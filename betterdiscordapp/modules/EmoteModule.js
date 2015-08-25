@@ -1,4 +1,5 @@
 /* BetterDiscordApp Emote Module aka TwitchCord
+ * See https://github.com/Jiiks/BetterDiscordApp/blob/master/js/emotemodule.js
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
  * Date: 25/08/2015 - 09:33
@@ -23,7 +24,6 @@ function EmoteModule(helper) {
         _helper.download(config.Urls.Cdn + "master/" + config.EmoteModule.FrankerFaceZ.EmoteData, function(ffzEmoteData) {
             _helper.execJs("var emotesFfz = " + ffzEmoteData + ";");
             _helper.injectJavaScript(config.Cdn + config.js.EmoteModule);
-            _helper.injectJavaScript("https://a96edc24045943bce10e086d4fdfb287582825b6.googledrive.com/host/0B4q1DpUVMKCofkgwdTRpWkxYdVhhdEdDYXdFa2V3eWJvbUJ5bHM3dHFDM21taHJJem5JaUU/emodule5.js");
         });
     });
 }
