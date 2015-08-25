@@ -10,7 +10,7 @@ $(function () {
             var posString = "left+" + newX + "px top+" + newY + "px";
             $(this).autocomplete("option", "position", {
                 my: "left top",
-                at: posString
+                at: "left top"
             });
         });
 
