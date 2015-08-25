@@ -1,0 +1,19 @@
+{
+  "EmoteModule": {
+    "Twitch":{
+      "EmoteData": "emotedata_twitch.json",
+      "EmoteUrlStart": "https://static-cdn.jtvnw.net/emoticons/v1/",
+      "EmoteUrlEnd": "/1.0"
+    },
+    "FrankerFaceZ": {
+      "EmoteData": "emotedata_ffz.json",
+      "EmoteUrlStart": "https://cdn.frankerfacez.com/emoticon/",
+      "EmoteUrlEnd": "/1"
+    },
+    "BetterTTV": {
+      "EmoteData": "",
+      "EmoteUrlStart": "",
+      "EmoteUrlEnd": ""
+    }
+  }
+}

@@ -5,7 +5,8 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var _helpers = require('./bda/helper.js');
+var _helpers = require('./helper.js');
+var _emoteModule = require('./modules/EmoteModule.js');
 var _helper;
 var _mainWindow;
 var _version = "1.0.0";
@@ -19,6 +20,8 @@ function BetterDiscordApp(mainWindow) {
 function init() {
     _helper.log("v" + _version + " initialized.");
     _helper.injectStylesheet("https://raw.githubusercontent.com/Jiiks/BetterDiscordApp/master/css/main.css");
+    _emoteModule = new _emoteModule.EmoteModule(_helper);
+
 }
 
 exports.BetterDiscordApp = BetterDiscordApp;
