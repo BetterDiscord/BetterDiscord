@@ -1,1 +1,0 @@
-function hi() { $("body").className = "This is for development testing purposes only" };
