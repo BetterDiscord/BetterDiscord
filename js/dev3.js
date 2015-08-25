@@ -1,0 +1,1 @@
+function devmode() { $("body").addClass("dev3mode"); }
