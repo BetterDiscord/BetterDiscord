@@ -2,7 +2,7 @@
  * Version: 1.1
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:54
- * Last Update: 26/08/2015 - 12:35
+ * Last Update: 26/08/2015 - 19:38
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -32,7 +32,7 @@ SettingsPanel.prototype.init = function() {
         }else {
             sof = "tc-switch-off active";
         }
-        settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { text: " - " + value.info })).append($("<div/>", { class: "tc-switch", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
+        settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { text: " - " + value.info })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
     })
 
     var settingsFooter = $("<div/>", { id: "tc-settings-panel-footer" });
@@ -85,4 +85,7 @@ SettingsPanel.prototype.handler = function(e){
     } else {
         $("#twitchcord-button-container").hide();
     }
+
+    autoCapitalize = settingsCookie["bda-es-ace"];
+
 }
