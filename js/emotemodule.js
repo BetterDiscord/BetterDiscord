@@ -1,26 +1,28 @@
 /* BetterDiscordApp EmoteModule JavaScript
- * Version: 1.1
+ * Version: 1.2
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:46
+ * Last Updated: 26/08/2015 - 15:49
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var emoteObserver;
-var emotesTwitch = {};
 var ffzEnabled = false;
 var bttvEnabled = false;
-var emotesFfz = {};
-var emotesBTTV = {};
 
-function startEmoteModule() {
-    emoteObserver = new MutationObserver(function(mutations) {
+function EmoteModule() {
+
+}
+
+EmoteModule.prototype.init = function() {
+    var self = this;
+    this.emoteObserver = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
                 var next = mutation.addedNodes.item(i);
                 if(next) {
-                    var nodes = getNodes(next);
+                    var nodes = self.getNodes(next);
                     for(var node in nodes) {
-                        injectEmote(nodes[node]);
+                        self.injectEmote(nodes[node]);
                     }
                 }
             }
@@ -28,11 +30,11 @@ function startEmoteModule() {
     });
 }
 
-function startEmoteObserver() {
-    emoteObserver.observe(document, {childList: true, subtree: true});
+EmoteModule.prototype.observe = function() {
+    this.emoteObserver.observe(document, { childList: true, subtree: true });
 }
 
-function getNodes(node) {
+EmoteModule.prototype.getNodes = function(node) {
     var next;
     var nodes = [];
 
@@ -45,7 +47,8 @@ function getNodes(node) {
     return nodes;
 }
 
-function injectEmote(node) {
+
+EmoteModule.prototype.injectEmote = function(node) {
 
     if(typeof emotesTwitch === 'undefined') return;
 
