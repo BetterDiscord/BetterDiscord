@@ -5,7 +5,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var observer;
+var emoteObserver;
 var emotesTwitch = {};
 var ffzEnabled = false;
 var bttvEnabled = false;
@@ -13,7 +13,7 @@ var emotesFfz = {};
 var emotesBTTV = {};
 
 function startEmoteModule() {
-    observer = new MutationObserver(function(mutations) {
+    emoteObserver = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
                 var next = mutation.addedNodes.item(i);
@@ -29,7 +29,7 @@ function startEmoteModule() {
 }
 
 function startEmoteObserver() {
-    observer.observe(document, {childList: true, subtree: true});
+    emoteObserver.observe(document, {childList: true, subtree: true});
 }
 
 function getNodes(node) {
