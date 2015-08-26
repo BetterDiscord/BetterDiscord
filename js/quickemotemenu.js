@@ -2,7 +2,7 @@
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:49
- * Last Updated: 26/08/2015 - 15:51
+ * Last Update: 26/08/2015 - 19:37
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -42,7 +42,13 @@ QuickEmoteMenu.prototype.init = function () {
         var command = emote;
         var id = globalEmotes[emote];
 
-        emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
+        emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
 
     }
+
+    $(".emote-icon").on("click", function() {
+        var emote = $(this).attr("id");
+        var ta = $(".channel-textarea-inner textarea");
+        ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
+    });
 }
