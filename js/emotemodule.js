@@ -1,7 +1,18 @@
+/* BetterDiscordApp EmoteModule JavaScript
+ * Version: 1.1
+ * Author: Jiiks | http://jiiks.net
+ * Date: 26/08/2015 - 11:46
+ * https://github.com/Jiiks/BetterDiscordApp
+ */
+
 var observer;
+var emotesTwitch = {};
+var ffzEnabled = false;
+var bttvEnabled = false;
+var emotesFfz = {};
+var emotesBTTV = {};
 
-(function() {
-
+function startEmoteModule() {
     observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
@@ -15,10 +26,11 @@ var observer;
             }
         });
     });
+}
 
+function startEmoteObserver() {
     observer.observe(document, {childList: true, subtree: true});
-
-})();
+}
 
 function getNodes(node) {
     var next;
@@ -49,14 +61,17 @@ function injectEmote(node) {
 
     words.some(function(word) {
         if (emotesTwitch.hasOwnProperty(word)) {
-            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch[word] + twitchEmoteUrlEnd + "><\/img>");
-        } else if(typeof emotesFfz !== 'undefined') {
+            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch[word] + twitchEmoteUrlEnd + " title="+word+"><\/img>");
+        } else if(typeof emotesFfz !== 'undefined' && ffzEnabled) {
             if(emotesFfz.hasOwnProperty(word)) {
-                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + "><\/img>");
+                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " title="+word+"><\/img>");
+            } else if(typeof emotesBTTV !== 'undefined' && bttvEnabled) {
+                if(emotesBTTV.hasOwnProperty(word)) {
+                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " title="+word+"><\/img>");
+                }
             }
         }
     });
 
     parent.innerHTML = parentInnerHTML;
-
 }
