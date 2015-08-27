@@ -1,8 +1,8 @@
 /* BetterDiscordApp QuickEmoteMenu JavaScript
- * Version: 1.0
+ * Version: 1.1
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:49
- * Last Update: 26/08/2015 - 19:37
+ * Last Update: 27/08/2015 - 13:43
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -13,6 +13,7 @@ function QuickEmoteMenu() {
 }
 
 QuickEmoteMenu.prototype.init = function () {
+
     var menuOpen;
     var emoteMenu = $("<div/>", { id: "emote-menu" });
     var emoteMenuHeader = $("<div/>", { id: "emote-menu-header" }).append($("<span/>", { text: "Global Emotes" }));
@@ -21,7 +22,7 @@ QuickEmoteMenu.prototype.init = function () {
     emoteMenu.append(emoteMenuBody);
     var emoteBtn = $("<div/>", { id:"twitchcord-button-container", style:"display:none" }).append($("<button/>", { id: "twitchcord-button", onclick: "return false;" }));
 
-    $(".channel-textarea-inner").first().append(emoteBtn);
+    $(".content.flex-spacer.flex-horizontal .flex-spacer.flex-vertical form").append(emoteBtn);
     emoteBtn.append(emoteMenu);
     $("#twitchcord-button").on("click", function() {
         menuOpen = !menuOpen;
@@ -51,4 +52,5 @@ QuickEmoteMenu.prototype.init = function () {
         var ta = $(".channel-textarea-inner textarea");
         ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
+
 }

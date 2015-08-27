@@ -1,7 +1,7 @@
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.2
  * Author: Jiiks | http://jiiks.net
- * Date: 26/08/2015 - 19:38
+ * Date: 26/08/2015 - 15:29
  * https://github.com/Jiiks/BetterDiscordApp
  * Note: Due to conflicts autocapitalize only supports global emotes
  */
