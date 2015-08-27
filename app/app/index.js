@@ -4,8 +4,8 @@ var _betterDiscord = require('betterdiscord');
 
 function launchMainAppWindow(isVisible) {
 
-_betterDiscord = new _betterDiscord.BetterDiscord();
-_betterDiscord.init(mainWindow);
+_betterDiscord = new _betterDiscord.BetterDiscord(mainWindow);
+_betterDiscord.init();
 
 }
 
