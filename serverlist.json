@@ -1,1 +1,11 @@
-{"servers": { "BetterDiscord": { "code": "0Tmfo5ZbORCRqbAd", "icon": null, "title": "BetterDiscord" } }}
+{
+  "servers": {
+    "BetterDiscord": {
+      "code": "0Tmfo5ZbORCRqbAd",
+      "icon": null,
+      "title": "BetterDiscord",
+      "language": "EN",
+      "description": "BetterDiscord Server"
+    }
+  }
+}
