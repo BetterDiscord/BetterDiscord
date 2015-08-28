@@ -1,11 +1,3 @@
-/* BetterDiscordApp Main JavaScript
- * Author: Jiiks | http://jiiks.net
- * Date: 27/08/2015 - 16:45
- * https://github.com/Jiiks/BetterDiscordApp
- */
-
-/**********************************************/
-
 /* BetterDiscordApp Core JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -302,7 +294,7 @@ SettingsPanel.prototype.init = function() {
         var son = "tc-switch-on";
         var sof = "tc-switch-off";
 
-        if(cookie[value.id]) {
+        if(settingsCookie[value.id]) {
             son = "tc-switch-on active";
         }else {
             sof = "tc-switch-off active";

@@ -27,7 +27,7 @@ SettingsPanel.prototype.init = function() {
         var son = "tc-switch-on";
         var sof = "tc-switch-off";
 
-        if(cookie[value.id]) {
+        if(settingsCookie[value.id]) {
             son = "tc-switch-on active";
         }else {
             sof = "tc-switch-off active";
