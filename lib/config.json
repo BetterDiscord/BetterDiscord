@@ -1,4 +1,7 @@
 {
+  "Core": {
+    "Version": "0.1.2"
+  },
   "EmoteModule": {
     "Twitch":{
       "EmoteData": "emotedata_twitch.json",
@@ -11,7 +14,7 @@
       "EmoteUrlEnd": "/1"
     },
     "BetterTTV": {
-      "EmoteData": "",
+      "EmoteData": "emotedata_bttv.json",
       "EmoteUrlStart": "",
       "EmoteUrlEnd": ""
     }
