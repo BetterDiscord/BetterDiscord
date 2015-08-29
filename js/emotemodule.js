@@ -19,24 +19,20 @@ function EmoteModule() {
 }
 
 EmoteModule.prototype.init = function() {
-    var self = this;
-    this.emoteObserver = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
-                var next = mutation.addedNodes.item(i);
-                if(next) {
-                    var nodes = self.getNodes(next);
-                    for(var node in nodes) {
-                        self.injectEmote(nodes[node]);
-                    }
-                }
-            }
-        });
-    });
+
 }
 
-EmoteModule.prototype.observe = function() {
-    this.emoteObserver.observe(document, { childList: true, subtree: true });
+EmoteModule.prototype.obsCallback = function(mutation) {
+    var self = this;
+    for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
+        var next = mutation.addedNodes.item(i);
+        if(next) {
+            var nodes = self.getNodes(next);
+            for(var node in nodes) {
+                self.injectEmote(nodes[node]);
+            }
+        }
+    }
 }
 
 EmoteModule.prototype.getNodes = function(node) {

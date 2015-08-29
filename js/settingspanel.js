@@ -6,6 +6,8 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
+var links = { "Check for updates": "#", "Jiiks.net": "http://jiiks.net", "Twitter": "http://twitter.com/jiiksi", "Github": "https://github.com/jiiks" };
+
 function SettingsPanel() {
 
 }
@@ -36,7 +38,7 @@ SettingsPanel.prototype.init = function() {
     })
 
     var settingsFooter = $("<div/>", { id: "tc-settings-panel-footer" });
-    settingsFooter.append($("<span/>", { id: "tc-about", text: "BetterDiscord v" + version + " by Jiiks | Settings are automatically saved." } ));
+    settingsFooter.append($("<span/>", { id: "tc-about", text: "BDA v" + version + "(js "+jsVersion+") by Jiiks | Settings are automatically saved." } ));
     var tcLinks = $("<span/>", { id: "tc-links" });
     $.each(links, function(key, value) {
         tcLinks.append($("<a/>", { href: value, text: key }));
@@ -80,12 +82,12 @@ SettingsPanel.prototype.handler = function(e){
 
     $.cookie("better-discord", JSON.stringify(settingsCookie));
 
-    if(settingsCookie["bda-es-qme"]) {
+    if(settingsCookie["bda-es-0"]) {
         $("#twitchcord-button-container").show();
     } else {
         $("#twitchcord-button-container").hide();
     }
 
-    autoCapitalize = settingsCookie["bda-es-ace"];
+    autoCapitalize = settingsCookie["bda-es-4"];
 
 }
