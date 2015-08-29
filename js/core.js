@@ -84,7 +84,7 @@ Core.prototype.initSettings = function() {
         settingsCookie = defaultCookie;
         this.saveSettings();
     } else {
-        this.loadSettigns();
+        this.loadSettings();
 
         for(var setting in defaultCookie) {
             if(settingsCookie[setting] == undefined) {
@@ -113,7 +113,7 @@ Core.prototype.initObserver = function() {
                 quickEmoteMenu.obsCallback();
             }
 
-            this.emoteModule.obsCallback(mutation);
+            emoteModule.obsCallback(mutation);
 
         });
     });
