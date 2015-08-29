@@ -2,7 +2,7 @@
  * Version: 1.2
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 29/08/2015 - 22:00
+ * Last Update: 29/08/2015 - 22:19
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -63,16 +63,16 @@ Core.prototype.init = function() {
     this.initSettings();
     this.initObserver();
 
-    //Settings button
-    $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button", style: 'background-image:url("https://a96edc24045943bce10e086d4fdfb287582825b6.googledrive.com/host/0B4q1DpUVMKCofkgwdTRpWkxYdVhhdEdDYXdFa2V3eWJvbUJ5bHM3dHFDM21taHJJem5JaUU/settings_icon.png")' })))));
+    $(".guilds-wrapper").ready(function() {
+        //Settings button
+        $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button", style: 'background-image:url("https://a96edc24045943bce10e086d4fdfb287582825b6.googledrive.com/host/0B4q1DpUVMKCofkgwdTRpWkxYdVhhdEdDYXdFa2V3eWJvbUJ5bHM3dHFDM21taHJJem5JaUU/settings_icon.png")' })))));
 
-    settingsPanel = new SettingsPanel();
-    settingsPanel.init();
-    quickEmoteMenu.init(false);
+        settingsPanel = new SettingsPanel();
+        settingsPanel.init();
+        quickEmoteMenu.init(false);
 
-    $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
-
-
+        $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
+    });
 }
 
 Core.prototype.initSettings = function() {
