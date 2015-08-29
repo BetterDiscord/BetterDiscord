@@ -1,7 +1,8 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.1
+ * Version: 1.2
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
+ * Last Update: 29/08/2015 - 11:48
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -33,7 +34,7 @@ var settings = {
 
 
 var defaultCookie = {
-    "version":"1.1",
+    "version":jsVersion,
     "bda-gs-0":false,
     "bda-gs-1":true,
     "bda-es-0":true,
@@ -79,21 +80,29 @@ Core.prototype.init = function() {
 }
 
 Core.prototype.initSettings = function() {
-    if(typeof($.cookie("better-discord")) == undefined) {
+    if($.cookie("better-discord") == undefined) {
         settingsCookie = defaultCookie;
-        $.cookie("better-discord", JSON.stringify(settingsCookie));
+        this.saveSettings();
     } else {
-        settingsCookie = JSON.parse($.cookie("better-discord"));
+        this.loadSettigns();
 
         for(var setting in defaultCookie) {
             if(settingsCookie[setting] == undefined) {
                 settingsCookie = defaultCookie;
-                $.cookie("better-discord", JSON.stringify(settingsCookie));
+                this.saveSettings();
                 alert("BetterDiscord settings reset due to update/error");
                 break;
             }
         }
     }
+}
+
+Core.prototype.saveSettings = function() {
+    $.cookie("better-discord", JSON.stringify(settingsCookie), { expires: 365, path: '/' });
+}
+
+Core.prototype.loadSettings = function() {
+    settingsCookie = JSON.parse($.cookie("better-discord"));
 }
 
 Core.prototype.initObserver = function() {

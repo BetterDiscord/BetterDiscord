@@ -1,7 +1,8 @@
 /* BetterDiscordApp EmoteModule JavaScript
- * Version: 1.2
+ * Version: 1.3
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 15:29
+ * Last Update: 29/08/2015 - 11:46
  * https://github.com/Jiiks/BetterDiscordApp
  * Note: Due to conflicts autocapitalize only supports global emotes
  */
@@ -84,9 +85,12 @@ EmoteModule.prototype.autoCapitalize = function() {
     var self = this;
     console.log("autocap");
     $('body').delegate($(".channel-textarea-inner textarea"), 'keyup change paste', function() {
-        if(!autoCapitalize) return;
+        if(!settingsCookie["bda-es-4"]) return;
 
         var text = $(".channel-textarea-inner textarea").val();
+
+        if(text == undefined) return;
+
         var lastWord = text.split(" ").pop();
         if(lastWord.length > 3) {
             var ret = self.capitalize(lastWord.toLowerCase());

@@ -1,8 +1,8 @@
 /* BetterDiscordApp Settings Panel JavaScript
- * Version: 1.1
+ * Version: 1.2
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:54
- * Last Update: 26/08/2015 - 19:38
+ * Last Update: 29/08/2015 - 11:47
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -80,7 +80,6 @@ SettingsPanel.prototype.handler = function(e){
         swoff.addClass("active");
     }
 
-    $.cookie("better-discord", JSON.stringify(settingsCookie));
 
     if(settingsCookie["bda-es-0"]) {
         $("#twitchcord-button-container").show();
@@ -88,6 +87,6 @@ SettingsPanel.prototype.handler = function(e){
         $("#twitchcord-button-container").hide();
     }
 
-    autoCapitalize = settingsCookie["bda-es-4"];
+    core.saveSettings();
 
 }

@@ -1,8 +1,8 @@
 /* BetterDiscordApp QuickEmoteMenu JavaScript
- * Version: 1.1
+ * Version: 1.2
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:49
- * Last Update: 27/08/2015 - 13:43
+ * Last Update: 29/08/2015 - 11:46
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
