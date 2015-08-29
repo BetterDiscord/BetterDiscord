@@ -3,8 +3,8 @@
 	width:50px;
 	height:45px;
 	right:0;
-	top:0;
 	display:block;
+	bottom:31px;
 }
 
 #twitchcord-button {
@@ -20,30 +20,30 @@
 .twitchcord-button-open {
 	background-image:url(https://static-cdn.jtvnw.net/emoticons/v1/3/1.0) !important; }
 
-#emote-menu { 
-	background:#2E3136; 
-	height:0; 
-	width:300px; 
-	position:absolute; 
-	bottom:45px; 
-	right:0; 
-	border:1px solid #000; 
-	border-radius: 5px 5px 0 0; 
-	overflow:auto; 
-	visibility:hidden; 
+#emote-menu {
+	background:#36393E;
+	height:0;
+	width:300px;
+	position:absolute;
+	bottom:45px;
+	right:0;
+	border:1px solid #000;
+	border-radius: 5px 0 0 0;
+	overflow:auto;
+	visibility:hidden;
 	transition: all 1s;
 	-webkit-transition: all 1s;
 }
 
-.emotemenu-open { 
-	height:450px !important; 
-	visibility:visible !important; 
+.emotemenu-open {
+	height:450px !important;
+	visibility:visible !important;
 }
 
 #emote-menu-header {
 	width:100%;
 	height:36px;
-	background:#36393E;
+	background:#212222;
 	border-bottom:1px solid #000;
 }
 
@@ -69,7 +69,7 @@
 	position:relative;
 }
 
-.emote-container img {
+.emote-icon {
 	max-width:100%;
 	max-height:100%;
 	position:absolute;
@@ -97,6 +97,7 @@
 	border:1px solid #000;
 	box-shadow:0 0 20px 0 #000;
 	max-height:800px;
+	min-width:750px;
 }
 
 #tc-settings-panel-header {
@@ -182,26 +183,48 @@
 
 .tc-switch {
 	background: rgb(46, 49, 54);
-    width: 100px;
-    height: 24px;
-    display: inline-block;
-    float: right;
-    margin: -7px;
-    border: 1px solid #000;
-    outline: 1px solid #404040;
-	  cursor:pointer;
+	width: 100px;
+	height: 24px;
+	display: inline-block;
+	float: right;
+	margin: -7px;
+	border: 1px solid #000;
+	outline: 1px solid #404040;
+	cursor:pointer;
+}
+
+.tc-switch.disabled {
+	background:gray;
+	cursor:default;
+}
+
+.tc-switch.disabled span {
+	background:gray !important;
+}
+
+.tc-switch.disabled .tc-switch-on {
+	border-left:1px gray !important;
 }
 
 .tc-switch span {
 	line-height:24px;
 	display:inline-block;
-	width:50px;
+	width:49px;
 	text-align:center;
 	height:24px;
 }
 
+.tc-switch-off {
+	border-right:1px solid #000;
+}
+
+.tc-switch-on {
+	border-left:1px solid #404040;
+}
+
 .tc-switch-on.active {
 	background:green;
+	border-left:1px solid #00AE08;
 }
 
 .tc-switch-off.active {
