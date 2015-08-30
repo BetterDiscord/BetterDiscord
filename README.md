@@ -5,8 +5,25 @@ First release coming very soon.
 
 v0.1.2
 
+```
+Note that there is no release currently(eta 01/09/2015)
+```
+
 ![ss](http://puu.sh/jTEBB.png)
 
+## Auto Installation
+* Download the latest package from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
+* Run the installer
+* Hopefully it works.
+* Installer requires [node](https://nodejs.org/download/) download the binaries and place in the same folder as the installer if you don't have node installed.
+* Installer uses [asar](https://github.com/atom/asar) which is bundled with the installer.
+* Installer uses [wrench](https://github.com/ryanmcgrath/wrench-js) which is bundled with the installer.
+
+## Manual Installation
+* Extract app.asar
+* Add BetterDiscord as a dependency
+* Add init to Discord load event
+* Move BetterDiscord to node_modules
 
 ## Features
 
