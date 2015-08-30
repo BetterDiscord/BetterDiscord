@@ -230,3 +230,37 @@
 .tc-switch-off.active {
 	background:#860606;
 }
+
+.bd-minimal .avatar-large {
+	width:0px;
+	border-right:2px solid #303030;
+}
+
+.bd-minimal.bd-minimal-chan .channels-wrap {
+	display:none;
+}
+
+.bd-minimal .message-group {
+	padding:5px;
+}
+
+.bd-minimal .embed {
+	padding:2px;
+}
+
+.bd-minimal .embed img {
+	max-height: 120px;
+	max-width:160px;
+}
+
+.bd-minimal .channel-members .avatar-small{
+	display:none;
+}
+
+.bd-minimal .channel-members .member {
+	padding:5px;
+}
+
+.bd-minimal .channel-members-wrap {
+	min-width: 0px;
+}
