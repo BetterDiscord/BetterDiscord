@@ -1,0 +1,1 @@
+cmd /k node.exe index.js
