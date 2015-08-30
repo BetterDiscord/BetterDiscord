@@ -48,13 +48,12 @@ QuickEmoteMenu.prototype.init = function (reload) {
         emoteBtn.show();
     }
 
-    if(!reload) {
-        $(".emote-icon").on("click", function() {
-            var emote = $(this).attr("id");
-            var ta = $(".channel-textarea-inner textarea");
-            ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
-        });
-    }
+     $(".emote-icon").off();
+     $(".emote-icon").on("click", function() {
+         var emote = $(this).attr("id");
+         var ta = $(".channel-textarea-inner textarea");
+         ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
+     });
 }
 
 QuickEmoteMenu.prototype.obsCallback = function() {
