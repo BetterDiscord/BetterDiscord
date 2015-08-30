@@ -1,13 +1,13 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.2
+ * Version: 1.3
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 29/08/2015 - 22:19
+ * Last Update: 30/08/2015 - 12:15
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu;
-var jsVersion = 1.1;
+var jsVersion = 1.2;
 
 var mainObserver;
 
@@ -23,6 +23,8 @@ var bttvEmoteUrlEnd = "";
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
     "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers", "implemented":false},
+    "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented":true},
+    "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode", "implemented":true},
     "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes", "implemented":true },
     "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes", "implemented":true },
     "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes", "implemented":false },
@@ -37,6 +39,8 @@ var defaultCookie = {
     "version":jsVersion,
     "bda-gs-0":false,
     "bda-gs-1":true,
+    "bda-gs-2":false,
+    "bda-gs-3":false,
     "bda-es-0":true,
     "bda-es-1":false,
     "bda-es-2":false,
@@ -117,6 +121,7 @@ Core.prototype.initObserver = function() {
 
     mainObserver.observe(document, { childList: true, subtree: true });
 }
+
 
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.3
@@ -335,10 +340,10 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
 }
 
 /* BetterDiscordApp Settings Panel JavaScript
- * Version: 1.2
+ * Version: 1.3
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:54
- * Last Update: 29/08/2015 - 11:47
+ * Last Update: 30/08/2015 - 12:16
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -370,7 +375,8 @@ SettingsPanel.prototype.init = function() {
         }else {
             sof = "tc-switch-off active";
         }
-        settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { text: " - " + value.info })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
+        console.log(value.implemented);
+        settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { html: " - <span>" + value.info  + "</span>" + (value.implemented == false ? '<span style="color:red">  Coming Soon</span>' : "") })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
     })
 
     var settingsFooter = $("<div/>", { id: "tc-settings-panel-footer" });
@@ -387,6 +393,23 @@ SettingsPanel.prototype.init = function() {
     $("body").append(this.getPanel());
     $("#tc-settings-close").on("click", function(e) { self.show(); });
     $(".tc-switch").on("click", function() { self.handler($(this)) });
+
+    if(settingsCookie["bda-es-0"]) {
+        $("#twitchcord-button-container").show();
+    } else {
+        $("#twitchcord-button-container").hide();
+    }
+
+    if(settingsCookie["bda-gs-2"]) {
+        $("body").addClass("bd-minimal");
+    } else {
+        $("body").removeClass("bd-minimal");
+    }
+    if(settingsCookie["bda-gs-3"]) {
+        $("body").addClass("bd-minimal-chan");
+    } else {
+        $("body").removeClass("bd-minimal-chan");
+    }
 }
 
 
@@ -423,8 +446,18 @@ SettingsPanel.prototype.handler = function(e){
         $("#twitchcord-button-container").hide();
     }
 
-    core.saveSettings();
+    if(settingsCookie["bda-gs-2"]) {
+        $("body").addClass("bd-minimal");
+    } else {
+        $("body").removeClass("bd-minimal");
+    }
+    if(settingsCookie["bda-gs-3"]) {
+        $("body").addClass("bd-minimal-chan");
+    } else {
+        $("body").removeClass("bd-minimal-chan");
+    }
 
+    core.saveSettings();
 }
 
 /* BetterDiscordApp Utilities JavaScript

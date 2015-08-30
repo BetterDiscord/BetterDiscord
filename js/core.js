@@ -1,13 +1,13 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.2
+ * Version: 1.3
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 29/08/2015 - 22:19
+ * Last Update: 30/08/2015 - 12:15
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu;
-var jsVersion = 1.1;
+var jsVersion = 1.2;
 
 var mainObserver;
 
@@ -23,6 +23,8 @@ var bttvEmoteUrlEnd = "";
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
     "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers", "implemented":false},
+    "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented":true},
+    "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode", "implemented":true},
     "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes", "implemented":true },
     "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes", "implemented":true },
     "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes", "implemented":false },
@@ -37,6 +39,8 @@ var defaultCookie = {
     "version":jsVersion,
     "bda-gs-0":false,
     "bda-gs-1":true,
+    "bda-gs-2":false,
+    "bda-gs-3":false,
     "bda-es-0":true,
     "bda-es-1":false,
     "bda-es-2":false,
@@ -63,7 +67,7 @@ Core.prototype.init = function() {
     this.initSettings();
     this.initObserver();
 
-    $(".guilds-wrapper").ready(function() {
+     $(".guilds-wrapper").ready(function() {
         //Settings button
         $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button", style: 'background-image:url("https://a96edc24045943bce10e086d4fdfb287582825b6.googledrive.com/host/0B4q1DpUVMKCofkgwdTRpWkxYdVhhdEdDYXdFa2V3eWJvbUJ5bHM3dHFDM21taHJJem5JaUU/settings_icon.png")' })))));
 
@@ -72,7 +76,7 @@ Core.prototype.init = function() {
         quickEmoteMenu.init(false);
 
         $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
-    });
+     });
 }
 
 Core.prototype.initSettings = function() {

@@ -1,8 +1,8 @@
 /* BetterDiscordApp Settings Panel JavaScript
- * Version: 1.2
+ * Version: 1.3
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:54
- * Last Update: 29/08/2015 - 11:47
+ * Last Update: 30/08/2015 - 12:16
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -34,7 +34,8 @@ SettingsPanel.prototype.init = function() {
         }else {
             sof = "tc-switch-off active";
         }
-        settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { text: " - " + value.info })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
+        console.log(value.implemented);
+        settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { html: " - <span>" + value.info  + "</span>" + (value.implemented == false ? '<span style="color:red">  Coming Soon</span>' : "") })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
     })
 
     var settingsFooter = $("<div/>", { id: "tc-settings-panel-footer" });
@@ -51,6 +52,23 @@ SettingsPanel.prototype.init = function() {
     $("body").append(this.getPanel());
     $("#tc-settings-close").on("click", function(e) { self.show(); });
     $(".tc-switch").on("click", function() { self.handler($(this)) });
+
+    if(settingsCookie["bda-es-0"]) {
+        $("#twitchcord-button-container").show();
+    } else {
+        $("#twitchcord-button-container").hide();
+    }
+
+    if(settingsCookie["bda-gs-2"]) {
+        $("body").addClass("bd-minimal");
+    } else {
+        $("body").removeClass("bd-minimal");
+    }
+    if(settingsCookie["bda-gs-3"]) {
+        $("body").addClass("bd-minimal-chan");
+    } else {
+        $("body").removeClass("bd-minimal-chan");
+    }
 }
 
 
@@ -87,6 +105,16 @@ SettingsPanel.prototype.handler = function(e){
         $("#twitchcord-button-container").hide();
     }
 
-    core.saveSettings();
+    if(settingsCookie["bda-gs-2"]) {
+        $("body").addClass("bd-minimal");
+    } else {
+        $("body").removeClass("bd-minimal");
+    }
+    if(settingsCookie["bda-gs-3"]) {
+        $("body").addClass("bd-minimal-chan");
+    } else {
+        $("body").removeClass("bd-minimal-chan");
+    }
 
+    core.saveSettings();
 }
