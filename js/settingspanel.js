@@ -19,7 +19,7 @@ SettingsPanel.prototype.getPanel = function() {
 SettingsPanel.prototype.init = function() {
 
     var self = this;
-    this.tcSettingsPanel = $("<div/>", { id: "tc-settings-panel" });
+    this.tcSettingsPanel = $("<div/>", { id: "tc-settings-panel", style: "display:none" });
     this.getPanel().append($("<div/>", { id: "tc-settings-panel-header" }).append($("<h2/>", { text: "BetterDiscord - Settings" })).append($("<span/>", { id: "tc-settings-close", text: "X", style:"cursor:pointer;" })));
 
     var settingsList = $("<ul/>");

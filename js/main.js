@@ -1,8 +1,8 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.3
+ * Version: 1.4
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 30/08/2015 - 12:15
+ * Last Update: 31/08/2015 - 16:17
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
@@ -67,16 +67,23 @@ Core.prototype.init = function() {
     this.initSettings();
     this.initObserver();
 
-    $(".guilds-wrapper").ready(function() {
-        //Settings button
-        $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button", style: 'background-image:url("https://a96edc24045943bce10e086d4fdfb287582825b6.googledrive.com/host/0B4q1DpUVMKCofkgwdTRpWkxYdVhhdEdDYXdFa2V3eWJvbUJ5bHM3dHFDM21taHJJem5JaUU/settings_icon.png")' })))));
+    function waitForGuildsWrapper() {
 
-        settingsPanel = new SettingsPanel();
-        settingsPanel.init();
-        quickEmoteMenu.init(false);
+        if($(".guilds-wrapper").size() < 1) {
+            $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
-        $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
-    });
+            settingsPanel = new SettingsPanel();
+            settingsPanel.init();
+            quickEmoteMenu.init(false);
+
+            $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
+        } else {
+            setTimeout(function() {
+                waitForGuildsWrapper();
+            }, 100);
+        }
+
+    }
 }
 
 Core.prototype.initSettings = function() {
@@ -248,6 +255,19 @@ function PublicServers() {
 
 PublicServers.prototype.init = function() {
 
+}/* BetterDiscordApp PublicSevers JavaSctript
+ * Version: 1.0
+ * Author: Jiiks | http://jiiks.net
+ * Date: 27/08/2015 - 14:16
+ * https://github.com/Jiiks/BetterDiscordApp
+ */
+
+function PublicServers() {
+
+}
+
+PublicServers.prototype.init = function() {
+
 }
 
 /* BetterDiscordApp QuickEmoteMenu JavaScript
@@ -359,7 +379,7 @@ SettingsPanel.prototype.getPanel = function() {
 SettingsPanel.prototype.init = function() {
 
     var self = this;
-    this.tcSettingsPanel = $("<div/>", { id: "tc-settings-panel" });
+    this.tcSettingsPanel = $("<div/>", { id: "tc-settings-panel", style: "display:none" });
     this.getPanel().append($("<div/>", { id: "tc-settings-panel-header" }).append($("<h2/>", { text: "BetterDiscord - Settings" })).append($("<span/>", { id: "tc-settings-close", text: "X", style:"cursor:pointer;" })));
 
     var settingsList = $("<ul/>");
@@ -456,7 +476,7 @@ SettingsPanel.prototype.handler = function(e){
         $("body").removeClass("bd-minimal-chan");
     }
 
-    mainCore.saveSettings();
+    core.saveSettings();
 }
 
 /* BetterDiscordApp Utilities JavaScript
