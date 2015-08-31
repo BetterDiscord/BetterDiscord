@@ -67,10 +67,10 @@ EmoteModule.prototype.injectEmote = function(node) {
     words.some(function(word) {
         if (emotesTwitch.hasOwnProperty(word)) {
             parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch[word] + twitchEmoteUrlEnd + " title="+word+"><\/img>");
-        } else if(typeof emotesFfz !== 'undefined' && ffzEnabled) {
+        } else if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
             if(emotesFfz.hasOwnProperty(word)) {
                 parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " title="+word+"><\/img>");
-            } else if(typeof emotesBTTV !== 'undefined' && bttvEnabled) {
+            } else if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
                 if(emotesBTTV.hasOwnProperty(word)) {
                     parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " title="+word+"><\/img>");
                 }
