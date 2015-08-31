@@ -69,7 +69,7 @@ Core.prototype.init = function() {
 
     function waitForGuildsWrapper() {
 
-        if($(".guilds-wrapper").size() < 1) {
+        if($(".guilds-wrapper").size() > 0) {
             $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
             settingsPanel = new SettingsPanel();
