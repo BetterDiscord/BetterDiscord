@@ -366,7 +366,7 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var links = { "Check for updates": "#", "Jiiks.net": "http://jiiks.net", "Twitter": "http://twitter.com/jiiksi", "Github": "https://github.com/jiiks" };
+var links = { "Jiiks.net": "http://jiiks.net", "Twitter": "http://twitter.com/jiiksi", "Github": "https://github.com/jiiks" };
 
 function SettingsPanel() {
 
@@ -402,7 +402,7 @@ SettingsPanel.prototype.init = function() {
     settingsFooter.append($("<span/>", { id: "tc-about", text: "BDA v" + version + "(js "+jsVersion+") by Jiiks | Settings are automatically saved." } ));
     var tcLinks = $("<span/>", { id: "tc-links" });
     $.each(links, function(key, value) {
-        tcLinks.append($("<a/>", { href: value, text: key }));
+        tcLinks.append($("<a/>", { href: value, text: key, target: "_blank" }));
         tcLinks.append($("<span/>", { text: " | " }));
     })
     settingsFooter.append(tcLinks);
