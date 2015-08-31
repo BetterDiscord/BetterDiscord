@@ -1,14 +1,6 @@
 # BetterDiscordApp
 Better Discord App enhances Discord desktop app with new features.
 
-First release coming very soon.
-
-v0.1.2
-
-```
-Note that there is no release currently(eta 01/09/2015)
-```
-
 ![ss](http://puu.sh/jTEBB.png)
 
 ## Auto Installation
