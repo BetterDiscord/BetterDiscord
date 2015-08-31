@@ -83,7 +83,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 
 EmoteModule.prototype.autoCapitalize = function() {
     var self = this;
-    console.log("autocap");
+
     $('body').delegate($(".channel-textarea-inner textarea"), 'keyup change paste', function() {
         if(!settingsCookie["bda-es-4"]) return;
 

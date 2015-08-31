@@ -82,8 +82,8 @@ Core.prototype.init = function() {
                 waitForGuildsWrapper();
             }, 100);
         }
-
     }
+    waitForGuildsWrapper();
 }
 
 Core.prototype.initSettings = function() {
@@ -128,7 +128,6 @@ Core.prototype.initObserver = function() {
 
     mainObserver.observe(document, { childList: true, subtree: true });
 }
-
 
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.3
@@ -215,7 +214,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 
 EmoteModule.prototype.autoCapitalize = function() {
     var self = this;
-    console.log("autocap");
+
     $('body').delegate($(".channel-textarea-inner textarea"), 'keyup change paste', function() {
         if(!settingsCookie["bda-es-4"]) return;
 
@@ -288,7 +287,7 @@ function QuickEmoteMenu() {
 }
 
 QuickEmoteMenu.prototype.init = function (reload) {
-    console.log("quickemote init");
+
     emoteBtn = null;
 
     if(!emoteMenu) {
@@ -394,7 +393,7 @@ SettingsPanel.prototype.init = function() {
         }else {
             sof = "tc-switch-off active";
         }
-        console.log(value.implemented);
+
         settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { html: " - <span>" + value.info  + "</span>" + (value.implemented == false ? '<span style="color:red">  Coming Soon</span>' : "") })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
     })
 

@@ -82,8 +82,8 @@ Core.prototype.init = function() {
                 waitForGuildsWrapper();
             }, 100);
         }
-
     }
+    waitForGuildsWrapper();
 }
 
 Core.prototype.initSettings = function() {

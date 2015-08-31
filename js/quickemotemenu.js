@@ -16,7 +16,7 @@ function QuickEmoteMenu() {
 }
 
 QuickEmoteMenu.prototype.init = function (reload) {
-    console.log("quickemote init");
+
     emoteBtn = null;
 
     if(!emoteMenu) {

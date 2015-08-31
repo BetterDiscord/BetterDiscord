@@ -34,7 +34,7 @@ SettingsPanel.prototype.init = function() {
         }else {
             sof = "tc-switch-off active";
         }
-        console.log(value.implemented);
+
         settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { html: " - <span>" + value.info  + "</span>" + (value.implemented == false ? '<span style="color:red">  Coming Soon</span>' : "") })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
     })
 
