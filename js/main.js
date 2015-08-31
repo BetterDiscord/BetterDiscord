@@ -67,8 +67,8 @@ Core.prototype.init = function() {
     this.initSettings();
     this.initObserver();
 
-    function waitForGuildsWrapper() {
-
+    //Temp
+    setTimeout(function() {
         if($(".guilds-wrapper").size() > 0) {
             $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
@@ -82,8 +82,9 @@ Core.prototype.init = function() {
                 waitForGuildsWrapper();
             }, 100);
         }
-    }
-    waitForGuildsWrapper();
+    }, 3000);
+
+
 }
 
 Core.prototype.initSettings = function() {
