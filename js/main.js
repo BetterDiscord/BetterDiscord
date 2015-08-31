@@ -475,7 +475,7 @@ SettingsPanel.prototype.handler = function(e){
         $("body").removeClass("bd-minimal-chan");
     }
 
-    core.saveSettings();
+    mainCore.saveSettings();
 }
 
 /* BetterDiscordApp Utilities JavaScript
