@@ -54,6 +54,7 @@ function install() {
 
             console.log("Extracting app archive");
 
+
             asar.extractAll(_discordPath + _appArchive, _discordPath + _appFolder);
 
             fs.exists(_discordPath + _appFolder, function(exists) {
@@ -63,7 +64,7 @@ function install() {
 
                     var data = fs.readFileSync(_discordPath + _index).toString().split("\n");
                     data.splice(80, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
-                    data.splice(363, 0, '_betterDiscord = new _betterDiscord.BetterDiscord(mainWindow); \n _betterDiscord.init(); \n');
+                    data.splice(409, 0, '_betterDiscord = new _betterDiscord.BetterDiscord(mainWindow); \n _betterDiscord.init(); \n');
 
 
                     fs.writeFile(_discordPath + _index, data.join("\n"), function(err) {
@@ -73,7 +74,7 @@ function install() {
                         console.log("Injecting package.json");
 
                         var data = fs.readFileSync(_discordPath + _packageJson).toString().split("\n");
-                        data.splice(9, 0, ',"betterdiscord":"^0.1.2"');
+                        data.splice(9, 0, '"betterdiscord":"^0.1.2",');
 
                         fs.writeFile(_discordPath + _packageJson, data.join("\n"), function(err) {
                             if(err) return console.log(err);
@@ -89,8 +90,6 @@ function install() {
                     process.exit();
                 }
             });
-
-
 
         } else {
             console.log("Discord resources not found at: " + _discordPath);
