@@ -3,6 +3,10 @@ Better Discord App enhances Discord desktop app with new features.
 
 ![ss](http://puu.sh/jTEBB.png)
 
+```
+If Discord has updated and the installer hasn't, try replaceing the installer index.js with the latest one here: [index.js](https://github.com/Jiiks/BetterDiscordApp/blob/master/NodeInstaller/index.js)
+```
+
 ## Auto Installation
 * Download the latest package from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
 * Run the installer

@@ -1,6 +1,8 @@
 /*
- * BetterDiscordApp Installer v0.2 for Discord 0.0.277
+ * BetterDiscordApp Installer v0.2
  */
+
+var dver = "0.0.278";
 
 var asar = require('asar');
 var wrench = require('wrench');
@@ -16,7 +18,7 @@ var _index = _appFolder + "\\app\\index.js";
 
 function install() {
 
-    _discordPath = process.env.LOCALAPPDATA + "\\Discord\\app-0.0.277\\resources";
+    _discordPath = process.env.LOCALAPPDATA + "\\Discord\\app-"+dver+"\\resources";
     console.log("Looking for discord resources at: " + _discordPath);
 
     fs.exists(_discordPath, function(exists) {
@@ -100,7 +102,7 @@ function install() {
 
 function init() {
 
-    console.log("BetterDiscord Simple Installer v0.1 for Discord 0.0.277 by Jiiks.");
+    console.log("BetterDiscord Simple Installer v0.1 for Discord "+dver+" by Jiiks.");
     console.log("If Discord has updated then download the latest installer.");
 
     var rl = readline.createInterface({ input: process.stdin, output: process.stdout });
