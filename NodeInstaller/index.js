@@ -1,5 +1,5 @@
 /*
- * BetterDiscordApp Installer v0.2
+ * BetterDiscordApp Installer v0.3
  */
 
 var dver = "0.0.278";
@@ -32,16 +32,17 @@ function install() {
                 console.log("Deleted " + _discordPath + _appFolder + " folder.");
             }
 
-            if(fs.existsSync(_discordPath + "\\node_modules")) {
-                console.log("Deleting " + _discordPath + "\\node_modules" + " folder.");
-                wrench.rmdirSyncRecursive(_discordPath + "\\node_modules");
-                console.log("Deleted " + _discordPath + "\\node_modules" + " folder.");
+            if(fs.existsSync(_discordPath + "\\node_modules\\BetterDiscord")) {
+                console.log("Deleting " + _discordPath + "\\node_modules\\BetterDiscord" + " folder.");
+                wrench.rmdirSyncRecursive(_discordPath + "\\node_modules\\BetterDiscord");
+                console.log("Deleted " + _discordPath + "\\node_modules\\BetterDiscord" + " folder.");
             }
 
             console.log("Copying BetterDiscord");
 
-            fs.mkdirSync(_discordPath + "\\node_modules");
-            wrench.copyDirSyncRecursive(__dirname + "\\BetterDiscord\\", _discordPath + "\\node_modules\\BetterDiscord\\");
+            fs.mkdirSync(_discordPath + "\\node_modules\\BetterDiscord");
+
+            wrench.copyDirSyncRecursive(__dirname + "\\BetterDiscord\\", _discordPath + "\\node_modules\\BetterDiscord\\", {forceDelete: true});
 
             console.log("Looking for app archive");
             if(fs.existsSync(_discordPath + _appArchive)) {
@@ -102,12 +103,12 @@ function install() {
 
 function init() {
 
-    console.log("BetterDiscord Simple Installer v0.1 for Discord "+dver+" by Jiiks.");
+    console.log("BetterDiscord Simple Installer v0.3 for Discord "+dver+" by Jiiks.");
     console.log("If Discord has updated then download the latest installer.");
 
     var rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-    rl.question("The following directories will be deleted if they exists: discorpath\\app, discordpath\\node_modules, is this ok? Y/N", function(answer) {
+    rl.question("The following directories will be deleted if they exists: discorpath\\app, discordpath\\node_modules\\BetterDiscord, is this ok? Y/N", function(answer) {
 
         var alc = answer.toLowerCase();
 
