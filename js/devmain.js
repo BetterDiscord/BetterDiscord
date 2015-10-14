@@ -217,7 +217,7 @@ EmoteModule.prototype.injectEmote = function(node) {
     parent.innerHTML = parentInnerHTML;
     var newHeight = parent.parentElement.offsetHeight;
 
-    console.log("heightdiff: " + newHeight - oldHeight);
+    console.log("heightdiff: " + (newHeight - oldHeight));
 }
 
 EmoteModule.prototype.autoCapitalize = function() {
