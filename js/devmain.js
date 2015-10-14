@@ -199,7 +199,7 @@ EmoteModule.prototype.injectEmote = function(node) {
     if(!words) return;
 
     words.some(function(word) {
-        console.log(word);
+
         if (emotesTwitch.hasOwnProperty(word)) {
             parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch[word] + twitchEmoteUrlEnd + "><\/img>");
         } else if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
@@ -213,7 +213,11 @@ EmoteModule.prototype.injectEmote = function(node) {
         }
     });
 
+    var oldHeight = parent.parent().height();
     parent.innerHTML = parentInnerHTML;
+    var newHeight = parent.parent().height();
+
+    console.log("heightdiff: " + newHeight - oldHeight);
 }
 
 EmoteModule.prototype.autoCapitalize = function() {
