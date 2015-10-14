@@ -213,9 +213,9 @@ EmoteModule.prototype.injectEmote = function(node) {
         }
     });
 
-    var oldHeight = parent.parentElement.height();
+    var oldHeight = parent.parentElement.offsetHeight;
     parent.innerHTML = parentInnerHTML;
-    var newHeight = parent.parentElement.height();
+    var newHeight = parent.parentElement.offsetHeight;
 
     console.log("heightdiff: " + newHeight - oldHeight);
 }
