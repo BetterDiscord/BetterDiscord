@@ -131,10 +131,10 @@ Core.prototype.initObserver = function() {
 }
 
 /* BetterDiscordApp EmoteModule JavaScript
- * Version: 1.3
+ * Version: 1.4
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 15:29
- * Last Update: 29/08/2015 - 11:46
+ * Last Update: 14/10/2015 - 09:48
  * https://github.com/Jiiks/BetterDiscordApp
  * Note: Due to conflicts autocapitalize only supports global emotes
  */
@@ -198,19 +198,24 @@ EmoteModule.prototype.injectEmote = function(node) {
 
     words.some(function(word) {
         if (emotesTwitch.hasOwnProperty(word)) {
-            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch[word] + twitchEmoteUrlEnd + "><\/img>");
+            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch[word] + twitchEmoteUrlEnd + " title="+word+"><\/img>");
         } else if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
             if(emotesFfz.hasOwnProperty(word)) {
-                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + "><\/img>");
+                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " title="+word+"><\/img>");
             } else if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
                 if(emotesBTTV.hasOwnProperty(word)) {
-                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + "><\/img>");
+                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " title="+word+"><\/img>");
                 }
             }
         }
     });
 
+    var oldHeight = parent.parentElement.offsetHeight;
     parent.innerHTML = parentInnerHTML;
+    var newHeight = parent.parentElement.offsetHeight;
+
+    var scrollPane = $($(".scroller.messages")[0])
+    scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
 }
 
 EmoteModule.prototype.autoCapitalize = function() {
@@ -241,6 +246,7 @@ EmoteModule.prototype.capitalize = function(value) {
     }
     return null;
 }
+
 
 /* BetterDiscordApp PublicSevers JavaSctript
  * Version: 1.0
