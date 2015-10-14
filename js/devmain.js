@@ -217,6 +217,9 @@ EmoteModule.prototype.injectEmote = function(node) {
     parent.innerHTML = parentInnerHTML;
     var newHeight = parent.parentElement.offsetHeight;
 
+    var scrollPane = $($(".scroller.messages")[0])
+    scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
+
     console.log("heightdiff: " + (newHeight - oldHeight));
 }
 
