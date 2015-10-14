@@ -1,7 +1,3 @@
-.messages .message-group .comment .markup {
-	min-height:30px;
-}
-
 #twitchcord-button-container {
 	position:absolute;
 	width:50px;
