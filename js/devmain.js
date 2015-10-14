@@ -199,6 +199,7 @@ EmoteModule.prototype.injectEmote = function(node) {
     if(!words) return;
 
     words.some(function(word) {
+        console.log(word);
         if (emotesTwitch.hasOwnProperty(word)) {
             parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch[word] + twitchEmoteUrlEnd + "><\/img>");
         } else if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
