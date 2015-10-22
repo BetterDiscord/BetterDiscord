@@ -1,8 +1,8 @@
 /*
- * BetterDiscordApp Installer v0.3.1
+ * BetterDiscordApp Installer v0.3.2
  */
 
-var dver = "0.0.279";
+var dver = "0.0.280";
 
 var asar = require('asar');
 var wrench = require('wrench');
@@ -61,30 +61,30 @@ function install() {
 				if(exists) {
 					console.log("Extracted to: " + _discordPath + _appFolder);
 					console.log("Injecting index.js");
-	
+
 					var data = fs.readFileSync(_discordPath + _index).toString().split("\n");
 					data.splice(83, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
-					data.splice(539, 0, '_betterDiscord = new _betterDiscord.BetterDiscord(mainWindow); \n _betterDiscord.init(); \n');
-	
-	
+					data.splice(497, 0, '_betterDiscord = new _betterDiscord.BetterDiscord(mainWindow); \n _betterDiscord.init(); \n');
+
+
 					fs.writeFile(_discordPath + _index, data.join("\n"), function(err) {
 						if(err) return console.log(err);
-	
+
 						console.log("Injected index.js");
 						console.log("Injecting package.json");
-	
+
 						var data = fs.readFileSync(_discordPath + _packageJson).toString().split("\n");
 						data.splice(10, 0, '"betterdiscord":"^0.1.2",');
-	
+
 						fs.writeFile(_discordPath + _packageJson, data.join("\n"), function(err) {
 							if(err) return console.log(err);
-	
+
 							console.log("Injected package.json");
 							console.log("Looks like were done here :)");
 							process.exit();
 						});
 					});
-	
+
 				} else {
 					console.log("Something went wrong, rerun.");
 					process.exit();
