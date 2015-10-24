@@ -377,6 +377,10 @@ PublicServers.prototype.addServer = function(name, code, title, language, descri
     }));
 
     tr.append($("<td/>", {
+        css: {
+            "-webkit-user-select":"initial",
+            "user-select":"initial"
+        },
         text: code
     }));
 
