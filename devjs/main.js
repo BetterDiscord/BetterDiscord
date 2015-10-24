@@ -13,7 +13,7 @@
  * --jsv 1.3
  */
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, publicServers;
 var jsVersion = 1.3;
 
 var mainObserver;
@@ -57,10 +57,6 @@ var settingsCookie = {};
 function Core() {}
 
 Core.prototype.init = function() {
-
-
-    if(version < "0.1.4") { alert("BetterDiscord v" + version + "(your version) is not supported by the latest js(" + jsVersion + "), please download the latest version from github."); return; }
-
     utils = new Utils();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
@@ -78,6 +74,10 @@ Core.prototype.init = function() {
 
             settingsPanel = new SettingsPanel();
             settingsPanel.init();
+
+            publicServers = new PublicServers();
+            publicServers.init();
+
             quickEmoteMenu.init(false);
 
             $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });

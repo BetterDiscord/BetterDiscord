@@ -13,7 +13,7 @@
  * --jsv 1.3
  */
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, publicServers;
 var jsVersion = 1.3;
 
 var mainObserver;
@@ -74,6 +74,10 @@ Core.prototype.init = function() {
 
             settingsPanel = new SettingsPanel();
             settingsPanel.init();
+
+            publicServers = new PublicServers();
+            publicServers.init();
+
             quickEmoteMenu.init(false);
 
             $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
