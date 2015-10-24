@@ -7,7 +7,7 @@
  */
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu;
-var jsVersion = 1.2;
+var jsVersion = 1.3;
 
 var mainObserver;
 
@@ -17,8 +17,6 @@ var ffzEmoteUrlStart = "https://cdn.frankerfacez.com/emoticon/";
 var ffzEmoteUrlEnd = "/1";
 var bttvEmoteUrlStart = "";
 var bttvEmoteUrlEnd = "";
-
-
 
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
@@ -32,8 +30,6 @@ var settings = {
     "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands", "implemented":true },
     "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes", "implemented":false }
 };
-
-
 
 var defaultCookie = {
     "version":jsVersion,
@@ -54,7 +50,6 @@ var settingsCookie = {};
 function Core() {
 
 }
-
 
 Core.prototype.init = function() {
     utils = new Utils();
@@ -200,28 +195,38 @@ EmoteModule.prototype.injectEmote = function(node) {
     if(!words) return;
 
     words.some(function(word) {
-		
-		
-		//Let's see how slow this is
-		$.each(subEmotesTwitch.channels, function() {
-			$.each(this.emotes, function() {
-				if(this.code == word) {
-					parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + this.image_id + twitchEmoteUrlEnd + " ><\/img>");
-				}
-			});
-		});
 
-        if (emotesTwitch.emotes.hasOwnProperty(word)) {
-            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
-		} else if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-            if(emotesFfz.hasOwnProperty(word)) {
+		var replaced = false;
+		
+		if(emotesTwitch.emotes.hasOwnProperty(word)) {
+			replaced = true;
+			parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
+		}
+		
+		if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"] && !replaced) {
+			if(emotesFfz.hasOwnProperty(word)) {
+				replaced = true;
                 parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " ><\/img>");
-            } else if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if(emotesBTTV.hasOwnProperty(word)) {
-                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " ><\/img>");
-                }
+            }
+		}
+		
+		if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"] && !replaced) {
+            if(emotesBTTV.hasOwnProperty(word)) {
+				replaced = true;
+                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " ><\/img>");
             }
         }
+		
+		if(!replaced) {
+			$.each(subEmotesTwitch.channels, function() {
+				$.each(this.emotes, function() {
+					if(this.code == word) {
+						parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + this.image_id + twitchEmoteUrlEnd + " ><\/img>");
+					}
+				});
+			});
+		}
+			
     });
 
     var oldHeight = parent.parentElement.offsetHeight;
