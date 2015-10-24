@@ -63,7 +63,7 @@ Core.prototype.init = function() {
     this.initObserver();
 
     //Temp
-    setTimeout(function() {
+  /*  setTimeout(function() {
         if($(".guilds-wrapper").size() > 0) {
             $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
@@ -77,7 +77,23 @@ Core.prototype.init = function() {
                 waitForGuildsWrapper();
             }, 100);
         }
-    }, 3000);
+    }, 3000);*/
+	
+	if($(".guilds-wrapper").size() > 0) {
+            $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
+
+            settingsPanel = new SettingsPanel();
+            settingsPanel.init();
+            quickEmoteMenu.init(false);
+
+            $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
+        } else {
+            setTimeout(function() {
+                waitForGuildsWrapper();
+            }, 100);
+        }
+	
+	
 
 
 }
