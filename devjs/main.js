@@ -217,6 +217,10 @@ EmoteModule.prototype.injectEmote = function(node) {
             }
         }
 		
+		if(subEmotesTwitch.hasOwnProperty(word)) {
+			parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + " ><\/img>");
+		}
+		
 		//This is way too slow
 		/*if(!replaced) {
 			$.each(subEmotesTwitch.channels, function() {
