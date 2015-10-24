@@ -217,7 +217,8 @@ EmoteModule.prototype.injectEmote = function(node) {
             }
         }
 		
-		if(!replaced) {
+		//This is way too slow
+		/*if(!replaced) {
 			$.each(subEmotesTwitch.channels, function() {
 				$.each(this.emotes, function() {
 					if(this.code == word) {
@@ -225,7 +226,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 					}
 				});
 			});
-		}
+		}*/
 			
     });
 
