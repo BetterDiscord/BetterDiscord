@@ -203,7 +203,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 		$.each(subEmotesTwitch.channels, function() {
 			$.each(this.emotes, function() {
 				if(this.code == word) {
-					parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + this.image_id + twitchEmoteUrlEnd + " title="+word+"><\/img>");
+					parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + this.image_id + twitchEmoteUrlEnd + " ><\/img>");
 				}
 			});
 		});
@@ -212,13 +212,13 @@ EmoteModule.prototype.injectEmote = function(node) {
 		
 		
         if (emotesTwitch.emotes.hasOwnProperty(word)) {
-            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " title="+word+"><\/img>");
+            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
 		} else if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
             if(emotesFfz.hasOwnProperty(word)) {
-                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " title="+word+"><\/img>");
+                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " ><\/img>");
             } else if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
                 if(emotesBTTV.hasOwnProperty(word)) {
-                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " title="+word+"><\/img>");
+                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " ><\/img>");
                 }
             }
         }
