@@ -1,13 +1,20 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.4
+ * Version: 1.5
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 31/08/2015 - 16:17
+ * Last Update: 24/010/2015 - 17:27
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
+/*
+ * =Changelog=
+ * -v1.5
+ * --Synchronized loading
+ * --jsv 1.3
+ */
+
 var settingsPanel, emoteModule, utils, quickEmoteMenu;
-var jsVersion = 1.2;
+var jsVersion = 1.3;
 
 var mainObserver;
 
@@ -17,8 +24,6 @@ var ffzEmoteUrlStart = "https://cdn.frankerfacez.com/emoticon/";
 var ffzEmoteUrlEnd = "/1";
 var bttvEmoteUrlStart = "";
 var bttvEmoteUrlEnd = "";
-
-
 
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
@@ -32,8 +37,6 @@ var settings = {
     "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands", "implemented":true },
     "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes", "implemented":false }
 };
-
-
 
 var defaultCookie = {
     "version":jsVersion,
@@ -51,10 +54,7 @@ var defaultCookie = {
 
 var settingsCookie = {};
 
-function Core() {
-
-}
-
+function Core() {}
 
 Core.prototype.init = function() {
     utils = new Utils();
@@ -67,8 +67,8 @@ Core.prototype.init = function() {
     this.initSettings();
     this.initObserver();
 
-    function waitForGuildsWrapper() {
-
+    //Incase were too fast
+    function gwDefer() {
         if($(".guilds-wrapper").size() > 0) {
             $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
@@ -77,13 +77,13 @@ Core.prototype.init = function() {
             quickEmoteMenu.init(false);
 
             $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
+
         } else {
-            setTimeout(function() {
-                waitForGuildsWrapper();
-            }, 100);
+            setTimeout(gwDefer(), 100);
         }
     }
-    waitForGuildsWrapper();
+
+    gwDefer();
 }
 
 Core.prototype.initSettings = function() {

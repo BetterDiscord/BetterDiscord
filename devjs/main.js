@@ -1,9 +1,16 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.4
+ * Version: 1.5
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 31/08/2015 - 16:17
+ * Last Update: 24/010/2015 - 17:27
  * https://github.com/Jiiks/BetterDiscordApp
+ */
+
+/*
+ * =Changelog=
+ * -v1.5
+ * --Synchronized loading
+ * --jsv 1.3
  */
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu;
@@ -47,9 +54,7 @@ var defaultCookie = {
 
 var settingsCookie = {};
 
-function Core() {
-
-}
+function Core() {}
 
 Core.prototype.init = function() {
     utils = new Utils();
@@ -62,8 +67,8 @@ Core.prototype.init = function() {
     this.initSettings();
     this.initObserver();
 
-    //Temp
-  /*  setTimeout(function() {
+    //Incase were too fast
+    function gwDefer() {
         if($(".guilds-wrapper").size() > 0) {
             $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
@@ -72,30 +77,13 @@ Core.prototype.init = function() {
             quickEmoteMenu.init(false);
 
             $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
+
         } else {
-            setTimeout(function() {
-                waitForGuildsWrapper();
-            }, 100);
+            setTimeout(gwDefer(), 100);
         }
-    }, 3000);*/
-	
-	if($(".guilds-wrapper").size() > 0) {
-            $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
+    }
 
-            settingsPanel = new SettingsPanel();
-            settingsPanel.init();
-            quickEmoteMenu.init(false);
-
-            $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
-        } else {
-            setTimeout(function() {
-                waitForGuildsWrapper();
-            }, 100);
-        }
-	
-	
-
-
+    gwDefer();
 }
 
 Core.prototype.initSettings = function() {
@@ -142,12 +130,18 @@ Core.prototype.initObserver = function() {
 }
 
 /* BetterDiscordApp EmoteModule JavaScript
- * Version: 1.4
+ * Version: 1.5
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 15:29
  * Last Update: 14/10/2015 - 09:48
  * https://github.com/Jiiks/BetterDiscordApp
  * Note: Due to conflicts autocapitalize only supports global emotes
+ */
+
+/*
+ * =Changelog=
+ * -v1.5
+ * --Twitchemotes.com api
  */
 
 var autoCapitalize = true;
@@ -161,13 +155,9 @@ var subEmotesTwitch = {};
 
 var twitchAc = {"4head":"4Head","anele":"ANELE","argieb8":"ArgieB8","arsonnosexy":"ArsonNoSexy","asianglow":"AsianGlow","atgl":"AtGL","athenapms":"AthenaPMS","ativy":"AtIvy","atww":"AtWW","babyrage":"BabyRage","batchest":"BatChest","bcwarrior":"BCWarrior","biblethump":"BibleThump","bigbrother":"BigBrother","bionicbunion":"BionicBunion","blargnaut":"BlargNaut","bloodtrail":"BloodTrail","bort":"BORT","brainslug":"BrainSlug","brokeback":"BrokeBack","buddhabar":"BuddhaBar","coolcat":"CoolCat","corgiderp":"CorgiDerp","cougarhunt":"CougarHunt","daesuppy":"DAESuppy","dansgame":"DansGame","dathass":"DatHass","datsheffy":"DatSheffy","dbstyle":"DBstyle","deexcite":"deExcite","deilluminati":"deIlluminati","dendiface":"DendiFace","dogface":"DogFace","doomguy":"DOOMGuy","eagleeye":"EagleEye","elegiggle":"EleGiggle","evilfetus":"EvilFetus","failfish":"FailFish","fpsmarksman":"FPSMarksman","frankerz":"FrankerZ","freakinstinkin":"FreakinStinkin","fungineer":"FUNgineer","funrun":"FunRun","fuzzyotteroo":"FuzzyOtterOO","gasjoker":"GasJoker","gingerpower":"GingerPower","grammarking":"GrammarKing","hassanchop":"HassanChop","heyguys":"HeyGuys","hotpokket":"HotPokket","humblelife":"HumbleLife","itsboshytime":"ItsBoshyTime","jebaited":"Jebaited","jkanstyle":"JKanStyle","joncarnage":"JonCarnage","kapow":"KAPOW","kappa":"Kappa","kappapride":"KappaPride","keepo":"Keepo","kevinturtle":"KevinTurtle","kippa":"Kippa","kreygasm":"Kreygasm","kzskull":"KZskull","mau5":"Mau5","mcat":"mcaT","mechasupes":"MechaSupes","mrdestructoid":"MrDestructoid","mvgame":"MVGame","nightbat":"NightBat","ninjatroll":"NinjaTroll","nonospot":"NoNoSpot","notatk":"NotATK","notlikethis":"NotLikeThis","omgscoots":"OMGScoots","onehand":"OneHand","opieop":"OpieOP","optimizeprime":"OptimizePrime","osbeaver":"OSbeaver","osbury":"OSbury","osdeo":"OSdeo","osfrog":"OSfrog","oskomodo":"OSkomodo","osrob":"OSrob","ossloth":"OSsloth","panicbasket":"panicBasket","panicvis":"PanicVis","pazpazowitz":"PazPazowitz","peopleschamp":"PeoplesChamp","permasmug":"PermaSmug","picomause":"PicoMause","pipehype":"PipeHype","pjharley":"PJHarley","pjsalt":"PJSalt","pmstwin":"PMSTwin","pogchamp":"PogChamp","poooound":"Poooound","praiseit":"PraiseIt","prchase":"PRChase","punchtrees":"PunchTrees","puppeyface":"PuppeyFace","raccattack":"RaccAttack","ralpherz":"RalpherZ","redcoat":"RedCoat","residentsleeper":"ResidentSleeper","ritzmitz":"RitzMitz","rulefive":"RuleFive","shadylulu":"ShadyLulu","shazam":"Shazam","shazamicon":"shazamicon","shazbotstix":"ShazBotstix","shibez":"ShibeZ","smorc":"SMOrc","smskull":"SMSkull","sobayed":"SoBayed","soonerlater":"SoonerLater","srihead":"SriHead","ssssss":"SSSsss","stonelightning":"StoneLightning","strawbeary":"StrawBeary","supervinlin":"SuperVinlin","swiftrage":"SwiftRage","tbbaconbiscuit":"tbBaconBiscuit","tbchickenbiscuit":"tbChickenBiscuit","tbquesarito":"tbQuesarito","tbsausagebiscuit":"tbSausageBiscuit","tbspicy":"tbSpicy","tbsriracha":"tbSriracha","tf2john":"TF2John","theking":"TheKing","theringer":"TheRinger","thetarfu":"TheTarFu","thething":"TheThing","thunbeast":"ThunBeast","tinyface":"TinyFace","toospicy":"TooSpicy","trihard":"TriHard","ttours":"TTours","uleetbackup":"UleetBackup","unclenox":"UncleNox","unsane":"UnSane","vaultboy":"VaultBoy","volcania":"Volcania","wholewheat":"WholeWheat","winwaker":"WinWaker","wtruck":"WTRuck","wutface":"WutFace","youwhy":"YouWHY"};
 
-function EmoteModule() {
+function EmoteModule() {}
 
-}
-
-EmoteModule.prototype.init = function() {
-
-}
+EmoteModule.prototype.init = function() {}
 
 EmoteModule.prototype.obsCallback = function(mutation) {
     var self = this;
@@ -212,48 +202,37 @@ EmoteModule.prototype.injectEmote = function(node) {
 
     words.some(function(word) {
 
-		var replaced = false;
-		
-		if(emotesTwitch.emotes.hasOwnProperty(word)) {
-			replaced = true;
-			parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
-		}
-		
-		if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"] && !replaced) {
-			if(emotesFfz.hasOwnProperty(word)) {
-				replaced = true;
+        var replaced = false;
+
+        if(emotesTwitch.emotes.hasOwnProperty(word)) {
+            replaced = true;
+            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
+        }
+
+        if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"] && !replaced) {
+            if(emotesFfz.hasOwnProperty(word)) {
+                replaced = true;
                 parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " ><\/img>");
             }
-		}
-		
-		if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"] && !replaced) {
+        }
+
+        if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"] && !replaced) {
             if(emotesBTTV.hasOwnProperty(word)) {
-				replaced = true;
+                replaced = true;
                 parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " ><\/img>");
             }
         }
-		
-		if(subEmotesTwitch.hasOwnProperty(word)) {
-			parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + " ><\/img>");
-		}
-		
-		//This is way too slow
-		/*if(!replaced) {
-			$.each(subEmotesTwitch.channels, function() {
-				$.each(this.emotes, function() {
-					if(this.code == word) {
-						parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + this.image_id + twitchEmoteUrlEnd + " ><\/img>");
-					}
-				});
-			});
-		}*/
-			
+
+        if(subEmotesTwitch.hasOwnProperty(word)) {
+            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + " ><\/img>");
+        }
     });
 
     var oldHeight = parent.parentElement.offsetHeight;
     parent.innerHTML = parentInnerHTML;
     var newHeight = parent.parentElement.offsetHeight;
 
+    //Scrollfix
     var scrollPane = $($(".scroller.messages")[0])
     scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
 }
