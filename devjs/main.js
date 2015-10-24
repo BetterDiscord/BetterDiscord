@@ -197,6 +197,20 @@ EmoteModule.prototype.injectEmote = function(node) {
     if(!words) return;
 
     words.some(function(word) {
+		
+		
+		//Let's see how slow this is
+		$.each(subEmotesTwitch.channels, function() {
+			$.each(this.emotes, function() {
+				if(this.code == word) {
+					parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + this.image_id + twitchEmoteUrlEnd + " title="+word+"><\/img>");
+				}
+			});
+		});
+		
+		
+		
+		
         if (emotesTwitch.emotes.hasOwnProperty(word)) {
             parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " title="+word+"><\/img>");
 		} else if(subEmotesTwitch.emotes.hasOwnProperty(word)) {
