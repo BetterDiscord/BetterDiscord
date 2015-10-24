@@ -379,9 +379,9 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
     emoteMenu.append(emoteMenuHeader);
     emoteMenu.append(emoteMenuBody);
 
-    for(var emote in emotesTwitch) {
+    for(var emote in emotesTwitch.emotes) {
         var command = emote;
-        var id = emotesTwitch[emote];
+        var id = emotesTwitch.emotes[emote].image_id;
 
         emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
     }
