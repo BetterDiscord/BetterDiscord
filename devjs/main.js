@@ -249,6 +249,8 @@ EmoteModule.prototype.injectEmote = function(node) {
         }
     });
 
+    if(parent.parentElement == null) return;
+
     var oldHeight = parent.parentElement.offsetHeight;
     parent.innerHTML = parentInnerHTML;
     var newHeight = parent.parentElement.offsetHeight;
@@ -307,7 +309,8 @@ PublicServers.prototype.getPanel = function() {
 PublicServers.prototype.init = function() {
 
     this.container = $("<div/>", {
-        id: "bd-ps-container"
+        id: "bd-ps-container",
+        style: "display:none"
     });
 
     var header = $("<div/>", {
