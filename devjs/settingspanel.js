@@ -125,7 +125,7 @@ SettingsPanel.prototype.handler = function(e){
         $("#bd-pub-li").hide();
     }
     if(settingsCookie["bda-gs-4"]){
-        voideMode.enable();
+        voiceMode.enable();
     } else {
         voiceMode.disable();
     }
