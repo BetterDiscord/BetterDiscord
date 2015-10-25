@@ -124,6 +124,6 @@ PublicServers.prototype.addServer = function(name, code, title, language, descri
     tableBody.append(tr);
 }
 
-SettingsPanel.prototype.show = function() {
+PublicServers.prototype.show = function() {
     this.getPanel().toggle();
 }
