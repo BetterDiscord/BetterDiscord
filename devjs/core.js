@@ -28,9 +28,9 @@ var bttvEmoteUrlEnd = "";
 
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
-    "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers", "implemented":false},
+    "Public Servers":             { "id": "bda-gs-1", "info": "BETA : Display public servers button", "implemented":true},
     "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented":true},
-    "Voice Mode":                { "id": "bda-gs-4", "info": "Only show voice chat", "implemented":true},
+    "Voice Mode":                 { "id": "bda-gs-4", "info": "Only show voice chat", "implemented":true},
     "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode", "implemented":true},
     "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes", "implemented":true },
     "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes", "implemented":true },
@@ -75,7 +75,7 @@ Core.prototype.init = function() {
         if($(".guilds-wrapper").size() > 0) {
 
 
-            $(".guilds li:first-child").after($("<li/>", { css: { "height": "20px" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px" }, text: "public", id: "bd-pub-button" })))));
+            $(".guilds li:first-child").after($("<li/>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px" }, text: "public", id: "bd-pub-button" })))));
             $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
             settingsPanel = new SettingsPanel();

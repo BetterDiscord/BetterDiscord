@@ -18,7 +18,10 @@ PublicServers.prototype.getPanel = function() {
 PublicServers.prototype.init = function() {
 
     this.container = $("<div/>", {
-        id: "bd-ps-container"
+        id: "bd-ps-container",
+        css: {
+            "display": "none"
+        }
     });
 
     var header = $("<div/>", {

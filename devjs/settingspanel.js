@@ -115,6 +115,11 @@ SettingsPanel.prototype.handler = function(e){
     } else {
         $("body").removeClass("bd-minimal-chan");
     }
+    if(settingsCookie["bda-gs-1"]) {
+        $("#bd-pub-li").show();
+    } else {
+        $("#bd-pub-li").hide();
+    }
 
     mainCore.saveSettings();
 }
