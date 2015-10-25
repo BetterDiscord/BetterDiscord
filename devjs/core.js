@@ -16,6 +16,7 @@
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode;
 var jsVersion = 1.3;
+var supportedVersion = "0.1.5";
 
 var mainObserver;
 
@@ -60,6 +61,13 @@ var settingsCookie = {};
 function Core() {}
 
 Core.prototype.init = function() {
+
+    if(version < supportedVersion) {
+        alert("BetterDiscord v" + version + "(your version)" + " is not supported by the latest js("+jsVersion+"). Please download the latest version from GitHub.");
+        return;
+    }
+
+
     utils = new Utils();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
