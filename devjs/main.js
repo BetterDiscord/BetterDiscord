@@ -645,7 +645,7 @@ function VoiceMode() {
 VoiceMode.prototype.enable = function() {
     $($(".scroller.guild-channels ul")[0]).css("display", "none");
     $($(".scroller.guild-channels header")[0]).css("display", "none");
-    $($(".flex-horizontal.flex-spacer")[0]).css("overflow", "hidden");
+    $($(".flex-vertical.flex-spacer")[0]).css("overflow", "hidden");
     $($(".chat.flex-vertical.flex-spacer")[0]).css("visibility", "hidden");
     $($(".chat.flex-vertical.flex-spacer")[0]).css("min-width", "0px");
     $($(".flex-vertical.channels-wrap")[0]).css("width", "100%");
@@ -656,7 +656,7 @@ VoiceMode.prototype.enable = function() {
 VoiceMode.prototype.disable = function() {
     $($(".scroller.guild-channels ul")[0]).css("display", "");
     $($(".scroller.guild-channels header")[0]).css("display", "");
-    $($(".flex-horizontal.flex-spacer")[0]).css("overflow", "");
+    $($(".flex-vertical.flex-spacer")[0]).css("overflow", "");
     $($(".chat.flex-vertical.flex-spacer")[0]).css("visibility", "");
     $($(".chat.flex-vertical.flex-spacer")[0]).css("min-width", "");
     $($(".flex-vertical.channels-wrap")[0]).css("width", "");
