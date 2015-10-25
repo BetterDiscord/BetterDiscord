@@ -69,6 +69,10 @@ SettingsPanel.prototype.init = function() {
     } else {
         $("body").removeClass("bd-minimal-chan");
     }
+
+    if(settingsCookie["bda-gs-4"]) {
+        voiceMode.enable();
+    }
 }
 
 
@@ -119,6 +123,11 @@ SettingsPanel.prototype.handler = function(e){
         $("#bd-pub-li").show();
     } else {
         $("#bd-pub-li").hide();
+    }
+    if(settingsCookie["bda-gs-4"]){
+        voideMode.enable();
+    } else {
+        voiceMode.disable();
     }
 
     mainCore.saveSettings();

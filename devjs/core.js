@@ -14,7 +14,7 @@
  * --Voice mode
  */
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode;
 var jsVersion = 1.3;
 
 var mainObserver;
@@ -63,6 +63,7 @@ Core.prototype.init = function() {
     utils = new Utils();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
+    voideMode = new VoiceMode();
 
     emoteModule.init();
     emoteModule.autoCapitalize();
