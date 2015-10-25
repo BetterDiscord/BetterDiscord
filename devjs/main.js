@@ -27,6 +27,8 @@ var ffzEmoteUrlEnd = "/1";
 var bttvEmoteUrlStart = "";
 var bttvEmoteUrlEnd = "";
 
+var mainCore;
+
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
     "Public Servers":             { "id": "bda-gs-1", "info": "BETA : Display public servers button", "implemented":true},
@@ -86,7 +88,7 @@ Core.prototype.init = function() {
 
             var guilds = $(".guilds li:first-child");
 
-            guilds.after($("<li/>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px" }, text: "public", id: "bd-pub-button" })))));
+            guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px" }, text: "public", id: "bd-pub-button" })))));
             guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
             settingsPanel = new SettingsPanel();
@@ -97,8 +99,8 @@ Core.prototype.init = function() {
 
             quickEmoteMenu.init(false);
 
-            $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
-            $("#bd-pub-button").on("click", function(e) { opublicServers.show(); });
+            $("#tc-settings-button").on("click", function() { settingsPanel.show(); });
+            $("#bd-pub-button").on("click", function() { opublicServers.show(); });
 
         } else {
             setTimeout(gwDefer(), 100);
@@ -146,6 +148,7 @@ Core.prototype.initObserver = function() {
         });
     });
 
+    //noinspection JSCheckFunctionSignatures
     mainObserver.observe(document, { childList: true, subtree: true });
 };
 
@@ -164,12 +167,9 @@ Core.prototype.initObserver = function() {
  * --Twitchemotes.com api
  */
 
-var autoCapitalize = true;
-var ffzEnabled = false;
-var bttvEnabled = false;
 var emotesFfz = {};
 var emotesBTTV = {};
-var emotesTwitch = {};
+var emotesTwitch = { "emotes": { "emote": { "image_id": 0 } } }; //for ide
 var subEmotesTwitch = {};
 
 var twitchAc = {"4head":"4Head","anele":"ANELE","argieb8":"ArgieB8","arsonnosexy":"ArsonNoSexy","asianglow":"AsianGlow","atgl":"AtGL","athenapms":"AthenaPMS","ativy":"AtIvy","atww":"AtWW","babyrage":"BabyRage","batchest":"BatChest","bcwarrior":"BCWarrior","biblethump":"BibleThump","bigbrother":"BigBrother","bionicbunion":"BionicBunion","blargnaut":"BlargNaut","bloodtrail":"BloodTrail","bort":"BORT","brainslug":"BrainSlug","brokeback":"BrokeBack","buddhabar":"BuddhaBar","coolcat":"CoolCat","corgiderp":"CorgiDerp","cougarhunt":"CougarHunt","daesuppy":"DAESuppy","dansgame":"DansGame","dathass":"DatHass","datsheffy":"DatSheffy","dbstyle":"DBstyle","deexcite":"deExcite","deilluminati":"deIlluminati","dendiface":"DendiFace","dogface":"DogFace","doomguy":"DOOMGuy","eagleeye":"EagleEye","elegiggle":"EleGiggle","evilfetus":"EvilFetus","failfish":"FailFish","fpsmarksman":"FPSMarksman","frankerz":"FrankerZ","freakinstinkin":"FreakinStinkin","fungineer":"FUNgineer","funrun":"FunRun","fuzzyotteroo":"FuzzyOtterOO","gasjoker":"GasJoker","gingerpower":"GingerPower","grammarking":"GrammarKing","hassanchop":"HassanChop","heyguys":"HeyGuys","hotpokket":"HotPokket","humblelife":"HumbleLife","itsboshytime":"ItsBoshyTime","jebaited":"Jebaited","jkanstyle":"JKanStyle","joncarnage":"JonCarnage","kapow":"KAPOW","kappa":"Kappa","kappapride":"KappaPride","keepo":"Keepo","kevinturtle":"KevinTurtle","kippa":"Kippa","kreygasm":"Kreygasm","kzskull":"KZskull","mau5":"Mau5","mcat":"mcaT","mechasupes":"MechaSupes","mrdestructoid":"MrDestructoid","mvgame":"MVGame","nightbat":"NightBat","ninjatroll":"NinjaTroll","nonospot":"NoNoSpot","notatk":"NotATK","notlikethis":"NotLikeThis","omgscoots":"OMGScoots","onehand":"OneHand","opieop":"OpieOP","optimizeprime":"OptimizePrime","osbeaver":"OSbeaver","osbury":"OSbury","osdeo":"OSdeo","osfrog":"OSfrog","oskomodo":"OSkomodo","osrob":"OSrob","ossloth":"OSsloth","panicbasket":"panicBasket","panicvis":"PanicVis","pazpazowitz":"PazPazowitz","peopleschamp":"PeoplesChamp","permasmug":"PermaSmug","picomause":"PicoMause","pipehype":"PipeHype","pjharley":"PJHarley","pjsalt":"PJSalt","pmstwin":"PMSTwin","pogchamp":"PogChamp","poooound":"Poooound","praiseit":"PraiseIt","prchase":"PRChase","punchtrees":"PunchTrees","puppeyface":"PuppeyFace","raccattack":"RaccAttack","ralpherz":"RalpherZ","redcoat":"RedCoat","residentsleeper":"ResidentSleeper","ritzmitz":"RitzMitz","rulefive":"RuleFive","shadylulu":"ShadyLulu","shazam":"Shazam","shazamicon":"shazamicon","shazbotstix":"ShazBotstix","shibez":"ShibeZ","smorc":"SMOrc","smskull":"SMSkull","sobayed":"SoBayed","soonerlater":"SoonerLater","srihead":"SriHead","ssssss":"SSSsss","stonelightning":"StoneLightning","strawbeary":"StrawBeary","supervinlin":"SuperVinlin","swiftrage":"SwiftRage","tbbaconbiscuit":"tbBaconBiscuit","tbchickenbiscuit":"tbChickenBiscuit","tbquesarito":"tbQuesarito","tbsausagebiscuit":"tbSausageBiscuit","tbspicy":"tbSpicy","tbsriracha":"tbSriracha","tf2john":"TF2John","theking":"TheKing","theringer":"TheRinger","thetarfu":"TheTarFu","thething":"TheThing","thunbeast":"ThunBeast","tinyface":"TinyFace","toospicy":"TooSpicy","trihard":"TriHard","ttours":"TTours","uleetbackup":"UleetBackup","unclenox":"UncleNox","unsane":"UnSane","vaultboy":"VaultBoy","volcania":"Volcania","wholewheat":"WholeWheat","winwaker":"WinWaker","wtruck":"WTRuck","wutface":"WutFace","youwhy":"YouWHY"};
@@ -244,8 +244,10 @@ EmoteModule.prototype.injectEmote = function(node) {
             }
         }
 
-        if(subEmotesTwitch.hasOwnProperty(word)) {
-            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + " ><\/img>");
+        if(!replaced) {
+            if (subEmotesTwitch.hasOwnProperty(word)) {
+                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + " ><\/img>");
+            }
         }
     });
 
@@ -254,7 +256,7 @@ EmoteModule.prototype.injectEmote = function(node) {
     var newHeight = parent.parentElement.offsetHeight;
 
     //Scrollfix
-    var scrollPane = $($(".scroller.messages")[0])
+    var scrollPane = $($(".scroller.messages")[0]);
     scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
 };
 
@@ -294,7 +296,7 @@ EmoteModule.prototype.capitalize = function(value) {
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var publicServers = {};
+var publicServers = { "servers": { "server": { "code": 0, "icon": null, "title": "title", "language": "EN", "description": "description" } } }; //for ide
 
 function PublicServers() {
 
@@ -367,17 +369,16 @@ PublicServers.prototype.init = function() {
     var servers = publicServers.servers;
 
     for(var server in servers) {
-        var name = server;
-        server = servers[server];
-        var code = server.code;
-        var icon = server.icon;
-        var title = server.title;
-        var language = server.language;
-        var description = server.description;
+        if(servers.hasOwnProperty(server)) {
+            var s = servers[server];
+            var code = s.code;
+            var title = s.title;
+            var language = s.language;
+            var description = s.description;
 
-        this.addServer(name, code, title, language, description);
+            this.addServer(server, code, title, language, description);
+        }
     }
-
 };
 
 PublicServers.prototype.addServer = function(name, code, title, language, description) {
@@ -432,9 +433,9 @@ function QuickEmoteMenu() {
 
 }
 
-QuickEmoteMenu.prototype.init = function (reload) {
+QuickEmoteMenu.prototype.init = function() {
 
-    emoteBtn = null;
+    var emoteBtn;
 
     if(!emoteMenu) {
         this.initEmoteList();
@@ -497,8 +498,10 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
     emoteMenu.append(emoteMenuBody);
 
     for(var emote in emotesTwitch.emotes) {
-        var id = emotesTwitch.emotes[emote].image_id;
-        emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, alt: "", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
+        if(emotesTwitch.emotes.hasOwnProperty(emote)) {
+            var id = emotesTwitch.emotes[emote].image_id;
+            emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, alt: "", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
+        }
     }
 };
 
@@ -555,7 +558,7 @@ SettingsPanel.prototype.init = function() {
 
 
     body.append(this.getPanel());
-    $("#tc-settings-close").on("click", function(e) { self.show(); });
+    $("#tc-settings-close").on("click", function() { self.show(); });
     $(".tc-switch").on("click", function() { self.handler($(this)) });
 
     if(settingsCookie["bda-es-0"]) {
@@ -652,22 +655,21 @@ function VoiceMode() {
 }
 
 VoiceMode.prototype.enable = function() {
+
     $($(".scroller.guild-channels ul")[0]).css("display", "none");
     $($(".scroller.guild-channels header")[0]).css("display", "none");
     $($(".flex-vertical.flex-spacer")[0]).css("overflow", "hidden");
-    $($(".chat.flex-vertical.flex-spacer")[0]).css("visibility", "hidden");
-    $($(".chat.flex-vertical.flex-spacer")[0]).css("min-width", "0px");
+    $($(".chat.flex-vertical.flex-spacer")[0]).css("visibility", "hidden").css("min-width", "0px");
     $($(".flex-vertical.channels-wrap")[0]).css("width", "100%");
     $($(".guild-header .btn.btn-hamburger")[0]).css("visibility", "hidden");
 
-}
+};
 
 VoiceMode.prototype.disable = function() {
     $($(".scroller.guild-channels ul")[0]).css("display", "");
     $($(".scroller.guild-channels header")[0]).css("display", "");
     $($(".flex-vertical.flex-spacer")[0]).css("overflow", "");
-    $($(".chat.flex-vertical.flex-spacer")[0]).css("visibility", "");
-    $($(".chat.flex-vertical.flex-spacer")[0]).css("min-width", "");
+    $($(".chat.flex-vertical.flex-spacer")[0]).css("visibility", "").css("min-width", "");
     $($(".flex-vertical.channels-wrap")[0]).css("width", "");
     $($(".guild-header .btn.btn-hamburger")[0]).css("visibility", "");
 };
