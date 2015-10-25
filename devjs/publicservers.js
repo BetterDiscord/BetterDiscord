@@ -11,9 +11,13 @@ function PublicServers() {
 
 }
 
+SettingsPanel.prototype.getPanel = function() {
+    return this.container;
+}
+
 PublicServers.prototype.init = function() {
 
-    var container = $("<div/>", {
+    this.container = $("<div/>", {
         id: "bd-ps-container"
     });
 
@@ -30,13 +34,13 @@ PublicServers.prototype.init = function() {
         text: "X"
     }).appendTo(header);
 
-    header.appendTo(container);
+    header.appendTo(this.getPanel());
 
     var psbody = $("<div/>", {
         id: "bd-ps-body"
     });
 
-    psbody.appendTo(container);
+    psbody.appendTo(this.getPanel());
 
     var table = $("<table/>", {
         border:"0"
@@ -68,7 +72,7 @@ PublicServers.prototype.init = function() {
 
     table.appendTo(psbody);
 
-    $("body").append(container);
+    $("body").append(this.getPanel());
 
 
     var servers = publicServers.servers;
@@ -118,4 +122,8 @@ PublicServers.prototype.addServer = function(name, code, title, language, descri
     tr.append(desc);
 
     tableBody.append(tr);
+}
+
+SettingsPanel.prototype.show = function() {
+    this.getPanel().toggle();
 }
