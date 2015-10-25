@@ -86,7 +86,7 @@ Core.prototype.init = function() {
 
             var guilds = $(".guilds li:first-child");
 
-            guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px" }, text: "public", id: "bd-pub-button" })))));
+            guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
             guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
             settingsPanel = new SettingsPanel();
@@ -307,6 +307,8 @@ PublicServers.prototype.getPanel = function() {
 };
 
 PublicServers.prototype.init = function() {
+
+    var self = this;
 
     this.container = $("<div/>", {
         id: "bd-ps-container",
