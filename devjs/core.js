@@ -11,6 +11,7 @@
  * -v1.5
  * --Synchronized loading
  * --jsv 1.3
+ * --Voice mode
  */
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers;
@@ -29,6 +30,7 @@ var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
     "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers", "implemented":false},
     "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented":true},
+    "Voidce Mode":                { "id": "bda-gs-4", "info": "Only show voice chat", "implemented":true},
     "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode", "implemented":true},
     "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes", "implemented":true },
     "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes", "implemented":true },
@@ -44,6 +46,7 @@ var defaultCookie = {
     "bda-gs-1":true,
     "bda-gs-2":false,
     "bda-gs-3":false,
+    "bda-gs-4":false,
     "bda-es-0":true,
     "bda-es-1":false,
     "bda-es-2":false,
@@ -99,10 +102,8 @@ Core.prototype.initSettings = function() {
 
         for(var setting in defaultCookie) {
             if(settingsCookie[setting] == undefined) {
-                settingsCookie = defaultCookie;
+                settingsCookie[setting] = defaultCookie[setting];
                 this.saveSettings();
-                alert("BetterDiscord settings reset due to update/error");
-                break;
             }
         }
     }
