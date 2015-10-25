@@ -1,4 +1,4 @@
-/* BetterDiscordApp PublicSevers JavaSctript
+/* BetterDiscordApp PublicSevers JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 14:16
@@ -11,7 +11,7 @@ function PublicServers() {
 
 }
 
-SettingsPanel.prototype.getPanel = function() {
+PublicServers.prototype.getPanel = function() {
     return this.container;
 }
 
