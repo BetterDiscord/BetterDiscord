@@ -69,7 +69,6 @@ Core.prototype.init = function() {
         return;
     }
 
-
     utils = new Utils();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
@@ -84,7 +83,6 @@ Core.prototype.init = function() {
     //Incase were too fast
     function gwDefer() {
         if($(".guilds-wrapper").size() > 0) {
-
 
             var guilds = $(".guilds li:first-child");
 
@@ -240,7 +238,7 @@ EmoteModule.prototype.injectEmote = function(node) {
         if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"] && !replaced) {
             if(emotesBTTV.hasOwnProperty(word)) {
                 replaced = true;
-                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + bttvEmoteUrlStart + emotesBTTV[word] + bttvEmoteUrlEnd + " ><\/img>");
+                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + emotesBTTV[word] + " ><\/img>");
             }
         }
 
@@ -256,7 +254,7 @@ EmoteModule.prototype.injectEmote = function(node) {
     var newHeight = parent.parentElement.offsetHeight;
 
     //Scrollfix
-    var scrollPane = $($(".scroller.messages")[0]);
+    var scrollPane = $(".scroller.messages").first();
     scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
 };
 
@@ -655,23 +653,21 @@ function VoiceMode() {
 }
 
 VoiceMode.prototype.enable = function() {
-
-    $($(".scroller.guild-channels ul")[0]).css("display", "none");
-    $($(".scroller.guild-channels header")[0]).css("display", "none");
-    $($(".flex-vertical.flex-spacer")[0]).css("overflow", "hidden");
-    $($(".chat.flex-vertical.flex-spacer")[0]).css("visibility", "hidden").css("min-width", "0px");
-    $($(".flex-vertical.channels-wrap")[0]).css("width", "100%");
-    $($(".guild-header .btn.btn-hamburger")[0]).css("visibility", "hidden");
-
+    $(".scroller.guild-channels ul").first().css("display", "none");
+    $(".scroller.guild-channels header").first().css("display", "none");
+    $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
+    $(".chat.flex-vertical.flex-spacer").first().css("visibility", "hidden").css("min-width", "0px");
+    $(".flex-vertical.channels-wrap").first().css("width", "100%");
+    $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
 };
 
 VoiceMode.prototype.disable = function() {
-    $($(".scroller.guild-channels ul")[0]).css("display", "");
-    $($(".scroller.guild-channels header")[0]).css("display", "");
-    $($(".flex-vertical.flex-spacer")[0]).css("overflow", "");
-    $($(".chat.flex-vertical.flex-spacer")[0]).css("visibility", "").css("min-width", "");
-    $($(".flex-vertical.channels-wrap")[0]).css("width", "");
-    $($(".guild-header .btn.btn-hamburger")[0]).css("visibility", "");
+    $(".scroller.guild-channels ul").first().css("display", "");
+    $(".scroller.guild-channels header").first().css("display", "");
+    $(".flex-vertical.flex-spacer").first().css("overflow", "");
+    $(".chat.flex-vertical.flex-spacer").first().css("visibility", "").css("min-width", "");
+    $(".flex-vertical.channels-wrap").first().css("width", "");
+    $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
 
 /* BetterDiscordApp Utilities JavaScript
