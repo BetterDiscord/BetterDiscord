@@ -227,14 +227,14 @@ EmoteModule.prototype.injectEmote = function(node) {
             return;
         }
 
-        if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"] && !replaced) {
+        if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
             if(emotesFfz.hasOwnProperty(word)) {
                 parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " ><\/img>");
                 return;
             }
         }
 
-        if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"] && !replaced) {
+        if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
             if(emotesBTTV.hasOwnProperty(word)) {
                 parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + emotesBTTV[word] + " ><\/img>");
                 return;
