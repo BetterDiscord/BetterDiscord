@@ -323,6 +323,7 @@ PublicServers.prototype.init = function() {
 
     $("<span/>", {
         id: "bd-ps-close",
+        style:"cursor:pointer;",
         text: "X"
     }).appendTo(header);
 
@@ -366,6 +367,7 @@ PublicServers.prototype.init = function() {
 
     $("body").append(this.getPanel());
 
+    $("#bd-ps-close").on("click", function() { self.show(); });
 
     var servers = publicServers.servers;
 
