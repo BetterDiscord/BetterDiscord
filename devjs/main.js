@@ -63,7 +63,7 @@ Core.prototype.init = function() {
     utils = new Utils();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
-    voideMode = new VoiceMode();
+    voiceMode = new VoiceMode();
 
     emoteModule.init();
     emoteModule.autoCapitalize();
