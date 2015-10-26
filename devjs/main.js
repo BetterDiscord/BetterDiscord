@@ -100,8 +100,8 @@ Core.prototype.init = function() {
 
             opublicServers = new PublicServers();
             opublicServers.init();
+            setTimeout(function() { quickEmoteMenu.init(false); }, 10000);
 
-            quickEmoteMenu.init(false);
 
             $("#tc-settings-button").on("click", function() { settingsPanel.show(); });
             $("#bd-pub-button").on("click", function() { opublicServers.show(); });
