@@ -119,6 +119,20 @@ Core.prototype.init = function() {
     }
 
     nextDefer();
+
+    $(document).ready(function() {
+        console.log("Document ready");
+
+        function finalDefer() {
+            console.log("FINAL DEFER");
+            if($(".guilds-wrapper .guilds").children().length > 0) {
+                console.log("Final loaded");
+            } else {
+                setTimeout(finalDefer(), 100);
+            }
+        }
+
+    });
 };
 
 Core.prototype.initSettings = function() {
