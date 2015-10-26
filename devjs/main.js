@@ -140,8 +140,10 @@ Core.prototype.initObserver = function() {
 
     mainObserver = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
+            console.log("s1");
             if(mutation.target.getAttribute('class') != null) {
                 if(mutation.target.getAttribute('class').indexOf("titlebar") != -1) {
+                    console.log("s2");
                     quickEmoteMenu.obsCallback();
                 }
             }
