@@ -102,13 +102,13 @@ Core.prototype.init = function() {
             $("#bd-pub-button").on("click", function() { opublicServers.show(); });
 
         } else {
-            setTimeout(gwDefer(), 100);
+            setTimeout(gwDefer, 100);
         }
     }
 
 
     $(document).ready(function() {
-        setTimeout(gwDefer, 3000);
+        setTimeout(gwDefer, 1000);
     });
 };
 
@@ -509,7 +509,7 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
     for(var emote in emotesTwitch.emotes) {
         if(emotesTwitch.emotes.hasOwnProperty(emote)) {
             var id = emotesTwitch.emotes[emote].image_id;
-            emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, alt: "", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
+           // emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, alt: "", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
         }
     }
 };
