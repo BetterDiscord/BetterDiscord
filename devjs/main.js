@@ -93,13 +93,13 @@ Core.prototype.init = function() {
             settingsPanel = new SettingsPanel();
             settingsPanel.init();
 
-            opublicServers = new PublicServers();
-            opublicServers.init();
-
             quickEmoteMenu.init(false);
 
             $("#tc-settings-button").on("click", function() { settingsPanel.show(); });
             $("#bd-pub-button").on("click", function() { opublicServers.show(); });
+
+            opublicServers = new PublicServers();
+            opublicServers.init();
 
         } else {
             setTimeout(gwDefer, 100);
