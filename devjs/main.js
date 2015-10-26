@@ -262,6 +262,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 };
 
 EmoteModule.prototype.autoCapitalize = function() {
+    console.log("autocapitalize init");
     var self = this;
     var textArea = $(".channel-textarea-inner textarea");
 
