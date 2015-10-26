@@ -106,34 +106,9 @@ Core.prototype.init = function() {
         }
     }
 
-    gwDefer();
-
-
-    function nextDefer() {
-        console.log(new Date().getTime() + " Next Defer");
-        if($(".guilds-wrapper .guilds").children().length > 0) {
-            console.log(new Date().getTime() + " Next Defer Loaded");
-        } else {
-            setTimeout(nextDefer(), 100);
-        }
-    }
-
-    nextDefer();
 
     $(document).ready(function() {
-        console.log(new Date().getTime() + " Document Ready");
-
-        function finalDefer() {
-            console.log("FINAL DEFER");
-            if($(".guilds-wrapper .guilds").children().length > 0) {
-                console.log(new Date().getTime() + " Final Defer Loaded");
-            } else {
-                setTimeout(finalDefer(), 100);
-            }
-        }
-
-        finalDefer();
-
+        setTimeout(gwDefer, 500);
     });
 };
 
