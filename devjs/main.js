@@ -82,7 +82,7 @@ Core.prototype.init = function() {
 
     //Incase were too fast
     function gwDefer() {
-        console.log("defer");//New version is too fast?
+        console.log("DEFER");
         if($(".guilds-wrapper").size() > 0) {
 
             var guilds = $(".guilds li:first-child");
@@ -107,6 +107,11 @@ Core.prototype.init = function() {
     }
 
     gwDefer();
+
+    $(".guilds-wrapper").load(function() {
+        console.log("LOAD");
+    });
+
 };
 
 Core.prototype.initSettings = function() {
