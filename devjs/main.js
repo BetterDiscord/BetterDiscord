@@ -108,7 +108,7 @@ Core.prototype.init = function() {
 
 
     $(document).ready(function() {
-        setTimeout(gwDefer, 1000);
+        setTimeout(gwDefer, 5000);
     });
 };
 
