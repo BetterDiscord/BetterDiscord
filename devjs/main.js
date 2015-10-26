@@ -108,7 +108,7 @@ Core.prototype.init = function() {
 
 
     $(document).ready(function() {
-        setTimeout(gwDefer, 5000);
+        setTimeout(gwDefer, 1000);
     });
 };
 
@@ -262,14 +262,13 @@ EmoteModule.prototype.injectEmote = function(node) {
 };
 
 EmoteModule.prototype.autoCapitalize = function() {
-    console.log("autocapitalize init");
-    var self = this;
-    var textArea = $(".channel-textarea-inner textarea");
 
-    $('body').delegate(textArea, 'keyup change paste', function() {
+    var self = this;
+
+    $('body').delegate($(".channel-textarea-inner textarea"), 'keyup change paste', function() {
         if(!settingsCookie["bda-es-4"]) return;
 
-        var text = textArea.val();
+        var text = $(".channel-textarea-inner textarea").val();
 
         if(text == undefined) return;
 
@@ -277,7 +276,7 @@ EmoteModule.prototype.autoCapitalize = function() {
         if(lastWord.length > 3) {
             var ret = self.capitalize(lastWord.toLowerCase());
             if(ret != null) {
-                textArea.val(text.replace(lastWord, ret));
+                $(".channel-textarea-inner textarea").val(text.replace(lastWord, ret));
             }
         }
     });
