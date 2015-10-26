@@ -75,7 +75,6 @@ Core.prototype.init = function() {
     voiceMode = new VoiceMode();
 
     emoteModule.init();
-    emoteModule.autoCapitalize();
 
     this.initSettings();
     this.initObserver();
@@ -101,6 +100,7 @@ Core.prototype.init = function() {
             opublicServers = new PublicServers();
             opublicServers.init();
 
+            emoteModule.autoCapitalize();
         } else {
             setTimeout(gwDefer, 100);
         }
