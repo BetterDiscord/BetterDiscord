@@ -69,22 +69,25 @@ Core.prototype.init = function() {
         return;
     }
 
-    utils = new Utils();
-    emoteModule = new EmoteModule();
-    quickEmoteMenu = new QuickEmoteMenu();
-    voiceMode = new VoiceMode();
-
-    emoteModule.init();
-    emoteModule.autoCapitalize();
-
-    this.initSettings();
-    this.initObserver();
-
     //Incase were too fast
     function gwDefer() {
         console.log(new Date().getTime() + " Defer");
         if($(".guilds-wrapper").size() > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
+
+
+            utils = new Utils();
+            emoteModule = new EmoteModule();
+            quickEmoteMenu = new QuickEmoteMenu();
+            voiceMode = new VoiceMode();
+
+            emoteModule.init();
+            emoteModule.autoCapitalize();
+
+            this.initSettings();
+            this.initObserver();
+
+
             var guilds = $(".guilds li:first-child");
 
             guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
@@ -511,7 +514,7 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
     for(var emote in emotesTwitch.emotes) {
         if(emotesTwitch.emotes.hasOwnProperty(emote)) {
             var id = emotesTwitch.emotes[emote].image_id;
-          //  emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, alt: "", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
+            emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, alt: "", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
         }
     }
 };
