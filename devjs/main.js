@@ -110,7 +110,7 @@ Core.prototype.init = function() {
 
 
     function nextDefer() {
-        cosole.log("NEXT DEFER");
+        console.log("NEXT DEFER");
         if($(".guilds-wrapper .guilds").children().length > 0) {
             console.log("Next loaded");
         } else {
