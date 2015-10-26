@@ -82,7 +82,7 @@ Core.prototype.init = function() {
     //Incase were too fast
     function gwDefer() {
         console.log(new Date().getTime() + " Defer");
-        if($(".guilds-wrapper").size() > 0) {
+        if($(".guilds-wrapper .guilds").children().length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
             var guilds = $(".guilds li:first-child");
 
