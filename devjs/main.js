@@ -84,7 +84,7 @@ Core.prototype.init = function() {
     function gwDefer() {
         console.log("DEFER");
         if($(".guilds-wrapper").size() > 0) {
-
+            console.log("defer laoded");
             var guilds = $(".guilds li:first-child");
 
             guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
@@ -108,10 +108,17 @@ Core.prototype.init = function() {
 
     gwDefer();
 
-    $(".guilds-wrapper").load(function() {
-        console.log("LOAD");
-    });
 
+    function nextDefer() {
+        cosole.log("NEXT DEFER");
+        if($(".guilds-wrapper .guilds").children().length > 0) {
+            console.log("Next loaded");
+        } else {
+            setTimeout(nextDefer(), 100);
+        }
+    }
+
+    nextDefer();
 };
 
 Core.prototype.initSettings = function() {
