@@ -82,6 +82,7 @@ Core.prototype.init = function() {
 
     //Incase were too fast
     function gwDefer() {
+        console.log("defer");//New version is too fast?
         if($(".guilds-wrapper").size() > 0) {
 
             var guilds = $(".guilds li:first-child");
