@@ -1,13 +1,22 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.4
+ * Version: 1.5
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 31/08/2015 - 16:17
+ * Last Update: 24/010/2015 - 17:27
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu;
-var jsVersion = 1.2;
+/*
+ * =Changelog=
+ * -v1.5
+ * --Synchronized loading
+ * --jsv 1.3
+ * --Voice mode
+ */
+
+var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode;
+var jsVersion = 1.3;
+var supportedVersion = "0.1.5";
 
 var mainObserver;
 
@@ -18,22 +27,21 @@ var ffzEmoteUrlEnd = "/1";
 var bttvEmoteUrlStart = "";
 var bttvEmoteUrlEnd = "";
 
-
+var mainCore;
 
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
-    "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers", "implemented":false},
+    "Public Servers":             { "id": "bda-gs-1", "info": "BETA : Display public servers button", "implemented":true},
     "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented":true},
+    "Voice Mode":                 { "id": "bda-gs-4", "info": "Only show voice chat", "implemented":true},
     "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode", "implemented":true},
     "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes", "implemented":true },
     "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes", "implemented":true },
-    "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes", "implemented":false },
+    "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes", "implemented":true },
     "Emote Autocomplete":         { "id": "bda-es-3", "info": "Autocomplete emote commands", "implemented":false },
     "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands", "implemented":true },
     "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes", "implemented":false }
 };
-
-
 
 var defaultCookie = {
     "version":jsVersion,
@@ -41,6 +49,7 @@ var defaultCookie = {
     "bda-gs-1":true,
     "bda-gs-2":false,
     "bda-gs-3":false,
+    "bda-gs-4":false,
     "bda-es-0":true,
     "bda-es-1":false,
     "bda-es-2":false,
@@ -51,15 +60,19 @@ var defaultCookie = {
 
 var settingsCookie = {};
 
-function Core() {
-
-}
-
+function Core() {}
 
 Core.prototype.init = function() {
+
+    if(version < supportedVersion) {
+        alert("BetterDiscord v" + version + "(your version)" + " is not supported by the latest js("+jsVersion+"). Please download the latest version from GitHub.");
+        return;
+    }
+
     utils = new Utils();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
+    voiceMode = new VoiceMode();
 
     emoteModule.init();
     emoteModule.autoCapitalize();
@@ -67,24 +80,37 @@ Core.prototype.init = function() {
     this.initSettings();
     this.initObserver();
 
-    function waitForGuildsWrapper() {
-
+    //Incase were too fast
+    function gwDefer() {
+        console.log(new Date().getTime() + " Defer");
         if($(".guilds-wrapper").size() > 0) {
-            $(".guilds li:first-child").after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
+            console.log(new Date().getTime() + " Defer Loaded");
+            var guilds = $(".guilds li:first-child");
+
+            guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
+            guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
             settingsPanel = new SettingsPanel();
             settingsPanel.init();
+
+            opublicServers = new PublicServers();
+            opublicServers.init();
+
             quickEmoteMenu.init(false);
 
-            $("#tc-settings-button").on("click", function(e) { settingsPanel.show(); });
+            $("#tc-settings-button").on("click", function() { settingsPanel.show(); });
+            $("#bd-pub-button").on("click", function() { opublicServers.show(); });
+
         } else {
-            setTimeout(function() {
-                waitForGuildsWrapper();
-            }, 100);
+            setTimeout(gwDefer(), 100);
         }
     }
-    waitForGuildsWrapper();
-}
+
+
+    $(document).ready(function() {
+        setTimeout(gwDefer, 500);
+    });
+};
 
 Core.prototype.initSettings = function() {
     if($.cookie("better-discord") == undefined) {
@@ -95,22 +121,20 @@ Core.prototype.initSettings = function() {
 
         for(var setting in defaultCookie) {
             if(settingsCookie[setting] == undefined) {
-                settingsCookie = defaultCookie;
+                settingsCookie[setting] = defaultCookie[setting];
                 this.saveSettings();
-                alert("BetterDiscord settings reset due to update/error");
-                break;
             }
         }
     }
-}
+};
 
 Core.prototype.saveSettings = function() {
     $.cookie("better-discord", JSON.stringify(settingsCookie), { expires: 365, path: '/' });
-}
+};
 
 Core.prototype.loadSettings = function() {
     settingsCookie = JSON.parse($.cookie("better-discord"));
-}
+};
 
 Core.prototype.initObserver = function() {
 
@@ -126,5 +150,6 @@ Core.prototype.initObserver = function() {
         });
     });
 
+    //noinspection JSCheckFunctionSignatures
     mainObserver.observe(document, { childList: true, subtree: true });
-}
+};

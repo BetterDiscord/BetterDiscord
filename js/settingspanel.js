@@ -14,11 +14,12 @@ function SettingsPanel() {
 
 SettingsPanel.prototype.getPanel = function() {
     return this.tcSettingsPanel;
-}
+};
 
 SettingsPanel.prototype.init = function() {
 
     var self = this;
+    var body = $("body");
     this.tcSettingsPanel = $("<div/>", { id: "tc-settings-panel", style: "display:none" });
     this.getPanel().append($("<div/>", { id: "tc-settings-panel-header" }).append($("<h2/>", { text: "BetterDiscord - Settings" })).append($("<span/>", { id: "tc-settings-close", text: "X", style:"cursor:pointer;" })));
 
@@ -36,7 +37,7 @@ SettingsPanel.prototype.init = function() {
         }
 
         settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { html: " - <span>" + value.info  + "</span>" + (value.implemented == false ? '<span style="color:red">  Coming Soon</span>' : "") })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
-    })
+    });
 
     var settingsFooter = $("<div/>", { id: "tc-settings-panel-footer" });
     settingsFooter.append($("<span/>", { id: "tc-about", text: "BDA v" + version + "(js "+jsVersion+") by Jiiks | Settings are automatically saved." } ));
@@ -44,13 +45,13 @@ SettingsPanel.prototype.init = function() {
     $.each(links, function(key, value) {
         tcLinks.append($("<a/>", { href: value, text: key, target: "_blank" }));
         tcLinks.append($("<span/>", { text: " | " }));
-    })
+    });
     settingsFooter.append(tcLinks);
     this.getPanel().append(settingsFooter);
 
 
-    $("body").append(this.getPanel());
-    $("#tc-settings-close").on("click", function(e) { self.show(); });
+    body.append(this.getPanel());
+    $("#tc-settings-close").on("click", function() { self.show(); });
     $(".tc-switch").on("click", function() { self.handler($(this)) });
 
     if(settingsCookie["bda-es-0"]) {
@@ -60,25 +61,31 @@ SettingsPanel.prototype.init = function() {
     }
 
     if(settingsCookie["bda-gs-2"]) {
-        $("body").addClass("bd-minimal");
+        body.addClass("bd-minimal");
     } else {
-        $("body").removeClass("bd-minimal");
+        body.removeClass("bd-minimal");
     }
     if(settingsCookie["bda-gs-3"]) {
-        $("body").addClass("bd-minimal-chan");
+        body.addClass("bd-minimal-chan");
     } else {
-        $("body").removeClass("bd-minimal-chan");
+        body.removeClass("bd-minimal-chan");
     }
-}
+
+    if(settingsCookie["bda-gs-4"]) {
+        voiceMode.enable();
+    }
+};
 
 
 SettingsPanel.prototype.show = function() {
     this.getPanel().toggle();
-    $("#tc-settings-li").removeClass();
+    var settingsLi = $("#tc-settings-li");
+
+    settingsLi.removeClass();
     if(this.getPanel().is(":visible")) {
-        $("#tc-settings-li").addClass("active");
+        settingsLi.addClass("active");
     }
-}
+};
 
 
 SettingsPanel.prototype.handler = function(e){
@@ -115,6 +122,16 @@ SettingsPanel.prototype.handler = function(e){
     } else {
         $("body").removeClass("bd-minimal-chan");
     }
+    if(settingsCookie["bda-gs-1"]) {
+        $("#bd-pub-li").show();
+    } else {
+        $("#bd-pub-li").hide();
+    }
+    if(settingsCookie["bda-gs-4"]){
+        voiceMode.enable();
+    } else {
+        voiceMode.disable();
+    }
 
     mainCore.saveSettings();
-}
+};

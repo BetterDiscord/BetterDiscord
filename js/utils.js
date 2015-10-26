@@ -11,8 +11,8 @@ function Utils() {
 
 Utils.prototype.getTextArea = function() {
     return $(".channel-textarea-inner textarea");
-}
+};
 
 Utils.prototype.jqDefer = function(fnc) {
     if(window.jQuery) { fnc(); } else { setTimeout(function() { this.jqDefer(fnc) }, 100) }
-}
+};

@@ -24,7 +24,7 @@ Better Discord App enhances Discord desktop app with new features.
 ## Features
 
 **Emotes:**
-BetterDiscord adds all [Twitch.tv](http://twitch.tv), some [FrankerFaceZ](http://frankerfacez.com)(~240 suggested emotes) and [BetterTTV](http://betterttv.net)(soon) emotes to Discord.
+BetterDiscord adds all [Twitch.tv](http://twitch.tv), some [FrankerFaceZ](http://frankerfacez.com)(~240 suggested emotes) and [BetterTTV](http://betterttv.net) emotes to Discord.
 
 **Quick Emote Menu:**
 Quick Emote Menu adds a menu for quickly adding twitch emotes.
@@ -38,6 +38,9 @@ Automatically completes/suggests emotes.(soon)
 **Minimal Mode:**
 Minimal mode makes elements smaller and hides certain elements.
 
+**Voice Chat Mode:**
+Only display voice channels
+
 **Public Servers:**
 A menu for displaying public servers.(soon) [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json)
 
@@ -46,6 +49,10 @@ Save chatlogs locally.(soon)
 
 ## Adding you server to public servers
 Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json) and submit a pull request.
+
+## BetterDiscord Uses the following API's
+* https://twitchemotes.com/apidocs for Twitch emotes
+* https://api.betterttv.net/emotes for [BetterTTV](https://nightdev.com/betterttv/) emotes
 
 ## License
 
