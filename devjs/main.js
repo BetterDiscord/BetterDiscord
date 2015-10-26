@@ -69,6 +69,8 @@ Core.prototype.init = function() {
         return;
     }
 
+    var self = this;
+
     //Incase were too fast
     function gwDefer() {
         console.log(new Date().getTime() + " Defer");
@@ -84,8 +86,8 @@ Core.prototype.init = function() {
             emoteModule.init();
             emoteModule.autoCapitalize();
 
-            this.initSettings();
-            this.initObserver();
+            self.initSettings();
+            self.initObserver();
 
 
             var guilds = $(".guilds li:first-child");
