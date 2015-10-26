@@ -69,27 +69,22 @@ Core.prototype.init = function() {
         return;
     }
 
-    var self = this;
+    utils = new Utils();
+    emoteModule = new EmoteModule();
+    quickEmoteMenu = new QuickEmoteMenu();
+    voiceMode = new VoiceMode();
+
+    emoteModule.init();
+    emoteModule.autoCapitalize();
+
+    this.initSettings();
+    this.initObserver();
 
     //Incase were too fast
     function gwDefer() {
         console.log(new Date().getTime() + " Defer");
         if($(".guilds-wrapper").size() > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
-
-
-            utils = new Utils();
-            emoteModule = new EmoteModule();
-            quickEmoteMenu = new QuickEmoteMenu();
-            voiceMode = new VoiceMode();
-
-            emoteModule.init();
-            emoteModule.autoCapitalize();
-
-            self.initSettings();
-            self.initObserver();
-
-
             var guilds = $(".guilds li:first-child");
 
             guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
@@ -100,8 +95,8 @@ Core.prototype.init = function() {
 
             opublicServers = new PublicServers();
             opublicServers.init();
-            setTimeout(function() { quickEmoteMenu.init(false); }, 10000);
 
+            quickEmoteMenu.init(false);
 
             $("#tc-settings-button").on("click", function() { settingsPanel.show(); });
             $("#bd-pub-button").on("click", function() { opublicServers.show(); });
@@ -113,7 +108,7 @@ Core.prototype.init = function() {
 
 
     $(document).ready(function() {
-        setTimeout(gwDefer, 500);
+        setTimeout(gwDefer, 3000);
     });
 };
 
@@ -294,7 +289,6 @@ EmoteModule.prototype.capitalize = function(value) {
     return null;
 };
 
-
 /* BetterDiscordApp PublicSevers JavaScripts
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -433,7 +427,6 @@ PublicServers.prototype.show = function() {
         li.addClass("active");
     }
 };
-
 
 /* BetterDiscordApp QuickEmoteMenu JavaScript
  * Version: 1.3
@@ -659,6 +652,25 @@ SettingsPanel.prototype.handler = function(e){
     mainCore.saveSettings();
 };
 
+/* BetterDiscordApp Utilities JavaScript
+ * Version: 1.0
+ * Author: Jiiks | http://jiiks.net
+ * Date: 26/08/2015 - 15:54
+ * https://github.com/Jiiks/BetterDiscordApp
+ */
+
+function Utils() {
+
+}
+
+Utils.prototype.getTextArea = function() {
+    return $(".channel-textarea-inner textarea");
+};
+
+Utils.prototype.jqDefer = function(fnc) {
+    if(window.jQuery) { fnc(); } else { setTimeout(function() { this.jqDefer(fnc) }, 100) }
+};
+
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -686,23 +698,4 @@ VoiceMode.prototype.disable = function() {
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "").css("min-width", "");
     $(".flex-vertical.channels-wrap").first().css("width", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
-};
-
-/* BetterDiscordApp Utilities JavaScript
- * Version: 1.0
- * Author: Jiiks | http://jiiks.net
- * Date: 26/08/2015 - 15:54
- * https://github.com/Jiiks/BetterDiscordApp
- */
-
-function Utils() {
-
-}
-
-Utils.prototype.getTextArea = function() {
-    return $(".channel-textarea-inner textarea");
-};
-
-Utils.prototype.jqDefer = function(fnc) {
-    if(window.jQuery) { fnc(); } else { setTimeout(function() { this.jqDefer(fnc) }, 100) }
 };
