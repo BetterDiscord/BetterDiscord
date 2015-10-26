@@ -82,9 +82,9 @@ Core.prototype.init = function() {
 
     //Incase were too fast
     function gwDefer() {
-        console.log(new Date.getTime() + " Defer");
+        console.log(new Date().getTime() + " Defer");
         if($(".guilds-wrapper").size() > 0) {
-            console.log(new Date.getTime() + " Defer Loaded");
+            console.log(new Date().getTime() + " Defer Loaded");
             var guilds = $(".guilds li:first-child");
 
             guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
@@ -110,9 +110,9 @@ Core.prototype.init = function() {
 
 
     function nextDefer() {
-        console.log(new Date.getTime() + " Next Defer");
+        console.log(new Date().getTime() + " Next Defer");
         if($(".guilds-wrapper .guilds").children().length > 0) {
-            console.log(new Date.getTime() + " Next Defer Loaded");
+            console.log(new Date().getTime() + " Next Defer Loaded");
         } else {
             setTimeout(nextDefer(), 100);
         }
@@ -121,12 +121,12 @@ Core.prototype.init = function() {
     nextDefer();
 
     $(document).ready(function() {
-        console.log(new Date.getTime() + " Document Ready");
+        console.log(new Date().getTime() + " Document Ready");
 
         function finalDefer() {
             console.log("FINAL DEFER");
             if($(".guilds-wrapper .guilds").children().length > 0) {
-                console.log(new Date.getTime() + " Final Defer Loaded");
+                console.log(new Date().getTime() + " Final Defer Loaded");
             } else {
                 setTimeout(finalDefer(), 100);
             }
