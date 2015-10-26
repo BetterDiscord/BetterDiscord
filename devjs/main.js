@@ -140,10 +140,8 @@ Core.prototype.initObserver = function() {
 
     mainObserver = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
-            console.log("s1");
             if(mutation.target.getAttribute('class') != null) {
                 if(mutation.target.getAttribute('class').indexOf("titlebar") != -1) {
-                    console.log("s2");
                     quickEmoteMenu.obsCallback();
                 }
             }
@@ -444,9 +442,9 @@ function QuickEmoteMenu() {
 
 }
 
-QuickEmoteMenu.prototype.init = function() {
+QuickEmoteMenu.prototype.init = function(reload) {
 
-    var emoteBtn;
+    emoteBtn = null;
 
     if(!emoteMenu) {
         this.initEmoteList();
@@ -511,7 +509,7 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
     for(var emote in emotesTwitch.emotes) {
         if(emotesTwitch.emotes.hasOwnProperty(emote)) {
             var id = emotesTwitch.emotes[emote].image_id;
-           // emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, alt: "", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
+            emoteMenuBody.append($("<div/>" , { class: "emote-container" }).append($("<img/>", { class: "emote-icon", id: emote, alt: "", src: "https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0", title: emote })));
         }
     }
 };
