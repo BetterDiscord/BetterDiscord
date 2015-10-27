@@ -209,6 +209,8 @@ EmoteModule.prototype.getNodes = function(node) {
     return nodes;
 };
 
+var bemotes = [ "double", "triple", "quadra", "penta" ];
+
 //TODO Functional titles
 EmoteModule.prototype.injectEmote = function(node) {
 
@@ -225,6 +227,8 @@ EmoteModule.prototype.injectEmote = function(node) {
     if(!words) return;
 
     words.some(function(word) {
+        
+        if($.inArray(bemotes, word)) return;
 
         if(emotesTwitch.emotes.hasOwnProperty(word)) {
             parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
