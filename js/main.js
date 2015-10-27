@@ -422,7 +422,7 @@ PublicServers.prototype.addServer = function(name, code, title, language, descri
 
     tr.append(desc);
 
-    tr.append($("<button/>", {
+    tr.append($("<td/>").append($("<button/>", {
         text: "Join",
         css: {
             "width": "100%",
@@ -435,11 +435,10 @@ PublicServers.prototype.addServer = function(name, code, title, language, descri
             "color": "#EDEDED"
         },
         click: function() { self.joinServer(code); }
-    }));
+    })));
 
     tableBody.append(tr);
 };
-
 
 PublicServers.prototype.show = function() {
     this.getPanel().toggle();
@@ -457,7 +456,7 @@ PublicServers.prototype.joinServer = function(code) {
     $(".action.join .btn").click();
     $(".create-guild-container input").val(code);
     $(".form.join-server .btn-primary").click();
-}
+};
 
 /* BetterDiscordApp QuickEmoteMenu JavaScript
  * Version: 1.3
