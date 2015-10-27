@@ -420,15 +420,26 @@ PublicServers.prototype.addServer = function(name, code, title, language, descri
         text: language
     }));
 
+    tr.append(desc);
+
     tr.append($("<button/>", {
         text: "Join",
+        css: {
+            "width": "100%",
+            "height": "30px",
+            "display": "block",
+            "margin-top": "10px",
+            "background-color": "#36393E",
+            "border": "1px solid #404040",
+            "outline": "1px solid #000",
+            "color": "#EDEDED"
+        },
         click: function() { self.joinServer(code); }
     }));
 
-    tr.append(desc);
-
     tableBody.append(tr);
 };
+
 
 PublicServers.prototype.show = function() {
     this.getPanel().toggle();
