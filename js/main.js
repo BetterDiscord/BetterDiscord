@@ -227,7 +227,7 @@ EmoteModule.prototype.injectEmote = function(node) {
     if(!words) return;
 
     words.some(function(word) {
-        
+
         if($.inArray(bemotes, word)) return;
 
         if(emotesTwitch.emotes.hasOwnProperty(word)) {
