@@ -130,7 +130,6 @@ PublicServers.prototype.addServer = function(name, code, title, language, descri
     tr.append($("<td/>").append($("<button/>", {
         text: "Join",
         css: {
-            "width": "100%",
             "height": "30px",
             "display": "block",
             "margin-top": "10px",
