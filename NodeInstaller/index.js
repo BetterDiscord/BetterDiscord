@@ -11,14 +11,19 @@ var readline = require('readline');
 var util = require('util');
 
 var _discordPath;
-var _appFolder = "\\app";
-var _appArchive = "\\app.asar";
-var _packageJson = _appFolder + "\\package.json";
-var _index = _appFolder + "\\app\\index.js";
+var _appFolder = "/app";
+var _appArchive = "/app.asar";
+var _packageJson = _appFolder + "/package.json";
+var _index = _appFolder + "/app/index.js";
 
 function install() {
 
-    _discordPath = process.env.LOCALAPPDATA + "\\Discord\\app-"+dver+"\\resources";
+    var _os = process.platform;
+    if (_os == "win32") {
+       _discordPath = process.env.LOCALAPPDATA + "/Discord/app-"+dver+"/resources";
+    } else if (_os == "darwin") {
+        _discordPath = "/Applications/Discord.app/Contents/Resources/" // currently hardcoded to look in the Applications directory, will fix
+    }
     console.log("Looking for discord resources at: " + _discordPath);
 
     fs.exists(_discordPath, function(exists) {
@@ -32,17 +37,17 @@ function install() {
                 console.log("Deleted " + _discordPath + _appFolder + " folder.");
             }
 
-            if(fs.existsSync(_discordPath + "\\node_modules\\BetterDiscord")) {
-                console.log("Deleting " + _discordPath + "\\node_modules\\BetterDiscord" + " folder.");
-                wrench.rmdirSyncRecursive(_discordPath + "\\node_modules\\BetterDiscord");
-                console.log("Deleted " + _discordPath + "\\node_modules\\BetterDiscord" + " folder.");
+            if(fs.existsSync(_discordPath + "/node_modules/BetterDiscord")) {
+                console.log("Deleting " + _discordPath + "/node_modules/BetterDiscord" + " folder.");
+                wrench.rmdirSyncRecursive(_discordPath + "/node_modules/BetterDiscord");
+                console.log("Deleted " + _discordPath + "/node_modules/BetterDiscord" + " folder.");
             }
 
             console.log("Copying BetterDiscord");
 
-            fs.mkdirSync(_discordPath + "\\node_modules\\BetterDiscord");
+            fs.mkdirSync(_discordPath + "/node_modules/BetterDiscord");
 
-            wrench.copyDirSyncRecursive(__dirname + "\\BetterDiscord\\", _discordPath + "\\node_modules\\BetterDiscord\\", {forceDelete: true});
+            wrench.copyDirSyncRecursive(__dirname + "/BetterDiscord/", _discordPath + "/node_modules/BetterDiscord/", {forceDelete: true});
 
             console.log("Looking for app archive");
             if(fs.existsSync(_discordPath + _appArchive)) {
@@ -64,8 +69,8 @@ function install() {
 
 					var data = fs.readFileSync(_discordPath + _index).toString().split("\n");
 					data.splice(83, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
-					data.splice(497, 0, '_betterDiscord = new _betterDiscord.BetterDiscord(mainWindow); \n _betterDiscord.init(); \n');
-
+					data.splice(497, 0, 'betterDiscord(mainWindow);');
+					data.splice(597, 0, 'function betterDiscord(mw) { _betterDiscord = new _betterDiscord.BetterDiscord(mw); _betterDiscord.init(); }');
 
 					fs.writeFile(_discordPath + _index, data.join("\n"), function(err) {
 						if(err) return console.log(err);
@@ -107,7 +112,7 @@ function init() {
 
     var rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
-    rl.question("The following directories will be deleted if they exists: discorpath\\app, discordpath\\node_modules\\BetterDiscord, is this ok? Y/N", function(answer) {
+    rl.question("The following directories will be deleted if they exists: discorpath/app, discordpath/node_modules/BetterDiscord, is this ok? Y/N", function(answer) {
 
         var alc = answer.toLowerCase();
 
