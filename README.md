@@ -54,6 +54,9 @@ Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serv
 * https://twitchemotes.com/apidocs for Twitch emotes
 * https://api.betterttv.net/emotes for [BetterTTV](https://nightdev.com/betterttv/) emotes
 
+## Credits
+* MacOS Installer by [Candunc](https://github.com/Candunc) 
+
 ## License
 
 The MIT License (MIT)
