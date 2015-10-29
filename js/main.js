@@ -200,15 +200,17 @@ EmoteModule.prototype.obsCallback = function(mutation) {
 };
 
 EmoteModule.prototype.getNodes = function(node) {
+    console.log("GETNODES=>");
     var next;
     var nodes = [];
 
     var treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
 
     while(next = treeWalker.nextNode()) {
+        consol.log("NEXT: " + next);
         nodes.push(next);
     }
-
+    console.log("<=GETNODES");
     return nodes;
 };
 
