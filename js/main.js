@@ -183,6 +183,16 @@ EmoteModule.prototype.init = function() {};
 
 EmoteModule.prototype.obsCallback = function(mutation) {
     var self = this;
+
+    //Edit injection
+    if(mutation.addedNodes.length == 1) {
+        var n = mutation.addedNodes[0];
+        if(n.parentNode.tagName == "SPAN") {
+            //Should be edit
+            self.injectEmote(n);
+        }
+    }
+
     for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
         var next = mutation.addedNodes.item(i);
         if(next) {
