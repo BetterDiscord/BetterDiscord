@@ -187,6 +187,7 @@ EmoteModule.prototype.obsCallback = function(mutation) {
     for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
         var next = mutation.addedNodes.item(i);
         if(next) {
+            console.log("Next: " + next);
             var nodes = self.getNodes(next);
             for(var node in nodes) {
                 if(nodes.hasOwnProperty(node)) {
