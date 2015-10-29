@@ -209,12 +209,6 @@ EmoteModule.prototype.getNodes = function(node) {
         nodes.push(next);
     }
 
-    if(nodes.length < 1) {
-        treeWalker = document.createTreeWalker(node.parentElement, NodeFilter.SHOW_TEXT);
-        while(next = treeWalker.nextNode()) {
-            nodes.push(next);
-        }
-    }
     
     return nodes;
 };
