@@ -210,6 +210,16 @@ EmoteModule.prototype.getNodes = function(node) {
         console.log("NEXT: " + next);
         nodes.push(next);
     }
+
+    if(nodes.length < 1) {
+        treeWalker = document.createTreeWalker(node.parentElement, NodeFilter.SHOW_TEXT);
+        while(next = treeWalker.nextNode()) {
+            console.log("PACCEPTED: " + next);
+            console.log(next);
+            nodes.push(next);
+        }
+    }
+
     console.log("<=GETNODES");
     return nodes;
 };
