@@ -189,7 +189,7 @@ EmoteModule.prototype.obsCallback = function(mutation) {
         var n = mutation.addedNodes[0];
         if(n.parentNode.tagName == "SPAN") {
             //Should be edit
-            self.injectEmote(n);
+            self.injectEmote(n.parentNode);
         }
     }
 
