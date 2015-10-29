@@ -203,13 +203,13 @@ EmoteModule.prototype.getNodes = function(node) {
     var next;
     var nodes = [];
 
-    var treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
+    var treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
 
     while(next = treeWalker.nextNode()) {
         nodes.push(next);
     }
 
-    
+
     return nodes;
 };
 
