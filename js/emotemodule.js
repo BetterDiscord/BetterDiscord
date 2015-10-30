@@ -70,6 +70,10 @@ EmoteModule.prototype.injectEmote = function(node) {
 
     words.some(function(word) {
 
+		if(word.length < 4) {
+			return;
+		}
+	
         if(emotesTwitch.emotes.hasOwnProperty(word)) {
             parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
             return;
