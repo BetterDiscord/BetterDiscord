@@ -188,12 +188,10 @@ EmoteModule.prototype.obsCallback = function(mutation) {
     for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
         var next = mutation.addedNodes.item(i);
         if(next) {
-            console.log("Next: " + next);
             var nodes = self.getNodes(next);
             for(var node in nodes) {
                 if(nodes.hasOwnProperty(node)) {
                     self.injectEmote(nodes[node]);
-                    console.log(nodes[node]);
                 }
             }
         }
@@ -459,7 +457,6 @@ PublicServers.prototype.show = function() {
 
 //Workaround for joining a server
 PublicServers.prototype.joinServer = function(code) {
-    console.log("Code: " + code);
     $(".guilds-add").click();
     $(".action.join .btn").click();
     $(".create-guild-container input").val(code);
