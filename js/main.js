@@ -143,6 +143,7 @@ Core.prototype.initObserver = function() {
             if(mutation.target.getAttribute('class') != null) {
                 if(mutation.target.getAttribute('class').indexOf("titlebar") != -1) {
                     quickEmoteMenu.obsCallback();
+					voiceMode.obsCallback();
                 }
             }
             emoteModule.obsCallback(mutation);
@@ -719,6 +720,14 @@ function VoiceMode() {
 
 }
 
+VoiceMode.prototype.obsCallback = function() {
+	console.log("voiceMode obs");
+	var self = this;
+	if(settingsCookie["bda-gs-4"]) {
+		self.disable();
+		self.enable();
+	}
+}
 
 VoiceMode.prototype.enable = function() {
     $(".scroller.guild-channels ul").first().css("display", "none");
