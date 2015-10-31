@@ -729,7 +729,8 @@ VoiceMode.prototype.obsCallback = function() {
 VoiceMode.prototype.enable = function() {
     $(".scroller.guild-channels ul").first().css("display", "none");
     $(".scroller.guild-channels header").first().css("display", "none");
-    $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
+   // $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
+    $(".app.flex-vertical").first().css("overflow", "hidden");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "hidden").css("min-width", "0px");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
@@ -738,7 +739,8 @@ VoiceMode.prototype.enable = function() {
 VoiceMode.prototype.disable = function() {
     $(".scroller.guild-channels ul").first().css("display", "");
     $(".scroller.guild-channels header").first().css("display", "");
-    $(".flex-vertical.flex-spacer").first().css("overflow", "");
+    //$(".flex-vertical.flex-spacer").first().css("overflow", "");
+	$(".app.flex-vertical").first().css("overflow", "");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "").css("min-width", "");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
