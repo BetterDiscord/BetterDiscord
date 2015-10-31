@@ -722,7 +722,10 @@ VoiceMode.prototype.obsCallback = function() {
 	var self = this;
 	if(settingsCookie["bda-gs-4"]) {
 		self.disable();
-		self.enable();
+		setTimeout(function() {
+			self.enable();
+		}, 300);
+		
 	}
 }
 
