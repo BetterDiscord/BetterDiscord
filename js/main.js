@@ -143,6 +143,7 @@ Core.prototype.initObserver = function() {
             if(mutation.target.getAttribute('class') != null) {
                 if(mutation.target.getAttribute('class').indexOf("titlebar") != -1) {
                     quickEmoteMenu.obsCallback();
+					voiceMode.obsCallback();
                 }
             }
             emoteModule.obsCallback(mutation);
@@ -183,6 +184,7 @@ EmoteModule.prototype.init = function() {};
 
 EmoteModule.prototype.obsCallback = function(mutation) {
     var self = this;
+
     for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
         var next = mutation.addedNodes.item(i);
         if(next) {
@@ -205,6 +207,7 @@ EmoteModule.prototype.getNodes = function(node) {
     while(next = treeWalker.nextNode()) {
         nodes.push(next);
     }
+
 
     return nodes;
 };
@@ -454,7 +457,6 @@ PublicServers.prototype.show = function() {
 
 //Workaround for joining a server
 PublicServers.prototype.joinServer = function(code) {
-    console.log("Code: " + code);
     $(".guilds-add").click();
     $(".action.join .btn").click();
     $(".create-guild-container input").val(code);
@@ -715,20 +717,34 @@ function VoiceMode() {
 
 }
 
+VoiceMode.prototype.obsCallback = function() {
+	console.log("voiceMode obs");
+	var self = this;
+	if(settingsCookie["bda-gs-4"]) {
+		self.disable();
+		setTimeout(function() {
+			self.enable();
+		}, 300);
+		
+	}
+}
+
 VoiceMode.prototype.enable = function() {
     $(".scroller.guild-channels ul").first().css("display", "none");
     $(".scroller.guild-channels header").first().css("display", "none");
-    $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
+   // $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
+    $(".app.flex-vertical").first().css("overflow", "hidden");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "hidden").css("min-width", "0px");
-    $(".flex-vertical.channels-wrap").first().css("width", "100%");
+    $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
 };
 
 VoiceMode.prototype.disable = function() {
     $(".scroller.guild-channels ul").first().css("display", "");
     $(".scroller.guild-channels header").first().css("display", "");
-    $(".flex-vertical.flex-spacer").first().css("overflow", "");
+    //$(".flex-vertical.flex-spacer").first().css("overflow", "");
+	$(".app.flex-vertical").first().css("overflow", "");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "").css("min-width", "");
-    $(".flex-vertical.channels-wrap").first().css("width", "");
+    $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
