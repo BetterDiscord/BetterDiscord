@@ -10,6 +10,11 @@ var fs = require('fs');
 var readline = require('readline');
 var util = require('util');
 
+var _packageSplice;
+var _importSplice;
+var _functionSplice;
+var _functionCallSplice;
+
 var _discordPath;
 var _appFolder = "/app";
 var _appArchive = "/app.asar";
@@ -34,8 +39,16 @@ function install() {
     if (typeof _discordPath == 'undefined') {
         var _os = process.platform;
         if (_os == "win32") {
+			_packageSplice = 10;
+			_importSplice = 83;
+			_functionCallSplice = 497;
+			_functionSplice = 597;
            _discordPath = process.env.LOCALAPPDATA + "/Discord/app-"+dver+"/resources";
         } else if (_os == "darwin") {
+			_packageSplice = 10;
+			_importSplice = 83;
+			_functionCallSplice = 500;
+			_functionSplice = 602;
             _discordPath = "/Applications/Discord.app/Contents/Resources" // Defaults to Applications directory
         }
     }
@@ -83,9 +96,9 @@ function install() {
 					console.log("Injecting index.js");
 
 					var data = fs.readFileSync(_discordPath + _index).toString().split("\n");
-					data.splice(83, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
-					data.splice(497, 0, 'betterDiscord(mainWindow);');
-					data.splice(597, 0, 'function betterDiscord(mw) { _betterDiscord = new _betterDiscord.BetterDiscord(mw); _betterDiscord.init(); }');
+					data.splice(_importSplice, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
+					data.splice(_functionCallSplice, 0, 'betterDiscord(mainWindow);');
+					data.splice(_functionSplice, 0, 'function betterDiscord(mw) { _betterDiscord = new _betterDiscord.BetterDiscord(mw); _betterDiscord.init(); }');
 
 					fs.writeFile(_discordPath + _index, data.join("\n"), function(err) {
 						if(err) return console.log(err);
@@ -94,7 +107,7 @@ function install() {
 						console.log("Injecting package.json");
 
 						var data = fs.readFileSync(_discordPath + _packageJson).toString().split("\n");
-						data.splice(10, 0, '"betterdiscord":"^0.1.2",');
+						data.splice(_packageSplice, 0, '"betterdiscord":"^0.1.2",');
 
 						fs.writeFile(_discordPath + _packageJson, data.join("\n"), function(err) {
 							if(err) return console.log(err);
