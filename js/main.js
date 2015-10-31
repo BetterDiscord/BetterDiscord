@@ -143,6 +143,7 @@ Core.prototype.initObserver = function() {
             if(mutation.target.getAttribute('class') != null) {
                 if(mutation.target.getAttribute('class').indexOf("titlebar") != -1) {
                     quickEmoteMenu.obsCallback();
+					voiceMode.obsCallback();
                 }
             }
             emoteModule.obsCallback(mutation);
@@ -717,6 +718,13 @@ Utils.prototype.jqDefer = function(fnc) {
 
 function VoiceMode() {
 
+}
+
+VoiceMode.prototype.obsCallback = function() {
+	if(settingsCookie["bda-gs-4"]) {
+		this.disable();
+		this.enable();
+	}
 }
 
 VoiceMode.prototype.enable = function() {
