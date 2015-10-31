@@ -202,7 +202,7 @@ EmoteModule.prototype.getNodes = function(node) {
     var next;
     var nodes = [];
 
-    var treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+    var treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
 
     while(next = treeWalker.nextNode()) {
         nodes.push(next);
