@@ -192,10 +192,10 @@ EmoteModule.prototype.getBlacklist = function() {
     if(typeof(_hash) == "undefined") {
         console.log("hash undefined");
         setTimeout(self.getBlacklist, 50);
-        return;
+    } else {
+        console.log("hash: " + _hash);
+        $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
     }
-    console.log("hash: " + _hash);
-    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
 };
 
 EmoteModule.prototype.obsCallback = function(mutation) {
