@@ -718,7 +718,7 @@ Utils.prototype.jqDefer = function(fnc) {
 Utils.prototype.getHash = function() {
     $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
         _hash = data.sha;
-        emoteModule.getBlaclist();
+        emoteModule.getBlacklist();
     });
 
 };
