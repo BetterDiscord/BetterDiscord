@@ -183,19 +183,10 @@ function EmoteModule() {
 }
 
 EmoteModule.prototype.init = function() {
-    this.getBlacklist();
 };
 
 EmoteModule.prototype.getBlacklist = function() {
-    var self = this;
-    console.log("getting blacklist");
-    if(typeof(_hash) == "undefined") {
-        console.log("hash undefined");
-        setTimeout(self.getBlacklist, 100);
-    } else {
-        console.log("hash: " + _hash);
-        $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
-    }
+    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
 };
 
 EmoteModule.prototype.obsCallback = function(mutation) {
@@ -727,6 +718,7 @@ Utils.prototype.jqDefer = function(fnc) {
 Utils.prototype.getHash = function() {
     $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
         _hash = data.sha;
+        emoteModule.getBlaclist();
     });
 
 };
