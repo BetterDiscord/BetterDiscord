@@ -183,7 +183,7 @@ function EmoteModule() {
 }
 
 EmoteModule.prototype.init = function() {
-    $.getJson("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
+    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
 };
 
 EmoteModule.prototype.obsCallback = function(mutation) {
@@ -713,7 +713,7 @@ Utils.prototype.jqDefer = function(fnc) {
 };
 
 Utils.prototype.getHash = function() {
-    $.getJson("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
+    $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
         _hash = data.sha;
     });
 
