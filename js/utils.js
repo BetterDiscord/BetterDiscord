@@ -5,6 +5,8 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
+var _hash;
+
 function Utils() {
 
 }
@@ -15,4 +17,11 @@ Utils.prototype.getTextArea = function() {
 
 Utils.prototype.jqDefer = function(fnc) {
     if(window.jQuery) { fnc(); } else { setTimeout(function() { this.jqDefer(fnc) }, 100) }
+};
+
+Utils.prototype.getHash = function() {
+    $.getJson("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
+        _hash = data.sha;
+    });
+
 };

@@ -1,0 +1,9 @@
+{
+  "blacklist": [
+    "double",
+    "triple",
+    "quadra",
+    "penta",
+    "snap"
+  ]
+}
