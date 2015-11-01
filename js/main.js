@@ -183,6 +183,15 @@ function EmoteModule() {
 }
 
 EmoteModule.prototype.init = function() {
+    this.getBlacklist();
+};
+
+EmoteModule.prototype.getBlacklist = function() {
+    var self = this;
+    if(typeof(_hash) == "undefined") {
+        setTimeout(self.getBlacklist, 50);
+        return;
+    }
     $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
 };
 
