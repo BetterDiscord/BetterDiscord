@@ -191,7 +191,7 @@ EmoteModule.prototype.getBlacklist = function() {
     console.log("getting blacklist");
     if(typeof(_hash) == "undefined") {
         console.log("hash undefined");
-        setTimeout(getBlacklist, 100);
+        setTimeout(self.getBlacklist, 100);
     } else {
         console.log("hash: " + _hash);
         $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/"+_hash+"/emotefilter.json", function(data) { bemotes = data.blacklist; });
