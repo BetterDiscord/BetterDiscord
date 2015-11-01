@@ -183,6 +183,7 @@ function EmoteModule() {
 }
 
 EmoteModule.prototype.init = function() {
+    this.getBlacklist();
 };
 
 EmoteModule.prototype.getBlacklist = function() {
