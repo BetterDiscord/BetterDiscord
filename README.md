@@ -11,7 +11,7 @@ Better Discord App enhances Discord desktop app with new features.
 * Download the latest package from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
 * Run the installer
 * Hopefully it works.
-* Installer requires [node](https://nodejs.org/download/) download the binaries and place in the same folder as the installer if you don't have node installed.
+* Installer requires [node](https://nodejs.org/en/download/) download the binaries and place in the same folder as the installer if you don't have node installed.
 * Installer uses [asar](https://github.com/atom/asar) which is bundled with the installer.
 * Installer uses [wrench](https://github.com/ryanmcgrath/wrench-js) which is bundled with the installer.
 
