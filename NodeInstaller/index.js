@@ -2,7 +2,7 @@
  * BetterDiscordApp Installer v0.3.2
  */
 
-var dver = "0.0.280";
+var dver = "0.0.283";
 
 var asar = require('asar');
 var wrench = require('wrench');
@@ -40,9 +40,9 @@ function install() {
         var _os = process.platform;
         if (_os == "win32") {
 			_packageSplice = 10;
-			_importSplice = 83;
+			_importSplice = 89;
 			_functionCallSplice = 497;
-			_functionSplice = 597;
+			_functionSplice = 601;
            _discordPath = process.env.LOCALAPPDATA + "/Discord/app-"+dver+"/resources";
         } else if (_os == "darwin") {
 			_packageSplice = 10;
