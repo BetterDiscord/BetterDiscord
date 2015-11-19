@@ -40,7 +40,8 @@ var settings = {
     "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes", "implemented":true },
     "Emote Autocomplete":         { "id": "bda-es-3", "info": "Autocomplete emote commands", "implemented":false },
     "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands", "implemented":true },
-    "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes", "implemented":false }
+    "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes", "implemented":false },
+    "Show Names":                 { "id": "bda-es-6", "info": "Show emote names on hover", "implemented": true}
 };
 
 var defaultCookie = {
@@ -55,7 +56,8 @@ var defaultCookie = {
     "bda-es-2":false,
     "bda-es-3":false,
     "bda-es-4":false,
-    "bda-es-5":true
+    "bda-es-5":true,
+    "bda-es-6":true
 };
 
 var settingsCookie = {};
@@ -144,7 +146,7 @@ Core.prototype.initObserver = function() {
             if(mutation.target.getAttribute('class') != null) {
                 if(mutation.target.getAttribute('class').indexOf("titlebar") != -1) {
                     quickEmoteMenu.obsCallback();
-					voiceMode.obsCallback();
+                    voiceMode.obsCallback();
                 }
             }
             emoteModule.obsCallback(mutation);
@@ -239,39 +241,64 @@ EmoteModule.prototype.injectEmote = function(node) {
     words.some(function(word) {
 
         if($.inArray(word, bemotes) != -1) return;
-		
-		if(word.length < 4) {
-			return;
-		}
+        
+        if(word.length < 4) {
+            return;
+        }
 
         if(emotesTwitch.emotes.hasOwnProperty(word)) {
-            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
-            return;
+            if (settingsCookie["bda-es-6"]) {
+                parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, word.length/2) + "\uFDD9" + word.substr(word.length/2) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />');
+                return;
+            }
+            else {
+                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
+                return;
+            }
         }
 
         if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
             if(emotesFfz.hasOwnProperty(word)) {
-                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " ><\/img>");
-                return;
+                if (settingsCookie["bda-es-6"]) {
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, word.length/2) + "\uFDD9" + word.substr(word.length/2) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
+                    return;
+                }
+                else {
+                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " ><\/img>");
+                    return;
+                }
             }
         }
 
         if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
             if(emotesBTTV.hasOwnProperty(word)) {
-                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + emotesBTTV[word] + " ><\/img>");
-                return;
+                if (settingsCookie["bda-es-6"]) {
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, word.length/2) + "\uFDD9" + word.substr(word.length/2) + '" src="' + emotesBTTV[word] + '" />');
+                    return;
+                }
+                else {
+                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + emotesBTTV[word] + " ><\/img>");
+                    return;
+                }
             }
         }
 
         if (subEmotesTwitch.hasOwnProperty(word)) {
-            parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + " ><\/img>");
+            if (settingsCookie["bda-es-6"]) {
+                parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, word.length/2) + "\uFDD9" + word.substr(word.length/2) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
+                return;
+            }
+            else {
+                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + " ><\/img>");
+                return;
+            }
         }
     });
 
     if(parent.parentElement == null) return;
 
     var oldHeight = parent.parentElement.offsetHeight;
-    parent.innerHTML = parentInnerHTML;
+    parent.innerHTML = parentInnerHTML.replace(new RegExp("\uFDD9", "g"), "");
     var newHeight = parent.parentElement.offsetHeight;
 
     //Scrollfix
@@ -735,15 +762,15 @@ function VoiceMode() {
 }
 
 VoiceMode.prototype.obsCallback = function() {
-	console.log("voiceMode obs");
-	var self = this;
-	if(settingsCookie["bda-gs-4"]) {
-		self.disable();
-		setTimeout(function() {
-			self.enable();
-		}, 300);
-		
-	}
+    console.log("voiceMode obs");
+    var self = this;
+    if(settingsCookie["bda-gs-4"]) {
+        self.disable();
+        setTimeout(function() {
+            self.enable();
+        }, 300);
+        
+    }
 }
 
 VoiceMode.prototype.enable = function() {
@@ -760,7 +787,7 @@ VoiceMode.prototype.disable = function() {
     $(".scroller.guild-channels ul").first().css("display", "");
     $(".scroller.guild-channels header").first().css("display", "");
     //$(".flex-vertical.flex-spacer").first().css("overflow", "");
-	$(".app.flex-vertical").first().css("overflow", "");
+    $(".app.flex-vertical").first().css("overflow", "");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "").css("min-width", "");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
