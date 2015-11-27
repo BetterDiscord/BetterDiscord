@@ -245,6 +245,7 @@ EmoteModule.prototype.getNodes = function(node) {
 };
 
 var bemotes = [];
+var spoilered = [];
 
 //TODO Functional titles
 EmoteModule.prototype.injectEmote = function(node) {
@@ -264,10 +265,20 @@ EmoteModule.prototype.injectEmote = function(node) {
     words.some(function(word) {
 
         if(word == "[s]") {
-            var markup = $(parent).parent();
-            markup.addClass("spoiler");
 
             parentInnerHTML = parentInnerHTML.replace(word, "");
+
+            var markup = $(parent).parent();
+
+            var reactId = markup.attr("data-reactid");
+
+            if(spoilered.indexOf(reactId) > -1) {
+                return;
+            }
+
+            spoilered.push(reactId);
+
+            markup.addClass("spoiler");
 
             markup.on("click", function() {
                 $(this).removeClass("spoiler");
