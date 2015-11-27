@@ -4,6 +4,9 @@ Better Discord App enhances Discord desktop app with new features.
 ![ss](http://puu.sh/jTEBB.png)
 
 
+## As of JavaScript version 1.4, settings have been moved to Discord settings dialog.
+![ss](http://i.imgur.com/iesp9UY.png)
+
 ## If Discord has updated and the installer hasn't, try replacing the installer index.js with the latest one here: [index.js](https://github.com/Jiiks/BetterDiscordApp/blob/master/NodeInstaller/index.js)
 
 
@@ -20,6 +23,7 @@ Better Discord App enhances Discord desktop app with new features.
 * Add BetterDiscord as a dependency
 * Add init to Discord load event
 * Move BetterDiscord to node_modules
+
 
 ## Features
 
