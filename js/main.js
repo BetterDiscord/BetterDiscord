@@ -6,16 +6,9 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-/*
- * =Changelog=
- * -v1.5
- * --Synchronized loading
- * --jsv 1.3
- * --Voice mode
- */
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode;
-var jsVersion = 1.3;
+var jsVersion = 1.4;
 var supportedVersion = "0.1.5";
 
 var mainObserver;
@@ -31,17 +24,24 @@ var mainCore;
 
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
-    "Public Servers":             { "id": "bda-gs-1", "info": "BETA : Display public servers button", "implemented":true},
+    "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers button", "implemented":true},
     "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented":true},
     "Voice Mode":                 { "id": "bda-gs-4", "info": "Only show voice chat", "implemented":true},
     "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode", "implemented":true},
     "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes", "implemented":true },
+    "Show Emotes":                { "id": "bda-es-7", "info": "Show any emotes", "implemented":true},
     "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes", "implemented":true },
     "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes", "implemented":true },
     "Emote Autocomplete":         { "id": "bda-es-3", "info": "Autocomplete emote commands", "implemented":false },
     "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands", "implemented":true },
     "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes", "implemented":false },
     "Show Names":                 { "id": "bda-es-6", "info": "Show emote names on hover", "implemented": true}
+};
+
+var links = {
+    "Jiiks.net": { "text": "Jiiks.net", "href": "http://jiiks.net",          "target": "_blank" },
+    "twitter":   { "text": "Twitter",   "href": "http://twitter.com/jiiksi", "target": "_blank" },
+    "github":    { "text": "Github",    "href": "http://github.com/jiiks",   "target": "_blank" }
 };
 
 var defaultCookie = {
@@ -57,7 +57,8 @@ var defaultCookie = {
     "bda-es-3":false,
     "bda-es-4":false,
     "bda-es-5":true,
-    "bda-es-6":true
+    "bda-es-6":true,
+    "bda-es-7":true
 };
 
 var settingsCookie = {};
@@ -90,7 +91,7 @@ Core.prototype.init = function() {
             var guilds = $(".guilds li:first-child");
 
             guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
-            guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
+           // guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
             settingsPanel = new SettingsPanel();
             settingsPanel.init();
@@ -193,6 +194,8 @@ EmoteModule.prototype.getBlacklist = function() {
 
 EmoteModule.prototype.obsCallback = function(mutation) {
     var self = this;
+
+    if(!settingsCookie["bda-es-7"]) return;
 
     for(var i = 0 ; i < mutation.addedNodes.length ; ++i) {
         var next = mutation.addedNodes.item(i);
@@ -584,60 +587,28 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
 };
 
 /* BetterDiscordApp Settings Panel JavaScript
- * Version: 1.3
+ * Version: 2.0
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 11:54
- * Last Update: 30/08/2015 - 12:16
+ * Last Update: 27/11/2015 - 00:50
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var links = { "Jiiks.net": "http://jiiks.net", "Twitter": "http://twitter.com/jiiksi", "Github": "https://github.com/jiiks" };
+var settingsButton = null;
+var panel = null;
 
 function SettingsPanel() {
 
 }
 
-SettingsPanel.prototype.getPanel = function() {
-    return this.tcSettingsPanel;
-};
-
 SettingsPanel.prototype.init = function() {
 
     var self = this;
+
+    self.construct();
+
+
     var body = $("body");
-    this.tcSettingsPanel = $("<div/>", { id: "tc-settings-panel", style: "display:none" });
-    this.getPanel().append($("<div/>", { id: "tc-settings-panel-header" }).append($("<h2/>", { text: "BetterDiscord - Settings" })).append($("<span/>", { id: "tc-settings-close", text: "X", style:"cursor:pointer;" })));
-
-    var settingsList = $("<ul/>");
-    this.getPanel().append($("<div/>", { id: "tc-settings-panel-body" }).append(settingsList));
-
-    $.each(settings, function(key, value) {
-        var son = "tc-switch-on";
-        var sof = "tc-switch-off";
-
-        if(settingsCookie[value.id]) {
-            son = "tc-switch-on active";
-        }else {
-            sof = "tc-switch-off active";
-        }
-
-        settingsList.append($("<li/>").append($("<h2/>", { text: key})).append($("<span/>", { html: " - <span>" + value.info  + "</span>" + (value.implemented == false ? '<span style="color:red">  Coming Soon</span>' : "") })).append($("<div/>", { class: value.implemented ? "tc-switch" : "tc-switch disabled", id: value.id }).append($("<span/>", { class: sof, text: "OFF" })).append($("<span/>", { class: son, text: "ON" }))));
-    });
-
-    var settingsFooter = $("<div/>", { id: "tc-settings-panel-footer" });
-    settingsFooter.append($("<span/>", { id: "tc-about", text: "BDA v" + version + "(js "+jsVersion+") by Jiiks | Settings are automatically saved." } ));
-    var tcLinks = $("<span/>", { id: "tc-links" });
-    $.each(links, function(key, value) {
-        tcLinks.append($("<a/>", { href: value, text: key, target: "_blank" }));
-        tcLinks.append($("<span/>", { text: " | " }));
-    });
-    settingsFooter.append(tcLinks);
-    this.getPanel().append(settingsFooter);
-
-
-    body.append(this.getPanel());
-    $("#tc-settings-close").on("click", function() { self.show(); });
-    $(".tc-switch").on("click", function() { self.handler($(this)) });
 
     if(settingsCookie["bda-es-0"]) {
         $("#twitchcord-button-container").show();
@@ -659,66 +630,227 @@ SettingsPanel.prototype.init = function() {
     if(settingsCookie["bda-gs-4"]) {
         voiceMode.enable();
     }
+
 };
 
+SettingsPanel.prototype.construct = function() {
 
-SettingsPanel.prototype.show = function() {
-    this.getPanel().toggle();
-    var settingsLi = $("#tc-settings-li");
+    var self = this;
 
-    settingsLi.removeClass();
-    if(this.getPanel().is(":visible")) {
-        settingsLi.addClass("active");
+    panel = $("<div/>", {
+        class: "settings-inner",
+        style: "display:none;"
+    });
+
+    var settingsPolyfill = $("<div/>", {
+        class:" scroller-wrap polyfil"
+    });
+
+    panel.append(settingsPolyfill);
+
+    var settingsWrapper = $("<div/>", {
+        class: "scroller settings-wrapper settings-panel"
+    });
+
+    //Scrollbar
+    var scrollBar = $("<div/>", {
+        class: "scrollbar"
+    }).append($("<div/>", {
+        class: "track"
+    }).append($("<div/>", {
+        class: "thumb"
+    })));
+
+    settingsWrapper.append(scrollBar);
+
+    settingsPolyfill.append(settingsWrapper);
+
+    var controlGroups = $("<div/>", {
+        class: "control-groups"
+    });
+
+    var controlGroups2 = $("<div/>", {
+        class: "control-groups"
+    });
+
+    settingsWrapper.append(controlGroups);
+    /*settingsWrapper.append(controlGroups2);*/
+    var featuresGroup = $("<div/>", {
+        class: "control-group"
+    });
+
+    var upcomingGroup = $("<div/>", {
+        class: "control-group"
+    });
+
+    controlGroups.append(featuresGroup);
+    controlGroups2.append(upcomingGroup);
+
+    featuresGroup.append($("<label/>", {
+        text: "BetterDiscord Settings"
+    }));
+
+    upcomingGroup.append($("<label/>", {
+        text: "Upcoming Features"
+    }));
+
+    var featuresCheckboxGroup = $("<ul/>", {
+        class: "checkbox-group"
+    });
+
+    function updateSetting() {
+        var cb = $(this).children().find('input[type="checkbox"]');
+        var enabled = !cb.is(":checked");
+        var id = cb.attr("id");
+        cb.prop("checked", enabled);
+
+        settingsCookie[id] = enabled;
+
+        if(settingsCookie["bda-es-0"]) {
+            $("#twitchcord-button-container").show();
+        } else {
+            $("#twitchcord-button-container").hide();
+        }
+
+        if(settingsCookie["bda-gs-2"]) {
+            $("body").addClass("bd-minimal");
+        } else {
+            $("body").removeClass("bd-minimal");
+        }
+        if(settingsCookie["bda-gs-3"]) {
+            $("body").addClass("bd-minimal-chan");
+        } else {
+            $("body").removeClass("bd-minimal-chan");
+        }
+        if(settingsCookie["bda-gs-1"]) {
+            $("#bd-pub-li").show();
+        } else {
+            $("#bd-pub-li").hide();
+        }
+        if(settingsCookie["bda-gs-4"]){
+            voiceMode.enable();
+        } else {
+            voiceMode.disable();
+        }
+
+        mainCore.saveSettings();
     }
-};
 
+    for(var setting in settings) {
 
-SettingsPanel.prototype.handler = function(e){
-    var sid = e.attr("id");
-    var enabled = settingsCookie[sid];
-    enabled = !enabled;
-    settingsCookie[sid] = enabled;
+        var sett = settings[setting];
+        var id = sett["id"];
 
-    var swoff = $("#" + sid + " .tc-switch-off");
-    var swon = $("#" + sid + " .tc-switch-on");
-    swoff.removeClass("active");
-    swon.removeClass("active");
+        if(sett["implemented"]) {
 
-    if(enabled) {
-        swon.addClass("active");
-    } else {
-        swoff.addClass("active");
+            featuresCheckboxGroup.append($("<li/>").append($("<div/>", {
+                class: "checkbox",
+                click: updateSetting
+            }).append($("<div/>", {
+                class: "checkbox-inner"
+            }).append($("<input/>", {
+                type: "checkbox",
+                id: id,
+                prop: {
+                    "checked": settingsCookie[id]
+                }
+            })).append($("<span/>"))).append($("<span/>", {
+                text: setting + " - " + sett["info"]
+            }))));
+        }
     }
 
+    featuresGroup.append(featuresCheckboxGroup);
 
-    if(settingsCookie["bda-es-0"]) {
-        $("#twitchcord-button-container").show();
-    } else {
-        $("#twitchcord-button-container").hide();
+    //Info Footer
+    var footer = $("<div/>", {
+        css: {
+            "background": "#1A1A1A",
+            "color": "#ADADAD",
+            "height": "30px",
+            "position": "absolute",
+            "bottom": "0",
+            "left": "0",
+            "right": "0"
+        }
+    });
+
+    var versionSpan = $("<span/>", {
+        text: "BetterDiscord v0.15(js1.4) by Jiiks",
+        css: {
+            "line-height": "30px",
+            "margin-left": "10px"
+        }
+    });
+
+    var linksSpan = $("<span/>", {
+        css: {
+            "float": "right",
+            "line-height": "30px",
+            "margin-right": "10px"
+        }
+    });
+
+    for(var link in links) {
+        $("<a/>", {
+            text: links[link]["text"],
+            href: links[link]["href"],
+            target: links[link]["target"]
+        }).append($("<span/>", {
+            text: " | "
+        })).appendTo(linksSpan);
     }
 
-    if(settingsCookie["bda-gs-2"]) {
-        $("body").addClass("bd-minimal");
-    } else {
-        $("body").removeClass("bd-minimal");
-    }
-    if(settingsCookie["bda-gs-3"]) {
-        $("body").addClass("bd-minimal-chan");
-    } else {
-        $("body").removeClass("bd-minimal-chan");
-    }
-    if(settingsCookie["bda-gs-1"]) {
-        $("#bd-pub-li").show();
-    } else {
-        $("#bd-pub-li").hide();
-    }
-    if(settingsCookie["bda-gs-4"]){
-        voiceMode.enable();
-    } else {
-        voiceMode.disable();
+    footer.append(versionSpan);
+    footer.append(linksSpan);
+
+    settingsPolyfill.append(footer);
+
+    function showSettings() {
+        $(".tab-bar-item").removeClass("selected");
+        settingsButton.addClass("selected");
+        $(".form .settings-right .settings-inner").first().hide();
+        panel.show();
     }
 
-    mainCore.saveSettings();
+    settingsButton = $("<div/>", {
+        class: "tab-bar-item",
+        text: "BetterDiscord",
+        id: "bd-settings-new",
+        click: showSettings
+    });
+
+    function defer() {
+        if($(".btn.btn-settings").length < 1) {
+            setTimeout(defer, 100);
+        }else {
+            $(".btn.btn-settings").first().on("click", function() {
+
+                function innerDefer() {
+                    if($(".modal-inner").first().is(":visible")) {
+
+                        panel.hide();
+                        var tabBar = $(".tab-bar.SIDE").first();
+
+                        $(".tab-bar.SIDE .tab-bar-item").click(function() {
+                            $(".form .settings-right .settings-inner").first().show();
+                            $("#bd-settings-new").removeClass("selected");
+                            panel.hide();
+                        });
+
+                        tabBar.append(settingsButton);
+                        panel.insertAfter(".form .settings-right .settings-inner");
+                        $("#bd-settings-new").removeClass("selected");
+                    } else {
+                        setTimeout(innerDefer, 100);
+                    }
+                }
+                innerDefer();
+            });
+        }
+    }
+    defer();
+
 };
 
 /* BetterDiscordApp Utilities JavaScript
