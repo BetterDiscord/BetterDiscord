@@ -276,12 +276,11 @@ EmoteModule.prototype.injectEmote = function(node) {
                 return;
             }
 
-            spoilered.push(reactId);
-
             markup.addClass("spoiler");
 
             markup.on("click", function() {
                 $(this).removeClass("spoiler");
+                spoilered.push($(this).attr("data-reactid"));
             });
 
             return;
