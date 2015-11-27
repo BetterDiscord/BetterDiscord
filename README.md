@@ -1,7 +1,7 @@
 # BetterDiscordApp
 Better Discord App enhances Discord desktop app with new features.
 
-![ss](http://puu.sh/jTEBB.png)
+![ss](http://i.imgur.com/F9yMSKc.jpg)
 
 
 ## As of JavaScript version 1.4, settings have been moved to Discord settings dialog.
