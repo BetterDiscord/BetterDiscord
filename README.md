@@ -1,11 +1,10 @@
 # BetterDiscordApp
 Better Discord App enhances Discord desktop app with new features.
 
-![ss](http://i.imgur.com/F9yMSKc.jpg)
-
-
-## As of JavaScript version 1.4, settings have been moved to Discord settings dialog.
+As of JavaScript version 1.4, settings have been moved to Discord settings dialog.
 ![ss](http://i.imgur.com/iesp9UY.png)
+
+![ss](http://i.imgur.com/F9yMSKc.jpg)
 
 ## If Discord has updated and the installer hasn't, try replacing the installer index.js with the latest one here: [index.js](https://github.com/Jiiks/BetterDiscordApp/blob/master/NodeInstaller/index.js)
 
