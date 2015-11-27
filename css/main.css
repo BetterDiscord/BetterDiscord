@@ -14,7 +14,9 @@
 #twitchcord-button {
 	position:absolute;
 	width:50px;
-	height:100%;
+	height:42px;
+	top:2px;
+	right:2px;
 	background-image:url(https://static-cdn.jtvnw.net/emoticons/v1/5/1.0);
 	background-repeat:no-repeat;
 	background-size:36px;
