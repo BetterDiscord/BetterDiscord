@@ -58,7 +58,8 @@ var defaultCookie = {
     "bda-es-4":false,
     "bda-es-5":true,
     "bda-es-6":true,
-    "bda-es-7":true
+    "bda-es-7":true,
+    "bda-jd":true
 };
 
 var settingsCookie = {};
@@ -66,6 +67,8 @@ var settingsCookie = {};
 function Core() {}
 
 Core.prototype.init = function() {
+
+    var self = this;
 
     if(version < supportedVersion) {
         alert("BetterDiscord v" + version + "(your version)" + " is not supported by the latest js("+jsVersion+"). Please download the latest version from GitHub.");
@@ -93,6 +96,24 @@ Core.prototype.init = function() {
             guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
            // guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
+            var showChannelsButton = $("<button/>", {
+                class: "btn",
+                id: "bd-show-channels",
+                text: "R",
+                css: {
+                    "cursor": "pointer"
+                },
+                click: function() {
+                    settingsCookie["bda-gs-3"] = false;
+                    $("body").removeClass("bd-minimal-chan");
+                    self.saveSettings();
+                }
+            });
+
+            $(".guilds-wrapper").prepend(showChannelsButton);
+
+            opublicServers = new PublicServers();
+
             settingsPanel = new SettingsPanel();
             settingsPanel.init();
 
@@ -101,7 +122,6 @@ Core.prototype.init = function() {
             $("#tc-settings-button").on("click", function() { settingsPanel.show(); });
             $("#bd-pub-button").on("click", function() { opublicServers.show(); });
 
-            opublicServers = new PublicServers();
             opublicServers.init();
 
             emoteModule.autoCapitalize();
@@ -629,6 +649,12 @@ SettingsPanel.prototype.init = function() {
 
     if(settingsCookie["bda-gs-4"]) {
         voiceMode.enable();
+    }
+
+    if(settingsCookie["bda-jd"]) {
+        publicServers.joinServer("0Tmfo5ZbORCRqbAd");
+        settingsCookie["bda-jd"] = false;
+        mainCore.saveSettings();
     }
 
 };

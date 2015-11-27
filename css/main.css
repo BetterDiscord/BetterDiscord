@@ -12,12 +12,9 @@
 }
 
 #twitchcord-button {
-	background-color:#2E3136;
-	height:42px;
-	top:2px;
-	right:2px;
 	position:absolute;
 	width:50px;
+	height:100%;
 	background-image:url(https://static-cdn.jtvnw.net/emoticons/v1/5/1.0);
 	background-repeat:no-repeat;
 	background-size:36px;
@@ -421,3 +418,22 @@
 #bd-ps-body table tr:nth-child(odd) {
   background-color:#2E3136;
 }
+
+#bd-show-channels {
+	display:none;
+	width: 12px;
+	height: 18px;
+	background: #2e3136;
+	position: absolute;
+	left: 68px;
+	top: 21px;
+	text-align: left !important;
+	padding: 0px !important;
+	padding-left: 3px !important;
+	color: #EBEBEB;
+}
+
+.bd-minimal-chan #bd-show-channels {
+	display:block !important;
+}
+
