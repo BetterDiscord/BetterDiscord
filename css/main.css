@@ -12,6 +12,7 @@
 }
 
 #twitchcord-button {
+	background-color:#2E3136;
 	position:absolute;
 	width:50px;
 	height:42px;
