@@ -94,7 +94,7 @@ Core.prototype.init = function() {
             var guilds = $(".guilds li:first-child");
 
             guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
-           // guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
+            // guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
 
             var showChannelsButton = $("<button/>", {
                 class: "btn",
@@ -263,8 +263,21 @@ EmoteModule.prototype.injectEmote = function(node) {
 
     words.some(function(word) {
 
+        if(word == "[s]") {
+            var markup = $(parent).parent();
+            markup.addClass("spoiler");
+
+            parentInnerHTML = parentInnerHTML.replace(word, "");
+
+            markup.on("click", function() {
+                $(this).removeClass("spoiler");
+            });
+
+            return;
+        }
+
         if($.inArray(word, bemotes) != -1) return;
-        
+
         if(word.length < 4) {
             return;
         }
@@ -537,7 +550,7 @@ function QuickEmoteMenu() {
 QuickEmoteMenu.prototype.init = function(reload) {
 
     emoteBtn = null;
-
+    $(".channel-textarea").first().removeClass("emotemenu-enabled");
     if(!emoteMenu) {
         this.initEmoteList();
     }
@@ -564,6 +577,7 @@ QuickEmoteMenu.prototype.init = function(reload) {
     });
 
     if(settingsCookie["bda-es-0"]) {
+        $(".channel-textarea").first().addClass("emotemenu-enabled");
         emoteBtn.show();
     }
 
@@ -927,14 +941,14 @@ VoiceMode.prototype.obsCallback = function() {
         setTimeout(function() {
             self.enable();
         }, 300);
-        
+
     }
 }
 
 VoiceMode.prototype.enable = function() {
     $(".scroller.guild-channels ul").first().css("display", "none");
     $(".scroller.guild-channels header").first().css("display", "none");
-   // $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
+    // $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
     $(".app.flex-vertical").first().css("overflow", "hidden");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "hidden").css("min-width", "0px");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
