@@ -46,7 +46,10 @@ Minimal mode makes elements smaller and hides certain elements.
 Only display voice channels
 
 **Public Servers:**
-A menu for displaying public servers.(soon) [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json)
+A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json)
+
+**Spoilers**
+Add spoilers to your chat, simply add [s] to your message.
 
 **Save Logs Locally:**
 Save chatlogs locally.(soon)
