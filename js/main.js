@@ -652,7 +652,7 @@ SettingsPanel.prototype.init = function() {
     }
 
     if(settingsCookie["bda-jd"]) {
-        publicServers.joinServer("0Tmfo5ZbORCRqbAd");
+        opublicServers.joinServer("0Tmfo5ZbORCRqbAd");
         settingsCookie["bda-jd"] = false;
         mainCore.saveSettings();
     }
