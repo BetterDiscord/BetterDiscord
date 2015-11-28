@@ -266,7 +266,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 
         if(word.slice(0, 4) == "[!s]" ) {
 
-            parentInnerHTML = parentInnerHTML.replace(word, "");
+            parentInnerHTML = parentInnerHTML.replace("[!s]", "");
 
             var markup = $(parent).parent();
 
