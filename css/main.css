@@ -1,3 +1,9 @@
+#custom-css-ta {
+	background: #D8D8D8;
+	height: 200px;
+	font-family: "Consolas";
+}
+
 .spoiler {
 	color:transparent !important;
 }

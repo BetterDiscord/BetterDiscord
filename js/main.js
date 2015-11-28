@@ -683,6 +683,16 @@ SettingsPanel.prototype.init = function() {
 
 };
 
+SettingsPanel.prototype.applyCustomCss = function(css) {
+    if($("#customcss").length == 0) {
+        $("head").append('<style id="customcss"></style>');
+    }
+
+    $("#customcss").html(css);
+
+    localStorage.setItem("bdcustomcss", btoa(css));
+};
+
 SettingsPanel.prototype.construct = function() {
 
     var self = this;
@@ -724,29 +734,45 @@ SettingsPanel.prototype.construct = function() {
     });
 
     settingsWrapper.append(controlGroups);
-    /*settingsWrapper.append(controlGroups2);*/
+    settingsWrapper.append(controlGroups2);
     var featuresGroup = $("<div/>", {
         class: "control-group"
     });
 
-    var upcomingGroup = $("<div/>", {
+    var customCssGroup = $("<div/>", {
         class: "control-group"
     });
 
     controlGroups.append(featuresGroup);
-    controlGroups2.append(upcomingGroup);
+    controlGroups2.append(customCssGroup);
 
     featuresGroup.append($("<label/>", {
         text: "BetterDiscord Settings"
     }));
 
-    upcomingGroup.append($("<label/>", {
-        text: "Upcoming Features"
+    customCssGroup.append($("<label/>", {
+        text: "Custom CSS"
     }));
+
+    var ta = $("<textarea/>", {
+        id: "custom-css-ta"
+    });
+
+    var decode = atob(localStorage.getItem("bdcustomcss"));
+    self.applyCustomCss(decode);
+    ta.val(decode);
+
+    customCssGroup.append(ta);
+
+    ta.on("input propertychange", function() {
+        self.applyCustomCss($(this).val());
+    });
 
     var featuresCheckboxGroup = $("<ul/>", {
         class: "checkbox-group"
     });
+
+
 
     function updateSetting() {
         var cb = $(this).children().find('input[type="checkbox"]');

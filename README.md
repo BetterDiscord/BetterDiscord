@@ -48,6 +48,9 @@ Only display voice channels
 **Public Servers:**
 A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json)
 
+**Custom CSS**
+BetterDiscord supports custom CSS for styling Discord to your liking.
+
 **Spoilers**
 Add spoilers to your chat, simply add [!s] to your message.
 
