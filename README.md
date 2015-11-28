@@ -49,7 +49,7 @@ Only display voice channels
 A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json)
 
 **Spoilers**
-Add spoilers to your chat, simply add [s] to your message.
+Add spoilers to your chat, simply add [!s] to your message.
 
 **Save Logs Locally:**
 Save chatlogs locally.(soon)
