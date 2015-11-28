@@ -66,6 +66,7 @@ Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serv
 
 ## Credits
 * MacOS Installer by [Candunc](https://github.com/Candunc) 
+* Emote titles by [pendo324](https://github.com/pendo324)
 
 ## License
 
