@@ -264,7 +264,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 
     words.some(function(word) {
 
-        if(word == "[s]") {
+        if(word.slice(0, 4) == "[!s]" ) {
 
             parentInnerHTML = parentInnerHTML.replace(word, "");
 
