@@ -8,7 +8,7 @@
 
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode;
-var jsVersion = 1.4;
+var jsVersion = 1.5;
 var supportedVersion = "0.1.5";
 
 var mainObserver;
@@ -23,19 +23,19 @@ var bttvEmoteUrlEnd = "";
 var mainCore;
 
 var settings = {
-    "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally", "implemented":false },
-    "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers button", "implemented":true},
-    "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented":true},
-    "Voice Mode":                 { "id": "bda-gs-4", "info": "Only show voice chat", "implemented":true},
-    "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode", "implemented":true},
-    "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes", "implemented":true },
-    "Show Emotes":                { "id": "bda-es-7", "info": "Show any emotes", "implemented":true},
-    "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes", "implemented":true },
-    "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes", "implemented":true },
-    "Emote Autocomplete":         { "id": "bda-es-3", "info": "Autocomplete emote commands", "implemented":false },
-    "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands", "implemented":true },
-    "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes", "implemented":false },
-    "Show Names":                 { "id": "bda-es-6", "info": "Show emote names on hover", "implemented": true}
+    "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally",                        "implemented": false },
+    "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers button",                  "implemented": true  },
+    "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented": true  },
+    "Voice Mode":                 { "id": "bda-gs-4", "info": "Only show voice chat",                           "implemented": true  },
+    "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode",                  "implemented": true  },
+    "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes",        "implemented": true  },
+    "Show Emotes":                { "id": "bda-es-7", "info": "Show any emotes",                                "implemented": true  },
+    "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes",                       "implemented": true  },
+    "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes",                          "implemented": true  },
+    "Emote Autocomplete":         { "id": "bda-es-3", "info": "Autocomplete emote commands",                    "implemented": false },
+    "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands",                  "implemented": true  },
+    "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes",                        "implemented": false },
+    "Show Names":                 { "id": "bda-es-6", "info": "Show emote names on hover",                      "implemented": true  }
 };
 
 var links = {
@@ -45,21 +45,59 @@ var links = {
 };
 
 var defaultCookie = {
-    "version":jsVersion,
-    "bda-gs-0":false,
-    "bda-gs-1":true,
-    "bda-gs-2":false,
-    "bda-gs-3":false,
-    "bda-gs-4":false,
-    "bda-es-0":true,
-    "bda-es-1":false,
-    "bda-es-2":false,
-    "bda-es-3":false,
-    "bda-es-4":false,
-    "bda-es-5":true,
-    "bda-es-6":true,
-    "bda-es-7":true,
-    "bda-jd":true
+    "version":  jsVersion,
+    "bda-gs-0": false,
+    "bda-gs-1": true,
+    "bda-gs-2": false,
+    "bda-gs-3": false,
+    "bda-gs-4": false,
+    "bda-es-0": true,
+    "bda-es-1": false,
+    "bda-es-2": false,
+    "bda-es-3": false,
+    "bda-es-4": false,
+    "bda-es-5": true,
+    "bda-es-6": true,
+    "bda-es-7": true,
+    "bda-jd":   true
+};
+
+var bdchangelog = {
+    "changes": {
+        "settings": {
+            "title": "New settings menu!",
+            "text": "The settings menu has been moved to the Discord settings dialog!",
+            "img": ""
+        },
+        "spoilers": {
+            "title": "Spoilers!",
+            "text": "BetterDiscord now supports spoilers, use [!s] in your message to turn it into a spoiler!",
+            "img": ""
+        },
+        "emotenames": {
+            "title": "Emote Names!",
+            "text": "The emote name on hover has been fixed and reimplemented by <a href=\"https://github.com/pendo324\" target=\"_blank\">pendo324</a>",
+            "img": ""
+        },
+        "customcss": {
+            "title": "Custom CSS!",
+            "text": "Apply custom CSS to your client! note: The CSS is stored in localstorage. If it's deleted for some reason, you will lose it and it cannot be recovered(keep a backup).",
+            "img": ""
+        }
+    },
+    "fixes": null,
+    "upcoming": {
+        "ignore": {
+            "title": "Ignore User!",
+            "text": "Ignore users you don't like",
+            "img": ""
+        },
+        "more": {
+            "title": "More Things!",
+            "text": "More things but probably not in the next version.",
+            "img": ""
+        }
+    }
 };
 
 var settingsCookie = {};
@@ -125,6 +163,18 @@ Core.prototype.init = function() {
             opublicServers.init();
 
             emoteModule.autoCapitalize();
+
+
+
+
+            /*Display new features in BetterDiscord*/
+            if(settingsCookie["version"] < jsVersion) {
+                var cl = self.constructChangelog();
+                $("body").append(cl);
+                settingsCookie["version"] = jsVersion;
+                self.saveSettings();
+            }
+
         } else {
             setTimeout(gwDefer, 100);
         }
@@ -177,6 +227,90 @@ Core.prototype.initObserver = function() {
 
     //noinspection JSCheckFunctionSignatures
     mainObserver.observe(document, { childList: true, subtree: true });
+};
+
+Core.prototype.constructChangelog = function() {
+    var changeLog = '' +
+        '<div id="bd-wn-modal" class="modal" style="opacity:1;">' +
+        '  <div class="modal-inner">' +
+        '       <div id="bdcl" class="change-log"> ' +
+        '           <div class="header">' +
+        '               <strong>What\'s new in BetterDiscord JS v' + jsVersion + '</strong>' +
+        '               <button class="close" onclick=\'$("#bd-wn-modal").remove();\'></button>' +
+        '           </div><!--header-->' +
+        '           <div class="scroller-wrap">' +
+        '               <div class="scroller">';
+
+    if(bdchangelog.changes != null) {
+        changeLog += '' +
+            '<h1 class="changelog-added">' +
+            '   <span>New Stuff</span>' +
+            '</h1>' +
+            '<ul>';
+
+        for(var change in bdchangelog.changes) {
+            change = bdchangelog.changes[change];
+
+            changeLog += '' +
+                '<li>' +
+                '   <strong>'+change.title+'</strong>' +
+                '   <div>'+change.text+'</div>' +
+                '</li>';
+        }
+
+        changeLog += '</ul>';
+    }
+
+    if(bdchangelog.fixes != null) {
+        changeLog += '' +
+            '<h1 class="changelog-fixed">' +
+            '   <span>Fixed</span>' +
+            '</h1>' +
+            '<ul>';
+
+        for(var fix in bdchangelog.fixes) {
+            fix = bdchangelog.fixes[fix];
+
+            changeLog += '' +
+                '<li>' +
+                '   <strong>'+fix.title+'</strong>' +
+                '   <div>'+fix.text+'</div>' +
+                '</li>';
+        }
+
+        changeLog += '</ul>';
+    }
+
+    if(bdchangelog.upcoming != null) {
+        changeLog += '' +
+            '<h1 class="changelog-in-progress">' +
+            '   <span>Coming Soon</span>' +
+            '</h1>' +
+            '<ul>';
+
+        for(var upc in bdchangelog.upcoming) {
+            upc = bdchangelog.upcoming[upc];
+
+            changeLog += '' +
+                '<li>' +
+                '   <strong>'+upc.title+'</strong>' +
+                '   <div>'+upc.text+'</div>' +
+                '</li>';
+        }
+
+        changeLog += '</ul>';
+    }
+
+    changeLog += '' +
+        '               </div><!--scoller-->' +
+        '           </div><!--scroller-wrap-->' +
+        '           <div class="footer">' +
+        '           </div><!--footer-->' +
+        '       </div><!--change-log-->' +
+        '   </div><!--modal-inner-->' +
+        '</div><!--modal-->';
+
+    return changeLog;
 };
 
 /* BetterDiscordApp EmoteModule JavaScript
@@ -852,7 +986,7 @@ SettingsPanel.prototype.construct = function() {
     });
 
     var versionSpan = $("<span/>", {
-        text: "BetterDiscord v0.15(js1.4) by Jiiks",
+        text: "BetterDiscord v"+version+"(JSv"+jsVersion+") by Jiiks",
         css: {
             "line-height": "30px",
             "margin-left": "10px"
