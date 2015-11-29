@@ -390,6 +390,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 
     var parent = node.parentElement;
     if(parent.tagName != "SPAN") return;
+    if(!$(parent.parentElement).hasClass("markup")) return;
 
     var parentInnerHTML = parent.innerHTML;
     var words = parentInnerHTML.split(/\s+/g);
