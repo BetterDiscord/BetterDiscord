@@ -5,6 +5,7 @@ if %errorlevel%==1 (
     start "" "https://nodejs.org/dist/latest/win-x86/node.exe"
     pause
 ) else (
-	cmd /k node.exe index.js
+    taskkill /f /im "Discord.exe" >nul 2>nul
+    cmd /k node.exe index.js
 )
 exit
