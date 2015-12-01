@@ -1,5 +1,5 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.51
+ * Version: 1.52
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
  * Last Update: 24/010/2015 - 17:27
@@ -8,7 +8,7 @@
 
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode;
-var jsVersion = 1.51;
+var jsVersion = 1.52;
 var supportedVersion = "0.1.5";
 
 var mainObserver;
@@ -63,29 +63,14 @@ var defaultCookie = {
 };
 
 var bdchangelog = {
-    "changes": {
-        "settings": {
-            "title": "New settings menu!",
-            "text": "The settings menu has been moved to the Discord settings dialog!",
-            "img": ""
-        },
-        "spoilers": {
-            "title": "Spoilers!",
-            "text": "BetterDiscord now supports spoilers, use [!s] in your message to turn it into a spoiler!",
-            "img": ""
-        },
-        "emotenames": {
-            "title": "Emote Names!",
-            "text": "The emote name on hover has been fixed and reimplemented by <a href=\"https://github.com/pendo324\" target=\"_blank\">pendo324</a>",
-            "img": ""
-        },
-        "customcss": {
-            "title": "Custom CSS!",
-            "text": "Apply custom CSS to your client! note: The CSS is stored in localstorage. If it's deleted for some reason, you will lose it and it cannot be recovered(keep a backup).",
-            "img": ""
-        }
-    },
-    "fixes": null,
+    "changes": null,
+    "fixes": {
+		"compact": {
+			"title": "Compact Mode Emotes!",
+			"text": "Compact Mode Emotes have been fixed and should now be visible!",
+			"img": ""
+		}
+	},
     "upcoming": {
         "ignore": {
             "title": "Ignore User!",
