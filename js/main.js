@@ -1,5 +1,5 @@
 /* BetterDiscordApp Core JavaScript
- * Version: 1.5
+ * Version: 1.51
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
  * Last Update: 24/010/2015 - 17:27
@@ -8,7 +8,7 @@
 
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode;
-var jsVersion = 1.5;
+var jsVersion = 1.51;
 var supportedVersion = "0.1.5";
 
 var mainObserver;
@@ -390,7 +390,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 
     var parent = node.parentElement;
     if(parent.tagName != "SPAN") return;
-    if(!$(parent.parentElement).hasClass("markup")) return;
+    if(!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) return;
 
     var parentInnerHTML = parent.innerHTML;
     var words = parentInnerHTML.split(/\s+/g);
