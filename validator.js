@@ -30,7 +30,7 @@ exists(bdPath + "/lib/config.json");
 exists(bdPath + "/lib/Utils.js");
 
 
-check(discordPath + "/app/app/index.js", "5b70d6fac7f5b2761cb50233134f5084");
+check(discordPath + "/app/app/index.js", "35CAB26E794CDA4123927F2DC932958B");
 
 check(bdPath + "/package.json", "9D469DC7C6D74443B41F74046A4088BA");
 check(bdPath + "/betterdiscord.js", "31DD3E3D37D6FD5F6C2784D06F1162C4");
