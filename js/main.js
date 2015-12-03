@@ -416,7 +416,8 @@ EmoteModule.prototype.injectEmote = function(node) {
 
         if(emotesTwitch.emotes.hasOwnProperty(word)) {
             if (settingsCookie["bda-es-6"]) {
-                parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, word.length/2) + "\uFDD9" + word.substr(word.length/2) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />');
+                var len = Math.round(word.length/4);
+                parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len*2, len) + "\uFDD9" + word.substr(len*3) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />');
                 return;
             }
             else {
@@ -428,7 +429,8 @@ EmoteModule.prototype.injectEmote = function(node) {
         if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
             if(emotesFfz.hasOwnProperty(word)) {
                 if (settingsCookie["bda-es-6"]) {
-                    parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, word.length/2) + "\uFDD9" + word.substr(word.length/2) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
+                    var len = Math.round(word.length/4);
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len*2, len) + "\uFDD9" + word.substr(len*3) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
                     return;
                 }
                 else {
@@ -441,7 +443,8 @@ EmoteModule.prototype.injectEmote = function(node) {
         if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
             if(emotesBTTV.hasOwnProperty(word)) {
                 if (settingsCookie["bda-es-6"]) {
-                    parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, word.length/2) + "\uFDD9" + word.substr(word.length/2) + '" src="' + emotesBTTV[word] + '" />');
+                    var len = Math.round(word.length/4);
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len*2, len) + "\uFDD9" + word.substr(len*3) + '" src="' + emotesBTTV[word] + '" />');
                     return;
                 }
                 else {
@@ -453,7 +456,8 @@ EmoteModule.prototype.injectEmote = function(node) {
 
         if (subEmotesTwitch.hasOwnProperty(word)) {
             if (settingsCookie["bda-es-6"]) {
-                parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, word.length/2) + "\uFDD9" + word.substr(word.length/2) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
+                var len = Math.round(word.length/4);
+                parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len*2, len) + "\uFDD9" + word.substr(len*3) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
                 return;
             }
             else {
