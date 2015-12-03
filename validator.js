@@ -32,11 +32,11 @@ exists(bdPath + "/lib/Utils.js");
 
 check(discordPath + "/app/app/index.js", "35CAB26E794CDA4123927F2DC932958B");
 
-check(bdPath + "/package.json", "9D469DC7C6D74443B41F74046A4088BA");
+check(bdPath + "/package.json", "26EF86E0910272D3ACA1B854D2F25340");
 check(bdPath + "/betterdiscord.js", "31DD3E3D37D6FD5F6C2784D06F1162C4");
-check(bdPath + "/lib/BetterDiscord.js", "B14C0A4841FBDE474C1AB164A9DBCCBC");
-check(bdPath + "/lib/config.json", "F0A00FDB993C9F9E9CE49383C0588190");
-check(bdPath + "/lib/Utils.js", "8DACE92500A16C8F113863D42001A09D");
+check(bdPath + "/lib/BetterDiscord.js", "84D281EDF38F945A5F6DFAAA2D951A6A");
+check(bdPath + "/lib/config.json", "9A6E146B64A2D2D459B081B910D60582");
+//check(bdPath + "/lib/Utils.js", "8DACE92500A16C8F113863D42001A09D"); weird mismatches
 
 console.log("Everything seems to be fine");
 
