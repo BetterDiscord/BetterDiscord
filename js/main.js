@@ -414,56 +414,32 @@ EmoteModule.prototype.injectEmote = function(node) {
             return;
         }
 
-        if(emotesTwitch.emotes.hasOwnProperty(word)) {
-            if (settingsCookie["bda-es-6"]) {
-                var len = Math.round(word.length/4);
-                parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len*2, len) + "\uFDD9" + word.substr(len*3) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />');
+        if (emotesTwitch.emotes.hasOwnProperty(word)) {
+                var len = Math.round(word.length / 4);
+                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />' );
                 return;
-            }
-            else {
-                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + " ><\/img>");
-                return;
-            }
         }
 
-        if(typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-            if(emotesFfz.hasOwnProperty(word)) {
-                if (settingsCookie["bda-es-6"]) {
-                    var len = Math.round(word.length/4);
-                    parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len*2, len) + "\uFDD9" + word.substr(len*3) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
+        if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
+            if (emotesFfz.hasOwnProperty(word)) {
+                    var len = Math.round(word.length / 4);
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
                     return;
                 }
-                else {
-                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + " ><\/img>");
-                    return;
-                }
-            }
         }
 
-        if(typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
-            if(emotesBTTV.hasOwnProperty(word)) {
-                if (settingsCookie["bda-es-6"]) {
-                    var len = Math.round(word.length/4);
-                    parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len*2, len) + "\uFDD9" + word.substr(len*3) + '" src="' + emotesBTTV[word] + '" />');
+        if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
+            if (emotesBTTV.hasOwnProperty(word)) {
+                    var len = Math.round(word.length / 4);
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + emotesBTTV[word] + '" />');
                     return;
-                }
-                else {
-                    parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + emotesBTTV[word] + " ><\/img>");
-                    return;
-                }
             }
         }
 
         if (subEmotesTwitch.hasOwnProperty(word)) {
-            if (settingsCookie["bda-es-6"]) {
-                var len = Math.round(word.length/4);
-                parentInnerHTML = parentInnerHTML.replace(word, '<img title="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len*2, len) + "\uFDD9" + word.substr(len*3) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
+                var len = Math.round(word.length / 4);
+                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
                 return;
-            }
-            else {
-                parentInnerHTML = parentInnerHTML.replace(word, "<img src=" + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + " ><\/img>");
-                return;
-            }
         }
     });
 
@@ -812,7 +788,15 @@ SettingsPanel.prototype.init = function() {
         settingsCookie["bda-jd"] = false;
         mainCore.saveSettings();
     }
-
+    
+    if (settingsCookie["bda-es-6"]) {
+        //Pretty emote titles
+      	emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+      	$(document).on("mouseover", ".emote", function() { console.log("yes"); var x = $(this).offset(); var title = $(this).attr("alt"); $(emoteNamePopup).find(".tipsy-inner").text(title); $(emoteNamePopup).css('left', x.left - 25); $(emoteNamePopup).css('top', x.top - 32); $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));});
+      	$(document).on("mouseleave", ".emote", function(){$(".tipsy").remove()});
+    } else {
+      	$(document).off('mouseover', '.emote');
+    }
 };
 
 SettingsPanel.prototype.applyCustomCss = function(css) {
@@ -940,6 +924,14 @@ SettingsPanel.prototype.construct = function() {
         } else {
             voiceMode.disable();
         }
+        if (settingsCookie["bda-es-6"]) {
+      	    //Pretty emote titles
+      	    emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+      	    $(document).on("mouseover", ".emote", function() { console.log("yes"); var x = $(this).offset(); var title = $(this).attr("alt"); $(emoteNamePopup).find(".tipsy-inner").text(title); $(emoteNamePopup).css('left', x.left - 25); $(emoteNamePopup).css('top', x.top - 32); $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));});
+      	    $(document).on("mouseleave", ".emote", function(){$(".tipsy").remove()});
+    	} else {
+      	    $(document).off('mouseover', '.emote');
+    	}
 
         mainCore.saveSettings();
     }
