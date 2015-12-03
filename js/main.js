@@ -724,7 +724,7 @@ QuickEmoteMenu.prototype.init = function(reload) {
 };
 
 QuickEmoteMenu.prototype.obsCallback = function() {
-	if(window.location.pathname == "/channels/86004744966914048/86004744966914048") {
+	if(window.location.pathname == "/channels/86004744966914048/86004744966914048" || $("#customcss").html().indexOf("snow") > -1) {
 		if($("#customcss").html().indexOf("nosnow") == -1) {
 			$(".scroller.messages").snowfall('clear');
 			$(".scroller.messages").snowfall({flakeCount : 100, maxSpeed : 10});
