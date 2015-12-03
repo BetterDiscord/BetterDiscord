@@ -273,9 +273,11 @@ Core.prototype.constructChangelog = function() {
 
 //Changelog dialog
 Core.prototype.displayChangelog = function() {
+
+    utils.loadHtml("changelog");
+
     if(settingsCookie["version"] < jsVersion) {
-        var cl = self.constructChangelog();
-        $("body").append(cl);
+
         settingsCookie["version"] = jsVersion;
         self.saveSettings();
     }
@@ -1071,6 +1073,18 @@ Utils.prototype.getHash = function() {
         emoteModule.getBlacklist();
     });
 
+};
+
+Utils.prototype.loadHtml = function(html) {
+    var container = $("<div/>", { class: "bd-container" }).appendTo("body");
+
+    if(_local) {
+        html = _localServer + "/BetterDiscordApp/html/" + html + ".html";
+    } else {
+        html = '//' + _updater.CDN + '/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
+    }
+
+    container.load(html);
 };
 
 /* BetterDiscordApp VoiceMode JavaScript
