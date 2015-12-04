@@ -469,4 +469,30 @@
 .bd-minimal-chan #bd-show-channels {
 	display:block !important;
 }
+.tipsy {
+	z-index: 9000000001!important;
+	position: absolute;
+	padding: 5px;
+	display: block;
+	visibility: visible;
+	opacity: 0.8;
+}
 
+.tipsy-arrow {
+	position: absolute;
+	width: 0;
+	height: 0;
+	border: 5px solid transparent;
+	bottom: 0;
+	right: 10px;
+	border-bottom: none;
+	border-top-color: black;
+}
+
+.tipsy-inner {
+	background-color: black;
+	color: white;
+	max-width: 200px;
+	padding: 5px 8px 4px;
+	text-align: center;
+}
