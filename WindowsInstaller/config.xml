@@ -10,10 +10,6 @@
 			<url>https://github.com/atom/asar/archive/master.zip</url>
 		</resource>
 		<resource>
-			<name>wrench</name>
-			<url>https://github.com/ryanmcgrath/wrench-js/archive/master.zip</url>
-		</resource>
-		<resource>
 			<name>BetterDiscord</name>
 			<url>https://github.com/Jiiks/BetterDiscordApp/archive/stable.zip</url>
 		</resource>
