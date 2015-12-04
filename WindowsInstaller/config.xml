@@ -1,4 +1,5 @@
 <config>
+	<latestversion>1.0</latestversion>
 	<resources>
 		<resource>
 			<name>Node</name>
