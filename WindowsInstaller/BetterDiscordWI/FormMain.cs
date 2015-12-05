@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.IO.Compression;
-using System.Net;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Linq;
 using BetterDiscordWI.panels;
 
 namespace BetterDiscordWI
@@ -19,6 +14,7 @@ namespace BetterDiscordWI
 
         public String DiscordPath;
         public String Sha;
+        public Boolean finished = false;
 
         public XmlNodeList ResourceList;
 
@@ -34,21 +30,6 @@ namespace BetterDiscordWI
                 Environment.Exit(0);
             }
             
-
-          /*  ZipArchive archive = ZipFile.OpenRead(@"C:\Users\Jiiks\AppData\Roaming\BetterDiscord\temp\asar.zip");
-
-            archive.ExtractToDirectory("C:/Users/Jiiks/AppData/Roaming/BetterDiscord/temp/");*/
-
-          
-
-            //Load installer config
-            XmlDocument doc = new XmlDocument();
-
-            doc.Load(@"G:\Git\BetterDiscordApp\BetterDiscordApp\WindowsInstaller\config.xml");
-
-            String latestVersion = doc.GetElementsByTagName("latestversion")[0].InnerText;
-            ResourceList = doc.GetElementsByTagName("resource");
-
             foreach (IPanel ipanel in _panels)
             {
                 panelContainer.Controls.Add((UserControl)ipanel);
@@ -75,11 +56,17 @@ namespace BetterDiscordWI
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            DialogResult dr = MessageBox.Show("Setup is not complete. If you exit now, BetterDiscord will not be installed.\n\nExit Setup?", "Exit Setup?", MessageBoxButtons.YesNo);
-
-            if (dr == DialogResult.No)
+            if (!finished)
             {
-                e.Cancel = true;
+                DialogResult dr =
+                    MessageBox.Show(
+                        "Setup is not complete. If you exit now, BetterDiscord will not be installed.\n\nExit Setup?",
+                        "Exit Setup?", MessageBoxButtons.YesNo);
+
+                if (dr == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
             }
         }
 

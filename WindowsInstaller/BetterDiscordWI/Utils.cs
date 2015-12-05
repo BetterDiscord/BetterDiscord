@@ -18,9 +18,10 @@ namespace BetterDiscordWI
         public void StartDownload(ProgressBar pb, String url, String name)
         {
 
+           
+
             Thread t = new Thread(() =>
             {
-                Debug.Print("Starting thread?");
                 WebClient webClient = new WebClient();
                 webClient.Headers["User-Agent"] = "Mozilla/5.0";
                 webClient.DownloadProgressChanged += delegate(object sender, DownloadProgressChangedEventArgs args)
@@ -34,16 +35,8 @@ namespace BetterDiscordWI
 
                 };
 
-                if (name.Contains(".exe"))
-                {
-                    webClient.DownloadFile(new Uri(url),
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\" +
-                        name);
-                }
-                else
-                {
-                    webClient.DownloadFile(new Uri(url), Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\" + name);
-                }
+
+                webClient.DownloadFile(new Uri(url), Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\" + name);
 
             });
 

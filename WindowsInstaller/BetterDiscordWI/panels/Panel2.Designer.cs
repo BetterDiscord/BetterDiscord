@@ -34,7 +34,7 @@
             // 
             // pbMain
             // 
-            this.pbMain.Location = new System.Drawing.Point(3, 238);
+            this.pbMain.Location = new System.Drawing.Point(3, 267);
             this.pbMain.Name = "pbMain";
             this.pbMain.Size = new System.Drawing.Size(518, 16);
             this.pbMain.TabIndex = 0;
@@ -43,7 +43,7 @@
             // 
             this.rtLog.Location = new System.Drawing.Point(3, 3);
             this.rtLog.Name = "rtLog";
-            this.rtLog.Size = new System.Drawing.Size(518, 229);
+            this.rtLog.Size = new System.Drawing.Size(518, 252);
             this.rtLog.TabIndex = 1;
             this.rtLog.Text = "";
             // 

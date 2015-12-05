@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Security.AccessControl;
+using System.IO.Compression;
+using System.Net;
+using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using System.Xml;
+using asardotnet;
 
 namespace BetterDiscordWI.panels
 {
@@ -23,131 +25,190 @@ namespace BetterDiscordWI.panels
         {
             GetParent().btnBack.Enabled = false;
             GetParent().btnNext.Enabled = false;
+            GetParent().btnBack.Visible = false;
+            GetParent().btnNext.Visible = false;
+            GetParent().btnCancel.Enabled = false;
 
+            _utils = new Utils();
 
+            AppendLog("Killing Discord");
+            foreach (var process in Process.GetProcessesByName("Discord"))
+            {
+                process.Kill();
+            }
             
             CreateDirectories();
-
-            
         }
 
         private void CreateDirectories()
         {
-            _dataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord";
-            _tempPath = _dataPath + "\\temp";
-
-
-            if (!Directory.Exists(_dataPath))
+            Thread t = new Thread(() =>
             {
-                AppendLog("Creating Directory: " + _dataPath);
-                Directory.CreateDirectory(_dataPath);
-            }
-
-            if (!Directory.Exists(_dataPath))
-            {
-                AppendLog("ERROR: Directory does not exist: " + _dataPath);
-                return;
-            }
-
-            if (!Directory.Exists(_tempPath))
-            {
-                AppendLog("Creating Directory: " + _tempPath);
-                Directory.CreateDirectory(_tempPath);
-            }
-            else
-            {
-                AppendLog("Directory already exists: " + _tempPath);
-                AppendLog("Deleting Directory: " + _tempPath);
-                Directory.Delete(_tempPath, true);
-            }
-
-            if (!Directory.Exists(_tempPath))
-            {
-                AppendLog("Creating Directory: " + _tempPath);
-                Directory.CreateDirectory(_tempPath);
-            }
-
-            if (!Directory.Exists(_tempPath))
-            {
-                AppendLog("ERROR: Directory does not exists: " + _tempPath);
-                return;
-            }
-
-            CheckNode();
-        }
-
-        private void CheckNode()
-        {
-            AppendLog("Checking if node exists");
-
-            bool nodeExists = false;
-            String nodePath = "";
+                _dataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord";
+                _tempPath = _dataPath + "\\temp";
 
 
-            Process p = new Process
-            {
-                StartInfo = { UseShellExecute = false, RedirectStandardOutput = true, FileName = "cmd.exe", Arguments = "/C where node" }
-            };
-
-            p.Start();
-
-            String output = p.StandardOutput.ReadToEnd();
-
-            if (File.Exists(output))
-            {
-                nodeExists = true;
-                nodePath = output;
-            }
-
-
-            if (!nodeExists)
-            {
-                if (File.Exists(_dataPath + "\\node.exe")) ;
-                nodePath = _dataPath + "\\node.exe";
-                nodeExists = true;
-            }
-
-            if (nodeExists)
-            {
-                AppendLog("Node located at: " + nodePath);
-            }
-
-            DownloadResources(nodeExists);
-        }
-
-
-
-        private void DownloadResources(bool node)
-        {
-            _utils = new Utils();
-
-
-            foreach (XmlNode resource in GetParent().ResourceList)
-            {
-
-                String name = resource["name"].InnerText;
-                String url = resource["url"].InnerText;
-
-                if (name.ToLower().Equals("node"))
+                if (Directory.Exists(_tempPath))
                 {
-                    if (!node)
-                    {
-                        DownloadResource(".exe", name, url);
-                    }
+                    AppendLog("Deleting temp path");
+                    Directory.Delete(_tempPath, true);
                 }
-                else
-                {
-                    DownloadResource(".zip", name, url);
-                }
-            }
 
+                while (Directory.Exists(_tempPath))
+                {
+                    Debug.Print("Waiting for dirdel");
+                    Thread.Sleep(100);
+                }
+
+                Directory.CreateDirectory(_tempPath);
+
+                DownloadResource("BetterDiscord.zip", "https://github.com/Jiiks/BetterDiscordApp/archive/stable.zip");
+
+                while (!File.Exists(_tempPath + "\\BetterDiscord.zip"))
+                {
+                    Debug.Print("Waiting for download");
+                    Thread.Sleep(100);
+                }
+
+                AppendLog("Extracting BetterDiscord");
+
+                ZipArchive zar =
+                    ZipFile.OpenRead(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                     "\\BetterDiscord\\temp\\BetterDiscord.zip");
+                zar.ExtractToDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
+                                       "\\BetterDiscord\\temp\\");
+
+                DeleteDirs();
+            });
+            t.Start();
 
         }
 
-        private void DownloadResource(String extension, String resource, String url)
+
+        private void DeleteDirs()
+        {
+            Thread t = new Thread(() =>
+            {
+                String dir = GetParent().DiscordPath + "\\resources\\app";
+
+                if (Directory.Exists(dir))
+                {
+                    AppendLog("Deleting " + dir);
+                    Directory.Delete(dir, true);
+                }
+
+                while (Directory.Exists(dir))
+                {
+                    Debug.Print("Waiting for direl");
+                    Thread.Sleep(100);
+                }
+
+                dir = GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord";
+
+
+                if (Directory.Exists(dir))
+                {
+                    AppendLog("Deleting " + dir);
+                    Directory.Delete(dir, true);
+                }
+
+                while (Directory.Exists(dir))
+                {
+                    Debug.Print("Waiting for direl");
+                    Thread.Sleep(100);
+                }
+
+                AppendLog("Moving BetterDiscord to resources\\node_modules\\");
+
+                Directory.Move(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\BetterDiscordApp-stable", GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord");
+
+                AppendLog("Extracting app.asar");
+
+                AsarArchive archive = new AsarArchive(GetParent().DiscordPath + "\\resources\\app.asar");
+
+                AsarExtractor extractor = new AsarExtractor();
+                extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
+
+                Splice();
+            });
+            
+            
+            t.Start();
+        }
+
+
+        private void DownloadResource(String resource, String url)
         {
             AppendLog("Downloading Resource: " + resource);
-            _utils.StartDownload(pbMain, url, resource + extension);
+
+            WebClient webClient = new WebClient();
+            webClient.Headers["User-Agent"] = "Mozilla/5.0";
+            
+            webClient.DownloadFile(new Uri(url), Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\" + resource);
+        }
+
+        private void Splice()
+        {
+            String indexloc = GetParent().DiscordPath + "\\resources\\app\\app\\index.js";
+
+            Thread t = new Thread(() =>
+            {
+
+                List<String> lines = new List<string>();
+
+                AppendLog("Spicing index");
+
+                using (FileStream fs = new FileStream(indexloc, FileMode.Open))
+                {
+                    using (StreamReader reader = new StreamReader(fs))
+                    {
+                        String line = "";
+                        while((line = reader.ReadLine()) != null)
+                        {
+                            if (line.Contains("var _overlay2"))
+                            {
+                                AppendLog("Splicing require");
+                                lines.Add(line);
+                                lines.Add("var _betterDiscord = require('betterdiscord');");
+                            }else if (line.Contains("mainWindow = new _BrowserWindow2"))
+                            {
+                                AppendLog("Splicing function call");
+                                lines.Add(line);
+                                lines.Add("betterDiscord(mainWindow);");
+                            }
+                            else if (line.Contains("main();"))
+                            {
+                                AppendLog("Splicing function");
+                                lines.Add("function betterDiscord(mw) { _betterDiscord = new _betterDiscord.BetterDiscord(mw); _betterDiscord.init(); }");
+                                lines.Add(line);
+                            }
+                            else
+                            {
+                                lines.Add(line);
+                            }
+                        }
+                    }
+                }
+
+                AppendLog("Writing index");
+
+                File.WriteAllLines(indexloc, lines.ToArray());
+
+                Finalize();
+            });
+            t.Start();
+        }
+
+        private void Finalize()
+        {
+            AppendLog("Finished installing BetterDiscord");
+
+            Invoke((MethodInvoker) delegate
+            {
+                GetParent().finished = true;
+                GetParent().btnCancel.Text = "OK";
+                GetParent().btnCancel.Enabled = true;
+            });
         }
 
         public FormMain GetParent()
@@ -167,9 +228,13 @@ namespace BetterDiscordWI.panels
 
         private void AppendLog(String message)
         {
-            rtLog.AppendText(message + "\n");
-            rtLog.SelectionStart = rtLog.Text.Length;
-            rtLog.ScrollToCaret();
+            Invoke((MethodInvoker) delegate
+            {
+                rtLog.AppendText(message + "\n");
+                rtLog.SelectionStart = rtLog.Text.Length;
+                rtLog.ScrollToCaret();
+            });
+            
         }
     }
 }

@@ -32,6 +32,7 @@
             this.btnBrowser = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.tbPath = new BetterDiscordWI.components.CTextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -74,10 +75,20 @@
             this.tbPath.TabIndex = 4;
             this.tbPath.Text = "feawfewafewa";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(20, 91);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(161, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "*Installer will kill Discord process.";
+            // 
             // Panel1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.tbPath);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnBrowser);
@@ -95,5 +106,6 @@
         private System.Windows.Forms.Button btnBrowser;
         private System.Windows.Forms.Label label2;
         private components.CTextBox tbPath;
+        private System.Windows.Forms.Label label3;
     }
 }
