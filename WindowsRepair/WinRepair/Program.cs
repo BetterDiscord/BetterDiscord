@@ -99,7 +99,7 @@ namespace WinRepair
 
             foreach (String dir in Directory.GetDirectories(directory))
             {
-                DeleteAndLogFiles(directory);
+                DeleteAndLogFiles(dir);
             }
         }
 
