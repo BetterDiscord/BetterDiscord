@@ -3,6 +3,8 @@ Better Discord App enhances Discord desktop app with new features.
 
 As of JavaScript version 1.4, settings have been moved to Discord settings dialog.
 
+## On connect you will be automatically invited to the BetterDiscord Discord server one time.
+
 ![ss](http://i.imgur.com/iesp9UY.png)
 
 ![ss](http://i.imgur.com/F9yMSKc.jpg)
