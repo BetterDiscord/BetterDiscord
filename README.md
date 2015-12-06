@@ -33,7 +33,8 @@ As of JavaScript version 1.4, settings have been moved to Discord settings dialo
 ## Features
 
 **Emotes:**
-BetterDiscord adds all [Twitch.tv](http://twitch.tv), some [FrankerFaceZ](http://frankerfacez.com)(~240 suggested emotes) and [BetterTTV](http://betterttv.net) emotes to Discord.
+BetterDiscord adds all [Twitch.tv](http://twitch.tv), most [FrankerFaceZ](http://frankerfacez.com) and [BetterTTV](http://betterttv.net) emotes to Discord.
+Supported FrankerFaceZ emotes: http://jiiks.net/projects/betterdiscord/ffz/
 
 **Quick Emote Menu:**
 Quick Emote Menu adds a menu for quickly adding twitch emotes.
