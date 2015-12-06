@@ -1,0 +1,6 @@
+G:\VSProjects\WinRepair\WinRepair\bin\Debug\WinRepair.exe.config
+G:\VSProjects\WinRepair\WinRepair\bin\Debug\WinRepair.exe
+G:\VSProjects\WinRepair\WinRepair\bin\Debug\WinRepair.pdb
+G:\VSProjects\WinRepair\WinRepair\obj\Debug\WinRepair.csprojResolveAssemblyReference.cache
+G:\VSProjects\WinRepair\WinRepair\obj\Debug\WinRepair.exe
+G:\VSProjects\WinRepair\WinRepair\obj\Debug\WinRepair.pdb
