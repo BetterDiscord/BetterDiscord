@@ -13,7 +13,7 @@ As of JavaScript version 1.4, settings have been moved to Discord settings dialo
 * Download the latest installer from https://github.com/Jiiks/BetterDiscordApp/releases/tag/WindowsInstaller
 * Follow the instructions
 * .NET 4.0 required https://www.microsoft.com/en-us/download/details.aspx?id=30653
-* Windows Installer users asar.net https://github.com/Jiiks/asar.net and json.net http://www.newtonsoft.com/json
+* Windows Installer users asar.net https://github.com/Jiiks/asar.net
 
 ## Auto Installation
 * Download the latest package from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
