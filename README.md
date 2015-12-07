@@ -3,7 +3,7 @@ Better Discord App enhances Discord desktop app with new features.
 
 As of JavaScript version 1.4, settings have been moved to Discord settings dialog.
 
-## On connect you will be automatically invited to the BetterDiscord Discord server one time.
+# On connect you will be automatically invited to the BetterDiscord Discord server one time.
 
 ![ss](http://i.imgur.com/iesp9UY.png)
 
@@ -54,7 +54,7 @@ Minimal mode makes elements smaller and hides certain elements.
 Only display voice channels
 
 **Public Servers:**
-A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json)
+A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json) (Broken)
 
 **Custom CSS**
 BetterDiscord supports custom CSS for styling Discord to your liking.
@@ -80,7 +80,7 @@ Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serv
 
 The MIT License (MIT)
 
-Copyright (c) <year> <copyright holders>
+Copyright (c) 2015 Jiiks
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
