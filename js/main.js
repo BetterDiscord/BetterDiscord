@@ -17,8 +17,8 @@ var twitchEmoteUrlStart = "https://static-cdn.jtvnw.net/emoticons/v1/";
 var twitchEmoteUrlEnd = "/1.0";
 var ffzEmoteUrlStart = "https://cdn.frankerfacez.com/emoticon/";
 var ffzEmoteUrlEnd = "/1";
-var bttvEmoteUrlStart = "";
-var bttvEmoteUrlEnd = "";
+var bttvEmoteUrlStart = "https://cdn.betterttv.net/emote/";
+var bttvEmoteUrlEnd = "/1x";
 
 var mainCore;
 
@@ -433,6 +433,17 @@ EmoteModule.prototype.injectEmote = function(node) {
                     var len = Math.round(word.length / 4);
                     parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + emotesBTTV[word] + '" />');
                     return;
+            }
+        }
+        
+        console.log("Checking for bttv2");
+        
+        if(typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
+            if(emotesBTTV2.hasOwnProperty(word)) {
+                console.log("bttv2 has word: " + word);
+                var len = Math.round(word.length / 4);
+                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + bttvEmoteUrlStart + emotesBTTV2[word]  + bttvEmoteUrlEnd + '" />');
+                return;
             }
         }
 
