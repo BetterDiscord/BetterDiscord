@@ -616,5 +616,19 @@
       "language": "EN",
       "title": "[UK] FPS/RTS/RPG"
     }
+    "RepZ": {
+      "code": "0gAFLYLhoOvyeqBA",
+      "description": "RepZ Clan Discord Server",
+      "icon": null,
+      "language": "EN",
+      "title": "RepZ"
+    }
+    "Bluscream's Server": {
+      "code": "0Xdjjtm2UyoI6Kgu",
+      "description": "Bluscream's Discord Server",
+      "icon": null,
+      "language": "EN",
+      "title": "Bluscream's Server"
+    }
   }
 }
