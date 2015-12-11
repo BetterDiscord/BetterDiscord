@@ -1087,7 +1087,6 @@ SettingsPanel.prototype.construct = function() {
  */
 
 var _hash;
-
 function Utils() {
 
 }
@@ -1105,8 +1104,19 @@ Utils.prototype.getHash = function() {
         _hash = data.sha;
         emoteModule.getBlacklist();
     });
-
 };
+
+Utils.prototype.loadHtml = function(html) {
+  var container = $("<div/>", {
+      class: "bd-container"
+  }).appendTo("body");  
+  
+  //TODO Inject these in next core update
+  html = '//cdn.rawgit.com/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
+  
+  container.load(html);
+};
+
 
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
