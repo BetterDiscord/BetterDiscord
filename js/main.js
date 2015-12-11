@@ -8,8 +8,8 @@
 
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule;
-var jsVersion = 1.52;
-var supportedVersion = "0.1.5";
+var jsVersion = 1.53;
+var supportedVersion = "0.2.3";
 
 var mainObserver;
 
@@ -63,11 +63,17 @@ var defaultCookie = {
 };
 
 var bdchangelog = {
-    "changes": null,
+    "changes": {
+        "plugins": {
+            "title": "Plugins!",
+            "text": "Combined with Core 0.2.4, you can now write/use JavaScript plugins for Discord!",
+            "img": ""
+        }
+    },
     "fixes": {
-		"compact": {
-			"title": "Compact Mode Emotes!",
-			"text": "Compact Mode Emotes have been fixed and should now be visible!",
+		"eemotes": {
+			"title": "Edit Emotes!",
+			"text": "Edited messages now display emotes properly!",
 			"img": ""
 		}
 	},
@@ -416,58 +422,58 @@ EmoteModule.prototype.injectEmote = function(node) {
                 return;
             }
         
-        if(word.length < 4) {
-            return;
-        }
-
-        if($.inArray(word, bemotes) != -1) return;
-
-        if (emotesTwitch.emotes.hasOwnProperty(word)) {
-            var len = Math.round(word.length / 4);
-            parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />' );
-            return;
-        }
-
-        if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-            if (emotesFfz.hasOwnProperty(word)) {
-                var len = Math.round(word.length / 4);
-                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
+            if(word.length < 4) {
                 return;
             }
-        }
 
-        if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
-            if (emotesBTTV.hasOwnProperty(word)) {
+            if($.inArray(word, bemotes) != -1) return;
+
+            if (emotesTwitch.emotes.hasOwnProperty(word)) {
                 var len = Math.round(word.length / 4);
-                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + emotesBTTV[word] + '" />');
+                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />' );
                 return;
             }
-        }
+
+            if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
+                if (emotesFfz.hasOwnProperty(word)) {
+                    var len = Math.round(word.length / 4);
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
+                    return;
+                }
+            }
+
+            if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
+                if (emotesBTTV.hasOwnProperty(word)) {
+                    var len = Math.round(word.length / 4);
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + emotesBTTV[word] + '" />');
+                    return;
+                }
+            }
               
-        if(typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
-            if(emotesBTTV2.hasOwnProperty(word)) {
+            if(typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
+                if(emotesBTTV2.hasOwnProperty(word)) {
+                    var len = Math.round(word.length / 4);
+                    parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + bttvEmoteUrlStart + emotesBTTV2[word]  + bttvEmoteUrlEnd + '" />');
+                    return;
+                }
+            }
+
+            if (subEmotesTwitch.hasOwnProperty(word)) {
                 var len = Math.round(word.length / 4);
-                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + bttvEmoteUrlStart + emotesBTTV2[word]  + bttvEmoteUrlEnd + '" />');
+                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
                 return;
             }
-        }
+        });
 
-        if (subEmotesTwitch.hasOwnProperty(word)) {
-            var len = Math.round(word.length / 4);
-            parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
-            return;
-        }
-    });
+        if(parent.parentElement == null) return;
 
-    if(parent.parentElement == null) return;
+        var oldHeight = parent.parentElement.offsetHeight;
+        parent.innerHTML = parentInnerHTML.replace(new RegExp("\uFDD9", "g"), "");
+        var newHeight = parent.parentElement.offsetHeight;
 
-    var oldHeight = parent.parentElement.offsetHeight;
-    parent.innerHTML = parentInnerHTML.replace(new RegExp("\uFDD9", "g"), "");
-    var newHeight = parent.parentElement.offsetHeight;
-
-    //Scrollfix
-    var scrollPane = $(".scroller.messages").first();
-    scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
+        //Scrollfix
+        var scrollPane = $(".scroller.messages").first();
+        scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
    } 
    
    if(edited) {
