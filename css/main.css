@@ -498,3 +498,87 @@
 	overflow:hidden !important;
     text-overflow: ellipsis;
 }
+
+body {
+    background-image:url("https://discordapp.com/assets/2f8fff584b4efd0febf82664f40aecaa.png");
+  width:100%;
+  height:100%;
+}
+
+#bd-psd-container {
+  position: fixed;
+  width:50%;
+  height:75%;
+  display:block;
+  margin-left:25%;
+  margin-top:5%;
+  box-shadow:0 0 20px 0 #000;
+  background:#2E3135;
+  border:1px solid #25282C;
+  min-width:750px;
+  min-height:800px;
+}
+
+#bd-psd-header {
+  width:100%;
+  height:40px;
+  border-bottom:1px solid #25282C;
+  line-height:40px;
+  color:#ADADAD;
+}
+
+#bd-psd-header span {
+  margin-left:10px;
+}
+
+#bd-psd-body {
+  height:100%;
+  width:100%;
+}
+
+#bd-psd-table {
+  width:100%;
+  margin:0;
+  padding:0;
+  text-align:left;
+  color:#ADADAD;
+}
+
+#bd-psd-table thead th{
+  background:#1D1D1D;
+  padding:5px;
+}
+
+#bd-psd-table tbody td {
+  padding:5px;
+}
+
+#bd-psd-table tbody tr {
+  background:#292C30;
+}
+
+#bd-psd-table tbody tr:nth-child(odd) {
+  background:#2E3135;
+}
+
+#bd-psd-table button {
+  background: #292C30;
+  border: 1px solid #1D1D1D;
+  width: 60px;
+  height: 30px;
+  color: #ADADAD;
+  cursor:pointer;
+}
+
+#bd-psd-table button:hover {
+  background:#2E3135;
+}
+
+#bd-psd-header a {
+  float: right;
+  margin-right: 10px;
+  font-size: 30px;
+  color: #ADADAD;
+  text-decoration: none;
+  margin-top: -7px;
+}
