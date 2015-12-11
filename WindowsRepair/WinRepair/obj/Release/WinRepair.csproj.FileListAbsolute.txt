@@ -1,6 +1,0 @@
-G:\VSProjects\WinRepair\WinRepair\bin\Release\WinRepair.exe.config
-G:\VSProjects\WinRepair\WinRepair\bin\Release\WinRepair.exe
-G:\VSProjects\WinRepair\WinRepair\bin\Release\WinRepair.pdb
-G:\VSProjects\WinRepair\WinRepair\obj\Release\WinRepair.exe
-G:\VSProjects\WinRepair\WinRepair\obj\Release\WinRepair.pdb
-G:\VSProjects\WinRepair\WinRepair\obj\Release\WinRepair.csprojResolveAssemblyReference.cache
