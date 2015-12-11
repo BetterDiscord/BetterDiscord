@@ -375,37 +375,46 @@ EmoteModule.prototype.injectEmote = function(node) {
     if(!node.parentElement) return;
 
     var parent = node.parentElement;
+
     if(parent.tagName != "SPAN") return;
-    if(!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) return;
+  
+    var edited = false;
+    
+    if($(parent.parentElement).hasClass("edited")) {
+        parent = parent.parentElement.parentElement.firstChild; //:D
+        edited = true;
+    }
+    
+    //if(!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) return;
 
-    var parentInnerHTML = parent.innerHTML;
-    var words = parentInnerHTML.split(/\s+/g);
+    function inject() {
+        if(!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) { return; }
 
-    if(!words) return;
+        var parentInnerHTML = parent.innerHTML;
+        var words = parentInnerHTML.split(/\s+/g);
 
-    words.some(function(word) {
+        if(!words) return;
 
-        if(word.slice(0, 4) == "[!s]" ) {
+        words.some(function(word) {
 
-            parentInnerHTML = parentInnerHTML.replace("[!s]", "");
+            if(word.slice(0, 4) == "[!s]" ) {
 
-            var markup = $(parent).parent();
+                parentInnerHTML = parentInnerHTML.replace("[!s]", "");
+                var markup = $(parent).parent();
+                var reactId = markup.attr("data-reactid");
+                
+                if(spoilered.indexOf(reactId) > -1) {
+                    return;
+                }
 
-            var reactId = markup.attr("data-reactid");
+                markup.addClass("spoiler");
+                markup.on("click", function() {
+                    $(this).removeClass("spoiler");
+                    spoilered.push($(this).attr("data-reactid"));
+                });
 
-            if(spoilered.indexOf(reactId) > -1) {
                 return;
             }
-
-            markup.addClass("spoiler");
-
-            markup.on("click", function() {
-                $(this).removeClass("spoiler");
-                spoilered.push($(this).attr("data-reactid"));
-            });
-
-            return;
-        }
         
         if(word.length < 4) {
             return;
@@ -414,24 +423,24 @@ EmoteModule.prototype.injectEmote = function(node) {
         if($.inArray(word, bemotes) != -1) return;
 
         if (emotesTwitch.emotes.hasOwnProperty(word)) {
-                var len = Math.round(word.length / 4);
-                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />' );
-                return;
+            var len = Math.round(word.length / 4);
+            parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />' );
+            return;
         }
 
         if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
             if (emotesFfz.hasOwnProperty(word)) {
-                    var len = Math.round(word.length / 4);
-                    parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
-                    return;
-                }
+                var len = Math.round(word.length / 4);
+                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + ffzEmoteUrlStart + emotesFfz[word] + ffzEmoteUrlEnd + '" />');
+                return;
+            }
         }
 
         if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
             if (emotesBTTV.hasOwnProperty(word)) {
-                    var len = Math.round(word.length / 4);
-                    parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + emotesBTTV[word] + '" />');
-                    return;
+                var len = Math.round(word.length / 4);
+                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + emotesBTTV[word] + '" />');
+                return;
             }
         }
               
@@ -444,9 +453,9 @@ EmoteModule.prototype.injectEmote = function(node) {
         }
 
         if (subEmotesTwitch.hasOwnProperty(word)) {
-                var len = Math.round(word.length / 4);
-                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
-                return;
+            var len = Math.round(word.length / 4);
+            parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd + '" />');
+            return;
         }
     });
 
@@ -459,6 +468,14 @@ EmoteModule.prototype.injectEmote = function(node) {
     //Scrollfix
     var scrollPane = $(".scroller.messages").first();
     scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
+   } 
+   
+   if(edited) {
+       setTimeout(inject, 250);
+   } else {
+       inject();
+   }
+   
 };
 
 EmoteModule.prototype.autoCapitalize = function() {
