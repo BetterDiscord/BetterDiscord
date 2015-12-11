@@ -116,8 +116,7 @@ Core.prototype.init = function() {
             console.log(new Date().getTime() + " Defer Loaded");
             var guilds = $(".guilds li:first-child");
 
-          //  guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
-            // guilds.after($("<li/>", {id:"tc-settings-li"}).append($("<div/>", { class: "guild-inner" }).append($("<a/>").append($("<div/>", { class: "avatar-small", id: "tc-settings-button" })))));
+            guilds.after($("<li></li>", { id: "bd-pub-li", css: { "height": "20px", "display": settingsCookie["bda-gs-1"] == true ? "" : "none" } }).append($("<div/>", { class: "guild-inner", css: { "height": "20px", "border-radius": "4px" } }).append($("<a/>").append($("<div/>", { css: { "line-height": "20px", "font-size": "12px" }, text: "public", id: "bd-pub-button" })))));
 
             var showChannelsButton = $("<button/>", {
                 class: "btn",
@@ -145,7 +144,7 @@ Core.prototype.init = function() {
             $("#tc-settings-button").on("click", function() { settingsPanel.show(); });
             $("#bd-pub-button").on("click", function() { opublicServers.show(); });
 
-           // opublicServers.init();
+            opublicServers.init();
 
             emoteModule.autoCapitalize();
 
@@ -818,7 +817,7 @@ SettingsPanel.prototype.init = function() {
     if (settingsCookie["bda-es-6"]) {
         //Pretty emote titles
       	emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
-      	$(document).on("mouseover", ".emote", function() { console.log("yes"); var x = $(this).offset(); var title = $(this).attr("alt"); $(emoteNamePopup).find(".tipsy-inner").text(title); $(emoteNamePopup).css('left', x.left - 25); $(emoteNamePopup).css('top', x.top - 32); $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));});
+      	$(document).on("mouseover", ".emote", function() { var x = $(this).offset(); var title = $(this).attr("alt"); $(emoteNamePopup).find(".tipsy-inner").text(title); $(emoteNamePopup).css('left', x.left - 25); $(emoteNamePopup).css('top', x.top - 32); $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));});
       	$(document).on("mouseleave", ".emote", function(){$(".tipsy").remove()});
     } else {
       	$(document).off('mouseover', '.emote');
@@ -953,7 +952,7 @@ SettingsPanel.prototype.construct = function() {
         if (settingsCookie["bda-es-6"]) {
       	    //Pretty emote titles
       	    emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
-      	    $(document).on("mouseover", ".emote", function() { console.log("yes"); var x = $(this).offset(); var title = $(this).attr("alt"); $(emoteNamePopup).find(".tipsy-inner").text(title); $(emoteNamePopup).css('left', x.left - 25); $(emoteNamePopup).css('top', x.top - 32); $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));});
+      	    $(document).on("mouseover", ".emote", function() { var x = $(this).offset(); var title = $(this).attr("alt"); $(emoteNamePopup).find(".tipsy-inner").text(title); $(emoteNamePopup).css('left', x.left - 25); $(emoteNamePopup).css('top', x.top - 32); $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));});
       	    $(document).on("mouseleave", ".emote", function(){$(".tipsy").remove()});
     	} else {
       	    $(document).off('mouseover', '.emote');
@@ -1106,15 +1105,15 @@ Utils.prototype.getHash = function() {
     });
 };
 
-Utils.prototype.loadHtml = function(html) {
+Utils.prototype.loadHtml = function(html, callback) {
   var container = $("<div/>", {
       class: "bd-container"
   }).appendTo("body");  
-  
+
   //TODO Inject these in next core update
   html = '//cdn.rawgit.com/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
   
-  container.load(html);
+  container.load(html, callback());
 };
 
 
@@ -1130,14 +1129,12 @@ function VoiceMode() {
 }
 
 VoiceMode.prototype.obsCallback = function() {
-    console.log("voiceMode obs");
     var self = this;
     if(settingsCookie["bda-gs-4"]) {
         self.disable();
         setTimeout(function() {
             self.enable();
         }, 300);
-
     }
 }
 
