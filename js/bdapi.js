@@ -10,41 +10,41 @@
 
 
 //Returns currrent BrowserWindow https://github.com/atom/electron/blob/master/docs/api/browser-window.md
-BdApi.prototype.getBrowserWindow = function() {
+BdApi.getBrowserWindow = function() {
 	
 };
 
 //Joins a server
 //code = server invite code
-BdApi.prototype.joinServer = function(code) {
+BdApi.joinServer = function(code) {
 	
 };
 
 //Inject CSS to document head
 //id = id of element
 //css = custom css
-BdApi.prototype.injectCSS = function(id, css) {
+BdApi.injectCSS = function(id, css) {
 	
 };
 
 //Clear css/remove any element
 //id = id of element
-BdApi.prototype.clearCSS = function(id) {
+BdApi.clearCSS = function(id) {
 	
 };
 
 //Get another plugin
 //name = name of plugin
-BdApi.prototype.getPlugin = function(name) {
+BdApi.getPlugin = function(name) {
 	
 };
 
 //Get ipc for reason
-BdApi.prototype.getIpc = function() {
+BdApi.getIpc = function() {
 	
 };
 
 //Get BetterDiscord Core
-BdApi.prototype.getCore = function() {
+BdApi.getCore = function() {
 	
 };
