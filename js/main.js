@@ -367,7 +367,7 @@ EmoteModule.prototype.getNodes = function(node) {
 var bemotes = [];
 var spoilered = [];
 
-//TODO Functional titles
+//TODO Edited emotes
 EmoteModule.prototype.injectEmote = function(node) {
 
     if(typeof emotesTwitch === 'undefined') return;
@@ -406,12 +406,12 @@ EmoteModule.prototype.injectEmote = function(node) {
 
             return;
         }
-
-        if($.inArray(word, bemotes) != -1) return;
-
+        
         if(word.length < 4) {
             return;
         }
+
+        if($.inArray(word, bemotes) != -1) return;
 
         if (emotesTwitch.emotes.hasOwnProperty(word)) {
                 var len = Math.round(word.length / 4);
