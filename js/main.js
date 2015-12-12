@@ -1343,3 +1343,26 @@ BdApi.getIpc = function() {
 BdApi.getCore = function() {
     return mainCore;	
 };
+
+
+BdApi.getUserIdByName = function(name, callback) {
+	$(".member-username").each(function() {	
+		if($(this).text() == name) {
+			var avatarUrl = $(this).closest(".member").find(".avatar-small").css("background-image");
+			var uid = avatarUrl.match(/\d+/);
+			callback(uid);
+		}
+	});
+};
+
+BdApi.getUserNameById = function(id, callback) {
+	$(".avatar-small").each(function() {
+		var url = $(this).css("background-image");
+		var uid = url.match(/\d+/);
+		
+		if(uid == id) {
+			var uname = $(this).parent().find(".member-username").text();
+			callback(uname);
+		}
+	});
+};
