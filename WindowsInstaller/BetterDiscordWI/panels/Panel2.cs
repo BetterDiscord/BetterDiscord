@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
@@ -242,14 +243,48 @@ namespace BetterDiscordWI.panels
 
                 File.WriteAllLines(indexloc, lines.ToArray());
 
-                Finalize();
+                
+                AppendLog("Finished installation, verifying installation...");
+
+                int errors = 0;
+
+                String curPath = GetParent().DiscordPath + "\\resources\\app\\app\\index.js";
+                
+                if (!File.Exists(curPath))
+                {
+                    AppendLog("ERROR: FILE: " + curPath + " DOES NOT EXIST!");
+                    errors++;
+                }
+
+                curPath = GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord";
+
+                if (!Directory.Exists(curPath))
+                {
+                    AppendLog("ERROR: DIRECTORY: " + curPath + " DOES NOT EXIST");
+                    errors++;
+                }
+
+
+                String basePath = GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord";
+                String[] bdFiles = {"\\package.json", "\\betterdiscord.js", "\\lib\\BetterDiscord.js", "\\lib\\config.json", "\\lib\\Utils.js"};
+
+                foreach (string s in bdFiles.Where(s => !File.Exists(basePath + s)))
+                {
+                    AppendLog("ERROR: FILE: " + basePath + s + " DOES NOT EXIST");
+                    errors++;
+                }
+
+
+                Finalize(errors);
             });
-            t.Start();
+
+
         }
 
-        private void Finalize()
+        private void Finalize(int errors)
         {
-            AppendLog("Finished installing BetterDiscord");
+            AppendLog("Finished installing BetterDiscord with " + errors + " errors");
+
 
             Invoke((MethodInvoker) delegate
             {
