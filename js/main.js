@@ -68,9 +68,24 @@ var bdchangelog = {
             "title": "Plugins!",
             "text": "Combined with Core 0.2.4, you can now write/use JavaScript plugins for Discord!",
             "img": ""
-        }
+        },
+        "settingsmenu": {
+            "title": "Settings Menu",
+            "text": "New and improved settings menu!",
+            "img": ""
+        },
+        "csseditor": {
+            "title": "New CSS Editor",
+            "text": "New CSS Editor powered by codemirror!",
+            "img": ""  
+        },
     },
     "fixes": {
+        "reload": {
+            "title": "Reload Fix",
+            "text": "Fixed an issue that caused Discord to crash on reload",
+            "img": ""  
+        },
 		"eemotes": {
 			"title": "Edit Emotes!",
 			"text": "Edited messages now display emotes properly!",
