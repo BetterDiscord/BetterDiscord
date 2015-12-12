@@ -166,7 +166,12 @@ Core.prototype.init = function() {
             }
 			$("head").append('<script>Date.now||(Date.now=function(){return(new Date).getTime()}),function(){"use strict";for(var t=["webkit","moz"],e=0;e<t.length&&!window.requestAnimationFrame;++e){var i=t[e];window.requestAnimationFrame=window[i+"RequestAnimationFrame"],window.cancelAnimationFrame=window[i+"CancelAnimationFrame"]||window[i+"CancelRequestAnimationFrame"]}if(/iP(ad|hone|od).*OS 6/.test(window.navigator.userAgent)||!window.requestAnimationFrame||!window.cancelAnimationFrame){var s=0;window.requestAnimationFrame=function(t){var e=Date.now(),i=Math.max(s+16,e);return setTimeout(function(){t(s=i)},i-e)},window.cancelAnimationFrame=clearTimeout}}(),function(t){t.snowfall=function(e,i){function s(s,n,a,o){this.x=s,this.y=n,this.size=a,this.speed=o,this.step=0,this.stepSize=h(1,10)/100,i.collection&&(this.target=m[h(0,m.length-1)]);var r=null;i.image?(r=document.createElement("img"),r.src=i.image):(r=document.createElement("div"),t(r).css({background:i.flakeColor})),t(r).attr({"class":"snowfall-flakes"}).css({width:this.size,height:this.size,position:i.flakePosition,top:this.y,left:this.x,fontSize:0,zIndex:i.flakeIndex}),t(e).get(0).tagName===t(document).get(0).tagName?(t("body").append(t(r)),e=t("body")):t(e).append(t(r)),this.element=r,this.update=function(){if(this.y+=this.speed,this.y>l-(this.size+6)&&this.reset(),this.element.style.top=this.y+"px",this.element.style.left=this.x+"px",this.step+=this.stepSize,this.x+=y===!1?Math.cos(this.step):y+Math.cos(this.step),i.collection&&this.x>this.target.x&&this.x<this.target.width+this.target.x&&this.y>this.target.y&&this.y<this.target.height+this.target.y){var t=this.target.element.getContext("2d"),e=this.x-this.target.x,s=this.y-this.target.y,n=this.target.colData;if(void 0!==n[parseInt(e)][parseInt(s+this.speed+this.size)]||s+this.speed+this.size>this.target.height)if(s+this.speed+this.size>this.target.height){for(;s+this.speed+this.size>this.target.height&&this.speed>0;)this.speed*=.5;t.fillStyle="#fff",void 0==n[parseInt(e)][parseInt(s+this.speed+this.size)]?(n[parseInt(e)][parseInt(s+this.speed+this.size)]=1,t.fillRect(e,s+this.speed+this.size,this.size,this.size)):(n[parseInt(e)][parseInt(s+this.speed)]=1,t.fillRect(e,s+this.speed,this.size,this.size)),this.reset()}else this.speed=1,this.stepSize=0,parseInt(e)+1<this.target.width&&void 0==n[parseInt(e)+1][parseInt(s)+1]?this.x++:parseInt(e)-1>0&&void 0==n[parseInt(e)-1][parseInt(s)+1]?this.x--:(t.fillStyle="#fff",t.fillRect(e,s,this.size,this.size),n[parseInt(e)][parseInt(s)]=1,this.reset())}(this.x+this.size>d-c||this.x<c)&&this.reset()},this.reset=function(){this.y=0,this.x=h(c,d-c),this.stepSize=h(1,10)/100,this.size=h(100*i.minSize,100*i.maxSize)/100,this.element.style.width=this.size+"px",this.element.style.height=this.size+"px",this.speed=h(i.minSpeed,i.maxSpeed)}}function n(){for(r=0;r<a.length;r+=1)a[r].update();f=requestAnimationFrame(function(){n()})}var a=[],o={flakeCount:35,flakeColor:"#ffffff",flakePosition:"absolute",flakeIndex:999999,minSize:1,maxSize:2,minSpeed:1,maxSpeed:5,round:!1,shadow:!1,collection:!1,collectionHeight:40,deviceorientation:!1},i=t.extend(o,i),h=function(t,e){return Math.round(t+Math.random()*(e-t))};t(e).data("snowfall",this);var r=0,l=t(e).height(),d=t(e).width(),c=0,f=0;if(i.collection!==!1){var p=document.createElement("canvas");if(p.getContext&&p.getContext("2d"))for(var m=[],w=t(i.collection),g=i.collectionHeight,r=0;r<w.length;r++){var u=w[r].getBoundingClientRect(),x=t("<canvas/>",{"class":"snowfall-canvas"}),z=[];if(u.top-g>0){t("body").append(x),x.css({position:i.flakePosition,left:u.left+"px",top:u.top-g+"px"}).prop({width:u.width,height:g});for(var v=0;v<u.width;v++)z[v]=[];m.push({element:x.get(0),x:u.left,y:u.top-g,width:u.width,height:g,colData:z})}}else i.collection=!1}for(t(e).get(0).tagName===t(document).get(0).tagName&&(c=25),t(window).bind("resize",function(){l=t(e)[0].clientHeight,d=t(e)[0].offsetWidth}),r=0;r<i.flakeCount;r+=1)a.push(new s(h(c,d-c),h(0,l),h(100*i.minSize,100*i.maxSize)/100,h(i.minSpeed,i.maxSpeed)));i.round&&t(".snowfall-flakes").css({"-moz-border-radius":i.maxSize,"-webkit-border-radius":i.maxSize,"border-radius":i.maxSize}),i.shadow&&t(".snowfall-flakes").css({"-moz-box-shadow":"1px 1px 1px #555","-webkit-box-shadow":"1px 1px 1px #555","box-shadow":"1px 1px 1px #555"});var y=!1;i.deviceorientation&&t(window).bind("deviceorientation",function(t){y=.1*t.originalEvent.gamma}),n(),this.clear=function(){t(".snowfall-canvas").remove(),t(e).children(".snowfall-flakes").remove(),cancelAnimationFrame(f)}},t.fn.snowfall=function(e){return"object"==typeof e||void 0==e?this.each(function(){new t.snowfall(this,e)}):"string"==typeof e?this.each(function(){var e=t(this).data("snowfall");e&&e.clear()}):void 0}}(jQuery);</script>');
 			//By http://www.somethinghitme.com
-            
+   
+            utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/codemirror.min.js");
+            utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/mode/css/css.min.js");
+            utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/codemirror.min.css");
+   
+            $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
    
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
@@ -801,9 +806,16 @@ var panel = null;
 
 function SettingsPanel() {
 
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/codemirror.min.js");
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/mode/css/css.min.js");
+    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/codemirror.min.css");
+
 }
 
 SettingsPanel.prototype.init = function() {
+    console.log("SETTINGSPANEL INIT");
+    
+    
 
     var self = this;
 
@@ -859,89 +871,42 @@ SettingsPanel.prototype.applyCustomCss = function(css) {
     localStorage.setItem("bdcustomcss", btoa(css));
 };
 
-SettingsPanel.prototype.construct = function() {
+var customCssInitialized = false;
+var lastTab = "";
 
-    var self = this;
-
-    panel = $("<div/>", {
-        class: "settings-inner",
-        style: "display:none;"
-    });
-
-    var settingsPolyfill = $("<div/>", {
-        class:" scroller-wrap polyfil"
-    });
-
-    panel.append(settingsPolyfill);
-
-    var settingsWrapper = $("<div/>", {
-        class: "scroller settings-wrapper settings-panel"
-    });
-
-    //Scrollbar
-    var scrollBar = $("<div/>", {
-        class: "scrollbar"
-    }).append($("<div/>", {
-        class: "track"
-    }).append($("<div/>", {
-        class: "thumb"
-    })));
-
-    settingsWrapper.append(scrollBar);
-
-    settingsPolyfill.append(settingsWrapper);
-
-    var controlGroups = $("<div/>", {
-        class: "control-groups"
-    });
-
-    var controlGroups2 = $("<div/>", {
-        class: "control-groups"
-    });
-
-    settingsWrapper.append(controlGroups);
-    settingsWrapper.append(controlGroups2);
-    var featuresGroup = $("<div/>", {
-        class: "control-group"
-    });
-
-    var customCssGroup = $("<div/>", {
-        class: "control-group"
-    });
-
-    controlGroups.append(featuresGroup);
-    controlGroups2.append(customCssGroup);
-
-    featuresGroup.append($("<label/>", {
-        text: "BetterDiscord Settings"
-    }));
-
-    customCssGroup.append($("<label/>", {
-        text: "Custom CSS"
-    }));
-
-    var ta = $("<textarea/>", {
-        id: "custom-css-ta"
-    });
-
-    var decode = atob(localStorage.getItem("bdcustomcss"));
-    self.applyCustomCss(decode);
-    ta.val(decode);
-
-    customCssGroup.append(ta);
-
-    ta.on("input propertychange", function() {
-        self.applyCustomCss($(this).val());
-    });
-
-    var featuresCheckboxGroup = $("<ul/>", {
-        class: "checkbox-group"
-    });
+SettingsPanel.prototype.changeTab = function(tab) {
+    
+    lastTab = tab;
+    
+    var controlGroups = $("#bd-control-groups");
+    $(".bd-tab").removeClass("selected");
+    $(".bd-pane").hide();
+    $("#" + tab).addClass("selected");   
+    $("#" + tab.replace("tab", "pane")).show();
+     
+    switch(tab) {
+        case "bd-settings-tab":
+        break;
+        case "bd-customcss-tab":
+            if(!customCssInitialized) {
+                CodeMirror.fromTextArea(document.getElementById("customcss-editor"), {
+                    lineNumbers: true, mode: 'css'
+                });
+                customCssInitialized = true;
+            }
+        break;
+        case "bd-plugins-tab":
+            
+        break;
+        case "bd-themes-tab":
+            controlGroups.html("<span>Coming soon</span>");
+        break;
+    }
+};
 
 
-
-    function updateSetting() {
-        var cb = $(this).children().find('input[type="checkbox"]');
+SettingsPanel.prototype.updateSetting = function(checkbox) {    
+        var cb = $(checkbox).children().find('input[type="checkbox"]');
         var enabled = !cb.is(":checked");
         var id = cb.attr("id");
         cb.prop("checked", enabled);
@@ -984,8 +949,38 @@ SettingsPanel.prototype.construct = function() {
     	}
 
         mainCore.saveSettings();
-    }
+}
 
+SettingsPanel.prototype.construct = function() {
+    
+    console.log("SETTINGSPANEL CONSTRUCT");
+    
+    var self = this;
+    
+    panel = $("<div/>", {
+        id: "bd-pane",
+        class: "settings-inner",
+        css: {
+            "display": "none"
+        }
+    });
+    
+    var settingsInner = '' +
+    '<div class="scroller-wrap">' +
+    '   <div class="scroller settings-wrapper settings-panel">' +
+    '       <div class="tab-bar TOP">' +
+    '           <div class="tab-bar-item bd-tab" id="bd-settings-tab" onclick="settingsPanel.changeTab(\'bd-settings-tab\');">Settings</div>' +
+    '           <div class="tab-bar-item bd-tab" id="bd-customcss-tab" onclick="settingsPanel.changeTab(\'bd-customcss-tab\');">Custom CSS</div>' +
+    '           <div class="tab-bar-item bd-tab" id="bd-plugins-tab" onclick="settingsPanel.changeTab(\'bd-plugins-tab\');">Plugins</div>' +
+    '           <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick="settingsPanel.changeTab(\'bd-themes-tab\');">Themes</div>' +
+    '       </div>' +
+    '       <div class="bd-settings">' +
+    '' +
+    '               <div class="bd-pane control-group" id="bd-settings-pane" style="display:none;">' + 
+    '                   <ul class="checkbox-group">';
+    
+    
+    
     for(var setting in settings) {
 
         var sett = settings[setting];
@@ -993,74 +988,52 @@ SettingsPanel.prototype.construct = function() {
 
         if(sett["implemented"]) {
 
-            featuresCheckboxGroup.append($("<li/>").append($("<div/>", {
-                class: "checkbox",
-                click: updateSetting
-            }).append($("<div/>", {
-                class: "checkbox-inner"
-            }).append($("<input/>", {
-                type: "checkbox",
-                id: id,
-                prop: {
-                    "checked": settingsCookie[id]
-                }
-            })).append($("<span/>"))).append($("<span/>", {
-                text: setting + " - " + sett["info"]
-            }))));
+            settingsInner += '' +
+            '<li>' +
+                '<div class="checkbox" onclick="settingsPanel.updateSetting(this);" >' +
+                    '<div class="checkbox-inner">' +
+                        '<input type="checkbox" id="'+id+ '" ' + (settingsCookie[id] ? "checked" : "") + '>' +
+                        '<span></span>' +
+                    '</div>' +
+                    '<span>' + setting + " - " + sett["info"] +
+                    '</span>' +
+                '</div>' +
+            '</li>';
         }
     }
-
-    featuresGroup.append(featuresCheckboxGroup);
-
-    //Info Footer
-    var footer = $("<div/>", {
-        css: {
-            "background": "#1A1A1A",
-            "color": "#ADADAD",
-            "height": "30px",
-            "position": "absolute",
-            "bottom": "0",
-            "left": "0",
-            "right": "0"
-        }
-    });
-
-    var versionSpan = $("<span/>", {
-        text: "BetterDiscord v"+version+"(JSv"+jsVersion+") by Jiiks",
-        css: {
-            "line-height": "30px",
-            "margin-left": "10px"
-        }
-    });
-
-    var linksSpan = $("<span/>", {
-        css: {
-            "float": "right",
-            "line-height": "30px",
-            "margin-right": "10px"
-        }
-    });
-
-    for(var link in links) {
-        $("<a/>", {
-            text: links[link]["text"],
-            href: links[link]["href"],
-            target: links[link]["target"]
-        }).append($("<span/>", {
-            text: " | "
-        })).appendTo(linksSpan);
-    }
-
-    footer.append(versionSpan);
-    footer.append(linksSpan);
-
-    settingsPolyfill.append(footer);
-
+    
+    
+    
+    
+    settingsInner += '</ul>' +
+    '               </div>' +
+    '' +
+    '               <div class="bd-pane control-group" id="bd-customcss-pane" style="display:none;">' +
+    '                   <textarea id="customcss-editor"></textarea>' +
+    '               </div>' +
+    '' +
+    '               <div class="bd-pane control-group" id="bd-plugins-pane" style="dispaly:none;">' +
+    'TODO PLUGINS PANE' +
+    '               </div>' +
+    '' +
+    '               <div class="bd-pane control-group" id="bd-themes-pane" style="dispaly:none;">' +
+    'TODO THEMES PANE' +
+    '               </div>' +
+    '' +
+    '       </div>' +
+    '   </div>' +
+    '</div>';
+    
     function showSettings() {
         $(".tab-bar-item").removeClass("selected");
         settingsButton.addClass("selected");
         $(".form .settings-right .settings-inner").first().hide();
         panel.show();
+        if(lastTab == "") {
+            self.changeTab("bd-settings-tab");
+        } else {
+            self.changeTab(lastTab);
+        }
     }
 
     settingsButton = $("<div/>", {
@@ -1069,6 +1042,8 @@ SettingsPanel.prototype.construct = function() {
         id: "bd-settings-new",
         click: showSettings
     });
+
+    panel.html(settingsInner);
 
     function defer() {
         if($(".btn.btn-settings").length < 1) {
@@ -1100,7 +1075,7 @@ SettingsPanel.prototype.construct = function() {
         }
     }
     defer();
-
+    
 };
 
 /* BetterDiscordApp Utilities JavaScript
@@ -1141,6 +1116,20 @@ Utils.prototype.loadHtml = function(html, callback) {
   container.load(html, callback());
 };
 
+Utils.prototype.injectJs = function(uri) {
+    $("<script/>", {
+        type: "text/javascript",
+        src: uri
+    }).appendTo($("body"));
+};
+
+Utils.prototype.injectCss = function(uri) {
+    $("<link/>", {
+        type: "text/css",
+        rel: "stylesheet",
+        href: uri
+    }).appendTo($("head"));
+};
 
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
