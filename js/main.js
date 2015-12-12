@@ -66,7 +66,7 @@ var bdchangelog = {
     "changes": {
         "plugins": {
             "title": "Plugins!",
-            "text": "Combined with Core 0.2.4, you can now write/use JavaScript plugins for Discord!",
+            "text": "Combined with Core 0.2.3, you can now write JavaScript plugins for Discord!",
             "img": ""
         },
         "settingsmenu": {
@@ -79,6 +79,11 @@ var bdchangelog = {
             "text": "New CSS Editor powered by <a href='http://codemirror.net' target='_blank'>CodeMirror!</a>",
             "img": ""  
         },
+        "minimalmode": {
+            "title": "Minimal mode makeover!", 
+            "text": "New and improved minimal mode!",
+            "img": ""
+        }
     },
     "fixes": {
         "reload": {
@@ -107,6 +112,16 @@ var bdchangelog = {
             "title": "Ignore User!",
             "text": "Ignore users you don't like!",
             "img": ""
+        },
+        "themes": {
+            "title": "Custom themes!",
+            "text": "Write your own or download custom themes!",
+            "img": ""  
+        },
+        "favemotes": {
+            "title": "Favorite emotes!",
+            "text": "Add your favorite emote(s) to the quick emote menu!",
+            "img": ""  
         },
         "more": {
             "title": "More Things!",
