@@ -8,12 +8,6 @@
  * Plugin Template: https://gist.github.com/Jiiks/71edd5af0beafcd08956
  */
 
-
-//Returns currrent BrowserWindow https://github.com/atom/electron/blob/master/docs/api/browser-window.md
-BdApi.getBrowserWindow = function() {
-	
-};
-
 //Joins a server
 //code = server invite code
 BdApi.joinServer = function(code) {
