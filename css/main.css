@@ -335,6 +335,54 @@
 	margin-top:3px;
 }
 
+.bd-minimal .account .avatar-small, .bd-minimal .account .username {
+		display:none;
+	}
+		
+
+	.bd-minimal .channel-text a, .bd-minimal .guild-channels ul .channel-voice {
+		padding:5px !important;
+		font-size:small;
+	}
+	
+	.bd-minimal .guild-channels h2 {
+		padding:2px;
+	}
+	
+	.bd-minimal .guild-channels header spann {
+		font-size:12px;
+	}
+
+	.bd-minimal .channels-wrap {
+		width:160px;
+	}
+	
+	.bd-minimal .channels-wrap .guild-channels {
+		padding:0;
+	}
+	
+	.bd-minimal .guilds li .avatar-small, .bd-minimal .guilds li, .bd-minimal .guilds li .guild-inner, .bd-minimal .guilds li .guild-inner a, .bd-minimal .guilds .friends-icon {
+		width:20px;
+		height:20px;
+		background-size:100%;
+		font-size:15px;
+		line-height:20px;
+	}
+
+	.bd-minimal .guilds-wrapper {
+		width:45px;
+	}
+	
+	.bd-minimal .guilds li.active .guild-inner:before {
+		height:20px;
+		margin-top:-10px;
+	}
+	
+	.bd-minimal .guilds-add {
+		font-size:20px;
+		line-height:14px;
+	}
+
 
 #bd-ps-container {
 	position:fixed;
@@ -482,8 +530,8 @@
 	height: 18px;
 	background: #2e3136;
 	position: absolute;
-	left: 68px;
-	top: 21px;
+	left: 33px;
+	top: 79px;
 	text-align: left !important;
 	padding: 0px !important;
 	padding-left: 3px !important;
