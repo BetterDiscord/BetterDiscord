@@ -1344,7 +1344,10 @@ BdApi.getCore = function() {
     return mainCore;	
 };
 
-
+//Attempts to get user id by username
+//Name = username
+//Callback = callback function
+//Since Discord hides users if there's too many, this will often fail
 BdApi.getUserIdByName = function(name, callback) {
 	$(".member-username").each(function() {	
 		if($(this).text() == name) {
@@ -1355,6 +1358,10 @@ BdApi.getUserIdByName = function(name, callback) {
 	});
 };
 
+//Attempts to get username by id
+//ID = user id
+//Callback = callback function
+//Since Discord hides users if there's too many, this will often fail
 BdApi.getUserNameById = function(id, callback) {
 	$(".avatar-small").each(function() {
 		var url = $(this).css("background-image");
