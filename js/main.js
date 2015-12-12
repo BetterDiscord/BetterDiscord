@@ -36,7 +36,7 @@ var settings = {
     "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands",                  "implemented": true  },
     "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes",                        "implemented": false },
     "Show Names":                 { "id": "bda-es-6", "info": "Show emote names on hover",                      "implemented": true  }
-};
+}
 
 var links = {
     "Jiiks.net": { "text": "Jiiks.net", "href": "http://jiiks.net",          "target": "_blank" },
@@ -417,7 +417,6 @@ EmoteModule.prototype.getNodes = function(node) {
 var bemotes = [];
 var spoilered = [];
 
-//TODO Edited emotes
 EmoteModule.prototype.injectEmote = function(node) {
 
     if(typeof emotesTwitch === 'undefined') return;
@@ -1054,7 +1053,7 @@ SettingsPanel.prototype.construct = function() {
     '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th></tr></thead><tbody>';
     
     
-    $.each(plugins, function() {
+    $.each(bdplugins, function() {
         
         var plugin = this["plugin"];
         settingsInner += '' +
@@ -1245,7 +1244,7 @@ PluginModule.prototype.loadPlugins = function() {
 
     this.loadPluginData();
 
-    $.each(plugins, function() {
+    $.each(bdplugins, function() {
         var plugin = this["plugin"];
         plugin.load();
         
@@ -1272,10 +1271,10 @@ PluginModule.prototype.handlePlugin = function(checkbox) {
     cb.prop("checked", enabled);
     
     if(enabled) {
-        plugins[id]["plugin"].start();
+        bdplugins[id]["plugin"].start();
         pluginCookie[id] = true;
     } else {
-        plugins[id]["plugin"].stop();
+        bdplugins[id]["plugin"].stop();
         pluginCookie[id] = false;
     }
     
@@ -1328,8 +1327,8 @@ BdApi.clearCSS = function(id) {
 //Get another plugin
 //name = name of plugin
 BdApi.getPlugin = function(name) {
-	if(plugins.hasOwnProperty(name)) {
-        return plugins[name]["plugin"];
+    if(bdplugins.hasOwnProperty(name)) {
+        return bdplugins[name]["plugin"];
     }
     return null;
 };

@@ -175,6 +175,54 @@ namespace BetterDiscordWI.panels
                                 AppendLog("Splicing function call");
                                 lines.Add(line);
                                 lines.Add("betterDiscord(mainWindow);");
+                                AppendLog("Splicing plugin&theme loaders");
+
+                                lines.Add("    mainWindow.webContents.on('dom-ready', function() {");
+                                lines.Add("        var fs = require('fs');");
+                                lines.Add("        fs.readdir('G:/BetterDiscord/plugins/',function(err,files) {");
+                                lines.Add("            if (err) { console.log(err); return; } ");
+                                lines.Add("            mainWindow.webContents.executeJavaScript('var bdplugins = {};');");
+                                lines.Add("            files.forEach(function(fileName){");
+                                lines.Add("                var plugin = fs.readFileSync('G:/BetterDiscord/plugins/' + fileName,'utf8');");
+                                lines.Add("                var meta = plugin.split('\\n')[0];");
+                                lines.Add("                if(meta.indexOf('META') < 0) {");
+                                lines.Add("                    console.log('BetterDiscord: ERROR[Plugin META not found in file: '+fileName+']');");
+                                lines.Add("                    return;");
+                                lines.Add("                }");
+                                lines.Add("                var pluginVar = meta.substring(meta.lastIndexOf('//META')+6, meta.lastIndexOf('*//'));");
+                                lines.Add("                var parse = JSON.parse(pluginVar);");
+                                lines.Add("                var pluginName = parse['name'];");
+                                lines.Add("                console.log('BetterDiscord: Loading Plugin: ' + pluginName);");
+                                lines.Add("                mainWindow.webContents.executeJavaScript(plugin);");
+                                lines.Add("                mainWindow.webContents.executeJavaScript('(function() { var plugin = new '+pluginName+'(); bdplugins[plugin.getName()] = { \"plugin\": plugin, \"enabled\": false } })();')");
+                                lines.Add("            });");
+                                lines.Add("        });");
+                                lines.Add("\n");
+                                lines.Add("        fs.readdir('G:/BetterDiscord/themes/', function(err, files) {");
+                                lines.Add("            if (err) { console.log(err); return; }");
+                                lines.Add("            mainWindow.webContents.executeJavaScript('var bdthemes = {};');");
+                                lines.Add("            files.forEach(function(fileName) {");
+                                lines.Add("                var theme = fs.readFileSync('G:/BetterDiscord/themes/' + fileName, 'utf8');");
+                                lines.Add("                var split = theme.split('\\n');");
+                                lines.Add("                var meta = split[0];");
+                                lines.Add("                if(meta.indexOf('META') < 0) {");
+                                lines.Add("                    console.log('BetterDiscord: ERROR[Theme META not found in file: '+fileName+']');");
+                                lines.Add("                    return;");
+                                lines.Add("                }");
+                                lines.Add("                var themeVar = meta.substring(meta.lastIndexOf('//META')+6, meta.lastIndexOf('*//'));");
+                                lines.Add("                var parse = JSON.parse(themeVar);");
+                                lines.Add("                var themeName = parse['name'];");
+                                lines.Add("                console.log('BetterDiscord: Loading Theme: ' + themeName);");
+                                lines.Add("                split.splice(0, 1);");
+                                lines.Add("                theme = split.join('\\n');");
+                                lines.Add("                theme = theme.replace(/(\\r\\n|\\n|\\r)/gm,'');");
+                                lines.Add("                theme = theme.replace(/\\s/g, '');");
+                                lines.Add("                mainWindow.webContents.executeJavaScript('var theme' + themeName + ' = \"' + escape(theme) + '\";');");
+                                lines.Add("                mainWindow.webContents.executeJavaScript('(function() { bdthemes[theme'+themeName+'] = false })();');");
+                                lines.Add("            });");
+                                lines.Add("        });");
+                                lines.Add("    });\n");
+
                             }
                             else if (line.Contains("main();"))
                             {
