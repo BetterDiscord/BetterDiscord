@@ -1345,30 +1345,34 @@ BdApi.getCore = function() {
 
 //Attempts to get user id by username
 //Name = username
-//Callback = callback function
 //Since Discord hides users if there's too many, this will often fail
-BdApi.getUserIdByName = function(name, callback) {
-	$(".member-username").each(function() {	
-		if($(this).text() == name) {
-			var avatarUrl = $(this).closest(".member").find(".avatar-small").css("background-image");
-			var uid = avatarUrl.match(/\d+/);
-			callback(uid);
-		}
-	});
+BdApi.getUserIdByName = function(name) {
+    var users = $(".member-username");
+    
+    for(var i = 0 ; i < users.length ; i++) {
+        var user = $(users[i]);
+        if(user.text() == name) {
+            console.log("FOUND: " + user);
+            var avatarUrl = user.closest(".member").find(".avatar-small").css("background-image");
+            return avatarUrl.match(/\d+/);
+        }
+    }
+    return null;
 };
 
 //Attempts to get username by id
 //ID = user id
-//Callback = callback function
 //Since Discord hides users if there's too many, this will often fail
-BdApi.getUserNameById = function(id, callback) {
-	$(".avatar-small").each(function() {
-		var url = $(this).css("background-image");
-		var uid = url.match(/\d+/);
-		
-		if(uid == id) {
-			var uname = $(this).parent().find(".member-username").text();
-			callback(uname);
-		}
-	});
+var gg;
+BdApi.getUserNameById = function(id) {
+    var users = $(".avatar-small");
+    
+    for(var i = 0 ; i < users.length ; i++) {
+        var user = $(users[i]);
+        var url = user.css("background-image");
+        if(id == url.match(/\d+/)) {
+            return user.parent().find(".member-username").text();
+        }
+    }
+    return null;
 };
