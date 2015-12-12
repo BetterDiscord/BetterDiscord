@@ -142,6 +142,9 @@ Core.prototype.init = function() {
 
             opublicServers = new PublicServers();
 
+            pluginModule = new PluginModule();
+            pluginModule.loadPlugins();
+
             settingsPanel = new SettingsPanel();
             settingsPanel.init();
 
@@ -172,8 +175,7 @@ Core.prototype.init = function() {
    
             $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
    
-            pluginModule = new PluginModule();
-            pluginModule.loadPlugins();
+            
         } else {
             setTimeout(gwDefer, 100);
         }
@@ -1012,7 +1014,36 @@ SettingsPanel.prototype.construct = function() {
     '               </div>' +
     '' +
     '               <div class="bd-pane control-group" id="bd-plugins-pane" style="dispaly:none;">' +
-    'TODO PLUGINS PANE' +
+    '                   <table class="bd-g-table">' +
+    '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th></tr></thead><tbody>';
+    
+    
+    $.each(plugins, function() {
+        
+        var plugin = this["plugin"];
+        console.log(plugin);
+        settingsInner += '' +
+        '<tr>' +
+        '   <td>'+plugin.getName()+'</td>' +
+        '   <td width="99%"><textarea>'+plugin.getDescription()+'</textarea></td>' +
+        '   <td>'+plugin.getAuthor()+'</td>' +
+        '   <td>'+plugin.getVersion()+'</td>' +
+        '   <td>' +
+        '       <div class="checkbox" onclick="pluginModule.handlePlugin(this);">' +
+        '       <div class="checkbox-inner">' +
+        '               <input id="'+plugin.getName()+'" type="checkbox" ' + (pluginCookie[plugin.getName()] ? "checked" : "") +'>' +
+        '               <span></span>' +
+        '           </div>' +
+        '       </div>' +
+        '   </td>' +
+        '</tr>';
+        
+    });
+    
+
+    
+    
+    settingsInner += '</tbody></table>' +
     '               </div>' +
     '' +
     '               <div class="bd-pane control-group" id="bd-themes-pane" style="dispaly:none;">' +
@@ -1154,7 +1185,6 @@ VoiceMode.prototype.obsCallback = function() {
 VoiceMode.prototype.enable = function() {
     $(".scroller.guild-channels ul").first().css("display", "none");
     $(".scroller.guild-channels header").first().css("display", "none");
-    // $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
     $(".app.flex-vertical").first().css("overflow", "hidden");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "hidden").css("min-width", "0px");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
@@ -1164,12 +1194,13 @@ VoiceMode.prototype.enable = function() {
 VoiceMode.prototype.disable = function() {
     $(".scroller.guild-channels ul").first().css("display", "");
     $(".scroller.guild-channels header").first().css("display", "");
-    //$(".flex-vertical.flex-spacer").first().css("overflow", "");
     $(".app.flex-vertical").first().css("overflow", "");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "").css("min-width", "");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
+
+var pluginCookie = {};
 
 function PluginModule() {
     
@@ -1177,12 +1208,52 @@ function PluginModule() {
 
 PluginModule.prototype.loadPlugins = function() {
 
+    this.loadPluginData();
+
+    $.each(plugins, function() {
+        var plugin = this["plugin"];
+        plugin.load();
+        
+        var name = plugin.getName();
+        var enabled = false;
+        
+        if(pluginCookie.hasOwnProperty(name)) {
+            enabled = pluginCookie[name];
+        } else {
+            pluginCookie[name] = false;
+        }
+        
+        if(enabled) {
+            plugin.start();
+        }
+    });
 };
 
-PluginModule.prototype.startPlugin = function(plugin) {
- 
+PluginModule.prototype.handlePlugin = function(checkbox) {
+    
+    var cb = $(checkbox).children().find('input[type="checkbox"]');
+    var enabled = !cb.is(":checked");
+    var id = cb.attr("id");
+    cb.prop("checked", enabled);
+    
+    if(enabled) {
+        plugins[id]["plugin"].start();
+        pluginCookie[id] = true;
+    } else {
+        plugins[id]["plugin"].stop();
+        pluginCookie[id] = false;
+    }
+    
+    this.savePluginData();
 };
 
-PluginModule.prototype.stopPlugin = function(plugin) {
+PluginModule.prototype.loadPluginData = function() {
+    var cookie = $.cookie("bd-plugins");
+    if(cookie != undefined) {
+        pluginCookie = JSON.parse($.cookie("bd-plugins")); 
+    }
+};
 
+PluginModule.prototype.savePluginData = function() {
+    $.cookie("bd-plugins", JSON.stringify(pluginCookie), { expires: 365, path: '/' });
 };
