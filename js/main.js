@@ -70,20 +70,20 @@ var bdchangelog = {
             "img": ""
         },
         "settingsmenu": {
-            "title": "Settings Menu",
+            "title": "Settings Menu!",
             "text": "New and improved settings menu!",
             "img": ""
         },
         "csseditor": {
-            "title": "New CSS Editor",
-            "text": "New CSS Editor powered by codemirror!",
+            "title": "New CSS Editor!",
+            "text": "New CSS Editor powered by <a href='http://codemirror.net' target='_blank'>CodeMirror!</a>",
             "img": ""  
         },
     },
     "fixes": {
         "reload": {
-            "title": "Reload Fix",
-            "text": "Fixed an issue that caused Discord to crash on reload",
+            "title": "Reload Fix!",
+            "text": "Fixed an issue that caused Discord to crash on reload!",
             "img": ""  
         },
 		"eemotes": {
@@ -97,20 +97,20 @@ var bdchangelog = {
             "img": ""
         },
         "other": {
-            "title": "Bugfixes",
-            "text": "Several smaller bugs fixed",
+            "title": "Bugfixes!",
+            "text": "Several smaller bugs fixed!",
             "img": ""
         }
 	},
     "upcoming": {
         "ignore": {
             "title": "Ignore User!",
-            "text": "Ignore users you don't like",
+            "text": "Ignore users you don't like!",
             "img": ""
         },
         "more": {
             "title": "More Things!",
-            "text": "More things but probably not in the next version.",
+            "text": "More things but probably not in the next version!",
             "img": ""
         }
     }
@@ -125,7 +125,7 @@ Core.prototype.init = function() {
     var self = this;
 
     if(version < supportedVersion) {
-        alert("BetterDiscord v" + version + "(your version)" + " is not supported by the latest js("+jsVersion+"). Please download the latest version from GitHub.");
+        alert("BetterDiscord v" + version + "(your version)" + " is not supported by the latest js("+jsVersion+"). Please download the latest version from betterdiscord.net");
         return;
     }
 
@@ -1276,4 +1276,55 @@ PluginModule.prototype.loadPluginData = function() {
 
 PluginModule.prototype.savePluginData = function() {
     $.cookie("bd-plugins", JSON.stringify(pluginCookie), { expires: 365, path: '/' });
+};
+
+/* BetterDiscordApp API for Plugins
+ * Version: 1.0
+ * Author: Jiiks | http://jiiks.net
+ * Date: 11/12/2015
+ * Last Update: 11/12/2015
+ * https://github.com/Jiiks/BetterDiscordApp
+ * 
+ * Plugin Template: https://gist.github.com/Jiiks/71edd5af0beafcd08956
+ */
+
+function BdApi() {}
+
+//Joins a server
+//code = server invite code
+BdApi.joinServer = function(code) {
+	opublicServers.joinServer(code);
+};
+
+//Inject CSS to document head
+//id = id of element
+//css = custom css
+BdApi.injectCSS = function(id, css) {
+	$("head").append('<style id="'+id+'"></style>')
+    $("#" + id).html(css);
+};
+
+//Clear css/remove any element
+//id = id of element
+BdApi.clearCSS = function(id) {
+	$("#"+id).remove();
+};
+
+//Get another plugin
+//name = name of plugin
+BdApi.getPlugin = function(name) {
+	if(plugins.hasOwnProperty(name)) {
+        return plugins[name]["plugin"];
+    }
+    return null;
+};
+
+//Get ipc for reason
+BdApi.getIpc = function() {
+	return betterDiscordIPC;
+};
+
+//Get BetterDiscord Core
+BdApi.getCore = function() {
+    return mainCore;	
 };
