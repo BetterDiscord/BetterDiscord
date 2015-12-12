@@ -278,10 +278,23 @@
 }
 
 .bd-minimal .avatar-large {
-	width:0px;
-	border-right:2px solid #303030;
+	max-width:20px;
+	max-height:20px;
+	background-size: 100%;
+	margin-right:2px;
+	margin-top:0;
+	border-radius:0;
 }
 
+.bd-minimal .comment {
+	border-left:2px solid #303030;
+	padding-left:2px;
+}
+
+.bd-minimal .user-name {
+	font-size:small;
+}
+	
 .bd-minimal.bd-minimal-chan .channels-wrap {
 	display:none;
 }
@@ -300,7 +313,14 @@
 }
 
 .bd-minimal .channel-members .avatar-small{
-	display:none;
+	max-width:15px;
+	max-height:15px;
+	background-size: 15px 15px;
+}
+	
+.bd-minimal .channel-members .avatar-small .status{
+	height:5px;
+	width:5px;
 }
 
 .bd-minimal .channel-members .member {
@@ -309,6 +329,10 @@
 
 .bd-minimal .channel-members-wrap {
 	min-width: 0px;
+}
+
+.bd-minimal .channel-members h2{
+	margin-top:3px;
 }
 
 
