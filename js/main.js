@@ -90,7 +90,17 @@ var bdchangelog = {
 			"title": "Edit Emotes!",
 			"text": "Edited messages now display emotes properly!",
 			"img": ""
-		}
+		},
+        "pservers": {
+            "title": "Public Servers",
+            "text": "Public servers have been fixed!",
+            "img": ""
+        },
+        "other": {
+            "title": "Bugfixes",
+            "text": "Several smaller bugs fixed",
+            "img": ""
+        }
 	},
     "upcoming": {
         "ignore": {
