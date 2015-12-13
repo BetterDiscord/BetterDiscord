@@ -1,0 +1,71 @@
+	var _os = process.platform;
+	var _dataPath = _os == "win32" ? process.env.APPDATA : _os == 'darwin' ? process.env.HOME + '/Library/Preferences' : '/var/local';
+	_dataPath += "/BetterDiscord/";
+	
+	mainWindow.webContents.on('dom-ready', function() {
+        var fs = require('fs');
+		
+		if(!fs.existsSync(_dataPath)) {
+			console.log('BetterDiscord: Creating BD Dir');
+			fs.mkdirSync(_dataPath);
+		}
+		
+		if(!fs.existsSync(_dataPath + "plugins/")) {
+			console.log('BetterDiscord: Creating Plugins Dir');
+			fs.mkdirSync(_dataPath + "plugins/");
+		}
+		
+		if(!fs.existsSync(_dataPath + "themes/")) {
+			console.log('BetterDiscord: Creating Themes Dir');
+			fs.mkdirSync(_dataPath + "themes/");
+		}
+		
+		
+		
+        fs.readdir(_dataPath + "plugins/",function(err,files) {
+            if (err) { console.log(err); return; } 
+            mainWindow.webContents.executeJavaScript('var bdplugins = {};');
+            files.forEach(function(fileName){
+                var plugin = fs.readFileSync(_dataPath + "plugins/" + fileName,'utf8');
+                var meta = plugin.split('\n')[0];
+                if(meta.indexOf('META') < 0) {
+                    console.log('BetterDiscord: ERROR[Plugin META not found in file: '+fileName+']');
+                    return;
+                }
+                var pluginVar = meta.substring(meta.lastIndexOf('//META')+6, meta.lastIndexOf('*//'));
+                var parse = JSON.parse(pluginVar);
+                var pluginName = parse['name'];
+                console.log('BetterDiscord: Loading Plugin: ' + pluginName);
+                mainWindow.webContents.executeJavaScript(plugin);
+                mainWindow.webContents.executeJavaScript('(function() { var plugin = new '+pluginName+'(); bdplugins[plugin.getName()] = { "plugin": plugin, "enabled": false } })();')
+            });
+        });
+
+
+        fs.readdir(_dataPath + 'themes/', function(err, files) {
+            if (err) { console.log(err); return; }
+            mainWindow.webContents.executeJavaScript('var bdthemes = {};');
+            files.forEach(function(fileName) {
+                var theme = fs.readFileSync(_dataPath + 'themes/' + fileName, 'utf8');
+                var split = theme.split('\n');
+                var meta = split[0];
+                if(meta.indexOf('META') < 0) {
+                    console.log('BetterDiscord: ERROR[Theme META not found in file: '+fileName+']');
+                    return;
+                }
+                var themeVar = meta.substring(meta.lastIndexOf('//META')+6, meta.lastIndexOf('*//'));
+                var parse = JSON.parse(themeVar);
+                var themeName = parse['name'];
+                console.log('BetterDiscord: Loading Theme: ' + themeName);
+                split.splice(0, 1);
+                theme = split.join('\n');
+                theme = theme.replace(/(\r\n|\n|\r)/gm,'');
+                theme = theme.replace(/\s/g, '');
+                mainWindow.webContents.executeJavaScript('var theme' + themeName + ' = "' + escape(theme) + '";');
+                mainWindow.webContents.executeJavaScript('(function() { bdthemes[theme'+themeName+'] = false })();');
+            });
+        });
+	});
+	
+	_betterDiscord = new _betterDiscord.BetterDiscord(mainWindow);
+	_betterDiscord.init();
