@@ -90,6 +90,14 @@ function install() {
 
             asar.extractAll(_discordPath + _appArchive, _discordPath + _appFolder);
 
+            if(!fs.existsSync("splice")) {
+                console.log("Missing splice file");
+                process.exit();
+            }
+
+            var splice = fs.readFileSync("splice");
+            
+
 			fs.exists(_discordPath + _appFolder, function(exists) {
 				if(exists) {
 					console.log("Extracted to: " + _discordPath + _appFolder);
@@ -97,8 +105,7 @@ function install() {
 
 					var data = fs.readFileSync(_discordPath + _index).toString().split("\n");
 					data.splice(_importSplice, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
-					data.splice(_functionCallSplice, 0, 'betterDiscord(mainWindow);');
-					data.splice(_functionSplice, 0, 'function betterDiscord(mw) { _betterDiscord = new _betterDiscord.BetterDiscord(mw); _betterDiscord.init(); }');
+					data.splice(_functionCallSplice, 0, splice);
 
 					fs.writeFile(_discordPath + _index, data.join("\n"), function(err) {
 						if(err) return console.log(err);
