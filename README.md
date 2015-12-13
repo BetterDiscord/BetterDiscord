@@ -12,7 +12,7 @@ As of JavaScript version 1.4, settings have been moved to Discord settings dialo
 ## If Discord has updated and the installer hasn't, try replacing the installer index.js with the latest one here: [index.js](https://github.com/Jiiks/BetterDiscordApp/blob/master/NodeInstaller/index.js)
 
 ## Windows Universal Installer
-* Download the latest installer from https://github.com/Jiiks/BetterDiscordApp/releases/tag/WindowsInstaller
+* Download the latest installer from https://github.com/Jiiks/BetterDiscordApp/releases/tag/WindowsInstaller0.2
 * Follow the instructions
 * .NET 4.0 required https://www.microsoft.com/en-us/download/details.aspx?id=30653
 * Windows Installer users asar.net https://github.com/Jiiks/asar.net
