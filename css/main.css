@@ -571,11 +571,6 @@
     text-overflow: ellipsis;
 }
 
-body {
-    background-image:url("https://discordapp.com/assets/2f8fff584b4efd0febf82664f40aecaa.png");
-  width:100%;
-  height:100%;
-}
 
 #bd-psd-container {
   position: fixed;
