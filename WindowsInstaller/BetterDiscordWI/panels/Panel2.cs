@@ -175,6 +175,7 @@ namespace BetterDiscordWI.panels
                             }
                             else if (line.Contains("mainWindow = new _BrowserWindow2"))
                             {
+                                lines.Add(line);
                                 lines.Add(File.ReadAllText("splice"));
                             }
                             else
