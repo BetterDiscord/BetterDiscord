@@ -224,7 +224,7 @@ namespace BetterDiscordWI.panels
                 Finalize(errors);
             });
 
-
+            t.Start();
         }
 
         private void Finalize(int errors)
