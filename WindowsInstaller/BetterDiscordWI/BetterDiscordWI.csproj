@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="asardotnet">
-      <HintPath>..\..\..\..\VSProjects\asardotnet\asardotnet\bin\Release\asardotnet.dll</HintPath>
+      <HintPath>..\..\..\..\..\VSProjects\asardotnet\asardotnet\bin\Release\asardotnet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

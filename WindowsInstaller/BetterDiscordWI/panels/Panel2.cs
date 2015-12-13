@@ -170,7 +170,7 @@ namespace BetterDiscordWI.panels
                             {
 
                                 lines.Add(line);
-                                lines.Add("var _betterDiscord = requires('betterdiscord');");
+                                lines.Add("var _betterDiscord = require('betterdiscord');");
 
                             }
                             else if (line.Contains("mainWindow = new _BrowserWindow2"))
