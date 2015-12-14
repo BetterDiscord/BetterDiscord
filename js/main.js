@@ -884,7 +884,7 @@ QuickEmoteMenu.prototype.favorite = function(name, url) {
 };
 
 QuickEmoteMenu.prototype.updateFavorites = function() {
-    console.log("UPDATE FAVORITES : " + favoriteEmotes);
+
     var self = this;
     var emoteMenuBody = $("#emote-menu-inner-fav");
     emoteMenuBody.empty();
@@ -1438,7 +1438,6 @@ BdApi.getUserIdByName = function(name) {
     for(var i = 0 ; i < users.length ; i++) {
         var user = $(users[i]);
         if(user.text() == name) {
-            console.log("FOUND: " + user);
             var avatarUrl = user.closest(".member").find(".avatar-small").css("background-image");
             return avatarUrl.match(/\d+/);
         }
