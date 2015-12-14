@@ -844,8 +844,8 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
     var emoteMenuBody = $("<div/>", { id: "emote-menu-inner" });
     var emoteMenuBodyFav = $("<div/>", { id: "emote-menu-inner-fav", css: { "display": "none" }})
     
-    var globalTab = $("<div/>", {class: "emote-menu-tab emote-menu-tab-selected", text: "Global", click: function() { $("#emote-menu-inner-fav").hide(); $("#emote-menu-inner").show(); }});
-    var favoriteTab = $("<div/>", {class: "emote-menu-tab", text: "Favorite", click: function() { $("#emote-menu-inner").hide(); $("#emote-menu-inner-fav").show(); }});
+    var globalTab = $("<div/>", {class: "emote-menu-tab emote-menu-tab-selected", id: "emgb", text: "Global", click: function() { $("#emfa").removeClass("emote-menu-tab-selected"); $("#emgb").addClass("emote-menu-tab-selected"); $("#emote-menu-inner-fav").hide(); $("#emote-menu-inner").show(); }});
+    var favoriteTab = $("<div/>", {class: "emote-menu-tab", id: "emfa", text: "Favorite", click: function() { $("#emgb").removeClass("emote-menu-tab-selected"); $("#emfa").addClass("emote-menu-tab-selected"); $("#emote-menu-inner").hide(); $("#emote-menu-inner-fav").show(); }});
     
     emoteMenuHeader.append(globalTab);
     emoteMenuHeader.append(favoriteTab);
