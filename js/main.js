@@ -8,7 +8,7 @@
 
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule;
-var jsVersion = 1.53;
+var jsVersion = 1.54;
 var supportedVersion = "0.2.3";
 
 var mainObserver;
@@ -64,6 +64,11 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
+        "favemotes": {
+            "title": "Favorite Emotes!",
+            "text": "You can now favorite emotes and have them listed in the quick emote menu!",
+            "img": ""
+        },
         "plugins": {
             "title": "Plugins!",
             "text": "Combined with Core 0.2.3, you can now write JavaScript plugins for Discord!",
@@ -274,7 +279,7 @@ Core.prototype.constructChangelog = function() {
         '  <div class="modal-inner">' +
         '       <div id="bdcl" class="change-log"> ' +
         '           <div class="header">' +
-        '               <strong>What\'s new in BetterDiscord JS v' + jsVersion + '</strong>' +
+        '               <strong>What\'s new in BetterDiscord JS v1.53&' + jsVersion + '</strong>' +
         '               <button class="close" onclick=\'$("#bd-wn-modal").remove();\'></button>' +
         '           </div><!--header-->' +
         '           <div class="scroller-wrap">' +
