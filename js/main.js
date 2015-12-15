@@ -189,7 +189,7 @@ Core.prototype.init = function() {
 
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
-            if(typeof(themesupport) !== "undefined") {
+            if(typeof(themesupport2) !== "undefined") {
                 themeModule = new ThemeModule();
                 themeModule.loadThemes();
             }
@@ -1169,7 +1169,7 @@ SettingsPanel.prototype.construct = function() {
     '               <div class="bd-pane control-group" id="bd-themes-pane" style="display:none;">';
     
     
-    if(typeof(themesupport) === "undefined") {
+    if(typeof(themesupport2) === "undefined") {
     settingsInner += '' +
     '                   Your version does not support themes. Download the latest version.';
     }else {
