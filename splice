@@ -60,7 +60,6 @@
                         split.splice(0, 1);
                         theme = split.join('\n');
                         theme = theme.replace(/(\r\n|\n|\r)/gm,'');
-                        theme = theme.replace(/\s/g, '');
                         mainWindow.webContents.executeJavaScript('(function() { bdthemes["'+themeName+'"] = { "enabled": false, "name": "'+themeName+'", "css": "'+escape(theme)+'", "description": "'+themeDescription+'", "author":"'+themeAuthor+'", "version":"'+themeVersion+'"  } })();');
                     });
                 });
