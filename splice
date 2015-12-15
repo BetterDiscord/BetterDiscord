@@ -61,7 +61,7 @@
                         theme = split.join('\n');
                         theme = theme.replace(/(\r\n|\n|\r)/gm,'');
                         theme = theme.replace(/\s/g, '');
-                        mainWindow.webContents.executeJavaScript('(function() { bdthemes["'+themeName+'"] = { "enabled": false, "css": "'+escape(theme)+'", "description": "'+themeDescription+'", "author":"'+themeAuthor+'", "version":"'+themeVersion+'"  } })();');
+                        mainWindow.webContents.executeJavaScript('(function() { bdthemes["'+themeName+'"] = { "enabled": false, "name": "'+themeName+'", "css": "'+escape(theme)+'", "description": "'+themeDescription+'", "author":"'+themeAuthor+'", "version":"'+themeVersion+'"  } })();');
                     });
                 });
 	});
