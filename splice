@@ -18,7 +18,7 @@
 			console.log('BetterDiscord: Creating Themes Dir');
 			fs.mkdirSync(_dataPath + "themes/");
 		}
-                mainWindow.webContents.executeJavaScript('var themesupport = true');
+                mainWindow.webContents.executeJavaScript('var themesupport2 = true');
 
                 fs.readdir(_dataPath + "plugins/",function(err,files) {
                     if (err) { console.log(err); return; } 
