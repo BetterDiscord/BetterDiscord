@@ -7,7 +7,7 @@
  */
 
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
 var jsVersion = 1.54;
 var supportedVersion = "0.2.3";
 
@@ -189,6 +189,10 @@ Core.prototype.init = function() {
 
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
+            if(typeof(themesupport) !== "undefined") {
+                themeModule = new ThemeModule();
+                themeModule.loadThemes();
+            }
 
             settingsPanel = new SettingsPanel();
             settingsPanel.init();
@@ -1127,10 +1131,8 @@ SettingsPanel.prototype.construct = function() {
         }
     }
     
-    
     var ccss = atob(localStorage.getItem("bdcustomcss"));
     self.applyCustomCss(ccss);
-    
     
     settingsInner += '</ul>' +
     '               </div>' +
@@ -1139,13 +1141,11 @@ SettingsPanel.prototype.construct = function() {
     '                   <textarea id="bd-custom-css-ta">'+ccss+'</textarea>' +
     '               </div>' +
     '' +
-    '               <div class="bd-pane control-group" id="bd-plugins-pane" style="dispaly:none;">' +
+    '               <div class="bd-pane control-group" id="bd-plugins-pane" style="display:none;">' +
     '                   <table class="bd-g-table">' +
     '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th></tr></thead><tbody>';
     
-    
     $.each(bdplugins, function() {
-        
         var plugin = this["plugin"];
         settingsInner += '' +
         '<tr>' +
@@ -1162,17 +1162,42 @@ SettingsPanel.prototype.construct = function() {
         '       </div>' +
         '   </td>' +
         '</tr>';
-        
     });
-    
 
-    
-    
     settingsInner += '</tbody></table>' +
     '               </div>' +
-    '' +
-    '               <div class="bd-pane control-group" id="bd-themes-pane" style="dispaly:none;">' +
-    'Coming very soon' +
+    '               <div class="bd-pane control-group" id="bd-themes-pane" style="display:none;">';
+    
+    
+    if(typeof(themesupport) === "undefined") {
+    settingsInner += '' +
+    '                   Your version does not support themes. Download the latest version.';
+    }else {
+        settingsInner += '' +
+        '                   <table class="bd-g-table">' +
+        '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th></tr></thead><tbody>';
+        $.each(bdthemes, function() {
+            settingsInner += '' +
+            '<tr>' +
+            '   <td>'+this["name"]+'</td>' +
+            '   <td width="99%"><textarea>'+this["description"]+'</textarea></td>' +
+            '   <td>'+this["author"]+'</td>' +
+            '   <td>'+this["version"]+'</td>' +
+            '   <td>' +
+            '       <div class="checkbox" onclick="themeModule.handleTheme(this);">' +
+            '           <div class="checkbox-inner">' +
+            '               <input id="ti'+this["name"]+'" type="checkbox" ' + (themeCookie[this["name"]] ? "checked" : "") +'>' +
+            '               <span></span>' +
+            '           </div>' +
+            '       </div>' +
+            '   </td>' +
+            '</tr>';
+        });
+        settingsInner += '</tbody></table>';
+    }
+    
+    
+    settingsInner += '' +
     '               </div>' +
     '' +
     '       </div>' +
@@ -1382,6 +1407,62 @@ PluginModule.prototype.loadPluginData = function() {
 PluginModule.prototype.savePluginData = function() {
     $.cookie("bd-plugins", JSON.stringify(pluginCookie), { expires: 365, path: '/' });
 };
+
+var themeCookie = {};
+
+function ThemeModule() {
+    
+}
+
+ThemeModule.prototype.loadThemes = function() {
+    this.loadThemeData();
+    
+    $.each(bdthemes, function() {
+        var name = this["name"];
+        var enabled = false;
+        if(themeCookie.hasOwnProperty(name)) {
+            if(themeCookie[name]) {
+                enabled = true;
+            }
+        } else {
+            themeCookie[name] = false;
+        }
+        
+        if(enabled) {
+            $("head").append('<style id="'+name+'">'+unescape(bdthemes[name]["css"])+'</style>');
+        }
+    });
+};
+
+ThemeModule.prototype.handleTheme = function(checkbox) {
+    
+    var cb = $(checkbox).children().find('input[type="checkbox"]');
+    var enabled = !cb.is(":checked");
+    var id = cb.attr("id").substring(2);
+    cb.prop("checked", enabled);
+    
+    if(enabled) {
+        $("head").append('<style id="'+id+'">'+unescape(bdthemes[id]["css"])+'</style>');
+        themeCookie[id] = true;
+    } else {
+        $("#"+id).remove();
+        themeCookie[id] = false;
+    }
+    
+    this.saveThemeData();
+};
+
+ThemeModule.prototype.loadThemeData = function() {
+    var cookie = $.cookie("bd-themes");
+    if(cookie != undefined) {
+        themeCookie = JSON.parse($.cookie("bd-themes"));
+    }
+};
+
+ThemeModule.prototype.saveThemeData = function() {
+    $.cookie("bd-themes", JSON.stringify(themeCookie), { expires: 365, path: '/' });
+};
+
 
 /* BetterDiscordApp API for Plugins
  * Version: 1.0
