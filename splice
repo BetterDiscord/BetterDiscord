@@ -55,9 +55,9 @@
                         var themeVar = meta.substring(meta.lastIndexOf('//META')+6, meta.lastIndexOf('*//'));
                         var parse = JSON.parse(themeVar);
                         var themeName = parse['name'];
-	       			var themeAuthor = parse['author'];
-	       			var themeDescription = parse['description'];
-	       			var themeVersion = parse['version'];
+	       	        var themeAuthor = parse['author'];
+	       	        var themeDescription = parse['description'];
+	       	        var themeVersion = parse['version'];
                         console.log('BetterDiscord: Loading Theme: ' + themeName);
                         split.splice(0, 1);
                         theme = split.join('\n');
