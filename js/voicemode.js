@@ -9,20 +9,32 @@ function VoiceMode() {
 
 }
 
+VoiceMode.prototype.obsCallback = function() {
+    var self = this;
+    if(settingsCookie["bda-gs-4"]) {
+        self.disable();
+        setTimeout(function() {
+            self.enable();
+        }, 300);
+    }
+}
+
 VoiceMode.prototype.enable = function() {
     $(".scroller.guild-channels ul").first().css("display", "none");
     $(".scroller.guild-channels header").first().css("display", "none");
-    $(".flex-vertical.flex-spacer").first().css("overflow", "hidden");
+    $(".app.flex-vertical").first().css("overflow", "hidden");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "hidden").css("min-width", "0px");
-    $(".flex-vertical.channels-wrap").first().css("width", "100%");
+    $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
 };
 
 VoiceMode.prototype.disable = function() {
     $(".scroller.guild-channels ul").first().css("display", "");
     $(".scroller.guild-channels header").first().css("display", "");
-    $(".flex-vertical.flex-spacer").first().css("overflow", "");
+    $(".app.flex-vertical").first().css("overflow", "");
     $(".chat.flex-vertical.flex-spacer").first().css("visibility", "").css("min-width", "");
-    $(".flex-vertical.channels-wrap").first().css("width", "");
+    $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
+
+var pluginCookie = {};

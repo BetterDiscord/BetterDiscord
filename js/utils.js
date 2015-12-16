@@ -6,7 +6,6 @@
  */
 
 var _hash;
-
 function Utils() {
 
 }
@@ -20,8 +19,34 @@ Utils.prototype.jqDefer = function(fnc) {
 };
 
 Utils.prototype.getHash = function() {
-    $.getJson("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
+    $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
         _hash = data.sha;
+        emoteModule.getBlacklist();
     });
+};
 
+Utils.prototype.loadHtml = function(html, callback) {
+  var container = $("<div/>", {
+      class: "bd-container"
+  }).appendTo("body");  
+
+  //TODO Inject these in next core update
+  html = '//cdn.rawgit.com/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
+  
+  container.load(html, callback());
+};
+
+Utils.prototype.injectJs = function(uri) {
+    $("<script/>", {
+        type: "text/javascript",
+        src: uri
+    }).appendTo($("body"));
+};
+
+Utils.prototype.injectCss = function(uri) {
+    $("<link/>", {
+        type: "text/css",
+        rel: "stylesheet",
+        href: uri
+    }).appendTo($("head"));
 };

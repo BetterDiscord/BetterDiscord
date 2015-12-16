@@ -1350,6 +1350,13 @@ VoiceMode.prototype.disable = function() {
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
 
+/* BetterDiscordApp PluginModule JavaScript
+ * Version: 1.0
+ * Author: Jiiks | http://jiiks.net
+ * Date: 16/12/2015
+ * https://github.com/Jiiks/BetterDiscordApp
+ */
+
 var pluginCookie = {};
 
 function PluginModule() {
@@ -1407,6 +1414,13 @@ PluginModule.prototype.loadPluginData = function() {
 PluginModule.prototype.savePluginData = function() {
     $.cookie("bd-plugins", JSON.stringify(pluginCookie), { expires: 365, path: '/' });
 };
+
+/* BetterDiscordApp ThemeModule JavaScript
+ * Version: 1.0
+ * Author: Jiiks | http://jiiks.net
+ * Date: 16/12/2015
+ * https://github.com/Jiiks/BetterDiscordApp
+ */
 
 var themeCookie = {};
 
