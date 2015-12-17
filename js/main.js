@@ -1202,6 +1202,10 @@ SettingsPanel.prototype.construct = function() {
     '' +
     '       </div>' +
     '   </div>' +
+    '   <div style="background:#2E3136; color:#ADADAD; height:30px; position:absolute; bottom:0; left:0; right:0;">'+
+    '       <span style="line-height:30px;margin-left:10px;">BetterDiscord v' + version + '(JSv'+jsVersion+') by Jiiks</span>'+
+    '       <span style="float:right;line-height:30px;margin-right:10px;"><a href="http://betterdiscord.net" target="_blank">BetterDiscord.net</a></span>'+
+    '   </div>'+
     '</div>';
     
     function showSettings() {
