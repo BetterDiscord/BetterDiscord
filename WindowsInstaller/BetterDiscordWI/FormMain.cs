@@ -13,6 +13,7 @@ namespace BetterDiscordWI
         private int _index;
 
         public String DiscordPath;
+        public Boolean RestartDiscord = false;
         public String Sha;
         public Boolean finished = false;
 

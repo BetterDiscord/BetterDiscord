@@ -33,6 +33,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tbPath = new BetterDiscordWI.components.CTextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.cbRestart = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -73,7 +74,6 @@
             this.tbPath.Name = "tbPath";
             this.tbPath.Size = new System.Drawing.Size(377, 26);
             this.tbPath.TabIndex = 4;
-            this.tbPath.Text = "feawfewafewa";
             // 
             // label3
             // 
@@ -84,10 +84,21 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "*Installer will kill Discord process.";
             // 
+            // cbRestart
+            // 
+            this.cbRestart.AutoSize = true;
+            this.cbRestart.Location = new System.Drawing.Point(23, 117);
+            this.cbRestart.Name = "cbRestart";
+            this.cbRestart.Size = new System.Drawing.Size(175, 17);
+            this.cbRestart.TabIndex = 6;
+            this.cbRestart.Text = "Restart Discord after installation";
+            this.cbRestart.UseVisualStyleBackColor = true;
+            // 
             // Panel1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.cbRestart);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.tbPath);
             this.Controls.Add(this.label2);
@@ -107,5 +118,6 @@
         private System.Windows.Forms.Label label2;
         private components.CTextBox tbPath;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox cbRestart;
     }
 }

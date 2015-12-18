@@ -28,21 +28,16 @@ namespace BetterDiscordWI.panels
             foreach(String s in directories)
             {
                 Debug.Print(s);
-                if (s.Contains("app-"))
+                if (!s.Contains("app-")) continue;
+                if (highestVersion == null)
                 {
-                    
+                    highestVersion = s;
+                    continue;
+                }
 
-                    if (highestVersion == null)
-                    {
-                        highestVersion = s;
-                        continue;
-                    }
-
-                    if (String.CompareOrdinal(s, highestVersion) > 0)
-                    {
-                        highestVersion = s;
-                    }
-
+                if (String.CompareOrdinal(s, highestVersion) > 0)
+                {
+                    highestVersion = s;
                 }
             }
 
@@ -57,6 +52,7 @@ namespace BetterDiscordWI.panels
         public void BtnNext()
         {
             GetParent().DiscordPath = tbPath.Text;
+            GetParent().RestartDiscord = cbRestart.Checked;
             GetParent().SwitchPanel(2);
         }
 

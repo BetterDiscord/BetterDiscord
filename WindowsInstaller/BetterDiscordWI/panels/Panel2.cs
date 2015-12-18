@@ -239,6 +239,11 @@ namespace BetterDiscordWI.panels
                 GetParent().btnCancel.Text = "OK";
                 GetParent().btnCancel.Enabled = true;
             });
+
+            if (GetParent().RestartDiscord)
+            {
+                Process.Start(GetParent().DiscordPath + "\\Discord.exe");
+            }
         }
 
         public FormMain GetParent()
