@@ -1,15 +1,7 @@
 # BetterDiscordApp
 Better Discord App enhances Discord desktop app with new features.
 
-As of JavaScript version 1.4, settings have been moved to Discord settings dialog.
-
-# On connect you will be automatically invited to the BetterDiscord Discord server one time.
-
-![ss](http://i.imgur.com/iesp9UY.png)
-
-![ss](http://i.imgur.com/F9yMSKc.jpg)
-
-## If Discord has updated and the installer hasn't, try replacing the installer index.js with the latest one here: [index.js](https://github.com/Jiiks/BetterDiscordApp/blob/master/NodeInstaller/index.js)
+![ss](http://i.imgur.com/P0XEyp6.jpg)
 
 ## Windows Universal Installer
 * Download the latest installer from https://github.com/Jiiks/BetterDiscordApp/releases/tag/WindowsInstaller0.2
@@ -20,7 +12,6 @@ As of JavaScript version 1.4, settings have been moved to Discord settings dialo
 ## Auto Installation
 * Download the latest package from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
 * Run the installer
-* Hopefully it works.
 * Installer requires [node](https://nodejs.org/en/download/) download the binaries and place in the same folder as the installer if you don't have node installed.
 * Installer uses [asar](https://github.com/atom/asar) which is bundled with the installer.
 * Installer uses [wrench](https://github.com/ryanmcgrath/wrench-js) which is bundled with the installer.
@@ -31,7 +22,6 @@ As of JavaScript version 1.4, settings have been moved to Discord settings dialo
 * Add init to Discord load event
 * Move BetterDiscord to node_modules
 
-
 ## Features
 
 **Emotes:**
@@ -39,7 +29,7 @@ BetterDiscord adds all [Twitch.tv](http://twitch.tv), most [FrankerFaceZ](http:/
 Supported FrankerFaceZ emotes: http://jiiks.net/projects/betterdiscord/ffz/
 
 **Quick Emote Menu:**
-Quick Emote Menu adds a menu for quickly adding twitch emotes.
+Quick Emote Menu adds a menu for quickly adding twitch emotes and your favorite emotes.
 
 **Emote Autocapitalize:**
 Automatically capitalize [Twitch.tv](http://twitch.tv) global emotes.
@@ -54,10 +44,16 @@ Minimal mode makes elements smaller and hides certain elements.
 Only display voice channels
 
 **Public Servers:**
-A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json) (Broken)
+A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json)
 
 **Custom CSS**
 BetterDiscord supports custom CSS for styling Discord to your liking.
+
+**Custom Themes**
+BetterDiscord comes with a theme loader for loading your own or downloading themes made by others.
+
+**Plugins**
+BetterDiscord comes with a JavaSCript plugin loader for loading your own or downloading plugins made by others.
 
 **Spoilers**
 Add spoilers to your chat, simply add [!s] to your message.
@@ -75,12 +71,15 @@ Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serv
 ## Credits
 * MacOS Installer by [Candunc](https://github.com/Candunc) 
 * Emote titles by [pendo324](https://github.com/pendo324)
+* Majority of FFZ emote work by [Pohky] (https://github.com/pohky)
+
+# On connect you will be automatically invited to the BetterDiscord Discord server one time.
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Jiiks
+Copyright (c) 2015 Jiiks | [Jiiks.net] (https://jiiks.net)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
