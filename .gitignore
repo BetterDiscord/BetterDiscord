@@ -1,4 +1,5 @@
 .idea/*
 *.name
 devjs/.idea/devjs.iml
-*.bak.js
+*.bak
+*.bak.*
