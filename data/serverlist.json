@@ -1,0 +1,669 @@
+{
+  "servers": {
+	"BetterDiscord": {
+      "code": "0Tmfo5ZbORCRqbAd",
+      "description": "BetterDiscord Server",
+      "icon": null,
+      "language": "EN",
+      "title": "BetterDiscord"
+    },
+    "3DS": {
+      "code": "0UFdpe0x69ZguQw8",
+      "description": "3DS",
+      "icon": null,
+      "language": "EN",
+      "title": "3DS"
+    },
+    "ALTEDM": {
+      "code": "0Y6Is461Ze5ae0w1",
+      "description": "ALTEDM",
+      "icon": null,
+      "language": "EN",
+      "title": "ALTEDM"
+    },
+    "ARMA": {
+      "code": "0aGPuCZqmGNA7xiu",
+      "description": "ARMA",
+      "icon": null,
+      "language": "EN",
+      "title": "ARMA"
+    },
+    "Abusement Park": {
+      "code": "0YEnlwRYgAEvNz98",
+      "description": "Abusement Park",
+      "icon": null,
+      "language": "EN",
+      "title": "Abusement Park"
+    },
+    "Adventurer's Guild": {
+      "code": "0MRCBg85iz6XrZu2",
+      "description": "Adventurer's Guild",
+      "icon": null,
+      "language": "EN",
+      "title": "Adventurer's Guild"
+    },
+    "Animu and Mango": {
+      "code": "0TrxVUwZsSuz9S4j",
+      "description": "Animu and Mango",
+      "icon": null,
+      "language": "EN",
+      "title": "Animu and Mango"
+    },
+        "Anime-Discuss": {
+      "code": "0ccNdvWBCEuw87eD",
+      "description": "Anime-Discuss",
+      "icon": null,
+      "language": "EN",
+      "title": "Anime-Discuss"
+    },
+    "Binding of Isaac": { 
+      "code": "0gonaBVBNISU8zhS", 
+      "description": "For all Isaac talk", 
+      "icon": null, 
+      "language": "EN", 
+      "title": "Binding of Isaac"
+    },
+    "Blade and Soul": {
+      "code": "0TaItTx9qrQce4iU",
+      "description": "Blade and Soul",
+      "icon": null,
+      "language": "EN",
+      "title": "Blade and Soul"
+    },
+    "Cell Geek House": {
+      "code": "0eMZO3uY2Gk15xD7",
+      "description": "Cell Geek House / Cell Cyber Arena",
+      "icon": null,
+      "language": "EN",
+      "title": "Cell Geek House"
+    },
+    "CS:GO": {
+      "code": "0TIJM4joeU3XmRWO",
+      "description": "CS:GO",
+      "icon": null,
+      "language": "EN",
+      "title": "CS:GO"
+    },
+    "ChristOutreachOnline": {
+      "code": "0aFmfZpsrBo0bD1d",
+      "description": "ChristOutreachOnline",
+      "icon": null,
+      "language": "EN",
+      "title": "ChristOutreachOnline"
+    },
+    "Closers Dimension Conflict": {
+      "code": "0S3aWQEkIlWcA2CD",
+      "description": "Closers Dimension Conflict",
+      "icon": null,
+      "language": "EN",
+      "title": "Closers Dimension Conflict"
+    },
+    "Comic Book General": {
+      "code": "0aNAiNnGVDNURGbI",
+      "description": "Comic Book General",
+      "icon": null,
+      "language": "EN",
+      "title": "Comic Book General"
+    },
+    "Crowfall MMO": {
+      "code": "0MDCm6IEmg1BF8Ui",
+      "description": "Crowfall MMO",
+      "icon": null,
+      "language": "EN",
+      "title": "Crowfall MMO"
+    },
+    "DOTA2": {
+      "code": "0Pj5D1QKnYAR4GQ7",
+      "description": "DOTA 2",
+      "icon": null,
+      "language": "EN",
+      "title": "DOTA 2"
+    },
+    "DUTCH": {
+      "code": "0Vb7szHL7DblhTFt",
+      "description": "[NL] FPS/MOBA",
+      "icon": null,
+      "language": "NL",
+      "title": "DUTCH"
+    },
+    "Devilion MMO": {
+      "code": "0Mgy9tqnN39ctFsm",
+      "description": "Devilion MMO",
+      "icon": null,
+      "language": "EN",
+      "title": "Devilion MMO"
+    },
+    "Diablo 3": {
+      "code": "0aOBBxGmOoM5IJ25",
+      "description": "Diablo 3",
+      "icon": null,
+      "language": "EN",
+      "title": "Diablo 3"
+    },
+    "Diablo": {
+      "code": "0TAtzhBDJhJiC9Ie",
+      "description": "Diablo",
+      "icon": null,
+      "language": "EN",
+      "title": "Diablo"
+    },
+    "DiscordDevs": {
+      "code": "0ESuwoZe4M2Xcpeu",
+      "description": "DiscordDevs",
+      "icon": null,
+      "language": "EN",
+      "title": "DiscordDevs"
+    },
+    "DiscordLinux": {
+      "code": "0XKEBLSe6ccP5uYT",
+      "description": "DiscordLinux",
+      "icon": null,
+      "language": "EN",
+      "title": "DiscordLinux"
+    },
+    "Distance": {
+      "code": "0SlqqvzfIbgVqJB6",
+      "description": "Distance",
+      "icon": null,
+      "language": "EN",
+      "title": "Distance"
+    },
+    "Dofus": {
+      "code": "0RDH0dqUoTRFbwy9",
+      "description": "Dofus",
+      "icon": null,
+      "language": "EN",
+      "title": "Dofus"
+    },
+    "Dragon Nest DNSWorld": {
+      "code": "0VcwAnzwc0KNfgML",
+      "description": "Dragon Nest DNSWorld",
+      "icon": null,
+      "language": "EN",
+      "title": "Dragon Nest DNSWorld"
+    },
+    "Dragon Nest NA": {
+      "code": "0aoJVkoXoNwFEUea",
+      "description": "Dragon Nest NA",
+      "icon": null,
+      "language": "EN",
+      "title": "Dragon Nest NA"
+    },
+    "E-Sports India": {
+      "code": "0YlFAx7vf5bUixZQ",
+      "description": "E-Sports India",
+      "icon": null,
+      "language": "EN",
+      "title": "E-Sports India"
+    },
+    "ElDewrito": {
+    	"code": "0TKY0SDEUHBum0w3",
+    	"description": "Halo Online ElDewrito",
+    	"icon": null,
+    	"language": "EN",
+    	"title": "ElDewrito"
+    },
+    "Elite Dangerous": {
+      "code": "0V5hfT4eO8fN9Q6K",
+      "description": "Elite Dangerous",
+      "icon": null,
+      "language": "EN",
+      "title": "Elite Dangerous"
+    },
+    "Evolve": {
+      "code": "0UqXI9nyH0aVU7rr",
+      "description": "Evolve",
+      "icon": null,
+      "language": "EN",
+      "title": "Evolve"
+    },
+    "FFXIV (chaos)XIV Cerberus": {
+      "code": "0ZxYbZOJBFGPHFCA",
+      "description": "FFXIV (chaos)XIV Cerberus",
+      "icon": null,
+      "language": "EN",
+      "title": "FFXIV (chaos)XIV Cerberus"
+    },
+    "FFXIV - Adamantoise": {
+      "code": "0a7yOKD02XGkhkX1",
+      "description": "FFXIV - Adamantoise",
+      "icon": null,
+      "language": "EN",
+      "title": "FFXIV - Adamantoise"
+    },
+    "FFXIV - Leviathan": {
+      "code": "0aBJkEDJGsBMDNON",
+      "description": "FFXIV - Leviathan",
+      "icon": null,
+      "language": "EN",
+      "title": "FFXIV - Leviathan"
+    },
+    "FFXIV - Odin": {
+      "code": "0aBuERD9ZVV8BFqq",
+      "description": "FFXIV - Odin",
+      "icon": null,
+      "language": "EN",
+      "title": "FFXIV - Odin"
+    },
+    "FFXIV - Ultros": {
+      "code": "0alCJcRuekEnn3Ha",
+      "description": "FFXIV - Ultros",
+      "icon": null,
+      "language": "EN",
+      "title": "FFXIV - Ultros"
+    },
+    "FFXIV Heavensward": {
+      "code": "0HCCgO4RbqVjgShp",
+      "description": "FFXIV Heavensward",
+      "icon": null,
+      "language": "EN",
+      "title": "FFXIV Heavensward"
+    },
+    "FRENCH": {
+      "code": "0Tx7qmKNCj1yivSy",
+      "description": "FRENCH",
+      "icon": null,
+      "language": "FR",
+      "title": "FRENCH"
+    },
+    "Fuckboii squad #1": {
+      "code": "0V2bHFWgHEZt0GsE",
+      "description": "Fuckboii squad #1",
+      "icon": null,
+      "language": "EN",
+      "title": "Fuckboii squad #1"
+    },
+    "Games are Magic": {
+      "code": "0THXqgmFNlha7B6g",
+      "description": "Games are Magic",
+      "icon": null,
+      "language": "EN",
+      "title": "Games are Magic"
+    },
+    "Guild Wars 2": {
+      "code": "0b5yVCmhcVt4C6mr",
+      "description": "Guild Wars 2",
+      "icon": null,
+      "language": "EN",
+      "title": "Guild Wars 2"
+    },
+    "Hearthstone": {
+      "code": "0TwrUZr5zGyFd7HX",
+      "description": "Hearthstone",
+      "icon": null,
+      "language": "EN",
+      "title": "Hearthstone"
+    },
+    "Heroes of the Storm": {
+      "code": "0SLRrvrOn5DdcrHU",
+      "description": "Heroes of the Storm",
+      "icon": null,
+      "language": "EN",
+      "title": "Heores of the Storm"
+    },
+    "Hip Slick & Geek": {
+      "code": "0Uk8GIZtbNLEbhaP",
+      "description": "Hip Slick & Geek",
+      "icon": null,
+      "language": "EN",
+      "title": "Hip Slick & Geek"
+    },
+    "Insurgency": {
+      "code": "0YOLsfWWZSvS0jHe",
+      "description": "Insurgency",
+      "icon": null,
+      "language": "EN",
+      "title": "Insurgency"
+    },
+    "Japanese Media Management": {
+      "code": "0XKJW7TObKLajoKc",
+      "description": "Japanese Media Management",
+      "icon": null,
+      "language": "EN",
+      "title": "Japanese Media Management"
+    },
+    "Killing Floor 2": {
+      "code": "0YmeWp0IqRUndLXx",
+      "description": "Killing Floor 2",
+      "icon": null,
+      "language": "EN",
+      "title": "Killing Floor 2"
+    },
+    "League of Legends": {
+      "code": "0T8zCRzGTxbLjlhw",
+      "description": "League of Legends",
+      "icon": null,
+      "language": "EN",
+      "title": "League of Legends"
+    },
+    "Left 4 Dead 2": {
+      "code": "0YmpIAl4WCls4SLK",
+      "description": "Left 4 Dead 2",
+      "icon": null,
+      "language": "EN",
+      "title": "Left 4 Dead 2"
+    },
+    "Lost Saga": {
+      "code": "0XVkwnDAeKgT2Cbv",
+      "description": "Lost Saga",
+      "icon": null,
+      "language": "EN",
+      "title": "Lost Saga"
+    },
+    "Mario Kart": {
+      "code": "0TtGzmNdU5ZxCkgv",
+      "description": "Mario Kart",
+      "icon": null,
+      "language": "EN",
+      "title": "Mario Kart"
+    },
+    "Meebo and Friends": {
+      "code": "0ZP2BxUIC1eQSp4K",
+      "description": "Meebo and Friends",
+      "icon": null,
+      "language": "EN",
+      "title": "Meebo and Friends"
+    },
+    "Minecraft": {
+      "code": "0VAzP14IRxYaC97V",
+      "description": "Minecraft",
+      "icon": null,
+      "language": "EN",
+      "title": "Minecraft"
+    },
+    "MovieClub": {
+      "code": "0Tx4H0SMzT5Qv46T",
+      "description": "MovieClub",
+      "icon": null,
+      "language": "EN",
+      "title": "MovieClub"
+    },
+    "Osu!": {
+      "code": "0Y1676AR4QQfPn4x",
+      "description": "Osu!",
+      "icon": null,
+      "language": "EN",
+      "title": "Osu!"
+    },
+    "Overwatch": {
+      "code": "0aP2XiSkO7ekjro4",
+      "description": "Overwatch",
+      "icon": null,
+      "language": "EN",
+      "title": "Overwatch"
+    },
+    "PKA/Painkiller": {
+      "code": "0Ud6KT05Ly2NMd3f",
+      "description": "PKA/Painkiller",
+      "icon": null,
+      "language": "EN",
+      "title": "PKA/Painkiller"
+    },
+    "PORTUGUESE": {
+      "code": "",
+      "description": "PORTUGUESE",
+      "icon": null,
+      "language": "PT",
+      "title": "PORTUGUESE"
+    },
+    "Path of Exile": {
+      "code": "0aPhfOWXrsfz4wk2",
+      "description": "Path of Exile",
+      "icon": null,
+      "language": "EN",
+      "title": "Path of Exile"
+    },
+    "Project Zomboid": {
+      "code": "0OjlJ7zhCLhDTCti",
+      "description": "Project Zomboid",
+      "icon": null,
+      "language": "EN",
+      "title": "Project Zomboid"
+    },
+    "Ragnarok Online": {
+      "code": "0hr7izZb0BhnyN8L",
+      "description": "Ragnarok Online",
+      "icon": null,
+      "language": "EN",
+      "title": "Ragnarok Online"
+    },
+    "Reflex": {
+      "code": "0SrnNbgr3f6Mz9kt",
+      "description": "Reflex",
+      "icon": null,
+      "language": "EN",
+      "title": "Reflex"
+    },
+    "Rhythm Games Community": {
+      "code": "0SrIUyiiarDafGL2",
+      "description": "Rhythm Games Community",
+      "icon": null,
+      "language": "EN",
+      "title": "Rhythm Games Community"
+    },
+    "Rising Thunder": {
+      "code": "0WTdWwnuayUuFQYH",
+      "description": "Rising Thunder",
+      "icon": null,
+      "language": "EN",
+      "title": "Rising Thunder"
+    },
+    "Rocket League": {
+      "code": "0TDkiRRfZwNBNfA5",
+      "description": "Rocket League",
+      "icon": null,
+      "language": "EN",
+      "title": "Rocket League"
+    },
+    "SWEDISH": {
+      "code": "0VnT8iwVFHLNARyZ",
+      "description": "SWEDISH",
+      "icon": null,
+      "language": "SWE",
+      "title": "SWEDISH"
+    },
+    "Secrets of Grindea": {
+      "code": "0OKNQ4xrrE0PRQQM",
+      "description": "Secrets of Grindea",
+      "icon": null,
+      "language": "EN",
+      "title": "Secrets of Grindea"
+    },
+    "Smash Brothers /r/ssbm": {
+      "code": "0Xeas8JqXwdpX0lR",
+      "description": "Smash Brothers /r/ssbm",
+      "icon": null,
+      "language": "EN",
+      "title": "Smash Brothers"
+    },
+    "Smash Brothers": {
+      "code": "0PAW8nxQx9UbYVTq",
+      "description": "Smash Brothers - Australian Smash",
+      "icon": null,
+      "language": "EN",
+      "title": "Smash Brothers"
+    },
+    "Smite": {
+      "code": "0U54RVEbDtnOU2wa",
+      "description": "Smite",
+      "icon": null,
+      "language": "EN",
+      "title": "Smite"
+    },
+    "Social Hub": {
+      "code": "0VIWePEAZcdNDQM5",
+      "description": "Social Hub",
+      "icon": null,
+      "language": "EN",
+      "title": "Social Hub"
+    },
+    "SoulsBorne": {
+      "code": "0gzazVW6NC6TCIJC",
+      "description": "All things soulsborne",
+      "icon": null,
+      "language": "EN",
+      "title": "SoulsBorne"
+    },
+    "Starcraft": {
+      "code": "0Vjzi81e7LFaUhPR",
+      "description": "Starcraft",
+      "icon": null,
+      "language": "EN",
+      "title": "Starcraft"
+    },
+    "Sword of Vermilion": {
+      "code": "0b0ZitR25ZeGGiLT",
+      "description": "Sword of Vermilion",
+      "icon": null,
+      "language": "EN",
+      "title": "Sword of Vermilion"
+    },
+    "TCG": {
+      "code": "0aGuULuB9C2JbHs4",
+      "description": "TCG Central",
+      "icon": null,
+      "language": "EN",
+      "title": "TCG"
+    },
+    "Team Fortress 2": {
+      "code": "0aDTtF09VPlNTg0Q",
+      "description": "Team Fortress 2",
+      "icon": null,
+      "language": "EN",
+      "title": "Team Fortress 2"
+    },
+    "Terraria": {
+      "code": "0U4zNFIJpDCL7GQs",
+      "description": "Terraria",
+      "icon": null,
+      "language": "EN",
+      "title": "Terraria"
+    },
+    "The Music Bar": {
+      "code": "0TBYxuT95eWrk9RI",
+      "description": "The Music Bar",
+      "icon": null,
+      "language": "EN",
+      "title": "The Music Bar"
+    },
+    "The Sims": {
+      "code": "0YjcYngtdfkBMAxn",
+      "description": "The Sims",
+      "icon": null,
+      "language": "EN",
+      "title": "The Sims"
+    },
+    "Touhou": {
+      "code": "0U6KAap475vPWss7",
+      "description": "Touhou",
+      "icon": null,
+      "language": "EN",
+      "title": "Touhou"
+    },
+    "Tree Of Savior": {
+      "code": "0QFW9NDirWiV9RZh",
+      "description": "Tree Of Savior",
+      "icon": null,
+      "language": "EN",
+      "title": "Tree Of Savior"
+    },
+    "Tripulse Community": {
+      "code": "0RfRA4njAeYbZAdl",
+      "description": "Tripulse Community",
+      "icon": null,
+      "language": "EN",
+      "title": "Tripulse Community"
+    },
+    "Unofficial Gearbox Discord": {
+      "code": "0Ut1Gt2sJo6GTFXa",
+      "description": "Unofficial Gearbox Discord",
+      "icon": null,
+      "language": "EN",
+      "title": "Unofficial Gearbox Discord"
+    },
+    "Unofficial Monstercat": {
+      "code": "0XzWvesV0VyuKDXW",
+      "description": "Unofficial Monstercat",
+      "icon": null,
+      "language": "EN",
+      "title": "Unofficial Monstercat"
+    },
+    "Unofficial Nintendo": {
+      "code": "0VUyTH6zFt3zU3QW",
+      "description": "Unofficial Nintendo",
+      "icon": null,
+      "language": "EN",
+      "title": "Unofficial Nintendo"
+    },
+    "Unofficial PC Master Race": {
+      "code": "0VEW0OVOGMjjSmzP",
+      "description": "Unofficial PC Master Race",
+      "icon": null,
+      "language": "EN",
+      "title": "Unofficial PC Master Race"
+    },
+    "Unreal Tournament 4": {
+      "code": "0UgVfEa2r2CwcjJg",
+      "description": "Unreal Tournament 4",
+      "icon": null,
+      "language": "EN",
+      "title": "Unreal Tournament 4"
+    },
+    "Wakfu": {
+      "code": "0WL9EEf55J99YJJX",
+      "description": "Wakfu",
+      "icon": null,
+      "language": "EN",
+      "title": "Wakfu"
+    },
+    "Warframe": {
+      "code": "0Qj6myIvIZgVf5zr",
+      "description": "Warframe",
+      "icon": null,
+      "language": "EN",
+      "title": "Warframe"
+    },
+    "Wildstar": {
+      "code": "0TrMr9NtcKujZXLh",
+      "description": "Wildstar",
+      "icon": null,
+      "language": "EN",
+      "title": "Wildstar"
+    },
+    "[EU]Rocket League": {
+      "code": "0W70FqxbCli27BfR",
+      "description": "[EU]Rocket League",
+      "icon": null,
+      "language": "EN",
+      "title": "[EU]Rocket League"
+    },
+    "[UK] FPS/RTS/RPG": {
+      "code": "0TzxyhJax4nDbITe",
+      "description": "[UK] FPS/RTS/RPG",
+      "icon": null,
+      "language": "EN",
+      "title": "[UK] FPS/RTS/RPG"
+    },
+    "RepZ": {
+      "code": "0gAFLYLhoOvyeqBA",
+      "description": "RepZ Clan Discord Server",
+      "icon": null,
+      "language": "EN",
+      "title": "RepZ"
+    },
+    "Bluscream's Server": {
+      "code": "0Xdjjtm2UyoI6Kgu",
+      "description": "Bluscream's Discord Server",
+      "icon": null,
+      "language": "EN",
+      "title": "Bluscream's Server"
+    },
+    "Highschool DxD": {
+      "code": "0guT1EI9HilMr4dg",
+      "description": "Highschool DxD",
+      "icon": null,
+      "language": "EN",
+      "title": "Highschool DxD"
+    }
+  }
+}
