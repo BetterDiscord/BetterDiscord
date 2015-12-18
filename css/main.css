@@ -315,9 +315,14 @@
 }
 
 .bd-minimal .comment {
-	border-left:2px solid #303030;
+	border-left:2px solid #EBEBEB;
 	padding-left:2px;
 }
+
+.bd-minimal .theme-dark .comment {
+	border-left:2px solid #303030;
+}
+
 
 .bd-minimal .user-name {
 	font-size:small;
