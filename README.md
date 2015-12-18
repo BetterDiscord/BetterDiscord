@@ -25,8 +25,7 @@ Better Discord App enhances Discord desktop app with new features.
 ## Features
 
 **Emotes:**
-BetterDiscord adds all [Twitch.tv](http://twitch.tv), most [FrankerFaceZ](http://frankerfacez.com) and [BetterTTV](http://betterttv.net) emotes to Discord.
-Supported FrankerFaceZ emotes: http://jiiks.net/projects/betterdiscord/ffz/
+BetterDiscord adds all [Twitch.tv](http://twitch.tv), most [FrankerFaceZ](http://frankerfacez.com) and [BetterTTV](http://betterttv.net) emotes to Discord. Supported emotes: https://betterdiscord.net/emotes
 
 **Quick Emote Menu:**
 Quick Emote Menu adds a menu for quickly adding twitch emotes and your favorite emotes.
