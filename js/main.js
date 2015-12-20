@@ -1186,7 +1186,7 @@ SettingsPanel.prototype.construct = function() {
         $.each(bdthemes, function() {
             settingsInner += '' +
             '<tr>' +
-            '   <td>'+this["name"]+'</td>' +
+            '   <td>'+this["name"].replace(/_/g, " ")+'</td>' +
             '   <td width="99%"><textarea>'+this["description"]+'</textarea></td>' +
             '   <td>'+this["author"]+'</td>' +
             '   <td>'+this["version"]+'</td>' +
