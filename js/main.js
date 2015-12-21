@@ -1255,7 +1255,7 @@ SettingsPanel.prototype.construct = function() {
                         });
 
                         tabBar.append(settingsButton);
-                        panel.insertAfter(".form .settings-right .settings-inner");
+                        $(".form .settings-right .settings-inner").last().after(panel);
                         $("#bd-settings-new").removeClass("selected");
                     } else {
                         setTimeout(innerDefer, 100);
