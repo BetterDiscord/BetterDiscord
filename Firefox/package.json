@@ -3,10 +3,10 @@
   "name": "betterdiscord",
   "version": "0.0.1",
   "description": "BetterDiscord enhances Discord with several features",
-  "main": "index.js",
-  "author": "Jiiks",
+  "main": "lib/main",
+  "author": "JiCode",
   "engines": {
-    "firefox": ">=38.0a1"
+    "firefox": ">=30"
   },
   "license": "MIT",
   "keywords": [
