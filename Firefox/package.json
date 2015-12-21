@@ -1,0 +1,15 @@
+{
+  "title": "BetterDiscord",
+  "name": "betterdiscord",
+  "version": "0.0.1",
+  "description": "BetterDiscord enhances Discord with several features",
+  "main": "index.js",
+  "author": "Jiiks",
+  "engines": {
+    "firefox": ">=38.0a1"
+  },
+  "license": "MIT",
+  "keywords": [
+    "jetpack"
+  ]
+}
