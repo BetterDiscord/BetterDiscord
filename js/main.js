@@ -1150,7 +1150,7 @@ SettingsPanel.prototype.construct = function() {
     '' +
     '               <div class="bd-pane control-group" id="bd-plugins-pane" style="display:none;">' +
     '                   <table class="bd-g-table">' +
-    '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th></tr></thead><tbody>';
+    '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th><th></th></tr></thead><tbody>';
     
     $.each(bdplugins, function() {
         var plugin = this["plugin"];
@@ -1160,6 +1160,7 @@ SettingsPanel.prototype.construct = function() {
         '   <td width="99%"><textarea>'+plugin.getDescription()+'</textarea></td>' +
         '   <td>'+plugin.getAuthor()+'</td>' +
         '   <td>'+plugin.getVersion()+'</td>' +
+        '   <td><button class="bd-psb" onclick="pluginModule.showSettings(\''+plugin.getName()+'\'); return false;"></button></td>' +
         '   <td>' +
         '       <div class="checkbox" onclick="pluginModule.handlePlugin(this);">' +
         '       <div class="checkbox-inner">' +
@@ -1413,6 +1414,16 @@ PluginModule.prototype.handlePlugin = function(checkbox) {
     }
     
     this.savePluginData();
+};
+
+PluginModule.prototype.showSettings = function(plugin) {
+    if(bdplugins[plugin] != null) {
+        if(typeof bdplugins[plugin].plugin.getSettingsPanel === "function") {
+            var panel = bdplugins[plugin].plugin.getSettingsPanel();
+            $(".modal").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
+            $("#bd-psm-s").append(panel);
+        }
+    }
 };
 
 PluginModule.prototype.loadPluginData = function() {
