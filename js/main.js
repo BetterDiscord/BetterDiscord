@@ -1420,6 +1420,15 @@ PluginModule.prototype.showSettings = function(plugin) {
     if(bdplugins[plugin] != null) {
         if(typeof bdplugins[plugin].plugin.getSettingsPanel === "function") {
             var panel = bdplugins[plugin].plugin.getSettingsPanel();
+            
+            $(".modal-inner").off("click.bdpsm").on("click.bdpsm", function(e) {
+                if($("#bd-psm-id").length) {
+                    $(".bd-psm").remove();
+                } else {
+                    $(".bd-psm").attr("id", "bd-psm-id");
+                }
+                
+            });
             $(".modal").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
             $("#bd-psm-s").append(panel);
         }
