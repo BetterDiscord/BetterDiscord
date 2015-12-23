@@ -492,7 +492,7 @@ EmoteModule.prototype.injectEmote = function(node) {
             if(word.length < 4) {
                 return;
             }
-			console.log("WORD: " + word);
+
 			if(word == "ClauZ") {
 				parentInnerHTML = parentInnerHTML.replace("ClauZ", '<img src="https://cdn.frankerfacez.com/emoticon/70852/1" style="width:25px; transform:translate(-29px, -14px);"></img>');
 				return;
@@ -580,6 +580,7 @@ EmoteModule.prototype.autoCapitalize = function() {
 
         var lastWord = text.split(" ").pop();
         if(lastWord.length > 3) {
+			if(lastWord == "danSgame") return;
             var ret = self.capitalize(lastWord.toLowerCase());
             if(ret !== null && ret !== undefined) {
                 $(".channel-textarea-inner textarea").val(text.replace(lastWord, ret));
