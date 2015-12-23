@@ -29,7 +29,7 @@ namespace BetterDiscordWI.panels
             {
                 Debug.Print(s);
                 if (!s.Contains("app-")) continue;
-                if (highestVersion == null)
+                if (String.IsNullOrEmpty(highestVersion))
                 {
                     highestVersion = s;
                     continue;
@@ -40,6 +40,7 @@ namespace BetterDiscordWI.panels
                     highestVersion = s;
                 }
             }
+
 
             tbPath.Text = highestVersion;
         }
