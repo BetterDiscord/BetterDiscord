@@ -9,7 +9,7 @@
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
 var jsVersion = 1.55;
-var supportedVersion = "0.2.3";
+var supportedVersion = "0.2.0";
 
 var mainObserver;
 
@@ -48,11 +48,11 @@ var defaultCookie = {
     "version":  jsVersion,
     "bda-gs-0": false,
     "bda-gs-1": true,
-    "bda-gs-2": false,
+    "bda-gs-2": true,
     "bda-gs-3": false,
     "bda-gs-4": false,
     "bda-es-0": true,
-    "bda-es-1": false,
+    "bda-es-1": true,
     "bda-es-2": false,
     "bda-es-3": false,
     "bda-es-4": false,
@@ -113,7 +113,7 @@ var bdchangelog = {
 		},
         "femotes": {
             "title": "Favorite Emotes!",
-            "test": "Favorite emotes right click now always works!",
+            "text": "Favorite emotes right click now always works!",
             "img": ""
         },
         "pservers": {
@@ -145,6 +145,7 @@ Core.prototype.init = function() {
     var self = this;
 
     if(version < supportedVersion) {
+        $("body").append("<div></div>");
         alert("BetterDiscord v" + version + "(your version)" + " is not supported by the latest js("+jsVersion+"). Please download the latest version from betterdiscord.net");
         return;
     }
@@ -361,6 +362,21 @@ Core.prototype.constructChangelog = function() {
     return changeLog;
 };
 
+Core.prototype.alert = function(title, text) {
+    $("body").append('' +
+                    '<div class="bd-alert">' +
+                    '   <div class="bd-alert-header">' +
+                    '       <span>'+title+'</span>' +
+                    '       <div class="bd-alert-closebtn">×</div>' +
+                    '   </div>' + 
+                    '   <div class="bd-alert-body">' +
+                    '       <div class="scroller-wrap dark fade">' + 
+                    '           <div class="scroller">'+text+'</div>' +
+                    '       </div>' +
+                    '   </div>' +
+                    '</div>');  
+};
+
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.5
  * Author: Jiiks | http://jiiks.net
@@ -561,7 +577,7 @@ EmoteModule.prototype.autoCapitalize = function() {
         var lastWord = text.split(" ").pop();
         if(lastWord.length > 3) {
             var ret = self.capitalize(lastWord.toLowerCase());
-            if(ret != null) {
+            if(ret !== null && ret !== undefined) {
                 $(".channel-textarea-inner textarea").val(text.replace(lastWord, ret));
             }
         }
@@ -929,7 +945,6 @@ QuickEmoteMenu.prototype.updateFavorites = function() {
             ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
         });
         icon.off("contextmenu").on("contextmenu", function(e) {
-            console.log("IT'S HAPPENING!");
             var title = $(this).attr("title");
             var menu = $("#rmenu");
             menu.find("a").off("click").on("click",function() {
