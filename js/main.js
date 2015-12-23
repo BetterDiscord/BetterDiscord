@@ -780,7 +780,18 @@ QuickEmoteMenu.prototype.init = function(reload) {
             emoteMenu.removeClass();
             $(this).removeClass();
         }
+        return false;
     });
+    
+    $(document).off("click.bdem").on("click.bdem", function() {
+        if(menuOpen) {
+            menuOpen = !menuOpen;
+            emoteMenu.removeClass();
+            $("#twitchcord-button").removeClass();
+        }
+    });
+    
+    $("#emote-menu").on("click", function() { return false; });
 
     if(settingsCookie["bda-es-0"]) {
         $(".channel-textarea").first().addClass("emotemenu-enabled");
