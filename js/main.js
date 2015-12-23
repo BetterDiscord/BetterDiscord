@@ -8,7 +8,7 @@
 
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
-var jsVersion = 1.54;
+var jsVersion = 1.55;
 var supportedVersion = "0.2.3";
 
 var mainObserver;
@@ -64,12 +64,17 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
-        "favemotes": {
-            "title": "Favorite Emotes!",
-            "text": "You can now favorite emotes and have them listed in the quick emote menu!",
+        "core": {
+            "title": "Core 0.2.5",
+            "text": "Core v0.2.5 has been made more universal. Download the latest from <a href='https://betterdiscord.net' target='_blank'>https://betterdiscord.net</a> ).",
             "img": ""
         },
         "plugins": {
+            "title": "Plugin Settings!",
+            "text": "Plugins can now add their own settings panel!",
+            "img": ""
+        },
+        "plugins2": {
             "title": "Plugins!",
             "text": "Combined with Core 0.2.3, you can now write JavaScript plugins for Discord!",
             "img": ""
@@ -77,6 +82,11 @@ var bdchangelog = {
         "settingsmenu": {
             "title": "Settings Menu!",
             "text": "New and improved settings menu!",
+            "img": ""
+        },
+        "qemotemenu": {
+            "title": "Quick emote menu!",
+            "text": "Quick emote menu now closes when you click anywhere else and you can favorite twitch global emotes!",
             "img": ""
         },
         "csseditor": {
@@ -101,6 +111,11 @@ var bdchangelog = {
 			"text": "Edited messages now display emotes properly!",
 			"img": ""
 		},
+        "femotes": {
+            "title": "Favorite Emotes!",
+            "test": "Favorite emotes right click now always works!",
+            "img": ""
+        },
         "pservers": {
             "title": "Public Servers",
             "text": "Public servers have been fixed!",
@@ -116,21 +131,6 @@ var bdchangelog = {
         "ignore": {
             "title": "Ignore User!",
             "text": "Ignore users you don't like!",
-            "img": ""
-        },
-        "themes": {
-            "title": "Custom themes!",
-            "text": "Write your own or download custom themes!",
-            "img": ""  
-        },
-        "favemotes": {
-            "title": "Favorite emotes!",
-            "text": "Add your favorite emote(s) to the quick emote menu!",
-            "img": ""  
-        },
-        "more": {
-            "title": "More Things!",
-            "text": "More things but probably not in the next version!",
             "img": ""
         }
     }
@@ -482,7 +482,9 @@ EmoteModule.prototype.injectEmote = function(node) {
 
             if (emotesTwitch.emotes.hasOwnProperty(word)) {
                 var len = Math.round(word.length / 4);
-                parentInnerHTML = parentInnerHTML.replace(word, '<img class="emote" alt="' + word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3) + '" src="' + twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd + '" />');
+                var name =  word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
+                var url = twitchEmoteUrlStart + emotesTwitch.emotes[word].image_id + twitchEmoteUrlEnd;
+                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote" alt="' + name + '" src="' + url + '" /><input onclick=\'quickEmoteMenu.favorite(\"'+name+'\", \"'+url+'\");\' class="fav" title="Favorite!" type="button"></div>');
                 return;
             }
 
@@ -762,7 +764,6 @@ QuickEmoteMenu.prototype.init = function(reload) {
 
     var menuOpen;
 
-
     emoteBtn = $("<div/>", { id:"twitchcord-button-container", style:"display:none" }).append($("<button/>", { id: "twitchcord-button", onclick: "return false;" }));
 
     $(".content.flex-spacer.flex-horizontal .flex-spacer.flex-vertical form").append(emoteBtn);
@@ -885,13 +886,6 @@ QuickEmoteMenu.prototype.initEmoteList = function() {
 
 QuickEmoteMenu.prototype.favorite = function(name, url) {
     
-    if(!$("#rmenu").length) {
-        $("body").append('<div id="rmenu"><ul><a href="#">Remove</a></ul></div>');
-        $(document).on("click", function() {
-            $("#rmenu").hide();
-        });
-    }
-    
     if(!favoriteEmotes.hasOwnProperty(name)) {
         favoriteEmotes[name] = url;
     }
@@ -900,6 +894,13 @@ QuickEmoteMenu.prototype.favorite = function(name, url) {
 };
 
 QuickEmoteMenu.prototype.updateFavorites = function() {
+    
+    if(!$("#rmenu").length) {
+        $("body").append('<div id="rmenu"><ul><a href="#">Remove</a></ul></div>');
+        $(document).on("click", function() {
+            $("#rmenu").hide();
+        });
+    }
 
     var self = this;
     var emoteMenuBody = $("#emote-menu-inner-fav");
@@ -917,6 +918,7 @@ QuickEmoteMenu.prototype.updateFavorites = function() {
             ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
         });
         icon.off("contextmenu").on("contextmenu", function(e) {
+            console.log("IT'S HAPPENING!");
             var title = $(this).attr("title");
             var menu = $("#rmenu");
             menu.find("a").off("click").on("click",function() {
