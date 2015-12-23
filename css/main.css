@@ -823,6 +823,10 @@
     height:178px;
 }
 
+.bd-alert-body a {
+    color:#FFF !important;
+}
+
 .bd-alert-body .scroller-wrap {
     height:178px;
 }

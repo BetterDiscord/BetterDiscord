@@ -8,8 +8,8 @@
 
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
-var jsVersion = 1.55;
-var supportedVersion = "0.2.0";
+var jsVersion = 1.56;
+var supportedVersion = "0.2.3";
 
 var mainObserver;
 
@@ -145,8 +145,7 @@ Core.prototype.init = function() {
     var self = this;
 
     if(version < supportedVersion) {
-        $("body").append("<div></div>");
-        alert("BetterDiscord v" + version + "(your version)" + " is not supported by the latest js("+jsVersion+"). Please download the latest version from betterdiscord.net");
+        this.alert("Not Supported",  "BetterDiscord v" + version + "(your version)" + " is not supported by the latest js("+jsVersion+").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
         return;
     }
 
