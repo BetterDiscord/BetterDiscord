@@ -4,7 +4,7 @@ Better Discord App enhances Discord desktop app with new features.
 ![ss](http://i.imgur.com/P0XEyp6.jpg)
 
 ## Windows Universal Installer
-* Download the latest installer from https://github.com/Jiiks/BetterDiscordApp/releases/tag/WindowsInstaller0.2
+* Download the latest installer from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
 * Follow the instructions
 * .NET 4.0 required https://www.microsoft.com/en-us/download/details.aspx?id=30653
 * Windows Installer users asar.net https://github.com/Jiiks/asar.net
