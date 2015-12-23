@@ -493,13 +493,9 @@ EmoteModule.prototype.injectEmote = function(node) {
                 return;
             }
 			console.log("WORD: " + word);
-			if(word == "ADDHAT") {
-				word = "sirHat";
-				var len = Math.round(word.length / 4);
-                var name =  word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
-				var url = "https://cdn.frankerfacez.com/emoticon/51162/1";
-				parentInnerHTML = parentInnerHTML.replace("ADDHAT", '<div class="emotewrapper" style="transform:translate(-35px, -20px);"><img class="emote" alt="' + name + '" src="' + url + '" /><input onclick=\'quickEmoteMenu.favorite(\"'+name+'\", \"'+url+'\");\' class="fav" title="Favorite!" type="button"></div>');
-                return;
+			if(word == "ClauZ") {
+				parentInnerHTML = parentInnerHTML.replace("ClauZ", '<img src="https://cdn.frankerfacez.com/emoticon/70852/1" style="width:25px; transform:translate(-29px, -14px);"></img>');
+				return;
 			}
 
             if($.inArray(word, bemotes) != -1) return;
