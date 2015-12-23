@@ -806,7 +806,7 @@ QuickEmoteMenu.prototype.init = function(reload) {
         }
     });
     
-    $("#emote-menu").on("click", function() { return false; });
+    $("#emote-menu").on("click", function() { $("#rmenu").hide(); return false; });
 
     if(settingsCookie["bda-es-0"]) {
         $(".channel-textarea").first().addClass("emotemenu-enabled");
