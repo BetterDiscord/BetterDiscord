@@ -367,7 +367,7 @@ Core.prototype.alert = function(title, text) {
                     '<div class="bd-alert">' +
                     '   <div class="bd-alert-header">' +
                     '       <span>'+title+'</span>' +
-                    '       <div class="bd-alert-closebtn">×</div>' +
+                    '       <div class="bd-alert-closebtn" onclick="$(this).parent().parent().remove();">×</div>' +
                     '   </div>' + 
                     '   <div class="bd-alert-body">' +
                     '       <div class="scroller-wrap dark fade">' + 
