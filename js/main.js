@@ -187,6 +187,8 @@ Core.prototype.init = function() {
             
             $("head").append("<script>function dec2hex(t){return hexDigit[t>>4]+hexDigit[15&t]}function hex2dec(t){return parseInt(t,16)}var hexDigit=new Array(\"0\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"A\",\"B\",\"C\",\"D\",\"E\",\"F\");JSFX.FireworkSpark=function(t,r){this.superC=JSFX.Layer,this.superC(\"X\"),this.dx=4*Math.random()-2,this.dy=4*Math.random()-2,this.ay=.09,this.x=t,this.y=r,this.type=0},JSFX.FireworkSpark.prototype=new JSFX.Layer,JSFX.FireworkSpark.prototype.fire0=function(){var t=6.294*Math.random(),r=2*Math.random();Math.random()>.6&&(r=2),this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire1=function(){var t=6.294*Math.random(),r=2*Math.random();this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire2=function(){var t=6.294*Math.random(),r=2;this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire3=function(){var t=6.294*Math.random(),r=t-Math.random();this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire4=function(){var t=6.294*Math.random(),r=Math.random()>.5?2:1;1==r?this.setFwColor=this.setFwColorR:this.setFwColor=this.setFwColorG,r-=Math.random()/4,this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire=function(t,r,o,i){1==i?this.setFwColor=this.setFwColorR:2==i?this.setFwColor=this.setFwColorC:3==i?this.setFwColor=this.setFwColorG:4==i?this.setFwColor=this.setFwColorW:this.setFwColor=this.setFwColorY,1==o?this.fire1():2==o?this.fire2():3==o?this.fire3():4==o?this.fire4():this.fire0(),this.x=t,this.y=r,this.moveTo(t,r)},JSFX.FireworkSpark.prototype.setFwColor=function(t){this.setFwColorY(t)},JSFX.FireworkSpark.prototype.setFwColorR=function(t){var r=dec2hex(t),o=\"#\"+r+\"0000\";this.setBgColor(o)},JSFX.FireworkSpark.prototype.setFwColorG=function(t){var r=dec2hex(t),o=\"#00\"+r+\"00\";this.setBgColor(o)},JSFX.FireworkSpark.prototype.setFwColorC=function(t){var r=dec2hex(t),o=\"#00\"+r+r;this.setBgColor(o)},JSFX.FireworkSpark.prototype.setFwColorY=function(t){var r=dec2hex(t),o=\"#\"+r+r+\"00\";this.setBgColor(o)},JSFX.FireworkSpark.prototype.setFwColorW=function(t){var r=dec2hex(t),o=\"#\"+r+r+r;this.setBgColor(o)},JSFX.FireworkSpark.prototype.animate=function(t){var r=30>t?255-4*t:Math.random()*(356-4*t);this.setFwColor(r),this.dy+=this.ay,this.x+=this.dx,this.y+=this.dy,this.moveTo(this.x,this.y)},JSFX.FireObj=function(t,r,o){for(this.id=\"JSFX_FireObj_\"+JSFX.FireObj.count++,this.sparks=new Array,i=0;i<t;i++)this.sparks[i]=new JSFX.FireworkSpark(r,o),this.sparks[i].clip(0,0,3,3),this.sparks[i].setBgColor(\"yellow\"),this.sparks[i].show();this.step=0,window[this.id]=this,this.animate()},JSFX.FireObj.count=0,JSFX.FireObj.prototype.explode=function(){var t=50+Math.random()*(JSFX.Browser.getMaxX()-200),r=50+Math.random()*(JSFX.Browser.getMaxY()-200),o=Math.floor(5*Math.random()),e=Math.floor(5*Math.random());for(i=0;i<this.sparks.length;i++)this.sparks[i].fire(t,r,o,e)},JSFX.FireObj.prototype.animate=function(){for(setTimeout(\"window.\"+this.id+\".animate()\",40),this.step>50&&(this.step=0),0==this.step&&this.explode(),this.step++,i=0;i<this.sparks.length;i++)this.sparks[i].animate(this.step)},JSFX.Fire=function(t,r,o){return new JSFX.FireObj(t,r,o)},-1==navigator.appName.indexOf(\"Netscape\")||document.getElementById||(JSFX.ns_resize||(JSFX.ow=outerWidth,JSFX.oh=outerHeight,JSFX.ns_resize=function(){(outerWidth!=JSFX.ow||outerHeight!=JSFX.oh)&&location.reload()}),window.onresize=JSFX.ns_resize);</script>");
             
+            /*Fireworks Scripts by http://www.javascript-fx.com/ */
+            
         } else {
             setTimeout(gwDefer, 100);
         }
@@ -1595,21 +1597,21 @@ BdWSocket.prototype.onMessage = function(e) {
 
     switch(type) {
         case "READY": 
-            bdSocket.interval = setInterval(() => bdws.send({ op: 1, d: Date.now() }), data.heartbeat_interval);
-            utils.log("Socket Ready");
-            console.log(data.heartbeat_interval);
+           // bdSocket.interval = setInterval(() => bdws.send({ op: 1, d: Date.now() }), data.heartbeat_interval);
+           // utils.log("Socket Ready");
+           // console.log(data.heartbeat_interval);
             break;
         case "PRESENCE_UPDATE":
             break;
         case "TYPING_START":
             break;
         case "MESSAGE_CREATE":
-                console.log("MESSAGE CREATE");
-                console.log(data);
+             //   console.log("MESSAGE CREATE");
+            //    console.log(data);
             break;
         case "MESSAGE_UPDATE":
-                console.log("MESSAGE UPDATE");
-                console.log(data);
+            //    console.log("MESSAGE UPDATE");
+            //    console.log(data);
             break;
         default:
             break;
