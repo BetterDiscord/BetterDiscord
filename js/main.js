@@ -103,7 +103,12 @@ Core.prototype.init = function() {
         return;
     }
 
+
+    
+
     utils = new Utils();
+    var sock = new BdWSocket();
+    sock.start();
     utils.getHash();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
@@ -173,6 +178,14 @@ Core.prototype.init = function() {
 
             $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
    
+            $("head").append('<style>div[id*="xLayer"] { font-size:3px !important; color:transparent !important; } </style>');
+   
+   
+            $("head").append("<script>var ns4=-1!=navigator.appName.indexOf(\"Netscape\")&&!document.getElementById;window.JSFX||(JSFX=new Object),JSFX.layerNo=0,JSFX.createLayer=function(e,t){var n=null;if(document.layers){var o=\"xLayer\"+JSFX.layerNo++;n=null==t?new Layer(2e3):new Layer(2e3,t.elem),n.document.open(),n.document.write(e),n.document.close(),n.moveTo(0,0),n.innerHTML=e}else if(document.all){t=null==t?document.body:t.elem;var o=\"xLayer\"+JSFX.layerNo++,i='<DIV ID=\"'+o+'\" STYLE=\"position:absolute;left:0;top:0;visibility:hidden\">'+e+\"</DIV>\";t.insertAdjacentHTML(\"BeforeEnd\",i),n=document.all[o]}else if(document.getElementById){t=null==t?document.body:t.elem;var o=\"xLayer\"+JSFX.layerNo++,i=\"position:absolute;left:0px;top:0px;visibility:hidden\",r=document.createRange();n=document.createElement(\"DIV\"),n.setAttribute(\"style\",i),n.setAttribute(\"id\",o),t.appendChild(n),r.setStartBefore(n),strFrag=r.createContextualFragment(e),n.appendChild(strFrag)}return n},JSFX.Layer=function(e,t){e&&(\"string\"==typeof e?this.elem=JSFX.createLayer(e,t):this.elem=e,document.layers?(this.images=this.elem.document.images,this.parent=t,this.style=this.elem,null!=t&&(this.style.visibility=\"inherit\")):(this.images=document.images,this.parent=t,this.style=this.elem.style),window[this.elem.id]=this)},JSFX.findLayer=function(e,t){if(document.layers){var n;null==t&&(t=document);var o=t.layers[e];if(null!=o)return o;for(n=0;n<t.layers.length;n++)if(o=JSFX.findLayer(e,t.layers[n].document),null!=o)return o;return\"Undefined....\"}return document.all?document.all[e]:document.getElementById?document.getElementById(e):\"Undefined.....\"},JSFX.Layer.prototype.moveTo=function(e,t){this.style.left=e+\"px\",this.style.top=t+\"px\"},ns4&&(JSFX.Layer.prototype.moveTo=function(e,t){this.elem.moveTo(e,t)}),JSFX.Layer.prototype.show=function(){this.style.visibility=\"visible\"},JSFX.Layer.prototype.hide=function(){this.style.visibility=\"hidden\"},JSFX.Layer.prototype.isVisible=function(){return\"visible\"==this.style.visibility},ns4&&(JSFX.Layer.prototype.show=function(){this.style.visibility=\"show\"},JSFX.Layer.prototype.hide=function(){this.style.visibility=\"hide\"},JSFX.Layer.prototype.isVisible=function(){return\"show\"==this.style.visibility}),JSFX.Layer.prototype.setzIndex=function(e){this.style.zIndex=e},JSFX.Layer.prototype.getzIndex=function(){return this.style.zIndex},JSFX.Layer.prototype.setColor=function(e){this.style.color=e},ns4&&(JSFX.Layer.prototype.setColor=function(e){this.elem.document.write(\"<FONT COLOR='\"+e+\"'>\"+this.elem.innerHTML+\"</FONT>\"),this.elem.document.close()}),JSFX.Layer.prototype.setBgColor=function(e){this.style.backgroundColor=null==e?\"transparent\":e},ns4&&(JSFX.Layer.prototype.setBgColor=function(e){this.elem.bgColor=e}),JSFX.Layer.prototype.setBgImage=function(e){this.style.backgroundImage=\"url(\"+e+\")\"},ns4&&(JSFX.Layer.prototype.setBgImage=function(e){this.style.background.src=e}),JSFX.Layer.prototype.setContent=function(e){this.elem.innerHTML=e},ns4&&(JSFX.Layer.prototype.setContent=function(e){this.elem.document.write(e),this.elem.document.close(),this.elem.innerHTML=e}),JSFX.Layer.prototype.clip=function(e,t,n,o){this.style.clip=\"rect(\"+t+\" \"+n+\" \"+o+\" \"+e+\")\"},ns4&&(JSFX.Layer.prototype.clip=function(e,t,n,o){this.style.clip.top=t,this.style.clip.left=e,this.style.clip.bottom=o,this.style.clip.right=n}),JSFX.Layer.prototype.resizeTo=function(e,t){this.style.width=e+\"px\",this.style.height=t+\"px\"},ns4&&(JSFX.Layer.prototype.resizeTo=function(e,t){this.style.clip.width=e,this.style.clip.height=t}),JSFX.Layer.prototype.getX=function(){return parseInt(this.style.left)},JSFX.Layer.prototype.getY=function(){return parseInt(this.style.top)},ns4&&(JSFX.Layer.prototype.getX=function(){return this.style.left},JSFX.Layer.prototype.getY=function(){return this.style.top}),JSFX.Layer.prototype.getWidth=function(){return this.elem.offsetWidth},JSFX.Layer.prototype.getHeight=function(){return this.elem.offsetHeight},document.getElementById||(JSFX.Layer.prototype.getWidth=function(){return this.elem.scrollWidth}),ns4&&(JSFX.Layer.prototype.getWidth=function(){return this.style.clip.right},JSFX.Layer.prototype.getHeight=function(){return this.style.clip.bottom}),ns4?JSFX.Layer.prototype.setOpacity=function(e){return 0}:document.all?JSFX.Layer.prototype.setOpacity=function(e){\"\"==this.style.filter&&(this.style.filter=\"alpha(opacity=100);\"),this.elem.filters.alpha.opacity=e}:JSFX.Layer.prototype.setOpacity=function(e){this.style.MozOpacity=e+\"%\"},ns4?(JSFX.eventmasks={onabort:Event.ABORT,onblur:Event.BLUR,onchange:Event.CHANGE,onclick:Event.CLICK,ondblclick:Event.DBLCLICK,ondragdrop:Event.DRAGDROP,onerror:Event.ERROR,onfocus:Event.FOCUS,onkeydown:Event.KEYDOWN,onkeypress:Event.KEYPRESS,onkeyup:Event.KEYUP,onload:Event.LOAD,onmousedown:Event.MOUSEDOWN,onmousemove:Event.MOUSEMOVE,onmouseout:Event.MOUSEOUT,onmouseover:Event.MOUSEOVER,onmouseup:Event.MOUSEUP,onmove:Event.MOVE,onreset:Event.RESET,onresize:Event.RESIZE,onselect:Event.SELECT,onsubmit:Event.SUBMIT,onunload:Event.UNLOAD},JSFX.Layer.prototype.addEventHandler=function(e,t){this.elem.captureEvents(JSFX.eventmasks[e]);var n=this;this.elem[e]=function(e){return e.clientX=e.pageX,e.clientY=e.pageY,e.button=e.which,e.keyCode=e.which,e.altKey=0!=(e.modifiers&Event.ALT_MASK),e.ctrlKey=0!=(e.modifiers&Event.CONTROL_MASK),e.shiftKey=0!=(e.modifiers&Event.SHIFT_MASK),t(n,e)}},JSFX.Layer.prototype.removeEventHandler=function(e){this.elem.releaseEvents(JSFX.eventmasks[e]),delete this.elem[e]}):document.all?(JSFX.Layer.prototype.addEventHandler=function(e,t){var n=this;this.elem[e]=function(){var e=window.event;if(e.cancelBubble=!0,document.getElementById)e.layerX=e.offsetX,e.layerY=e.offsetY;else{ev=new Object;for(i in e)ev[i]=e[i];ev.layerX=e.offsetX,ev.layerY=e.offsetY,e=ev}return t(n,e)}},JSFX.Layer.prototype.removeEventHandler=function(e){this.elem[e]=null}):(JSFX.Layer.prototype.addEventHandler=function(e,t){var n=this;this.elem[e]=function(e){return e.cancelBubble=!0,t(n,e)}},JSFX.Layer.prototype.removeEventHandler=function(e){this.elem[e]=null}),JSFX.Layer.prototype.setTimeout=function(e,t){setTimeout(\"window.\"+this.elem.id+\".\"+e,t)};</script>");
+            
+            $("head").append('<script>window.JSFX||(JSFX=new Object),JSFX.Browser||(JSFX.Browser=new Object),-1!=navigator.appName.indexOf("Netscape")?(JSFX.Browser.getCanvasWidth=function(){return innerWidth},JSFX.Browser.getCanvasHeight=function(){return innerHeight},JSFX.Browser.getWindowWidth=function(){return outerWidth},JSFX.Browser.getWindowHeight=function(){return outerHeight},JSFX.Browser.getScreenWidth=function(){return screen.width},JSFX.Browser.getScreenHeight=function(){return screen.height},JSFX.Browser.getMinX=function(){return pageXOffset},JSFX.Browser.getMinY=function(){return pageYOffset},JSFX.Browser.getMaxX=function(){return pageXOffset+innerWidth},JSFX.Browser.getMaxY=function(){return pageYOffset+innerHeight}):document.all&&(JSFX.Browser.getCanvasWidth=function(){return document.body.clientWidth},JSFX.Browser.getCanvasHeight=function(){return document.body.clientHeight},JSFX.Browser.getWindowWidth=function(){return document.body.clientWidth},JSFX.Browser.getWindowHeight=function(){return document.body.clientHeight},JSFX.Browser.getScreenWidth=function(){return screen.width},JSFX.Browser.getScreenHeight=function(){return screen.height},JSFX.Browser.getMinX=function(){return document.body.scrollLeft},JSFX.Browser.getMinY=function(){return document.body.scrollTop},JSFX.Browser.getMaxX=function(){return document.body.scrollLeft+document.body.clientWidth},JSFX.Browser.getMaxY=function(){return document.body.scrollTop+document.body.clientHeight});</script>');
+            
+            $("head").append("<script>function dec2hex(t){return hexDigit[t>>4]+hexDigit[15&t]}function hex2dec(t){return parseInt(t,16)}var hexDigit=new Array(\"0\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\",\"A\",\"B\",\"C\",\"D\",\"E\",\"F\");JSFX.FireworkSpark=function(t,r){this.superC=JSFX.Layer,this.superC(\"X\"),this.dx=4*Math.random()-2,this.dy=4*Math.random()-2,this.ay=.09,this.x=t,this.y=r,this.type=0},JSFX.FireworkSpark.prototype=new JSFX.Layer,JSFX.FireworkSpark.prototype.fire0=function(){var t=6.294*Math.random(),r=2*Math.random();Math.random()>.6&&(r=2),this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire1=function(){var t=6.294*Math.random(),r=2*Math.random();this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire2=function(){var t=6.294*Math.random(),r=2;this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire3=function(){var t=6.294*Math.random(),r=t-Math.random();this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire4=function(){var t=6.294*Math.random(),r=Math.random()>.5?2:1;1==r?this.setFwColor=this.setFwColorR:this.setFwColor=this.setFwColorG,r-=Math.random()/4,this.dx=r*Math.sin(t),this.dy=r*Math.cos(t)-2},JSFX.FireworkSpark.prototype.fire=function(t,r,o,i){1==i?this.setFwColor=this.setFwColorR:2==i?this.setFwColor=this.setFwColorC:3==i?this.setFwColor=this.setFwColorG:4==i?this.setFwColor=this.setFwColorW:this.setFwColor=this.setFwColorY,1==o?this.fire1():2==o?this.fire2():3==o?this.fire3():4==o?this.fire4():this.fire0(),this.x=t,this.y=r,this.moveTo(t,r)},JSFX.FireworkSpark.prototype.setFwColor=function(t){this.setFwColorY(t)},JSFX.FireworkSpark.prototype.setFwColorR=function(t){var r=dec2hex(t),o=\"#\"+r+\"0000\";this.setBgColor(o)},JSFX.FireworkSpark.prototype.setFwColorG=function(t){var r=dec2hex(t),o=\"#00\"+r+\"00\";this.setBgColor(o)},JSFX.FireworkSpark.prototype.setFwColorC=function(t){var r=dec2hex(t),o=\"#00\"+r+r;this.setBgColor(o)},JSFX.FireworkSpark.prototype.setFwColorY=function(t){var r=dec2hex(t),o=\"#\"+r+r+\"00\";this.setBgColor(o)},JSFX.FireworkSpark.prototype.setFwColorW=function(t){var r=dec2hex(t),o=\"#\"+r+r+r;this.setBgColor(o)},JSFX.FireworkSpark.prototype.animate=function(t){var r=30>t?255-4*t:Math.random()*(356-4*t);this.setFwColor(r),this.dy+=this.ay,this.x+=this.dx,this.y+=this.dy,this.moveTo(this.x,this.y)},JSFX.FireObj=function(t,r,o){for(this.id=\"JSFX_FireObj_\"+JSFX.FireObj.count++,this.sparks=new Array,i=0;i<t;i++)this.sparks[i]=new JSFX.FireworkSpark(r,o),this.sparks[i].clip(0,0,3,3),this.sparks[i].setBgColor(\"yellow\"),this.sparks[i].show();this.step=0,window[this.id]=this,this.animate()},JSFX.FireObj.count=0,JSFX.FireObj.prototype.explode=function(){var t=50+Math.random()*(JSFX.Browser.getMaxX()-200),r=50+Math.random()*(JSFX.Browser.getMaxY()-200),o=Math.floor(5*Math.random()),e=Math.floor(5*Math.random());for(i=0;i<this.sparks.length;i++)this.sparks[i].fire(t,r,o,e)},JSFX.FireObj.prototype.animate=function(){for(setTimeout(\"window.\"+this.id+\".animate()\",40),this.step>50&&(this.step=0),0==this.step&&this.explode(),this.step++,i=0;i<this.sparks.length;i++)this.sparks[i].animate(this.step)},JSFX.Fire=function(t,r,o){return new JSFX.FireObj(t,r,o)},-1==navigator.appName.indexOf(\"Netscape\")||document.getElementById||(JSFX.ns_resize||(JSFX.ow=outerWidth,JSFX.oh=outerHeight,JSFX.ns_resize=function(){(outerWidth!=JSFX.ow||outerHeight!=JSFX.oh)&&location.reload()}),window.onresize=JSFX.ns_resize);</script>");
             
         } else {
             setTimeout(gwDefer, 100);
@@ -797,8 +810,29 @@ QuickEmoteMenu.prototype.init = function(reload) {
     }
 };
 
+var bdfw = {};
+
 QuickEmoteMenu.prototype.obsCallback = function() {
-		
+    
+    var customCss = $("#customcss").html();
+    if(window.location.pathname == "/channels/86004744966914048/86004744966914048" || customCss.indexOf("fireworks{}") > -1) { 
+        if(customCss.indexOf("nofireworks{}") > -1) { 
+            $("[id*=xLayer]").remove();
+            if(bdfw.id) {
+                delete bdfw.id;
+            }
+        } else {
+            bdfw = JSFX.Fire(100, 40, 40);
+        }
+    } else {
+        $("[id*=xLayer]").remove();
+    
+        if(bdfw.id) {
+            delete bdfw.id;
+        }
+    }
+    
+    
     if(!emoteBtn) return;
     if(!$(".content.flex-spacer.flex-horizontal .flex-spacer.flex-vertical form")) return;
 
@@ -1287,6 +1321,14 @@ Utils.prototype.injectCss = function(uri) {
     }).appendTo($("head"));
 };
 
+Utils.prototype.log = function(message) {
+    console.info("%c[BetterDiscord]%c " + message, "color:teal; font-weight:bold;","");
+};
+
+Utils.prototype.err = function(message) {
+    console.info("%c[BetterDiscord]%c " + message, "color:red; font-weight:bold;","");
+};
+
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1491,6 +1533,102 @@ ThemeModule.prototype.saveThemeData = function() {
     $.cookie("bd-themes", JSON.stringify(themeCookie), { expires: 365, path: '/' });
 };
 
+
+/*BDSocket*/
+
+var bdSocket;
+var bdws;
+
+function BdWSocket() {
+    bdws = this;
+}
+
+BdWSocket.prototype.start = function() {
+    var self = this;
+    $.ajax({
+        method:"GET",
+        url:"https://discordapp.com/api/gateway",
+        headers: {authorization: localStorage.token.match(/\"(.+)\"/)[1]},
+        success: function(data){
+            self.open(data.url);
+        }
+    });
+};
+
+BdWSocket.prototype.open = function(host) {
+    return;
+    utils.log("Socket Host: " + host);
+    try {
+        bdSocket = new WebSocket(host);
+        bdSocket.onopen =  this.onOpen;
+        bdSocket.onmessage = this.onMessage;
+        bdSocket.onerror = this.onError;
+        bdSocket.onclose = this.onClose;
+    }catch(err) { utils.log(err); }
+    
+};
+
+BdWSocket.prototype.onOpen = function() {
+    utils.log("Socket Open");
+    var data = {
+        op: 2,
+        d: {
+            token: JSON.parse(localStorage.getItem('token')),
+            properties: JSON.parse(localStorage.getItem('superProperties')),
+            v: 3
+        }
+    };
+    bdws.send(data);
+};
+
+BdWSocket.prototype.onMessage = function(e) {
+
+    var packet, data, type;
+    try {
+        packet = JSON.parse(e.data);
+        data = packet.d;
+        type = packet.t;
+    } catch(err) {
+        utils.err(err);
+        return;
+    }
+
+    switch(type) {
+        case "READY": 
+            bdSocket.interval = setInterval(() => bdws.send({ op: 1, d: Date.now() }), data.heartbeat_interval);
+            utils.log("Socket Ready");
+            console.log(data.heartbeat_interval);
+            break;
+        case "PRESENCE_UPDATE":
+            break;
+        case "TYPING_START":
+            break;
+        case "MESSAGE_CREATE":
+                console.log("MESSAGE CREATE");
+                console.log(data);
+            break;
+        case "MESSAGE_UPDATE":
+                console.log("MESSAGE UPDATE");
+                console.log(data);
+            break;
+        default:
+            break;
+    }
+
+};
+
+BdWSocket.prototype.onError = function(e) {
+    utils.log("onError: ");
+};
+
+BdWSocket.prototype.onClose = function(e) {
+    utils.log("Socket Closed - " + e.code + " : " + e.reason);
+};
+
+BdWSocket.prototype.send = function(data) {
+    utils.log("Sending: " + JSON.stringify(data));
+    bdSocket.send(JSON.stringify(data));
+};
 
 /* BetterDiscordApp API for Plugins
  * Version: 1.0
