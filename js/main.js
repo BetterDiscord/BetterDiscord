@@ -177,6 +177,7 @@ Core.prototype.init = function() {
             }
 
             $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
+            $("head").append('<style id="bdemotemenustyle"></style>');
 
         } else {
             setTimeout(gwDefer, 100);
@@ -736,6 +737,7 @@ PublicServers.prototype.joinServer = function(code) {
  */
 
 var emoteBtn, emoteMenu;
+var eiarr = [1, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14];
 
 function QuickEmoteMenu() {
 
@@ -761,6 +763,7 @@ QuickEmoteMenu.prototype.init = function(reload) {
     $("#twitchcord-button").on("click", function() {
         menuOpen = !menuOpen;
         if(menuOpen) {
+            $("#bdemotemenustyle").html('.twitchcord-button-open { background-image:url(https://static-cdn.jtvnw.net/emoticons/v1/'+eiarr[Math.floor(Math.random()*eiarr.length)]+'/1.0) !important; }');
             emoteMenu.addClass("emotemenu-open");
             $(this).addClass("twitchcord-button-open");
         } else {
