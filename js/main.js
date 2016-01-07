@@ -1606,7 +1606,6 @@ BdWSocket.prototype.onClose = function(e) {
 };
 
 BdWSocket.prototype.send = function(data) {
-    utils.log("Sending: " + JSON.stringify(data));
     bdSocket.send(JSON.stringify(data));
 };
 
