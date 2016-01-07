@@ -1442,6 +1442,10 @@ PluginModule.prototype.channelSwitch = function() {
     });
 };
 
+PluginModule.prototype.socketEvent = function(e, data) {
+    
+};
+
 
 /* BetterDiscordApp ThemeModule JavaScript
  * Version: 1.0
@@ -1528,7 +1532,6 @@ BdWSocket.prototype.start = function() {
 };
 
 BdWSocket.prototype.open = function(host) {
-    return;
     utils.log("Socket Host: " + host);
     try {
         bdSocket = new WebSocket(host);
@@ -1567,21 +1570,20 @@ BdWSocket.prototype.onMessage = function(e) {
 
     switch(type) {
         case "READY": 
-           // bdSocket.interval = setInterval(() => bdws.send({ op: 1, d: Date.now() }), data.heartbeat_interval);
-           // utils.log("Socket Ready");
-           // console.log(data.heartbeat_interval);
+            bdSocket.interval = setInterval(() => bdws.send({ op: 1, d: Date.now() }), data.heartbeat_interval);
+            utils.log("Socket Ready");
             break;
         case "PRESENCE_UPDATE":
+                pluginModule.socketEvent("PRESENCE_UPDATE", data);
             break;
         case "TYPING_START":
+                pluginModule.socketEvent("TYPING_START", data);
             break;
         case "MESSAGE_CREATE":
-             //   console.log("MESSAGE CREATE");
-            //    console.log(data);
+                pluginModule.socketEvent("MESSAGE_CREATE", data);
             break;
         case "MESSAGE_UPDATE":
-            //    console.log("MESSAGE UPDATE");
-            //    console.log(data);
+                pluginModule.socketEvent("MESSAGE_UPDATE", data);
             break;
         default:
             break;
@@ -1590,16 +1592,21 @@ BdWSocket.prototype.onMessage = function(e) {
 };
 
 BdWSocket.prototype.onError = function(e) {
-    utils.log("onError: ");
+    utils.log("Socket Error - " + e.message);
 };
 
 BdWSocket.prototype.onClose = function(e) {
     utils.log("Socket Closed - " + e.code + " : " + e.reason);
+    bdws.start();
 };
 
 BdWSocket.prototype.send = function(data) {
     utils.log("Sending: " + JSON.stringify(data));
     bdSocket.send(JSON.stringify(data));
+};
+
+BdWSocket.prototype.getSocket = function() {
+    return bdSocket;
 };
 
 /* BetterDiscordApp API for Plugins
@@ -1684,4 +1691,12 @@ BdApi.getUserNameById = function(id) {
         }
     }
     return null;
+};
+
+BdApi.setPlaying = function(game) {
+    bdws.send({"op":3,"d":{"idle_since":null,"game":{"name": game}}});
+};
+
+BdApi.setStatus = function(idle_since, status) {
+    bdws.send({"op":3,"d":{"idle_since":idle_since,"game":{"name": status}}});
 };
