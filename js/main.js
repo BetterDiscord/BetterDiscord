@@ -1602,6 +1602,7 @@ BdWSocket.prototype.onError = function(e) {
 
 BdWSocket.prototype.onClose = function(e) {
     utils.log("Socket Closed - " + e.code + " : " + e.reason);
+    clearInterval(bdSocket.interval);
     bdws.start();
 };
 
