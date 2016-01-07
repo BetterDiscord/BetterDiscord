@@ -232,7 +232,9 @@ Core.prototype.initObserver = function() {
                 }
                 if(mutation.target.getAttribute('class').indexOf('scroller messages') != -1) {
                     var lastMessage = $(".message-group").last();
-                    if(botlist.indexOf(lastMessage.find(".avatar-large").css("background-image").match(/\d+/).toString()) > -1) { lastMessage.find(".user-name").addClass("boticon"); }
+                    if(lastMessage != undefined) {
+                        if(botlist.indexOf(lastMessage.find(".avatar-large").css("background-image").match(/\d+/).toString()) > -1) { lastMessage.find(".user-name").addClass("boticon"); }
+                    }
 			        if(typeof pluginModule !== "undefined")  pluginModule.newMessage();
                 }
             }
