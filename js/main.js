@@ -213,7 +213,7 @@ Core.prototype.saveSettings = function() {
 Core.prototype.loadSettings = function() {
     settingsCookie = JSON.parse($.cookie("better-discord"));
 };
-
+var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function() {
 
     mainObserver = new MutationObserver(function(mutations) {
@@ -223,8 +223,16 @@ Core.prototype.initObserver = function() {
                     quickEmoteMenu.obsCallback();
                     voiceMode.obsCallback();
                     if(typeof pluginModule !== "undefined") pluginModule.channelSwitch();
+                    $(".message-group").each(function() {
+                        var a = $(this).find(".avatar-large").css("background-image").match(/\d+/).toString();
+                        if(botlist.indexOf(a) > -1) {
+                            $(this).find(".user-name").addClass("boticon");
+                        }
+                    });
                 }
                 if(mutation.target.getAttribute('class').indexOf('scroller messages') != -1) {
+                    var lastMessage = $(".message-group").last();
+                    if(botlist.indexOf(lastMessage.find(".avatar-large").css("background-image").match(/\d+/).toString()) > -1) { lastMessage.find(".user-name").addClass("boticon"); }
 			        if(typeof pluginModule !== "undefined")  pluginModule.newMessage();
                 }
             }
@@ -1610,7 +1618,9 @@ BdWSocket.prototype.onClose = function(e) {
 };
 
 BdWSocket.prototype.send = function(data) {
-    bdSocket.send(JSON.stringify(data));
+    if(bdSocket.readyState == 1) {
+        bdSocket.send(JSON.stringify(data));
+    }
 };
 
 BdWSocket.prototype.getSocket = function() {
