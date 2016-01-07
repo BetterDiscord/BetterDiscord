@@ -1443,7 +1443,12 @@ PluginModule.prototype.channelSwitch = function() {
 };
 
 PluginModule.prototype.socketEvent = function(e, data) {
-    
+    $.each(bdplugins, function() {
+        if(!pluginCookie[this.plugin.getName()]) return;
+        if(typeof this.plugin.socketEvent === "function") {
+            this.plugin.socketEvent(data);
+        }
+    });
 };
 
 
@@ -1693,10 +1698,15 @@ BdApi.getUserNameById = function(id) {
     return null;
 };
 
+//Set current game
+//game = game
 BdApi.setPlaying = function(game) {
     bdws.send({"op":3,"d":{"idle_since":null,"game":{"name": game}}});
 };
 
+//Set current status
+//idle_since = date
+//status = status
 BdApi.setStatus = function(idle_since, status) {
     bdws.send({"op":3,"d":{"idle_since":idle_since,"game":{"name": status}}});
 };
