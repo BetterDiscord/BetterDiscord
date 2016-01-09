@@ -175,6 +175,13 @@
       "language": "EN",
       "title": "Diablo"
     },
+     "Discord & Chill": {
+      "code": "0kXd4CnI26mZzkun",
+      "description": "Discord & Chill",
+      "icon": null,
+      "language": "EN",
+      "title": "Discord & Chill"
+    },
     "DiscordDevs": {
       "code": "0ESuwoZe4M2Xcpeu",
       "description": "DiscordDevs",
@@ -713,6 +720,13 @@
       "icon": null,
       "language": "EN",
       "title": "[UK] FPS/RTS/RPG"
+    },
+    "Game Development": {
+      "code": "0dlKnYoTVkWaLYOd",
+      "description": "Game Development",
+      "icon": null,
+      "language": "EN",
+      "title": "Game Development"
     }
   }
 }
