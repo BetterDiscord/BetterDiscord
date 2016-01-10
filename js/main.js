@@ -264,9 +264,11 @@ Core.prototype.initObserver = function () {
                     if (lastMessage != undefined) {
                         var a = lastMessage.find(".avatar-large");
                         if (a.length > 0) {
+							try {
                             if (botlist.indexOf(a.css("background-image").match(/\d+/).toString()) > -1) {
                                 lastMessage.find(".user-name").addClass("boticon");
                             }
+							}catch(err) {}
                         }
                     }
                     if (typeof pluginModule !== "undefined") pluginModule.newMessage();
