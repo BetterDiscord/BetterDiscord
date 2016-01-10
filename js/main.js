@@ -250,10 +250,12 @@ Core.prototype.initObserver = function () {
                     $(".message-group").each(function () {
                         var a = $(this).find(".avatar-large");
                         if (a.length > 0) {
+							try {
                             var b = a.css("background-image").match(/\d+/).toString();
                             if (botlist.indexOf(a) > -1) {
                                 $(this).find(".user-name").addClass("boticon");
                             }
+							}catch(err) {}
                         }
                     });
                 }
