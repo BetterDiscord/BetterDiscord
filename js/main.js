@@ -122,7 +122,7 @@ Core.prototype.init = function () {
         console.log(new Date().getTime() + " Defer");
         if ($(".guilds-wrapper .guilds").children().length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
-            var guilds = $(".guilds li:first-child");
+            var guilds = $(".guilds>li:first-child");
 
             guilds.after($("<li></li>", {
                 id: "bd-pub-li",
