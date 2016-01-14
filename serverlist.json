@@ -85,7 +85,7 @@
       "title": "Blade and Soul"
     },
     "Blade Symphony": {
-      "code": "0gaDaXebgoCjC8fy",
+      "code": "0gaDaXebgoD4CJ3a",
       "description": "Blade Symphony",
       "icon": null,
       "language": "EN",
@@ -476,13 +476,6 @@
       "language": "EN",
       "title": "Project Zomboid"
     },
-    "R6: Siege Community": {
-      "code": "0eyCK2wAW2OEYa6K",
-      "description": "Rainbow 6: Siege Community Server",
-      "icon": null,
-      "language": "EN",
-      "title": "R6: Siege Community"
-    },
     "Ragnarok Online": {
       "code": "0hr7izZb0BhnyN8L",
       "description": "Ragnarok Online",
@@ -734,6 +727,13 @@
       "icon": null,
       "language": "EN",
       "title": "Game Development"
+    },
+    "Rivals of Aether": {
+      "code": "0M4F1870WAbAPTbg",
+      "description": "Rivals of Aether",
+      "icon": null,
+      "language": "EN",
+      "title": "Rivals of Aether"
     }
   }
 }
