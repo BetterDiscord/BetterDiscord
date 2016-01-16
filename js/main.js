@@ -416,7 +416,7 @@ function EmoteModule() {}
 EmoteModule.prototype.init = function () {};
 
 EmoteModule.prototype.getBlacklist = function () {
-    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/emotefilter.json", function (data) {
+    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
         bemotes = data.blacklist;
     });
 };
