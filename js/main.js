@@ -7,7 +7,7 @@
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
 var jsVersion = 1.57;
-var supportedVersion = "0.2.3";
+var supportedVersion = "0.2.5";
 
 var mainObserver;
 
