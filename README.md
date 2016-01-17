@@ -61,7 +61,7 @@ Add spoilers to your chat, simply add [!s] to your message.
 Save chatlogs locally.(soon)
 
 ## Adding you server to public servers
-Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/serverlist.json) and submit a pull request.
+Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/data/serverlist.json) and submit a pull request.
 
 ## BetterDiscord Uses the following API's
 * https://twitchemotes.com/apidocs for Twitch emotes
