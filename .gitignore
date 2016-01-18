@@ -5,3 +5,4 @@ devjs/.idea/devjs.iml
 *.bak.*
 *.xpi
 Firefox/data/js/jquery-2.1.4.min.js
+*.dev.*

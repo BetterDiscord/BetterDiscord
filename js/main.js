@@ -7,7 +7,7 @@
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
 var jsVersion = 1.57;
-var supportedVersion = "0.2.3";
+var supportedVersion = "0.2.5";
 
 var mainObserver;
 
@@ -122,7 +122,7 @@ Core.prototype.init = function () {
         console.log(new Date().getTime() + " Defer");
         if ($(".guilds-wrapper .guilds").children().length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
-            var guilds = $(".guilds li:first-child");
+            var guilds = $(".guilds>li:first-child");
 
             guilds.after($("<li></li>", {
                 id: "bd-pub-li",
@@ -250,10 +250,12 @@ Core.prototype.initObserver = function () {
                     $(".message-group").each(function () {
                         var a = $(this).find(".avatar-large");
                         if (a.length > 0) {
+							try {
                             var b = a.css("background-image").match(/\d+/).toString();
                             if (botlist.indexOf(a) > -1) {
                                 $(this).find(".user-name").addClass("boticon");
                             }
+							}catch(err) {}
                         }
                     });
                 }
@@ -262,9 +264,11 @@ Core.prototype.initObserver = function () {
                     if (lastMessage != undefined) {
                         var a = lastMessage.find(".avatar-large");
                         if (a.length > 0) {
+							try {
                             if (botlist.indexOf(a.css("background-image").match(/\d+/).toString()) > -1) {
                                 lastMessage.find(".user-name").addClass("boticon");
                             }
+							}catch(err) {}
                         }
                     }
                     if (typeof pluginModule !== "undefined") pluginModule.newMessage();
@@ -412,7 +416,7 @@ function EmoteModule() {}
 EmoteModule.prototype.init = function () {};
 
 EmoteModule.prototype.getBlacklist = function () {
-    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/emotefilter.json", function (data) {
+    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
         bemotes = data.blacklist;
     });
 };

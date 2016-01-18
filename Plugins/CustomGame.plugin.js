@@ -59,7 +59,10 @@ customGamePlugin.prototype.setGame = function(game) {
 
 customGamePlugin.prototype.setPlaying = function() {
     if(!this.enabled) return;
-    if(this.uid == null) this.uid = $(".account .avatar-small").css("background-image").match(/\d+/);
+    if(this.uid == null) {
+    	if($(".account .avatar-small").css("background-image") == undefined)return;
+    	this.uid = $(".account .avatar-small").css("background-image").match(/\d+/);
+    }
 
     if(this.game == null) this.game = "";
     

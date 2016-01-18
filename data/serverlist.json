@@ -476,6 +476,13 @@
       "language": "EN",
       "title": "Project Zomboid"
     },
+    "R6:Siege Community": {
+      "code": "0eyCK2wAW2LziLem",
+      "description": "Rainbow 6: Siege Community",
+      "icon": null,
+      "language": "EN",
+      "title": "R6: Siege Community"
+    },
     "Ragnarok Online": {
       "code": "0hr7izZb0BhnyN8L",
       "description": "Ragnarok Online",
@@ -630,6 +637,13 @@
       "language": "EN",
       "title": "The Sims"
     },
+    "The Division Community": {
+      "code": "0lh5FmzP4CG785uV",
+      "description": "The Division Community",
+      "icon": null,
+      "language": "EN",
+      "title": "The Division Community"
+    },
     "Touhou": {
       "code": "0U6KAap475vPWss7",
       "description": "Touhou",
@@ -727,6 +741,20 @@
       "icon": null,
       "language": "EN",
       "title": "Game Development"
+    },
+    "9D Awaken": {
+      "code": "0lQg5MHMLN5dV7F7",
+      "description": "9dragons awaken beta group",
+      "icon": null,
+      "language": "EN",
+      "title": "9dragons awaken beta group"
+    },
+    "Rivals of Aether": {
+      "code": "0M4F1870WAbAPTbg",
+      "description": "Rivals of Aether",
+      "icon": null,
+      "language": "EN",
+      "title": "Rivals of Aether"
     }
   }
 }
