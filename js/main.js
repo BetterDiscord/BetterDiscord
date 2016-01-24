@@ -1079,12 +1079,6 @@ SettingsPanel.prototype.init = function () {
         voiceMode.enable();
     }
 
-    if (settingsCookie["bda-jd"]) {
-        opublicServers.joinServer("0Tmfo5ZbORCRqbAd");
-        settingsCookie["bda-jd"] = false;
-        mainCore.saveSettings();
-    }
-
     if (settingsCookie["bda-es-6"]) {
         //Pretty emote titles
         emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
