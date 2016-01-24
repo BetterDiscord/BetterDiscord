@@ -6,3 +6,4 @@ devjs/.idea/devjs.iml
 *.xpi
 Firefox/data/js/jquery-2.1.4.min.js
 *.dev.*
+/nbproject/private/

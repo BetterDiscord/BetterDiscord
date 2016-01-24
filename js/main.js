@@ -239,11 +239,11 @@ Core.prototype.loadSettings = function () {
 };
 var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function () {
-
     mainObserver = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             if (mutation.target.getAttribute('class') != null) {
-                if (mutation.target.getAttribute('class').indexOf("titlebar") != -1) {
+                //console.log(mutation.target)
+                if(mutation.target.classList.contains('title-wrap') || mutation.target.classList.contains('chat')){
                     quickEmoteMenu.obsCallback();
                     voiceMode.obsCallback();
                     if (typeof pluginModule !== "undefined") pluginModule.channelSwitch();
@@ -887,12 +887,10 @@ QuickEmoteMenu.prototype.init = function (reload) {
 var bdfw = {};
 
 QuickEmoteMenu.prototype.obsCallback = function () {
-
     if (!emoteBtn) return;
     if (!$(".content.flex-spacer.flex-horizontal .flex-spacer.flex-vertical form")) return;
 
     var tcbtn = $("#twitchcord-button-container");
-
     if (tcbtn.parent().prop("tagName") == undefined) {
         quickEmoteMenu = new QuickEmoteMenu();
         quickEmoteMenu.init(true);
@@ -918,7 +916,7 @@ QuickEmoteMenu.prototype.initEmoteList = function () {
         css: {
             "display": "none"
         }
-    })
+    });
 
     var globalTab = $("<div/>", {
         class: "emote-menu-tab emote-menu-tab-selected",
@@ -1099,7 +1097,7 @@ SettingsPanel.prototype.init = function () {
             $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));
         });
         $(document).on("mouseleave", ".emote", function () {
-            $(".tipsy").remove()
+            $(".tipsy").remove();
         });
     } else {
         $(document).off('mouseover', '.emote');
@@ -1208,14 +1206,14 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
             $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));
         });
         $(document).on("mouseleave", ".emote", function () {
-            $(".tipsy").remove()
+            $(".tipsy").remove();
         });
     } else {
         $(document).off('mouseover', '.emote');
     }
 
     mainCore.saveSettings();
-}
+};
 
 SettingsPanel.prototype.construct = function () {
     var self = this;
@@ -1419,8 +1417,8 @@ Utils.prototype.jqDefer = function (fnc) {
         fnc();
     } else {
         setTimeout(function () {
-            this.jqDefer(fnc)
-        }, 100)
+            this.jqDefer(fnc);
+        }, 100);
     }
 };
 
@@ -1484,7 +1482,7 @@ VoiceMode.prototype.obsCallback = function () {
             self.enable();
         }, 300);
     }
-}
+};
 
 VoiceMode.prototype.enable = function () {
     $(".scroller.guild-channels ul").first().css("display", "none");
@@ -1749,10 +1747,10 @@ BdWSocket.prototype.onMessage = function (e) {
 
     switch (type) {
     case "READY":
-        bdSocket.interval = setInterval(() => bdws.send({
+        bdSocket.interval = setInterval(function(){bdws.send({
             op: 1,
             d: Date.now()
-        }), data.heartbeat_interval);
+        });}, data.heartbeat_interval);
         utils.log("Socket Ready");
         break;
     case "PRESENCE_UPDATE":
@@ -1815,7 +1813,7 @@ BdApi.joinServer = function (code) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append('<style id="' + id + '"></style>')
+    $("head").append('<style id="' + id + '"></style>');
     $("#" + id).html(css);
 };
 
