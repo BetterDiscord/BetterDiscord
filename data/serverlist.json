@@ -377,7 +377,14 @@
 	  "icon": null,
 	  "language": "EN",
 	  "title": "KappaPride"
-	},
+    },
+    "Keep Talking and Nobody Explodes": {
+      "code": "0mq6FkTuEuF2i7Gc",
+      "description": "Don't Explode!",
+      "icon": null,
+      "language": "EN",
+      "title": "Keep Talking and Nobody Explodes"
+    },
     "Killing Floor 2": {
       "code": "0YmeWp0IqRUndLXx",
       "description": "Killing Floor 2",
