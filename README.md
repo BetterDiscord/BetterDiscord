@@ -1,6 +1,6 @@
 # BetterDiscordApp
 
-If you have issues then join the BD Discord server: discord.gg/0Tmfo5ZbORCRqbAd
+If you have issues then join the BD Discord server: [Here](https://discord.gg/0Tmfo5ZbORCRqbAd)
 If your Discord breaks then uninstall BD and try again 
 # Do not contact Discord support about BD issues. 
 
