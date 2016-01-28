@@ -1,4 +1,9 @@
 # BetterDiscordApp
+
+If you have issues then join the BD Discord server: [Here](https://discord.gg/0Tmfo5ZbORCRqbAd)
+If your Discord breaks then uninstall BD and try again 
+# Do not contact Discord support about BD issues. 
+
 Better Discord App enhances Discord desktop app with new features.
 
 ![ss](http://i.imgur.com/P0XEyp6.jpg)
@@ -71,8 +76,6 @@ Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/data
 * MacOS Installer by [Candunc](https://github.com/Candunc) 
 * Emote titles by [pendo324](https://github.com/pendo324)
 * Majority of FFZ emote work by [Pohky] (https://github.com/pohky)
-
-# On connect you will be automatically invited to the BetterDiscord Discord server one time.
 
 ## License
 
