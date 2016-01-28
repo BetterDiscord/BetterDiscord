@@ -52,7 +52,6 @@ namespace BetterDiscordWI.panels
                 foreach (var process in Process.GetProcessesByName("DiscordPTB"))
                 {
                     process.Kill();
-                    break;
                 }
             }
 
