@@ -116,8 +116,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnBrowser;
         private System.Windows.Forms.Label label2;
-        private components.CTextBox tbPath;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox cbRestart;
+        internal components.CTextBox tbPath;
     }
 }
