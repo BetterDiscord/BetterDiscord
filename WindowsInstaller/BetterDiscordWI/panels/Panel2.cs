@@ -189,11 +189,8 @@ namespace BetterDiscordWI.panels
 
             Thread t = new Thread(() =>
             {
-
                 List<String> lines = new List<string>();
-
                 AppendLog("Spicing index");
-
                 using (FileStream fs = new FileStream(indexloc, FileMode.Open))
                 {
                     using (StreamReader reader = new StreamReader(fs))
@@ -201,21 +198,57 @@ namespace BetterDiscordWI.panels
                         String line = "";
                         while((line = reader.ReadLine()) != null)
                         {
-                            if (line.Contains("var _overlay2"))
+                            if (GetParent().DiscordPath.Contains("Discord\\"))
                             {
-
-                                lines.Add(line);
-                                lines.Add("var _betterDiscord = require('betterdiscord');");
-
+                                if (line.Contains("var _overlay2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add("var _betterDiscord = require('betterdiscord');");
+                                }
+                                else if (line.Contains("mainWindow = new _BrowserWindow2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add(File.ReadAllText("splice"));
+                                }
+                                else
+                                {
+                                    lines.Add(line);
+                                }
                             }
-                            else if (line.Contains("mainWindow = new _BrowserWindow2"))
+                            if (GetParent().DiscordPath.Contains("DiscordCanary\\"))
                             {
-                                lines.Add(line);
-                                lines.Add(File.ReadAllText("splice"));
+                                if (line.Contains("var _overlay2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add("var _betterDiscord = require('betterdiscord');");
+                                }
+                                else if (line.Contains("mainWindow = new _BrowserWindow2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add(File.ReadAllText("splice"));
+                                }
+                                else
+                                {
+                                    lines.Add(line);
+                                }
                             }
-                            else
+                            if (GetParent().DiscordPath.Contains("DiscordPTB\\"))
                             {
-                                lines.Add(line);
+                                //"mainWindow = new _browserWindow2"
+                                if (line.Contains("var _discord_overlay2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add("var _betterDiscord = require('betterdiscord');");
+                                }
+                                else if (line.Contains("mainWindow = new _browserWindow2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add(File.ReadAllText("splice"));
+                                }
+                                else
+                                {
+                                    lines.Add(line);
+                                }
                             }
                         }
                     }
