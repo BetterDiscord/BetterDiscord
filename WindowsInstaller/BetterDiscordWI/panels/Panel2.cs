@@ -13,7 +13,6 @@ namespace BetterDiscordWI.panels
 {
     public partial class Panel2 : UserControl, IPanel
     {
-
         private String _dataPath, _tempPath;
         private Utils _utils;
 
@@ -31,13 +30,31 @@ namespace BetterDiscordWI.panels
             GetParent().btnCancel.Enabled = false;
 
             _utils = new Utils();
-
-            AppendLog("Killing Discord");
-            foreach (var process in Process.GetProcessesByName("Discord"))
+            if (GetParent().DiscordPath.Contains("Discord\\"))
             {
-                process.Kill();
+                AppendLog("Killing Discord");
+                foreach (var process in Process.GetProcessesByName("Discord"))
+                {
+                    process.Kill();
+                }
             }
-            
+            if (GetParent().DiscordPath.Contains("DiscordCanary\\"))
+            {
+                AppendLog("Killing DiscordCanary");
+                foreach (var process in Process.GetProcessesByName("DiscordCanary"))
+                {
+                    process.Kill();
+                }
+            }
+            if (GetParent().DiscordPath.Contains("DiscordPTB\\"))
+            {
+                AppendLog("Killing DiscordPTB");
+                foreach (var process in Process.GetProcessesByName("DiscordPTB"))
+                {
+                    process.Kill();
+                }
+            }
+
             CreateDirectories();
         }
 
@@ -88,14 +105,24 @@ namespace BetterDiscordWI.panels
 
         private void DeleteDirs()
         {
+            int errors = 0;
             Thread t = new Thread(() =>
             {
                 String dir = GetParent().DiscordPath + "\\resources\\app";
 
                 if (Directory.Exists(dir))
                 {
-                    AppendLog("Deleting " + dir);
-                    Directory.Delete(dir, true);
+                    try
+                    {
+                        AppendLog("Deleting " + dir);
+                        Directory.Delete(dir, true);
+                    }
+                    catch
+                    {
+                        AppendLog("Error Failed to Delete the '" + dir + "\\resources\\app' Directory.");
+                        errors = 1;
+                        Finalize(errors);
+                    }
                 }
 
                 while (Directory.Exists(dir))
@@ -123,14 +150,22 @@ namespace BetterDiscordWI.panels
 
                 Directory.Move(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\BetterDiscordApp-stable", GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord");
 
-                AppendLog("Extracting app.asar");
+                try
+                {
+                    AppendLog("Extracting app.asar");
+                    AsarArchive archive = new AsarArchive(GetParent().DiscordPath + "\\resources\\app.asar");
 
-                AsarArchive archive = new AsarArchive(GetParent().DiscordPath + "\\resources\\app.asar");
+                    AsarExtractor extractor = new AsarExtractor();
+                    extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
 
-                AsarExtractor extractor = new AsarExtractor();
-                extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
-
-                Splice();
+                    Splice();
+                }
+                catch
+                {
+                    AppendLog("Error Extracting app.asar: Newtonsoft.Json.dll might not be present in the Installer Folder. Installation cannot Continue.");
+                    errors = 1;
+                    Finalize(errors);
+                }
             });
             
             
@@ -154,11 +189,8 @@ namespace BetterDiscordWI.panels
 
             Thread t = new Thread(() =>
             {
-
                 List<String> lines = new List<string>();
-
                 AppendLog("Spicing index");
-
                 using (FileStream fs = new FileStream(indexloc, FileMode.Open))
                 {
                     using (StreamReader reader = new StreamReader(fs))
@@ -166,21 +198,57 @@ namespace BetterDiscordWI.panels
                         String line = "";
                         while((line = reader.ReadLine()) != null)
                         {
-                            if (line.Contains("var _overlay2"))
+                            if (GetParent().DiscordPath.Contains("Discord\\"))
                             {
-
-                                lines.Add(line);
-                                lines.Add("var _betterDiscord = require('betterdiscord');");
-
+                                if (line.Contains("var _overlay2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add("var _betterDiscord = require('betterdiscord');");
+                                }
+                                else if (line.Contains("mainWindow = new _BrowserWindow2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add(File.ReadAllText("splice"));
+                                }
+                                else
+                                {
+                                    lines.Add(line);
+                                }
                             }
-                            else if (line.Contains("mainWindow = new _BrowserWindow2"))
+                            if (GetParent().DiscordPath.Contains("DiscordCanary\\"))
                             {
-                                lines.Add(line);
-                                lines.Add(File.ReadAllText("splice"));
+                                if (line.Contains("var _overlay2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add("var _betterDiscord = require('betterdiscord');");
+                                }
+                                else if (line.Contains("mainWindow = new _BrowserWindow2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add(File.ReadAllText("splice"));
+                                }
+                                else
+                                {
+                                    lines.Add(line);
+                                }
                             }
-                            else
+                            if (GetParent().DiscordPath.Contains("DiscordPTB\\"))
                             {
-                                lines.Add(line);
+                                //"mainWindow = new _browserWindow2"
+                                if (line.Contains("var _discord_overlay2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add("var _betterDiscord = require('betterdiscord');");
+                                }
+                                else if (line.Contains("mainWindow = new _browserWindow2"))
+                                {
+                                    lines.Add(line);
+                                    lines.Add(File.ReadAllText("splice"));
+                                }
+                                else
+                                {
+                                    lines.Add(line);
+                                }
                             }
                         }
                     }
@@ -242,7 +310,18 @@ namespace BetterDiscordWI.panels
 
             if (GetParent().RestartDiscord)
             {
-                Process.Start(GetParent().DiscordPath + "\\Discord.exe");
+                if (GetParent().DiscordPath.Contains("\\Discord\\"))
+                {
+                    Process.Start(GetParent().DiscordPath + "\\Discord.exe");
+                }
+                if (GetParent().DiscordPath.Contains("\\DiscordCanary\\"))
+                {
+                    Process.Start(GetParent().DiscordPath + "\\DiscordCanary.exe");
+                }
+                if (GetParent().DiscordPath.Contains("\\DiscordPTB\\"))
+                {
+                    Process.Start(GetParent().DiscordPath + "\\DiscordPTB.exe");
+                }
             }
         }
 
