@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>BetterDiscord-icon.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\BetterDiscord-icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -144,7 +144,7 @@
     <None Include="Resources\bd_logo_large_nobg.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BetterDiscord-icon.ico" />
+    <Content Include="Resources\BetterDiscord-icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

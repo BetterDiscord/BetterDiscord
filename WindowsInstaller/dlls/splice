@@ -1,0 +1,2 @@
+_betterDiscord = new _betterDiscord.BetterDiscord(mainWindow);
+_betterDiscord.init();

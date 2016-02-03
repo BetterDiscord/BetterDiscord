@@ -69,5 +69,121 @@ namespace BetterDiscordWI.panels
 
             tbPath.Text = fbd.SelectedPath;
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox1.Checked == true)
+            {
+                checkBox2.Checked = false;
+                String[] directories = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DiscordCanary");
+
+                String highestVersion = null;
+
+                foreach (String s in directories)
+                {
+                    Debug.Print(s);
+                    if (!s.Contains("app-")) continue;
+                    if (String.IsNullOrEmpty(highestVersion))
+                    {
+                        highestVersion = s;
+                        continue;
+                    }
+
+                    if (String.CompareOrdinal(s, highestVersion) > 0)
+                    {
+                        highestVersion = s;
+                    }
+                }
+
+
+                tbPath.Text = highestVersion;
+            }
+            if (checkBox1.Checked == false)
+            {
+                if (checkBox2.Checked == false)
+                {
+                    String[] directories = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Discord");
+
+                    String highestVersion = null;
+
+                    foreach (String s in directories)
+                    {
+                        Debug.Print(s);
+                        if (!s.Contains("app-")) continue;
+                        if (String.IsNullOrEmpty(highestVersion))
+                        {
+                            highestVersion = s;
+                            continue;
+                        }
+
+                        if (String.CompareOrdinal(s, highestVersion) > 0)
+                        {
+                            highestVersion = s;
+                        }
+                    }
+
+
+                    tbPath.Text = highestVersion;
+                }
+            }
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked == true)
+            {
+                checkBox1.Checked = false;
+                String[] directories = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DiscordPTB");
+
+                String highestVersion = null;
+
+                foreach (String s in directories)
+                {
+                    Debug.Print(s);
+                    if (!s.Contains("app-")) continue;
+                    if (String.IsNullOrEmpty(highestVersion))
+                    {
+                        highestVersion = s;
+                        continue;
+                    }
+
+                    if (String.CompareOrdinal(s, highestVersion) > 0)
+                    {
+                        highestVersion = s;
+                    }
+                }
+
+
+                tbPath.Text = highestVersion;
+            }
+            if (checkBox2.Checked == false)
+            {
+                if (checkBox1.Checked == false)
+                {
+                    String[] directories = Directory.GetDirectories(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Discord");
+
+                    String highestVersion = null;
+
+                    foreach (String s in directories)
+                    {
+                        Debug.Print(s);
+                        if (!s.Contains("app-")) continue;
+                        if (String.IsNullOrEmpty(highestVersion))
+                        {
+                            highestVersion = s;
+                            continue;
+                        }
+
+                        if (String.CompareOrdinal(s, highestVersion) > 0)
+                        {
+                            highestVersion = s;
+                        }
+                    }
+
+
+                    tbPath.Text = highestVersion;
+                }
+            }
+        }
     }
 }
