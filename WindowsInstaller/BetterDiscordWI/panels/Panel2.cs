@@ -234,13 +234,13 @@ namespace BetterDiscordWI.panels
                             }
                             if (GetParent().DiscordPath.Contains("DiscordPTB\\"))
                             {
-                                //"mainWindow = new _browserWindow2"
                                 if (line.Contains("var _discord_overlay2"))
                                 {
                                     lines.Add(line);
                                     lines.Add("var _betterDiscord = require('betterdiscord');");
                                 }
-                                else if (line.Contains("mainWindow = new _browserWindow2"))
+                                //"mainWindow = new _browserWindow2" was changed in DiscordPTB v0.0.6
+                                else if (line.Contains("mainWindow = new _electron.BrowserWindow"))
                                 {
                                     lines.Add(line);
                                     lines.Add(File.ReadAllText("splice"));
