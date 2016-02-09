@@ -23,6 +23,7 @@ agif.prototype.convert = function () {
 };
 
 agif.prototype.onMessage = function () {
+	console.log("ONMESSAGE");
     this.convert();
 };
 agif.prototype.onSwitch = function () {
@@ -43,7 +44,7 @@ agif.prototype.getName = function () {
     return "Autogif";
 };
 agif.prototype.getDescription = function () {
-    return "Autoplay gifs without having to hover.";
+    return "Don't use currently broken.";
 };
 agif.prototype.getVersion = function () {
     return "0.1.0";
