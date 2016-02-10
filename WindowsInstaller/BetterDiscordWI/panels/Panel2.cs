@@ -64,6 +64,30 @@ namespace BetterDiscordWI.panels
             {
                 _dataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord";
                 _tempPath = _dataPath + "\\temp";
+                AppendLog("Deleting old cached files");
+                try
+                {
+                    if (File.Exists(_dataPath + "\\emotes_bttv.json"))
+                    {
+                        File.Delete(_dataPath + "\\emotes_bttv.json");
+                    }
+                    if (File.Exists(_dataPath + "\\emotes_bttv_2.json"))
+                    {
+                        File.Delete(_dataPath + "\\emotes_bttv_2.json");
+                    }
+                    if (File.Exists(_dataPath + "\\emotes_ffz.json")) {
+                        File.Delete(_dataPath + "\\emotes_ffz.json");
+                    }
+                    if (File.Exists(_dataPath + "\\emotes_twitch_global.json")) {
+                        File.Delete(_dataPath + "\\emotes_twitch_global.json");
+                    }
+                    if (File.Exists(_dataPath + "\\emotes_twitch_subscriber.json")) {
+                        File.Delete(_dataPath + "\\emotes_twitch_subscriber.json");
+                    }
+                    if (File.Exists(_dataPath + "\\user.json")) {
+                        File.Delete(_dataPath + "\\user.json");
+                    }
+                } catch (Exception e) { AppendLog("Failed to delete one or more cached files"); }
 
 
                 if (Directory.Exists(_tempPath))

@@ -41,7 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="asardotnet">
-      <HintPath>bin\dlls\asardotnet.dll</HintPath>
+      <HintPath>..\dlls\asardotnet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
