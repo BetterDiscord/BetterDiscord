@@ -156,7 +156,8 @@ namespace BetterDiscordWI.panels
                     AsarArchive archive = new AsarArchive(GetParent().DiscordPath + "\\resources\\app.asar");
 
                     AsarExtractor extractor = new AsarExtractor();
-                    extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
+                    //Add extraoffset of 3
+                    extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\", 3);
 
                     Splice();
                 }
@@ -200,12 +201,12 @@ namespace BetterDiscordWI.panels
                         {
                             if (GetParent().DiscordPath.Contains("Discord\\"))
                             {
-                                if (line.Contains("var _overlay2"))
+                                if (line.Contains("var _discord_overlay2"))
                                 {
                                     lines.Add(line);
                                     lines.Add("var _betterDiscord = require('betterdiscord');");
-                                }
-                                else if (line.Contains("mainWindow = new _BrowserWindow2"))
+                                } 
+                                else if (line.Contains("mainWindow = new _electron.BrowserWindow"))
                                 {
                                     lines.Add(line);
                                     lines.Add(File.ReadAllText("splice"));
@@ -217,7 +218,7 @@ namespace BetterDiscordWI.panels
                             }
                             if (GetParent().DiscordPath.Contains("DiscordCanary\\"))
                             {
-                                if (line.Contains("var _overlay2"))
+                                if (line.Contains("var _discord_overlay2"))
                                 {
                                     lines.Add(line);
                                     lines.Add("var _betterDiscord = require('betterdiscord');");
