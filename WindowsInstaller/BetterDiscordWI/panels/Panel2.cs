@@ -114,7 +114,7 @@ namespace BetterDiscordWI.panels {
                         AppendLog("Deleting " + dir);
                         Directory.Delete(dir, true);
                     } catch {
-                        AppendLog("Error Failed to Delete the '" + dir + "\\resources\\app' Directory.");
+                        AppendLog("Error: Failed to Delete the '" + dir + "\\resources\\app' Directory.");
                         errors = 1;
                         Finalize(errors);
                     }
@@ -144,15 +144,23 @@ namespace BetterDiscordWI.panels {
 
                 try {
                     AppendLog("Extracting app.asar");
-                    AsarArchive archive = new AsarArchive(GetParent().DiscordPath + "\\resources\\app.asar");
+					string appAsarPath = GetParent().DiscordPath + "\\resources\\app.asar";
 
-                    AsarExtractor extractor = new AsarExtractor();
-                    //Add extraoffset of 3
-                    extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
+					if(File.Exists(appAsarPath)) {
+						AsarArchive archive = new AsarArchive(appAsarPath);
 
-                    Splice();
+						AsarExtractor extractor = new AsarExtractor();
+						//Add extraoffset of 3
+						extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
+
+						Splice();
+					} else {
+						AppendLog("Error: app.asar file couldn't be found in 'resources' folder. Installation cannot Continue.");
+						errors = 1;
+						Finalize(errors);
+					}
                 } catch {
-                    AppendLog("Error Extracting app.asar: Newtonsoft.Json.dll might not be present in the Installer Folder. Installation cannot Continue.");
+                    AppendLog("Error: Extracting app.asar: Newtonsoft.Json.dll might not be present in the Installer Folder. Installation cannot Continue.");
                     errors = 1;
                     Finalize(errors);
                 }
