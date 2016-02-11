@@ -138,32 +138,31 @@ namespace BetterDiscordWI.panels {
                     Thread.Sleep(100);
                 }
 
-                AppendLog("Moving BetterDiscord to resources\\node_modules\\");
+				AppendLog("Extracting app.asar");
+				string appAsarPath = GetParent().DiscordPath + "\\resources\\app.asar";
 
-                Directory.Move(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\BetterDiscordApp-stable", GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord");
+				if(File.Exists(appAsarPath)) {
+					AsarArchive archive = new AsarArchive(appAsarPath);
+					AsarExtractor extractor = new AsarExtractor();
+					extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
+				} else {
+					AppendLog("Error: app.asar file couldn't be found in 'resources' folder. Installation cannot Continue.");
+					errors = 1;
+					Finalize(errors);
+				}
 
-                try {
-                    AppendLog("Extracting app.asar");
-					string appAsarPath = GetParent().DiscordPath + "\\resources\\app.asar";
+				if(errors == 0) {
+					AppendLog("Moving BetterDiscord to resources\\node_modules\\");
+					Directory.Move(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\BetterDiscordApp-stable", GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord");
 
-					if(File.Exists(appAsarPath)) {
-						AsarArchive archive = new AsarArchive(appAsarPath);
-
-						AsarExtractor extractor = new AsarExtractor();
-						//Add extraoffset of 3
-						extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
-
+					try {
 						Splice();
-					} else {
-						AppendLog("Error: app.asar file couldn't be found in 'resources' folder. Installation cannot Continue.");
+					} catch {
+						AppendLog("Error: Extracting app.asar: Newtonsoft.Json.dll might not be present in the Installer Folder. Installation cannot Continue.");
 						errors = 1;
 						Finalize(errors);
 					}
-                } catch {
-                    AppendLog("Error: Extracting app.asar: Newtonsoft.Json.dll might not be present in the Installer Folder. Installation cannot Continue.");
-                    errors = 1;
-                    Finalize(errors);
-                }
+				}
             });
 
 
