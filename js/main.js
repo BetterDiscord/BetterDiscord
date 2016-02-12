@@ -1688,7 +1688,7 @@ function BdWSocket() {
 
 BdWSocket.prototype.start = function () {
     var self = this;
-    $.ajax({
+   /* $.ajax({
         method: "GET",
         url: "https://discordapp.com/api/gateway",
         headers: {
@@ -1697,7 +1697,7 @@ BdWSocket.prototype.start = function () {
         success: function (data) {
             self.open(data.url);
         }
-    });
+    });*/
 };
 
 BdWSocket.prototype.open = function (host) {
