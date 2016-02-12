@@ -3,5 +3,5 @@
 
 command -v node > /dev/null || (echo 'Node not found, please download it!' && open 'https://nodejs.org/en/' && sleep 5 && exit)
 
-node index.js 
+node index.js
 exit
