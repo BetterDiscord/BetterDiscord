@@ -31,11 +31,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnBrowser = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.tbPath = new BetterDiscordWI.components.CTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.cbRestart = new System.Windows.Forms.CheckBox();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.tbPath = new BetterDiscordWI.components.CTextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -67,15 +67,6 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "*If the path is not pointing to the latest version of Discord then click browse a" +
     "nd select it.";
-            // 
-            // tbPath
-            // 
-            this.tbPath.CAutoSize = false;
-            this.tbPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbPath.Location = new System.Drawing.Point(23, 46);
-            this.tbPath.Name = "tbPath";
-            this.tbPath.Size = new System.Drawing.Size(377, 26);
-            this.tbPath.TabIndex = 4;
             // 
             // label3
             // 
@@ -118,6 +109,15 @@
     "y for this)";
             this.checkBox2.UseVisualStyleBackColor = true;
             this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
+            // tbPath
+            // 
+            this.tbPath.CAutoSize = false;
+            this.tbPath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tbPath.Location = new System.Drawing.Point(23, 46);
+            this.tbPath.Name = "tbPath";
+            this.tbPath.Size = new System.Drawing.Size(377, 26);
+            this.tbPath.TabIndex = 4;
             // 
             // Panel1
             // 
