@@ -38,14 +38,14 @@ function install() {
     if (typeof _discordPath == 'undefined') {
         var _os = process.platform;
         if (_os == "win32") {
-			_importSplice = 89;
-			_functionCallSplice = 497;
-			_functionSplice = 601;
+            _importSplice = 89;
+            _functionCallSplice = 497;
+            _functionSplice = 601;
            _discordPath = process.env.LOCALAPPDATA + "/Discord/app-"+dver+"/resources";
         } else if (_os == "darwin") {
-			_importSplice = 67;
-			_functionCallSplice = 446;
-			_functionSplice = 547;
+            _importSplice = 67;
+            _functionCallSplice = 446;
+            _functionSplice = 547;
             _discordPath = "/Applications/Discord.app/Contents/Resources" // Defaults to Applications directory
         }
     }
@@ -68,12 +68,6 @@ function install() {
                 console.log("Deleted " + _discordPath + "/node_modules/BetterDiscord" + " folder.");
             }
 
-            console.log("Copying BetterDiscord");
-
-            fs.mkdirSync(_discordPath + "/node_modules/BetterDiscord");
-
-            wrench.copyDirSyncRecursive(__dirname + "/BetterDiscord/", _discordPath + "/node_modules/BetterDiscord/", {forceDelete: true});
-
             console.log("Looking for app archive");
             if(fs.existsSync(_discordPath + _appArchive)) {
                 console.log("App archive found at: " + _discordPath + _appArchive);
@@ -83,9 +77,13 @@ function install() {
             }
 
             console.log("Extracting app archive");
-
-
             asar.extractAll(_discordPath + _appArchive, _discordPath + _appFolder);
+
+            console.log("Copying BetterDiscord");
+
+            fs.mkdirSync(_discordPath + "/node_modules/BetterDiscord");
+
+            wrench.copyDirSyncRecursive(__dirname + "/BetterDiscord/", _discordPath + _appFolder  +  "/node_modules/BetterDiscord/", {forceDelete: true});
 
             if(!fs.existsSync("splice")) {
                 console.log("Missing splice file");
@@ -93,100 +91,118 @@ function install() {
             }
 
             var splice = fs.readFileSync("splice");
-            
 
-			fs.exists(_discordPath + _appFolder, function(exists) {
-				if(exists) {
-					console.log("Extracted to: " + _discordPath + _appFolder);
-					console.log("Injecting index.js");
 
-					var data = fs.readFileSync(_discordPath + _index).toString().split("\n");
-					data.splice(_importSplice, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
-					data.splice(_functionCallSplice, 0, splice);
+            fs.exists(_discordPath + _appFolder, function(exists) {
+                if(exists) {
+                    console.log("Extracted to: " + _discordPath + _appFolder);
+                    console.log("Injecting index.js");
 
-					fs.writeFile(_discordPath + _index, data.join("\n"), function(err) {
-						if(err) return console.log(err);
-						console.log("Injected index.js");
-						
-						console.log("Deleting old cache files");
-						
-						var counter = 0;
-						
-						fs.exists(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_twitch_global.json', (exists) => {
-							console.log("Deleting emotes_twitch_global.json")
-							fs.unlink(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_twitch_global.json', (err) => {
-								if(err) throw err;
-								console.log("Deleted emotes_twitch_global.json");
-								counter++;
-								finished();
-							});
-						});
-						
-						fs.exists(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_twitch_subscriber.json', (exists) => {
-							console.log("Deleting emotes_twitch_subscriber.json")
-							fs.unlink(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_twitch_subscriber.json', (err) => {
-								if(err) throw err;
-								console.log("Deleted emotes_twitch_subscriber.json");
-								counter++;
-								finished();
-							});
-						});
-						
-						fs.exists(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_bttv.json', (exists) => {
-							console.log("Deleting emotes_bttv.json")
-							fs.unlink(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_bttv.json', (err) => {
-								if(err) throw err;
-								console.log("Deleted emotes_bttv.json");
-								counter++;
-								finished();
-							});
-						});
-						
-						fs.exists(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_bttv_2.json', (exists) => {
-							console.log("Deleting emotes_bttv_2.json")
-							fs.unlink(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_bttv_2.json', (err) => {
-								if(err) throw err;
-								console.log("Deleted emotes_bttv_2.json");
-								counter++;
-								finished();
-							});
-						});
-						
-						fs.exists(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_ffz.json', (exists) => {
-							console.log("Deleting emotes_ffz.json")
-							fs.unlink(process.env.HOME + '/Library/Preferences/BetterDiscord/emotes_ffz.json', (err) => {
-								if(err) throw err;
-								console.log("Deleted emotes_ffz.json");
-								counter++;
-								finished();
-							});
-						});
-						
-						fs.exists(process.env.HOME + '/Library/Preferences/BetterDiscord/user.json', (exists) => {
-							console.log("Deleting user.json")
-							fs.unlink(process.env.HOME + '/Library/Preferences/BetterDiscord/user.json', (err) => {
-								if(err) throw err;
-								console.log("Deleted user.json");
-								counter++;
-								finished();
-							});
-						});
-						
-						function finished() {
-							if(counter => 6) {
-								console.log("Looks like we're done here");
-								process.exit();
-							}
-						}
-						
-						
-					});
+                    var data = fs.readFileSync(_discordPath + _index).toString().split("\n");
+                    data.splice(_importSplice, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
+                    data.splice(_functionCallSplice, 0, splice);
 
-				} else {
-					console.log("Something went wrong, rerun.");
-					process.exit();
-				}
-			});
+                    fs.writeFile(_discordPath + _index, data.join("\n"), function(err) {
+                        if(err) return console.log(err);
+                        console.log("Injected index.js");
+
+                        console.log("Deleting old cache files");
+
+                        var counter = 0;
+                        var _prefsPath = '/Library/Preferences/BetterDiscord/';
+
+                        var emotes_twitch_global = 'emotes_twitch_global.json';
+                        fs.exists(process.env.HOME + _prefsPath + emotes_twitch_global, (exists) => {
+                            if (exists) {
+                                console.log("Deleting " + emotes_twitch_global);
+                                fs.unlinkSync(process.env.HOME + _prefsPath + emotes_twitch_global, (err) => {
+                                    if(err) throw err;
+                                });
+                                console.log("Deleted " + emotes_twitch_global);
+                            }
+                            counter++;
+                            finished();
+
+                        });
+
+                        var emotes_twitch_subscriber = 'emotes_twitch_subscriber.json';
+                        fs.exists(process.env.HOME + _prefsPath + emotes_twitch_subscriber, (exists) => {
+                            if (exists) {
+                                console.log("Deleting " + emotes_twitch_subscriber);
+                                fs.unlinkSync(process.env.HOME + _prefsPath + emotes_twitch_subscriber, (err) => {
+                                    if(err) throw err;
+                                });
+                                console.log("Deleted " + emotes_twitch_subscriber);
+                            }
+                            counter++;
+                            finished();
+                        });
+
+                        var emotes_bttv = 'emotes_bttv.json';
+                        fs.exists(process.env.HOME + _prefsPath + emotes_bttv, (exists) => {
+                            if (exists) {
+                                console.log("Deleting " + emotes_bttv);
+                                 fs.unlinkSync(process.env.HOME + _prefsPath + emotes_bttv, (err) => {
+                                    if(err) throw err;
+                                });
+                                console.log("Deleted " + emotes_bttv);
+                            }
+                            counter++;
+                            finished();
+                        });
+
+                        var emotes_bttv_2 = "emotes_bttv_2.json";
+                        fs.exists(process.env.HOME + _prefsPath + emotes_bttv_2, (exists) => {
+                            if (exists) {
+                                console.log("Deleting " + emotes_bttv_2);
+                                fs.unlinkSync(process.env.HOME + _prefsPath + emotes_bttv_2, (err) => {
+                                    if(err) throw err;
+                                });
+                                console.log("Deleted " + emotes_bttv_2);
+                            }
+                            counter++;
+                            finished();
+                        });
+
+                        var emotes_ffz = "emotes_ffz.json";
+                        fs.exists(process.env.HOME + _prefsPath + emotes_ffz, (exists) => {
+                            if (exists) {
+                                console.log("Deleting " + emotes_ffz);
+                                fs.unlinkSync(process.env.HOME + _prefsPath + emotes_ffz, (err) => {
+                                    if(err) throw err;
+                                });
+                                console.log("Deleted " + emotes_ffz);
+                            }
+                            counter++;
+                            finished();
+
+                        });
+                        var user_pref = "user.json";
+                        fs.exists(process.env.HOME + _prefsPath + user_pref, (exists) => {
+                            if (exists) {
+                                console.log("Deleting " + user_pref);
+                                fs.unlinkSync(process.env.HOME + _prefsPath + user_pref, (err) => {
+                                    if(err) throw err;
+                                });
+                                console.log("Deleted " + user_pref);
+                            }
+                            counter++;
+                            finished();
+                        });
+
+                        function finished() {
+                            if(counter => 6) {
+                                console.log("Looks like we're done here");
+                                process.exit();
+                            }
+                        }
+                    });
+
+                } else {
+                    console.log("Something went wrong. Please try again.");
+                    process.exit();
+                }
+            });
 
         } else {
             console.log("Discord resources not found at: " + _discordPath);
