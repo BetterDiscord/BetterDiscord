@@ -27,9 +27,9 @@ typingSoundPlugin.prototype.start = function() {
 	});
 
 	$(document).on("keydown.ts", function(e) {
-		self.bs.trigger("pause");
-		self.bs.prop("currentTime", 0);
 		if(e.keyCode == 8) {
+			self.bs.trigger("pause");
+			self.bs.prop("currentTime", 0);
 			self.bs.trigger("play");
 			return;
 		}
