@@ -490,6 +490,13 @@
       "language": "EN",
       "title": "MovieClub"
     },
+    "NadekoLog": {
+      "code": "0ehQwTK2RBjAxzEY",
+      "description": "Server for NadekoBot",
+      "icon": null,
+      "language": "EN",
+      "title": "NadekoLog"
+    },
     "NerdChat": {
       "code": "0Z83mQOMvdEpNbBg",
       "description": "NerdChat",
