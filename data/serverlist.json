@@ -874,5 +874,12 @@
       "icon": null,
       "language": "EN",
       "title": "Metal Gear Network"
+  },
+    "League of Legends (España)": {
+      "code": "0pQ5IG864BvI4MZp",
+      "description": "Servidor de League of Legends para la comunidad española.",
+      "icon": null,
+      "language": "SP",
+      "title": "League of Legends (España)"
   }
 }}
