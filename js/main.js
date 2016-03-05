@@ -532,6 +532,14 @@ EmoteModule.prototype.injectEmote = function (node) {
                 return;
             }
 
+            if (subEmotesTwitch.hasOwnProperty(word)) {
+                var len = Math.round(word.length / 4);
+                var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
+                var url = twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd;
+                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote" alt="' + name + '" src="' + url + '" /><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                return;
+            }
+			
             if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
                 if (emotesFfz.hasOwnProperty(word)) {
                     var len = Math.round(word.length / 4);
@@ -563,13 +571,6 @@ EmoteModule.prototype.injectEmote = function (node) {
                 }
             }
 
-            if (subEmotesTwitch.hasOwnProperty(word)) {
-                var len = Math.round(word.length / 4);
-                var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
-                var url = twitchEmoteUrlStart + subEmotesTwitch[word] + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote" alt="' + name + '" src="' + url + '" /><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                return;
-            }
         });
 
         if (parent.parentElement == null) return;
