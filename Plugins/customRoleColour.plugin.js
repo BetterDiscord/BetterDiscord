@@ -46,9 +46,8 @@ crr.prototype.start = function () {
                         }
                     });
                 });
-                
             }
-	    }
+        }
     });
     this.crrMt.observe(document, {childList:true, subtree:true})
 };
