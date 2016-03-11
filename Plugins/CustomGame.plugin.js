@@ -9,6 +9,7 @@ customGamePlugin.prototype.unload = function() {
 };
 
 customGamePlugin.prototype.start = function() {
+	return;
     var self = this;
     this.enabled = true;
     this.interval = setInterval(function() {
@@ -18,6 +19,7 @@ customGamePlugin.prototype.start = function() {
 };
 
 customGamePlugin.prototype.stop = function() {
+	return;
     var gp = this.game;
     this.game = "";
     this.setPlaying();
