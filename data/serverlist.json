@@ -1,6 +1,6 @@
 {
   "servers": {
-	"BetterDiscord": {
+    "BetterDiscord": {
       "code": "0Tmfo5ZbORCRqbAd",
       "description": "BetterDiscord Server",
       "icon": null,
@@ -27,6 +27,13 @@
       "icon": null,
       "language": "EN",
       "title": "a RinkuTalk's chat for ALL gamers"
+    },
+    "Bacon_Space": {
+      "code": "0X6sQJODTVdEYwL0",
+      "description": "The official Server For Bacon_Space",
+      "icon": null,
+      "language": "EN",
+      "title": "Bacon_Space"
     },
     "Black Desert Online": {
       "code": "0hpSA0xzUj07ABop",
@@ -70,7 +77,7 @@
       "language": "EN",
       "title": "Animu and Mango"
     },
-        "Anime-Discuss": {
+    "Anime-Discuss": {
       "code": "0ccNdvWBCEuw87eD",
       "description": "Anime-Discuss",
       "icon": null,
@@ -78,17 +85,17 @@
       "title": "Anime-Discuss"
     },
     "Anime Discord": {
-    	"code": "0jsnS27eGHesxVRA",
-    	"description": "General Anime Server",
-    	"icon": null,
-    	"language": "EN",
-    	"title": "Anime Discord"
+      "code": "0jsnS27eGHesxVRA",
+      "description": "General Anime Server",
+      "icon": null,
+      "language": "EN",
+      "title": "Anime Discord"
     },
-    "Binding of Isaac": { 
-      "code": "0gonaBVBNISU8zhS", 
-      "description": "For all Isaac talk", 
-      "icon": null, 
-      "language": "EN", 
+    "Binding of Isaac": {
+      "code": "0gonaBVBNISU8zhS",
+      "description": "For all Isaac talk",
+      "icon": null,
+      "language": "EN",
       "title": "Binding of Isaac"
     },
     "Blade and Soul": {
@@ -105,12 +112,12 @@
       "language": "EN",
       "title": "Blade Symphony"
     },
-    "Bluscream's Server": {
-      "code": "0Xdjjtm2UyoI6Kgu",
-      "description": "Bluscream's Discord Server",
+    "BloodBorne": {
+      "code": "0rWbfWTmpUVHaC9Z",
+      "description": "BloodBorne",
       "icon": null,
       "language": "EN",
-      "title": "Bluscream's Server"
+      "title": "BloodBorne"
     },
     "Borderlands": {
       "code": "0mxtC2FGDw7JkCyb",
@@ -161,6 +168,13 @@
       "language": "EN",
       "title": "Crowfall MMO"
     },
+    "Dark souls": {
+      "code": "0rmIDReRI5pRvVwL",
+      "description": "Souls games in general",
+      "icon": null,
+      "language": "EN",
+      "title": "Dark souls"
+    },
     "DOTA2": {
       "code": "0Pj5D1QKnYAR4GQ7",
       "description": "DOTA 2",
@@ -196,7 +210,7 @@
       "language": "EN",
       "title": "Diablo"
     },
-     "Discord & Chill": {
+    "Discord & Chill": {
       "code": "0kXd4CnI26mZzkun",
       "description": "Discord & Chill",
       "icon": null,
@@ -253,11 +267,11 @@
       "title": "E-Sports India"
     },
     "ElDewrito": {
-    	"code": "0TKY0SDEUHBum0w3",
-    	"description": "Halo Online ElDewrito",
-    	"icon": null,
-    	"language": "EN",
-    	"title": "ElDewrito"
+      "code": "0TKY0SDEUHBum0w3",
+      "description": "Halo Online ElDewrito",
+      "icon": null,
+      "language": "EN",
+      "title": "ElDewrito"
     },
     "Elite Dangerous": {
       "code": "0V5hfT4eO8fN9Q6K",
@@ -314,7 +328,7 @@
       "icon": null,
       "language": "EN",
       "title": "FFXIV - Siren"
-    },    
+    },
     "FFXIV - Ultros": {
       "code": "0alCJcRuekEnn3Ha",
       "description": "FFXIV - Ultros",
@@ -329,13 +343,6 @@
       "language": "EN",
       "title": "FFXIV Heavensward"
     },
-    "FRENCH": {
-      "code": "0Tx7qmKNCj1yivSy",
-      "description": "FRENCH",
-      "icon": null,
-      "language": "FR",
-      "title": "FRENCH"
-    },
     "Fuckboii squad #1": {
       "code": "0V2bHFWgHEZt0GsE",
       "description": "Fuckboii squad #1",
@@ -349,6 +356,13 @@
       "icon": null,
       "language": "EN",
       "title": "Games are Magic"
+    },
+    "GamerLust": {
+      "code": "0cvtNUFEng8cC0M5",
+      "description": "SG-based Gaming Group for Asia",
+      "icon": null,
+      "language": "EN",
+      "title": "GamerLust"
     },
     "Guild Wars 2": {
       "code": "0b5yVCmhcVt4C6mr",
@@ -406,12 +420,12 @@
       "language": "EN",
       "title": "Kantai Collection"
     },
-	"KappaPride": {
-	  "code": "0ijf4nNsflGI8zYR",
-	  "description": "#Kappa",
-	  "icon": null,
-	  "language": "EN",
-	  "title": "KappaPride"
+    "KappaPride": {
+      "code": "0ijf4nNsflGI8zYR",
+      "description": "#Kappa",
+      "icon": null,
+      "language": "EN",
+      "title": "KappaPride"
     },
     "Keep Talking and Nobody Explodes": {
       "code": "0mq6FkTuEuF2i7Gc",
@@ -483,6 +497,13 @@
       "language": "EN",
       "title": "MovieClub"
     },
+    "NadekoLog": {
+      "code": "0ehQwTK2RBjAxzEY",
+      "description": "Server for NadekoBot",
+      "icon": null,
+      "language": "EN",
+      "title": "NadekoLog"
+    },
     "NerdChat": {
       "code": "0Z83mQOMvdEpNbBg",
       "description": "NerdChat",
@@ -552,6 +573,13 @@
       "icon": null,
       "language": "EN",
       "title": "Reflex"
+    },
+    "Rampage Knights": {
+      "code": "0q1Yv1bYDsRYK3TH",
+      "description": "Rampage Knights",
+      "icon": null,
+      "language": "EN",
+      "title": "Rampage Knights"
     },
     "RepZ": {
       "code": "0gAFLYLhoOvyeqBA",
@@ -631,11 +659,11 @@
       "title": "SoulsBorne"
     },
     "Splatoon Central": {
-    	"code": "0d2oP2Iw3a4HmOvT",
-    	"description": "Casual and Competitive Splatoon",
-    	"icon": null,
-    	"language": "EN",
-    	"title": "Splatoon"
+      "code": "0d2oP2Iw3a4HmOvT",
+      "description": "Casual and Competitive Splatoon",
+      "icon": null,
+      "language": "EN",
+      "title": "Splatoon"
     },
     "Starcraft": {
       "code": "0Vjzi81e7LFaUhPR",
@@ -692,6 +720,13 @@
       "icon": null,
       "language": "EN",
       "title": "The Music Bar"
+    },
+    "The Prickly Cactus": {
+      "code": "0nkHMl1nnNymyVju",
+      "description": "Social Interaction",
+      "icon": null,
+      "language": "EN",
+      "title": "The Prickly Cactus"
     },
     "The Sims": {
       "code": "0YjcYngtdfkBMAxn",
@@ -846,12 +881,34 @@
       "icon": null,
       "language": "EN",
       "title": "We didnt name this server at all"
-  },
+    },
     "Metal Gear Network": {
       "code": "0PsGOLmD8akgwIB0",
       "description": "Metal Gear Network // Metal Gear Series as well as games in the Konami/Kojima universe",
       "icon": null,
       "language": "EN",
       "title": "Metal Gear Network"
+    },
+    "All the games!": {
+      "code": "0qKvbnYBZO1Vb4cB",
+      "description": "This server is for people who wanna play games together or just talk about anime or whatever!",
+      "icon": null,
+      "language": "EN",
+      "title": "All the games!"
+    },
+    "League of Legends (España)": {
+      "code": "0pQ5IG864BvI4MZp",
+      "description": "Servidor de League of Legends para la comunidad española.",
+      "icon": null,
+      "language": "SP",
+      "title": "League of Legends (España)"
+    },
+    "Dirty Bomb": {
+      "code": "0gP8aNVcec8Og5Tm",
+      "description": "Official Dirty Bomb Discord!",
+      "icon": null,
+      "language": "EN",
+      "title": "Dirty Bomb"
+    }
   }
-}}
+}
