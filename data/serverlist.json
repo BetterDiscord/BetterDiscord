@@ -406,6 +406,13 @@
       "language": "EN",
       "title": "Hip Slick & Geek"
     },
+    "HiT KiLL": {
+      "code": "0fKc5put2GOk7Ha1",
+      "description": "Clã Profissional Brasileiro",
+      "icon": null,
+      "language": "BR",
+      "title": "HiT KiLL"
+    },
     "Insurgency": {
       "code": "0YOLsfWWZSvS0jHe",
       "description": "Insurgency",
@@ -485,7 +492,7 @@
     },
     "Marimonda Gaming": {
       "code": "0b0XbRZUIQGnkit6",
-      "description": "Marimonda Gaming Community",
+      "description": "Community for Esports Competitive & Co-Op games. Everyone is welcome!",
       "icon": null,
       "language": "EN",
       "title": "Marimonda Gaming"
@@ -762,6 +769,13 @@
       "icon": null,
       "language": "EN",
       "title": "The Division Community"
+    },
+    "Torture Room": {
+      "code": "0cjW7fqk1DDiV0VQ",
+      "description": "The Official Torture Room :D",
+      "icon": null,
+      "language": "EN",
+      "title": "Torture Room"
     },
     "Touhou": {
       "code": "0U6KAap475vPWss7",
