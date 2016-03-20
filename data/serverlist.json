@@ -553,6 +553,20 @@
       "language": "EN",
       "title": "PKA/Painkiller"
     },
+    "PSO": {
+      "code": "0tj67PFj37QfKumq",
+      "description": "Discord Server for Phantasy Star Online.",
+      "icon": null,
+      "language": "EN",
+      "title": "PSO"
+    },
+    "PSO2": {
+      "code": "0tj67PFj37QfKumq",
+      "description": "Discord Server for Phantasy Star Online 2.",
+      "icon": null,
+      "language": "EN",
+      "title": "PSO2"
+    },
     "PORTUGUESE": {
       "code": "",
       "description": "PORTUGUESE",
