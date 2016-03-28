@@ -3,10 +3,11 @@
 var videoSupport = function () {};
 
 videoSupport.prototype.convert = function () {
-	$(".message-group a").each(function() {
+    $(".message-group a").each(function() {
         var t = $(this);
         var href = t.attr("href");
         if(href == undefined) return true;
+        href = href.replace("http", "https");
         if(!href.endsWith(".mp4") && !href.endsWith(".webm") && !href.endsWith(".ogg")) return true;
         var type = "webm";
         if(href.endsWith(".mp4")) type = "mp4";
