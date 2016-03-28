@@ -7,7 +7,7 @@ videoSupport.prototype.convert = function () {
         var t = $(this);
         var href = t.attr("href");
         if(href == undefined) return true;
-        href = href.replace("http", "https");
+        href = href.replace("http:", "https:");
         if(!href.endsWith(".mp4") && !href.endsWith(".webm") && !href.endsWith(".ogg")) return true;
         var type = "webm";
         if(href.endsWith(".mp4")) type = "mp4";
