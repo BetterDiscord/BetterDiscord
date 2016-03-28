@@ -13,9 +13,7 @@ videoSupport.prototype.convert = function () {
         if(href.endsWith(".mp4")) type = "mp4";
         if(href.endsWith(".ogg")) type = "ogg";
         
-        t.replaceWith( '<video width="480" height="320" controls>' +
-                '<source src="'+href+'" type="video/'+type+'">' +
-                '</video>');
+        t.replaceWith( '<video width="480" height="320" src="'+href+'" type="video/'+type+'" controls></video>');
     });
 };
 
