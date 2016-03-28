@@ -26,7 +26,7 @@
 	  "description": "a gamming server that allows 18+ content and plays ats mp",
 	  "icon": null,
 	  "language": "EN",
-	  title": "American Truck Simulator"
+	  "title": "American Truck Simulator"
 	},
     "a RinkuTalk's chat for ALL gamers": {
       "code": "0c2ds5wYPS0qMqF5",
@@ -972,5 +972,6 @@
       "icon": null,
       "language": "EN",
       "title": "Dirty Bomb"
+	}
   }
 }
