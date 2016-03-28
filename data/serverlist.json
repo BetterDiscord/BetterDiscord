@@ -882,6 +882,13 @@
       "language": "EN",
       "title": "Wildstar"
     },
+    "World of Tanks": {
+      "code": "0tm6LMVPkok6gKP8",
+      "description": "World of Tanks community server",
+      "icon": null,
+      "language": "EN",
+      "title": "World of Tanks"
+    },
     "[EU]Rocket League": {
       "code": "0W70FqxbCli27BfR",
       "description": "[EU]Rocket League",
@@ -958,6 +965,5 @@
       "icon": null,
       "language": "EN",
       "title": "Dirty Bomb"
-    }
   }
 }
