@@ -3,7 +3,7 @@
 var videoSupport = function () {};
 
 videoSupport.prototype.convert = function () {
-    $(".message-group a").each(function() {
+    $(".message a").each(function() {
         var t = $(this);
         var href = t.attr("href");
         if(href == undefined) return true;
