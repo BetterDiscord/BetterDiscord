@@ -18,7 +18,7 @@ videoSupport.prototype.convert = function () {
 };
 
 videoSupport.prototype.onMessage = function () {
-    this.convert();
+    setTimeout(this.convert(), 2000);
 };
 videoSupport.prototype.onSwitch = function () {
     this.convert();
