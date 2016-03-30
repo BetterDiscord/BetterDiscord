@@ -48,10 +48,10 @@ mediaSupport.prototype.getSettingsPanel = function () {
 };
 
 mediaSupport.prototype.getName = function () {
-    return "Video Support";
+    return "Media Support";
 };
 mediaSupport.prototype.getDescription = function () {
-    return "Add support for html5 video";
+    return "Add support for html5 media";
 };
 mediaSupport.prototype.getVersion = function () {
     return "0.1.0";
