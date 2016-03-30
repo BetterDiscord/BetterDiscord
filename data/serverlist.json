@@ -476,6 +476,13 @@
         "language": "EN",
         "title": "Kiri's Bubble"
     },
+    "LeagueConnect": {
+      "code": "0rZblC446P2ivDcq",
+      "description": "/r/leagueconnect ~ Find summoners to play with!",
+      "icon": null,
+      "language": "EN",
+      "title": "LeagueConnect"
+    },
     "League of Legends": {
       "code": "0T8zCRzGTxbLjlhw",
       "description": "League of Legends",
