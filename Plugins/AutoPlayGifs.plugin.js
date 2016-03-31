@@ -4,13 +4,10 @@ var agif = function () {};
 
 agif.prototype.convert = function () {
     $(".image canvas").each(function() { 
-        var href = $(this).attr("href"); 
-        if(href != undefined) { 
-            if(href.endsWith(".gif")) {
-                href = href.replace("http:", "https:");
-                $(this).replaceWith('<img src="'+href+'"></img>'); 
-            }
-        } 
+        var src = $(this).attr("src"); 
+        if(src != undefined) { 
+            $(this).replaceWith('<img src="'+src+'"></img>'); 
+        }
     });
 };
 
