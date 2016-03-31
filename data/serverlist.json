@@ -21,13 +21,13 @@
       "language": "EN",
       "title": "4chan"
     },
-	"American truck simulator multiplayer": {
-	  "code": "0dFHyDoIgbSUXSpX",
-	  "description": "a gamming server that allows 18+ content and plays ats mp",
-	  "icon": null,
-	  "language": "EN",
-	  "title": "American Truck Simulator"
-	},
+    "American truck simulator multiplayer": {
+      "code": "0dFHyDoIgbSUXSpX",
+      "description": "a gamming server that allows 18+ content and plays ats mp",
+      "icon": null,
+      "language": "EN",
+      "title": "American Truck Simulator"
+    },
     "a RinkuTalk's chat for ALL gamers": {
       "code": "0c2ds5wYPS0qMqF5",
       "description": "A new community for ALL gamers",
@@ -182,7 +182,7 @@
       "language": "EN",
       "title": "Dark souls"
     },
-   "Don't Panic Gaming": {
+    "Don't Panic Gaming": {
       "code": "0bXgOt3dBY4skhqx",
       "description": "Community for Esports, Competitive, Co-Op, & MMO games. Everyone is welcome!",
       "icon": null,
@@ -469,12 +469,12 @@
       "language": "EN",
       "title": "Killing Floor 2"
     },
-      "Kiri's Bubble": {
-        "code": "0pnEgYqTNP4MlRam",
-        "description": "Anime, games & weebyness!",
-        "icon": null,
-        "language": "EN",
-        "title": "Kiri's Bubble"
+    "Kiri's Bubble": {
+      "code": "0pnEgYqTNP4MlRam",
+      "description": "Anime, games & weebyness!",
+      "icon": null,
+      "language": "EN",
+      "title": "Kiri's Bubble"
     },
     "LeagueConnect": {
       "code": "0rZblC446P2ivDcq",
@@ -986,6 +986,13 @@
       "icon": null,
       "language": "EN",
       "title": "Dirty Bomb"
-	}
+    },
+    "[Division]": {
+      "code": "0ZuJtFPiGu0YtDjO",
+      "description": "Void Elsword Guild Server.",
+      "icon": null,
+      "language": "EN",
+      "title": "Division"
+    }
   }
 }
