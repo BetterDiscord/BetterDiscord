@@ -1,5 +1,16 @@
 //META{"name":"customGamePlugin"}*//
 
+/*
+ * #####################READ THIS!################################
+ * #####################READ THIS!################################
+ *
+ * This plugin is discontinued and no longer works due to Discord having custom game title built in and is kept for archiving purposes only.
+ *
+ * #####################READ THIS!################################
+ * #####################READ THIS!################################
+*/
+
+
 function customGamePlugin() {}
 
 customGamePlugin.prototype.load = function() {
