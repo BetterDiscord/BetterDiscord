@@ -7,6 +7,7 @@ agif.prototype.convert = function () {
         var href = $(this).attr("href"); 
         if(href != undefined) { 
             if(href.endsWith(".gif")) {
+                href = href.replace("http:", "https:");
                 $(this).replaceWith('<img src="'+href+'"></img>'); 
             }
         } 
