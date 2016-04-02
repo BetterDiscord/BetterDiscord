@@ -148,11 +148,17 @@
 	background: rgba(123, 123, 123, 0.37);
 }
 
-.emoteflip {
+.emoteflip, .emotespinflip {
 	transform:scaleX(-1);
 }
-.emotespin {
+.emotespin, .emotespinflip {
 	animation: 1s emote-spin infinite linear;
+}
+.emotespin2 {
+	animation: 0.5s emote-spin infinite linear;
+}
+.emotespin3 {
+	animation: 0.2s emote-spin infinite linear;
 }
 .emotepulse {
 	animation: 1s emote-pulse infinite linear;

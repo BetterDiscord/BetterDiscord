@@ -525,7 +525,7 @@ EmoteModule.prototype.injectEmote = function (node) {
             var useEmoteCss = false;
             var sWord = word;
             var emoteClass = "";
-            var allowedClasses = ["flip", "spin", "pulse"];
+            var allowedClasses = ["flip", "spin", "pulse", "spinflip", "spin2", "spin3"];
             if(word.indexOf(":") > -1) {
                 userEmoteCss = true;
                 sWord = word.split(":")[0];
