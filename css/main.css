@@ -148,6 +148,27 @@
 	background: rgba(123, 123, 123, 0.37);
 }
 
+.emoteflip {
+	transform:scaleX(-1);
+}
+.emotespin {
+	animation: 1s emote-spin infinite linear;
+}
+.emotepulse {
+	animation: 1s emote-pulse infinite linear;
+}
+
+@keyframes emote-spin {
+	from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes emote-pulse {
+	0% {-webkit-transform: scale(1, 1);}
+    50% {-webkit-transform: scale(1.2, 1.2);}
+    100% {-webkit-transform: scale(1, 1);}
+}
+
 #tc-settings-panel {
 	position:fixed;
 	width:50%;
