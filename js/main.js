@@ -503,12 +503,10 @@ EmoteModule.prototype.injectEmote = function (node) {
                 return;
             }
 
-            if ($.inArray(word, bemotes) != -1) return;
-
             var useEmoteCss = false;
             var sWord = word;
             var emoteClass = "";
-            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespinflip", "emotespin2", "emotespin3"];
+            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespin2", "emotespin3", "emote1spin", "emote2spin", "emote3spin", "emotetr", "emotebl", "emotebr", "emoteshake"];
             if(word.indexOf(":") > -1) {
                 userEmoteCss = true;
                 sWord = word.split(":")[0];
@@ -519,6 +517,7 @@ EmoteModule.prototype.injectEmote = function (node) {
                     }
                 }
             }
+            if ($.inArray(sWord, bemotes) != -1) return;
 
             if (emotesTwitch.emotes.hasOwnProperty(sWord)) {
                 var len = Math.round(sWord.length / 4);
