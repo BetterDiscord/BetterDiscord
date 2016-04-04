@@ -184,6 +184,30 @@
 .emoteshake {
 	animation: 1s emote-shake infinite linear;
 }
+.emoteflap {
+	transform:scaleY(-1) !important;
+}
+.emoteshake2 {
+	animation: emote-shake2 0.3s linear infinite;
+}
+.emoteshake3 {
+	animation: emote-shake3 0.1s linear infinite;
+}
+
+
+@keyframes emote-shake2 {
+    25% { transform:translate(-1px, -1px) }
+    50% { transform:translate(-1px, 1px) }
+    75% { transform:translate(1px, 1px) }
+    75% { transform:translate(1px, -1px) }
+}
+
+@keyframes emote-shake3 {
+    25% { transform:translate(-1px, -1px) }
+    50% { transform:translate(-1px, 1px) }
+    75% { transform:translate(1px, 1px) }
+    75% { transform:translate(1px, -1px) }
+}
 
 @keyframes emote-spin {
 	from { transform: rotate(0deg); }
@@ -413,11 +437,6 @@
 
 .bd-minimal .embed {
 	padding:2px;
-}
-
-.bd-minimal .embed img {
-	max-height: 120px;
-	max-width:160px;
 }
 
 .bd-minimal .channel-members .avatar-small{

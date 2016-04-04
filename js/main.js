@@ -6,7 +6,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
-var jsVersion = 1.58;
+var jsVersion = 1.59;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -65,8 +65,30 @@ var defaultCookie = {
 var bdchangelog = {
     "changes": {
         "api": {
-            "title": "Emote modifiers!",
-            "text": "You can use the following modifiers to modify emotes: <br> <strong>spin</strong>, <strong>spin2</strong>, <strong>spin3</strong>, <strong>flip</strong>, <strong>pulse</strong>, <strong>spinflip</strong>. <br> Example usage: Kappa:spin",
+            "title": "New plugin api callback",
+            "text": "Use the `observer(e)` callback instead of creating your own MutationObserver",
+            "img": ""
+        },
+        "emotemods": {
+            "title": "New emote mods!",
+            "text": "The following emote mods have been added: :shake2, :shake3, :flap",
+            "img": ""
+        },
+        "minmode": {
+            "title": "Minimal mode",
+            "text": "Minimal mode embed fixed size has been removed",
+            "img": ""
+        }
+    },
+    "fixes": {
+        "emotes": {
+            "title": "Native sub emote mods",
+            "text": "Emote mods now work with native sub emotes!",
+            "img": ""
+        },
+        "emotes2": {
+            "title": "Emote mods and custom emotes",
+            "text": "Emote mods will no longer interfere with custom emotes using :",
             "img": ""
         }
     }
@@ -223,41 +245,19 @@ var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function () {
     mainObserver = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
+            if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
             if (mutation.target.getAttribute('class') != null) {
                 //console.log(mutation.target)
                 if(mutation.target.classList.contains('title-wrap') || mutation.target.classList.contains('chat')){
                     quickEmoteMenu.obsCallback();
                     voiceMode.obsCallback();
                     if (typeof pluginModule !== "undefined") pluginModule.channelSwitch();
-                    /*$(".message-group").each(function () {
-                        var a = $(this).find(".avatar-large");
-                        if (a.length > 0) {
-                            try {
-                            var b = a.css("background-image").match(/\d+/).toString();
-                            if (botlist.indexOf(a) > -1) {
-                                $(this).find(".user-name").addClass("boticon");
-                            }
-                            }catch(err) {}
-                        }
-                    });*/
                 }
                 if (mutation.target.getAttribute('class').indexOf('scroller messages') != -1) {
-                    /*var lastMessage = $(".message-group").last();
-                    if (lastMessage != undefined) {
-                        var a = lastMessage.find(".avatar-large");
-                        if (a.length > 0) {
-                            try {
-                            if (botlist.indexOf(a.css("background-image").match(/\d+/).toString()) > -1) {
-                                lastMessage.find(".user-name").addClass("boticon");
-                            }
-                            }catch(err) {}
-                        }
-                    }*/
                     if (typeof pluginModule !== "undefined") pluginModule.newMessage();
                 }
             }
             emoteModule.obsCallback(mutation);
-
         });
     });
 
@@ -411,7 +411,21 @@ EmoteModule.prototype.obsCallback = function (mutation) {
     $(".emoji").each(function () {
         var t = $(this);
         if (t.attr("src").indexOf(".png") != -1) {
-            t.replaceWith("<span>" + t.attr("alt") + "</span>");
+
+            var next = t.next();
+            var newText = t.attr("alt");
+            if(next.size() > 0) {
+                if(next.prop("tagName") == "SPAN") {
+                    newText += next.text();
+                    next.remove();
+                }
+            }
+
+            if(t.parent().prop("tagName") != "SPAN") {
+                t.replaceWith("<span>" + newText + "</span>");
+            } else {
+                t.replaceWith(newText);
+            }
         }
     });
 
@@ -458,15 +472,12 @@ EmoteModule.prototype.injectEmote = function (node) {
         return;
     }
 
-
     var edited = false;
 
     if ($(parent.parentElement).hasClass("edited")) {
-        parent = parent.parentElement.parentElement.firstChild; //:D
+        parent = parent.parentElement.parentElement.firstChild;
         edited = true;
     }
-
-    //if(!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) return;
 
     function inject() {
         var parentInnerHTML = parent.innerHTML;
@@ -506,14 +517,21 @@ EmoteModule.prototype.injectEmote = function (node) {
             var useEmoteCss = false;
             var sWord = word;
             var emoteClass = "";
-            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespin2", "emotespin3", "emote1spin", "emote2spin", "emote3spin", "emotetr", "emotebl", "emotebr", "emoteshake"];
+            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespin2", "emotespin3", "emote1spin", "emote2spin", "emote3spin", "emotetr", "emotebl", "emotebr", "emoteshake", "emoteshake2", "emoteshake3", "emoteflap"];
             if(word.indexOf(":") > -1) {
-                userEmoteCss = true;
-                sWord = word.split(":")[0];
-                if(settingsCookie["bda-es-8"]) {
-                    emoteClass = "emote" + word.split(":")[1];
-                    if(allowedClasses.indexOf(emoteClass) < 0) {
-                        emoteClass = "";
+              // userEmoteCss = true;
+                //sWord = word.split(":")[0];
+                var split = word.split(/:(?!.*:)/);
+                if (split[0] != "" && split[1] != "") { 
+                    userEmoteCss = true;
+                    sWord = split[0];
+                    if(settingsCookie["bda-es-8"]) {
+                   // emoteClass = "emote" + word.split(":")[1];
+                        emoteClass = "emote" + split[1];
+                        console.log("gg");
+                        if(allowedClasses.indexOf(emoteClass) < 0) {
+                            emoteClass = "";
+                        }
                     }
                 }
             }
@@ -1603,6 +1621,15 @@ PluginModule.prototype.socketEvent = function (e, data) {
         if (!pluginCookie[this.plugin.getName()]) return;
         if (typeof this.plugin.socketEvent === "function") {
             this.plugin.socketEvent(data);
+        }
+    });
+};
+
+PluginModule.prototype.rawObserver = function(e) {
+    $.each(bdplugins, function() {
+        if (!pluginCookie[this.plugin.getName()]) return;
+        if(typeof this.plugin.observer === "function") {
+            this.plugin.observer(e);
         }
     });
 };
