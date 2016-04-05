@@ -1028,6 +1028,13 @@
       "icon": null,
       "language": "EN",
       "title": "Tavern in the Sky"
-    }
+    },
+	"LeagueSharp": {
+		"code": "0onTZpA5TLlg2hsC",
+		"description": "LeagueSharp - Easy, Efficient, Gamebreaking!",
+		"icon": null,
+		"language": "EN",
+		"title": "LeagueSharp"
+	}
   }
 }
