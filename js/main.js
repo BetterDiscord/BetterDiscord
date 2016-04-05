@@ -528,7 +528,6 @@ EmoteModule.prototype.injectEmote = function (node) {
                     if(settingsCookie["bda-es-8"]) {
                    // emoteClass = "emote" + word.split(":")[1];
                         emoteClass = "emote" + split[1];
-                        console.log("gg");
                         if(allowedClasses.indexOf(emoteClass) < 0) {
                             emoteClass = "";
                         }
