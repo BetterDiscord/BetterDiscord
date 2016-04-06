@@ -65,7 +65,6 @@ emoteBlacklist.prototype.save = function() {
         blist.push(item);
     });
     localStorage["emoteBlacklist"] = JSON.stringify(blist);
-    console.log("ENABLED? " + this.enabled);
     if(window.ebEnabled) {
         this.start();
     }
