@@ -35,6 +35,7 @@ var settings = {
     "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                        "implemented": false, "hidden": false},
     "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                      "implemented": true,  "hidden": false},
     "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable/Disable emote mods",                      "implemented": true,  "hidden": false},
+	"Disconnect Voice on exit":   { "id": "bda-dc-0",  "info": "",                								 "implemented": true,  "hidden": false},
     "Custom css live update":     { "id": "bda-css-0", "info": "",                                               "implemented": true,  "hidden": true },
     "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                               "implemented": true,  "hidden": true }
 };
@@ -63,6 +64,7 @@ var defaultCookie = {
     "bda-es-8": true,
     "bda-jd": true,
     "bda-es-8": true,
+	"bda-dc-0": false,
     "bda-css-0": false,
     "bda-css-1": false
 };
@@ -170,6 +172,12 @@ Core.prototype.init = function () {
                 settingsPanel.show();
             });
             
+			window.addEventListener("beforeunload", function(){
+				if(settingsCookie["bda-dc-0"]){
+					$('.btn.btn-disconnect').click();
+				}
+			});
+			
             opublicServers.init();
 
             emoteModule.autoCapitalize();
