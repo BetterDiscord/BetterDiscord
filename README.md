@@ -58,7 +58,7 @@ BetterDiscord supports custom CSS for styling Discord to your liking.
 BetterDiscord comes with a theme loader for loading your own or downloading themes made by others.
 
 **Plugins**
-BetterDiscord comes with a JavaSCript plugin loader for loading your own or downloading plugins made by others.
+BetterDiscord comes with a JavaScript plugin loader for loading your own or downloading plugins made by others.
 
 **Spoilers**
 Add spoilers to your chat, simply add [!s] to your message.
@@ -78,6 +78,7 @@ Add your server there and it will appear in the list!
 * MacOS Installer by [Candunc](https://github.com/Candunc) 
 * Emote titles by [pendo324](https://github.com/pendo324)
 * Majority of FFZ emote work by [Pohky] (https://github.com/pohky)
+* Majority of BTTV emote work by [EhsanKia] (https://github.com/EhsanKia)
 
 ## License
 
