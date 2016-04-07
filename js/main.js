@@ -6,7 +6,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
-var jsVersion = 1.59;
+var jsVersion = 1.6;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -64,30 +64,35 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
+        "pslist": {
+            "title": "v1.60 : New public server list!",
+            "text": 'New and shiny public server list powered by <a href="https://www.discordservers.com/" target="_blank">DiscordServers.com</a>!',
+            "img": ""
+        },
         "api": {
-            "title": "New plugin api callback",
+            "title": "v1.59 : New plugin api callback",
             "text": "Use the `observer(e)` callback instead of creating your own MutationObserver",
             "img": ""
         },
         "emotemods": {
-            "title": "New emote mods!",
+            "title": "v1.59 : New emote mods!",
             "text": "The following emote mods have been added: :shake2, :shake3, :flap",
             "img": ""
         },
         "minmode": {
-            "title": "Minimal mode",
+            "title": "v1.59: Minimal mode",
             "text": "Minimal mode embed fixed size has been removed",
             "img": ""
         }
     },
     "fixes": {
         "emotes": {
-            "title": "Native sub emote mods",
+            "title": "v1.59 : Native sub emote mods",
             "text": "Emote mods now work with native sub emotes!",
             "img": ""
         },
         "emotes2": {
-            "title": "Emote mods and custom emotes",
+            "title": "v1.59 : Emote mods and custom emotes",
             "text": "Emote mods will no longer interfere with custom emotes using :",
             "img": ""
         }
@@ -590,9 +595,9 @@ EmoteModule.prototype.injectEmote = function (node) {
         parent.innerHTML = parentInnerHTML.replace(new RegExp("\uFDD9", "g"), "");
         var newHeight = parent.parentElement.offsetHeight;
 
-        //Scrollfix
         var scrollPane = $(".scroller.messages").first();
         scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
+        
     }
 
     if (edited) {
@@ -641,18 +646,6 @@ EmoteModule.prototype.capitalize = function (value) {
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var publicServers = {
-    "servers": {
-        "server": {
-            "code": 0,
-            "icon": null,
-            "title": "title",
-            "language": "EN",
-            "description": "description"
-        }
-    }
-}; //for ide
-
 function PublicServers() {
 
 }
@@ -662,145 +655,172 @@ PublicServers.prototype.getPanel = function () {
 };
 
 PublicServers.prototype.init = function () {
-
-    var self = this;
-
-    this.container = $("<div/>", {
-        id: "bd-ps-container",
-        style: "display:none"
-    });
-
-    var header = $("<div/>", {
-        id: "bd-ps-header"
-    });
-
-    $("<h2/>", {
-        text: "Public Servers"
-    }).appendTo(header);
-
-    $("<span/>", {
-        id: "bd-ps-close",
-        style: "cursor:pointer;",
-        text: "X"
-    }).appendTo(header);
-
-    header.appendTo(this.getPanel());
-
-    var psbody = $("<div/>", {
-        id: "bd-ps-body"
-    });
-
-    psbody.appendTo(this.getPanel());
-
-    var table = $("<table/>", {
-        border: "0"
-    });
-
-    var thead = $("<thead/>");
-
-    thead.appendTo(table);
-
-    var headers = $("<tr/>", {
-
-    }).append($("<th/>", {
-        text: "Name"
-    })).append($("<th/>", {
-        text: "Code"
-    })).append($("<th/>", {
-        text: "Language"
-    })).append($("<th/>", {
-        text: "Description"
-    })).append($("<th/>", {
-        text: "Join"
-    }));
-
-    headers.appendTo(thead);
-
-    var tbody = $("<tbody/>", {
-        id: "bd-ps-tbody"
-    });
-
-    tbody.appendTo(table);
-
-    table.appendTo(psbody);
-
-    $("body").append(this.getPanel());
-
-    $("#bd-ps-close").on("click", function () {
-        self.show();
-    });
-
-    var servers = publicServers.servers;
-
-    for (var server in servers) {
-        if (servers.hasOwnProperty(server)) {
-            var s = servers[server];
-            var code = s.code;
-            var title = s.title;
-            var language = s.language;
-            var description = s.description;
-
-            this.addServer(server, code, title, language, description);
-        }
-    }
+    var panelBase="";
+        panelBase += "<div id=\"pubs-container\">";
+        panelBase += "  <div id=\"pubs-spinner\">";
+        panelBase += "    <span class=\"spinner\" type=\"wandering-cubes\"><span class=\"spinner-inner spinner-wandering-cubes\"><span class=\"spinner-item\"><\/span><span class=\"spinner-item\"><\/span><\/span><\/span>";
+        panelBase += "  <\/div>";
+        panelBase += "  <div id=\"pubs-header\">";
+        panelBase += "    <h2 id=\"pubs-header-title\">Public Servers<\/h2>";
+        panelBase += "    <button id=\"sbtn\">Search<\/button>";
+        panelBase += "    <input id=\"sterm\" type=\"text\" placeholder=\"Search term...\"\/>";
+        panelBase += "  <\/div>";
+        panelBase += "  <div class=\"scroller-wrap\">";
+        panelBase += "    <div class=\"scroller\">";
+        panelBase += "      <div id=\"slist\" class=\"servers-listing\">";
+        panelBase += "        ";
+        panelBase += "      <\/div>";
+        panelBase += "    <\/div>";
+        panelBase += "  <\/div>";
+        panelBase += "  <div id=\"pubs-footer\">";
+        panelBase += "    <div>Server list provided by <a href=\"https:\/\/www.discordservers.com\/\" target=\"_blank\">DiscordServers.com<\/a><\/div>";
+        panelBase += "  <\/div>";
+        panelBase += "<\/div>";
+    this.container = panelBase;
 };
 
-PublicServers.prototype.addServer = function (name, code, title, language, description) {
-    var self = this;
-    var tableBody = $("#bd-ps-tbody");
-
-
-    var desc = $("<td/>").append($("<div/>", {
-        class: "bd-ps-description",
-        text: description
-    }));
-
-    var tr = $("<tr/>");
-
-    tr.append($("<td/>", {
-        text: title
-    }));
-
-    tr.append($("<td/>", {
-        css: {
-            "-webkit-user-select": "initial",
-            "user-select": "initial"
-        },
-        text: code
-    }));
-
-    tr.append($("<td/>", {
-        text: language
-    }));
-
-    tr.append(desc);
-
-    tr.append($("<td/>").append($("<button/>", {
-        text: "Join",
-        css: {
-            "height": "30px",
-            "display": "block",
-            "margin-top": "10px",
-            "background-color": "#36393E",
-            "border": "1px solid #404040",
-            "outline": "1px solid #000",
-            "color": "#EDEDED"
-        },
-        click: function () {
-            self.joinServer(code);
-        }
-    })));
-
-    tableBody.append(tr);
-};
 
 PublicServers.prototype.show = function () {
-    this.getPanel().toggle();
-    var li = $("#bd-pub-li");
-    li.removeClass();
-    if (this.getPanel().is(":visible")) {
-        li.addClass("active");
+    var self = this;
+    $("body").append(this.getPanel());
+
+    var dataset = {
+        "sort": [{
+            "online": "desc"
+        }],
+        "from": 0,
+        "size": 20,
+        "query": {
+            "filtered": {
+                "query": {
+                    "match_all": {}
+                }
+            }
+        }
+    };
+
+    $("#sbtn").on("click", function() {
+        self.search();
+    });
+    $("#sterm").on("keyup", function(e) {
+        if (e.keyCode == 13) {
+            self.search();
+        }
+    });
+
+
+   this.loadServers(dataset, false);
+   var self = this;
+    $(document).on("mouseup.bdps",function(e) {
+        if(!$("#bd-pub-button").is(e.target) && !$("#pubs-container").is(e.target) && $("#pubs-container").has(e.target).length === 0) {
+            self.hide();
+        }
+    });
+};
+
+PublicServers.prototype.hide = function() {
+    $("#pubs-container").remove();
+    $(document).off("mouseup.bdps");
+};
+
+PublicServers.prototype.loadServers = function(dataset, search) {
+    var self = this;
+    $("#sbtn").prop("disabled", true);
+    $("#sterm").prop("disabled", true);
+    $("#slist").empty();
+    $("#pubs-spinner").show();
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/app/_search",
+        crossDomain: true,
+        data: JSON.stringify(dataset),
+        success: function(data) {
+            var hits = data.hits.hits;
+            if(search) {
+              $("#pubs-header-title").text("Public Servers - Search Results: " + hits.length);
+            } else {
+              $("#pubs-header-title").text("Public Servers");
+            }
+            hits.forEach(function(hit) {
+                var source = hit._source;
+                var icode = source.invite_code;
+                var html = '<div class="server-row">';
+                html += '<div class="server-icon" style="background-image:url(' + source.icon + ')"></div>';
+                html += '<div class="server-info server-name">';
+                html += '<span>' + source.name + ' by ' + source.owner.name + '</span>';
+                html += '</div>';
+                html += '<div class="server-info server-members">';
+                html += '<span>' + source.online + '/' + source.members + ' Members</span>';
+                html += '</div>';
+                html += '<div class="server-info server-region">';
+                html += '<span>' + source.region + '</span>';
+                html += '</div>';
+                html += '<div class="server-info">';
+                html += '<button data-server-invite-code='+icode+'>Join</button>';
+                html += '</div>';
+                html += '</div>';
+                $("#slist").append(html);
+                $("button[data-server-invite-code="+icode+"]").on("click", function(){
+                    self.joinServer(icode);
+                });
+            });
+        },
+      done: function() {
+        $("#pubs-spinner").hide();
+        $("#sbtn").prop("disabled", false);
+        $("#sterm").prop("disabled", false);
+      },
+      always: function() {
+        $("#pubs-spinner").hide();
+        $("#sbtn").prop("disabled", false);
+        $("#sterm").prop("disabled", false);
+      },
+      error: function() {
+        $("#pubs-spinner").hide();
+        $("#sbtn").prop("disabled", false);
+        $("#sterm").prop("disabled", false);
+      },
+      complete: function() {
+        $("#pubs-spinner").hide();
+        $("#sbtn").prop("disabled", false);
+        $("#sterm").prop("disabled", false);
+      }
+    });
+};
+
+PublicServers.prototype.search = function() {
+    var dataset = {
+        "sort": [{
+            "online": "desc"
+        }],
+        "from": 0,
+        "size": 20,
+        "query": {
+            "filtered": {
+                "query": {
+                    "match_all": {}
+                }
+            }
+        }
+    };
+
+    var filter = {
+        "filter": {
+            "and": [{
+                "query": {
+                    "match_phrase_prefix": {
+                        "name": $("#sterm").val()
+                    }
+                }
+            }]
+        }
+    };
+
+    if ($("#sterm").val()) {
+        $.extend(dataset, filter);
     }
+    this.loadServers(dataset, true);
 };
 
 //Workaround for joining a server

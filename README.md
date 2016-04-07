@@ -48,7 +48,8 @@ Minimal mode makes elements smaller and hides certain elements.
 Only display voice channels
 
 **Public Servers:**
-A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/data/serverlist.json)
+A modal window for public servers [DiscordServers.com](https://www.discordservers.com/) 
+![ss](http://puu.sh/o9oNl.png)
 
 **Custom CSS**
 BetterDiscord supports custom CSS for styling Discord to your liking.
@@ -66,7 +67,8 @@ Add spoilers to your chat, simply add [!s] to your message.
 Save chatlogs locally.(soon)
 
 ## Adding your server to public servers
-Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/data/serverlist.json) and submit a pull request.
+As of JS1.60 the public server list is supplied by [DiscordServers.com](https://www.discordservers.com/) 
+Add your server there and it will appear in the list!
 
 ## BetterDiscord Uses the following API's
 * https://twitchemotes.com/apidocs for Twitch emotes
@@ -81,7 +83,7 @@ Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/data
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Jiiks | [Jiiks.net] (https://jiiks.net)
+Copyright (c) 2015-2016 Jiiks | [Jiiks.net] (https://jiiks.net)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
