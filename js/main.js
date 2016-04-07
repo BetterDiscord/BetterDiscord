@@ -5,8 +5,8 @@
  * Last Update: 02/04/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
-var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
-var jsVersion = 1.6;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
+var jsVersion = 1.61;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -21,20 +21,23 @@ var bttvEmoteUrlEnd = "/1x";
 var mainCore;
 
 var settings = {
-    "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally",                        "implemented": false },
-    "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers button",                  "implemented": true  },
-    "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented": true  },
-    "Voice Mode":                 { "id": "bda-gs-4", "info": "Only show voice chat",                           "implemented": true  },
-    "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode",                  "implemented": true  },
-    "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes",        "implemented": true  },
-    "Show Emotes":                { "id": "bda-es-7", "info": "Show any emotes",                                "implemented": true  },
-    "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes",                       "implemented": true  },
-    "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes",                          "implemented": true  },
-    "Emote Autocomplete":         { "id": "bda-es-3", "info": "Autocomplete emote commands",                    "implemented": false },
-    "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands",                  "implemented": true  },
-    "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes",                        "implemented": false },
-    "Show Names":                 { "id": "bda-es-6", "info": "Show emote names on hover",                      "implemented": true  },
-    "Show emote modifiers":       { "id": "bda-es-8", "info": "Enable/Disable emote mods",                      "implemented": true  }
+    "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false},
+    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false},
+    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false},
+    "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false},
+    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false},
+    "Quick Emote Menu":           { "id": "bda-es-0",  "info": "Show quick emote menu for adding emotes",           "implemented": true,  "hidden": false},
+    "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false},
+    "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false},
+    "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false},
+    "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false},
+    "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false},
+    "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false},
+    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false},
+    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable/Disable emote mods",                         "implemented": true,  "hidden": false},
+    "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false},
+    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true },
+    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true }
 };
 
 var links = {
@@ -59,11 +62,25 @@ var defaultCookie = {
     "bda-es-6": true,
     "bda-es-7": true,
     "bda-es-8": true,
-    "bda-jd": true
+    "bda-jd": true,
+    "bda-es-8": true,
+    "bda-dc-0": false,
+    "bda-css-0": false,
+    "bda-css-1": false
 };
 
 var bdchangelog = {
     "changes": {
+        "cccss": {
+            "title": "v1.61 : New custom CSS editor",
+            "text": "The custom CSS editor now has options and can be detached!",
+            "img": ""
+        },
+        "vdc": {
+            "title": "v1.61 : Voice Disconnect",
+            "text": "Disconnect from voice server when closing Discord!",
+            "img": ""
+        },
         "pslist": {
             "title": "v1.60 : New public server list!",
             "text": 'New and shiny public server list powered by <a href="https://www.discordservers.com/" target="_blank">DiscordServers.com</a>!',
@@ -100,8 +117,6 @@ var bdchangelog = {
 };
 
 var settingsCookie = {};
-var bdaf = false;
-var bdafo = false;
 
 function Core() {}
 
@@ -150,7 +165,7 @@ Core.prototype.init = function () {
             $(".guilds-wrapper").prepend(showChannelsButton);
 
             opublicServers = new PublicServers();
-
+            customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
             if (typeof (themesupport2) !== "undefined") {
@@ -165,6 +180,12 @@ Core.prototype.init = function () {
 
             $("#tc-settings-button").on("click", function () {
                 settingsPanel.show();
+            });
+            
+            window.addEventListener("beforeunload", function(){
+                if(settingsCookie["bda-dc-0"]){
+                    $('.btn.btn-disconnect').click();
+                }
             });
             
             opublicServers.init();
@@ -1078,6 +1099,108 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     window.localStorage["bdfavemotes"] = btoa(JSON.stringify(favoriteEmotes));
 };
 
+
+function CustomCssEditor() { }
+
+CustomCssEditor.prototype.init = function() {
+var self = this;
+self.hideBackdrop = false;
+self.editor = CodeMirror.fromTextArea(document.getElementById("bd-custom-css-ta"), {
+    lineNumbers: true,
+    mode: 'css',
+    indentUnit: 4,
+    theme: 'neat'
+});
+
+self.editor.on("change", function (cm) {
+    var css = cm.getValue();
+    self.applyCustomCss(css, false, false);
+});
+
+var attachEditor="";
+attachEditor += "<div id=\"bd-customcss-attach-controls\">";
+attachEditor += "       <ul class=\"checkbox-group\">";
+attachEditor += "       <li>";
+attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-0\" type=\"checkbox\" "+(settingsCookie["bda-css-0"] ? "checked" : "")+"><span><\/span><\/div>";
+attachEditor += "               <span title=\"Update client css while typing\">Live Update<\/span>";
+attachEditor += "           <\/div>";
+attachEditor += "       <\/li>";
+attachEditor += "       <li>";
+attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-1\" type=\"checkbox\" "+(settingsCookie["bda-css-1"] ? "checked" : "")+"><span><\/span><\/div>";
+attachEditor += "               <span title=\"Autosave css to localstorage when typing\">Autosave<\/span>";
+attachEditor += "           <\/div>";
+attachEditor += "       <\/li>";
+attachEditor += "        <li>";
+attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-2\" type=\"checkbox\" "+(customCssEditor.hideBackdrop ? "checked" : "")+"><span><\/span><\/div>";
+attachEditor += "               <span title=\"Hide the callout backdrop to disable modal close events\">Hide Backdrop<\/span>";
+attachEditor += "           <\/div>";
+attachEditor += "       <\/li>";
+attachEditor += "   <\/ul>";
+attachEditor += "   <div id=\"bd-customcss-detach-controls-buttons\">";
+attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-update\" onclick=\"return false;\">Update<\/button>";
+attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-save\"  onclick=\"return false;\">Save<\/button>";
+attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-detach\" onclick=\"customCssEditor.detach(); return false;\">Detach</button>";
+attachEditor += "   <\/div>";
+attachEditor += "<\/div>";
+
+this.attachEditor = attachEditor;
+
+$("#bd-customcss-innerpane").append(attachEditor);
+
+$("#bd-customcss-detached-update").on("click", function() {
+        self.applyCustomCss(self.editor.getValue(), true, false);
+        return false;
+});
+$("#bd-customcss-detached-save").on("click", function() {
+        self.applyCustomCss(self.editor.getValue(), false, true);
+        return false;
+});
+
+
+var detachEditor="";
+    detachEditor += "<div id=\"bd-customcss-detach-container\">";
+    detachEditor += "   <div id=\"bd-customcss-detach-editor\">";
+    detachEditor += "   <\/div>";
+    detachEditor += "<\/div>";
+this.detachedEditor = detachEditor;
+};
+
+CustomCssEditor.prototype.attach = function() {
+    $("#editor-detached").hide();
+    $("#app-mount").removeClass("bd-detached-editor");
+    $("#bd-customcss-pane").append($("#bd-customcss-innerpane"));
+    $("#bd-customcss-detached-detach").show();
+    $("#bd-customcss-detach-container").remove();
+};
+
+CustomCssEditor.prototype.detach = function() {
+    var self = this;
+    this.attach();
+    $("#editor-detached").show();
+    $("#bd-customcss-detached-detach").hide();
+    $("#app-mount").addClass("bd-detached-editor");
+    $(".app").parent().append(this.detachedEditor);
+    $("#bd-customcss-detach-editor").append($("#bd-customcss-innerpane"));
+};
+
+CustomCssEditor.prototype.applyCustomCss = function (css, forceupdate, forcesave) {
+    if ($("#customcss").length == 0) {
+        $("head").append('<style id="customcss"></style>');
+    }
+
+    if(forceupdate || settingsCookie["bda-css-0"]) {
+        $("#customcss").html(css);
+    }
+
+    if(forcesave || settingsCookie["bda-css-1"]) {
+        localStorage.setItem("bdcustomcss", btoa(css));
+    }
+};
+
+
 /* BetterDiscordApp Settings Panel JavaScript
  * Version: 2.0
  * Author: Jiiks | http://jiiks.net
@@ -1140,16 +1263,6 @@ SettingsPanel.prototype.init = function () {
     }
 };
 
-SettingsPanel.prototype.applyCustomCss = function (css) {
-    if ($("#customcss").length == 0) {
-        $("head").append('<style id="customcss"></style>');
-    }
-    bdafo = (css.indexOf("april2nd") > -1);
-    $("#customcss").html(css);
-
-    localStorage.setItem("bdcustomcss", btoa(css));
-};
-
 var customCssInitialized = false;
 var lastTab = "";
 
@@ -1170,19 +1283,7 @@ SettingsPanel.prototype.changeTab = function (tab) {
         break;
     case "bd-customcss-tab":
         if (!customCssInitialized) {
-            var editor = CodeMirror.fromTextArea(document.getElementById("bd-custom-css-ta"), {
-                lineNumbers: true,
-                mode: 'css',
-                indentUnit: 4,
-                theme: 'neat'
-            });
-
-
-            editor.on("change", function (cm) {
-                var css = cm.getValue();
-                self.applyCustomCss(css);
-            });
-
+            customCssEditor.init();
             customCssInitialized = true;
         }
         break;
@@ -1195,12 +1296,19 @@ SettingsPanel.prototype.changeTab = function (tab) {
     }
 };
 
-
 SettingsPanel.prototype.updateSetting = function (checkbox) {
     var cb = $(checkbox).children().find('input[type="checkbox"]');
     var enabled = !cb.is(":checked");
     var id = cb.attr("id");
     cb.prop("checked", enabled);
+
+    if(id == "bda-css-2") {
+        $("#app-mount").removeClass("bd-hide-bd");
+        customCssEditor.hideBackdrop = enabled;
+        if(enabled) {
+            $("#app-mount").addClass("bd-hide-bd")
+        }
+    }
 
     settingsCookie[id] = enabled;
 
@@ -1272,7 +1380,6 @@ SettingsPanel.prototype.construct = function () {
         '           <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick="settingsPanel.changeTab(\'bd-themes-tab\');">Themes</div>' +
         '       </div>' +
         '       <div class="bd-settings">' +
-        '' +
         '               <div class="bd-pane control-group" id="bd-settings-pane" style="display:none;">' +
         '                   <ul class="checkbox-group">';
 
@@ -1283,7 +1390,7 @@ SettingsPanel.prototype.construct = function () {
         var sett = settings[setting];
         var id = sett["id"];
 
-        if (sett["implemented"]) {
+        if (sett["implemented"] && !sett["hidden"]) {
 
             settingsInner += '' +
                 '<li>' +
@@ -1300,13 +1407,17 @@ SettingsPanel.prototype.construct = function () {
     }
 
     var ccss = atob(localStorage.getItem("bdcustomcss"));
-    self.applyCustomCss(ccss);
+    customCssEditor.applyCustomCss(ccss, true, false);
 
     settingsInner += '</ul>' +
         '               </div>' +
         '' +
         '               <div class="bd-pane control-group" id="bd-customcss-pane" style="display:none;">' +
-        '                   <textarea id="bd-custom-css-ta">' + ccss + '</textarea>' +
+        '                   <div id="editor-detached" style="display:none;">' +
+        '                       <h3>Editor Detached</h3>' +
+        '                       <button class="btn btn-primary" onclick="customCssEditor.attach(); return false;">Attach</button>' +
+        '                   </div>' +
+        '                   <div id="bd-customcss-innerpane"><textarea id="bd-custom-css-ta">' + ccss + '</textarea></div>' +
         '               </div>' +
         '' +
         '               <div class="bd-pane control-group" id="bd-plugins-pane" style="display:none;">' +
