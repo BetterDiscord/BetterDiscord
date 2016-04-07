@@ -133,27 +133,6 @@ Core.prototype.init = function () {
             console.log(new Date().getTime() + " Defer Loaded");
             var guilds = $(".guilds>li:first-child");
 
-            guilds.after($("<li></li>", {
-                id: "bd-pub-li",
-                css: {
-                    "height": "20px",
-                    "display": settingsCookie["bda-gs-1"] == true ? "" : "none"
-                }
-            }).append($("<div/>", {
-                class: "guild-inner",
-                css: {
-                    "height": "20px",
-                    "border-radius": "4px"
-                }
-            }).append($("<a/>").append($("<div/>", {
-                css: {
-                    "line-height": "20px",
-                    "font-size": "12px"
-                },
-                text: "public",
-                id: "bd-pub-button"
-            })))));
-
             var showChannelsButton = $("<button/>", {
                 class: "btn",
                 id: "bd-show-channels",
@@ -187,16 +166,10 @@ Core.prototype.init = function () {
             $("#tc-settings-button").on("click", function () {
                 settingsPanel.show();
             });
-            $("#bd-pub-button").on("click", function () {
-                opublicServers.show();
-            });
-
+            
             opublicServers.init();
 
             emoteModule.autoCapitalize();
-
-
-
 
             /*Display new features in BetterDiscord*/
             if (settingsCookie["version"] < jsVersion) {
@@ -655,6 +628,35 @@ PublicServers.prototype.getPanel = function () {
 };
 
 PublicServers.prototype.init = function () {
+    var self = this;
+
+    var guilds = $(".guilds>li:first-child");
+
+    guilds.after($("<li></li>", {
+        id: "bd-pub-li",
+        css: {
+            "height": "20px",
+            "display": settingsCookie["bda-gs-1"] == true ? "" : "none"
+        }
+    }).append($("<div/>", {
+        class: "guild-inner",
+        css: {
+            "height": "20px",
+            "border-radius": "4px"
+        }
+    }).append($("<a/>").append($("<div/>", {
+        css: {
+            "line-height": "20px",
+            "font-size": "12px"
+        },
+        text: "public",
+        id: "bd-pub-button"
+    })))));
+
+    $("#bd-pub-button").on("click", function () {
+        this.show();
+    });
+
     var panelBase="";
         panelBase += "<div id=\"pubs-container\">";
         panelBase += "  <div id=\"pubs-spinner\">";
@@ -677,6 +679,12 @@ PublicServers.prototype.init = function () {
         panelBase += "  <\/div>";
         panelBase += "<\/div>";
     this.container = panelBase;
+
+    if($("#bd-pub-li").length < 1) {
+        setTimeout(function() {
+            self.init();
+        }, 250);
+    }
 };
 
 
