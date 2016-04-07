@@ -654,7 +654,7 @@ PublicServers.prototype.init = function () {
     })))));
 
     $("#bd-pub-button").on("click", function () {
-        this.show();
+        self.show();
     });
 
     var panelBase="";
