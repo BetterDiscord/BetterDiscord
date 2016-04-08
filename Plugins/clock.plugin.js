@@ -6,7 +6,7 @@ var clockPlugin = function () {};
 
 clockPlugin.prototype.start = function () {
 	BdApi.clearCSS("clockPluginCss");
-	BdApi.injectCSS("clockPluginCss", '#clockPluginClock { position:absolute; color:#FFF; background:#333333; padding:0 12px 0 10px; }');
+	BdApi.injectCSS("clockPluginCss", '#clockPluginClock { position:absolute; color:#FFF; background:#333333; padding:0 12px 0 10px; min-width:70px; }');
 	var self = this;
 	this.clock = $("<div/>", { id: "clockPluginClock" });
 	$("body").append(this.clock);
