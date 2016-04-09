@@ -74,7 +74,9 @@ var defaultCookie = {
 var bdchangelog = {
     "changes": {
         "emotemenu": {
-            "title": "v1.62 : Brand new emote menu that fits in Discord emoji menu!"
+            "title": "v1.62 : Brand new emote menu that fits in Discord emoji menu!",
+            "text": "The emote menu has been repalced by a new one that injects itself in the Discord emoji menu!",
+            "img": ""
         },
         "cccss": {
             "title": "v1.61 : New custom CSS editor",
