@@ -48,7 +48,8 @@ Minimal mode makes elements smaller and hides certain elements.
 Only display voice channels
 
 **Public Servers:**
-A menu for displaying public servers. [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/data/serverlist.json)
+A modal window for public servers [DiscordServers.com](https://www.discordservers.com/) 
+![ss](http://puu.sh/o9oNl.png)
 
 **Custom CSS**
 BetterDiscord supports custom CSS for styling Discord to your liking.
@@ -57,7 +58,7 @@ BetterDiscord supports custom CSS for styling Discord to your liking.
 BetterDiscord comes with a theme loader for loading your own or downloading themes made by others.
 
 **Plugins**
-BetterDiscord comes with a JavaSCript plugin loader for loading your own or downloading plugins made by others.
+BetterDiscord comes with a JavaScript plugin loader for loading your own or downloading plugins made by others.
 
 **Spoilers**
 Add spoilers to your chat, simply add [!s] to your message.
@@ -66,7 +67,8 @@ Add spoilers to your chat, simply add [!s] to your message.
 Save chatlogs locally.(soon)
 
 ## Adding your server to public servers
-Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/data/serverlist.json) and submit a pull request.
+As of JS1.60 the public server list is supplied by [DiscordServers.com](https://www.discordservers.com/) 
+Add your server there and it will appear in the list!
 
 ## BetterDiscord Uses the following API's
 * https://twitchemotes.com/apidocs for Twitch emotes
@@ -76,12 +78,13 @@ Edit the [Serverlist](https://github.com/Jiiks/BetterDiscordApp/blob/master/data
 * MacOS Installer by [Candunc](https://github.com/Candunc) 
 * Emote titles by [pendo324](https://github.com/pendo324)
 * Majority of FFZ emote work by [Pohky] (https://github.com/pohky)
+* Majority of BTTV emote work by [EhsanKia] (https://github.com/EhsanKia)
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Jiiks | [Jiiks.net] (https://jiiks.net)
+Copyright (c) 2015-2016 Jiiks | [Jiiks.net] (https://jiiks.net)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

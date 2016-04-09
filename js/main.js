@@ -5,8 +5,8 @@
  * Last Update: 02/04/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
-var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule;
-var jsVersion = 1.58;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
+var jsVersion = 1.62;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -21,20 +21,24 @@ var bttvEmoteUrlEnd = "/1x";
 var mainCore;
 
 var settings = {
-    "Save logs locally":          { "id": "bda-gs-0", "info": "Saves chat logs locally",                        "implemented": false },
-    "Public Servers":             { "id": "bda-gs-1", "info": "Display public servers button",                  "implemented": true  },
-    "Minimal Mode":               { "id": "bda-gs-2", "info": "Hide elements and reduce the size of elements.", "implemented": true  },
-    "Voice Mode":                 { "id": "bda-gs-4", "info": "Only show voice chat",                           "implemented": true  },
-    "Hide Channels":              { "id": "bda-gs-3", "info": "Hide channels in minimal mode",                  "implemented": true  },
-    "Quick Emote Menu":           { "id": "bda-es-0", "info": "Show quick emote menu for adding emotes",        "implemented": true  },
-    "Show Emotes":                { "id": "bda-es-7", "info": "Show any emotes",                                "implemented": true  },
-    "FrankerFaceZ Emotes":        { "id": "bda-es-1", "info": "Show FrankerFaceZ Emotes",                       "implemented": true  },
-    "BetterTTV Emotes":           { "id": "bda-es-2", "info": "Show BetterTTV Emotes",                          "implemented": true  },
-    "Emote Autocomplete":         { "id": "bda-es-3", "info": "Autocomplete emote commands",                    "implemented": false },
-    "Emote Auto Capitalization":  { "id": "bda-es-4", "info": "Autocapitalize emote commands",                  "implemented": true  },
-    "Override Default Emotes":    { "id": "bda-es-5", "info": "Override default emotes",                        "implemented": false },
-    "Show Names":                 { "id": "bda-es-6", "info": "Show emote names on hover",                      "implemented": true  },
-    "Show emote modifiers":       { "id": "bda-es-8", "info": "Enable/Disable emote mods",                      "implemented": true  }
+    "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false},
+    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false},
+    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false},
+    "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false},
+    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false},
+    "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false},
+    "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show/Hide Discord emoji menu",                      "implemented": true,  "hidden": false},
+    "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false},
+    "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false},
+    "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false},
+    "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false},
+    "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false},
+    "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false},
+    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false},
+    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable/Disable emote mods",                         "implemented": true,  "hidden": false},
+    "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false},
+    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true },
+    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true },
 };
 
 var links = {
@@ -59,22 +63,72 @@ var defaultCookie = {
     "bda-es-6": true,
     "bda-es-7": true,
     "bda-es-8": true,
-    "bda-jd": true
+    "bda-jd": true,
+    "bda-es-8": true,
+    "bda-dc-0": false,
+    "bda-css-0": false,
+    "bda-css-1": false,
+    "bda-es-9": true
 };
 
 var bdchangelog = {
     "changes": {
+        "emotemenu": {
+            "title": "v1.62 : Brand new emote menu that fits in Discord emoji menu!",
+            "text": "The emote menu has been replaced by a new one that injects itself in the Discord emoji menu!",
+            "img": ""
+        },
+        "cccss": {
+            "title": "v1.61 : New custom CSS editor",
+            "text": "The custom CSS editor now has options and can be detached!",
+            "img": ""
+        },
+        "vdc": {
+            "title": "v1.61 : Voice Disconnect",
+            "text": "Disconnect from voice server when closing Discord!",
+            "img": ""
+        },
+        "pslist": {
+            "title": "v1.60 : New public server list!",
+            "text": 'New and shiny public server list powered by <a href="https://www.discordservers.com/" target="_blank">DiscordServers.com</a>!',
+            "img": ""
+        },
         "api": {
-            "title": "Emote modifiers!",
-            "text": "You can use the following modifiers to modify emotes: <br> <strong>spin</strong>, <strong>spin2</strong>, <strong>spin3</strong>, <strong>flip</strong>, <strong>pulse</strong>, <strong>spinflip</strong>. <br> Example usage: Kappa:spin",
+            "title": "v1.59 : New plugin api callback",
+            "text": "Use the `observer(e)` callback instead of creating your own MutationObserver",
+            "img": ""
+        },
+        "emotemods": {
+            "title": "v1.59 : New emote mods!",
+            "text": "The following emote mods have been added: :shake2, :shake3, :flap",
+            "img": ""
+        },
+        "minmode": {
+            "title": "v1.59: Minimal mode",
+            "text": "Minimal mode embed fixed size has been removed",
+            "img": ""
+        }
+    },
+    "fixes": {
+        "modal": {
+            "title": "v1.62 : Fixed modals",
+            "text": "Fixed broken modal introduced by 0.0.287",
+            "imt": ""
+        },
+        "emotes": {
+            "title": "v1.59 : Native sub emote mods",
+            "text": "Emote mods now work with native sub emotes!",
+            "img": ""
+        },
+        "emotes2": {
+            "title": "v1.59 : Emote mods and custom emotes",
+            "text": "Emote mods will no longer interfere with custom emotes using :",
             "img": ""
         }
     }
 };
 
 var settingsCookie = {};
-var bdaf = false;
-var bdafo = false;
 
 function Core() {}
 
@@ -106,27 +160,6 @@ Core.prototype.init = function () {
             console.log(new Date().getTime() + " Defer Loaded");
             var guilds = $(".guilds>li:first-child");
 
-            guilds.after($("<li></li>", {
-                id: "bd-pub-li",
-                css: {
-                    "height": "20px",
-                    "display": settingsCookie["bda-gs-1"] == true ? "" : "none"
-                }
-            }).append($("<div/>", {
-                class: "guild-inner",
-                css: {
-                    "height": "20px",
-                    "border-radius": "4px"
-                }
-            }).append($("<a/>").append($("<div/>", {
-                css: {
-                    "line-height": "20px",
-                    "font-size": "12px"
-                },
-                text: "public",
-                id: "bd-pub-button"
-            })))));
-
             var showChannelsButton = $("<button/>", {
                 class: "btn",
                 id: "bd-show-channels",
@@ -144,7 +177,7 @@ Core.prototype.init = function () {
             $(".guilds-wrapper").prepend(showChannelsButton);
 
             opublicServers = new PublicServers();
-
+            customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
             if (typeof (themesupport2) !== "undefined") {
@@ -160,16 +193,16 @@ Core.prototype.init = function () {
             $("#tc-settings-button").on("click", function () {
                 settingsPanel.show();
             });
-            $("#bd-pub-button").on("click", function () {
-                opublicServers.show();
+            
+            window.addEventListener("beforeunload", function(){
+                if(settingsCookie["bda-dc-0"]){
+                    $('.btn.btn-disconnect').click();
+                }
             });
-
+            
             opublicServers.init();
 
             emoteModule.autoCapitalize();
-
-
-
 
             /*Display new features in BetterDiscord*/
             if (settingsCookie["version"] < jsVersion) {
@@ -219,45 +252,30 @@ Core.prototype.saveSettings = function () {
 Core.prototype.loadSettings = function () {
     settingsCookie = JSON.parse($.cookie("better-discord"));
 };
+
 var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function () {
     mainObserver = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
+            if($(mutation.target).find(".emoji-picker").length) {
+                var fc = mutation.target.firstChild;
+                if(fc.classList.contains("popout")) {
+                    quickEmoteMenu.obsCallback($(fc));
+                }
+            }
+            if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
             if (mutation.target.getAttribute('class') != null) {
                 //console.log(mutation.target)
                 if(mutation.target.classList.contains('title-wrap') || mutation.target.classList.contains('chat')){
-                    quickEmoteMenu.obsCallback();
+                   // quickEmoteMenu.obsCallback();
                     voiceMode.obsCallback();
                     if (typeof pluginModule !== "undefined") pluginModule.channelSwitch();
-                    /*$(".message-group").each(function () {
-                        var a = $(this).find(".avatar-large");
-                        if (a.length > 0) {
-                            try {
-                            var b = a.css("background-image").match(/\d+/).toString();
-                            if (botlist.indexOf(a) > -1) {
-                                $(this).find(".user-name").addClass("boticon");
-                            }
-                            }catch(err) {}
-                        }
-                    });*/
                 }
                 if (mutation.target.getAttribute('class').indexOf('scroller messages') != -1) {
-                    /*var lastMessage = $(".message-group").last();
-                    if (lastMessage != undefined) {
-                        var a = lastMessage.find(".avatar-large");
-                        if (a.length > 0) {
-                            try {
-                            if (botlist.indexOf(a.css("background-image").match(/\d+/).toString()) > -1) {
-                                lastMessage.find(".user-name").addClass("boticon");
-                            }
-                            }catch(err) {}
-                        }
-                    }*/
                     if (typeof pluginModule !== "undefined") pluginModule.newMessage();
                 }
             }
             emoteModule.obsCallback(mutation);
-
         });
     });
 
@@ -272,10 +290,10 @@ Core.prototype.constructChangelog = function () {
     var changeLog = '' +
         '<div id="bd-wn-modal" class="modal" style="opacity:1;">' +
         '  <div class="modal-inner">' +
-        '       <div id="bdcl" class="change-log"> ' +
-        '           <div class="header">' +
+        '       <div id="bdcl" class="markdown-modal change-log"> ' +
+        '           <div class="markdown-modal-header">' +
         '               <strong>What\'s new in BetterDiscord JS' + jsVersion + '</strong>' +
-        '               <button class="close" onclick=\'$("#bd-wn-modal").remove();\'></button>' +
+        '               <button class="markdown-modal-close" onclick=\'$("#bd-wn-modal").remove();\'></button>' +
         '           </div><!--header-->' +
         '           <div class="scroller-wrap">' +
         '               <div class="scroller">';
@@ -411,7 +429,21 @@ EmoteModule.prototype.obsCallback = function (mutation) {
     $(".emoji").each(function () {
         var t = $(this);
         if (t.attr("src").indexOf(".png") != -1) {
-            t.replaceWith("<span>" + t.attr("alt") + "</span>");
+
+            var next = t.next();
+            var newText = t.attr("alt");
+            if(next.size() > 0) {
+                if(next.prop("tagName") == "SPAN") {
+                    newText += next.text();
+                    next.remove();
+                }
+            }
+
+            if(t.parent().prop("tagName") != "SPAN") {
+                t.replaceWith("<span>" + newText + "</span>");
+            } else {
+                t.replaceWith(newText);
+            }
         }
     });
 
@@ -438,7 +470,6 @@ EmoteModule.prototype.getNodes = function (node) {
         nodes.push(next);
     }
 
-
     return nodes;
 };
 
@@ -458,15 +489,12 @@ EmoteModule.prototype.injectEmote = function (node) {
         return;
     }
 
-
     var edited = false;
 
     if ($(parent.parentElement).hasClass("edited")) {
-        parent = parent.parentElement.parentElement.firstChild; //:D
+        parent = parent.parentElement.parentElement.firstChild;
         edited = true;
     }
-
-    //if(!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) return;
 
     function inject() {
         var parentInnerHTML = parent.innerHTML;
@@ -503,22 +531,24 @@ EmoteModule.prototype.injectEmote = function (node) {
                 return;
             }
 
-            if ($.inArray(word, bemotes) != -1) return;
-
             var useEmoteCss = false;
             var sWord = word;
             var emoteClass = "";
-            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespinflip", "emotespin2", "emotespin3"];
+            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespin2", "emotespin3", "emote1spin", "emote2spin", "emote3spin", "emotetr", "emotebl", "emotebr", "emoteshake", "emoteshake2", "emoteshake3", "emoteflap"];
             if(word.indexOf(":") > -1) {
-                userEmoteCss = true;
-                sWord = word.split(":")[0];
-                if(settingsCookie["bda-es-8"]) {
-                    emoteClass = "emote" + word.split(":")[1];
-                    if(allowedClasses.indexOf(emoteClass) < 0) {
-                        emoteClass = "";
+                var split = word.split(/:(?!.*:)/);
+                if (split[0] != "" && split[1] != "") { 
+                    userEmoteCss = true;
+                    sWord = split[0];
+                    if(settingsCookie["bda-es-8"]) {
+                        emoteClass = "emote" + split[1];
+                        if(allowedClasses.indexOf(emoteClass) < 0) {
+                            emoteClass = "";
+                        }
                     }
                 }
             }
+            if ($.inArray(sWord, bemotes) != -1) return;
 
             if (emotesTwitch.emotes.hasOwnProperty(sWord)) {
                 var len = Math.round(sWord.length / 4);
@@ -574,9 +604,9 @@ EmoteModule.prototype.injectEmote = function (node) {
         parent.innerHTML = parentInnerHTML.replace(new RegExp("\uFDD9", "g"), "");
         var newHeight = parent.parentElement.offsetHeight;
 
-        //Scrollfix
         var scrollPane = $(".scroller.messages").first();
         scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
+        
     }
 
     if (edited) {
@@ -584,7 +614,6 @@ EmoteModule.prototype.injectEmote = function (node) {
     } else {
         inject();
     }
-
 };
 
 EmoteModule.prototype.autoCapitalize = function () {
@@ -625,18 +654,6 @@ EmoteModule.prototype.capitalize = function (value) {
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var publicServers = {
-    "servers": {
-        "server": {
-            "code": 0,
-            "icon": null,
-            "title": "title",
-            "language": "EN",
-            "description": "description"
-        }
-    }
-}; //for ide
-
 function PublicServers() {
 
 }
@@ -646,145 +663,206 @@ PublicServers.prototype.getPanel = function () {
 };
 
 PublicServers.prototype.init = function () {
-
     var self = this;
 
-    this.container = $("<div/>", {
-        id: "bd-ps-container",
-        style: "display:none"
-    });
+    var guilds = $(".guilds>li:first-child");
 
-    var header = $("<div/>", {
-        id: "bd-ps-header"
-    });
+    guilds.after($("<li></li>", {
+        id: "bd-pub-li",
+        css: {
+            "height": "20px",
+            "display": settingsCookie["bda-gs-1"] == true ? "" : "none"
+        }
+    }).append($("<div/>", {
+        class: "guild-inner",
+        css: {
+            "height": "20px",
+            "border-radius": "4px"
+        }
+    }).append($("<a/>").append($("<div/>", {
+        css: {
+            "line-height": "20px",
+            "font-size": "12px"
+        },
+        text: "public",
+        id: "bd-pub-button"
+    })))));
 
-    $("<h2/>", {
-        text: "Public Servers"
-    }).appendTo(header);
-
-    $("<span/>", {
-        id: "bd-ps-close",
-        style: "cursor:pointer;",
-        text: "X"
-    }).appendTo(header);
-
-    header.appendTo(this.getPanel());
-
-    var psbody = $("<div/>", {
-        id: "bd-ps-body"
-    });
-
-    psbody.appendTo(this.getPanel());
-
-    var table = $("<table/>", {
-        border: "0"
-    });
-
-    var thead = $("<thead/>");
-
-    thead.appendTo(table);
-
-    var headers = $("<tr/>", {
-
-    }).append($("<th/>", {
-        text: "Name"
-    })).append($("<th/>", {
-        text: "Code"
-    })).append($("<th/>", {
-        text: "Language"
-    })).append($("<th/>", {
-        text: "Description"
-    })).append($("<th/>", {
-        text: "Join"
-    }));
-
-    headers.appendTo(thead);
-
-    var tbody = $("<tbody/>", {
-        id: "bd-ps-tbody"
-    });
-
-    tbody.appendTo(table);
-
-    table.appendTo(psbody);
-
-    $("body").append(this.getPanel());
-
-    $("#bd-ps-close").on("click", function () {
+    $("#bd-pub-button").on("click", function () {
         self.show();
     });
 
-    var servers = publicServers.servers;
+    var panelBase="";
+        panelBase += "<div id=\"pubs-container\">";
+        panelBase += "  <div id=\"pubs-spinner\">";
+        panelBase += "    <span class=\"spinner\" type=\"wandering-cubes\"><span class=\"spinner-inner spinner-wandering-cubes\"><span class=\"spinner-item\"><\/span><span class=\"spinner-item\"><\/span><\/span><\/span>";
+        panelBase += "  <\/div>";
+        panelBase += "  <div id=\"pubs-header\">";
+        panelBase += "    <h2 id=\"pubs-header-title\">Public Servers<\/h2>";
+        panelBase += "    <button id=\"sbtn\">Search<\/button>";
+        panelBase += "    <input id=\"sterm\" type=\"text\" placeholder=\"Search term...\"\/>";
+        panelBase += "  <\/div>";
+        panelBase += "  <div class=\"scroller-wrap\">";
+        panelBase += "    <div class=\"scroller\">";
+        panelBase += "      <div id=\"slist\" class=\"servers-listing\">";
+        panelBase += "        ";
+        panelBase += "      <\/div>";
+        panelBase += "    <\/div>";
+        panelBase += "  <\/div>";
+        panelBase += "  <div id=\"pubs-footer\">";
+        panelBase += "    <div>Server list provided by <a href=\"https:\/\/www.discordservers.com\/\" target=\"_blank\">DiscordServers.com<\/a><\/div>";
+        panelBase += "  <\/div>";
+        panelBase += "<\/div>";
+    this.container = panelBase;
 
-    for (var server in servers) {
-        if (servers.hasOwnProperty(server)) {
-            var s = servers[server];
-            var code = s.code;
-            var title = s.title;
-            var language = s.language;
-            var description = s.description;
-
-            this.addServer(server, code, title, language, description);
-        }
+    if($("#bd-pub-li").length < 1) {
+        setTimeout(function() {
+            self.init();
+        }, 250);
     }
 };
 
-PublicServers.prototype.addServer = function (name, code, title, language, description) {
-    var self = this;
-    var tableBody = $("#bd-ps-tbody");
-
-
-    var desc = $("<td/>").append($("<div/>", {
-        class: "bd-ps-description",
-        text: description
-    }));
-
-    var tr = $("<tr/>");
-
-    tr.append($("<td/>", {
-        text: title
-    }));
-
-    tr.append($("<td/>", {
-        css: {
-            "-webkit-user-select": "initial",
-            "user-select": "initial"
-        },
-        text: code
-    }));
-
-    tr.append($("<td/>", {
-        text: language
-    }));
-
-    tr.append(desc);
-
-    tr.append($("<td/>").append($("<button/>", {
-        text: "Join",
-        css: {
-            "height": "30px",
-            "display": "block",
-            "margin-top": "10px",
-            "background-color": "#36393E",
-            "border": "1px solid #404040",
-            "outline": "1px solid #000",
-            "color": "#EDEDED"
-        },
-        click: function () {
-            self.joinServer(code);
-        }
-    })));
-
-    tableBody.append(tr);
-};
 
 PublicServers.prototype.show = function () {
-    this.getPanel().toggle();
-    var li = $("#bd-pub-li");
-    li.removeClass();
-    if (this.getPanel().is(":visible")) {
-        li.addClass("active");
+    var self = this;
+    $("body").append(this.getPanel());
+
+    var dataset = {
+        "sort": [{
+            "online": "desc"
+        }],
+        "from": 0,
+        "size": 20,
+        "query": {
+            "filtered": {
+                "query": {
+                    "match_all": {}
+                }
+            }
+        }
+    };
+
+    $("#sbtn").on("click", function() {
+        self.search();
+    });
+    $("#sterm").on("keyup", function(e) {
+        if (e.keyCode == 13) {
+            self.search();
+        }
+    });
+
+   this.loadServers(dataset, false);
+   var self = this;
+    $(document).on("mouseup.bdps",function(e) {
+        if(!$("#bd-pub-button").is(e.target) && !$("#pubs-container").is(e.target) && $("#pubs-container").has(e.target).length === 0) {
+            self.hide();
+        }
+    });
+};
+
+PublicServers.prototype.hide = function() {
+    $("#pubs-container").remove();
+    $(document).off("mouseup.bdps");
+};
+
+PublicServers.prototype.loadServers = function(dataset, search) {
+    var self = this;
+    $("#sbtn").prop("disabled", true);
+    $("#sterm").prop("disabled", true);
+    $("#slist").empty();
+    $("#pubs-spinner").show();
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/app/_search",
+        crossDomain: true,
+        data: JSON.stringify(dataset),
+        success: function(data) {
+            var hits = data.hits.hits;
+            if(search) {
+              $("#pubs-header-title").text("Public Servers - Search Results: " + hits.length);
+            } else {
+              $("#pubs-header-title").text("Public Servers");
+            }
+            hits.forEach(function(hit) {
+                var source = hit._source;
+                var icode = source.invite_code;
+                var html = '<div class="server-row">';
+                html += '<div class="server-icon" style="background-image:url(' + source.icon + ')"></div>';
+                html += '<div class="server-info server-name">';
+                html += '<span>' + source.name + ' by ' + source.owner.name + '</span>';
+                html += '</div>';
+                html += '<div class="server-info server-members">';
+                html += '<span>' + source.online + '/' + source.members + ' Members</span>';
+                html += '</div>';
+                html += '<div class="server-info server-region">';
+                html += '<span>' + source.region + '</span>';
+                html += '</div>';
+                html += '<div class="server-info">';
+                html += '<button data-server-invite-code='+icode+'>Join</button>';
+                html += '</div>';
+                html += '</div>';
+                $("#slist").append(html);
+                $("button[data-server-invite-code="+icode+"]").on("click", function(){
+                    self.joinServer(icode);
+                });
+            });
+        },
+      done: function() {
+        $("#pubs-spinner").hide();
+        $("#sbtn").prop("disabled", false);
+        $("#sterm").prop("disabled", false);
+      },
+      always: function() {
+        $("#pubs-spinner").hide();
+        $("#sbtn").prop("disabled", false);
+        $("#sterm").prop("disabled", false);
+      },
+      error: function() {
+        $("#pubs-spinner").hide();
+        $("#sbtn").prop("disabled", false);
+        $("#sterm").prop("disabled", false);
+      },
+      complete: function() {
+        $("#pubs-spinner").hide();
+        $("#sbtn").prop("disabled", false);
+        $("#sterm").prop("disabled", false);
+      }
+    });
+};
+
+PublicServers.prototype.search = function() {
+    var dataset = {
+        "sort": [{
+            "online": "desc"
+        }],
+        "from": 0,
+        "size": 20,
+        "query": {
+            "filtered": {
+                "query": {
+                    "match_all": {}
+                }
+            }
+        }
+    };
+
+    var filter = {
+        "filter": {
+            "and": [{
+                "query": {
+                    "match_phrase_prefix": {
+                        "name": $("#sterm").val()
+                    }
+                }
+            }]
+        }
+    };
+
+    if ($("#sterm").val()) {
+        $.extend(dataset, filter);
     }
+    this.loadServers(dataset, true);
 };
 
 //Workaround for joining a server
@@ -803,179 +881,154 @@ PublicServers.prototype.joinServer = function (code) {
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-var emoteBtn, emoteMenu;
-var eiarr = [1, 3, 4, 6, 7, 8, 10, 11, 12, 13, 14];
-
 function QuickEmoteMenu() {
 
 }
 
-QuickEmoteMenu.prototype.init = function (reload) {
+QuickEmoteMenu.prototype.init = function() {
 
-    emoteBtn = null;
-    $(".channel-textarea").first().removeClass("emotemenu-enabled");
-    if (!emoteMenu) {
-        this.initEmoteList();
+    $(document).on("mousedown", function(e) {
+        if(e.target.id != "rmenu") $("#rmenu").remove();
+    });
+
+    var fe = localStorage["bdfavemotes"];
+    if (fe != undefined) {
+        this.favoriteEmotes = JSON.parse(atob(fe));
     }
 
-    var menuOpen;
+    var qmeHeader="";
+    qmeHeader += "<div id=\"bda-qem\">";
+    qmeHeader += "    <button class=\"active\" id=\"bda-qem-twitch\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Twitch<\/button>";
+    qmeHeader += "    <button id=\"bda-qem-favourite\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Favourite<\/button>";
+    qmeHeader += "    <button id=\"bda-qem-emojis\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Emojis<\/buttond>";
+    qmeHeader += "<\/div>";
+    this.qmeHeader = qmeHeader;
 
-    emoteBtn = $("<div/>", {
-        id: "twitchcord-button-container",
-        style: "display:none"
-    }).append($("<button/>", {
-        id: "twitchcord-button",
-        onclick: "return false;"
-    }));
-
-    $(".content.flex-spacer.flex-horizontal .flex-spacer.flex-vertical form").append(emoteBtn);
-
-    emoteMenu.detach();
-    emoteBtn.append(emoteMenu);
-
-    $("#twitchcord-button").on("click", function () {
-        menuOpen = !menuOpen;
-        if (menuOpen) {
-            $("#bdemotemenustyle").html('.twitchcord-button-open { background-image:url(https://static-cdn.jtvnw.net/emoticons/v1/' + eiarr[Math.floor(Math.random() * eiarr.length)] + '/1.0) !important; }');
-            emoteMenu.addClass("emotemenu-open");
-            $(this).addClass("twitchcord-button-open");
-        } else {
-            emoteMenu.removeClass();
-            $(this).removeClass();
+    var teContainer="";
+    teContainer += "<div id=\"bda-qem-twitch-container\">";
+    teContainer += "    <div class=\"scroller-wrap fade\">";
+    teContainer += "        <div class=\"scroller\">";
+    teContainer += "            <div class=\"emote-menu-inner\">";
+    for (var emote in emotesTwitch.emotes) {
+        if (emotesTwitch.emotes.hasOwnProperty(emote)) {
+            var id = emotesTwitch.emotes[emote].image_id;
+            teContainer += "<div class=\"emote-container\">";
+            teContainer += "    <img class=\"emote-icon\" id=\""+emote+"\" alt=\"\" src=\"https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0\" title=\""+emote+"\">";
+            teContainer += "    </img>";
+            teContainer += "</div>";
         }
-        return false;
-    });
-
-    $(document).off("click.bdem").on("click.bdem", function () {
-        if (menuOpen) {
-            menuOpen = !menuOpen;
-            emoteMenu.removeClass();
-            $("#twitchcord-button").removeClass();
-        }
-    });
-
-    $("#emote-menu").on("click", function () {
-        $("#rmenu").hide();
-        return false;
-    });
-
-    if (settingsCookie["bda-es-0"]) {
-        $(".channel-textarea").first().addClass("emotemenu-enabled");
-        emoteBtn.show();
     }
+    teContainer += "            <\/div>";
+    teContainer += "        <\/div>";
+    teContainer += "    <\/div>";
+    teContainer += "<\/div>";
+    this.teContainer = teContainer;
+
+    var faContainer="";
+    faContainer += "<div id=\"bda-qem-favourite-container\">";
+    faContainer += "    <div class=\"scroller-wrap fade\">";
+    faContainer += "        <div class=\"scroller\">";
+    faContainer += "            <div class=\"emote-menu-inner\">";
+    for (var emote in this.favoriteEmotes) {
+        var url = this.favoriteEmotes[emote];
+        faContainer += "<div class=\"emote-container\">";
+        faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\""+url+"\" title=\""+emote+"\" oncontextmenu='quickEmoteMenu.favContext(event, this);'>";
+        faContainer += "    </img>";
+        faContainer += "</div>";
+    }
+    faContainer += "            <\/div>";
+    faContainer += "        <\/div>";
+    faContainer += "    <\/div>";
+    faContainer += "<\/div>";
+    this.faContainer = faContainer;
+};
+
+QuickEmoteMenu.prototype.favContext = function(e, em) {
+    e.stopPropagation();
+    var menu = $('<div/>', { id: "rmenu", "data-emoteid": $(em).prop("title"), text: "Remove" });
+    menu.css({
+        top: e.pageY - $("#bda-qem-favourite-container").offset().top,
+        left: e.pageX - $("#bda-qem-favourite-container").offset().left
+    });
+    $(em).parent().append(menu);
+    menu.on("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).remove();
+        console.log($(this).data("emoteid"));
+        delete quickEmoteMenu.favoriteEmotes[$(this).data("emoteid")];
+        quickEmoteMenu.updateFavorites();
+        return false;
+    });
+    return false;
+};
+
+QuickEmoteMenu.prototype.switchHandler = function(e) {
+    this.switchQem($(e).attr("id"));
+};
+
+QuickEmoteMenu.prototype.switchQem = function(id) {
+    var twitch = $("#bda-qem-twitch");
+    var fav = $("#bda-qem-favourite");
+    var emojis = $("#bda-qem-emojis");
+    twitch.removeClass("active");
+    fav.removeClass("active");
+    emojis.removeClass("active");
+
+    $(".emoji-picker").hide();
+    $("#bda-qem-favourite-container").hide();
+    $("#bda-qem-twitch-container").hide();
+
+    switch(id) {
+        case "bda-qem-twitch":
+            twitch.addClass("active");
+            $("#bda-qem-twitch-container").show();
+        break;
+        case "bda-qem-favourite":
+            fav.addClass("active");
+            $("#bda-qem-favourite-container").show();
+        break;
+        case "bda-qem-emojis":
+            emojis.addClass("active");
+            $(".emoji-picker").show();
+        break;
+    }
+    this.lastTab = id;
 
     var emoteIcon = $(".emote-icon");
-
     emoteIcon.off();
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
         var ta = $(".channel-textarea-inner textarea");
         ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
-
-    var fe = localStorage["bdfavemotes"];
-    if (fe != undefined) {
-        favoriteEmotes = JSON.parse(atob(fe));
-        this.updateFavorites();
-    }
 };
 
-var bdfw = {};
+QuickEmoteMenu.prototype.obsCallback = function (e) {
 
-QuickEmoteMenu.prototype.obsCallback = function () {
-    if (!emoteBtn) return;
-    if (!$(".content.flex-spacer.flex-horizontal .flex-spacer.flex-vertical form")) return;
-
-    var tcbtn = $("#twitchcord-button-container");
-    if (tcbtn.parent().prop("tagName") == undefined) {
-        quickEmoteMenu = new QuickEmoteMenu();
-        quickEmoteMenu.init(true);
+    if(!settingsCookie["bda-es-9"]) {
+        e.addClass("bda-qme-hidden");
+    } else {
+        e.removeClass("bda-qme-hidden");
     }
-};
 
-var favoriteEmotes = {};
+    if(!settingsCookie["bda-es-0"]) return;
+    var self = this;
 
-QuickEmoteMenu.prototype.initEmoteList = function () {
+    e.prepend(this.qmeHeader);
+    e.append(this.teContainer);
+    e.append(this.faContainer);
 
-    emoteMenu = $("<div/>", {
-        id: "emote-menu"
-    });
-
-    var emoteMenuHeader = $("<div/>", {
-        id: "emote-menu-header"
-    });
-    var emoteMenuBody = $("<div/>", {
-        id: "emote-menu-inner"
-    });
-    var emoteMenuBodyFav = $("<div/>", {
-        id: "emote-menu-inner-fav",
-        css: {
-            "display": "none"
-        }
-    });
-
-    var globalTab = $("<div/>", {
-        class: "emote-menu-tab emote-menu-tab-selected",
-        id: "emgb",
-        text: "Global",
-        click: function () {
-            $("#emfa").removeClass("emote-menu-tab-selected");
-            $("#emgb").addClass("emote-menu-tab-selected");
-            $("#emote-menu-inner-fav").hide();
-            $("#emote-menu-inner").show();
-        }
-    });
-    var favoriteTab = $("<div/>", {
-        class: "emote-menu-tab",
-        id: "emfa",
-        text: "Favorite",
-        click: function () {
-            $("#emgb").removeClass("emote-menu-tab-selected");
-            $("#emfa").addClass("emote-menu-tab-selected");
-            $("#emote-menu-inner").hide();
-            $("#emote-menu-inner-fav").show();
-        }
-    });
-
-    emoteMenuHeader.append(globalTab);
-    emoteMenuHeader.append(favoriteTab);
-
-    emoteMenu.append(emoteMenuHeader);
-
-    var swrapper = $("<div/>", {
-        class: "scroller-wrap"
-    });
-    var scroller = $("<div/>", {
-        class: "scroller"
-    });
-
-
-    swrapper.append(scroller);
-    scroller.append(emoteMenuBody);
-    scroller.append(emoteMenuBodyFav);
-
-    emoteMenu.append(swrapper);
-
-    for (var emote in emotesTwitch.emotes) {
-        if (emotesTwitch.emotes.hasOwnProperty(emote)) {
-            var id = emotesTwitch.emotes[emote].image_id;
-            emoteMenuBody.append($("<div/>", {
-                class: "emote-container"
-            }).append($("<img/>", {
-                class: "emote-icon",
-                id: emote,
-                alt: "",
-                src: "https://static-cdn.jtvnw.net/emoticons/v1/" + id + "/1.0",
-                title: emote
-            })));
-        }
-    }
+    if(this.lastTab == undefined) {
+        this.lastTab = "bda-qem-favourite";
+    } 
+    this.switchQem(this.lastTab);
 };
 
 QuickEmoteMenu.prototype.favorite = function (name, url) {
 
-    if (!favoriteEmotes.hasOwnProperty(name)) {
-        favoriteEmotes[name] = url;
+    if (!this.favoriteEmotes.hasOwnProperty(name)) {
+        this.favoriteEmotes[name] = url;
     }
 
     this.updateFavorites();
@@ -983,56 +1036,130 @@ QuickEmoteMenu.prototype.favorite = function (name, url) {
 
 QuickEmoteMenu.prototype.updateFavorites = function () {
 
-    if (!$("#rmenu").length) {
-        $("body").append('<div id="rmenu"><ul><a href="#">Remove</a></ul></div>');
-        $(document).on("click", function () {
-            $("#rmenu").hide();
-        });
+    var faContainer="";
+    faContainer += "<div id=\"bda-qem-favourite-container\">";
+    faContainer += "    <div class=\"scroller-wrap fade\">";
+    faContainer += "        <div class=\"scroller\">";
+    faContainer += "            <div class=\"emote-menu-inner\">";
+    for (var emote in this.favoriteEmotes) {
+        var url = this.favoriteEmotes[emote];
+        faContainer += "<div class=\"emote-container\">";
+        faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\""+url+"\" title=\""+emote+"\" oncontextmenu='quickEmoteMenu.favContext(event, this);'>";
+        faContainer += "    </img>";
+        faContainer += "</div>";
     }
+    faContainer += "            <\/div>";
+    faContainer += "        <\/div>";
+    faContainer += "    <\/div>";
+    faContainer += "<\/div>";
+    this.faContainer = faContainer;
 
-    $("#rmenu").on("click", function(e) { $(this).hide(); return false; });
+    $("#bda-qem-favourite-container").replaceWith(faContainer);
 
-    var self = this;
-    var emoteMenuBody = $("#emote-menu-inner-fav");
-    emoteMenuBody.empty();
-    for (var emote in favoriteEmotes) {
-        var url = favoriteEmotes[emote];
-
-        var econtainer = $("<div/>", {
-            class: "emote-container"
-        });
-        var icon = $("<img/>", {
-            class: "emote-icon",
-            alt: "",
-            src: url,
-            title: emote
-        }).appendTo(econtainer);
-        emoteMenuBody.append(econtainer);
-
-        icon.off("click").on("click", function (e) {
-            var emote = $(this).attr("title");
-            var ta = $(".channel-textarea-inner textarea");
-            ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
-        });
-        icon.off("contextmenu").on("contextmenu", function (e) {
-            var title = $(this).attr("title");
-            var menu = $("#rmenu");
-            menu.find("a").off("click").on("click", function () {
-                delete favoriteEmotes[title];
-                self.updateFavorites();
-            });
-            menu.hide();
-            menu.css({
-                top: e.pageY,
-                left: e.pageX
-            });
-            menu.show();
-            return false;
-        });
-    }
-
-    window.localStorage["bdfavemotes"] = btoa(JSON.stringify(favoriteEmotes));
+    window.localStorage["bdfavemotes"] = btoa(JSON.stringify(this.favoriteEmotes));
 };
+
+
+function CustomCssEditor() { }
+
+CustomCssEditor.prototype.init = function() {
+var self = this;
+self.hideBackdrop = false;
+self.editor = CodeMirror.fromTextArea(document.getElementById("bd-custom-css-ta"), {
+    lineNumbers: true,
+    mode: 'css',
+    indentUnit: 4,
+    theme: 'neat'
+});
+
+self.editor.on("change", function (cm) {
+    var css = cm.getValue();
+    self.applyCustomCss(css, false, false);
+});
+
+var attachEditor="";
+attachEditor += "<div id=\"bd-customcss-attach-controls\">";
+attachEditor += "       <ul class=\"checkbox-group\">";
+attachEditor += "       <li>";
+attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-0\" type=\"checkbox\" "+(settingsCookie["bda-css-0"] ? "checked" : "")+"><span><\/span><\/div>";
+attachEditor += "               <span title=\"Update client css while typing\">Live Update<\/span>";
+attachEditor += "           <\/div>";
+attachEditor += "       <\/li>";
+attachEditor += "       <li>";
+attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-1\" type=\"checkbox\" "+(settingsCookie["bda-css-1"] ? "checked" : "")+"><span><\/span><\/div>";
+attachEditor += "               <span title=\"Autosave css to localstorage when typing\">Autosave<\/span>";
+attachEditor += "           <\/div>";
+attachEditor += "       <\/li>";
+attachEditor += "        <li>";
+attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-2\" type=\"checkbox\" "+(customCssEditor.hideBackdrop ? "checked" : "")+"><span><\/span><\/div>";
+attachEditor += "               <span title=\"Hide the callout backdrop to disable modal close events\">Hide Backdrop<\/span>";
+attachEditor += "           <\/div>";
+attachEditor += "       <\/li>";
+attachEditor += "   <\/ul>";
+attachEditor += "   <div id=\"bd-customcss-detach-controls-buttons\">";
+attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-update\" onclick=\"return false;\">Update<\/button>";
+attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-save\"  onclick=\"return false;\">Save<\/button>";
+attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-detach\" onclick=\"customCssEditor.detach(); return false;\">Detach</button>";
+attachEditor += "   <\/div>";
+attachEditor += "<\/div>";
+
+this.attachEditor = attachEditor;
+
+$("#bd-customcss-innerpane").append(attachEditor);
+
+$("#bd-customcss-detached-update").on("click", function() {
+        self.applyCustomCss(self.editor.getValue(), true, false);
+        return false;
+});
+$("#bd-customcss-detached-save").on("click", function() {
+        self.applyCustomCss(self.editor.getValue(), false, true);
+        return false;
+});
+
+
+var detachEditor="";
+    detachEditor += "<div id=\"bd-customcss-detach-container\">";
+    detachEditor += "   <div id=\"bd-customcss-detach-editor\">";
+    detachEditor += "   <\/div>";
+    detachEditor += "<\/div>";
+this.detachedEditor = detachEditor;
+};
+
+CustomCssEditor.prototype.attach = function() {
+    $("#editor-detached").hide();
+    $("#app-mount").removeClass("bd-detached-editor");
+    $("#bd-customcss-pane").append($("#bd-customcss-innerpane"));
+    $("#bd-customcss-detached-detach").show();
+    $("#bd-customcss-detach-container").remove();
+};
+
+CustomCssEditor.prototype.detach = function() {
+    var self = this;
+    this.attach();
+    $("#editor-detached").show();
+    $("#bd-customcss-detached-detach").hide();
+    $("#app-mount").addClass("bd-detached-editor");
+    $(".app").parent().append(this.detachedEditor);
+    $("#bd-customcss-detach-editor").append($("#bd-customcss-innerpane"));
+};
+
+CustomCssEditor.prototype.applyCustomCss = function (css, forceupdate, forcesave) {
+    if ($("#customcss").length == 0) {
+        $("head").append('<style id="customcss"></style>');
+    }
+
+    if(forceupdate || settingsCookie["bda-css-0"]) {
+        $("#customcss").html(css);
+    }
+
+    if(forcesave || settingsCookie["bda-css-1"]) {
+        localStorage.setItem("bdcustomcss", btoa(css));
+    }
+};
+
 
 /* BetterDiscordApp Settings Panel JavaScript
  * Version: 2.0
@@ -1096,16 +1223,6 @@ SettingsPanel.prototype.init = function () {
     }
 };
 
-SettingsPanel.prototype.applyCustomCss = function (css) {
-    if ($("#customcss").length == 0) {
-        $("head").append('<style id="customcss"></style>');
-    }
-    bdafo = (css.indexOf("april2nd") > -1);
-    $("#customcss").html(css);
-
-    localStorage.setItem("bdcustomcss", btoa(css));
-};
-
 var customCssInitialized = false;
 var lastTab = "";
 
@@ -1126,19 +1243,7 @@ SettingsPanel.prototype.changeTab = function (tab) {
         break;
     case "bd-customcss-tab":
         if (!customCssInitialized) {
-            var editor = CodeMirror.fromTextArea(document.getElementById("bd-custom-css-ta"), {
-                lineNumbers: true,
-                mode: 'css',
-                indentUnit: 4,
-                theme: 'neat'
-            });
-
-
-            editor.on("change", function (cm) {
-                var css = cm.getValue();
-                self.applyCustomCss(css);
-            });
-
+            customCssEditor.init();
             customCssInitialized = true;
         }
         break;
@@ -1151,12 +1256,19 @@ SettingsPanel.prototype.changeTab = function (tab) {
     }
 };
 
-
 SettingsPanel.prototype.updateSetting = function (checkbox) {
     var cb = $(checkbox).children().find('input[type="checkbox"]');
     var enabled = !cb.is(":checked");
     var id = cb.attr("id");
     cb.prop("checked", enabled);
+
+    if(id == "bda-css-2") {
+        $("#app-mount").removeClass("bd-hide-bd");
+        customCssEditor.hideBackdrop = enabled;
+        if(enabled) {
+            $("#app-mount").addClass("bd-hide-bd")
+        }
+    }
 
     settingsCookie[id] = enabled;
 
@@ -1228,7 +1340,6 @@ SettingsPanel.prototype.construct = function () {
         '           <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick="settingsPanel.changeTab(\'bd-themes-tab\');">Themes</div>' +
         '       </div>' +
         '       <div class="bd-settings">' +
-        '' +
         '               <div class="bd-pane control-group" id="bd-settings-pane" style="display:none;">' +
         '                   <ul class="checkbox-group">';
 
@@ -1239,7 +1350,7 @@ SettingsPanel.prototype.construct = function () {
         var sett = settings[setting];
         var id = sett["id"];
 
-        if (sett["implemented"]) {
+        if (sett["implemented"] && !sett["hidden"]) {
 
             settingsInner += '' +
                 '<li>' +
@@ -1256,13 +1367,17 @@ SettingsPanel.prototype.construct = function () {
     }
 
     var ccss = atob(localStorage.getItem("bdcustomcss"));
-    self.applyCustomCss(ccss);
+    customCssEditor.applyCustomCss(ccss, true, false);
 
     settingsInner += '</ul>' +
         '               </div>' +
         '' +
         '               <div class="bd-pane control-group" id="bd-customcss-pane" style="display:none;">' +
-        '                   <textarea id="bd-custom-css-ta">' + ccss + '</textarea>' +
+        '                   <div id="editor-detached" style="display:none;">' +
+        '                       <h3>Editor Detached</h3>' +
+        '                       <button class="btn btn-primary" onclick="customCssEditor.attach(); return false;">Attach</button>' +
+        '                   </div>' +
+        '                   <div id="bd-customcss-innerpane"><textarea id="bd-custom-css-ta">' + ccss + '</textarea></div>' +
         '               </div>' +
         '' +
         '               <div class="bd-pane control-group" id="bd-plugins-pane" style="display:none;">' +
@@ -1384,7 +1499,6 @@ SettingsPanel.prototype.construct = function () {
         }
     }
     defer();
-
 };
 
 /* BetterDiscordApp Utilities JavaScript
@@ -1608,6 +1722,15 @@ PluginModule.prototype.socketEvent = function (e, data) {
     });
 };
 
+PluginModule.prototype.rawObserver = function(e) {
+    $.each(bdplugins, function() {
+        if (!pluginCookie[this.plugin.getName()]) return;
+        if(typeof this.plugin.observer === "function") {
+            this.plugin.observer(e);
+        }
+    });
+};
+
 
 /* BetterDiscordApp ThemeModule JavaScript
  * Version: 1.0
@@ -1709,7 +1832,6 @@ BdWSocket.prototype.open = function (host) {
     } catch (err) {
         utils.log(err);
     }
-
 };
 
 BdWSocket.prototype.onOpen = function () {
