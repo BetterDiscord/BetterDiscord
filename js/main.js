@@ -6,7 +6,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
-var jsVersion = 1.62;
+var jsVersion = 1.63;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -26,6 +26,7 @@ var settings = {
     "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false},
     "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false},
     "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false},
+    "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false},
     "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false},
     "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show/Hide Discord emoji menu",                      "implemented": true,  "hidden": false},
     "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false},
@@ -54,6 +55,7 @@ var defaultCookie = {
     "bda-gs-2": false,
     "bda-gs-3": false,
     "bda-gs-4": false,
+    "bda-gs-5": true,
     "bda-es-0": true,
     "bda-es-1": true,
     "bda-es-2": true,
@@ -73,6 +75,11 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
+        "darkmode": {
+            "title": "v1.63 : Dark Mode",
+            "text": "Dark mode makes certain elements dark by default(currently only applies to emote menu)",
+            "img": ""
+        },
         "emotemenu": {
             "title": "v1.62 : Brand new emote menu that fits in Discord emoji menu!",
             "text": "The emote menu has been replaced by a new one that injects itself in the Discord emoji menu!",
@@ -1204,6 +1211,10 @@ SettingsPanel.prototype.init = function () {
         voiceMode.enable();
     }
 
+    if(settingsCookie["bda-gs-5"]) {
+        $("#app-mount").addClass("bda-dark");
+    }
+
     if (settingsCookie["bda-es-6"]) {
         //Pretty emote titles
         emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
@@ -1297,6 +1308,10 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
         voiceMode.enable();
     } else {
         voiceMode.disable();
+    }
+    $("#app-mount").removeClass("bda-dark");
+    if(settingsCookie["bda-gs-5"]) {
+        $("#app-mount").addClass("bda-dark");
     }
     if (settingsCookie["bda-es-6"]) {
         //Pretty emote titles
