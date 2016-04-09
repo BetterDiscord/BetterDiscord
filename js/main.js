@@ -75,7 +75,7 @@ var bdchangelog = {
     "changes": {
         "emotemenu": {
             "title": "v1.62 : Brand new emote menu that fits in Discord emoji menu!",
-            "text": "The emote menu has been repalced by a new one that injects itself in the Discord emoji menu!",
+            "text": "The emote menu has been replaced by a new one that injects itself in the Discord emoji menu!",
             "img": ""
         },
         "cccss": {
