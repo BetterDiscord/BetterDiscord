@@ -1310,7 +1310,13 @@
 .bda-dark .emoji-picker .scroller .emoji-item.selected {
 	background: rgba(123, 123, 123, 0.37);
 }
-
+.bda-dark .emoji-picker .dimmer.visible {
+	background-color: rgba(62, 62, 62, 0.65);
+}
+.bda-dark .emoji-picker .diversity-selector .popout {
+	background: #353535;
+    border-color: #202020;
+}
 .bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar,
 .bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar-track,
 .bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar-track-piece,
