@@ -21,25 +21,26 @@ var bttvEmoteUrlEnd = "/1x";
 var mainCore;
 
 var settings = {
-    "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false},
-    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false},
-    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false},
-    "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false},
-    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false},
-    "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false},
-    "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false},
-    "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show/Hide Discord emoji menu",                      "implemented": true,  "hidden": false},
-    "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false},
-    "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false},
-    "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false},
-    "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false},
-    "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false},
-    "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false},
-    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false},
-    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable/Disable emote mods",                         "implemented": true,  "hidden": false},
-    "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false},
-    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true },
-    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true },
+    "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
+    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false, "cat": "core"},
+    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
+    "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
+    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
+    "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false, "cat": "core"},
+    "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false, "cat": "core"},
+    "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false, "cat": "core"},
+    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true , "cat": "core"},
+    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true , "cat": "core"},
+
+    "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false, "cat": "emote"},
+    "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
+    "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show Discord emoji menu",                           "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false, "cat": "emote"},
+    "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": true,  "hidden": false, "cat": "emote"},
 };
 
 var links = {
@@ -1258,12 +1259,6 @@ SettingsPanel.prototype.changeTab = function (tab) {
             customCssInitialized = true;
         }
         break;
-    case "bd-plugins-tab":
-
-        break;
-    case "bd-themes-tab":
-        controlGroups.html("<span>Coming soon</span>");
-        break;
     }
 };
 
@@ -1329,7 +1324,7 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
         });
     } else {
         $(document).off('mouseover', '.emote');
-    }
+    } 
 
     mainCore.saveSettings();
 };
@@ -1349,7 +1344,8 @@ SettingsPanel.prototype.construct = function () {
         '<div class="scroller-wrap">' +
         '   <div class="scroller settings-wrapper settings-panel">' +
         '       <div class="tab-bar TOP">' +
-        '           <div class="tab-bar-item bd-tab" id="bd-settings-tab" onclick="settingsPanel.changeTab(\'bd-settings-tab\');">Settings</div>' +
+        '           <div class="tab-bar-item bd-tab" id="bd-settings-tab" onclick="settingsPanel.changeTab(\'bd-settings-tab\');">Core</div>' +
+        '           <div class="tab-bar-item bd-tab" id="bd-emotes-tab" onclick="settingsPanel.changeTab(\'bd-emotes-tab\');">Emotes</div>' +
         '           <div class="tab-bar-item bd-tab" id="bd-customcss-tab" onclick="settingsPanel.changeTab(\'bd-customcss-tab\');">Custom CSS</div>' +
         '           <div class="tab-bar-item bd-tab" id="bd-plugins-tab" onclick="settingsPanel.changeTab(\'bd-plugins-tab\');">Plugins</div>' +
         '           <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick="settingsPanel.changeTab(\'bd-themes-tab\');">Themes</div>' +
@@ -1358,12 +1354,11 @@ SettingsPanel.prototype.construct = function () {
         '               <div class="bd-pane control-group" id="bd-settings-pane" style="display:none;">' +
         '                   <ul class="checkbox-group">';
 
-
-
     for (var setting in settings) {
 
         var sett = settings[setting];
         var id = sett["id"];
+        if(sett["cat"] != "core") continue;
 
         if (sett["implemented"] && !sett["hidden"]) {
 
@@ -1381,12 +1376,43 @@ SettingsPanel.prototype.construct = function () {
         }
     }
 
+    settingsInner += '  </ul>' +
+        '           </div>';
+
+
+    settingsInner += '<div class="bd-pane control-group" id="bd-emotes-pane" style="display:none;">' +
+        '                   <ul class="checkbox-group">';
+
+    for (var setting in settings) {
+
+        var sett = settings[setting];
+        var id = sett["id"];
+        if(sett["cat"] != "emote") continue;
+
+        if (sett["implemented"] && !sett["hidden"]) {
+
+            settingsInner += '' +
+                '<li>' +
+                '<div class="checkbox" onclick="settingsPanel.updateSetting(this);" >' +
+                '<div class="checkbox-inner">' +
+                '<input type="checkbox" id="' + id + '" ' + (settingsCookie[id] ? "checked" : "") + '>' +
+                '<span></span>' +
+                '</div>' +
+                '<span>' + setting + " - " + sett["info"] +
+                '</span>' +
+                '</div>' +
+                '</li>';
+        }
+    }
+
+    settingsInner += '  </ul>' +
+        '           </div>';
+
+
     var ccss = atob(localStorage.getItem("bdcustomcss"));
     customCssEditor.applyCustomCss(ccss, true, false);
 
-    settingsInner += '</ul>' +
-        '               </div>' +
-        '' +
+    settingsInner += '' +
         '               <div class="bd-pane control-group" id="bd-customcss-pane" style="display:none;">' +
         '                   <div id="editor-detached" style="display:none;">' +
         '                       <h3>Editor Detached</h3>' +
