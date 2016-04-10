@@ -7,3 +7,5 @@ devjs/.idea/devjs.iml
 Firefox/data/js/jquery-2.1.4.min.js
 *.dev.*
 /nbproject/private/
+node_modules
+.sass-cache
