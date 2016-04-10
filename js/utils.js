@@ -6,47 +6,62 @@
  */
 
 var _hash;
+
 function Utils() {
 
 }
 
-Utils.prototype.getTextArea = function() {
+Utils.prototype.getTextArea = function () {
     return $(".channel-textarea-inner textarea");
 };
 
-Utils.prototype.jqDefer = function(fnc) {
-    if(window.jQuery) { fnc(); } else { setTimeout(function() { this.jqDefer(fnc) }, 100) }
+Utils.prototype.jqDefer = function (fnc) {
+    if (window.jQuery) {
+        fnc();
+    } else {
+        setTimeout(function () {
+            this.jqDefer(fnc);
+        }, 100);
+    }
 };
 
-Utils.prototype.getHash = function() {
-    $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function(data) {
+Utils.prototype.getHash = function () {
+    $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function (data) {
         _hash = data.sha;
         emoteModule.getBlacklist();
     });
 };
 
-Utils.prototype.loadHtml = function(html, callback) {
-  var container = $("<div/>", {
-      class: "bd-container"
-  }).appendTo("body");  
+Utils.prototype.loadHtml = function (html, callback) {
+    var container = $("<div/>", {
+        class: "bd-container"
+    }).appendTo("body");
 
-  //TODO Inject these in next core update
-  html = '//cdn.rawgit.com/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
-  
-  container.load(html, callback());
+    //TODO Inject these in next core update
+    html = '//cdn.rawgit.com/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
+
+    container.load(html, callback());
 };
 
-Utils.prototype.injectJs = function(uri) {
+Utils.prototype.injectJs = function (uri) {
     $("<script/>", {
         type: "text/javascript",
         src: uri
     }).appendTo($("body"));
 };
 
-Utils.prototype.injectCss = function(uri) {
+Utils.prototype.injectCss = function (uri) {
     $("<link/>", {
         type: "text/css",
         rel: "stylesheet",
         href: uri
     }).appendTo($("head"));
+};
+
+Utils.prototype.log = function (message) {
+    console.info("%c[BetterDiscord]%c " + message, "color:teal; font-weight:bold;", "");
+};
+
+Utils.prototype.err = function (message) {
+    console.info("%c[BetterDiscord]%c " + message, "color:red; font-weight:bold;", "");
 };

@@ -8,54 +8,57 @@
 var themeCookie = {};
 
 function ThemeModule() {
-    
+
 }
 
-ThemeModule.prototype.loadThemes = function() {
+ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
-    
-    $.each(bdthemes, function() {
+
+    $.each(bdthemes, function () {
         var name = this["name"];
         var enabled = false;
-        if(themeCookie.hasOwnProperty(name)) {
-            if(themeCookie[name]) {
+        if (themeCookie.hasOwnProperty(name)) {
+            if (themeCookie[name]) {
                 enabled = true;
             }
         } else {
             themeCookie[name] = false;
         }
-        
-        if(enabled) {
-            $("head").append('<style id="'+name+'">'+unescape(bdthemes[name]["css"])+'</style>');
+
+        if (enabled) {
+            $("head").append('<style id="' + name + '">' + unescape(bdthemes[name]["css"]) + '</style>');
         }
     });
 };
 
-ThemeModule.prototype.handleTheme = function(checkbox) {
-    
+ThemeModule.prototype.handleTheme = function (checkbox) {
+
     var cb = $(checkbox).children().find('input[type="checkbox"]');
     var enabled = !cb.is(":checked");
     var id = cb.attr("id").substring(2);
     cb.prop("checked", enabled);
-    
-    if(enabled) {
-        $("head").append('<style id="'+id+'">'+unescape(bdthemes[id]["css"])+'</style>');
+
+    if (enabled) {
+        $("head").append('<style id="' + id + '">' + unescape(bdthemes[id]["css"]) + '</style>');
         themeCookie[id] = true;
     } else {
-        $("#"+id).remove();
+        $("#" + id).remove();
         themeCookie[id] = false;
     }
-    
+
     this.saveThemeData();
 };
 
-ThemeModule.prototype.loadThemeData = function() {
+ThemeModule.prototype.loadThemeData = function () {
     var cookie = $.cookie("bd-themes");
-    if(cookie != undefined) {
+    if (cookie != undefined) {
         themeCookie = JSON.parse($.cookie("bd-themes"));
     }
 };
 
-ThemeModule.prototype.saveThemeData = function() {
-    $.cookie("bd-themes", JSON.stringify(themeCookie), { expires: 365, path: '/' });
+ThemeModule.prototype.saveThemeData = function () {
+    $.cookie("bd-themes", JSON.stringify(themeCookie), {
+        expires: 365,
+        path: '/'
+    });
 };

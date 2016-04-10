@@ -9,17 +9,17 @@ function VoiceMode() {
 
 }
 
-VoiceMode.prototype.obsCallback = function() {
+VoiceMode.prototype.obsCallback = function () {
     var self = this;
-    if(settingsCookie["bda-gs-4"]) {
+    if (settingsCookie["bda-gs-4"]) {
         self.disable();
-        setTimeout(function() {
+        setTimeout(function () {
             self.enable();
         }, 300);
     }
-}
+};
 
-VoiceMode.prototype.enable = function() {
+VoiceMode.prototype.enable = function () {
     $(".scroller.guild-channels ul").first().css("display", "none");
     $(".scroller.guild-channels header").first().css("display", "none");
     $(".app.flex-vertical").first().css("overflow", "hidden");
@@ -28,7 +28,7 @@ VoiceMode.prototype.enable = function() {
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
 };
 
-VoiceMode.prototype.disable = function() {
+VoiceMode.prototype.disable = function () {
     $(".scroller.guild-channels ul").first().css("display", "");
     $(".scroller.guild-channels header").first().css("display", "");
     $(".app.flex-vertical").first().css("overflow", "");
@@ -36,5 +36,3 @@ VoiceMode.prototype.disable = function() {
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
-
-var pluginCookie = {};
