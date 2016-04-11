@@ -8,12 +8,6 @@
 
 var BD;
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
-
-var mainObserver;
-var mainCore;
-var settingsCookie = {};
-
 function Core() {
     BD = this;
 }
@@ -21,30 +15,38 @@ function Core() {
 Core.prototype.init = function () {
     var self = this;
     this.version = version;
-    this.jsVersion = jsVersion;
-    if (this.version < supportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + this.version + "(your version)" + " is not supported by the latest js(" + this.jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
+
+    if (this.version < bdConfig.versionInfo.supportedVersion) {
+        this.alert("Not Supported", "BetterDiscord v" + this.version + "(your version)" + " is not supported by the latest js(" + bdConfig.versionInfo.version + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
         return;
     }
 
-    this.utils = new Utils();
+    this.modules =  {
+        emoteModule:    new EmoteModule(),
+        publicServers:  new PublicServers(),
+        emoteMenu:      new QuickEmoteMenu(),
+        cssEditor:      new customCssEditor(),
+        settingsPanel:  new SettingsPanel(),
+        utils:          new Utils(),
+        voiceMode:      new VoiceMode(),
+        pluginModule:   new pluginModule(),
+        themeModule:    new ThemeModule()
+    }
 
-    utils = new Utils();
-    utils.getHash();
-    emoteModule = new EmoteModule();
-    quickEmoteMenu = new QuickEmoteMenu();
-    voiceMode = new VoiceMode();
+    this.modules.utils.getHash();
 
-    emoteModule.init();
+    this.modules.emoteModule.init();
 
     this.initSettings();
     this.initObserver();
 
+
     //Incase were too fast
     function gwDefer() {
-        console.log(new Date().getTime() + " Defer");
+        self.modules.utils.log(new Date().getTime() + " Defer");
+
         if ($(".guilds-wrapper .guilds").children().length > 0) {
-            console.log(new Date().getTime() + " Defer Loaded");
+            self.modules.utils.log(new Date().getTime() + " Defer Loaded");
             var guilds = $(".guilds>li:first-child");
 
             var showChannelsButton = $("<button/>", {
@@ -55,7 +57,7 @@ Core.prototype.init = function () {
                     "cursor": "pointer"
                 },
                 click: function () {
-                    settingsCookie["bda-gs-3"] = false;
+                    self.settingsCookie["bda-gs-3"] = false;
                     $("body").removeClass("bd-minimal-chan");
                     self.saveSettings();
                 }
@@ -63,39 +65,29 @@ Core.prototype.init = function () {
 
             $(".guilds-wrapper").prepend(showChannelsButton);
 
-            opublicServers = new PublicServers();
-            customCssEditor = new CustomCssEditor();
-            pluginModule = new PluginModule();
-            pluginModule.loadPlugins();
+            self.modules.pluginModule.loadPlugins();
+
             if (typeof (themesupport2) !== "undefined") {
-                themeModule = new ThemeModule();
-                themeModule.loadThemes();
+                self.modules.themeModule.loadThemes();
             }
 
-            settingsPanel = new SettingsPanel();
-            settingsPanel.init();
+            self.modules.settingsPanel.init();
 
-            quickEmoteMenu.init(false);
-
-            $("#tc-settings-button").on("click", function () {
-                settingsPanel.show();
-            });
+            self.modules.quickEmoteMenu.init(false);
             
             window.addEventListener("beforeunload", function(){
-                if(settingsCookie["bda-dc-0"]){
+                if(self.settingsCookie["bda-dc-0"]){
                     $('.btn.btn-disconnect').click();
                 }
             });
-            
-            opublicServers.init();
-
-            emoteModule.autoCapitalize();
+            self.modules.publicServers.init();
+            self.modules.emoteModule.autoCapitalize();
 
             /*Display new features in BetterDiscord*/
-            if (settingsCookie["version"] < jsVersion) {
+            if (self.settingsCookie["version"] < bdConfig.versionInfo.version) {
                 var cl = self.constructChangelog();
                 $("body").append(cl);
-                settingsCookie["version"] = jsVersion;
+                self.settingsCookie["version"] = bdConfig.versionInfo.version;
                 self.saveSettings();
             }
 
@@ -115,14 +107,14 @@ Core.prototype.init = function () {
 
 Core.prototype.initSettings = function () {
     if ($.cookie("better-discord") == undefined) {
-        settingsCookie = defaultCookie;
+        this.settingsCookie = bdConfig.defaults;
         this.saveSettings();
     } else {
         this.loadSettings();
 
         for (var setting in defaultCookie) {
-            if (settingsCookie[setting] == undefined) {
-                settingsCookie[setting] = defaultCookie[setting];
+            if (this.settingsCookie[setting] == undefined) {
+                this.settingsCookie[setting] = bdConfig.defaults[setting];
                 this.saveSettings();
             }
         }
@@ -130,38 +122,39 @@ Core.prototype.initSettings = function () {
 };
 
 Core.prototype.saveSettings = function () {
-    $.cookie("better-discord", JSON.stringify(settingsCookie), {
+    $.cookie("better-discord", JSON.stringify(this.settingsCookie), {
         expires: 365,
         path: '/'
     });
 };
 
 Core.prototype.loadSettings = function () {
-    settingsCookie = JSON.parse($.cookie("better-discord"));
+    this.settingsCookie = JSON.parse($.cookie("better-discord"));
 };
 
 Core.prototype.initObserver = function () {
-    mainObserver = new MutationObserver(function (mutations) {
+    var self = this;
+    this.observer = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
             if($(mutation.target).find(".emoji-picker").length) {
                 var fc = mutation.target.firstChild;
                 if(fc.classList.contains("popout")) {
-                    quickEmoteMenu.obsCallback($(fc));
+                    self.modules.quickEmoteMenu.obsCallback($(fc));
                 }
             }
-            if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
+            if (typeof pluginModule !== "undefined") self.modules.pluginModule.rawObserver(mutation);
             if (mutation.target.getAttribute('class') != null) {
                 //console.log(mutation.target)
                 if(mutation.target.classList.contains('title-wrap') || mutation.target.classList.contains('chat')){
                    // quickEmoteMenu.obsCallback();
-                    voiceMode.obsCallback();
-                    if (typeof pluginModule !== "undefined") pluginModule.channelSwitch();
+                    self.modules.voiceMode.obsCallback();
+                    if (typeof pluginModule !== "undefined") self.modules.pluginModule.channelSwitch();
                 }
                 if (mutation.target.getAttribute('class').indexOf('scroller messages') != -1) {
-                    if (typeof pluginModule !== "undefined") pluginModule.newMessage();
+                    if (typeof self.modules.pluginModule !== "undefined") self.modules.pluginModule.newMessage();
                 }
             }
-            emoteModule.obsCallback(mutation);
+            self.modules.emoteModule.obsCallback(mutation);
         });
     });
 
@@ -184,15 +177,15 @@ Core.prototype.constructChangelog = function () {
         '           <div class="scroller-wrap">' +
         '               <div class="scroller">';
 
-    if (bdchangelog.changes != null) {
+    if (bdConfig.changelog.changes != null) {
         changeLog += '' +
             '<h1 class="changelog-added">' +
             '   <span>New Stuff</span>' +
             '</h1>' +
             '<ul>';
 
-        for (var change in bdchangelog.changes) {
-            change = bdchangelog.changes[change];
+        for (var change in bdConfig.changelog.changes) {
+            change = bdConfig.changelog.changes[change];
 
             changeLog += '' +
                 '<li>' +
@@ -204,15 +197,15 @@ Core.prototype.constructChangelog = function () {
         changeLog += '</ul>';
     }
 
-    if (bdchangelog.fixes != null) {
+    if (bdConfig.changelog.fixes != null) {
         changeLog += '' +
             '<h1 class="changelog-fixed">' +
             '   <span>Fixed</span>' +
             '</h1>' +
             '<ul>';
 
-        for (var fix in bdchangelog.fixes) {
-            fix = bdchangelog.fixes[fix];
+        for (var fix in bdConfig.changelog.fixes) {
+            fix = bdConfig.changelog.fixes[fix];
 
             changeLog += '' +
                 '<li>' +
@@ -224,15 +217,15 @@ Core.prototype.constructChangelog = function () {
         changeLog += '</ul>';
     }
 
-    if (bdchangelog.upcoming != null) {
+    if (bdConfig.changelog.upcoming != null) {
         changeLog += '' +
             '<h1 class="changelog-in-progress">' +
             '   <span>Coming Soon</span>' +
             '</h1>' +
             '<ul>';
 
-        for (var upc in bdchangelog.upcoming) {
-            upc = bdchangelog.upcoming[upc];
+        for (var upc in bdConfig.changelog.upcoming) {
+            upc = bdConfig.changelog.upcoming[upc];
 
             changeLog += '' +
                 '<li>' +
@@ -269,8 +262,4 @@ Core.prototype.alert = function (title, text) {
         '       </div>' +
         '   </div>' +
         '</div>');
-};
-
-Core.prototype.getUtils = function() {
-    return this.utils;
 };
