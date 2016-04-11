@@ -898,7 +898,7 @@ QuickEmoteMenu.prototype.init = function() {
     $(document).on("mousedown", function(e) {
         if(e.target.id != "rmenu") $("#rmenu").remove();
     });
-
+    this.favoriteEmotes = {};
     var fe = localStorage["bdfavemotes"];
     if (fe != undefined) {
         this.favoriteEmotes = JSON.parse(atob(fe));
