@@ -65,3 +65,16 @@ Utils.prototype.log = function (message) {
 Utils.prototype.err = function (message) {
     console.info("%c[BetterDiscord]%c " + message, "color:red; font-weight:bold;", "");
 };
+
+//Html generation utils
+Utils.prototype.getDiscordCheckbox = function(data) {
+    return '\
+        <div class="checkbox" onclick="'+data.onClick+'">\
+            <div class="checkbox-inner">\
+                <input type="checkbox" id="'+data.id+'" '+(data.checked ? "checked" : "")+'>\
+                <span></span>\
+            </div>\
+            <span>'+data.text+'</span>\
+        </div>\
+    ';
+};

@@ -22,9 +22,13 @@ module.exports = function(grunt) {
             }
         },
         uglify: {
+            options: {
+                screwIE8: true
+            },
             js: {
-                src: 'js/main.js',
-                dest: 'js/main.min.js'
+                files: {
+                    'js/main.min.js': ['js/main.js']
+                }
             }
         },
         cssmin: {
