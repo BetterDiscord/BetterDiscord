@@ -5,112 +5,49 @@
  * Last Update: 02/04/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
-
-var BD;
-
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
 var jsVersion = 1.63;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
 
+var twitchEmoteUrlStart = "https://static-cdn.jtvnw.net/emoticons/v1/";
+var twitchEmoteUrlEnd = "/1.0";
+var ffzEmoteUrlStart = "https://cdn.frankerfacez.com/emoticon/";
+var ffzEmoteUrlEnd = "/1";
+var bttvEmoteUrlStart = "https://cdn.betterttv.net/emote/";
+var bttvEmoteUrlEnd = "/1x";
+
 var mainCore;
 
+var settings = {
+    "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
+    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false, "cat": "core"},
+    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
+    "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
+    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
+    "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false, "cat": "core"},
+    "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false, "cat": "core"},
+    "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false, "cat": "core"},
+    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true , "cat": "core"},
+    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true , "cat": "core"},
 
+    "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false, "cat": "emote"},
+    "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
+    "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show Discord emoji menu",                           "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false, "cat": "emote"},
+    "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": true,  "hidden": false, "cat": "emote"},
+};
 
 var links = {
     "Jiiks.net": { "text": "Jiiks.net", "href": "http://jiiks.net",          "target": "_blank" },
     "twitter":   { "text": "Twitter",   "href": "http://twitter.com/jiiksi", "target": "_blank" },
     "github":    { "text": "Github",    "href": "http://github.com/jiiks",   "target": "_blank" }
 };
-
-
-var bdConfig = (function() {
-
-    return {
-        versionInfo: {
-            version: 1.63,
-            supportedVersion: "0.2.5"
-        },
-        defaults: {
-                "version": 1.63,
-                "bda-gs-0": false,
-                "bda-gs-1": true,
-                "bda-gs-2": false,
-                "bda-gs-3": false,
-                "bda-gs-4": false,
-                "bda-gs-5": true,
-                "bda-es-0": true,
-                "bda-es-1": true,
-                "bda-es-2": true,
-                "bda-es-3": false,
-                "bda-es-4": false,
-                "bda-es-5": true,
-                "bda-es-6": true,
-                "bda-es-7": true,
-                "bda-es-8": true,
-                "bda-jd":   true,
-                "bda-es-8": true,
-                "bda-dc-0": false,
-                "bda-css-0": false,
-                "bda-css-1": false,
-                "bda-es-9": true
-        },
-        options: {
-                "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
-                "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false, "cat": "core"},
-                "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
-                "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
-                "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
-                "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false, "cat": "core"},
-                "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false, "cat": "core"},
-                "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false, "cat": "core"},
-                "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true , "cat": "core"},
-                "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true , "cat": "core"},
-            
-                "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false, "cat": "emote"},
-                "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
-                "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false, "cat": "emote"},
-                "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false, "cat": "emote"},
-                "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show Discord emoji menu",                           "implemented": true,  "hidden": false, "cat": "emote"},
-                "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false, "cat": "emote"},
-                "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false, "cat": "emote"},
-                "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
-                "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": true,  "hidden": false, "cat": "emote"},
-        },
-        links: {
-                "Jiiks.net":         { "text": "Jiiks.net",         "href": "https://jiiks.net",          "target": "_blank" },
-                "twitter":           { "text": "Twitter",           "href": "https://twitter.com/jiiksi", "target": "_blank" },
-                "github":            { "text": "Github",            "href": "https://github.com/jiiks",   "target": "_blank" },
-                "betterdiscord.net": { "text": "BetterDiscord.net", "href": "https://betterdiscord.net",  "target": "_blank" }
-        },
-        urls: {
-            twitch: {
-                home: "https://twitch.tv/",
-                emotes: {
-                    start: "https://static-cdn.jtvnw.net/emoticons/v1/",
-                    end: "/1.0"
-                }
-            },
-            bttv: {
-                home: "https://betterttv.net",
-                emotes: {
-                    start: "https://cdn.betterttv.net/emote/",
-                    end: "/1x"
-                }
-            },
-            ffz: {
-                home: "https://frankerfacez.com/",
-                emotes: {
-                    start: "https://cdn.frankerfacez.com/emoticon/",
-                    end: "/1"
-                }
-            }
-        }
-    }
-
-})();
-
 
 var defaultCookie = {
     "version": jsVersion,
@@ -129,7 +66,7 @@ var defaultCookie = {
     "bda-es-6": true,
     "bda-es-7": true,
     "bda-es-8": true,
-    "bda-jd":   true,
+    "bda-jd": true,
     "bda-es-8": true,
     "bda-dc-0": false,
     "bda-css-0": false,
@@ -201,22 +138,19 @@ var bdchangelog = {
 
 var settingsCookie = {};
 
-function Core() {
-    BD = this;
-}
+function Core() {}
 
 Core.prototype.init = function () {
     var self = this;
-    this.version = version;
-    this.jsVersion = jsVersion;
-    if (this.version < supportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + this.version + "(your version)" + " is not supported by the latest js(" + this.jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
+
+    if (version < supportedVersion) {
+        this.alert("Not Supported", "BetterDiscord v" + version + "(your version)" + " is not supported by the latest js(" + jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
         return;
     }
 
-    this.utils = new Utils();
-
     utils = new Utils();
+    var sock = new BdWSocket();
+    sock.start();
     utils.getHash();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
@@ -327,6 +261,7 @@ Core.prototype.loadSettings = function () {
     settingsCookie = JSON.parse($.cookie("better-discord"));
 };
 
+var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function () {
     mainObserver = new MutationObserver(function (mutations) {
         mutations.forEach(function (mutation) {
@@ -456,8 +391,4 @@ Core.prototype.alert = function (title, text) {
         '       </div>' +
         '   </div>' +
         '</div>');
-};
-
-Core.prototype.getUtils = function() {
-    return this.utils;
 };

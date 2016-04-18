@@ -26,28 +26,7 @@ var subEmotesTwitch = {};
 
 function EmoteModule() {}
 
-EmoteModule.prototype.init = function () {
-    this.config = {
-        twitch: {
-            url: {
-                start: "https://static-cdn.jtvnw.net/emoticons/v1/",
-                end: "/1.0"
-            }
-        },
-        ffz: {
-            url: {
-                start: "https://cdn.frankerfacez.com/emoticon/",
-                end: "/1"
-            }
-        },
-        bttv: {
-            url: {
-                start: "https://cdn.betterttv.net/emote/",
-                end: "/1x"
-            }
-        }
-    }
-};
+EmoteModule.prototype.init = function () {};
 
 EmoteModule.prototype.getBlacklist = function () {
     $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
@@ -111,8 +90,6 @@ var bemotes = [];
 var spoilered = [];
 
 EmoteModule.prototype.injectEmote = function (node) {
-
-    var self = this;
 
     if (typeof emotesTwitch === 'undefined') return;
 
@@ -186,23 +163,36 @@ EmoteModule.prototype.injectEmote = function (node) {
             }
             if ($.inArray(sWord, bemotes) != -1) return;
 
-            var len = Math.round(sWord.length / 4);
-            var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-            var cfg = self.config;
             if (emotesTwitch.emotes.hasOwnProperty(sWord)) {
-                var url = cfg.twitch.url.start + emotesTwitch.emotes[sWord].image_id + cfg.twitch.url.end;
+                var len = Math.round(sWord.length / 4);
+                var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
+                var url = twitchEmoteUrlStart + emotesTwitch.emotes[sWord].image_id + twitchEmoteUrlEnd;
                 parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
                 return;
             }
 
             if (subEmotesTwitch.hasOwnProperty(sWord)) {
-                var url = cfg.twitch.url.start + subEmotesTwitch[sWord] + cfg.twitch.url.end;
+                var len = Math.round(sWord.length / 4);
+                var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
+                var url = twitchEmoteUrlStart + subEmotesTwitch[sWord] + twitchEmoteUrlEnd;
                 parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
                 return;
             }
             
+            if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
+                if (emotesFfz.hasOwnProperty(sWord)) {
+                    var len = Math.round(sWord.length / 4);
+                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
+                    var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
+                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                    return;
+                }
+            }
+
             if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
                 if (emotesBTTV.hasOwnProperty(sWord)) {
+                    var len = Math.round(sWord.length / 4);
+                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
                     var url = emotesBTTV[sWord];
                     parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
                     return;
@@ -211,15 +201,9 @@ EmoteModule.prototype.injectEmote = function (node) {
 
             if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
                 if (emotesBTTV2.hasOwnProperty(sWord)) {
-                    var url = cfg.bttv.url.start + emotesBTTV2[sWord] + cfg.bttv.url.end;
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
-                }
-            }
-
-            if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-                if (emotesFfz.hasOwnProperty(sWord)) {
-                    var url = cfg.ffz.url.start + emotesFfz[sWord] + cfg.ffz.url.end;
+                    var len = Math.round(sWord.length / 4);
+                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
+                    var url = bttvEmoteUrlStart + emotesBTTV2[sWord] + bttvEmoteUrlEnd;
                     parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
                     return;
                 }
