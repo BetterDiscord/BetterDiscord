@@ -573,26 +573,6 @@ EmoteModule.prototype.injectEmote = function (node) {
                 parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
                 return;
             }
-            
-            if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-                if (emotesFfz.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
-                }
-            }
-
-            if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if (emotesBTTV.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = emotesBTTV[sWord];
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
-                }
-            }
 
             if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
                 if (emotesBTTV2.hasOwnProperty(sWord)) {
@@ -603,7 +583,27 @@ EmoteModule.prototype.injectEmote = function (node) {
                     return;
                 }
             }
-
+			
+            if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
+                if (emotesBTTV.hasOwnProperty(sWord)) {
+                    var len = Math.round(sWord.length / 4);
+                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
+                    var url = emotesBTTV[sWord];
+                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                    return;
+                }
+            }
+			
+            if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
+                if (emotesFfz.hasOwnProperty(sWord)) {
+                    var len = Math.round(sWord.length / 4);
+                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
+                    var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
+                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                    return;
+                }
+            }
+			
         });
 
         if (parent.parentElement == null) return;
