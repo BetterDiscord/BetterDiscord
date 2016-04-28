@@ -539,6 +539,7 @@ EmoteModule.prototype.injectEmote = function (node) {
                 return;
             }
 
+			var skipffz = false;
             var useEmoteCss = false;
             var sWord = word;
             var emoteClass = "";
@@ -548,6 +549,10 @@ EmoteModule.prototype.injectEmote = function (node) {
                 if (split[0] != "" && split[1] != "") { 
                     userEmoteCss = true;
                     sWord = split[0];
+					
+					//check for bttv mod
+					if(split[1] == "bttv") skipffz = true;
+					
                     if(settingsCookie["bda-es-8"]) {
                         emoteClass = "emote" + split[1];
                         if(allowedClasses.indexOf(emoteClass) < 0) {
@@ -573,16 +578,6 @@ EmoteModule.prototype.injectEmote = function (node) {
                 parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
                 return;
             }
-
-            if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if (emotesBTTV2.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = bttvEmoteUrlStart + emotesBTTV2[sWord] + bttvEmoteUrlEnd;
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
-                }
-            }
 			
             if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
                 if (emotesBTTV.hasOwnProperty(sWord)) {
@@ -594,11 +589,28 @@ EmoteModule.prototype.injectEmote = function (node) {
                 }
             }
 			
-            if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-                if (emotesFfz.hasOwnProperty(sWord)) {
+			if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
+				//only skip ffz if there is a bttv emote for it
+				if(!skipffz || !emotesBTTV2.hasOwnProperty(sWord)){
+					if (emotesFfz.hasOwnProperty(sWord)) {
+						var len = Math.round(sWord.length / 4);
+						var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
+						var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
+						parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+						return;
+					}
+				}
+            }
+			
+            if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
+                if (emotesBTTV2.hasOwnProperty(sWord)) {
                     var len = Math.round(sWord.length / 4);
                     var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
+					
+					//if bttv emote is forced change its name for fav. and tooltip and to be able to copy them with the mod
+					if (skipffz) name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
+                    
+					var url = bttvEmoteUrlStart + emotesBTTV2[sWord] + bttvEmoteUrlEnd;
                     parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
                     return;
                 }
