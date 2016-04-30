@@ -2,7 +2,7 @@
  * Version: 1.53
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 02/04/2016
+ * Last Update: 01/05/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
@@ -143,8 +143,10 @@ function Core() {}
 Core.prototype.init = function () {
     var self = this;
 
-    if (version < supportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + version + "(your version)" + " is not supported by the latest js(" + jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
+    var lVersion = (typeof(version) === "undefined") ? bdVersion : version;
+
+    if (lVersion < supportedVersion) {
+        this.alert("Not Supported", "BetterDiscord v" + lVersion + "(your version)" + " is not supported by the latest js(" + jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
         return;
     }
 
@@ -379,18 +381,31 @@ Core.prototype.constructChangelog = function () {
 };
 
 Core.prototype.alert = function (title, text) {
-    $("body").append('' +
-        '<div class="bd-alert">' +
-        '   <div class="bd-alert-header">' +
-        '       <span>' + title + '</span>' +
-        '       <div class="bd-alert-closebtn" onclick="$(this).parent().parent().remove();">×</div>' +
-        '   </div>' +
-        '   <div class="bd-alert-body">' +
-        '       <div class="scroller-wrap dark fade">' +
-        '           <div class="scroller">' + text + '</div>' +
-        '       </div>' +
-        '   </div>' +
-        '</div>');
+    var id = 'bdalert-';
+    for( var i=0; i < 5; i++ )
+        id += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length)); 
+    var bdAlert = '\
+    <div id=\''+id+'\' class=\'modal\' style=\'opacity:1\'>\
+        <div class=\'modal-inner\'>\
+            <div class=\'markdown-modal\'>\
+                <div class=\'markdown-modal-header\'>\
+                    <strong style=\'float:left\'><span>BetterDiscord - </span><span>'+title+'</span></strong>\
+                    <span></span>\
+                    <button class=\'markdown-modal-close\' onclick=document.getElementById(\''+id+'\').remove();></button>\
+                </div>\
+                <div class=\'scroller-wrap fade\'>\
+                    <div style=\'font-weight:700\' class=\'scroller\'>'+text+'</div>\
+                </div>\
+                <div class=\'markdown-modal-footer\'>\
+                    <span style=\'float:right\'> for support.</span>\
+                    <a style=\'float:right\' href=\'https://discord.gg/0Tmfo5ZbOR9NxvDd\' target=\'_blank\'>#support</a>\
+                    <span style=\'float:right\'>Join </span>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+    ';
+    $("body").append(bdAlert);
 };
 
 /* BetterDiscordApp EmoteModule JavaScript
@@ -1496,7 +1511,7 @@ SettingsPanel.prototype.construct = function () {
         '       </div>' +
         '   </div>' +
         '   <div style="background:#2E3136; color:#ADADAD; height:30px; position:absolute; bottom:0; left:0; right:0;">' +
-        '       <span style="line-height:30px;margin-left:10px;">BetterDiscord v' + version + '(JSv' + jsVersion + ') by Jiiks</span>' +
+        '       <span style="line-height:30px;margin-left:10px;">BetterDiscord v' + ((typeof(version) == "undefined") ? bdVersion : version)  + '(JSv' + jsVersion + ') by Jiiks</span>' +
         '       <span style="float:right;line-height:30px;margin-right:10px;"><a href="http://betterdiscord.net" target="_blank">BetterDiscord.net</a></span>' +
         '   </div>' +
         '</div>';
