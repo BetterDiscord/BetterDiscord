@@ -1,6 +1,6 @@
 {
   "Core": {
-    "Version": "0.2.7"
+    "Version": "0.2.8"
   },
   "EmoteModule": {
     "Twitch":{
@@ -18,5 +18,24 @@
       "EmoteUrlStart": "",
       "EmoteUrlEnd": ""
     }
+  },
+  "cfg": {
+        "repo": "Jiiks",
+        "branch": null,
+        "beta": false,
+        "local": true,
+        "localServer": "http://localhost",
+        "version": "0.2.8",
+        "updater": null,
+        "hash": null,
+        "dataPath": null,
+        "userFile": null,
+        "os": null,
+        "cache": {
+            "expired": true,
+            "days": 0
+        },
+        "defaultCfg": { "cache": null },
+        "userCfg": { "cache": null }
   }
 }
