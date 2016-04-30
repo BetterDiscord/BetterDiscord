@@ -825,7 +825,7 @@ PublicServers.prototype.loadServers = function(dataset, search) {
                 var html = '<div class="server-row">';
                 html += '<div class="server-icon" style="background-image:url(' + source.icon + ')"></div>';
                 html += '<div class="server-info server-name">';
-                html += '<span>' + source.name + ' by ' + source.owner.name + '</span>';
+                html += '<span>' + source.name + '</span>';
                 html += '</div>';
                 html += '<div class="server-info server-members">';
                 html += '<span>' + source.online + '/' + source.members + ' Members</span>';
