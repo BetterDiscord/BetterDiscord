@@ -6,7 +6,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
-var jsVersion = 1.63;
+var jsVersion = 1.64;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -76,62 +76,22 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
-        "darkmode": {
-            "title": "v1.63 : Dark Mode",
-            "text": "Dark mode makes certain elements dark by default(currently only applies to emote menu)",
+        "028s": {
+            "title": "v1.64 : 0.2.8 Support",
+            "text": "Added support for Core version 0.2.8",
             "img": ""
         },
-        "emotemenu": {
-            "title": "v1.62 : Brand new emote menu that fits in Discord emoji menu!",
-            "text": "The emote menu has been replaced by a new one that injects itself in the Discord emoji menu!",
-            "img": ""
-        },
-        "cccss": {
-            "title": "v1.61 : New custom CSS editor",
-            "text": "The custom CSS editor now has options and can be detached!",
-            "img": ""
-        },
-        "vdc": {
-            "title": "v1.61 : Voice Disconnect",
-            "text": "Disconnect from voice server when closing Discord!",
-            "img": ""
-        },
-        "pslist": {
-            "title": "v1.60 : New public server list!",
-            "text": 'New and shiny public server list powered by <a href="https://www.discordservers.com/" target="_blank">DiscordServers.com</a>!',
-            "img": ""
-        },
-        "api": {
-            "title": "v1.59 : New plugin api callback",
-            "text": "Use the `observer(e)` callback instead of creating your own MutationObserver",
-            "img": ""
-        },
-        "emotemods": {
-            "title": "v1.59 : New emote mods!",
-            "text": "The following emote mods have been added: :shake2, :shake3, :flap",
-            "img": ""
-        },
-        "minmode": {
-            "title": "v1.59: Minimal mode",
-            "text": "Minimal mode embed fixed size has been removed",
+        "infscroll": {
+            "title": "v1.64 : Public Server List Infinite Scroll",
+            "text": "Public server list now has the ability to load more than 20 servers.",
             "img": ""
         }
     },
     "fixes": {
-        "modal": {
-            "title": "v1.62 : Fixed modals",
-            "text": "Fixed broken modal introduced by 0.0.287",
+        "pserver": {
+            "title": "v1.64 : Public Server Owner",
+            "text": "Removed undefined server owner property",
             "imt": ""
-        },
-        "emotes": {
-            "title": "v1.59 : Native sub emote mods",
-            "text": "Emote mods now work with native sub emotes!",
-            "img": ""
-        },
-        "emotes2": {
-            "title": "v1.59 : Emote mods and custom emotes",
-            "text": "Emote mods will no longer interfere with custom emotes using :",
-            "img": ""
         }
     }
 };
@@ -698,6 +658,7 @@ PublicServers.prototype.getPanel = function () {
 };
 
 PublicServers.prototype.init = function () {
+    this.loadingServers = false;
     var self = this;
 
     var guilds = $(".guilds>li:first-child");
@@ -727,27 +688,43 @@ PublicServers.prototype.init = function () {
         self.show();
     });
 
-    var panelBase="";
-        panelBase += "<div id=\"pubs-container\">";
-        panelBase += "  <div id=\"pubs-spinner\">";
-        panelBase += "    <span class=\"spinner\" type=\"wandering-cubes\"><span class=\"spinner-inner spinner-wandering-cubes\"><span class=\"spinner-item\"><\/span><span class=\"spinner-item\"><\/span><\/span><\/span>";
-        panelBase += "  <\/div>";
-        panelBase += "  <div id=\"pubs-header\">";
-        panelBase += "    <h2 id=\"pubs-header-title\">Public Servers<\/h2>";
-        panelBase += "    <button id=\"sbtn\">Search<\/button>";
-        panelBase += "    <input id=\"sterm\" type=\"text\" placeholder=\"Search term...\"\/>";
-        panelBase += "  <\/div>";
-        panelBase += "  <div class=\"scroller-wrap\">";
-        panelBase += "    <div class=\"scroller\">";
-        panelBase += "      <div id=\"slist\" class=\"servers-listing\">";
-        panelBase += "        ";
-        panelBase += "      <\/div>";
-        panelBase += "    <\/div>";
-        panelBase += "  <\/div>";
-        panelBase += "  <div id=\"pubs-footer\">";
-        panelBase += "    <div>Server list provided by <a href=\"https:\/\/www.discordservers.com\/\" target=\"_blank\">DiscordServers.com<\/a><\/div>";
-        panelBase += "  <\/div>";
-        panelBase += "<\/div>";
+
+    var panelBase = '\
+        <div id="pubs-container">\
+            <div id="pubs-spinner">\
+                <span class="spinner" type="wandering-cubes">\
+                    <span class="spinner-inner spinner-wandering-cubes">\
+                        <span class="spinner-item"></span>\
+                        <span class="spinner-item"></span>\
+                    </span>\
+                </span>\
+            </div>\
+            <div id="pubs-header">\
+                <h2 id="pubs-header-title">Public Servers</h2>\
+                <button id="pubs-searchbtn">Search</button>\
+                <input id="pubs-sterm" type="text" placeholder="Search Term...">\
+            </div>\
+            <div class="scroller-wrap">\
+                <div class="scroller" id="pubs-scroller">\
+                    <div id="pubs-list" class="servers-listing">\
+                    </div>\
+                    <div style="background:#FFF; padding: 5px 0; display:none;" id="pubs-spinner-bottom">\
+                        <div>\
+                            <span class="spinner" type="wandering-cubes">\
+                                <span class="spinner-inner spinner-wandering-cubes">\
+                                    <span class="spinner-item"></span>\
+                                    <span class="spinner-item"></span>\
+                                </span>\
+                            </span>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div id="pubs-footer">\
+                <div>Server list provided by <a href="https://discordservers.com" target="_blank">DiscordServers.com</a></div>\
+            </div>\
+        ';
+
     this.container = panelBase;
 
     if($("#bd-pub-li").length < 1) {
@@ -756,7 +733,6 @@ PublicServers.prototype.init = function () {
         }, 250);
     }
 };
-
 
 PublicServers.prototype.show = function () {
     var self = this;
@@ -777,21 +753,63 @@ PublicServers.prototype.show = function () {
         }
     };
 
-    $("#sbtn").on("click", function() {
+    $("#pubs-searchbtn").on("click", function() {
         self.search();
     });
-    $("#sterm").on("keyup", function(e) {
+    $("#pubs-sterm").on("keyup", function(e) {
         if (e.keyCode == 13) {
             self.search();
         }
     });
 
-   this.loadServers(dataset, false);
+   this.loadServers(dataset, false, true);
    var self = this;
     $(document).on("mouseup.bdps",function(e) {
         if(!$("#bd-pub-button").is(e.target) && !$("#pubs-container").is(e.target) && $("#pubs-container").has(e.target).length === 0) {
             self.hide();
         }
+    });
+
+    $("#pubs-scroller").off("scroll.pubs").on("scroll.pubs", function() {
+        if(self.loadingServers) return;
+        var list = $("#pubs-list");
+        if($(this).scrollTop() + 550 < list.height()) return;
+        if(list.children().length % 20 != 0) return;
+
+        self.loadingServers = true;
+        $("#pubs-spinner-bottom").show();
+        var dataset = {
+            "sort": [{
+                "online": "desc"
+            }],
+            "from": list.children().length,
+            "size": 20,
+            "query": {
+                "filtered": {
+                    "query": {
+                        "match_all": {}
+                    }
+                }
+            }
+        };
+
+        var filter = {
+            "filter": {
+                "and": [{
+                    "query": {
+                        "match_phrase_prefix": {
+                            "name": $("#pubs-sterm").val()
+                        }
+                    }
+                }]
+            }
+        };
+
+        if ($("#pubs-sterm").val()) {
+            $.extend(dataset, filter);
+        }
+
+        self.loadServers(dataset, true, false);
     });
 };
 
@@ -800,11 +818,12 @@ PublicServers.prototype.hide = function() {
     $(document).off("mouseup.bdps");
 };
 
-PublicServers.prototype.loadServers = function(dataset, search) {
+PublicServers.prototype.loadServers = function(dataset, search, clear) {
+    this.loadingServers = true;
     var self = this;
-    $("#sbtn").prop("disabled", true);
-    $("#sterm").prop("disabled", true);
-    $("#slist").empty();
+    $("#pubs-searchbtn").prop("disabled", true);
+    $("#pubs-sterm").prop("disabled", true);
+    if(clear) $("#pubs-list").empty();
     $("#pubs-spinner").show();
     $.ajax({
         type: "POST",
@@ -814,11 +833,13 @@ PublicServers.prototype.loadServers = function(dataset, search) {
         data: JSON.stringify(dataset),
         success: function(data) {
             var hits = data.hits.hits;
+            
             if(search) {
               $("#pubs-header-title").text("Public Servers - Search Results: " + hits.length);
             } else {
               $("#pubs-header-title").text("Public Servers");
             }
+
             hits.forEach(function(hit) {
                 var source = hit._source;
                 var icode = source.invite_code;
@@ -837,31 +858,43 @@ PublicServers.prototype.loadServers = function(dataset, search) {
                 html += '<button data-server-invite-code='+icode+'>Join</button>';
                 html += '</div>';
                 html += '</div>';
-                $("#slist").append(html);
+                $("#pubs-list").append(html);
                 $("button[data-server-invite-code="+icode+"]").on("click", function(){
                     self.joinServer(icode);
                 });
             });
+
+            if(search) {
+              $("#pubs-header-title").text("Public Servers - Search Results: " + $("#pubs-list").children().length);
+            }
         },
       done: function() {
         $("#pubs-spinner").hide();
-        $("#sbtn").prop("disabled", false);
-        $("#sterm").prop("disabled", false);
+        $("#pubs-spinner-bottom").hide();
+        $("#pubs-searchbtn").prop("disabled", false);
+        $("#pubs-sterm").prop("disabled", false);
+        self.loadingServers = false;
       },
       always: function() {
         $("#pubs-spinner").hide();
-        $("#sbtn").prop("disabled", false);
-        $("#sterm").prop("disabled", false);
+        $("#pubs-spinner-bottom").hide();
+        $("#pubs-searchbtn").prop("disabled", false);
+        $("#pubs-sterm").prop("disabled", false);
+        self.loadingServers = false;
       },
       error: function() {
         $("#pubs-spinner").hide();
-        $("#sbtn").prop("disabled", false);
-        $("#sterm").prop("disabled", false);
+        $("#pubs-spinner-bottom").hide();
+        $("#pubs-searchbtn").prop("disabled", false);
+        $("#pubs-sterm").prop("disabled", false);
+        self.loadingServers = false;
       },
       complete: function() {
         $("#pubs-spinner").hide();
-        $("#sbtn").prop("disabled", false);
-        $("#sterm").prop("disabled", false);
+        $("#pubs-spinner-bottom").hide();
+        $("#pubs-searchbtn").prop("disabled", false);
+        $("#pubs-sterm").prop("disabled", false);
+        self.loadingServers = false;
       }
     });
 };
@@ -887,17 +920,17 @@ PublicServers.prototype.search = function() {
             "and": [{
                 "query": {
                     "match_phrase_prefix": {
-                        "name": $("#sterm").val()
+                        "name": $("#pubs-sterm").val()
                     }
                 }
             }]
         }
     };
 
-    if ($("#sterm").val()) {
+    if ($("#pubs-sterm").val()) {
         $.extend(dataset, filter);
     }
-    this.loadServers(dataset, true);
+    this.loadServers(dataset, true, true);
 };
 
 //Workaround for joining a server
