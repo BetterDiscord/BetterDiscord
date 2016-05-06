@@ -1304,22 +1304,6 @@
   margin-top:70px;
 }
 
-.chat .title-wrap, .guild-header header {
-    background: rgba(25, 62, 90, 0.91) !important;
-}
-
-.guilds-wrapper:before {
-    background: rgba(25, 62, 90, 0.91) !important;
-    min-height:48px !important;
-    width:60px;
-    content: " ";
-    display:block;
-}
-
-.guilds-wrapper ul {
-    padding-top:5px;
-}
-
 .bda-backdrop {
   position:absolute;
     top:0;
