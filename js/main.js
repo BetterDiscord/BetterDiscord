@@ -1477,7 +1477,7 @@ SettingsPanel.prototype.construct = function () {
                 </div>\
                 <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick=\'settingsPanel.changeTab("bd-themes-tab");\'>Themes\
                 </div>\
-                <div class="bda-slist-top" style="position:absolute; right:15px;">\
+                <div class="bda-slist-top">\
                     <button class="btn btn-primary" onclick="utils.exportSettings(); return false;">Export</button>\
                     <button class="btn btn-primary" onclick="utils.importSettings(); return false;">Import</button>\
                 </div>\
@@ -1594,7 +1594,7 @@ SettingsPanel.prototype.construct = function () {
                 <div class="bda-right">\
                     <div class="checkbox" onclick="pluginModule.handlePlugin(this);">\
                         <div class="checkbox-inner">\
-                            <input id="'+plugin.getName()+'" type="checkbox" '+(pluginCookie[plugin.getName()] ? "checked" : "")+'>\
+                            <input id="'+plugin.getName().replace(" ", "__")+'" type="checkbox" '+(pluginCookie[plugin.getName()] ? "checked" : "")+'>\
                             <span></span>\
                         </div>\
                         <span></span>\
@@ -1637,9 +1637,9 @@ SettingsPanel.prototype.construct = function () {
                     </div>\
                 </div>\
                 <div class="bda-right">\
-                    <div class="checkbox" onclick="pluginModule.handlePlugin(this);">\
+                    <div class="checkbox" onclick="themeModule.handleTheme(this);">\
                         <div class="checkbox-inner">\
-                            <input id="'+this["name"]+'" type="checkbox" '+(themeCookie[this["name"]] ? "checked" : "")+'>\
+                            <input id="ti'+this["name"]+'" type="checkbox" '+(themeCookie[this["name"]] ? "checked" : "")+'>\
                             <span></span>\
                         </div>\
                         <span></span>\
@@ -1812,12 +1812,61 @@ Utils.prototype.importSettings = function() {
             }
             localStorage["bdcustomcss"] = obj.customCss;
             var ccss = atob(localStorage.getItem("bdcustomcss"));
+            if (!customCssInitialized) {
+                customCssEditor.init();
+                customCssInitialized = true;
+            }
             customCssEditor.applyCustomCss(ccss, settingsCookie["bda-css-0"], false); 
             customCssEditor.editor.setValue(ccss);
         }catch(err) {
             mainCore.alert("Invalid Data", err);
             return false;
         }
+
+        try {
+            $.each(obj.plugins, function(plugin) {
+                var enabled = obj.plugins[plugin];
+                if(bdplugins.hasOwnProperty(plugin)) {
+                    pluginCookie[plugin] = enabled;
+                    var cb = $("#"+plugin.replace(" ", "__"));
+                    if(cb.is(":checked") && !enabled) {
+                        bdplugins[plugin]["plugin"].stop();
+                        cb.prop("checked", false);
+                    }
+                    if(!cb.is(":checked") && enabled) {
+                        bdplugins[plugin]["plugin"].start();
+                        cb.prop("checked", true);
+                    }
+                }
+            });
+            pluginModule.savePluginData();
+        }catch(err) {
+            mainCore.alert("Failed to load plugin data", err);
+            return false;
+        }
+
+        try {
+            themeCookie = obj.themes;
+            $.each(themeCookie, function(theme) {
+                var enabled = themeCookie[theme];
+                var id = "#ti" + theme;
+                if(bdthemes.hasOwnProperty(theme)) {
+                    if($(id).is(":checked") && !enabled) {
+                        $(id).prop("checked", false);
+                        $("#"+theme).remove();
+                    }
+                    if(!$(id).is(":checked") && enabled) {
+                        $(id).prop("checked", true);
+                        $("head").append('<style id="' + theme + '">' + unescape(bdthemes[theme]["css"]) + '</style>');
+                    }
+                }
+            });
+            themeModule.saveThemeData();
+        }catch(err) {
+            mainCore.alert("Failed to load theme data", err);
+            return false;
+        }
+
         return false;
     });
 };
@@ -1826,7 +1875,7 @@ Utils.prototype.exportSettings = function() {
     var obj =  {
         settings: settingsCookie,
         customCss: localStorage["bdcustomcss"],
-        plugins: bdplugins,
+        plugins: pluginCookie,
         themes: themeCookie,
         favEmotes: window.localStorage["bdfavemotes"]
     };
@@ -1928,7 +1977,7 @@ PluginModule.prototype.handlePlugin = function (checkbox) {
 
     var cb = $(checkbox).children().find('input[type="checkbox"]');
     var enabled = !cb.is(":checked");
-    var id = cb.attr("id");
+    var id = cb.attr("id").replace("__", " ");
     cb.prop("checked", enabled);
 
     if (enabled) {

@@ -144,6 +144,7 @@
     <None Include="Resources\bd_logo_large_nobg.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BetterDiscord-icon.ico" />
     <Content Include="Resources\BetterDiscord-icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

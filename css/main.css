@@ -1202,6 +1202,138 @@
   display: none;
 }
 
+#bd-pane .tab-bar.TOP {
+  margin-bottom:0;
+}
+
+#bd-settings-pane {
+  margin-top:18px;
+}
+
+.bda-slist-top {
+  height:25px;
+    flex-grow:1;
+}
+
+.bda-slist-top > .btn {
+  height: 20px;
+    line-height: 20px;
+    font-size: 13px;
+    padding: 6px;
+    padding-top: 0;
+    margin-left:5px !important;
+    float:right;
+}
+
+.bda-slist li {
+  background:#F3F3F3;
+    padding:5px;
+    border-bottom:1px solid #ADADAD;
+    min-height:116px;
+    max-height:116px;
+}
+
+.bda-slist li:nth-child(odd) {
+  background:#F3F3F3;
+    border-top:1px solid #FFF;
+}
+
+.bda-slist .bda-name {
+  color:#87909C;
+    font-weight:700;
+    font-size:12px;
+}
+
+.bda-slist .bda-description {
+    margin-top:5px;
+    color:#4E4E4E;
+    width:400px;
+    overflow-y:scroll;
+    min-height:90px;
+    max-height:90px;
+    border-top:1px solid #DADADA;
+    padding-top:5px;
+    word-break: break-word;
+}
+
+.bda-slist .scroller::-webkit-scrollbar-track-piece,
+.bda-slist .scroller::-webkit-scrollbar-thumb {
+    border-radius:0 !important;
+    border-color:transparent;
+}
+
+.bda-slist .bda-left {
+  width:400px;
+    display:inline-block;
+}
+
+.bda-slist .bda-right {
+  display:inline-block;
+    float:right;
+}
+
+.bda-slist .checkbox {
+  margin-left:18px;
+}
+
+.bda-slist .checkbox:before {
+  content: "Enabled";
+    color:#87909C;
+    margin-right:5px;
+    font-weight:600;
+}
+
+.bda-slist .bda-right .btn {
+    height: 30px;
+    width:100px;
+    line-height: 12px;
+    margin-left:0;
+    text-align:center;
+    display:block;
+}
+
+.bda-slist .bda-right .bda-plugin-reload {
+  margin-top:35px;
+}
+
+.bda-slist .bda-right .bda-plugin-settings {
+  margin-top:5px;
+}
+
+#bd-themes-pane .bda-plugin-reload {
+  margin-top:70px;
+}
+
+.chat .title-wrap, .guild-header header {
+    background: rgba(25, 62, 90, 0.91) !important;
+}
+
+.guilds-wrapper:before {
+    background: rgba(25, 62, 90, 0.91) !important;
+    min-height:48px !important;
+    width:60px;
+    content: " ";
+    display:block;
+}
+
+.guilds-wrapper ul {
+    padding-top:5px;
+}
+
+.bda-backdrop {
+  position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:1000;
+    background:rgba(0,0,0,0.5);
+}
+
+.bd-settings {
+  max-width:516px;
+}
+
 .bda-dark #bda-qem-favourite-container, .bda-dark #bda-qem-twitch-container {
   background-color: #353535;
 }
