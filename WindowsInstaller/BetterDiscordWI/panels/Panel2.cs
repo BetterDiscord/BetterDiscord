@@ -11,7 +11,7 @@ using asardotnet;
 
 namespace BetterDiscordWI.panels {
     public partial class Panel2: UserControl, IPanel {
-        private String _dataPath, _tempPath;
+        private string _dataPath, _tempPath;
         private Utils _utils;
 
         public Panel2() {
@@ -35,40 +35,38 @@ namespace BetterDiscordWI.panels {
         }
 
         private void KillProcessIfInstalling(string app) {
-            if(GetParent().DiscordPath.Contains(app + "\\")) {
-                AppendLog("Killing " + app);
-                foreach(var process in Process.GetProcessesByName(app)) {
-                    process.Kill();
-                }
+            if (!GetParent().DiscordPath.Contains(app + "\\")) return;
+            AppendLog("Killing " + app);
+            foreach(var process in Process.GetProcessesByName(app)) {
+                process.Kill();
             }
         }
 
         private void CreateDirectories() {
             Thread t = new Thread(() => {
-                _dataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord";
-                _tempPath = _dataPath + "\\temp";
+                _dataPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\BetterDiscord";
+                _tempPath = $"{_dataPath}\\temp";
                 AppendLog("Deleting old cached files");
                 try {
-                    if(File.Exists(_dataPath + "\\emotes_bttv.json")) {
-                        File.Delete(_dataPath + "\\emotes_bttv.json");
+                    if(File.Exists($"{_dataPath}\\emotes_bttv.json")) {
+                        File.Delete($"{_dataPath}\\emotes_bttv.json");
                     }
-                    if(File.Exists(_dataPath + "\\emotes_bttv_2.json")) {
-                        File.Delete(_dataPath + "\\emotes_bttv_2.json");
+                    if(File.Exists($"{_dataPath}\\emotes_bttv_2.json")) {
+                        File.Delete($"{_dataPath}\\emotes_bttv_2.json");
                     }
-                    if(File.Exists(_dataPath + "\\emotes_ffz.json")) {
-                        File.Delete(_dataPath + "\\emotes_ffz.json");
+                    if(File.Exists($"{_dataPath}\\emotes_ffz.json")) {
+                        File.Delete($"{_dataPath}\\emotes_ffz.json");
                     }
-                    if(File.Exists(_dataPath + "\\emotes_twitch_global.json")) {
-                        File.Delete(_dataPath + "\\emotes_twitch_global.json");
+                    if(File.Exists($"{_dataPath}\\emotes_twitch_global.json")) {
+                        File.Delete($"{_dataPath}\\emotes_twitch_global.json");
                     }
-                    if(File.Exists(_dataPath + "\\emotes_twitch_subscriber.json")) {
-                        File.Delete(_dataPath + "\\emotes_twitch_subscriber.json");
+                    if(File.Exists($"{_dataPath}\\emotes_twitch_subscriber.json")) {
+                        File.Delete($"{_dataPath}\\emotes_twitch_subscriber.json");
                     }
-                    if(File.Exists(_dataPath + "\\user.json")) {
-                        File.Delete(_dataPath + "\\user.json");
+                    if(File.Exists($"{_dataPath}\\user.json")) {
+                        File.Delete($"{_dataPath}\\user.json");
                     }
                 } catch(Exception e) { AppendLog("Failed to delete one or more cached files"); }
-
 
                 if(Directory.Exists(_tempPath)) {
                     AppendLog("Deleting temp path");
@@ -82,9 +80,9 @@ namespace BetterDiscordWI.panels {
 
                 Directory.CreateDirectory(_tempPath);
 
-                DownloadResource("BetterDiscord.zip", "https://github.com/Jiiks/BetterDiscordApp/archive/stable.zip");
+                DownloadResource("BetterDiscord.zip", "https://github.com/Jiiks/BetterDiscordApp/archive/stable16.zip");
 
-                while(!File.Exists(_tempPath + "\\BetterDiscord.zip")) {
+                while(!File.Exists($"{_tempPath}\\BetterDiscord.zip")) {
                     Debug.Print("Waiting for download");
                     Thread.Sleep(100);
                 }
@@ -92,10 +90,8 @@ namespace BetterDiscordWI.panels {
                 AppendLog("Extracting BetterDiscord");
 
                 ZipArchive zar =
-                    ZipFile.OpenRead(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                                     "\\BetterDiscord\\temp\\BetterDiscord.zip");
-                zar.ExtractToDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) +
-                                       "\\BetterDiscord\\temp\\");
+                    ZipFile.OpenRead($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\BetterDiscord\\temp\\BetterDiscord.zip");
+                zar.ExtractToDirectory($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\BetterDiscord\\temp\\");
 
                 DeleteDirs();
             });
@@ -107,14 +103,14 @@ namespace BetterDiscordWI.panels {
         private void DeleteDirs() {
             int errors = 0;
             Thread t = new Thread(() => {
-                String dir = GetParent().DiscordPath + "\\resources\\app";
+                string dir = $"{GetParent().DiscordPath}\\resources\\app";
 
                 if(Directory.Exists(dir)) {
                     try {
                         AppendLog("Deleting " + dir);
                         Directory.Delete(dir, true);
                     } catch {
-                        AppendLog("Error: Failed to Delete the '" + dir + "\\resources\\app' Directory.");
+                        AppendLog($"Error: Failed to Delete the '{dir}\\resources\\app' Directory.");
                         errors = 1;
                         Finalize(errors);
                     }
@@ -125,11 +121,11 @@ namespace BetterDiscordWI.panels {
                     Thread.Sleep(100);
                 }
 
-                dir = GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord";
+                dir = $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord";
 
 
                 if(Directory.Exists(dir)) {
-                    AppendLog("Deleting " + dir);
+                    AppendLog($"Deleting {dir}");
                     Directory.Delete(dir, true);
                 }
 
@@ -139,12 +135,12 @@ namespace BetterDiscordWI.panels {
                 }
 
 				AppendLog("Extracting app.asar");
-				string appAsarPath = GetParent().DiscordPath + "\\resources\\app.asar";
+				string appAsarPath = $"{GetParent().DiscordPath}\\resources\\app.asar";
 
 				if(File.Exists(appAsarPath)) {
 					AsarArchive archive = new AsarArchive(appAsarPath);
 					AsarExtractor extractor = new AsarExtractor();
-					extractor.ExtractAll(archive, GetParent().DiscordPath + "\\resources\\app\\");
+					extractor.ExtractAll(archive, $"{GetParent().DiscordPath}\\resources\\app\\");
 				} else {
 					AppendLog("Error: app.asar file couldn't be found in 'resources' folder. Installation cannot Continue.");
 					errors = 1;
@@ -153,7 +149,7 @@ namespace BetterDiscordWI.panels {
 
 				if(errors == 0) {
 					AppendLog("Moving BetterDiscord to resources\\node_modules\\");
-					Directory.Move(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\BetterDiscordApp-stable", GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord");
+					Directory.Move($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\BetterDiscord\\temp\\BetterDiscordApp-stable16", $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord");
 
 					try {
 						Splice();
@@ -169,25 +165,23 @@ namespace BetterDiscordWI.panels {
             t.Start();
         }
 
-
-        private void DownloadResource(String resource, String url) {
+        private void DownloadResource(string resource, string url) {
             AppendLog("Downloading Resource: " + resource);
 
-            WebClient webClient = new WebClient();
-            webClient.Headers["User-Agent"] = "Mozilla/5.0";
+            WebClient webClient = new WebClient {Headers = {["User-Agent"] = "Mozilla/5.0"}};
 
-            webClient.DownloadFile(new Uri(url), Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BetterDiscord\\temp\\" + resource);
+            webClient.DownloadFile(new Uri(url), $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\BetterDiscord\\temp\\{resource}");
         }
 
         private void Splice() {
-            String indexloc = GetParent().DiscordPath + "\\resources\\app\\app\\index.js";
+            string indexloc = $"{GetParent().DiscordPath}\\resources\\app\\app\\index.js";
 
             Thread t = new Thread(() => {
-                List<String> lines = new List<string>();
+                List<string> lines = new List<string>();
                 AppendLog("Spicing index");
                 using(FileStream fs = new FileStream(indexloc, FileMode.Open)) {
                     using(StreamReader reader = new StreamReader(fs)) {
-                        String line = "";
+                        string line = "";
                         while((line = reader.ReadLine()) != null) {
                             //if(GetParent().DiscordPath.Contains("Discord\\")) {
                             //if(GetParent().DiscordPath.Contains("DiscordCanary\\")) {
@@ -195,9 +189,10 @@ namespace BetterDiscordWI.panels {
                             if(line.Replace(" ", "").Contains("var_fs=")) {
                                 lines.Add(line);
                                 lines.Add("var _betterDiscord = require('betterdiscord');");
+                                lines.Add("var _betterDiscord2;");
                             } else if(line.Replace(" ", "").Contains("mainWindow=new")) {
                                 lines.Add(line);
-                                lines.Add(File.ReadAllText("splice"));
+                                lines.Add(File.ReadAllText(@"splice"));
                             } else {
                                 lines.Add(line);
                             }
@@ -210,35 +205,32 @@ namespace BetterDiscordWI.panels {
 
                 File.WriteAllLines(indexloc, lines.ToArray());
 
-
                 AppendLog("Finished installation, verifying installation...");
 
                 int errors = 0;
 
-                String curPath = GetParent().DiscordPath + "\\resources\\app\\app\\index.js";
+                string curPath = $"{GetParent().DiscordPath}\\resources\\app\\app\\index.js";
 
                 if(!File.Exists(curPath)) {
-                    AppendLog("ERROR: FILE: " + curPath + " DOES NOT EXIST!");
+                    AppendLog($"ERROR: FILE: {curPath} DOES NOT EXIST!");
                     errors++;
                 }
 
-                curPath = GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord";
+                curPath = $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord";
 
                 if(!Directory.Exists(curPath)) {
-                    AppendLog("ERROR: DIRECTORY: " + curPath + " DOES NOT EXIST");
+                    AppendLog($"ERROR: DIRECTORY: {curPath} DOES NOT EXIST!");
                     errors++;
                 }
 
 
-                String basePath = GetParent().DiscordPath + "\\resources\\node_modules\\BetterDiscord";
-                String[] bdFiles = { "\\package.json", "\\betterdiscord.js", "\\lib\\BetterDiscord.js", "\\lib\\config.json", "\\lib\\Utils.js" };
+                string basePath = $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord";
+                string[] bdFiles = { "\\package.json", "\\betterdiscord.js", "\\lib\\BetterDiscord.js", "\\lib\\config.json", "\\lib\\Utils.js" };
 
                 foreach(string s in bdFiles.Where(s => !File.Exists(basePath + s))) {
-                    AppendLog("ERROR: FILE: " + basePath + s + " DOES NOT EXIST");
+                    AppendLog($"ERROR: FILE: {basePath}{s} DOES NOT EXIST");
                     errors++;
                 }
-
-
                 Finalize(errors);
             });
 
@@ -246,24 +238,23 @@ namespace BetterDiscordWI.panels {
         }
 
         private void Finalize(int errors) {
-            AppendLog("Finished installing BetterDiscord with " + errors + " errors");
-
+            AppendLog($"Finished installing BetterDiscord with {errors} errors");
 
             Invoke((MethodInvoker)delegate {
-                GetParent().finished = true;
-                GetParent().btnCancel.Text = "OK";
+                GetParent().Finished = true;
+                GetParent().btnCancel.Text = @"OK";
                 GetParent().btnCancel.Enabled = true;
             });
 
             if(GetParent().RestartDiscord) {
                 if(GetParent().DiscordPath.Contains("\\Discord\\")) {
-                    Process.Start(GetParent().DiscordPath + "\\Discord.exe");
+                    Process.Start($"{GetParent().DiscordPath}\\Discord.exe");
                 }
                 if(GetParent().DiscordPath.Contains("\\DiscordCanary\\")) {
-                    Process.Start(GetParent().DiscordPath + "\\DiscordCanary.exe");
+                    Process.Start($"{GetParent().DiscordPath}\\DiscordCanary.exe");
                 }
                 if(GetParent().DiscordPath.Contains("\\DiscordPTB\\")) {
-                    Process.Start(GetParent().DiscordPath + "\\DiscordPTB.exe");
+                    Process.Start($"{GetParent().DiscordPath}\\DiscordPTB.exe");
                 }
             }
         }
@@ -272,15 +263,11 @@ namespace BetterDiscordWI.panels {
             return (FormMain)ParentForm;
         }
 
-        public void BtnNext() {
-            throw new NotImplementedException();
-        }
+        public void BtnNext() { }
 
-        public void BtnPrev() {
-            throw new NotImplementedException();
-        }
+        public void BtnPrev() { }
 
-        private void AppendLog(String message) {
+        private void AppendLog(string message) {
             Invoke((MethodInvoker)delegate {
                 rtLog.AppendText(message + "\n");
                 rtLog.SelectionStart = rtLog.Text.Length;

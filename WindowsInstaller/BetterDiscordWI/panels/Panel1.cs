@@ -14,10 +14,10 @@ namespace BetterDiscordWI.panels {
             GetParent().btnBack.Visible = true;
             GetParent().btnNext.Enabled = true;
             GetParent().btnBack.Enabled = true;
-            GetParent().btnNext.Text = "Install";
-            GetParent().lblPanelTitle.Text = "BetterDiscord Installation";
+            GetParent().btnNext.Text = @"Install";
+            GetParent().lblPanelTitle.Text = @"BetterDiscord Installation";
 
-            pickVersion();
+            PickVersion();
         }
 
         public FormMain GetParent() {
@@ -42,51 +42,49 @@ namespace BetterDiscordWI.panels {
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e) {
-            pickVersion();
+            PickVersion();
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e) {
-            pickVersion();
+            PickVersion();
         }
 
-        private void pickVersion() {
-            string dirPath = null;
-            if(checkBox1.Checked == true) {
-                dirPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DiscordCanary";
+        private void PickVersion() {
+            string dirPath;
+            if(checkBox1.Checked) {
+                dirPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\DiscordCanary";
                 if(!Directory.Exists(dirPath)) checkBox1.Checked = false;
                 
                 checkBox2.Checked = false;
-            } else if(checkBox2.Checked == true) {
-                dirPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\DiscordPTB";
+            } else if(checkBox2.Checked) {
+                dirPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\DiscordPTB";
                 if(!Directory.Exists(dirPath)) checkBox2.Checked = false;
 
                 checkBox1.Checked = false;
             } else {
-                dirPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Discord";
+                dirPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\\Discord";
             }
 
-            if(Directory.Exists(dirPath)) {
-                String[] directories = Directory.GetDirectories(dirPath);
+            if (!Directory.Exists(dirPath)) return;
+            string[] directories = Directory.GetDirectories(dirPath);
 
-                String highestVersion = null;
+            string highestVersion = null;
 
-                foreach(String s in directories) {
-                    Debug.Print(s);
-                    if(!s.Contains("app-"))
-                        continue;
-                    if(String.IsNullOrEmpty(highestVersion)) {
-                        highestVersion = s;
-                        continue;
-                    }
-
-                    if(String.CompareOrdinal(s, highestVersion) > 0) {
-                        highestVersion = s;
-                    }
+            foreach(string s in directories) {
+                Debug.Print(s);
+                if(!s.Contains("app-"))
+                    continue;
+                if(string.IsNullOrEmpty(highestVersion)) {
+                    highestVersion = s;
+                    continue;
                 }
 
-
-                tbPath.Text = highestVersion;
+                if(string.CompareOrdinal(s, highestVersion) > 0) {
+                    highestVersion = s;
+                }
             }
+
+            tbPath.Text = highestVersion;
         }
     }
 }

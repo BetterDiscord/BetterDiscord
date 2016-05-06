@@ -1,29 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace BetterDiscordWI
 {
     class Utils
     {
-
-
-        public void StartDownload(ProgressBar pb, String url, String name)
+        public void StartDownload(ProgressBar pb, string url, string name)
         {
-
-           
-
             Thread t = new Thread(() =>
             {
-                WebClient webClient = new WebClient();
-                webClient.Headers["User-Agent"] = "Mozilla/5.0";
+                WebClient webClient = new WebClient {Headers = {["User-Agent"] = "Mozilla/5.0"}};
                 webClient.DownloadProgressChanged += delegate(object sender, DownloadProgressChangedEventArgs args)
                 {                   
                     double percentage = (double.Parse(args.BytesReceived.ToString()) /double.Parse(args.TotalBytesToReceive.ToString())) * 100;
@@ -43,18 +32,15 @@ namespace BetterDiscordWI
             t.Start();
         }
 
-        public static String GetHash()
+        public static string GetHash()
         {
-            WebClient wc = new WebClient();
-            wc.Headers["User-Agent"] = "Mozilla/5.0";
-            String result = wc.DownloadString("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master");
+            WebClient wc = new WebClient {Headers = {["User-Agent"] = "Mozilla/5.0"}};
+            string result = wc.DownloadString(@"https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master");
 
             int start = result.IndexOf("{\"sha\":");
             int end = result.IndexOf("\",\"");
 
             return result.Substring(start + 8, end - 8);
         }
-
-
     }
 }
