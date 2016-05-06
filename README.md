@@ -8,7 +8,7 @@ If your Discord breaks then uninstall BD and try again
 
 Better Discord App enhances Discord desktop app with new features.
 
-![ss](http://i.imgur.com/P0XEyp6.jpg)
+![ss](http://puu.sh/oIO58.png)
 
 ## Windows Universal Installer
 * Download the latest installer from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
