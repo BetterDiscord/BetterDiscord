@@ -23,7 +23,7 @@
         "repo": "Jiiks",
         "branch": null,
         "beta": false,
-        "local": true,
+        "local": false,
         "localServer": "http://localhost",
         "version": "0.2.8",
         "updater": null,
