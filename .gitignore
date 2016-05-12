@@ -10,4 +10,6 @@ Firefox/data/js/jquery-2.1.4.min.js
 node_modules
 .sass-cache
 /*.jiiks
-WindowInstaller/bin/
+Installers/dotNet/bin/
+Installers/dotNet/packages/
+Installers/dotNet/dlls/
