@@ -444,12 +444,17 @@
   padding: 5px !important;
   font-size: small;
 }
+.bd-minimal .guild-channels ul .channel-text.unread:not(.selected):not(.channel-muted):before
+{
+  width: 10px;
+  top: 8px;
+}
 .bd-minimal .guild-channels ul .channel-voice {
   padding: 5px !important;
   font-size: small;
 }
 .bd-minimal .guild-channels h2 {
-  padding: 2px;
+  padding: 5px;
 }
 .bd-minimal .guild-channels header spann {
   font-size: 12px;
@@ -460,28 +465,21 @@
 .bd-minimal .channels-wrap .guild-channels {
   padding: 0;
 }
-.bd-minimal .guilds li {
+.bd-minimal .guilds-wrapper .guilds .guild {
   width: 20px;
   height: 20px;
   background-size: 100%;
   font-size: 15px;
   line-height: 20px;
 }
-.bd-minimal .guilds li .avatar-small {
+.bd-minimal .guild .guild-inner a.avatar-small {
   width: 20px;
   height: 20px;
   background-size: 100%;
   font-size: 15px;
   line-height: 20px;
 }
-.bd-minimal .guilds li .guild-inner {
-  width: 20px;
-  height: 20px;
-  background-size: 100%;
-  font-size: 15px;
-  line-height: 20px;
-}
-.bd-minimal .guilds li .guild-inner a {
+.bd-minimal .guild .guild-inner {
   width: 20px;
   height: 20px;
   background-size: 100%;
@@ -495,10 +493,20 @@
   font-size: 15px;
   line-height: 20px;
 }
+.bd-minimal .guilds .friends-online
+{
+  margin-left: -15px;
+  font-size: 7px;
+}
 .bd-minimal .guilds-wrapper {
   width: 45px;
 }
-.bd-minimal .guilds li.active .guild-inner:before {
+.bd-minimal .guilds-wrapper .guild-separator
+{
+  margin-left: -15px;
+}
+.bd-minimal .guilds-wrapper .guilds .guild.selected:before
+{
   height: 20px;
   margin-top: -10px;
 }
@@ -506,10 +514,18 @@
   font-size: 20px;
   line-height: 14px;
 }
-.bd-minimal .guilds li.audio .guild-inner:after {
+.bd-minimal .guilds .audio .guild-inner:after {
   width: 12px;
   height: 12px;
   background-size: 12px;
+}
+.bd-minimal .guild-header header span
+{
+  margin-left: -20px;
+}
+.bd-minimal .btn-hamburger
+{
+  margin-right: -30px;
 }
 
 .emotewrapper {
