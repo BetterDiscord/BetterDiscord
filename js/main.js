@@ -6,7 +6,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
-var jsVersion = 1.70;
+var jsVersion = 1.71;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -32,16 +32,16 @@ var settings = {
     "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
     "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
     "24 Hour Timestamps":         { "id": "bda-gs-6",  "info": "Replace 12hr timestamps with proper ones",          "implemented": true,  "hidden": false, "cat": "core"},
-    "Coloured Text":               { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
+    "Coloured Text":              { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
 
-    "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false, "cat": "emote"},
+    "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
     "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
     "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false, "cat": "emote"},
     "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false, "cat": "emote"},
     "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show Discord emoji menu",                           "implemented": true,  "hidden": false, "cat": "emote"},
     "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false, "cat": "emote"},
     "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false, "cat": "emote"},
-    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names trueon hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
     "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": true,  "hidden": false, "cat": "emote"},
 };
 
@@ -80,6 +80,16 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
+        "ttv": {
+            "title": "v1.71 : Hide Twitch emotes",
+            "text": "Hide all emotes option now toggles Twitch emotes instead!",
+            "img": ""
+        },
+        "bttv": {
+            "title": "v1.71 : Override FFZ emote",
+            "text": "Use the <code class=\"inline\">:bttv</code> emote modifier to override a FFZ emote with a BTTV one!",
+            "img": ""
+        },
         "028s": {
             "title": "v1.70 : 0.2.8 Support",
             "text": "Added support for Core version 0.2.8.",
@@ -107,6 +117,16 @@ var bdchangelog = {
         }
     },
     "fixes": {
+        "emotes": {
+            "title": "v1.71 : Fixed emotes and edit",
+            "text": "Emotes work again! So does editing emotes!",
+            "img": ""
+        },
+        "spoiler": {
+            "title": "Spoilers are currently broken :(",
+            "text": "Ps. I know this in the fixes section :o",
+            "img": ""
+        },
         "pserver": {
             "title": "v1.64 : Public Server Owner",
             "text": "Removed undefined server owner property",
@@ -464,7 +484,7 @@ EmoteModule.prototype.getBlacklist = function () {
 EmoteModule.prototype.obsCallback = function (mutation) {
     var self = this;
 
-    if (!settingsCookie["bda-es-7"]) return;
+    //if (!settingsCookie["bda-es-7"]) return;
 
     $(".emoji").each(function() {
         var t = $(this);
@@ -472,27 +492,6 @@ EmoteModule.prototype.obsCallback = function (mutation) {
             t.replaceWith(t.attr("alt"));
         }
     });
-
-   /* $(".emoji").each(function () {
-        var t = $(this);
-        if (t.attr("src").indexOf(".png") != -1) {
-
-            var next = t.next();
-            var newText = t.attr("alt");
-            if(next.size() > 0) {
-                if(next.prop("tagName") == "SPAN") {
-                    newText += next.text();
-                    next.remove();
-                }
-            }
-
-            if(t.parent().prop("tagName") != "SPAN") {
-                t.replaceWith("<span>" + newText + "</span>");
-            } else {
-                t.replaceWith(newText);
-            }
-        }
-    });*/
 
     for (var i = 0; i < mutation.addedNodes.length; ++i) {
         var next = mutation.addedNodes.item(i);
@@ -536,11 +535,6 @@ EmoteModule.prototype.injectEmote = function (node) {
     }
 
     var edited = false;
-
-    /*if ($(parent.parentElement).hasClass("edited")) {
-        parent = parent.parentElement.parentElement.firstChild;
-        edited = true;
-    }*/
 
     function inject() {
         var p = $(parent);
@@ -605,7 +599,7 @@ EmoteModule.prototype.injectEmote = function (node) {
             }
             if ($.inArray(sWord, bemotes) != -1) return;
 
-            if (emotesTwitch.emotes.hasOwnProperty(sWord)) {
+            if (emotesTwitch.emotes.hasOwnProperty(sWord) && settingsCookie["bda-es-7"]) {
                 var len = Math.round(sWord.length / 4);
                 var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
                 var url = twitchEmoteUrlStart + emotesTwitch.emotes[sWord].image_id + twitchEmoteUrlEnd;
@@ -1353,7 +1347,7 @@ SettingsPanel.prototype.init = function () {
             $(emoteNamePopup).find(".tipsy-inner").text(title);
             $(emoteNamePopup).css('left', x.left - 25);
             $(emoteNamePopup).css('top', x.top - 32);
-            $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));
+            $(".app").append($(emoteNamePopup));
         });
         $(document).on("mouseleave", ".emote", function () {
             $(".tipsy").remove();
