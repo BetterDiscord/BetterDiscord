@@ -466,7 +466,14 @@ EmoteModule.prototype.obsCallback = function (mutation) {
 
     if (!settingsCookie["bda-es-7"]) return;
 
-    $(".emoji").each(function () {
+    $(".emoji").each(function() {
+        var t = $(this);
+        if(t.attr("src").indexOf(".png") != -1) {
+            t.replaceWith(t.attr("alt"));
+        }
+    });
+
+   /* $(".emoji").each(function () {
         var t = $(this);
         if (t.attr("src").indexOf(".png") != -1) {
 
@@ -485,7 +492,7 @@ EmoteModule.prototype.obsCallback = function (mutation) {
                 t.replaceWith(newText);
             }
         }
-    });
+    });*/
 
     for (var i = 0; i < mutation.addedNodes.length; ++i) {
         var next = mutation.addedNodes.item(i);
@@ -524,26 +531,29 @@ EmoteModule.prototype.injectEmote = function (node) {
 
     var parent = node.parentElement;
 
-    if (parent.tagName != "SPAN") return;
-    if (!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) {
+    if (!$(parent).hasClass("markup")) {
         return;
     }
 
     var edited = false;
 
-    if ($(parent.parentElement).hasClass("edited")) {
+    /*if ($(parent.parentElement).hasClass("edited")) {
         parent = parent.parentElement.parentElement.firstChild;
         edited = true;
-    }
+    }*/
 
     function inject() {
-        var parentInnerHTML = parent.innerHTML;
+        var p = $(parent);
+        var parentInnerHTML = p.html();
         var words = parentInnerHTML.split(/\s+/g);
-
+        var injected = false;
         if (!words) return;
+        var oldHeight = parent.parentElement.offsetHeight;
+        words.forEach(function (word) {
 
-        words.some(function (word) {
-            if (word.slice(0, 4) == "[!s]") {
+            var w = word.replace("-->", "").replace("<!--", "");
+
+            if (w.slice(0, 4) == "[!s]") {
 
                 parentInnerHTML = parentInnerHTML.replace("[!s]", "");
                 var markup = $(parent).parent();
@@ -562,22 +572,22 @@ EmoteModule.prototype.injectEmote = function (node) {
                 return;
             }
 
-            if (word.length < 4) {
+            if (w.length < 4) {
                 return;
             }
 
-            if (word == "ClauZ") {
+            if (w == "ClauZ") {
                 parentInnerHTML = parentInnerHTML.replace("ClauZ", '<img src="https://cdn.frankerfacez.com/emoticon/70852/1" style="width:25px; transform:translate(-29px, -14px);"></img>');
                 return;
             }
 
 			var skipffz = false;
             var useEmoteCss = false;
-            var sWord = word;
+            var sWord = w;
             var emoteClass = "";
             var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespin2", "emotespin3", "emote1spin", "emote2spin", "emote3spin", "emotetr", "emotebl", "emotebr", "emoteshake", "emoteshake2", "emoteshake3", "emoteflap"];
-            if(word.indexOf(":") > -1) {
-                var split = word.split(/:(?!.*:)/);
+            if(w.indexOf(":") > -1) {
+                var split = w.split(/:(?!.*:)/);
                 if (split[0] != "" && split[1] != "") { 
                     userEmoteCss = true;
                     sWord = split[0];
@@ -599,7 +609,8 @@ EmoteModule.prototype.injectEmote = function (node) {
                 var len = Math.round(sWord.length / 4);
                 var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
                 var url = twitchEmoteUrlStart + emotesTwitch.emotes[sWord].image_id + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                injected = true;
                 return;
             }
 
@@ -607,7 +618,8 @@ EmoteModule.prototype.injectEmote = function (node) {
                 var len = Math.round(sWord.length / 4);
                 var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
                 var url = twitchEmoteUrlStart + subEmotesTwitch[sWord] + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                injected = true;
                 return;
             }
 			
@@ -616,7 +628,8 @@ EmoteModule.prototype.injectEmote = function (node) {
                     var len = Math.round(sWord.length / 4);
                     var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
                     var url = emotesBTTV[sWord];
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                    parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                    injected = true;
                     return;
                 }
             }
@@ -628,8 +641,9 @@ EmoteModule.prototype.injectEmote = function (node) {
 						var len = Math.round(sWord.length / 4);
 						var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
 						var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
-						parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-						return;
+                        parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+						injected = true;
+                        return;
 					}
 				}
             }
@@ -640,20 +654,21 @@ EmoteModule.prototype.injectEmote = function (node) {
                     var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
 					
 					//if bttv emote is forced change its name for fav. and tooltip and to be able to copy them with the mod
-					if (skipffz) name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
+					if (skipffz) name = w.substr(0, len) + "\uFDD9" + w.substr(len, len) + "\uFDD9" + w.substr(len * 2, len) + "\uFDD9" + w.substr(len * 3);
                     
 					var url = bttvEmoteUrlStart + emotesBTTV2[sWord] + bttvEmoteUrlEnd;
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                    parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
+                    injected = true;
                     return;
                 }
             }
 			
         });
-
+        if(!injected) return;
         if (parent.parentElement == null) return;
 
-        var oldHeight = parent.parentElement.offsetHeight;
-        parent.innerHTML = parentInnerHTML.replace(new RegExp("\uFDD9", "g"), "");
+        parent.innerHTML = parentInnerHTML.replace(/(<!.*?react.*?>)/g, "").replace(new RegExp("\uFDD9", "g"), "");
+        
         var newHeight = parent.parentElement.offsetHeight;
 
         var scrollPane = $(".scroller.messages").first();
@@ -661,11 +676,7 @@ EmoteModule.prototype.injectEmote = function (node) {
         
     }
 
-    if (edited) {
-        setTimeout(inject, 250);
-    } else {
-        inject();
-    }
+    setTimeout(inject, 300);
 };
 
 EmoteModule.prototype.autoCapitalize = function () {
