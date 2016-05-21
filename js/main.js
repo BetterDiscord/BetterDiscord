@@ -831,7 +831,7 @@ PublicServers.prototype.init = function () {
                 <div class="server-info server-members"><span></span></div>\
                 <div class="server-info server-region"><span></span></div>\
                 <div class="server-info">\
-                    <button data-server-invite-code="0WrILkb5M80rqxl4">Join</button>\
+                    <button data-server-invite-code="0Tmfo5ZbORCRqbAd">Join</button>\
                 </div>\
             </div>\
             <div class="scroller-wrap">\
@@ -872,8 +872,8 @@ PublicServers.prototype.getPinnedServer = function() {
         "size": 1,
         "query": {
             "query_string": {
-        	"default_operator": "AND",
-        	"query": "BetterDiscord"
+            "default_operator": "AND",
+            "query": "BetterDiscord"
             }
         }
     };
@@ -1075,7 +1075,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 };
 
 PublicServers.prototype.search = function(start, clear) {
-	var sterm = $("#pubs-sterm").val();
+    var sterm = $("#pubs-sterm").val();
     
     var dataset = {
         "sort": [{ "online": "desc" }],
