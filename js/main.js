@@ -46,7 +46,7 @@ var settings = {
 };
 
 var links = {
-    "Jiiks.net": { "text": "Jiiks.net", "href": "http://jiiks.net",          "target": "_blank" },
+    "Jiiks.net": { "text": "Jiiks.net", "href": "thtp://jiiks.net",          "target": "_blank" },
     "twitter":   { "text": "Twitter",   "href": "http://twitter.com/jiiksi", "target": "_blank" },
     "github":    { "text": "Github",    "href": "http://github.com/jiiks",   "target": "_blank" }
 };
@@ -872,8 +872,8 @@ PublicServers.prototype.getPinnedServer = function() {
         "size": 1,
         "query": {
             "query_string": {
-            "default_operator": "AND",
-            "query": "BetterDiscord"
+        	"default_operator": "AND",
+        	"query": "BetterDiscord"
             }
         }
     };
@@ -1075,7 +1075,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 };
 
 PublicServers.prototype.search = function(start, clear) {
-    var sterm = $("#pubs-sterm").val();
+	var sterm = $("#pubs-sterm").val();
     
     var dataset = {
         "sort": [{ "online": "desc" }],
@@ -1500,10 +1500,10 @@ SettingsPanel.prototype.changeTab = function (tab) {
         }
         break;
     case "bd-themes-tab":
-        $(".bda-slist-top").hide();
+        $(".bda-slist-top:first").hide();
         break;
     case "bd-plugins-tab":
-        $(".bda-slist-top").hide();
+        $(".bda-slist-top:first").hide();
         break;
     default:
         $(".bda-slist-top").show();
@@ -1700,7 +1700,7 @@ SettingsPanel.prototype.construct = function () {
     //Plugin pane
 
     settingsInner += '\
-        <div class="bd-pane control-group" id="bd-plugins-pane" style="display:none;">\
+        <div class="bd-pane control-group" id="bd-plugins-pane" style="display:show;">\
             <div class="bda-slist-top">\
                 <button class="btn btn-primary" onclick=\'betterDiscordIPC.send("asynchronous-message", { "arg": "opendir", "path": "plugindir" }); return false;\'>Open Plugin Folder</button>\
                 <button class="btn btn-primary" onclick=\'window.open("https://betterdiscord.net/plugins"); return false;\'>Get Plugins</button>\
