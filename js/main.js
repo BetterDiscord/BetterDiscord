@@ -6,7 +6,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
-var jsVersion = 1.71;
+var jsVersion = 1.72;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -80,57 +80,87 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
-        "ttv": {
+        "a": {
+            "title": "v1.72 : Public Servers",
+            "text": "Public servers now have categories, description, tags, dark mode and more!",
+            "img": ""
+        },
+        "b": {
+            "title": "v1.72 : Import/Export",
+            "text": "Import/Export buttons now disappear in themes/plugins tabs to avoid confusion",
+            "img": ""
+        },
+        "c": {
+            "title": "v1.72 : Changelog",
+            "text": "You can now reopen this changelog from the settings",
+            "img": ""
+        },
+        "d": {
             "title": "v1.71 : Hide Twitch emotes",
             "text": "Hide all emotes option now toggles Twitch emotes instead!",
             "img": ""
         },
-        "bttv": {
+        "e": {
             "title": "v1.71 : Override FFZ emote",
             "text": "Use the <code class=\"inline\">:bttv</code> emote modifier to override a FFZ emote with a BTTV one!",
             "img": ""
         },
-        "028s": {
+        "f": {
             "title": "v1.70 : 0.2.8 Support",
             "text": "Added support for Core version 0.2.8.",
             "img": ""
         },
-        "importexport": {
+        "g": {
             "title": "v1.70 : Setting Import/Export",
             "text": "You can now import and export your settings!",
             "img": ""
         },
-        "infscroll": {
+        "h": {
             "title": "v1.70 : Public Server List Infinite Scroll",
             "text": "Public server list now has the ability to load more than 20 servers.",
             "img": ""
         },
-        "tstamps": {
+        "i": {
             "title": "v1.70 : 24 hour timestamps",
             "text": "Replace 12 hour timestamp with 24 hour timestamps!",
             "img": ""
         },
-        "ctext": {
+        "j": {
             "title": "v1.70 : Coloured text",
             "text": "Make text colour the same as role colour!",
             "img": ""
         }
     },
     "fixes": {
-        "emotes": {
+        "a": {
+            "title": "v1.72 : Settings panel",
+            "text": "Settings panel will now show no matter how you open it!",
+            "img": ""
+        },
+        "b": {
+            "title": "v1.72 : Fixed emote edit bug",
+            "text": "Edits now appear properly even with emotes!",
+            "img": ""
+        },
+        "c": {
+            "title": "v1.72 : Public servers",
+            "text": "Public servers button is visible again!",
+            "img": ""
+        },
+        "d": {
+            "title": "v1.72 : Public servers",
+            "text": "Updated public servers api endpoint url for fetching correct serverlist.",
+            "img": ""
+        },
+        "e": {
             "title": "v1.71 : Fixed emotes and edit",
             "text": "Emotes work again! So does editing emotes!",
             "img": ""
         },
-        "spoiler": {
+        "f": {
             "title": "Spoilers are currently broken :(",
             "text": "Ps. I know this in the fixes section :o",
             "img": ""
-        },
-        "pserver": {
-            "title": "v1.64 : Public Server Owner",
-            "text": "Removed undefined server owner property",
-            "imt": ""
         }
     }
 };
@@ -270,7 +300,11 @@ Core.prototype.loadSettings = function () {
 var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function () {
     mainObserver = new MutationObserver(function (mutations) {
+
         mutations.forEach(function (mutation) {
+            if(settingsPanel !== undefined)
+                settingsPanel.inject(mutation);
+
             if($(mutation.target).find(".emoji-picker").length) {
                 var fc = mutation.target.firstChild;
                 if(fc.classList.contains("popout")) {
@@ -306,7 +340,7 @@ Core.prototype.initObserver = function () {
                         }
                     
                         matches[2] = ('0' + h).slice(-2);
-                        t.text(matches[1] + matches[2] + ":" + matches[3]);
+                        t.text(matches[1] + " at " + matches[2] + ":" + matches[3]);
                     });
                 }
                 if(settingsCookie["bda-gs-7"]) {
@@ -499,7 +533,12 @@ EmoteModule.prototype.obsCallback = function (mutation) {
             var nodes = self.getNodes(next);
             for (var node in nodes) {
                 if (nodes.hasOwnProperty(node)) {
-                    self.injectEmote(nodes[node]);
+                    var elem = nodes[node].parentElement;
+                    if (elem && elem.classList.contains('edited')) {
+                        self.injectEmote(elem);
+                    } else {
+                        self.injectEmote(nodes[node]);
+                    }
                 }
             }
         }
@@ -515,173 +554,167 @@ EmoteModule.prototype.getNodes = function (node) {
     while (next = treeWalker.nextNode()) {
         nodes.push(next);
     }
-
     return nodes;
 };
 
 var bemotes = [];
 var spoilered = [];
 
-EmoteModule.prototype.injectEmote = function (node) {
 
-    if (typeof emotesTwitch === 'undefined') return;
+EmoteModule.prototype.injectEmote = function(node) {
+    var self = this;
 
     if (!node.parentElement) return;
+    var parent = $(node).parent();
+    
+    if(!parent.hasClass("markup") && !parent.hasClass("message-content")) return;
 
-    var parent = node.parentElement;
-
-    if (!$(parent).hasClass("markup")) {
-        return;
-    }
-
-    var edited = false;
 
     function inject() {
-        var p = $(parent);
-        var parentInnerHTML = p.html();
-        var words = parentInnerHTML.split(/\s+/g);
-        var injected = false;
-        if (!words) return;
-        var oldHeight = parent.parentElement.offsetHeight;
-        words.forEach(function (word) {
+        var contents = parent.contents();
+        
+        contents.each(function(i) {
+            if(contents[i] == undefined) return;
+            var nodeValue = contents[i].nodeValue;
+            if(nodeValue == null) return;
+            //if(nodeValue.indexOf("react-") > -1) return;
+            if(contents[i].nodeType == 8) return;
+            contents.splice(i, 1);
 
-            var w = word.replace("-->", "").replace("<!--", "");
+            var words = nodeValue.split(/([^\s]+)([\s]|$)/g).filter(function(e){ return e});
+            
+            var splice = 0;
 
-            if (w.slice(0, 4) == "[!s]") {
+            var doInject = false;
+            var text = null;
 
-                parentInnerHTML = parentInnerHTML.replace("[!s]", "");
-                var markup = $(parent).parent();
-                var reactId = markup.attr("data-reactid");
-
-                if (spoilered.indexOf(reactId) > -1) {
-                    return;
+            words.forEach(function(w, index, a) {
+                
+                if(w.indexOf("[!s]") > -1) {
+                    w = w.replace("[!s]", "");
+                    parent.data("spoilered", false);
+                    parent.addClass("spoiler");
                 }
-
-                markup.addClass("spoiler");
-                markup.on("click", function () {
-                    $(this).removeClass("spoiler");
-                    spoilered.push($(this).attr("data-reactid"));
-                });
-
-                return;
-            }
-
-            if (w.length < 4) {
-                return;
-            }
-
-            if (w == "ClauZ") {
-                parentInnerHTML = parentInnerHTML.replace("ClauZ", '<img src="https://cdn.frankerfacez.com/emoticon/70852/1" style="width:25px; transform:translate(-29px, -14px);"></img>');
-                return;
-            }
-
-			var skipffz = false;
-            var useEmoteCss = false;
-            var sWord = w;
-            var emoteClass = "";
-            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespin2", "emotespin3", "emote1spin", "emote2spin", "emote3spin", "emotetr", "emotebl", "emotebr", "emoteshake", "emoteshake2", "emoteshake3", "emoteflap"];
-            if(w.indexOf(":") > -1) {
-                var split = w.split(/:(?!.*:)/);
-                if (split[0] != "" && split[1] != "") { 
-                    userEmoteCss = true;
-                    sWord = split[0];
-					
-					//check for bttv mod
-					if(split[1] == "bttv") skipffz = true;
-					
-                    if(settingsCookie["bda-es-8"]) {
-                        emoteClass = "emote" + split[1];
-                        if(allowedClasses.indexOf(emoteClass) < 0) {
-                            emoteClass = "";
+                
+                var allowedClasses = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
+                var useEmoteClass = false;
+                var emoteClass = "";
+                var skipffz = false;
+                
+                var sw = w;
+                
+                if(w.indexOf(":") > -1) {
+                    var split = w.split(":");
+                    if(split[0] != "" && split[1] != "") {
+                        if(allowedClasses.indexOf(split[1]) > -1) {
+                            sw = split[0];
+                            emoteClass = settingsCookie["bda-es-8"] ? "emote" + split[1] : "";
+                        }
+                        if(split[1] == "bttv") {
+                            sw = split[0];
+                            skipffz = true;
                         }
                     }
                 }
-            }
-            if ($.inArray(sWord, bemotes) != -1) return;
-
-            if (emotesTwitch.emotes.hasOwnProperty(sWord) && settingsCookie["bda-es-7"]) {
-                var len = Math.round(sWord.length / 4);
-                var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                var url = twitchEmoteUrlStart + emotesTwitch.emotes[sWord].image_id + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                injected = true;
-                return;
-            }
-
-            if (subEmotesTwitch.hasOwnProperty(sWord)) {
-                var len = Math.round(sWord.length / 4);
-                var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                var url = twitchEmoteUrlStart + subEmotesTwitch[sWord] + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                injected = true;
-                return;
-            }
-			
-            if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if (emotesBTTV.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = emotesBTTV[sWord];
-                    parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    injected = true;
-                    return;
-                }
-            }
-			
-			if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-				//only skip ffz if there is a bttv emote for it
-				if(!skipffz || !emotesBTTV2.hasOwnProperty(sWord)){
-					if (emotesFfz.hasOwnProperty(sWord)) {
-						var len = Math.round(sWord.length / 4);
-						var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-						var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
-                        parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-						injected = true;
+                
+                if ($.inArray(sw, bemotes) != -1) return;
+                
+                if(typeof emotesTwitch !== 'undefind' && settingsCookie["bda-es-7"]) {
+                    if(emotesTwitch.emotes.hasOwnProperty(sw) && sw.length >= 4) { 
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = twitchEmoteUrlStart + emotesTwitch.emotes[sw].image_id + twitchEmoteUrlEnd;
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
                         return;
-					}
-				}
-            }
-			
-            if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if (emotesBTTV2.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-					
-					//if bttv emote is forced change its name for fav. and tooltip and to be able to copy them with the mod
-					if (skipffz) name = w.substr(0, len) + "\uFDD9" + w.substr(len, len) + "\uFDD9" + w.substr(len * 2, len) + "\uFDD9" + w.substr(len * 3);
-                    
-					var url = bttvEmoteUrlStart + emotesBTTV2[sWord] + bttvEmoteUrlEnd;
-                    parentInnerHTML = parentInnerHTML.replace(w, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    injected = true;
-                    return;
+                    }
                 }
+                
+                if(typeof subEmotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
+                    if(subEmotesTwitch.hasOwnProperty(sw) && sw.length >= 4) {
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = twitchEmoteUrlStart + subEmotesTwitch[sw] + twitchEmoteUrlEnd;
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
+                }
+                
+                if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) { 
+                    if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 4) {
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = emotesBTTV[sw];
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
+                }
+                
+                if ((typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) && (!skipffz || !emotesBTTV2.hasOwnProperty(sw))) { 
+                    if(emotesFfz.hasOwnProperty(sw) && sw.length >= 4) {
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = ffzEmoteUrlStart + emotesFfz[sw] + ffzEmoteUrlEnd;
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
+                }
+
+                if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) { 
+                    if(emotesBTTV2.hasOwnProperty(sw) && sw.length >= 4) {
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = bttvEmoteUrlStart + emotesBTTV2[sw] + bttvEmoteUrlEnd;
+                        if(skipffz && emotesFfz.hasOwnProperty(sw)) sw = sw + ":bttv";
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
+                }
+                
+                if(text == null) {
+                    text = w;
+                } else {
+                    text += "" + w;
+                }
+
+                if(index === a.length - 1) {
+                    contents.splice(i + splice, 0, document.createTextNode(text));
+                }
+            });
+
+            if(doInject) {
+                var oldHeight = parent.outerHeight();
+                parent.html(contents);
+                var scrollPane = $(".scroller.messages").first();
+                scrollPane.scrollTop(scrollPane.scrollTop() + (parent.outerHeight() - oldHeight));
             }
-			
+
         });
-        if(!injected) return;
-        if (parent.parentElement == null) return;
-
-        parent.innerHTML = parentInnerHTML.replace(/(<!.*?react.*?>)/g, "").replace(new RegExp("\uFDD9", "g"), "");
-        
-        var newHeight = parent.parentElement.offsetHeight;
-
-        var scrollPane = $(".scroller.messages").first();
-        scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
-        
+    }
+    
+    inject();
+    if(parent.children().hasClass("edited")) {
+        setTimeout(inject, 250);
     }
 
-    setTimeout(inject, 300);
+    
+
+};
+
+EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
+    var len = Math.round(word.length / 4);
+    var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
+    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" class="emote '+ mod +'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></span>';
+    return $.parseHTML(html.replace(new RegExp("\uFDD9", "g"), ""))[0];
 };
 
 EmoteModule.prototype.autoCapitalize = function () {
 
     var self = this;
 
-    $('body').delegate($(".channel-textarea-inner textarea"), 'keyup change paste', function () {
+    $('body').delegate($(".channel-textarea-inner textarea:first"), 'keyup change paste', function () {
         if (!settingsCookie["bda-es-4"]) return;
 
-        var text = $(".channel-textarea-inner textarea").val();
-
+        var text = $(".channel-textarea-inner textarea:first").val();
         if (text == undefined) return;
 
         var lastWord = text.split(" ").pop();
@@ -689,7 +722,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = self.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                $(".channel-textarea-inner textarea").val(text.replace(lastWord, ret));
+                $(".channel-textarea-inner textarea:first").val(text.replace(lastWord, ret));
             }
         }
     });
@@ -720,12 +753,15 @@ PublicServers.prototype.getPanel = function () {
 };
 
 PublicServers.prototype.init = function () {
+    this.filtered = ["134680912691462144", "86004744966914048"];
+    this.bdServer = null;
     this.loadingServers = false;
     var self = this;
 
-    var guilds = $(".guilds>li:first-child");
+    var guilds = $(".guilds>:first-child");
 
-    guilds.after($("<li></li>", {
+    guilds.after($("<div></div>", {
+        class: "guild",
         id: "bd-pub-li",
         css: {
             "height": "20px",
@@ -765,6 +801,38 @@ PublicServers.prototype.init = function () {
                 <h2 id="pubs-header-title">Public Servers</h2>\
                 <button id="pubs-searchbtn">Search</button>\
                 <input id="pubs-sterm" type="text" placeholder="Search Term...">\
+                <div id="pubs-select-dropdown" class="bd-dropdown">\
+                    <button class="bd-dropdown-select" id="pubs-cat-select">All</button>\
+                    <div class="bd-dropdown-list">\
+                        <ul>\
+                            <li class="pubs-cat-select-li" data-val="all">All</li>\
+                            <li class="pubs-cat-select-li" data-val="1">FPS Games</li>\
+                            <li class="pubs-cat-select-li" data-val="2">MMO Games</li>\
+                            <li class="pubs-cat-select-li" data-val="3">MOBA Games</li>\
+                            <li class="pubs-cat-select-li" data-val="4">Strategy Games</li>\
+                            <li class="pubs-cat-select-li" data-val="5">Sports Games</li>\
+                            <li class="pubs-cat-select-li" data-val="6">Puzzle Games</li>\
+                            <li class="pubs-cat-select-li" data-val="7">Retro Games</li>\
+                            <li class="pubs-cat-select-li" data-val="8">Party Games</li>\
+                            <li class="pubs-cat-select-li" data-val="9">Tabletop Games</li>\
+                            <li class="pubs-cat-select-li" data-val="10">Sandbox Games</li>\
+                            <li class="pubs-cat-select-li" data-val="11">Community</li>\
+                            <li class="pubs-cat-select-li" data-val="12">Language</li>\
+                            <li class="pubs-cat-select-li" data-val="13">Programming</li>\
+                            <li class="pubs-cat-select-li" data-val="14">Other</li>\
+                            <li class="pubs-cat-select-li" data-val="15">Simulation Games</li>\
+                        </ul>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="server-row server-pinned" style="display:none;">\
+                <div class="server-icon" style="background-image:url(https://cdn.discordapp.comi/cons/86004744966914048/6e5729ed5c12d5af558d80d7a194c3f9.jpg)"></div>\
+                <div class="server-info server-name"><span>BetterDiscord</span><span id="server-bd-tag">Official BetterDiscord server</span></div>\
+                <div class="server-info server-members"><span></span></div>\
+                <div class="server-info server-region"><span></span></div>\
+                <div class="server-info">\
+                    <button data-server-invite-code="0WrILkb5M80rqxl4">Join</button>\
+                </div>\
             </div>\
             <div class="scroller-wrap">\
                 <div class="scroller" id="pubs-scroller">\
@@ -783,6 +851,7 @@ PublicServers.prototype.init = function () {
                 </div>\
             </div>\
             <div id="pubs-footer">\
+                <span style="color:#FFF; font-size:10px; font-weight:700; margin-left:5px;">Tip: Hover over server name for description if available</span>\
                 <div>Server list provided by <a href="https://discordservers.com" target="_blank">DiscordServers.com</a></div>\
             </div>\
         ';
@@ -796,35 +865,94 @@ PublicServers.prototype.init = function () {
     }
 };
 
-PublicServers.prototype.show = function () {
+PublicServers.prototype.getPinnedServer = function() {
     var self = this;
-    $("body").append(this.getPanel());
-
     var dataset = {
-        "sort": [{
-            "online": "desc"
-        }],
-        "from": 0,
-        "size": 20,
+        "sort": [{"online": "desc"}],
+        "size": 1,
         "query": {
-            "filtered": {
-                "query": {
-                    "match_all": {}
-                }
+            "query_string": {
+            "default_operator": "AND",
+            "query": "BetterDiscord"
             }
         }
     };
-
-    $("#pubs-searchbtn").on("click", function() {
-        self.search();
-    });
-    $("#pubs-sterm").on("keyup", function(e) {
-        if (e.keyCode == 13) {
-            self.search();
+    
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/discord_servers/_search",
+        crossDomain: true,
+        data: JSON.stringify(dataset),
+        success: function(data) {
+            try {
+                var s = data.hits.hits[0]._source;
+                if(s.identifier == "86004744966914048") {
+                    self.bdServer = s;
+                    self.showPinnedServer();
+                }
+            }catch(err) {
+                self.bdServer = null;
+            }
         }
     });
+};
 
-   this.loadServers(dataset, false, true);
+PublicServers.prototype.hidePinnedServer = function() {
+    $("#pubs-container .scroller-wrap").css({"margin-top": "0", "height": "500px"});
+    $(".server-pinned").hide();
+};
+
+PublicServers.prototype.showPinnedServer = function() {
+    $(".server-pinned .server-icon").css("background-image", "url("+this.bdServer.icon+")");
+    $(".server-pinned .server-members span").text(this.bdServer.online + "/"+this.bdServer.members+" Members");
+    $(".server-pinned .server-region span").text(this.bdServer.region);
+    $(".server-pinned .server-info button").data("server-invite-code", this.bdServer.invite_code);
+    $("#pubs-container .scroller-wrap").css({"margin-top": "75px", "height": "425px"});
+    $(".server-pinned").show();
+};
+
+PublicServers.prototype.show = function () {
+    var self = this;
+    this.hidePinnedServer();
+    $("#pubs-cat-select").text("All");
+    this.selectedCategory = "all";
+    $("#pubs-container .scroller-wrap").css({"margin-top": "0", "height": "500px"});
+    $(".server-pinned").hide();
+    
+    $(".app").append(this.getPanel());
+    
+    if(this.bdServer == null) {
+        this.getPinnedServer();
+    } else {
+        this.showPinnedServer();
+    }
+
+    self.search(0, true);
+
+    $("#pubs-searchbtn").off("click").on("click", function() {
+        self.search();
+    });
+    $("#pubs-sterm").off("keyup").on("keyup", function(e) {
+        if (e.keyCode == 13) {
+            self.search(0, true);
+        }
+    });
+    $("#pubs-cat-select").off("click").on("click", function() {
+        $("#pubs-select-dropdown").addClass("open");
+    });
+    $(".pubs-cat-select-li").off("click").on("click", function() {
+        $("#pubs-select-dropdown").removeClass("open");
+        $("#pubs-cat-select").text($(this).text());
+        if(self.selectedCategory != $(this).data("val")) {
+            self.selectedCategory = $(this).data("val");
+            self.search(0, true);
+        }
+    });
+    $("#pubs-container").off("mouseup").on("mouseup", function() {
+        $("#pubs-select-dropdown").removeClass("open");
+    });
+
    var self = this;
     $(document).on("mouseup.bdps",function(e) {
         if(!$("#bd-pub-button").is(e.target) && !$("#pubs-container").is(e.target) && $("#pubs-container").has(e.target).length === 0) {
@@ -840,38 +968,7 @@ PublicServers.prototype.show = function () {
 
         self.loadingServers = true;
         $("#pubs-spinner-bottom").show();
-        var dataset = {
-            "sort": [{
-                "online": "desc"
-            }],
-            "from": list.children().length,
-            "size": 20,
-            "query": {
-                "filtered": {
-                    "query": {
-                        "match_all": {}
-                    }
-                }
-            }
-        };
-
-        var filter = {
-            "filter": {
-                "and": [{
-                    "query": {
-                        "match_phrase_prefix": {
-                            "name": $("#pubs-sterm").val()
-                        }
-                    }
-                }]
-            }
-        };
-
-        if ($("#pubs-sterm").val()) {
-            $.extend(dataset, filter);
-        }
-
-        self.loadServers(dataset, true, false);
+        self.search(list.children().length, false);
     });
 };
 
@@ -879,6 +976,7 @@ PublicServers.prototype.hide = function() {
     $("#pubs-container").remove();
     $(document).off("mouseup.bdps");
 };
+
 
 PublicServers.prototype.loadServers = function(dataset, search, clear) {
     this.loadingServers = true;
@@ -890,7 +988,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/app/_search",
+        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/discord_servers/_search",
         crossDomain: true,
         data: JSON.stringify(dataset),
         success: function(data) {
@@ -904,11 +1002,26 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 
             hits.forEach(function(hit) {
                 var source = hit._source;
-                var icode = source.invite_code;
+                var icode = source.invite_code.replace(/ /g,'');
                 var html = '<div class="server-row">';
                 html += '<div class="server-icon" style="background-image:url(' + source.icon + ')"></div>';
                 html += '<div class="server-info server-name">';
-                html += '<span>' + source.name + '</span>';
+                html += '<div class="server-information">';
+                
+                if(source.is_official) {
+                    html += '<span class="server-official">Official!</span>';
+                }
+
+                html += '<span class="server-name-span">' + source.name + '</span>';
+                
+                var tags = [];
+                source.categories.forEach(function(tag) {
+                    tags.push(tag.name);
+                });
+
+                html += '<span class="server-tags">'+tags.join(", ")+'</span>';
+                html += '<span class="server-description">'+(source.description == undefined ? "No Description" : source.description)+'</span>';
+                html += '</div>';
                 html += '</div>';
                 html += '<div class="server-info server-members">';
                 html += '<span>' + source.online + '/' + source.members + ' Members</span>';
@@ -961,38 +1074,38 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
     });
 };
 
-PublicServers.prototype.search = function() {
+PublicServers.prototype.search = function(start, clear) {
+    var sterm = $("#pubs-sterm").val();
+    
     var dataset = {
-        "sort": [{
-            "online": "desc"
-        }],
-        "from": 0,
+        "sort": [{ "online": "desc" }],
+        "from": start,
         "size": 20,
         "query": {
             "filtered": {
                 "query": {
-                    "match_all": {}
+                    "query_string": {
+                        "default_operator": "AND",
+                        "query": sterm ? sterm : "*"
+                    }
+                },
+                "filter": {
+                    "bool": {
+                        "must_not": [{
+                            "terms": {
+                                "identifier": this.filtered
+                            }
+                        }]
+                    }
                 }
             }
         }
     };
-
-    var filter = {
-        "filter": {
-            "and": [{
-                "query": {
-                    "match_phrase_prefix": {
-                        "name": $("#pubs-sterm").val()
-                    }
-                }
-            }]
-        }
-    };
-
-    if ($("#pubs-sterm").val()) {
-        $.extend(dataset, filter);
+    if(this.selectedCategory != "all") {
+        dataset.query.filtered.filter.bool.must = [{ "term": { "categories.id": this.selectedCategory } }]
     }
-    this.loadServers(dataset, true, true);
+    
+    this.loadServers(dataset, true, clear);
 };
 
 //Workaround for joining a server
@@ -1085,7 +1198,7 @@ QuickEmoteMenu.prototype.favContext = function(e, em) {
         e.preventDefault();
         e.stopPropagation();
         $(this).remove();
-        console.log($(this).data("emoteid"));
+
         delete quickEmoteMenu.favoriteEmotes[$(this).data("emoteid")];
         quickEmoteMenu.updateFavorites();
         return false;
@@ -1346,7 +1459,7 @@ SettingsPanel.prototype.init = function () {
             var title = $(this).attr("alt");
             $(emoteNamePopup).find(".tipsy-inner").text(title);
             $(emoteNamePopup).css('left', x.left - 25);
-            $(emoteNamePopup).css('top', x.top - 32);
+            $(emoteNamePopup).css('top', x.top - 37);
             $(".app").append($(emoteNamePopup));
         });
         $(document).on("mouseleave", ".emote", function () {
@@ -1374,12 +1487,26 @@ SettingsPanel.prototype.changeTab = function (tab) {
 
     switch (tab) {
     case "bd-settings-tab":
+        $(".bda-slist-top").show();
+        break;
+    case "bd-emotes-tab":
+        $(".bda-slist-top").show();
         break;
     case "bd-customcss-tab":
+        $(".bda-slist-top").show();
         if (!customCssInitialized) {
             customCssEditor.init();
             customCssInitialized = true;
         }
+        break;
+    case "bd-themes-tab":
+        $(".bda-slist-top").hide();
+        break;
+    case "bd-plugins-tab":
+        $(".bda-slist-top").hide();
+        break;
+    default:
+        $(".bda-slist-top").show();
         break;
     }
 };
@@ -1669,6 +1796,7 @@ SettingsPanel.prototype.construct = function () {
         <div style="background:#2E3136; color:#ADADAD; height:30px; position:absolute; bottom:0; left:0; right:0;">\
             <span style="line-height:30px;margin-left:10px;">BetterDiscord v' + ((typeof(version) == "undefined") ? bdVersion : version)  + '(JSv' + jsVersion + ') by Jiiks</span>\
             <span style="float:right;line-height:30px;margin-right:10px;"><a href="http://betterdiscord.net" target="_blank">BetterDiscord.net</a></span>\
+            <span id="bd-changelog" onclick=\'$("body").append(mainCore.constructChangelog());\'>changelog</span>\
         </div>\
         </div></div>\
     ';
@@ -1694,37 +1822,27 @@ SettingsPanel.prototype.construct = function () {
     });
 
     panel.html(settingsInner);
+    this.panel = panel;
+};
 
-    function defer() {
-        if ($(".btn.btn-settings").length < 1) {
-            setTimeout(defer, 100);
-        } else {
-            $(".btn.btn-settings").first().on("click", function () {
+SettingsPanel.prototype.inject = function(mutation) {
+    if(mutation.type != "childList") return;
+    if(mutation.addedNodes.length <= 0) return;
+    if($(mutation.addedNodes[0]).find(".user-settings-modal").length <= 0) return;
 
-                function innerDefer() {
-                    if ($(".modal-inner").first().is(":visible")) {
+    var self = this;
+    this.panel.hide();
+    var tabBar = $(".tab-bar.SIDE").first();
 
-                        panel.hide();
-                        var tabBar = $(".tab-bar.SIDE").first();
+    $(".tab-bar.SIDE .tab-bar-item").click(function () {
+        $(".form .settings-right .settings-inner").first().show();
+        $("#bd-settings-new").removeClass("selected");
+        self.panel.hide();
+    });
 
-                        $(".tab-bar.SIDE .tab-bar-item").click(function () {
-                            $(".form .settings-right .settings-inner").first().show();
-                            $("#bd-settings-new").removeClass("selected");
-                            panel.hide();
-                        });
-
-                        tabBar.append(settingsButton);
-                        $(".form .settings-right .settings-inner").last().after(panel);
-                        $("#bd-settings-new").removeClass("selected");
-                    } else {
-                        setTimeout(innerDefer, 100);
-                    }
-                }
-                innerDefer();
-            });
-        }
-    }
-    defer();
+    tabBar.append(settingsButton);
+    $(".form .settings-right .settings-inner").last().after(self.panel);
+    $("#bd-settings-new").removeClass("selected");
 };
 
 /* BetterDiscordApp Utilities JavaScript
@@ -1788,11 +1906,11 @@ Utils.prototype.injectCss = function (uri) {
 };
 
 Utils.prototype.log = function (message) {
-    console.info("%c[BetterDiscord]%c " + message, "color:teal; font-weight:bold;", "");
+    console.log('%c[%cBetterDiscord%c] %c'+message+'', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
 };
 
 Utils.prototype.err = function (message) {
-    console.info("%c[BetterDiscord]%c " + message, "color:red; font-weight:bold;", "");
+    console.log('%c[%cBetterDiscord%c] %c'+message+'', 'color: red;', 'color: red; font-weight:700;', 'color:red;', '');
 };
 
 Utils.prototype.importSettings = function() {
