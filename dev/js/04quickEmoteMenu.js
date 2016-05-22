@@ -80,7 +80,7 @@ QuickEmoteMenu.prototype.favContext = function(e, em) {
         e.preventDefault();
         e.stopPropagation();
         $(this).remove();
-        console.log($(this).data("emoteid"));
+
         delete quickEmoteMenu.favoriteEmotes[$(this).data("emoteid")];
         quickEmoteMenu.updateFavorites();
         return false;

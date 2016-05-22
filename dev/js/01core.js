@@ -2,11 +2,11 @@
  * Version: 1.53
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 02/04/2016
+ * Last Update: 01/05/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
-var jsVersion = 1.63;
+var jsVersion = 1.72;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -29,10 +29,12 @@ var settings = {
     "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false, "cat": "core"},
     "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false, "cat": "core"},
     "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false, "cat": "core"},
-    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true , "cat": "core"},
-    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true , "cat": "core"},
+    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
+    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
+    "24 Hour Timestamps":         { "id": "bda-gs-6",  "info": "Replace 12hr timestamps with proper ones",          "implemented": true,  "hidden": false, "cat": "core"},
+    "Coloured Text":              { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
 
-    "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false, "cat": "emote"},
+    "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
     "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
     "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false, "cat": "emote"},
     "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false, "cat": "emote"},
@@ -44,7 +46,7 @@ var settings = {
 };
 
 var links = {
-    "Jiiks.net": { "text": "Jiiks.net", "href": "http://jiiks.net",          "target": "_blank" },
+    "Jiiks.net": { "text": "Jiiks.net", "href": "thtp://jiiks.net",          "target": "_blank" },
     "twitter":   { "text": "Twitter",   "href": "http://twitter.com/jiiksi", "target": "_blank" },
     "github":    { "text": "Github",    "href": "http://github.com/jiiks",   "target": "_blank" }
 };
@@ -57,6 +59,8 @@ var defaultCookie = {
     "bda-gs-3": false,
     "bda-gs-4": false,
     "bda-gs-5": true,
+    "bda-gs-6": false,
+    "bda-gs-7": false,
     "bda-es-0": true,
     "bda-es-1": true,
     "bda-es-2": true,
@@ -76,61 +80,86 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
-        "darkmode": {
-            "title": "v1.63 : Dark Mode",
-            "text": "Dark mode makes certain elements dark by default(currently only applies to emote menu)",
+        "a": {
+            "title": "v1.72 : Public Servers",
+            "text": "Public servers now have categories, description, tags, dark mode and more!",
             "img": ""
         },
-        "emotemenu": {
-            "title": "v1.62 : Brand new emote menu that fits in Discord emoji menu!",
-            "text": "The emote menu has been replaced by a new one that injects itself in the Discord emoji menu!",
+        "b": {
+            "title": "v1.72 : Import/Export",
+            "text": "Import/Export buttons now disappear in themes/plugins tabs to avoid confusion",
             "img": ""
         },
-        "cccss": {
-            "title": "v1.61 : New custom CSS editor",
-            "text": "The custom CSS editor now has options and can be detached!",
+        "c": {
+            "title": "v1.72 : Changelog",
+            "text": "You can now reopen this changelog from the settings",
             "img": ""
         },
-        "vdc": {
-            "title": "v1.61 : Voice Disconnect",
-            "text": "Disconnect from voice server when closing Discord!",
+        "d": {
+            "title": "v1.71 : Hide Twitch emotes",
+            "text": "Hide all emotes option now toggles Twitch emotes instead!",
             "img": ""
         },
-        "pslist": {
-            "title": "v1.60 : New public server list!",
-            "text": 'New and shiny public server list powered by <a href="https://www.discordservers.com/" target="_blank">DiscordServers.com</a>!',
+        "e": {
+            "title": "v1.71 : Override FFZ emote",
+            "text": "Use the <code class=\"inline\">:bttv</code> emote modifier to override a FFZ emote with a BTTV one!",
             "img": ""
         },
-        "api": {
-            "title": "v1.59 : New plugin api callback",
-            "text": "Use the `observer(e)` callback instead of creating your own MutationObserver",
+        "f": {
+            "title": "v1.70 : 0.2.8 Support",
+            "text": "Added support for Core version 0.2.8.",
             "img": ""
         },
-        "emotemods": {
-            "title": "v1.59 : New emote mods!",
-            "text": "The following emote mods have been added: :shake2, :shake3, :flap",
+        "g": {
+            "title": "v1.70 : Setting Import/Export",
+            "text": "You can now import and export your settings!",
             "img": ""
         },
-        "minmode": {
-            "title": "v1.59: Minimal mode",
-            "text": "Minimal mode embed fixed size has been removed",
+        "h": {
+            "title": "v1.70 : Public Server List Infinite Scroll",
+            "text": "Public server list now has the ability to load more than 20 servers.",
+            "img": ""
+        },
+        "i": {
+            "title": "v1.70 : 24 hour timestamps",
+            "text": "Replace 12 hour timestamp with 24 hour timestamps!",
+            "img": ""
+        },
+        "j": {
+            "title": "v1.70 : Coloured text",
+            "text": "Make text colour the same as role colour!",
             "img": ""
         }
     },
     "fixes": {
-        "modal": {
-            "title": "v1.62 : Fixed modals",
-            "text": "Fixed broken modal introduced by 0.0.287",
-            "imt": ""
-        },
-        "emotes": {
-            "title": "v1.59 : Native sub emote mods",
-            "text": "Emote mods now work with native sub emotes!",
+        "a": {
+            "title": "v1.72 : Settings panel",
+            "text": "Settings panel will now show no matter how you open it!",
             "img": ""
         },
-        "emotes2": {
-            "title": "v1.59 : Emote mods and custom emotes",
-            "text": "Emote mods will no longer interfere with custom emotes using :",
+        "b": {
+            "title": "v1.72 : Fixed emote edit bug",
+            "text": "Edits now appear properly even with emotes!",
+            "img": ""
+        },
+        "c": {
+            "title": "v1.72 : Public servers",
+            "text": "Public servers button is visible again!",
+            "img": ""
+        },
+        "d": {
+            "title": "v1.72 : Public servers",
+            "text": "Updated public servers api endpoint url for fetching correct serverlist.",
+            "img": ""
+        },
+        "e": {
+            "title": "v1.71 : Fixed emotes and edit",
+            "text": "Emotes work again! So does editing emotes!",
+            "img": ""
+        },
+        "f": {
+            "title": "Spoilers are currently broken :(",
+            "text": "Ps. I know this in the fixes section :o",
             "img": ""
         }
     }
@@ -143,8 +172,10 @@ function Core() {}
 Core.prototype.init = function () {
     var self = this;
 
-    if (version < supportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + version + "(your version)" + " is not supported by the latest js(" + jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
+    var lVersion = (typeof(version) === "undefined") ? bdVersion : version;
+
+    if (lVersion < supportedVersion) {
+        this.alert("Not Supported", "BetterDiscord v" + lVersion + "(your version)" + " is not supported by the latest js(" + jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
         return;
     }
 
@@ -207,6 +238,11 @@ Core.prototype.init = function () {
                     $('.btn.btn-disconnect').click();
                 }
             });
+
+            $(document).on("mousedown", function(e) {
+                //bd modal hiders
+
+            });
             
             opublicServers.init();
 
@@ -264,7 +300,11 @@ Core.prototype.loadSettings = function () {
 var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function () {
     mainObserver = new MutationObserver(function (mutations) {
+
         mutations.forEach(function (mutation) {
+            if(settingsPanel !== undefined)
+                settingsPanel.inject(mutation);
+
             if($(mutation.target).find(".emoji-picker").length) {
                 var fc = mutation.target.firstChild;
                 if(fc.classList.contains("popout")) {
@@ -281,6 +321,38 @@ Core.prototype.initObserver = function () {
                 }
                 if (mutation.target.getAttribute('class').indexOf('scroller messages') != -1) {
                     if (typeof pluginModule !== "undefined") pluginModule.newMessage();
+                }
+
+                if(settingsCookie["bda-gs-6"]) {
+                    $(".timestamp").not("[data-24]").each(function() {
+                        var t = $(this);
+                        t.attr("data-24", true);
+                        var text = t.text();
+                        var matches = /(.*)?at\s+(\d{1,2}):(\d{1,2})\s+(.*)/.exec(text);
+                        if(matches == null) return true;
+                        if(matches.length < 5) return true;
+                        
+                        var h = parseInt(matches[2]);
+                        if(matches[4] == "AM") {
+                            if(h == 12) h -= 12;
+                        }else if(matches[4] == "PM") {
+                            if(h < 12) h += 12;
+                        }
+                    
+                        matches[2] = ('0' + h).slice(-2);
+                        t.text(matches[1] + " at " + matches[2] + ":" + matches[3]);
+                    });
+                }
+                if(settingsCookie["bda-gs-7"]) {
+                    $(".user-name").not("[data-colour]").each(function() {
+                        var t = $(this);
+                        var color = t.css("color");
+                        if(color == "rgb(255, 255, 255)") return true;
+                        t.closest(".message-group").find(".markup").not("[data-colour]").each(function() {
+                            $(this).attr("data-colour", true);
+                            $(this).css("color", color);
+                        });
+                    });
                 }
             }
             emoteModule.obsCallback(mutation);
@@ -379,16 +451,30 @@ Core.prototype.constructChangelog = function () {
 };
 
 Core.prototype.alert = function (title, text) {
-    $("body").append('' +
-        '<div class="bd-alert">' +
-        '   <div class="bd-alert-header">' +
-        '       <span>' + title + '</span>' +
-        '       <div class="bd-alert-closebtn" onclick="$(this).parent().parent().remove();">×</div>' +
-        '   </div>' +
-        '   <div class="bd-alert-body">' +
-        '       <div class="scroller-wrap dark fade">' +
-        '           <div class="scroller">' + text + '</div>' +
-        '       </div>' +
-        '   </div>' +
-        '</div>');
+    var id = '';
+    for( var i=0; i < 5; i++ )
+        id += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length)); 
+    var bdAlert = '\
+    <div id="bda-alert-'+id+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+id+'">\
+        <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
+            <div class="markdown-modal">\
+                <div class="markdown-modal-header">\
+                    <strong style="float:left"><span>BetterDiscord - </span><span>'+title+'</span></strong>\
+                    <span></span>\
+                    <button class="markdown-modal-close" onclick=\'document.getElementById("bda-alert-'+id+'").remove(); utils.removeBackdrop("'+id+'");\'></button>\
+                </div>\
+                <div class="scroller-wrap fade">\
+                    <div style="font-weight:700" class="scroller">'+text+'</div>\
+                </div>\
+                <div class="markdown-modal-footer">\
+                    <span style="float:right"> for support.</span>\
+                    <a style="float:right" href="https://discord.gg/0Tmfo5ZbOR9NxvDd" target="_blank">#support</a>\
+                    <span style="float:right">Join </span>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+    ';
+    $("body").append(bdAlert);
+    utils.addBackdrop(id);
 };

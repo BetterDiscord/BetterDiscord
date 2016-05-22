@@ -37,26 +37,12 @@ EmoteModule.prototype.getBlacklist = function () {
 EmoteModule.prototype.obsCallback = function (mutation) {
     var self = this;
 
-    if (!settingsCookie["bda-es-7"]) return;
+    //if (!settingsCookie["bda-es-7"]) return;
 
-    $(".emoji").each(function () {
+    $(".emoji").each(function() {
         var t = $(this);
-        if (t.attr("src").indexOf(".png") != -1) {
-
-            var next = t.next();
-            var newText = t.attr("alt");
-            if(next.size() > 0) {
-                if(next.prop("tagName") == "SPAN") {
-                    newText += next.text();
-                    next.remove();
-                }
-            }
-
-            if(t.parent().prop("tagName") != "SPAN") {
-                t.replaceWith("<span>" + newText + "</span>");
-            } else {
-                t.replaceWith(newText);
-            }
+        if(t.attr("src").indexOf(".png") != -1) {
+            t.replaceWith(t.attr("alt"));
         }
     });
 
@@ -66,7 +52,12 @@ EmoteModule.prototype.obsCallback = function (mutation) {
             var nodes = self.getNodes(next);
             for (var node in nodes) {
                 if (nodes.hasOwnProperty(node)) {
-                    self.injectEmote(nodes[node]);
+                    var elem = nodes[node].parentElement;
+                    if (elem && elem.classList.contains('edited')) {
+                        self.injectEmote(elem);
+                    } else {
+                        self.injectEmote(nodes[node]);
+                    }
                 }
             }
         }
@@ -82,162 +73,167 @@ EmoteModule.prototype.getNodes = function (node) {
     while (next = treeWalker.nextNode()) {
         nodes.push(next);
     }
-
     return nodes;
 };
 
 var bemotes = [];
 var spoilered = [];
 
-EmoteModule.prototype.injectEmote = function (node) {
 
-    if (typeof emotesTwitch === 'undefined') return;
+EmoteModule.prototype.injectEmote = function(node) {
+    var self = this;
 
     if (!node.parentElement) return;
+    var parent = $(node).parent();
+    
+    if(!parent.hasClass("markup") && !parent.hasClass("message-content")) return;
 
-    var parent = node.parentElement;
-
-    if (parent.tagName != "SPAN") return;
-    if (!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) {
-        return;
-    }
-
-    var edited = false;
-
-    if ($(parent.parentElement).hasClass("edited")) {
-        parent = parent.parentElement.parentElement.firstChild;
-        edited = true;
-    }
 
     function inject() {
-        var parentInnerHTML = parent.innerHTML;
-        var words = parentInnerHTML.split(/\s+/g);
+        var contents = parent.contents();
+        
+        contents.each(function(i) {
+            if(contents[i] == undefined) return;
+            var nodeValue = contents[i].nodeValue;
+            if(nodeValue == null) return;
+            //if(nodeValue.indexOf("react-") > -1) return;
+            if(contents[i].nodeType == 8) return;
+            contents.splice(i, 1);
 
-        if (!words) return;
+            var words = nodeValue.split(/([^\s]+)([\s]|$)/g).filter(function(e){ return e});
+            
+            var splice = 0;
 
-        words.some(function (word) {
-            if (word.slice(0, 4) == "[!s]") {
+            var doInject = false;
+            var text = null;
 
-                parentInnerHTML = parentInnerHTML.replace("[!s]", "");
-                var markup = $(parent).parent();
-                var reactId = markup.attr("data-reactid");
-
-                if (spoilered.indexOf(reactId) > -1) {
-                    return;
+            words.forEach(function(w, index, a) {
+                
+                if(w.indexOf("[!s]") > -1) {
+                    w = w.replace("[!s]", "");
+                    parent.data("spoilered", false);
+                    parent.addClass("spoiler");
                 }
-
-                markup.addClass("spoiler");
-                markup.on("click", function () {
-                    $(this).removeClass("spoiler");
-                    spoilered.push($(this).attr("data-reactid"));
-                });
-
-                return;
-            }
-
-            if (word.length < 4) {
-                return;
-            }
-
-            if (word == "ClauZ") {
-                parentInnerHTML = parentInnerHTML.replace("ClauZ", '<img src="https://cdn.frankerfacez.com/emoticon/70852/1" style="width:25px; transform:translate(-29px, -14px);"></img>');
-                return;
-            }
-
-            var useEmoteCss = false;
-            var sWord = word;
-            var emoteClass = "";
-            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespin2", "emotespin3", "emote1spin", "emote2spin", "emote3spin", "emotetr", "emotebl", "emotebr", "emoteshake", "emoteshake2", "emoteshake3", "emoteflap"];
-            if(word.indexOf(":") > -1) {
-                var split = word.split(/:(?!.*:)/);
-                if (split[0] != "" && split[1] != "") { 
-                    userEmoteCss = true;
-                    sWord = split[0];
-                    if(settingsCookie["bda-es-8"]) {
-                        emoteClass = "emote" + split[1];
-                        if(allowedClasses.indexOf(emoteClass) < 0) {
-                            emoteClass = "";
+                
+                var allowedClasses = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
+                var useEmoteClass = false;
+                var emoteClass = "";
+                var skipffz = false;
+                
+                var sw = w;
+                
+                if(w.indexOf(":") > -1) {
+                    var split = w.split(":");
+                    if(split[0] != "" && split[1] != "") {
+                        if(allowedClasses.indexOf(split[1]) > -1) {
+                            sw = split[0];
+                            emoteClass = settingsCookie["bda-es-8"] ? "emote" + split[1] : "";
+                        }
+                        if(split[1] == "bttv") {
+                            sw = split[0];
+                            skipffz = true;
                         }
                     }
                 }
-            }
-            if ($.inArray(sWord, bemotes) != -1) return;
-
-            if (emotesTwitch.emotes.hasOwnProperty(sWord)) {
-                var len = Math.round(sWord.length / 4);
-                var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                var url = twitchEmoteUrlStart + emotesTwitch.emotes[sWord].image_id + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                return;
-            }
-
-            if (subEmotesTwitch.hasOwnProperty(sWord)) {
-                var len = Math.round(sWord.length / 4);
-                var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                var url = twitchEmoteUrlStart + subEmotesTwitch[sWord] + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                return;
-            }
-            
-            if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-                if (emotesFfz.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
+                
+                if ($.inArray(sw, bemotes) != -1) return;
+                
+                if(typeof emotesTwitch !== 'undefind' && settingsCookie["bda-es-7"]) {
+                    if(emotesTwitch.emotes.hasOwnProperty(sw) && sw.length >= 4) { 
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = twitchEmoteUrlStart + emotesTwitch.emotes[sw].image_id + twitchEmoteUrlEnd;
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
                 }
-            }
-
-            if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if (emotesBTTV.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = emotesBTTV[sWord];
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
+                
+                if(typeof subEmotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
+                    if(subEmotesTwitch.hasOwnProperty(sw) && sw.length >= 4) {
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = twitchEmoteUrlStart + subEmotesTwitch[sw] + twitchEmoteUrlEnd;
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
                 }
-            }
-
-            if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if (emotesBTTV2.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = bttvEmoteUrlStart + emotesBTTV2[sWord] + bttvEmoteUrlEnd;
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
+                
+                if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) { 
+                    if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 4) {
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = emotesBTTV[sw];
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
                 }
+                
+                if ((typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) && (!skipffz || !emotesBTTV2.hasOwnProperty(sw))) { 
+                    if(emotesFfz.hasOwnProperty(sw) && sw.length >= 4) {
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = ffzEmoteUrlStart + emotesFfz[sw] + ffzEmoteUrlEnd;
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
+                }
+
+                if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) { 
+                    if(emotesBTTV2.hasOwnProperty(sw) && sw.length >= 4) {
+                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                        var url = bttvEmoteUrlStart + emotesBTTV2[sw] + bttvEmoteUrlEnd;
+                        if(skipffz && emotesFfz.hasOwnProperty(sw)) sw = sw + ":bttv";
+                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                        doInject = true;
+                        return;
+                    }
+                }
+                
+                if(text == null) {
+                    text = w;
+                } else {
+                    text += "" + w;
+                }
+
+                if(index === a.length - 1) {
+                    contents.splice(i + splice, 0, document.createTextNode(text));
+                }
+            });
+
+            if(doInject) {
+                var oldHeight = parent.outerHeight();
+                parent.html(contents);
+                var scrollPane = $(".scroller.messages").first();
+                scrollPane.scrollTop(scrollPane.scrollTop() + (parent.outerHeight() - oldHeight));
             }
 
         });
-
-        if (parent.parentElement == null) return;
-
-        var oldHeight = parent.parentElement.offsetHeight;
-        parent.innerHTML = parentInnerHTML.replace(new RegExp("\uFDD9", "g"), "");
-        var newHeight = parent.parentElement.offsetHeight;
-
-        var scrollPane = $(".scroller.messages").first();
-        scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
-        
     }
-
-    if (edited) {
+    
+    inject();
+    if(parent.children().hasClass("edited")) {
         setTimeout(inject, 250);
-    } else {
-        inject();
     }
+
+    
+
+};
+
+EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
+    var len = Math.round(word.length / 4);
+    var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
+    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" class="emote '+ mod +'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></span>';
+    return $.parseHTML(html.replace(new RegExp("\uFDD9", "g"), ""))[0];
 };
 
 EmoteModule.prototype.autoCapitalize = function () {
 
     var self = this;
 
-    $('body').delegate($(".channel-textarea-inner textarea"), 'keyup change paste', function () {
+    $('body').delegate($(".channel-textarea-inner textarea:first"), 'keyup change paste', function () {
         if (!settingsCookie["bda-es-4"]) return;
 
-        var text = $(".channel-textarea-inner textarea").val();
-
+        var text = $(".channel-textarea-inner textarea:first").val();
         if (text == undefined) return;
 
         var lastWord = text.split(" ").pop();
@@ -245,7 +241,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = self.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                $(".channel-textarea-inner textarea").val(text.replace(lastWord, ret));
+                $(".channel-textarea-inner textarea:first").val(text.replace(lastWord, ret));
             }
         }
     });

@@ -38,7 +38,7 @@ PluginModule.prototype.handlePlugin = function (checkbox) {
 
     var cb = $(checkbox).children().find('input[type="checkbox"]');
     var enabled = !cb.is(":checked");
-    var id = cb.attr("id");
+    var id = cb.attr("id").replace("__", " ");
     cb.prop("checked", enabled);
 
     if (enabled) {

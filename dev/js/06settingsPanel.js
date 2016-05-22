@@ -53,8 +53,8 @@ SettingsPanel.prototype.init = function () {
             var title = $(this).attr("alt");
             $(emoteNamePopup).find(".tipsy-inner").text(title);
             $(emoteNamePopup).css('left', x.left - 25);
-            $(emoteNamePopup).css('top', x.top - 32);
-            $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));
+            $(emoteNamePopup).css('top', x.top - 37);
+            $(".app").append($(emoteNamePopup));
         });
         $(document).on("mouseleave", ".emote", function () {
             $(".tipsy").remove();
@@ -81,12 +81,26 @@ SettingsPanel.prototype.changeTab = function (tab) {
 
     switch (tab) {
     case "bd-settings-tab":
+        $(".bda-slist-top").show();
+        break;
+    case "bd-emotes-tab":
+        $(".bda-slist-top").show();
         break;
     case "bd-customcss-tab":
+        $(".bda-slist-top").show();
         if (!customCssInitialized) {
             customCssEditor.init();
             customCssInitialized = true;
         }
+        break;
+    case "bd-themes-tab":
+        $(".bda-slist-top:first").hide();
+        break;
+    case "bd-plugins-tab":
+        $(".bda-slist-top:first").hide();
+        break;
+    default:
+        $(".bda-slist-top").show();
         break;
     }
 };
@@ -107,6 +121,10 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
 
     settingsCookie[id] = enabled;
 
+    this.updateSettings();
+};
+
+SettingsPanel.prototype.updateSettings = function() {
     if (settingsCookie["bda-es-0"]) {
         $("#twitchcord-button-container").show();
     } else {
@@ -169,154 +187,214 @@ SettingsPanel.prototype.construct = function () {
         }
     });
 
-    var settingsInner = '' +
-        '<div class="scroller-wrap">' +
-        '   <div class="scroller settings-wrapper settings-panel">' +
-        '       <div class="tab-bar TOP">' +
-        '           <div class="tab-bar-item bd-tab" id="bd-settings-tab" onclick="settingsPanel.changeTab(\'bd-settings-tab\');">Core</div>' +
-        '           <div class="tab-bar-item bd-tab" id="bd-emotes-tab" onclick="settingsPanel.changeTab(\'bd-emotes-tab\');">Emotes</div>' +
-        '           <div class="tab-bar-item bd-tab" id="bd-customcss-tab" onclick="settingsPanel.changeTab(\'bd-customcss-tab\');">Custom CSS</div>' +
-        '           <div class="tab-bar-item bd-tab" id="bd-plugins-tab" onclick="settingsPanel.changeTab(\'bd-plugins-tab\');">Plugins</div>' +
-        '           <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick="settingsPanel.changeTab(\'bd-themes-tab\');">Themes</div>' +
-        '       </div>' +
-        '       <div class="bd-settings">' +
-        '               <div class="bd-pane control-group" id="bd-settings-pane" style="display:none;">' +
-        '                   <ul class="checkbox-group">';
+    //Panel start and core settings
 
-    for (var setting in settings) {
+    var settingsInner = '\
+        <div class="scroller-wrap">\
+            <div class="scroller settings-wrapper settings-panel">\
+            <div class="tab-bar TOP">\
+                <div class="tab-bar-item bd-tab" id="bd-settings-tab" onclick=\'settingsPanel.changeTab("bd-settings-tab");\'>Core\
+                </div>\
+                <div class="tab-bar-item bd-tab" id="bd-emotes-tab" onclick=\'settingsPanel.changeTab("bd-emotes-tab");\'>Emotes\
+                </div>\
+                <div class="tab-bar-item bd-tab" id="bd-customcss-tab" onclick=\'settingsPanel.changeTab("bd-customcss-tab");\'>Custom CSS\
+                </div>\
+                <div class="tab-bar-item bd-tab" id="bd-plugins-tab" onclick=\'settingsPanel.changeTab("bd-plugins-tab");\'>Plugins\
+                </div>\
+                <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick=\'settingsPanel.changeTab("bd-themes-tab");\'>Themes\
+                </div>\
+                <div class="bda-slist-top">\
+                    <button class="btn btn-primary" onclick="utils.exportSettings(); return false;">Export</button>\
+                    <button class="btn btn-primary" onclick="utils.importSettings(); return false;">Import</button>\
+                </div>\
+            </div>\
+            <div class="bd-settings">\
+                <div class="bd-pane control-group" id="bd-settings-pane" style="display:none;">\
+                    <ul class="checkbox-group">\
+    ';
 
+    for(var setting in settings) {
         var sett = settings[setting];
         var id = sett["id"];
-        if(sett["cat"] != "core") continue;
+        if(sett["cat"] != "core" || !sett["implemented"] || sett["hidden"]) continue;
 
-        if (sett["implemented"] && !sett["hidden"]) {
-
-            settingsInner += '' +
-                '<li>' +
-                '<div class="checkbox" onclick="settingsPanel.updateSetting(this);" >' +
-                '<div class="checkbox-inner">' +
-                '<input type="checkbox" id="' + id + '" ' + (settingsCookie[id] ? "checked" : "") + '>' +
-                '<span></span>' +
-                '</div>' +
-                '<span>' + setting + " - " + sett["info"] +
-                '</span>' +
-                '</div>' +
-                '</li>';
-        }
+        settingsInner += '\
+            <li>\
+                <div class="checkbox" onclick="settingsPanel.updateSetting(this);">\
+                    <div class="checkbox-inner">\
+                        <input type="checkbox" id="'+id+'" '+(settingsCookie[id] ? "checked" : "")+'>\
+                        <span></span>\
+                    </div>\
+                    <span>\
+                        '+setting+' - '+sett["info"]+'\
+                    </span>\
+                </div>\
+            </li>\
+        ';
     }
 
-    settingsInner += '  </ul>' +
-        '           </div>';
+    settingsInner += '\
+                    </ul>\
+                </div>\
+    ';
+    //End core settings
 
+    //Emote settings
 
-    settingsInner += '<div class="bd-pane control-group" id="bd-emotes-pane" style="display:none;">' +
-        '                   <ul class="checkbox-group">';
+    settingsInner += '\
+        <div class="bd-pane control-group" id="bd-emotes-pane" style="display:none;">\
+            <ul class="checkbox-group">\
+    ';
 
-    for (var setting in settings) {
-
+    for(var setting in settings) {
         var sett = settings[setting];
         var id = sett["id"];
-        if(sett["cat"] != "emote") continue;
+        if(sett["cat"] != "emote" || !sett["implemented"] || sett["hidden"]) continue;
 
-        if (sett["implemented"] && !sett["hidden"]) {
-
-            settingsInner += '' +
-                '<li>' +
-                '<div class="checkbox" onclick="settingsPanel.updateSetting(this);" >' +
-                '<div class="checkbox-inner">' +
-                '<input type="checkbox" id="' + id + '" ' + (settingsCookie[id] ? "checked" : "") + '>' +
-                '<span></span>' +
-                '</div>' +
-                '<span>' + setting + " - " + sett["info"] +
-                '</span>' +
-                '</div>' +
-                '</li>';
-        }
+        settingsInner += '\
+            <li>\
+                <div class="checkbox" onclick="settingsPanel.updateSetting(this);">\
+                    <div class="checkbox-inner">\
+                        <input type="checkbox" id="'+id+'" '+(settingsCookie[id] ? "checked" : "")+'>\
+                        <span></span>\
+                    </div>\
+                    <span>\
+                        '+setting+' - '+sett["info"]+'\
+                    </span>\
+                </div>\
+            </li>\
+        ';
     }
 
-    settingsInner += '  </ul>' +
-        '           </div>';
+    settingsInner += '\
+            </ul>\
+        </div>\
+    ';
 
+    //End emote settings
 
+    //Custom CSS Editor
     var ccss = atob(localStorage.getItem("bdcustomcss"));
     customCssEditor.applyCustomCss(ccss, true, false);
 
-    settingsInner += '' +
-        '               <div class="bd-pane control-group" id="bd-customcss-pane" style="display:none;">' +
-        '                   <div id="editor-detached" style="display:none;">' +
-        '                       <h3>Editor Detached</h3>' +
-        '                       <button class="btn btn-primary" onclick="customCssEditor.attach(); return false;">Attach</button>' +
-        '                   </div>' +
-        '                   <div id="bd-customcss-innerpane"><textarea id="bd-custom-css-ta">' + ccss + '</textarea></div>' +
-        '               </div>' +
-        '' +
-        '               <div class="bd-pane control-group" id="bd-plugins-pane" style="display:none;">' +
-        '                   <table class="bd-g-table">' +
-        '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th><th></th></tr></thead><tbody>';
+    settingsInner += '\
+        <div class="bd-pane control-group" id="bd-customcss-pane" style="display:none;">\
+            <div id="editor-detached" style="display:none;">\
+                <h3>Editor Detached</h3>\
+                <button class="btn btn-primary" onclick="customCssEditor.attach(); return false;">Attach</button>\
+            </div>\
+            <div id="bd-customcss-innerpane">\
+                <textarea id="bd-custom-css-ta">'+ccss+'</textarea>\
+            </div>\
+        </div>\
+    ';
 
-    $.each(bdplugins, function () {
+    //End Custom CSS Editor
+
+    //Plugin pane
+
+    settingsInner += '\
+        <div class="bd-pane control-group" id="bd-plugins-pane" style="display:show;">\
+            <div class="bda-slist-top">\
+                <button class="btn btn-primary" onclick=\'betterDiscordIPC.send("asynchronous-message", { "arg": "opendir", "path": "plugindir" }); return false;\'>Open Plugin Folder</button>\
+                <button class="btn btn-primary" onclick=\'window.open("https://betterdiscord.net/plugins"); return false;\'>Get Plugins</button>\
+            </div>\
+            <ul class="bda-slist">\
+    ';
+
+    $.each(bdplugins, function() {
         var plugin = this["plugin"];
-        settingsInner += '' +
-            '<tr>' +
-            '   <td>' + plugin.getName() + '</td>' +
-            '   <td width="99%"><textarea>' + plugin.getDescription() + '</textarea></td>' +
-            '   <td>' + plugin.getAuthor() + '</td>' +
-            '   <td>' + plugin.getVersion() + '</td>' +
-            '   <td><button class="bd-psb" onclick="pluginModule.showSettings(\'' + plugin.getName() + '\'); return false;"></button></td>' +
-            '   <td>' +
-            '       <div class="checkbox" onclick="pluginModule.handlePlugin(this);">' +
-            '       <div class="checkbox-inner">' +
-            '               <input id="' + plugin.getName() + '" type="checkbox" ' + (pluginCookie[plugin.getName()] ? "checked" : "") + '>' +
-            '               <span></span>' +
-            '           </div>' +
-            '       </div>' +
-            '   </td>' +
-            '</tr>';
+        var hasSettings = false;
+        if(typeof(plugin.getSettingsPanel) == "function") {
+            hasSettings = plugin.getSettingsPanel() != null && plugin.getSettingsPanel() != "";
+        }
+
+        settingsInner += '\
+            <li>\
+                <div class="bda-left">\
+                    <span class="bda-name">'+plugin.getName()+' v'+plugin.getVersion()+' by '+plugin.getAuthor()+'</span>\
+                    <div class="scroller-wrap fade">\
+                        <div class="scroller bda-description">'+plugin.getDescription()+'</div>\
+                    </div>\
+                </div>\
+                <div class="bda-right">\
+                    <div class="checkbox" onclick="pluginModule.handlePlugin(this);">\
+                        <div class="checkbox-inner">\
+                            <input id="'+plugin.getName().replace(" ", "__")+'" type="checkbox" '+(pluginCookie[plugin.getName()] ? "checked" : "")+'>\
+                            <span></span>\
+                        </div>\
+                        <span></span>\
+                    </div>\
+                    <button class="btn btn-primary bda-plugin-reload" onclick="return false;" disabled>Reload</button>\
+                    <button class="btn btn-primary bda-plugin-settings" onclick=\'pluginModule.showSettings("'+plugin.getName()+'"); return false;\' '+(hasSettings ? "" : "disabled")+'>Settings</button>\
+                </div>\
+            </li>\
+        ';
     });
 
-    settingsInner += '</tbody></table>' +
-        '               </div>' +
-        '               <div class="bd-pane control-group" id="bd-themes-pane" style="display:none;">';
+    settingsInner += '\
+            </ul>\
+        </div>\
+    ';
 
+    //End plugin pane
 
-    if (typeof (themesupport2) === "undefined") {
-        settingsInner += '' +
-            '                   Your version does not support themes. Download the latest version.';
+    //Theme pane
+
+    settingsInner += '\
+        <div class="bd-pane control-group" id="bd-themes-pane" style="display:none;">\
+            <div class="bda-slist-top">\
+                <button class="btn btn-primary" onclick=\'betterDiscordIPC.send("asynchronous-message", { "arg": "opendir", "path": "themedir" }); return false;\'>Open Theme Folder</button>\
+                <button class="btn btn-primary" onclick=\'window.open("https://betterdiscord.net/themes"); return false;\'>Get Themes</button>\
+            </div>\
+            <ul class="bda-slist">\
+    ';
+
+    if(typeof(themesupport2) === "undefined") {
+        settingsInner += "Your version does not support themes!";
     } else {
-        settingsInner += '' +
-            '                   <table class="bd-g-table">' +
-            '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th></tr></thead><tbody>';
-        $.each(bdthemes, function () {
-            settingsInner += '' +
-                '<tr>' +
-                '   <td>' + this["name"].replace(/_/g, " ") + '</td>' +
-                '   <td width="99%"><textarea>' + this["description"] + '</textarea></td>' +
-                '   <td>' + this["author"] + '</td>' +
-                '   <td>' + this["version"] + '</td>' +
-                '   <td>' +
-                '       <div class="checkbox" onclick="themeModule.handleTheme(this);">' +
-                '           <div class="checkbox-inner">' +
-                '               <input id="ti' + this["name"] + '" type="checkbox" ' + (themeCookie[this["name"]] ? "checked" : "") + '>' +
-                '               <span></span>' +
-                '           </div>' +
-                '       </div>' +
-                '   </td>' +
-                '</tr>';
+        $.each(bdthemes, function() {
+        settingsInner += '\
+            <li>\
+                <div class="bda-left">\
+                    <span class="bda-name">'+this["name"].replace(/_/g, " ")+' v'+this["version"]+' by '+this["author"]+'</span>\
+                    <div class="scroller-wrap fade">\
+                        <div class="scroller bda-description">'+this["description"]+'</div>\
+                    </div>\
+                </div>\
+                <div class="bda-right">\
+                    <div class="checkbox" onclick="themeModule.handleTheme(this);">\
+                        <div class="checkbox-inner">\
+                            <input id="ti'+this["name"]+'" type="checkbox" '+(themeCookie[this["name"]] ? "checked" : "")+'>\
+                            <span></span>\
+                        </div>\
+                        <span></span>\
+                    </div>\
+                    <button class="btn btn-primary bda-plugin-reload" onclick="return false;" disabled>Reload</button>\
+                </div>\
+            </li>\
+        ';
         });
-        settingsInner += '</tbody></table>';
     }
 
+    settingsInner += '\
+            </ul>\
+        </div>\
+    ';
 
-    settingsInner += '' +
-        '               </div>' +
-        '' +
-        '       </div>' +
-        '   </div>' +
-        '   <div style="background:#2E3136; color:#ADADAD; height:30px; position:absolute; bottom:0; left:0; right:0;">' +
-        '       <span style="line-height:30px;margin-left:10px;">BetterDiscord v' + version + '(JSv' + jsVersion + ') by Jiiks</span>' +
-        '       <span style="float:right;line-height:30px;margin-right:10px;"><a href="http://betterdiscord.net" target="_blank">BetterDiscord.net</a></span>' +
-        '   </div>' +
-        '</div>';
+    //End theme panel
+
+    //Footer
+
+    settingsInner += '\
+        <div style="background:#2E3136; color:#ADADAD; height:30px; position:absolute; bottom:0; left:0; right:0;">\
+            <span style="line-height:30px;margin-left:10px;">BetterDiscord v' + ((typeof(version) == "undefined") ? bdVersion : version)  + '(JSv' + jsVersion + ') by Jiiks</span>\
+            <span style="float:right;line-height:30px;margin-right:10px;"><a href="http://betterdiscord.net" target="_blank">BetterDiscord.net</a></span>\
+            <span id="bd-changelog" onclick=\'$("body").append(mainCore.constructChangelog());\'>changelog</span>\
+        </div>\
+        </div></div>\
+    ';
+
 
     function showSettings() {
         $(".tab-bar-item").removeClass("selected");
@@ -338,35 +416,25 @@ SettingsPanel.prototype.construct = function () {
     });
 
     panel.html(settingsInner);
+    this.panel = panel;
+};
 
-    function defer() {
-        if ($(".btn.btn-settings").length < 1) {
-            setTimeout(defer, 100);
-        } else {
-            $(".btn.btn-settings").first().on("click", function () {
+SettingsPanel.prototype.inject = function(mutation) {
+    if(mutation.type != "childList") return;
+    if(mutation.addedNodes.length <= 0) return;
+    if($(mutation.addedNodes[0]).find(".user-settings-modal").length <= 0) return;
 
-                function innerDefer() {
-                    if ($(".modal-inner").first().is(":visible")) {
+    var self = this;
+    this.panel.hide();
+    var tabBar = $(".tab-bar.SIDE").first();
 
-                        panel.hide();
-                        var tabBar = $(".tab-bar.SIDE").first();
+    $(".tab-bar.SIDE .tab-bar-item").click(function () {
+        $(".form .settings-right .settings-inner").first().show();
+        $("#bd-settings-new").removeClass("selected");
+        self.panel.hide();
+    });
 
-                        $(".tab-bar.SIDE .tab-bar-item").click(function () {
-                            $(".form .settings-right .settings-inner").first().show();
-                            $("#bd-settings-new").removeClass("selected");
-                            panel.hide();
-                        });
-
-                        tabBar.append(settingsButton);
-                        $(".form .settings-right .settings-inner").last().after(panel);
-                        $("#bd-settings-new").removeClass("selected");
-                    } else {
-                        setTimeout(innerDefer, 100);
-                    }
-                }
-                innerDefer();
-            });
-        }
-    }
-    defer();
+    tabBar.append(settingsButton);
+    $(".form .settings-right .settings-inner").last().after(self.panel);
+    $("#bd-settings-new").removeClass("selected");
 };
