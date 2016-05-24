@@ -1,3 +1,4 @@
+
 /* BetterDiscordApp Core JavaScript
  * Version: 1.53
  * Author: Jiiks | http://jiiks.net
@@ -5,8 +6,8 @@
  * Last Update: 01/05/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
-var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
-var jsVersion = 1.72;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
+var jsVersion = 1.73;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -33,6 +34,7 @@ var settings = {
     "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
     "24 Hour Timestamps":         { "id": "bda-gs-6",  "info": "Replace 12hr timestamps with proper ones",          "implemented": true,  "hidden": false, "cat": "core"},
     "Coloured Text":              { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
+    "Developer Mode":             { "id": "bda-gs-8",  "info": "Developer Mode",                                    "implemented": true,  "hidden": false, "cat": "core"},
 
     "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
     "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
@@ -61,6 +63,7 @@ var defaultCookie = {
     "bda-gs-5": true,
     "bda-gs-6": false,
     "bda-gs-7": false,
+    "bda-gs-8": false,
     "bda-es-0": true,
     "bda-es-1": true,
     "bda-es-2": true,
@@ -80,6 +83,16 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
+        "0a": {
+            "title": "1.73 : Native sub emotes",
+            "text": "Native sub emote support disabled for now due to a critical bug",
+            "img": ""
+        },
+        "1a": {
+            "title": "1.73 : Initial Developer Mode",
+            "text": "Enable developer mode from settings!",
+            "img": ""
+        },
         "a": {
             "title": "v1.72 : Public Servers",
             "text": "Public servers now have categories, description, tags, dark mode and more!",
@@ -186,6 +199,7 @@ Core.prototype.init = function () {
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
+    dMode = new devMode();
 
     emoteModule.init();
 
@@ -478,7 +492,6 @@ Core.prototype.alert = function (title, text) {
     $("body").append(bdAlert);
     utils.addBackdrop(id);
 };
-
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.5
  * Author: Jiiks | http://jiiks.net
@@ -520,12 +533,21 @@ EmoteModule.prototype.obsCallback = function (mutation) {
 
     //if (!settingsCookie["bda-es-7"]) return;
 
-    $(".emoji").each(function() {
+    /*$(".emoji").each(function() {
         var t = $(this);
         if(t.attr("src").indexOf(".png") != -1) {
             t.replaceWith(t.attr("alt"));
         }
-    });
+    });*/
+    
+    /*$(".emoji:not(.emote)").each(function() {
+        var t = $(this);
+        t.addClass("emote");
+        t.wrap('<span class="emotewrapper"></span>');
+        t.parent().append($("<input/>", { class: "fav", title: "Favorite!", type: "button" }));
+    });*/
+    
+
 
     for (var i = 0; i < mutation.addedNodes.length; ++i) {
         var next = mutation.addedNodes.item(i);
@@ -578,6 +600,7 @@ EmoteModule.prototype.injectEmote = function(node) {
             var nodeValue = contents[i].nodeValue;
             if(nodeValue == null) return;
             //if(nodeValue.indexOf("react-") > -1) return;
+
             if(contents[i].nodeType == 8) return;
             contents.splice(i, 1);
 
@@ -616,6 +639,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                         }
                     }
                 }
+                
                 if ($.inArray(sw, bemotes) == -1) {
                 
                     if(typeof emotesTwitch !== 'undefind' && settingsCookie["bda-es-7"]) {
@@ -669,6 +693,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                         }
                     }
                 }
+                
                 if(text == null) {
                     text = w;
                 } else {
@@ -735,7 +760,6 @@ EmoteModule.prototype.capitalize = function (value) {
         }
     }
 };
-
 /* BetterDiscordApp PublicSevers JavaScripts
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1114,7 +1138,6 @@ PublicServers.prototype.joinServer = function (code) {
     $(".create-guild-container input").val(code);
     $(".form.join-server .btn-primary").click();
 };
-
 /* BetterDiscordApp QuickEmoteMenu JavaScript
  * Version: 1.3
  * Author: Jiiks | http://jiiks.net
@@ -1300,8 +1323,6 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
 
     window.localStorage["bdfavemotes"] = btoa(JSON.stringify(this.favoriteEmotes));
 };
-
-
 function CustomCssEditor() { }
 
 CustomCssEditor.prototype.init = function() {
@@ -1401,8 +1422,6 @@ CustomCssEditor.prototype.applyCustomCss = function (css, forceupdate, forcesave
         localStorage.setItem("bdcustomcss", btoa(css));
     }
 };
-
-
 /* BetterDiscordApp Settings Panel JavaScript
  * Version: 2.0
  * Author: Jiiks | http://jiiks.net
@@ -1467,6 +1486,12 @@ SettingsPanel.prototype.init = function () {
     } else {
         $(document).off('mouseover', '.emote');
     }
+    
+    if(settingsCookie["bda-gs-8"]) {
+        dMode.enable();
+    } else {
+        dMode.disable();
+    }
 };
 
 var customCssInitialized = false;
@@ -1523,6 +1548,9 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
             $("#app-mount").addClass("bd-hide-bd")
         }
     }
+    if(id == "bda-gs-8" && enabled) {
+        mainCore.alert("Developer Mode Enabled", "Use F8 to break/resume execution<br>More coming soon")
+    }
 
     settingsCookie[id] = enabled;
 
@@ -1577,6 +1605,12 @@ SettingsPanel.prototype.updateSettings = function() {
     } else {
         $(document).off('mouseover', '.emote');
     } 
+
+    if(settingsCookie["bda-gs-8"]) {
+        dMode.enable();
+    } else {
+        dMode.disable();
+    }
 
     mainCore.saveSettings();
 };
@@ -1843,7 +1877,6 @@ SettingsPanel.prototype.inject = function(mutation) {
     $(".form .settings-right .settings-inner").last().after(self.panel);
     $("#bd-settings-new").removeClass("selected");
 };
-
 /* BetterDiscordApp Utilities JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -2019,7 +2052,6 @@ Utils.prototype.addBackdrop = function(target) {
 Utils.prototype.removeBackdrop = function(target) {
     $('[data-bdbackdrop="'+target+'"]').remove();
 };
-
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -2058,7 +2090,6 @@ VoiceMode.prototype.disable = function () {
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
-
 /* BetterDiscordApp PluginModule JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -2181,8 +2212,6 @@ PluginModule.prototype.rawObserver = function(e) {
         }
     });
 };
-
-
 /* BetterDiscordApp ThemeModule JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -2247,8 +2276,6 @@ ThemeModule.prototype.saveThemeData = function () {
         path: '/'
     });
 };
-
-
 /*BDSocket*/
 
 var bdSocket;
@@ -2355,7 +2382,6 @@ BdWSocket.prototype.send = function (data) {
 BdWSocket.prototype.getSocket = function () {
     return bdSocket;
 };
-
 /* BetterDiscordApp API for Plugins
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -2468,3 +2494,69 @@ BdApi.setStatus = function (idle_since, status) {
         }
     });
 };
+/* BetterDiscordApp DevMode JavaScript
+ * Version: 1.0
+ * Author: Jiiks | http://jiiks.net
+ * Date: 22/05/2016
+ * Last Update: 22/05/2016
+ * https://github.com/Jiiks/BetterDiscordApp
+ */
+ 
+ function devMode() {}
+ 
+ devMode.prototype.enable = function() {
+     var self = this;
+     $(window).on("keydown.bdDevmode", function(e) {
+         if(e.which === 119) {//F8
+             debugger;
+         }
+     });
+     /*
+     $(window).on("mousedown.bdDevmode", function(e) {
+         if(e.which !== 3) return;
+         var parents = [];
+         $(e.toElement).parents().addBack().not('html').each(function() {
+             var entry = "";
+             if(this.className) {
+                 entry += "." + this.className.trim().replace(/ /g, ".");
+                 parents.push(entry);
+             }
+         });
+         self.lastSelector = parents.join(" ").trim();
+
+         function attach() {
+            var cm = $(".context-menu");
+            if(cm.length <= 0) {
+                return;
+                cm = $("body").append('<div class="context-menu"></div>');
+            }
+            
+            var cmo = $("<div/>", {
+                class: "item-group"
+            });
+            var cmi = $("<div/>", {
+                class: "item",
+                click: function() {
+                    var t = $("<textarea/>", { text: self.lastSelector }).appendTo("body");
+                    t.select();
+                    document.execCommand("copy");
+                    t.remove();
+                    cm.remove();
+                }
+            }).append($("<span/>", { text: "Copy Selector" }));
+            cmo.append(cmi);
+            cm.append(cmo);
+            cm.css("top", (cm.css("top").replace("px", "") - 28) + "px");
+         }
+         
+         setTimeout(attach, 100);
+         
+         e.stopPropagation();
+     });
+     */
+ };
+ 
+ devMode.prototype.disable = function() {
+     $(window).off("keydown.bdDevmode");
+     $(window).off("mousedown.bdDevmode")
+ };
