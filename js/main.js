@@ -616,60 +616,59 @@ EmoteModule.prototype.injectEmote = function(node) {
                         }
                     }
                 }
+                if ($.inArray(sw, bemotes) == -1) {
                 
-                if ($.inArray(sw, bemotes) != -1) return;
-                
-                if(typeof emotesTwitch !== 'undefind' && settingsCookie["bda-es-7"]) {
-                    if(emotesTwitch.emotes.hasOwnProperty(sw) && sw.length >= 4) { 
-                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                        var url = twitchEmoteUrlStart + emotesTwitch.emotes[sw].image_id + twitchEmoteUrlEnd;
-                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                        doInject = true;
-                        return;
+                    if(typeof emotesTwitch !== 'undefind' && settingsCookie["bda-es-7"]) {
+                        if(emotesTwitch.emotes.hasOwnProperty(sw) && sw.length >= 4) { 
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = twitchEmoteUrlStart + emotesTwitch.emotes[sw].image_id + twitchEmoteUrlEnd;
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
+                    
+                    if(typeof subEmotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
+                        if(subEmotesTwitch.hasOwnProperty(sw) && sw.length >= 4) {
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = twitchEmoteUrlStart + subEmotesTwitch[sw] + twitchEmoteUrlEnd;
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
+                    
+                    if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) { 
+                        if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 4) {
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = emotesBTTV[sw];
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
+                    
+                    if ((typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) && (!skipffz || !emotesBTTV2.hasOwnProperty(sw))) { 
+                        if(emotesFfz.hasOwnProperty(sw) && sw.length >= 4) {
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = ffzEmoteUrlStart + emotesFfz[sw] + ffzEmoteUrlEnd;
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
+    
+                    if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) { 
+                        if(emotesBTTV2.hasOwnProperty(sw) && sw.length >= 4) {
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = bttvEmoteUrlStart + emotesBTTV2[sw] + bttvEmoteUrlEnd;
+                            if(skipffz && emotesFfz.hasOwnProperty(sw)) sw = sw + ":bttv";
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
                     }
                 }
-                
-                if(typeof subEmotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
-                    if(subEmotesTwitch.hasOwnProperty(sw) && sw.length >= 4) {
-                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                        var url = twitchEmoteUrlStart + subEmotesTwitch[sw] + twitchEmoteUrlEnd;
-                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                        doInject = true;
-                        return;
-                    }
-                }
-                
-                if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) { 
-                    if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 4) {
-                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                        var url = emotesBTTV[sw];
-                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                        doInject = true;
-                        return;
-                    }
-                }
-                
-                if ((typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) && (!skipffz || !emotesBTTV2.hasOwnProperty(sw))) { 
-                    if(emotesFfz.hasOwnProperty(sw) && sw.length >= 4) {
-                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                        var url = ffzEmoteUrlStart + emotesFfz[sw] + ffzEmoteUrlEnd;
-                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                        doInject = true;
-                        return;
-                    }
-                }
-
-                if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) { 
-                    if(emotesBTTV2.hasOwnProperty(sw) && sw.length >= 4) {
-                        if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                        var url = bttvEmoteUrlStart + emotesBTTV2[sw] + bttvEmoteUrlEnd;
-                        if(skipffz && emotesFfz.hasOwnProperty(sw)) sw = sw + ":bttv";
-                        contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                        doInject = true;
-                        return;
-                    }
-                }
-                
                 if(text == null) {
                     text = w;
                 } else {
