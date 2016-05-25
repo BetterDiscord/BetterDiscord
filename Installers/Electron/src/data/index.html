@@ -1,8 +1,6 @@
 <html>
 <head>
 	<link rel="stylesheet" href="css/main.css">
-	<script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
-	<script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
   <div id="titleBar">
@@ -17,10 +15,10 @@
     <div class="sidebar">
       <div class="sidebar-inner">
         <ul>
-          <li id="li-0" class="active">Introduction</li>
-          <li id="li-1">License</li>
-          <li id="li-2">Destination</li>
-          <li id="li-3">Installation</li>
+          <li id="li-0" class="navli active">Introduction</li>
+          <li id="li-1" class="navli">License</li>
+          <li id="li-2" class="navli">Destination</li>
+          <li id="li-3" class="navli">Installation</li>
         </ul>
       </div>
     </div>
@@ -74,6 +72,27 @@
       </div>
     </div>
   </div>
+  <div class="modal" id="quit" style="display: none;">
+    <div class="modal-container">
+      <div class="modal-header">
+        <span>Exit Setup?</span>
+      </div>
+      <div class="modal-body">
+        Setup is not complete. If you exit now, BetterDiscord will not be installed.
+        <br>
+        Exit Setup?
+      </div>
+      <div class="modal-footer">
+        <button id="modal-exit">
+          Yes
+        </button>
+        <button id="modal-cancel">
+          No
+        </button>
+      </div>
+    </div>
+  </div>
   </body>
-
+  <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
 </html>

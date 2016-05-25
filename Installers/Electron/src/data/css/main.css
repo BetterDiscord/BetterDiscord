@@ -223,3 +223,95 @@ input.path {
 	border-style: solid;
 	border-color: #111;
 }
+
+.modal {
+  position: absolute;
+  background: rgba(29, 29, 29, 0.71);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900000;
+}
+
+.modal-container {
+  background: #212229;
+  width: 600px;
+  height: 200px;
+  position: relative;
+  margin: auto;
+  top: 100px;
+  box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, 0.39);
+}
+
+.modal-header {
+  height: 30px;
+  line-height: 30px;
+  background: #212229;
+  padding-left: 10px;
+  border-bottom: 1px solid #000;
+  box-shadow: 0 1px 0 0 #303030;
+}
+
+.modal-body {
+  padding:30px;
+}
+
+.modal-footer {
+  position: absolute;
+  bottom: 0;
+  left:0;
+  right: 0;
+  height: 35px;
+  padding-top:10px;
+  background:#212229;
+  box-shadow: 0 1px 0 0 #303030 inset;
+  border-top: 1px solid #000;
+}
+
+.modal-footer button {
+  margin-right:5px;
+  float: right;
+}
+
+.splash {
+  width:300px !important;
+  height:100px !important;
+}
+.splash .wrapper {
+  top:20px;
+  width:40px;
+  margin:auto;
+  position:relative;
+}
+.splash .wrapper .spinner {
+  width:30px;
+  height:30px;
+  border-radius:30px;
+  border-width:5px;
+  border-color:#121212 #404040 #404040 #404040;
+  border-style:solid;
+  animation: spin 0.7s linear infinite;
+}
+.splash .spinnertext {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: block;
+  text-align: center;
+  bottom: 10px;
+  color: rgb(171, 171, 171);
+  -webkit-animation: spinnertext-opacity 2s linear 0s infinite;
+}
+
+@-webkit-keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spinnertext-opacity {
+    0%  {opacity: 0}
+    20% {opacity: 0}
+    50% {opacity: 1}
+    100%{opacity: 0}
+}
