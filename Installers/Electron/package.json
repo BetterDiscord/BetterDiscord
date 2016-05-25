@@ -1,7 +1,7 @@
 {
   "name": "Install",
   "description": "Better Discord enhances Discord.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/Jiiks/BetterDiscordApp",
   "license": "MIT",
   "devDependencies": {
