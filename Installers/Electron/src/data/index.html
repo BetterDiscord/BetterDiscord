@@ -3,6 +3,7 @@
 	<link rel="stylesheet" href="css/main.css">
 </head>
 <body>
+<div class="border"></div>
   <div id="titleBar">
     <div class="icon">
       <div class="icon-image"></div>
@@ -24,10 +25,10 @@
     </div>
     <div class="main">
       <div class="panel-container">
-        <div class="panel" id="panel-0">
+        <div class="panel" id="panel-3">
           <h2>Welcome to the BetterDiscord setup</h2>
           <p>
-            The setup will isntall BetterDiscord on your computer.
+            The setup will install BetterDiscord on your computer.
             <br>
             Click "Next" to continue or "Cancel" to exit the setup.
           </p>
@@ -63,12 +64,16 @@
           	<label for="restart" style="margin:0; line-height: 18px;">Restart Discord after installation</label>
         </div>
 
-        <div class="panel" id="panel-3">feafewa</div>
+        <div class="panel" id="panel-0">
+          <div name="log" id="log"></div>
+          <progress id="logpbar" value="0" max="100"></progress>
+        </div>
       </div>
       <div class="controls">
+        <button id="uninstall" style="display: none;">Uninstall</button>
         <button id="back" style="display: none;">Back</button>
-        <button id="next">Next</button>
-        <button id="cancel">Cancel</button>
+        <button id="next" style="display: none;">Next</button>
+        <button id="cancel">Abort</button>
       </div>
     </div>
   </div>
@@ -94,5 +99,14 @@
   </div>
   </body>
   <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
-  <script type="text/javascript" src="js/main.js"></script>
+
+  <script type="text/javascript">
+    $(window).blur(function(){
+      $(".border").css("border-color", "#F76455");
+    });
+    $(window).focus(function(){
+      $(".border").css("border-color", "#55BBF7");
+    });
+  </script>
+
 </html>

@@ -1,7 +1,7 @@
 html, body {
   margin:0;
   padding:0;
-  background:#212229;
+  background: rgba(34, 35, 42, 0.6);
   overflow: hidden;
 }
 
@@ -25,9 +25,12 @@ html, body {
   pointer-events: none;
   width:100%;
   height:40px;
-  background:#212229;
+  background:rgba(34, 35, 42, 0.6);
   border-bottom:1px solid #000;
   box-shadow:0 1px 0 0 #303030;
+  background: rgba(23, 23, 23, 0.6);
+  border:none;
+  box-shadow: none;
 }
 
 #titleBar h3 {
@@ -62,12 +65,16 @@ html, body {
 
 .sidebar {
   width:200px;
-  height:100%;
+  height:359px;
   border-right:1px solid #000;
   box-shadow:1px 0 0 0 #303030;
-  background:#212229;
+  background:rgba(34, 35, 42, 0.6);
   z-index:90001;
   margin-top: 1px;
+  border:none;
+  margin:0;
+  box-shadow: none;
+  margin-left:1px;
 }
 
 .sidebar-inner {
@@ -191,6 +198,8 @@ button {
   padding:5px;
   box-shadow:1px 1px 0 0 #303030 inset;
   cursor:pointer;
+  border: none;
+  box-shadow: none;
 }
 
 button:hover {
@@ -203,6 +212,9 @@ button:disabled {
   border-color:#191919;
   color:gray;
   cursor: not-allowed;
+}
+button:active {
+  background: #232b2e;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -314,4 +326,43 @@ input.path {
     20% {opacity: 0}
     50% {opacity: 1}
     100%{opacity: 0}
+}
+
+#log {
+  padding: 10px;
+  height:294px;
+  resize: none;
+  width: 563px;
+  background: rgba(42, 44, 55, 0.6);
+  border: none;
+  -webkit-user-select: text;
+  word-wrap: break-word;
+  white-space: pre-line;
+  overflow: auto;
+}
+
+progress {
+  position: absolute;
+  bottom: -36px;
+  left:0;
+  width:520px;
+  height: 27px;
+  -webkit-appearance:none;
+}
+
+progress::-webkit-progress-bar {
+  background:rgba(42, 44, 55, 0.6);
+}
+
+progress[value]::-webkit-progress-value {
+  background-image: -webkit-linear-gradient(left, rgba(73,155,234,1) 0%, rgba(32,124,229,1) 100%);
+}
+
+.border {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border:1px solid #55BBF7;
 }

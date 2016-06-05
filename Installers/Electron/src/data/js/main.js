@@ -2,7 +2,7 @@
 
 const ipcRenderer = require('electron').ipcRenderer;
 
-$(function() {
+(function() {
 
   var currentPanel = 0;
   
@@ -102,6 +102,38 @@ $(function() {
     $("#quit").show();
   }
 
-  $("#discordPath").val(ipcRenderer.sendSync('sync', 'getInstallPath'));
-
+  $("#discordPath").val(ipcRenderer.sendSync('sync', '{ "arg": "getInstallPath" }'));
+  install();
 })();
+
+ipcRenderer.on('async-reply', (event, arg) => {
+  console.log(arg);
+  switch(arg.arg) {
+    case "exists":
+      switch(arg.file) {
+        case "app.asar":
+          if(arg.exists) {
+            appendLog("Located app.asar");
+            appendLog("Downloading latest BetterDiscord package");
+            ipcRenderer.send('async', '{"arg": "download", "package": { "host": "https://github.com/", "path": "Jiiks/BetterDiscordApp/archive/stable16.zip" }}');
+          } else {
+            appendLog("Unable to locate app.asar. Check your install path.");
+          }
+      }
+    break;
+  }
+});
+
+function install() {
+  appendLog("Initiating installation");
+  ipcRenderer.send('async', '{ "arg": "locate-discord" }');
+}
+
+function appendLog(text) {
+  var log = $("#log");
+  log.append(text+"\n");
+  var sh = log[0].scrollHeight - 40;
+  if(log.height() + log.scrollTop() >= sh) {
+    log.scrollTop(sh);
+  }
+}
