@@ -13,13 +13,14 @@ dblClickEdit.prototype.start = function () {
             var msg = target.parents(".message").first();
             var opt = msg.find(".btn-option");
             opt.click();
-    
-            var popout = $(".option-popout");
-            if(popout.children().length == 2) {
-                popout.children().first().click();
-            } else {
-                popout.hide();
-            }
+
+            $.each($(".popout .btn-item"), (index, value) => {
+                var option = $(value);
+                if(option.text() === "Edit") {
+                    option.click();
+                }
+            });
+
         }
     });
 };
