@@ -121,6 +121,12 @@ namespace BetterDiscordWI.panels {
                     Thread.Sleep(100);
                 }
 
+                if (!Directory.Exists($"{GetParent().DiscordPath}\\resources\\node_modules\\")) {
+                    Debug.Print("node_modules doesn't exist, creating");
+                    AppendLog("node_modules doesn't exist, creating");
+                    Directory.CreateDirectory($"{GetParent().DiscordPath}\\resources\\node_modules\\");
+                }
+
                 dir = $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord";
 
 
