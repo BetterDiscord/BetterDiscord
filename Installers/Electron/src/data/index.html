@@ -1,0 +1,153 @@
+<html>
+<head>
+	<link rel="stylesheet" href="css/main.css">
+</head>
+    <body>
+        <div class="border"></div>
+        <div id="titleBar">
+            <div class="icon">
+                <div class="icon-image"></div>
+            </div>
+            <div class="title">
+                BetterDiscord Installer - v0.1.1
+            </div>
+        </div>
+        <div class="main-container panel-0">
+            <div class="sidebar">
+                <div class="sidebar-inner">
+                    <ul>
+                      <li id="li-0" class="navli">Introduction</li>
+                      <li id="li-1" class="navli">License</li>
+                      <li id="li-2" class="navli">Destination</li>
+                      <li id="li-3" class="navli">Installation</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="main">
+                <div class="panel-container">
+                    <div class="panel" id="panel-0">
+                        <h2>Welcome to the BetterDiscord setup</h2>
+                        <p style="white-space:pre-line">
+                            The setup will install BetterDiscord on your computer.
+                            Click "Next" to continue or "Cancel" to exit the setup.
+                            BetterDiscord is not in any way affiliated with Discord
+                            For support join the <a href="https://betterdiscord.net/discord" target="_blank">official BetterDiscord support channel</a> in Discord
+                        </p>
+                        <p>
+                            <strong class="warning" style="font-size:12px">
+                                Do not contact Discord support about BetterDiscord issues!
+                                <br>
+                                If Discord breaks, ask in the BetterDiscord support channel!
+                            </strong>
+                        </p>
+                        <input name="cd" id="cd" type="checkbox">
+                        <label style="margin:0; line-height: 18px;" for="cd">I will not contact Discord support about BetterDiscord issues</label>
+                    </div>
+    
+                    <div class="panel" id="panel-1">
+                        <div id="licensetext">
+                            The MIT License (MIT)
+            
+                            Copyright (c) 2015-2016 Jiiks | Jiiks.net
+            
+                            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+                            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+                            
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE  SOFTWARE.
+                        </div>
+                        <form action="" id="licenseform">
+                            <input type="radio" name="licensegroup" value="Accept" id="accept" disabled="true"><label for="accept">Accept</label>
+                            <input type="radio" name="licensegroup" value="Decline" id="decline" checked="true"><label for="decline">Decline</label>
+                        </form>
+                    </div>
+    
+                    <div class="panel" id="panel-2">
+                        <p style="font-size: 12px;">Setup will install BetterDiscord to the following location:</p>
+                        <input class="path" id="libpath" type="text" style="height:26px;" disabled="true" />
+                        <button id="libpathbtn" style="height:26px;">Browse</button>
+                        <p style="font-size:12px">
+                          *If you wish to install somewhere else then click "Browse" and select your path
+                        </p>
+                        <label for="discordPath" style="display:block; margin-top: 10px; font-size: 12px;">Discord Path:</label>
+                        <input class="path" id="discordPath" type="text" style="height:26px;" disabled="true" />
+                        <button id="path" style="height:26px;">Browse</button>
+                        <p style="font-size:12px">
+                            *If the path is not pointing to the latest version of Discord then click "Browse" and select it
+                            <br>
+                            *If you want to install to ptb/canary then click "Browse" and select it
+                            <br>
+                            *Installer will kill Discord process
+                        </p>
+                        <div class="checkboxGroup">
+                            <input type="checkbox" name="demotes" id="demotes">
+                            <label for="demotes" style="margin:0; line-height: 18px;">Disable emotes completely</label>
+                        </div>
+                        <div class="checkboxGroup">
+                            <input type="checkbox" name="restart" id="restart" checked="true">
+                            <label for="restart" style="margin:0; line-height: 18px;">Restart Discord after installation</label>
+                        </div>
+                        <button id="advanced-settings">Advanced</button>
+                    </div>
+    
+                    <div class="panel" id="panel-advanced">
+                        <span>Advanced settings</span> - <span class="warning">For advanced users only!</span>
+                        <ul>
+                          <li><input type="checkbox" name="aaot" id="aaot"><label for="aaot">Discord window always on top</label></li>
+                          <li><input type="checkbox" name="aframeless" id="aframeless" checked><label for="aframeless">Frameless Discord window</label></li>
+                          <li><input type="checkbox" name="atransparent" id="atransparent"><label for="atransparent">Transparent Discord window</label></li>
+                          <li><input type="checkbox" name="athickframe" id="athickframe"><label for="athickframe">Thick Frame</label></li>
+                          <li><input type="checkbox" name="aprefs" id="aprefs"><label for="aprefs">Use custom Web Preferences:</label></li>
+                        </ul>
+                        <textarea name="" id="" cols="30" rows="10"></textarea>
+                        <button id="advanced-close">Save</button>
+                    </div>
+    
+                    <div class="panel" id="panel-3">
+                        <div name="log" id="log"></div>
+                        <progress id="logpbar" value="0" max="100"></progress>
+                    </div>
+                </div>
+    
+                <div class="controls">
+                  <button id="uninstall">Uninstall</button>
+                  <button id="back">Back</button>
+                  <button id="next" >Next</button>
+                  <button id="cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+    
+        <div class="modal" id="quit" style="display: none;">
+          <div class="modal-container">
+            <div class="modal-header">
+              <span>Exit Setup?</span>
+            </div>
+            <div class="modal-body">
+              Setup is not complete. If you exit now, BetterDiscord will not be installed.
+              <br>
+              Exit Setup?
+            </div>
+            <div class="modal-footer">
+              <button id="modal-exit">
+                Yes
+              </button>
+              <button id="modal-cancel">
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+
+    </body>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
+
+    <script type="text/javascript">
+      $(window).blur(function(){
+        $(".border").css("border-color", "#F76455");
+      });
+      $(window).focus(function(){
+        $(".border").css("border-color", "#55BBF7");
+      });
+    </script>
+</html>
