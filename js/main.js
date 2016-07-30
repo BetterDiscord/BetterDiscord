@@ -7,7 +7,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.73;
+var jsVersion = 1.74;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -107,72 +107,37 @@ var bdchangelog = {
             "title": "v1.72 : Changelog",
             "text": "You can now reopen this changelog from the settings",
             "img": ""
-        },
-        "d": {
-            "title": "v1.71 : Hide Twitch emotes",
-            "text": "Hide all emotes option now toggles Twitch emotes instead!",
-            "img": ""
-        },
-        "e": {
-            "title": "v1.71 : Override FFZ emote",
-            "text": "Use the <code class=\"inline\">:bttv</code> emote modifier to override a FFZ emote with a BTTV one!",
-            "img": ""
-        },
-        "f": {
-            "title": "v1.70 : 0.2.8 Support",
-            "text": "Added support for Core version 0.2.8.",
-            "img": ""
-        },
-        "g": {
-            "title": "v1.70 : Setting Import/Export",
-            "text": "You can now import and export your settings!",
-            "img": ""
-        },
-        "h": {
-            "title": "v1.70 : Public Server List Infinite Scroll",
-            "text": "Public server list now has the ability to load more than 20 servers.",
-            "img": ""
-        },
-        "i": {
-            "title": "v1.70 : 24 hour timestamps",
-            "text": "Replace 12 hour timestamp with 24 hour timestamps!",
-            "img": ""
-        },
-        "j": {
-            "title": "v1.70 : Coloured text",
-            "text": "Make text colour the same as role colour!",
-            "img": ""
         }
     },
     "fixes": {
-        "a": {
+        "0a": {
+            "title": "v1.74 : BetterDiscord Invite",
+            "text": "Fixed the BetterDiscord invite link in public servers",
+            "img": ""
+        },
+        "0b": {
+            "title": "v1.74 : Dev Mode",
+            "text": "Fixed dev mode breaking",
+            "img": ""
+        },
+        "0c": {
             "title": "v1.72 : Settings panel",
             "text": "Settings panel will now show no matter how you open it!",
             "img": ""
         },
-        "b": {
+        "0d": {
             "title": "v1.72 : Fixed emote edit bug",
             "text": "Edits now appear properly even with emotes!",
             "img": ""
         },
-        "c": {
+        "0e": {
             "title": "v1.72 : Public servers",
             "text": "Public servers button is visible again!",
             "img": ""
         },
-        "d": {
+        "0f": {
             "title": "v1.72 : Public servers",
             "text": "Updated public servers api endpoint url for fetching correct serverlist.",
-            "img": ""
-        },
-        "e": {
-            "title": "v1.71 : Fixed emotes and edit",
-            "text": "Emotes work again! So does editing emotes!",
-            "img": ""
-        },
-        "f": {
-            "title": "Spoilers are currently broken :(",
-            "text": "Ps. I know this in the fixes section :o",
             "img": ""
         }
     }
@@ -992,6 +957,10 @@ PublicServers.prototype.show = function () {
         self.loadingServers = true;
         $("#pubs-spinner-bottom").show();
         self.search(list.children().length, false);
+    });
+
+    $("button[data-server-invite-code=0Tmfo5ZbORCRqbAd]").off("click").on("click", function(){
+        self.joinServer("0Tmfo5ZbORCRqbAd");
     });
 };
 
@@ -2508,7 +2477,8 @@ BdApi.setStatus = function (idle_since, status) {
      var self = this;
      $(window).on("keydown.bdDevmode", function(e) {
          if(e.which === 119) {//F8
-             debugger;
+            console.log('%c[%cDM%c] %cBreak/Resume', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
+            debugger;
          }
      });
      /*
