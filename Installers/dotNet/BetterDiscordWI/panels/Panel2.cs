@@ -180,7 +180,31 @@ namespace BetterDiscordWI.panels {
         }
 
         private void Splice() {
-            string indexloc = $"{GetParent().DiscordPath}\\resources\\app\\app\\index.js";
+        	
+            string indexloc = null;
+            if(File.Exists($"{GetParent().DiscordPath}\\resources\\app\\app\\index.js"))
+            {
+            	//Normal path
+                indexloc = $"{GetParent().DiscordPath}\\resources\\app\\app\\index.js";
+            } else if (File.Exists($"{GetParent().DiscordPath}\\resources\\app\\index.js"))
+            {
+            	//Canary 0.0.138 changed path to app\\index.js
+                indexloc = $"{GetParent().DiscordPath}\\resources\\app\\index.js";
+            }
+
+            if(indexloc == null)
+            {
+                AppendLog($"Error: index.js not found");
+                Finalize(1);
+                return;
+            }
+
+            if(!File.Exists(@"splice"))
+            {
+                AppendLog($"Error: splice install file not found, this should be included with the installer.");
+                Finalize(1);
+                return;
+            }
 
             Thread t = new Thread(() => {
                 List<string> lines = new List<string>();
@@ -216,9 +240,10 @@ namespace BetterDiscordWI.panels {
                 int errors = 0;
 
                 string curPath = $"{GetParent().DiscordPath}\\resources\\app\\app\\index.js";
-
-                if(!File.Exists(curPath)) {
-                    AppendLog($"ERROR: FILE: {curPath} DOES NOT EXIST!");
+                string curPath2 = $"{GetParent().DiscordPath}\\resources\\app\\index.js";
+                if (!File.Exists(curPath) && !File.Exists(curPath2))
+                {
+                    AppendLog($"ERROR: index.js not found in {curPath} or {curPath2}");
                     errors++;
                 }
 
