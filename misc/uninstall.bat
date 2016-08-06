@@ -18,7 +18,6 @@ call:deleteFolder %appdata%\BetterDiscord
 for /d %%G in ("%localappdata%\Discord\app-*") do (
     call:deleteFolder "%%G\resources\node_modules\BetterDiscord"
     call:deleteFolder "%%G\resources\app"
-    SET latestDiscordVersion=%%G
 )
 
 goto:end
