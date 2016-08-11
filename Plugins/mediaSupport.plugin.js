@@ -23,9 +23,9 @@ mediaSupport.prototype.convert = function () {
         }
         
         if(video) {
-            t.replaceWith('<video width="480" height="320" src="'+href+'" type="video/'+type+'" controls></video>');
+            t.replaceWith('<video width="480" height="320" src="'+encodeURI(href)+'" type="video/'+type+'" controls></video>');
         } else {
-            t.replaceWith('<audio src="'+href+'" type="audio/'+type+'" controls></audio>');
+            t.replaceWith('<audio src="'+encodeURI(href)+'" type="audio/'+type+'" controls></audio>');
         }
     });
 };
