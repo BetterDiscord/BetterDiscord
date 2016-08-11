@@ -1004,15 +1004,17 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
                     html += '<span class="server-official">Official!</span>';
                 }
 
-                html += '<span class="server-name-span">' + source.name + '</span>';
+                html += '<span class="server-name-span">' + self.escape(source.name) + '</span>';
                 
                 var tags = [];
                 source.categories.forEach(function(tag) {
                     tags.push(tag.name);
                 });
 
+                var desc = 
+
                 html += '<span class="server-tags">'+tags.join(", ")+'</span>';
-                html += '<span class="server-description">'+(source.description == undefined ? "No Description" : source.description)+'</span>';
+                html += '<span class="server-description">'+(source.description == undefined ? "No Description" : self.escape(source.description)) +'</span>';
                 html += '</div>';
                 html += '</div>';
                 html += '<div class="server-info server-members">';
@@ -1106,6 +1108,15 @@ PublicServers.prototype.joinServer = function (code) {
     $(".action.join .btn").click();
     $(".create-guild-container input").val(code);
     $(".form.join-server .btn-primary").click();
+};
+
+PublicServers.prototype.escape = function(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
 };
 /* BetterDiscordApp QuickEmoteMenu JavaScript
  * Version: 1.3
