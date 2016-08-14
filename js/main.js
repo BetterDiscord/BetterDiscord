@@ -994,7 +994,8 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 
             hits.forEach(function(hit) {
                 var source = hit._source;
-                var icode = self.escape(source.invite_code.replace(/ /g,''));
+                var icode = source.invite_code.replace(/ /g,'');
+                icode = self.escape(icode);
                 var html = '<div class="server-row">';
                 html += '<div class="server-icon" style="background-image:url(' + self.escape(source.icon) + ')"></div>';
                 html += '<div class="server-info server-name">';
