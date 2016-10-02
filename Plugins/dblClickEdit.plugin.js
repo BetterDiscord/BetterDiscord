@@ -13,13 +13,14 @@ dblClickEdit.prototype.start = function () {
             var msg = target.parents(".message").first();
             var opt = msg.find(".btn-option");
             opt.click();
-    
-            var popout = $(".option-popout");
-            if(popout.children().length == 2) {
-                popout.children().first().click();
-            } else {
-                popout.hide();
-            }
+
+            $.each($(".popout .btn-item"), (index, value) => {
+                var option = $(value);
+                if(option.text() === "Edit") {
+                    option.click();
+                }
+            });
+
         }
     });
 };
@@ -42,7 +43,7 @@ dblClickEdit.prototype.getDescription = function () {
     return "Double click messages to edit them";
 };
 dblClickEdit.prototype.getVersion = function () {
-    return "0.1.0";
+    return "0.1.1";
 };
 dblClickEdit.prototype.getAuthor = function () {
     return "Jiiks";

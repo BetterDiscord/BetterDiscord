@@ -4,5 +4,10 @@
   "version": "0.2.7",
   "homepage": "https://github.com/Jiiks/BetterDiscordApp",
   "license": "MIT",
-  "main": "betterdiscord.js"
+  "main": "betterdiscord.js",
+  "devDependencies": {
+    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.1"
+  }
 }

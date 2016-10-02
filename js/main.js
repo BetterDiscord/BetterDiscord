@@ -1,12 +1,13 @@
+
 /* BetterDiscordApp Core JavaScript
  * Version: 1.53
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
- * Last Update: 02/04/2016
+ * Last Update: 01/05/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
-var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor;
-var jsVersion = 1.62;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
+var jsVersion = 1.74;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -21,28 +22,33 @@ var bttvEmoteUrlEnd = "/1x";
 var mainCore;
 
 var settings = {
-    "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false},
-    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false},
-    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false},
-    "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false},
-    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false},
-    "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false},
-    "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show/Hide Discord emoji menu",                      "implemented": true,  "hidden": false},
-    "Show Emotes":                { "id": "bda-es-7",  "info": "Show any emotes",                                   "implemented": true,  "hidden": false},
-    "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false},
-    "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false},
-    "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false},
-    "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false},
-    "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false},
-    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false},
-    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable/Disable emote mods",                         "implemented": true,  "hidden": false},
-    "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false},
-    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true },
-    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true },
+    "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
+    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false, "cat": "core"},
+    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
+    "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
+    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
+    "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false, "cat": "core"},
+    "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false, "cat": "core"},
+    "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false, "cat": "core"},
+    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
+    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
+    "24 Hour Timestamps":         { "id": "bda-gs-6",  "info": "Replace 12hr timestamps with proper ones",          "implemented": true,  "hidden": false, "cat": "core"},
+    "Coloured Text":              { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
+    "Developer Mode":             { "id": "bda-gs-8",  "info": "Developer Mode",                                    "implemented": true,  "hidden": false, "cat": "core"},
+
+    "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
+    "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
+    "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show Discord emoji menu",                           "implemented": true,  "hidden": false, "cat": "emote"},
+    "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false, "cat": "emote"},
+    "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": true,  "hidden": false, "cat": "emote"},
 };
 
 var links = {
-    "Jiiks.net": { "text": "Jiiks.net", "href": "http://jiiks.net",          "target": "_blank" },
+    "Jiiks.net": { "text": "Jiiks.net", "href": "thtp://jiiks.net",          "target": "_blank" },
     "twitter":   { "text": "Twitter",   "href": "http://twitter.com/jiiksi", "target": "_blank" },
     "github":    { "text": "Github",    "href": "http://github.com/jiiks",   "target": "_blank" }
 };
@@ -54,6 +60,10 @@ var defaultCookie = {
     "bda-gs-2": false,
     "bda-gs-3": false,
     "bda-gs-4": false,
+    "bda-gs-5": true,
+    "bda-gs-6": false,
+    "bda-gs-7": false,
+    "bda-gs-8": false,
     "bda-es-0": true,
     "bda-es-1": true,
     "bda-es-2": true,
@@ -73,56 +83,61 @@ var defaultCookie = {
 
 var bdchangelog = {
     "changes": {
-        "emotemenu": {
-            "title": "v1.62 : Brand new emote menu that fits in Discord emoji menu!",
-            "text": "The emote menu has been replaced by a new one that injects itself in the Discord emoji menu!",
+        "0a": {
+            "title": "1.73 : Native sub emotes",
+            "text": "Native sub emote support disabled for now due to a critical bug",
             "img": ""
         },
-        "cccss": {
-            "title": "v1.61 : New custom CSS editor",
-            "text": "The custom CSS editor now has options and can be detached!",
+        "1a": {
+            "title": "1.73 : Initial Developer Mode",
+            "text": "Enable developer mode from settings!",
             "img": ""
         },
-        "vdc": {
-            "title": "v1.61 : Voice Disconnect",
-            "text": "Disconnect from voice server when closing Discord!",
+        "a": {
+            "title": "v1.72 : Public Servers",
+            "text": "Public servers now have categories, description, tags, dark mode and more!",
             "img": ""
         },
-        "pslist": {
-            "title": "v1.60 : New public server list!",
-            "text": 'New and shiny public server list powered by <a href="https://www.discordservers.com/" target="_blank">DiscordServers.com</a>!',
+        "b": {
+            "title": "v1.72 : Import/Export",
+            "text": "Import/Export buttons now disappear in themes/plugins tabs to avoid confusion",
             "img": ""
         },
-        "api": {
-            "title": "v1.59 : New plugin api callback",
-            "text": "Use the `observer(e)` callback instead of creating your own MutationObserver",
-            "img": ""
-        },
-        "emotemods": {
-            "title": "v1.59 : New emote mods!",
-            "text": "The following emote mods have been added: :shake2, :shake3, :flap",
-            "img": ""
-        },
-        "minmode": {
-            "title": "v1.59: Minimal mode",
-            "text": "Minimal mode embed fixed size has been removed",
+        "c": {
+            "title": "v1.72 : Changelog",
+            "text": "You can now reopen this changelog from the settings",
             "img": ""
         }
     },
     "fixes": {
-        "modal": {
-            "title": "v1.62 : Fixed modals",
-            "text": "Fixed broken modal introduced by 0.0.287",
-            "imt": ""
-        },
-        "emotes": {
-            "title": "v1.59 : Native sub emote mods",
-            "text": "Emote mods now work with native sub emotes!",
+        "0a": {
+            "title": "v1.74 : BetterDiscord Invite",
+            "text": "Fixed the BetterDiscord invite link in public servers",
             "img": ""
         },
-        "emotes2": {
-            "title": "v1.59 : Emote mods and custom emotes",
-            "text": "Emote mods will no longer interfere with custom emotes using :",
+        "0b": {
+            "title": "v1.74 : Dev Mode",
+            "text": "Fixed dev mode breaking",
+            "img": ""
+        },
+        "0c": {
+            "title": "v1.72 : Settings panel",
+            "text": "Settings panel will now show no matter how you open it!",
+            "img": ""
+        },
+        "0d": {
+            "title": "v1.72 : Fixed emote edit bug",
+            "text": "Edits now appear properly even with emotes!",
+            "img": ""
+        },
+        "0e": {
+            "title": "v1.72 : Public servers",
+            "text": "Public servers button is visible again!",
+            "img": ""
+        },
+        "0f": {
+            "title": "v1.72 : Public servers",
+            "text": "Updated public servers api endpoint url for fetching correct serverlist.",
             "img": ""
         }
     }
@@ -135,8 +150,10 @@ function Core() {}
 Core.prototype.init = function () {
     var self = this;
 
-    if (version < supportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + version + "(your version)" + " is not supported by the latest js(" + jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
+    var lVersion = (typeof(version) === "undefined") ? bdVersion : version;
+
+    if (lVersion < supportedVersion) {
+        this.alert("Not Supported", "BetterDiscord v" + lVersion + "(your version)" + " is not supported by the latest js(" + jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
         return;
     }
 
@@ -147,6 +164,7 @@ Core.prototype.init = function () {
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
+    dMode = new devMode();
 
     emoteModule.init();
 
@@ -198,6 +216,11 @@ Core.prototype.init = function () {
                 if(settingsCookie["bda-dc-0"]){
                     $('.btn.btn-disconnect').click();
                 }
+            });
+
+            $(document).on("mousedown", function(e) {
+                //bd modal hiders
+
             });
             
             opublicServers.init();
@@ -256,7 +279,11 @@ Core.prototype.loadSettings = function () {
 var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function () {
     mainObserver = new MutationObserver(function (mutations) {
+
         mutations.forEach(function (mutation) {
+            if(settingsPanel !== undefined)
+                settingsPanel.inject(mutation);
+
             if($(mutation.target).find(".emoji-picker").length) {
                 var fc = mutation.target.firstChild;
                 if(fc.classList.contains("popout")) {
@@ -273,6 +300,38 @@ Core.prototype.initObserver = function () {
                 }
                 if (mutation.target.getAttribute('class').indexOf('scroller messages') != -1) {
                     if (typeof pluginModule !== "undefined") pluginModule.newMessage();
+                }
+
+                if(settingsCookie["bda-gs-6"]) {
+                    $(".timestamp").not("[data-24]").each(function() {
+                        var t = $(this);
+                        t.attr("data-24", true);
+                        var text = t.text();
+                        var matches = /(.*)?at\s+(\d{1,2}):(\d{1,2})\s+(.*)/.exec(text);
+                        if(matches == null) return true;
+                        if(matches.length < 5) return true;
+                        
+                        var h = parseInt(matches[2]);
+                        if(matches[4] == "AM") {
+                            if(h == 12) h -= 12;
+                        }else if(matches[4] == "PM") {
+                            if(h < 12) h += 12;
+                        }
+                    
+                        matches[2] = ('0' + h).slice(-2);
+                        t.text(matches[1] + " at " + matches[2] + ":" + matches[3]);
+                    });
+                }
+                if(settingsCookie["bda-gs-7"]) {
+                    $(".user-name").not("[data-colour]").each(function() {
+                        var t = $(this);
+                        var color = t.css("color");
+                        if(color == "rgb(255, 255, 255)") return true;
+                        t.closest(".message-group").find(".markup").not("[data-colour]").each(function() {
+                            $(this).attr("data-colour", true);
+                            $(this).css("color", color);
+                        });
+                    });
                 }
             }
             emoteModule.obsCallback(mutation);
@@ -371,20 +430,33 @@ Core.prototype.constructChangelog = function () {
 };
 
 Core.prototype.alert = function (title, text) {
-    $("body").append('' +
-        '<div class="bd-alert">' +
-        '   <div class="bd-alert-header">' +
-        '       <span>' + title + '</span>' +
-        '       <div class="bd-alert-closebtn" onclick="$(this).parent().parent().remove();">×</div>' +
-        '   </div>' +
-        '   <div class="bd-alert-body">' +
-        '       <div class="scroller-wrap dark fade">' +
-        '           <div class="scroller">' + text + '</div>' +
-        '       </div>' +
-        '   </div>' +
-        '</div>');
+    var id = '';
+    for( var i=0; i < 5; i++ )
+        id += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length)); 
+    var bdAlert = '\
+    <div id="bda-alert-'+id+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+id+'">\
+        <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
+            <div class="markdown-modal">\
+                <div class="markdown-modal-header">\
+                    <strong style="float:left"><span>BetterDiscord - </span><span>'+title+'</span></strong>\
+                    <span></span>\
+                    <button class="markdown-modal-close" onclick=\'document.getElementById("bda-alert-'+id+'").remove(); utils.removeBackdrop("'+id+'");\'></button>\
+                </div>\
+                <div class="scroller-wrap fade">\
+                    <div style="font-weight:700" class="scroller">'+text+'</div>\
+                </div>\
+                <div class="markdown-modal-footer">\
+                    <span style="float:right"> for support.</span>\
+                    <a style="float:right" href="https://discord.gg/0Tmfo5ZbOR9NxvDd" target="_blank">#support</a>\
+                    <span style="float:right">Join </span>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+    ';
+    $("body").append(bdAlert);
+    utils.addBackdrop(id);
 };
-
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.5
  * Author: Jiiks | http://jiiks.net
@@ -424,28 +496,23 @@ EmoteModule.prototype.getBlacklist = function () {
 EmoteModule.prototype.obsCallback = function (mutation) {
     var self = this;
 
-    if (!settingsCookie["bda-es-7"]) return;
+    //if (!settingsCookie["bda-es-7"]) return;
 
-    $(".emoji").each(function () {
+    /*$(".emoji").each(function() {
         var t = $(this);
-        if (t.attr("src").indexOf(".png") != -1) {
-
-            var next = t.next();
-            var newText = t.attr("alt");
-            if(next.size() > 0) {
-                if(next.prop("tagName") == "SPAN") {
-                    newText += next.text();
-                    next.remove();
-                }
-            }
-
-            if(t.parent().prop("tagName") != "SPAN") {
-                t.replaceWith("<span>" + newText + "</span>");
-            } else {
-                t.replaceWith(newText);
-            }
+        if(t.attr("src").indexOf(".png") != -1) {
+            t.replaceWith(t.attr("alt"));
         }
-    });
+    });*/
+    
+    /*$(".emoji:not(.emote)").each(function() {
+        var t = $(this);
+        t.addClass("emote");
+        t.wrap('<span class="emotewrapper"></span>');
+        t.parent().append($("<input/>", { class: "fav", title: "Favorite!", type: "button" }));
+    });*/
+    
+
 
     for (var i = 0; i < mutation.addedNodes.length; ++i) {
         var next = mutation.addedNodes.item(i);
@@ -453,7 +520,12 @@ EmoteModule.prototype.obsCallback = function (mutation) {
             var nodes = self.getNodes(next);
             for (var node in nodes) {
                 if (nodes.hasOwnProperty(node)) {
-                    self.injectEmote(nodes[node]);
+                    var elem = nodes[node].parentElement;
+                    if (elem && elem.classList.contains('edited')) {
+                        self.injectEmote(elem);
+                    } else {
+                        self.injectEmote(nodes[node]);
+                    }
                 }
             }
         }
@@ -469,162 +541,169 @@ EmoteModule.prototype.getNodes = function (node) {
     while (next = treeWalker.nextNode()) {
         nodes.push(next);
     }
-
     return nodes;
 };
 
 var bemotes = [];
 var spoilered = [];
 
-EmoteModule.prototype.injectEmote = function (node) {
 
-    if (typeof emotesTwitch === 'undefined') return;
+EmoteModule.prototype.injectEmote = function(node) {
+    var self = this;
 
     if (!node.parentElement) return;
+    var parent = $(node).parent();
+    
+    if(!parent.hasClass("markup") && !parent.hasClass("message-content")) return;
 
-    var parent = node.parentElement;
-
-    if (parent.tagName != "SPAN") return;
-    if (!$(parent.parentElement).hasClass("markup") && !$(parent.parentElement).hasClass("message-content")) {
-        return;
-    }
-
-    var edited = false;
-
-    if ($(parent.parentElement).hasClass("edited")) {
-        parent = parent.parentElement.parentElement.firstChild;
-        edited = true;
-    }
 
     function inject() {
-        var parentInnerHTML = parent.innerHTML;
-        var words = parentInnerHTML.split(/\s+/g);
+        var contents = parent.contents();
+        
+        contents.each(function(i) {
+            if(contents[i] == undefined) return;
+            var nodeValue = contents[i].nodeValue;
+            if(nodeValue == null) return;
+            //if(nodeValue.indexOf("react-") > -1) return;
 
-        if (!words) return;
+            if(contents[i].nodeType == 8) return;
+            contents.splice(i, 1);
 
-        words.some(function (word) {
-            if (word.slice(0, 4) == "[!s]") {
+            var words = nodeValue.split(/([^\s]+)([\s]|$)/g).filter(function(e){ return e});
+            
+            var splice = 0;
 
-                parentInnerHTML = parentInnerHTML.replace("[!s]", "");
-                var markup = $(parent).parent();
-                var reactId = markup.attr("data-reactid");
+            var doInject = false;
+            var text = null;
 
-                if (spoilered.indexOf(reactId) > -1) {
-                    return;
+            words.forEach(function(w, index, a) {
+                
+                if(w.indexOf("[!s]") > -1) {
+                    w = w.replace("[!s]", "");
+                    parent.data("spoilered", false);
+                    parent.addClass("spoiler");
                 }
-
-                markup.addClass("spoiler");
-                markup.on("click", function () {
-                    $(this).removeClass("spoiler");
-                    spoilered.push($(this).attr("data-reactid"));
-                });
-
-                return;
-            }
-
-            if (word.length < 4) {
-                return;
-            }
-
-            if (word == "ClauZ") {
-                parentInnerHTML = parentInnerHTML.replace("ClauZ", '<img src="https://cdn.frankerfacez.com/emoticon/70852/1" style="width:25px; transform:translate(-29px, -14px);"></img>');
-                return;
-            }
-
-            var useEmoteCss = false;
-            var sWord = word;
-            var emoteClass = "";
-            var allowedClasses = ["emoteflip", "emotespin", "emotepulse", "emotespin2", "emotespin3", "emote1spin", "emote2spin", "emote3spin", "emotetr", "emotebl", "emotebr", "emoteshake", "emoteshake2", "emoteshake3", "emoteflap"];
-            if(word.indexOf(":") > -1) {
-                var split = word.split(/:(?!.*:)/);
-                if (split[0] != "" && split[1] != "") { 
-                    userEmoteCss = true;
-                    sWord = split[0];
-                    if(settingsCookie["bda-es-8"]) {
-                        emoteClass = "emote" + split[1];
-                        if(allowedClasses.indexOf(emoteClass) < 0) {
-                            emoteClass = "";
+                
+                var allowedClasses = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
+                var useEmoteClass = false;
+                var emoteClass = "";
+                var skipffz = false;
+                
+                var sw = w;
+                
+                if(w.indexOf(":") > -1) {
+                    var split = w.split(":");
+                    if(split[0] != "" && split[1] != "") {
+                        if(allowedClasses.indexOf(split[1]) > -1) {
+                            sw = split[0];
+                            emoteClass = settingsCookie["bda-es-8"] ? "emote" + split[1] : "";
+                        }
+                        if(split[1] == "bttv") {
+                            sw = split[0];
+                            skipffz = true;
                         }
                     }
                 }
-            }
-            if ($.inArray(sWord, bemotes) != -1) return;
-
-            if (emotesTwitch.emotes.hasOwnProperty(sWord)) {
-                var len = Math.round(sWord.length / 4);
-                var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                var url = twitchEmoteUrlStart + emotesTwitch.emotes[sWord].image_id + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                return;
-            }
-
-            if (subEmotesTwitch.hasOwnProperty(sWord)) {
-                var len = Math.round(sWord.length / 4);
-                var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                var url = twitchEmoteUrlStart + subEmotesTwitch[sWord] + twitchEmoteUrlEnd;
-                parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                return;
-            }
-            
-            if (typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) {
-                if (emotesFfz.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = ffzEmoteUrlStart + emotesFfz[sWord] + ffzEmoteUrlEnd;
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
+                
+                if ($.inArray(sw, bemotes) == -1) {
+                
+                    if(typeof emotesTwitch !== 'undefind' && settingsCookie["bda-es-7"]) {
+                        if(emotesTwitch.emotes.hasOwnProperty(sw) && sw.length >= 4) { 
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = twitchEmoteUrlStart + emotesTwitch.emotes[sw].image_id + twitchEmoteUrlEnd;
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
+                    
+                    if(typeof subEmotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
+                        if(subEmotesTwitch.hasOwnProperty(sw) && sw.length >= 4) {
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = twitchEmoteUrlStart + subEmotesTwitch[sw] + twitchEmoteUrlEnd;
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
+                    
+                    if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) { 
+                        if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 4) {
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = emotesBTTV[sw];
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
+                    
+                    if ((typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) && (!skipffz || !emotesBTTV2.hasOwnProperty(sw))) { 
+                        if(emotesFfz.hasOwnProperty(sw) && sw.length >= 4) {
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = ffzEmoteUrlStart + emotesFfz[sw] + ffzEmoteUrlEnd;
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
+    
+                    if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) { 
+                        if(emotesBTTV2.hasOwnProperty(sw) && sw.length >= 4) {
+                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
+                            var url = bttvEmoteUrlStart + emotesBTTV2[sw] + bttvEmoteUrlEnd;
+                            if(skipffz && emotesFfz.hasOwnProperty(sw)) sw = sw + ":bttv";
+                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
+                            doInject = true;
+                            return;
+                        }
+                    }
                 }
-            }
-
-            if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if (emotesBTTV.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = emotesBTTV[sWord];
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
+                
+                if(text == null) {
+                    text = w;
+                } else {
+                    text += "" + w;
                 }
-            }
 
-            if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) {
-                if (emotesBTTV2.hasOwnProperty(sWord)) {
-                    var len = Math.round(sWord.length / 4);
-                    var name = sWord.substr(0, len) + "\uFDD9" + sWord.substr(len, len) + "\uFDD9" + sWord.substr(len * 2, len) + "\uFDD9" + sWord.substr(len * 3);
-                    var url = bttvEmoteUrlStart + emotesBTTV2[sWord] + bttvEmoteUrlEnd;
-                    parentInnerHTML = parentInnerHTML.replace(word, '<div class="emotewrapper"><img class="emote '+emoteClass+'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></div>');
-                    return;
+                if(index === a.length - 1) {
+                    contents.splice(i + splice, 0, document.createTextNode(text));
                 }
+            });
+
+            if(doInject) {
+                var oldHeight = parent.outerHeight();
+                parent.html(contents);
+                var scrollPane = $(".scroller.messages").first();
+                scrollPane.scrollTop(scrollPane.scrollTop() + (parent.outerHeight() - oldHeight));
             }
 
         });
-
-        if (parent.parentElement == null) return;
-
-        var oldHeight = parent.parentElement.offsetHeight;
-        parent.innerHTML = parentInnerHTML.replace(new RegExp("\uFDD9", "g"), "");
-        var newHeight = parent.parentElement.offsetHeight;
-
-        var scrollPane = $(".scroller.messages").first();
-        scrollPane.scrollTop(scrollPane.scrollTop() + (newHeight - oldHeight));
-        
     }
-
-    if (edited) {
+    
+    inject();
+    if(parent.children().hasClass("edited")) {
         setTimeout(inject, 250);
-    } else {
-        inject();
     }
+
+    
+
+};
+
+EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
+    var len = Math.round(word.length / 4);
+    var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
+    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" class="emote '+ mod +'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></span>';
+    return $.parseHTML(html.replace(new RegExp("\uFDD9", "g"), ""))[0];
 };
 
 EmoteModule.prototype.autoCapitalize = function () {
 
     var self = this;
 
-    $('body').delegate($(".channel-textarea-inner textarea"), 'keyup change paste', function () {
+    $('body').delegate($(".channel-textarea-inner textarea:first"), 'keyup change paste', function () {
         if (!settingsCookie["bda-es-4"]) return;
 
-        var text = $(".channel-textarea-inner textarea").val();
-
+        var text = $(".channel-textarea-inner textarea:first").val();
         if (text == undefined) return;
 
         var lastWord = text.split(" ").pop();
@@ -632,7 +711,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = self.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                $(".channel-textarea-inner textarea").val(text.replace(lastWord, ret));
+                $(".channel-textarea-inner textarea:first").val(text.replace(lastWord, ret));
             }
         }
     });
@@ -646,7 +725,6 @@ EmoteModule.prototype.capitalize = function (value) {
         }
     }
 };
-
 /* BetterDiscordApp PublicSevers JavaScripts
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -663,11 +741,15 @@ PublicServers.prototype.getPanel = function () {
 };
 
 PublicServers.prototype.init = function () {
+    this.filtered = ["134680912691462144", "86004744966914048"];
+    this.bdServer = null;
+    this.loadingServers = false;
     var self = this;
 
-    var guilds = $(".guilds>li:first-child");
+    var guilds = $(".guilds>:first-child");
 
-    guilds.after($("<li></li>", {
+    guilds.after($("<div></div>", {
+        class: "guild",
         id: "bd-pub-li",
         css: {
             "height": "20px",
@@ -692,27 +774,76 @@ PublicServers.prototype.init = function () {
         self.show();
     });
 
-    var panelBase="";
-        panelBase += "<div id=\"pubs-container\">";
-        panelBase += "  <div id=\"pubs-spinner\">";
-        panelBase += "    <span class=\"spinner\" type=\"wandering-cubes\"><span class=\"spinner-inner spinner-wandering-cubes\"><span class=\"spinner-item\"><\/span><span class=\"spinner-item\"><\/span><\/span><\/span>";
-        panelBase += "  <\/div>";
-        panelBase += "  <div id=\"pubs-header\">";
-        panelBase += "    <h2 id=\"pubs-header-title\">Public Servers<\/h2>";
-        panelBase += "    <button id=\"sbtn\">Search<\/button>";
-        panelBase += "    <input id=\"sterm\" type=\"text\" placeholder=\"Search term...\"\/>";
-        panelBase += "  <\/div>";
-        panelBase += "  <div class=\"scroller-wrap\">";
-        panelBase += "    <div class=\"scroller\">";
-        panelBase += "      <div id=\"slist\" class=\"servers-listing\">";
-        panelBase += "        ";
-        panelBase += "      <\/div>";
-        panelBase += "    <\/div>";
-        panelBase += "  <\/div>";
-        panelBase += "  <div id=\"pubs-footer\">";
-        panelBase += "    <div>Server list provided by <a href=\"https:\/\/www.discordservers.com\/\" target=\"_blank\">DiscordServers.com<\/a><\/div>";
-        panelBase += "  <\/div>";
-        panelBase += "<\/div>";
+
+    var panelBase = '\
+        <div id="pubs-container">\
+            <div id="pubs-spinner">\
+                <span class="spinner" type="wandering-cubes">\
+                    <span class="spinner-inner spinner-wandering-cubes">\
+                        <span class="spinner-item"></span>\
+                        <span class="spinner-item"></span>\
+                    </span>\
+                </span>\
+            </div>\
+            <div id="pubs-header">\
+                <h2 id="pubs-header-title">Public Servers</h2>\
+                <button id="pubs-searchbtn">Search</button>\
+                <input id="pubs-sterm" type="text" placeholder="Search Term...">\
+                <div id="pubs-select-dropdown" class="bd-dropdown">\
+                    <button class="bd-dropdown-select" id="pubs-cat-select">All</button>\
+                    <div class="bd-dropdown-list">\
+                        <ul>\
+                            <li class="pubs-cat-select-li" data-val="all">All</li>\
+                            <li class="pubs-cat-select-li" data-val="1">FPS Games</li>\
+                            <li class="pubs-cat-select-li" data-val="2">MMO Games</li>\
+                            <li class="pubs-cat-select-li" data-val="3">MOBA Games</li>\
+                            <li class="pubs-cat-select-li" data-val="4">Strategy Games</li>\
+                            <li class="pubs-cat-select-li" data-val="5">Sports Games</li>\
+                            <li class="pubs-cat-select-li" data-val="6">Puzzle Games</li>\
+                            <li class="pubs-cat-select-li" data-val="7">Retro Games</li>\
+                            <li class="pubs-cat-select-li" data-val="8">Party Games</li>\
+                            <li class="pubs-cat-select-li" data-val="9">Tabletop Games</li>\
+                            <li class="pubs-cat-select-li" data-val="10">Sandbox Games</li>\
+                            <li class="pubs-cat-select-li" data-val="11">Community</li>\
+                            <li class="pubs-cat-select-li" data-val="12">Language</li>\
+                            <li class="pubs-cat-select-li" data-val="13">Programming</li>\
+                            <li class="pubs-cat-select-li" data-val="14">Other</li>\
+                            <li class="pubs-cat-select-li" data-val="15">Simulation Games</li>\
+                        </ul>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="server-row server-pinned" style="display:none;">\
+                <div class="server-icon" style="background-image:url(https://cdn.discordapp.comi/cons/86004744966914048/6e5729ed5c12d5af558d80d7a194c3f9.jpg)"></div>\
+                <div class="server-info server-name"><span>BetterDiscord</span><span id="server-bd-tag">Official BetterDiscord server</span></div>\
+                <div class="server-info server-members"><span></span></div>\
+                <div class="server-info server-region"><span></span></div>\
+                <div class="server-info">\
+                    <button data-server-invite-code="0Tmfo5ZbORCRqbAd">Join</button>\
+                </div>\
+            </div>\
+            <div class="scroller-wrap">\
+                <div class="scroller" id="pubs-scroller">\
+                    <div id="pubs-list" class="servers-listing">\
+                    </div>\
+                    <div style="background:#FFF; padding: 5px 0; display:none;" id="pubs-spinner-bottom">\
+                        <div>\
+                            <span class="spinner" type="wandering-cubes">\
+                                <span class="spinner-inner spinner-wandering-cubes">\
+                                    <span class="spinner-item"></span>\
+                                    <span class="spinner-item"></span>\
+                                </span>\
+                            </span>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div id="pubs-footer">\
+                <span style="color:#FFF; font-size:10px; font-weight:700; margin-left:5px;">Tip: Hover over server name for description if available</span>\
+                <div>Server list provided by <a href="https://discordservers.com" target="_blank">DiscordServers.com</a></div>\
+            </div>\
+        ';
+
     this.container = panelBase;
 
     if($("#bd-pub-li").length < 1) {
@@ -722,41 +853,114 @@ PublicServers.prototype.init = function () {
     }
 };
 
-
-PublicServers.prototype.show = function () {
+PublicServers.prototype.getPinnedServer = function() {
     var self = this;
-    $("body").append(this.getPanel());
-
     var dataset = {
-        "sort": [{
-            "online": "desc"
-        }],
-        "from": 0,
-        "size": 20,
+        "sort": [{"online": "desc"}],
+        "size": 1,
         "query": {
-            "filtered": {
-                "query": {
-                    "match_all": {}
-                }
+            "query_string": {
+            "default_operator": "AND",
+            "query": "BetterDiscord"
             }
         }
     };
-
-    $("#sbtn").on("click", function() {
-        self.search();
-    });
-    $("#sterm").on("keyup", function(e) {
-        if (e.keyCode == 13) {
-            self.search();
+    
+    $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/discord_servers/_search",
+        crossDomain: true,
+        data: JSON.stringify(dataset),
+        success: function(data) {
+            try {
+                var s = data.hits.hits[0]._source;
+                if(s.identifier == "86004744966914048") {
+                    self.bdServer = s;
+                    self.showPinnedServer();
+                }
+            }catch(err) {
+                self.bdServer = null;
+            }
         }
     });
+};
 
-   this.loadServers(dataset, false);
+PublicServers.prototype.hidePinnedServer = function() {
+    $("#pubs-container .scroller-wrap").css({"margin-top": "0", "height": "500px"});
+    $(".server-pinned").hide();
+};
+
+PublicServers.prototype.showPinnedServer = function() {
+    $(".server-pinned .server-icon").css("background-image", "url("+this.bdServer.icon+")");
+    $(".server-pinned .server-members span").text(this.bdServer.online + "/"+this.bdServer.members+" Members");
+    $(".server-pinned .server-region span").text(this.bdServer.region);
+    $(".server-pinned .server-info button").data("server-invite-code", this.bdServer.invite_code);
+    $("#pubs-container .scroller-wrap").css({"margin-top": "75px", "height": "425px"});
+    $(".server-pinned").show();
+};
+
+PublicServers.prototype.show = function () {
+    var self = this;
+    this.hidePinnedServer();
+    $("#pubs-cat-select").text("All");
+    this.selectedCategory = "all";
+    $("#pubs-container .scroller-wrap").css({"margin-top": "0", "height": "500px"});
+    $(".server-pinned").hide();
+    
+    $(".app").append(this.getPanel());
+    
+    if(this.bdServer == null) {
+        this.getPinnedServer();
+    } else {
+        this.showPinnedServer();
+    }
+
+    self.search(0, true);
+
+    $("#pubs-searchbtn").off("click").on("click", function() {
+        self.search();
+    });
+    $("#pubs-sterm").off("keyup").on("keyup", function(e) {
+        if (e.keyCode == 13) {
+            self.search(0, true);
+        }
+    });
+    $("#pubs-cat-select").off("click").on("click", function() {
+        $("#pubs-select-dropdown").addClass("open");
+    });
+    $(".pubs-cat-select-li").off("click").on("click", function() {
+        $("#pubs-select-dropdown").removeClass("open");
+        $("#pubs-cat-select").text($(this).text());
+        if(self.selectedCategory != $(this).data("val")) {
+            self.selectedCategory = $(this).data("val");
+            self.search(0, true);
+        }
+    });
+    $("#pubs-container").off("mouseup").on("mouseup", function() {
+        $("#pubs-select-dropdown").removeClass("open");
+    });
+
    var self = this;
     $(document).on("mouseup.bdps",function(e) {
         if(!$("#bd-pub-button").is(e.target) && !$("#pubs-container").is(e.target) && $("#pubs-container").has(e.target).length === 0) {
             self.hide();
         }
+    });
+
+    $("#pubs-scroller").off("scroll.pubs").on("scroll.pubs", function() {
+        if(self.loadingServers) return;
+        var list = $("#pubs-list");
+        if($(this).scrollTop() + 550 < list.height()) return;
+        if(list.children().length % 20 != 0) return;
+
+        self.loadingServers = true;
+        $("#pubs-spinner-bottom").show();
+        self.search(list.children().length, false);
+    });
+
+    $("button[data-server-invite-code=0Tmfo5ZbORCRqbAd]").off("click").on("click", function(){
+        self.joinServer("0Tmfo5ZbORCRqbAd");
     });
 };
 
@@ -765,32 +969,54 @@ PublicServers.prototype.hide = function() {
     $(document).off("mouseup.bdps");
 };
 
-PublicServers.prototype.loadServers = function(dataset, search) {
+
+PublicServers.prototype.loadServers = function(dataset, search, clear) {
+    this.loadingServers = true;
     var self = this;
-    $("#sbtn").prop("disabled", true);
-    $("#sterm").prop("disabled", true);
-    $("#slist").empty();
+    $("#pubs-searchbtn").prop("disabled", true);
+    $("#pubs-sterm").prop("disabled", true);
+    if(clear) $("#pubs-list").empty();
     $("#pubs-spinner").show();
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/app/_search",
+        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/discord_servers/_search",
         crossDomain: true,
         data: JSON.stringify(dataset),
         success: function(data) {
             var hits = data.hits.hits;
+            
             if(search) {
               $("#pubs-header-title").text("Public Servers - Search Results: " + hits.length);
             } else {
               $("#pubs-header-title").text("Public Servers");
             }
+
             hits.forEach(function(hit) {
                 var source = hit._source;
-                var icode = source.invite_code;
+                var icode = source.invite_code.replace(/ /g,'');
+                icode = self.escape(icode);
                 var html = '<div class="server-row">';
-                html += '<div class="server-icon" style="background-image:url(' + source.icon + ')"></div>';
+                html += '<div class="server-icon" style="background-image:url(' + self.escape(source.icon) + ')"></div>';
                 html += '<div class="server-info server-name">';
-                html += '<span>' + source.name + ' by ' + source.owner.name + '</span>';
+                html += '<div class="server-information">';
+                
+                if(source.is_official) {
+                    html += '<span class="server-official">Official!</span>';
+                }
+
+                html += '<span class="server-name-span">' + self.escape(source.name) + '</span>';
+                
+                var tags = [];
+                source.categories.forEach(function(tag) {
+                    tags.push(self.escape(tag.name));
+                });
+
+                var desc = 
+
+                html += '<span class="server-tags">'+tags.join(", ")+'</span>';
+                html += '<span class="server-description">'+(source.description == undefined ? "No Description" : self.escape(source.description)) +'</span>';
+                html += '</div>';
                 html += '</div>';
                 html += '<div class="server-info server-members">';
                 html += '<span>' + source.online + '/' + source.members + ' Members</span>';
@@ -802,67 +1028,79 @@ PublicServers.prototype.loadServers = function(dataset, search) {
                 html += '<button data-server-invite-code='+icode+'>Join</button>';
                 html += '</div>';
                 html += '</div>';
-                $("#slist").append(html);
+                $("#pubs-list").append(html);
                 $("button[data-server-invite-code="+icode+"]").on("click", function(){
                     self.joinServer(icode);
                 });
             });
+
+            if(search) {
+              $("#pubs-header-title").text("Public Servers - Search Results: " + $("#pubs-list").children().length);
+            }
         },
       done: function() {
         $("#pubs-spinner").hide();
-        $("#sbtn").prop("disabled", false);
-        $("#sterm").prop("disabled", false);
+        $("#pubs-spinner-bottom").hide();
+        $("#pubs-searchbtn").prop("disabled", false);
+        $("#pubs-sterm").prop("disabled", false);
+        self.loadingServers = false;
       },
       always: function() {
         $("#pubs-spinner").hide();
-        $("#sbtn").prop("disabled", false);
-        $("#sterm").prop("disabled", false);
+        $("#pubs-spinner-bottom").hide();
+        $("#pubs-searchbtn").prop("disabled", false);
+        $("#pubs-sterm").prop("disabled", false);
+        self.loadingServers = false;
       },
       error: function() {
         $("#pubs-spinner").hide();
-        $("#sbtn").prop("disabled", false);
-        $("#sterm").prop("disabled", false);
+        $("#pubs-spinner-bottom").hide();
+        $("#pubs-searchbtn").prop("disabled", false);
+        $("#pubs-sterm").prop("disabled", false);
+        self.loadingServers = false;
       },
       complete: function() {
         $("#pubs-spinner").hide();
-        $("#sbtn").prop("disabled", false);
-        $("#sterm").prop("disabled", false);
+        $("#pubs-spinner-bottom").hide();
+        $("#pubs-searchbtn").prop("disabled", false);
+        $("#pubs-sterm").prop("disabled", false);
+        self.loadingServers = false;
       }
     });
 };
 
-PublicServers.prototype.search = function() {
+PublicServers.prototype.search = function(start, clear) {
+    var sterm = $("#pubs-sterm").val();
+    
     var dataset = {
-        "sort": [{
-            "online": "desc"
-        }],
-        "from": 0,
+        "sort": [{ "online": "desc" }],
+        "from": start,
         "size": 20,
         "query": {
             "filtered": {
                 "query": {
-                    "match_all": {}
+                    "query_string": {
+                        "default_operator": "AND",
+                        "query": sterm ? sterm : "*"
+                    }
+                },
+                "filter": {
+                    "bool": {
+                        "must_not": [{
+                            "terms": {
+                                "identifier": this.filtered
+                            }
+                        }]
+                    }
                 }
             }
         }
     };
-
-    var filter = {
-        "filter": {
-            "and": [{
-                "query": {
-                    "match_phrase_prefix": {
-                        "name": $("#sterm").val()
-                    }
-                }
-            }]
-        }
-    };
-
-    if ($("#sterm").val()) {
-        $.extend(dataset, filter);
+    if(this.selectedCategory != "all") {
+        dataset.query.filtered.filter.bool.must = [{ "term": { "categories.id": this.selectedCategory } }]
     }
-    this.loadServers(dataset, true);
+    
+    this.loadServers(dataset, true, clear);
 };
 
 //Workaround for joining a server
@@ -873,6 +1111,14 @@ PublicServers.prototype.joinServer = function (code) {
     $(".form.join-server .btn-primary").click();
 };
 
+PublicServers.prototype.escape = function(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+};
 /* BetterDiscordApp QuickEmoteMenu JavaScript
  * Version: 1.3
  * Author: Jiiks | http://jiiks.net
@@ -890,7 +1136,7 @@ QuickEmoteMenu.prototype.init = function() {
     $(document).on("mousedown", function(e) {
         if(e.target.id != "rmenu") $("#rmenu").remove();
     });
-
+    this.favoriteEmotes = {};
     var fe = localStorage["bdfavemotes"];
     if (fe != undefined) {
         this.favoriteEmotes = JSON.parse(atob(fe));
@@ -955,7 +1201,7 @@ QuickEmoteMenu.prototype.favContext = function(e, em) {
         e.preventDefault();
         e.stopPropagation();
         $(this).remove();
-        console.log($(this).data("emoteid"));
+
         delete quickEmoteMenu.favoriteEmotes[$(this).data("emoteid")];
         quickEmoteMenu.updateFavorites();
         return false;
@@ -1058,8 +1304,6 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
 
     window.localStorage["bdfavemotes"] = btoa(JSON.stringify(this.favoriteEmotes));
 };
-
-
 function CustomCssEditor() { }
 
 CustomCssEditor.prototype.init = function() {
@@ -1159,8 +1403,6 @@ CustomCssEditor.prototype.applyCustomCss = function (css, forceupdate, forcesave
         localStorage.setItem("bdcustomcss", btoa(css));
     }
 };
-
-
 /* BetterDiscordApp Settings Panel JavaScript
  * Version: 2.0
  * Author: Jiiks | http://jiiks.net
@@ -1204,6 +1446,10 @@ SettingsPanel.prototype.init = function () {
         voiceMode.enable();
     }
 
+    if(settingsCookie["bda-gs-5"]) {
+        $("#app-mount").addClass("bda-dark");
+    }
+
     if (settingsCookie["bda-es-6"]) {
         //Pretty emote titles
         emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
@@ -1212,14 +1458,20 @@ SettingsPanel.prototype.init = function () {
             var title = $(this).attr("alt");
             $(emoteNamePopup).find(".tipsy-inner").text(title);
             $(emoteNamePopup).css('left', x.left - 25);
-            $(emoteNamePopup).css('top', x.top - 32);
-            $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));
+            $(emoteNamePopup).css('top', x.top - 37);
+            $(".app").append($(emoteNamePopup));
         });
         $(document).on("mouseleave", ".emote", function () {
             $(".tipsy").remove();
         });
     } else {
         $(document).off('mouseover', '.emote');
+    }
+    
+    if(settingsCookie["bda-gs-8"]) {
+        dMode.enable();
+    } else {
+        dMode.disable();
     }
 };
 
@@ -1240,18 +1492,26 @@ SettingsPanel.prototype.changeTab = function (tab) {
 
     switch (tab) {
     case "bd-settings-tab":
+        $(".bda-slist-top").show();
+        break;
+    case "bd-emotes-tab":
+        $(".bda-slist-top").show();
         break;
     case "bd-customcss-tab":
+        $(".bda-slist-top").show();
         if (!customCssInitialized) {
             customCssEditor.init();
             customCssInitialized = true;
         }
         break;
-    case "bd-plugins-tab":
-
-        break;
     case "bd-themes-tab":
-        controlGroups.html("<span>Coming soon</span>");
+        $(".bda-slist-top:first").hide();
+        break;
+    case "bd-plugins-tab":
+        $(".bda-slist-top:first").hide();
+        break;
+    default:
+        $(".bda-slist-top").show();
         break;
     }
 };
@@ -1269,9 +1529,16 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
             $("#app-mount").addClass("bd-hide-bd")
         }
     }
+    if(id == "bda-gs-8" && enabled) {
+        mainCore.alert("Developer Mode Enabled", "Use F8 to break/resume execution<br>More coming soon")
+    }
 
     settingsCookie[id] = enabled;
 
+    this.updateSettings();
+};
+
+SettingsPanel.prototype.updateSettings = function() {
     if (settingsCookie["bda-es-0"]) {
         $("#twitchcord-button-container").show();
     } else {
@@ -1298,6 +1565,10 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
     } else {
         voiceMode.disable();
     }
+    $("#app-mount").removeClass("bda-dark");
+    if(settingsCookie["bda-gs-5"]) {
+        $("#app-mount").addClass("bda-dark");
+    }
     if (settingsCookie["bda-es-6"]) {
         //Pretty emote titles
         emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
@@ -1314,6 +1585,12 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
         });
     } else {
         $(document).off('mouseover', '.emote');
+    } 
+
+    if(settingsCookie["bda-gs-8"]) {
+        dMode.enable();
+    } else {
+        dMode.disable();
     }
 
     mainCore.saveSettings();
@@ -1330,123 +1607,214 @@ SettingsPanel.prototype.construct = function () {
         }
     });
 
-    var settingsInner = '' +
-        '<div class="scroller-wrap">' +
-        '   <div class="scroller settings-wrapper settings-panel">' +
-        '       <div class="tab-bar TOP">' +
-        '           <div class="tab-bar-item bd-tab" id="bd-settings-tab" onclick="settingsPanel.changeTab(\'bd-settings-tab\');">Settings</div>' +
-        '           <div class="tab-bar-item bd-tab" id="bd-customcss-tab" onclick="settingsPanel.changeTab(\'bd-customcss-tab\');">Custom CSS</div>' +
-        '           <div class="tab-bar-item bd-tab" id="bd-plugins-tab" onclick="settingsPanel.changeTab(\'bd-plugins-tab\');">Plugins</div>' +
-        '           <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick="settingsPanel.changeTab(\'bd-themes-tab\');">Themes</div>' +
-        '       </div>' +
-        '       <div class="bd-settings">' +
-        '               <div class="bd-pane control-group" id="bd-settings-pane" style="display:none;">' +
-        '                   <ul class="checkbox-group">';
+    //Panel start and core settings
 
+    var settingsInner = '\
+        <div class="scroller-wrap">\
+            <div class="scroller settings-wrapper settings-panel">\
+            <div class="tab-bar TOP">\
+                <div class="tab-bar-item bd-tab" id="bd-settings-tab" onclick=\'settingsPanel.changeTab("bd-settings-tab");\'>Core\
+                </div>\
+                <div class="tab-bar-item bd-tab" id="bd-emotes-tab" onclick=\'settingsPanel.changeTab("bd-emotes-tab");\'>Emotes\
+                </div>\
+                <div class="tab-bar-item bd-tab" id="bd-customcss-tab" onclick=\'settingsPanel.changeTab("bd-customcss-tab");\'>Custom CSS\
+                </div>\
+                <div class="tab-bar-item bd-tab" id="bd-plugins-tab" onclick=\'settingsPanel.changeTab("bd-plugins-tab");\'>Plugins\
+                </div>\
+                <div class="tab-bar-item bd-tab" id="bd-themes-tab" onclick=\'settingsPanel.changeTab("bd-themes-tab");\'>Themes\
+                </div>\
+                <div class="bda-slist-top">\
+                    <button class="btn btn-primary" onclick="utils.exportSettings(); return false;">Export</button>\
+                    <button class="btn btn-primary" onclick="utils.importSettings(); return false;">Import</button>\
+                </div>\
+            </div>\
+            <div class="bd-settings">\
+                <div class="bd-pane control-group" id="bd-settings-pane" style="display:none;">\
+                    <ul class="checkbox-group">\
+    ';
 
-
-    for (var setting in settings) {
-
+    for(var setting in settings) {
         var sett = settings[setting];
         var id = sett["id"];
+        if(sett["cat"] != "core" || !sett["implemented"] || sett["hidden"]) continue;
 
-        if (sett["implemented"] && !sett["hidden"]) {
-
-            settingsInner += '' +
-                '<li>' +
-                '<div class="checkbox" onclick="settingsPanel.updateSetting(this);" >' +
-                '<div class="checkbox-inner">' +
-                '<input type="checkbox" id="' + id + '" ' + (settingsCookie[id] ? "checked" : "") + '>' +
-                '<span></span>' +
-                '</div>' +
-                '<span>' + setting + " - " + sett["info"] +
-                '</span>' +
-                '</div>' +
-                '</li>';
-        }
+        settingsInner += '\
+            <li>\
+                <div class="checkbox" onclick="settingsPanel.updateSetting(this);">\
+                    <div class="checkbox-inner">\
+                        <input type="checkbox" id="'+id+'" '+(settingsCookie[id] ? "checked" : "")+'>\
+                        <span></span>\
+                    </div>\
+                    <span>\
+                        '+setting+' - '+sett["info"]+'\
+                    </span>\
+                </div>\
+            </li>\
+        ';
     }
 
+    settingsInner += '\
+                    </ul>\
+                </div>\
+    ';
+    //End core settings
+
+    //Emote settings
+
+    settingsInner += '\
+        <div class="bd-pane control-group" id="bd-emotes-pane" style="display:none;">\
+            <ul class="checkbox-group">\
+    ';
+
+    for(var setting in settings) {
+        var sett = settings[setting];
+        var id = sett["id"];
+        if(sett["cat"] != "emote" || !sett["implemented"] || sett["hidden"]) continue;
+
+        settingsInner += '\
+            <li>\
+                <div class="checkbox" onclick="settingsPanel.updateSetting(this);">\
+                    <div class="checkbox-inner">\
+                        <input type="checkbox" id="'+id+'" '+(settingsCookie[id] ? "checked" : "")+'>\
+                        <span></span>\
+                    </div>\
+                    <span>\
+                        '+setting+' - '+sett["info"]+'\
+                    </span>\
+                </div>\
+            </li>\
+        ';
+    }
+
+    settingsInner += '\
+            </ul>\
+        </div>\
+    ';
+
+    //End emote settings
+
+    //Custom CSS Editor
     var ccss = atob(localStorage.getItem("bdcustomcss"));
     customCssEditor.applyCustomCss(ccss, true, false);
 
-    settingsInner += '</ul>' +
-        '               </div>' +
-        '' +
-        '               <div class="bd-pane control-group" id="bd-customcss-pane" style="display:none;">' +
-        '                   <div id="editor-detached" style="display:none;">' +
-        '                       <h3>Editor Detached</h3>' +
-        '                       <button class="btn btn-primary" onclick="customCssEditor.attach(); return false;">Attach</button>' +
-        '                   </div>' +
-        '                   <div id="bd-customcss-innerpane"><textarea id="bd-custom-css-ta">' + ccss + '</textarea></div>' +
-        '               </div>' +
-        '' +
-        '               <div class="bd-pane control-group" id="bd-plugins-pane" style="display:none;">' +
-        '                   <table class="bd-g-table">' +
-        '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th><th></th></tr></thead><tbody>';
+    settingsInner += '\
+        <div class="bd-pane control-group" id="bd-customcss-pane" style="display:none;">\
+            <div id="editor-detached" style="display:none;">\
+                <h3>Editor Detached</h3>\
+                <button class="btn btn-primary" onclick="customCssEditor.attach(); return false;">Attach</button>\
+            </div>\
+            <div id="bd-customcss-innerpane">\
+                <textarea id="bd-custom-css-ta">'+ccss+'</textarea>\
+            </div>\
+        </div>\
+    ';
 
-    $.each(bdplugins, function () {
+    //End Custom CSS Editor
+
+    //Plugin pane
+
+    settingsInner += '\
+        <div class="bd-pane control-group" id="bd-plugins-pane" style="display:show;">\
+            <div class="bda-slist-top">\
+                <button class="btn btn-primary" onclick=\'betterDiscordIPC.send("asynchronous-message", { "arg": "opendir", "path": "plugindir" }); return false;\'>Open Plugin Folder</button>\
+                <button class="btn btn-primary" onclick=\'window.open("https://betterdiscord.net/plugins"); return false;\'>Get Plugins</button>\
+            </div>\
+            <ul class="bda-slist">\
+    ';
+
+    $.each(bdplugins, function() {
         var plugin = this["plugin"];
-        settingsInner += '' +
-            '<tr>' +
-            '   <td>' + plugin.getName() + '</td>' +
-            '   <td width="99%"><textarea>' + plugin.getDescription() + '</textarea></td>' +
-            '   <td>' + plugin.getAuthor() + '</td>' +
-            '   <td>' + plugin.getVersion() + '</td>' +
-            '   <td><button class="bd-psb" onclick="pluginModule.showSettings(\'' + plugin.getName() + '\'); return false;"></button></td>' +
-            '   <td>' +
-            '       <div class="checkbox" onclick="pluginModule.handlePlugin(this);">' +
-            '       <div class="checkbox-inner">' +
-            '               <input id="' + plugin.getName() + '" type="checkbox" ' + (pluginCookie[plugin.getName()] ? "checked" : "") + '>' +
-            '               <span></span>' +
-            '           </div>' +
-            '       </div>' +
-            '   </td>' +
-            '</tr>';
+        var hasSettings = false;
+        if(typeof(plugin.getSettingsPanel) == "function") {
+            hasSettings = plugin.getSettingsPanel() != null && plugin.getSettingsPanel() != "";
+        }
+
+        settingsInner += '\
+            <li>\
+                <div class="bda-left">\
+                    <span class="bda-name">'+plugin.getName()+' v'+plugin.getVersion()+' by '+plugin.getAuthor()+'</span>\
+                    <div class="scroller-wrap fade">\
+                        <div class="scroller bda-description">'+plugin.getDescription()+'</div>\
+                    </div>\
+                </div>\
+                <div class="bda-right">\
+                    <div class="checkbox" onclick="pluginModule.handlePlugin(this);">\
+                        <div class="checkbox-inner">\
+                            <input id="'+plugin.getName().replace(" ", "__")+'" type="checkbox" '+(pluginCookie[plugin.getName()] ? "checked" : "")+'>\
+                            <span></span>\
+                        </div>\
+                        <span></span>\
+                    </div>\
+                    <button class="btn btn-primary bda-plugin-reload" onclick="return false;" disabled>Reload</button>\
+                    <button class="btn btn-primary bda-plugin-settings" onclick=\'pluginModule.showSettings("'+plugin.getName()+'"); return false;\' '+(hasSettings ? "" : "disabled")+'>Settings</button>\
+                </div>\
+            </li>\
+        ';
     });
 
-    settingsInner += '</tbody></table>' +
-        '               </div>' +
-        '               <div class="bd-pane control-group" id="bd-themes-pane" style="display:none;">';
+    settingsInner += '\
+            </ul>\
+        </div>\
+    ';
 
+    //End plugin pane
 
-    if (typeof (themesupport2) === "undefined") {
-        settingsInner += '' +
-            '                   Your version does not support themes. Download the latest version.';
+    //Theme pane
+
+    settingsInner += '\
+        <div class="bd-pane control-group" id="bd-themes-pane" style="display:none;">\
+            <div class="bda-slist-top">\
+                <button class="btn btn-primary" onclick=\'betterDiscordIPC.send("asynchronous-message", { "arg": "opendir", "path": "themedir" }); return false;\'>Open Theme Folder</button>\
+                <button class="btn btn-primary" onclick=\'window.open("https://betterdiscord.net/themes"); return false;\'>Get Themes</button>\
+            </div>\
+            <ul class="bda-slist">\
+    ';
+
+    if(typeof(themesupport2) === "undefined") {
+        settingsInner += "Your version does not support themes!";
     } else {
-        settingsInner += '' +
-            '                   <table class="bd-g-table">' +
-            '                       <thead><tr><th>Name</th><th>Description</th><th>Author</th><th>Version</th><th></th></tr></thead><tbody>';
-        $.each(bdthemes, function () {
-            settingsInner += '' +
-                '<tr>' +
-                '   <td>' + this["name"].replace(/_/g, " ") + '</td>' +
-                '   <td width="99%"><textarea>' + this["description"] + '</textarea></td>' +
-                '   <td>' + this["author"] + '</td>' +
-                '   <td>' + this["version"] + '</td>' +
-                '   <td>' +
-                '       <div class="checkbox" onclick="themeModule.handleTheme(this);">' +
-                '           <div class="checkbox-inner">' +
-                '               <input id="ti' + this["name"] + '" type="checkbox" ' + (themeCookie[this["name"]] ? "checked" : "") + '>' +
-                '               <span></span>' +
-                '           </div>' +
-                '       </div>' +
-                '   </td>' +
-                '</tr>';
+        $.each(bdthemes, function() {
+        settingsInner += '\
+            <li>\
+                <div class="bda-left">\
+                    <span class="bda-name">'+this["name"].replace(/_/g, " ")+' v'+this["version"]+' by '+this["author"]+'</span>\
+                    <div class="scroller-wrap fade">\
+                        <div class="scroller bda-description">'+this["description"]+'</div>\
+                    </div>\
+                </div>\
+                <div class="bda-right">\
+                    <div class="checkbox" onclick="themeModule.handleTheme(this);">\
+                        <div class="checkbox-inner">\
+                            <input id="ti'+this["name"]+'" type="checkbox" '+(themeCookie[this["name"]] ? "checked" : "")+'>\
+                            <span></span>\
+                        </div>\
+                        <span></span>\
+                    </div>\
+                    <button class="btn btn-primary bda-plugin-reload" onclick="return false;" disabled>Reload</button>\
+                </div>\
+            </li>\
+        ';
         });
-        settingsInner += '</tbody></table>';
     }
 
+    settingsInner += '\
+            </ul>\
+        </div>\
+    ';
 
-    settingsInner += '' +
-        '               </div>' +
-        '' +
-        '       </div>' +
-        '   </div>' +
-        '   <div style="background:#2E3136; color:#ADADAD; height:30px; position:absolute; bottom:0; left:0; right:0;">' +
-        '       <span style="line-height:30px;margin-left:10px;">BetterDiscord v' + version + '(JSv' + jsVersion + ') by Jiiks</span>' +
-        '       <span style="float:right;line-height:30px;margin-right:10px;"><a href="http://betterdiscord.net" target="_blank">BetterDiscord.net</a></span>' +
-        '   </div>' +
-        '</div>';
+    //End theme panel
+
+    //Footer
+
+    settingsInner += '\
+        <div style="background:#2E3136; color:#ADADAD; height:30px; position:absolute; bottom:0; left:0; right:0;">\
+            <span style="line-height:30px;margin-left:10px;">BetterDiscord v' + ((typeof(version) == "undefined") ? bdVersion : version)  + '(JSv' + jsVersion + ') by Jiiks</span>\
+            <span style="float:right;line-height:30px;margin-right:10px;"><a href="http://betterdiscord.net" target="_blank">BetterDiscord.net</a></span>\
+            <span id="bd-changelog" onclick=\'$("body").append(mainCore.constructChangelog());\'>changelog</span>\
+        </div>\
+        </div></div>\
+    ';
+
 
     function showSettings() {
         $(".tab-bar-item").removeClass("selected");
@@ -1468,39 +1836,28 @@ SettingsPanel.prototype.construct = function () {
     });
 
     panel.html(settingsInner);
-
-    function defer() {
-        if ($(".btn.btn-settings").length < 1) {
-            setTimeout(defer, 100);
-        } else {
-            $(".btn.btn-settings").first().on("click", function () {
-
-                function innerDefer() {
-                    if ($(".modal-inner").first().is(":visible")) {
-
-                        panel.hide();
-                        var tabBar = $(".tab-bar.SIDE").first();
-
-                        $(".tab-bar.SIDE .tab-bar-item").click(function () {
-                            $(".form .settings-right .settings-inner").first().show();
-                            $("#bd-settings-new").removeClass("selected");
-                            panel.hide();
-                        });
-
-                        tabBar.append(settingsButton);
-                        $(".form .settings-right .settings-inner").last().after(panel);
-                        $("#bd-settings-new").removeClass("selected");
-                    } else {
-                        setTimeout(innerDefer, 100);
-                    }
-                }
-                innerDefer();
-            });
-        }
-    }
-    defer();
+    this.panel = panel;
 };
 
+SettingsPanel.prototype.inject = function(mutation) {
+    if(mutation.type != "childList") return;
+    if(mutation.addedNodes.length <= 0) return;
+    if($(mutation.addedNodes[0]).find(".user-settings-modal").length <= 0) return;
+
+    var self = this;
+    this.panel.hide();
+    var tabBar = $(".tab-bar.SIDE").first();
+
+    $(".tab-bar.SIDE .tab-bar-item").click(function () {
+        $(".form .settings-right .settings-inner").first().show();
+        $("#bd-settings-new").removeClass("selected");
+        self.panel.hide();
+    });
+
+    tabBar.append(settingsButton);
+    $(".form .settings-right .settings-inner").last().after(self.panel);
+    $("#bd-settings-new").removeClass("selected");
+};
 /* BetterDiscordApp Utilities JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1562,13 +1919,120 @@ Utils.prototype.injectCss = function (uri) {
 };
 
 Utils.prototype.log = function (message) {
-    console.info("%c[BetterDiscord]%c " + message, "color:teal; font-weight:bold;", "");
+    console.log('%c[%cBetterDiscord%c] %c'+message+'', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
 };
 
 Utils.prototype.err = function (message) {
-    console.info("%c[BetterDiscord]%c " + message, "color:red; font-weight:bold;", "");
+    console.log('%c[%cBetterDiscord%c] %c'+message+'', 'color: red;', 'color: red; font-weight:700;', 'color:red;', '');
 };
 
+Utils.prototype.importSettings = function() {
+    mainCore.alert("Import Settings", '<div class="form" style="width:100%;"><div class="control-group"><textarea id="bda-import-textarea" style="min-height:150px;"></textarea></div><button id="bda-import-settings" class="btn btn-primary">Import</button></div>');
+    $("#bda-import-settings").off("click").on("click", function() {
+        var obj;
+        try {
+            obj = JSON.parse($("#bda-import-textarea").val());
+        }catch(err) {
+            mainCore.alert("Invalid Data", err);
+            return false;
+        }
+        try {
+            for(key in obj.settings) {
+                var val = obj.settings[key];
+                if(settingsCookie.hasOwnProperty(key)) {
+                    settingsCookie[key] = val;
+                    var cb = $("#" + key);
+                    cb.prop("checked", val);
+                    settingsPanel.updateSettings();
+                }
+            }
+            localStorage["bdcustomcss"] = obj.customCss;
+            var ccss = atob(localStorage.getItem("bdcustomcss"));
+            if (!customCssInitialized) {
+                customCssEditor.init();
+                customCssInitialized = true;
+            }
+            customCssEditor.applyCustomCss(ccss, settingsCookie["bda-css-0"], false); 
+            customCssEditor.editor.setValue(ccss);
+        }catch(err) {
+            mainCore.alert("Invalid Data", err);
+            return false;
+        }
+
+        try {
+            $.each(obj.plugins, function(plugin) {
+                var enabled = obj.plugins[plugin];
+                if(bdplugins.hasOwnProperty(plugin)) {
+                    pluginCookie[plugin] = enabled;
+                    var cb = $("#"+plugin.replace(" ", "__"));
+                    if(cb.is(":checked") && !enabled) {
+                        bdplugins[plugin]["plugin"].stop();
+                        cb.prop("checked", false);
+                    }
+                    if(!cb.is(":checked") && enabled) {
+                        bdplugins[plugin]["plugin"].start();
+                        cb.prop("checked", true);
+                    }
+                }
+            });
+            pluginModule.savePluginData();
+        }catch(err) {
+            mainCore.alert("Failed to load plugin data", err);
+            return false;
+        }
+
+        try {
+            themeCookie = obj.themes;
+            $.each(themeCookie, function(theme) {
+                var enabled = themeCookie[theme];
+                var id = "#ti" + theme;
+                if(bdthemes.hasOwnProperty(theme)) {
+                    if($(id).is(":checked") && !enabled) {
+                        $(id).prop("checked", false);
+                        $("#"+theme).remove();
+                    }
+                    if(!$(id).is(":checked") && enabled) {
+                        $(id).prop("checked", true);
+                        $("head").append('<style id="' + theme + '">' + unescape(bdthemes[theme]["css"]) + '</style>');
+                    }
+                }
+            });
+            themeModule.saveThemeData();
+        }catch(err) {
+            mainCore.alert("Failed to load theme data", err);
+            return false;
+        }
+
+        return false;
+    });
+};
+
+Utils.prototype.exportSettings = function() {
+    var obj =  {
+        settings: settingsCookie,
+        customCss: localStorage["bdcustomcss"],
+        plugins: pluginCookie,
+        themes: themeCookie,
+        favEmotes: window.localStorage["bdfavemotes"]
+    };
+    mainCore.alert("Export Settings", '<div class="form" style="width:100%;"><div class="control-group"><textarea style="min-height:150px;">'+JSON.stringify(obj)+'</textarea></div></div>');
+};
+
+Utils.prototype.addBackdrop = function(target) {
+    var backDrop = $("<div/>", {
+        class: "bda-backdrop",
+        "data-bdbackdrop": target,
+        mouseup: function() {
+            $('[data-bdalert="'+target+'"]').remove();
+            $(this).remove();
+        }
+    });
+    $("#app-mount").append(backDrop)
+};
+
+Utils.prototype.removeBackdrop = function(target) {
+    $('[data-bdbackdrop="'+target+'"]').remove();
+};
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1607,7 +2071,6 @@ VoiceMode.prototype.disable = function () {
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
-
 /* BetterDiscordApp PluginModule JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1648,7 +2111,7 @@ PluginModule.prototype.handlePlugin = function (checkbox) {
 
     var cb = $(checkbox).children().find('input[type="checkbox"]');
     var enabled = !cb.is(":checked");
-    var id = cb.attr("id");
+    var id = cb.attr("id").replace("__", " ");
     cb.prop("checked", enabled);
 
     if (enabled) {
@@ -1730,8 +2193,6 @@ PluginModule.prototype.rawObserver = function(e) {
         }
     });
 };
-
-
 /* BetterDiscordApp ThemeModule JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1796,8 +2257,6 @@ ThemeModule.prototype.saveThemeData = function () {
         path: '/'
     });
 };
-
-
 /*BDSocket*/
 
 var bdSocket;
@@ -1904,7 +2363,6 @@ BdWSocket.prototype.send = function (data) {
 BdWSocket.prototype.getSocket = function () {
     return bdSocket;
 };
-
 /* BetterDiscordApp API for Plugins
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -2017,3 +2475,70 @@ BdApi.setStatus = function (idle_since, status) {
         }
     });
 };
+/* BetterDiscordApp DevMode JavaScript
+ * Version: 1.0
+ * Author: Jiiks | http://jiiks.net
+ * Date: 22/05/2016
+ * Last Update: 22/05/2016
+ * https://github.com/Jiiks/BetterDiscordApp
+ */
+ 
+ function devMode() {}
+ 
+ devMode.prototype.enable = function() {
+     var self = this;
+     $(window).on("keydown.bdDevmode", function(e) {
+         if(e.which === 119) {//F8
+            console.log('%c[%cDM%c] %cBreak/Resume', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
+            debugger;
+         }
+     });
+     /*
+     $(window).on("mousedown.bdDevmode", function(e) {
+         if(e.which !== 3) return;
+         var parents = [];
+         $(e.toElement).parents().addBack().not('html').each(function() {
+             var entry = "";
+             if(this.className) {
+                 entry += "." + this.className.trim().replace(/ /g, ".");
+                 parents.push(entry);
+             }
+         });
+         self.lastSelector = parents.join(" ").trim();
+
+         function attach() {
+            var cm = $(".context-menu");
+            if(cm.length <= 0) {
+                return;
+                cm = $("body").append('<div class="context-menu"></div>');
+            }
+            
+            var cmo = $("<div/>", {
+                class: "item-group"
+            });
+            var cmi = $("<div/>", {
+                class: "item",
+                click: function() {
+                    var t = $("<textarea/>", { text: self.lastSelector }).appendTo("body");
+                    t.select();
+                    document.execCommand("copy");
+                    t.remove();
+                    cm.remove();
+                }
+            }).append($("<span/>", { text: "Copy Selector" }));
+            cmo.append(cmi);
+            cm.append(cmo);
+            cm.css("top", (cm.css("top").replace("px", "") - 28) + "px");
+         }
+         
+         setTimeout(attach, 100);
+         
+         e.stopPropagation();
+     });
+     */
+ };
+ 
+ devMode.prototype.disable = function() {
+     $(window).off("keydown.bdDevmode");
+     $(window).off("mousedown.bdDevmode")
+ };

@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<head>
+			<link rel="stylesheet" href="css/main.css">
+			<script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+		</head>
+	</head>
+	<body>
+		<div class="border"></div>
+		<div id="titleBar">
+    		<div class="icon">
+    		  <div class="icon-image"></div>
+    		</div>
+    		<div class="title">
+    		  Error!
+    		</div>
+ 		</div>
+ 		<div>
+ 			<div id="log" style="width:680px"></div>
+ 		</div>
+ 		<div>
+ 			<button style="position: absolute;right: 10px;bottom: 6px;">OK</button>
+ 		</div>
+	</body>
+	<script>
+		const ipcRenderer = require('electron').ipcRenderer;
+		$(function() {
+			ipcRenderer.send('async', '{ "arg": "geterror" }');
+		});
+		ipcRenderer.on('async-reply', (event, arg) => { 
+			console.log(event);
+			console.log(arg);
+			$("#log").text(arg);
+		});
+	</script>
+</html>

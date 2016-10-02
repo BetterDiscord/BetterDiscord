@@ -6,7 +6,7 @@ var clockPlugin = function () {};
 
 clockPlugin.prototype.start = function () {
 	BdApi.clearCSS("clockPluginCss");
-	BdApi.injectCSS("clockPluginCss", '#clockPluginClock { position:absolute; color:#FFF; background:#333333; padding:0 12px 0 10px; min-width:70px; }');
+	BdApi.injectCSS("clockPluginCss", '#clockPluginClock { position:absolute; color:#FFF; background:#333333; padding:0 12px 0 13px; min-width:55px; max-width:55px; z-index:100; }');
 	var self = this;
 	this.clock = $("<div/>", { id: "clockPluginClock" });
 	$("body").append(this.clock);
@@ -23,6 +23,28 @@ clockPlugin.prototype.start = function () {
 		var current_time = [h,m,s].join(':');
 		self.clock.html(current_time);
 	};
+
+	this.ticktock12 = function() {
+		var suffix = "AM";
+		var d = new Date();
+		var h = d.getHours();
+		var m = self.pad(d.getMinutes());
+		var s = self.pad(d.getSeconds());
+
+		if(h >= 12) {
+			h -= 12;
+			suffix = "PM";
+		}
+		if(h == 0) {
+			h = 12;
+		}
+
+		h = self.pad(h);
+
+		var current_time = [h,m,s].join(":") + suffix;
+		self.clock.html(current_time);
+	};
+
 	this.ticktock();
 	this.interval = setInterval(this.ticktock, 1000);
 };
