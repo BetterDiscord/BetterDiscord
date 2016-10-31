@@ -33,7 +33,7 @@ class Logger {
     }
     
     log(msg, severity) {
-        var l = `{BD|${this.severity(severity)}}[${_utils.dateString}] >>> ${msg}`;
+        var l = `[BD|${this.severity(severity)}][${_utils.dateString}] >>> ${msg}`;
         console.log(l);
         this.logs += `${l}${EOL}`;
     }

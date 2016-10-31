@@ -49,6 +49,22 @@ class Core {
             this.exit("mainWindow is undefined!");
             return;
         }
+        this.mainWindow = mainWindow;
+        this.hookEvent('dom-ready', this.domReady);
+    }
+    
+    hookEvent(event, callback) {
+        if(!this.continue) return;
+        try {
+            _logger.log(`Hooking ${event}`);
+            this.mainWindow.webContents.on(event, callback);
+        }catch(err) {
+            this.exit(`Failed to hook event ${event}. Reason: ${err}`);
+        }
+    }
+    
+    domReady() {
+        
     }
     
     exit(reason, severity) {
@@ -64,4 +80,4 @@ class Core {
     
 }
 
-exports.BetterDiscord = new Core({ cfg: { } });
+exports.BetterDiscord = Core;
