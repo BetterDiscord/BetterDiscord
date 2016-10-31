@@ -85,7 +85,11 @@ module.exports = grunt => {
         ]
     });
     
+    grunt.registerTask("js", [ "requirejs", "babel", "replace", "amdclean", "clean" ]);
+    grunt.registerTask("js-noclean", [ "requirejs", "babel", "replace", "amdclean" ]);
+    
     grunt.registerTask("fastjs", ["requirejs", "babel", "replace:nongreedy", "amdclean", "clean" ]);
-    grunt.registerTask("default", [ "requirejs", "babel", "replace", "amdclean", "clean" ]);
+    grunt.registerTask("fastjs-noclean", ["requirejs", "babel", "replace:nongreedy", "amdclean" ]);
+    
     
 };
