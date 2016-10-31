@@ -12,6 +12,36 @@
 
 class Utils {
     
+    //Get the latest commit hash from github
+    getHash(callback) {
+        this.download("api.github.com", "/repos/Jiiks/BetterDiscordApp/commits/master", data => {
+            //TODO use the new soon to be implemented tryparse
+            callback(JSON.parse(data).sha);
+        });
+    }
+    
+    download(host, path, callback) {
+        _logger.log(`Downloading Resource: ${host}${path}`);
+        var options = {
+            host: host,
+            path: path,
+            headers: this.headers
+        };
+        
+        _https.get(options, res => {
+            var data = "";
+            res.on('data', chunk => {
+                data += chunk;
+            });
+            res.on('end', () => {
+                callback(data);
+            });
+        }).on('error', () => {
+            //TODO error logging
+            callback(null);
+        });
+    }
+    
     //Returns a datestring: [DD/MM/YYYY - HH:MM:SS]
     get dateString() {
         var d = new Date();
@@ -22,6 +52,10 @@ class Utils {
                `${("00" + d.getHours()).slice(-2)}:`        +
                `${("00" + d.getMinutes()).slice(-2)}:`      +
                `${("00" + d.getSeconds()).slice(-2)}`;
+    }
+    
+    get headers() {
+        return { 'user-agent': 'Mozilla/5.0' };
     }
     
 }
@@ -59,7 +93,8 @@ class Logger {
 const _utils = new Utils(),
       _logger = new Logger(),
       _fs = require('fs'),
-      {EOL} = require('os');
+      {EOL} = require('os'),
+      _https = require('https');
       
 exports._utils = _utils;
 exports._logger = _logger;
