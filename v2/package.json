@@ -1,0 +1,10 @@
+{
+  "name": "betterdiscord",
+  "description": "Discord enhancement project. v2 preview",
+  "version": "0.3.0",
+  "homepage": "https://github.com/Jiiks/BetterDiscordApp",
+  "license": "MIT",
+  "main": "lib/main.js",
+  "devDependencies": {
+  }
+}
