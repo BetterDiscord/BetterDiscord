@@ -29,9 +29,25 @@ const _defaults = {
     emotesEnabled: true
 };
 
+const _resources = {
+    "mainjs": {
+        "path": "js",
+        "filename": "main.js",
+        "var": "window.BetterDiscord"
+    },
+    "jQuery": {
+        "path": "vendor",
+        "filename": "jquery-2.2.4.min.js",
+        "var": "window.BD.$ = window.BD.jQuery"
+    }
+};
+
+var _self;
+
 class Core {
     
     constructor(args) {
+        _self = this;
         this.continue = true;
         _logger.log(`v${this.__version} Loading - OS: ${_os.platform()}`);
         this.initConfig(args.cfg);
@@ -64,7 +80,10 @@ class Core {
     }
     
     domReady() {
-        
+        for(var key in _resources) {
+            var resource = _resources[key];
+            _utils.requireJs(`${_cfg.dataPath}/${resource.path}/${resource.filename}`, resource.var, _self.mainWindow);
+        }
     }
     
     exit(reason, severity) {

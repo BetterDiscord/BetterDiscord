@@ -42,11 +42,16 @@ class Utils {
         });
     }
     
+    requireJs(file, varstring, _window) {
+        _logger.log(`Injecting file: ${file}`);
+        _window.webContents.executeJavaScript(`${varstring} = require("${file}");`);
+    }
+    
     //Returns a datestring: [DD/MM/YYYY - HH:MM:SS]
     get dateString() {
         var d = new Date();
 
-        return `${("00" + (d.getDate() + 1)).slice(-2)}/`   +
+        return `${("00" + (d.getDate())).slice(-2)}/`   +
                `${("00" + d.getMonth()).slice(-2)}/`        +
                `${d.getFullYear()} - `                      +
                `${("00" + d.getHours()).slice(-2)}:`        +

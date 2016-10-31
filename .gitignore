@@ -13,3 +13,5 @@ node_modules
 Installers/dotNet/bin/
 Installers/dotNet/packages/
 Installers/dotNet/dlls/
+v2/dist/vendor/
+v2/lib/static.js
