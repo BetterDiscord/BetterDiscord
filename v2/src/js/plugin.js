@@ -13,19 +13,22 @@ define(() => {
     
     class Plugin {
         
-        constructor(args) {
-            this.author = args.author;
-            this.version = args.version;
+	    constructor(args) {
+	    	this.info = args;
+	    }
+    
+	    get author() {
+	    	return this.info.author;
+	    }
+    
+	    get name() {
+	    	return this.info.name;
+	    }
+    
+	    get version() {
+	    	return this.info.version;
+            
         }
-        
-        get author() {
-            return this.author;
-        }
-        
-        get version() {
-            return this.version;
-        }
-        
     }
     
     return Plugin;
