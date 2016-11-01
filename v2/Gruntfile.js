@@ -9,7 +9,11 @@ module.exports = grunt => {
                 options: {
                     include: ['src/js/core'],
                     out: 'intermediate/requirejs.js',
-                    optimize: 'none'
+                    optimize: 'none',
+                    paths: {
+                        'events': 'empty:',
+                        'electron': 'empty:'
+                    }
                 }
             }
         },

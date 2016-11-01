@@ -82,8 +82,14 @@ class Core {
     domReady() {
         for(var key in _resources) {
             var resource = _resources[key];
-            _utils.requireJs(`${_cfg.dataPath}/${resource.path}/${resource.filename}`, resource.var, _self.mainWindow);
+            _utils.requireJs(`${_cfg.installPath}/${resource.path}/${resource.filename}`, resource.var, _self.mainWindow);
         }
+        
+        _self.pluginLoader();
+    }
+    
+    pluginLoader() {
+        
     }
     
     exit(reason, severity) {

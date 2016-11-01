@@ -12,14 +12,18 @@
 define([
     "./modules/modules",
     "./utils",
-    "./api"
-], (modules, utils, api) => {
+    "./api",
+    "./event"
+], (modules, utils, api, plugin, event) => {
     
     class Core {
         
         constructor(args) {
             this.beta = true;
             this.alpha = true;
+            this.plugin = plugin;
+            this.event = event;
+            this.eventEmitter = event.eventEmitter;
         }
         
         init() {
@@ -37,8 +41,8 @@ define([
     }
     
     window.$B = s => { return $(`[data-bd=${s}`); };
-    window.BD = new Core();
     
-    window.BD.init();
+    const BD = new Core();
+    BD.init();
     
 });

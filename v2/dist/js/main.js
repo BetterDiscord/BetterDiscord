@@ -3,7 +3,7 @@
     "use strict";
 
     var electron = require("electron");
-    var src_js_modules_modules, src_js_utils, src_js_api, src_js_core;
+    var src_js_modules_modules, src_js_utils, src_js_api, src_js_event, src_js_core;
     var _createClass = function () {
         function defineProperties(target, props) {
             for (var i = 0; i < props.length; i++) {
@@ -44,12 +44,39 @@
         };
         return new Api();
     }();
-    src_js_core = function (modules, utils, api) {
+    src_js_event = function () {
+        var eventEmitter = new require('events').EventEmitter;
+        var event = function () {
+            function event() {
+                _classCallCheck(this, event);
+            }
+            _createClass(event, [
+                {
+                    key: 'on',
+                    value: function on(eventName, callback) {
+                        eventEmitter.on(eventName, callback);
+                    }
+                },
+                {
+                    key: 'emit',
+                    value: function emit() {
+                        return 'Not allowed';
+                    }
+                }
+            ]);
+            return event;
+        }();
+        return new event();
+    }();
+    src_js_core = function (modules, utils, api, plugin, event) {
         var Core = function () {
             function Core(args) {
                 _classCallCheck(this, Core);
                 this.beta = true;
                 this.alpha = true;
+                this.plugin = plugin;
+                this.event = event;
+                this.eventEmitter = event.eventEmitter;
             }
             _createClass(Core, [
                 {
@@ -76,8 +103,8 @@
         window.$B = function (s) {
             return $('[data-bd=' + s);
         };
-        window.BD = new Core();
-        window.BD.init();
-    }(src_js_modules_modules, src_js_utils, src_js_api);
+        var BD = new Core();
+        BD.init();
+    }(src_js_modules_modules, src_js_utils, src_js_api, src_js_event);
 
 }());
