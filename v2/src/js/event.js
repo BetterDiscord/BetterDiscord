@@ -11,19 +11,23 @@
  
 define(() => {
 
-     const eventEmitter = new require('events').EventEmitter;
-     
-     class event {
+    const EventEmitter = new require('events').EventEmitter;
+
+     class Event {
          
-         on(eventName, callback) {
-             eventEmitter.on(eventName, callback);
+         constructor() {
+             this.eventEmitter = new EventEmitter;
          }
          
-         emit() {
-             return "Not allowed";
+         on(eventName, callback) {
+             this.eventEmitter.on(eventName, callback);
+         }
+         
+         emit(...args) {
+             this.eventEmitter.emit(...args);
          }
          
      }
      
-     return new event();
+     return new Event();
 });

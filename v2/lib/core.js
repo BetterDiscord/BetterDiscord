@@ -38,7 +38,7 @@ const _resources = {
     "jQuery": {
         "path": "vendor",
         "filename": "jquery-2.2.4.min.js",
-        "var": "window.BD.$ = window.BD.jQuery"
+        "var": "window.$ = window.jQuery"
     }
 };
 

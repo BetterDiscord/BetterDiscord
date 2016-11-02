@@ -8,9 +8,13 @@
  * License: MIT
  */
  
-define([], () => {
+define([
+    "./observermodule"
+], (observerModule) => {
     
-    var modules = {};
+    const modules = {
+        observerModule: observerModule
+    };
     
     return modules;
 });

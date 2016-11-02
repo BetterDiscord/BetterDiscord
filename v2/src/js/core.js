@@ -13,17 +13,19 @@ define([
     "./modules/modules",
     "./utils",
     "./api",
+    "./plugin",
     "./event"
 ], (modules, utils, api, plugin, event) => {
     
     class Core {
         
         constructor(args) {
+            console.log(event);
+            this.event = event;
+            this.modules = modules;
             this.beta = true;
             this.alpha = true;
             this.plugin = plugin;
-            this.event = event;
-            this.eventEmitter = event.eventEmitter;
         }
         
         init() {
@@ -42,7 +44,7 @@ define([
     
     window.$B = s => { return $(`[data-bd=${s}`); };
     
-    const BD = new Core();
+    window.BD = new Core();
     BD.init();
-    
+
 });
