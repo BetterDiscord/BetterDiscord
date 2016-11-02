@@ -159,7 +159,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                 }
                 
                 if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) { 
-                    if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 4) {
+                    if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 3) {
                         if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
                         var url = emotesBTTV[sw];
                         contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
