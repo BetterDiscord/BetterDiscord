@@ -55,9 +55,50 @@
         return modules;
     }(src_js_modules_observermodule);
     src_js_utils = function () {
-        var Utils = function Utils() {
-            _classCallCheck(this, Utils);
-        };
+        var Utils = function () {
+            function Utils() {
+                _classCallCheck(this, Utils);
+            }
+            _createClass(Utils, [
+                {
+                    key: 'log',
+                    value: function log(msg) {
+                        console.log('%c[BD] %c>> %c' + msg, 'color:#3e82e5; font-weight:700', 'color:#000; font-weight:700', '');
+                    }
+                },
+                {
+                    key: 'info',
+                    value: function info(msg) {
+                        console.info('%c[BD] %c>> %c' + msg, 'color:#3e82e5; font-weight:700', 'color:blue; font-weight:700', '');
+                    }
+                },
+                {
+                    key: 'warn',
+                    value: function warn(msg) {
+                        console.warn('%c[BD] %c>> %c' + msg, 'color:#3e82e5; font-weight:700', 'color:orange; font-weight:700', '');
+                    }
+                },
+                {
+                    key: 'err',
+                    value: function err(msg) {
+                        console.error('%c[BD] %c>> %c' + msg, 'color:#3e82e5; font-weight:700', 'color:red; font-weight:700', '');
+                    }
+                },
+                {
+                    key: 'dateString',
+                    get: function get() {
+                        return new Date().toLocaleString('en-GB');
+                    }
+                },
+                {
+                    key: 'timeString',
+                    get: function get() {
+                        return new Date().toTimeString().split(' ')[0];
+                    }
+                }
+            ]);
+            return Utils;
+        }();
         return new Utils();
     }();
     src_js_api = function () {
@@ -97,7 +138,7 @@
         return Plugin;
     }();
     src_js_event = function () {
-        var EventEmitter = events.EventEmitter;
+        var EventEmitter = new require('events').EventEmitter;
         var Event = function () {
             function Event() {
                 _classCallCheck(this, Event);
@@ -126,7 +167,7 @@
         var Core = function () {
             function Core(args) {
                 _classCallCheck(this, Core);
-                console.log(event);
+                this.utils = utils;
                 this.event = event;
                 this.modules = modules;
                 this.beta = true;
@@ -137,7 +178,7 @@
                 {
                     key: 'init',
                     value: function init() {
-                        console.log('Initialized');
+                        utils.log(this.__versionString + ' Initializing');
                     }
                 },
                 {
