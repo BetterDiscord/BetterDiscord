@@ -1,7 +1,7 @@
 /* BetterDiscordApp Client Utilities
  * Version: 2:1.0
  * Author: Jiiks | https://jiiks.net
- * Date: 31/10/2016
+ * Date: 04/11/2016
  * Last Update: 31/10/2016
  * Github: https://github.com/Jiiks/BetterDiscordApp
  * Git: https://github.com/Jiiks/BetterDiscordApp.git
@@ -18,15 +18,19 @@ define(() => {
         }
         
         log(msg) {
-            console.log(`%c[BD] %cINF >> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:green; font-weight:700', '')
+            console.log(`%c[BD] %c>> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:#000; font-weight:700', '')
+        }
+        
+        info(msg) {
+            console.info(`%c[BD] %c>> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:blue; font-weight:700', '')
         }
         
         warn(msg) {
-            console.log(`%c[BD] %cWRN >> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:orange; font-weight:700', '')
+            console.warn(`%c[BD] %c>> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:orange; font-weight:700', '')
         }
         
         err(msg) {
-            console.log(`%c[BD] %cERR >> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:red; font-weight:700', '')
+            console.error(`%c[BD] %c>> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:red; font-weight:700', '')
         }
         
         get dateString() {
