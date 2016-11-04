@@ -22,7 +22,7 @@ define(() => {
         }
         
         info(msg) {
-            console.info(`%c[BD] %c>> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:blue; font-weight:700', '')
+            console.info(`%c[BD] %c>> %c${msg}`, 'color:#3e82e5; font-weight:700', 'color:#3e82e5; font-weight:700', '')
         }
         
         warn(msg) {
