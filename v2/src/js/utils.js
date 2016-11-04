@@ -13,6 +13,22 @@ define(() => {
     
     class Utils {
         
+        constructor() {
+            
+        }
+        
+        log(msg) {
+            console.log(`%c[%cBetterDiscord|INF%c] %c${msg}`, 'color: #000;', 'color: green; font-weight:#000;', 'color:#00;', '');
+        }
+        
+        warn(msg) {
+            console.log(`%c[%cBetterDiscord|WRN%c] %c${msg}`, 'color: #000;', 'color: orange; font-weight:700;', 'color:#000;', '');
+        }
+        
+        err(msg) {
+            console.log(`%c[%cBetterDiscord|ERR%c] %c${msg}`, 'color: #000;', 'color: red; font-weight:700;', 'color:#000;', '');
+        }
+        
     }
     
     return new Utils();
