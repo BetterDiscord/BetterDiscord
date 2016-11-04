@@ -20,7 +20,7 @@ define([
     class Core {
         
         constructor(args) {
-            console.log(event);
+            this.utils = utils;
             this.event = event;
             this.modules = modules;
             this.beta = true;
@@ -29,7 +29,7 @@ define([
         }
         
         init() {
-            console.log("Initialized");
+            utils.log(`${this.__versionString} Initializing`);
         }
         
         get __version() {
