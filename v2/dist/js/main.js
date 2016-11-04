@@ -63,19 +63,19 @@
                 {
                     key: 'log',
                     value: function log(msg) {
-                        console.log('[' + this.timeString + ']%c[%cBetterDiscord%c] %c' + msg, 'color: #000;', 'color: green; font-weight:#000;', 'color:#00;', '');
+                        console.log('%c[BD] %cINF >> %c' + msg, 'color:#3e82e5; font-weight:700', 'color:green; font-weight:700', '');
                     }
                 },
                 {
                     key: 'warn',
                     value: function warn(msg) {
-                        console.log('[' + this.timeString + ']%c[%cBetterDiscord%c] %c' + msg, 'color: #000;', 'color: orange; font-weight:700;', 'color:#000;', '');
+                        console.log('%c[BD] %cWRN >> %c' + msg, 'color:#3e82e5; font-weight:700', 'color:orange; font-weight:700', '');
                     }
                 },
                 {
                     key: 'err',
                     value: function err(msg) {
-                        console.log('[' + this.timeString + ']%c[%cBetterDiscord%c] %c' + msg, 'color: #000;', 'color: red; font-weight:700;', 'color:#000;', '');
+                        console.log('%c[BD] %cERR >> %c' + msg, 'color:#3e82e5; font-weight:700', 'color:red; font-weight:700', '');
                     }
                 },
                 {
