@@ -170,7 +170,7 @@ class Installer {
 
 		var lines = [];
 		var lr = readline.createInterface({
-			input: fs.createReadStream(`${config.paths.installPath}/resources/app/app/index.js`)
+			input: fs.createReadStream(`${config.paths.installPath}/resources/app/index.js`)
 		});
 
 		lr.on('line', line => {
@@ -187,7 +187,7 @@ class Installer {
 		});
 
 		lr.on('close', () => {
-			fs.writeFileSync(`${config.paths.installPath}/resources/app/app/index.js`, lines.join('\n'));
+			fs.writeFileSync(`${config.paths.installPath}/resources/app/index.js`, lines.join('\n'));
 			self.appendLog("Finished installing BetterDiscord");
 			self.updatePb(5, 5);
 		});
