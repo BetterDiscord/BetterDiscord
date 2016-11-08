@@ -1,10 +1,10 @@
 # BetterDiscordApp
 
-If you have issues then join the BD Discord server: [Here](https://discord.gg/0Tmfo5ZbORCRqbAd)
-If your Discord breaks then uninstall BD and try again 
+# If you have issues then join the BD Discord server: [Here](https://discord.gg/0Tmfo5ZbORCRqbAd)
+
 # Do not contact Discord support about BD issues. 
 
-## Coming in 0.2.8 all plugins must be named `*.plugin.js` and all themes must be named `*.theme.css`
+## All plugins must be named `*.plugin.js` and all themes must be named `*.theme.css`
 
 Better Discord App enhances Discord desktop app with new features.
 
