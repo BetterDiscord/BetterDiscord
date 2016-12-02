@@ -1009,7 +1009,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
                 html += '<span class="server-name-span">' + self.escape(source.name) + '</span>';
                 
                 var tags = [];
-                source.categories.forEach(function(tag) {
+                source.tags.forEach(function(tag) {
                     tags.push(self.escape(tag.name));
                 });
 
