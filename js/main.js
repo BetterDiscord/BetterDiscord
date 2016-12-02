@@ -1128,7 +1128,7 @@ PublicServers.prototype.search = function(start, clear) {
 
 //Workaround for joining a server
 PublicServers.prototype.joinServer = function (code) {
-	require('electron').shell.openExternal(`https://www.discordservers.com/join/${code}`);
+	require('electron').shell.openExternal("https://www.discordservers.com/join/" + code);
 };
 
 PublicServers.prototype.escape = function(unsafe) {
