@@ -994,6 +994,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 
             hits.forEach(function(hit) {
                 var source = hit._source;
+                if(source.invite_code === undefined) continue;
                 var icode = source.invite_code.replace(/ /g,'');
                 icode = self.escape(icode);
                 var html = '<div class="server-row">';
