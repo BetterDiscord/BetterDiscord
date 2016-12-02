@@ -794,21 +794,21 @@ PublicServers.prototype.init = function () {
                     <div class="bd-dropdown-list">\
                         <ul>\
                             <li class="pubs-cat-select-li" data-val="all">All</li>\
-                            <li class="pubs-cat-select-li" data-val="1">FPS Games</li>\
-                            <li class="pubs-cat-select-li" data-val="2">MMO Games</li>\
-                            <li class="pubs-cat-select-li" data-val="3">MOBA Games</li>\
-                            <li class="pubs-cat-select-li" data-val="4">Strategy Games</li>\
-                            <li class="pubs-cat-select-li" data-val="5">Sports Games</li>\
-                            <li class="pubs-cat-select-li" data-val="6">Puzzle Games</li>\
-                            <li class="pubs-cat-select-li" data-val="7">Retro Games</li>\
-                            <li class="pubs-cat-select-li" data-val="8">Party Games</li>\
-                            <li class="pubs-cat-select-li" data-val="9">Tabletop Games</li>\
-                            <li class="pubs-cat-select-li" data-val="10">Sandbox Games</li>\
-                            <li class="pubs-cat-select-li" data-val="11">Community</li>\
-                            <li class="pubs-cat-select-li" data-val="12">Language</li>\
-                            <li class="pubs-cat-select-li" data-val="13">Programming</li>\
-                            <li class="pubs-cat-select-li" data-val="14">Other</li>\
-                            <li class="pubs-cat-select-li" data-val="15">Simulation Games</li>\
+                            <li class="pubs-cat-select-li" data-val="fps games">FPS Games</li>\
+                            <li class="pubs-cat-select-li" data-val="mmo games">MMO Games</li>\
+                            <li class="pubs-cat-select-li" data-val="moba games">MOBA Games</li>\
+                            <li class="pubs-cat-select-li" data-val="strategy games">Strategy Games</li>\
+                            <li class="pubs-cat-select-li" data-val="sports games">Sports Games</li>\
+                            <li class="pubs-cat-select-li" data-val="puzzle games">Puzzle Games</li>\
+                            <li class="pubs-cat-select-li" data-val="retro games">Retro Games</li>\
+                            <li class="pubs-cat-select-li" data-val="party games">Party Games</li>\
+                            <li class="pubs-cat-select-li" data-val="tabletop games">Tabletop Games</li>\
+                            <li class="pubs-cat-select-li" data-val="sandbox games">Sandbox Games</li>\
+                            <li class="pubs-cat-select-li" data-val="simulation games">Simulation Games</li>\
+                            <li class="pubs-cat-select-li" data-val="community">Community</li>\
+                            <li class="pubs-cat-select-li" data-val="language">Language</li>\
+                            <li class="pubs-cat-select-li" data-val="programming">Programming</li>\
+                            <li class="pubs-cat-select-li" data-val="other">Other</li>\
                         </ul>\
                     </div>\
                 </div>\
