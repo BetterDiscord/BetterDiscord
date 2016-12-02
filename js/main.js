@@ -869,7 +869,7 @@ PublicServers.prototype.getPinnedServer = function() {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/discord_servers/_search",
+        url: "https://69ccb59e91f99116aae036ddceae21b3.us-east-1.aws.found.io:9243/_search",
         crossDomain: true,
         data: JSON.stringify(dataset),
         success: function(data) {
@@ -980,7 +980,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/discord_servers/_search",
+        url: "https://69ccb59e91f99116aae036ddceae21b3.us-east-1.aws.found.io:9243/_search",
         crossDomain: true,
         data: JSON.stringify(dataset),
         success: function(data) {
