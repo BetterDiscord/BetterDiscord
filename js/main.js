@@ -1072,7 +1072,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 PublicServers.prototype.search = function(start, clear) {
     var sterm = $("#pubs-sterm").val();
     
-    var dataset = {
+    /*var dataset = {
         "sort": [{ "online": "desc" }],
         "from": start,
         "size": 20,
@@ -1095,9 +1095,30 @@ PublicServers.prototype.search = function(start, clear) {
                 }
             }
         }
+    };*/
+
+    var dataset = {
+    	"sort": [{ "online": "desc" }],
+    	"from": start,
+    	"size": 20,
+    	"query": {
+    		"bool": {
+    			"must": [
+    				{"query_string": {
+    					"default_operator": "AND",
+    					"query": sterm ? sterm : "*"
+    				}}
+    			],
+    			"must_not": [
+    				{"match": { "identifier": this.filtered }}
+    			]
+    		}
+    	}
     };
+
+
     if(this.selectedCategory != "all") {
-        dataset.query.filtered.filter.bool.must = [{ "term": { "categories.id": this.selectedCategory } }]
+    	dataset.query.bool.must.push({ "match_phrase": { "categories": this.selectedCategory } });
     }
     
     this.loadServers(dataset, true, clear);
