@@ -794,21 +794,21 @@ PublicServers.prototype.init = function () {
                     <div class="bd-dropdown-list">\
                         <ul>\
                             <li class="pubs-cat-select-li" data-val="all">All</li>\
-                            <li class="pubs-cat-select-li" data-val="1">FPS Games</li>\
-                            <li class="pubs-cat-select-li" data-val="2">MMO Games</li>\
-                            <li class="pubs-cat-select-li" data-val="3">MOBA Games</li>\
-                            <li class="pubs-cat-select-li" data-val="4">Strategy Games</li>\
-                            <li class="pubs-cat-select-li" data-val="5">Sports Games</li>\
-                            <li class="pubs-cat-select-li" data-val="6">Puzzle Games</li>\
-                            <li class="pubs-cat-select-li" data-val="7">Retro Games</li>\
-                            <li class="pubs-cat-select-li" data-val="8">Party Games</li>\
-                            <li class="pubs-cat-select-li" data-val="9">Tabletop Games</li>\
-                            <li class="pubs-cat-select-li" data-val="10">Sandbox Games</li>\
-                            <li class="pubs-cat-select-li" data-val="11">Community</li>\
-                            <li class="pubs-cat-select-li" data-val="12">Language</li>\
-                            <li class="pubs-cat-select-li" data-val="13">Programming</li>\
-                            <li class="pubs-cat-select-li" data-val="14">Other</li>\
-                            <li class="pubs-cat-select-li" data-val="15">Simulation Games</li>\
+                            <li class="pubs-cat-select-li" data-val="fps games">FPS Games</li>\
+                            <li class="pubs-cat-select-li" data-val="mmo games">MMO Games</li>\
+                            <li class="pubs-cat-select-li" data-val="moba games">MOBA Games</li>\
+                            <li class="pubs-cat-select-li" data-val="strategy games">Strategy Games</li>\
+                            <li class="pubs-cat-select-li" data-val="sports games">Sports Games</li>\
+                            <li class="pubs-cat-select-li" data-val="puzzle games">Puzzle Games</li>\
+                            <li class="pubs-cat-select-li" data-val="retro games">Retro Games</li>\
+                            <li class="pubs-cat-select-li" data-val="party games">Party Games</li>\
+                            <li class="pubs-cat-select-li" data-val="tabletop games">Tabletop Games</li>\
+                            <li class="pubs-cat-select-li" data-val="sandbox games">Sandbox Games</li>\
+                            <li class="pubs-cat-select-li" data-val="simulation games">Simulation Games</li>\
+                            <li class="pubs-cat-select-li" data-val="community">Community</li>\
+                            <li class="pubs-cat-select-li" data-val="language">Language</li>\
+                            <li class="pubs-cat-select-li" data-val="programming">Programming</li>\
+                            <li class="pubs-cat-select-li" data-val="other">Other</li>\
                         </ul>\
                     </div>\
                 </div>\
@@ -869,7 +869,7 @@ PublicServers.prototype.getPinnedServer = function() {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/discord_servers/_search",
+        url: "https://69ccb59e91f99116aae036ddceae21b3.us-east-1.aws.found.io:9243/_search",
         crossDomain: true,
         data: JSON.stringify(dataset),
         success: function(data) {
@@ -980,7 +980,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
     $.ajax({
         type: "POST",
         dataType: "json",
-        url: "https://search-discordservers-izrtub5nprzrl76ugyy6hdooe4.us-west-1.es.amazonaws.com/discord_servers/_search",
+        url: "https://69ccb59e91f99116aae036ddceae21b3.us-east-1.aws.found.io:9243/_search",
         crossDomain: true,
         data: JSON.stringify(dataset),
         success: function(data) {
@@ -994,8 +994,10 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 
             hits.forEach(function(hit) {
                 var source = hit._source;
-                var icode = source.invite_code.replace(/ /g,'');
-                icode = self.escape(icode);
+               // if(source.invite_code === undefined) return;
+               // var icode = source.invite_code.replace(/ /g,'');
+               // icode = self.escape(icode).replace(/[^A-z0-9]/g,'');
+               	var icode = source.identifier;
                 var html = '<div class="server-row">';
                 html += '<div class="server-icon" style="background-image:url(' + self.escape(source.icon) + ')"></div>';
                 html += '<div class="server-info server-name">';
@@ -1008,7 +1010,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
                 html += '<span class="server-name-span">' + self.escape(source.name) + '</span>';
                 
                 var tags = [];
-                source.categories.forEach(function(tag) {
+                source.tags.forEach(function(tag) {
                     tags.push(self.escape(tag.name));
                 });
 
@@ -1072,7 +1074,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 PublicServers.prototype.search = function(start, clear) {
     var sterm = $("#pubs-sterm").val();
     
-    var dataset = {
+    /*var dataset = {
         "sort": [{ "online": "desc" }],
         "from": start,
         "size": 20,
@@ -1095,9 +1097,30 @@ PublicServers.prototype.search = function(start, clear) {
                 }
             }
         }
+    };*/
+
+    var dataset = {
+    	"sort": [{ "online": "desc" }],
+    	"from": start,
+    	"size": 20,
+    	"query": {
+    		"bool": {
+    			"must": [
+    				{"query_string": {
+    					"default_operator": "AND",
+    					"query": sterm ? sterm : "*"
+    				}}
+    			],
+    			"must_not": [
+    				{"terms": { "identifier": this.filtered }}
+    			]
+    		}
+    	}
     };
+
+
     if(this.selectedCategory != "all") {
-        dataset.query.filtered.filter.bool.must = [{ "term": { "categories.id": this.selectedCategory } }]
+    	dataset.query.bool.must.push({ "match_phrase": { "categories": this.selectedCategory } });
     }
     
     this.loadServers(dataset, true, clear);
@@ -1105,13 +1128,13 @@ PublicServers.prototype.search = function(start, clear) {
 
 //Workaround for joining a server
 PublicServers.prototype.joinServer = function (code) {
-    $(".guilds-add").click();
-    $(".action.join .btn").click();
-    $(".create-guild-container input").val(code);
-    $(".form.join-server .btn-primary").click();
+	require('electron').shell.openExternal("https://www.discordservers.com/join/" + code);
+	this.hide();
 };
 
 PublicServers.prototype.escape = function(unsafe) {
+	if(unsafe === undefined) return "";
+
     return unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
