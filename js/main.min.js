@@ -1134,6 +1134,7 @@ PublicServers.prototype.joinServer = function (code) {
 };
 
 PublicServers.prototype.escape = function(unsafe) {
+	if(unsafe === undefined) return "";
     return unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
