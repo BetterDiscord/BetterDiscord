@@ -994,9 +994,10 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
 
             hits.forEach(function(hit) {
                 var source = hit._source;
-                if(source.invite_code === undefined) return;
-                var icode = source.invite_code.replace(/ /g,'');
-                icode = self.escape(icode).replace(/[^A-z0-9]/g,'');
+               // if(source.invite_code === undefined) return;
+               // var icode = source.invite_code.replace(/ /g,'');
+               // icode = self.escape(icode).replace(/[^A-z0-9]/g,'');
+               	var icode = source.identifier;
                 var html = '<div class="server-row">';
                 html += '<div class="server-icon" style="background-image:url(' + self.escape(source.icon) + ')"></div>';
                 html += '<div class="server-info server-name">';
@@ -1127,10 +1128,7 @@ PublicServers.prototype.search = function(start, clear) {
 
 //Workaround for joining a server
 PublicServers.prototype.joinServer = function (code) {
-    $(".guilds-add").click();
-    $(".action.join .btn").click();
-    $(".create-guild-container input").val(code);
-    $(".form.join-server .btn-primary").click();
+	require('electron').shell.openExternal(`https://www.discordservers.com/join/${code}`);
 };
 
 PublicServers.prototype.escape = function(unsafe) {
