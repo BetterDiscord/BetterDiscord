@@ -1026,7 +1026,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
                 html += '<span>' + source.region + '</span>';
                 html += '</div>';
                 html += '<div class="server-info">';
-                html += '<button data-server-invite-code='+icode+'>Join</button>';
+                html += '<button data-server-invite-code='+icode.replace(/[^a-z0-9]/g,'')+'>Join</button>';
                 html += '</div>';
                 html += '</div>';
                 $("#pubs-list").append(html);
@@ -1135,6 +1135,7 @@ PublicServers.prototype.joinServer = function (code) {
 
 PublicServers.prototype.escape = function(unsafe) {
 	if(unsafe === undefined) return "";
+
     return unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
