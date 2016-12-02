@@ -1110,7 +1110,7 @@ PublicServers.prototype.search = function(start, clear) {
     				}}
     			],
     			"must_not": [
-    				{"match": { "identifier": this.filtered }}
+    				{"terms": { "identifier": this.filtered }}
     			]
     		}
     	}
