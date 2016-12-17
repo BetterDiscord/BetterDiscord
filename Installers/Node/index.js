@@ -18,7 +18,7 @@ var _discordPath;
 var _appFolder = "/app";
 var _appArchive = "/app.asar";
 var _packageJson = _appFolder + "/package.json";
-var _index = _appFolder + "/app/index.js";
+var _index = _appFolder + "/index.js";
 
 var _force = false;
 

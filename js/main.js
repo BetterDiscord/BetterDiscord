@@ -960,7 +960,7 @@ PublicServers.prototype.show = function () {
     });
 
     $("button[data-server-invite-code=0Tmfo5ZbORCRqbAd]").off("click").on("click", function(){
-        self.joinServer("0Tmfo5ZbORCRqbAd");
+        self.joinServerDirect("0Tmfo5ZbORCRqbAd");
     });
 };
 
@@ -1130,6 +1130,14 @@ PublicServers.prototype.search = function(start, clear) {
 PublicServers.prototype.joinServer = function (code) {
 	require('electron').shell.openExternal("https://www.discordservers.com/join/" + code);
 	this.hide();
+};
+
+PublicServers.prototype.joinServerDirect = function(code) {
+        $(".guilds-add").click();
+        $(".action.join .btn").click();
+        $(".create-guild-container input").val(code);
+        $(".form.join-server .btn-primary").click();
+        this.hide();
 };
 
 PublicServers.prototype.escape = function(unsafe) {
