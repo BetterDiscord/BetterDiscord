@@ -227,14 +227,10 @@ function init() {
 
             switch(alc) {
                 case "y":
-                    install();
-                    break;
                 case "yes":
                     install();
                     break;
                 case "n":
-                    process.exit();
-                    break;
                 case "no":
                     process.exit();
                     break;
