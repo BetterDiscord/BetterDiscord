@@ -6,8 +6,29 @@
  * Last Update: 01/05/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
+
+window.bdStorage = {};
+window.bdStorage.get = function(i) {
+    return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'get', 'var': i });
+};
+window.bdStorage.set = function(i, v) {
+    betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'set', 'var': i, 'data': v });
+};
+window.bdPluginStorage = {};
+window.bdPluginStorage.get = function(pn, i) {
+    return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'pluginstorage', 'cmd': 'get', 'pn': pn, 'var': i });
+};
+window.bdPluginStorage.set = function(pn, i, v) {
+    betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'pluginstorage', 'cmd': 'set', 'pn': pn, 'var': i, 'data': v });
+};
+
+betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
+    console.log(event);
+    console.log(arg);
+});
+
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.74;
+var jsVersion = 1.75;
 var supportedVersion = "0.2.5";
 
 var mainObserver;
@@ -997,7 +1018,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
                // if(source.invite_code === undefined) return;
                // var icode = source.invite_code.replace(/ /g,'');
                // icode = self.escape(icode).replace(/[^A-z0-9]/g,'');
-               	var icode = source.identifier;
+                var icode = source.identifier;
                 var html = '<div class="server-row">';
                 html += '<div class="server-icon" style="background-image:url(' + self.escape(source.icon) + ')"></div>';
                 html += '<div class="server-info server-name">';
@@ -1100,27 +1121,27 @@ PublicServers.prototype.search = function(start, clear) {
     };*/
 
     var dataset = {
-    	"sort": [{ "online": "desc" }],
-    	"from": start,
-    	"size": 20,
-    	"query": {
-    		"bool": {
-    			"must": [
-    				{"query_string": {
-    					"default_operator": "AND",
-    					"query": sterm ? sterm : "*"
-    				}}
-    			],
-    			"must_not": [
-    				{"terms": { "identifier": this.filtered }}
-    			]
-    		}
-    	}
+        "sort": [{ "online": "desc" }],
+        "from": start,
+        "size": 20,
+        "query": {
+            "bool": {
+                "must": [
+                    {"query_string": {
+                        "default_operator": "AND",
+                        "query": sterm ? sterm : "*"
+                    }}
+                ],
+                "must_not": [
+                    {"terms": { "identifier": this.filtered }}
+                ]
+            }
+        }
     };
 
 
     if(this.selectedCategory != "all") {
-    	dataset.query.bool.must.push({ "match_phrase": { "categories": this.selectedCategory } });
+        dataset.query.bool.must.push({ "match_phrase": { "categories": this.selectedCategory } });
     }
     
     this.loadServers(dataset, true, clear);
@@ -1128,8 +1149,8 @@ PublicServers.prototype.search = function(start, clear) {
 
 //Workaround for joining a server
 PublicServers.prototype.joinServer = function (code) {
-	require('electron').shell.openExternal("https://www.discordservers.com/join/" + code);
-	this.hide();
+    require('electron').shell.openExternal("https://www.discordservers.com/join/" + code);
+    this.hide();
 };
 
 PublicServers.prototype.joinServerDirect = function(code) {
@@ -1141,7 +1162,7 @@ PublicServers.prototype.joinServerDirect = function(code) {
 };
 
 PublicServers.prototype.escape = function(unsafe) {
-	if(unsafe === undefined) return "";
+    if(unsafe === undefined) return "";
 
     return unsafe
          .replace(/&/g, "&amp;")
@@ -1168,7 +1189,7 @@ QuickEmoteMenu.prototype.init = function() {
         if(e.target.id != "rmenu") $("#rmenu").remove();
     });
     this.favoriteEmotes = {};
-    var fe = localStorage["bdfavemotes"];
+    var fe = bdStorage.get("bdfavemotes");
     if (fe != undefined) {
         this.favoriteEmotes = JSON.parse(atob(fe));
     }
@@ -1332,8 +1353,7 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     this.faContainer = faContainer;
 
     $("#bda-qem-favourite-container").replaceWith(faContainer);
-
-    window.localStorage["bdfavemotes"] = btoa(JSON.stringify(this.favoriteEmotes));
+    window.bdStorage.set("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
 };
 function CustomCssEditor() { }
 
@@ -1364,7 +1384,7 @@ attachEditor += "       <\/li>";
 attachEditor += "       <li>";
 attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
 attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-1\" type=\"checkbox\" "+(settingsCookie["bda-css-1"] ? "checked" : "")+"><span><\/span><\/div>";
-attachEditor += "               <span title=\"Autosave css to localstorage when typing\">Autosave<\/span>";
+attachEditor += "               <span title=\"Autosave css to storage when typing\">TEMPDISABLED<\/span>";
 attachEditor += "           <\/div>";
 attachEditor += "       <\/li>";
 attachEditor += "        <li>";
@@ -1430,8 +1450,8 @@ CustomCssEditor.prototype.applyCustomCss = function (css, forceupdate, forcesave
         $("#customcss").html(css);
     }
 
-    if(forcesave || settingsCookie["bda-css-1"]) {
-        localStorage.setItem("bdcustomcss", btoa(css));
+    if(forcesave) {
+        window.bdStorage.set("bdcustomcss", btoa(css));
     }
 };
 /* BetterDiscordApp Settings Panel JavaScript
@@ -1725,7 +1745,7 @@ SettingsPanel.prototype.construct = function () {
     //End emote settings
 
     //Custom CSS Editor
-    var ccss = atob(localStorage.getItem("bdcustomcss"));
+    var ccss = atob(window.bdStorage.get("bdcustomcss"));
     customCssEditor.applyCustomCss(ccss, true, false);
 
     settingsInner += '\
@@ -1977,8 +1997,8 @@ Utils.prototype.importSettings = function() {
                     settingsPanel.updateSettings();
                 }
             }
-            localStorage["bdcustomcss"] = obj.customCss;
-            var ccss = atob(localStorage.getItem("bdcustomcss"));
+            window.bdStorage.set("bdcustomcss", obj.customCss);
+            var ccss = window.bdStorage.get("bdcustomcss");
             if (!customCssInitialized) {
                 customCssEditor.init();
                 customCssInitialized = true;
@@ -2041,10 +2061,10 @@ Utils.prototype.importSettings = function() {
 Utils.prototype.exportSettings = function() {
     var obj =  {
         settings: settingsCookie,
-        customCss: localStorage["bdcustomcss"],
+        customCss: window.bdStorage.get("bdcustomcss"),
         plugins: pluginCookie,
         themes: themeCookie,
-        favEmotes: window.localStorage["bdfavemotes"]
+        favEmotes: window.bdStorage.get("bdfavemotes")
     };
     mainCore.alert("Export Settings", '<div class="form" style="width:100%;"><div class="control-group"><textarea style="min-height:150px;">'+JSON.stringify(obj)+'</textarea></div></div>');
 };
@@ -2329,8 +2349,8 @@ BdWSocket.prototype.onOpen = function () {
     var data = {
         op: 2,
         d: {
-            token: JSON.parse(localStorage.getItem('token')),
-            properties: JSON.parse(localStorage.getItem('superProperties')),
+            token: JSON.parse(window.bdStorage.get('token')),
+            properties: JSON.parse(window.bdStorage.get('superProperties')),
             v: 3
         }
     };
