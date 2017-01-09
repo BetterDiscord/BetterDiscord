@@ -28,8 +28,8 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 });
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.75;
-var supportedVersion = "0.2.5";
+var jsVersion = 1.76;
+var supportedVersion = "0.2.81";
 
 var mainObserver;
 
@@ -105,60 +105,15 @@ var defaultCookie = {
 var bdchangelog = {
     "changes": {
         "0a": {
-            "title": "1.73 : Native sub emotes",
-            "text": "Native sub emote support disabled for now due to a critical bug",
-            "img": ""
-        },
-        "1a": {
-            "title": "1.73 : Initial Developer Mode",
-            "text": "Enable developer mode from settings!",
-            "img": ""
-        },
-        "a": {
-            "title": "v1.72 : Public Servers",
-            "text": "Public servers now have categories, description, tags, dark mode and more!",
-            "img": ""
-        },
-        "b": {
-            "title": "v1.72 : Import/Export",
-            "text": "Import/Export buttons now disappear in themes/plugins tabs to avoid confusion",
-            "img": ""
-        },
-        "c": {
-            "title": "v1.72 : Changelog",
-            "text": "You can now reopen this changelog from the settings",
+            "title": "1.76 : Alternate Storage",
+            "text": "<a target='blank' href='https://gist.github.com/Jiiks/267113ecb1685f39f4dc4646f9380d55'>https://gist.github.com/Jiiks/267113ecb1685f39f4dc4646f9380d55</a>",
             "img": ""
         }
     },
     "fixes": {
         "0a": {
-            "title": "v1.74 : BetterDiscord Invite",
-            "text": "Fixed the BetterDiscord invite link in public servers",
-            "img": ""
-        },
-        "0b": {
-            "title": "v1.74 : Dev Mode",
-            "text": "Fixed dev mode breaking",
-            "img": ""
-        },
-        "0c": {
-            "title": "v1.72 : Settings panel",
-            "text": "Settings panel will now show no matter how you open it!",
-            "img": ""
-        },
-        "0d": {
-            "title": "v1.72 : Fixed emote edit bug",
-            "text": "Edits now appear properly even with emotes!",
-            "img": ""
-        },
-        "0e": {
-            "title": "v1.72 : Public servers",
-            "text": "Public servers button is visible again!",
-            "img": ""
-        },
-        "0f": {
-            "title": "v1.72 : Public servers",
-            "text": "Updated public servers api endpoint url for fetching correct serverlist.",
+            "title": "1.76 : Alternate Storage",
+            "text": "Both BetterDiscord and plugins now use alternate storage",
             "img": ""
         }
     }
