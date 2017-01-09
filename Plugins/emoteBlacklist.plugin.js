@@ -10,8 +10,9 @@ emoteBlacklist.prototype.start = function () {
     window.ebEnabled = true;
     var self = this;
     var em = bdPluginStorage.get("emoteBlacklist", "blacklist");
-    if(em == undefined) return;
-    JSON.parse(em).forEach(function(emote) {
+
+    if(em === null) return;
+    em.forEach(function(emote) {
         self.remove(emote);
         self.add(emote);
     });
@@ -36,8 +37,7 @@ emoteBlacklist.prototype.stop = function () {
 emoteBlacklist.prototype.clear = function() {
     var self = this;
     var em = bdPluginStorage.get("emoteBlacklist", "blacklist");
-    if(em == undefined) return;
-    var em = JSON.parse(em);
+    if(em === null) return;
     em.forEach(function(emote) {
         self.remove(emote);
     });
@@ -48,8 +48,8 @@ emoteBlacklist.prototype.getSettingsPanel = function () {
     var html = '';
     html += '<h2>Emote Blacklist</2>';
     html += '<textarea id="emoteBlistTa" style="width:100%; min-height:200px;">';
-    if(em != undefined) {
-        JSON.parse(em).forEach(function(item) { 
+    if(em !== null) {
+        em.forEach(function(item) { 
             html += item + "\n";
         });
     }
