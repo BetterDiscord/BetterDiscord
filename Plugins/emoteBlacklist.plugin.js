@@ -9,7 +9,7 @@ emoteBlacklist.prototype.onSwitch = function () {
 emoteBlacklist.prototype.start = function () {
     window.ebEnabled = true;
     var self = this;
-    var em = localStorage["emoteBlacklist"];
+    var em = bdPluginStorage.get("emoteBlacklist", "blacklist");
     if(em == undefined) return;
     JSON.parse(em).forEach(function(emote) {
         self.remove(emote);
@@ -35,7 +35,7 @@ emoteBlacklist.prototype.stop = function () {
 };
 emoteBlacklist.prototype.clear = function() {
     var self = this;
-    var em = localStorage["emoteBlacklist"];
+    var em = bdPluginStorage.get("emoteBlacklist", "blacklist");
     if(em == undefined) return;
     var em = JSON.parse(em);
     em.forEach(function(emote) {
@@ -43,7 +43,7 @@ emoteBlacklist.prototype.clear = function() {
     });
 };
 emoteBlacklist.prototype.getSettingsPanel = function () {
-    var em = localStorage["emoteBlacklist"];
+    var em = bdPluginStorage.get("emoteBlacklist", "blacklist");
 
     var html = '';
     html += '<h2>Emote Blacklist</2>';
@@ -64,7 +64,7 @@ emoteBlacklist.prototype.save = function() {
     $("#emoteBlistTa").val().split("\n").forEach(function(item) { 
         blist.push(item);
     });
-    localStorage["emoteBlacklist"] = JSON.stringify(blist);
+    bdPluginStorage.set("emoteBlacklist", "blacklist", blist);
     if(window.ebEnabled) {
         this.start();
     }
