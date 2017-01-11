@@ -11,29 +11,52 @@
 (function() {
 
     let __fs = window.require("fs");
-    var data = {};
+    let __data = {};
     if(__fs.existsSync("localStorage.json")) {
         try {
-            data = JSON.parse(__fs.readFileSync("localStorage.json"));
+            __data = JSON.parse(__fs.readFileSync("localStorage.json"));
         }catch(err) {
             console.log(err);
         }
     }
 
-    let __ls = data;
-    __ls.setItem = function(i, v) {
+    var __ls = __data;
+    __ls.setItem = function(i, v) { 
         __ls[i] = v;
-        __fs.writeFileSync("localStorage.json", JSON.stringify(__ls), null, 4);
+        this.save();
     };
     __ls.getItem = function(i) {
         return __ls[i];
     };
-    __ls.push = function() {
-        __fs.writeFileSync("localStorage.json", JSON.stringify(__ls), null, 4);
+    __ls.save = function() {
+        __fs.writeFileSync("localStorage.json", JSON.stringify(this), null, 4);
     };
 
-    window.localStorage = __ls;
+    var __proxy = new Proxy(__ls, {
+        set: function(target, name, val, receiver) {
+            __ls[name] = val;
+            __ls.save();
+        },
+        get: function(target, name, receiver) {
+            return __ls[name];
+        }
+    });
+
+    window.localStorage = __proxy;
+
 })();
+
+
+var g = Object;
+var p = new Proxy(g, {
+  set: function(target,name,val,receiver) {
+    console.log(target);
+    console.log(name);
+    console.log(val);
+    console.log(receiver);
+  }
+});
+
 
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
