@@ -79,7 +79,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 });
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.76;
+var jsVersion = 1.77;
 var supportedVersion = "0.2.81";
 
 var mainObserver;
@@ -156,6 +156,11 @@ var defaultCookie = {
 var bdchangelog = {
     "changes": {
         "0a": {
+            "title": "1.77 : Local storage proxy",
+            "text": "Implemented a local storage proxy for old plugin support. Do not use it for new plugins! use the bdPluginStorage.get and bdPluginStorage.set",
+            "img": ""
+        },
+        "0b": {
             "title": "1.76 : Alternate Storage",
             "text": "<a target='blank' href='https://gist.github.com/Jiiks/267113ecb1685f39f4dc4646f9380d55'>https://gist.github.com/Jiiks/267113ecb1685f39f4dc4646f9380d55</a>",
             "img": ""
@@ -163,6 +168,11 @@ var bdchangelog = {
     },
     "fixes": {
         "0a": {
+            "title": "1.77 : Custom css and favourite emote loading",
+            "text": "Fixed custom css and favourite emote loading when they are not present",
+            "img": ""
+        },
+        "0b": {
             "title": "1.76 : Alternate Storage",
             "text": "Both BetterDiscord and plugins now use alternate storage",
             "img": ""
