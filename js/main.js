@@ -15,7 +15,9 @@
     if(__fs.existsSync("localStorage.json")) {
         try {
             data = JSON.parse(__fs.readFileSync("localStorage.json"));
-        }catch() {}
+        }catch(err) {
+            console.log(err);
+        }
     }
 
     let __ls = data;
