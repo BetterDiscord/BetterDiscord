@@ -1196,7 +1196,7 @@ QuickEmoteMenu.prototype.init = function() {
     });
     this.favoriteEmotes = {};
     var fe = bdStorage.get("bdfavemotes");
-    if (fe !== null) {
+    if (fe !== "" && fe !== null) {
         this.favoriteEmotes = JSON.parse(atob(fe));
     }
 
@@ -1753,7 +1753,7 @@ SettingsPanel.prototype.construct = function () {
     //Custom CSS Editor
     var _ccss = window.bdStorage.get("bdcustomcss");
     var ccss = "";
-    if(_ccss !== null) {
+    if(_ccss !== null && _ccss !== "") {
         ccss = atob(_ccss);
     }
     customCssEditor.applyCustomCss(ccss, true, false);
