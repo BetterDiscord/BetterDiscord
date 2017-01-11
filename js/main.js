@@ -26,7 +26,7 @@
         this.save();
     };
     __ls.getItem = function(i) {
-        return __ls[i];
+        return __ls[i] || null;
     };
     __ls.save = function() {
         __fs.writeFileSync("localStorage.json", JSON.stringify(this), null, 4);
@@ -38,25 +38,13 @@
             __ls.save();
         },
         get: function(target, name, receiver) {
-            return __ls[name];
+            return __ls[name] || null;
         }
     });
 
     window.localStorage = __proxy;
 
 })();
-
-
-var g = Object;
-var p = new Proxy(g, {
-  set: function(target,name,val,receiver) {
-    console.log(target);
-    console.log(name);
-    console.log(val);
-    console.log(receiver);
-  }
-});
-
 
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
