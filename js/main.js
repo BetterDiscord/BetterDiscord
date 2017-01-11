@@ -23,6 +23,7 @@
     let __ls = data;
     __ls.setItem = function(i, v) {
         __ls[i] = v;
+        __fs.writeFileSync("localStorage.json", JSON.stringify(__ls), null, 4);
     };
     __ls.getItem = function(i) {
         return __ls[i];
