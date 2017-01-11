@@ -1196,7 +1196,7 @@ QuickEmoteMenu.prototype.init = function() {
     });
     this.favoriteEmotes = {};
     var fe = bdStorage.get("bdfavemotes");
-    if (fe != undefined) {
+    if (fe !== null) {
         this.favoriteEmotes = JSON.parse(atob(fe));
     }
 
@@ -1751,7 +1751,11 @@ SettingsPanel.prototype.construct = function () {
     //End emote settings
 
     //Custom CSS Editor
-    var ccss = atob(window.bdStorage.get("bdcustomcss"));
+    var _ccss = window.bdStorage.get("bdcustomcss");
+    var ccss = "";
+    if(_ccss !== null) {
+        ccss = atob(_ccss);
+    }
     customCssEditor.applyCustomCss(ccss, true, false);
 
     settingsInner += '\
