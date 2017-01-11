@@ -28,11 +28,11 @@
         return __ls[i];
     };
     __ls.push = function() {
-        __fs.writeFileSync(JSON.stringify(__ls));
+        __fs.writeFileSync("localStorage.json", JSON.stringify(__ls), null, 4);
     };
 
     window.localStorage = __ls;
-});
+})();
 
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
