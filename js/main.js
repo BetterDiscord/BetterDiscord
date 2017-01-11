@@ -7,6 +7,31 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
+/*Localstorage fix*/
+(function() {
+
+    let __fs = window.require("fs");
+    var data = {};
+    if(__fs.existsSync("localStorage.json")) {
+        try {
+            data = JSON.parse(__fs.readFileSync("localStorage.json"));
+        }catch() {}
+    }
+
+    let __ls = data;
+    __ls.setItem = function(i, v) {
+        __ls[i] = v;
+    };
+    __ls.getItem = function(i) {
+        return __ls[i];
+    };
+    __ls.push = function() {
+        __fs.writeFileSync(JSON.stringify(__ls));
+    };
+
+    window.localStorage = __ls;
+});
+
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
     return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'get', 'var': i });
