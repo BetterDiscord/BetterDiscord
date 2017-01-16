@@ -6,7 +6,7 @@
 
 ## All plugins must be named `*.plugin.js` and all themes must be named `*.theme.css`
 
-Better Discord App enhances Discord desktop app with new features.
+Better Discord App enhances the Discord desktop app with new features.
 
 ![ss](http://puu.sh/oIO58.png)
 
