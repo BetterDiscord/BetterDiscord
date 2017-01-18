@@ -73,7 +73,7 @@ class Utils {
                 });
                 return path;
             },
-            "darwin": () => "/Applications/Discord.app",
+            "darwin": () => "/Applications/Discord.app/Contents",
             "linux": () => "" // TODO
         }[platform]();
 
