@@ -84,6 +84,9 @@ class Utils {
             "win32": () => {
                 return `${process.env.APPDATA}/BetterDiscord/lib`;
             },
+            "darwin": () => {
+                return ""; // TODO
+            },
             "linux": () => {
                 return ""; // TODO
             }
