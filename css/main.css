@@ -699,6 +699,7 @@
   padding: 0px !important;
   padding-left: 3px !important;
   color: #EBEBEB;
+  z-index: 90000;
 }
 
 .bd-minimal-chan #bd-show-channels {
