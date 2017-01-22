@@ -11,8 +11,19 @@
 (function() {
 
     let __fs = window.require("fs");
+    let __process = window.require("process");
+    let __platform = __process.platform;
+    let __dataPath = (__platform === 'win32' ? __process.env.APPDATA : __platform === 'darwin' ? __process.env.HOME + '/Library/Preferences' : '/var/local') + '/BetterDiscord/';
+
+
     let __data = {};
-    if(__fs.existsSync("localStorage.json")) {
+    if(__fs.existsSync(`${__dataPath}/localStorage.json`)) {
+        try {
+            __data = JSON.parse(__fs.readFileSync(`${__dataPath}/localStorage.json`))
+        }catch(err) {
+            console.log(err);
+        }
+    } else if(__fs.existsSync("localStorage.json")) {
         try {
             __data = JSON.parse(__fs.readFileSync("localStorage.json"));
         }catch(err) {
@@ -29,7 +40,7 @@
         return __ls[i] || null;
     };
     __ls.save = function() {
-        __fs.writeFileSync("localStorage.json", JSON.stringify(this), null, 4);
+        __fs.writeFileSync(`${__dataPath}/localStorage.json`, JSON.stringify(this), null, 4);
     };
 
     var __proxy = new Proxy(__ls, {
