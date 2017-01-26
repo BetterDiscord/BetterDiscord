@@ -13,7 +13,7 @@
     let __fs = window.require("fs");
     let __process = window.require("process");
     let __platform = __process.platform;
-    let __dataPath = (__platform === 'win32' ? __process.env.APPDATA : __platform === 'darwin' ? __process.env.HOME + '/Library/Preferences' : '/var/local') + '/BetterDiscord/';
+    let __dataPath = (__platform === 'win32' ? __process.env.APPDATA : __platform === 'darwin' ? __process.env.HOME + '/Library/Preferences' : process.env.HOME + '/.config') + '/BetterDiscord/';
 
 
     let __data = {};
