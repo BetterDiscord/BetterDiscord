@@ -74,7 +74,7 @@ class Utils {
                 return path;
             },
             "darwin": () => "/Applications/Discord.app/Contents",
-            "linux": () => "" // TODO
+            "linux": () => "/usr/share/discord-canary"
         }[platform]();
 
     }
@@ -88,7 +88,8 @@ class Utils {
                 return `${process.env.HOME}/.local/share/BetterDiscord`;
             },
             "linux": () => {
-                return ""; // TODO
+                // FIXME: for a non-root user, a path like OSX's makes more sense
+                return "/usr/local/share/BetterDiscord";
             }
         }[platform]();
     }
