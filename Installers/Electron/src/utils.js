@@ -85,7 +85,7 @@ class Utils {
                 return `${process.env.APPDATA}/BetterDiscord/lib`;
             },
             "darwin": () => {
-                return ""; // TODO
+                return `${process.env.HOME}/.local/share/BetterDiscord`;
             },
             "linux": () => {
                 return ""; // TODO
