@@ -74,7 +74,7 @@ class Utils {
                 return path;
             },
             "darwin": () => "/Applications/Discord.app/Contents",
-            "linux": () => "/usr/share/discord-canary"
+            "linux": () => "/usr/share/discord"
         }[platform]();
 
     }
