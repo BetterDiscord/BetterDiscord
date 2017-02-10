@@ -47,6 +47,9 @@ function install() {
             _functionCallSplice = 446;
             _functionSplice = 547;
             _discordPath = "/Applications/Discord.app/Contents/Resources" // Defaults to Applications directory
+        } else if (_os == "linux") {
+            _discordPath = "/opt/DiscordCanary/resources";
+            _index = "/app/index.js";
         }
     }
     console.log("Looking for discord resources at: " + _discordPath);
@@ -80,8 +83,12 @@ function install() {
             asar.extractAll(_discordPath + _appArchive, _discordPath + _appFolder);
 
             console.log("Copying BetterDiscord");
-
-            fs.mkdirSync(_discordPath + "/node_modules/BetterDiscord");
+            if(_os == "linux") {
+                fs.mkdirSync(_discordPath + _appFolder + "/node_modules/BetterDiscord");
+            }
+            else {
+                fs.mkdirSync(_discordPath + "/node_modules/BetterDiscord");
+            }
 
             wrench.copyDirSyncRecursive(__dirname + "/BetterDiscord/", _discordPath + _appFolder  +  "/node_modules/BetterDiscord/", {forceDelete: true});
 
@@ -99,8 +106,18 @@ function install() {
                     console.log("Injecting index.js");
 
                     var data = fs.readFileSync(_discordPath + _index).toString().split("\n");
-                    data.splice(_importSplice, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
-                    data.splice(_functionCallSplice, 0, splice);
+                    
+                    if(_os == "linux") {
+                        data = data.join("\n");
+                        data = data.replace('var _GPUSettings2 = _interopRequireDefault(_GPUSettings);','var _GPUSettings2 = _interopRequireDefault(_GPUSettings);\n\nvar _betterDiscord = require(\'BetterDiscord\');\n');
+                       
+                        data = data.replace('mainWindow.setMenuBarVisibility(false);','mainWindow.setMenuBarVisibility(false);\n' + splice + '\n');
+                        data = data.split("\n");
+                     
+                    } else {
+                        data.splice(_importSplice, 0, 'var _betterDiscord = require(\'betterdiscord\');\n');
+                        data.splice(_functionCallSplice, 0, splice);
+                    }
 
                     fs.writeFile(_discordPath + _index, data.join("\n"), function(err) {
                         if(err) return console.log(err);
