@@ -1,3 +1,5 @@
+Note that this whole branch is deprecated. all further development is going on here: https://github.com/Jiiks/BetterDiscordApp/tree/v2
+
 # BetterDiscordApp
 
 # If you have issues then join the BD Discord server: [Here](https://discord.gg/0Tmfo5ZbORCRqbAd)
