@@ -24,8 +24,8 @@ var _cfg;
 
 // Default configs if for some reason we don't receive config params
 const _defaults = {
-    installPath:  (_os.platform() === 'win32' ? process.env.APPDATA : _os.platform() === 'darwin' ? `${process.env.HOME}/Library/Preferences`: `/var/local`) + '/BetterDiscord/lib/',
-    dataPath: (_os.platform() === 'win32' ? process.env.APPDATA : _os.platform() === 'darwin' ? `${process.env.HOME}/Library/Preferences`: `/var/local`) + '/BetterDiscord/data/',
+    installPath:  (_os.platform() === 'win32' ? process.env.APPDATA : _os.platform() === 'darwin' ? `${process.env.HOME}/Library/Preferences`: `/var/local`) + '/BetterDiscord/lib',
+    dataPath: (_os.platform() === 'win32' ? process.env.APPDATA : _os.platform() === 'darwin' ? `${process.env.HOME}/Library/Preferences`: `/var/local`) + '/BetterDiscord/data',
     emotesEnabled: true
 };
 

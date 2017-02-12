@@ -1,3 +1,5 @@
+Note that this whole branch is deprecated. all further development is going on here: https://github.com/Jiiks/BetterDiscordApp/tree/v2
+
 # BetterDiscordApp
 
 # If you have issues then join the BD Discord server: [Here](https://discord.gg/0Tmfo5ZbORCRqbAd)
@@ -6,7 +8,7 @@
 
 ## All plugins must be named `*.plugin.js` and all themes must be named `*.theme.css`
 
-Better Discord App enhances Discord desktop app with new features.
+Better Discord App enhances the Discord desktop app with new features.
 
 ![ss](http://puu.sh/oIO58.png)
 

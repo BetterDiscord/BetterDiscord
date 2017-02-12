@@ -6,9 +6,80 @@
  * Last Update: 01/05/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
+
+/*Localstorage fix*/
+(function() {
+
+    let __fs = window.require("fs");
+    let __process = window.require("process");
+    let __platform = __process.platform;
+    let __dataPath = (__platform === 'win32' ? __process.env.APPDATA : __platform === 'darwin' ? __process.env.HOME + '/Library/Preferences' : process.env.HOME + '/.config') + '/BetterDiscord/';
+
+
+    let __data = {};
+    if(__fs.existsSync(`${__dataPath}localStorage.json`)) {
+        try {
+            __data = JSON.parse(__fs.readFileSync(`${__dataPath}localStorage.json`))
+        }catch(err) {
+            console.log(err);
+        }
+    } else if(__fs.existsSync("localStorage.json")) {
+        try {
+            __data = JSON.parse(__fs.readFileSync("localStorage.json"));
+        }catch(err) {
+            console.log(err);
+        }
+    }
+
+    var __ls = __data;
+    __ls.setItem = function(i, v) { 
+        __ls[i] = v;
+        this.save();
+    };
+    __ls.getItem = function(i) {
+        return __ls[i] || null;
+    };
+    __ls.save = function() {
+        __fs.writeFileSync(`${__dataPath}/localStorage.json`, JSON.stringify(this), null, 4);
+    };
+
+    var __proxy = new Proxy(__ls, {
+        set: function(target, name, val, receiver) {
+            __ls[name] = val;
+            __ls.save();
+        },
+        get: function(target, name, receiver) {
+            return __ls[name] || null;
+        }
+    });
+
+    window.localStorage = __proxy;
+
+})();
+
+window.bdStorage = {};
+window.bdStorage.get = function(i) {
+    return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'get', 'var': i });
+};
+window.bdStorage.set = function(i, v) {
+    betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'set', 'var': i, 'data': v });
+};
+window.bdPluginStorage = {};
+window.bdPluginStorage.get = function(pn, i) {
+    return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'pluginstorage', 'cmd': 'get', 'pn': pn, 'var': i });
+};
+window.bdPluginStorage.set = function(pn, i, v) {
+    betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'pluginstorage', 'cmd': 'set', 'pn': pn, 'var': i, 'data': v });
+};
+
+betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
+    console.log(event);
+    console.log(arg);
+});
+
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.74;
-var supportedVersion = "0.2.5";
+var jsVersion = 1.77;
+var supportedVersion = "0.2.81";
 
 var mainObserver;
 
@@ -84,60 +155,25 @@ var defaultCookie = {
 var bdchangelog = {
     "changes": {
         "0a": {
-            "title": "1.73 : Native sub emotes",
-            "text": "Native sub emote support disabled for now due to a critical bug",
+            "title": "1.77 : Local storage proxy",
+            "text": "Implemented a local storage proxy for old plugin support. Do not use it for new plugins! use the bdPluginStorage.get and bdPluginStorage.set",
             "img": ""
         },
-        "1a": {
-            "title": "1.73 : Initial Developer Mode",
-            "text": "Enable developer mode from settings!",
-            "img": ""
-        },
-        "a": {
-            "title": "v1.72 : Public Servers",
-            "text": "Public servers now have categories, description, tags, dark mode and more!",
-            "img": ""
-        },
-        "b": {
-            "title": "v1.72 : Import/Export",
-            "text": "Import/Export buttons now disappear in themes/plugins tabs to avoid confusion",
-            "img": ""
-        },
-        "c": {
-            "title": "v1.72 : Changelog",
-            "text": "You can now reopen this changelog from the settings",
+        "0b": {
+            "title": "1.76 : Alternate Storage",
+            "text": "<a target='blank' href='https://gist.github.com/Jiiks/267113ecb1685f39f4dc4646f9380d55'>https://gist.github.com/Jiiks/267113ecb1685f39f4dc4646f9380d55</a>",
             "img": ""
         }
     },
     "fixes": {
         "0a": {
-            "title": "v1.74 : BetterDiscord Invite",
-            "text": "Fixed the BetterDiscord invite link in public servers",
+            "title": "1.77 : Custom css and favourite emote loading",
+            "text": "Fixed custom css and favourite emote loading when they are not present",
             "img": ""
         },
         "0b": {
-            "title": "v1.74 : Dev Mode",
-            "text": "Fixed dev mode breaking",
-            "img": ""
-        },
-        "0c": {
-            "title": "v1.72 : Settings panel",
-            "text": "Settings panel will now show no matter how you open it!",
-            "img": ""
-        },
-        "0d": {
-            "title": "v1.72 : Fixed emote edit bug",
-            "text": "Edits now appear properly even with emotes!",
-            "img": ""
-        },
-        "0e": {
-            "title": "v1.72 : Public servers",
-            "text": "Public servers button is visible again!",
-            "img": ""
-        },
-        "0f": {
-            "title": "v1.72 : Public servers",
-            "text": "Updated public servers api endpoint url for fetching correct serverlist.",
+            "title": "1.76 : Alternate Storage",
+            "text": "Both BetterDiscord and plugins now use alternate storage",
             "img": ""
         }
     }
@@ -997,7 +1033,7 @@ PublicServers.prototype.loadServers = function(dataset, search, clear) {
                // if(source.invite_code === undefined) return;
                // var icode = source.invite_code.replace(/ /g,'');
                // icode = self.escape(icode).replace(/[^A-z0-9]/g,'');
-               	var icode = source.identifier;
+                var icode = source.identifier;
                 var html = '<div class="server-row">';
                 html += '<div class="server-icon" style="background-image:url(' + self.escape(source.icon) + ')"></div>';
                 html += '<div class="server-info server-name">';
@@ -1100,27 +1136,27 @@ PublicServers.prototype.search = function(start, clear) {
     };*/
 
     var dataset = {
-    	"sort": [{ "online": "desc" }],
-    	"from": start,
-    	"size": 20,
-    	"query": {
-    		"bool": {
-    			"must": [
-    				{"query_string": {
-    					"default_operator": "AND",
-    					"query": sterm ? sterm : "*"
-    				}}
-    			],
-    			"must_not": [
-    				{"terms": { "identifier": this.filtered }}
-    			]
-    		}
-    	}
+        "sort": [{ "online": "desc" }],
+        "from": start,
+        "size": 20,
+        "query": {
+            "bool": {
+                "must": [
+                    {"query_string": {
+                        "default_operator": "AND",
+                        "query": sterm ? sterm : "*"
+                    }}
+                ],
+                "must_not": [
+                    {"terms": { "identifier": this.filtered }}
+                ]
+            }
+        }
     };
 
 
     if(this.selectedCategory != "all") {
-    	dataset.query.bool.must.push({ "match_phrase": { "categories": this.selectedCategory } });
+        dataset.query.bool.must.push({ "match_phrase": { "categories": this.selectedCategory } });
     }
     
     this.loadServers(dataset, true, clear);
@@ -1128,8 +1164,8 @@ PublicServers.prototype.search = function(start, clear) {
 
 //Workaround for joining a server
 PublicServers.prototype.joinServer = function (code) {
-	require('electron').shell.openExternal("https://www.discordservers.com/join/" + code);
-	this.hide();
+    require('electron').shell.openExternal("https://www.discordservers.com/join/" + code);
+    this.hide();
 };
 
 PublicServers.prototype.joinServerDirect = function(code) {
@@ -1141,7 +1177,7 @@ PublicServers.prototype.joinServerDirect = function(code) {
 };
 
 PublicServers.prototype.escape = function(unsafe) {
-	if(unsafe === undefined) return "";
+    if(unsafe === undefined) return "";
 
     return unsafe
          .replace(/&/g, "&amp;")
@@ -1168,8 +1204,8 @@ QuickEmoteMenu.prototype.init = function() {
         if(e.target.id != "rmenu") $("#rmenu").remove();
     });
     this.favoriteEmotes = {};
-    var fe = localStorage["bdfavemotes"];
-    if (fe != undefined) {
+    var fe = bdStorage.get("bdfavemotes");
+    if (fe !== "" && fe !== null) {
         this.favoriteEmotes = JSON.parse(atob(fe));
     }
 
@@ -1332,8 +1368,7 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     this.faContainer = faContainer;
 
     $("#bda-qem-favourite-container").replaceWith(faContainer);
-
-    window.localStorage["bdfavemotes"] = btoa(JSON.stringify(this.favoriteEmotes));
+    window.bdStorage.set("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
 };
 function CustomCssEditor() { }
 
@@ -1364,7 +1399,7 @@ attachEditor += "       <\/li>";
 attachEditor += "       <li>";
 attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
 attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-1\" type=\"checkbox\" "+(settingsCookie["bda-css-1"] ? "checked" : "")+"><span><\/span><\/div>";
-attachEditor += "               <span title=\"Autosave css to localstorage when typing\">Autosave<\/span>";
+attachEditor += "               <span title=\"Autosave css to storage when typing\">TEMPDISABLED<\/span>";
 attachEditor += "           <\/div>";
 attachEditor += "       <\/li>";
 attachEditor += "        <li>";
@@ -1430,8 +1465,8 @@ CustomCssEditor.prototype.applyCustomCss = function (css, forceupdate, forcesave
         $("#customcss").html(css);
     }
 
-    if(forcesave || settingsCookie["bda-css-1"]) {
-        localStorage.setItem("bdcustomcss", btoa(css));
+    if(forcesave) {
+        window.bdStorage.set("bdcustomcss", btoa(css));
     }
 };
 /* BetterDiscordApp Settings Panel JavaScript
@@ -1725,7 +1760,11 @@ SettingsPanel.prototype.construct = function () {
     //End emote settings
 
     //Custom CSS Editor
-    var ccss = atob(localStorage.getItem("bdcustomcss"));
+    var _ccss = window.bdStorage.get("bdcustomcss");
+    var ccss = "";
+    if(_ccss !== null && _ccss !== "") {
+        ccss = atob(_ccss);
+    }
     customCssEditor.applyCustomCss(ccss, true, false);
 
     settingsInner += '\
@@ -1977,8 +2016,8 @@ Utils.prototype.importSettings = function() {
                     settingsPanel.updateSettings();
                 }
             }
-            localStorage["bdcustomcss"] = obj.customCss;
-            var ccss = atob(localStorage.getItem("bdcustomcss"));
+            window.bdStorage.set("bdcustomcss", obj.customCss);
+            var ccss = window.bdStorage.get("bdcustomcss");
             if (!customCssInitialized) {
                 customCssEditor.init();
                 customCssInitialized = true;
@@ -2041,10 +2080,10 @@ Utils.prototype.importSettings = function() {
 Utils.prototype.exportSettings = function() {
     var obj =  {
         settings: settingsCookie,
-        customCss: localStorage["bdcustomcss"],
+        customCss: window.bdStorage.get("bdcustomcss"),
         plugins: pluginCookie,
         themes: themeCookie,
-        favEmotes: window.localStorage["bdfavemotes"]
+        favEmotes: window.bdStorage.get("bdfavemotes")
     };
     mainCore.alert("Export Settings", '<div class="form" style="width:100%;"><div class="control-group"><textarea style="min-height:150px;">'+JSON.stringify(obj)+'</textarea></div></div>');
 };
@@ -2329,8 +2368,8 @@ BdWSocket.prototype.onOpen = function () {
     var data = {
         op: 2,
         d: {
-            token: JSON.parse(localStorage.getItem('token')),
-            properties: JSON.parse(localStorage.getItem('superProperties')),
+            token: JSON.parse(window.bdStorage.get('token')),
+            properties: JSON.parse(window.bdStorage.get('superProperties')),
             v: 3
         }
     };
