@@ -4382,6 +4382,10 @@ class V2C_PublicServers extends BDV2.reactComponent {
         $.ajax({
             method: 'GET',
             url: `${self.joinEndPoint}/session`,
+            crossDomain: true,
+            xhrFields: {
+               withCredentials: true
+            },
             success: data => {
                 self.setState({
                     'selectedCategory': 0,
