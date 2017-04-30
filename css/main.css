@@ -57,17 +57,17 @@
 }
 
 .bd-server-card.bd-server-card-pinned {
-	margin-bottom: 11px;
+  margin-bottom: 11px;
 }
 
 .bd-server-card.bd-server-card-pinned:after {
-	background: #3a71c1;
-	content: "";
-	height: 3px;
-	width: 100%;
-	display: block;
-	position: absolute;
-	margin-top: 5px;
+  background: #3a71c1;
+  content: "";
+  height: 3px;
+  width: 100%;
+  display: block;
+  position: absolute;
+  margin-top: 5px;
 }
 
 .ui-standard-sidebar-view #bd-customcss-attach-controls button,
@@ -169,7 +169,7 @@
   font-size: 20px;
 }
 
-.bd-blue ui-standard-sidebar-view #editor-detached button {
+.bd-blue .ui-standard-sidebar-view #editor-detached button {
   background: #3a71c1;
 }
 
@@ -2106,5 +2106,3 @@
 .bd-blue .ui-switch-wrapper:not(.disabled):not(.clear):hover .ui-switch-checkbox:checked+.ui-switch { background: #3f79ce; }
 .bd-blue *[style*="border-color: rgb(114, 137, 218)"] { border-color: #3a71c1 !important; }
 .bd-blue *[style*="background-color: rgb(114, 137, 218)"] { background-color: #3a71c1 !important; }
-
-
