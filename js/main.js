@@ -3863,7 +3863,9 @@ class V2C_PluginCard extends BDV2.reactComponent {
     constructor(props) {
         super(props);
         let self = this;
-        self.settingsPanel = self.props.plugin.getSettingsPanel();
+        if (typeof self.props.plugin.getSettingsPanel === "function") {
+            self.settingsPanel = self.props.plugin.getSettingsPanel();
+        }
         self.onChange = self.onChange.bind(self);
         self.showSettings = self.showSettings.bind(self);
         self.setInitialState();
@@ -3943,7 +3945,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
                     BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
                     BDV2.react.createElement("div", { className: "ui-switch" })
                 ),
-                BDV2.react.createElement(
+                this.settingsPanel && BDV2.react.createElement(
                     "button",
                     { onClick: this.showSettings },
                     "Settings"
@@ -3966,6 +3968,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     showSettings() {
+        if (!this.settingsPanel) return;
         this.setState({
             'settings': true
         });
