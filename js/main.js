@@ -3965,6 +3965,10 @@ class V2C_PluginCard extends BDV2.reactComponent {
         } else {
             self.props.plugin.stop();
         }
+        $.cookie("bd-plugins", JSON.stringify(pluginCookie), {
+            expires: 365,
+            path: '/'
+        });
     }
 
     showSettings() {
@@ -4044,6 +4048,10 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         } else {
             $(`#${self.props.theme.name}`).remove();
         }
+        $.cookie("bd-themes", JSON.stringify(themeCookie), {
+            expires: 365,
+            path: '/'
+        });
     }
 }
 
@@ -4730,7 +4738,6 @@ class V2_PublicServers {
         }
         BDV2.reactDom.render(this.component, root);
     }
-
 }
 
 class V2_SettingsPanel_Sidebar {
