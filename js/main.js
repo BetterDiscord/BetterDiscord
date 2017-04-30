@@ -3863,6 +3863,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
     constructor(props) {
         super(props);
         let self = this;
+        self.settingsPanel = self.props.plugin.getSettingsPanel();
         self.onChange = self.onChange.bind(self);
         self.showSettings = self.showSettings.bind(self);
         self.setInitialState();
@@ -3877,16 +3878,20 @@ class V2C_PluginCard extends BDV2.reactComponent {
 
     componentDidUpdate() {
         if (this.state.settings) {
-            // this.refs.settingspanel.innerHTML = this.props.plugin.getSettingsPanel();
+            if (typeof this.settingsPanel === "object") {
+                this.refs.settingspanel.appendChild(this.settingsPanel);
+            }
         }
     }
 
     render() {
+        let self = this;
         let { plugin } = this.props;
         let name = plugin.getName();
         let author = plugin.getAuthor();
         let description = plugin.getDescription();
         let version = plugin.getVersion();
+        let { settingsPanel } = this;
 
         if (this.state.settings) {
             return BDV2.react.createElement(
@@ -3895,11 +3900,12 @@ class V2C_PluginCard extends BDV2.reactComponent {
                 BDV2.react.createElement(
                     "div",
                     { style: { float: "right", cursor: "pointer" }, onClick: () => {
-                            this.setState({ 'settings': false });
+                            this.refs.settingspanel.innerHTML = "";self.setState({ 'settings': false });
                         } },
                     BDV2.react.createElement(V2Components.XSvg, null)
                 ),
-                BDV2.react.createElement("div", { ref: "settingspanel", dangerouslySetInnerHTML: { __html: plugin.getSettingsPanel() } })
+                typeof settingsPanel === 'object' && BDV2.react.createElement("div", { ref: "settingspanel" }),
+                typeof settingsPanel !== 'object' && BDV2.react.createElement("div", { ref: "settingspanel", dangerouslySetInnerHTML: { __html: plugin.getSettingsPanel() } })
             );
         }
 
