@@ -3588,6 +3588,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
         let self = this;
         switch (id) {
             case 'attach':
+                if ($("#editor-detached").length) self.props.attach();
                 BDV2.reactDom.unmountComponentAtNode(self.root);
                 break;
             case 'update':
@@ -3618,13 +3619,13 @@ class V2C_CssEditor extends BDV2.reactComponent {
     constructor(props) {
         super(props);
         let self = this;
-        self.detachedEditor = BDV2.react.createElement(V2C_CssEditorDetached, null);
         self.setInitialState();
+        self.attach = self.attach.bind(self);
+        self.detachedEditor = BDV2.react.createElement(V2C_CssEditorDetached, { attach: self.attach });
         self.onClick = self.onClick.bind(self);
         self.updateCss = self.updateCss.bind(self);
         self.saveCss = self.saveCss.bind(self);
         self.detach = self.detach.bind(self);
-        self.attach = self.attach.bind(self);
         self.codeMirror = self.codeMirror.bind(self);
     }
 
@@ -4384,7 +4385,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
             url: `${self.joinEndPoint}/session`,
             crossDomain: true,
             xhrFields: {
-               withCredentials: true
+                withCredentials: true
             },
             success: data => {
                 self.setState({
