@@ -56,6 +56,20 @@
     border-radius: 6px;
 }
 
+.bd-server-card.bd-server-card-pinned {
+	margin-bottom: 11px;
+}
+
+.bd-server-card.bd-server-card-pinned:after {
+	background: #3a71c1;
+	content: "";
+	height: 3px;
+	width: 100%;
+	display: block;
+	position: absolute;
+	margin-top: 5px;
+}
+
 .ui-standard-sidebar-view #bd-customcss-attach-controls button,
 .bd-detached-css-editor #bd-customcss-attach-controls button {
     margin: 0;
