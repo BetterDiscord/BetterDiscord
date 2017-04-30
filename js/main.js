@@ -4572,16 +4572,21 @@ class V2C_PublicServers extends BDV2.reactComponent {
         return [BDV2.react.createElement(
             "div",
             { ref: "content", className: "content-column default" },
-            BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title }),
             BDV2.react.createElement(
-                "button",
-                { onClick: self.connect, type: "button", className: "ui-button filled brand small grow", style: { width: "200px", height: "50px", margin: "auto" } },
+                "h2",
+                { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+                "Not connected to discordservers.com!",
                 BDV2.react.createElement(
-                    "div",
-                    { className: "ui-button-contents" },
-                    "Connect"
+                    "button",
+                    { onClick: self.connect, type: "button", className: "ui-button filled brand small grow", style: { display: "inline-block", minHeight: "18px", marginLeft: "10px", lineHeight: "14px" } },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-button-contents" },
+                        "Connect"
+                    )
                 )
-            )
+            ),
+            self.bdServer
         ), BDV2.react.createElement(V2Components.Tools, { ref: "tools", onClick: self.close })];
     }
 
