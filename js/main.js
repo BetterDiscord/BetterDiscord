@@ -4310,11 +4310,13 @@ class V2C_PublicServers extends BDV2.reactComponent {
             'loading': true
         });
 
-        if (server.pinned) {
+        if (server.nativejoin) {
             self.setState({
                 'loading': false
             });
-            console.log("PINNED!");
+            $(".guilds-add").click();
+            $(".join .btn-primary").click();
+            $(".join-server input").val(server.invitecode);
             return;
         }
 
@@ -4360,7 +4362,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
             "identifier": "86004744966914048",
             "icon": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
             "nativejoin": true,
-            "inviteid": "0Tmfo5ZbORCRqbAd",
+            "invitecode": "0Tmfo5ZbORCRqbAd",
             "pinned": true
         };
         return BDV2.react.createElement(V2Components.ServerCard, { server: server, pinned: true, join: this.join });
