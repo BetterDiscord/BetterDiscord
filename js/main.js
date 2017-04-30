@@ -4571,7 +4571,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
         let self = this;
         return [BDV2.react.createElement(
             "div",
-            { ref: "content", className: "content-column default" },
+            { key: "ncc", ref: "content", className: "content-column default" },
             BDV2.react.createElement(
                 "h2",
                 { className: "ui-form-title h2 margin-reset margin-bottom-20" },
@@ -4587,7 +4587,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
                 )
             ),
             self.bdServer
-        ), BDV2.react.createElement(V2Components.Tools, { ref: "tools", onClick: self.close })];
+        ), BDV2.react.createElement(V2Components.Tools, { key: "nct", ref: "tools", onClick: self.close })];
     }
 
     get footer() {
