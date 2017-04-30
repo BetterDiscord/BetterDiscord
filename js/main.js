@@ -169,16 +169,21 @@ var bdchangelog = {
             "img": ""
         },
         "0b": {
+            "title": "1.78 : Public Servers",
+            "text": "New look and flow for public servers",
+            "img": ""
+        },
+        "0c": {
             "title": "1.78 : New loading icon",
             "text": "New loading icon will now display in bottom right when BD is loading.",
             "img": ""
         },
-        "0c": {
+        "0d": {
             "title": "1.78 : New CustomCSS editor look",
             "text": "Updated CustomCSS editor with dark theme",
             "img": ""
         },
-        "0d": {
+        "0e": {
             "title": "1.78 : BetterDiscord Blue",
             "text": "Replace Discord blue with BetterDiscord blue!",
             "img": ""
