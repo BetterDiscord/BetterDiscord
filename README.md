@@ -81,14 +81,14 @@ Add your server there and it will appear in the list!
 ## Credits
 * MacOS Installer by [Candunc](https://github.com/Candunc) 
 * Emote titles by [pendo324](https://github.com/pendo324)
-* Majority of FFZ emote work by [Pohky] (https://github.com/pohky)
-* Majority of BTTV emote work by [EhsanKia] (https://github.com/EhsanKia)
+* Majority of FFZ emote work by [Pohky](https://github.com/pohky) and [DeathStrikeV](https://github.com/DeathStrikeV)
+* Majority of BTTV emote work by [EhsanKia](https://github.com/EhsanKia)
 
 ## License
 
 The MIT License (MIT)
 
-Copyright (c) 2015-2016 Jiiks | [Jiiks.net] (https://jiiks.net)
+Copyright (c) 2015-present Jiiks | [Jiiks.net] (https://jiiks.net)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
