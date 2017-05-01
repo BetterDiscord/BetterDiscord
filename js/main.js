@@ -4778,7 +4778,7 @@ class V2_SettingsPanel_Sidebar {
     }
 
     injectRoot() {
-        let changeLog = $(".ui-tab-bar-item:contains('Change Log')");
+        let changeLog = $(".ui-tab-bar-item:not(.danger)").last();
         if (!changeLog.length) return false;
         $("<span/>", { 'id': 'bd-settings-sidebar' }).insertBefore(changeLog.prev());
         return true;
@@ -4787,7 +4787,7 @@ class V2_SettingsPanel_Sidebar {
     render() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .ui-tab-bar-item:contains('Change Log')");
+            console.log("FAILED TO LOCATE ROOT: .ui-tab-bar-item:not(.danger)");
             return;
         }
         BDV2.reactDom.render(this.component, root);
