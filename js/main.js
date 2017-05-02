@@ -85,7 +85,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 });
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.78;
+var jsVersion = 1.79;
 var supportedVersion = "0.2.81";
 
 var mainObserver;
@@ -186,6 +186,13 @@ var bdchangelog = {
         "0e": {
             "title": "1.78 : BetterDiscord Blue",
             "text": "Replace Discord blue with BetterDiscord blue!",
+            "img": ""
+        }
+    },
+    "fixes": {
+        "0a": {
+            "title": "1.79 : Settings Saving",
+            "text": "Fixed settings not saving with new settings panel",
             "img": ""
         }
     }
@@ -4937,6 +4944,8 @@ class V2_SettingsPanel {
         } else {
             dMode.disable();
         }
+
+        mainCore.saveSettings();
     }
 
     renderSidebar() {
