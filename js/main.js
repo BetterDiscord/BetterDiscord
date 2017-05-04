@@ -2025,7 +2025,17 @@ SettingsPanel.prototype.inject = function(mutation) {
 SettingsPanel.prototype.injectNew = function(mutation) {
     let self = this;
     if(!mutation.target.classList.contains("layers")) return;
-    if(!$(".ui-tab-bar-header:contains('App Settings')").length) return;
+    if($(".guild-settings-base-section").length) {
+        try {
+            mutation.addedNodes[0].setAttribute('layer-id', 'server-settings');
+        }catch(err) {}
+    }
+    if(!$(".user-settings-account").length) return;
+    try {
+        mutation.addedNodes[0].setAttribute('layer-id', 'user-settings');
+    }catch(err) {}
+
+   // if(!$(".ui-tab-bar-header:contains('App Settings')").length) return;
     if($("#bd-settings-sidebar").length) return;
     self.v2SettingsPanel.renderSidebar();
     /*$(".ui-tab-bar-item").off("click.bd").on("click.bd", e => {
