@@ -73,8 +73,8 @@ class Utils {
                 });
                 return path;
             },
-            "darwin": () => "/Applications/Discord.app",
-            "linux": () => "" // TODO
+            "darwin": () => "/Applications/Discord.app/Contents",
+            "linux": () => "/usr/share/discord"
         }[platform]();
 
     }
@@ -84,8 +84,12 @@ class Utils {
             "win32": () => {
                 return `${process.env.APPDATA}/BetterDiscord/lib`;
             },
+            "darwin": () => {
+                return `${process.env.HOME}/.local/share/BetterDiscord`;
+            },
             "linux": () => {
-                return ""; // TODO
+                // FIXME: for a non-root user, a path like OSX's makes more sense
+                return "/usr/local/share/BetterDiscord";
             }
         }[platform]();
     }
