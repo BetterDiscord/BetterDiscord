@@ -1,6 +1,6 @@
 
 /* BetterDiscordApp Core JavaScript
- * Version: 1.53
+ * Version: 1.78
  * Author: Jiiks | http://jiiks.net
  * Date: 27/08/2015 - 16:36
  * Last Update: 01/05/2016
@@ -57,6 +57,13 @@
 
 })();
 
+(() => {
+    let v2Loader = document.createElement('div');
+    v2Loader.className = "bd-loaderv2";
+    v2Loader.title = "BetterDiscord is loading...";
+    document.body.appendChild(v2Loader);
+})();
+
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
     return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'get', 'var': i });
@@ -78,7 +85,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 });
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.77;
+var jsVersion = 1.79;
 var supportedVersion = "0.2.81";
 
 var mainObserver;
@@ -105,6 +112,7 @@ var settings = {
     "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
     "24 Hour Timestamps":         { "id": "bda-gs-6",  "info": "Replace 12hr timestamps with proper ones",          "implemented": true,  "hidden": false, "cat": "core"},
     "Coloured Text":              { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
+    "BetterDiscord Blue":         { "id": "bda-gs-b",  "info": "Replace Discord blue with BD Blue",                 "implemented": true,  "hidden": false, "cat": "core"},
     "Developer Mode":             { "id": "bda-gs-8",  "info": "Developer Mode",                                    "implemented": true,  "hidden": false, "cat": "core"},
 
     "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
@@ -143,6 +151,7 @@ var defaultCookie = {
     "bda-es-5": true,
     "bda-es-6": true,
     "bda-es-7": true,
+    "bda-gs-b": true,
     "bda-es-8": true,
     "bda-jd": true,
     "bda-es-8": true,
@@ -155,25 +164,35 @@ var defaultCookie = {
 var bdchangelog = {
     "changes": {
         "0a": {
-            "title": "1.77 : Local storage proxy",
-            "text": "Implemented a local storage proxy for old plugin support. Do not use it for new plugins! use the bdPluginStorage.get and bdPluginStorage.set",
+            "title": "1.78 : Temp support for new settingspanel",
+            "text": "Added temp support for Discord's new settingspanel until v2.",
             "img": ""
         },
         "0b": {
-            "title": "1.76 : Alternate Storage",
-            "text": "<a target='blank' href='https://gist.github.com/Jiiks/267113ecb1685f39f4dc4646f9380d55'>https://gist.github.com/Jiiks/267113ecb1685f39f4dc4646f9380d55</a>",
+            "title": "1.78 : Public Servers",
+            "text": "New look and flow for public servers",
+            "img": ""
+        },
+        "0c": {
+            "title": "1.78 : New loading icon",
+            "text": "New loading icon will now display in bottom right when BD is loading.",
+            "img": ""
+        },
+        "0d": {
+            "title": "1.78 : New CustomCSS editor look",
+            "text": "Updated CustomCSS editor with dark theme",
+            "img": ""
+        },
+        "0e": {
+            "title": "1.78 : BetterDiscord Blue",
+            "text": "Replace Discord blue with BetterDiscord blue!",
             "img": ""
         }
     },
     "fixes": {
         "0a": {
-            "title": "1.77 : Custom css and favourite emote loading",
-            "text": "Fixed custom css and favourite emote loading when they are not present",
-            "img": ""
-        },
-        "0b": {
-            "title": "1.76 : Alternate Storage",
-            "text": "Both BetterDiscord and plugins now use alternate storage",
+            "title": "1.79 : Settings Saving",
+            "text": "Fixed settings not saving with new settings panel",
             "img": ""
         }
     }
@@ -273,7 +292,7 @@ Core.prototype.init = function () {
 
             $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
             $("head").append('<style id="bdemotemenustyle"></style>');
-
+            document.getElementsByClassName("bd-loaderv2")[0].remove();
         } else {
             setTimeout(gwDefer, 100);
         }
@@ -768,424 +787,477 @@ EmoteModule.prototype.capitalize = function (value) {
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
-function PublicServers() {
+class PublicServers {
+
+    constructor() {
+        this.v2p = new V2_PublicServers();
+    }
+
+    get endPoint() {
+        return 'https://search.discordservers.com';
+    }
+
+    get button() {
+        let self = this;
+        let btn = $("<div/>", {
+            class: 'guild',
+            id: 'bd-pub-li',
+            css: {
+                'height': '20px',
+                'display': settingsCookie['bda-gs-1'] ? "" : "none"
+            }
+        }).append($("<div/>", {
+            class: 'guild-inner',
+            css: {
+                'height': '20px',
+                'border-radius': '4px'
+            }
+        }).append($("<a/>", {
+
+        }).append($("<div/>", {
+            text: 'public',
+            id: 'bd-pub-button',
+            css: {
+                'line-height': '20px',
+                'font-size': '12px'
+            },
+            click: () => { self.v2p.render(); }
+        }))));
+
+        return btn;
+    }
+
+    init() {
+        let self = this;
+
+        let guilds = $(".guilds>:first-child");
+        guilds.after(self.button);
+
+    }
+
+    get layer() {
+        let self = this;
+        let layer = `<div id="bd-pubs-layer" class="layer bd-layer" tabindex="0">
+            <div class="ui-standard-sidebar-view">
+                <div class="sidebar-region">
+                    <div class="scroller-wrap fade dark">
+                        <div class="scroller">
+                            <div class="sidebar">
+                                <div class="ui-tab-bar SIDE">
+                                    <div class="ui-tab-bar-header" style="font-size: 16px;">Public Servers</div>
+                                    <div class="ui-tab-bar-separator margin-top-8 margin-bottom-8"></div>
+                                    <div class="ui-form-item">
+                                        <div class="ui-text-input flex-vertical" style="width: 186px; margin-left: 10px;">
+                                            <input type="text" class="input default" id="bd-pubs-search" name="bd-pubs-search" value="" placeholder="Search..." maxlength="999">
+                                        </div>
+                                    </div>
+                                    <div class="ui-tab-bar-separator margin-top-8 margin-bottom-8"></div>
+                                    <div class="ui-tab-bar-header">Categories</div>
+                                    <div class="ui-tab-bar-item selected">All</div>
+                                    <div class="ui-tab-bar-item">FPS Games</div>
+                                    <div class="ui-tab-bar-item">MMO Games</div>
+                                    <div class="ui-tab-bar-item">Strategy Games</div>
+                                    <div class="ui-tab-bar-item">Sports Games</div>
+                                    <div class="ui-tab-bar-item">Puzzle Games</div>
+                                    <div class="ui-tab-bar-item">Retro Games</div>
+                                    <div class="ui-tab-bar-item">Party Games</div>
+                                    <div class="ui-tab-bar-item">Tabletop Games</div>
+                                    <div class="ui-tab-bar-item">Sandbox Games</div>
+                                    <div class="ui-tab-bar-item">Simulation Games</div>
+                                    <div class="ui-tab-bar-item">Community</div>
+                                    <div class="ui-tab-bar-item">Language</div>
+                                    <div class="ui-tab-bar-item">Programming</div>
+                                    <div class="ui-tab-bar-item">Other</div>
+                                    <div class="ui-tab-bar-separator margin-top-8 margin-bottom-8"></div>
+                                    <div class="ui-tab-bar-header" style="font-size: 9px;font-weight: 700;">Listing provided by: <a href="https://discordservers.com" target="_blank">Discordservers.com</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-region">
+                    <div class="scroller-wrap fade dark">
+                        <div class="scroller">
+                            <div class="content-column" id="bd-pubs-bg-spinner">
+                                <div style="height: 100vh; margin: -60px -40px;">
+                                    <span class="spinner" type="wandering-cubes" style="top: 50%;position: relative;left: 50%;transform: translate(-50%, -50%);">
+                                        <span class="spinner-inner spinner-wandering-cubes">
+                                            <span class="spinner-item"></span>
+                                            <span class="spinner-item"></span>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="content-column" id="bd-pubs-listing-container" style="display:none;">
+                                <span id="bd-pubs-results" style="color: #72767d;font-weight: 700;"></span>
+                                <div id="bd-pubs-listing"></div>
+                            </div>
+                            <div class="tools">
+                                <div class="btn-close">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" style="width: 18px; height: 18px;"><g class="background" fill="none" fill-rule="evenodd"><path d="M0 0h12v12H0"></path><path class="fill" fill="#dcddde" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></g></svg>
+                                </div>
+                                <div class="esc-text">ESC</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        
+        layer = $(layer);
+
+        layer.on("blur", e => {
+            if(e.relatedTarget.id === 'bd-pubs-search') return;
+            layer.focus();
+            console.log("blur:");
+            console.log(e);
+        });
+
+        layer.on("keydown", e => {
+            if(e.which === 13 && e.target.id === 'bd-pubs-search') {
+                let category = $("#bd-pubs-layer .ui-tab-bar-item.selected").text();
+                if(category === 'All') category = '';
+                self.search(self.query({'term': e.target.value, 'category': category}), true);
+                return;
+            }
+            if(e.which !== 27) return;
+            self.hide();
+        });
+
+        layer.find('.btn-close').on('click', e => { self.hide(); });
+
+        layer.find('.ui-tab-bar.SIDE .ui-tab-bar-item').on('click', e => {
+            let category = e.target.textContent;
+            if(category === 'All') category = '';
+            self.search(self.query({'term': $("#bd-pubs-search").val(), 'category': category}), true);
+        });
+
+        return layer;
+    }
+
+    serverCard(serverInfo) {
+        return `<div class="ui-card ui-card-primary bd-server-card" style="margin-top: 5px">
+            <div class="ui-flex horizontal" style="display: flex; flex-flow: row nowrap; justify-content: flex-start; align-items: stretch; flex: 1 1 auto;">
+                <div class="ui-flex-child" style="flex: 0 1 auto; padding: 5px;">
+                    <div class="bd-pubs-server-icon" style="width: 100px; height: 100px; background-size: cover; background-image: url(${serverInfo.icon})"></div>
+                </div>
+                <div class="ui-flex-child" style="flex: 1 1 auto; padding: 5px;">
+                    <div class="ui-flex horizontal">
+                        <div class="ui-form-item" style="flex: 1 1 auto">
+                            <h5 class="ui-form-title h5 margin-reset">${serverInfo.name}</h5>
+                        </div>
+                        <div class="ui-form-item">
+                            <h5 class="ui-form-title h5 margin-reset">${serverInfo.online}/${serverInfo.members} Members</h5>
+                        </div>
+                    </div>
+                    <div class="ui-flex horizontal">
+                        <div class="scroller-wrap fade dark" style="min-height: 60px; max-height: 60px; border-top: 1px solid #3f4146; border-bottom: 1px solid #3f4146; padding-top: 5px">
+                            <div class="scoller">
+                                <div style="font-size: 13px; color: #b9bbbe">
+                                    ${serverInfo.description}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-flex horizontal">
+                        <div class="ui-flex-child bd-server-tags" style="flex: 1 1 auto">${serverInfo.categories.join(" ,")}</div>
+                        <button type="button" class="ui-button filled brand small grow" style="min-height: 12px; margin-top: 4px;">
+                            <div class="ui-button-contents">Join</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    get bdServerCard() {
+
+        let serverInfo = {
+            'name': 'BetterDiscord',
+            'icon': 'https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.webp',
+            'online': '7500+',
+            'members': '20000+',
+            'description': 'Official BetterDiscord support server'
+        };
+
+        return `<div class="ui-card ui-card-primary bd-server-card" style="margin-top: 5px">
+            <div class="ui-flex horizontal" style="display: flex; flex-flow: row nowrap; justify-content: flex-start; align-items: stretch; flex: 1 1 auto;">
+                <div class="ui-flex-child" style="flex: 0 1 auto; padding: 5px;">
+                    <div class="bd-pubs-server-icon" style="width: 100px; height: 100px; background-size: cover; background-image: url(${serverInfo.icon})"></div>
+                </div>
+                <div class="ui-flex-child" style="flex: 1 1 auto; padding: 5px;">
+                    <div class="ui-flex horizontal">
+                        <div class="ui-form-item" style="flex: 1 1 auto">
+                            <h5 class="ui-form-title h5 margin-reset">${serverInfo.name}</h5>
+                        </div>
+                        <div class="ui-form-item">
+                            <h5 class="ui-form-title h5 margin-reset">Too many members</h5>
+                        </div>
+                    </div>
+                    <div class="ui-flex horizontal">
+                        <div class="scroller-wrap fade dark" style="min-height: 60px; max-height: 60px; border-top: 1px solid #3f4146; border-bottom: 1px solid #3f4146; padding-top: 5px">
+                            <div class="scoller">
+                                <div style="font-size: 13px; color: #b9bbbe">
+                                    ${serverInfo.description}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-flex horizontal">
+                        <div class="ui-flex-child bd-server-tags" style="flex: 1 1 auto"></div>
+                        <button type="button" class="ui-button filled brand small grow" style="min-height: 12px; margin-top: 4px;">
+                            <div class="ui-button-contents">Join</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }
+
+
+    getPanel() {
+        console.log("pubs get panel");
+        return '<div></div>';
+    }
+
+    getPinnedServer() {
+        console.log("pubs get pinned server");
+        return '<div></div>';
+    }
+
+    hidePinnedServer() {
+        console.log("pubs hide pinned server");
+    }
+
+    showPinnedServer() {
+        console.log("pubs show pinned server");
+    }
+
+    show() {
+        let self = this;
+        $(".layers").append(self.layer);
+        //self.search("", true);
+    }
+
+    hide() {
+        $("#bd-pubs-layer").remove();
+    }
+
+    loadServers(dataset, search, clear) {
+        console.log("pubs load servers");
+    }
+
+    search(query, clear) {
+        
+        let self = this;
+        let $list = $("#bd-pubs-listing");
+        if(clear) { 
+            $list.empty(); 
+            $("#bd-pubs-listing-container").hide();
+            $("#bd-pubs-bg-spinner").show();
+        }
+        $.ajax({
+            method: 'GET',
+            url: `${self.endPoint}?${query}`,
+            success: data => {
+                $list.append(self.bdServerCard);
+                data.results.map(server => {
+                    $list.append(self.serverCard(server));
+                });
+                $("#bd-pubs-listing-container").show();
+                $("#bd-pubs-bg-spinner").hide();
+                self.setSearchText(1, $(".bd-server-card").size(), data.total, null, $("#bd-pubs-search").val());
+            }
+        });
+    }
+
+    setSearchText(start, end, total, category, term) {
+        if(!category) category = $("#bd-pubs-layer .ui-tab-bar-item.selected").text();
+        let text = `Showing ${start}-${end} of ${total} results in ${category}`;
+        if(term && term.length) text += ` for: ${term}`;
+        $("#bd-pubs-results").text(text);
+    }
+
+    get next() {
+        let self = this;
+        if(!self.next) return null;
+    }
+
+    joinServer(code) {
+        console.log("pubs join");
+    }
+
+    joinServerDirect(code) {
+        console.log("pubs join direct");
+    }
+
+    escape(unsafe) {
+        console.log("pubs escape");
+    }
+
+    query(params) {
+        return require('querystring').stringify(params);
+    }
 
 }
 
-PublicServers.prototype.getPanel = function () {
-    return this.container;
-};
-
-PublicServers.prototype.init = function () {
-    this.filtered = ["134680912691462144", "86004744966914048"];
-    this.bdServer = null;
-    this.loadingServers = false;
-    var self = this;
-
-    var guilds = $(".guilds>:first-child");
-
-    guilds.after($("<div></div>", {
-        class: "guild",
-        id: "bd-pub-li",
-        css: {
-            "height": "20px",
-            "display": settingsCookie["bda-gs-1"] == true ? "" : "none"
-        }
-    }).append($("<div/>", {
-        class: "guild-inner",
-        css: {
-            "height": "20px",
-            "border-radius": "4px"
-        }
-    }).append($("<a/>").append($("<div/>", {
-        css: {
-            "line-height": "20px",
-            "font-size": "12px"
-        },
-        text: "public",
-        id: "bd-pub-button"
-    })))));
-
-    $("#bd-pub-button").on("click", function () {
-        self.show();
-    });
 
 
-    var panelBase = '\
-        <div id="pubs-container">\
-            <div id="pubs-spinner">\
-                <span class="spinner" type="wandering-cubes">\
-                    <span class="spinner-inner spinner-wandering-cubes">\
-                        <span class="spinner-item"></span>\
-                        <span class="spinner-item"></span>\
-                    </span>\
-                </span>\
-            </div>\
-            <div id="pubs-header">\
-                <h2 id="pubs-header-title">Public Servers</h2>\
-                <button id="pubs-searchbtn">Search</button>\
-                <input id="pubs-sterm" type="text" placeholder="Search Term...">\
-                <div id="pubs-select-dropdown" class="bd-dropdown">\
-                    <button class="bd-dropdown-select" id="pubs-cat-select">All</button>\
-                    <div class="bd-dropdown-list">\
-                        <ul>\
-                            <li class="pubs-cat-select-li" data-val="all">All</li>\
-                            <li class="pubs-cat-select-li" data-val="fps games">FPS Games</li>\
-                            <li class="pubs-cat-select-li" data-val="mmo games">MMO Games</li>\
-                            <li class="pubs-cat-select-li" data-val="moba games">MOBA Games</li>\
-                            <li class="pubs-cat-select-li" data-val="strategy games">Strategy Games</li>\
-                            <li class="pubs-cat-select-li" data-val="sports games">Sports Games</li>\
-                            <li class="pubs-cat-select-li" data-val="puzzle games">Puzzle Games</li>\
-                            <li class="pubs-cat-select-li" data-val="retro games">Retro Games</li>\
-                            <li class="pubs-cat-select-li" data-val="party games">Party Games</li>\
-                            <li class="pubs-cat-select-li" data-val="tabletop games">Tabletop Games</li>\
-                            <li class="pubs-cat-select-li" data-val="sandbox games">Sandbox Games</li>\
-                            <li class="pubs-cat-select-li" data-val="simulation games">Simulation Games</li>\
-                            <li class="pubs-cat-select-li" data-val="community">Community</li>\
-                            <li class="pubs-cat-select-li" data-val="language">Language</li>\
-                            <li class="pubs-cat-select-li" data-val="programming">Programming</li>\
-                            <li class="pubs-cat-select-li" data-val="other">Other</li>\
-                        </ul>\
-                    </div>\
-                </div>\
-            </div>\
-            <div class="server-row server-pinned" style="display:none;">\
-                <div class="server-icon" style="background-image:url(https://cdn.discordapp.comi/cons/86004744966914048/6e5729ed5c12d5af558d80d7a194c3f9.jpg)"></div>\
-                <div class="server-info server-name"><span>BetterDiscord</span><span id="server-bd-tag">Official BetterDiscord server</span></div>\
-                <div class="server-info server-members"><span></span></div>\
-                <div class="server-info server-region"><span></span></div>\
-                <div class="server-info">\
-                    <button data-server-invite-code="0Tmfo5ZbORCRqbAd">Join</button>\
-                </div>\
-            </div>\
-            <div class="scroller-wrap">\
-                <div class="scroller" id="pubs-scroller">\
-                    <div id="pubs-list" class="servers-listing">\
-                    </div>\
-                    <div style="background:#FFF; padding: 5px 0; display:none;" id="pubs-spinner-bottom">\
-                        <div>\
-                            <span class="spinner" type="wandering-cubes">\
-                                <span class="spinner-inner spinner-wandering-cubes">\
-                                    <span class="spinner-item"></span>\
-                                    <span class="spinner-item"></span>\
-                                </span>\
-                            </span>\
-                        </div>\
-                    </div>\
-                </div>\
-            </div>\
-            <div id="pubs-footer">\
-                <span style="color:#FFF; font-size:10px; font-weight:700; margin-left:5px;">Tip: Hover over server name for description if available</span>\
-                <div>Server list provided by <a href="https://discordservers.com" target="_blank">DiscordServers.com</a></div>\
-            </div>\
-        ';
-
-    this.container = panelBase;
-
-    if($("#bd-pub-li").length < 1) {
-        setTimeout(function() {
-            self.init();
-        }, 250);
-    }
-};
-
-PublicServers.prototype.getPinnedServer = function() {
-    var self = this;
-    var dataset = {
-        "sort": [{"online": "desc"}],
-        "size": 1,
-        "query": {
-            "query_string": {
-            "default_operator": "AND",
-            "query": "BetterDiscord"
-            }
-        }
-    };
-    
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: "https://69ccb59e91f99116aae036ddceae21b3.us-east-1.aws.found.io:9243/_search",
-        crossDomain: true,
-        data: JSON.stringify(dataset),
-        success: function(data) {
-            try {
-                var s = data.hits.hits[0]._source;
-                if(s.identifier == "86004744966914048") {
-                    self.bdServer = s;
-                    self.showPinnedServer();
-                }
-            }catch(err) {
-                self.bdServer = null;
-            }
-        }
-    });
-};
-
-PublicServers.prototype.hidePinnedServer = function() {
-    $("#pubs-container .scroller-wrap").css({"margin-top": "0", "height": "500px"});
-    $(".server-pinned").hide();
-};
-
-PublicServers.prototype.showPinnedServer = function() {
-    $(".server-pinned .server-icon").css("background-image", "url("+this.bdServer.icon+")");
-    $(".server-pinned .server-members span").text(this.bdServer.online + "/"+this.bdServer.members+" Members");
-    $(".server-pinned .server-region span").text(this.bdServer.region);
-    $(".server-pinned .server-info button").data("server-invite-code", this.bdServer.invite_code);
-    $("#pubs-container .scroller-wrap").css({"margin-top": "75px", "height": "425px"});
-    $(".server-pinned").show();
-};
-
-PublicServers.prototype.show = function () {
-    var self = this;
-    this.hidePinnedServer();
-    $("#pubs-cat-select").text("All");
-    this.selectedCategory = "all";
-    $("#pubs-container .scroller-wrap").css({"margin-top": "0", "height": "500px"});
-    $(".server-pinned").hide();
-    
-    $(".app").append(this.getPanel());
-    
-    if(this.bdServer == null) {
-        this.getPinnedServer();
-    } else {
-        this.showPinnedServer();
-    }
-
-    self.search(0, true);
-
-    $("#pubs-searchbtn").off("click").on("click", function() {
-        self.search();
-    });
-    $("#pubs-sterm").off("keyup").on("keyup", function(e) {
-        if (e.keyCode == 13) {
-            self.search(0, true);
-        }
-    });
-    $("#pubs-cat-select").off("click").on("click", function() {
-        $("#pubs-select-dropdown").addClass("open");
-    });
-    $(".pubs-cat-select-li").off("click").on("click", function() {
-        $("#pubs-select-dropdown").removeClass("open");
-        $("#pubs-cat-select").text($(this).text());
-        if(self.selectedCategory != $(this).data("val")) {
-            self.selectedCategory = $(this).data("val");
-            self.search(0, true);
-        }
-    });
-    $("#pubs-container").off("mouseup").on("mouseup", function() {
-        $("#pubs-select-dropdown").removeClass("open");
-    });
-
-   var self = this;
-    $(document).on("mouseup.bdps",function(e) {
-        if(!$("#bd-pub-button").is(e.target) && !$("#pubs-container").is(e.target) && $("#pubs-container").has(e.target).length === 0) {
-            self.hide();
-        }
-    });
-
-    $("#pubs-scroller").off("scroll.pubs").on("scroll.pubs", function() {
-        if(self.loadingServers) return;
-        var list = $("#pubs-list");
-        if($(this).scrollTop() + 550 < list.height()) return;
-        if(list.children().length % 20 != 0) return;
-
-        self.loadingServers = true;
-        $("#pubs-spinner-bottom").show();
-        self.search(list.children().length, false);
-    });
-
-    $("button[data-server-invite-code=0Tmfo5ZbORCRqbAd]").off("click").on("click", function(){
-        self.joinServerDirect("0Tmfo5ZbORCRqbAd");
-    });
-};
-
-PublicServers.prototype.hide = function() {
-    $("#pubs-container").remove();
-    $(document).off("mouseup.bdps");
-};
 
 
-PublicServers.prototype.loadServers = function(dataset, search, clear) {
-    this.loadingServers = true;
-    var self = this;
-    $("#pubs-searchbtn").prop("disabled", true);
-    $("#pubs-sterm").prop("disabled", true);
-    if(clear) $("#pubs-list").empty();
-    $("#pubs-spinner").show();
-    $.ajax({
-        type: "POST",
-        dataType: "json",
-        url: "https://69ccb59e91f99116aae036ddceae21b3.us-east-1.aws.found.io:9243/_search",
-        crossDomain: true,
-        data: JSON.stringify(dataset),
-        success: function(data) {
-            var hits = data.hits.hits;
-            
-            if(search) {
-              $("#pubs-header-title").text("Public Servers - Search Results: " + hits.length);
-            } else {
-              $("#pubs-header-title").text("Public Servers");
-            }
-
-            hits.forEach(function(hit) {
-                var source = hit._source;
-               // if(source.invite_code === undefined) return;
-               // var icode = source.invite_code.replace(/ /g,'');
-               // icode = self.escape(icode).replace(/[^A-z0-9]/g,'');
-                var icode = source.identifier;
-                var html = '<div class="server-row">';
-                html += '<div class="server-icon" style="background-image:url(' + self.escape(source.icon) + ')"></div>';
-                html += '<div class="server-info server-name">';
-                html += '<div class="server-information">';
-                
-                if(source.is_official) {
-                    html += '<span class="server-official">Official!</span>';
-                }
-
-                html += '<span class="server-name-span">' + self.escape(source.name) + '</span>';
-                
-                var tags = [];
-                source.tags.forEach(function(tag) {
-                    tags.push(self.escape(tag.name));
-                });
-
-                var desc = 
-
-                html += '<span class="server-tags">'+tags.join(", ")+'</span>';
-                html += '<span class="server-description">'+(source.description == undefined ? "No Description" : self.escape(source.description)) +'</span>';
-                html += '</div>';
-                html += '</div>';
-                html += '<div class="server-info server-members">';
-                html += '<span>' + source.online + '/' + source.members + ' Members</span>';
-                html += '</div>';
-                html += '<div class="server-info server-region">';
-                html += '<span>' + source.region + '</span>';
-                html += '</div>';
-                html += '<div class="server-info">';
-                html += '<button data-server-invite-code='+icode+'>Join</button>';
-                html += '</div>';
-                html += '</div>';
-                $("#pubs-list").append(html);
-                $("button[data-server-invite-code="+icode+"]").on("click", function(){
-                    self.joinServer(icode);
-                });
-            });
-
-            if(search) {
-              $("#pubs-header-title").text("Public Servers - Search Results: " + $("#pubs-list").children().length);
-            }
-        },
-      done: function() {
-        $("#pubs-spinner").hide();
-        $("#pubs-spinner-bottom").hide();
-        $("#pubs-searchbtn").prop("disabled", false);
-        $("#pubs-sterm").prop("disabled", false);
-        self.loadingServers = false;
-      },
-      always: function() {
-        $("#pubs-spinner").hide();
-        $("#pubs-spinner-bottom").hide();
-        $("#pubs-searchbtn").prop("disabled", false);
-        $("#pubs-sterm").prop("disabled", false);
-        self.loadingServers = false;
-      },
-      error: function() {
-        $("#pubs-spinner").hide();
-        $("#pubs-spinner-bottom").hide();
-        $("#pubs-searchbtn").prop("disabled", false);
-        $("#pubs-sterm").prop("disabled", false);
-        self.loadingServers = false;
-      },
-      complete: function() {
-        $("#pubs-spinner").hide();
-        $("#pubs-spinner-bottom").hide();
-        $("#pubs-searchbtn").prop("disabled", false);
-        $("#pubs-sterm").prop("disabled", false);
-        self.loadingServers = false;
-      }
-    });
-};
-
-PublicServers.prototype.search = function(start, clear) {
-    var sterm = $("#pubs-sterm").val();
-    
-    /*var dataset = {
-        "sort": [{ "online": "desc" }],
-        "from": start,
-        "size": 20,
-        "query": {
-            "filtered": {
-                "query": {
-                    "query_string": {
-                        "default_operator": "AND",
-                        "query": sterm ? sterm : "*"
-                    }
-                },
-                "filter": {
-                    "bool": {
-                        "must_not": [{
-                            "terms": {
-                                "identifier": this.filtered
-                            }
-                        }]
-                    }
-                }
-            }
-        }
-    };*/
-
-    var dataset = {
-        "sort": [{ "online": "desc" }],
-        "from": start,
-        "size": 20,
-        "query": {
-            "bool": {
-                "must": [
-                    {"query_string": {
-                        "default_operator": "AND",
-                        "query": sterm ? sterm : "*"
-                    }}
-                ],
-                "must_not": [
-                    {"terms": { "identifier": this.filtered }}
-                ]
-            }
-        }
-    };
 
 
-    if(this.selectedCategory != "all") {
-        dataset.query.bool.must.push({ "match_phrase": { "categories": this.selectedCategory } });
-    }
-    
-    this.loadServers(dataset, true, clear);
-};
 
-//Workaround for joining a server
-PublicServers.prototype.joinServer = function (code) {
-    require('electron').shell.openExternal("https://www.discordservers.com/join/" + code);
-    this.hide();
-};
 
-PublicServers.prototype.joinServerDirect = function(code) {
-        $(".guilds-add").click();
-        $(".action.join .btn").click();
-        $(".create-guild-container input").val(code);
-        $(".form.join-server .btn-primary").click();
-        this.hide();
-};
 
-PublicServers.prototype.escape = function(unsafe) {
-    if(unsafe === undefined) return "";
 
-    return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* BetterDiscordApp QuickEmoteMenu JavaScript
  * Version: 1.3
  * Author: Jiiks | http://jiiks.net
@@ -1379,7 +1451,8 @@ self.editor = CodeMirror.fromTextArea(document.getElementById("bd-custom-css-ta"
     lineNumbers: true,
     mode: 'css',
     indentUnit: 4,
-    theme: 'neat'
+    theme: 'material',
+    scrollbarStyle: 'simple'
 });
 
 self.editor.on("change", function (cm) {
@@ -1481,13 +1554,17 @@ var settingsButton = null;
 var panel = null;
 
 function SettingsPanel() {
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/codemirror.min.js");
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.9.0/mode/css/css.min.js");
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js");
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/css/css.min.js");
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.js");
+    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.css");
+    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/theme/material.min.css");
     utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js");
 }
 
 SettingsPanel.prototype.init = function () {
     var self = this;
+    self.v2SettingsPanel = new V2_SettingsPanel();
     self.construct();
     var body = $("body");
 
@@ -1538,6 +1615,12 @@ SettingsPanel.prototype.init = function () {
         dMode.enable();
     } else {
         dMode.disable();
+    }
+
+    if(settingsCookie["bda-gs-b"]) {
+        $("body").addClass("bd-blue");
+    } else {
+        $("body").removeClass("bd-blue");
     }
 };
 
@@ -1599,6 +1682,7 @@ SettingsPanel.prototype.updateSetting = function (checkbox) {
         mainCore.alert("Developer Mode Enabled", "Use F8 to break/resume execution<br>More coming soon")
     }
 
+
     settingsCookie[id] = enabled;
 
     this.updateSettings();
@@ -1609,6 +1693,12 @@ SettingsPanel.prototype.updateSettings = function() {
         $("#twitchcord-button-container").show();
     } else {
         $("#twitchcord-button-container").hide();
+    }
+
+    if(settingsCookie["bda-gs-b"]) {
+        $("body").addClass("bd-blue");
+    } else {
+        $("body").removeClass("bd-blue");
     }
 
     if (settingsCookie["bda-gs-2"]) {
@@ -1910,6 +2000,7 @@ SettingsPanel.prototype.construct = function () {
 };
 
 SettingsPanel.prototype.inject = function(mutation) {
+    if(this.injectNew(mutation)) return;
     if(mutation.type != "childList") return;
     if(mutation.addedNodes.length <= 0) return;
     if($(mutation.addedNodes[0]).find(".user-settings-modal").length <= 0) return;
@@ -1928,6 +2019,382 @@ SettingsPanel.prototype.inject = function(mutation) {
     $(".form .settings-right .settings-inner").last().after(self.panel);
     $("#bd-settings-new").removeClass("selected");
 };
+
+/*New settingspanel temp until v2*/
+
+SettingsPanel.prototype.injectNew = function(mutation) {
+    let self = this;
+    if(!mutation.target.classList.contains("layers")) return;
+    if($(".guild-settings-base-section").length) {
+        try {
+            mutation.addedNodes[0].setAttribute('layer-id', 'server-settings');
+        }catch(err) {}
+    }
+    if(!$(".user-settings-account").length) return;
+    try {
+        mutation.addedNodes[0].setAttribute('layer-id', 'user-settings');
+    }catch(err) {}
+
+   // if(!$(".ui-tab-bar-header:contains('App Settings')").length) return;
+    if($("#bd-settings-sidebar").length) return;
+    self.v2SettingsPanel.renderSidebar();
+    /*$(".ui-tab-bar-item").off("click.bd").on("click.bd", e => {
+    $(".ui-tab-bar-item").removeClass("selected");
+    $(e.target).addClass("selected");
+        self.hideBdSettingsPane();
+    });
+    let changeLogBtn = $(".ui-tab-bar-item:contains('Change Log')");
+    let bdBtn = $("<div/>", {
+        class: 'ui-tab-bar-item',
+        text: 'BetterDiscord',
+        click: function() { 
+            $(".ui-tab-bar-item").removeClass("selected");
+            $(this).addClass("selected");
+            self.showBdSettingsPane();
+        }
+    });   
+    let separator = $("<div/>", {
+        class: 'ui-tab-bar-separator margin-top-8 margin-bottom-8'
+    });
+    separator.insertBefore(changeLogBtn.prev());
+    bdBtn.insertBefore(changeLogBtn.prev()); 
+
+    $(".ui-standard-sidebar-view").last().append(self.settingsPaneNew());
+    $(".bd-pane").hide();
+    $(".bd-pane").first().show();
+    $(".bd-tab").removeClass("selected");
+    $("#bd-core").addClass("selected");
+    $("#bd-settingspane").hide();
+
+    $(".ui-standard-sidebar-view>.sidebar-region").append(self.versionInfo());*/
+
+    return true;
+};
+
+SettingsPanel.prototype.versionInfo = function() {
+    let self = this;
+    let element = $("<div/>", {
+        class: 'bd-versioninfo-wrapper'
+    }).append($("<span/>", {
+        text: `BetterDiscord v${(typeof(version) === "undefined" ? bdVersion : version)}:${jsVersion} by `
+    })).append($("<a/>", {
+        text: 'Jiiks',
+        href: 'https://google.com',
+        target: '_blank'
+    }));
+    return element;
+}
+
+SettingsPanel.prototype.tabBarNew = function() {
+    let self = this;
+    let _tabBar = $("<div/>", {
+        class: 'tab-bar TOP',
+        style: 'border-bottom:none'
+    });
+
+    let items = [
+        { 'id': 'bd-core', 'text': 'Core' },
+        { 'id': 'bd-emotes', 'text': 'Emotes' },
+        { 'id': 'bd-customcss', 'text': 'Custom CSS' },
+        { 'id': 'bd-plugins', 'text': 'Plugins' },
+        { 'id': 'bd-themes', 'text': 'Themes' }
+    ];
+
+    items.map(value => {
+        _tabBar.append($("<div/>", {
+            class: 'tab-bar-item bd-tab',
+            text: value.text,
+            id: value.id,
+            click: () => self.changeTabNew(value.id)
+        }));
+    });
+
+    return _tabBar;
+}
+
+SettingsPanel.prototype.changeTabNew = function(id) {
+    $(".bd-tab").removeClass("selected");
+    $(`#${id}`).addClass("selected");
+    $(".bd-pane").hide();
+    $(`#${id}-pane`).show();
+
+    if(id === 'bd-customcss') {
+        if (!customCssInitialized) {
+            customCssEditor.init();
+            customCssInitialized = true;
+        }
+    }
+
+}
+
+SettingsPanel.prototype.updateSettingNew = function (id, checked) {
+
+    if(id == "bda-css-2") {
+        $("#app-mount").removeClass("bd-hide-bd");
+        customCssEditor.hideBackdrop = checked;
+        if(checked) {
+            $("#app-mount").addClass("bd-hide-bd")
+        }
+    }
+    if(id == "bda-gs-8" && checked) {
+        mainCore.alert("Developer Mode Enabled", "Use F8 to break/resume execution<br>More coming soon")
+    }
+
+    settingsCookie[id] = checked;
+
+    this.updateSettings();
+};
+
+SettingsPanel.prototype.settingsSwitch = function(key) {
+    let self = this;
+    let setting = settings[key];
+    return $("<div/>", {
+        class: 'ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item'
+    }).append($("<div/>", {
+        class: 'ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap'
+    }).append($("<h3/>", {
+        class: 'ui-form-title h3 margin-reset margin-reset ui-flex-child',
+        text: key
+    })).append($("<label/>", {
+        class: 'ui-switch-wrapper ui-flex-child',
+        style: 'flex: 0 0 auto'
+    }).append($("<input/>", {
+        class: 'ui-switch-checkbox',
+        type: 'checkbox',
+        change: function() { self.updateSettingNew(setting.id, this.checked) },
+        checked: settingsCookie[setting.id]
+    })).append($("<div/>", {
+        class: 'ui-switch'
+    })))).append($("<div/>", {
+        class: 'ui-form-text style-description margin-top-4',
+        style: 'flex: 1 1 auto',
+        text: setting.info
+    }));
+}
+
+SettingsPanel.prototype.corePaneNew = function() {
+    let self = this;
+    let _pane = $("<div/>", {
+        class: 'ui-form-item bd-pane',
+        id: 'bd-core-pane',
+        style: 'display:none'
+    });
+
+    Object.keys(settings).map(value => {
+        let setting = settings[value];
+        if(setting.cat !== 'core' || !setting.implemented || setting.hidden) return false;
+        
+        _pane.append(self.settingsSwitch(value))
+    });
+
+    return _pane;
+}
+SettingsPanel.prototype.emotesPaneNew = function() {
+    let self = this;
+    let _pane = $("<div/>", {
+        class: 'ui-form-item bd-pane',
+        id: 'bd-emotes-pane',
+        style: 'display:none'
+    });
+
+    Object.keys(settings).map(value => {
+        let setting = settings[value];
+        if(setting.cat !== 'emote' || !setting.implemented || setting.hidden) return false;
+        
+        _pane.append(self.settingsSwitch(value))
+    });
+
+    return _pane;
+}
+SettingsPanel.prototype.customCssPaneNew = function() {
+    let self = this;
+    let _pane = $("<div/>", {
+        class: 'ui-form-item bd-pane',
+        id: 'bd-customcss-pane',
+        style: 'display:none'
+    });
+
+    let attachBtn = $("<div/>", {
+        id: 'editor-detached',
+        style: 'display:none'
+    }).append($("<h3/>", {
+        text: 'Editor Detached'
+    })).append($("<button/>", {
+        class: 'btn btn-primary',
+        text: 'Attach',
+        click: () => { customCssEditor.attach(); }
+    }));
+
+    _pane.append(attachBtn);
+
+    let _ccss = window.bdStorage.get("bdcustomcss");
+    let ccss = "";
+    if(_ccss !== null && _ccss !== "") {
+        ccss = atob(_ccss);
+    }
+
+    let innerPane = $("<div/>", {
+        id: 'bd-customcss-innerpane'
+    }).append($("<textarea/>", {
+        id: 'bd-custom-css-ta',
+        text: ccss
+    }));
+
+    _pane.append(innerPane);
+
+    return _pane;
+}
+
+SettingsPanel.prototype.pluginTemp = function(plugin, cb) {
+    let item = $("<li/>", {
+
+    }).append($("<div/>", {
+        class: 'bda-left'
+    }).append($("<span/>", {
+        class: 'bda-name',
+        text: `${plugin.getName()} v${plugin.getVersion()} by ${plugin.getAuthor()}`
+    })).append($("<div/>", {
+        class: 'scroller-wrap fade'
+    }).append($("<div/>", {
+        class: 'scroller bda-description',
+        text: plugin.getDescription()
+    })))).append($("<div/>", {
+        class: 'bda-right'
+    }).append($("<label/>", {
+        class: 'ui-switch-wrapper ui-flex-child',
+        style: 'flex: 0 0 auto'
+    }).append($("<input/>", {
+        class: 'ui-switch-checkbox',
+        type: 'checkbox',
+        change: function() { pluginModule.handlePluginT(plugin.getName(), this.checked) },
+        checked: pluginCookie[plugin.getName()]
+    })).append($("<div/>", {
+        class: 'ui-switch'
+    }))).append($("<button/>", {
+        text: 'Reload',
+        disabled: true,
+        enabled: false,
+        click: () => { return false; }
+    })).append($("<button/>", {
+        text: 'Settings',
+        click: () => { pluginModule.showSettingsT(plugin.getName()) }
+    })));
+
+    return item;
+}
+
+
+SettingsPanel.prototype.pluginsPaneNew = function() {
+    let self = this;
+    let list = $("<ul/>", {
+        class: 'bda-slist'
+    });
+    $.each(bdplugins, function() {
+        let plugin = this["plugin"];
+        list.append(self.pluginTemp(plugin));
+    });
+    return $("<div/>", {
+        class: 'ui-form-item bd-pane',
+        id: 'bd-plugins-pane',
+        style: 'display:none'
+    }).append(list);
+}
+
+SettingsPanel.prototype.themeTemp = function(theme) {
+    let item = $("<li/>", {
+
+    }).append($("<div/>", {
+        class: 'bda-left'
+    }).append($("<span/>", {
+        class: 'bda-name',
+        text: `${theme["name"].replace(/_/g, " ")} v${theme["version"]} by ${theme["author"]}`
+    })).append($("<div/>", {
+        class: 'scroller-wrap fade'
+    }).append($("<div/>", {
+        class: 'scroller bda-description',
+        text: theme["description"]
+    })))).append($("<div/>", {
+        class: 'bda-right'
+    }).append($("<label/>", {
+        class: 'ui-switch-wrapper ui-flex-child',
+        style: 'flex: 0 0 auto'
+    }).append($("<input/>", {
+        class: 'ui-switch-checkbox',
+        type: 'checkbox',
+        change: function() { themeModule.handleThemeT(theme["name"], this.checked) },
+        checked: themeCookie[theme["name"]]
+    })).append($("<div/>", {
+        class: 'ui-switch'
+    }))).append($("<button/>", {
+        text: 'Reload',
+        disabled: true,
+        enabled: false,
+        click: () => { return false; }
+    })));
+
+    return item;
+}
+
+SettingsPanel.prototype.themesPaneNew = function() {
+    let self = this;
+    let list = $("<ul/>", {
+        class: 'bda-slist'
+    });
+    $.each(bdthemes, function() {
+        let theme = this;
+        list.append(self.themeTemp(theme));
+    });
+    return $("<div/>", {
+        class: 'ui-form-item bd-pane',
+        id: 'bd-themes-pane',
+        style: 'display:none'
+    }).append(list);
+}
+
+SettingsPanel.prototype.panesNew = function() {
+    let self = this;
+    let _panes = $("<div/>", {
+        class: 'bd-settings-panes'
+    }); 
+
+    _panes.append(self.corePaneNew());
+    _panes.append(self.emotesPaneNew());
+    _panes.append(self.customCssPaneNew());
+    _panes.append(self.pluginsPaneNew());
+    _panes.append(self.themesPaneNew());
+
+    return _panes;
+}
+
+SettingsPanel.prototype.settingsPaneNew = function() {
+    let self = this;
+    if(self.constructed) return self.constructed;
+    let tools = $(".tools").clone();
+    tools.find(".btn-close").on("click", () => { $(".tools").first().find(".btn-close").click(); });
+    self.constructed = $("<div/>", {
+        class: 'content-region',
+        id: 'bd-settingspane',
+        style: 'display:none'
+    }).append($("<div/>", {
+        class: 'scroller-wrap fade dark'
+    }).append($("<div/>", {
+        class: 'scroller'
+    }).append($("<div/>", {
+        class: 'content-column'
+    }).append(self.tabBarNew()).append(self.panesNew())).append(tools)));
+    return self.constructed;
+};
+
+SettingsPanel.prototype.showBdSettingsPane = function() {
+    $(".ui-standard-sidebar-view .content-region").first().hide();
+    $("#bd-settingspane").show();
+};
+
+SettingsPanel.prototype.hideBdSettingsPane = function() {
+    $(".ui-standard-sidebar-view .content-region").first().show();
+    $("#bd-settingspane").hide();
+};
+
 /* BetterDiscordApp Utilities JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -2195,6 +2662,19 @@ PluginModule.prototype.handlePlugin = function (checkbox) {
     this.savePluginData();
 };
 
+PluginModule.prototype.handlePluginT = function(id, enabled) {
+
+    if(enabled) {
+        bdplugins[id]["plugin"].start();
+        pluginCookie[id] = true;
+    } else {
+        bdplugins[id]["plugin"].stop();
+        pluginCookie[id] = false;
+    }
+
+    this.savePluginData();
+};
+
 PluginModule.prototype.showSettings = function (plugin) {
     if (bdplugins[plugin] != null) {
         if (typeof bdplugins[plugin].plugin.getSettingsPanel === "function") {
@@ -2213,6 +2693,23 @@ PluginModule.prototype.showSettings = function (plugin) {
         }
     }
 };
+
+PluginModule.prototype.showSettingsT = function(plugin) {
+    if(bdplugins[plugin] === null) return;
+    if(typeof bdplugins[plugin].plugin.getSettingsPanel !== "function") return;
+
+    $("#bd-settingspane").off("click.bdpsm").on("click.bdpsm", function(e) {
+        if(e.target.id === 'bd-psm-s') return;
+        if(e.target.textContent && e.target.textContent === 'Settings') return;
+        $(".bd-psm").remove();
+    });
+
+    let panel = bdplugins[plugin].plugin.getSettingsPanel();
+
+    $(".bd-settings-panes").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
+    $("#bd-psm-s").append(panel);
+
+}
 
 PluginModule.prototype.loadPluginData = function () {
     var cookie = $.cookie("bd-plugins");
@@ -2304,6 +2801,19 @@ ThemeModule.prototype.handleTheme = function (checkbox) {
     cb.prop("checked", enabled);
 
     if (enabled) {
+        $("head").append('<style id="' + id + '">' + unescape(bdthemes[id]["css"]) + '</style>');
+        themeCookie[id] = true;
+    } else {
+        $("#" + id).remove();
+        themeCookie[id] = false;
+    }
+
+    this.saveThemeData();
+};
+
+ThemeModule.prototype.handleThemeT = function(id, enabled) {
+
+    if(enabled) {
         $("head").append('<style id="' + id + '">' + unescape(bdthemes[id]["css"]) + '</style>');
         themeCookie[id] = true;
     } else {
@@ -2612,3 +3122,1924 @@ BdApi.setStatus = function (idle_since, status) {
      $(window).off("keydown.bdDevmode");
      $(window).off("mousedown.bdDevmode")
  };
+
+
+
+/*V2 Premature*/
+
+window.bdtemp = {
+    'editorDetached': false
+};
+
+class V2 {
+
+    constructor() {
+        this.internal = {
+            'react': require('react'),
+            'react-dom': require('react-dom')
+        };
+    }
+
+    get reactComponent() {
+        return this.internal['react'].Component;
+    }
+
+    get react() {
+        return this.internal['react'];
+    }
+
+    get reactDom() {
+        return this.internal['react-dom'];
+    }
+
+    parseSettings(cat) {
+        return Object.keys(settings).reduce((arr, key) => { 
+            let setting = settings[key];
+            if(setting.cat === cat && setting.implemented && !setting.hidden) { 
+                setting.text = key;
+                arr.push(setting) 
+            } return arr; 
+        }, []);
+    }
+
+
+}
+window.BDV2 = new V2();
+
+class V2C_SettingsPanel extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let { settings } = this.props;
+        return BDV2.react.createElement(
+            "div",
+            { className: "content-column default" },
+            BDV2.react.createElement(V2Components.SettingsTitle, { text: this.props.title }),
+            settings.map(setting => {
+                return BDV2.react.createElement(V2Components.Switch, { id: setting.id, key: setting.id, data: setting, checked: settingsCookie[setting.id], onChange: (id, checked) => {
+                        this.props.onChange(id, checked);
+                    } });
+            })
+        );
+    }
+}
+
+class V2C_Switch extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        this.setInitialState();
+        this.onChange = this.onChange.bind(this);
+    }
+
+    setInitialState() {
+        this.state = {
+            'checked': this.props.checked
+        };
+    }
+
+    render() {
+        let { text, info } = this.props.data;
+        let { checked } = this.state;
+        return BDV2.react.createElement(
+            "div",
+            { className: "ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item" },
+            BDV2.react.createElement(
+                "div",
+                { className: "ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap" },
+                BDV2.react.createElement(
+                    "h3",
+                    { className: "ui-form-title h3 margin-reset margin-reset ui-flex-child" },
+                    text
+                ),
+                BDV2.react.createElement(
+                    "label",
+                    { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
+                    BDV2.react.createElement("input", { className: "ui-switch-checkbox", type: "checkbox", checked: checked, onChange: e => this.onChange(e) }),
+                    BDV2.react.createElement("div", { className: "ui-switch" })
+                )
+            ),
+            BDV2.react.createElement(
+                "div",
+                { className: "ui-form-text style-description margin-top-4", style: { flex: '1 1 auto' } },
+                info
+            )
+        );
+    }
+
+    onChange(e) {
+        this.props.onChange(this.props.id, !this.state.checked);
+        this.setState({
+            'checked': !this.state.checked
+        });
+    }
+}
+
+class V2C_Scroller extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let wrapperClass = `scroller-wrap${this.props.fade ? ' fade' : ''} ${this.props.dark ? ' dark' : ''}`;
+        let { children } = this.props;
+        return BDV2.react.createElement(
+            "div",
+            { key: "scrollerwrap", className: wrapperClass },
+            BDV2.react.createElement(
+                "div",
+                { key: "scroller", ref: "scroller", className: "scroller" },
+                children
+            )
+        );
+    }
+}
+
+class V2C_TabBarItem extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        this.setInitialState();
+        this.onClick = this.onClick.bind(this);
+    }
+
+    setInitialState() {
+        this.state = {
+            'selected': this.props.selected || false
+        };
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "div",
+            { className: `ui-tab-bar-item${this.props.selected ? ' selected' : ''}`, onClick: this.onClick },
+            this.props.text
+        );
+    }
+
+    onClick() {
+
+        if (this.props.onClick) {
+            this.props.onClick(this.props.id);
+        }
+    }
+}
+
+class V2C_TabBarSeparator extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement("div", { className: "ui-tab-bar-separator margin-top-8 margin-bottom-8" });
+    }
+}
+
+class V2C_TabBarHeader extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "ui-tab-bar-header" },
+            this.props.text
+        );
+    }
+}
+
+class V2C_SideBar extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        let self = this;
+        $('.ui-tab-bar-item').on('click', e => {
+            self.setState({
+                'selected': null
+            });
+        });
+        self.setInitialState();
+        self.onClick = self.onClick.bind(self);
+    }
+
+    setInitialState() {
+        let self = this;
+        self.state = {
+            'selected': null,
+            'items': self.props.items
+        };
+
+        let initialSelection = self.props.items.find(item => {
+            return item.selected;
+        });
+        if (initialSelection) {
+            self.state.selected = initialSelection.id;
+        }
+    }
+
+    render() {
+        let self = this;
+        let { headerText } = self.props;
+        let { items, selected } = self.state;
+        return BDV2.react.createElement(
+            "div",
+            null,
+            BDV2.react.createElement(V2Components.TabBar.Separator, null),
+            BDV2.react.createElement(V2Components.TabBar.Header, { text: headerText }),
+            items.map(item => {
+                let { id, text } = item;
+                return BDV2.react.createElement(V2Components.TabBar.Item, { key: id, selected: selected === id, text: text, id: id, onClick: self.onClick });
+            })
+        );
+    }
+
+    onClick(id) {
+        let self = this;
+        $('.ui-tab-bar-item').removeClass('selected');
+        self.setState({
+            'selected': id
+        });
+
+        if (self.props.onClick) self.props.onClick(id);
+    }
+}
+
+class V2C_XSvg extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "svg",
+            { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 12 12", style: { width: "18px", height: "18px" } },
+            BDV2.react.createElement(
+                "g",
+                { className: "background", fill: "none", "fill-rule": "evenodd" },
+                BDV2.react.createElement("path", { d: "M0 0h12v12H0" }),
+                BDV2.react.createElement("path", { className: "fill", fill: "#dcddde", d: "M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6" })
+            )
+        );
+    }
+}
+
+class V2C_Tools extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "tools" },
+            BDV2.react.createElement(
+                "div",
+                { className: "btn-close", onClick: this.onClick },
+                BDV2.react.createElement(V2Components.XSvg, null)
+            ),
+            BDV2.react.createElement(
+                "div",
+                { className: "esc-text" },
+                "ESC"
+            )
+        );
+    }
+
+    onClick() {
+        if (this.props.onClick) {
+            this.props.onClick();
+        }
+        $(".btn-close").first().click();
+    }
+}
+
+class V2C_SettingsTitle extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "h2",
+            { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+            this.props.text
+        );
+    }
+}
+
+class V2C_Checkbox extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+        this.onClick = this.onClick.bind(this);
+        this.setInitialState();
+    }
+
+    setInitialState() {
+        this.state = {
+            'checked': this.props.checked || false
+        };
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "li",
+            null,
+            BDV2.react.createElement(
+                "div",
+                { className: "checkbox", onClick: this.onClick },
+                BDV2.react.createElement(
+                    "div",
+                    { className: "checkbox-inner" },
+                    BDV2.react.createElement("input", { checked: this.state.checked, onChange: () => {}, type: "checkbox" }),
+                    BDV2.react.createElement("span", null)
+                ),
+                BDV2.react.createElement(
+                    "span",
+                    null,
+                    this.props.text
+                )
+            )
+        );
+    }
+
+    onClick() {
+        this.props.onChange(this.props.id, !this.state.checked);
+        this.setState({
+            'checked': !this.state.checked
+        });
+    }
+}
+
+class V2C_CssEditorDetached extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        let self = this;
+        self.onClick = self.onClick.bind(self);
+        self.updateCss = self.updateCss.bind(self);
+        self.saveCss = self.saveCss.bind(self);
+        self.onChange = self.onChange.bind(self);
+    }
+
+    componentDidMount() {
+        let self = this;
+        $("#app-mount").addClass('bd-detached-editor');
+        self.editor = CodeMirror.fromTextArea(self.refs.editor, self.options);
+        self.editor.on("change", cm => {
+            if (!settingsCookie["bda-css-0"]) return;
+            self.updateCss();
+        });
+        window.bdtemp.editorDetached = true;
+    }
+
+    componentWillUnmount() {
+        $("#app-mount").removeClass('bd-detached-editor');
+        window.bdtemp.editorDetached = false;
+    }
+
+    get options() {
+        return {
+            lineNumbers: true,
+            mode: 'css',
+            indentUnit: 4,
+            theme: 'material',
+            scrollbarStyle: 'simple'
+        };
+    }
+
+    get css() {
+        let _ccss = window.bdStorage.get("bdcustomcss");
+        let ccss = "";
+        if (_ccss && _ccss !== "") {
+            ccss = atob(_ccss);
+        }
+        return ccss;
+    }
+
+    get root() {
+        let _root = $("#bd-customcss-detach-container");
+        if (!_root.length) {
+            if (!this.injectRoot()) return null;
+            return this.detachedRoot;
+        }
+        return _root[0];
+    }
+
+    injectRoot() {
+        if (!$(".app").length) return false;
+        $("<div/>", {
+            id: 'bd-customcss-detach-container'
+        }).insertAfter($(".app"));
+        return true;
+    }
+
+    render() {
+        let self = this;
+        return BDV2.react.createElement(
+            "div",
+            { className: "bd-detached-css-editor", id: "bd-customcss-detach-editor" },
+            BDV2.react.createElement(
+                "div",
+                { id: "bd-customcss-innerpane" },
+                BDV2.react.createElement("textarea", { onChange: () => {}, value: self.css, ref: "editor", id: "bd-customcss-ta" }),
+                BDV2.react.createElement(
+                    "div",
+                    { id: "bd-customcss-attach-controls" },
+                    BDV2.react.createElement(
+                        "ul",
+                        { className: "checkbox-group" },
+                        BDV2.react.createElement(V2Components.Checkbox, { id: "live-update", text: "Live Update", onChange: self.onChange, checked: settingsCookie["bda-css-0"] })
+                    ),
+                    BDV2.react.createElement(
+                        "div",
+                        { id: "bd-customcss-detach-controls-button" },
+                        BDV2.react.createElement(
+                            "button",
+                            { style: { borderRadius: "3px 0 0 3px", borderRight: "1px solid #3f4146" }, className: "btn btn-primary", onClick: () => {
+                                    self.onClick("update");
+                                } },
+                            "Update"
+                        ),
+                        BDV2.react.createElement(
+                            "button",
+                            { style: { borderRadius: "0", borderLeft: "1px solid #2d2d2d", borderRight: "1px solid #2d2d2d" }, className: "btn btn-primary", onClick: () => {
+                                    self.onClick("save");
+                                } },
+                            "Save"
+                        ),
+                        BDV2.react.createElement(
+                            "button",
+                            { style: { borderRadius: "0 3px 3px 0", borderLeft: "1px solid #3f4146" }, className: "btn btn-primary", onClick: () => {
+                                    self.onClick("attach");
+                                } },
+                            "Attach"
+                        ),
+                        BDV2.react.createElement(
+                            "span",
+                            { style: { fontSize: "10px", marginLeft: "5px" } },
+                            "Unsaved changes are lost on attach"
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    onChange(id, checked) {
+        switch (id) {
+            case 'live-update':
+                settingsCookie["bda-css-0"] = checked;
+                mainCore.saveSettings();
+                break;
+        }
+    }
+
+    onClick(id) {
+        let self = this;
+        switch (id) {
+            case 'attach':
+                if ($("#editor-detached").length) self.props.attach();
+                BDV2.reactDom.unmountComponentAtNode(self.root);
+                break;
+            case 'update':
+                self.updateCss();
+                break;
+            case 'save':
+                self.saveCss();
+                break;
+        }
+    }
+
+    updateCss() {
+        let self = this;
+        if ($("#customcss").length == 0) {
+            $("head").append('<style id="customcss"></style>');
+        }
+        $("#customcss").html(self.editor.getValue());
+    }
+
+    saveCss() {
+        let self = this;
+        window.bdStorage.set("bdcustomcss", btoa(self.editor.getValue()));
+    }
+}
+
+class V2C_CssEditor extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        let self = this;
+        self.setInitialState();
+        self.attach = self.attach.bind(self);
+        self.detachedEditor = BDV2.react.createElement(V2C_CssEditorDetached, { attach: self.attach });
+        self.onClick = self.onClick.bind(self);
+        self.updateCss = self.updateCss.bind(self);
+        self.saveCss = self.saveCss.bind(self);
+        self.detach = self.detach.bind(self);
+        self.codeMirror = self.codeMirror.bind(self);
+    }
+
+    setInitialState() {
+        this.state = {
+            'detached': this.props.detached || window.bdtemp.editorDetached
+        };
+    }
+
+    componentDidMount() {
+        let self = this;
+        self.codeMirror();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        let self = this;
+        if (prevState.detached && !self.state.detached) {
+            BDV2.reactDom.unmountComponentAtNode(self.detachedRoot);
+            self.codeMirror();
+        }
+    }
+
+    codeMirror() {
+        let self = this;
+        if (!self.state.detached) {
+            self.editor = CodeMirror.fromTextArea(self.refs.editor, self.options);
+            self.editor.on("change", cm => {
+                if (!settingsCookie["bda-css-0"]) return;
+                self.updateCss();
+            });
+        }
+    }
+
+    get options() {
+        return {
+            lineNumbers: true,
+            mode: 'css',
+            indentUnit: 4,
+            theme: 'material',
+            scrollbarStyle: 'simple'
+        };
+    }
+
+    get css() {
+        let _ccss = window.bdStorage.get("bdcustomcss");
+        let ccss = "";
+        if (_ccss && _ccss !== "") {
+            ccss = atob(_ccss);
+        }
+        return ccss;
+    }
+
+    render() {
+        let self = this;
+
+        let { detached } = self.state;
+        return BDV2.react.createElement(
+            "div",
+            { className: "content-column default", style: { padding: '60px 40px 0px' } },
+            detached && BDV2.react.createElement(
+                "div",
+                { id: "editor-detached" },
+                BDV2.react.createElement(V2Components.SettingsTitle, { text: "Custom CSS Editor" }),
+                BDV2.react.createElement(
+                    "h3",
+                    null,
+                    "Editor Detached"
+                ),
+                BDV2.react.createElement(
+                    "button",
+                    { className: "btn btn-primary", onClick: () => {
+                            self.attach();
+                        } },
+                    "Attach"
+                )
+            ),
+            !detached && BDV2.react.createElement(
+                "div",
+                null,
+                BDV2.react.createElement(V2Components.SettingsTitle, { text: "Custom CSS Editor" }),
+                BDV2.react.createElement("textarea", { ref: "editor", value: self.css, onChange: () => {} }),
+                BDV2.react.createElement(
+                    "div",
+                    { id: "bd-customcss-attach-controls" },
+                    BDV2.react.createElement(
+                        "ul",
+                        { className: "checkbox-group" },
+                        BDV2.react.createElement(V2Components.Checkbox, { id: "live-update", text: "Live Update", onChange: this.onChange, checked: settingsCookie["bda-css-0"] })
+                    ),
+                    BDV2.react.createElement(
+                        "div",
+                        { id: "bd-customcss-detach-controls-button" },
+                        BDV2.react.createElement(
+                            "button",
+                            { style: { borderRadius: "3px 0 0 3px", borderRight: "1px solid #3f4146" }, className: "btn btn-primary", onClick: () => {
+                                    self.onClick("update");
+                                } },
+                            "Update"
+                        ),
+                        BDV2.react.createElement(
+                            "button",
+                            { style: { borderRadius: "0", borderLeft: "1px solid #2d2d2d", borderRight: "1px solid #2d2d2d" }, className: "btn btn-primary", onClick: () => {
+                                    self.onClick("save");
+                                } },
+                            "Save"
+                        ),
+                        BDV2.react.createElement(
+                            "button",
+                            { style: { borderRadius: "0 3px 3px 0", borderLeft: "1px solid #3f4146" }, className: "btn btn-primary", onClick: () => {
+                                    self.onClick("detach");
+                                } },
+                            "Detach"
+                        ),
+                        BDV2.react.createElement(
+                            "span",
+                            { style: { fontSize: "10px", marginLeft: "5px" } },
+                            "Unsaved changes are lost on detach"
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    onClick(arg) {
+        let self = this;
+        switch (arg) {
+            case 'update':
+                self.updateCss();
+                break;
+            case 'save':
+                self.saveCss();
+                break;
+            case 'detach':
+                self.detach();
+                break;
+        }
+    }
+
+    onChange(id, checked) {
+        switch (id) {
+            case 'live-update':
+                settingsCookie["bda-css-0"] = checked;
+                mainCore.saveSettings();
+                break;
+        }
+    }
+
+    updateCss() {
+        let self = this;
+        if ($("#customcss").length == 0) {
+            $("head").append('<style id="customcss"></style>');
+        }
+        $("#customcss").html(self.editor.getValue());
+    }
+
+    saveCss() {
+        let self = this;
+        window.bdStorage.set("bdcustomcss", btoa(self.editor.getValue()));
+    }
+
+    detach() {
+        let self = this;
+        self.setState({
+            'detached': true
+        });
+        let droot = self.detachedRoot;
+        if (!droot) {
+            console.log("FAILED TO INJECT ROOT: .app");
+            return;
+        }
+        BDV2.reactDom.render(self.detachedEditor, droot);
+    }
+
+    get detachedRoot() {
+        let _root = $("#bd-customcss-detach-container");
+        if (!_root.length) {
+            if (!this.injectDetachedRoot()) return null;
+            return this.detachedRoot;
+        }
+        return _root[0];
+    }
+
+    injectDetachedRoot() {
+        if (!$(".app").length) return false;
+        $("<div/>", {
+            id: 'bd-customcss-detach-container'
+        }).insertAfter($(".app"));
+        return true;
+    }
+
+    attach() {
+        let self = this;
+        self.setState({
+            'detached': false
+        });
+    }
+}
+
+class V2C_List extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "ul",
+            { className: this.props.className },
+            this.props.children
+        );
+    }
+}
+
+class V2C_ContentColumn extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "content-column default" },
+            BDV2.react.createElement(
+                "h2",
+                { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+                this.props.title
+            ),
+            this.props.children
+        );
+    }
+}
+
+class V2C_PluginCard extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        let self = this;
+        if (typeof self.props.plugin.getSettingsPanel === "function") {
+            self.settingsPanel = self.props.plugin.getSettingsPanel();
+        }
+        self.onChange = self.onChange.bind(self);
+        self.showSettings = self.showSettings.bind(self);
+        self.setInitialState();
+    }
+
+    setInitialState() {
+        this.state = {
+            'checked': pluginCookie[this.props.plugin.getName()],
+            'settings': false
+        };
+    }
+
+    componentDidUpdate() {
+        if (this.state.settings) {
+            if (typeof this.settingsPanel === "object") {
+                this.refs.settingspanel.appendChild(this.settingsPanel);
+            }
+        }
+    }
+
+    render() {
+        let self = this;
+        let { plugin } = this.props;
+        let name = plugin.getName();
+        let author = plugin.getAuthor();
+        let description = plugin.getDescription();
+        let version = plugin.getVersion();
+        let { settingsPanel } = this;
+
+        if (this.state.settings) {
+            return BDV2.react.createElement(
+                "li",
+                { style: { maxHeight: "500px", overflow: "auto" } },
+                BDV2.react.createElement(
+                    "div",
+                    { style: { float: "right", cursor: "pointer" }, onClick: () => {
+                            this.refs.settingspanel.innerHTML = "";self.setState({ 'settings': false });
+                        } },
+                    BDV2.react.createElement(V2Components.XSvg, null)
+                ),
+                typeof settingsPanel === 'object' && BDV2.react.createElement("div", { ref: "settingspanel" }),
+                typeof settingsPanel !== 'object' && BDV2.react.createElement("div", { ref: "settingspanel", dangerouslySetInnerHTML: { __html: plugin.getSettingsPanel() } })
+            );
+        }
+
+        return BDV2.react.createElement(
+            "li",
+            null,
+            BDV2.react.createElement(
+                "div",
+                { className: "bda-left" },
+                BDV2.react.createElement(
+                    "span",
+                    { className: "bda-name" },
+                    name,
+                    " v",
+                    version,
+                    " by ",
+                    author
+                ),
+                BDV2.react.createElement(
+                    "div",
+                    { className: "scroller-wrap fade" },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "scroller bda-description" },
+                        description
+                    )
+                )
+            ),
+            BDV2.react.createElement(
+                "div",
+                { className: "bda-right" },
+                BDV2.react.createElement(
+                    "label",
+                    { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
+                    BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
+                    BDV2.react.createElement("div", { className: "ui-switch" })
+                ),
+                this.settingsPanel && BDV2.react.createElement(
+                    "button",
+                    { onClick: this.showSettings },
+                    "Settings"
+                )
+            )
+        );
+    }
+
+    onChange() {
+        let self = this;
+        self.setState({
+            'checked': !self.state.checked
+        });
+        pluginCookie[self.props.plugin.getName()] = !self.state.checked;
+        if (!self.state.checked) {
+            self.props.plugin.start();
+        } else {
+            self.props.plugin.stop();
+        }
+        $.cookie("bd-plugins", JSON.stringify(pluginCookie), {
+            expires: 365,
+            path: '/'
+        });
+    }
+
+    showSettings() {
+        if (!this.settingsPanel) return;
+        this.setState({
+            'settings': true
+        });
+    }
+}
+
+class V2C_ThemeCard extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        this.setInitialState();
+        this.onChange = this.onChange.bind(this);
+    }
+
+    setInitialState() {
+        this.state = {
+            'checked': themeCookie[this.props.theme.name]
+        };
+    }
+
+    render() {
+        let { theme } = this.props;
+        let name = theme.name.replace('_', ' ');
+        let description = theme.description;
+        let version = theme.version;
+        let author = theme.author;
+        return BDV2.react.createElement(
+            "li",
+            null,
+            BDV2.react.createElement(
+                "div",
+                { className: "bda-left" },
+                BDV2.react.createElement(
+                    "span",
+                    { className: "bda-name" },
+                    name,
+                    " v",
+                    version,
+                    " by ",
+                    author
+                ),
+                BDV2.react.createElement(
+                    "div",
+                    { className: "scroller-wrap fade" },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "scroller bda-description" },
+                        description
+                    )
+                )
+            ),
+            BDV2.react.createElement(
+                "div",
+                { className: "bda-right" },
+                BDV2.react.createElement(
+                    "label",
+                    { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
+                    BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
+                    BDV2.react.createElement("div", { className: "ui-switch" })
+                )
+            )
+        );
+    }
+
+    onChange() {
+        let self = this;
+        self.setState({
+            'checked': !self.state.checked
+        });
+        themeCookie[self.props.theme.name] = !self.state.checked;
+        if (!self.state.checked) {
+            $("head").append(`<style id="${self.props.theme.name}">${unescape(self.props.theme.css)}</style>`);
+        } else {
+            $(`#${self.props.theme.name}`).remove();
+        }
+        $.cookie("bd-themes", JSON.stringify(themeCookie), {
+            expires: 365,
+            path: '/'
+        });
+    }
+}
+
+class V2Cs_TabBar {
+    static get Item() {
+        return V2C_TabBarItem;
+    }
+    static get Header() {
+        return V2C_TabBarHeader;
+    }
+    static get Separator() {
+        return V2C_TabBarSeparator;
+    }
+}
+
+class V2C_Layer extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        $(window).on(`keyup.${this.props.id}`, e => {
+            if (e.which === 27) {
+                BDV2.reactDom.unmountComponentAtNode(this.refs.root.parentNode);
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        $(window).off(`keyup.${this.props.id}`);
+        $(`#${this.props.rootId}`).remove();
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "layer", id: this.props.id, ref: "root" },
+            this.props.children
+        );
+    }
+}
+
+class V2C_SidebarView extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let { sidebar, content } = this.props.children;
+        return BDV2.react.createElement(
+            "div",
+            { className: "ui-standard-sidebar-view" },
+            BDV2.react.createElement(
+                "div",
+                { className: "sidebar-region" },
+                BDV2.react.createElement(V2Components.Scroller, { key: "sidebarScroller", ref: "sidebarScroller", fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component })
+            ),
+            BDV2.react.createElement(
+                "div",
+                { className: "content-region" },
+                BDV2.react.createElement(V2Components.Scroller, { key: "contentScroller", ref: "contentScroller", fade: content.fade || true, dark: content.dark || true, children: content.component })
+            )
+        );
+    }
+}
+
+class V2C_ServerCard extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let { server } = this.props;
+
+        return BDV2.react.createElement(
+            "div",
+            { className: `ui-card ui-card-primary bd-server-card${server.pinned ? ' bd-server-card-pinned' : ''}`, style: { marginTop: "5px" } },
+            BDV2.react.createElement(
+                "div",
+                { className: "ui-flex horizontal", style: { display: "flex", flexFlow: "row nowrap", justifyContent: "flex-start", alignItems: "stretch", flex: "1 1 auto" } },
+                BDV2.react.createElement(
+                    "div",
+                    { className: "ui-flex-child", style: { flex: "0 1 auto", padding: "5px" } },
+                    BDV2.react.createElement("div", { className: "bd-pubs-server-icon", style: { width: "100px", height: "100px", backgroundSize: "cover", backgroundImage: `url(${server.icon})` } })
+                ),
+                BDV2.react.createElement(
+                    "div",
+                    { className: "ui-flex-child", style: { flex: "1 1 auto", padding: "5px" } },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-flex horizontal" },
+                        BDV2.react.createElement(
+                            "div",
+                            { className: "ui-form-item", style: { flex: "1 1 auto" } },
+                            BDV2.react.createElement(
+                                "h5",
+                                { className: "ui-form-title h5 margin-reset" },
+                                server.name
+                            )
+                        ),
+                        BDV2.react.createElement(
+                            "div",
+                            { className: "ui-form-item" },
+                            BDV2.react.createElement(
+                                "h5",
+                                { className: "ui-form-title h5 margin-reset" },
+                                server.online,
+                                "/",
+                                server.members,
+                                " Members"
+                            )
+                        )
+                    ),
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-flex horizontal" },
+                        BDV2.react.createElement(
+                            "div",
+                            { className: "scroller-wrap fade dark", style: { minHeight: "60px", maxHeight: "60px", borderTop: "1px solid #3f4146", borderBottom: "1px solid #3f4146", paddingTop: "5px" } },
+                            BDV2.react.createElement(
+                                "div",
+                                { className: "scroller" },
+                                BDV2.react.createElement(
+                                    "div",
+                                    { style: { fontSize: "13px", color: "#b9bbbe" } },
+                                    server.description
+                                )
+                            )
+                        )
+                    ),
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-flex horizontal" },
+                        BDV2.react.createElement(
+                            "div",
+                            { className: "ui-flex-child bd-server-tags", style: { flex: "1 1 auto" } },
+                            server.categories.join(', ')
+                        ),
+                        server.joined && BDV2.react.createElement(
+                            "button",
+                            { type: "button", className: "ui-button filled brand small grow disabled", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c" } },
+                            BDV2.react.createElement(
+                                "div",
+                                { className: "ui-button-contents" },
+                                "Joined"
+                            )
+                        ),
+                        server.error && BDV2.react.createElement(
+                            "button",
+                            { type: "button", className: "ui-button filled brand small grow disabled", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a" } },
+                            BDV2.react.createElement(
+                                "div",
+                                { className: "ui-button-contents" },
+                                "Error"
+                            )
+                        ),
+                        !server.error && !server.joined && BDV2.react.createElement(
+                            "button",
+                            { type: "button", className: "ui-button filled brand small grow", style: { minHeight: "12px", marginTop: "4px" }, onClick: () => {
+                                    this.join(server.identifier);
+                                } },
+                            BDV2.react.createElement(
+                                "div",
+                                { className: "ui-button-contents" },
+                                "Join"
+                            )
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    join(id) {
+        let self = this;
+        self.props.join(self.props.server);
+    }
+}
+
+class V2C_PublicServers extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        this.setInitialState();
+        this.close = this.close.bind(this);
+        this.changeCategory = this.changeCategory.bind(this);
+        this.search = this.search.bind(this);
+        this.searchKeyDown = this.searchKeyDown.bind(this);
+        this.checkConnection = this.checkConnection.bind(this);
+        this.join = this.join.bind(this);
+        this.connect = this.connect.bind(this);
+    }
+
+    componentDidMount() {
+        this.checkConnection();
+    }
+
+    setInitialState() {
+        this.state = {
+            'selectedCategory': -1,
+            'title': 'Loading...',
+            'loading': true,
+            'servers': [],
+            'next': null,
+            'connection': {
+                'state': 0,
+                'user': null
+            }
+        };
+    }
+
+    close() {
+        BDV2.reactDom.unmountComponentAtNode(document.getElementById(this.props.rootId));
+    }
+
+    search(query, clear) {
+        let self = this;
+
+        $.ajax({
+            method: 'GET',
+            url: `${self.endPoint}${query}`,
+            success: data => {
+
+                let servers = data.results.reduce((arr, server) => {
+                    server.joined = false;
+                    arr.push(server);
+                    // arr.push(<V2Components.ServerCard server={server} join={self.join}/>);
+                    return arr;
+                }, []);
+
+                if (!clear) {
+                    servers = self.state.servers.concat(servers);
+                } else {
+                    //servers.unshift(self.bdServer);
+                }
+
+                let end = data.size + data.from;
+                if (end >= data.total) {
+                    end = data.total;
+                    data.next = null;
+                }
+
+                let title = `Showing 1-${end} of ${data.total} results in ${self.categoryButtons[self.state.selectedCategory]}`;
+                if (self.state.term) title += ` for ${self.state.term}`;
+
+                self.setState({
+                    'loading': false,
+                    'title': title,
+                    'servers': servers,
+                    'next': data.next
+                });
+
+                if (clear) {
+                    self.refs.sbv.refs.contentScroller.refs.scroller.scrollTop = 0;
+                }
+            },
+            error: (jqXHR, textStatus, errorThrow) => {
+                self.setState({
+                    'loading': false,
+                    'title': 'Failed to load servers. Check console for details'
+                });
+                console.log(jqXHR);
+            }
+        });
+    }
+
+    join(server) {
+        let self = this;
+        if (self.state.loading) return;
+        self.setState({
+            'loading': true
+        });
+
+        if (server.nativejoin) {
+            self.setState({
+                'loading': false
+            });
+            $(".guilds-add").click();
+            $(".join .btn-primary").click();
+            $(".join-server input").val(server.invitecode);
+            return;
+        }
+
+        $.ajax({
+            method: 'GET',
+            url: `${self.joinEndPoint}/${server.identifier}`,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            success: data => {
+                let servers = self.state.servers;
+                servers.map(s => {
+                    if (s.identifier === server.identifier) server.joined = true;
+                });
+                self.setState({
+                    'loading': false,
+                    'servers': servers
+                });
+            },
+            error: jqXHR => {
+                console.log(`[BetterDiscord] Failed to join server ${server.name}. Reason: `);
+                console.log(jqXHR);
+                let servers = self.state.servers;
+                servers.map(s => {
+                    if (s.identifier === server.identifier) server.error = true;
+                });
+                self.setState({
+                    'loading': false,
+                    'servers': servers
+                });
+            }
+        });
+    }
+
+    get bdServer() {
+        let server = {
+            "name": "BetterDiscord",
+            "online": "7500+",
+            "members": "20000+",
+            "categories": ["community", "programming", "support"],
+            "description": "Official BetterDiscord server for support etc",
+            "identifier": "86004744966914048",
+            "icon": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
+            "nativejoin": true,
+            "invitecode": "0Tmfo5ZbORCRqbAd",
+            "pinned": true
+        };
+        return BDV2.react.createElement(V2Components.ServerCard, { server: server, pinned: true, join: this.join });
+    }
+
+    get endPoint() {
+        return 'https://search.discordservers.com';
+    }
+
+    get joinEndPoint() {
+        return 'https://join.discordservers.com';
+    }
+
+    get connectEndPoint() {
+        return 'https://join.discordservers.com/connect';
+    }
+
+    checkConnection() {
+        let self = this;
+        $.ajax({
+            method: 'GET',
+            url: `${self.joinEndPoint}/session`,
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            success: data => {
+                self.setState({
+                    'selectedCategory': 0,
+                    'connection': {
+                        'state': 2,
+                        'user': data
+                    }
+                });
+                self.search("", true);
+            },
+            error: jqXHR => {
+                if (jqXHR.status === 403) {
+                    //Not connected
+                    self.setState({
+                        'title': 'Not connected to discordservers.com!',
+                        'loading': true,
+                        'selectedCategory': -1,
+                        'connection': {
+                            'state': 1,
+                            'user': null
+                        }
+                    });
+                    return;
+                }
+                console.log(jqXHR);
+            }
+        });
+    }
+
+    get windowOptions() {
+        return {
+            width: 520,
+            height: 710,
+            backgroundColor: '#282b30',
+            show: true,
+            resizable: false,
+            maximizable: false,
+            minimizable: false,
+            alwaysOnTop: true,
+            frame: false,
+            center: false
+        };
+    }
+
+    connect() {
+        let self = this;
+        let options = self.windowOptions;
+        options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
+        options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
+
+        self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
+        let sub = window.location.hostname.split('.')[0];
+        let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
+        self.joinWindow.on('close', e => {
+            self.checkConnection();
+        });
+        self.joinWindow.webContents.on('did-navigate', (event, url) => {
+            if (!url.includes("connect/callback")) return;
+            self.joinWindow.close();
+        });
+        self.joinWindow.loadURL(url);
+    }
+
+    render() {
+        return BDV2.react.createElement(V2Components.SidebarView, { ref: "sbv", children: this.component });
+    }
+
+    get component() {
+        return {
+            'sidebar': {
+                'component': this.sidebar
+            },
+            'content': {
+                'component': this.content
+            }
+        };
+    }
+
+    get sidebar() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "sidebar", key: "ps" },
+            BDV2.react.createElement(
+                "div",
+                { className: "ui-tab-bar SIDE" },
+                BDV2.react.createElement(
+                    "div",
+                    { className: "ui-tab-bar-header", style: { fontSize: "16px" } },
+                    "Public Servers"
+                ),
+                BDV2.react.createElement(V2Components.TabBar.Separator, null),
+                this.searchInput,
+                BDV2.react.createElement(V2Components.TabBar.Separator, null),
+                BDV2.react.createElement(V2Components.TabBar.Header, { text: "Categories" }),
+                this.categoryButtons.map((value, index) => {
+                    return BDV2.react.createElement(V2Components.TabBar.Item, { id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index });
+                }),
+                BDV2.react.createElement(V2Components.TabBar.Separator, null),
+                this.footer,
+                this.connection
+            )
+        );
+    }
+
+    get searchInput() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "ui-form-item" },
+            BDV2.react.createElement(
+                "div",
+                { className: "ui-text-input flex-vertical", style: { width: "172px", marginLeft: "10px" } },
+                BDV2.react.createElement("input", { ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50" })
+            )
+        );
+    }
+
+    searchKeyDown(e) {
+        let self = this;
+        if (self.state.loading || e.which !== 13) return;
+        self.setState({
+            'loading': true,
+            'title': 'Loading...',
+            'term': e.target.value
+        });
+        let query = `?term=${e.target.value}`;
+        if (self.state.selectedCategory !== 0) {
+            query += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
+        }
+        self.search(query, true);
+    }
+
+    get categoryButtons() {
+        return ["All", "FPS Games", "MMO Games", "Strategy Games", "Sports Games", "Puzzle Games", "Retro Games", "Party Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Community", "Language", "Programming", "Other"];
+    }
+
+    changeCategory(id) {
+        let self = this;
+        if (self.state.loading) return;
+        self.refs.searchinput.value = "";
+        self.setState({
+            'loading': true,
+            'selectedCategory': id,
+            'title': 'Loading...',
+            'term': null
+        });
+        if (id === 0) {
+            self.search("", true);
+            return;
+        }
+        self.search(`?category=${self.categoryButtons[id]}`, true);
+    }
+
+    get content() {
+        let self = this;
+        if (self.state.connection.state === 1) return self.notConnected;
+        return [BDV2.react.createElement(
+            "div",
+            { ref: "content", key: "pc", className: "content-column default" },
+            BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title }),
+            self.bdServer,
+            self.state.servers.map((server, index) => {
+                return BDV2.react.createElement(V2Components.ServerCard, { key: index, server: server, join: self.join });
+            }),
+            self.state.next && BDV2.react.createElement(
+                "button",
+                { type: "button", onClick: () => {
+                        if (self.state.loading) return;self.setState({ 'loading': true });self.search(self.state.next, false);
+                    }, className: "ui-button filled brand small grow", style: { width: "100%", marginTop: "10px", marginBottom: "10px" } },
+                BDV2.react.createElement(
+                    "div",
+                    { className: "ui-button-contents" },
+                    self.state.loading ? 'Loading' : 'Load More'
+                )
+            ),
+            self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title })
+        ), BDV2.react.createElement(V2Components.Tools, { key: "pt", ref: "tools", onClick: self.close })];
+    }
+
+    get notConnected() {
+        let self = this;
+        return [BDV2.react.createElement(
+            "div",
+            { key: "ncc", ref: "content", className: "content-column default" },
+            BDV2.react.createElement(
+                "h2",
+                { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+                "Not connected to discordservers.com!",
+                BDV2.react.createElement(
+                    "button",
+                    { onClick: self.connect, type: "button", className: "ui-button filled brand small grow", style: { display: "inline-block", minHeight: "18px", marginLeft: "10px", lineHeight: "14px" } },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-button-contents" },
+                        "Connect"
+                    )
+                )
+            ),
+            self.bdServer
+        ), BDV2.react.createElement(V2Components.Tools, { key: "nct", ref: "tools", onClick: self.close })];
+    }
+
+    get footer() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "ui-tab-bar-header" },
+            BDV2.react.createElement(
+                "a",
+                { href: "https://discordservers.com", target: "_blank" },
+                "Discordservers.com"
+            )
+        );
+    }
+
+    get connection() {
+        let self = this;
+        let { connection } = self.state;
+        if (connection.state !== 2) return BDV2.react.createElement("span", null);
+
+        return BDV2.react.createElement(
+            "span",
+            null,
+            BDV2.react.createElement(V2Components.TabBar.Separator, null),
+            BDV2.react.createElement(
+                "span",
+                { style: { color: "#b9bbbe", fontSize: "10px", marginLeft: "10px" } },
+                "Connected as: ",
+                `${connection.user.username}#${connection.user.discriminator}`
+            ),
+            BDV2.react.createElement(
+                "div",
+                { style: { padding: "5px 10px 0 10px" } },
+                BDV2.react.createElement(
+                    "button",
+                    { style: { width: "100%", minHeight: "20px" }, type: "button", className: "ui-button filled brand small grow" },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-button-contents", onClick: self.connect },
+                        "Reconnect"
+                    )
+                )
+            )
+        );
+    }
+}
+
+class V2Components {
+    static get SettingsPanel() {
+        return V2C_SettingsPanel;
+    }
+    static get Switch() {
+        return V2C_Switch;
+    }
+    static get Scroller() {
+        return V2C_Scroller;
+    }
+    static get TabBar() {
+        return V2Cs_TabBar;
+    }
+    static get SideBar() {
+        return V2C_SideBar;
+    }
+    static get Tools() {
+        return V2C_Tools;
+    }
+    static get SettingsTitle() {
+        return V2C_SettingsTitle;
+    }
+    static get CssEditor() {
+        return V2C_CssEditor;
+    }
+    static get Checkbox() {
+        return V2C_Checkbox;
+    }
+    static get List() {
+        return V2C_List;
+    }
+    static get PluginCard() {
+        return V2C_PluginCard;
+    }
+    static get ThemeCard() {
+        return V2C_ThemeCard;
+    }
+    static get ContentColumn() {
+        return V2C_ContentColumn;
+    }
+    static get XSvg() {
+        return V2C_XSvg;
+    }
+    static get Layer() {
+        return V2C_Layer;
+    }
+    static get SidebarView() {
+        return V2C_SidebarView;
+    }
+    static get ServerCard() {
+        return V2C_ServerCard;
+    }
+}
+
+class V2_PublicServers {
+
+    constructor() {}
+
+    get component() {
+        return BDV2.react.createElement(V2Components.Layer, { rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, { rootId: "pubslayerroot" }) });
+    }
+
+    get root() {
+        let _root = $("#pubslayerroot");
+        if (!_root.length) {
+            if (!this.injectRoot()) return null;
+            return this.root;
+        }
+        return _root[0];
+    }
+
+    injectRoot() {
+        if (!$(".layers").length) return false;
+        $(".layers").append($("<span/>", {
+            id: 'pubslayerroot'
+        }));
+        return true;
+    }
+
+    render() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layers");
+            return;
+        }
+        BDV2.reactDom.render(this.component, root);
+    }
+}
+
+class V2_SettingsPanel_Sidebar {
+
+    constructor(onClick) {
+        this.onClick = onClick;
+    }
+
+    get items() {
+        return [{ 'text': 'Core', 'id': 'core' }, { 'text': 'Emotes', 'id': 'emotes' }, { 'text': 'Custom CSS', 'id': 'customcss' }, { 'text': 'Plugins', 'id': 'plugins' }, { 'text': 'Themes', 'id': 'themes' }];
+    }
+
+    get component() {
+        return BDV2.react.createElement(
+            "span",
+            null,
+            BDV2.react.createElement(V2Components.SideBar, { onClick: this.onClick, headerText: "BetterDiscord", items: this.items }),
+            BDV2.react.createElement(
+                "span",
+                { style: { fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "6px 10px" } },
+                `v${bdVersion}:${jsVersion} by `,
+                BDV2.react.createElement(
+                    "a",
+                    { href: "https://github.com/Jiiks/", target: "_blank" },
+                    "Jiiks"
+                )
+            )
+        );
+    }
+
+    get root() {
+        let _root = $("#bd-settings-sidebar");
+        if (!_root.length) {
+            if (!this.injectRoot()) return null;
+            return this.root;
+        }
+        return _root[0];
+    }
+
+    injectRoot() {
+        let changeLog = $(".ui-tab-bar-item:not(.danger)").last();
+        if (!changeLog.length) return false;
+        $("<span/>", { 'id': 'bd-settings-sidebar' }).insertBefore(changeLog.prev());
+        return true;
+    }
+
+    render() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .ui-tab-bar-item:not(.danger)");
+            return;
+        }
+        BDV2.reactDom.render(this.component, root);
+    }
+}
+
+class V2_SettingsPanel {
+
+    constructor() {
+        let self = this;
+        self.sideBarOnClick = self.sideBarOnClick.bind(self);
+        self.onChange = self.onChange.bind(self);
+        self.updateSettings = this.updateSettings.bind(self);
+        self.sidebar = new V2_SettingsPanel_Sidebar(self.sideBarOnClick);
+    }
+
+    get root() {
+        let _root = $("#bd-settingspane-container");
+        if (!_root.length) {
+            if (!this.injectRoot()) return null;
+            return this.root;
+        }
+        return _root[0];
+    }
+
+    injectRoot() {
+        if (!$(".layer .ui-standard-sidebar-view").length) return false;
+        $(".layer .ui-standard-sidebar-view").append($("<div/>", {
+            class: 'content-region',
+            id: 'bd-settingspane-container'
+        }));
+        return true;
+    }
+
+    get coreSettings() {
+        return this.getSettings("core");
+    }
+    get emoteSettings() {
+        return this.getSettings("emote");
+    }
+    getSettings(category) {
+        return Object.keys(settings).reduce((arr, key) => {
+            let setting = settings[key];
+            if (setting.cat === category && setting.implemented && !setting.hidden) {
+                setting.text = key;
+                arr.push(setting);
+            }
+            return arr;
+        }, []);
+    }
+
+    sideBarOnClick(id) {
+        let self = this;
+        $(".content-region").first().hide();
+        $(self.root).show();
+        switch (id) {
+            case 'core':
+                self.renderCoreSettings();
+                break;
+            case 'emotes':
+                self.renderEmoteSettings();
+                break;
+            case 'customcss':
+                self.renderCustomCssEditor();
+                break;
+            case 'plugins':
+                self.renderPluginPane();
+                break;
+            case 'themes':
+                self.renderThemePane();
+                break;
+        }
+    }
+
+    onClick(id) {}
+
+    onChange(id, checked) {
+        settingsCookie[id] = checked;
+        this.updateSettings();
+    }
+
+    updateSettings() {
+        let _c = settingsCookie;
+
+        if (_c["bda-es-0"]) {
+            $("#twitchcord-button-container").show();
+        } else {
+            $("#twitchcord-button-container").hide();
+        }
+
+        if (_c["bda-gs-b"]) {
+            $("body").addClass("bd-blue");
+        } else {
+            $("body").removeClass("bd-blue");
+        }
+
+        if (_c["bda-gs-2"]) {
+            $("body").addClass("bd-minimal");
+        } else {
+            $("body").removeClass("bd-minimal");
+        }
+
+        if (_c["bda-gs-3"]) {
+            $("body").addClass("bd-minimal-chan");
+        } else {
+            $("body").removeClass("bd-minimal-chan");
+        }
+
+        if (_c["bda-gs-1"]) {
+            $("#bd-pub-li").show();
+        } else {
+            $("#bd-pub-li").hide();
+        }
+
+        if (_c["bda-gs-4"]) {
+            voiceMode.enable();
+        } else {
+            voiceMode.disable();
+        }
+
+        if (_c["bda-gs-5"]) {
+            $("#app-mount").addClass("bda-dark");
+        } else {
+            $("#app-mount").removeClass("bda-dark");
+        }
+
+        if (_c["bda-es-6"]) {
+            //Pretty emote titles
+            emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+            $(document).on("mouseover", ".emote", function () {
+                var x = $(this).offset();
+                var title = $(this).attr("alt");
+                $(emoteNamePopup).find(".tipsy-inner").text(title);
+                $(emoteNamePopup).css('left', x.left - 25);
+                $(emoteNamePopup).css('top', x.top - 32);
+                $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));
+            });
+            $(document).on("mouseleave", ".emote", function () {
+                $(".tipsy").remove();
+            });
+        } else {
+            $(document).off('mouseover', '.emote');
+        }
+
+        if (_c["bda-gs-8"]) {
+            dMode.enable();
+        } else {
+            dMode.disable();
+        }
+
+        mainCore.saveSettings();
+    }
+
+    renderSidebar() {
+        let self = this;
+        $(".ui-tab-bar-item").off('click.v2settingspanel').on('click.v2settingspanel', e => {
+            BDV2.reactDom.unmountComponentAtNode(self.root);
+            $(self.root).hide();
+            $(".content-region").first().show();
+        });
+        self.sidebar.render();
+    }
+
+    get coreComponent() {
+        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+    }
+
+    get emoteComponent() {
+        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+    }
+
+    get customCssComponent() {
+        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [BDV2.react.createElement(V2Components.CssEditor, { key: "csseditor" }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+    }
+
+    get pluginsComponent() {
+        let plugins = Object.keys(bdplugins).reduce((arr, key) => {
+            arr.push(BDV2.react.createElement(V2Components.PluginCard, { key: key, plugin: bdplugins[key].plugin }));return arr;
+        }, []);
+        let list = BDV2.react.createElement(V2Components.List, { key: "plugin-list", className: "bda-slist", children: plugins });
+        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "pcolumn", title: "Plugins", children: list });
+        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+    }
+
+    get themesComponent() {
+        let themes = Object.keys(bdthemes).reduce((arr, key) => {
+            arr.push(BDV2.react.createElement(V2Components.ThemeCard, { key: key, theme: bdthemes[key] }));return arr;
+        }, []);
+        let list = BDV2.react.createElement(V2Components.List, { key: "theme-list", className: "bda-slist", children: themes });
+        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "tcolumn", title: "Themes", children: list });
+        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+    }
+
+    renderCoreSettings() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            return;
+        }
+        BDV2.reactDom.render(this.coreComponent, root);
+    }
+
+    renderEmoteSettings() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            return;
+        }
+        BDV2.reactDom.render(this.emoteComponent, root);
+    }
+
+    renderCustomCssEditor() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            return;
+        }
+        BDV2.reactDom.render(this.customCssComponent, root);
+    }
+
+    renderPluginPane() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            return;
+        }
+        BDV2.reactDom.render(this.pluginsComponent, root);
+    }
+
+    renderThemePane() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            return;
+        }
+        BDV2.reactDom.render(this.themesComponent, root);
+    }
+}
