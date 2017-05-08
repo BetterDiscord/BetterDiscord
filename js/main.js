@@ -662,7 +662,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                 
                 if ($.inArray(sw, bemotes) == -1) {
                 
-                    if(typeof emotesTwitch !== 'undefind' && settingsCookie["bda-es-7"]) {
+                    if(typeof emotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
                         if(emotesTwitch.emotes.hasOwnProperty(sw) && sw.length >= 4) { 
                             if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
                             var url = twitchEmoteUrlStart + emotesTwitch.emotes[sw].image_id + twitchEmoteUrlEnd;
