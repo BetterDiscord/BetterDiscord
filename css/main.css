@@ -1891,9 +1891,10 @@
 }
 
 .bd-pfbtn {
-  position: absolute;
-  top: 60px;
-  left: 120px;
+  position: relative;
+  top: -40px;
+  left: 80px;
+  margin-bottom: -19px;
   background: #7289da;
   color: #FFF;
   border-radius: 5px;
