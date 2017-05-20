@@ -1890,7 +1890,19 @@
   background:#202020; 
 }
 
+.bd-pfbtn {
+  position: relative;
+  top: -40px;
+  left: 80px;
+  margin-bottom: -19px;
+  background: #7289da;
+  color: #FFF;
+  border-radius: 5px;
+  display: block;
+}
+
 /*BD BLUE*/
+.bd-blue .bd-pfbtn { background: #3a71c1; }
 .bd-blue .bot-tag {background: #3a71c1;}
 .bd-blue .bot-tag.bot-tag-invert {color: #3a71c1!important}
 .bd-blue .spinner-wandering-cubes .spinner-item {background-color: #3a71c1;}

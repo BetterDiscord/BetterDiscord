@@ -85,7 +85,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 });
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.79;
+var jsVersion = 1.791;
 var supportedVersion = "0.2.81";
 
 var mainObserver;
@@ -191,6 +191,11 @@ var bdchangelog = {
     },
     "fixes": {
         "0a": {
+            "title": "1.791 : Restored Buttons",
+            "text": "Restored Open Theme Folder and Open Plugin Folder buttons",
+            "img": ""
+        },
+        "0b": {
             "title": "1.79 : Settings Saving",
             "text": "Fixed settings not saving with new settings panel",
             "img": ""
@@ -4985,7 +4990,8 @@ class V2_SettingsPanel {
             arr.push(BDV2.react.createElement(V2Components.PluginCard, { key: key, plugin: bdplugins[key].plugin }));return arr;
         }, []);
         let list = BDV2.react.createElement(V2Components.List, { key: "plugin-list", className: "bda-slist", children: plugins });
-        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "pcolumn", title: "Plugins", children: list });
+        let pfBtn = BDV2.react.createElement("button", {className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'plugindir' }); }}, "Open Plugin Folder");
+        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "pcolumn", title: "Plugins", children: [pfBtn, list] });
         return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
 
@@ -4994,7 +5000,8 @@ class V2_SettingsPanel {
             arr.push(BDV2.react.createElement(V2Components.ThemeCard, { key: key, theme: bdthemes[key] }));return arr;
         }, []);
         let list = BDV2.react.createElement(V2Components.List, { key: "theme-list", className: "bda-slist", children: themes });
-        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "tcolumn", title: "Themes", children: list });
+        let tfBtn = BDV2.react.createElement("button", {className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'themedir' }); }}, "Open Theme Folder");
+        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "tcolumn", title: "Themes", children: [tfBtn, list] });
         return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
 
