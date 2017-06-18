@@ -1901,6 +1901,227 @@
   display: block;
 }
 
+#bd-settings-sidebar .ui-tab-bar-item {
+    color: #b9bbbe;
+	padding-top: 6px;
+    padding-bottom: 6px;
+    margin-bottom: 2px;
+    padding: 6px 10px;
+    position: relative;
+    font-size: 16px;
+    line-height: 20px;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex-shrink: 0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#bd-settings-sidebar .ui-tab-bar-item:hover {
+	color: #f6f6f7;
+    background-color: hsla(216,4%,74%,.1);
+}
+
+#bd-settings-sidebar .ui-tab-bar-item.selected {
+    color: #fff;
+	background-color: #7289da;
+}
+
+#bd-settings-sidebar .ui-tab-bar-header {
+	color: #72767d;
+	padding: 6px 10px;
+    font-size: 12px;
+    line-height: 16px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+#bd-settings-sidebar .ui-tab-bar-separator {
+	background-color: hsla(218,5%,47%,.3);
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 1px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+#bd-settingspane-container h2.ui-form-title {
+	color: #f6f6f7;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+#bd-settingspane-container .ui-switch-item {
+    flex-direction: column;
+}
+
+#bd-settingspane-container .ui-switch-item h3 {
+	font-weight: 500;
+	color: #f6f6f7;
+    flex: 1;
+    line-height: 24px;
+}
+
+#bd-settingspane-container .ui-switch-item .style-description {
+	color: #72767d;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    line-height: 30px;
+    border-bottom: 1px solid hsla(218,5%,47%,.3);
+}
+
+#bd-settingspane-container .ui-switch-item .ui-switch-wrapper {
+	-webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    position: relative;
+    width: 44px;
+    height: 24px;
+    display: block;
+    flex: 0 0 auto;
+}
+
+#bd-settingspane-container .ui-switch-item .ui-switch-wrapper input {
+	position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#bd-settingspane-container .ui-switch-item .ui-switch-wrapper .ui-switch {
+	background: #7289da;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #72767d;
+    border-radius: 14px;
+    transition: background .15s ease-in-out,box-shadow .15s ease-in-out,border .15s ease-in-out;
+}
+
+#bd-settingspane-container .ui-switch-item .ui-switch-wrapper .ui-switch:before {
+	content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    bottom: 3px;
+    background: #f6f6f7;
+    border-radius: 10px;
+    transition: all .15s ease;
+    box-shadow: 0 3px 1px 0 rgba(0,0,0,.05),0 2px 2px 0 rgba(0,0,0,.1),0 3px 3px 0 rgba(0,0,0,.05);
+}
+
+#bd-settingspane-container .ui-switch-item .ui-switch-wrapper .ui-switch.checked {
+	background: #7289da;
+}
+
+#bd-settingspane-container .ui-switch-item .ui-switch-wrapper .ui-switch.checked:before {
+	transform: translateX(20px);
+}
+
+#pubslayer .ui-tab-bar-item {
+    color: #b9bbbe;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    margin-bottom: 2px;
+    padding: 6px 10px;
+    position: relative;
+    font-size: 16px;
+    line-height: 20px;
+    border-radius: 3px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex-shrink: 0;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+#pubslayer .ui-tab-bar-item:hover {
+    color: #f6f6f7;
+    background-color: hsla(216,4%,74%,.1);
+}
+
+#pubslayer .ui-tab-bar-item.selected {
+    color: #fff;
+    background-color: #7289da;
+}
+
+#pubslayer .ui-tab-bar-header {
+    color: #72767d;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 16px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+#pubslayer #bd-settings-sidebar .ui-tab-bar-separator {
+    background-color: hsla(218,5%,47%,.3);
+    margin-left: 10px;
+    margin-right: 10px;
+    height: 1px;
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+#pubslayer h2.ui-form-title {
+    color: #f6f6f7;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+#pubslayer h5.ui-form-title {
+    color: #f6f6f7;
+}
+
+#pubslayer button {
+	background: #7289da;
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    padding: 2px 16px;
+    border: none;
+    border-radius: 3px;
+    transition: background-color .17s ease;
+}
+
+#pubslayer button:hover {
+	background-color: #677bc4;
+}
+
+#pubslayer input {
+	color: #f6f6f7;
+    background-color: rgba(0,0,0,.1);
+    border-color: rgba(0,0,0,.3);
+    padding: 10px;
+    height: 30px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    outline: none;
+    transition: background-color .15s ease,border .15s ease;
+}
+
 /*BD BLUE*/
 .bd-blue .bd-pfbtn { background: #3a71c1; }
 .bd-blue .bot-tag {background: #3a71c1;}
