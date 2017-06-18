@@ -85,7 +85,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 });
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
-var jsVersion = 1.791;
+var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
 
 var mainObserver;
@@ -191,11 +191,16 @@ var bdchangelog = {
     },
     "fixes": {
         "0a": {
+            "title": "1.792 : Fixed settingspanel injection",
+            "text": "Still has some minor bugs",
+            "img": ""
+        },
+        "0b": {
             "title": "1.791 : Restored Buttons",
             "text": "Restored Open Theme Folder and Open Plugin Folder buttons",
             "img": ""
         },
-        "0b": {
+        "0c": {
             "title": "1.79 : Settings Saving",
             "text": "Fixed settings not saving with new settings panel",
             "img": ""
@@ -3224,7 +3229,7 @@ class V2C_Switch extends BDV2.reactComponent {
                     "label",
                     { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
                     BDV2.react.createElement("input", { className: "ui-switch-checkbox", type: "checkbox", checked: checked, onChange: e => this.onChange(e) }),
-                    BDV2.react.createElement("div", { className: "ui-switch" })
+                    BDV2.react.createElement("div", { className: `ui-switch ${checked ? 'checked' : ''}` })
                 )
             ),
             BDV2.react.createElement(
@@ -3287,7 +3292,6 @@ class V2C_TabBarItem extends BDV2.reactComponent {
     }
 
     onClick() {
-
         if (this.props.onClick) {
             this.props.onClick(this.props.id);
         }
@@ -3323,7 +3327,15 @@ class V2C_SideBar extends BDV2.reactComponent {
     constructor(props) {
         super(props);
         let self = this;
-        $('.ui-tab-bar-item').on('click', e => {
+        const si = $("[class*=side] > [class*=selected]");
+        if(si.length) {
+            self.scn = si.attr("class");
+        }
+        const ns = $("[class*=side] > [class*=notSelected]");
+        if(ns.length) {
+            self.nscn = ns.attr("class");
+        }
+        $("[class*=side] > [class*=item]").on("click", e => {
             self.setState({
                 'selected': null
             });
@@ -3365,6 +3377,14 @@ class V2C_SideBar extends BDV2.reactComponent {
 
     onClick(id) {
         let self = this;
+        const si = $("[class*=side] > [class*=selected]");
+        if(si.length) {
+            si.off("click.bdsb").on("click.bsb", e => {
+                $(e.target).attr("class", self.scn);
+            });
+            si.attr("class", self.nscn);
+        }
+
         $('.ui-tab-bar-item').removeClass('selected');
         self.setState({
             'selected': id
@@ -4800,7 +4820,7 @@ class V2_SettingsPanel_Sidebar {
     }
 
     injectRoot() {
-        let changeLog = $(".ui-tab-bar-item:not(.danger)").last();
+        let changeLog = $("[class*=side] > [class*=item]:not([class*=Danger])").last();
         if (!changeLog.length) return false;
         $("<span/>", { 'id': 'bd-settings-sidebar' }).insertBefore(changeLog.prev());
         return true;
@@ -4809,7 +4829,7 @@ class V2_SettingsPanel_Sidebar {
     render() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .ui-tab-bar-item:not(.danger)");
+            console.log("FAILED TO LOCATE ROOT: [class*=side] > [class*=item]:not([class*=Danger])");
             return;
         }
         BDV2.reactDom.render(this.component, root);
@@ -4965,7 +4985,7 @@ class V2_SettingsPanel {
 
     renderSidebar() {
         let self = this;
-        $(".ui-tab-bar-item").off('click.v2settingspanel').on('click.v2settingspanel', e => {
+        $("[class*=side] > [class*=item]").off('click.v2settingspanel').on('click.v2settingspanel', e => {
             BDV2.reactDom.unmountComponentAtNode(self.root);
             $(self.root).hide();
             $(".content-region").first().show();
