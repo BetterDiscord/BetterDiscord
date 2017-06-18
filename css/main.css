@@ -2122,6 +2122,14 @@
     transition: background-color .15s ease,border .15s ease;
 }
 
+#bd-settingspane-container .scroller-wrap {
+	height: 100%;
+}
+
+#bd-settingspane-container .scroller-wrap .scroller {
+	display: flex;
+}
+
 /*BD BLUE*/
 .bd-blue .bd-pfbtn { background: #3a71c1; }
 .bd-blue .bot-tag {background: #3a71c1;}
