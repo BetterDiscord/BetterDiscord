@@ -295,7 +295,7 @@ Core.prototype.init = function () {
             /*Display new features in BetterDiscord*/
             if (settingsCookie["version"] < jsVersion) {
                 var cl = self.constructChangelog();
-                $("body").append(cl);
+                /*$("body").append(cl);*/
                 settingsCookie["version"] = jsVersion;
                 self.saveSettings();
             }
@@ -765,10 +765,10 @@ EmoteModule.prototype.autoCapitalize = function () {
 
     var self = this;
 
-    $('body').delegate($(".channel-textarea-inner textarea:first"), 'keyup change paste', function () {
+    $('body').delegate($(".channel-text-area-default textarea:first"), 'keyup change paste', function () {
         if (!settingsCookie["bda-es-4"]) return;
 
-        var text = $(".channel-textarea-inner textarea:first").val();
+        var text = $(".channel-text-area-default textarea:first").val();
         if (text == undefined) return;
 
         var lastWord = text.split(" ").pop();
@@ -776,7 +776,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = self.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                $(".channel-textarea-inner textarea:first").val(text.replace(lastWord, ret));
+                $(".channel-text-area-default textarea:first").val(text.replace(lastWord, ret));
             }
         }
     });
@@ -1394,7 +1394,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     emoteIcon.off();
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
-        var ta = $(".channel-textarea-inner textarea");
+        var ta = $(".channel-text-area-default textarea");
         ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
 };
@@ -2419,7 +2419,7 @@ function Utils() {
 }
 
 Utils.prototype.getTextArea = function () {
-    return $(".channel-textarea-inner textarea");
+    return $(".channel-text-area-default textarea");
 };
 
 Utils.prototype.jqDefer = function (fnc) {
