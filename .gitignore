@@ -1,0 +1,17 @@
+.idea/*
+*.name
+devjs/.idea/devjs.iml
+*.bak
+*.bak.*
+*.xpi
+Firefox/data/js/jquery-2.1.4.min.js
+*.dev.*
+/nbproject/private/
+node_modules
+.sass-cache
+/*.jiiks
+Installers/dotNet/bin/
+Installers/dotNet/packages/
+Installers/dotNet/dlls/
+v2/dist/vendor/
+v2/lib/static.js
