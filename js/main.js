@@ -540,10 +540,8 @@ Core.prototype.alert = function (title, text) {
 var emotesFfz = {};
 var emotesBTTV = {};
 var emotesTwitch = {
-    "emotes": {
-        "emote": {
-            "image_id": 0
-        }
+    "emote": {
+        "id": 0
     }
 }; //for ide
 var subEmotesTwitch = {};
@@ -673,9 +671,9 @@ EmoteModule.prototype.injectEmote = function(node) {
                 if ($.inArray(sw, bemotes) == -1) {
                 
                     if(typeof emotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
-                        if(emotesTwitch.emotes.hasOwnProperty(sw) && sw.length >= 4) { 
+                        if(emotesTwitch.hasOwnProperty(sw) && sw.length >= 4) { 
                             if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            var url = twitchEmoteUrlStart + emotesTwitch.emotes[sw].image_id + twitchEmoteUrlEnd;
+                            var url = twitchEmoteUrlStart + emotesTwitch[sw].id + twitchEmoteUrlEnd;
                             contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
                             doInject = true;
                             return;
@@ -783,7 +781,7 @@ EmoteModule.prototype.autoCapitalize = function () {
 };
 
 EmoteModule.prototype.capitalize = function (value) {
-    var res = emotesTwitch.emotes;
+    var res = emotesTwitch;
     for (var p in res) {
         if (res.hasOwnProperty(p) && value == (p + '').toLowerCase()) {
             return p;
@@ -1304,9 +1302,9 @@ QuickEmoteMenu.prototype.init = function() {
     teContainer += "    <div class=\"scroller-wrap fade\">";
     teContainer += "        <div class=\"scroller\">";
     teContainer += "            <div class=\"emote-menu-inner\">";
-    for (var emote in emotesTwitch.emotes) {
-        if (emotesTwitch.emotes.hasOwnProperty(emote)) {
-            var id = emotesTwitch.emotes[emote].image_id;
+    for (var emote in emotesTwitch) {
+        if (emotesTwitch.hasOwnProperty(emote)) {
+            var id = emotesTwitch[emote].id;
             teContainer += "<div class=\"emote-container\">";
             teContainer += "    <img class=\"emote-icon\" id=\""+emote+"\" alt=\"\" src=\"https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0\" title=\""+emote+"\">";
             teContainer += "    </img>";
