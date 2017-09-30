@@ -1,8 +1,0 @@
-{
-  "name": "betterdiscord",
-  "description": "Better Discord enhances Discord.",
-  "version": "0.2.81",
-  "homepage": "https://github.com/Jiiks/BetterDiscordApp",
-  "license": "MIT",
-  "main": "betterdiscord.js"
-}
