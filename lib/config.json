@@ -33,7 +33,7 @@
         "os": null,
         "cache": {
             "expired": true,
-            "days": 0
+            "days": 7
         },
         "defaultCfg": { "cache": null },
         "userCfg": { "cache": null }
