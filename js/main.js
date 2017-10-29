@@ -855,7 +855,7 @@ class PublicServers {
                             </div>
                             <div class="tools">
                                 <div class="btn-close">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" style="width: 18px; height: 18px;"><g class="background" fill="none" fill-rule="evenodd"><path d="M0 0h12v12H0"></path><path class="fill" fill="#dcddde" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></g></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" style="width: 18px; height: 18px;"><g class="background" fill="none" fillRule="evenodd"><path d="M0 0h12v12H0"></path><path class="fill" fill="#dcddde" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></g></svg>
                                 </div>
                                 <div class="esc-text">ESC</div>
                             </div>
@@ -3363,7 +3363,7 @@ class V2C_XSvg extends BDV2.reactComponent {
             { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 12 12", style: { width: "18px", height: "18px" } },
             BDV2.react.createElement(
                 "g",
-                { className: "background", fill: "none", "fill-rule": "evenodd" },
+                { className: "background", fill: "none", "fillRule": "evenodd" },
                 BDV2.react.createElement("path", { d: "M0 0h12v12H0" }),
                 BDV2.react.createElement("path", { className: "fill", fill: "#dcddde", d: "M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6" })
             )
@@ -4968,7 +4968,7 @@ class V2_SettingsPanel {
             arr.push(BDV2.react.createElement(V2Components.PluginCard, { key: key, plugin: bdplugins[key].plugin }));return arr;
         }, []);
         let list = BDV2.react.createElement(V2Components.List, { key: "plugin-list", className: "bda-slist", children: plugins });
-        let pfBtn = BDV2.react.createElement("button", {className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'plugindir' }); }}, "Open Plugin Folder");
+        let pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'plugindir' }); }}, "Open Plugin Folder");
         let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "pcolumn", title: "Plugins", children: [pfBtn, list] });
         return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
@@ -4978,7 +4978,7 @@ class V2_SettingsPanel {
             arr.push(BDV2.react.createElement(V2Components.ThemeCard, { key: key, theme: bdthemes[key] }));return arr;
         }, []);
         let list = BDV2.react.createElement(V2Components.List, { key: "theme-list", className: "bda-slist", children: themes });
-        let tfBtn = BDV2.react.createElement("button", {className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'themedir' }); }}, "Open Theme Folder");
+        let tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'themedir' }); }}, "Open Theme Folder");
         let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "tcolumn", title: "Themes", children: [tfBtn, list] });
         return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
