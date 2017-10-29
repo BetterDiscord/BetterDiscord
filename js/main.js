@@ -2424,11 +2424,11 @@ Utils.prototype.injectCss = function (uri) {
 };
 
 Utils.prototype.log = function (message) {
-    console.log('%c[%cBetterDiscord%c] %c'+message+'', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
+    console.log('%c[%cBetterDiscord%c] %c' + message + '', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
 };
 
 Utils.prototype.err = function (message) {
-    console.log('%c[%cBetterDiscord%c] %c'+message+'', 'color: red;', 'color: red; font-weight:700;', 'color:red;', '');
+    console.log('%c[%cBetterDiscord%c] %c' + message + '', 'color: red;', 'color: red; font-weight:700;', 'color:red;', '');
 };
 
 Utils.prototype.importSettings = function() {
@@ -2595,9 +2595,13 @@ PluginModule.prototype.loadPlugins = function () {
 
     $.each(bdplugins, function () {
         var plugin = this["plugin"];
-        plugin.load();
+        var name = "";
+        try { 
+            name = plugin.getName();
+            plugin.load();
+        }
+        catch (err) { return utils.err("Plugin " + name + " could not be loaded. \n" + err.toString()); }
 
-        var name = plugin.getName();
         var enabled = false;
 
         if (pluginCookie.hasOwnProperty(name)) {
@@ -2607,7 +2611,8 @@ PluginModule.prototype.loadPlugins = function () {
         }
 
         if (enabled) {
-            plugin.start();
+            try { plugin.start(); }
+            catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
         }
     });
 };
@@ -2620,11 +2625,17 @@ PluginModule.prototype.handlePlugin = function (checkbox) {
     cb.prop("checked", enabled);
 
     if (enabled) {
-        bdplugins[id]["plugin"].start();
-        pluginCookie[id] = true;
+        try {
+            bdplugins[id]["plugin"].start();
+            pluginCookie[id] = true;
+        }
+        catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
     } else {
-        bdplugins[id]["plugin"].stop();
-        pluginCookie[id] = false;
+        try {
+            bdplugins[id]["plugin"].stop();
+            pluginCookie[id] = false;
+        }
+        catch (err) { utils.err("Plugin " + name + " could not be stopped. \n" + err.toString()); }
     }
 
     this.savePluginData();
@@ -2633,11 +2644,17 @@ PluginModule.prototype.handlePlugin = function (checkbox) {
 PluginModule.prototype.handlePluginT = function(id, enabled) {
 
     if(enabled) {
-        bdplugins[id]["plugin"].start();
-        pluginCookie[id] = true;
+        try {
+            bdplugins[id]["plugin"].start();
+            pluginCookie[id] = true;
+        }
+        catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
     } else {
-        bdplugins[id]["plugin"].stop();
-        pluginCookie[id] = false;
+        try {
+            bdplugins[id]["plugin"].stop();
+            pluginCookie[id] = false;
+        }
+        catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
     }
 
     this.savePluginData();
@@ -2756,7 +2773,7 @@ ThemeModule.prototype.loadThemes = function () {
         }
 
         if (enabled) {
-            $("head").append('<style id="' + name + '">' + unescape(bdthemes[name]["css"]) + '</style>');
+            $("head").append($('<style>', {id: escape(name), html: unescape(bdthemes[name]["css"])}));
         }
     });
 };
@@ -2769,10 +2786,10 @@ ThemeModule.prototype.handleTheme = function (checkbox) {
     cb.prop("checked", enabled);
 
     if (enabled) {
-        $("head").append('<style id="' + id + '">' + unescape(bdthemes[id]["css"]) + '</style>');
+        $("head").append($('<style>', {id: escape(id), html: unescape(bdthemes[id]["css"])}));
         themeCookie[id] = true;
     } else {
-        $("#" + id).remove();
+        $("#" + escape(id)).remove();
         themeCookie[id] = false;
     }
 
@@ -2782,10 +2799,10 @@ ThemeModule.prototype.handleTheme = function (checkbox) {
 ThemeModule.prototype.handleThemeT = function(id, enabled) {
 
     if(enabled) {
-        $("head").append('<style id="' + id + '">' + unescape(bdthemes[id]["css"]) + '</style>');
+        $("head").append($('<style>', {id: escape(id), html: unescape(bdthemes[id]["css"])}));
         themeCookie[id] = true;
     } else {
-        $("#" + id).remove();
+        $("#" + escape(id)).remove();
         themeCookie[id] = false;
     }
 
@@ -2933,14 +2950,13 @@ BdApi.joinServer = function (code) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append('<style id="' + id + '"></style>');
-    $("#" + id).html(css);
+    $("head").append($('<style>', {id: escape(id), html: css}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    $("#" + id).remove();
+    $("#" + escape(id)).remove();
 };
 
 //Get another plugin
