@@ -522,7 +522,7 @@ function EmoteModule() {}
 EmoteModule.prototype.init = function () {};
 
 EmoteModule.prototype.getBlacklist = function () {
-    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
+    $.getJSON("https://rauenzi.github.io/BetterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
         bemotes = data.blacklist;
     });
 };
@@ -727,7 +727,6 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = self.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                console.log(text.replace(lastWord, ret));
                 utils.insertText(utils.getTextArea()[0], text.replace(lastWord, ret));
             }
         }
@@ -1347,8 +1346,6 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
         var ta = utils.getTextArea();
-        console.log("click");
-        console.log(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
         utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
 };
@@ -2394,7 +2391,7 @@ Utils.prototype.jqDefer = function (fnc) {
 };
 
 Utils.prototype.getHash = function () {
-    $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function (data) {
+    $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master", function (data) {
         _hash = data.sha;
         emoteModule.getBlacklist();
     });
@@ -2406,7 +2403,7 @@ Utils.prototype.loadHtml = function (html, callback) {
     }).appendTo("body");
 
     //TODO Inject these in next core update
-    html = '//cdn.rawgit.com/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
+    html = '//rauenzi.github.io/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
 
     container.load(html, callback());
 };
