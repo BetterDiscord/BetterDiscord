@@ -101,10 +101,10 @@ var mainCore;
 
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
-    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false, "cat": "core"},
-    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
+    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false,  "hidden": false, "cat": "core"},
+    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": false,  "hidden": false, "cat": "core"},
     "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
-    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
+    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": false,  "hidden": false, "cat": "core"},
     "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false, "cat": "core"},
     "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false, "cat": "core"},
     "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false, "cat": "core"},
@@ -123,7 +123,7 @@ var settings = {
     "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false, "cat": "emote"},
     "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false, "cat": "emote"},
     "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
-    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": false,  "hidden": false, "cat": "emote"},
 };
 
 var links = {
@@ -241,23 +241,6 @@ Core.prototype.init = function () {
         console.log(new Date().getTime() + " Defer");
         if (document.querySelectorAll('.guilds .guild').length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
-            var guilds = $(".guilds>li:first-child");
-
-            // var showChannelsButton = $("<button/>", {
-            //     class: "btn",
-            //     id: "bd-show-channels",
-            //     text: "R",
-            //     css: {
-            //         "cursor": "pointer"
-            //     },
-            //     click: function () {
-            //         settingsCookie["bda-gs-3"] = false;
-            //         $("body").removeClass("bd-minimal-chan");
-            //         self.saveSettings();
-            //     }
-            // });
-
-            // $(".guilds-wrapper").prepend(showChannelsButton);
 
             opublicServers = new PublicServers();
             customCssEditor = new CustomCssEditor();
@@ -272,21 +255,12 @@ Core.prototype.init = function () {
             settingsPanel.init();
 
             quickEmoteMenu.init(false);
-
-            // $("#tc-settings-button").on("click", function () {
-            //     settingsPanel.show();
-            // });
             
             window.addEventListener("beforeunload", function(){
                 if(settingsCookie["bda-dc-0"]){
                     $('.btn.btn-disconnect').click();
                 }
             });
-
-            // $(document).on("mousedown", function(e) {
-            //     //bd modal hiders
-
-            // });
             
             opublicServers.init();
 
@@ -295,7 +269,6 @@ Core.prototype.init = function () {
             /*Display new features in BetterDiscord*/
             if (settingsCookie["version"] < jsVersion) {
                 var cl = self.constructChangelog();
-                /*$("body").append(cl);*/
                 settingsCookie["version"] = jsVersion;
                 self.saveSettings();
             }
@@ -494,34 +467,34 @@ Core.prototype.constructChangelog = function () {
     return changeLog;
 };
 
-// Core.prototype.alert = function (title, text) {
-//     var id = '';
-//     for( var i=0; i < 5; i++ )
-//         id += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length)); 
-//     var bdAlert = '\
-//     <div id="bda-alert-'+id+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+id+'">\
-//         <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
-//             <div class="markdown-modal">\
-//                 <div class="markdown-modal-header">\
-//                     <strong style="float:left"><span>BetterDiscord - </span><span>'+title+'</span></strong>\
-//                     <span></span>\
-//                     <button class="markdown-modal-close" onclick=\'document.getElementById("bda-alert-'+id+'").remove(); utils.removeBackdrop("'+id+'");\'></button>\
-//                 </div>\
-//                 <div class="scroller-wrap fade">\
-//                     <div style="font-weight:700" class="scroller">'+text+'</div>\
-//                 </div>\
-//                 <div class="markdown-modal-footer">\
-//                     <span style="float:right"> for support.</span>\
-//                     <a style="float:right" href="https://discord.gg/0Tmfo5ZbOR9NxvDd" target="_blank">#support</a>\
-//                     <span style="float:right">Join </span>\
-//                 </div>\
-//             </div>\
-//         </div>\
-//     </div>\
-//     ';
-//     $("body").append(bdAlert);
-//     utils.addBackdrop(id);
-// };
+Core.prototype.alert = function (title, text) {
+    var id = '';
+    for( var i=0; i < 5; i++ )
+        id += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length)); 
+    var bdAlert = '\
+    <div id="bda-alert-'+id+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+id+'">\
+        <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
+            <div class="markdown-modal">\
+                <div class="markdown-modal-header">\
+                    <strong style="float:left"><span>BetterDiscord - </span><span>'+title+'</span></strong>\
+                    <span></span>\
+                    <button class="markdown-modal-close" onclick=\'document.getElementById("bda-alert-'+id+'").remove(); utils.removeBackdrop("'+id+'");\'></button>\
+                </div>\
+                <div class="scroller-wrap fade">\
+                    <div style="font-weight:700" class="scroller">'+text+'</div>\
+                </div>\
+                <div class="markdown-modal-footer">\
+                    <span style="float:right"> for support.</span>\
+                    <a style="float:right" href="https://discord.gg/0Tmfo5ZbOR9NxvDd" target="_blank">#support</a>\
+                    <span style="float:right">Join </span>\
+                </div>\
+            </div>\
+        </div>\
+    </div>\
+    ';
+    $("body").append(bdAlert);
+    utils.addBackdrop(id);
+};
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.5
  * Author: Jiiks | http://jiiks.net
@@ -558,25 +531,7 @@ EmoteModule.prototype.getBlacklist = function () {
 
 EmoteModule.prototype.obsCallback = function (mutation) {
     var self = this;
-
-    //if (!settingsCookie["bda-es-7"]) return;
-
-    /*$(".emoji").each(function() {
-        var t = $(this);
-        if(t.attr("src").indexOf(".png") != -1) {
-            t.replaceWith(t.attr("alt"));
-        }
-    });*/
     
-    /*$(".emoji:not(.emote)").each(function() {
-        var t = $(this);
-        t.addClass("emote");
-        t.wrap('<span class="emotewrapper"></span>');
-        t.parent().append($("<input/>", { class: "fav", title: "Favorite!", type: "button" }));
-    });*/
-    
-
-
     for (var i = 0; i < mutation.addedNodes.length; ++i) {
         var next = mutation.addedNodes.item(i);
         if (next) {
