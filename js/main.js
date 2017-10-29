@@ -154,7 +154,6 @@ var defaultCookie = {
     "bda-gs-b": true,
     "bda-es-8": true,
     "bda-jd": true,
-    "bda-es-8": true,
     "bda-dc-0": false,
     "bda-css-0": false,
     "bda-css-1": false,
@@ -314,7 +313,6 @@ Core.prototype.loadSettings = function () {
     settingsCookie = JSON.parse($.cookie("better-discord"));
 };
 
-var botlist = ["119598467310944259"]; //Temp
 Core.prototype.initObserver = function () {
     mainObserver = new MutationObserver(function (mutations) {
 
@@ -341,13 +339,13 @@ Core.prototype.initObserver = function () {
                 }
 
                 if(settingsCookie["bda-gs-6"]) {
-                    $(".timestamp").not("[data-24]").each(function() {
-                        var t = $(this);
-                        t.attr("data-24", true);
-                        var text = t.text();
-                        var matches = /(.*)?at\s+(\d{1,2}):(\d{1,2})\s+(.*)/.exec(text);
-                        if(matches == null) return true;
-                        if(matches.length < 5) return true;
+                    document.querySelectorAll('.timestamp').forEach(elem => {
+                        if (elem.getAttribute("data-24")) return;
+                        elem.setAttribute("data-24", true);
+                        let text = elem.innerText || elem.textContent;
+                        let matches = /(.*)?at\s+(\d{1,2}):(\d{1,2})\s+(.*)/.exec(text);
+                        if(matches == null) return;
+                        if(matches.length < 5) return;
                         
                         var h = parseInt(matches[2]);
                         if(matches[4] == "AM") {
@@ -357,17 +355,17 @@ Core.prototype.initObserver = function () {
                         }
                     
                         matches[2] = ('0' + h).slice(-2);
-                        t.text(matches[1] + " at " + matches[2] + ":" + matches[3]);
+                        elem.innerText = matches[1] + " at " + matches[2] + ":" + matches[3];
                     });
                 }
                 if(settingsCookie["bda-gs-7"]) {
-                    $(".user-name").not("[data-colour]").each(function() {
-                        var t = $(this);
-                        var color = t.css("color");
-                        if(color == "rgb(255, 255, 255)") return true;
-                        t.closest(".message-group").find(".markup").not("[data-colour]").each(function() {
-                            $(this).attr("data-colour", true);
-                            $(this).css("color", color);
+                    document.querySelectorAll('.user-name').forEach(elem => {
+                        let color = elem.style.color;
+                        if (color === "rgb(255, 255, 255)") return;
+                        elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
+                            if (elem.getAttribute("data-color")) return;
+                            elem.setAttribute("data-color", true);
+                            elem.style.setProperty("color", color);
                         });
                     });
                 }
