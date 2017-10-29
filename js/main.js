@@ -257,7 +257,7 @@ Core.prototype.init = function () {
             
             window.addEventListener("beforeunload", function(){
                 if(settingsCookie["bda-dc-0"]){
-                    $('.btn.btn-disconnect').click();
+                    document.querySelector('.btn.btn-disconnect').click();
                 }
             });
             
@@ -323,7 +323,7 @@ Core.prototype.initObserver = function () {
             if(mutation.target.querySelectorAll(".emoji-picker").length) {
                 var fc = mutation.target.firstChild;
                 if(fc.classList.contains("popout")) {
-                    quickEmoteMenu.obsCallback($(fc));
+                    quickEmoteMenu.obsCallback(fc);
                 }
             }
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
@@ -716,10 +716,10 @@ EmoteModule.prototype.autoCapitalize = function () {
 
     var self = this;
 
-    $('body').delegate($(".channel-text-area-default textarea:first"), 'keyup change paste', function () {
+    $('body').delegate($(".channelTextArea-1HTP3C textarea:first"), 'keyup change paste', function () {
         if (!settingsCookie["bda-es-4"]) return;
 
-        var text = $(".channel-text-area-default textarea:first").val();
+        var text = $(".channelTextArea-1HTP3C textarea:first").val();
         if (text == undefined) return;
 
         var lastWord = text.split(" ").pop();
@@ -727,7 +727,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = self.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                $(".channel-text-area-default textarea:first").val(text.replace(lastWord, ret));
+                utils.insertText(utils.getTextArea()[0], text.replace(lastWord, ret));
             }
         }
     });
@@ -1345,13 +1345,13 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     emoteIcon.off();
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
-        var ta = $(".channel-text-area-default textarea");
-        ta.val(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
+        var ta = utils.getTextArea();
+        utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
 };
 
-QuickEmoteMenu.prototype.obsCallback = function (e) {
-
+QuickEmoteMenu.prototype.obsCallback = function (elem) {
+    var e = $(elem);
     if(!settingsCookie["bda-es-9"]) {
         e.addClass("bda-qme-hidden");
     } else {
@@ -2370,7 +2370,13 @@ function Utils() {
 }
 
 Utils.prototype.getTextArea = function () {
-    return $(".channel-text-area-default textarea");
+    return $(".channelTextArea-1HTP3C textarea");
+};
+
+Utils.prototype.insertText = function (textarea, text) {
+    textarea.selectionStart = 0;
+    textarea.selectionEnd = textarea.value.length;
+    document.execCommand("insertText", false, text);
 };
 
 Utils.prototype.jqDefer = function (fnc) {
