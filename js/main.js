@@ -3977,9 +3977,11 @@ class V2C_PluginCard extends BDV2.reactComponent {
         });
         pluginCookie[self.props.plugin.getName()] = !self.state.checked;
         if (!self.state.checked) {
-            self.props.plugin.start();
+            try { self.props.plugin.start(); }
+            catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be started. \n" + err.toString()); }
         } else {
-            self.props.plugin.stop();
+            try { self.props.plugin.stop(); }
+            catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be stopped. \n" + err.toString()); }
         }
         $.cookie("bd-plugins", JSON.stringify(pluginCookie), {
             expires: 365,
