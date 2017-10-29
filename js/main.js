@@ -242,7 +242,7 @@ Core.prototype.init = function () {
         if (document.querySelectorAll('.guilds .guild').length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
 
-            opublicServers = new PublicServers();
+            //opublicServers = new PublicServers();
             customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
@@ -262,7 +262,7 @@ Core.prototype.init = function () {
                 }
             });
             
-            opublicServers.init();
+            //opublicServers.init();
 
             emoteModule.autoCapitalize();
 
