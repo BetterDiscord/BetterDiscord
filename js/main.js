@@ -522,7 +522,7 @@ function EmoteModule() {}
 EmoteModule.prototype.init = function () {};
 
 EmoteModule.prototype.getBlacklist = function () {
-    $.getJSON("https://rauenzi.github.io/BetterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
+    $.getJSON("https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json", function (data) {
         bemotes = data.blacklist;
     });
 };
@@ -2403,7 +2403,7 @@ Utils.prototype.loadHtml = function (html, callback) {
     }).appendTo("body");
 
     //TODO Inject these in next core update
-    html = '//rauenzi.github.io/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
+    html = '//rauenzi.github.io/BetterDiscordApp/html/' + html + '.html';
 
     container.load(html, callback());
 };
