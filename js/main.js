@@ -727,6 +727,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = self.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
+                console.log(text.replace(lastWord, ret));
                 utils.insertText(utils.getTextArea()[0], text.replace(lastWord, ret));
             }
         }
@@ -1346,6 +1347,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
         var ta = utils.getTextArea();
+        console.log("click");
         console.log(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
         utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
