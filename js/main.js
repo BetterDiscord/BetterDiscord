@@ -2423,6 +2423,10 @@ Utils.prototype.injectCss = function (uri) {
     }).appendTo($("head"));
 };
 
+Utils.prototype.escapeID = function(id) {
+    return id.replace(/^[^a-z]+|[^\w-]+/gi, "");
+};
+
 Utils.prototype.log = function (message) {
     console.log('%c[%cBetterDiscord%c] %c' + message + '', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
 };
@@ -2773,7 +2777,7 @@ ThemeModule.prototype.loadThemes = function () {
         }
 
         if (enabled) {
-            $("head").append($('<style>', {id: escape(name), html: unescape(bdthemes[name]["css"])}));
+            $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name]["css"])}));
         }
     });
 };
@@ -2786,10 +2790,10 @@ ThemeModule.prototype.handleTheme = function (checkbox) {
     cb.prop("checked", enabled);
 
     if (enabled) {
-        $("head").append($('<style>', {id: escape(id), html: unescape(bdthemes[id]["css"])}));
+        $("head").append($('<style>', {id: utils.escapeID(id), html: unescape(bdthemes[id]["css"])}));
         themeCookie[id] = true;
     } else {
-        $("#" + escape(id)).remove();
+        $("#" + utils.escapeID(id)).remove();
         themeCookie[id] = false;
     }
 
@@ -2799,10 +2803,10 @@ ThemeModule.prototype.handleTheme = function (checkbox) {
 ThemeModule.prototype.handleThemeT = function(id, enabled) {
 
     if(enabled) {
-        $("head").append($('<style>', {id: escape(id), html: unescape(bdthemes[id]["css"])}));
+        $("head").append($('<style>', {id: utils.escapeID(id), html: unescape(bdthemes[id]["css"])}));
         themeCookie[id] = true;
     } else {
-        $("#" + escape(id)).remove();
+        $("#" + utils.escapeID(id)).remove();
         themeCookie[id] = false;
     }
 
@@ -2950,13 +2954,13 @@ BdApi.joinServer = function (code) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append($('<style>', {id: escape(id), html: css}));
+    $("head").append($('<style>', {id: utils.escapeID(id), html: css}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    $("#" + escape(id)).remove();
+    $("#" + utils.escapeID(id)).remove();
 };
 
 //Get another plugin
@@ -4062,9 +4066,9 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         });
         themeCookie[self.props.theme.name] = !self.state.checked;
         if (!self.state.checked) {
-            $("head").append(`<style id="${escape(self.props.theme.name)}">${unescape(self.props.theme.css)}</style>`);
+            $("head").append(`<style id="${utils.escapeID(self.props.theme.name)}">${unescape(self.props.theme.css)}</style>`);
         } else {
-            $(`#${escape(self.props.theme.name)}`).remove();
+            $(`#${utils.escapeID(self.props.theme.name)}`).remove();
         }
         $.cookie("bd-themes", JSON.stringify(themeCookie), {
             expires: 365,
