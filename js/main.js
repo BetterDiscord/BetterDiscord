@@ -568,11 +568,11 @@ EmoteModule.prototype.injectEmote = function(node) {
     var self = this;
 
     if (!node.parentElement) return;
-    var parent = $(node).parent();
+    var parent = node.parentElement;
     
-    if(!parent.hasClass("markup") && !parent.hasClass("message-content")) return;
+    if(!parent.classList.contains("markup") && !parent.classList.contains("message-content")) return;
 
-
+    parent = $(parent);
     function inject() {
         var contents = parent.contents();
         
@@ -741,326 +741,6 @@ EmoteModule.prototype.capitalize = function (value) {
         }
     }
 };
-/* BetterDiscordApp PublicSevers JavaScripts
- * Version: 1.0
- * Author: Jiiks | http://jiiks.net
- * Date: 27/08/2015 - 14:16
- * https://github.com/Jiiks/BetterDiscordApp
- */
-
-class PublicServers {
-
-    constructor() {
-        this.v2p = new V2_PublicServers();
-    }
-
-    get endPoint() {
-        return 'https://search.discordservers.com';
-    }
-
-    get button() {
-        let self = this;
-        let btn = $("<div/>", {
-            class: 'guild',
-            id: 'bd-pub-li',
-            css: {
-                'height': '20px',
-                'display': settingsCookie['bda-gs-1'] ? "" : "none"
-            }
-        }).append($("<div/>", {
-            class: 'guild-inner',
-            css: {
-                'height': '20px',
-                'border-radius': '4px'
-            }
-        }).append($("<a/>", {
-
-        }).append($("<div/>", {
-            text: 'public',
-            id: 'bd-pub-button',
-            css: {
-                'line-height': '20px',
-                'font-size': '12px'
-            },
-            click: () => { self.v2p.render(); }
-        }))));
-
-        return btn;
-    }
-
-    init() {
-        let self = this;
-
-        let guilds = $(".guilds>:first-child");
-        guilds.after(self.button);
-
-    }
-
-    get layer() {
-        let self = this;
-        let layer = `<div id="bd-pubs-layer" class="layer bd-layer" tabindex="0">
-            <div class="ui-standard-sidebar-view">
-                <div class="sidebar-region">
-                    <div class="scroller-wrap fade dark">
-                        <div class="scroller">
-                            <div class="sidebar">
-                                <div class="ui-tab-bar SIDE">
-                                    <div class="ui-tab-bar-header" style="font-size: 16px;">Public Servers</div>
-                                    <div class="ui-tab-bar-separator margin-top-8 margin-bottom-8"></div>
-                                    <div class="ui-form-item">
-                                        <div class="ui-text-input flex-vertical" style="width: 186px; margin-left: 10px;">
-                                            <input type="text" class="input default" id="bd-pubs-search" name="bd-pubs-search" value="" placeholder="Search..." maxlength="999">
-                                        </div>
-                                    </div>
-                                    <div class="ui-tab-bar-separator margin-top-8 margin-bottom-8"></div>
-                                    <div class="ui-tab-bar-header">Categories</div>
-                                    <div class="ui-tab-bar-item selected">All</div>
-                                    <div class="ui-tab-bar-item">FPS Games</div>
-                                    <div class="ui-tab-bar-item">MMO Games</div>
-                                    <div class="ui-tab-bar-item">Strategy Games</div>
-                                    <div class="ui-tab-bar-item">Sports Games</div>
-                                    <div class="ui-tab-bar-item">Puzzle Games</div>
-                                    <div class="ui-tab-bar-item">Retro Games</div>
-                                    <div class="ui-tab-bar-item">Party Games</div>
-                                    <div class="ui-tab-bar-item">Tabletop Games</div>
-                                    <div class="ui-tab-bar-item">Sandbox Games</div>
-                                    <div class="ui-tab-bar-item">Simulation Games</div>
-                                    <div class="ui-tab-bar-item">Community</div>
-                                    <div class="ui-tab-bar-item">Language</div>
-                                    <div class="ui-tab-bar-item">Programming</div>
-                                    <div class="ui-tab-bar-item">Other</div>
-                                    <div class="ui-tab-bar-separator margin-top-8 margin-bottom-8"></div>
-                                    <div class="ui-tab-bar-header" style="font-size: 9px;font-weight: 700;">Listing provided by: <a href="https://discordservers.com" target="_blank">Discordservers.com</a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="content-region">
-                    <div class="scroller-wrap fade dark">
-                        <div class="scroller">
-                            <div class="content-column" id="bd-pubs-bg-spinner">
-                                <div style="height: 100vh; margin: -60px -40px;">
-                                    <span class="spinner" type="wandering-cubes" style="top: 50%;position: relative;left: 50%;transform: translate(-50%, -50%);">
-                                        <span class="spinner-inner spinner-wandering-cubes">
-                                            <span class="spinner-item"></span>
-                                            <span class="spinner-item"></span>
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="content-column" id="bd-pubs-listing-container" style="display:none;">
-                                <span id="bd-pubs-results" style="color: #72767d;font-weight: 700;"></span>
-                                <div id="bd-pubs-listing"></div>
-                            </div>
-                            <div class="tools">
-                                <div class="btn-close">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" style="width: 18px; height: 18px;"><g class="background" fill="none" fillRule="evenodd"><path d="M0 0h12v12H0"></path><path class="fill" fill="#dcddde" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"></path></g></svg>
-                                </div>
-                                <div class="esc-text">ESC</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-        
-        layer = $(layer);
-
-        layer.on("blur", e => {
-            if(e.relatedTarget.id === 'bd-pubs-search') return;
-            layer.focus();
-            console.log("blur:");
-            console.log(e);
-        });
-
-        layer.on("keydown", e => {
-            if(e.which === 13 && e.target.id === 'bd-pubs-search') {
-                let category = $("#bd-pubs-layer .ui-tab-bar-item.selected").text();
-                if(category === 'All') category = '';
-                self.search(self.query({'term': e.target.value, 'category': category}), true);
-                return;
-            }
-            if(e.which !== 27) return;
-            self.hide();
-        });
-
-        layer.find('.btn-close').on('click', e => { self.hide(); });
-
-        layer.find('.ui-tab-bar.SIDE .ui-tab-bar-item').on('click', e => {
-            let category = e.target.textContent;
-            if(category === 'All') category = '';
-            self.search(self.query({'term': $("#bd-pubs-search").val(), 'category': category}), true);
-        });
-
-        return layer;
-    }
-
-    serverCard(serverInfo) {
-        return `<div class="ui-card ui-card-primary bd-server-card" style="margin-top: 5px">
-            <div class="ui-flex horizontal" style="display: flex; flex-flow: row nowrap; justify-content: flex-start; align-items: stretch; flex: 1 1 auto;">
-                <div class="ui-flex-child" style="flex: 0 1 auto; padding: 5px;">
-                    <div class="bd-pubs-server-icon" style="width: 100px; height: 100px; background-size: cover; background-image: url(${serverInfo.icon})"></div>
-                </div>
-                <div class="ui-flex-child" style="flex: 1 1 auto; padding: 5px;">
-                    <div class="ui-flex horizontal">
-                        <div class="ui-form-item" style="flex: 1 1 auto">
-                            <h5 class="ui-form-title h5 margin-reset">${serverInfo.name}</h5>
-                        </div>
-                        <div class="ui-form-item">
-                            <h5 class="ui-form-title h5 margin-reset">${serverInfo.online}/${serverInfo.members} Members</h5>
-                        </div>
-                    </div>
-                    <div class="ui-flex horizontal">
-                        <div class="scroller-wrap fade dark" style="min-height: 60px; max-height: 60px; border-top: 1px solid #3f4146; border-bottom: 1px solid #3f4146; padding-top: 5px">
-                            <div class="scoller">
-                                <div style="font-size: 13px; color: #b9bbbe">
-                                    ${serverInfo.description}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ui-flex horizontal">
-                        <div class="ui-flex-child bd-server-tags" style="flex: 1 1 auto">${serverInfo.categories.join(" ,")}</div>
-                        <button type="button" class="ui-button filled brand small grow" style="min-height: 12px; margin-top: 4px;">
-                            <div class="ui-button-contents">Join</div>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-    }
-
-    get bdServerCard() {
-
-        let serverInfo = {
-            'name': 'BetterDiscord',
-            'icon': 'https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.webp',
-            'online': '7500+',
-            'members': '20000+',
-            'description': 'Official BetterDiscord support server'
-        };
-
-        return `<div class="ui-card ui-card-primary bd-server-card" style="margin-top: 5px">
-            <div class="ui-flex horizontal" style="display: flex; flex-flow: row nowrap; justify-content: flex-start; align-items: stretch; flex: 1 1 auto;">
-                <div class="ui-flex-child" style="flex: 0 1 auto; padding: 5px;">
-                    <div class="bd-pubs-server-icon" style="width: 100px; height: 100px; background-size: cover; background-image: url(${serverInfo.icon})"></div>
-                </div>
-                <div class="ui-flex-child" style="flex: 1 1 auto; padding: 5px;">
-                    <div class="ui-flex horizontal">
-                        <div class="ui-form-item" style="flex: 1 1 auto">
-                            <h5 class="ui-form-title h5 margin-reset">${serverInfo.name}</h5>
-                        </div>
-                        <div class="ui-form-item">
-                            <h5 class="ui-form-title h5 margin-reset">Too many members</h5>
-                        </div>
-                    </div>
-                    <div class="ui-flex horizontal">
-                        <div class="scroller-wrap fade dark" style="min-height: 60px; max-height: 60px; border-top: 1px solid #3f4146; border-bottom: 1px solid #3f4146; padding-top: 5px">
-                            <div class="scoller">
-                                <div style="font-size: 13px; color: #b9bbbe">
-                                    ${serverInfo.description}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ui-flex horizontal">
-                        <div class="ui-flex-child bd-server-tags" style="flex: 1 1 auto"></div>
-                        <button type="button" class="ui-button filled brand small grow" style="min-height: 12px; margin-top: 4px;">
-                            <div class="ui-button-contents">Join</div>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>`;
-    }
-
-
-    getPanel() {
-        console.log("pubs get panel");
-        return '<div></div>';
-    }
-
-    getPinnedServer() {
-        console.log("pubs get pinned server");
-        return '<div></div>';
-    }
-
-    hidePinnedServer() {
-        console.log("pubs hide pinned server");
-    }
-
-    showPinnedServer() {
-        console.log("pubs show pinned server");
-    }
-
-    show() {
-        let self = this;
-        $(".layers").append(self.layer);
-        //self.search("", true);
-    }
-
-    hide() {
-        $("#bd-pubs-layer").remove();
-    }
-
-    loadServers(dataset, search, clear) {
-        console.log("pubs load servers");
-    }
-
-    search(query, clear) {
-        
-        let self = this;
-        let $list = $("#bd-pubs-listing");
-        if(clear) { 
-            $list.empty(); 
-            $("#bd-pubs-listing-container").hide();
-            $("#bd-pubs-bg-spinner").show();
-        }
-        $.ajax({
-            method: 'GET',
-            url: `${self.endPoint}?${query}`,
-            success: data => {
-                $list.append(self.bdServerCard);
-                data.results.map(server => {
-                    $list.append(self.serverCard(server));
-                });
-                $("#bd-pubs-listing-container").show();
-                $("#bd-pubs-bg-spinner").hide();
-                self.setSearchText(1, $(".bd-server-card").size(), data.total, null, $("#bd-pubs-search").val());
-            }
-        });
-    }
-
-    setSearchText(start, end, total, category, term) {
-        if(!category) category = $("#bd-pubs-layer .ui-tab-bar-item.selected").text();
-        let text = `Showing ${start}-${end} of ${total} results in ${category}`;
-        if(term && term.length) text += ` for: ${term}`;
-        $("#bd-pubs-results").text(text);
-    }
-
-    get next() {
-        let self = this;
-        if(!self.next) return null;
-    }
-
-    joinServer(code) {
-        console.log("pubs join");
-    }
-
-    joinServerDirect(code) {
-        console.log("pubs join direct");
-    }
-
-    escape(unsafe) {
-        console.log("pubs escape");
-    }
-
-    query(params) {
-        return require('querystring').stringify(params);
-    }
-
-}
 
 
 
@@ -1699,113 +1379,6 @@ Utils.prototype.err = function (message) {
     console.log('%c[%cBetterDiscord%c] %c' + message + '', 'color: red;', 'color: red; font-weight:700;', 'color:red;', '');
 };
 
-Utils.prototype.importSettings = function() {
-    mainCore.alert("Import Settings", '<div class="form" style="width:100%;"><div class="control-group"><textarea id="bda-import-textarea" style="min-height:150px;"></textarea></div><button id="bda-import-settings" class="btn btn-primary">Import</button></div>');
-    $("#bda-import-settings").off("click").on("click", function() {
-        var obj;
-        try {
-            obj = JSON.parse($("#bda-import-textarea").val());
-        }catch(err) {
-            mainCore.alert("Invalid Data", err);
-            return false;
-        }
-        try {
-            for(key in obj.settings) {
-                var val = obj.settings[key];
-                if(settingsCookie.hasOwnProperty(key)) {
-                    settingsCookie[key] = val;
-                    var cb = $("#" + key);
-                    cb.prop("checked", val);
-                    settingsPanel.updateSettings();
-                }
-            }
-            window.bdStorage.set("bdcustomcss", obj.customCss);
-            var ccss = window.bdStorage.get("bdcustomcss");
-            if (!customCssInitialized) {
-                customCssEditor.init();
-                customCssInitialized = true;
-            }
-            customCssEditor.applyCustomCss(ccss, settingsCookie["bda-css-0"], false); 
-            customCssEditor.editor.setValue(ccss);
-        }catch(err) {
-            mainCore.alert("Invalid Data", err);
-            return false;
-        }
-
-        try {
-            $.each(obj.plugins, function(plugin) {
-                var enabled = obj.plugins[plugin];
-                if(bdplugins.hasOwnProperty(plugin)) {
-                    pluginCookie[plugin] = enabled;
-                    var cb = $("#"+plugin.replace(" ", "__"));
-                    if(cb.is(":checked") && !enabled) {
-                        bdplugins[plugin]["plugin"].stop();
-                        cb.prop("checked", false);
-                    }
-                    if(!cb.is(":checked") && enabled) {
-                        bdplugins[plugin]["plugin"].start();
-                        cb.prop("checked", true);
-                    }
-                }
-            });
-            pluginModule.savePluginData();
-        }catch(err) {
-            mainCore.alert("Failed to load plugin data", err);
-            return false;
-        }
-
-        try {
-            themeCookie = obj.themes;
-            $.each(themeCookie, function(theme) {
-                var enabled = themeCookie[theme];
-                var id = "#ti" + theme;
-                if(bdthemes.hasOwnProperty(theme)) {
-                    if($(id).is(":checked") && !enabled) {
-                        $(id).prop("checked", false);
-                        $("#"+theme).remove();
-                    }
-                    if(!$(id).is(":checked") && enabled) {
-                        $(id).prop("checked", true);
-                        $("head").append('<style id="' + theme + '">' + unescape(bdthemes[theme]["css"]) + '</style>');
-                    }
-                }
-            });
-            themeModule.saveThemeData();
-        }catch(err) {
-            mainCore.alert("Failed to load theme data", err);
-            return false;
-        }
-
-        return false;
-    });
-};
-
-Utils.prototype.exportSettings = function() {
-    var obj =  {
-        settings: settingsCookie,
-        customCss: window.bdStorage.get("bdcustomcss"),
-        plugins: pluginCookie,
-        themes: themeCookie,
-        favEmotes: window.bdStorage.get("bdfavemotes")
-    };
-    mainCore.alert("Export Settings", '<div class="form" style="width:100%;"><div class="control-group"><textarea style="min-height:150px;">'+JSON.stringify(obj)+'</textarea></div></div>');
-};
-
-Utils.prototype.addBackdrop = function(target) {
-    var backDrop = $("<div/>", {
-        class: "bda-backdrop",
-        "data-bdbackdrop": target,
-        mouseup: function() {
-            $('[data-bdalert="'+target+'"]').remove();
-            $(this).remove();
-        }
-    });
-    $("#app-mount").append(backDrop)
-};
-
-Utils.prototype.removeBackdrop = function(target) {
-    $('[data-bdbackdrop="'+target+'"]').remove();
-};
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1885,84 +1458,84 @@ PluginModule.prototype.loadPlugins = function () {
     });
 };
 
-PluginModule.prototype.handlePlugin = function (checkbox) {
+// PluginModule.prototype.handlePlugin = function (checkbox) {
 
-    var cb = $(checkbox).children().find('input[type="checkbox"]');
-    var enabled = !cb.is(":checked");
-    var id = cb.attr("id").replace("__", " ");
-    cb.prop("checked", enabled);
+//     var cb = $(checkbox).children().find('input[type="checkbox"]');
+//     var enabled = !cb.is(":checked");
+//     var id = cb.attr("id").replace("__", " ");
+//     cb.prop("checked", enabled);
 
-    if (enabled) {
-        try {
-            bdplugins[id]["plugin"].start();
-            pluginCookie[id] = true;
-        }
-        catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
-    } else {
-        try {
-            bdplugins[id]["plugin"].stop();
-            pluginCookie[id] = false;
-        }
-        catch (err) { utils.err("Plugin " + name + " could not be stopped. \n" + err.toString()); }
-    }
+//     if (enabled) {
+//         try {
+//             bdplugins[id]["plugin"].start();
+//             pluginCookie[id] = true;
+//         }
+//         catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
+//     } else {
+//         try {
+//             bdplugins[id]["plugin"].stop();
+//             pluginCookie[id] = false;
+//         }
+//         catch (err) { utils.err("Plugin " + name + " could not be stopped. \n" + err.toString()); }
+//     }
 
-    this.savePluginData();
-};
+//     this.savePluginData();
+// };
 
-PluginModule.prototype.handlePluginT = function(id, enabled) {
+// PluginModule.prototype.handlePluginT = function(id, enabled) {
 
-    if(enabled) {
-        try {
-            bdplugins[id]["plugin"].start();
-            pluginCookie[id] = true;
-        }
-        catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
-    } else {
-        try {
-            bdplugins[id]["plugin"].stop();
-            pluginCookie[id] = false;
-        }
-        catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
-    }
+//     if(enabled) {
+//         try {
+//             bdplugins[id]["plugin"].start();
+//             pluginCookie[id] = true;
+//         }
+//         catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
+//     } else {
+//         try {
+//             bdplugins[id]["plugin"].stop();
+//             pluginCookie[id] = false;
+//         }
+//         catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
+//     }
 
-    this.savePluginData();
-};
+//     this.savePluginData();
+// };
 
-PluginModule.prototype.showSettings = function (plugin) {
-    if (bdplugins[plugin] != null) {
-        if (typeof bdplugins[plugin].plugin.getSettingsPanel === "function") {
-            var panel = bdplugins[plugin].plugin.getSettingsPanel();
+// PluginModule.prototype.showSettings = function (plugin) {
+//     if (bdplugins[plugin] != null) {
+//         if (typeof bdplugins[plugin].plugin.getSettingsPanel === "function") {
+//             var panel = bdplugins[plugin].plugin.getSettingsPanel();
 
-            $(".modal-inner").off("click.bdpsm").on("click.bdpsm", function (e) {
-                if ($("#bd-psm-id").length) {
-                    $(".bd-psm").remove();
-                } else {
-                    $(".bd-psm").attr("id", "bd-psm-id");
-                }
+//             $(".modal-inner").off("click.bdpsm").on("click.bdpsm", function (e) {
+//                 if ($("#bd-psm-id").length) {
+//                     $(".bd-psm").remove();
+//                 } else {
+//                     $(".bd-psm").attr("id", "bd-psm-id");
+//                 }
 
-            });
-            $(".modal").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
-            $("#bd-psm-s").append(panel);
-        }
-    }
-};
+//             });
+//             $(".modal").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
+//             $("#bd-psm-s").append(panel);
+//         }
+//     }
+// };
 
-PluginModule.prototype.showSettingsT = function(plugin) {
-    if(bdplugins[plugin] === null) return;
-    if(typeof bdplugins[plugin].plugin.getSettingsPanel !== "function") return;
+// PluginModule.prototype.showSettingsT = function(plugin) {
+//     if(bdplugins[plugin] === null) return;
+//     if(typeof bdplugins[plugin].plugin.getSettingsPanel !== "function") return;
 
-    $("#bd-settingspane").off("click.bdpsm").on("click.bdpsm", function(e) {
-        if(e.target.id === 'bd-psm-s') return;
-        if(e.target.textContent && e.target.textContent === 'Settings') return;
-        $(".bd-psm").remove();
-    });
+//     $("#bd-settingspane").off("click.bdpsm").on("click.bdpsm", function(e) {
+//         if(e.target.id === 'bd-psm-s') return;
+//         if(e.target.textContent && e.target.textContent === 'Settings') return;
+//         $(".bd-psm").remove();
+//     });
 
-    let panel = bdplugins[plugin].plugin.getSettingsPanel();
+//     let panel = bdplugins[plugin].plugin.getSettingsPanel();
 
-    $(".bd-settings-panes").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
-    $("#bd-psm-s").append(panel);
+//     $(".bd-settings-panes").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
+//     $("#bd-psm-s").append(panel);
 
-}
+// }
 
 PluginModule.prototype.loadPluginData = function () {
     var cookie = $.cookie("bd-plugins");
@@ -2046,36 +1619,36 @@ ThemeModule.prototype.loadThemes = function () {
     });
 };
 
-ThemeModule.prototype.handleTheme = function (checkbox) {
+// ThemeModule.prototype.handleTheme = function (checkbox) {
 
-    var cb = $(checkbox).children().find('input[type="checkbox"]');
-    var enabled = !cb.is(":checked");
-    var id = cb.attr("id").substring(2);
-    cb.prop("checked", enabled);
+//     var cb = $(checkbox).children().find('input[type="checkbox"]');
+//     var enabled = !cb.is(":checked");
+//     var id = cb.attr("id").substring(2);
+//     cb.prop("checked", enabled);
 
-    if (enabled) {
-        $("head").append($('<style>', {id: utils.escapeID(id), html: unescape(bdthemes[id]["css"])}));
-        themeCookie[id] = true;
-    } else {
-        $("#" + utils.escapeID(id)).remove();
-        themeCookie[id] = false;
-    }
+//     if (enabled) {
+//         $("head").append($('<style>', {id: utils.escapeID(id), html: unescape(bdthemes[id]["css"])}));
+//         themeCookie[id] = true;
+//     } else {
+//         $("#" + utils.escapeID(id)).remove();
+//         themeCookie[id] = false;
+//     }
 
-    this.saveThemeData();
-};
+//     this.saveThemeData();
+// };
 
-ThemeModule.prototype.handleThemeT = function(id, enabled) {
+// ThemeModule.prototype.handleThemeT = function(id, enabled) {
 
-    if(enabled) {
-        $("head").append($('<style>', {id: utils.escapeID(id), html: unescape(bdthemes[id]["css"])}));
-        themeCookie[id] = true;
-    } else {
-        $("#" + utils.escapeID(id)).remove();
-        themeCookie[id] = false;
-    }
+//     if(enabled) {
+//         $("head").append($('<style>', {id: utils.escapeID(id), html: unescape(bdthemes[id]["css"])}));
+//         themeCookie[id] = true;
+//     } else {
+//         $("#" + utils.escapeID(id)).remove();
+//         themeCookie[id] = false;
+//     }
 
-    this.saveThemeData();
-};
+//     this.saveThemeData();
+// };
 
 ThemeModule.prototype.loadThemeData = function () {
     var cookie = $.cookie("bd-themes");
