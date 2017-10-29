@@ -1346,6 +1346,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
         var ta = utils.getTextArea();
+        console.log(ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
         utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
 };
