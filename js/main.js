@@ -4060,9 +4060,9 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         });
         themeCookie[self.props.theme.name] = !self.state.checked;
         if (!self.state.checked) {
-            $("head").append(`<style id="${self.props.theme.name}">${unescape(self.props.theme.css)}</style>`);
+            $("head").append(`<style id="${escape(self.props.theme.name)}">${unescape(self.props.theme.css)}</style>`);
         } else {
-            $(`#${self.props.theme.name}`).remove();
+            $(`#${escape(self.props.theme.name)}`).remove();
         }
         $.cookie("bd-themes", JSON.stringify(themeCookie), {
             expires: 365,
