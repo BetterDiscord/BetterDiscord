@@ -2377,6 +2377,7 @@ Utils.prototype.getTextArea = function () {
 };
 
 Utils.prototype.insertText = function (textarea, text) {
+    textarea.focus();
     textarea.selectionStart = 0;
     textarea.selectionEnd = textarea.value.length;
     document.execCommand("insertText", false, text);
