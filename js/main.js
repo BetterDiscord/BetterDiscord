@@ -135,7 +135,7 @@ var links = {
 var defaultCookie = {
     "version": jsVersion,
     "bda-gs-0": false,
-    "bda-gs-1": true,
+    "bda-gs-1": false,
     "bda-gs-2": false,
     "bda-gs-3": false,
     "bda-gs-4": false,
