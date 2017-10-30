@@ -331,7 +331,7 @@ Core.prototype.initObserver = function () {
                     voiceMode.obsCallback();
                     if (typeof pluginModule !== "undefined") pluginModule.channelSwitch();
                 }
-                if (mutation.target.getAttribute('class').indexOf('message') != -1) {
+                if (mutation.addedNodes.length && mutation.addedNodes[0] instanceof Element && (mutation.addedNodes[0].classList.contains("message"))) {
                     console.log("onMessage");
                     if (typeof pluginModule !== "undefined") pluginModule.newMessage();
                 }
