@@ -1505,6 +1505,7 @@ BdApi.getCore = function () {
  
  devMode.prototype.enable = function() {
      var self = this;
+     this.disable();
      $(window).on("keydown.bdDevmode", function(e) {
          if(e.which === 119) {//F8
             console.log('%c[%cDM%c] %cBreak/Resume', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
@@ -1566,7 +1567,7 @@ BdApi.getCore = function () {
             cm.css("top",  "-=" + cmi.outerHeight());
          }
          
-         setTimeout(attach, 100);
+         setImmediate(attach);
          
          e.stopPropagation();
      });
