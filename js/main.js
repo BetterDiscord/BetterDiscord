@@ -1554,7 +1554,7 @@ BdApi.getCore = function () {
  
  devMode.prototype.disable = function() {
      $(window).off("keydown.bdDevmode");
-     $(window).off("mousedown.bdDevmode");
+     $(window).off("contextmenu.bdDevmode");
  };
 
 
