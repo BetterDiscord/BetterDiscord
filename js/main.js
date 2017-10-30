@@ -1142,64 +1142,65 @@ function SettingsPanel() {
 SettingsPanel.prototype.init = function () {
     var self = this;
     self.v2SettingsPanel = new V2_SettingsPanel();
-    var body = $("body");
+    self.v2SettingsPanel.updateSettings();
+    //var body = $("body");
+    //
+    // if (settingsCookie["bda-es-0"]) {
+    //     $("#twitchcord-button-container").show();
+    // } else {
+    //     $("#twitchcord-button-container").hide();
+    // }
 
-    if (settingsCookie["bda-es-0"]) {
-        $("#twitchcord-button-container").show();
-    } else {
-        $("#twitchcord-button-container").hide();
-    }
+    // if (settingsCookie["bda-gs-2"]) {
+    //     body.addClass("bd-minimal");
+    // } else {
+    //     body.removeClass("bd-minimal");
+    // }
+    // if (settingsCookie["bda-gs-3"]) {
+    //     body.addClass("bd-minimal-chan");
+    // } else {
+    //     body.removeClass("bd-minimal-chan");
+    // }
 
-    if (settingsCookie["bda-gs-2"]) {
-        body.addClass("bd-minimal");
-    } else {
-        body.removeClass("bd-minimal");
-    }
-    if (settingsCookie["bda-gs-3"]) {
-        body.addClass("bd-minimal-chan");
-    } else {
-        body.removeClass("bd-minimal-chan");
-    }
+    // if (settingsCookie["bda-gs-4"]) {
+    //     voiceMode.enable();
+    // }
 
-    if (settingsCookie["bda-gs-4"]) {
-        voiceMode.enable();
-    }
+    // if(settingsCookie["bda-gs-5"]) {
+    //     $("#app-mount").addClass("bda-dark");
+    // }
 
-    if(settingsCookie["bda-gs-5"]) {
-        $("#app-mount").addClass("bda-dark");
-    }
-
-    if (settingsCookie["bda-es-6"]) {
-        //Pretty emote titles
-        emoteNamePopup = $("<div class='tipsy tipsy-se'><div class='tipsy-inner'></div></div>");
-        $(document).on("mouseover", ".emote", function () {
-            var emote = $(this);
-            var x = emote.offset();
-            var title = emote.attr("alt");
-            emoteNamePopup.find(".tipsy-inner").text(title);
-            $(".app").append($(emoteNamePopup));
-            var nodecenter = x.left + (emote.outerWidth() / 2);
-            emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
-            emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
-        });
-        $(document).on("mouseleave", ".emote", function () {
-            $(".tipsy").remove();
-        });
-    } else {
-        $(document).off('mouseover', '.emote');
-    }
+    // if (settingsCookie["bda-es-6"]) {
+    //     //Pretty emote titles
+    //     emoteNamePopup = $("<div class='tipsy tipsy-se'><div class='tipsy-inner'></div></div>");
+    //     $(document).on("mouseover", ".emote", function () {
+    //         var emote = $(this);
+    //         var x = emote.offset();
+    //         var title = emote.attr("alt");
+    //         emoteNamePopup.find(".tipsy-inner").text(title);
+    //         $(".app").append($(emoteNamePopup));
+    //         var nodecenter = x.left + (emote.outerWidth() / 2);
+    //         emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
+    //         emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
+    //     });
+    //     $(document).on("mouseleave", ".emote", function () {
+    //         $(".tipsy").remove();
+    //     });
+    // } else {
+    //     $(document).off('mouseover', '.emote');
+    // }
     
-    if(settingsCookie["bda-gs-8"]) {
-        dMode.enable();
-    } else {
-        dMode.disable();
-    }
+    // if(settingsCookie["bda-gs-8"]) {
+    //     dMode.enable();
+    // } else {
+    //     dMode.disable();
+    // }
 
-    if(settingsCookie["bda-gs-b"]) {
-        $("body").addClass("bd-blue");
-    } else {
-        $("body").removeClass("bd-blue");
-    }
+    // if(settingsCookie["bda-gs-b"]) {
+    //     $("body").addClass("bd-blue");
+    // } else {
+    //     $("body").removeClass("bd-blue");
+    // }
 };
 
 var customCssInitialized = false;
@@ -3399,78 +3400,77 @@ class V2_SettingsPanel {
     }
 
     updateSettings() {
-        settingsPanel.updateSettings();
-        // let _c = settingsCookie;
+        let _c = settingsCookie;
 
-        // if (_c["bda-es-0"]) {
-        //     $("#twitchcord-button-container").show();
-        // } else {
-        //     $("#twitchcord-button-container").hide();
-        // }
+        if (_c["bda-es-0"]) {
+            $("#twitchcord-button-container").show();
+        } else {
+            $("#twitchcord-button-container").hide();
+        }
 
-        // if (_c["bda-gs-b"]) {
-        //     $("body").addClass("bd-blue");
-        // } else {
-        //     $("body").removeClass("bd-blue");
-        // }
+        if (_c["bda-gs-b"]) {
+            $("body").addClass("bd-blue");
+        } else {
+            $("body").removeClass("bd-blue");
+        }
 
-        // if (_c["bda-gs-2"]) {
-        //     $("body").addClass("bd-minimal");
-        // } else {
-        //     $("body").removeClass("bd-minimal");
-        // }
+        if (_c["bda-gs-2"]) {
+            $("body").addClass("bd-minimal");
+        } else {
+            $("body").removeClass("bd-minimal");
+        }
 
-        // if (_c["bda-gs-3"]) {
-        //     $("body").addClass("bd-minimal-chan");
-        // } else {
-        //     $("body").removeClass("bd-minimal-chan");
-        // }
+        if (_c["bda-gs-3"]) {
+            $("body").addClass("bd-minimal-chan");
+        } else {
+            $("body").removeClass("bd-minimal-chan");
+        }
 
-        // if (_c["bda-gs-1"]) {
-        //     $("#bd-pub-li").show();
-        // } else {
-        //     $("#bd-pub-li").hide();
-        // }
+        if (_c["bda-gs-1"]) {
+            $("#bd-pub-li").show();
+        } else {
+            $("#bd-pub-li").hide();
+        }
 
-        // if (_c["bda-gs-4"]) {
-        //     voiceMode.enable();
-        // } else {
-        //     voiceMode.disable();
-        // }
+        if (_c["bda-gs-4"]) {
+            voiceMode.enable();
+        } else {
+            voiceMode.disable();
+        }
 
-        // if (_c["bda-gs-5"]) {
-        //     $("#app-mount").addClass("bda-dark");
-        // } else {
-        //     $("#app-mount").removeClass("bda-dark");
-        // }
+        if (_c["bda-gs-5"]) {
+            $("#app-mount").addClass("bda-dark");
+        } else {
+            $("#app-mount").removeClass("bda-dark");
+        }
 
-        // if (_c["bda-es-6"]) {
-        //     //Pretty emote titles
-        //     emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
-        //     $(document).on("mouseover", ".emote", function () {
-        //         var emote = $(this);
-        //         var x = emote.offset();
-        //         var title = emote.attr("alt");
-        //         emoteNamePopup.find(".tipsy-inner").text(title);
-        //         $(".app").append($(emoteNamePopup));
-        //         var nodecenter = x.left + (emote.outerWidth() / 2);
-        //         emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
-        //         emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
-        //     });
-        //     $(document).on("mouseleave", ".emote", function () {
-        //         $(".tipsy").remove();
-        //     });
-        // } else {
-        //     $(document).off('mouseover', '.emote');
-        // }
+        if (_c["bda-es-6"]) {
+            //Pretty emote titles
+            emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+            $(document).on("mouseover", ".emote", function () {
+                var emote = $(this);
+                var x = emote.offset();
+                var title = emote.attr("alt");
+                emoteNamePopup.find(".tipsy-inner").text(title);
+                $(".app").append($(emoteNamePopup));
+                var nodecenter = x.left + (emote.outerWidth() / 2);
+                emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
+                emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
+            });
+            $(document).on("mouseleave", ".emote", function () {
+                $(".tipsy").remove();
+            });
+        } else {
+            $(document).off('mouseover', '.emote');
+        }
 
-        // if (_c["bda-gs-8"]) {
-        //     dMode.enable();
-        // } else {
-        //     dMode.disable();
-        // }
+        if (_c["bda-gs-8"]) {
+            dMode.enable();
+        } else {
+            dMode.disable();
+        }
 
-        // mainCore.saveSettings();
+        mainCore.saveSettings();
     }
 
     renderSidebar() {
