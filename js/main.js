@@ -1171,14 +1171,16 @@ SettingsPanel.prototype.init = function () {
 
     if (settingsCookie["bda-es-6"]) {
         //Pretty emote titles
-        emoteNamePopup = $("<div class='tipsy tipsy-se tipsy-test' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+        emoteNamePopup = $("<div class='tipsy tipsy-se'><div class='tipsy-inner'></div></div>");
         $(document).on("mouseover", ".emote", function () {
-            var x = $(this).offset();
-            var title = $(this).attr("alt");
-            $(emoteNamePopup).find(".tipsy-inner").text(title);
-            $(emoteNamePopup).css('left', x.left - 25);
-            $(emoteNamePopup).css('top', x.top - 37);
+            var emote = $(this);
+            var x = emote.offset();
+            var title = emote.attr("alt");
+            emoteNamePopup.find(".tipsy-inner").text(title);
             $(".app").append($(emoteNamePopup));
+            var nodecenter = x.left + (emote.outerWidth() / 2);
+            emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
+            emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
         });
         $(document).on("mouseleave", ".emote", function () {
             $(".tipsy").remove();
@@ -3449,7 +3451,7 @@ class V2_SettingsPanel {
                 var x = emote.offset();
                 var title = emote.attr("alt");
                 emoteNamePopup.find(".tipsy-inner").text(title);
-                $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));
+                $(".app").append($(emoteNamePopup));
                 var nodecenter = x.left + (emote.outerWidth() / 2);
                 emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
                 emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
