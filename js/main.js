@@ -3446,7 +3446,7 @@ class V2_SettingsPanel {
 
         if (_c["bda-es-6"]) {
             //Pretty emote titles
-            emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+            var emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
             $(document).on("mouseover", ".emote", function () {
                 var emote = $(this);
                 var x = emote.offset();
