@@ -1509,7 +1509,7 @@ BdApi.getCore = function () {
          }
      });
      
-     $(window).on("contexmenu.bdDevmode", function(e) {
+     $(window).on("contextmenu.bdDevmode", function(e) {
          //if(e.which !== 3) return;
          var parents = [];
          $(e.toElement).parents().addBack().not('html').each(function() {
