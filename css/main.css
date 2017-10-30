@@ -924,7 +924,7 @@
 
 .tipsy {
   z-index: 9000000001 !important;
-  position: absolute;
+  position: fixed;
   padding: 5px;
   display: block;
   visibility: visible;

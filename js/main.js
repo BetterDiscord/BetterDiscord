@@ -316,53 +316,56 @@ Core.prototype.initObserver = function () {
             if(settingsPanel !== undefined)
                 settingsPanel.inject(mutation);
 
-            if(mutation.target.querySelectorAll(".emoji-picker").length) {
-                var fc = mutation.target.firstChild;
-                if(fc.classList.contains("popout")) {
-                    quickEmoteMenu.obsCallback(fc);
-                }
-            }
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
 
+            // onSwitch()
+            // leaving Activity Feed/Friends menu
             if (mutation.removedNodes.length && mutation.removedNodes[0] instanceof Element) {
                 let node = mutation.removedNodes[0];
                 if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
-                    console.log("onSwitch");
                     pluginModule.channelSwitch();
                 }
             }
 
+            // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) return;
 
             let node = mutation.addedNodes[0];
 
-            // Not a channel, but still a switch
+            // Emoji Picker
+            if (node.classList.contains('popout')) {
+                if (node.getElementsByClassName('emoji-picker')) quickEmoteMenu.obsCallback(node);
+            }
+
+            // onSwitch()
+            // Not a channel, but still a switch (Activity Feed/Friends menu)
             if ( node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
-                console.log("onSwitch");
                 pluginModule.channelSwitch();
             }
 
+            // onSwitch()
             // New Channel
             if (node.classList.contains("messages-wrapper")) {
                 self.inject24Hour(node);
                 self.injectColoredText(node);
-                console.log("onSwitch");
                 pluginModule.channelSwitch();
             }
 
+            // onMessage
             // New Message Group
             if (node.classList.contains("message-group") && !node.querySelector(".message-sending")) {
                 self.inject24Hour(node);
                 self.injectColoredText(node);
                 if (node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
-                    console.log("onNewMessageGroup");
+                    pluginModule.newMessage();
                 }
             }
 
+            // onMessage
             // Single Message
             if (node.classList.contains("message") && !node.classList.contains("message-sending")) {
                 self.injectColoredText(node.parentElement.parentElement);
-                console.log("onMessage");
+                pluginModule.newMessage();
             }
 
             emoteModule.obsCallback(mutation);
@@ -1168,7 +1171,7 @@ SettingsPanel.prototype.init = function () {
 
     if (settingsCookie["bda-es-6"]) {
         //Pretty emote titles
-        emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+        emoteNamePopup = $("<div class='tipsy tipsy-se tipsy-test' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
         $(document).on("mouseover", ".emote", function () {
             var x = $(this).offset();
             var title = $(this).attr("alt");
@@ -3442,12 +3445,14 @@ class V2_SettingsPanel {
             //Pretty emote titles
             emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
             $(document).on("mouseover", ".emote", function () {
-                var x = $(this).offset();
-                var title = $(this).attr("alt");
-                $(emoteNamePopup).find(".tipsy-inner").text(title);
-                $(emoteNamePopup).css('left', x.left - 25);
-                $(emoteNamePopup).css('top', x.top - 32);
+                var emote = $(this);
+                var x = emote.offset();
+                var title = emote.attr("alt");
+                emoteNamePopup.find(".tipsy-inner").text(title);
                 $("div[data-reactid='.0.1.1']").append($(emoteNamePopup));
+                var nodecenter = x.left + (emote.outerWidth() / 2);
+                emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
+                emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
             });
             $(document).on("mouseleave", ".emote", function () {
                 $(".tipsy").remove();
