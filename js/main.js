@@ -318,7 +318,7 @@ Core.prototype.initObserver = function () {
             if(mutation.target.querySelectorAll(".emoji-picker").length) {
                 var fc = mutation.target.firstChild;
                 if(fc.classList.contains("popout")) {
-                    //quickEmoteMenu.obsCallback(fc);
+                    quickEmoteMenu.obsCallback(fc);
                 }
             }
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
