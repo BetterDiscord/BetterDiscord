@@ -102,9 +102,9 @@ var mainCore;
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
     "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false,  "hidden": false, "cat": "core"},
-    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": false,  "hidden": false, "cat": "core"},
+    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
     "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
-    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": false,  "hidden": false, "cat": "core"},
+    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
     "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false, "cat": "core"},
     "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false, "cat": "core"},
     "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false, "cat": "core"},
@@ -3399,77 +3399,78 @@ class V2_SettingsPanel {
     }
 
     updateSettings() {
-        let _c = settingsCookie;
+        settingsPanel.updateSettings();
+        // let _c = settingsCookie;
 
-        if (_c["bda-es-0"]) {
-            $("#twitchcord-button-container").show();
-        } else {
-            $("#twitchcord-button-container").hide();
-        }
+        // if (_c["bda-es-0"]) {
+        //     $("#twitchcord-button-container").show();
+        // } else {
+        //     $("#twitchcord-button-container").hide();
+        // }
 
-        if (_c["bda-gs-b"]) {
-            $("body").addClass("bd-blue");
-        } else {
-            $("body").removeClass("bd-blue");
-        }
+        // if (_c["bda-gs-b"]) {
+        //     $("body").addClass("bd-blue");
+        // } else {
+        //     $("body").removeClass("bd-blue");
+        // }
 
-        if (_c["bda-gs-2"]) {
-            $("body").addClass("bd-minimal");
-        } else {
-            $("body").removeClass("bd-minimal");
-        }
+        // if (_c["bda-gs-2"]) {
+        //     $("body").addClass("bd-minimal");
+        // } else {
+        //     $("body").removeClass("bd-minimal");
+        // }
 
-        if (_c["bda-gs-3"]) {
-            $("body").addClass("bd-minimal-chan");
-        } else {
-            $("body").removeClass("bd-minimal-chan");
-        }
+        // if (_c["bda-gs-3"]) {
+        //     $("body").addClass("bd-minimal-chan");
+        // } else {
+        //     $("body").removeClass("bd-minimal-chan");
+        // }
 
-        if (_c["bda-gs-1"]) {
-            $("#bd-pub-li").show();
-        } else {
-            $("#bd-pub-li").hide();
-        }
+        // if (_c["bda-gs-1"]) {
+        //     $("#bd-pub-li").show();
+        // } else {
+        //     $("#bd-pub-li").hide();
+        // }
 
-        if (_c["bda-gs-4"]) {
-            voiceMode.enable();
-        } else {
-            voiceMode.disable();
-        }
+        // if (_c["bda-gs-4"]) {
+        //     voiceMode.enable();
+        // } else {
+        //     voiceMode.disable();
+        // }
 
-        if (_c["bda-gs-5"]) {
-            $("#app-mount").addClass("bda-dark");
-        } else {
-            $("#app-mount").removeClass("bda-dark");
-        }
+        // if (_c["bda-gs-5"]) {
+        //     $("#app-mount").addClass("bda-dark");
+        // } else {
+        //     $("#app-mount").removeClass("bda-dark");
+        // }
 
-        if (_c["bda-es-6"]) {
-            //Pretty emote titles
-            emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
-            $(document).on("mouseover", ".emote", function () {
-                var emote = $(this);
-                var x = emote.offset();
-                var title = emote.attr("alt");
-                emoteNamePopup.find(".tipsy-inner").text(title);
-                $(".app").append($(emoteNamePopup));
-                var nodecenter = x.left + (emote.outerWidth() / 2);
-                emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
-                emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
-            });
-            $(document).on("mouseleave", ".emote", function () {
-                $(".tipsy").remove();
-            });
-        } else {
-            $(document).off('mouseover', '.emote');
-        }
+        // if (_c["bda-es-6"]) {
+        //     //Pretty emote titles
+        //     emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+        //     $(document).on("mouseover", ".emote", function () {
+        //         var emote = $(this);
+        //         var x = emote.offset();
+        //         var title = emote.attr("alt");
+        //         emoteNamePopup.find(".tipsy-inner").text(title);
+        //         $(".app").append($(emoteNamePopup));
+        //         var nodecenter = x.left + (emote.outerWidth() / 2);
+        //         emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
+        //         emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
+        //     });
+        //     $(document).on("mouseleave", ".emote", function () {
+        //         $(".tipsy").remove();
+        //     });
+        // } else {
+        //     $(document).off('mouseover', '.emote');
+        // }
 
-        if (_c["bda-gs-8"]) {
-            dMode.enable();
-        } else {
-            dMode.disable();
-        }
+        // if (_c["bda-gs-8"]) {
+        //     dMode.enable();
+        // } else {
+        //     dMode.disable();
+        // }
 
-        mainCore.saveSettings();
+        // mainCore.saveSettings();
     }
 
     renderSidebar() {
