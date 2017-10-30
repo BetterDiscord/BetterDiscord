@@ -626,7 +626,7 @@
 .bd-minimal .user-name {
   font-size: small;
 }
-.bd-minimal.bd-minimal-chan .channels-wrap {
+.bd-minimal.bd-minimal-chan .channels-3g2vYe {
   display: none;
 }
 .bd-minimal .message-group {
@@ -675,10 +675,7 @@
 .bd-minimal .guild-channels header spann {
   font-size: 12px;
 }
-.bd-minimal .channels-wrap {
-  width: 160px;
-}
-.bd-minimal .channels-wrap .guild-channels {
+.bd-minimal .channels-3g2vYe .guild-channels {
   padding: 0;
 }
 .bd-minimal .guilds-wrapper .guilds .guild {
