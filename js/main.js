@@ -324,12 +324,15 @@ Core.prototype.initObserver = function () {
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
             if (mutation.target.getAttribute('class') != null) {
                 //console.log(mutation.target)
+                if (mutation.addedNodes.length && mutation.addedNodes[0] instanceof Element && (mutation.addedNodes[0].classList.contains("messages-wrapper") || mutation.addedNodes[0].classList.contains("activityFeed-HeiGwL") || mutation.addedNodes[0].id === "friends")) console.log("onSwitch");
+                if (mutation.removedNodes.length && mutation.removedNodes[0] instanceof Element && (mutation.removedNodes[0].classList.contains("activityFeed-HeiGwL") || mutation.removedNodes[0].id === "friends")) console.log("onSwitch");
                 if(mutation.target.classList.contains('title-wrap') || mutation.target.classList.contains('chat')){
                    // quickEmoteMenu.obsCallback();
                     voiceMode.obsCallback();
                     if (typeof pluginModule !== "undefined") pluginModule.channelSwitch();
                 }
-                if (mutation.target.getAttribute('class').indexOf('scroller messages') != -1) {
+                if (mutation.target.getAttribute('class').indexOf('message') != -1) {
+                    console.log("onMessage");
                     if (typeof pluginModule !== "undefined") pluginModule.newMessage();
                 }
 
