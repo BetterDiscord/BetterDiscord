@@ -334,7 +334,7 @@ Core.prototype.initObserver = function () {
 
             // Emoji Picker
             if (node.classList.contains('popout')) {
-                if (node.getElementsByClassName('emoji-picker')) quickEmoteMenu.obsCallback(node);
+                if (node.getElementsByClassName('emoji-picker').length) quickEmoteMenu.obsCallback(node);
             }
 
             // onSwitch()
@@ -391,9 +391,10 @@ Core.prototype.inject24Hour = function(node) {
         if(matches.length < 5) return;
         
         var h = parseInt(matches[2]);
-        if(matches[4] == "AM") {
+        if (matches[4] == "AM") {
             if(h == 12) h -= 12;
-        }else if(matches[4] == "PM") {
+        }
+        else if (matches[4] == "PM") {
             if(h < 12) h += 12;
         }
     
@@ -416,118 +417,7 @@ Core.prototype.injectColoredText = function(node) {
     });
 };
 
-// Core.prototype.constructChangelog = function () {
-//     var changeLog = '' +
-//         '<div id="bd-wn-modal" class="modal" style="opacity:1;">' +
-//         '  <div class="modal-inner">' +
-//         '       <div id="bdcl" class="markdown-modal change-log"> ' +
-//         '           <div class="markdown-modal-header">' +
-//         '               <strong>What\'s new in BetterDiscord JS' + jsVersion + '</strong>' +
-//         '               <button class="markdown-modal-close" onclick=\'$("#bd-wn-modal").remove();\'></button>' +
-//         '           </div><!--header-->' +
-//         '           <div class="scroller-wrap">' +
-//         '               <div class="scroller">';
 
-//     if (bdchangelog.changes != null) {
-//         changeLog += '' +
-//             '<h1 class="changelog-added">' +
-//             '   <span>New Stuff</span>' +
-//             '</h1>' +
-//             '<ul>';
-
-//         for (var change in bdchangelog.changes) {
-//             change = bdchangelog.changes[change];
-
-//             changeLog += '' +
-//                 '<li>' +
-//                 '   <strong>' + change.title + '</strong>' +
-//                 '   <div>' + change.text + '</div>' +
-//                 '</li>';
-//         }
-
-//         changeLog += '</ul>';
-//     }
-
-//     if (bdchangelog.fixes != null) {
-//         changeLog += '' +
-//             '<h1 class="changelog-fixed">' +
-//             '   <span>Fixed</span>' +
-//             '</h1>' +
-//             '<ul>';
-
-//         for (var fix in bdchangelog.fixes) {
-//             fix = bdchangelog.fixes[fix];
-
-//             changeLog += '' +
-//                 '<li>' +
-//                 '   <strong>' + fix.title + '</strong>' +
-//                 '   <div>' + fix.text + '</div>' +
-//                 '</li>';
-//         }
-
-//         changeLog += '</ul>';
-//     }
-
-//     if (bdchangelog.upcoming != null) {
-//         changeLog += '' +
-//             '<h1 class="changelog-in-progress">' +
-//             '   <span>Coming Soon</span>' +
-//             '</h1>' +
-//             '<ul>';
-
-//         for (var upc in bdchangelog.upcoming) {
-//             upc = bdchangelog.upcoming[upc];
-
-//             changeLog += '' +
-//                 '<li>' +
-//                 '   <strong>' + upc.title + '</strong>' +
-//                 '   <div>' + upc.text + '</div>' +
-//                 '</li>';
-//         }
-
-//         changeLog += '</ul>';
-//     }
-
-//     changeLog += '' +
-//         '               </div><!--scoller-->' +
-//         '           </div><!--scroller-wrap-->' +
-//         '           <div class="footer">' +
-//         '           </div><!--footer-->' +
-//         '       </div><!--change-log-->' +
-//         '   </div><!--modal-inner-->' +
-//         '</div><!--modal-->';
-
-//     return changeLog;
-// };
-
-// Core.prototype.alert = function (title, text) {
-//     var id = '';
-//     for( var i=0; i < 5; i++ )
-//         id += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length)); 
-//     var bdAlert = '\
-//     <div id="bda-alert-'+id+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+id+'">\
-//         <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
-//             <div class="markdown-modal">\
-//                 <div class="markdown-modal-header">\
-//                     <strong style="float:left"><span>BetterDiscord - </span><span>'+title+'</span></strong>\
-//                     <span></span>\
-//                     <button class="markdown-modal-close" onclick=\'document.getElementById("bda-alert-'+id+'").remove(); utils.removeBackdrop("'+id+'");\'></button>\
-//                 </div>\
-//                 <div class="scroller-wrap fade">\
-//                     <div style="font-weight:700" class="scroller">'+text+'</div>\
-//                 </div>\
-//                 <div class="markdown-modal-footer">\
-//                     <span style="float:right"> for support.</span>\
-//                     <a style="float:right" href="https://discord.gg/0Tmfo5ZbOR9NxvDd" target="_blank">#support</a>\
-//                     <span style="float:right">Join </span>\
-//                 </div>\
-//             </div>\
-//         </div>\
-//     </div>\
-//     ';
-//     $("body").append(bdAlert);
-//     utils.addBackdrop(id);
-// };
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.5
  * Author: Jiiks | http://jiiks.net
