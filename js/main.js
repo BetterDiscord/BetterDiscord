@@ -1509,13 +1509,13 @@ BdApi.getCore = function () {
          }
      });
      
-     $(window).on("contextmenu.bdDevmode", function(e) {
+     $(document).on("contextmenu.bdDevmode", function(e) {
          //if(e.which !== 3) return;
          var parents = [];
          $(e.toElement).parents().addBack().not('html').each(function() {
              var entry = "";
-             if(this.className) {
-                 entry += "." + this.className.trim().replace(/ /g, ".");
+             if (this.classList && this.classList.length) {
+                 entry += "." + Array.prototype.join.call(this.classList, '.');
                  parents.push(entry);
              }
          });
@@ -1524,8 +1524,12 @@ BdApi.getCore = function () {
          function attach() {
             var cm = $(".context-menu");
             if(cm.length <= 0) {
-                return;
-                //cm = $("body").append('<div class="context-menu"></div>');
+                cm = $('<div class="context-menu bd-context-menu"></div>');
+                cm.addClass($('.app').hasClass("theme-dark") ? "theme-dark" : "theme-light");
+                cm.appendTo('.app');
+                cm.css("top", e.clientY);
+                cm.css("left", e.clientX);
+                $(document).on('click.bdDevMode', () => {cm.remove(); $(document).off('click.bdDevMode');});
             }
             
             var cmo = $("<div/>", {
@@ -1538,7 +1542,8 @@ BdApi.getCore = function () {
                     t.select();
                     document.execCommand("copy");
                     t.remove();
-                    cm.remove();
+                    //if (cm.hasClass("bd-context-menu")) cm.remove();
+                    cm.hide();
                 }
             }).append($("<span/>", { text: "Copy Selector" }));
             cmo.append(cmi);
@@ -1554,7 +1559,7 @@ BdApi.getCore = function () {
  
  devMode.prototype.disable = function() {
      $(window).off("keydown.bdDevmode");
-     $(window).off("contextmenu.bdDevmode");
+     $(document).off("contextmenu.bdDevmode");
  };
 
 
