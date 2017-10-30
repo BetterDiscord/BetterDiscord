@@ -309,6 +309,7 @@ Core.prototype.loadSettings = function () {
 };
 
 Core.prototype.initObserver = function () {
+    let self = this;
     mainObserver = new MutationObserver(function (mutations) {
 
         mutations.forEach(function (mutation) {
@@ -322,52 +323,48 @@ Core.prototype.initObserver = function () {
                 }
             }
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
-            if (mutation.target.getAttribute('class') != null) {
-                //console.log(mutation.target)
-                if (mutation.addedNodes.length && mutation.addedNodes[0] instanceof Element && (mutation.addedNodes[0].classList.contains("messages-wrapper") || mutation.addedNodes[0].classList.contains("activityFeed-HeiGwL") || mutation.addedNodes[0].id === "friends")) console.log("onSwitch");
-                if (mutation.removedNodes.length && mutation.removedNodes[0] instanceof Element && (mutation.removedNodes[0].classList.contains("activityFeed-HeiGwL") || mutation.removedNodes[0].id === "friends")) console.log("onSwitch");
-                if(mutation.target.classList.contains('title-wrap') || mutation.target.classList.contains('chat')){
-                   // quickEmoteMenu.obsCallback();
-                    voiceMode.obsCallback();
-                    if (typeof pluginModule !== "undefined") pluginModule.channelSwitch();
-                }
-                if (mutation.addedNodes.length && mutation.addedNodes[0] instanceof Element && ((mutation.addedNodes[0].classList.contains("message-group") && !mutation.addedNodes[0].querySelector(".message-sending")) || (mutation.addedNodes[0].classList.contains("message") && !mutation.addedNodes[0].classList.contains("message-sending")))) {
-                    console.log("onMessage");
-                    if (typeof pluginModule !== "undefined") pluginModule.newMessage();
-                }
 
-                if(settingsCookie["bda-gs-6"]) {
-                    mutation.target.querySelectorAll('.timestamp').forEach(elem => {
-                        if (elem.getAttribute("data-24")) return;
-                        elem.setAttribute("data-24", true);
-                        let text = elem.innerText || elem.textContent;
-                        let matches = /(.*)?at\s+(\d{1,2}):(\d{1,2})\s+(.*)/.exec(text);
-                        if(matches == null) return;
-                        if(matches.length < 5) return;
-                        
-                        var h = parseInt(matches[2]);
-                        if(matches[4] == "AM") {
-                            if(h == 12) h -= 12;
-                        }else if(matches[4] == "PM") {
-                            if(h < 12) h += 12;
-                        }
-                    
-                        matches[2] = ('0' + h).slice(-2);
-                        elem.innerText = matches[1] + " at " + matches[2] + ":" + matches[3];
-                    });
-                }
-                if(settingsCookie["bda-gs-7"]) {
-                    mutation.target.querySelectorAll('.user-name').forEach(elem => {
-                        let color = elem.style.color;
-                        if (color === "rgb(255, 255, 255)") return;
-                        elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
-                            if (elem.getAttribute("data-color")) return;
-                            elem.setAttribute("data-color", true);
-                            elem.style.setProperty("color", color);
-                        });
-                    });
+            if (mutation.removedNodes.length && mutation.removedNodes[0] instanceof Element) {
+                let node = mutation.removedNodes[0];
+                if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
+                    console.log("onSwitch");
+                    pluginModule.channelSwitch();
                 }
             }
+
+            if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) return;
+
+            let node = mutation.addedNodes[0];
+
+            // Not a channel, but still a switch
+            if ( node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
+                console.log("onSwitch");
+                pluginModule.channelSwitch();
+            }
+
+            // New Channel
+            if (node.classList.contains("messages-wrapper")) {
+                self.inject24Hour(node);
+                self.injectColoredText(node);
+                console.log("onSwitch");
+                pluginModule.channelSwitch();
+            }
+
+            // New Message Group
+            if (node.classList.contains("message-group") && !node.querySelector(".message-sending")) {
+                self.inject24Hour(node);
+                self.injectColoredText(node);
+                if (node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
+                    console.log("onNewMessageGroup");
+                }
+            }
+
+            // Single Message
+            if (node.classList.contains("message") && !node.classList.contains("message-sending")) {
+                self.injectColoredText(node.parentElement.parentElement);
+                console.log("onMessage");
+            }
+
             emoteModule.obsCallback(mutation);
         });
     });
@@ -376,6 +373,43 @@ Core.prototype.initObserver = function () {
     mainObserver.observe(document, {
         childList: true,
         subtree: true
+    });
+};
+
+Core.prototype.inject24Hour = function(node) {
+    if (!settingsCookie["bda-gs-6"]) return;
+
+    node.querySelectorAll('.timestamp').forEach(elem => {
+        if (elem.getAttribute("data-24")) return;
+        elem.setAttribute("data-24", true);
+        let text = elem.innerText || elem.textContent;
+        let matches = /(.*)?at\s+(\d{1,2}):(\d{1,2})\s+(.*)/.exec(text);
+        if(matches == null) return;
+        if(matches.length < 5) return;
+        
+        var h = parseInt(matches[2]);
+        if(matches[4] == "AM") {
+            if(h == 12) h -= 12;
+        }else if(matches[4] == "PM") {
+            if(h < 12) h += 12;
+        }
+    
+        matches[2] = ('0' + h).slice(-2);
+        elem.innerText = matches[1] + " at " + matches[2] + ":" + matches[3];
+    });
+};
+
+Core.prototype.injectColoredText = function(node) {
+    if (!settingsCookie["bda-gs-7"]) return;
+
+    node.querySelectorAll('.user-name').forEach(elem => {
+        let color = elem.style.color;
+        if (color === "rgb(255, 255, 255)") return;
+        elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
+            if (elem.getAttribute("data-color")) return;
+            elem.setAttribute("data-color", true);
+            elem.style.setProperty("color", color);
+        });
     });
 };
 
@@ -1564,7 +1598,7 @@ BdApi.getCore = function () {
             }).append($("<span/>", { text: "Copy Selector" }));
             cmo.append(cmi);
             cm.append(cmo);
-            cm.css("top",  "-=" + cmi.outerHeight());
+            cm.css("top",  "-=" + cmo.outerHeight());
          }
          
          setImmediate(attach);
