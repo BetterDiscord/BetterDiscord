@@ -1510,7 +1510,6 @@ BdApi.getCore = function () {
      });
      
      $(document).on("contextmenu.bdDevmode", function(e) {
-         //if(e.which !== 3) return;
          var parents = [];
          $(e.toElement).parents().addBack().not('html').each(function() {
              var entry = "";
@@ -1529,7 +1528,20 @@ BdApi.getCore = function () {
                 cm.appendTo('.app');
                 cm.css("top", e.clientY);
                 cm.css("left", e.clientX);
-                $(document).on('click.bdDevMode', () => {cm.remove(); $(document).off('click.bdDevMode');});
+                $(document).on('click.bdDevModeCtx', () => {
+                    cm.remove();
+                    $(document).off('.bdDevModeCtx');
+                });
+                $(document).on('contextmenu.bdDevModeCtx', () => {
+                    cm.remove();
+                    $(document).off('.bdDevModeCtx');
+                });
+                $(document).on("keyup.bdDevModeCtx", (e) => {
+                    if (e.keyCode === 27) {
+                        cm.remove();
+                        $(document).off('.bdDevModeCtx');
+                    }
+                });
             }
             
             var cmo = $("<div/>", {
