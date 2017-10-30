@@ -740,6 +740,37 @@
 {
   margin-right: -30px;
 }
+.bd-minimal .container-iksrDt .flex-lFgbSz {
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.bd-minimal .container-iksrDt .button-1aU9q1 {
+	height: 16px;
+	width: 16px;
+	background-size: 16px 16px;
+}
+
+.bd-minimal .container-iksrDt .button-1aU9q1 {margin-top: 3px;}
+
+.bd-minimal .channels-3g2vYe {
+	width: 160px;
+}
+
+.bd-minimal .name-2SL4ev {
+	font-size: 14px;
+}
+
+.bd-minimal .icon-3tVJnl {
+	width: 14px;
+	height: 14px;
+}
+
+.bd-minimal .channels-3g2vYe .wrapperDefault-1Dl4SS,
+.bd-minimal .channels-3g2vYe .wrapperHovered-1KDCyZ {
+  display: none;
+}
 
 .emotewrapper {
   display: inline-block;
