@@ -337,7 +337,7 @@ Core.prototype.initObserver = function () {
                 }
 
                 if(settingsCookie["bda-gs-6"]) {
-                    document.querySelectorAll('.timestamp').forEach(elem => {
+                    mutation.target.querySelectorAll('.timestamp').forEach(elem => {
                         if (elem.getAttribute("data-24")) return;
                         elem.setAttribute("data-24", true);
                         let text = elem.innerText || elem.textContent;
@@ -357,7 +357,7 @@ Core.prototype.initObserver = function () {
                     });
                 }
                 if(settingsCookie["bda-gs-7"]) {
-                    document.querySelectorAll('.user-name').forEach(elem => {
+                    mutation.target.querySelectorAll('.user-name').forEach(elem => {
                         let color = elem.style.color;
                         if (color === "rgb(255, 255, 255)") return;
                         elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
@@ -1563,7 +1563,7 @@ BdApi.getCore = function () {
             }).append($("<span/>", { text: "Copy Selector" }));
             cmo.append(cmi);
             cm.append(cmo);
-            cm.css("top", (cm.css("top").replace("px", "") - 28) + "px");
+            cm.css("top",  "-=" + cmi.outerHeight());
          }
          
          setTimeout(attach, 100);
@@ -1575,6 +1575,7 @@ BdApi.getCore = function () {
  devMode.prototype.disable = function() {
      $(window).off("keydown.bdDevmode");
      $(document).off("contextmenu.bdDevmode");
+     $(document).off("contextmenu.bdDevModeCtx");
  };
 
 
