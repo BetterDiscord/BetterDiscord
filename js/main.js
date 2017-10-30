@@ -84,7 +84,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
     console.log(arg);
 });
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu, opublicServers, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
 
@@ -222,8 +222,6 @@ Core.prototype.init = function () {
     }
 
     utils = new Utils();
-    var sock = new BdWSocket();
-    sock.start();
     utils.getHash();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
@@ -241,8 +239,7 @@ Core.prototype.init = function () {
         if (document.querySelectorAll('.guilds .guild').length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
 
-            //opublicServers = new PublicServers();
-            customCssEditor = new CustomCssEditor();
+            // customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
             if (typeof (themesupport2) !== "undefined") {
@@ -260,14 +257,12 @@ Core.prototype.init = function () {
                     document.querySelector('.btn.btn-disconnect').click();
                 }
             });
-            
-            //opublicServers.init();
 
             emoteModule.autoCapitalize();
 
             /*Display new features in BetterDiscord*/
             if (settingsCookie["version"] < jsVersion) {
-                var cl = self.constructChangelog();
+                //var cl = self.constructChangelog();
                 settingsCookie["version"] = jsVersion;
                 self.saveSettings();
             }
@@ -381,118 +376,118 @@ Core.prototype.initObserver = function () {
     });
 };
 
-Core.prototype.constructChangelog = function () {
-    var changeLog = '' +
-        '<div id="bd-wn-modal" class="modal" style="opacity:1;">' +
-        '  <div class="modal-inner">' +
-        '       <div id="bdcl" class="markdown-modal change-log"> ' +
-        '           <div class="markdown-modal-header">' +
-        '               <strong>What\'s new in BetterDiscord JS' + jsVersion + '</strong>' +
-        '               <button class="markdown-modal-close" onclick=\'$("#bd-wn-modal").remove();\'></button>' +
-        '           </div><!--header-->' +
-        '           <div class="scroller-wrap">' +
-        '               <div class="scroller">';
+// Core.prototype.constructChangelog = function () {
+//     var changeLog = '' +
+//         '<div id="bd-wn-modal" class="modal" style="opacity:1;">' +
+//         '  <div class="modal-inner">' +
+//         '       <div id="bdcl" class="markdown-modal change-log"> ' +
+//         '           <div class="markdown-modal-header">' +
+//         '               <strong>What\'s new in BetterDiscord JS' + jsVersion + '</strong>' +
+//         '               <button class="markdown-modal-close" onclick=\'$("#bd-wn-modal").remove();\'></button>' +
+//         '           </div><!--header-->' +
+//         '           <div class="scroller-wrap">' +
+//         '               <div class="scroller">';
 
-    if (bdchangelog.changes != null) {
-        changeLog += '' +
-            '<h1 class="changelog-added">' +
-            '   <span>New Stuff</span>' +
-            '</h1>' +
-            '<ul>';
+//     if (bdchangelog.changes != null) {
+//         changeLog += '' +
+//             '<h1 class="changelog-added">' +
+//             '   <span>New Stuff</span>' +
+//             '</h1>' +
+//             '<ul>';
 
-        for (var change in bdchangelog.changes) {
-            change = bdchangelog.changes[change];
+//         for (var change in bdchangelog.changes) {
+//             change = bdchangelog.changes[change];
 
-            changeLog += '' +
-                '<li>' +
-                '   <strong>' + change.title + '</strong>' +
-                '   <div>' + change.text + '</div>' +
-                '</li>';
-        }
+//             changeLog += '' +
+//                 '<li>' +
+//                 '   <strong>' + change.title + '</strong>' +
+//                 '   <div>' + change.text + '</div>' +
+//                 '</li>';
+//         }
 
-        changeLog += '</ul>';
-    }
+//         changeLog += '</ul>';
+//     }
 
-    if (bdchangelog.fixes != null) {
-        changeLog += '' +
-            '<h1 class="changelog-fixed">' +
-            '   <span>Fixed</span>' +
-            '</h1>' +
-            '<ul>';
+//     if (bdchangelog.fixes != null) {
+//         changeLog += '' +
+//             '<h1 class="changelog-fixed">' +
+//             '   <span>Fixed</span>' +
+//             '</h1>' +
+//             '<ul>';
 
-        for (var fix in bdchangelog.fixes) {
-            fix = bdchangelog.fixes[fix];
+//         for (var fix in bdchangelog.fixes) {
+//             fix = bdchangelog.fixes[fix];
 
-            changeLog += '' +
-                '<li>' +
-                '   <strong>' + fix.title + '</strong>' +
-                '   <div>' + fix.text + '</div>' +
-                '</li>';
-        }
+//             changeLog += '' +
+//                 '<li>' +
+//                 '   <strong>' + fix.title + '</strong>' +
+//                 '   <div>' + fix.text + '</div>' +
+//                 '</li>';
+//         }
 
-        changeLog += '</ul>';
-    }
+//         changeLog += '</ul>';
+//     }
 
-    if (bdchangelog.upcoming != null) {
-        changeLog += '' +
-            '<h1 class="changelog-in-progress">' +
-            '   <span>Coming Soon</span>' +
-            '</h1>' +
-            '<ul>';
+//     if (bdchangelog.upcoming != null) {
+//         changeLog += '' +
+//             '<h1 class="changelog-in-progress">' +
+//             '   <span>Coming Soon</span>' +
+//             '</h1>' +
+//             '<ul>';
 
-        for (var upc in bdchangelog.upcoming) {
-            upc = bdchangelog.upcoming[upc];
+//         for (var upc in bdchangelog.upcoming) {
+//             upc = bdchangelog.upcoming[upc];
 
-            changeLog += '' +
-                '<li>' +
-                '   <strong>' + upc.title + '</strong>' +
-                '   <div>' + upc.text + '</div>' +
-                '</li>';
-        }
+//             changeLog += '' +
+//                 '<li>' +
+//                 '   <strong>' + upc.title + '</strong>' +
+//                 '   <div>' + upc.text + '</div>' +
+//                 '</li>';
+//         }
 
-        changeLog += '</ul>';
-    }
+//         changeLog += '</ul>';
+//     }
 
-    changeLog += '' +
-        '               </div><!--scoller-->' +
-        '           </div><!--scroller-wrap-->' +
-        '           <div class="footer">' +
-        '           </div><!--footer-->' +
-        '       </div><!--change-log-->' +
-        '   </div><!--modal-inner-->' +
-        '</div><!--modal-->';
+//     changeLog += '' +
+//         '               </div><!--scoller-->' +
+//         '           </div><!--scroller-wrap-->' +
+//         '           <div class="footer">' +
+//         '           </div><!--footer-->' +
+//         '       </div><!--change-log-->' +
+//         '   </div><!--modal-inner-->' +
+//         '</div><!--modal-->';
 
-    return changeLog;
-};
+//     return changeLog;
+// };
 
-Core.prototype.alert = function (title, text) {
-    var id = '';
-    for( var i=0; i < 5; i++ )
-        id += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length)); 
-    var bdAlert = '\
-    <div id="bda-alert-'+id+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+id+'">\
-        <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
-            <div class="markdown-modal">\
-                <div class="markdown-modal-header">\
-                    <strong style="float:left"><span>BetterDiscord - </span><span>'+title+'</span></strong>\
-                    <span></span>\
-                    <button class="markdown-modal-close" onclick=\'document.getElementById("bda-alert-'+id+'").remove(); utils.removeBackdrop("'+id+'");\'></button>\
-                </div>\
-                <div class="scroller-wrap fade">\
-                    <div style="font-weight:700" class="scroller">'+text+'</div>\
-                </div>\
-                <div class="markdown-modal-footer">\
-                    <span style="float:right"> for support.</span>\
-                    <a style="float:right" href="https://discord.gg/0Tmfo5ZbOR9NxvDd" target="_blank">#support</a>\
-                    <span style="float:right">Join </span>\
-                </div>\
-            </div>\
-        </div>\
-    </div>\
-    ';
-    $("body").append(bdAlert);
-    utils.addBackdrop(id);
-};
+// Core.prototype.alert = function (title, text) {
+//     var id = '';
+//     for( var i=0; i < 5; i++ )
+//         id += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".charAt(Math.floor(Math.random() * "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".length)); 
+//     var bdAlert = '\
+//     <div id="bda-alert-'+id+'" class="modal bda-alert" style="opacity:1" data-bdalert="'+id+'">\
+//         <div class="modal-inner" style="box-shadow:0 0 8px -2px #000;">\
+//             <div class="markdown-modal">\
+//                 <div class="markdown-modal-header">\
+//                     <strong style="float:left"><span>BetterDiscord - </span><span>'+title+'</span></strong>\
+//                     <span></span>\
+//                     <button class="markdown-modal-close" onclick=\'document.getElementById("bda-alert-'+id+'").remove(); utils.removeBackdrop("'+id+'");\'></button>\
+//                 </div>\
+//                 <div class="scroller-wrap fade">\
+//                     <div style="font-weight:700" class="scroller">'+text+'</div>\
+//                 </div>\
+//                 <div class="markdown-modal-footer">\
+//                     <span style="float:right"> for support.</span>\
+//                     <a style="float:right" href="https://discord.gg/0Tmfo5ZbOR9NxvDd" target="_blank">#support</a>\
+//                     <span style="float:right">Join </span>\
+//                 </div>\
+//             </div>\
+//         </div>\
+//     </div>\
+//     ';
+//     $("body").append(bdAlert);
+//     utils.addBackdrop(id);
+// };
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.5
  * Author: Jiiks | http://jiiks.net
@@ -1083,106 +1078,106 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     $("#bda-qem-favourite-container").replaceWith(faContainer);
     window.bdStorage.set("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
 };
-function CustomCssEditor() { }
+// function CustomCssEditor() { }
 
-CustomCssEditor.prototype.init = function() {
-var self = this;
-self.hideBackdrop = false;
-self.editor = CodeMirror.fromTextArea(document.getElementById("bd-custom-css-ta"), {
-    lineNumbers: true,
-    mode: 'css',
-    indentUnit: 4,
-    theme: 'material',
-    scrollbarStyle: 'simple'
-});
+// CustomCssEditor.prototype.init = function() {
+// var self = this;
+// self.hideBackdrop = false;
+// self.editor = CodeMirror.fromTextArea(document.getElementById("bd-custom-css-ta"), {
+//     lineNumbers: true,
+//     mode: 'css',
+//     indentUnit: 4,
+//     theme: 'material',
+//     scrollbarStyle: 'simple'
+// });
 
-self.editor.on("change", function (cm) {
-    var css = cm.getValue();
-    self.applyCustomCss(css, false, false);
-});
+// self.editor.on("change", function (cm) {
+//     var css = cm.getValue();
+//     self.applyCustomCss(css, false, false);
+// });
 
-var attachEditor="";
-attachEditor += "<div id=\"bd-customcss-attach-controls\">";
-attachEditor += "       <ul class=\"checkbox-group\">";
-attachEditor += "       <li>";
-attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
-attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-0\" type=\"checkbox\" "+(settingsCookie["bda-css-0"] ? "checked" : "")+"><span><\/span><\/div>";
-attachEditor += "               <span title=\"Update client css while typing\">Live Update<\/span>";
-attachEditor += "           <\/div>";
-attachEditor += "       <\/li>";
-attachEditor += "       <li>";
-attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
-attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-1\" type=\"checkbox\" "+(settingsCookie["bda-css-1"] ? "checked" : "")+"><span><\/span><\/div>";
-attachEditor += "               <span title=\"Autosave css to storage when typing\">TEMPDISABLED<\/span>";
-attachEditor += "           <\/div>";
-attachEditor += "       <\/li>";
-attachEditor += "        <li>";
-attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
-attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-2\" type=\"checkbox\" "+(customCssEditor.hideBackdrop ? "checked" : "")+"><span><\/span><\/div>";
-attachEditor += "               <span title=\"Hide the callout backdrop to disable modal close events\">Hide Backdrop<\/span>";
-attachEditor += "           <\/div>";
-attachEditor += "       <\/li>";
-attachEditor += "   <\/ul>";
-attachEditor += "   <div id=\"bd-customcss-detach-controls-buttons\">";
-attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-update\" onclick=\"return false;\">Update<\/button>";
-attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-save\"  onclick=\"return false;\">Save<\/button>";
-attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-detach\" onclick=\"customCssEditor.detach(); return false;\">Detach</button>";
-attachEditor += "   <\/div>";
-attachEditor += "<\/div>";
+// var attachEditor="";
+// attachEditor += "<div id=\"bd-customcss-attach-controls\">";
+// attachEditor += "       <ul class=\"checkbox-group\">";
+// attachEditor += "       <li>";
+// attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+// attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-0\" type=\"checkbox\" "+(settingsCookie["bda-css-0"] ? "checked" : "")+"><span><\/span><\/div>";
+// attachEditor += "               <span title=\"Update client css while typing\">Live Update<\/span>";
+// attachEditor += "           <\/div>";
+// attachEditor += "       <\/li>";
+// attachEditor += "       <li>";
+// attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+// attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-1\" type=\"checkbox\" "+(settingsCookie["bda-css-1"] ? "checked" : "")+"><span><\/span><\/div>";
+// attachEditor += "               <span title=\"Autosave css to storage when typing\">TEMPDISABLED<\/span>";
+// attachEditor += "           <\/div>";
+// attachEditor += "       <\/li>";
+// attachEditor += "        <li>";
+// attachEditor += "           <div class=\"checkbox\" onclick=\"settingsPanel.updateSetting(this);\">";
+// attachEditor += "               <div class=\"checkbox-inner\"><input id=\"bda-css-2\" type=\"checkbox\" "+(customCssEditor.hideBackdrop ? "checked" : "")+"><span><\/span><\/div>";
+// attachEditor += "               <span title=\"Hide the callout backdrop to disable modal close events\">Hide Backdrop<\/span>";
+// attachEditor += "           <\/div>";
+// attachEditor += "       <\/li>";
+// attachEditor += "   <\/ul>";
+// attachEditor += "   <div id=\"bd-customcss-detach-controls-buttons\">";
+// attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-update\" onclick=\"return false;\">Update<\/button>";
+// attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-save\"  onclick=\"return false;\">Save<\/button>";
+// attachEditor += "       <button class=\"btn btn-primary\" id=\"bd-customcss-detached-detach\" onclick=\"customCssEditor.detach(); return false;\">Detach</button>";
+// attachEditor += "   <\/div>";
+// attachEditor += "<\/div>";
 
-this.attachEditor = attachEditor;
+// this.attachEditor = attachEditor;
 
-$("#bd-customcss-innerpane").append(attachEditor);
+// $("#bd-customcss-innerpane").append(attachEditor);
 
-$("#bd-customcss-detached-update").on("click", function() {
-        self.applyCustomCss(self.editor.getValue(), true, false);
-        return false;
-});
-$("#bd-customcss-detached-save").on("click", function() {
-        self.applyCustomCss(self.editor.getValue(), false, true);
-        return false;
-});
+// $("#bd-customcss-detached-update").on("click", function() {
+//         self.applyCustomCss(self.editor.getValue(), true, false);
+//         return false;
+// });
+// $("#bd-customcss-detached-save").on("click", function() {
+//         self.applyCustomCss(self.editor.getValue(), false, true);
+//         return false;
+// });
 
 
-var detachEditor="";
-    detachEditor += "<div id=\"bd-customcss-detach-container\">";
-    detachEditor += "   <div id=\"bd-customcss-detach-editor\">";
-    detachEditor += "   <\/div>";
-    detachEditor += "<\/div>";
-this.detachedEditor = detachEditor;
-};
+// var detachEditor="";
+//     detachEditor += "<div id=\"bd-customcss-detach-container\">";
+//     detachEditor += "   <div id=\"bd-customcss-detach-editor\">";
+//     detachEditor += "   <\/div>";
+//     detachEditor += "<\/div>";
+// this.detachedEditor = detachEditor;
+// };
 
-CustomCssEditor.prototype.attach = function() {
-    $("#editor-detached").hide();
-    $("#app-mount").removeClass("bd-detached-editor");
-    $("#bd-customcss-pane").append($("#bd-customcss-innerpane"));
-    $("#bd-customcss-detached-detach").show();
-    $("#bd-customcss-detach-container").remove();
-};
+// CustomCssEditor.prototype.attach = function() {
+//     $("#editor-detached").hide();
+//     $("#app-mount").removeClass("bd-detached-editor");
+//     $("#bd-customcss-pane").append($("#bd-customcss-innerpane"));
+//     $("#bd-customcss-detached-detach").show();
+//     $("#bd-customcss-detach-container").remove();
+// };
 
-CustomCssEditor.prototype.detach = function() {
-    var self = this;
-    this.attach();
-    $("#editor-detached").show();
-    $("#bd-customcss-detached-detach").hide();
-    $("#app-mount").addClass("bd-detached-editor");
-    $(".app").parent().append(this.detachedEditor);
-    $("#bd-customcss-detach-editor").append($("#bd-customcss-innerpane"));
-};
+// CustomCssEditor.prototype.detach = function() {
+//     var self = this;
+//     this.attach();
+//     $("#editor-detached").show();
+//     $("#bd-customcss-detached-detach").hide();
+//     $("#app-mount").addClass("bd-detached-editor");
+//     $(".app").parent().append(this.detachedEditor);
+//     $("#bd-customcss-detach-editor").append($("#bd-customcss-innerpane"));
+// };
 
-CustomCssEditor.prototype.applyCustomCss = function (css, forceupdate, forcesave) {
-    if ($("#customcss").length == 0) {
-        $("head").append('<style id="customcss"></style>');
-    }
+// CustomCssEditor.prototype.applyCustomCss = function (css, forceupdate, forcesave) {
+//     if ($("#customcss").length == 0) {
+//         $("head").append('<style id="customcss"></style>');
+//     }
 
-    if(forceupdate || settingsCookie["bda-css-0"]) {
-        $("#customcss").html(css);
-    }
+//     if(forceupdate || settingsCookie["bda-css-0"]) {
+//         $("#customcss").html(css);
+//     }
 
-    if(forcesave) {
-        window.bdStorage.set("bdcustomcss", btoa(css));
-    }
-};
+//     if(forcesave) {
+//         window.bdStorage.set("bdcustomcss", btoa(css));
+//     }
+// };
 /* BetterDiscordApp Settings Panel JavaScript
  * Version: 2.0
  * Author: Jiiks | http://jiiks.net
@@ -1458,85 +1453,6 @@ PluginModule.prototype.loadPlugins = function () {
     });
 };
 
-// PluginModule.prototype.handlePlugin = function (checkbox) {
-
-//     var cb = $(checkbox).children().find('input[type="checkbox"]');
-//     var enabled = !cb.is(":checked");
-//     var id = cb.attr("id").replace("__", " ");
-//     cb.prop("checked", enabled);
-
-//     if (enabled) {
-//         try {
-//             bdplugins[id]["plugin"].start();
-//             pluginCookie[id] = true;
-//         }
-//         catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
-//     } else {
-//         try {
-//             bdplugins[id]["plugin"].stop();
-//             pluginCookie[id] = false;
-//         }
-//         catch (err) { utils.err("Plugin " + name + " could not be stopped. \n" + err.toString()); }
-//     }
-
-//     this.savePluginData();
-// };
-
-// PluginModule.prototype.handlePluginT = function(id, enabled) {
-
-//     if(enabled) {
-//         try {
-//             bdplugins[id]["plugin"].start();
-//             pluginCookie[id] = true;
-//         }
-//         catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
-//     } else {
-//         try {
-//             bdplugins[id]["plugin"].stop();
-//             pluginCookie[id] = false;
-//         }
-//         catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
-//     }
-
-//     this.savePluginData();
-// };
-
-// PluginModule.prototype.showSettings = function (plugin) {
-//     if (bdplugins[plugin] != null) {
-//         if (typeof bdplugins[plugin].plugin.getSettingsPanel === "function") {
-//             var panel = bdplugins[plugin].plugin.getSettingsPanel();
-
-//             $(".modal-inner").off("click.bdpsm").on("click.bdpsm", function (e) {
-//                 if ($("#bd-psm-id").length) {
-//                     $(".bd-psm").remove();
-//                 } else {
-//                     $(".bd-psm").attr("id", "bd-psm-id");
-//                 }
-
-//             });
-//             $(".modal").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
-//             $("#bd-psm-s").append(panel);
-//         }
-//     }
-// };
-
-// PluginModule.prototype.showSettingsT = function(plugin) {
-//     if(bdplugins[plugin] === null) return;
-//     if(typeof bdplugins[plugin].plugin.getSettingsPanel !== "function") return;
-
-//     $("#bd-settingspane").off("click.bdpsm").on("click.bdpsm", function(e) {
-//         if(e.target.id === 'bd-psm-s') return;
-//         if(e.target.textContent && e.target.textContent === 'Settings') return;
-//         $(".bd-psm").remove();
-//     });
-
-//     let panel = bdplugins[plugin].plugin.getSettingsPanel();
-
-//     $(".bd-settings-panes").append('<div class="bd-psm"><div class="scroller-wrap" style="height:100%"><div id="bd-psm-s" class="scroller" style="padding:10px;"></div></div></div>');
-//     $("#bd-psm-s").append(panel);
-
-// }
-
 PluginModule.prototype.loadPluginData = function () {
     var cookie = $.cookie("bd-plugins");
     if (cookie != undefined) {
@@ -1555,7 +1471,8 @@ PluginModule.prototype.newMessage = function () {
     $.each(bdplugins, function () {
         if (!pluginCookie[this.plugin.getName()]) return;
         if (typeof this.plugin.onMessage === "function") {
-            this.plugin.onMessage();
+            try { this.plugin.onMessage(); }
+            catch (err) { utils.err("Unable to fire onMessage for " + this.plugin.getName() + "\n" + err.toString()); }
         }
     });
 };
@@ -1564,16 +1481,8 @@ PluginModule.prototype.channelSwitch = function () {
     $.each(bdplugins, function () {
         if (!pluginCookie[this.plugin.getName()]) return;
         if (typeof this.plugin.onSwitch === "function") {
-            this.plugin.onSwitch();
-        }
-    });
-};
-
-PluginModule.prototype.socketEvent = function (e, data) {
-    $.each(bdplugins, function () {
-        if (!pluginCookie[this.plugin.getName()]) return;
-        if (typeof this.plugin.socketEvent === "function") {
-            this.plugin.socketEvent(data);
+            try { this.plugin.onSwitch(); }
+            catch (err) { utils.err("Unable to fire onSwitch for " + this.plugin.getName() + "\n" + err.toString()); }
         }
     });
 };
@@ -1582,7 +1491,8 @@ PluginModule.prototype.rawObserver = function(e) {
     $.each(bdplugins, function() {
         if (!pluginCookie[this.plugin.getName()]) return;
         if(typeof this.plugin.observer === "function") {
-            this.plugin.observer(e);
+            try { this.plugin.observer(e); }
+            catch (err) { utils.err("Unable to fire observer for " + this.plugin.getName() + "\n" + err.toString()); }
         }
     });
 };
@@ -1619,37 +1529,6 @@ ThemeModule.prototype.loadThemes = function () {
     });
 };
 
-// ThemeModule.prototype.handleTheme = function (checkbox) {
-
-//     var cb = $(checkbox).children().find('input[type="checkbox"]');
-//     var enabled = !cb.is(":checked");
-//     var id = cb.attr("id").substring(2);
-//     cb.prop("checked", enabled);
-
-//     if (enabled) {
-//         $("head").append($('<style>', {id: utils.escapeID(id), html: unescape(bdthemes[id]["css"])}));
-//         themeCookie[id] = true;
-//     } else {
-//         $("#" + utils.escapeID(id)).remove();
-//         themeCookie[id] = false;
-//     }
-
-//     this.saveThemeData();
-// };
-
-// ThemeModule.prototype.handleThemeT = function(id, enabled) {
-
-//     if(enabled) {
-//         $("head").append($('<style>', {id: utils.escapeID(id), html: unescape(bdthemes[id]["css"])}));
-//         themeCookie[id] = true;
-//     } else {
-//         $("#" + utils.escapeID(id)).remove();
-//         themeCookie[id] = false;
-//     }
-
-//     this.saveThemeData();
-// };
-
 ThemeModule.prototype.loadThemeData = function () {
     var cookie = $.cookie("bd-themes");
     if (cookie != undefined) {
@@ -1663,112 +1542,7 @@ ThemeModule.prototype.saveThemeData = function () {
         path: '/'
     });
 };
-/*BDSocket*/
 
-var bdSocket;
-var bdws;
-
-function BdWSocket() {
-    bdws = this;
-}
-
-BdWSocket.prototype.start = function () {
-    var self = this;
-   /* $.ajax({
-        method: "GET",
-        url: "https://discordapp.com/api/gateway",
-        headers: {
-            authorization: localStorage.token.match(/\"(.+)\"/)[1]
-        },
-        success: function (data) {
-            self.open(data.url);
-        }
-    });*/
-};
-
-BdWSocket.prototype.open = function (host) {
-    utils.log("Socket Host: " + host);
-    try {
-        bdSocket = new WebSocket(host);
-        bdSocket.onopen = this.onOpen;
-        bdSocket.onmessage = this.onMessage;
-        bdSocket.onerror = this.onError;
-        bdSocket.onclose = this.onClose;
-    } catch (err) {
-        utils.log(err);
-    }
-};
-
-BdWSocket.prototype.onOpen = function () {
-    utils.log("Socket Open");
-    var data = {
-        op: 2,
-        d: {
-            token: JSON.parse(window.bdStorage.get('token')),
-            properties: JSON.parse(window.bdStorage.get('superProperties')),
-            v: 3
-        }
-    };
-    bdws.send(data);
-};
-
-BdWSocket.prototype.onMessage = function (e) {
-
-    var packet, data, type;
-    try {
-        packet = JSON.parse(e.data);
-        data = packet.d;
-        type = packet.t;
-    } catch (err) {
-        utils.err(err);
-        return;
-    }
-
-    switch (type) {
-    case "READY":
-        bdSocket.interval = setInterval(function(){bdws.send({
-            op: 1,
-            d: Date.now()
-        });}, data.heartbeat_interval);
-        utils.log("Socket Ready");
-        break;
-    case "PRESENCE_UPDATE":
-        pluginModule.socketEvent("PRESENCE_UPDATE", data);
-        break;
-    case "TYPING_START":
-        pluginModule.socketEvent("TYPING_START", data);
-        break;
-    case "MESSAGE_CREATE":
-        pluginModule.socketEvent("MESSAGE_CREATE", data);
-        break;
-    case "MESSAGE_UPDATE":
-        pluginModule.socketEvent("MESSAGE_UPDATE", data);
-        break;
-    default:
-        break;
-    }
-
-};
-
-BdWSocket.prototype.onError = function (e) {
-    utils.log("Socket Error - " + e.message);
-};
-
-BdWSocket.prototype.onClose = function (e) {
-    utils.log("Socket Closed - " + e.code + " : " + e.reason);
-    clearInterval(bdSocket.interval);
-    bdws.start();
-};
-
-BdWSocket.prototype.send = function (data) {
-    if (bdSocket.readyState == 1) {
-        bdSocket.send(JSON.stringify(data));
-    }
-};
-
-BdWSocket.prototype.getSocket = function () {
-    return bdSocket;
-};
 /* BetterDiscordApp API for Plugins
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1780,12 +1554,6 @@ BdWSocket.prototype.getSocket = function () {
  */
 
 function BdApi() {}
-
-//Joins a server
-//code = server invite code
-BdApi.joinServer = function (code) {
-    opublicServers.joinServer(code);
-};
 
 //Inject CSS to document head
 //id = id of element
@@ -1819,67 +1587,6 @@ BdApi.getCore = function () {
     return mainCore;
 };
 
-//Attempts to get user id by username
-//Name = username
-//Since Discord hides users if there's too many, this will often fail
-BdApi.getUserIdByName = function (name) {
-    var users = $(".member-username");
-
-    for (var i = 0; i < users.length; i++) {
-        var user = $(users[i]);
-        if (user.text() == name) {
-            var avatarUrl = user.closest(".member").find(".avatar-small").css("background-image");
-            return avatarUrl.match(/\d+/);
-        }
-    }
-    return null;
-};
-
-//Attempts to get username by id
-//ID = user id
-//Since Discord hides users if there's too many, this will often fail
-var gg;
-BdApi.getUserNameById = function (id) {
-    var users = $(".avatar-small");
-
-    for (var i = 0; i < users.length; i++) {
-        var user = $(users[i]);
-        var url = user.css("background-image");
-        if (id == url.match(/\d+/)) {
-            return user.parent().find(".member-username").text();
-        }
-    }
-    return null;
-};
-
-//Set current game
-//game = game
-BdApi.setPlaying = function (game) {
-    bdws.send({
-        "op": 3,
-        "d": {
-            "idle_since": null,
-            "game": {
-                "name": game
-            }
-        }
-    });
-};
-
-//Set current status
-//idle_since = date
-//status = status
-BdApi.setStatus = function (idle_since, status) {
-    bdws.send({
-        "op": 3,
-        "d": {
-            "idle_since": idle_since,
-            "game": {
-                "name": status
-            }
-        }
-    });
-};
 /* BetterDiscordApp DevMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1945,7 +1652,7 @@ BdApi.setStatus = function (idle_since, status) {
  
  devMode.prototype.disable = function() {
      $(window).off("keydown.bdDevmode");
-     $(window).off("mousedown.bdDevmode")
+     $(window).off("mousedown.bdDevmode");
  };
 
 
