@@ -1208,7 +1208,7 @@ Utils.prototype.err = function (message, error) {
     console.log('%c[BetterDiscord] %c' + message + '', 'color: red; font-weight: 700;', '');
     if (error) {
         console.groupCollapsed('%cError: ' + error.message, 'color: red;');
-        console.error(error);
+        console.error(error.stack);
         console.groupEnd();
     }
 };
@@ -2443,13 +2443,13 @@ class V2C_ThemeCard extends BDV2.reactComponent {
 
     render() {
         let { theme } = this.props;
-        let name = theme.name.replace('_', ' ');
+        let name = theme.name;
         let description = theme.description;
         let version = theme.version;
         let author = theme.author;
         return BDV2.react.createElement(
             "li",
-            null,
+            {"data-name": name, "data-version": version},
             BDV2.react.createElement(
                 "div",
                 { className: "bda-left" },
