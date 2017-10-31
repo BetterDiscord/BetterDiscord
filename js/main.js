@@ -1276,15 +1276,55 @@ PluginModule.prototype.loadPlugins = function () {
             name = plugin.getName();
             plugin.load();
         }
-        catch (err) { return utils.err("Plugin " + name + " could not be loaded.", err); }
+        catch (err) {
+            pluginCookie[name] = false;
+            return utils.err("Plugin " + name + " could not be loaded.", err);
+        }
 
         if (!pluginCookie[name]) pluginCookie[name] = false;
 
         if (pluginCookie[name]) {
             try { plugin.start(); }
-            catch (err) { utils.err("Plugin " + name + " could not be started.", err); }
+            catch (err) {
+                pluginCookie[name] = false;
+                utils.err("Plugin " + name + " could not be started.", err);
+            }
         }
     }
+    this.savePluginData();
+};
+
+PluginModule.prototype.startPlugin = function (plugin) {
+    try { bdplugins[plugin].plugin.start(); }
+    catch (err) {
+        pluginCookie[plugin] = false;
+        this.savePluginData();
+        utils.err("Plugin " + name + " could not be started.", err);
+    }
+};
+
+PluginModule.prototype.stopPlugin = function (plugin) {
+    try { bdplugins[plugin].plugin.stop(); }
+    catch (err) { utils.err("Plugin " + name + " could not be stopped.", err); }
+};
+
+PluginModule.prototype.enablePlugin = function (plugin) {
+    pluginCookie[plugin] = true;
+    this.savePluginData();
+    this.startPlugin(plugin);
+};
+
+PluginModule.prototype.disablePlugin = function (plugin) {
+    pluginCookie[plugin] = false;
+    this.savePluginData();
+    this.stopPlugin(plugin);
+};
+
+PluginModule.prototype.togglePlugin = function (plugin) {
+    pluginCookie[plugin] = !pluginCookie[plugin];
+    this.savePluginData();
+    if (pluginCookie[plugin]) this.startPlugin(plugin);
+    else this.stopPlugin(plugin);
 };
 
 PluginModule.prototype.loadPluginData = function () {
@@ -2376,18 +2416,24 @@ class V2C_PluginCard extends BDV2.reactComponent {
         self.setState({
             'checked': !self.state.checked
         });
-        pluginCookie[self.props.plugin.getName()] = !self.state.checked;
-        if (!self.state.checked) {
-            try { self.props.plugin.start(); }
-            catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be started.", err); }
-        } else {
-            try { self.props.plugin.stop(); }
-            catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be stopped.", err); }
-        }
-        $.cookie("bd-plugins", JSON.stringify(pluginCookie), {
-            expires: 365,
-            path: '/'
-        });
+        // if checked enableplugin(plugin)
+        // else disableplugin(plugin)
+        pluginModule.togglePlugin(self.props.plugin.getName());
+        // pluginCookie[self.props.plugin.getName()] = !self.state.checked;
+        // if (!self.state.checked) {
+        //     try { self.props.plugin.start(); }
+        //     catch (err) {
+        //         pluginCookie[name] = false;
+        //         utils.err("Plugin " + self.props.plugin.getName() + " could not be started.", err);
+        //     }
+        // } else {
+        //     try { self.props.plugin.stop(); }
+        //     catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be stopped.", err); }
+        // }
+        // $.cookie("bd-plugins", JSON.stringify(pluginCookie), {
+        //     expires: 365,
+        //     path: '/'
+        // });
     }
 
     showSettings() {
