@@ -1265,11 +1265,9 @@ function PluginModule() {
 }
 
 PluginModule.prototype.loadPlugins = function () {
-
     this.loadPluginData();
 
     var plugins = Object.keys(bdplugins);
-
     for (var i = 0; i < plugins.length; i++) {
         var plugin, name;
 
@@ -1304,33 +1302,39 @@ PluginModule.prototype.savePluginData = function () {
 };
 
 PluginModule.prototype.newMessage = function () {
-    $.each(bdplugins, function () {
-        if (!pluginCookie[this.plugin.getName()]) return;
-        if (typeof this.plugin.onMessage === "function") {
-            try { this.plugin.onMessage(); }
-            catch (err) { utils.err("Unable to fire onMessage for " + this.plugin.getName() + ".", err); }
+    var plugins = Object.keys(bdplugins);
+    for (var i = 0; i < plugins.length; i++) {
+        var plugin = bdplugins[plugins[i]].plugin;
+        if (!pluginCookie[plugin.getName()]) return;
+        if (typeof plugin.onMessage === "function") {
+            try { plugin.onMessage(); }
+            catch (err) { utils.err("Unable to fire onMessage for " + plugin.getName() + ".", err); }
         }
-    });
+    }
 };
 
 PluginModule.prototype.channelSwitch = function () {
-    $.each(bdplugins, function () {
-        if (!pluginCookie[this.plugin.getName()]) return;
-        if (typeof this.plugin.onSwitch === "function") {
-            try { this.plugin.onSwitch(); }
-            catch (err) { utils.err("Unable to fire onSwitch for " + this.plugin.getName() + ".", err); }
+    var plugins = Object.keys(bdplugins);
+    for (var i = 0; i < plugins.length; i++) {
+        var plugin = bdplugins[plugins[i]].plugin;
+        if (!pluginCookie[plugin.getName()]) return;
+        if (typeof plugin.onSwitch === "function") {
+            try { plugin.onSwitch(); }
+            catch (err) { utils.err("Unable to fire onSwitch for " + plugin.getName() + ".", err); }
         }
-    });
+    }
 };
 
 PluginModule.prototype.rawObserver = function(e) {
-    $.each(bdplugins, function() {
-        if (!pluginCookie[this.plugin.getName()]) return;
-        if(typeof this.plugin.observer === "function") {
-            try { this.plugin.observer(e); }
-            catch (err) { utils.err("Unable to fire observer for " + this.plugin.getName() + ".", err); }
+    var plugins = Object.keys(bdplugins);
+    for (var i = 0; i < plugins.length; i++) {
+        var plugin = bdplugins[plugins[i]].plugin;
+        if (!pluginCookie[plugin.getName()]) return;
+        if (typeof plugin.observer === "function") {
+            try { plugin.observer(e); }
+            catch (err) { utils.err("Unable to fire observer for " + plugin.getName() + ".", err); }
         }
-    });
+    }
 };
 
 
@@ -1352,11 +1356,11 @@ ThemeModule.prototype.loadThemes = function () {
 
     var themes = Object.keys(bdthemes);
     
-        for (var i = 0; i < themes.length; i++) {
-            var name = bdthemes[themes[i]].name;
-            if (!themeCookie[name]) themeCookie[name] = false;
-            if (themeCookie[name]) $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name]["css"])}));
-        }
+    for (var i = 0; i < themes.length; i++) {
+        var name = bdthemes[themes[i]].name;
+        if (!themeCookie[name]) themeCookie[name] = false;
+        if (themeCookie[name]) $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name]["css"])}));
+    }
 };
 
 ThemeModule.prototype.loadThemeData = function () {
@@ -2002,6 +2006,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
             case 'attach':
                 if ($("#editor-detached").length) self.props.attach();
                 BDV2.reactDom.unmountComponentAtNode(self.root);
+                self.root.remove();
                 break;
             case 'update':
                 self.updateCss();
