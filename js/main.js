@@ -2370,7 +2370,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
 
         return BDV2.react.createElement(
             "li",
-            null,
+            {pluginName: name, version: version},
             BDV2.react.createElement(
                 "div",
                 { className: "bda-left" },
@@ -2416,24 +2416,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         self.setState({
             'checked': !self.state.checked
         });
-        // if checked enableplugin(plugin)
-        // else disableplugin(plugin)
         pluginModule.togglePlugin(self.props.plugin.getName());
-        // pluginCookie[self.props.plugin.getName()] = !self.state.checked;
-        // if (!self.state.checked) {
-        //     try { self.props.plugin.start(); }
-        //     catch (err) {
-        //         pluginCookie[name] = false;
-        //         utils.err("Plugin " + self.props.plugin.getName() + " could not be started.", err);
-        //     }
-        // } else {
-        //     try { self.props.plugin.stop(); }
-        //     catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be stopped.", err); }
-        // }
-        // $.cookie("bd-plugins", JSON.stringify(pluginCookie), {
-        //     expires: 365,
-        //     path: '/'
-        // });
     }
 
     showSettings() {
