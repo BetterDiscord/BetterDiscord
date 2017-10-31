@@ -356,7 +356,7 @@ Core.prototype.initObserver = function () {
             if (node.classList.contains("message-group") && !node.querySelector(".message-sending")) {
                 self.inject24Hour(node);
                 self.injectColoredText(node);
-                if (node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
+                if (node.parentElement && node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
                     pluginModule.newMessage();
                 }
             }
@@ -1201,11 +1201,16 @@ Utils.prototype.escapeID = function(id) {
 };
 
 Utils.prototype.log = function (message) {
-    console.log('%c[%cBetterDiscord%c] %c' + message + '', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
+    console.log('%c[BetterDiscord] %c' + message + '', 'color: #3a71c1; font-weight: 700;', '');
 };
 
-Utils.prototype.err = function (message) {
-    console.log('%c[%cBetterDiscord%c] %c' + message + '', 'color: red;', 'color: red; font-weight:700;', 'color:red;', '');
+Utils.prototype.err = function (message, error) {
+    console.log('%c[BetterDiscord] %c' + message + '', 'color: red; font-weight: 700;', '');
+    if (error) {
+        console.groupCollapsed('%cError: ' + error.message, 'color: red;');
+        console.trace(error);
+        console.groupEnd();
+    }
 };
 
 /* BetterDiscordApp VoiceMode JavaScript
@@ -1263,14 +1268,17 @@ PluginModule.prototype.loadPlugins = function () {
 
     this.loadPluginData();
 
-    $.each(bdplugins, function () {
-        var plugin = this["plugin"];
+    var plugins = bdplugins.keys();
+
+    for (var i = 0; i < plugins.length; i++) {
+        var plugin = bdplugins[plugins[i]];
         var name = "";
+
         try { 
             name = plugin.getName();
             plugin.load();
         }
-        catch (err) { return utils.err("Plugin " + name + " could not be loaded. \n" + err.toString()); }
+        catch (err) { return utils.err("Plugin " + name + " could not be loaded.", err); }
 
         var enabled = false;
 
@@ -1282,9 +1290,9 @@ PluginModule.prototype.loadPlugins = function () {
 
         if (enabled) {
             try { plugin.start(); }
-            catch (err) { utils.err("Plugin " + name + " could not be started. \n" + err.toString()); }
+            catch (err) { utils.err("Plugin " + name + " could not be started.", err); }
         }
-    });
+    }
 };
 
 PluginModule.prototype.loadPluginData = function () {
@@ -1306,7 +1314,7 @@ PluginModule.prototype.newMessage = function () {
         if (!pluginCookie[this.plugin.getName()]) return;
         if (typeof this.plugin.onMessage === "function") {
             try { this.plugin.onMessage(); }
-            catch (err) { utils.err("Unable to fire onMessage for " + this.plugin.getName() + "\n" + err.toString()); }
+            catch (err) { utils.err("Unable to fire onMessage for " + this.plugin.getName() + ".", err); }
         }
     });
 };
@@ -1316,7 +1324,7 @@ PluginModule.prototype.channelSwitch = function () {
         if (!pluginCookie[this.plugin.getName()]) return;
         if (typeof this.plugin.onSwitch === "function") {
             try { this.plugin.onSwitch(); }
-            catch (err) { utils.err("Unable to fire onSwitch for " + this.plugin.getName() + "\n" + err.toString()); }
+            catch (err) { utils.err("Unable to fire onSwitch for " + this.plugin.getName() + ".", err); }
         }
     });
 };
@@ -1326,7 +1334,7 @@ PluginModule.prototype.rawObserver = function(e) {
         if (!pluginCookie[this.plugin.getName()]) return;
         if(typeof this.plugin.observer === "function") {
             try { this.plugin.observer(e); }
-            catch (err) { utils.err("Unable to fire observer for " + this.plugin.getName() + "\n" + err.toString()); }
+            catch (err) { utils.err("Unable to fire observer for " + this.plugin.getName() + ".", err); }
         }
     });
 };
@@ -2380,10 +2388,10 @@ class V2C_PluginCard extends BDV2.reactComponent {
         pluginCookie[self.props.plugin.getName()] = !self.state.checked;
         if (!self.state.checked) {
             try { self.props.plugin.start(); }
-            catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be started. \n" + err.toString()); }
+            catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be started.", err); }
         } else {
             try { self.props.plugin.stop(); }
-            catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be stopped. \n" + err.toString()); }
+            catch (err) { utils.err("Plugin " + self.props.plugin.getName() + " could not be stopped.", err); }
         }
         $.cookie("bd-plugins", JSON.stringify(pluginCookie), {
             expires: 365,
