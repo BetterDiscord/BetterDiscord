@@ -1278,7 +1278,8 @@ PluginModule.prototype.loadPlugins = function () {
         }
         catch (err) {
             pluginCookie[name] = false;
-            return utils.err("Plugin " + name + " could not be loaded.", err);
+            utils.err("Plugin " + name + " could not be loaded.", err);
+            continue;
         }
 
         if (!pluginCookie[name]) pluginCookie[name] = false;
@@ -1345,7 +1346,7 @@ PluginModule.prototype.newMessage = function () {
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) return;
+        if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.onMessage === "function") {
             try { plugin.onMessage(); }
             catch (err) { utils.err("Unable to fire onMessage for " + plugin.getName() + ".", err); }
@@ -1357,7 +1358,7 @@ PluginModule.prototype.channelSwitch = function () {
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) return;
+        if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.onSwitch === "function") {
             try { plugin.onSwitch(); }
             catch (err) { utils.err("Unable to fire onSwitch for " + plugin.getName() + ".", err); }
@@ -1369,7 +1370,7 @@ PluginModule.prototype.rawObserver = function(e) {
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) return;
+        if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.observer === "function") {
             try { plugin.observer(e); }
             catch (err) { utils.err("Unable to fire observer for " + plugin.getName() + ".", err); }
