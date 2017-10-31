@@ -2370,7 +2370,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
 
         return BDV2.react.createElement(
             "li",
-            {dataName: name, dataVersion: version},
+            {"data-name": name, "data-version": version},
             BDV2.react.createElement(
                 "div",
                 { className: "bda-left" },
