@@ -1271,24 +1271,18 @@ PluginModule.prototype.loadPlugins = function () {
     var plugins = Object.keys(bdplugins);
 
     for (var i = 0; i < plugins.length; i++) {
-        var plugin = bdplugins[plugins[i]];
-        var name = "";
+        var plugin, name;
 
-        try { 
+        try {
+            plugin = bdplugins[plugins[i]].plugin;
             name = plugin.getName();
             plugin.load();
         }
         catch (err) { return utils.err("Plugin " + name + " could not be loaded.", err); }
 
-        var enabled = false;
+        if (!pluginCookie[name]) pluginCookie[name] = false;
 
-        if (pluginCookie.hasOwnProperty(name)) {
-            enabled = pluginCookie[name];
-        } else {
-            pluginCookie[name] = false;
-        }
-
-        if (enabled) {
+        if (pluginCookie[name]) {
             try { plugin.start(); }
             catch (err) { utils.err("Plugin " + name + " could not be started.", err); }
         }
@@ -1356,21 +1350,13 @@ function ThemeModule() {
 ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
 
-    $.each(bdthemes, function () {
-        var name = this["name"];
-        var enabled = false;
-        if (themeCookie.hasOwnProperty(name)) {
-            if (themeCookie[name]) {
-                enabled = true;
-            }
-        } else {
-            themeCookie[name] = false;
+    var themes = Object.keys(bdthemes);
+    
+        for (var i = 0; i < themes.length; i++) {
+            var name = bdthemes[themes[i]].name;
+            if (!themeCookie[name]) themeCookie[name] = false;
+            if (themeCookie[name]) $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name]["css"])}));
         }
-
-        if (enabled) {
-            $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name]["css"])}));
-        }
-    });
 };
 
 ThemeModule.prototype.loadThemeData = function () {
