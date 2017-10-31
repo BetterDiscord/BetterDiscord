@@ -1268,7 +1268,7 @@ PluginModule.prototype.loadPlugins = function () {
 
     this.loadPluginData();
 
-    var plugins = bdplugins.keys();
+    var plugins = Object.keys(bdplugins);
 
     for (var i = 0; i < plugins.length; i++) {
         var plugin = bdplugins[plugins[i]];
