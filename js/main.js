@@ -231,7 +231,6 @@ Core.prototype.init = function () {
     emoteModule.init();
 
     this.initSettings();
-    this.initObserver();
 
     //Incase were too fast
     function gwDefer() {
@@ -271,6 +270,7 @@ Core.prototype.init = function () {
             $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
             $("head").append('<style id="bdemotemenustyle"></style>');
             document.getElementsByClassName("bd-loaderv2")[0].remove();
+            this.initObserver();
         } else {
             setTimeout(gwDefer, 100);
         }
