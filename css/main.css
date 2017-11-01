@@ -2099,10 +2099,9 @@
   background: #7289da;
   color: #FFF;
   border-radius: 5px;
-  height: 30px;
   display: block;
-  width: 100px;
   margin-left: auto;
+  padding: 2px 16px;
 }
 
 
