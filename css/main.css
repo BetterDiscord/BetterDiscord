@@ -2046,6 +2046,13 @@
   border: 1px solid #202225;
   border-radius: 5px;
   padding: 5px 7px;
+  max-height: 175px;
+  overflow: hidden;
+}
+
+.bda-slist li.settings-open {
+  max-height: 800px;
+  overflow-y: auto;
 }
 
 .bda-slist .bda-header {
@@ -2095,7 +2102,6 @@
   height: 30px;
   display: block;
   width: 100px;
-  margin: 5px;
   margin-left: auto;
 }
 
