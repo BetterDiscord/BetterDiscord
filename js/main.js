@@ -247,8 +247,9 @@ Core.prototype.init = function () {
                 themeModule.loadThemes();
             }
 
-            settingsPanel = new SettingsPanel();
-            settingsPanel.init();
+            this.injectExternals();
+            settingsPanel = new V2_SettingsPanel();
+            settingsPanel.updateSettings();
 
             quickEmoteMenu.init(false);
             
@@ -279,6 +280,15 @@ Core.prototype.init = function () {
     $(document).ready(function () {
         setTimeout(gwDefer, 1000);
     });
+};
+
+Core.prototype.injectExternals = function() {
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js");
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/css/css.min.js");
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.js");
+    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.css");
+    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/theme/material.min.css");
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js");
 };
 
 Core.prototype.initSettings = function () {
@@ -313,8 +323,6 @@ Core.prototype.initObserver = function () {
     mainObserver = new MutationObserver(function (mutations) {
 
         mutations.forEach(function (mutation) {
-            if(settingsPanel !== undefined)
-                settingsPanel.inject(mutation);
 
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
 
@@ -331,6 +339,15 @@ Core.prototype.initObserver = function () {
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) return;
 
             let node = mutation.addedNodes[0];
+
+            if (node.classList.contains("layer")) {
+                if (node.querySelector(".guild-settings-base-section")) node.setAttribute('layer-id', 'server-settings');
+
+                if (node.querySelector(".socialLinks-1oZoF3")) {
+                    node.setAttribute('layer-id', 'user-settings');
+                    if (!node.querySelector("#bd-settings-sidebar")) settingsPanel.renderSidebar();
+                }
+            }
 
             // Emoji Picker
             if (node.classList.contains('popout')) {
@@ -1008,56 +1025,8 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     window.bdStorage.set("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
 };
 
-/* BetterDiscordApp Settings Panel JavaScript
- * Version: 2.0
- * Author: Jiiks | http://jiiks.net
- * Date: 26/08/2015 - 11:54
- * Last Update: 27/11/2015 - 00:50
- * https://github.com/Jiiks/BetterDiscordApp
- */
 
-var settingsButton = null;
-var panel = null;
 
-function SettingsPanel() {
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js");
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/css/css.min.js");
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.js");
-    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.css");
-    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/theme/material.min.css");
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js");
-}
-
-SettingsPanel.prototype.init = function () {
-    var self = this;
-    self.v2SettingsPanel = new V2_SettingsPanel();
-    self.v2SettingsPanel.updateSettings();
-};
-
-var customCssInitialized = false;
-var lastTab = "";
-
-SettingsPanel.prototype.inject = function(mutation) {
-    let self = this;
-    if(!mutation.target.classList.contains("layers")) return;
-    if(document.querySelector(".guild-settings-base-section")) {
-        try {
-            mutation.addedNodes[0].setAttribute('layer-id', 'server-settings');
-        }
-        catch(err) {}
-    }
-    if(!document.querySelector(".layer .socialLinks-1oZoF3")) return;
-    try {
-        mutation.addedNodes[0].setAttribute('layer-id', 'user-settings');
-    }
-    catch(err) {}
-
-    if(document.querySelector("#bd-settings-sidebar")) return;
-    self.v2SettingsPanel.renderSidebar();
-};
-//.side-2nYO0F
-//.side-2nYO0F .header-1-f9X5:first-child
-//.socialLinks-1oZoF3
 /* BetterDiscordApp Utilities JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
