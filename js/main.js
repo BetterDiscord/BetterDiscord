@@ -2203,6 +2203,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         let author = plugin.getAuthor();
         let description = plugin.getDescription();
         let version = plugin.getVersion();
+        let link = bdplugins[plugin.getName()].link;
         let { settingsPanel } = this;
 
         if (this.state.settings) {
@@ -2227,34 +2228,34 @@ class V2C_PluginCard extends BDV2.reactComponent {
             BDV2.react.createElement(
                 "div",
                 { className: "bda-header" },
-                BDV2.react.createElement("span", {className: "bda-name" }, name,
+                    BDV2.react.createElement("span", {className: "bda-name" }, name),
                     " v",
                     BDV2.react.createElement("span", {className: "bda-version" }, version),
                     " by ",
-                    BDV2.react.createElement("span", {className: "bda-author" }, author)
-                ),
+                    BDV2.react.createElement("span", {className: "bda-author" }, author),
+                    BDV2.react.createElement(
+                        "label",
+                        { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
+                        BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
+                        BDV2.react.createElement("div", { className: "ui-switch" })
+                    )
+            ),
+            BDV2.react.createElement(
+                "div",
+                { className: "bda-description-wrap scroller-wrap fade" },
                 BDV2.react.createElement(
                     "div",
-                    { className: "scroller-wrap fade" },
-                    BDV2.react.createElement(
-                        "div",
-                        { className: "scroller bda-description" },
-                        description
-                    )
+                    { className: "bda-description scroller" },
+                    description
                 )
             ),
             BDV2.react.createElement(
                 "div",
-                { className: "bda-right" },
-                BDV2.react.createElement(
-                    "label",
-                    { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
-                    BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
-                    BDV2.react.createElement("div", { className: "ui-switch" })
-                ),
+                { className: "bda-footer" },
+                BDV2.react.createElement("a", {className: "bda-link", href: link, target: "_blank"}, name),
                 this.settingsPanel && BDV2.react.createElement(
                     "button",
-                    { onClick: this.showSettings },
+                    {onClick: this.showSettings, className: "bda-settings-button"},
                     "Settings"
                 )
             )
