@@ -2219,8 +2219,8 @@ class V2C_PluginCard extends BDV2.reactComponent {
         let author = plugin.getAuthor();
         let description = plugin.getDescription();
         let version = plugin.getVersion();
-        let website = bdplugins[plugin.getName()].website;
-        let source = bdplugins[plugin.getName()].source;
+        let website = bdplugins[name].website;
+        let source = bdplugins[name].source;
         let { settingsPanel } = this;
 
         if (this.state.settings) {
@@ -2272,7 +2272,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
     showSettings() {
         if (!this.settingsPanel) return;
         this.setState({'settings': true});
-        BDV2.reactDom.findDOMNode(this).scrollIntoView({
+        BDV2.reactDom.findDOMNode(this).scrollIntoViewIfNeeded({
             behavior: "smooth", // or "auto" or "instant"
             block: "start" // or "end"
         });

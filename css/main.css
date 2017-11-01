@@ -2110,6 +2110,14 @@
   opacity: 0.4;
 }
 
+.bda-slist .bda-footer a {
+  color: #7289da;
+}
+
+.bda-slist .bda-footer a:hover {
+  text-decoration: underline;
+}
+
 
 /*BD BLUE*/
 .bd-blue .bd-pfbtn { background: #3a71c1; }
@@ -2336,4 +2344,5 @@
 .bd-blue *[style*="border-color: rgb(114, 137, 218)"] { border-color: #3a71c1 !important; }
 .bd-blue *[style*="background-color: rgb(114, 137, 218)"] { background-color: #3a71c1 !important; }
 .bd-blue .bda-slist .bda-footer button {background-color: #3a71c1;}
+.bd-blue .bda-slist .bda-footer a {color: #3a71c1;}
 
