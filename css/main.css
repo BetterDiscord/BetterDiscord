@@ -2104,6 +2104,10 @@
   padding: 2px 16px;
 }
 
+.bda-slist .bda-footer button:disabled {
+  opacity: 0.4;
+}
+
 
 /*BD BLUE*/
 .bd-blue .bd-pfbtn { background: #3a71c1; }

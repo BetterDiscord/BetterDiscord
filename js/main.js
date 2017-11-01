@@ -1174,10 +1174,8 @@ PluginModule.prototype.disablePlugin = function (plugin) {
 };
 
 PluginModule.prototype.togglePlugin = function (plugin) {
-    pluginCookie[plugin] = !pluginCookie[plugin];
-    this.savePluginData();
-    if (pluginCookie[plugin]) this.startPlugin(plugin);
-    else this.stopPlugin(plugin);
+    if (pluginCookie[plugin]) this.disablePlugin(plugin);
+    else this.enablePlugin(plugin);
 };
 
 PluginModule.prototype.loadPluginData = function () {
@@ -1269,8 +1267,8 @@ ThemeModule.prototype.disableTheme = function (theme) {
 };
 
 ThemeModule.prototype.toggleTheme = function (theme) {
-    if (themeCookie[theme]) this.enableTheme(theme);
-    else this.disableTheme(theme);
+    if (themeCookie[theme]) this.disableTheme(theme);
+    else this.enableTheme(theme);
 };
 
 ThemeModule.prototype.loadThemeData = function () {
@@ -2261,7 +2259,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
                     website && source && " | ",
                     source && BDV2.react.createElement("a", {className: "bda-link", href: source, target: "_blank"}, "Source")
                 ),
-                this.settingsPanel && BDV2.react.createElement("button", {onClick: this.showSettings, className: "bda-settings-button", disabled: this.state.checked}, "Settings")
+                this.settingsPanel && BDV2.react.createElement("button", {onClick: this.showSettings, className: "bda-settings-button", disabled: !this.state.checked}, "Settings")
             )
         );
     }
