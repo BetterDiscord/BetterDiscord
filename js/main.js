@@ -162,52 +162,6 @@ var defaultCookie = {
     "bda-es-9": true
 };
 
-var bdchangelog = {
-    "changes": {
-        "0a": {
-            "title": "1.78 : Temp support for new settingspanel",
-            "text": "Added temp support for Discord's new settingspanel until v2.",
-            "img": ""
-        },
-        "0b": {
-            "title": "1.78 : Public Servers",
-            "text": "New look and flow for public servers",
-            "img": ""
-        },
-        "0c": {
-            "title": "1.78 : New loading icon",
-            "text": "New loading icon will now display in bottom right when BD is loading.",
-            "img": ""
-        },
-        "0d": {
-            "title": "1.78 : New CustomCSS editor look",
-            "text": "Updated CustomCSS editor with dark theme",
-            "img": ""
-        },
-        "0e": {
-            "title": "1.78 : BetterDiscord Blue",
-            "text": "Replace Discord blue with BetterDiscord blue!",
-            "img": ""
-        }
-    },
-    "fixes": {
-        "0a": {
-            "title": "1.792 : Fixed settingspanel injection",
-            "text": "Still has some minor bugs",
-            "img": ""
-        },
-        "0b": {
-            "title": "1.791 : Restored Buttons",
-            "text": "Restored Open Theme Folder and Open Plugin Folder buttons",
-            "img": ""
-        },
-        "0c": {
-            "title": "1.79 : Settings Saving",
-            "text": "Fixed settings not saving with new settings panel",
-            "img": ""
-        }
-    }
-};
 
 var settingsCookie = {};
 
@@ -243,10 +197,9 @@ Core.prototype.init = function () {
             // customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
-            if (typeof (themesupport2) !== "undefined") {
-                themeModule = new ThemeModule();
-                themeModule.loadThemes();
-            }
+
+            themeModule = new ThemeModule();
+            themeModule.loadThemes();
 
             settingsPanel = new V2_SettingsPanel();
             settingsPanel.updateSettings();
@@ -2273,15 +2226,12 @@ class V2C_PluginCard extends BDV2.reactComponent {
             {"data-name": name, "data-version": version},
             BDV2.react.createElement(
                 "div",
-                { className: "bda-left" },
-                BDV2.react.createElement(
-                    "span",
-                    { className: "bda-name" },
-                    name,
+                { className: "bda-header" },
+                BDV2.react.createElement("span", {className: "bda-name" }, name,
                     " v",
-                    version,
+                    BDV2.react.createElement("span", {className: "bda-version" }, version),
                     " by ",
-                    author
+                    BDV2.react.createElement("span", {className: "bda-author" }, author)
                 ),
                 BDV2.react.createElement(
                     "div",
