@@ -1252,8 +1252,25 @@ ThemeModule.prototype.loadThemes = function () {
     for (var i = 0; i < themes.length; i++) {
         var name = bdthemes[themes[i]].name;
         if (!themeCookie[name]) themeCookie[name] = false;
-        if (themeCookie[name]) $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name]["css"])}));
+        if (themeCookie[name]) $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name].css)}));
     }
+};
+
+ThemeModule.prototype.enableTheme = function (theme) {
+    themeCookie[theme] = true;
+    this.saveThemeData();
+    $("head").append(`<style id="${utils.escapeID(bdthemes[theme].name)}">${unescape(bdthemes[theme].css)}</style>`);
+};
+
+ThemeModule.prototype.disableTheme = function (theme) {
+    themeCookie[theme] = false;
+    this.saveThemeData();
+    $(`#${utils.escapeID(bdthemes[theme].name)}`).remove();
+};
+
+ThemeModule.prototype.togglePlugin = function (theme) {
+    if (themeCookie[theme]) this.enableTheme(theme);
+    else this.disableTheme(theme);
 };
 
 ThemeModule.prototype.loadThemeData = function () {
@@ -2250,8 +2267,8 @@ class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     onChange() {
-        self.setState({'checked': !this.state.checked});
-        pluginModule.togglePlugin(self.props.plugin.getName());
+        this.setState({'checked': !this.state.checked});
+        pluginModule.togglePlugin(this.props.plugin.getName());
     }
 
     showSettings() {
@@ -2311,18 +2328,8 @@ class V2C_ThemeCard extends BDV2.reactComponent {
     }
 
     onChange() {
-        let self = this;
-        self.setState({'checked': !self.state.checked});
-        themeCookie[self.props.theme.name] = !self.state.checked;
-        if (!self.state.checked) {
-            $("head").append(`<style id="${utils.escapeID(self.props.theme.name)}">${unescape(self.props.theme.css)}</style>`);
-        } else {
-            $(`#${utils.escapeID(self.props.theme.name)}`).remove();
-        }
-        $.cookie("bd-themes", JSON.stringify(themeCookie), {
-            expires: 365,
-            path: '/'
-        });
+        this.setState({'checked': !this.state.checked});
+        themeModule.toggleTheme(this.props.theme.name);
     }
 }
 
