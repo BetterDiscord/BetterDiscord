@@ -1268,7 +1268,7 @@ ThemeModule.prototype.disableTheme = function (theme) {
     $(`#${utils.escapeID(bdthemes[theme].name)}`).remove();
 };
 
-ThemeModule.prototype.togglePlugin = function (theme) {
+ThemeModule.prototype.toggleTheme = function (theme) {
     if (themeCookie[theme]) this.enableTheme(theme);
     else this.disableTheme(theme);
 };
@@ -2261,7 +2261,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
                     website && source && " | ",
                     source && BDV2.react.createElement("a", {className: "bda-link", href: source, target: "_blank"}, "Source")
                 ),
-                this.state.checked && this.settingsPanel && BDV2.react.createElement("button", {onClick: this.showSettings, className: "bda-settings-button"}, "Settings")
+                this.settingsPanel && BDV2.react.createElement("button", {onClick: this.showSettings, className: "bda-settings-button", disabled: this.state.checked}, "Settings")
             )
         );
     }
