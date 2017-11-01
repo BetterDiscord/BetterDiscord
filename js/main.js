@@ -237,7 +237,7 @@ Core.prototype.init = function () {
         console.log(new Date().getTime() + " Defer");
         if (document.querySelectorAll('.guilds .guild').length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
-
+            self.injectExternals();
             // customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
@@ -246,7 +246,6 @@ Core.prototype.init = function () {
                 themeModule.loadThemes();
             }
 
-            this.injectExternals();
             settingsPanel = new V2_SettingsPanel();
             settingsPanel.updateSettings();
 
@@ -270,7 +269,7 @@ Core.prototype.init = function () {
             $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
             $("head").append('<style id="bdemotemenustyle"></style>');
             document.getElementsByClassName("bd-loaderv2")[0].remove();
-            this.initObserver();
+            self.initObserver();
         } else {
             setTimeout(gwDefer, 100);
         }
