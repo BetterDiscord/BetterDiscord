@@ -2047,6 +2047,7 @@
   border-radius: 5px;
   padding: 5px 7px;
   max-height: 175px;
+  margin-bottom: 20px;
   overflow: hidden;
 }
 
@@ -2102,6 +2103,7 @@
   display: block;
   margin-left: auto;
   padding: 2px 16px;
+  transition: opacity 250ms ease;
 }
 
 .bda-slist .bda-footer button:disabled {

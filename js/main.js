@@ -2272,6 +2272,10 @@ class V2C_PluginCard extends BDV2.reactComponent {
     showSettings() {
         if (!this.settingsPanel) return;
         this.setState({'settings': true});
+        BDV2.reactDom.findDOMNode(this).scrollIntoView({
+            behavior: "smooth", // or "auto" or "instant"
+            block: "start" // or "end"
+        });
     }
 }
 
