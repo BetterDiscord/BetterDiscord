@@ -21,32 +21,6 @@
     100% { opacity: 0.05; }
 }
 
-/*new settingspanel stuff*/
-.ui-standard-sidebar-view .bda-slist li:nth-child(odd) {
-  background: #292b2f;
-  border-top: 1px solid #2b2b2b;
-}
-
-.ui-standard-sidebar-view .bda-slist li {
-  background: #26272b;
-  border-bottom: 1px solid #3f4146;
-}
-
-.ui-standard-sidebar-view .bda-slist .bda-description {
-  border-top: 1px solid #3f4146;
-  color: #b0b6b9;
-}
-
-.ui-standard-sidebar-view .bda-slist .bda-right button {
-  background: #7289da;
-  color: #FFF;
-  border-radius: 5px;
-  height: 30px;
-  display: block;
-  width: 100px;
-  margin: 5px;
-}
-
 .ui-standard-sidebar-view .bd-psm {
     background-color: #292b2f;
     box-shadow: 0 0 12px 6px rgba(31, 31, 31, 0.32);
@@ -1673,103 +1647,6 @@
   margin-top:18px;
 }
 
-.bda-slist-top {
-  height:25px;
-    flex-grow:1;
-}
-
-.bda-slist-top > .btn {
-  height: 20px;
-    line-height: 20px;
-    font-size: 13px;
-    padding: 6px;
-    padding-top: 0;
-    margin-left:5px !important;
-    float:right;
-}
-
-.bda-slist li {
-  background:#F3F3F3;
-    padding:5px;
-    border-bottom:1px solid #ADADAD;
-    min-height:116px;
-    max-height:116px;
-}
-
-.bda-slist li:nth-child(odd) {
-  background:#F3F3F3;
-    border-top:1px solid #FFF;
-}
-
-.bda-slist .bda-name {
-    color:#87909C;
-    font-weight:700;
-    font-size:12px;
-    overflow: hidden;
-    display: block;
-    max-height: 12px;
-}
-
-.bda-slist li div:not(.bda-right):nth-of-type(2) {
-    margin-top: 30px;
-}
-
-.bda-slist .bda-description {
-    margin-top:5px;
-    color:#4E4E4E;
-    width:400px;
-    overflow-y:scroll;
-    min-height:90px;
-    max-height:90px;
-    border-top:1px solid #DADADA;
-    padding-top:5px;
-    word-break: break-word;
-}
-
-.bda-slist .scroller::-webkit-scrollbar-track-piece,
-.bda-slist .scroller::-webkit-scrollbar-thumb {
-    border-radius:0 !important;
-    border-color:transparent;
-}
-
-.bda-slist .bda-left {
-  width:400px;
-    display:inline-block;
-}
-
-.bda-slist .bda-right {
-  display:inline-block;
-    float:right;
-}
-
-.bda-slist .checkbox {
-  margin-left:18px;
-}
-
-.bda-slist .checkbox:before {
-  content: "Enabled";
-    color:#87909C;
-    margin-right:5px;
-    font-weight:600;
-}
-
-.bda-slist .bda-right .btn {
-    height: 30px;
-    width:100px;
-    line-height: 12px;
-    margin-left:0;
-    text-align:center;
-    display:block;
-}
-
-.bda-slist .bda-right .bda-plugin-reload {
-  margin-top:35px;
-}
-
-.bda-slist .bda-right .bda-plugin-settings {
-  margin-top:5px;
-}
-
 #bd-themes-pane .bda-plugin-reload {
   margin-top:70px;
 }
@@ -2158,6 +2035,71 @@
 	display: flex;
 }
 
+
+/*new settingspanel stuff*/
+.bda-slist {
+  user-select: text;
+}
+
+.bda-slist li {
+  background: rgba(32,34,37,.6);
+  border: 1px solid #202225;
+  border-radius: 5px;
+  padding: 5px 7px;
+}
+
+.bda-slist .bda-header {
+  color: #87909C;
+  font-weight: 700;
+  font-size: 12px;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255, 0.1);
+  padding-bottom: 5px;
+}
+
+.bda-slist .bda-description {
+    margin-top:5px;
+    color: #b0b6b9;
+    overflow-y:auto;
+    max-height: 100px;
+    min-height: 75px;
+    padding-top:5px;
+    word-break: break-word;
+}
+
+.bda-slist .scroller::-webkit-scrollbar-track-piece,
+.bda-slist .scroller::-webkit-scrollbar-thumb {
+    border-radius:0 !important;
+    border-color:transparent;
+}
+
+.bda-slist .bda-footer {
+  border-top: 1px solid rgba(255,255,255, 0.1);
+  padding-top: 5px;
+  color: #87909C;
+  font-weight: 700;
+  font-size: 12px;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bda-slist .bda-footer button {
+  background: #7289da;
+  color: #FFF;
+  border-radius: 5px;
+  height: 30px;
+  display: block;
+  width: 100px;
+  margin: 5px;
+  margin-left: auto;
+}
+
+
 /*BD BLUE*/
 .bd-blue .bd-pfbtn { background: #3a71c1; }
 .bd-blue .bot-tag {background: #3a71c1;}
@@ -2382,5 +2324,5 @@
 .bd-blue .ui-switch-wrapper:not(.disabled):not(.clear):hover .ui-switch-checkbox:checked+.ui-switch { background: #3f79ce; }
 .bd-blue *[style*="border-color: rgb(114, 137, 218)"] { border-color: #3a71c1 !important; }
 .bd-blue *[style*="background-color: rgb(114, 137, 218)"] { background-color: #3a71c1 !important; }
-
+.bd-blue .bda-slist .bda-footer button {background-color: #3a71c1;}
 

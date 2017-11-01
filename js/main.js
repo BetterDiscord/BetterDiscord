@@ -2209,7 +2209,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         if (this.state.settings) {
             return BDV2.react.createElement(
                 "li",
-                { style: { maxHeight: "500px", overflow: "auto" } },
+                { style: {className: "settings-open"} },
                 BDV2.react.createElement(
                     "div",
                     { style: { float: "right", cursor: "pointer" }, onClick: () => {
@@ -2224,18 +2224,18 @@ class V2C_PluginCard extends BDV2.reactComponent {
 
         return BDV2.react.createElement(
             "li",
-            {"data-name": name, "data-version": version},
+            {"data-name": name, "data-version": version, className: "settings-closed"},
             BDV2.react.createElement(
                 "div",
                 { className: "bda-header" },
-                    BDV2.react.createElement("span", {className: "bda-name" }, name),
-                    " v",
-                    BDV2.react.createElement("span", {className: "bda-version" }, version),
-                    " by ",
-                    BDV2.react.createElement("span", {className: "bda-author" }, author),
-                    BDV2.react.createElement(
-                        "label",
-                        { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
+                    BDV2.react.createElement("span", {className: "bda-header-title" },
+                        BDV2.react.createElement("span", {className: "bda-name" }, name),
+                        " v",
+                        BDV2.react.createElement("span", {className: "bda-version" }, version),
+                        " by ",
+                        BDV2.react.createElement("span", {className: "bda-author" }, author)
+                    ),
+                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' }},
                         BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
                         BDV2.react.createElement("div", { className: "ui-switch" })
                     )
@@ -2252,7 +2252,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
             BDV2.react.createElement(
                 "div",
                 { className: "bda-footer" },
-                BDV2.react.createElement("a", {className: "bda-link", href: link, target: "_blank"}, name),
+                link && BDV2.react.createElement("a", {className: "bda-link", href: link, target: "_blank"}, "Website/Source"),
                 this.settingsPanel && BDV2.react.createElement(
                     "button",
                     {onClick: this.showSettings, className: "bda-settings-button"},
@@ -2298,40 +2298,39 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         let description = theme.description;
         let version = theme.version;
         let author = theme.author;
+        let link = bdthemes[name].link;
+
         return BDV2.react.createElement(
             "li",
-            {"data-name": name, "data-version": version},
+            {"data-name": name, "data-version": version, className: "settings-closed"},
             BDV2.react.createElement(
                 "div",
-                { className: "bda-left" },
-                BDV2.react.createElement(
-                    "span",
-                    { className: "bda-name" },
-                    name,
-                    " v",
-                    version,
-                    " by ",
-                    author
-                ),
+                { className: "bda-header" },
+                    BDV2.react.createElement("span", {className: "bda-header-title" },
+                        BDV2.react.createElement("span", {className: "bda-name" }, name),
+                        " v",
+                        BDV2.react.createElement("span", {className: "bda-version" }, version),
+                        " by ",
+                        BDV2.react.createElement("span", {className: "bda-author" }, author)
+                    ),
+                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' }},
+                        BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
+                        BDV2.react.createElement("div", { className: "ui-switch" })
+                    )
+            ),
+            BDV2.react.createElement(
+                "div",
+                { className: "bda-description-wrap scroller-wrap fade" },
                 BDV2.react.createElement(
                     "div",
-                    { className: "scroller-wrap fade" },
-                    BDV2.react.createElement(
-                        "div",
-                        { className: "scroller bda-description" },
-                        description
-                    )
+                    { className: "bda-description scroller" },
+                    description
                 )
             ),
             BDV2.react.createElement(
                 "div",
-                { className: "bda-right" },
-                BDV2.react.createElement(
-                    "label",
-                    { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
-                    BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
-                    BDV2.react.createElement("div", { className: "ui-switch" })
-                )
+                { className: "bda-footer" },
+                link && BDV2.react.createElement("a", {className: "bda-link", href: link, target: "_blank"}, "Website/Source")
             )
         );
     }
