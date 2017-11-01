@@ -2237,7 +2237,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
                     ),
                     BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' }},
                         BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
-                        BDV2.react.createElement("div", { className: "ui-switch" })
+                        BDV2.react.createElement("div", { className: this.state.checked ? "ui-switch" : "ui-switch checked" })
                     )
             ),
             BDV2.react.createElement(
@@ -2313,10 +2313,14 @@ class V2C_ThemeCard extends BDV2.reactComponent {
                         " by ",
                         BDV2.react.createElement("span", {className: "bda-author" }, author)
                     ),
-                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' }},
-                        BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
-                        BDV2.react.createElement("div", { className: "ui-switch" })
-                    )
+                    BDV2.react.createElement(V2Components.Switch, {checked: this.state.checked, onChange: this.onChange})
+                    // BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' }},
+                    //     BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
+                    //     BDV2.react.createElement("div", { className: "ui-switch" })
+                    // )
+                    // return BDV2.react.createElement(V2Components.Switch, { id: setting.id, key: setting.id, data: setting, checked: settingsCookie[setting.id], onChange: (id, checked) => {
+                    //     this.props.onChange(id, checked);
+                    // } });
             ),
             BDV2.react.createElement(
                 "div",
