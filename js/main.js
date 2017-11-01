@@ -2231,8 +2231,8 @@ class V2C_PluginCard extends BDV2.reactComponent {
                         }},
                     BDV2.react.createElement(V2Components.XSvg, null)
                 ),
-                typeof settingsPanel === 'object' && BDV2.react.createElement("div", { ref: "settingspanel" }),
-                typeof settingsPanel !== 'object' && BDV2.react.createElement("div", { ref: "settingspanel", dangerouslySetInnerHTML: { __html: plugin.getSettingsPanel() } })
+                typeof settingsPanel === 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel" }),
+                typeof settingsPanel !== 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: { __html: this.settingsPanel } })
             );
         }
 
