@@ -206,7 +206,7 @@ Core.prototype.init = function () {
 
             // Show loading errors
             if (settingsCookie["bda-gs-9"]) {
-                this.showStartupErrors();
+                self.showStartupErrors();
             }
 
             settingsPanel = new V2_SettingsPanel();
