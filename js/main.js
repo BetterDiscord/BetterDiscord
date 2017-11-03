@@ -1140,7 +1140,10 @@ PluginModule.prototype.loadPlugins = function () {
         if (!pluginCookie[name]) pluginCookie[name] = false;
 
         if (pluginCookie[name]) {
-            try { plugin.start(); }
+            try {
+                plugin.start();
+                if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${plugin.getName()} v${plugin.getVersion()} has started.`);
+            }
             catch (err) {
                 pluginCookie[name] = false;
                 utils.err("Plugin " + name + " could not be started.", err);
