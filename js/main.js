@@ -1,4 +1,3 @@
-
 /* BetterDiscordApp Core JavaScript
  * Version: 1.78
  * Author: Jiiks | http://jiiks.net
@@ -104,7 +103,7 @@ var bttvEmoteUrlEnd = "/1x";
 var mainCore;
 
 var settings = {
-    "Show Error Modal":           { "id": "bda-gs-9",  "info": "Show a modal with plugin/theme errors on startup.", "implemented": true,  "hidden": true, "cat": "core"},
+    "Show Error Modal":           { "id": "bda-gs-9",  "info": "Show a modal with plugin/theme errors on startup.", "implemented": true,  "hidden": false, "cat": "core"},
     "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
     "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false, "hidden": false, "cat": "core"},
     "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
@@ -206,12 +205,14 @@ Core.prototype.init = function () {
             themeModule.loadThemes();
 
             // Show loading errors
-            for (let err of bdpluginErrors) {
-                console.log(err);
-            }
+            if (settingsCookie["bda-gs-9"]) {
+                for (let err of bdpluginErrors) {
+                    console.log(err);
+                }
 
-            for (let err of bdthemeErrors) {
-                console.log(err);
+                for (let err of bdthemeErrors) {
+                    console.log(err);
+                }
             }
 
             settingsPanel = new V2_SettingsPanel();
