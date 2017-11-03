@@ -205,6 +205,15 @@ Core.prototype.init = function () {
             themeModule = new ThemeModule();
             themeModule.loadThemes();
 
+            // Show loading errors
+            for (let err of bdpluginErrors) {
+                console.log(err);
+            }
+
+            for (let err of bdthemeErrors) {
+                console.log(err);
+            }
+
             settingsPanel = new V2_SettingsPanel();
             settingsPanel.updateSettings();
 
@@ -1137,6 +1146,7 @@ PluginModule.prototype.loadPlugins = function () {
         catch (err) {
             pluginCookie[name] = false;
             utils.err("Plugin " + name + " could not be loaded.", err);
+            bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, reason: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
             continue;
         }
 
@@ -1147,6 +1157,7 @@ PluginModule.prototype.loadPlugins = function () {
             catch (err) {
                 pluginCookie[name] = false;
                 utils.err("Plugin " + name + " could not be started.", err);
+                bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, reason: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
             }
         }
     }
