@@ -170,6 +170,8 @@ var defaultCookie = {
 
 var settingsCookie = {};
 
+var bdpluginErrors, bdthemeErrors; // define for backwards compatibility
+
 function Core() {}
 
 Core.prototype.init = function () {
