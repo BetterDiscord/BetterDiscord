@@ -204,11 +204,6 @@ Core.prototype.init = function () {
             themeModule = new ThemeModule();
             themeModule.loadThemes();
 
-            // Show loading errors
-            if (settingsCookie["bda-gs-9"]) {
-                self.showStartupErrors();
-            }
-
             settingsPanel = new V2_SettingsPanel();
             settingsPanel.updateSettings();
 
@@ -232,6 +227,10 @@ Core.prototype.init = function () {
             $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
             $("head").append('<style id="bdemotemenustyle"></style>');
             document.getElementsByClassName("bd-loaderv2")[0].remove();
+            // Show loading errors
+            if (settingsCookie["bda-gs-9"]) {
+                self.showStartupErrors();
+            }
             self.initObserver();
         } else {
             setTimeout(gwDefer, 100);
@@ -1303,6 +1302,41 @@ BdApi.getCore = function () {
 //Show modal alert
 BdApi.alert = function (title, content) {
     mainCore.alert(title, content);
+};
+
+/**
+ * This shows a toast similar to android towards the bottom of the screen.
+ * 
+ * @param {string} content The string to show in the toast.
+ * @param {object} options Options object. Optional parameter.
+ * @param {string} options.type Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
+ * @param {boolean} options.icon Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
+ * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
+ */
+BdApi.showToast = function(content, options = {}) {
+    if (!document.querySelector('.bd-toasts')) {
+        let toastWrapper = document.createElement("div");
+        toastWrapper.classList.add("bd-toasts");
+        let boundingElement = document.querySelector('.chat form, #friends, .noChannel-2EQ0a9, .activityFeed-HeiGwL');
+        toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
+        toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
+        toastWrapper.style.setProperty("bottom", (document.querySelector('.chat form') ? document.querySelector('.chat form').offsetHeight : 80) + "px");
+        document.querySelector('.app').appendChild(toastWrapper);
+    }
+    const {type = "", icon = true, timeout = 3000} = options;
+    let toastElem = document.createElement("div");
+    toastElem.classList.add("bd-toast");
+	if (type) toastElem.classList.add("toast-" + type);
+	if (type && icon) toastElem.classList.add("icon");
+    toastElem.innerText = content;
+    document.querySelector('.bd-toasts').appendChild(toastElem);
+    setTimeout(() => {
+        toastElem.classList.add('closing');
+        setTimeout(() => {
+            toastElem.remove();
+            if (!document.querySelectorAll('.bd-toasts .bd-toast').length) document.querySelector('.bd-toasts').remove();
+        }, 300);
+    }, timeout);
 };
 
 /* BetterDiscordApp DevMode JavaScript
