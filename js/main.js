@@ -103,7 +103,7 @@ var bttvEmoteUrlEnd = "/1x";
 var mainCore;
 
 var settings = {
-    "Show Error Modal":           { "id": "bda-gs-9",  "info": "Show a modal with plugin/theme errors on startup.", "implemented": true,  "hidden": false, "cat": "core"},
+    "Startup Error Modal":        { "id": "bda-gs-9",  "info": "Show a modal with plugin/theme errors on startup.", "implemented": true,  "hidden": false, "cat": "core"},
     "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
     "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false, "hidden": false, "cat": "core"},
     "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
