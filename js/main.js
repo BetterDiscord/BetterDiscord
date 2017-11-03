@@ -199,6 +199,11 @@ Core.prototype.init = function () {
         if (document.querySelectorAll('.guilds .guild').length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
             self.injectExternals();
+
+            // Add check for backwards compatibility
+            if (!bdpluginErrors) var bdpluginErrors = [];
+            if (!bdthemeErrors) var bdthemeErrors = [];
+
             // customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
@@ -1147,7 +1152,7 @@ PluginModule.prototype.loadPlugins = function () {
 PluginModule.prototype.startPlugin = function (plugin) {
     try {
         bdplugins[plugin].plugin.start();
-        mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
+        if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
     }
     catch (err) {
         pluginCookie[plugin] = false;
@@ -1159,7 +1164,7 @@ PluginModule.prototype.startPlugin = function (plugin) {
 PluginModule.prototype.stopPlugin = function (plugin) {
     try {
         bdplugins[plugin].plugin.stop();
-        mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
+        if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
     }
     catch (err) {
         utils.err("Plugin " + name + " could not be stopped.", err);
@@ -1263,12 +1268,14 @@ ThemeModule.prototype.enableTheme = function (theme) {
     themeCookie[theme] = true;
     this.saveThemeData();
     $("head").append(`<style id="${utils.escapeID(bdthemes[theme].name)}">${unescape(bdthemes[theme].css)}</style>`);
+    if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
 };
 
 ThemeModule.prototype.disableTheme = function (theme) {
     themeCookie[theme] = false;
     this.saveThemeData();
     $(`#${utils.escapeID(bdthemes[theme].name)}`).remove();
+    if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been removed.`);
 };
 
 ThemeModule.prototype.toggleTheme = function (theme) {
