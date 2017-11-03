@@ -22,7 +22,7 @@
     let __data = {};
     if(__fs.existsSync(`${__dataPath}localStorage.json`)) {
         try {
-            __data = JSON.parse(__fs.readFileSync(`${__dataPath}localStorage.json`))
+            __data = JSON.parse(__fs.readFileSync(`${__dataPath}localStorage.json`));
         }catch(err) {
             console.log(err);
         }
@@ -324,7 +324,7 @@ Core.prototype.initObserver = function () {
 
             // onSwitch()
             // Not a channel, but still a switch (Activity Feed/Friends menu)
-            if ( node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
+            if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
                 pluginModule.channelSwitch();
             }
 
@@ -400,6 +400,109 @@ Core.prototype.injectColoredText = function(node) {
             elem.style.setProperty("color", color);
         });
     });
+};
+
+Core.prototype.alert = function(title, content) {
+    let modal = $(`<div class="bd-modal-wrapper theme-dark">
+                    <div class="bd-backdrop backdrop-2ohBEd"></div>
+                    <div class="bd-modal modal-2LIEKY">
+                        <div class="bd-modal-inner inner-1_1f7b">
+                            <div class="header header-3sp3cE">
+                                <div class="title">${title}</div>
+                            </div>
+                            <div class="bd-modal-body">
+                                <div class="scroller-wrap fade">
+                                    <div class="scroller">
+                                        ${content}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="footer footer-1PYmcw">
+                                <button type="button">Okay</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`);
+    modal.find('.footer button').on('click', () => {
+        modal.addClass('closing');
+        setTimeout(() => { modal.remove(); }, 300);
+    });
+    modal.find('.bd-backdrop').on('click', () => {
+        modal.addClass('closing');
+        setTimeout(() => { modal.remove(); }, 300);
+    });
+    modal.appendTo("#app-mount");
+};
+
+Core.prototype.showStartupErrors = function() {
+    let modal = $(`<div class="bd-modal-wrapper theme-dark">
+                    <div class="bd-backdrop backdrop-2ohBEd"></div>
+                    <div class="bd-modal bd-startup-modal modal-2LIEKY">
+                        <div class="bd-modal-inner inner-1_1f7b">
+                            <div class="header header-3sp3cE"><div class="title">Startup Errors</div></div>
+                            <div class="bd-modal-body">
+                                <div class="tab-bar-container">
+                                    <div class="tab-bar TOP">
+                                        <div class="tab-bar-item">Plugins</div>
+                                        <div class="tab-bar-item">Themes</div>
+                                    </div>
+                                </div>
+                                <div class="table-header">
+                                    <div class="table-column column-name">Name</div>
+                                    <div class="table-column column-reason">Reason</div>
+                                    <div class="table-column column-error">Error</div>
+                                </div>
+                                <div class="scroller-wrap fade">
+                                    <div class="scroller">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="footer footer-1PYmcw">
+                                <button type="button">Okay</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`);
+
+    function generateTab(errors) {
+        let container = $(`<div class="errors">`);
+        for (let err of errors) {
+            let error = $(`<div class="error">
+                                <div class="table-column column-name">${err.name ? err.name : err.file}</div>
+                                <div class="table-column column-reason">${err.reason}</div>
+                                <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
+                            </div>`);
+            container.append(error);
+            if (err.error) {
+                error.find('a').on('click', (e) => {
+                    e.preventDefault();
+                    utils.err(`Error details for ${err.name ? err.name : err.file}.`, err.error);
+                });
+            }
+        }
+        return container;
+    }
+    
+    let tabs = [generateTab(bdpluginErrors), generateTab(bdthemeErrors)];
+
+    modal.find('.tab-bar-item').on('click', (e) => {
+        e.preventDefault();
+        modal.find('.tab-bar-item').removeClass('selected');
+        $(e.target).addClass('selected');
+        modal.find('.scroller').empty().append(tabs[$(e.target).index()]);
+    });
+
+    modal.find('.footer button').on('click', () => {
+        modal.addClass('closing');
+        setTimeout(() => { modal.remove(); }, 300);
+    });
+    modal.find('.bd-backdrop').on('click', () => {
+        modal.addClass('closing');
+        setTimeout(() => { modal.remove(); }, 300);
+    });
+    modal.appendTo("#app-mount");
+    modal.find('.tab-bar-item')[0].click();
 };
 
 
@@ -653,163 +756,6 @@ EmoteModule.prototype.capitalize = function (value) {
         }
     }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /* BetterDiscordApp QuickEmoteMenu JavaScript
  * Version: 1.3
@@ -1328,6 +1274,19 @@ BdApi.clearCSS = function (id) {
     $("#" + utils.escapeID(id)).remove();
 };
 
+//Inject CSS to document head
+//id = id of element
+//css = custom css
+BdApi.linkJS = function (id, url) {
+    $("head").append($('<script>', {id: utils.escapeID(id), src: url, type: "text/javascript"}));
+};
+
+//Clear css/remove any element
+//id = id of element
+BdApi.unlinkJS = function (id) {
+    $("#" + utils.escapeID(id)).remove();
+};
+
 //Get another plugin
 //name = name of plugin
 BdApi.getPlugin = function (name) {
@@ -1347,6 +1306,11 @@ BdApi.getCore = function () {
     return mainCore;
 };
 
+//Show modal alert
+BdApi.alert = function (title, content) {
+    mainCore.alert(title, content);
+};
+
 /* BetterDiscordApp DevMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1362,7 +1326,7 @@ BdApi.getCore = function () {
      this.disable();
      $(window).on("keydown.bdDevmode", function(e) {
          if(e.which === 119) {//F8
-            console.log('%c[%cDM%c] %cBreak/Resume', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
+            console.log('%c[%cDevMode%c] %cBreak/Resume', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
             debugger; // eslint-disable-line no-debugger
          }
      });
@@ -1432,6 +1396,162 @@ BdApi.getCore = function () {
      $(document).off("contextmenu.bdDevmode");
      $(document).off("contextmenu.bdDevModeCtx");
  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2529,423 +2649,8 @@ class V2C_ServerCard extends BDV2.reactComponent {
     }
 }
 
-// class V2C_PublicServers extends BDV2.reactComponent {
 
-//     constructor(props) {
-//         super(props);
-//         this.setInitialState();
-//         this.close = this.close.bind(this);
-//         this.changeCategory = this.changeCategory.bind(this);
-//         this.search = this.search.bind(this);
-//         this.searchKeyDown = this.searchKeyDown.bind(this);
-//         this.checkConnection = this.checkConnection.bind(this);
-//         this.join = this.join.bind(this);
-//         this.connect = this.connect.bind(this);
-//     }
 
-//     componentDidMount() {
-//         this.checkConnection();
-//     }
-
-//     setInitialState() {
-//         this.state = {
-//             'selectedCategory': -1,
-//             'title': 'Loading...',
-//             'loading': true,
-//             'servers': [],
-//             'next': null,
-//             'connection': {
-//                 'state': 0,
-//                 'user': null
-//             }
-//         };
-//     }
-
-//     close() {
-//         BDV2.reactDom.unmountComponentAtNode(document.getElementById(this.props.rootId));
-//     }
-
-//     search(query, clear) {
-//         let self = this;
-
-//         $.ajax({
-//             method: 'GET',
-//             url: `${self.endPoint}${query}`,
-//             success: data => {
-
-//                 let servers = data.results.reduce((arr, server) => {
-//                     server.joined = false;
-//                     arr.push(server);
-//                     // arr.push(<V2Components.ServerCard server={server} join={self.join}/>);
-//                     return arr;
-//                 }, []);
-
-//                 if (!clear) {
-//                     servers = self.state.servers.concat(servers);
-//                 } else {
-//                     //servers.unshift(self.bdServer);
-//                 }
-
-//                 let end = data.size + data.from;
-//                 if (end >= data.total) {
-//                     end = data.total;
-//                     data.next = null;
-//                 }
-
-//                 let title = `Showing 1-${end} of ${data.total} results in ${self.categoryButtons[self.state.selectedCategory]}`;
-//                 if (self.state.term) title += ` for ${self.state.term}`;
-
-//                 self.setState({
-//                     'loading': false,
-//                     'title': title,
-//                     'servers': servers,
-//                     'next': data.next
-//                 });
-
-//                 if (clear) {
-//                     self.refs.sbv.refs.contentScroller.refs.scroller.scrollTop = 0;
-//                 }
-//             },
-//             error: (jqXHR) => {
-//                 self.setState({
-//                     'loading': false,
-//                     'title': 'Failed to load servers. Check console for details'
-//                 });
-//                 console.log(jqXHR);
-//             }
-//         });
-//     }
-
-//     join(server) {
-//         let self = this;
-//         if (self.state.loading) return;
-//         self.setState({
-//             'loading': true
-//         });
-
-//         if (server.nativejoin) {
-//             self.setState({
-//                 'loading': false
-//             });
-//             $(".guilds-add").click();
-//             $(".join .btn-primary").click();
-//             $(".join-server input").val(server.invitecode);
-//             return;
-//         }
-
-//         $.ajax({
-//             method: 'GET',
-//             url: `${self.joinEndPoint}/${server.identifier}`,
-//             crossDomain: true,
-//             xhrFields: {
-//                 withCredentials: true
-//             },
-//             success: () => {
-//                 let servers = self.state.servers;
-//                 servers.map(s => {
-//                     if (s.identifier === server.identifier) server.joined = true;
-//                 });
-//                 self.setState({
-//                     'loading': false,
-//                     'servers': servers
-//                 });
-//             },
-//             error: jqXHR => {
-//                 console.log(`[BetterDiscord] Failed to join server ${server.name}. Reason: `);
-//                 console.log(jqXHR);
-//                 let servers = self.state.servers;
-//                 servers.map(s => {
-//                     if (s.identifier === server.identifier) server.error = true;
-//                 });
-//                 self.setState({
-//                     'loading': false,
-//                     'servers': servers
-//                 });
-//             }
-//         });
-//     }
-
-//     get bdServer() {
-//         let server = {
-//             "name": "BetterDiscord",
-//             "online": "7500+",
-//             "members": "20000+",
-//             "categories": ["community", "programming", "support"],
-//             "description": "Official BetterDiscord server for support etc",
-//             "identifier": "86004744966914048",
-//             "icon": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
-//             "nativejoin": true,
-//             "invitecode": "0Tmfo5ZbORCRqbAd",
-//             "pinned": true
-//         };
-//         return BDV2.react.createElement(V2Components.ServerCard, { server: server, pinned: true, join: this.join });
-//     }
-
-//     get endPoint() {
-//         return 'https://search.discordservers.com';
-//     }
-
-//     get joinEndPoint() {
-//         return 'https://join.discordservers.com';
-//     }
-
-//     get connectEndPoint() {
-//         return 'https://join.discordservers.com/connect';
-//     }
-
-//     checkConnection() {
-//         let self = this;
-//         $.ajax({
-//             method: 'GET',
-//             url: `${self.joinEndPoint}/session`,
-//             crossDomain: true,
-//             xhrFields: {
-//                 withCredentials: true
-//             },
-//             success: data => {
-//                 self.setState({
-//                     'selectedCategory': 0,
-//                     'connection': {
-//                         'state': 2,
-//                         'user': data
-//                     }
-//                 });
-//                 self.search("", true);
-//             },
-//             error: jqXHR => {
-//                 if (jqXHR.status === 403) {
-//                     //Not connected
-//                     self.setState({
-//                         'title': 'Not connected to discordservers.com!',
-//                         'loading': true,
-//                         'selectedCategory': -1,
-//                         'connection': {
-//                             'state': 1,
-//                             'user': null
-//                         }
-//                     });
-//                     return;
-//                 }
-//                 console.log(jqXHR);
-//             }
-//         });
-//     }
-
-//     get windowOptions() {
-//         return {
-//             width: 520,
-//             height: 710,
-//             backgroundColor: '#282b30',
-//             show: true,
-//             resizable: false,
-//             maximizable: false,
-//             minimizable: false,
-//             alwaysOnTop: true,
-//             frame: false,
-//             center: false
-//         };
-//     }
-
-//     connect() {
-//         let self = this;
-//         let options = self.windowOptions;
-//         options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
-//         options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
-
-//         self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
-//         let sub = window.location.hostname.split('.')[0];
-//         let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
-//         self.joinWindow.on('close', () => {
-//             self.checkConnection();
-//         });
-//         self.joinWindow.webContents.on('did-navigate', (event, url) => {
-//             if (!url.includes("connect/callback")) return;
-//             self.joinWindow.close();
-//         });
-//         self.joinWindow.loadURL(url);
-//     }
-
-//     render() {
-//         return BDV2.react.createElement(V2Components.SidebarView, { ref: "sbv", children: this.component });
-//     }
-
-//     get component() {
-//         return {
-//             'sidebar': {
-//                 'component': this.sidebar
-//             },
-//             'content': {
-//                 'component': this.content
-//             }
-//         };
-//     }
-
-//     get sidebar() {
-//         return BDV2.react.createElement(
-//             "div",
-//             { className: "sidebar", key: "ps" },
-//             BDV2.react.createElement(
-//                 "div",
-//                 { className: "ui-tab-bar SIDE" },
-//                 BDV2.react.createElement(
-//                     "div",
-//                     { className: "ui-tab-bar-header", style: { fontSize: "16px" } },
-//                     "Public Servers"
-//                 ),
-//                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
-//                 this.searchInput,
-//                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
-//                 BDV2.react.createElement(V2Components.TabBar.Header, { text: "Categories" }),
-//                 this.categoryButtons.map((value, index) => {
-//                     return BDV2.react.createElement(V2Components.TabBar.Item, { id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index });
-//                 }),
-//                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
-//                 this.footer,
-//                 this.connection
-//             )
-//         );
-//     }
-
-//     get searchInput() {
-//         return BDV2.react.createElement(
-//             "div",
-//             { className: "ui-form-item" },
-//             BDV2.react.createElement(
-//                 "div",
-//                 { className: "ui-text-input flex-vertical", style: { width: "172px", marginLeft: "10px" } },
-//                 BDV2.react.createElement("input", { ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50" })
-//             )
-//         );
-//     }
-
-//     searchKeyDown(e) {
-//         let self = this;
-//         if (self.state.loading || e.which !== 13) return;
-//         self.setState({
-//             'loading': true,
-//             'title': 'Loading...',
-//             'term': e.target.value
-//         });
-//         let query = `?term=${e.target.value}`;
-//         if (self.state.selectedCategory !== 0) {
-//             query += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
-//         }
-//         self.search(query, true);
-//     }
-
-//     get categoryButtons() {
-//         return ["All", "FPS Games", "MMO Games", "Strategy Games", "Sports Games", "Puzzle Games", "Retro Games", "Party Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Community", "Language", "Programming", "Other"];
-//     }
-
-//     changeCategory(id) {
-//         let self = this;
-//         if (self.state.loading) return;
-//         self.refs.searchinput.value = "";
-//         self.setState({
-//             'loading': true,
-//             'selectedCategory': id,
-//             'title': 'Loading...',
-//             'term': null
-//         });
-//         if (id === 0) {
-//             self.search("", true);
-//             return;
-//         }
-//         self.search(`?category=${self.categoryButtons[id]}`, true);
-//     }
-
-//     get content() {
-//         let self = this;
-//         if (self.state.connection.state === 1) return self.notConnected;
-//         return [BDV2.react.createElement(
-//             "div",
-//             { ref: "content", key: "pc", className: "content-column default" },
-//             BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title }),
-//             self.bdServer,
-//             self.state.servers.map((server, index) => {
-//                 return BDV2.react.createElement(V2Components.ServerCard, { key: index, server: server, join: self.join });
-//             }),
-//             self.state.next && BDV2.react.createElement(
-//                 "button",
-//                 { type: "button", onClick: () => {
-//                         if (self.state.loading) return;self.setState({ 'loading': true });self.search(self.state.next, false);
-//                     }, className: "ui-button filled brand small grow", style: { width: "100%", marginTop: "10px", marginBottom: "10px" } },
-//                 BDV2.react.createElement(
-//                     "div",
-//                     { className: "ui-button-contents" },
-//                     self.state.loading ? 'Loading' : 'Load More'
-//                 )
-//             ),
-//             self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title })
-//         ), BDV2.react.createElement(V2Components.Tools, { key: "pt", ref: "tools", onClick: self.close })];
-//     }
-
-//     get notConnected() {
-//         let self = this;
-//         return [BDV2.react.createElement(
-//             "div",
-//             { key: "ncc", ref: "content", className: "content-column default" },
-//             BDV2.react.createElement(
-//                 "h2",
-//                 { className: "ui-form-title h2 margin-reset margin-bottom-20" },
-//                 "Not connected to discordservers.com!",
-//                 BDV2.react.createElement(
-//                     "button",
-//                     { onClick: self.connect, type: "button", className: "ui-button filled brand small grow", style: { display: "inline-block", minHeight: "18px", marginLeft: "10px", lineHeight: "14px" } },
-//                     BDV2.react.createElement(
-//                         "div",
-//                         { className: "ui-button-contents" },
-//                         "Connect"
-//                     )
-//                 )
-//             ),
-//             self.bdServer
-//         ), BDV2.react.createElement(V2Components.Tools, { key: "nct", ref: "tools", onClick: self.close })];
-//     }
-
-//     get footer() {
-//         return BDV2.react.createElement(
-//             "div",
-//             { className: "ui-tab-bar-header" },
-//             BDV2.react.createElement(
-//                 "a",
-//                 { href: "https://discordservers.com", target: "_blank" },
-//                 "Discordservers.com"
-//             )
-//         );
-//     }
-
-//     get connection() {
-//         let self = this;
-//         let { connection } = self.state;
-//         if (connection.state !== 2) return BDV2.react.createElement("span", null);
-
-//         return BDV2.react.createElement(
-//             "span",
-//             null,
-//             BDV2.react.createElement(V2Components.TabBar.Separator, null),
-//             BDV2.react.createElement(
-//                 "span",
-//                 { style: { color: "#b9bbbe", fontSize: "10px", marginLeft: "10px" } },
-//                 "Connected as: ",
-//                 `${connection.user.username}#${connection.user.discriminator}`
-//             ),
-//             BDV2.react.createElement(
-//                 "div",
-//                 { style: { padding: "5px 10px 0 10px" } },
-//                 BDV2.react.createElement(
-//                     "button",
-//                     { style: { width: "100%", minHeight: "20px" }, type: "button", className: "ui-button filled brand small grow" },
-//                     BDV2.react.createElement(
-//                         "div",
-//                         { className: "ui-button-contents", onClick: self.connect },
-//                         "Reconnect"
-//                     )
-//                 )
-//             )
-//         );
-//     }
-// }
 
 class V2Components {
     static get SettingsPanel() {
@@ -3000,41 +2705,6 @@ class V2Components {
         return V2C_ServerCard;
     }
 }
-
-// class V2_PublicServers {
-
-//     constructor() {}
-
-//     get component() {
-//         return BDV2.react.createElement(V2Components.Layer, { rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, { rootId: "pubslayerroot" }) });
-//     }
-
-//     get root() {
-//         let _root = $("#pubslayerroot");
-//         if (!_root.length) {
-//             if (!this.injectRoot()) return null;
-//             return this.root;
-//         }
-//         return _root[0];
-//     }
-
-//     injectRoot() {
-//         if (!$(".layers").length) return false;
-//         $(".layers").append($("<span/>", {
-//             id: 'pubslayerroot'
-//         }));
-//         return true;
-//     }
-
-//     render() {
-//         let root = this.root;
-//         if (!root) {
-//             console.log("FAILED TO LOCATE ROOT: .layers");
-//             return;
-//         }
-//         BDV2.reactDom.render(this.component, root);
-//     }
-// }
 
 class V2_SettingsPanel_Sidebar {
 
