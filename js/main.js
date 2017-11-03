@@ -203,8 +203,8 @@ Core.prototype.init = function () {
             self.injectExternals();
 
             // Add check for backwards compatibility
-            if (!bdpluginErrors) var bdpluginErrors = [];
-            if (!bdthemeErrors) var bdthemeErrors = [];
+            if (!bdpluginErrors) bdpluginErrors = [];
+            if (!bdthemeErrors) bdthemeErrors = [];
 
             // customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
