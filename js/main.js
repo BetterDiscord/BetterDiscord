@@ -7,6 +7,10 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
+ /* global Proxy, bdplugins, bdthemes, bdpluginErrors, bdthemeErrors, betterDiscordIPC, bdVersion, version, BDV2, CodeMirror */
+
+ /* eslint-disable  no-console */
+
 /*Localstorage fix*/
 (function() {
 
@@ -44,11 +48,11 @@
     };
 
     var __proxy = new Proxy(__ls, {
-        set: function(target, name, val, receiver) {
+        set: function(target, name, val) {
             __ls[name] = val;
             __ls.save();
         },
-        get: function(target, name, receiver) {
+        get: function(target, name) {
             return __ls[name] || null;
         }
     });
@@ -84,7 +88,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
     console.log(arg);
 });
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, customCssEditor, dMode;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
 
@@ -127,11 +131,11 @@ var settings = {
     "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": true,  "hidden": false, "cat": "emote"},
 };
 
-var links = {
-    "Jiiks.net": { "text": "Jiiks.net", "href": "thtp://jiiks.net",          "target": "_blank" },
-    "twitter":   { "text": "Twitter",   "href": "http://twitter.com/jiiksi", "target": "_blank" },
-    "github":    { "text": "Github",    "href": "http://github.com/jiiks",   "target": "_blank" }
-};
+// var links = {
+//     "Jiiks.net": { "text": "Jiiks.net", "href": "thtp://jiiks.net",          "target": "_blank" },
+//     "twitter":   { "text": "Twitter",   "href": "http://twitter.com/jiiksi", "target": "_blank" },
+//     "github":    { "text": "Github",    "href": "http://github.com/jiiks",   "target": "_blank" }
+// };
 
 var defaultCookie = {
     "version": jsVersion,
@@ -406,6 +410,7 @@ Core.prototype.injectColoredText = function(node) {
 
 var emotesFfz = {};
 var emotesBTTV = {};
+var emotesBTTV2 = {};
 var emotesTwitch = {
     "emote": {
         "id": 0
@@ -450,6 +455,7 @@ EmoteModule.prototype.getNodes = function (node) {
 
     var treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
 
+    // eslint-disable-next-line no-cond-assign
     while (next = treeWalker.nextNode()) {
         nodes.push(next);
     }
@@ -457,7 +463,7 @@ EmoteModule.prototype.getNodes = function (node) {
 };
 
 var bemotes = [];
-var spoilered = [];
+// var spoilered = [];
 
 
 EmoteModule.prototype.injectEmote = function(node) {
@@ -481,7 +487,7 @@ EmoteModule.prototype.injectEmote = function(node) {
             if(contents[i].nodeType == 8) return;
             contents.splice(i, 1);
 
-            var words = nodeValue.split(/([^\s]+)([\s]|$)/g).filter(function(e){ return e});
+            var words = nodeValue.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
             
             var splice = 0;
 
@@ -497,7 +503,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                 }
                 
                 var allowedClasses = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
-                var useEmoteClass = false;
+                // var useEmoteClass = false;
                 var emoteClass = "";
                 var skipffz = false;
                 
@@ -522,7 +528,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                     if(typeof emotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
                         if(emotesTwitch.hasOwnProperty(sw) && sw.length >= 4) { 
                             if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            var url = twitchEmoteUrlStart + emotesTwitch[sw].id + twitchEmoteUrlEnd;
+                            let url = twitchEmoteUrlStart + emotesTwitch[sw].id + twitchEmoteUrlEnd;
                             contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
                             doInject = true;
                             return;
@@ -532,7 +538,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                     if(typeof subEmotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
                         if(subEmotesTwitch.hasOwnProperty(sw) && sw.length >= 4) {
                             if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            var url = twitchEmoteUrlStart + subEmotesTwitch[sw] + twitchEmoteUrlEnd;
+                            let url = twitchEmoteUrlStart + subEmotesTwitch[sw] + twitchEmoteUrlEnd;
                             contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
                             doInject = true;
                             return;
@@ -542,7 +548,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                     if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) { 
                         if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 4) {
                             if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            var url = emotesBTTV[sw];
+                            let url = emotesBTTV[sw];
                             contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
                             doInject = true;
                             return;
@@ -552,7 +558,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                     if ((typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) && (!skipffz || !emotesBTTV2.hasOwnProperty(sw))) { 
                         if(emotesFfz.hasOwnProperty(sw) && sw.length >= 4) {
                             if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            var url = ffzEmoteUrlStart + emotesFfz[sw] + ffzEmoteUrlEnd;
+                            let url = ffzEmoteUrlStart + emotesFfz[sw] + ffzEmoteUrlEnd;
                             contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
                             doInject = true;
                             return;
@@ -562,7 +568,7 @@ EmoteModule.prototype.injectEmote = function(node) {
                     if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) { 
                         if(emotesBTTV2.hasOwnProperty(sw) && sw.length >= 4) {
                             if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            var url = bttvEmoteUrlStart + emotesBTTV2[sw] + bttvEmoteUrlEnd;
+                            let url = bttvEmoteUrlStart + emotesBTTV2[sw] + bttvEmoteUrlEnd;
                             if(skipffz && emotesFfz.hasOwnProperty(sw)) sw = sw + ":bttv";
                             contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
                             doInject = true;
@@ -604,7 +610,7 @@ EmoteModule.prototype.injectEmote = function(node) {
 EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
     var len = Math.round(word.length / 4);
     var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
-    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" class="emote '+ mod +'" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite(\"' + name + '\", \"' + url + '\");\' class="fav" title="Favorite!" type="button"></span>';
+    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" class="emote ' + mod + '" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite("' + name + '", "' + url + '");\' class="fav" title="Favorite!" type="button"></span>';
     return $.parseHTML(html.replace(new RegExp("\uFDD9", "g"), ""))[0];
 };
 
@@ -813,16 +819,16 @@ QuickEmoteMenu.prototype.init = function() {
         if(e.target.id != "rmenu") $("#rmenu").remove();
     });
     this.favoriteEmotes = {};
-    var fe = bdStorage.get("bdfavemotes");
+    var fe = window.bdStorage.get("bdfavemotes");
     if (fe !== "" && fe !== null) {
         this.favoriteEmotes = JSON.parse(atob(fe));
     }
 
     var qmeHeader = "";
     qmeHeader += "<div id=\"bda-qem\">";
-    qmeHeader += "    <button class=\"active\" id=\"bda-qem-twitch\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Twitch<\/button>";
-    qmeHeader += "    <button id=\"bda-qem-favourite\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Favourite<\/button>";
-    qmeHeader += "    <button id=\"bda-qem-emojis\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Emojis<\/buttond>";
+    qmeHeader += "    <button class=\"active\" id=\"bda-qem-twitch\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Twitch</button>";
+    qmeHeader += "    <button id=\"bda-qem-favourite\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Favourite</button>";
+    qmeHeader += "    <button id=\"bda-qem-emojis\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Emojis</buttond>";
     qmeHeader += "</div>";
     this.qmeHeader = qmeHeader;
 
@@ -831,19 +837,19 @@ QuickEmoteMenu.prototype.init = function() {
     teContainer += "    <div class=\"scroller-wrap fade\">";
     teContainer += "        <div class=\"scroller\">";
     teContainer += "            <div class=\"emote-menu-inner\">";
-    for (var emote in emotesTwitch) {
+    for (let emote in emotesTwitch) {
         if (emotesTwitch.hasOwnProperty(emote)) {
             var id = emotesTwitch[emote].id;
             teContainer += "<div class=\"emote-container\">";
-            teContainer += "    <img class=\"emote-icon\" id=\"" + emote + "\" alt=\"\" src=\"https://static-cdn.jtvnw.net/emoticons/v1/"+id+"/1.0\" title=\""+emote+"\">";
+            teContainer += "    <img class=\"emote-icon\" id=\"" + emote + "\" alt=\"\" src=\"https://static-cdn.jtvnw.net/emoticons/v1/" + id + "/1.0\" title=\"" + emote + "\">";
             teContainer += "    </img>";
             teContainer += "</div>";
         }
     }
-    teContainer += "            <\/div>";
-    teContainer += "        <\/div>";
-    teContainer += "    <\/div>";
-    teContainer += "<\/div>";
+    teContainer += "            </div>";
+    teContainer += "        </div>";
+    teContainer += "    </div>";
+    teContainer += "</div>";
     this.teContainer = teContainer;
 
     var faContainer = "";
@@ -851,7 +857,7 @@ QuickEmoteMenu.prototype.init = function() {
     faContainer += "    <div class=\"scroller-wrap fade\">";
     faContainer += "        <div class=\"scroller\">";
     faContainer += "            <div class=\"emote-menu-inner\">";
-    for (var emote in this.favoriteEmotes) {
+    for (let emote in this.favoriteEmotes) {
         var url = this.favoriteEmotes[emote];
         faContainer += "<div class=\"emote-container\">";
         faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu='quickEmoteMenu.favContext(event, this);'>";
@@ -1345,7 +1351,7 @@ BdApi.getCore = function () {
      $(window).on("keydown.bdDevmode", function(e) {
          if(e.which === 119) {//F8
             console.log('%c[%cDM%c] %cBreak/Resume', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
-            debugger;
+            debugger; // eslint-disable-line no-debugger
          }
      });
      
@@ -1449,7 +1455,7 @@ class V2 {
             let setting = settings[key];
             if(setting.cat === cat && setting.implemented && !setting.hidden) { 
                 setting.text = key;
-                arr.push(setting) 
+                arr.push(setting);
             } return arr; 
         }, []);
     }
@@ -1523,7 +1529,7 @@ class V2C_Switch extends BDV2.reactComponent {
         );
     }
 
-    onChange(e) {
+    onChange() {
         this.props.onChange(this.props.id, !this.state.checked);
         this.setState({
             'checked': !this.state.checked
@@ -1618,7 +1624,7 @@ class V2C_SideBar extends BDV2.reactComponent {
         if(ns.length) {
             self.nscn = ns.attr("class");
         }
-        $("[class*=side] > [class*=item]").on("click", e => {
+        $("[class*=side] > [class*=item]").on("click", () => {
             self.setState({
                 'selected': null
             });
@@ -1668,10 +1674,8 @@ class V2C_SideBar extends BDV2.reactComponent {
             si.attr("class", self.nscn);
         }
 
-        $('.ui-tab-bar-item').removeClass('selected');
-        self.setState({
-            'selected': id
-        });
+        self.setState({'selected': null});
+        self.setState({'selected': id});
 
         if (self.props.onClick) self.props.onClick(id);
     }
@@ -1800,7 +1804,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
         let self = this;
         $("#app-mount").addClass('bd-detached-editor');
         self.editor = CodeMirror.fromTextArea(self.refs.editor, self.options);
-        self.editor.on("change", cm => {
+        self.editor.on("change", () => {
             if (!settingsCookie["bda-css-0"]) return;
             self.updateCss();
         });
@@ -1978,7 +1982,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
         let self = this;
         if (!self.state.detached) {
             self.editor = CodeMirror.fromTextArea(self.refs.editor, self.options);
-            self.editor.on("change", cm => {
+            self.editor.on("change", () => {
                 if (!settingsCookie["bda-css-0"]) return;
                 self.updateCss();
             });
@@ -2507,429 +2511,429 @@ class V2C_ServerCard extends BDV2.reactComponent {
         );
     }
 
-    join(id) {
+    join() {
         let self = this;
         self.props.join(self.props.server);
     }
 }
 
-class V2C_PublicServers extends BDV2.reactComponent {
+// class V2C_PublicServers extends BDV2.reactComponent {
 
-    constructor(props) {
-        super(props);
-        this.setInitialState();
-        this.close = this.close.bind(this);
-        this.changeCategory = this.changeCategory.bind(this);
-        this.search = this.search.bind(this);
-        this.searchKeyDown = this.searchKeyDown.bind(this);
-        this.checkConnection = this.checkConnection.bind(this);
-        this.join = this.join.bind(this);
-        this.connect = this.connect.bind(this);
-    }
+//     constructor(props) {
+//         super(props);
+//         this.setInitialState();
+//         this.close = this.close.bind(this);
+//         this.changeCategory = this.changeCategory.bind(this);
+//         this.search = this.search.bind(this);
+//         this.searchKeyDown = this.searchKeyDown.bind(this);
+//         this.checkConnection = this.checkConnection.bind(this);
+//         this.join = this.join.bind(this);
+//         this.connect = this.connect.bind(this);
+//     }
 
-    componentDidMount() {
-        this.checkConnection();
-    }
+//     componentDidMount() {
+//         this.checkConnection();
+//     }
 
-    setInitialState() {
-        this.state = {
-            'selectedCategory': -1,
-            'title': 'Loading...',
-            'loading': true,
-            'servers': [],
-            'next': null,
-            'connection': {
-                'state': 0,
-                'user': null
-            }
-        };
-    }
+//     setInitialState() {
+//         this.state = {
+//             'selectedCategory': -1,
+//             'title': 'Loading...',
+//             'loading': true,
+//             'servers': [],
+//             'next': null,
+//             'connection': {
+//                 'state': 0,
+//                 'user': null
+//             }
+//         };
+//     }
 
-    close() {
-        BDV2.reactDom.unmountComponentAtNode(document.getElementById(this.props.rootId));
-    }
+//     close() {
+//         BDV2.reactDom.unmountComponentAtNode(document.getElementById(this.props.rootId));
+//     }
 
-    search(query, clear) {
-        let self = this;
+//     search(query, clear) {
+//         let self = this;
 
-        $.ajax({
-            method: 'GET',
-            url: `${self.endPoint}${query}`,
-            success: data => {
+//         $.ajax({
+//             method: 'GET',
+//             url: `${self.endPoint}${query}`,
+//             success: data => {
 
-                let servers = data.results.reduce((arr, server) => {
-                    server.joined = false;
-                    arr.push(server);
-                    // arr.push(<V2Components.ServerCard server={server} join={self.join}/>);
-                    return arr;
-                }, []);
+//                 let servers = data.results.reduce((arr, server) => {
+//                     server.joined = false;
+//                     arr.push(server);
+//                     // arr.push(<V2Components.ServerCard server={server} join={self.join}/>);
+//                     return arr;
+//                 }, []);
 
-                if (!clear) {
-                    servers = self.state.servers.concat(servers);
-                } else {
-                    //servers.unshift(self.bdServer);
-                }
+//                 if (!clear) {
+//                     servers = self.state.servers.concat(servers);
+//                 } else {
+//                     //servers.unshift(self.bdServer);
+//                 }
 
-                let end = data.size + data.from;
-                if (end >= data.total) {
-                    end = data.total;
-                    data.next = null;
-                }
+//                 let end = data.size + data.from;
+//                 if (end >= data.total) {
+//                     end = data.total;
+//                     data.next = null;
+//                 }
 
-                let title = `Showing 1-${end} of ${data.total} results in ${self.categoryButtons[self.state.selectedCategory]}`;
-                if (self.state.term) title += ` for ${self.state.term}`;
+//                 let title = `Showing 1-${end} of ${data.total} results in ${self.categoryButtons[self.state.selectedCategory]}`;
+//                 if (self.state.term) title += ` for ${self.state.term}`;
 
-                self.setState({
-                    'loading': false,
-                    'title': title,
-                    'servers': servers,
-                    'next': data.next
-                });
+//                 self.setState({
+//                     'loading': false,
+//                     'title': title,
+//                     'servers': servers,
+//                     'next': data.next
+//                 });
 
-                if (clear) {
-                    self.refs.sbv.refs.contentScroller.refs.scroller.scrollTop = 0;
-                }
-            },
-            error: (jqXHR, textStatus, errorThrow) => {
-                self.setState({
-                    'loading': false,
-                    'title': 'Failed to load servers. Check console for details'
-                });
-                console.log(jqXHR);
-            }
-        });
-    }
+//                 if (clear) {
+//                     self.refs.sbv.refs.contentScroller.refs.scroller.scrollTop = 0;
+//                 }
+//             },
+//             error: (jqXHR) => {
+//                 self.setState({
+//                     'loading': false,
+//                     'title': 'Failed to load servers. Check console for details'
+//                 });
+//                 console.log(jqXHR);
+//             }
+//         });
+//     }
 
-    join(server) {
-        let self = this;
-        if (self.state.loading) return;
-        self.setState({
-            'loading': true
-        });
+//     join(server) {
+//         let self = this;
+//         if (self.state.loading) return;
+//         self.setState({
+//             'loading': true
+//         });
 
-        if (server.nativejoin) {
-            self.setState({
-                'loading': false
-            });
-            $(".guilds-add").click();
-            $(".join .btn-primary").click();
-            $(".join-server input").val(server.invitecode);
-            return;
-        }
+//         if (server.nativejoin) {
+//             self.setState({
+//                 'loading': false
+//             });
+//             $(".guilds-add").click();
+//             $(".join .btn-primary").click();
+//             $(".join-server input").val(server.invitecode);
+//             return;
+//         }
 
-        $.ajax({
-            method: 'GET',
-            url: `${self.joinEndPoint}/${server.identifier}`,
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            },
-            success: data => {
-                let servers = self.state.servers;
-                servers.map(s => {
-                    if (s.identifier === server.identifier) server.joined = true;
-                });
-                self.setState({
-                    'loading': false,
-                    'servers': servers
-                });
-            },
-            error: jqXHR => {
-                console.log(`[BetterDiscord] Failed to join server ${server.name}. Reason: `);
-                console.log(jqXHR);
-                let servers = self.state.servers;
-                servers.map(s => {
-                    if (s.identifier === server.identifier) server.error = true;
-                });
-                self.setState({
-                    'loading': false,
-                    'servers': servers
-                });
-            }
-        });
-    }
+//         $.ajax({
+//             method: 'GET',
+//             url: `${self.joinEndPoint}/${server.identifier}`,
+//             crossDomain: true,
+//             xhrFields: {
+//                 withCredentials: true
+//             },
+//             success: () => {
+//                 let servers = self.state.servers;
+//                 servers.map(s => {
+//                     if (s.identifier === server.identifier) server.joined = true;
+//                 });
+//                 self.setState({
+//                     'loading': false,
+//                     'servers': servers
+//                 });
+//             },
+//             error: jqXHR => {
+//                 console.log(`[BetterDiscord] Failed to join server ${server.name}. Reason: `);
+//                 console.log(jqXHR);
+//                 let servers = self.state.servers;
+//                 servers.map(s => {
+//                     if (s.identifier === server.identifier) server.error = true;
+//                 });
+//                 self.setState({
+//                     'loading': false,
+//                     'servers': servers
+//                 });
+//             }
+//         });
+//     }
 
-    get bdServer() {
-        let server = {
-            "name": "BetterDiscord",
-            "online": "7500+",
-            "members": "20000+",
-            "categories": ["community", "programming", "support"],
-            "description": "Official BetterDiscord server for support etc",
-            "identifier": "86004744966914048",
-            "icon": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
-            "nativejoin": true,
-            "invitecode": "0Tmfo5ZbORCRqbAd",
-            "pinned": true
-        };
-        return BDV2.react.createElement(V2Components.ServerCard, { server: server, pinned: true, join: this.join });
-    }
+//     get bdServer() {
+//         let server = {
+//             "name": "BetterDiscord",
+//             "online": "7500+",
+//             "members": "20000+",
+//             "categories": ["community", "programming", "support"],
+//             "description": "Official BetterDiscord server for support etc",
+//             "identifier": "86004744966914048",
+//             "icon": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
+//             "nativejoin": true,
+//             "invitecode": "0Tmfo5ZbORCRqbAd",
+//             "pinned": true
+//         };
+//         return BDV2.react.createElement(V2Components.ServerCard, { server: server, pinned: true, join: this.join });
+//     }
 
-    get endPoint() {
-        return 'https://search.discordservers.com';
-    }
+//     get endPoint() {
+//         return 'https://search.discordservers.com';
+//     }
 
-    get joinEndPoint() {
-        return 'https://join.discordservers.com';
-    }
+//     get joinEndPoint() {
+//         return 'https://join.discordservers.com';
+//     }
 
-    get connectEndPoint() {
-        return 'https://join.discordservers.com/connect';
-    }
+//     get connectEndPoint() {
+//         return 'https://join.discordservers.com/connect';
+//     }
 
-    checkConnection() {
-        let self = this;
-        $.ajax({
-            method: 'GET',
-            url: `${self.joinEndPoint}/session`,
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            },
-            success: data => {
-                self.setState({
-                    'selectedCategory': 0,
-                    'connection': {
-                        'state': 2,
-                        'user': data
-                    }
-                });
-                self.search("", true);
-            },
-            error: jqXHR => {
-                if (jqXHR.status === 403) {
-                    //Not connected
-                    self.setState({
-                        'title': 'Not connected to discordservers.com!',
-                        'loading': true,
-                        'selectedCategory': -1,
-                        'connection': {
-                            'state': 1,
-                            'user': null
-                        }
-                    });
-                    return;
-                }
-                console.log(jqXHR);
-            }
-        });
-    }
+//     checkConnection() {
+//         let self = this;
+//         $.ajax({
+//             method: 'GET',
+//             url: `${self.joinEndPoint}/session`,
+//             crossDomain: true,
+//             xhrFields: {
+//                 withCredentials: true
+//             },
+//             success: data => {
+//                 self.setState({
+//                     'selectedCategory': 0,
+//                     'connection': {
+//                         'state': 2,
+//                         'user': data
+//                     }
+//                 });
+//                 self.search("", true);
+//             },
+//             error: jqXHR => {
+//                 if (jqXHR.status === 403) {
+//                     //Not connected
+//                     self.setState({
+//                         'title': 'Not connected to discordservers.com!',
+//                         'loading': true,
+//                         'selectedCategory': -1,
+//                         'connection': {
+//                             'state': 1,
+//                             'user': null
+//                         }
+//                     });
+//                     return;
+//                 }
+//                 console.log(jqXHR);
+//             }
+//         });
+//     }
 
-    get windowOptions() {
-        return {
-            width: 520,
-            height: 710,
-            backgroundColor: '#282b30',
-            show: true,
-            resizable: false,
-            maximizable: false,
-            minimizable: false,
-            alwaysOnTop: true,
-            frame: false,
-            center: false
-        };
-    }
+//     get windowOptions() {
+//         return {
+//             width: 520,
+//             height: 710,
+//             backgroundColor: '#282b30',
+//             show: true,
+//             resizable: false,
+//             maximizable: false,
+//             minimizable: false,
+//             alwaysOnTop: true,
+//             frame: false,
+//             center: false
+//         };
+//     }
 
-    connect() {
-        let self = this;
-        let options = self.windowOptions;
-        options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
-        options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
+//     connect() {
+//         let self = this;
+//         let options = self.windowOptions;
+//         options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
+//         options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
 
-        self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
-        let sub = window.location.hostname.split('.')[0];
-        let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
-        self.joinWindow.on('close', e => {
-            self.checkConnection();
-        });
-        self.joinWindow.webContents.on('did-navigate', (event, url) => {
-            if (!url.includes("connect/callback")) return;
-            self.joinWindow.close();
-        });
-        self.joinWindow.loadURL(url);
-    }
+//         self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
+//         let sub = window.location.hostname.split('.')[0];
+//         let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
+//         self.joinWindow.on('close', () => {
+//             self.checkConnection();
+//         });
+//         self.joinWindow.webContents.on('did-navigate', (event, url) => {
+//             if (!url.includes("connect/callback")) return;
+//             self.joinWindow.close();
+//         });
+//         self.joinWindow.loadURL(url);
+//     }
 
-    render() {
-        return BDV2.react.createElement(V2Components.SidebarView, { ref: "sbv", children: this.component });
-    }
+//     render() {
+//         return BDV2.react.createElement(V2Components.SidebarView, { ref: "sbv", children: this.component });
+//     }
 
-    get component() {
-        return {
-            'sidebar': {
-                'component': this.sidebar
-            },
-            'content': {
-                'component': this.content
-            }
-        };
-    }
+//     get component() {
+//         return {
+//             'sidebar': {
+//                 'component': this.sidebar
+//             },
+//             'content': {
+//                 'component': this.content
+//             }
+//         };
+//     }
 
-    get sidebar() {
-        return BDV2.react.createElement(
-            "div",
-            { className: "sidebar", key: "ps" },
-            BDV2.react.createElement(
-                "div",
-                { className: "ui-tab-bar SIDE" },
-                BDV2.react.createElement(
-                    "div",
-                    { className: "ui-tab-bar-header", style: { fontSize: "16px" } },
-                    "Public Servers"
-                ),
-                BDV2.react.createElement(V2Components.TabBar.Separator, null),
-                this.searchInput,
-                BDV2.react.createElement(V2Components.TabBar.Separator, null),
-                BDV2.react.createElement(V2Components.TabBar.Header, { text: "Categories" }),
-                this.categoryButtons.map((value, index) => {
-                    return BDV2.react.createElement(V2Components.TabBar.Item, { id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index });
-                }),
-                BDV2.react.createElement(V2Components.TabBar.Separator, null),
-                this.footer,
-                this.connection
-            )
-        );
-    }
+//     get sidebar() {
+//         return BDV2.react.createElement(
+//             "div",
+//             { className: "sidebar", key: "ps" },
+//             BDV2.react.createElement(
+//                 "div",
+//                 { className: "ui-tab-bar SIDE" },
+//                 BDV2.react.createElement(
+//                     "div",
+//                     { className: "ui-tab-bar-header", style: { fontSize: "16px" } },
+//                     "Public Servers"
+//                 ),
+//                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
+//                 this.searchInput,
+//                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
+//                 BDV2.react.createElement(V2Components.TabBar.Header, { text: "Categories" }),
+//                 this.categoryButtons.map((value, index) => {
+//                     return BDV2.react.createElement(V2Components.TabBar.Item, { id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index });
+//                 }),
+//                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
+//                 this.footer,
+//                 this.connection
+//             )
+//         );
+//     }
 
-    get searchInput() {
-        return BDV2.react.createElement(
-            "div",
-            { className: "ui-form-item" },
-            BDV2.react.createElement(
-                "div",
-                { className: "ui-text-input flex-vertical", style: { width: "172px", marginLeft: "10px" } },
-                BDV2.react.createElement("input", { ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50" })
-            )
-        );
-    }
+//     get searchInput() {
+//         return BDV2.react.createElement(
+//             "div",
+//             { className: "ui-form-item" },
+//             BDV2.react.createElement(
+//                 "div",
+//                 { className: "ui-text-input flex-vertical", style: { width: "172px", marginLeft: "10px" } },
+//                 BDV2.react.createElement("input", { ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50" })
+//             )
+//         );
+//     }
 
-    searchKeyDown(e) {
-        let self = this;
-        if (self.state.loading || e.which !== 13) return;
-        self.setState({
-            'loading': true,
-            'title': 'Loading...',
-            'term': e.target.value
-        });
-        let query = `?term=${e.target.value}`;
-        if (self.state.selectedCategory !== 0) {
-            query += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
-        }
-        self.search(query, true);
-    }
+//     searchKeyDown(e) {
+//         let self = this;
+//         if (self.state.loading || e.which !== 13) return;
+//         self.setState({
+//             'loading': true,
+//             'title': 'Loading...',
+//             'term': e.target.value
+//         });
+//         let query = `?term=${e.target.value}`;
+//         if (self.state.selectedCategory !== 0) {
+//             query += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
+//         }
+//         self.search(query, true);
+//     }
 
-    get categoryButtons() {
-        return ["All", "FPS Games", "MMO Games", "Strategy Games", "Sports Games", "Puzzle Games", "Retro Games", "Party Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Community", "Language", "Programming", "Other"];
-    }
+//     get categoryButtons() {
+//         return ["All", "FPS Games", "MMO Games", "Strategy Games", "Sports Games", "Puzzle Games", "Retro Games", "Party Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Community", "Language", "Programming", "Other"];
+//     }
 
-    changeCategory(id) {
-        let self = this;
-        if (self.state.loading) return;
-        self.refs.searchinput.value = "";
-        self.setState({
-            'loading': true,
-            'selectedCategory': id,
-            'title': 'Loading...',
-            'term': null
-        });
-        if (id === 0) {
-            self.search("", true);
-            return;
-        }
-        self.search(`?category=${self.categoryButtons[id]}`, true);
-    }
+//     changeCategory(id) {
+//         let self = this;
+//         if (self.state.loading) return;
+//         self.refs.searchinput.value = "";
+//         self.setState({
+//             'loading': true,
+//             'selectedCategory': id,
+//             'title': 'Loading...',
+//             'term': null
+//         });
+//         if (id === 0) {
+//             self.search("", true);
+//             return;
+//         }
+//         self.search(`?category=${self.categoryButtons[id]}`, true);
+//     }
 
-    get content() {
-        let self = this;
-        if (self.state.connection.state === 1) return self.notConnected;
-        return [BDV2.react.createElement(
-            "div",
-            { ref: "content", key: "pc", className: "content-column default" },
-            BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title }),
-            self.bdServer,
-            self.state.servers.map((server, index) => {
-                return BDV2.react.createElement(V2Components.ServerCard, { key: index, server: server, join: self.join });
-            }),
-            self.state.next && BDV2.react.createElement(
-                "button",
-                { type: "button", onClick: () => {
-                        if (self.state.loading) return;self.setState({ 'loading': true });self.search(self.state.next, false);
-                    }, className: "ui-button filled brand small grow", style: { width: "100%", marginTop: "10px", marginBottom: "10px" } },
-                BDV2.react.createElement(
-                    "div",
-                    { className: "ui-button-contents" },
-                    self.state.loading ? 'Loading' : 'Load More'
-                )
-            ),
-            self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title })
-        ), BDV2.react.createElement(V2Components.Tools, { key: "pt", ref: "tools", onClick: self.close })];
-    }
+//     get content() {
+//         let self = this;
+//         if (self.state.connection.state === 1) return self.notConnected;
+//         return [BDV2.react.createElement(
+//             "div",
+//             { ref: "content", key: "pc", className: "content-column default" },
+//             BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title }),
+//             self.bdServer,
+//             self.state.servers.map((server, index) => {
+//                 return BDV2.react.createElement(V2Components.ServerCard, { key: index, server: server, join: self.join });
+//             }),
+//             self.state.next && BDV2.react.createElement(
+//                 "button",
+//                 { type: "button", onClick: () => {
+//                         if (self.state.loading) return;self.setState({ 'loading': true });self.search(self.state.next, false);
+//                     }, className: "ui-button filled brand small grow", style: { width: "100%", marginTop: "10px", marginBottom: "10px" } },
+//                 BDV2.react.createElement(
+//                     "div",
+//                     { className: "ui-button-contents" },
+//                     self.state.loading ? 'Loading' : 'Load More'
+//                 )
+//             ),
+//             self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title })
+//         ), BDV2.react.createElement(V2Components.Tools, { key: "pt", ref: "tools", onClick: self.close })];
+//     }
 
-    get notConnected() {
-        let self = this;
-        return [BDV2.react.createElement(
-            "div",
-            { key: "ncc", ref: "content", className: "content-column default" },
-            BDV2.react.createElement(
-                "h2",
-                { className: "ui-form-title h2 margin-reset margin-bottom-20" },
-                "Not connected to discordservers.com!",
-                BDV2.react.createElement(
-                    "button",
-                    { onClick: self.connect, type: "button", className: "ui-button filled brand small grow", style: { display: "inline-block", minHeight: "18px", marginLeft: "10px", lineHeight: "14px" } },
-                    BDV2.react.createElement(
-                        "div",
-                        { className: "ui-button-contents" },
-                        "Connect"
-                    )
-                )
-            ),
-            self.bdServer
-        ), BDV2.react.createElement(V2Components.Tools, { key: "nct", ref: "tools", onClick: self.close })];
-    }
+//     get notConnected() {
+//         let self = this;
+//         return [BDV2.react.createElement(
+//             "div",
+//             { key: "ncc", ref: "content", className: "content-column default" },
+//             BDV2.react.createElement(
+//                 "h2",
+//                 { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+//                 "Not connected to discordservers.com!",
+//                 BDV2.react.createElement(
+//                     "button",
+//                     { onClick: self.connect, type: "button", className: "ui-button filled brand small grow", style: { display: "inline-block", minHeight: "18px", marginLeft: "10px", lineHeight: "14px" } },
+//                     BDV2.react.createElement(
+//                         "div",
+//                         { className: "ui-button-contents" },
+//                         "Connect"
+//                     )
+//                 )
+//             ),
+//             self.bdServer
+//         ), BDV2.react.createElement(V2Components.Tools, { key: "nct", ref: "tools", onClick: self.close })];
+//     }
 
-    get footer() {
-        return BDV2.react.createElement(
-            "div",
-            { className: "ui-tab-bar-header" },
-            BDV2.react.createElement(
-                "a",
-                { href: "https://discordservers.com", target: "_blank" },
-                "Discordservers.com"
-            )
-        );
-    }
+//     get footer() {
+//         return BDV2.react.createElement(
+//             "div",
+//             { className: "ui-tab-bar-header" },
+//             BDV2.react.createElement(
+//                 "a",
+//                 { href: "https://discordservers.com", target: "_blank" },
+//                 "Discordservers.com"
+//             )
+//         );
+//     }
 
-    get connection() {
-        let self = this;
-        let { connection } = self.state;
-        if (connection.state !== 2) return BDV2.react.createElement("span", null);
+//     get connection() {
+//         let self = this;
+//         let { connection } = self.state;
+//         if (connection.state !== 2) return BDV2.react.createElement("span", null);
 
-        return BDV2.react.createElement(
-            "span",
-            null,
-            BDV2.react.createElement(V2Components.TabBar.Separator, null),
-            BDV2.react.createElement(
-                "span",
-                { style: { color: "#b9bbbe", fontSize: "10px", marginLeft: "10px" } },
-                "Connected as: ",
-                `${connection.user.username}#${connection.user.discriminator}`
-            ),
-            BDV2.react.createElement(
-                "div",
-                { style: { padding: "5px 10px 0 10px" } },
-                BDV2.react.createElement(
-                    "button",
-                    { style: { width: "100%", minHeight: "20px" }, type: "button", className: "ui-button filled brand small grow" },
-                    BDV2.react.createElement(
-                        "div",
-                        { className: "ui-button-contents", onClick: self.connect },
-                        "Reconnect"
-                    )
-                )
-            )
-        );
-    }
-}
+//         return BDV2.react.createElement(
+//             "span",
+//             null,
+//             BDV2.react.createElement(V2Components.TabBar.Separator, null),
+//             BDV2.react.createElement(
+//                 "span",
+//                 { style: { color: "#b9bbbe", fontSize: "10px", marginLeft: "10px" } },
+//                 "Connected as: ",
+//                 `${connection.user.username}#${connection.user.discriminator}`
+//             ),
+//             BDV2.react.createElement(
+//                 "div",
+//                 { style: { padding: "5px 10px 0 10px" } },
+//                 BDV2.react.createElement(
+//                     "button",
+//                     { style: { width: "100%", minHeight: "20px" }, type: "button", className: "ui-button filled brand small grow" },
+//                     BDV2.react.createElement(
+//                         "div",
+//                         { className: "ui-button-contents", onClick: self.connect },
+//                         "Reconnect"
+//                     )
+//                 )
+//             )
+//         );
+//     }
+// }
 
 class V2Components {
     static get SettingsPanel() {
@@ -2985,40 +2989,40 @@ class V2Components {
     }
 }
 
-class V2_PublicServers {
+// class V2_PublicServers {
 
-    constructor() {}
+//     constructor() {}
 
-    get component() {
-        return BDV2.react.createElement(V2Components.Layer, { rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, { rootId: "pubslayerroot" }) });
-    }
+//     get component() {
+//         return BDV2.react.createElement(V2Components.Layer, { rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, { rootId: "pubslayerroot" }) });
+//     }
 
-    get root() {
-        let _root = $("#pubslayerroot");
-        if (!_root.length) {
-            if (!this.injectRoot()) return null;
-            return this.root;
-        }
-        return _root[0];
-    }
+//     get root() {
+//         let _root = $("#pubslayerroot");
+//         if (!_root.length) {
+//             if (!this.injectRoot()) return null;
+//             return this.root;
+//         }
+//         return _root[0];
+//     }
 
-    injectRoot() {
-        if (!$(".layers").length) return false;
-        $(".layers").append($("<span/>", {
-            id: 'pubslayerroot'
-        }));
-        return true;
-    }
+//     injectRoot() {
+//         if (!$(".layers").length) return false;
+//         $(".layers").append($("<span/>", {
+//             id: 'pubslayerroot'
+//         }));
+//         return true;
+//     }
 
-    render() {
-        let root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layers");
-            return;
-        }
-        BDV2.reactDom.render(this.component, root);
-    }
-}
+//     render() {
+//         let root = this.root;
+//         if (!root) {
+//             console.log("FAILED TO LOCATE ROOT: .layers");
+//             return;
+//         }
+//         BDV2.reactDom.render(this.component, root);
+//     }
+// }
 
 class V2_SettingsPanel_Sidebar {
 
@@ -3142,7 +3146,7 @@ class V2_SettingsPanel {
         }
     }
 
-    onClick(id) {}
+    onClick() {}
 
     onChange(id, checked) {
         settingsCookie[id] = checked;
@@ -3225,7 +3229,7 @@ class V2_SettingsPanel {
 
     renderSidebar() {
         let self = this;
-        $("[class*=side] > [class*=item]").off('click.v2settingspanel').on('click.v2settingspanel', e => {
+        $("[class*=side] > [class*=item]").off('click.v2settingspanel').on('click.v2settingspanel', () => {
             BDV2.reactDom.unmountComponentAtNode(self.root);
             $(self.root).hide();
             $(".content-region").first().show();
