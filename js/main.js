@@ -206,13 +206,7 @@ Core.prototype.init = function () {
 
             // Show loading errors
             if (settingsCookie["bda-gs-9"]) {
-                for (let err of bdpluginErrors) {
-                    console.log(err);
-                }
-
-                for (let err of bdthemeErrors) {
-                    console.log(err);
-                }
+                this.showStartupErrors();
             }
 
             settingsPanel = new V2_SettingsPanel();
