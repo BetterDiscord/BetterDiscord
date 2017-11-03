@@ -104,6 +104,7 @@ var mainCore;
 
 var settings = {
     "Startup Error Modal":        { "id": "bda-gs-9",  "info": "Show a modal with plugin/theme errors on startup.", "implemented": true,  "hidden": false, "cat": "core"},
+    "Show Plugin Toasts":         { "id": "bda-gs-10", "info": "Shows a small notification for starting and stopping plugins.", "implemented": true,  "hidden": false, "cat": "core"},
     "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
     "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false, "hidden": false, "cat": "core"},
     "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
@@ -148,6 +149,7 @@ var defaultCookie = {
     "bda-gs-7": false,
     "bda-gs-8": false,
     "bda-gs-9": true,
+    "bda-gs-10": true,
     "bda-es-0": true,
     "bda-es-1": true,
     "bda-es-2": true,
@@ -428,6 +430,8 @@ Core.prototype.alert = function(title, content) {
 };
 
 Core.prototype.showStartupErrors = function() {
+    if (!bdpluginErrors || !bdthemeErrors) return;
+    if (!bdpluginErrors.length && !bdthemeErrors.length) return;
     let modal = $(`<div class="bd-modal-wrapper theme-dark">
                     <div class="bd-backdrop backdrop-2ohBEd"></div>
                     <div class="bd-modal bd-startup-modal modal-2LIEKY">
@@ -496,6 +500,41 @@ Core.prototype.showStartupErrors = function() {
     });
     modal.appendTo("#app-mount");
     modal.find('.tab-bar-item')[0].click();
+};
+
+/**
+ * This shows a toast similar to android towards the bottom of the screen.
+ * 
+ * @param {string} content The string to show in the toast.
+ * @param {object} options Options object. Optional parameter.
+ * @param {string} options.type Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
+ * @param {boolean} options.icon Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
+ * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
+ */
+Core.prototype.showToast = function(content, options = {}) {
+    if (!document.querySelector('.bd-toasts')) {
+        let toastWrapper = document.createElement("div");
+        toastWrapper.classList.add("bd-toasts");
+        let boundingElement = document.querySelector('.chat form, #friends, .noChannel-2EQ0a9, .activityFeed-HeiGwL');
+        toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
+        toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
+        toastWrapper.style.setProperty("bottom", (document.querySelector('.chat form') ? document.querySelector('.chat form').offsetHeight : 80) + "px");
+        document.querySelector('.app').appendChild(toastWrapper);
+    }
+    const {type = "", icon = true, timeout = 3000} = options;
+    let toastElem = document.createElement("div");
+    toastElem.classList.add("bd-toast");
+	if (type) toastElem.classList.add("toast-" + type);
+	if (type && icon) toastElem.classList.add("icon");
+    toastElem.innerText = content;
+    document.querySelector('.bd-toasts').appendChild(toastElem);
+    setTimeout(() => {
+        toastElem.classList.add('closing');
+        setTimeout(() => {
+            toastElem.remove();
+            if (!document.querySelectorAll('.bd-toasts .bd-toast').length) document.querySelector('.bd-toasts').remove();
+        }, 300);
+    }, timeout);
 };
 
 
@@ -822,7 +861,7 @@ QuickEmoteMenu.prototype.init = function() {
 
 QuickEmoteMenu.prototype.favContext = function(e, em) {
     e.stopPropagation();
-    var menu = $('<div/>', { id: "rmenu", "data-emoteid": $(em).prop("title"), text: "Remove" });
+    var menu = $('<div>', { id: "rmenu", "data-emoteid": $(em).prop("title"), text: "Remove", class: "context-menu theme-dark" });
     menu.css({
         top: e.pageY - $("#bda-qem-favourite-container").offset().top,
         left: e.pageX - $("#bda-qem-favourite-container").offset().left
@@ -868,6 +907,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
         case "bda-qem-emojis":
             emojis.addClass("active");
             $(".emoji-picker").show();
+            $(".emoji-picker .search-bar-inner input").focus();
         break;
     }
     this.lastTab = id;
@@ -920,7 +960,7 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     for (var emote in this.favoriteEmotes) {
         var url = this.favoriteEmotes[emote];
         faContainer += "<div class=\"emote-container\">";
-        faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu='quickEmoteMenu.favContext(event, this);'>";
+        faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu=\"quickEmoteMenu.favContext(event, this);\">";
         faContainer += "    </img>";
         faContainer += "</div>";
     }
@@ -1105,7 +1145,10 @@ PluginModule.prototype.loadPlugins = function () {
 };
 
 PluginModule.prototype.startPlugin = function (plugin) {
-    try { bdplugins[plugin].plugin.start(); }
+    try {
+        bdplugins[plugin].plugin.start();
+        mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
+    }
     catch (err) {
         pluginCookie[plugin] = false;
         this.savePluginData();
@@ -1114,8 +1157,13 @@ PluginModule.prototype.startPlugin = function (plugin) {
 };
 
 PluginModule.prototype.stopPlugin = function (plugin) {
-    try { bdplugins[plugin].plugin.stop(); }
-    catch (err) { utils.err("Plugin " + name + " could not be stopped.", err); }
+    try {
+        bdplugins[plugin].plugin.stop();
+        mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
+    }
+    catch (err) {
+        utils.err("Plugin " + name + " could not be stopped.", err);
+    }
 };
 
 PluginModule.prototype.enablePlugin = function (plugin) {
@@ -1304,39 +1352,9 @@ BdApi.alert = function (title, content) {
     mainCore.alert(title, content);
 };
 
-/**
- * This shows a toast similar to android towards the bottom of the screen.
- * 
- * @param {string} content The string to show in the toast.
- * @param {object} options Options object. Optional parameter.
- * @param {string} options.type Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
- * @param {boolean} options.icon Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
- * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
- */
+//Show toast alert
 BdApi.showToast = function(content, options = {}) {
-    if (!document.querySelector('.bd-toasts')) {
-        let toastWrapper = document.createElement("div");
-        toastWrapper.classList.add("bd-toasts");
-        let boundingElement = document.querySelector('.chat form, #friends, .noChannel-2EQ0a9, .activityFeed-HeiGwL');
-        toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
-        toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
-        toastWrapper.style.setProperty("bottom", (document.querySelector('.chat form') ? document.querySelector('.chat form').offsetHeight : 80) + "px");
-        document.querySelector('.app').appendChild(toastWrapper);
-    }
-    const {type = "", icon = true, timeout = 3000} = options;
-    let toastElem = document.createElement("div");
-    toastElem.classList.add("bd-toast");
-	if (type) toastElem.classList.add("toast-" + type);
-	if (type && icon) toastElem.classList.add("icon");
-    toastElem.innerText = content;
-    document.querySelector('.bd-toasts').appendChild(toastElem);
-    setTimeout(() => {
-        toastElem.classList.add('closing');
-        setTimeout(() => {
-            toastElem.remove();
-            if (!document.querySelectorAll('.bd-toasts .bd-toast').length) document.querySelector('.bd-toasts').remove();
-        }, 300);
-    }, timeout);
+    mainCore.showToast(content, options);
 };
 
 /* BetterDiscordApp DevMode JavaScript
