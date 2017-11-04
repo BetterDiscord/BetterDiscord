@@ -6,7 +6,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
- /* global Proxy, bdplugins, bdthemes, bdpluginErrors, bdthemeErrors, betterDiscordIPC, bdVersion, version, BDV2, CodeMirror */
+ /* global Proxy, bdplugins, bdthemes, betterDiscordIPC, bdVersion, version, BDV2, CodeMirror */
 
  /* eslint-disable  no-console */
 
@@ -371,41 +371,36 @@ Core.prototype.inject24Hour = function(node) {
 
     node.querySelectorAll('.timestamp').forEach(elem => {
         if (elem.getAttribute("data-24")) return;
-        elem.setAttribute("data-24", true);
         let text = elem.innerText || elem.textContent;
         let matches = /([^0-9]*)([0-9]?[0-9]:[0-9][0-9])([^0-9]*)/.exec(text);
         if(matches == null) return;
         if(matches.length < 4) return;
-        
-        let time = utils.getReactProperty(elem, "return.return.return.return.memoizedProps.message.timestamp._d");
-        let hours = ("0" + time.getHours()).slice(-2);
-        let minutes = ("0" + time.getMinutes()).slice(-2);
 
+        let time = matches[2].split(':');
+        let hours = parseInt(time[0]);
+        let minutes = time[1];
+        let timeOfDay = matches[3].toLowerCase();
+
+        if (timeOfDay.includes("am") && hours == 12) hours -= 12;
+        else if (timeOfDay.includes("pm") && hours < 2) hours += 12;
+        
+        hours = ("0" + hours).slice(-2);
         elem.innerText = matches[1] + hours + ":" + minutes + matches[3];
+        elem.setAttribute("data-24", matches[2]);
     });
 };
 
-Core.prototype.inject24HourOld = function(node) {
-    if (!settingsCookie["bda-gs-6"]) return;
-
+Core.prototype.remove24Hour = function(node) {
     node.querySelectorAll('.timestamp').forEach(elem => {
-        if (elem.getAttribute("data-24")) return;
-        elem.setAttribute("data-24", true);
+        if (!elem.getAttribute("data-24")) return;
+        let time = elem.getAttribute("data-24");
+        elem.removeAttribute("data-24");
         let text = elem.innerText || elem.textContent;
-        let matches = /(.*)?at\s+(\d{1,2}):(\d{1,2})\s+(.*)/.exec(text);
+        let matches = /([^0-9]*)([0-9]?[0-9]:[0-9][0-9])([^0-9]*)/.exec(text);
         if(matches == null) return;
-        if(matches.length < 5) return;
-        
-        var h = parseInt(matches[2]);
-        if (matches[4] == "AM") {
-            if(h == 12) h -= 12;
-        }
-        else if (matches[4] == "PM") {
-            if(h < 12) h += 12;
-        }
-    
-        matches[2] = ('0' + h).slice(-2);
-        elem.innerText = matches[1] + " at " + matches[2] + ":" + matches[3];
+        if(matches.length < 4) return;
+
+        elem.innerText = matches[1] + time + matches[3];
     });
 };
 
@@ -419,6 +414,16 @@ Core.prototype.injectColoredText = function(node) {
             if (elem.getAttribute("data-color")) return;
             elem.setAttribute("data-color", true);
             elem.style.setProperty("color", color);
+        });
+    });
+};
+
+Core.prototype.removeColoredText = function(node) {
+    node.querySelectorAll('.user-name').forEach(elem => {
+        elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
+            if (!elem.getAttribute("data-color")) return;
+            elem.removeAttribute("data-color");
+            elem.style.setProperty("color", "");
         });
     });
 };
@@ -1087,20 +1092,6 @@ Utils.prototype.err = function (message, error) {
 };
 
 
-// Edited version of getReactInstance by noodlebox/samogot
-Utils.prototype.getReactInstance = function(node) {
-	if (!(node instanceof jQuery) && !(node instanceof Element)) return undefined;
-	var domNode = node instanceof jQuery ? node[0] : node;
-	return domNode[Object.keys(domNode).find(key => key.startsWith("__reactInternalInstance"))];
-};
-
-Utils.prototype.getReactProperty = function(node, path) {
-	var value = path.split(/\s?\.\s?/).reduce(function(obj, prop) {
-		return obj && obj[prop];
-	}, this.getReactInstance(node));
-	return value;
-};
-
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1403,15 +1394,6 @@ BdApi.showToast = function(content, options = {}) {
     mainCore.showToast(content, options);
 };
 
-//Gets the react instance of an element
-BdApi.getReactInstance = function(element) {
-    return utils.getReactInstance(element);
-};
-
-//Gets a react property safely avoiding accessing properties of undefined
-BdApi.getReactProperty = function(element, propertyPath) {
-    return utils.getReactProperty(element, propertyPath);
-};
 
 /* BetterDiscordApp DevMode JavaScript
  * Version: 1.0
@@ -2981,6 +2963,21 @@ class V2_SettingsPanel {
             $("#app-mount").addClass("bda-dark");
         } else {
             $("#app-mount").removeClass("bda-dark");
+        }
+
+        if (document.querySelector('.messages')) {
+            let elem = document.querySelector('.messages');
+            if (_c["bda-gs-6"]) {
+                mainCore.inject24Hour(elem);
+            } else {
+                mainCore.remove24Hour(elem);
+            }
+
+            if (_c["bda-gs-7"] && document.querySelector('.messages')) {
+                mainCore.injectColoredText(elem);
+            } else {
+                mainCore.removeColoredText(elem);
+            }
         }
 
         if (_c["bda-es-6"]) {
