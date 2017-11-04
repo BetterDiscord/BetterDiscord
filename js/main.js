@@ -206,7 +206,6 @@ Core.prototype.init = function () {
             if (!bdpluginErrors) bdpluginErrors = [];
             if (!bdthemeErrors) bdthemeErrors = [];
 
-            // customCssEditor = new CustomCssEditor();
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
 
@@ -599,7 +598,7 @@ function EmoteModule() {}
 EmoteModule.prototype.init = function () {};
 
 EmoteModule.prototype.getBlacklist = function () {
-    $.getJSON("https://cdn.rawgit.com/rauenzi/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
+    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
         bemotes = data.blacklist;
     });
 };
@@ -1042,7 +1041,7 @@ Utils.prototype.jqDefer = function (fnc) {
 };
 
 Utils.prototype.getHash = function () {
-    $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master", function (data) {
+    $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function (data) {
         _hash = data.sha;
         emoteModule.getBlacklist();
     });
@@ -1054,7 +1053,7 @@ Utils.prototype.loadHtml = function (html, callback) {
     }).appendTo("body");
 
     //TODO Inject these in next core update
-    html = '//cdn.rawgit.com/rauenzi/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
+    html = '//cdn.rawgit.com/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
 
     container.load(html, callback());
 };
