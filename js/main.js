@@ -373,6 +373,25 @@ Core.prototype.inject24Hour = function(node) {
         if (elem.getAttribute("data-24")) return;
         elem.setAttribute("data-24", true);
         let text = elem.innerText || elem.textContent;
+        let matches = /([^0-9]*)([0-9]?[0-9]:[0-9][0-9])([^0-9]*)/.exec(text);
+        if(matches == null) return;
+        if(matches.length < 4) return;
+        
+        let time = utils.getReactProperty(elem, "return.return.return.return.memoizedProps.message.timestamp._d");
+        let hours = ("0" + time.getHours()).slice(-2);
+        let minutes = ("0" + time.getMinutes()).slice(-2);
+
+        elem.innerText = matches[1] + hours + ":" + minutes + matches[3];
+    });
+};
+
+Core.prototype.inject24HourOld = function(node) {
+    if (!settingsCookie["bda-gs-6"]) return;
+
+    node.querySelectorAll('.timestamp').forEach(elem => {
+        if (elem.getAttribute("data-24")) return;
+        elem.setAttribute("data-24", true);
+        let text = elem.innerText || elem.textContent;
         let matches = /(.*)?at\s+(\d{1,2}):(\d{1,2})\s+(.*)/.exec(text);
         if(matches == null) return;
         if(matches.length < 5) return;
@@ -1067,6 +1086,21 @@ Utils.prototype.err = function (message, error) {
     }
 };
 
+
+// Edited version of getReactInstance by noodlebox/samogot
+Utils.prototype.getReactInstance = function(node) {
+	if (!(node instanceof jQuery) && !(node instanceof Element)) return undefined;
+	var domNode = node instanceof jQuery ? node[0] : node;
+	return domNode[Object.keys(domNode).find(key => key.startsWith("__reactInternalInstance"))];
+};
+
+Utils.prototype.getReactProperty = function(node, path) {
+	var value = path.split(/\s?\.\s?/).reduce(function(obj, prop) {
+		return obj && obj[prop];
+	}, this.getReactInstance(node));
+	return value;
+};
+
 /* BetterDiscordApp VoiceMode JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1367,6 +1401,16 @@ BdApi.alert = function (title, content) {
 //Show toast alert
 BdApi.showToast = function(content, options = {}) {
     mainCore.showToast(content, options);
+};
+
+//Gets the react instance of an element
+BdApi.getReactInstance = function(element) {
+    return utils.getReactInstance(element);
+};
+
+//Gets a react property safely avoiding accessing properties of undefined
+BdApi.getReactProperty = function(element, propertyPath) {
+    return utils.getReactProperty(element, propertyPath);
 };
 
 /* BetterDiscordApp DevMode JavaScript
