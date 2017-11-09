@@ -266,7 +266,7 @@ Core.prototype.initSettings = function () {
         this.saveSettings();
     } else {
         this.loadSettings();
-        $('<style id="customcss">').html(window.bdStorage.get("bdcustomcss")).appendTo(document.head);
+        $('<style id="customcss">').html(atob(window.bdStorage.get("bdcustomcss"))).appendTo(document.head);
         for (var setting in defaultCookie) {
             if (settingsCookie[setting] == undefined) {
                 settingsCookie[setting] = defaultCookie[setting];
