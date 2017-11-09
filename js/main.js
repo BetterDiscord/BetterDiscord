@@ -266,7 +266,7 @@ Core.prototype.initSettings = function () {
         this.saveSettings();
     } else {
         this.loadSettings();
-
+        $('<style id="customcss">').html(window.bdStorage.get("bdcustomcss")).appendTo(document.head);
         for (var setting in defaultCookie) {
             if (settingsCookie[setting] == undefined) {
                 settingsCookie[setting] = defaultCookie[setting];
@@ -324,14 +324,17 @@ Core.prototype.initObserver = function () {
             }
 
             // onSwitch()
-            // Not a channel, but still a switch (Activity Feed/Friends menu)
+            // Not a channel, but still a switch (Activity Feed/Friends menu/NSFW check)
             if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
                 pluginModule.channelSwitch();
             }
 
+            if (node.classList.contains(".nsfw-1APjPl")  || (node.querySelector(".nsfw-1APjPl") && node.classList.contains("")))
+
             // onSwitch()
             // New Channel
-            if (node.classList.contains("messages-wrapper")) {
+            if (node.classList.contains("messages-wrapper") || node.querySelector(".messages-wrapper")) {
+                console.log(node);
                 self.inject24Hour(node);
                 self.injectColoredText(node);
                 pluginModule.channelSwitch();
