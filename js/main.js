@@ -329,8 +329,6 @@ Core.prototype.initObserver = function () {
                 pluginModule.channelSwitch();
             }
 
-            if (node.classList.contains(".nsfw-1APjPl")  || (node.querySelector(".nsfw-1APjPl") && node.classList.contains("")))
-
             // onSwitch()
             // New Channel
             if (node.classList.contains("messages-wrapper") || node.querySelector(".messages-wrapper")) {
