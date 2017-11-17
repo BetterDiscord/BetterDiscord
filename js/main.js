@@ -332,7 +332,6 @@ Core.prototype.initObserver = function () {
             // onSwitch()
             // New Channel
             if (node.classList.contains("messages-wrapper") || node.querySelector(".messages-wrapper")) {
-                console.log(node);
                 self.inject24Hour(node);
                 self.injectColoredText(node);
                 pluginModule.channelSwitch();
