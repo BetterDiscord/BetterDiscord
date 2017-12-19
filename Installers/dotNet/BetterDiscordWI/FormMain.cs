@@ -14,6 +14,10 @@ namespace BetterDiscordWI {
         public bool RestartDiscord = false;
         public string Sha;
         public bool Finished = false;
+        public bool ZeresFork = false;
+        public string DiscordVersion = "Discord";
+        public bool DesktopModule = false;
+        public string DiscordInstallPath;
 
         public XmlNodeList ResourceList;
 

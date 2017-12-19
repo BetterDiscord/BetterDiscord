@@ -13,6 +13,7 @@ namespace BetterDiscordWI.panels {
     public partial class Panel2: UserControl, IPanel {
         private string _dataPath, _tempPath;
         private Utils _utils;
+        private bool discord_core_module = false;
 
         public Panel2() {
             InitializeComponent();
@@ -80,7 +81,9 @@ namespace BetterDiscordWI.panels {
 
                 Directory.CreateDirectory(_tempPath);
 
-                DownloadResource("BetterDiscord.zip", "https://github.com/Jiiks/BetterDiscordApp/archive/stable16.zip");
+                String fork = "Jiiks";
+                if (GetParent().ZeresFork) fork = "rauenzi";
+                DownloadResource("BetterDiscord.zip", $"https://github.com/{fork}/BetterDiscordApp/archive/stable16.zip");
 
                 while(!File.Exists($"{_tempPath}\\BetterDiscord.zip")) {
                     Debug.Print("Waiting for download");
@@ -102,7 +105,7 @@ namespace BetterDiscordWI.panels {
 
         private void DeleteDirs() {
             int errors = 0;
-            Thread t = new Thread(() => {
+            Thread t1 = new Thread(() => {
                 string dir = $"{GetParent().DiscordPath}\\resources\\app";
 
                 if(Directory.Exists(dir)) {
@@ -120,7 +123,7 @@ namespace BetterDiscordWI.panels {
                     Debug.Print("Waiting for direl");
                     Thread.Sleep(100);
                 }
-
+                //C:\Users\Zack\AppData\Roaming\discordcanary
                 if (!Directory.Exists($"{GetParent().DiscordPath}\\resources\\node_modules\\")) {
                     Debug.Print("node_modules doesn't exist, creating");
                     AppendLog("node_modules doesn't exist, creating");
@@ -160,15 +163,67 @@ namespace BetterDiscordWI.panels {
 					try {
 						Splice();
 					} catch {
-						AppendLog("Error: Extracting app.asar: Newtonsoft.Json.dll might not be present in the Installer Folder. Installation cannot Continue.");
+						AppendLog("Error: Splicing index.js: Newtonsoft.Json.dll might not be present in the Installer Folder. Installation cannot Continue.");
 						errors = 1;
 						Finalize(errors);
 					}
 				}
             });
 
+            Thread t2 = new Thread(() => {
+                string dir = $"{GetParent().DiscordPath}\\app\\mainScreen.js";
 
-            t.Start();
+                if (File.Exists(dir + ".old") && File.Exists(dir))
+                {
+                    AppendLog($"Restoring original {dir}");
+                    File.Delete(dir);
+                    while (File.Exists(dir))
+                    {
+                        Debug.Print("Waiting for direl");
+                        Thread.Sleep(100);
+                    }
+                    File.Move(dir + ".old", dir);
+
+                }
+
+                AppendLog($"Making backup of {dir}");
+                File.Copy(dir, dir + ".old");
+                
+
+                dir = $"{GetParent().DiscordPath}\\node_modules\\BetterDiscord";
+
+                if (Directory.Exists(dir))
+                {
+                    AppendLog($"Deleting {dir}");
+                    Directory.Delete(dir, true);
+                }
+
+                while (Directory.Exists(dir))
+                {
+                    Debug.Print("Waiting for direl");
+                    Thread.Sleep(100);
+                }
+
+                if (errors == 0)
+                {
+                    AppendLog("Moving BetterDiscord to node_modules");
+                    Directory.Move($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\BetterDiscord\\temp\\BetterDiscordApp-stable16", dir);
+
+                    try
+                    {
+                        Splice();
+                    }
+                    catch
+                    {
+                        AppendLog("Error: Splicing mainScreen.js: Newtonsoft.Json.dll might not be present in the Installer Folder. Installation cannot Continue.");
+                        errors = 1;
+                        Finalize(errors);
+                    }
+                }
+            });
+
+            if (GetParent().DesktopModule) t2.Start();
+            else t1.Start();
         }
 
         private void DownloadResource(string resource, string url) {
@@ -179,59 +234,63 @@ namespace BetterDiscordWI.panels {
             webClient.DownloadFile(new Uri(url), $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\BetterDiscord\\temp\\{resource}");
         }
 
-        private void Splice() {
-        	
+        private void Splice()
+        {
+
             string indexloc = null;
-            if(File.Exists($"{GetParent().DiscordPath}\\resources\\app\\app\\index.js"))
+            if (File.Exists($"{GetParent().DiscordPath}\\resources\\app\\index.js"))
             {
-            	//Normal path
-                indexloc = $"{GetParent().DiscordPath}\\resources\\app\\app\\index.js";
-            } else if (File.Exists($"{GetParent().DiscordPath}\\resources\\app\\index.js"))
-            {
-            	//Canary 0.0.138 changed path to app\\index.js
                 indexloc = $"{GetParent().DiscordPath}\\resources\\app\\index.js";
             }
-
-            if(indexloc == null)
+            else if (File.Exists($"{GetParent().DiscordPath}\\app\\mainScreen.js"))
             {
-                AppendLog($"Error: index.js not found");
+                indexloc = $"{GetParent().DiscordPath}\\app\\mainScreen.js";
+            }
+
+            if (indexloc == null)
+            {
+                AppendLog($"Error: index.js or mainScreen.js not found");
                 Finalize(1);
                 return;
             }
 
-            if(!File.Exists(@"splice"))
-            {
-                AppendLog($"Error: splice install file not found, this should be included with the installer.");
-                Finalize(1);
-                return;
-            }
+            //if (!File.Exists(@"splice"))
+            //{
+            //    AppendLog($"Error: splice install file not found, this should be included with the installer.");
+            //    Finalize(1);
+            //    return;
+            //}
 
             Thread t = new Thread(() => {
                 List<string> lines = new List<string>();
-                AppendLog("Spicing index");
-                using(FileStream fs = new FileStream(indexloc, FileMode.Open)) {
-                    using(StreamReader reader = new StreamReader(fs)) {
+                AppendLog("Splicing main file");
+                using (FileStream fs = new FileStream(indexloc, FileMode.Open))
+                {
+                    using (StreamReader reader = new StreamReader(fs))
+                    {
                         string line = "";
-                        while((line = reader.ReadLine()) != null) {
-                            //if(GetParent().DiscordPath.Contains("Discord\\")) {
-                            //if(GetParent().DiscordPath.Contains("DiscordCanary\\")) {
-                            //if(GetParent().DiscordPath.Contains("DiscordPTB\\")) {
-                            if(line.Replace(" ", "").Contains("var_fs=")) {
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            if (line.Replace(" ", "").Contains("var_url="))
+                            {
                                 lines.Add(line);
                                 lines.Add("var _betterDiscord = require('betterdiscord');");
                                 lines.Add("var _betterDiscord2;");
-                            } else if(line.Replace(" ", "").Contains("mainWindow=new")) {
+                            }
+                            else if (line.Replace(" ", "").Contains("mainWindow=new"))
+                            {
                                 lines.Add(line);
-                                lines.Add(File.ReadAllText(@"splice"));
-                            } else {
+                                lines.Add("_betterDiscord2 = new _betterDiscord.BetterDiscord(mainWindow);");
+                            }
+                            else
+                            {
                                 lines.Add(line);
                             }
-                            //}
                         }
                     }
                 }
 
-                AppendLog("Writing index");
+                AppendLog("Writing injection");
 
                 File.WriteAllLines(indexloc, lines.ToArray());
 
@@ -239,27 +298,31 @@ namespace BetterDiscordWI.panels {
 
                 int errors = 0;
 
-                string curPath = $"{GetParent().DiscordPath}\\resources\\app\\app\\index.js";
-                string curPath2 = $"{GetParent().DiscordPath}\\resources\\app\\index.js";
+                string curPath = $"{GetParent().DiscordPath}\\resources\\app\\index.js";
+                string curPath2 = $"{GetParent().DiscordPath}\\app\\mainScreen.js";
                 if (!File.Exists(curPath) && !File.Exists(curPath2))
                 {
-                    AppendLog($"ERROR: index.js not found in {curPath} or {curPath2}");
+                    AppendLog($"ERROR: index.js or mainScreen.js not found in {curPath} or {curPath2}");
                     errors++;
                 }
 
-                curPath = $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord";
+                if (GetParent().DesktopModule)
+                    curPath = $"{GetParent().DiscordPath}\\node_modules\\BetterDiscord";
+                else
+                    curPath = $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord";
 
-                if(!Directory.Exists(curPath)) {
+                if (!Directory.Exists(curPath))
+                {
                     AppendLog($"ERROR: DIRECTORY: {curPath} DOES NOT EXIST!");
                     errors++;
                 }
 
 
-                string basePath = $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord";
                 string[] bdFiles = { "\\package.json", "\\betterdiscord.js", "\\lib\\BetterDiscord.js", "\\lib\\config.json", "\\lib\\Utils.js" };
 
-                foreach(string s in bdFiles.Where(s => !File.Exists(basePath + s))) {
-                    AppendLog($"ERROR: FILE: {basePath}{s} DOES NOT EXIST");
+                foreach (string s in bdFiles.Where(s => !File.Exists(curPath + s)))
+                {
+                    AppendLog($"ERROR: FILE: {curPath}{s} DOES NOT EXIST");
                     errors++;
                 }
                 Finalize(errors);
@@ -278,15 +341,7 @@ namespace BetterDiscordWI.panels {
             });
 
             if(GetParent().RestartDiscord) {
-                if(GetParent().DiscordPath.Contains("\\Discord\\")) {
-                    Process.Start($"{GetParent().DiscordPath}\\Discord.exe");
-                }
-                if(GetParent().DiscordPath.Contains("\\DiscordCanary\\")) {
-                    Process.Start($"{GetParent().DiscordPath}\\DiscordCanary.exe");
-                }
-                if(GetParent().DiscordPath.Contains("\\DiscordPTB\\")) {
-                    Process.Start($"{GetParent().DiscordPath}\\DiscordPTB.exe");
-                }
+                Process.Start($"{GetParent().DiscordInstallPath}\\{GetParent().DiscordVersion}.exe");
             }
         }
 
