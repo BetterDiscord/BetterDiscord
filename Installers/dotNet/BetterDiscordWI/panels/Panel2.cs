@@ -13,7 +13,6 @@ namespace BetterDiscordWI.panels {
     public partial class Panel2: UserControl, IPanel {
         private string _dataPath, _tempPath;
         private Utils _utils;
-        private bool discord_core_module = false;
 
         public Panel2() {
             InitializeComponent();
@@ -28,11 +27,21 @@ namespace BetterDiscordWI.panels {
 
             _utils = new Utils();
 
-            KillProcessIfInstalling("Discord");
-            KillProcessIfInstalling("DiscordCanary");
-            KillProcessIfInstalling("DiscordPTB");
+            //KillProcessIfInstalling("Discord");
+            //KillProcessIfInstalling("DiscordCanary");
+            //KillProcessIfInstalling("DiscordPTB");
+            KillRunningProcess();
 
             CreateDirectories();
+        }
+
+        private void KillRunningProcess()
+        {
+            AppendLog("Killing " + GetParent());
+            foreach (var process in Process.GetProcessesByName(GetParent().DiscordVersion))
+            {
+                process.Kill();
+            }
         }
 
         private void KillProcessIfInstalling(string app) {
@@ -171,7 +180,7 @@ namespace BetterDiscordWI.panels {
             });
 
             Thread t2 = new Thread(() => {
-                string dir = $"{GetParent().DiscordPath}\\app\\mainScreen.js";
+                string dir = $"{GetParent().DiscordPath}\\index.js";
 
                 if (File.Exists(dir + ".old") && File.Exists(dir))
                 {
@@ -188,21 +197,62 @@ namespace BetterDiscordWI.panels {
 
                 AppendLog($"Making backup of {dir}");
                 File.Copy(dir, dir + ".old");
-                
 
-                dir = $"{GetParent().DiscordPath}\\node_modules\\BetterDiscord";
+                File.WriteAllText(dir, "module.exports = require('./core');");
+
+                dir = $"{GetParent().DiscordPath}\\core";
+
+                if (Directory.Exists(dir))
+                {
+                    try
+                    {
+                        AppendLog("Deleting " + dir);
+                        Directory.Delete(dir, true);
+                        while (Directory.Exists(dir))
+                        {
+                            Debug.Print("Waiting for direl");
+                            Thread.Sleep(100);
+                        }
+                    }
+                    catch
+                    {
+                        AppendLog($"Error: Failed to Delete the '{dir}\\core' Directory.");
+                        errors = 1;
+                        Finalize(errors);
+                    }
+                }
+
+
+                AppendLog("Extracting core.asar");
+                string appAsarPath = $"{GetParent().DiscordPath}\\core.asar";
+
+                if (File.Exists(appAsarPath))
+                {
+                    AsarArchive archive = new AsarArchive(appAsarPath);
+                    AsarExtractor extractor = new AsarExtractor();
+                    extractor.ExtractAll(archive, $"{GetParent().DiscordPath}\\core\\");
+                }
+                else
+                {
+                    AppendLog("Error: core.asar file couldn't be found. Installation cannot Continue.");
+                    errors = 1;
+                    Finalize(errors);
+                }
+
+
+                dir = $"{GetParent().DiscordPath}\\core\\node_modules\\BetterDiscord";
 
                 if (Directory.Exists(dir))
                 {
                     AppendLog($"Deleting {dir}");
                     Directory.Delete(dir, true);
+                    while (Directory.Exists(dir))
+                    {
+                        Debug.Print("Waiting for direl");
+                        Thread.Sleep(100);
+                    }
                 }
 
-                while (Directory.Exists(dir))
-                {
-                    Debug.Print("Waiting for direl");
-                    Thread.Sleep(100);
-                }
 
                 if (errors == 0)
                 {
@@ -242,9 +292,9 @@ namespace BetterDiscordWI.panels {
             {
                 indexloc = $"{GetParent().DiscordPath}\\resources\\app\\index.js";
             }
-            else if (File.Exists($"{GetParent().DiscordPath}\\app\\mainScreen.js"))
+            else if (File.Exists($"{GetParent().DiscordPath}\\core\\app\\mainScreen.js"))
             {
-                indexloc = $"{GetParent().DiscordPath}\\app\\mainScreen.js";
+                indexloc = $"{GetParent().DiscordPath}\\core\\app\\mainScreen.js";
             }
 
             if (indexloc == null)
@@ -299,7 +349,7 @@ namespace BetterDiscordWI.panels {
                 int errors = 0;
 
                 string curPath = $"{GetParent().DiscordPath}\\resources\\app\\index.js";
-                string curPath2 = $"{GetParent().DiscordPath}\\app\\mainScreen.js";
+                string curPath2 = $"{GetParent().DiscordPath}\\core\\app\\mainScreen.js";
                 if (!File.Exists(curPath) && !File.Exists(curPath2))
                 {
                     AppendLog($"ERROR: index.js or mainScreen.js not found in {curPath} or {curPath2}");
@@ -307,7 +357,7 @@ namespace BetterDiscordWI.panels {
                 }
 
                 if (GetParent().DesktopModule)
-                    curPath = $"{GetParent().DiscordPath}\\node_modules\\BetterDiscord";
+                    curPath = $"{GetParent().DiscordPath}\\core\\node_modules\\BetterDiscord";
                 else
                     curPath = $"{GetParent().DiscordPath}\\resources\\node_modules\\BetterDiscord";
 
