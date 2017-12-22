@@ -118,7 +118,8 @@ var settings = {
     "24 Hour Timestamps":         { "id": "bda-gs-6",  "info": "Replace 12hr timestamps with proper ones",          "implemented": true,  "hidden": false, "cat": "core"},
     "Coloured Text":              { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
     "BetterDiscord Blue":         { "id": "bda-gs-b",  "info": "Replace Discord blue with BD Blue",                 "implemented": true,  "hidden": false, "cat": "core"},
-    "Developer Mode":             { "id": "bda-gs-8",  "info": "Developer Mode",                                    "implemented": true,  "hidden": false, "cat": "core"},
+    "Developer Mode":         	  { "id": "bda-gs-8",  "info": "Developer Mode",                                    "implemented": true,  "hidden": false, "cat": "core"},
+	"Copy Selector":			  { "id": "bda-gs-11", "info": "Adds a \"Copy Selector\" option to context menus when developer mode is active.", "implemented": true,  "hidden": false, "cat": "core"},
 
     "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
     "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
@@ -128,7 +129,7 @@ var settings = {
     "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false, "cat": "emote"},
     "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false, "cat": "emote"},
     "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
-    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods",                                 "implemented": true,  "hidden": false, "cat": "emote"},
+    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)", "implemented": true,  "hidden": false, "cat": "emote"},
 };
 
 // var links = {
@@ -148,6 +149,7 @@ var defaultCookie = {
     "bda-gs-6": false,
     "bda-gs-7": false,
     "bda-gs-8": false,
+	"bda-gs-11": false,
     "bda-gs-9": true,
     "bda-gs-10": true,
     "bda-es-0": true,
@@ -191,8 +193,10 @@ Core.prototype.init = function () {
     voiceMode = new VoiceMode();
     dMode = new devMode();
 
+	utils.log("Initializing EmoteModule");
     emoteModule.init();
 
+	utils.log("Initializing Settings");
     this.initSettings();
 
     //Incase were too fast
@@ -206,15 +210,19 @@ Core.prototype.init = function () {
             if (!bdpluginErrors) bdpluginErrors = [];
             if (!bdthemeErrors) bdthemeErrors = [];
 
+			utils.log("Loading Plugins");
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
 
+			utils.log("Loading Themes");
             themeModule = new ThemeModule();
             themeModule.loadThemes();
 
+			utils.log("Updating Settings");
             settingsPanel = new V2_SettingsPanel();
             settingsPanel.updateSettings();
 
+			utils.log("Initializing QuickEmoteMenu");
             quickEmoteMenu.init(false);
             
             window.addEventListener("beforeunload", function(){
@@ -232,13 +240,16 @@ Core.prototype.init = function () {
                 self.saveSettings();
             }
 
+			utils.log("Removing Loading Icon");
             $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
             $("head").append('<style id="bdemotemenustyle"></style>');
             document.getElementsByClassName("bd-loaderv2")[0].remove();
             // Show loading errors
             if (settingsCookie["bda-gs-9"]) {
+				utils.log("Collecting Startup Errors");
                 self.showStartupErrors();
             }
+			utils.log("Initializing Main Observer");
             self.initObserver();
         } else {
             setTimeout(gwDefer, 100);
@@ -319,7 +330,7 @@ Core.prototype.initObserver = function () {
             }
 
             // Emoji Picker
-            if (node.classList.contains('popout')) {
+            if (node.classList.contains('popout') && !node.classList.contains('popout-left')) {
                 if (node.getElementsByClassName('emoji-picker').length) quickEmoteMenu.obsCallback(node);
             }
 
@@ -1404,7 +1415,7 @@ BdApi.showToast = function(content, options = {}) {
  
  function devMode() {}
  
- devMode.prototype.enable = function() {
+ devMode.prototype.enable = function(selectorMode) {
      var self = this;
      this.disable();
      $(window).on("keydown.bdDevmode", function(e) {
@@ -1414,6 +1425,7 @@ BdApi.showToast = function(content, options = {}) {
          }
      });
      
+	 if (!selectorMode) return;
      $(document).on("contextmenu.bdDevmode", function(e) {
          var parents = [];
          $(e.toElement).parents().addBack().not('html').each(function() {
@@ -2448,12 +2460,10 @@ class V2C_PluginCard extends BDV2.reactComponent {
     constructor(props) {
         super(props);
         let self = this;
-        if (typeof self.props.plugin.getSettingsPanel === "function") {
-            self.settingsPanel = self.props.plugin.getSettingsPanel();
-        }
         self.onChange = self.onChange.bind(self);
         self.showSettings = self.showSettings.bind(self);
         self.setInitialState();
+		self.hasSettings = typeof self.props.plugin.getSettingsPanel === "function";
     }
 
     setInitialState() {
@@ -2480,9 +2490,13 @@ class V2C_PluginCard extends BDV2.reactComponent {
         let version = plugin.getVersion();
         let website = bdplugins[name].website;
         let source = bdplugins[name].source;
-        let { settingsPanel } = this;
+        //let { settingsPanel } = this;
 
         if (this.state.settings) {
+			let settingsPanel = "";
+			try { settingsPanel = plugin.getSettingsPanel(); }
+			catch (err) { utils.err("Unable to get settings panel for " + plugin.getName() + ".", err); }
+			
             return BDV2.react.createElement("li", {className: "settings-open ui-switch-item"},
                     BDV2.react.createElement("div", {style: { float: "right", cursor: "pointer" }, onClick: () => {
                             this.refs.settingspanel.innerHTML = "";
@@ -2491,7 +2505,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
                     BDV2.react.createElement(V2Components.XSvg, null)
                 ),
                 typeof settingsPanel === 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel" }),
-                typeof settingsPanel !== 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: { __html: this.settingsPanel } })
+                typeof settingsPanel !== 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: { __html: settingsPanel } })
             );
         }
 
@@ -2518,7 +2532,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
                     website && source && " | ",
                     source && BDV2.react.createElement("a", {className: "bda-link", href: source, target: "_blank"}, "Source")
                 ),
-                this.settingsPanel && BDV2.react.createElement("button", {onClick: this.showSettings, className: "bda-settings-button", disabled: !this.state.checked}, "Settings")
+                this.hasSettings && BDV2.react.createElement("button", {onClick: this.showSettings, className: "bda-settings-button", disabled: !this.state.checked}, "Settings")
             )
         );
     }
@@ -2528,8 +2542,8 @@ class V2C_PluginCard extends BDV2.reactComponent {
         pluginModule.togglePlugin(this.props.plugin.getName());
     }
 
-    showSettings() {
-        if (!this.settingsPanel) return;
+    showSettings() {		
+        if (!this.hasSettings) return;
         this.setState({'settings': true});
         let self = $(BDV2.reactDom.findDOMNode(this));
         let container = self.parents('.scroller');
@@ -3026,6 +3040,8 @@ class V2_SettingsPanel {
                 var emote = $(this);
                 var x = emote.offset();
                 var title = emote.attr("alt");
+				var modifier = emote.attr("class").replace(/emote/g, "").trim();
+				if (modifier) title = title + ":" + modifier;
                 emoteNamePopup.find(".tipsy-inner").text(title);
                 $(".app").append($(emoteNamePopup));
                 var nodecenter = x.left + (emote.outerWidth() / 2);
@@ -3040,7 +3056,7 @@ class V2_SettingsPanel {
         }
 
         if (_c["bda-gs-8"]) {
-            dMode.enable();
+            dMode.enable(_c["bda-gs-11"]);
         } else {
             dMode.disable();
         }
