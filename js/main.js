@@ -1647,9 +1647,49 @@ window.bdtemp = {
 class V2 {
 
     constructor() {
+        this.WebpackModules = (() => {
+            const req = webpackJsonp([], {
+                '__extra_id__': (module, exports, req) => exports.default = req
+            }, ['__extra_id__']).default;
+            delete req.m['__extra_id__'];
+            delete req.c['__extra_id__'];
+            const find = (filter, options = {}) => {
+                const {cacheOnly = true} = options;
+                for (let i in req.c) {
+                    if (req.c.hasOwnProperty(i)) {
+                        let m = req.c[i].exports;
+                        if (m && m.__esModule && m.default && filter(m.default)) return m.default;
+                        if (m && filter(m))	return m;
+                    }
+                }
+                if (cacheOnly) {
+                    console.warn('Cannot find loaded module in cache');
+                    return null;
+                }
+                console.warn('Cannot find loaded module in cache. Loading all modules may have unexpected side effects');
+                for (let i = 0; i < req.m.length; ++i) {
+                    try {
+                        let m = req(i);
+                        if (m && m.__esModule && m.default && filter(m.default)) return m.default;
+                        if (m && filter(m))	return m;
+                    }
+                    catch (e) {
+                        console.error(e);
+                    }
+                }
+                console.warn('Cannot find module');
+                return null;
+            };
+            
+            const findByUniqueProperties = (propNames, options) => find(module => propNames.every(prop => module[prop] !== undefined), options);
+            const findByDisplayName = (displayName, options) => find(module => module.displayName === displayName, options);
+                
+            return {find, findByUniqueProperties, findByDisplayName};
+        })();
+
         this.internal = {
-            'react': require('react'),
-            'react-dom': require('react-dom')
+            'react': this.WebpackModules.findByUniqueProperties(['Component', 'PureComponent', 'Children', 'createElement', 'cloneElement']),
+            'react-dom': this.WebpackModules.findByUniqueProperties(['findDOMNode'])
         };
     }
 
