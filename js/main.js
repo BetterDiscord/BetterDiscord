@@ -2464,6 +2464,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         self.showSettings = self.showSettings.bind(self);
         self.setInitialState();
 		self.hasSettings = typeof self.props.plugin.getSettingsPanel === "function";
+		self.settingsPanel = ""
     }
 
     setInitialState() {
@@ -2493,8 +2494,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         //let { settingsPanel } = this;
 
         if (this.state.settings) {
-			let settingsPanel = "";
-			try { settingsPanel = plugin.getSettingsPanel(); }
+			try { self.settingsPanel = plugin.getSettingsPanel(); }
 			catch (err) { utils.err("Unable to get settings panel for " + plugin.getName() + ".", err); }
 			
             return BDV2.react.createElement("li", {className: "settings-open ui-switch-item"},
@@ -2504,8 +2504,8 @@ class V2C_PluginCard extends BDV2.reactComponent {
                         }},
                     BDV2.react.createElement(V2Components.XSvg, null)
                 ),
-                typeof settingsPanel === 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel" }),
-                typeof settingsPanel !== 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: { __html: settingsPanel } })
+                typeof self.settingsPanel === 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel" }),
+                typeof self.settingsPanel !== 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: { __html: self.settingsPanel } })
             );
         }
 
