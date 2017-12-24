@@ -90,6 +90,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
+var bbdVersion = "0.0.1";
 
 var mainObserver;
 
@@ -103,8 +104,6 @@ var bttvEmoteUrlEnd = "/1x";
 var mainCore;
 
 var settings = {
-    "Startup Error Modal":        { "id": "bda-gs-9",  "info": "Show a modal with plugin/theme errors on startup.", "implemented": true,  "hidden": false, "cat": "core"},
-    "Show Toasts":                { "id": "bda-gs-10", "info": "Shows a small notification for starting and stopping plugins & themes.", "implemented": true,  "hidden": false, "cat": "core"},
     "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
     "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false, "hidden": false, "cat": "core"},
     "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
@@ -119,7 +118,15 @@ var settings = {
     "Coloured Text":              { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
     "BetterDiscord Blue":         { "id": "bda-gs-b",  "info": "Replace Discord blue with BD Blue",                 "implemented": true,  "hidden": false, "cat": "core"},
     "Developer Mode":         	  { "id": "bda-gs-8",  "info": "Developer Mode",                                    "implemented": true,  "hidden": false, "cat": "core"},
-	"Copy Selector":			  { "id": "bda-gs-11", "info": "Adds a \"Copy Selector\" option to context menus when developer mode is active.", "implemented": true,  "hidden": false, "cat": "core"},
+	
+	
+	"Startup Error Modal":        { "id": "fork-ps-1",  "info": "Show a modal with plugin/theme errors on startup", "implemented": true,  "hidden": false, "cat": "fork"},
+    "Show Toasts":                { "id": "fork-ps-2", "info": "Shows a small notification for starting and stopping plugins & themes", "implemented": true,  "hidden": false, "cat": "fork"},
+	"Scroll To Settings":         { "id": "fork-ps-3", "info": "Auto-scrolls to plugin settins when opened (only if out of view)", "implemented": true,  "hidden": false, "cat": "fork"},
+	"Emote Modifier Tooltip":     { "id": "fork-es-1", "info": "Shows the emote modifier in the tooltip.", "implemented": true,  "hidden": false, "cat": "fork"},
+	"Animate On Hover":           { "id": "fork-es-2", "info": "Only animate the emote modifiers on hover", "implemented": true,  "hidden": false, "cat": "fork"},
+	"Copy Selector":			  { "id": "fork-dm-1", "info": "Adds a \"Copy Selector\" option to context menus when developer mode is active", "implemented": true,  "hidden": false, "cat": "fork"},
+	
 
     "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
     "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
@@ -149,9 +156,6 @@ var defaultCookie = {
     "bda-gs-6": false,
     "bda-gs-7": false,
     "bda-gs-8": false,
-	"bda-gs-11": false,
-    "bda-gs-9": true,
-    "bda-gs-10": true,
     "bda-es-0": true,
     "bda-es-1": true,
     "bda-es-2": true,
@@ -166,7 +170,13 @@ var defaultCookie = {
     "bda-dc-0": false,
     "bda-css-0": false,
     "bda-css-1": false,
-    "bda-es-9": true
+    "bda-es-9": true,
+	"fork-dm-1": false,
+    "fork-ps-1": true,
+    "fork-ps-2": true,
+	"fork-ps-3": true,
+	"fork-es-1": true,
+    "fork-es-2": false,
 };
 
 
@@ -245,7 +255,7 @@ Core.prototype.init = function () {
             $("head").append('<style id="bdemotemenustyle"></style>');
             document.getElementsByClassName("bd-loaderv2")[0].remove();
             // Show loading errors
-            if (settingsCookie["bda-gs-9"]) {
+            if (settingsCookie["fork-ps-1"]) {
 				utils.log("Collecting Startup Errors");
                 self.showStartupErrors();
             }
@@ -323,7 +333,7 @@ Core.prototype.initObserver = function () {
             if (node.classList.contains("layer")) {
                 if (node.querySelector(".guild-settings-base-section")) node.setAttribute('layer-id', 'server-settings');
 
-                if (node.querySelector(".socialLinks-1oZoF3")) {
+                if (node.getElementsByClassName("socialLinks-1oZoF3").length) {
                     node.setAttribute('layer-id', 'user-settings');
                     if (!node.querySelector("#bd-settings-sidebar")) settingsPanel.renderSidebar();
                 }
@@ -796,7 +806,8 @@ EmoteModule.prototype.injectEmote = function(node) {
 EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
     var len = Math.round(word.length / 4);
     var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
-    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" class="emote ' + mod + '" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite("' + name + '", "' + url + '");\' class="fav" title="Favorite!" type="button"></span>';
+	var stopAnim = settingsCookie['fork-es-2'] ? " stop-animation" : "";
+    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" data-modifier="' + mod.replace("emote", "") + '" class="emote ' + mod + stopAnim + '" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite("' + name + '", "' + url + '");\' class="fav" title="Favorite!" type="button"></span>';
     return $.parseHTML(html.replace(new RegExp("\uFDD9", "g"), ""))[0];
 };
 
@@ -1177,7 +1188,7 @@ PluginModule.prototype.loadPlugins = function () {
         if (pluginCookie[name]) {
             try {
                 plugin.start();
-                if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${plugin.getName()} v${plugin.getVersion()} has started.`);
+                if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${plugin.getName()} v${plugin.getVersion()} has started.`);
             }
             catch (err) {
                 pluginCookie[name] = false;
@@ -1192,7 +1203,7 @@ PluginModule.prototype.loadPlugins = function () {
 PluginModule.prototype.startPlugin = function (plugin) {
     try {
         bdplugins[plugin].plugin.start();
-        if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
+        if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
     }
     catch (err) {
         pluginCookie[plugin] = false;
@@ -1204,7 +1215,7 @@ PluginModule.prototype.startPlugin = function (plugin) {
 PluginModule.prototype.stopPlugin = function (plugin) {
     try {
         bdplugins[plugin].plugin.stop();
-        if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
+        if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
     }
     catch (err) {
         utils.err("Plugin " + name + " could not be stopped.", err);
@@ -1308,14 +1319,14 @@ ThemeModule.prototype.enableTheme = function (theme) {
     themeCookie[theme] = true;
     this.saveThemeData();
     $("head").append(`<style id="${utils.escapeID(bdthemes[theme].name)}">${unescape(bdthemes[theme].css)}</style>`);
-    if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
+    if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
 };
 
 ThemeModule.prototype.disableTheme = function (theme) {
     themeCookie[theme] = false;
     this.saveThemeData();
     $(`#${utils.escapeID(bdthemes[theme].name)}`).remove();
-    if (settingsCookie["bda-gs-10"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been removed.`);
+    if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been removed.`);
 };
 
 ThemeModule.prototype.toggleTheme = function (theme) {
@@ -1743,7 +1754,8 @@ class V2C_SettingsPanel extends BDV2.reactComponent {
         return BDV2.react.createElement(
             "div",
             { className: "content-column default" },
-            BDV2.react.createElement(V2Components.SettingsTitle, { text: this.props.title }),
+            BDV2.react.createElement(V2Components.SettingsTitle, { text: this.props.title}),
+			this.props.button && BDV2.react.createElement("button", {key: "title-button", className: 'bd-pfbtn', onClick: this.props.button.onClick}, this.props.button.title),
             settings.map(setting => {
                 return BDV2.react.createElement(V2Components.Switch, { id: setting.id, key: setting.id, data: setting, checked: settingsCookie[setting.id], onChange: (id, checked) => {
                         this.props.onChange(id, checked);
@@ -2005,6 +2017,7 @@ class V2C_SettingsTitle extends BDV2.reactComponent {
     }
 
     render() {
+		let pfBtn = BDV2.react.createElement("button", {key: "changelog-button", className: 'bd-pfbtn', onClick: () => { utils.log("Changelog") }}, "Changelog");
         return BDV2.react.createElement(
             "h2",
             { className: "ui-form-title h2 margin-reset margin-bottom-20" },
@@ -2479,6 +2492,25 @@ class V2C_PluginCard extends BDV2.reactComponent {
             if (typeof this.settingsPanel === "object") {
                 this.refs.settingspanel.appendChild(this.settingsPanel);
             }
+			
+			if (!settingsCookie['fork-ps-3']) return;
+			var isHidden = (container, element) => {
+
+				let cTop = container.scrollTop;
+				let cBottom = cTop + container.clientHeight;
+
+				let eTop = element.offsetTop;
+				let eBottom = eTop + element.clientHeight;
+
+				return  (eTop < cTop || eBottom > cBottom);
+			}
+			
+			let self = $(BDV2.reactDom.findDOMNode(this));
+			let container = self.parents('.scroller');
+			if (!isHidden(container[0], self[0])) return;
+			container.animate({
+				scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
+			}, 300);
         }
     }
 
@@ -2526,7 +2558,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
             BDV2.react.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
                 BDV2.react.createElement("div", {className: "bda-description scroller"}, description)
             ),
-            BDV2.react.createElement("div", {className: "bda-footer"},
+            (website || source || this.hasSettings) && BDV2.react.createElement("div", {className: "bda-footer"},
                 BDV2.react.createElement("span", {className: "bda-links"},
                     website && BDV2.react.createElement("a", {className: "bda-link", href: website, target: "_blank"}, "Website"),
                     website && source && " | ",
@@ -2545,11 +2577,6 @@ class V2C_PluginCard extends BDV2.reactComponent {
     showSettings() {		
         if (!this.hasSettings) return;
         this.setState({'settings': true});
-        let self = $(BDV2.reactDom.findDOMNode(this));
-        let container = self.parents('.scroller');
-        container.animate({
-            scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
-        }, 1000);
     }
 }
 
@@ -2593,7 +2620,7 @@ class V2C_ThemeCard extends BDV2.reactComponent {
             BDV2.react.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
                 BDV2.react.createElement("div", {className: "bda-description scroller"}, description)
             ),
-            BDV2.react.createElement("div", {className: "bda-footer"},
+            (website || source) && BDV2.react.createElement("div", {className: "bda-footer"},
                 BDV2.react.createElement("span", {className: "bda-links"},
                     website && BDV2.react.createElement("a", {className: "bda-link", href: website, target: "_blank"}, "Website"),
                     website && source && " | ",
@@ -2851,22 +2878,32 @@ class V2_SettingsPanel_Sidebar {
     }
 
     get items() {
-        return [{ 'text': 'Core', 'id': 'core' }, { 'text': 'Emotes', 'id': 'emotes' }, { 'text': 'Custom CSS', 'id': 'customcss' }, { 'text': 'Plugins', 'id': 'plugins' }, { 'text': 'Themes', 'id': 'themes' }];
+        return [{ 'text': 'Core', 'id': 'core' }, { 'text': 'Zere\'s Fork', 'id': 'fork' }, { 'text': 'Emotes', 'id': 'emotes' }, { 'text': 'Custom CSS', 'id': 'customcss' }, { 'text': 'Plugins', 'id': 'plugins' }, { 'text': 'Themes', 'id': 'themes' }];
     }
 
     get component() {
         return BDV2.react.createElement(
             "span",
             null,
-            BDV2.react.createElement(V2Components.SideBar, { onClick: this.onClick, headerText: "BetterDiscord", items: this.items }),
+            BDV2.react.createElement(V2Components.SideBar, { onClick: this.onClick, headerText: "Bandaged BD", items: this.items }),
             BDV2.react.createElement(
-                "span",
-                { style: { fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "6px 10px" } },
-                `v${bdVersion}:${jsVersion} by `,
+                "div",
+                { style: { fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px" } },
+                `BD v${bdVersion}, JS v${jsVersion} by `,
                 BDV2.react.createElement(
                     "a",
                     { href: "https://github.com/Jiiks/", target: "_blank" },
                     "Jiiks"
+                )
+            ),
+			BDV2.react.createElement(
+                "div",
+                { style: { fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px" } },
+                `BBD v${bbdVersion} by `,
+                BDV2.react.createElement(
+                    "a",
+                    { href: "https://github.com/rauenzi/", target: "_blank" },
+                    "Zerebos"
                 )
             )
         );
@@ -2929,6 +2966,9 @@ class V2_SettingsPanel {
     get coreSettings() {
         return this.getSettings("core");
     }
+	get forkSettings() {
+        return this.getSettings("fork");
+    }
     get emoteSettings() {
         return this.getSettings("emote");
     }
@@ -2951,6 +2991,9 @@ class V2_SettingsPanel {
             case 'core':
                 self.renderCoreSettings();
                 break;
+			case 'fork':
+				self.renderForkSettings();
+				break;
             case 'emotes':
                 self.renderEmoteSettings();
                 break;
@@ -3032,31 +3075,41 @@ class V2_SettingsPanel {
                 mainCore.removeColoredText(elem);
             }
         }
-
-        if (_c["bda-es-6"]) {
-            //Pretty emote titles
-            var emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
-            $(document).on("mouseover", ".emote", function () {
-                var emote = $(this);
-                var x = emote.offset();
-                var title = emote.attr("alt");
-				var modifier = emote.attr("class").replace(/emote/g, "").trim();
-				if (modifier) title = title + ":" + modifier;
-                emoteNamePopup.find(".tipsy-inner").text(title);
-                $(".app").append($(emoteNamePopup));
-                var nodecenter = x.left + (emote.outerWidth() / 2);
-                emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
-                emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
-            });
-            $(document).on("mouseleave", ".emote", function () {
-                $(".tipsy").remove();
-            });
-        } else {
-            $(document).off('mouseover', '.emote');
-        }
+		
+		if (_c["fork-es-2"]) {
+			$('.emote').each(() => {
+				$(this).addClass("stop-animation")
+			});
+		}
+		else {
+			$('.emote').each(() => {
+				$(this).removeClass("stop-animation")
+			});
+		}
+		$(document).off('mouseover', '.emote');
+		//Pretty emote titles
+		var emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
+		$(document).on("mouseover", ".emote", function () {
+			var emote = $(this);
+			if (_c["fork-es-2"] && _c["bda-es-8"]) emote.removeClass("stop-animation");
+			if (!_c["bda-es-6"]) return;
+			var x = emote.offset();
+			var title = emote.attr("alt");
+			var modifier = emote.attr("data-modifier")
+			if (modifier && _c["fork-es-1"]) title = title + ":" + modifier;
+			emoteNamePopup.find(".tipsy-inner").text(title);
+			$(".app").append($(emoteNamePopup));
+			var nodecenter = x.left + (emote.outerWidth() / 2);
+			emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
+			emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
+		});
+		$(document).on("mouseleave", ".emote", function () {
+			if (_c["bda-es-6"]) $(".tipsy").remove();
+			if (_c["fork-es-2"] && _c["bda-es-8"]) $(this).addClass("stop-animation");
+		});
 
         if (_c["bda-gs-8"]) {
-            dMode.enable(_c["bda-gs-11"]);
+            dMode.enable(_c["fork-dm-1"]);
         } else {
             dMode.disable();
         }
@@ -3076,6 +3129,21 @@ class V2_SettingsPanel {
 
     get coreComponent() {
         return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+    }
+	
+	get forkComponent() {
+        return BDV2.react.createElement(V2Components.Scroller, {
+				fade: true,
+				dark: true,
+				children: [
+					BDV2.react.createElement(V2Components.SettingsPanel, { key: "fspanel", title: "Zere's Fork Settings", onChange: this.onChange, settings: this.forkSettings, button: {
+						title: "Changelog",
+						onClick: () => { mainCore.alert("Changelog", "Sorry :( this feature isn't quite ready.");}
+					}}),
+					BDV2.react.createElement(V2Components.Tools, { key: "tools" })
+				]
+			}
+		);
     }
 
     get emoteComponent() {
@@ -3113,6 +3181,15 @@ class V2_SettingsPanel {
             return;
         }
         BDV2.reactDom.render(this.coreComponent, root);
+    }
+	
+	renderForkSettings() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            return;
+        }
+        BDV2.reactDom.render(this.forkComponent, root);
     }
 
     renderEmoteSettings() {

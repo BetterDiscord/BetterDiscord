@@ -299,6 +299,8 @@
   cursor: pointer;
 }
 
+.emote.stop-animation {animation: none!important;}
+
 .emote-container:hover {
   background: rgba(123, 123, 123, 0.37);
 }
@@ -755,13 +757,13 @@
 }
 
 #bd-changelog {
-  float: right;
-  height: 30px;
-  line-height: 30px;
-  margin-right: 10px;
-  font-size: 11px;
-  font-weight: 700;
-  cursor:pointer;
+  
+}
+
+#bd-changelog h2 {
+  font-size: 150%;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0,0,0, 0.5);
 }
 
 .fav {
@@ -1796,14 +1798,10 @@
 }
 
 .bd-pfbtn {
-  position: relative;
-  top: -40px;
-  left: 80px;
-  margin-bottom: -19px;
   background: #7289da;
   color: #FFF;
   border-radius: 5px;
-  display: block;
+  margin-left: 10px;
 }
 
 #bd-settings-sidebar .ui-tab-bar-item {
@@ -1860,6 +1858,7 @@
 	color: #f6f6f7;
     text-transform: uppercase;
     font-weight: 600;
+	display: inline-block;
 }
 
 #bd-settingspane-container .ui-switch-item {
@@ -2057,7 +2056,7 @@
 }
 
 .bda-slist .bda-header {
-  color: #87909C;
+  color: #e6e6e7;
   font-weight: 700;
   font-size: 12px;
   overflow: hidden;
@@ -2069,12 +2068,11 @@
 }
 
 .bda-slist .bda-description {
-    margin-top:5px;
+    margin:5px 0;
     color: #b0b6b9;
     overflow-y:auto;
     max-height: 100px;
-    min-height: 75px;
-    padding-top:5px;
+    padding:5px 0;
     word-break: break-word;
 }
 
