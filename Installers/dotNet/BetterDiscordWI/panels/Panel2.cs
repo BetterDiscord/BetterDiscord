@@ -37,7 +37,7 @@ namespace BetterDiscordWI.panels {
 
         private void KillRunningProcess()
         {
-            AppendLog("Killing " + GetParent());
+            AppendLog("Killing " + GetParent().DiscordVersion);
             foreach (var process in Process.GetProcessesByName(GetParent().DiscordVersion))
             {
                 process.Kill();

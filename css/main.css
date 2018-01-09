@@ -40,7 +40,6 @@
   height: 3px;
   width: 100%;
   display: block;
-  position: absolute;
   margin-top: 5px;
 }
 
@@ -194,8 +193,18 @@
 }
 
 .bd-layer {
-  background: #36393f;
-  z-index: 900;
+  -ms-flex-direction: column;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  bottom: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .spoiler {
@@ -222,6 +231,41 @@
 
 #bdbeta {
   background: red;
+}
+
+.editor-wrapper {
+	display: flex;
+}
+
+.line-numbers, .editor {
+	line-height: normal;
+	font-family: Consolas, monospace;
+	box-sizing: border-box;
+	height: 750px;
+	font-size: 14px;
+}
+
+.line-numbers {
+	white-space: pre;
+    color: gray;
+    padding: 10px 5px 0 5px;
+    background: #24262a;
+	overflow: hidden;
+}
+
+.editor {
+    width: 100%;
+    background: #292B2F;
+    outline: none;
+    color: white;
+    padding: 10px;
+    resize: none;
+}
+
+#bd-customcss-detach-container .editor-wrapper,
+#bd-customcss-detach-container .line-numbers,
+#bd-customcss-detach-container .editor {
+	height: 100%;
 }
 
 #emote-menu {
@@ -1434,7 +1478,6 @@
   top: 0;
   right: 0;
   bottom: 0;
-  padding-top: 58px;
   background-color: #36393e;
 }
 

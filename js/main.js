@@ -6,7 +6,7 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
- /* global Proxy, bdplugins, bdthemes, betterDiscordIPC, bdVersion, version, BDV2, CodeMirror */
+ /* global Proxy, bdplugins, bdthemes, betterDiscordIPC, bdVersion, version, BDV2, webpackJsonp */
 
  /* eslint-disable  no-console */
 
@@ -17,18 +17,18 @@
     let __process = window.require("process");
     let __platform = __process.platform;
     let __dataPath = (__platform === 'win32' ? __process.env.APPDATA : __platform === 'darwin' ? __process.env.HOME + '/Library/Preferences' : process.env.HOME + '/.config') + '/BetterDiscord/';
-
+    let localStorageFile = "localStorage.json";
 
     let __data = {};
-    if(__fs.existsSync(`${__dataPath}localStorage.json`)) {
+    if(__fs.existsSync(`${__dataPath}${localStorageFile}`)) {
         try {
-            __data = JSON.parse(__fs.readFileSync(`${__dataPath}localStorage.json`));
+            __data = JSON.parse(__fs.readFileSync(`${__dataPath}${localStorageFile}`));
         }catch(err) {
             console.log(err);
         }
-    } else if(__fs.existsSync("localStorage.json")) {
+    } else if(__fs.existsSync(localStorageFile)) {
         try {
-            __data = JSON.parse(__fs.readFileSync("localStorage.json"));
+            __data = JSON.parse(__fs.readFileSync(localStorageFile));
         }catch(err) {
             console.log(err);
         }
@@ -43,7 +43,7 @@
         return __ls[i] || null;
     };
     __ls.save = function() {
-        __fs.writeFileSync(`${__dataPath}/localStorage.json`, JSON.stringify(this), null, 4);
+        __fs.writeFileSync(`${__dataPath}${localStorageFile}`, JSON.stringify(this), null, 4);
     };
 
     var __proxy = new Proxy(__ls, {
@@ -87,7 +87,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
     console.log(arg);
 });
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode;
+var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
 var bbdVersion = "0.0.1";
@@ -105,7 +105,7 @@ var mainCore;
 
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
-    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false, "hidden": false, "cat": "core"},
+    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false,  "hidden": false, "cat": "core"},
     "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
     "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
     "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
@@ -184,7 +184,21 @@ var settingsCookie = {};
 
 var bdpluginErrors, bdthemeErrors; // define for backwards compatibility
 
-function Core() {}
+var bdConfig = null;
+
+function Core(config) {
+    if (!config) {
+        config = {
+            branch: "master",
+            repo: "rauenzi",
+            updater: {
+                CDN: "cdn.rawgit.com"
+            }
+        }
+    }
+    else config.newLoader = true;
+    window.bdConfig = config;
+}
 
 Core.prototype.init = function () {
     var self = this;
@@ -198,6 +212,7 @@ Core.prototype.init = function () {
 
     utils = new Utils();
     utils.getHash();
+	publicServersModule = new V2_PublicServers();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
@@ -240,6 +255,8 @@ Core.prototype.init = function () {
                     document.querySelector('.btn.btn-disconnect').click();
                 }
             });
+			
+			publicServersModule.initialize();
 
             emoteModule.autoCapitalize();
 
@@ -273,12 +290,12 @@ Core.prototype.init = function () {
 };
 
 Core.prototype.injectExternals = function() {
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js");
+    /*utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js");
     utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/css/css.min.js");
     utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.js");
     utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.css");
     utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/theme/material.min.css");
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js");
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js");*/
 };
 
 Core.prototype.initSettings = function () {
@@ -607,16 +624,189 @@ Core.prototype.showToast = function(content, options = {}) {
 var emotesFfz = {};
 var emotesBTTV = {};
 var emotesBTTV2 = {};
-var emotesTwitch = {
-    "emote": {
-        "id": 0
-    }
-}; //for ide
+var emotesTwitch = {};
 var subEmotesTwitch = {};
+
+window.bdEmotes = {
+    TwitchGlobal: {},
+    TwitchSubscriber: {},
+    FrankerFaceZ: {},
+    BTTV: {},
+    BTTV2: {}
+}
+
+window.bdEmoteSettingIDs = {
+    TwitchGlobal: "bda-es-7",
+    TwitchSubscriber: "bda-es-7",
+    FrankerFaceZ: "bda-es-1",
+    BTTV: "bda-es-2",
+    BTTV2: "bda-es-2"
+}
 
 function EmoteModule() {}
 
-EmoteModule.prototype.init = function () {};
+EmoteModule.prototype.init = function () {
+    this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
+    this.categories = Object.keys(window.bdEmoteSettingIDs);
+
+    let emoteInfo = {
+        'TwitchGlobal': {
+            url: 'https://twitchemotes.com/api_cache/v3/global.json',
+            backup: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_twitch_global.json',
+            variable: 'TwitchGlobal',
+            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0`
+        },
+        'TwitchSubscriber': {
+            url: 'https://twitchemotes.com/api_cache/v3/subscriber.json',
+            backup: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_twitch_subscriber.json',
+            variable: 'TwitchSubscriber',
+            parser: (data) => {
+                let emotes = {};
+                for (let c in data) {
+                    let channel = data[c];
+                    for (let e = 0, elen = channel.emotes.length; e < elen; e++) {
+                        let emote = channel.emotes[e];
+                        emotes[emote.code] = emote.id;
+                    }
+                }
+                return emotes;
+            },
+            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`
+        },
+        'FrankerFaceZ': {
+            url: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_ffz.json',
+            variable: 'FrankerFaceZ',
+            getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`
+        },
+        'BTTV': {
+            url: 'https://api.betterttv.net/emotes',
+            variable: 'BTTV',
+            parser: (data) => {
+                let emotes = {};
+                for (let e = 0, len = data.emotes.length; e < len; e++) {
+                    let emote = data.emotes[e];
+                    emotes[emote.regex] = emote.url;
+                }
+                return emotes;
+            },
+            getEmoteURL: (e) => `${e}`
+        },
+        'BTTV2': {
+            url: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_bttv.json',
+            variable: 'BTTV2',
+            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`
+        }
+    };
+
+    if (!bdConfig.newLoader) {
+        window.bdEmotes = {
+            TwitchGlobal: emotesTwitch,
+            TwitchSubscriber: subEmotesTwitch,
+            FrankerFaceZ: emotesFfz,
+            BTTV: emotesBTTV,
+            BTTV2: emotesBTTV2
+        }
+
+        for (let type in window.bdEmotes) {
+            for (let emote in window.bdEmotes[type]) {
+                window.bdEmotes[type][emote] = emoteInfo[type].getEmoteURL(window.bdEmotes[type][emote]);
+            }
+        }
+        return;
+    }
+
+    this.loadEmoteData(emoteInfo);
+};
+
+EmoteModule.prototype.clearEmoteData = async function() {
+    let _fs = require("fs");
+    let emoteFile = "emote_data.json";
+    let file = bdConfig.dataPath + emoteFile;
+    let exists = _fs.existsSync(file);
+
+    if (exists) _fs.unlinkSync(file);
+
+    window.bdEmotes = {
+        TwitchGlobal: {},
+        TwitchSubscriber: {},
+        FrankerFaceZ: {},
+        BTTV: {},
+        BTTV2: {}
+    }
+};
+
+EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
+    let _fs = require("fs");
+    let emoteFile = "emote_data.json";
+    let file = bdConfig.dataPath + emoteFile;
+    let exists = _fs.existsSync(file);
+    
+    if (exists && !bdConfig.cache.expired) {
+        utils.log("[Emotes] Loading emotes from local cache.")
+        let data = _fs.readFileSync(file, "utf8");
+
+        if (this.testJSON(data)) {
+            bdEmotes = JSON.parse(data);
+            return;
+        }
+        else {
+            utils.log("[Emotes] Cache was corrupt, downloading...")
+            _fs.unlinkSync(file);
+        }
+    }
+
+    for (let e in emoteInfo) {
+        let data = await this.downloadEmotes(emoteInfo[e]);
+        bdEmotes[emoteInfo[e].variable] = data;
+    }
+
+    try { _fs.writeFileSync(file, JSON.stringify(bdEmotes), "utf8"); }
+    catch(err) { utils.err("[Emotes] Could not save emote data.", err); }
+}
+
+EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
+    let request = require("request");
+    let options = {
+        url: emoteMeta.url,
+        timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
+    };
+
+    utils.log("[Emotes] Downloading: " + emoteMeta.variable);
+
+    return new Promise((resolve, reject) => {
+        request(options, (error, response, body) => {
+            if (error) {
+                utils.err("[Emotes] Could not download " + emoteMeta.variable, error)
+                if (emoteMeta.backup) {
+                    emoteMeta.url = emoteMeta.backup;
+                    emoteMeta.backup = null;
+                    return this.downloadEmotes(emoteMeta);
+                }
+                reject({});
+            }
+            else {
+                let parsedData = JSON.parse(body);
+                if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
+
+                for (let emote in parsedData) {
+                    parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
+                }
+                resolve(parsedData);
+            }
+        });
+    });
+}
+
+EmoteModule.prototype.testJSON = function(data) {
+    try {
+        let json = JSON.parse(data);
+        return true;
+    }
+    catch(err) {
+        return false;
+    }
+    return false;
+}
 
 EmoteModule.prototype.getBlacklist = function () {
     $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
@@ -659,156 +849,47 @@ EmoteModule.prototype.getNodes = function (node) {
 };
 
 var bemotes = [];
-// var spoilered = [];
 
+EmoteModule.prototype.injectEmote = async function(node) {
+    if (!node.parentElement || !node.parentElement.classList.contains("markup")) return;
+    let messageScroller = document.querySelector('.messages.scroller');
+    let message = node.parentElement;
+    let words = message.innerHTML.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
 
-EmoteModule.prototype.injectEmote = function(node) {
-    var self = this;
+    for (let w = 0, len = words.length; w < len; w++) {
+        let emote = words[w];
+        let emoteSplit = emote.split(':');
+        let emoteName = emoteSplit[0];
+        let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
 
-    if (!node.parentElement) return;
-    var parent = node.parentElement;
-    
-    if(!parent.classList.contains("markup") && !parent.classList.contains("message-content")) return;
-
-    parent = $(parent);
-    function inject() {
-        var contents = parent.contents();
+        if (bemotes.includes(emoteName)) continue;
+        if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
         
-        contents.each(function(i) {
-            if(contents[i] == undefined) return;
-            var nodeValue = contents[i].nodeValue;
-            if(nodeValue == null) return;
-            //if(nodeValue.indexOf("react-") > -1) return;
+        for (let c = 0, clen = this.categories.length; c < clen; c++) {
+            let category = this.categories[c];
+            if (settingsCookie[bdEmoteSettingIDs[category]]) {
+                let inCategory = bdEmotes[category].hasOwnProperty(emoteName);
+                if (!inCategory) continue;
 
-            if(contents[i].nodeType == 8) return;
-            contents.splice(i, 1);
-
-            var words = nodeValue.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
-            
-            var splice = 0;
-
-            var doInject = false;
-            var text = null;
-
-            words.forEach(function(w, index, a) {
-                
-                if(w.indexOf("[!s]") > -1) {
-                    w = w.replace("[!s]", "");
-                    parent.data("spoilered", false);
-                    parent.addClass("spoiler");
-                }
-                
-                var allowedClasses = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
-                // var useEmoteClass = false;
-                var emoteClass = "";
-                var skipffz = false;
-                
-                var sw = w;
-                
-                if(w.indexOf(":") > -1) {
-                    var split = w.split(":");
-                    if(split[0] != "" && split[1] != "") {
-                        if(allowedClasses.indexOf(split[1]) > -1) {
-                            sw = split[0];
-                            emoteClass = settingsCookie["bda-es-8"] ? "emote" + split[1] : "";
-                        }
-                        if(split[1] == "bttv") {
-                            sw = split[0];
-                            skipffz = true;
-                        }
-                    }
-                }
-                
-                if ($.inArray(sw, bemotes) == -1) {
-                
-                    if(typeof emotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
-                        if(emotesTwitch.hasOwnProperty(sw) && sw.length >= 4) { 
-                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            let url = twitchEmoteUrlStart + emotesTwitch[sw].id + twitchEmoteUrlEnd;
-                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                            doInject = true;
-                            return;
-                        }
-                    }
-                    
-                    if(typeof subEmotesTwitch !== 'undefined' && settingsCookie["bda-es-7"]) {
-                        if(subEmotesTwitch.hasOwnProperty(sw) && sw.length >= 4) {
-                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            let url = twitchEmoteUrlStart + subEmotesTwitch[sw] + twitchEmoteUrlEnd;
-                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                            doInject = true;
-                            return;
-                        }
-                    }
-                    
-                    if (typeof emotesBTTV !== 'undefined' && settingsCookie["bda-es-2"]) { 
-                        if(emotesBTTV.hasOwnProperty(sw) && sw.length >= 4) {
-                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            let url = emotesBTTV[sw];
-                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                            doInject = true;
-                            return;
-                        }
-                    }
-                    
-                    if ((typeof emotesFfz !== 'undefined' && settingsCookie["bda-es-1"]) && (!skipffz || !emotesBTTV2.hasOwnProperty(sw))) { 
-                        if(emotesFfz.hasOwnProperty(sw) && sw.length >= 4) {
-                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            let url = ffzEmoteUrlStart + emotesFfz[sw] + ffzEmoteUrlEnd;
-                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                            doInject = true;
-                            return;
-                        }
-                    }
-    
-                    if (typeof emotesBTTV2 !== 'undefined' && settingsCookie["bda-es-2"]) { 
-                        if(emotesBTTV2.hasOwnProperty(sw) && sw.length >= 4) {
-                            if(text != null) { contents.splice(i + splice++, 0, document.createTextNode(text));  text = null;}
-                            let url = bttvEmoteUrlStart + emotesBTTV2[sw] + bttvEmoteUrlEnd;
-                            if(skipffz && emotesFfz.hasOwnProperty(sw)) sw = sw + ":bttv";
-                            contents.splice(i + splice++, 0, self.createEmoteElement(sw, url, emoteClass));
-                            doInject = true;
-                            return;
-                        }
-                    }
-                }
-                
-                if(text == null) {
-                    text = w;
-                } else {
-                    text += "" + w;
-                }
-
-                if(index === a.length - 1) {
-                    contents.splice(i + splice, 0, document.createTextNode(text));
-                }
-            });
-
-            if(doInject) {
-                var oldHeight = parent.outerHeight();
-                parent.html(contents);
-                var scrollPane = $(".scroller.messages").first();
-                scrollPane.scrollTop(scrollPane.scrollTop() + (parent.outerHeight() - oldHeight));
+                let url = bdEmotes[category][emoteName];
+                let element = this.createEmoteElement(emoteName, url, emoteModifier);
+                let oldHeight = message.offsetHeight;
+                message.innerHTML = message.innerHTML.replace(new RegExp(`([\\s]|^)${emoteModifier ? emoteName + ":" + emoteModifier : emoteName}([\\s]|$)`, "g"), `$1${element}$2`);
+                messageScroller.scrollTop = messageScroller.scrollTop + (message.offsetHeight - oldHeight);
             }
+        }
 
-        });
+        if (emote == "[!s]") message.classList.add("spoiler");
     }
-    
-    inject();
-    if(parent.children().hasClass("edited")) {
-        setTimeout(inject, 250);
-    }
-
-    
-
 };
 
 EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
     var len = Math.round(word.length / 4);
     var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
-	var stopAnim = settingsCookie['fork-es-2'] ? " stop-animation" : "";
-    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" data-modifier="' + mod.replace("emote", "") + '" class="emote ' + mod + stopAnim + '" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite("' + name + '", "' + url + '");\' class="fav" title="Favorite!" type="button"></span>';
-    return $.parseHTML(html.replace(new RegExp("\uFDD9", "g"), ""))[0];
+    var stopAnim = settingsCookie['fork-es-2'] ? " stop-animation" : "";
+    var modClass = mod ? "emote" + mod : "";
+    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" data-modifier="' + mod + '" class="emote ' + modClass + stopAnim + '" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite("' + name + '", "' + url + '");\' class="fav" title="Favorite!" type="button"></span>';
+    return html.replace(new RegExp("\uFDD9", "g"), "");
 };
 
 EmoteModule.prototype.autoCapitalize = function () {
@@ -833,7 +914,7 @@ EmoteModule.prototype.autoCapitalize = function () {
 };
 
 EmoteModule.prototype.capitalize = function (value) {
-    var res = emotesTwitch;
+    var res = bdEmotes.TwitchGlobal;
     for (var p in res) {
         if (res.hasOwnProperty(p) && value == (p + '').toLowerCase()) {
             return p;
@@ -877,11 +958,11 @@ QuickEmoteMenu.prototype.init = function() {
     teContainer += "    <div class=\"scroller-wrap fade\">";
     teContainer += "        <div class=\"scroller\">";
     teContainer += "            <div class=\"emote-menu-inner\">";
-    for (let emote in emotesTwitch) {
-        if (emotesTwitch.hasOwnProperty(emote)) {
-            var id = emotesTwitch[emote].id;
+    for (let emote in bdEmotes.TwitchGlobal) {
+        if (bdEmotes.TwitchGlobal.hasOwnProperty(emote)) {
+            var url = bdEmotes.TwitchGlobal[emote];
             teContainer += "<div class=\"emote-container\">";
-            teContainer += "    <img class=\"emote-icon\" id=\"" + emote + "\" alt=\"\" src=\"https://static-cdn.jtvnw.net/emoticons/v1/" + id + "/1.0\" title=\"" + emote + "\">";
+            teContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\">";
             teContainer += "    </img>";
             teContainer += "</div>";
         }
@@ -1436,7 +1517,7 @@ BdApi.showToast = function(content, options = {}) {
          }
      });
      
-	 if (!selectorMode) return;
+	if (!selectorMode) return;
      $(document).on("contextmenu.bdDevmode", function(e) {
          var parents = [];
          $(e.toElement).parents().addBack().not('html').each(function() {
@@ -2017,7 +2098,6 @@ class V2C_SettingsTitle extends BDV2.reactComponent {
     }
 
     render() {
-		let pfBtn = BDV2.react.createElement("button", {key: "changelog-button", className: 'bd-pfbtn', onClick: () => { utils.log("Changelog") }}, "Changelog");
         return BDV2.react.createElement(
             "h2",
             { className: "ui-form-title h2 margin-reset margin-bottom-20" },
@@ -2081,20 +2161,22 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     componentDidMount() {
-        let self = this;
         $("#app-mount").addClass('bd-detached-editor');
-        self.editor = CodeMirror.fromTextArea(self.refs.editor, self.options);
-        self.editor.on("change", () => {
-            if (!settingsCookie["bda-css-0"]) return;
-            self.updateCss();
-        });
         window.bdtemp.editorDetached = true;
+		this.updateLineCount();
     }
 
     componentWillUnmount() {
         $("#app-mount").removeClass('bd-detached-editor');
         window.bdtemp.editorDetached = false;
     }
+	
+	updateLineCount() {
+		let lineCount = this.refs.editor.value.split('\n').length;
+		if (lineCount == this.props.lines) return;
+		this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
+		this.props.lines = lineCount;
+	}
 
     get options() {
         return {
@@ -2140,7 +2222,23 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
             BDV2.react.createElement(
                 "div",
                 { id: "bd-customcss-innerpane" },
-                BDV2.react.createElement("textarea", { onChange: () => {}, value: self.css, ref: "editor", id: "bd-customcss-ta" }),
+                BDV2.react.createElement("div", {className: "editor-wrapper"},
+					BDV2.react.createElement("div", {className: "line-numbers", ref: "lines"}),
+					BDV2.react.createElement("textarea", {id: "bd-customcss-ta", className: "editor", ref: "editor", defaultValue: self.css,
+					onChange: () => {
+						this.updateLineCount();
+						if (!settingsCookie["bda-css-0"]) return;
+						self.updateCss();
+					}, onScroll: () => {
+						this.refs.lines.scrollTop = this.refs.editor.scrollTop;
+					}, onKeyDown: (e) => {
+						if (e.keyCode == 9) {
+							e.preventDefault();
+							document.execCommand("insertText", false, "    ");
+						}
+					}
+					})
+				),
                 BDV2.react.createElement(
                     "div",
                     { id: "bd-customcss-attach-controls" },
@@ -2211,16 +2309,14 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     updateCss() {
-        let self = this;
         if ($("#customcss").length == 0) {
             $("head").append('<style id="customcss"></style>');
         }
-        $("#customcss").html(self.editor.getValue());
+        $("#customcss").html(this.refs.editor.value);
     }
 
     saveCss() {
-        let self = this;
-        window.bdStorage.set("bdcustomcss", btoa(self.editor.getValue()));
+        window.bdStorage.set("bdcustomcss", btoa(this.refs.editor.value));
     }
 }
 
@@ -2229,6 +2325,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
     constructor(props) {
         super(props);
         let self = this;
+		self.props.lines = 0;
         self.setInitialState();
         self.attach = self.attach.bind(self);
         self.detachedEditor = BDV2.react.createElement(V2C_CssEditorDetached, { attach: self.attach });
@@ -2236,7 +2333,6 @@ class V2C_CssEditor extends BDV2.reactComponent {
         self.updateCss = self.updateCss.bind(self);
         self.saveCss = self.saveCss.bind(self);
         self.detach = self.detach.bind(self);
-        self.codeMirror = self.codeMirror.bind(self);
     }
 
     setInitialState() {
@@ -2246,27 +2342,17 @@ class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     componentDidMount() {
-        let self = this;
-        self.codeMirror();
+		this.updateLineCount();
     }
 
     componentDidUpdate(prevProps, prevState) {
         let self = this;
         if (prevState.detached && !self.state.detached) {
             BDV2.reactDom.unmountComponentAtNode(self.detachedRoot);
-            self.codeMirror();
         }
     }
 
     codeMirror() {
-        let self = this;
-        if (!self.state.detached) {
-            self.editor = CodeMirror.fromTextArea(self.refs.editor, self.options);
-            self.editor.on("change", () => {
-                if (!settingsCookie["bda-css-0"]) return;
-                self.updateCss();
-            });
-        }
     }
 
     get options() {
@@ -2287,6 +2373,13 @@ class V2C_CssEditor extends BDV2.reactComponent {
         }
         return ccss;
     }
+	
+	updateLineCount() {
+		let lineCount = this.refs.editor.value.split('\n').length;
+		if (lineCount == this.props.lines) return;
+		this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
+		this.props.lines = lineCount;
+	}
 
     render() {
         let self = this;
@@ -2316,7 +2409,23 @@ class V2C_CssEditor extends BDV2.reactComponent {
                 "div",
                 null,
                 BDV2.react.createElement(V2Components.SettingsTitle, { text: "Custom CSS Editor" }),
-                BDV2.react.createElement("textarea", { ref: "editor", value: self.css, onChange: () => {} }),
+				BDV2.react.createElement("div", {className: "editor-wrapper"},
+					BDV2.react.createElement("div", {className: "line-numbers", ref: "lines"}),
+					BDV2.react.createElement("textarea", {id: "bd-customcss-ta", className: "editor", ref: "editor", defaultValue: self.css,
+					onChange: () => {
+						this.updateLineCount();
+						if (!settingsCookie["bda-css-0"]) return;
+						self.updateCss();
+					}, onScroll: () => {
+						this.refs.lines.scrollTop = this.refs.editor.scrollTop;
+					}, onKeyDown: (e) => {
+						if (e.keyCode == 9) {
+							e.preventDefault();
+							document.execCommand("insertText", false, "    ");
+						}
+					}
+					})
+				),
                 BDV2.react.createElement(
                     "div",
                     { id: "bd-customcss-attach-controls" },
@@ -2385,16 +2494,14 @@ class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     updateCss() {
-        let self = this;
         if ($("#customcss").length == 0) {
             $("head").append('<style id="customcss"></style>');
         }
-        $("#customcss").html(self.editor.getValue());
+        $("#customcss").html(this.refs.editor.value);
     }
 
     saveCss() {
-        let self = this;
-        window.bdStorage.set("bdcustomcss", btoa(self.editor.getValue()));
+        window.bdStorage.set("bdcustomcss", btoa(this.refs.editor.value));
     }
 
     detach() {
@@ -2477,7 +2584,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         self.showSettings = self.showSettings.bind(self);
         self.setInitialState();
 		self.hasSettings = typeof self.props.plugin.getSettingsPanel === "function";
-		self.settingsPanel = ""
+		self.settingsPanel = "";
     }
 
     setInitialState() {
@@ -2503,7 +2610,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
 				let eBottom = eTop + element.clientHeight;
 
 				return  (eTop < cTop || eBottom > cBottom);
-			}
+			};
 			
 			let self = $(BDV2.reactDom.findDOMNode(this));
 			let container = self.parents('.scroller');
@@ -2647,174 +2754,6 @@ class V2Cs_TabBar {
         return V2C_TabBarSeparator;
     }
 }
-
-class V2C_Layer extends BDV2.reactComponent {
-
-    constructor(props) {
-        super(props);
-    }
-
-    componentDidMount() {
-        $(window).on(`keyup.${this.props.id}`, e => {
-            if (e.which === 27) {
-                BDV2.reactDom.unmountComponentAtNode(this.refs.root.parentNode);
-            }
-        });
-    }
-
-    componentWillUnmount() {
-        $(window).off(`keyup.${this.props.id}`);
-        $(`#${this.props.rootId}`).remove();
-    }
-
-    render() {
-        return BDV2.react.createElement(
-            "div",
-            { className: "layer", id: this.props.id, ref: "root" },
-            this.props.children
-        );
-    }
-}
-
-class V2C_SidebarView extends BDV2.reactComponent {
-
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        let { sidebar, content } = this.props.children;
-        return BDV2.react.createElement(
-            "div",
-            { className: "ui-standard-sidebar-view" },
-            BDV2.react.createElement(
-                "div",
-                { className: "sidebar-region" },
-                BDV2.react.createElement(V2Components.Scroller, { key: "sidebarScroller", ref: "sidebarScroller", fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component })
-            ),
-            BDV2.react.createElement(
-                "div",
-                { className: "content-region" },
-                BDV2.react.createElement(V2Components.Scroller, { key: "contentScroller", ref: "contentScroller", fade: content.fade || true, dark: content.dark || true, children: content.component })
-            )
-        );
-    }
-}
-
-class V2C_ServerCard extends BDV2.reactComponent {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        let { server } = this.props;
-
-        return BDV2.react.createElement(
-            "div",
-            { className: `ui-card ui-card-primary bd-server-card${server.pinned ? ' bd-server-card-pinned' : ''}`, style: { marginTop: "5px" } },
-            BDV2.react.createElement(
-                "div",
-                { className: "ui-flex horizontal", style: { display: "flex", flexFlow: "row nowrap", justifyContent: "flex-start", alignItems: "stretch", flex: "1 1 auto" } },
-                BDV2.react.createElement(
-                    "div",
-                    { className: "ui-flex-child", style: { flex: "0 1 auto", padding: "5px" } },
-                    BDV2.react.createElement("div", { className: "bd-pubs-server-icon", style: { width: "100px", height: "100px", backgroundSize: "cover", backgroundImage: `url(${server.icon})` } })
-                ),
-                BDV2.react.createElement(
-                    "div",
-                    { className: "ui-flex-child", style: { flex: "1 1 auto", padding: "5px" } },
-                    BDV2.react.createElement(
-                        "div",
-                        { className: "ui-flex horizontal" },
-                        BDV2.react.createElement(
-                            "div",
-                            { className: "ui-form-item", style: { flex: "1 1 auto" } },
-                            BDV2.react.createElement(
-                                "h5",
-                                { className: "ui-form-title h5 margin-reset" },
-                                server.name
-                            )
-                        ),
-                        BDV2.react.createElement(
-                            "div",
-                            { className: "ui-form-item" },
-                            BDV2.react.createElement(
-                                "h5",
-                                { className: "ui-form-title h5 margin-reset" },
-                                server.online,
-                                "/",
-                                server.members,
-                                " Members"
-                            )
-                        )
-                    ),
-                    BDV2.react.createElement(
-                        "div",
-                        { className: "ui-flex horizontal" },
-                        BDV2.react.createElement(
-                            "div",
-                            { className: "scroller-wrap fade dark", style: { minHeight: "60px", maxHeight: "60px", borderTop: "1px solid #3f4146", borderBottom: "1px solid #3f4146", paddingTop: "5px" } },
-                            BDV2.react.createElement(
-                                "div",
-                                { className: "scroller" },
-                                BDV2.react.createElement(
-                                    "div",
-                                    { style: { fontSize: "13px", color: "#b9bbbe" } },
-                                    server.description
-                                )
-                            )
-                        )
-                    ),
-                    BDV2.react.createElement(
-                        "div",
-                        { className: "ui-flex horizontal" },
-                        BDV2.react.createElement(
-                            "div",
-                            { className: "ui-flex-child bd-server-tags", style: { flex: "1 1 auto" } },
-                            server.categories.join(', ')
-                        ),
-                        server.joined && BDV2.react.createElement(
-                            "button",
-                            { type: "button", className: "ui-button filled brand small grow disabled", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c" } },
-                            BDV2.react.createElement(
-                                "div",
-                                { className: "ui-button-contents" },
-                                "Joined"
-                            )
-                        ),
-                        server.error && BDV2.react.createElement(
-                            "button",
-                            { type: "button", className: "ui-button filled brand small grow disabled", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a" } },
-                            BDV2.react.createElement(
-                                "div",
-                                { className: "ui-button-contents" },
-                                "Error"
-                            )
-                        ),
-                        !server.error && !server.joined && BDV2.react.createElement(
-                            "button",
-                            { type: "button", className: "ui-button filled brand small grow", style: { minHeight: "12px", marginTop: "4px" }, onClick: () => {
-                                    this.join(server.identifier);
-                                } },
-                            BDV2.react.createElement(
-                                "div",
-                                { className: "ui-button-contents" },
-                                "Join"
-                            )
-                        )
-                    )
-                )
-            )
-        );
-    }
-
-    join() {
-        let self = this;
-        self.props.join(self.props.server);
-    }
-}
-
-
 
 
 class V2Components {
@@ -3078,12 +3017,12 @@ class V2_SettingsPanel {
 		
 		if (_c["fork-es-2"]) {
 			$('.emote').each(() => {
-				$(this).addClass("stop-animation")
+				$(this).addClass("stop-animation");
 			});
 		}
 		else {
 			$('.emote').each(() => {
-				$(this).removeClass("stop-animation")
+				$(this).removeClass("stop-animation");
 			});
 		}
 		$(document).off('mouseover', '.emote');
@@ -3095,7 +3034,7 @@ class V2_SettingsPanel {
 			if (!_c["bda-es-6"]) return;
 			var x = emote.offset();
 			var title = emote.attr("alt");
-			var modifier = emote.attr("data-modifier")
+			var modifier = emote.attr("data-modifier");
 			if (modifier && _c["fork-es-1"]) title = title + ":" + modifier;
 			emoteNamePopup.find(".tipsy-inner").text(title);
 			$(".app").append($(emoteNamePopup));
@@ -3137,8 +3076,8 @@ class V2_SettingsPanel {
 				dark: true,
 				children: [
 					BDV2.react.createElement(V2Components.SettingsPanel, { key: "fspanel", title: "Zere's Fork Settings", onChange: this.onChange, settings: this.forkSettings, button: {
-						title: "Changelog",
-						onClick: () => { mainCore.alert("Changelog", "Sorry :( this feature isn't quite ready.");}
+						title: "Clear Emote Cache",
+						onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); }
 					}}),
 					BDV2.react.createElement(V2Components.Tools, { key: "tools" })
 				]
@@ -3226,5 +3165,644 @@ class V2_SettingsPanel {
             return;
         }
         BDV2.reactDom.render(this.themesComponent, root);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class V2C_Layer extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        $(window).on(`keyup.${this.props.id}`, e => {
+            if (e.which === 27) {
+                BDV2.reactDom.unmountComponentAtNode(this.refs.root.parentNode);
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        $(window).off(`keyup.${this.props.id}`);
+        $(`#${this.props.rootId}`).remove();
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "layer bd-layer", id: this.props.id, ref: "root" },
+            this.props.children
+        );
+    }
+}
+
+class V2C_SidebarView extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        let { sidebar, content, tools } = this.props.children;
+        return BDV2.react.createElement(
+            "div",
+            { className: "ui-standard-sidebar-view" },
+            BDV2.react.createElement(
+                "div",
+                { className: "sidebar-region" },
+                BDV2.react.createElement(V2Components.Scroller, { key: "sidebarScroller", ref: "sidebarScroller", fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component })
+            ),
+            BDV2.react.createElement("div", {className: "content-region"},
+                BDV2.react.createElement("div", {className: "content-transition-wrap"},
+                    BDV2.react.createElement("div", {className: "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0"},
+                        BDV2.react.createElement("div", {className: "scroller-fzNley content-region-scroller"},
+                            BDV2.react.createElement("div", {className: "content-column default"}, content.component),
+                            tools.component
+                        )
+                    )
+                )
+            )
+        );
+    }
+}
+
+
+class V2_PublicServers {
+
+    constructor() {}
+
+    get component() {
+        return BDV2.react.createElement(V2Components.Layer, { rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, { rootId: "pubslayerroot" }) });
+    }
+
+    get root() {
+        let _root = document.getElementById("pubslayerroot");
+        if (!_root) {
+            if (!this.injectRoot()) return null;
+            return this.root;
+        }
+        return _root;
+    }
+
+    injectRoot() {
+        if (!$(".layers").length) return false;
+        $(".layers").append($("<div/>", {
+            id: 'pubslayerroot'
+        }));
+        return true;
+    }
+
+    render() {
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layers");
+            return;
+        }
+        BDV2.reactDom.render(this.component, root);
+    }
+
+    get button() {
+        let btn = $("<div/>", {
+            class: 'guild',
+            id: 'bd-pub-li',
+            css: {
+                'height': '20px',
+                'display': settingsCookie['bda-gs-1'] ? "" : "none"
+            }
+        }).append($("<div/>", {
+            class: 'guild-inner',
+            css: {
+                'height': '20px',
+                'border-radius': '4px'
+            }
+        }).append($("<a/>", {
+
+        }).append($("<div/>", {
+            text: 'public',
+            id: 'bd-pub-button',
+            css: {
+                'line-height': '20px',
+                'font-size': '12px'
+            },
+            click: () => { this.render(); }
+        }))));
+
+        return btn;
+    }
+
+    initialize() {
+        let guilds = $(".guilds>:first-child");
+        guilds.after(this.button);
+	}
+}
+
+
+class V2C_ServerCard extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+        this.state = {
+            imageError: false,
+            joined: this.props.guildList.includes(this.props.server.identifier)
+        };
+    }
+
+    render() {
+        let { server } = this.props;
+        return BDV2.react.createElement(
+            "div",
+            { className: `ui-card ui-card-primary bd-server-card${server.pinned ? ' bd-server-card-pinned' : ''}`, style: { marginTop: "5px" } },
+            BDV2.react.createElement(
+                "div",
+                { className: "ui-flex horizontal", style: { display: "flex", flexFlow: "row nowrap", justifyContent: "flex-start", alignItems: "stretch", flex: "1 1 auto" } },
+                BDV2.react.createElement(
+                    "div",
+                    { className: "ui-flex-child", style: { flex: "0 1 auto", padding: "5px" } },
+                    BDV2.react.createElement("img", { ref: "img", className: "bd-pubs-server-icon", src: server.icon, style: { width: "100px", height: "100px" }, onError: this.handleError.bind(this) })
+                ),
+                BDV2.react.createElement(
+                    "div",
+                    { className: "ui-flex-child", style: { flex: "1 1 auto", padding: "5px" } },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-flex horizontal" },
+                        BDV2.react.createElement(
+                            "div",
+                            { className: "ui-form-item", style: { flex: "1 1 auto" } },
+                            BDV2.react.createElement(
+                                "h5",
+                                { className: "ui-form-title h5 margin-reset" },
+                                server.name
+                            )
+                        ),
+                        BDV2.react.createElement(
+                            "div",
+                            { className: "ui-form-item" },
+                            BDV2.react.createElement(
+                                "h5",
+                                { className: "ui-form-title h5 margin-reset" },
+                                server.online,
+                                "/",
+                                server.members,
+                                " Members"
+                            )
+                        )
+                    ),
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-flex horizontal" },
+                        BDV2.react.createElement(
+                            "div",
+                            { className: "scroller-wrap fade dark", style: { minHeight: "60px", maxHeight: "60px", borderTop: "1px solid #3f4146", borderBottom: "1px solid #3f4146", paddingTop: "5px" } },
+                            BDV2.react.createElement(
+                                "div",
+                                { className: "scroller" },
+                                BDV2.react.createElement(
+                                    "div",
+                                    { style: { fontSize: "13px", color: "#b9bbbe" } },
+                                    server.description
+                                )
+                            )
+                        )
+                    ),
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-flex horizontal" },
+                        BDV2.react.createElement(
+                            "div",
+                            { className: "ui-flex-child bd-server-tags", style: { flex: "1 1 auto" } },
+                            server.categories.join(', ')
+                        ),
+                        this.state.joined && BDV2.react.createElement(
+                            "button",
+                            { type: "button", className: "ui-button filled brand small grow disabled", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c" } },
+                            BDV2.react.createElement(
+                                "div",
+                                { className: "ui-button-contents" },
+                                "Joined"
+                            )
+                        ),
+                        server.error && BDV2.react.createElement(
+                            "button",
+                            { type: "button", className: "ui-button filled brand small grow disabled", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a" } },
+                            BDV2.react.createElement(
+                                "div",
+                                { className: "ui-button-contents" },
+                                "Error"
+                            )
+                        ),
+                        !server.error && !this.state.joined && server.invite_code && BDV2.react.createElement(
+                            "button",
+                            { type: "button", className: "ui-button filled brand small grow", style: { minHeight: "12px", marginTop: "4px" }, onClick: () => {this.join();} },
+                            BDV2.react.createElement(
+                                "div",
+                                { className: "ui-button-contents" },
+                                "Join"
+                            )
+                        )
+                    )
+                )
+            )
+        );
+    }
+
+    handleError() {
+        this.props.server.icon = this.props.fallback;
+        this.setState({imageError: true});
+    }
+
+    join() {
+        this.props.join(this.props.server);
+        this.setState({joined: true});
+    }
+}
+
+class V2C_PublicServers extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+        this.setInitialState();
+        this.close = this.close.bind(this);
+        this.changeCategory = this.changeCategory.bind(this);
+        this.search = this.search.bind(this);
+        this.searchKeyDown = this.searchKeyDown.bind(this);
+        this.checkConnection = this.checkConnection.bind(this);
+        this.join = this.join.bind(this);
+
+        this.GuildStore = BDV2.WebpackModules.findByUniqueProperties(["getGuilds"]);
+        this.AvatarDefaults = BDV2.WebpackModules.findByUniqueProperties(["getUserAvatarURL", "DEFAULT_AVATARS"]);
+        this.InviteActions = BDV2.WebpackModules.findByUniqueProperties(['acceptInvite']);
+    }
+
+    componentDidMount() {
+        this.checkConnection();
+    }
+
+    setInitialState() {
+        this.state = {
+            'selectedCategory': -1,
+            'title': 'Loading...',
+            'loading': true,
+            'servers': [],
+            'next': null,
+            'connection': {
+                'state': 0,
+                'user': null
+            }
+        };
+    }
+
+    close() {
+        BDV2.reactDom.unmountComponentAtNode(document.getElementById(this.props.rootId));
+    }
+
+    search(query, clear) {
+        let self = this;
+
+        $.ajax({
+            method: 'GET',
+            url: `${self.endPoint}${query}`,
+            success: data => {
+                console.log(data);
+                let servers = data.results.reduce((arr, server) => {
+                    server.joined = false;
+                    arr.push(server);
+                    // arr.push(<V2Components.ServerCard server={server} join={self.join}/>);
+                    return arr;
+                }, []);
+
+                if (!clear) {
+                    servers = self.state.servers.concat(servers);
+                } else {
+                    //servers.unshift(self.bdServer);
+                }
+
+                let end = data.size + data.from;
+                if (end >= data.total) {
+                    end = data.total;
+                    data.next = null;
+                }
+
+                let title = `Showing 1-${end} of ${data.total} results in ${self.categoryButtons[self.state.selectedCategory]}`;
+                if (self.state.term) title += ` for ${self.state.term}`;
+
+                self.setState({
+                    'loading': false,
+                    'title': title,
+                    'servers': servers,
+                    'next': data.next
+                });
+
+                if (clear) {
+                    self.refs.sbv.refs.contentScroller.refs.scroller.scrollTop = 0;
+                }
+            },
+            error: (jqXHR) => {
+                self.setState({
+                    'loading': false,
+                    'title': 'Failed to load servers. Check console for details'
+                });
+                console.log(jqXHR);
+            }
+        });
+    }
+
+    join(server) {
+        this.InviteActions.acceptInvite(server.invite_code);
+    }
+
+    // connect() {
+    //     let self = this;
+    //     let options = self.windowOptions;
+    //     options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
+    //     options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
+
+    //     self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
+    //     let sub = window.location.hostname.split('.')[0];
+    //     let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
+    //     self.joinWindow.webContents.on('did-navigate', (event, url) => {
+    //         if (!url.includes("connect/callback")) return;
+    //         self.joinWindow.close();
+    //     });
+    //     self.joinWindow.loadURL(url);
+    //     console.log(url)
+    // }
+
+    // joinID(identifier) {
+    //     let self = this;
+    //     let options = self.windowOptions;
+    //     options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
+    //     options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
+
+    //     self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
+    //     let sub = window.location.hostname.split('.')[0];
+    //     let url = self.joinEndPoint + "/" + identifier;
+    //     self.joinWindow.webContents.on('did-navigate', (event, url) => {
+    //         if (!url.includes("connect/callback")) return;
+    //         self.joinWindow.close();
+    //     });
+    //     self.joinWindow.loadURL(url);
+    //     console.log(url)
+    // }
+
+    // get windowOptions() {
+    //     return {
+    //         width: 520,
+    //         height: 710,
+    //         backgroundColor: '#282b30',
+    //         show: true,
+    //         resizable: false,
+    //         maximizable: false,
+    //         minimizable: false,
+    //         alwaysOnTop: true,
+    //         frame: false,
+    //         center: false
+    //     };
+    // }
+
+    get bdServer() {
+        let server = {
+            "name": "BetterDiscord",
+            "online": "7500+",
+            "members": "20000+",
+            "categories": ["community", "programming", "support"],
+            "description": "Official BetterDiscord server for support etc",
+            "identifier": "86004744966914048",
+            "icon": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
+            "nativejoin": true,
+            "invite_code": "0Tmfo5ZbORCRqbAd",
+            "pinned": true
+        };
+        let guildList = Object.keys(this.GuildStore.getGuilds());
+        let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
+        return BDV2.react.createElement(V2Components.ServerCard, { server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)] });
+    }
+
+    get endPoint() {
+        return 'https://search.discordservers.com';
+    }
+
+    get joinEndPoint() {
+        return 'https://join.discordservers.com';
+    }
+
+    get connectEndPoint() {
+        return 'https://join.discordservers.com/connect';
+    }
+
+    checkConnection() {
+        let self = this;
+        try {
+            $.ajax({
+                method: 'GET',
+                url: `${self.endPoint}`,
+                success: data => {
+                    self.setState({
+                        'selectedCategory': 0,
+                        'connection': {
+                            'state': 2,
+                            'user': data
+                        }
+                    });
+                    self.search("", true);
+                },
+                error: jqXHR => {
+                    if (jqXHR.status === 403 || jqXHR.status === 404) {
+                        //Not connected
+                        self.setState({
+                            'title': 'Not connected to discordservers.com!',
+                            'loading': true,
+                            'selectedCategory': -1,
+                            'connection': {
+                                'state': 1,
+                                'user': null
+                            }
+                        });
+                        return;
+                    }
+                    console.log(jqXHR);
+                }
+            });
+        }
+        catch(error) {
+            self.setState({
+                'title': 'Not connected to discordservers.com!',
+                'loading': true,
+                'selectedCategory': -1,
+                'connection': {
+                    'state': 1,
+                    'user': null
+                }
+            });
+        }
+    }
+
+    render() {
+        return BDV2.react.createElement(V2Components.SidebarView, { ref: "sbv", children: this.component });
+    }
+
+    get component() {
+        return {
+            'sidebar': {
+                'component': this.sidebar
+            },
+            'content': {
+                'component': this.content
+            },
+            'tools': {
+                'component': BDV2.react.createElement(V2Components.Tools, { key: "pt", ref: "tools", onClick: this.close })
+            }
+        };
+    }
+
+    get sidebar() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "sidebar", key: "ps" },
+            BDV2.react.createElement(
+                "div",
+                { className: "ui-tab-bar SIDE" },
+                BDV2.react.createElement(
+                    "div",
+                    { className: "ui-tab-bar-header", style: { fontSize: "16px" } },
+                    "Public Servers"
+                ),
+                BDV2.react.createElement(V2Components.TabBar.Separator, null),
+                this.searchInput,
+                BDV2.react.createElement(V2Components.TabBar.Separator, null),
+                BDV2.react.createElement(V2Components.TabBar.Header, { text: "Categories" }),
+                this.categoryButtons.map((value, index) => {
+                    return BDV2.react.createElement(V2Components.TabBar.Item, { id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index });
+                }),
+                BDV2.react.createElement(V2Components.TabBar.Separator, null),
+                this.footer
+            )
+        );
+    }
+
+    get searchInput() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "ui-form-item" },
+            BDV2.react.createElement(
+                "div",
+                { className: "ui-text-input flex-vertical", style: { width: "172px", marginLeft: "10px" } },
+                BDV2.react.createElement("input", { ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50" })
+            )
+        );
+    }
+
+    searchKeyDown(e) {
+        let self = this;
+        if (self.state.loading || e.which !== 13) return;
+        self.setState({
+            'loading': true,
+            'title': 'Loading...',
+            'term': e.target.value
+        });
+        let query = `?term=${e.target.value}`;
+        if (self.state.selectedCategory !== 0) {
+            query += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
+        }
+        self.search(query, true);
+    }
+
+    get categoryButtons() {
+        return ["All", "FPS Games", "MMO Games", "Strategy Games", "Sports Games", "Puzzle Games", "Retro Games", "Party Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Community", "Language", "Programming", "Other"];
+    }
+
+    changeCategory(id) {
+        let self = this;
+        if (self.state.loading) return;
+        self.refs.searchinput.value = "";
+        self.setState({
+            'loading': true,
+            'selectedCategory': id,
+            'title': 'Loading...',
+            'term': null
+        });
+        if (id === 0) {
+            self.search("", true);
+            return;
+        }
+        self.search(`?category=${self.categoryButtons[id]}`, true);
+    }
+
+    get content() {
+        let self = this;
+        let guildList = Object.keys(this.GuildStore.getGuilds());
+        let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
+        if (self.state.connection.state === 1) return self.notConnected;
+        return [BDV2.react.createElement(
+            "div",
+            { ref: "content", key: "pc", className: "content-column default" },
+            BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title }),
+            self.bdServer,
+            self.state.servers.map((server, index) => {
+                return BDV2.react.createElement(V2Components.ServerCard, { key: index, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)] });
+            }),
+            self.state.next && BDV2.react.createElement(
+                "button",
+                { type: "button", onClick: () => {
+                        if (self.state.loading) return;self.setState({ 'loading': true });self.search(self.state.next, false);
+                    }, className: "ui-button filled brand small grow", style: { width: "100%", marginTop: "10px", marginBottom: "10px" } },
+                BDV2.react.createElement(
+                    "div",
+                    { className: "ui-button-contents" },
+                    self.state.loading ? 'Loading' : 'Load More'
+                )
+            ),
+            self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title })
+        )];
+    }
+
+    get footer() {
+        return BDV2.react.createElement(
+            "div",
+            { className: "ui-tab-bar-header" },
+            BDV2.react.createElement(
+                "a",
+                { href: "https://discordservers.com", target: "_blank" },
+                "Discordservers.com"
+            )
+        );
     }
 }
