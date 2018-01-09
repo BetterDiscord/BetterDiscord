@@ -862,7 +862,7 @@ EmoteModule.prototype.injectEmote = async function(node) {
         let emoteName = emoteSplit[0];
         let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
 
-        if (bemotes.includes(emoteName)) continue;
+        if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
         if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
         
         for (let c = 0, clen = this.categories.length; c < clen; c++) {
