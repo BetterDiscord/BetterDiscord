@@ -90,7 +90,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
-var bbdVersion = "0.0.1";
+var bbdVersion = "0.0.3";
 
 var mainObserver;
 
@@ -122,7 +122,7 @@ var settings = {
 	
 	"Startup Error Modal":        { "id": "fork-ps-1",  "info": "Show a modal with plugin/theme errors on startup", "implemented": true,  "hidden": false, "cat": "fork"},
     "Show Toasts":                { "id": "fork-ps-2", "info": "Shows a small notification for starting and stopping plugins & themes", "implemented": true,  "hidden": false, "cat": "fork"},
-	"Scroll To Settings":         { "id": "fork-ps-3", "info": "Auto-scrolls to plugin settins when opened (only if out of view)", "implemented": true,  "hidden": false, "cat": "fork"},
+	"Scroll To Settings":         { "id": "fork-ps-3", "info": "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Emote Modifier Tooltip":     { "id": "fork-es-1", "info": "Shows the emote modifier in the tooltip.", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Animate On Hover":           { "id": "fork-es-2", "info": "Only animate the emote modifiers on hover", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Copy Selector":			  { "id": "fork-dm-1", "info": "Adds a \"Copy Selector\" option to context menus when developer mode is active", "implemented": true,  "hidden": false, "cat": "fork"},
@@ -242,6 +242,8 @@ Core.prototype.init = function () {
 			utils.log("Loading Themes");
             themeModule = new ThemeModule();
             themeModule.loadThemes();
+
+            $("#customcss").detach().appendTo(document.head);
 
 			utils.log("Updating Settings");
             settingsPanel = new V2_SettingsPanel();
@@ -377,19 +379,23 @@ Core.prototype.initObserver = function () {
 
             // onMessage
             // New Message Group
-            if (node.classList.contains("message-group") && !node.querySelector(".message-sending")) {
+            if (node.classList.contains("message-group")) {
                 self.inject24Hour(node);
                 self.injectColoredText(node);
-                if (node.parentElement && node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
+                if (!node.querySelector(".message-sending") && node.parentElement && node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
                     pluginModule.newMessage();
                 }
             }
 
+            if (node.classList.contains("message-text")) {
+                self.injectColoredText(node.parentElement.parentElement.parentElement.parentElement);
+            }
+
             // onMessage
             // Single Message
-            if (node.classList.contains("message") && !node.classList.contains("message-sending")) {
+            if (node.classList.contains("message")) {
                 self.injectColoredText(node.parentElement.parentElement);
-                pluginModule.newMessage();
+                if (!node.classList.contains("message-sending")) pluginModule.newMessage();
             }
 
             emoteModule.obsCallback(mutation);
@@ -419,7 +425,7 @@ Core.prototype.inject24Hour = function(node) {
         let timeOfDay = matches[3].toLowerCase();
 
         if (timeOfDay.includes("am") && hours == 12) hours -= 12;
-        else if (timeOfDay.includes("pm") && hours < 2) hours += 12;
+        else if (timeOfDay.includes("pm") && hours < 12) hours += 12;
         
         hours = ("0" + hours).slice(-2);
         elem.innerText = matches[1] + hours + ":" + minutes + matches[3];
@@ -740,25 +746,38 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     let emoteFile = "emote_data.json";
     let file = bdConfig.dataPath + emoteFile;
     let exists = _fs.existsSync(file);
+
+    
     
     if (exists && !bdConfig.cache.expired) {
+        mainCore.showToast("Loading emotes from cache.", {type: "info"});
         utils.log("[Emotes] Loading emotes from local cache.")
         let data = _fs.readFileSync(file, "utf8");
+        let isValid = this.testJSON(data);
 
-        if (this.testJSON(data)) {
-            bdEmotes = JSON.parse(data);
+        if (isValid) bdEmotes = JSON.parse(data);
+
+        for (let e in emoteInfo) {
+            isValid = Object.keys(bdEmotes[emoteInfo[e].variable]).length > 0;
+        }
+
+        if (isValid) {
+            mainCore.showToast("Emotes successfully loaded.", {type: "success"})
             return;
         }
-        else {
-            utils.log("[Emotes] Cache was corrupt, downloading...")
-            _fs.unlinkSync(file);
-        }
+
+        utils.log("[Emotes] Cache was corrupt, downloading...")
+        _fs.unlinkSync(file);
     }
+
+    mainCore.showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
     for (let e in emoteInfo) {
         let data = await this.downloadEmotes(emoteInfo[e]);
         bdEmotes[emoteInfo[e].variable] = data;
     }
+
+    mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
 
     try { _fs.writeFileSync(file, JSON.stringify(bdEmotes), "utf8"); }
     catch(err) { utils.err("[Emotes] Could not save emote data.", err); }
@@ -851,7 +870,7 @@ EmoteModule.prototype.getNodes = function (node) {
 var bemotes = [];
 
 EmoteModule.prototype.injectEmote = async function(node) {
-    if (!node.parentElement || !node.parentElement.classList.contains("markup")) return;
+    if (!node.parentElement || (!node.parentElement.classList.contains("markup") && !node.parentElement.classList.contains("message-content"))) return;
     let messageScroller = document.querySelector('.messages.scroller');
     let message = node.parentElement;
     let words = message.innerHTML.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
@@ -2312,7 +2331,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
         if ($("#customcss").length == 0) {
             $("head").append('<style id="customcss"></style>');
         }
-        $("#customcss").html(this.refs.editor.value);
+        $("#customcss").html(this.refs.editor.value).detach().appendTo(document.head);
     }
 
     saveCss() {
@@ -2497,7 +2516,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
         if ($("#customcss").length == 0) {
             $("head").append('<style id="customcss"></style>');
         }
-        $("#customcss").html(this.refs.editor.value);
+        $("#customcss").html(this.refs.editor.value).detach().appendTo(document.head);
     }
 
     saveCss() {
