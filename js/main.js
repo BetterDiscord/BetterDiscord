@@ -90,7 +90,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
-var bbdVersion = "0.0.3";
+var bbdVersion = "0.0.4";
 
 var mainObserver;
 
@@ -218,9 +218,6 @@ Core.prototype.init = function () {
     voiceMode = new VoiceMode();
     dMode = new devMode();
 
-	utils.log("Initializing EmoteModule");
-    emoteModule.init();
-
 	utils.log("Initializing Settings");
     this.initSettings();
 
@@ -230,6 +227,9 @@ Core.prototype.init = function () {
         if (document.querySelectorAll('.guilds .guild').length > 0) {
             console.log(new Date().getTime() + " Defer Loaded");
             self.injectExternals();
+
+            utils.log("Initializing EmoteModule");
+            emoteModule.init();
 
             // Add check for backwards compatibility
             if (!bdpluginErrors) bdpluginErrors = [];
@@ -250,7 +250,7 @@ Core.prototype.init = function () {
             settingsPanel.updateSettings();
 
 			utils.log("Initializing QuickEmoteMenu");
-            quickEmoteMenu.init(false);
+            quickEmoteMenu.init();
             
             window.addEventListener("beforeunload", function(){
                 if(settingsCookie["bda-dc-0"]){
@@ -270,8 +270,6 @@ Core.prototype.init = function () {
             }
 
 			utils.log("Removing Loading Icon");
-            $("head").append("<style>.CodeMirror{ min-width:100%; }</style>");
-            $("head").append('<style id="bdemotemenustyle"></style>');
             document.getElementsByClassName("bd-loaderv2")[0].remove();
             // Show loading errors
             if (settingsCookie["fork-ps-1"]) {
@@ -360,7 +358,7 @@ Core.prototype.initObserver = function () {
 
             // Emoji Picker
             if (node.classList.contains('popout') && !node.classList.contains('popout-left')) {
-                if (node.getElementsByClassName('emoji-picker').length) quickEmoteMenu.obsCallback(node);
+                if (node.getElementsByClassName('emoji-picker').length || node.getElementsByClassName('emojiPicker-3g68GS').length) quickEmoteMenu.obsCallback(node);
             }
 
             // onSwitch()
@@ -454,8 +452,8 @@ Core.prototype.injectColoredText = function(node) {
         let color = elem.style.color;
         if (color === "rgb(255, 255, 255)") return;
         elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
-            if (elem.getAttribute("data-color")) return;
-            elem.setAttribute("data-color", true);
+            if (elem.getAttribute("data-colour")) return;
+            elem.setAttribute("data-colour", true);
             elem.style.setProperty("color", color);
         });
     });
@@ -464,8 +462,8 @@ Core.prototype.injectColoredText = function(node) {
 Core.prototype.removeColoredText = function(node) {
     node.querySelectorAll('.user-name').forEach(elem => {
         elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
-            if (!elem.getAttribute("data-color")) return;
-            elem.removeAttribute("data-color");
+            if (!elem.getAttribute("data-colour")) return;
+            elem.removeAttribute("data-colour");
             elem.style.setProperty("color", "");
         });
     });
@@ -781,6 +779,8 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 
     try { _fs.writeFileSync(file, JSON.stringify(bdEmotes), "utf8"); }
     catch(err) { utils.err("[Emotes] Could not save emote data.", err); }
+
+    quickEmoteMenu.init();
 }
 
 EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
@@ -1043,7 +1043,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     fav.removeClass("active");
     emojis.removeClass("active");
 
-    $(".emoji-picker").hide();
+    $(".emoji-picker, .emojiPicker-3g68GS").hide();
     $("#bda-qem-favourite-container").hide();
     $("#bda-qem-twitch-container").hide();
 
@@ -1058,8 +1058,8 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
         break;
         case "bda-qem-emojis":
             emojis.addClass("active");
-            $(".emoji-picker").show();
-            $(".emoji-picker .search-bar-inner input").focus();
+            $(".emoji-picker, .emojiPicker-3g68GS").show();
+            $(".emoji-picker .search-bar-inner input, .emojiPicker-3g68GS .search-bar-inner input").focus();
         break;
     }
     this.lastTab = id;
@@ -3096,7 +3096,7 @@ class V2_SettingsPanel {
 				children: [
 					BDV2.react.createElement(V2Components.SettingsPanel, { key: "fspanel", title: "Zere's Fork Settings", onChange: this.onChange, settings: this.forkSettings, button: {
 						title: "Clear Emote Cache",
-						onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); }
+						onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
 					}}),
 					BDV2.react.createElement(V2Components.Tools, { key: "tools" })
 				]
