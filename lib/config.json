@@ -24,7 +24,7 @@
         "branch": null,
         "beta": false,
         "local": false,
-        "localServer": "http://localhost",
+        "localServer": "//localhost",
         "version": "0.2.82",
         "updater": null,
         "hash": null,
@@ -33,7 +33,7 @@
         "os": null,
         "cache": {
             "expired": true,
-            "days": 0
+            "days": 7
         },
         "defaultCfg": { "cache": null },
         "userCfg": { "cache": null }
