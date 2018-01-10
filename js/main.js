@@ -90,7 +90,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
-var bbdVersion = "0.0.4";
+var bbdVersion = "0.0.5";
 
 var mainObserver;
 
@@ -290,6 +290,8 @@ Core.prototype.init = function () {
 };
 
 Core.prototype.injectExternals = function() {
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js")
+    // utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.10.1/min/vs/loader.js");
     /*utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js");
     utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/css/css.min.js");
     utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.js");
@@ -347,7 +349,7 @@ Core.prototype.initObserver = function () {
 
             let node = mutation.addedNodes[0];
 
-            if (node.classList.contains("layer")) {
+            if (node.classList.contains("layer") || node.classList.contains("layer-kosS71")) {
                 if (node.querySelector(".guild-settings-base-section")) node.setAttribute('layer-id', 'server-settings');
 
                 if (node.getElementsByClassName("socialLinks-1oZoF3").length) {
@@ -2182,12 +2184,23 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     componentDidMount() {
         $("#app-mount").addClass('bd-detached-editor');
         window.bdtemp.editorDetached = true;
-		this.updateLineCount();
+        // this.updateLineCount();
+        this.editor = ace.edit("bd-customcss-editor-detached");
+        this.editor.setTheme("ace/theme/monokai");
+        this.editor.session.setMode("ace/mode/css");
+        this.editor.setShowPrintMargin(false);
+        this.editor.setFontSize(14);
+        this.editor.on('change', () => {
+            if (!settingsCookie["bda-css-0"]) return;
+            this.saveCss();
+            this.updateCss();
+        });
     }
 
     componentWillUnmount() {
         $("#app-mount").removeClass('bd-detached-editor');
         window.bdtemp.editorDetached = false;
+        this.editor.destroy();
     }
 	
 	updateLineCount() {
@@ -2242,21 +2255,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
                 "div",
                 { id: "bd-customcss-innerpane" },
                 BDV2.react.createElement("div", {className: "editor-wrapper"},
-					BDV2.react.createElement("div", {className: "line-numbers", ref: "lines"}),
-					BDV2.react.createElement("textarea", {id: "bd-customcss-ta", className: "editor", ref: "editor", defaultValue: self.css,
-					onChange: () => {
-						this.updateLineCount();
-						if (!settingsCookie["bda-css-0"]) return;
-						self.updateCss();
-					}, onScroll: () => {
-						this.refs.lines.scrollTop = this.refs.editor.scrollTop;
-					}, onKeyDown: (e) => {
-						if (e.keyCode == 9) {
-							e.preventDefault();
-							document.execCommand("insertText", false, "    ");
-						}
-					}
-					})
+                    BDV2.react.createElement("div", {id: "bd-customcss-editor-detached", className: "editor", ref: "editor"}, self.css)
 				),
                 BDV2.react.createElement(
                     "div",
@@ -2331,11 +2330,11 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
         if ($("#customcss").length == 0) {
             $("head").append('<style id="customcss"></style>');
         }
-        $("#customcss").html(this.refs.editor.value).detach().appendTo(document.head);
+        $("#customcss").html(this.editor.session.getValue()).detach().appendTo(document.head);
     }
 
     saveCss() {
-        window.bdStorage.set("bdcustomcss", btoa(this.refs.editor.value));
+        window.bdStorage.set("bdcustomcss", btoa(this.editor.session.getValue()));
     }
 }
 
@@ -2361,7 +2360,21 @@ class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     componentDidMount() {
-		this.updateLineCount();
+        // this.updateLineCount();
+        this.editor = ace.edit("bd-customcss-editor");
+        this.editor.setTheme("ace/theme/monokai");
+        this.editor.session.setMode("ace/mode/css");
+        this.editor.setShowPrintMargin(false);
+        this.editor.setFontSize(14);
+        this.editor.on('change', () => {
+            if (!settingsCookie["bda-css-0"]) return;
+            this.saveCss();
+            this.updateCss();
+        });
+    }
+
+    componentWillUnmount() {
+        this.editor.destroy();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -2429,21 +2442,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
                 null,
                 BDV2.react.createElement(V2Components.SettingsTitle, { text: "Custom CSS Editor" }),
 				BDV2.react.createElement("div", {className: "editor-wrapper"},
-					BDV2.react.createElement("div", {className: "line-numbers", ref: "lines"}),
-					BDV2.react.createElement("textarea", {id: "bd-customcss-ta", className: "editor", ref: "editor", defaultValue: self.css,
-					onChange: () => {
-						this.updateLineCount();
-						if (!settingsCookie["bda-css-0"]) return;
-						self.updateCss();
-					}, onScroll: () => {
-						this.refs.lines.scrollTop = this.refs.editor.scrollTop;
-					}, onKeyDown: (e) => {
-						if (e.keyCode == 9) {
-							e.preventDefault();
-							document.execCommand("insertText", false, "    ");
-						}
-					}
-					})
+					BDV2.react.createElement("div", {id: "bd-customcss-editor", className: "editor", ref: "editor"}, self.css)
 				),
                 BDV2.react.createElement(
                     "div",
@@ -2516,11 +2515,11 @@ class V2C_CssEditor extends BDV2.reactComponent {
         if ($("#customcss").length == 0) {
             $("head").append('<style id="customcss"></style>');
         }
-        $("#customcss").html(this.refs.editor.value).detach().appendTo(document.head);
+        $("#customcss").html(this.editor.session.getValue()).detach().appendTo(document.head);
     }
 
     saveCss() {
-        window.bdStorage.set("bdcustomcss", btoa(this.refs.editor.value));
+        window.bdStorage.set("bdcustomcss", btoa(this.editor.session.getValue()));
     }
 
     detach() {
@@ -2913,8 +2912,8 @@ class V2_SettingsPanel {
     }
 
     injectRoot() {
-        if (!$(".layer .ui-standard-sidebar-view").length) return false;
-        $(".layer .ui-standard-sidebar-view").append($("<div/>", {
+        if (!$(".layer .ui-standard-sidebar-view, .layer-kosS71 .ui-standard-sidebar-view").length) return false;
+        $(".layer .ui-standard-sidebar-view, .layer-kosS71 .ui-standard-sidebar-view").append($("<div/>", {
             class: 'content-region',
             id: 'bd-settingspane-container'
         }));
@@ -3248,7 +3247,7 @@ class V2C_Layer extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "div",
-            { className: "layer bd-layer", id: this.props.id, ref: "root" },
+            { className: "layer bd-layer layer-kosS71", id: this.props.id, ref: "root" },
             this.props.children
         );
     }
@@ -3303,8 +3302,8 @@ class V2_PublicServers {
     }
 
     injectRoot() {
-        if (!$(".layers").length) return false;
-        $(".layers").append($("<div/>", {
+        if (!$(".layers, .layers-20RVFW").length) return false;
+        $(".layers, .layers-20RVFW").append($("<div/>", {
             id: 'pubslayerroot'
         }));
         return true;

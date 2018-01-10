@@ -44,7 +44,7 @@
 .bd-detached-css-editor #bd-customcss-attach-controls button {
     margin: 0;
     width: 100px;
-    background: #36393f;
+    background: #31332b;
     color: #FFF;
     height: 26px;
     font-weight: 600;
@@ -73,10 +73,10 @@
 
 .content-region #bd-customcss-attach-controls,
 #bd-customcss-detach-container #bd-customcss-attach-controls {
-    background: #292b2f;
-    color: #FFF;
-    border: none;
-    box-shadow: 0px 1px 0px 0px #36393f inset;
+  background: #272822;
+  color: #FFF;
+  border: none;
+  box-shadow: 0px 1px 0px 0px #2F3129 inset;
 }
 
 
