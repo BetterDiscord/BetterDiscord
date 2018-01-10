@@ -1,5 +1,5 @@
 #!/bin/bash
-# As there is no Linux support, this script assumes OS X as the host system.
+# For macOS X and Linux (if using Linux, run this script with sudo).
 
 command -v node > /dev/null || (echo 'Node not found, please download it!' && open 'https://nodejs.org/en/' && sleep 5 && exit)
 

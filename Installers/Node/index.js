@@ -41,14 +41,18 @@ function install() {
             _importSplice = 89;
             _functionCallSplice = 497;
             _functionSplice = 601;
-           _discordPath = process.env.LOCALAPPDATA + "/Discord/app-"+dver+"/resources";
+            _discordPath = process.env.LOCALAPPDATA + "/Discord/app-"+dver+"/resources";
         } else if (_os == "darwin") {
             _importSplice = 67;
             _functionCallSplice = 446;
             _functionSplice = 547;
             _discordPath = "/Applications/Discord.app/Contents/Resources" // Defaults to Applications directory
         } else if (_os == "linux") {
-            _discordPath = "/opt/DiscordCanary/resources";
+            if (fs.existsSync("/opt/DiscordCanary/resources")) {
+                _discordPath = "/opt/DiscordCanary/resources";
+            } else {
+                _discordPath = "/usr/share/discord/resources";
+            }
             _index = "/app/index.js";
         }
     }
@@ -238,7 +242,7 @@ function init() {
     var rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 
     if (_force == false) {
-        rl.question("The following directories will be deleted if they exists: discorpath/app, discordpath/node_modules/BetterDiscord, is this ok? Y/N", function(answer) {
+        rl.question("The following directories will be deleted if they exists: discordpath/app, discordpath/node_modules/BetterDiscord, is this ok [Y/N]? ", function(answer) {
 
             var alc = answer.toLowerCase();
 
