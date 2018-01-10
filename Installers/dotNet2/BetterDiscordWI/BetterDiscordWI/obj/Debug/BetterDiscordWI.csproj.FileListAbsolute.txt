@@ -1,0 +1,15 @@
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\bin\Debug\BetterDiscordWI.exe.config
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\bin\Debug\BetterDiscordWI.exe
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\bin\Debug\BetterDiscordWI.pdb
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.csprojResolveAssemblyReference.cache
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.FormMain.resources
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.Properties.Resources.resources
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.csproj.GenerateResource.Cache
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.exe
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.pdb
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.panels.LicensePanel.resources
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.panels.ConfigPanel.resources
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\obj\Debug\BetterDiscordWI.panels.InstallPanel.resources
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\bin\Debug\Newtonsoft.Json.dll
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\bin\Debug\asardotnetasync.dll
+G:\Github\BetterDiscordApp\Installers\dotNet2\BetterDiscordWI\BetterDiscordWI\bin\Debug\asardotnetasync.pdb
