@@ -231,6 +231,10 @@ Core.prototype.init = function () {
             utils.log("Initializing EmoteModule");
             emoteModule.init();
 
+			utils.log("Updating Settings");
+            settingsPanel = new V2_SettingsPanel();
+            settingsPanel.updateSettings();
+
             // Add check for backwards compatibility
             if (!bdpluginErrors) bdpluginErrors = [];
             if (!bdthemeErrors) bdthemeErrors = [];
@@ -244,10 +248,6 @@ Core.prototype.init = function () {
             themeModule.loadThemes();
 
             $("#customcss").detach().appendTo(document.head);
-
-			utils.log("Updating Settings");
-            settingsPanel = new V2_SettingsPanel();
-            settingsPanel.updateSettings();
 
 			utils.log("Initializing QuickEmoteMenu");
             quickEmoteMenu.init();
@@ -644,15 +644,16 @@ window.bdEmotes = {
 window.bdEmoteSettingIDs = {
     TwitchGlobal: "bda-es-7",
     TwitchSubscriber: "bda-es-7",
-    FrankerFaceZ: "bda-es-1",
     BTTV: "bda-es-2",
-    BTTV2: "bda-es-2"
+    BTTV2: "bda-es-2",
+    FrankerFaceZ: "bda-es-1"
 }
 
 function EmoteModule() {}
 
 EmoteModule.prototype.init = function () {
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
+    this.overrides = ['twitch', 'bttv', 'ffz'];
     this.categories = Object.keys(window.bdEmoteSettingIDs);
 
     let emoteInfo = {
@@ -708,9 +709,9 @@ EmoteModule.prototype.init = function () {
         window.bdEmotes = {
             TwitchGlobal: emotesTwitch,
             TwitchSubscriber: subEmotesTwitch,
-            FrankerFaceZ: emotesFfz,
             BTTV: emotesBTTV,
-            BTTV2: emotesBTTV2
+            BTTV2: emotesBTTV2,
+            FrankerFaceZ: emotesFfz
         }
 
         for (let type in window.bdEmotes) {
@@ -846,7 +847,7 @@ EmoteModule.prototype.obsCallback = function (mutation) {
                 if (nodes.hasOwnProperty(node)) {
                     var elem = nodes[node].parentElement;
                     if (elem && elem.classList.contains('edited')) {
-                        self.injectEmote(elem);
+                        self.injectEmote(elem, true);
                     } else {
                         self.injectEmote(nodes[node]);
                     }
@@ -871,37 +872,67 @@ EmoteModule.prototype.getNodes = function (node) {
 
 var bemotes = [];
 
-EmoteModule.prototype.injectEmote = async function(node) {
+EmoteModule.prototype.injectEmote = async function(node, edited) {
     if (!node.parentElement || (!node.parentElement.classList.contains("markup") && !node.parentElement.classList.contains("message-content"))) return;
     let messageScroller = document.querySelector('.messages.scroller');
     let message = node.parentElement;
+    let editNode = null;
+    // if (edited) editNode = $(message).children('.edited').detach();
     let words = message.innerHTML.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
+
+    let inject = function(message, messageScroller, category, emoteName, emoteModifier) {
+        let inCategory = bdEmotes[category].hasOwnProperty(emoteName);
+
+        if (!inCategory || !settingsCookie[bdEmoteSettingIDs[category]]) return false;
+
+        let url = bdEmotes[category][emoteName];
+        let element = this.createEmoteElement(emoteName, url, emoteModifier);
+        let oldHeight = message.offsetHeight;
+        message.innerHTML = message.innerHTML.replace(new RegExp(`([\\s]|^)${emoteModifier ? emoteName + ":" + emoteModifier : emoteName}([\\s]|$)`, "g"), `$1${element}$2`);
+        messageScroller.scrollTop = messageScroller.scrollTop + (message.offsetHeight - oldHeight);
+        return true;
+    }
+
+    inject = inject.bind(this, message, messageScroller);
 
     for (let w = 0, len = words.length; w < len; w++) {
         let emote = words[w];
         let emoteSplit = emote.split(':');
         let emoteName = emoteSplit[0];
         let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
+        let emoteOverride = emoteModifier.slice(0);
 
         if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
         if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
+        if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
+
+        if (emoteOverride === "twitch") {
+            let tglobal = false;
+            let tsubscriber = false;
+            tglobal = inject("TwitchGlobal", emoteName, emoteOverride);
+            if (!tglobal) tsubscriber = inject("TwitchSubscriber", emoteName, emoteOverride);
+            if (tglobal || tsubscriber) continue;
+        }
+        else if (emoteOverride === "bttv") {
+            let bttv = false;
+            let bttv2 = false;
+            bttv = inject("BTTV", emoteName, emoteOverride);
+            if (!bttv) bttv2 = inject("BTTV2", emoteName, emoteOverride);
+            if (bttv || bttv2) continue;
+        }
+        else if (emoteOverride === "ffz") {
+            let ffz = inject("FrankerFaceZ", emoteName, emoteOverride);
+            if (ffz) continue;
+        }
         
         for (let c = 0, clen = this.categories.length; c < clen; c++) {
-            let category = this.categories[c];
-            if (settingsCookie[bdEmoteSettingIDs[category]]) {
-                let inCategory = bdEmotes[category].hasOwnProperty(emoteName);
-                if (!inCategory) continue;
-
-                let url = bdEmotes[category][emoteName];
-                let element = this.createEmoteElement(emoteName, url, emoteModifier);
-                let oldHeight = message.offsetHeight;
-                message.innerHTML = message.innerHTML.replace(new RegExp(`([\\s]|^)${emoteModifier ? emoteName + ":" + emoteModifier : emoteName}([\\s]|$)`, "g"), `$1${element}$2`);
-                messageScroller.scrollTop = messageScroller.scrollTop + (message.offsetHeight - oldHeight);
-            }
+            inject(this.categories[c], emoteName, emoteModifier);
         }
 
         if (emote == "[!s]") message.classList.add("spoiler");
     }
+
+    // if (edited) $(message).append(editNode);
 };
 
 EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
