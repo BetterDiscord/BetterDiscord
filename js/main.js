@@ -636,8 +636,8 @@ var subEmotesTwitch = {};
 window.bdEmotes = {
     TwitchGlobal: {},
     TwitchSubscriber: {},
-    FrankerFaceZ: {},
     BTTV: {},
+    FrankerFaceZ: {},
     BTTV2: {}
 }
 
@@ -645,8 +645,8 @@ window.bdEmoteSettingIDs = {
     TwitchGlobal: "bda-es-7",
     TwitchSubscriber: "bda-es-7",
     BTTV: "bda-es-2",
-    BTTV2: "bda-es-2",
-    FrankerFaceZ: "bda-es-1"
+    FrankerFaceZ: "bda-es-1",
+    BTTV2: "bda-es-2"
 }
 
 function EmoteModule() {}
@@ -710,8 +710,8 @@ EmoteModule.prototype.init = function () {
             TwitchGlobal: emotesTwitch,
             TwitchSubscriber: subEmotesTwitch,
             BTTV: emotesBTTV,
-            BTTV2: emotesBTTV2,
-            FrankerFaceZ: emotesFfz
+            FrankerFaceZ: emotesFfz,
+            BTTV2: emotesBTTV2
         }
 
         for (let type in window.bdEmotes) {
@@ -736,8 +736,8 @@ EmoteModule.prototype.clearEmoteData = async function() {
     window.bdEmotes = {
         TwitchGlobal: {},
         TwitchSubscriber: {},
-        FrankerFaceZ: {},
         BTTV: {},
+        FrankerFaceZ: {},
         BTTV2: {}
     }
 };
@@ -814,6 +814,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                     parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
                 }
                 resolve(parsedData);
+                utils.log("[Emotes] Downloaded: " + emoteMeta.variable);
             }
         });
     });
