@@ -2037,7 +2037,7 @@ class V2C_SideBar extends BDV2.reactComponent {
         if(ns.length) {
             self.nscn = ns.attr("class");
         }
-        $("[class*=side] > [class*=item]").on("click", () => {
+        $("[class*='side-'] > [class*='item-']").on("click", () => {
             self.setState({
                 'selected': null
             });
@@ -2908,7 +2908,7 @@ class V2_SettingsPanel_Sidebar {
     }
 
     injectRoot() {
-        let changeLog = $("[class*=side] > [class*=item]:not([class*=Danger])").last();
+        let changeLog = $("[class*='side-'] > [class*='item-']:not([class*=Danger])").last();
         if (!changeLog.length) return false;
         $("<span/>", { 'id': 'bd-settings-sidebar' }).insertBefore(changeLog.prev());
         return true;
@@ -2917,7 +2917,7 @@ class V2_SettingsPanel_Sidebar {
     render() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: [class*=side] > [class*=item]:not([class*=Danger])");
+            console.log("FAILED TO LOCATE ROOT: [class*='side-'] > [class*='item-']:not([class*=Danger])");
             return;
         }
         BDV2.reactDom.render(this.component, root);
@@ -3108,7 +3108,7 @@ class V2_SettingsPanel {
 
     renderSidebar() {
         let self = this;
-        $("[class*=side] > [class*=item]").off('click.v2settingspanel').on('click.v2settingspanel', () => {
+        $("[class*='side-'] > [class*='item-']").off('click.v2settingspanel').on('click.v2settingspanel', () => {
             BDV2.reactDom.unmountComponentAtNode(self.root);
             $(self.root).hide();
             $(".content-region").first().show();
