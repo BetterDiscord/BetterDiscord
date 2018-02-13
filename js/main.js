@@ -769,7 +769,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     
     
     if (exists && !bdConfig.cache.expired) {
-        mainCore.showToast("Loading emotes from cache.", {type: "info"});
+        if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
         utils.log("[Emotes] Loading emotes from local cache.")
         let data = _fs.readFileSync(file, "utf8");
         let isValid = this.testJSON(data);
@@ -782,7 +782,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 
         if (isValid) {
             await this.goBack(emoteInfo)
-            mainCore.showToast("Emotes successfully loaded.", {type: "success"})
+            if (settingsCookie["fork-ps-2"]) mainCore.showToast("Emotes successfully loaded.", {type: "success"})
             return;
         }
 
@@ -790,7 +790,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         _fs.unlinkSync(file);
     }
 
-    mainCore.showToast("Downloading emotes in the background do not reload.", {type: "info"});
+    if (settingsCookie["fork-ps-2"]) mainCore.showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
     for (let e in emoteInfo) {
         let data = await this.downloadEmotes(emoteInfo[e]);
@@ -799,7 +799,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 
     await this.goBack(emoteInfo)
 
-    mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
+    if (settingsCookie["fork-ps-2"]) mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
 
     try { _fs.writeFileSync(file, JSON.stringify(bdEmotes), "utf8"); }
     catch(err) { utils.err("[Emotes] Could not save emote data.", err); }
