@@ -654,19 +654,22 @@ function EmoteModule() {}
 EmoteModule.prototype.init = function () {
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
     this.overrides = ['twitch', 'bttv', 'ffz'];
-    this.categories = Object.keys(window.bdEmoteSettingIDs);
+    this.categories = ["TwitchGlobal", "TwitchSubscriber", "BTTV", "FrankerFaceZ", "BTTV2"];
 
     let emoteInfo = {
         'TwitchGlobal': {
             url: 'https://twitchemotes.com/api_cache/v3/global.json',
             backup: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_twitch_global.json',
             variable: 'TwitchGlobal',
-            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0`
+            oldVariable: 'emotesTwitch',
+            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0`,
+            getOldData: (url, name) => { return {id: url.match(/\/([0-9]+)\//)[1], code: name, emoticon_set: 0, description: null} }
         },
         'TwitchSubscriber': {
             url: 'https://twitchemotes.com/api_cache/v3/subscriber.json',
             backup: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_twitch_subscriber.json',
             variable: 'TwitchSubscriber',
+            oldVariable: 'subEmotesTwitch',
             parser: (data) => {
                 let emotes = {};
                 for (let c in data) {
@@ -678,16 +681,20 @@ EmoteModule.prototype.init = function () {
                 }
                 return emotes;
             },
-            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`
+            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`,
+            getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
         },
         'FrankerFaceZ': {
             url: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_ffz.json',
             variable: 'FrankerFaceZ',
-            getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`
+            oldVariable: "emotesFfz",
+            getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`,
+            getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
         },
         'BTTV': {
             url: 'https://api.betterttv.net/emotes',
             variable: 'BTTV',
+            oldVariable: "emotesBTTV",
             parser: (data) => {
                 let emotes = {};
                 for (let e = 0, len = data.emotes.length; e < len; e++) {
@@ -696,12 +703,15 @@ EmoteModule.prototype.init = function () {
                 }
                 return emotes;
             },
-            getEmoteURL: (e) => `${e}`
+            getEmoteURL: (e) => `${e}`,
+            getOldData: (url) => url
         },
         'BTTV2': {
             url: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_bttv.json',
             variable: 'BTTV2',
-            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`
+            oldVariable: "emotesBTTV2",
+            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`,
+            getOldData: (url) => url.match(/emote\/(.+)\//)[1]
         }
     };
 
@@ -742,6 +752,14 @@ EmoteModule.prototype.clearEmoteData = async function() {
     }
 };
 
+EmoteModule.prototype.goBack = async function(emoteInfo) {
+    for (let e in emoteInfo) {
+        for (let emote in bdEmotes[emoteInfo[e].variable]) {
+            window[emoteInfo[e].oldVariable][emote] = emoteInfo[e].getOldData(bdEmotes[emoteInfo[e].variable][emote], emote)
+        }
+    }
+}
+
 EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     let _fs = require("fs");
     let emoteFile = "emote_data.json";
@@ -763,6 +781,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         }
 
         if (isValid) {
+            await this.goBack(emoteInfo)
             mainCore.showToast("Emotes successfully loaded.", {type: "success"})
             return;
         }
@@ -777,6 +796,8 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         let data = await this.downloadEmotes(emoteInfo[e]);
         bdEmotes[emoteInfo[e].variable] = data;
     }
+
+    await this.goBack(emoteInfo)
 
     mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
 
