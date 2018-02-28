@@ -105,7 +105,7 @@ var mainCore;
 
 var settings = {
     "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
-    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": false,  "hidden": false, "cat": "core"},
+    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false, "cat": "core"},
     "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
     "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
     "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
@@ -214,6 +214,8 @@ Core.prototype.init = function () {
     utils.getHash();
 	publicServersModule = new V2_PublicServers();
     emoteModule = new EmoteModule();
+	utils.log("Initializing EmoteModule");
+    emoteModule.init();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
     dMode = new devMode();
@@ -228,8 +230,6 @@ Core.prototype.init = function () {
             console.log(new Date().getTime() + " Defer Loaded");
             self.injectExternals();
 
-            utils.log("Initializing EmoteModule");
-            emoteModule.init();
 
 			utils.log("Updating Settings");
             settingsPanel = new V2_SettingsPanel();
@@ -242,12 +242,12 @@ Core.prototype.init = function () {
 			utils.log("Loading Plugins");
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
-
+			
 			utils.log("Loading Themes");
-            themeModule = new ThemeModule();
-            themeModule.loadThemes();
+			themeModule = new ThemeModule();
+			themeModule.loadThemes();
 
-            $("#customcss").detach().appendTo(document.head);
+			$("#customcss").detach().appendTo(document.head);
 
 			utils.log("Initializing QuickEmoteMenu");
             quickEmoteMenu.init();
@@ -271,13 +271,14 @@ Core.prototype.init = function () {
 
 			utils.log("Removing Loading Icon");
             document.getElementsByClassName("bd-loaderv2")[0].remove();
-            // Show loading errors
+			utils.log("Initializing Main Observer");
+            self.initObserver();
+			
+			// Show loading errors
             if (settingsCookie["fork-ps-1"]) {
 				utils.log("Collecting Startup Errors");
                 self.showStartupErrors();
             }
-			utils.log("Initializing Main Observer");
-            self.initObserver();
         } else {
             setTimeout(gwDefer, 100);
         }
@@ -651,7 +652,7 @@ window.bdEmoteSettingIDs = {
 
 function EmoteModule() {}
 
-EmoteModule.prototype.init = function () {
+EmoteModule.prototype.init = async function () {
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
     this.overrides = ['twitch', 'bttv', 'ffz'];
     this.categories = ["TwitchGlobal", "TwitchSubscriber", "BTTV", "FrankerFaceZ", "BTTV2"];
@@ -869,7 +870,7 @@ EmoteModule.prototype.obsCallback = function (mutation) {
                 if (nodes.hasOwnProperty(node)) {
                     var elem = nodes[node].parentElement;
                     if (elem && elem.classList.contains('edited')) {
-                        self.injectEmote(elem, true);
+                        setTimeout(() => {self.injectEmote(elem, true);}, 200);
                     } else {
                         self.injectEmote(nodes[node]);
                     }
@@ -899,18 +900,27 @@ EmoteModule.prototype.injectEmote = async function(node, edited) {
     let messageScroller = document.querySelector('.messages.scroller');
     let message = node.parentElement;
     let editNode = null;
-    // if (edited) editNode = $(message).children('.edited').detach();
-    let words = message.innerHTML.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
+    /*if (edited) message.querySelectorAll(".emotewrapper").forEach(node => {
+		let name = node.querySelector(".emote").getAttribute("alt");
+		let last = message.children.length - 2;
+		if (node == message.children[0] && node != message.children[last]) name = name + " ";
+		else if (node == message.children[last] && node != message.children[0]) name = " " + name;
+		else if (node != message.children[0] && node != message.children[last]) name = " " + name + " ";
+		node.outerHTML = name;
+	});*/
+	let textNodes = utils.getTextNodes(message);
+	
+    let words = textNodes.map(n => n.data).join(" ").split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });//message.innerHTML.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
 
     let inject = function(message, messageScroller, category, emoteName, emoteModifier) {
         let inCategory = bdEmotes[category].hasOwnProperty(emoteName);
-
         if (!inCategory || !settingsCookie[bdEmoteSettingIDs[category]]) return false;
 
         let url = bdEmotes[category][emoteName];
         let element = this.createEmoteElement(emoteName, url, emoteModifier);
         let oldHeight = message.offsetHeight;
-        message.innerHTML = message.innerHTML.replace(new RegExp(`([\\s]|^)${emoteModifier ? emoteName + ":" + emoteModifier : emoteName}([\\s]|$)`, "g"), `$1${element}$2`);
+        //message.innerHTML = message.innerHTML.replace(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`, "g"), `$1${element}$2`);
+		utils.insertElement(message, new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`, "g"), $(element)[0]);
         messageScroller.scrollTop = messageScroller.scrollTop + (message.offsetHeight - oldHeight);
         return true;
     }
@@ -1266,6 +1276,49 @@ Utils.prototype.err = function (message, error) {
         console.groupEnd();
     }
 };
+
+Utils.prototype.escape = function(s) {
+    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
+Utils.prototype.insertElement = function(node, regex, element) { 
+
+    var child = node.firstChild;
+
+    while (child) {
+		if (child.nodeType != Node.TEXT_NODE) {child = child.nextSibling; continue};
+		var bk = 0;
+		child.data.replace(regex, function(all) {
+			var args = [].slice.call(arguments),
+				offset = args[args.length - 2],
+				newTextNode = child.splitText(offset+bk), tag;
+			bk -= child.data.length + all.length;
+
+			newTextNode.data = newTextNode.data.substr(all.length);
+			tag = element;
+			child.parentNode.insertBefore(tag, newTextNode);
+			child = newTextNode;
+		});
+		
+		regex.lastIndex = 0;
+
+
+        child = child.nextSibling;
+    }
+
+    return node;
+};
+
+Utils.prototype.getTextNodes = function(node) {
+	var textNodes = [];
+	for (var i = 0; i < node.childNodes.length; i++) {
+		var curNode = node.childNodes[i];
+		if (curNode.nodeType === Node.TEXT_NODE) {
+			textNodes.push(curNode)
+		}
+	}
+	return textNodes;
+}
 
 
 /* BetterDiscordApp VoiceMode JavaScript
@@ -3325,7 +3378,7 @@ class V2C_SidebarView extends BDV2.reactComponent {
             BDV2.react.createElement("div", {className: "content-region"},
                 BDV2.react.createElement("div", {className: "content-transition-wrap"},
                     BDV2.react.createElement("div", {className: "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0"},
-                        BDV2.react.createElement("div", {className: "scroller-fzNley content-region-scroller"},
+                        BDV2.react.createElement("div", {className: "scroller-fzNley content-region-scroller", ref: "contentScroller"},
                             BDV2.react.createElement("div", {className: "content-column default"}, content.component),
                             tools.component
                         )
@@ -3572,7 +3625,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
             method: 'GET',
             url: `${self.endPoint}${query}`,
             success: data => {
-                console.log(data);
+                //console.log(data);
                 let servers = data.results.reduce((arr, server) => {
                     server.joined = false;
                     arr.push(server);
@@ -3603,7 +3656,8 @@ class V2C_PublicServers extends BDV2.reactComponent {
                 });
 
                 if (clear) {
-                    self.refs.sbv.refs.contentScroller.refs.scroller.scrollTop = 0;
+					//console.log(self);
+                    self.refs.sbv.refs.contentScroller.scrollTop = 0;
                 }
             },
             error: (jqXHR) => {
