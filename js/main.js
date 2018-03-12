@@ -200,7 +200,7 @@ function Core(config) {
     window.bdConfig = config;
 }
 
-Core.prototype.init = function () {
+Core.prototype.init = async function () {
     var self = this;
 
     var lVersion = (typeof(version) === "undefined") ? bdVersion : version;
@@ -398,8 +398,6 @@ Core.prototype.initObserver = function () {
                 self.injectColoredText(node.parentElement.parentElement);
                 if (!node.classList.contains("message-sending")) pluginModule.newMessage();
             }
-
-            emoteModule.obsCallback(mutation);
         });
     });
 
@@ -734,6 +732,25 @@ EmoteModule.prototype.init = async function () {
     }
 
     this.loadEmoteData(emoteInfo);
+
+    BDV2.ReactComponents.get("Message").then(MessageComponent => {
+
+        this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {after: (data) => {
+            let message = BDV2.reactDom.findDOMNode(data.thisObject);
+            message = message.querySelector('.markup');
+            $(message).children('.emotewrapper').remove();
+            emoteModule.injectEmote(message);
+        }});
+        
+        this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {after: (data) => {
+            let message = BDV2.reactDom.findDOMNode(data.thisObject);
+            message = message.querySelector('.markup');
+            if (!message) return;
+            $(message).children('.emotewrapper').remove();
+            emoteModule.injectEmote(message);
+        }});
+
+    });
 };
 
 EmoteModule.prototype.clearEmoteData = async function() {
@@ -860,6 +877,7 @@ EmoteModule.prototype.getBlacklist = function () {
 };
 
 EmoteModule.prototype.obsCallback = function (mutation) {
+    return;
     var self = this;
     
     for (var i = 0; i < mutation.addedNodes.length; ++i) {
@@ -870,7 +888,10 @@ EmoteModule.prototype.obsCallback = function (mutation) {
                 if (nodes.hasOwnProperty(node)) {
                     var elem = nodes[node].parentElement;
                     if (elem && elem.classList.contains('edited')) {
-                        setTimeout(() => {self.injectEmote(elem, true);}, 200);
+                        $(elem.parentElement).children('.emotewrapper').remove();
+                        setTimeout(() => {
+                            self.injectEmote(elem, true);
+                        }, 200);
                     } else {
                         self.injectEmote(nodes[node]);
                     }
@@ -896,9 +917,9 @@ EmoteModule.prototype.getNodes = function (node) {
 var bemotes = [];
 
 EmoteModule.prototype.injectEmote = async function(node, edited) {
-    if (!node.parentElement || (!node.parentElement.classList.contains("markup") && !node.parentElement.classList.contains("message-content"))) return;
+    //if (!node.parentElement || (!node.parentElement.classList.contains("markup") && !node.parentElement.classList.contains("message-content"))) return;
     let messageScroller = document.querySelector('.messages.scroller');
-    let message = node.parentElement;
+    let message = node;
     let editNode = null;
     /*if (edited) message.querySelectorAll(".emotewrapper").forEach(node => {
 		let name = node.querySelector(".emote").getAttribute("alt");
@@ -920,7 +941,7 @@ EmoteModule.prototype.injectEmote = async function(node, edited) {
         let element = this.createEmoteElement(emoteName, url, emoteModifier);
         let oldHeight = message.offsetHeight;
         //message.innerHTML = message.innerHTML.replace(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`, "g"), `$1${element}$2`);
-		utils.insertElement(message, new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`, "g"), $(element)[0]);
+		utils.insertElement(message, new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`), $(element)[0]);
         messageScroller.scrollTop = messageScroller.scrollTop + (message.offsetHeight - oldHeight);
         return true;
     }
@@ -1319,6 +1340,47 @@ Utils.prototype.getTextNodes = function(node) {
 	}
 	return textNodes;
 }
+
+Utils.suppressErrors = (method, desiption) => (...params) => {
+	try { return method(...params);	}
+	catch (e) { console.error('Error occurred in ' + desiption, e); }
+};
+
+Utils.monkeyPatch = (what, methodName, options) => {
+	const {before, after, instead, once = false, silent = false} = options;
+	const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
+	if (!silent) console.log('patch', methodName, 'of', displayName); // eslint-disable-line no-console
+	const origMethod = what[methodName];
+	const cancel = () => {
+		if (!silent) console.log('unpatch', methodName, 'of', displayName); // eslint-disable-line no-console
+		what[methodName] = origMethod;
+	};
+	what[methodName] = function() {
+		const data = {
+			thisObject: this,
+			methodArguments: arguments,
+			cancelPatch: cancel,
+			originalMethod: origMethod,
+			callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
+		};
+		if (instead) {
+			const tempRet = Utils.suppressErrors(instead, '`instead` callback of ' + what[methodName].displayName)(data);
+			if (tempRet !== undefined)
+				data.returnValue = tempRet;
+		}
+		else {
+			if (before) Utils.suppressErrors(before, '`before` callback of ' + what[methodName].displayName)(data);
+			data.callOriginalMethod();
+			if (after) Utils.suppressErrors(after, '`after` callback of ' + what[methodName].displayName)(data);
+		}
+		if (once) cancel();
+		return data.returnValue;
+	};
+	what[methodName].__monkeyPatched = true;
+	what[methodName].displayName = 'patched ' + (what[methodName].displayName || methodName);
+	return cancel;
+};
+
 
 
 /* BetterDiscordApp VoiceMode JavaScript
@@ -1922,6 +1984,104 @@ class V2 {
             'react': this.WebpackModules.findByUniqueProperties(['Component', 'PureComponent', 'Children', 'createElement', 'cloneElement']),
             'react-dom': this.WebpackModules.findByUniqueProperties(['findDOMNode'])
         };
+
+        this.getInternalInstance = e => e[Object.keys(e).find(k => k.startsWith("__reactInternalInstance"))];
+        this.Renderer = (() => {
+
+            const reactRootInternalInstance = () => this.getInternalInstance(document.getElementById('app-mount').firstElementChild);
+
+            /**
+             * Generator for recursive traversal of rendered react component tree. Only component instances are returned.
+             * @param {object} [internalInstance] React Internal Instance of tree root. If not provided, default one is used
+             * @return {Iterable<Component>} Returns iterable of rendered react component instances.
+             */
+            const recursiveComponents = function* (internalInstance = reactRootInternalInstance()) {
+                    if (internalInstance.stateNode)
+                        yield internalInstance.stateNode;
+                    if (internalInstance.sibling)
+                        yield* recursiveComponents(internalInstance.sibling);
+                    if (internalInstance.child)
+                        yield* recursiveComponents(internalInstance.child);
+                };
+
+            return {recursiveComponents};
+        })();
+
+        this.ReactComponents = (() => {
+	
+            const components = {};
+            const listeners = {};
+            const noNameComponents = new Set();
+            const newNamedComponents = new Set();
+            const nameSetters = {};
+        
+            const namesClashMessage = (oldName, newName) => `Several name setters for one component is detected! Old name is ${oldName}, new name is ${newName}. Only new name will be available as displayName, but all getters will resolve`;
+        
+            const put = component => {
+                if (typeof component === "function") {
+                    const name = component.displayName;
+                    if (name) {
+                        if (!components[name]) {
+                            components[name] = component;
+                            if (listeners[name]) {
+                                listeners[name].forEach(f => f(component));
+                                listeners[name] = null;
+                            }
+                            if (nameSetters[name]) {
+                                delete nameSetters[name];
+                            }
+                        }
+                    }
+                    else {
+                        if (!noNameComponents.has(component)) {
+                            for (const [name, filter] of Object.entries(nameSetters)) {
+                                if (filter(component)) {
+                                    if (component.displayName) {
+                                        console.warn(namesClashMessage(component.displayName, name), component)
+                                    }
+                                    component.displayName = name;
+                                    delete nameSetters[name];
+                                    put(component);
+                                }
+                            }
+                            if (!component.displayName) {
+                                noNameComponents.add(component);
+                            }
+                            else {
+                                newNamedComponents.add(component);
+                            }
+                        }
+                    }
+                }
+            };
+
+            const get = (name, callback = null) => new Promise(resolve => {
+                const listener = component => {
+                    if (callback) callback(component);
+                    resolve(component);
+                };
+                if (components[name]) {
+                    listener(components[name]);
+                }
+                else {
+                    if (!listeners[name]) listeners[name] = [];
+                    listeners[name].push(listener);
+                }
+            });
+        
+            Utils.monkeyPatch(this.react, 'createElement', {
+                displayName: 'React',
+                before: ({methodArguments}) => {
+                    put(methodArguments[0]);
+                }
+            });
+            for (let component of this.Renderer.recursiveComponents()) {
+                put(component.constructor);
+            }
+        
+            return {get};
+        
+        })();
     }
 
     get reactComponent() {

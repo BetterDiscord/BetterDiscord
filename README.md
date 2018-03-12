@@ -51,4 +51,4 @@ See this link: https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77c
  - Add toasts as notification option and in `BdApi`
  - Remove most jQuery dependency for speedup
  - Attach to settings when entering from right click
- - Remove broken PublicServers
+ - Patch PublicServers
