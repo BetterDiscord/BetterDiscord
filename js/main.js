@@ -67,6 +67,7 @@
     document.body.appendChild(v2Loader);
 })();
 
+
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
     return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'get', 'var': i });
@@ -90,7 +91,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
-var bbdVersion = "0.0.5";
+var bbdVersion = "0.0.6";
 
 var mainObserver;
 
@@ -138,12 +139,6 @@ var settings = {
     "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
     "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)", "implemented": true,  "hidden": false, "cat": "emote"},
 };
-
-// var links = {
-//     "Jiiks.net": { "text": "Jiiks.net", "href": "thtp://jiiks.net",          "target": "_blank" },
-//     "twitter":   { "text": "Twitter",   "href": "http://twitter.com/jiiksi", "target": "_blank" },
-//     "github":    { "text": "Github",    "href": "http://github.com/jiiks",   "target": "_blank" }
-// };
 
 var defaultCookie = {
     "version": jsVersion,
@@ -200,7 +195,7 @@ function Core(config) {
     window.bdConfig = config;
 }
 
-Core.prototype.init = async function () {
+Core.prototype.init = async function() {
     var self = this;
 
     var lVersion = (typeof(version) === "undefined") ? bdVersion : version;
@@ -213,9 +208,6 @@ Core.prototype.init = async function () {
     utils = new Utils();
     utils.getHash();
 	publicServersModule = new V2_PublicServers();
-    emoteModule = new EmoteModule();
-	utils.log("Initializing EmoteModule");
-    emoteModule.init();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
     dMode = new devMode();
@@ -225,9 +217,12 @@ Core.prototype.init = async function () {
 
     //Incase were too fast
     function gwDefer() {
-        console.log(new Date().getTime() + " Defer");
+        //console.log(new Date().getTime() + " Defer");
         if (document.querySelectorAll('.guilds .guild').length > 0) {
-            console.log(new Date().getTime() + " Defer Loaded");
+            //console.log(new Date().getTime() + " Defer Loaded");
+            emoteModule = new EmoteModule();
+            utils.log("Initializing EmoteModule");
+            emoteModule.init();
             self.injectExternals();
 
 
@@ -292,13 +287,6 @@ Core.prototype.init = async function () {
 
 Core.prototype.injectExternals = function() {
     utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js")
-    // utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.10.1/min/vs/loader.js");
-    /*utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/codemirror.min.js");
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/mode/css/css.min.js");
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.js");
-    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/addon/scroll/simplescrollbars.min.css");
-    utils.injectCss("https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.25.0/theme/material.min.css");
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js");*/
 };
 
 Core.prototype.initSettings = function () {
@@ -398,10 +386,11 @@ Core.prototype.initObserver = function () {
                 self.injectColoredText(node.parentElement.parentElement);
                 if (!node.classList.contains("message-sending")) pluginModule.newMessage();
             }
+
+            emoteModule.obsCallback(mutation);
         });
     });
 
-    //noinspection JSCheckFunctionSignatures
     mainObserver.observe(document, {
         childList: true,
         subtree: true
@@ -731,26 +720,39 @@ EmoteModule.prototype.init = async function () {
         return;
     }
 
-    this.loadEmoteData(emoteInfo);
 
-    BDV2.ReactComponents.get("Message").then(MessageComponent => {
 
+    new Promise((resolve) => {
+        let observer = new MutationObserver((changes) => {
+			for (let change of changes) {
+                if (!change.addedNodes.length || !(change.addedNodes[0] instanceof Element) || !change.addedNodes[0].classList) continue;
+                let elem = change.addedNodes[0];
+                if (!elem.querySelector(".message")) continue;
+                resolve(BDV2.getInternalInstance(elem.querySelector(".message")).return.type);
+            }
+        });
+        observer.observe(document.querySelector('.app') || document.querySelector('#app-mount'), {childList: true, subtree: true})
+    }).then(MessageComponent => {
         this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {after: (data) => {
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
-            $(message).children('.emotewrapper').remove();
-            emoteModule.injectEmote(message);
+            if (!message) return;
+            this.injectEmote(message);
         }});
         
+
         this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {after: (data) => {
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
             if (!message) return;
             $(message).children('.emotewrapper').remove();
-            emoteModule.injectEmote(message);
+            this.injectEmote(message);
         }});
 
     });
+
+    this.loadEmoteData(emoteInfo);
+    this.getBlacklist();
 };
 
 EmoteModule.prototype.clearEmoteData = async function() {
@@ -871,7 +873,7 @@ EmoteModule.prototype.testJSON = function(data) {
 }
 
 EmoteModule.prototype.getBlacklist = function () {
-    $.getJSON("https://cdn.rawgit.com/Jiiks/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
+    $.getJSON("https://cdn.rawgit.com/rauenzi/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
         bemotes = data.blacklist;
     });
 };
@@ -890,6 +892,7 @@ EmoteModule.prototype.obsCallback = function (mutation) {
                     if (elem && elem.classList.contains('edited')) {
                         $(elem.parentElement).children('.emotewrapper').remove();
                         setTimeout(() => {
+                            //$(elem.parentElement).children()
                             self.injectEmote(elem, true);
                         }, 200);
                     } else {
@@ -919,7 +922,7 @@ var bemotes = [];
 EmoteModule.prototype.injectEmote = async function(node, edited) {
     //if (!node.parentElement || (!node.parentElement.classList.contains("markup") && !node.parentElement.classList.contains("message-content"))) return;
     let messageScroller = document.querySelector('.messages.scroller');
-    let message = node;
+    let message = node//.parentElement;
     let editNode = null;
     /*if (edited) message.querySelectorAll(".emotewrapper").forEach(node => {
 		let name = node.querySelector(".emote").getAttribute("alt");
@@ -1249,9 +1252,8 @@ Utils.prototype.jqDefer = function (fnc) {
 };
 
 Utils.prototype.getHash = function () {
-    $.getJSON("https://api.github.com/repos/Jiiks/BetterDiscordApp/commits/master", function (data) {
+    $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master", function (data) {
         _hash = data.sha;
-        emoteModule.getBlacklist();
     });
 };
 
@@ -1331,7 +1333,8 @@ Utils.prototype.insertElement = function(node, regex, element) {
 };
 
 Utils.prototype.getTextNodes = function(node) {
-	var textNodes = [];
+    var textNodes = [];
+    if (!node) return textNodes;
 	for (var i = 0; i < node.childNodes.length; i++) {
 		var curNode = node.childNodes[i];
 		if (curNode.nodeType === Node.TEXT_NODE) {
@@ -1719,9 +1722,9 @@ BdApi.showToast = function(content, options = {}) {
          self.lastSelector = parents.join(" ").trim();
 
          function attach() {
-            var cm = $(".context-menu");
+            var cm = $(".contextMenu-uoJTbz");
             if(cm.length <= 0) {
-                cm = $('<div class="context-menu bd-context-menu"></div>');
+                cm = $('<div class="contextMenu-uoJTbz bd-context-menu"></div>');
                 cm.addClass($('.app').hasClass("theme-dark") ? "theme-dark" : "theme-light");
                 cm.appendTo('.app');
                 cm.css("top", e.clientY);
@@ -1743,10 +1746,10 @@ BdApi.showToast = function(content, options = {}) {
             }
             
             var cmo = $("<div/>", {
-                class: "item-group"
+                class: "itemGroup-oViAgA"
             });
             var cmi = $("<div/>", {
-                class: "item",
+                class: "item-1XYaYf",
                 click: function() {
                     var t = $("<textarea/>", { text: self.lastSelector }).appendTo("body");
                     t.select();
@@ -1758,7 +1761,7 @@ BdApi.showToast = function(content, options = {}) {
             }).append($("<span/>", { text: "Copy Selector" }));
             cmo.append(cmi);
             cm.append(cmo);
-            cm.css("top",  "-=" + cmo.outerHeight());
+            if (cm.hasClass("undefined")) cm.css("top",  "-=" + cmo.outerHeight());
          }
          
          setImmediate(attach);
@@ -1984,104 +1987,7 @@ class V2 {
             'react': this.WebpackModules.findByUniqueProperties(['Component', 'PureComponent', 'Children', 'createElement', 'cloneElement']),
             'react-dom': this.WebpackModules.findByUniqueProperties(['findDOMNode'])
         };
-
         this.getInternalInstance = e => e[Object.keys(e).find(k => k.startsWith("__reactInternalInstance"))];
-        this.Renderer = (() => {
-
-            const reactRootInternalInstance = () => this.getInternalInstance(document.getElementById('app-mount').firstElementChild);
-
-            /**
-             * Generator for recursive traversal of rendered react component tree. Only component instances are returned.
-             * @param {object} [internalInstance] React Internal Instance of tree root. If not provided, default one is used
-             * @return {Iterable<Component>} Returns iterable of rendered react component instances.
-             */
-            const recursiveComponents = function* (internalInstance = reactRootInternalInstance()) {
-                    if (internalInstance.stateNode)
-                        yield internalInstance.stateNode;
-                    if (internalInstance.sibling)
-                        yield* recursiveComponents(internalInstance.sibling);
-                    if (internalInstance.child)
-                        yield* recursiveComponents(internalInstance.child);
-                };
-
-            return {recursiveComponents};
-        })();
-
-        this.ReactComponents = (() => {
-	
-            const components = {};
-            const listeners = {};
-            const noNameComponents = new Set();
-            const newNamedComponents = new Set();
-            const nameSetters = {};
-        
-            const namesClashMessage = (oldName, newName) => `Several name setters for one component is detected! Old name is ${oldName}, new name is ${newName}. Only new name will be available as displayName, but all getters will resolve`;
-        
-            const put = component => {
-                if (typeof component === "function") {
-                    const name = component.displayName;
-                    if (name) {
-                        if (!components[name]) {
-                            components[name] = component;
-                            if (listeners[name]) {
-                                listeners[name].forEach(f => f(component));
-                                listeners[name] = null;
-                            }
-                            if (nameSetters[name]) {
-                                delete nameSetters[name];
-                            }
-                        }
-                    }
-                    else {
-                        if (!noNameComponents.has(component)) {
-                            for (const [name, filter] of Object.entries(nameSetters)) {
-                                if (filter(component)) {
-                                    if (component.displayName) {
-                                        console.warn(namesClashMessage(component.displayName, name), component)
-                                    }
-                                    component.displayName = name;
-                                    delete nameSetters[name];
-                                    put(component);
-                                }
-                            }
-                            if (!component.displayName) {
-                                noNameComponents.add(component);
-                            }
-                            else {
-                                newNamedComponents.add(component);
-                            }
-                        }
-                    }
-                }
-            };
-
-            const get = (name, callback = null) => new Promise(resolve => {
-                const listener = component => {
-                    if (callback) callback(component);
-                    resolve(component);
-                };
-                if (components[name]) {
-                    listener(components[name]);
-                }
-                else {
-                    if (!listeners[name]) listeners[name] = [];
-                    listeners[name].push(listener);
-                }
-            });
-        
-            Utils.monkeyPatch(this.react, 'createElement', {
-                displayName: 'React',
-                before: ({methodArguments}) => {
-                    put(methodArguments[0]);
-                }
-            });
-            for (let component of this.Renderer.recursiveComponents()) {
-                put(component.constructor);
-            }
-        
-            return {get};
-        
-        })();
     }
 
     get reactComponent() {
