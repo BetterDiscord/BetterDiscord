@@ -642,7 +642,7 @@ function EmoteModule() {}
 EmoteModule.prototype.init = async function () {
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
     this.overrides = ['twitch', 'bttv', 'ffz'];
-    this.categories = ["TwitchGlobal", "TwitchSubscriber", "BTTV", "FrankerFaceZ", "BTTV2"];
+    this.categories = ["TwitchGlobal", "TwitchSubscriber", "BTTV", "BTTV2", "FrankerFaceZ"];
 
     let emoteInfo = {
         'TwitchGlobal': {
@@ -787,8 +787,6 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     let emoteFile = "emote_data.json";
     let file = bdConfig.dataPath + emoteFile;
     let exists = _fs.existsSync(file);
-
-    
     
     if (exists && !bdConfig.cache.expired) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
@@ -1256,6 +1254,7 @@ Utils.prototype.jqDefer = function (fnc) {
 Utils.prototype.getHash = function () {
     $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master", function (data) {
         _hash = data.sha;
+        bdConfig.hash = _hash;
     });
 };
 
@@ -1314,14 +1313,13 @@ Utils.prototype.insertElement = function(node, regex, element) {
 		if (child.nodeType != Node.TEXT_NODE) {child = child.nextSibling; continue};
 		var bk = 0;
 		child.data.replace(regex, function(all) {
-			var args = [].slice.call(arguments),
-				offset = args[args.length - 2],
-				newTextNode = child.splitText(offset+bk), tag;
+			var args = [].slice.call(arguments);
+			var offset = args[args.length - 2];
+            var newTextNode = args[1] ? child.splitText(offset + args[1].length + bk) : child.splitText(offset + bk);
 			bk -= child.data.length + all.length;
 
-			newTextNode.data = newTextNode.data.substr(all.length);
-			tag = element;
-			child.parentNode.insertBefore(tag, newTextNode);
+			newTextNode.data = newTextNode.data.substr(all.trim().length);
+			child.parentNode.insertBefore(element, newTextNode);
 			child = newTextNode;
 		});
 		
