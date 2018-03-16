@@ -733,13 +733,15 @@ EmoteModule.prototype.init = async function () {
         });
         observer.observe(document.querySelector('.app') || document.querySelector('#app-mount'), {childList: true, subtree: true})
     }).then(MessageComponent => {
+        if (this.cancel1) this.cancel1();
+        if (this.cancel2) this.cancel2();
+
         this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {after: (data) => {
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
             if (!message) return;
             this.injectEmote(message);
         }});
-        
 
         this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {after: (data) => {
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
@@ -937,7 +939,7 @@ EmoteModule.prototype.injectEmote = async function(node, edited) {
     let words = textNodes.map(n => n.data).join(" ").split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });//message.innerHTML.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
 
     let inject = function(message, messageScroller, category, emoteName, emoteModifier) {
-        let inCategory = bdEmotes[category].hasOwnProperty(emoteName);
+        let inCategory = Object.hasOwnProperty.call(bdEmotes[category], emoteName);
         if (!inCategory || !settingsCookie[bdEmoteSettingIDs[category]]) return false;
 
         let url = bdEmotes[category][emoteName];
