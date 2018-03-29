@@ -27,19 +27,6 @@
     border-radius: 6px;
 }
 
-.bd-server-card.bd-server-card-pinned {
-  margin-bottom: 11px;
-}
-
-.bd-server-card.bd-server-card-pinned:after {
-  background: #3a71c1;
-  content: "";
-  height: 3px;
-  width: 100%;
-  display: block;
-  margin-top: 5px;
-}
-
 .ui-standard-sidebar-view #bd-customcss-attach-controls button,
 .bd-detached-css-editor #bd-customcss-attach-controls button {
     margin: 0;
@@ -187,6 +174,61 @@
     left: 0;
     right: 0;
     margin-top: 4px;
+}
+
+.bd-server-card.bd-server-card-pinned {
+  margin-bottom: 15px;
+}
+
+.bd-server-card.bd-server-card-pinned:after {
+  background: #3a71c1;
+  content: "";
+  height: 3px;
+  width: 100%;
+  display: block;
+  margin-top: 7px;
+  position: absolute;
+  top: 100%;
+}
+
+.bd-server-description-container {
+  color: #b9bbbe;
+  min-height: 65px;
+  max-height: 65px;
+  border-top: 1px solid #3f4146;
+  border-bottom: 1px solid #3f4146;
+  padding-top: 5px;
+  font-size: 13px;
+}
+
+.bd-server-header {
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+.bd-server-card {
+  display: flex;
+}
+
+.bd-server-content {
+  padding: 5px 10px;
+  flex: 1;
+}
+
+.bd-server-image {
+  min-width: 115px;
+  min-height: 115px;
+  max-width: 115px;
+  max-height: 115px;
+}
+
+.bd-server-name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: 15px;
+  max-width: 330px;
+  flex: 1 1 50%;
 }
 
 .bd-layer {

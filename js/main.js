@@ -143,7 +143,7 @@ var settings = {
 var defaultCookie = {
     "version": jsVersion,
     "bda-gs-0": false,
-    "bda-gs-1": false,
+    "bda-gs-1": true,
     "bda-gs-2": false,
     "bda-gs-3": false,
     "bda-gs-4": false,
@@ -172,6 +172,7 @@ var defaultCookie = {
 	"fork-ps-3": true,
 	"fork-es-1": true,
     "fork-es-2": false,
+    "fork-pub-notice": false
 };
 
 
@@ -273,6 +274,13 @@ Core.prototype.init = async function() {
             if (settingsCookie["fork-ps-1"]) {
 				utils.log("Collecting Startup Errors");
                 self.showStartupErrors();
+            }
+
+            if (!bdStorage.get("publicServerNotice")) {
+                settingsCookie["bda-gs-1"] = true;
+                settingsPanel.updateSettings();
+                self.alert("Public Servers Fixed!", "Hey there!<br><br>I just overhauled and fixed the public servers module. Since it was broken for a long time, I've enabled it for you and I suggest you go ahead and check it out!");
+                bdStorage.set("publicServerNotice", true);
             }
         } else {
             setTimeout(gwDefer, 100);
@@ -2097,14 +2105,15 @@ class V2C_Scroller extends BDV2.reactComponent {
     }
 
     render() {
-        let wrapperClass = `scroller-wrap${this.props.fade ? ' fade' : ''} ${this.props.dark ? ' dark' : ''}`;
+        //scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW scrollerFade-28dRsO
+        let wrapperClass = `scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW${this.props.fade ? ' scrollerFade-28dRsO' : ''}`;
         let { children } = this.props;
         return BDV2.react.createElement(
             "div",
             { key: "scrollerwrap", className: wrapperClass },
             BDV2.react.createElement(
                 "div",
-                { key: "scroller", ref: "scroller", className: "scroller" },
+                { key: "scroller", ref: "scroller", className: this.props.sidebar ? "scroller-fzNley sidebar-region-scroller scroller" : "scroller-fzNley scroller" },
                 children
             )
         );
@@ -3409,17 +3418,49 @@ class V2C_Layer extends BDV2.reactComponent {
                 BDV2.reactDom.unmountComponentAtNode(this.refs.root.parentNode);
             }
         });
+
+        $(`#${this.props.id}`).animate({opacity: 1}, {
+            step: function(now, fx) {
+              $(this).css("transform", `scale(${1.1 - 0.1*now}) translateZ(0px)`); 
+            },
+            duration: 200,
+            done: () => {$(`#${this.props.id}`).css("opacity", "").css("transform", "");}
+        });
     }
 
     componentWillUnmount() {
         $(window).off(`keyup.${this.props.id}`);
-        $(`#${this.props.rootId}`).remove();
+        $(`#${this.props.id}`).animate({opacity: 0}, {
+            step: function(now, fx) {
+              $(this).css("transform", `scale(${1.1 - 0.1*now}) translateZ(0px)`); 
+            },
+            duration: 200,
+            done: () => {$(`#${this.props.rootId}`).remove();}
+        });
+        
+        $('[class*="layer-"]').animate({opacity: 1}, {
+            step: function(now, fx) {
+              $(this).css("transform", `scale(${0.07*now + 0.93}) translateZ(0px)`); 
+            },
+            duration: 200,
+            done: () => {$('[class*="layer-"]').css("opacity", "").css("transform", "");}
+        });
+        
+    }
+
+    componentWillMount() {
+        $('[class*="layer-"]').animate({opacity: 0}, {
+            step: function(now, fx) {
+              $(this).css("transform", `scale(${0.07*now + 0.93}) translateZ(0px)`); 
+            },
+            duration: 200
+        });
     }
 
     render() {
         return BDV2.react.createElement(
             "div",
-            { className: "layer bd-layer layer-kosS71", id: this.props.id, ref: "root" },
+            { className: "layer bd-layer layer-kosS71", id: this.props.id, ref: "root", style: {opacity: 0, transform: "scale(1.1) translateZ(0px)"} },
             this.props.children
         );
     }
@@ -3439,7 +3480,7 @@ class V2C_SidebarView extends BDV2.reactComponent {
             BDV2.react.createElement(
                 "div",
                 { className: "sidebar-region" },
-                BDV2.react.createElement(V2Components.Scroller, { key: "sidebarScroller", ref: "sidebarScroller", fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component })
+                BDV2.react.createElement(V2Components.Scroller, { key: "sidebarScroller", ref: "sidebarScroller", sidebar: true, fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component })
             ),
             BDV2.react.createElement("div", {className: "content-region"},
                 BDV2.react.createElement("div", {className: "content-transition-wrap"},
@@ -3529,6 +3570,7 @@ class V2_PublicServers {
 class V2C_ServerCard extends BDV2.reactComponent {
     constructor(props) {
         super(props);
+        if (!this.props.server.iconUrl) this.props.server.iconUrl = this.props.fallback;
         this.state = {
             imageError: false,
             joined: this.props.guildList.includes(this.props.server.identifier)
@@ -3538,72 +3580,54 @@ class V2C_ServerCard extends BDV2.reactComponent {
     render() {
         let { server } = this.props;
         return BDV2.react.createElement(
-            "div",
-            { className: `ui-card ui-card-primary bd-server-card${server.pinned ? ' bd-server-card-pinned' : ''}`, style: { marginTop: "5px" } },
-            BDV2.react.createElement(
-                "div",
-                { className: "ui-flex horizontal", style: { display: "flex", flexFlow: "row nowrap", justifyContent: "flex-start", alignItems: "stretch", flex: "1 1 auto" } },
+            "div", // cardPrimary-ZVL9Jr
+            { className: `card-3DrRmC cardPrimary-ZVL9Jr marginBottom8-1mABJ4 bd-server-card${server.pinned ? ' bd-server-card-pinned' : ''}` },
+            // BDV2.react.createElement(
+                // "div",
+                // { className: "flex-lFgbSz flex-3B1Tl4 horizontal-2BEEBe horizontal-2VE-Fw flex-3B1Tl4 directionRow-yNbSvJ justifyStart-2yIZo0 alignStretch-1hwxMa noWrap-v6g9vO" },
+                BDV2.react.createElement("img", { ref: "img", className: "bd-server-image", src: server.iconUrl, onError: this.handleError.bind(this) }),
                 BDV2.react.createElement(
                     "div",
-                    { className: "ui-flex-child", style: { flex: "0 1 auto", padding: "5px" } },
-                    BDV2.react.createElement("img", { ref: "img", className: "bd-pubs-server-icon", src: server.icon, style: { width: "100px", height: "100px" }, onError: this.handleError.bind(this) })
-                ),
-                BDV2.react.createElement(
-                    "div",
-                    { className: "ui-flex-child", style: { flex: "1 1 auto", padding: "5px" } },
+                    { className: "flexChild-1KGW5q bd-server-content" },
                     BDV2.react.createElement(
                         "div",
-                        { className: "ui-flex horizontal" },
+                        { className: "flex-lFgbSz flex-3B1Tl4 horizontal-2BEEBe horizontal-2VE-Fw flex-3B1Tl4 directionRow-yNbSvJ noWrap-v6g9vO bd-server-header" },
                         BDV2.react.createElement(
-                            "div",
-                            { className: "ui-form-item", style: { flex: "1 1 auto" } },
-                            BDV2.react.createElement(
-                                "h5",
-                                { className: "ui-form-title h5 margin-reset" },
-                                server.name
-                            )
+                            "h5",
+                            { className: "h5-3KssQU defaultColor-v22dK1 margin-reset bd-server-name" },
+                            server.name
                         ),
                         BDV2.react.createElement(
-                            "div",
-                            { className: "ui-form-item" },
-                            BDV2.react.createElement(
-                                "h5",
-                                { className: "ui-form-title h5 margin-reset" },
-                                server.online,
-                                "/",
-                                server.members,
-                                " Members"
-                            )
+                            "h5",
+                            { className: "h5-3KssQU defaultColor-v22dK1 margin-reset bd-server-member-count" },
+                            server.members,
+                            " Members"
                         )
                     ),
                     BDV2.react.createElement(
                         "div",
-                        { className: "ui-flex horizontal" },
+                        { className: "flex-lFgbSz flex-3B1Tl4 horizontal-2BEEBe horizontal-2VE-Fw flex-3B1Tl4 directionRow-yNbSvJ noWrap-v6g9vO" },
                         BDV2.react.createElement(
                             "div",
-                            { className: "scroller-wrap fade dark", style: { minHeight: "60px", maxHeight: "60px", borderTop: "1px solid #3f4146", borderBottom: "1px solid #3f4146", paddingTop: "5px" } },
+                            { className: "scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW scrollerFade-28dRsO bd-server-description-container"},
                             BDV2.react.createElement(
                                 "div",
-                                { className: "scroller" },
-                                BDV2.react.createElement(
-                                    "div",
-                                    { style: { fontSize: "13px", color: "#b9bbbe" } },
+                                { className: "scroller-fzNley scroller bd-server-description" },
                                     server.description
-                                )
                             )
                         )
                     ),
                     BDV2.react.createElement(
                         "div",
-                        { className: "ui-flex horizontal" },
+                        { className: "flex-lFgbSz flex-3B1Tl4 horizontal-2BEEBe horizontal-2VE-Fw flex-3B1Tl4 directionRow-yNbSvJ noWrap-v6g9vO bd-server-footer" },
                         BDV2.react.createElement(
                             "div",
-                            { className: "ui-flex-child bd-server-tags", style: { flex: "1 1 auto" } },
+                            { className: "flexChild-1KGW5q bd-server-tags", style: { flex: "1 1 auto" } },
                             server.categories.join(', ')
                         ),
                         this.state.joined && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "ui-button filled brand small grow disabled", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c" } },
+                            { type: "button", className: "button-2t3of8 lookFilled-luDKDo colorBrand-3PmwCE sizeMin-1Wh1KC grow-25YQ8u colorGreen-22At8E", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c" } },
                             BDV2.react.createElement(
                                 "div",
                                 { className: "ui-button-contents" },
@@ -3612,16 +3636,16 @@ class V2C_ServerCard extends BDV2.reactComponent {
                         ),
                         server.error && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "ui-button filled brand small grow disabled", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a" } },
+                            { type: "button", className: "button-2t3of8 lookFilled-luDKDo colorBrand-3PmwCE sizeMin-1Wh1KC grow-25YQ8u disabled-uc2Cqc", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a" } },
                             BDV2.react.createElement(
                                 "div",
                                 { className: "ui-button-contents" },
                                 "Error"
                             )
                         ),
-                        !server.error && !this.state.joined && server.invite_code && BDV2.react.createElement(
+                        !server.error && !this.state.joined && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "ui-button filled brand small grow", style: { minHeight: "12px", marginTop: "4px" }, onClick: () => {this.join();} },
+                            { type: "button", className: "button-2t3of8 lookFilled-luDKDo colorBrand-3PmwCE sizeMin-1Wh1KC grow-25YQ8u", style: { minHeight: "12px", marginTop: "4px" }, onClick: () => {this.join();} },
                             BDV2.react.createElement(
                                 "div",
                                 { className: "ui-button-contents" },
@@ -3630,18 +3654,18 @@ class V2C_ServerCard extends BDV2.reactComponent {
                         )
                     )
                 )
-            )
+            // )
         );
     }
 
     handleError() {
-        this.props.server.icon = this.props.fallback;
+        this.props.server.iconUrl = this.props.fallback;
         this.setState({imageError: true});
     }
 
     join() {
-        this.props.join(this.props.server);
-        this.setState({joined: true});
+        this.props.join(this);
+        //this.setState({joined: true});
     }
 }
 
@@ -3656,10 +3680,12 @@ class V2C_PublicServers extends BDV2.reactComponent {
         this.searchKeyDown = this.searchKeyDown.bind(this);
         this.checkConnection = this.checkConnection.bind(this);
         this.join = this.join.bind(this);
+        this.connect = this.connect.bind(this);
 
         this.GuildStore = BDV2.WebpackModules.findByUniqueProperties(["getGuilds"]);
         this.AvatarDefaults = BDV2.WebpackModules.findByUniqueProperties(["getUserAvatarURL", "DEFAULT_AVATARS"]);
         this.InviteActions = BDV2.WebpackModules.findByUniqueProperties(['acceptInvite']);
+        this.SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(['getSortedGuilds']);
     }
 
     componentDidMount() {
@@ -3689,9 +3715,8 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
         $.ajax({
             method: 'GET',
-            url: `${self.endPoint}${query}`,
+            url: `${self.endPoint}${query}${query ? "&schema=new" : "?schema=new"}`,
             success: data => {
-                //console.log(data);
                 let servers = data.results.reduce((arr, server) => {
                     server.joined = false;
                     arr.push(server);
@@ -3705,7 +3730,11 @@ class V2C_PublicServers extends BDV2.reactComponent {
                     //servers.unshift(self.bdServer);
                 }
 
+                let hasNext = true;
                 let end = data.size + data.from;
+                data.next = `?from=${end}`;
+                if (self.state.term) data.next += `&term=${self.state.term}`;
+                if (self.state.selectedCategory) data.next += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
                 if (end >= data.total) {
                     end = data.total;
                     data.next = null;
@@ -3731,63 +3760,62 @@ class V2C_PublicServers extends BDV2.reactComponent {
                     'loading': false,
                     'title': 'Failed to load servers. Check console for details'
                 });
-                console.log(jqXHR);
             }
         });
     }
 
-    join(server) {
-        this.InviteActions.acceptInvite(server.invite_code);
+    join(serverCard) {
+        if (serverCard.props.pinned) return this.InviteActions.acceptInvite(serverCard.props.invite_code);
+        $.ajax({
+            method: 'GET',
+            url: `${this.joinEndPoint}/${serverCard.props.server.identifier}`,
+            headers: {          
+                Accept: "application/json;",         
+                "Content-Type": "application/json;" ,
+                "x-discord-id": this.state.connection.user.id,
+                "x-discord-token": this.state.connection.user.accessToken
+            },
+            crossDomain: true,
+            xhrFields: {
+                withCredentials: true
+            },
+            success: data => {
+                serverCard.setState({joined: true});
+            }
+        });
     }
 
-    // connect() {
-    //     let self = this;
-    //     let options = self.windowOptions;
-    //     options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
-    //     options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
+    connect() {
+        let self = this;
+        let options = self.windowOptions;
+        options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
+        options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
 
-    //     self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
-    //     let sub = window.location.hostname.split('.')[0];
-    //     let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
-    //     self.joinWindow.webContents.on('did-navigate', (event, url) => {
-    //         if (!url.includes("connect/callback")) return;
-    //         self.joinWindow.close();
-    //     });
-    //     self.joinWindow.loadURL(url);
-    //     console.log(url)
-    // }
+        self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
+        let sub = window.location.hostname.split('.')[0];
+        let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
+        self.joinWindow.webContents.on('did-navigate', (event, url) => {
+            if (url != "https://discordservers.com/") return;
+            self.joinWindow.close();
+            self.checkConnection();
+        });
+        self.joinWindow.loadURL(url);
+    }
 
-    // joinID(identifier) {
-    //     let self = this;
-    //     let options = self.windowOptions;
-    //     options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
-    //     options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
-
-    //     self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
-    //     let sub = window.location.hostname.split('.')[0];
-    //     let url = self.joinEndPoint + "/" + identifier;
-    //     self.joinWindow.webContents.on('did-navigate', (event, url) => {
-    //         if (!url.includes("connect/callback")) return;
-    //         self.joinWindow.close();
-    //     });
-    //     self.joinWindow.loadURL(url);
-    //     console.log(url)
-    // }
-
-    // get windowOptions() {
-    //     return {
-    //         width: 520,
-    //         height: 710,
-    //         backgroundColor: '#282b30',
-    //         show: true,
-    //         resizable: false,
-    //         maximizable: false,
-    //         minimizable: false,
-    //         alwaysOnTop: true,
-    //         frame: false,
-    //         center: false
-    //     };
-    // }
+    get windowOptions() {
+        return {
+            width: 500,
+            height: 550,
+            backgroundColor: '#282b30',
+            show: true,
+            resizable: false,
+            maximizable: false,
+            minimizable: false,
+            alwaysOnTop: true,
+            frame: false,
+            center: false
+        };
+    }
 
     get bdServer() {
         let server = {
@@ -3797,12 +3825,12 @@ class V2C_PublicServers extends BDV2.reactComponent {
             "categories": ["community", "programming", "support"],
             "description": "Official BetterDiscord server for support etc",
             "identifier": "86004744966914048",
-            "icon": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
+            "iconUrl": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
             "nativejoin": true,
             "invite_code": "0Tmfo5ZbORCRqbAd",
             "pinned": true
         };
-        let guildList = Object.keys(this.GuildStore.getGuilds());
+        let guildList = this.SortedGuildStore.guildPositions;
         let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         return BDV2.react.createElement(V2Components.ServerCard, { server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)] });
     }
@@ -3824,7 +3852,15 @@ class V2C_PublicServers extends BDV2.reactComponent {
         try {
             $.ajax({
                 method: 'GET',
-                url: `${self.endPoint}`,
+                url: `${self.joinEndPoint}/session`,
+                headers: {          
+                    Accept: "application/json;",         
+                    "Content-Type": "application/json;"   
+                },
+                crossDomain: true,
+                xhrFields: {
+                    withCredentials: true
+                },
                 success: data => {
                     self.setState({
                         'selectedCategory': 0,
@@ -3834,6 +3870,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
                         }
                     });
                     self.search("", true);
+                    
                 },
                 error: jqXHR => {
                     if (jqXHR.status === 403 || jqXHR.status === 404) {
@@ -3849,7 +3886,6 @@ class V2C_PublicServers extends BDV2.reactComponent {
                         });
                         return;
                     }
-                    console.log(jqXHR);
                 }
             });
         }
@@ -3904,7 +3940,8 @@ class V2C_PublicServers extends BDV2.reactComponent {
                     return BDV2.react.createElement(V2Components.TabBar.Item, { id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index });
                 }),
                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
-                this.footer
+                this.footer,
+                this.connection
             )
         );
     }
@@ -3959,7 +3996,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
     get content() {
         let self = this;
-        let guildList = Object.keys(this.GuildStore.getGuilds());
+        let guildList = this.SortedGuildStore.guildPositions;
         let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         if (self.state.connection.state === 1) return self.notConnected;
         return [BDV2.react.createElement(
@@ -3968,12 +4005,12 @@ class V2C_PublicServers extends BDV2.reactComponent {
             BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title }),
             self.bdServer,
             self.state.servers.map((server, index) => {
-                return BDV2.react.createElement(V2Components.ServerCard, { key: index, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)] });
+                return BDV2.react.createElement(V2Components.ServerCard, { key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)] });
             }),
             self.state.next && BDV2.react.createElement(
                 "button",
                 { type: "button", onClick: () => {
-                        if (self.state.loading) return;self.setState({ 'loading': true });self.search(self.state.next, false);
+                        if (self.state.loading) return;self.setState({ 'loading': true }); self.search(self.state.next, false);
                     }, className: "ui-button filled brand small grow", style: { width: "100%", marginTop: "10px", marginBottom: "10px" } },
                 BDV2.react.createElement(
                     "div",
@@ -3982,6 +4019,29 @@ class V2C_PublicServers extends BDV2.reactComponent {
                 )
             ),
             self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title })
+        )];
+    }
+
+    get notConnected() {
+        let self = this;
+        //return BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title });
+        return [BDV2.react.createElement(
+            "div",
+            { key: "ncc", ref: "content", className: "content-column default" },
+            BDV2.react.createElement(
+                "h2",
+                { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+                "Not connected to discordservers.com!",
+                BDV2.react.createElement(
+                    "button",
+                    { onClick: self.connect, type: "button", className: "ui-button filled brand small grow", style: { display: "inline-block", minHeight: "18px", marginLeft: "10px", lineHeight: "14px" } },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-button-contents" },
+                        "Connect"
+                    )
+                )
+            ), self.bdServer
         )];
     }
 
@@ -3996,4 +4056,35 @@ class V2C_PublicServers extends BDV2.reactComponent {
             )
         );
     }
+
+    get connection() {
+        let self = this;
+        let { connection } = self.state;
+        if (connection.state !== 2) return BDV2.react.createElement("span", null);
+
+        return BDV2.react.createElement(
+            "span",
+            null,
+            BDV2.react.createElement(V2Components.TabBar.Separator, null),
+            BDV2.react.createElement(
+                "span",
+                { style: { color: "#b9bbbe", fontSize: "10px", marginLeft: "10px" } },
+                "Connected as: ",
+                `${connection.user.username}#${connection.user.discriminator}`
+            ),
+            BDV2.react.createElement(
+                "div",
+                { style: { padding: "5px 10px 0 10px" } },
+                BDV2.react.createElement(
+                    "button",
+                    { style: { width: "100%", minHeight: "20px" }, type: "button", className: "ui-button filled brand small grow" },
+                    BDV2.react.createElement(
+                        "div",
+                        { className: "ui-button-contents", onClick: self.connect },
+                        "Reconnect"
+                    )
+                )
+            )
+        );
+}
 }
