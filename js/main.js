@@ -2107,13 +2107,19 @@ class V2C_Scroller extends BDV2.reactComponent {
     render() {
         //scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW scrollerFade-28dRsO
         let wrapperClass = `scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW${this.props.fade ? ' scrollerFade-28dRsO' : ''}`;
+        let scrollerClass = "scroller-fzNley scroller";
+        if (this.props.sidebar) scrollerClass = "scroller-fzNley sidebar-region-scroller scroller";
+        if (this.props.contentColumn) {
+            scrollerClass = "scroller-fzNley content-region-scroller";
+            wrapperClass = "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0";
+        }
         let { children } = this.props;
         return BDV2.react.createElement(
             "div",
             { key: "scrollerwrap", className: wrapperClass },
             BDV2.react.createElement(
                 "div",
-                { key: "scroller", ref: "scroller", className: this.props.sidebar ? "scroller-fzNley sidebar-region-scroller scroller" : "scroller-fzNley scroller" },
+                { key: "scroller", ref: "scroller", className: scrollerClass },
                 children
             )
         );
@@ -3266,11 +3272,12 @@ class V2_SettingsPanel {
     }
 
     get coreComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
 	
 	get forkComponent() {
         return BDV2.react.createElement(V2Components.Scroller, {
+                contentColumn: true, 
 				fade: true,
 				dark: true,
 				children: [
@@ -3285,11 +3292,11 @@ class V2_SettingsPanel {
     }
 
     get emoteComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
 
     get customCssComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [BDV2.react.createElement(V2Components.CssEditor, { key: "csseditor" }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.CssEditor, { key: "csseditor" }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
 
     get pluginsComponent() {
@@ -3299,7 +3306,7 @@ class V2_SettingsPanel {
         let list = BDV2.react.createElement(V2Components.List, { key: "plugin-list", className: "bda-slist", children: plugins });
         let pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'plugindir' }); }}, "Open Plugin Folder");
         let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "pcolumn", title: "Plugins", children: [pfBtn, list] });
-        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
 
     get themesComponent() {
@@ -3309,7 +3316,7 @@ class V2_SettingsPanel {
         let list = BDV2.react.createElement(V2Components.List, { key: "theme-list", className: "bda-slist", children: themes });
         let tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'themedir' }); }}, "Open Theme Folder");
         let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "tcolumn", title: "Themes", children: [tfBtn, list] });
-        return BDV2.react.createElement(V2Components.Scroller, { fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
     }
 
     renderCoreSettings() {
