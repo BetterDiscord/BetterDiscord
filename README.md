@@ -1,6 +1,6 @@
 # BandagedBD
 
-BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](https://github.com/Jiiks/BetterDiscordApp) by Jiiks. This has a number of improvements over the original which is currently undergoing a full rewrite. In the interim, the current version has been unmaintained hence this fork existing. I will continue to maintain this fork until BDv2 comes out. I am helping to develop BDv2 as well so as release gets closer this fork will become less and less active.
+BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](https://github.com/JsSucks/BetterDiscordApp) by JsSucks. This has a number of improvements over the original which is currently undergoing a full rewrite. In the interim, the current version has been unmaintained hence this fork existing. I will continue to maintain this fork until BDv2 comes out. I am helping to develop BDv2 as well so as release gets closer this fork will become less and less active.
 
 # Installation
 
