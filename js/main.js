@@ -91,7 +91,7 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
-var bbdVersion = "0.0.6";
+var bbdVersion = "0.0.7";
 
 var mainObserver;
 
@@ -341,7 +341,7 @@ Core.prototype.initObserver = function () {
             }
     
             // if there was nothing added, skip
-            if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) return;
+            if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
     
             let node = mutation.addedNodes[0];
     
@@ -393,8 +393,7 @@ Core.prototype.initObserver = function () {
                 this.injectColoredText(node.parentElement.parentElement);
                 //if (!node.classList.contains("message-sending")) pluginModule.newMessage();
             }
-    
-            emoteModule.obsCallback(mutation);
+
         }
     });
 
