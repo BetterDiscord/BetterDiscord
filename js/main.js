@@ -325,78 +325,77 @@ Core.prototype.loadSettings = function () {
 };
 
 Core.prototype.initObserver = function () {
-    let self = this;
-    mainObserver = new MutationObserver(function (mutations) {
+    mainObserver = new MutationObserver((mutations) => {
 
-        mutations.forEach(function (mutation) {
-
+        for (let i = 0; i < mutations.length; i++) {
+            let mutation = mutations[i];
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
-
+    
             // onSwitch()
             // leaving Activity Feed/Friends menu
             if (mutation.removedNodes.length && mutation.removedNodes[0] instanceof Element) {
-                let node = mutation.removedNodes[0];
-                if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
-                    pluginModule.channelSwitch();
-                }
+               let node = mutation.removedNodes[0];
+               if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
+                   pluginModule.channelSwitch();
+               }
             }
-
+    
             // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) return;
-
+    
             let node = mutation.addedNodes[0];
-
+    
             if (node.classList.contains("layer") || node.classList.contains("layer-kosS71")) {
-                if (node.querySelector(".guild-settings-base-section")) node.setAttribute('layer-id', 'server-settings');
-
+                if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute('layer-id', 'server-settings');
+    
                 if (node.getElementsByClassName("socialLinks-1oZoF3").length) {
                     node.setAttribute('layer-id', 'user-settings');
-                    if (!node.querySelector("#bd-settings-sidebar")) settingsPanel.renderSidebar();
+                    if (!document.getElementById("bd-settings-sidebar")) settingsPanel.renderSidebar();
                 }
             }
-
+    
             // Emoji Picker
             if (node.classList.contains('popout') && !node.classList.contains('popout-left')) {
                 if (node.getElementsByClassName('emoji-picker').length || node.getElementsByClassName('emojiPicker-3g68GS').length) quickEmoteMenu.obsCallback(node);
             }
-
+    
             // onSwitch()
             // Not a channel, but still a switch (Activity Feed/Friends menu/NSFW check)
             if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
                 pluginModule.channelSwitch();
             }
-
+    
             // onSwitch()
             // New Channel
-            if (node.classList.contains("messages-wrapper") || node.querySelector(".messages-wrapper")) {
-                self.inject24Hour(node);
-                self.injectColoredText(node);
+            if (node.classList.contains("messages-wrapper") || node.getElementsByClassName("messages-wrapper").length) {
+                this.inject24Hour(node);
+                this.injectColoredText(node);
                 pluginModule.channelSwitch();
             }
-
+    
             // onMessage
             // New Message Group
             if (node.classList.contains("message-group")) {
-                self.inject24Hour(node);
-                self.injectColoredText(node);
-                if (!node.querySelector(".message-sending") && node.parentElement && node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
-                    pluginModule.newMessage();
-                }
+                this.inject24Hour(node);
+                this.injectColoredText(node);
+                // if (!node.getElementsByClassName("message-sending").length && node.parentElement && node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
+                //    pluginModule.newMessage();
+                // }
             }
-
+    
             if (node.classList.contains("message-text")) {
-                self.injectColoredText(node.parentElement.parentElement.parentElement.parentElement);
+                this.injectColoredText(node.parentElement.parentElement.parentElement.parentElement);
             }
-
+    
             // onMessage
             // Single Message
             if (node.classList.contains("message")) {
-                self.injectColoredText(node.parentElement.parentElement);
-                if (!node.classList.contains("message-sending")) pluginModule.newMessage();
+                this.injectColoredText(node.parentElement.parentElement);
+                //if (!node.classList.contains("message-sending")) pluginModule.newMessage();
             }
-
+    
             emoteModule.obsCallback(mutation);
-        });
+        }
     });
 
     mainObserver.observe(document, {
@@ -736,6 +735,7 @@ EmoteModule.prototype.init = async function () {
                 if (!change.addedNodes.length || !(change.addedNodes[0] instanceof Element) || !change.addedNodes[0].classList) continue;
                 let elem = change.addedNodes[0];
                 if (!elem.querySelector(".message")) continue;
+                observer.disconnect();
                 resolve(BDV2.getInternalInstance(elem.querySelector(".message")).return.type);
             }
         });
@@ -745,6 +745,7 @@ EmoteModule.prototype.init = async function () {
         if (this.cancel2) this.cancel2();
 
         this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {after: (data) => {
+            if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
             if (!message) return;
@@ -752,6 +753,7 @@ EmoteModule.prototype.init = async function () {
         }});
 
         this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {after: (data) => {
+            if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
             if (!message) return;
@@ -2110,7 +2112,7 @@ class V2C_Scroller extends BDV2.reactComponent {
         let scrollerClass = "scroller-fzNley scroller";
         if (this.props.sidebar) scrollerClass = "scroller-fzNley sidebar-region-scroller scroller";
         if (this.props.contentColumn) {
-            scrollerClass = "scroller-fzNley content-region-scroller";
+            scrollerClass = "scroller-fzNley content-region-scroller scroller";
             wrapperClass = "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0";
         }
         let { children } = this.props;
@@ -3492,7 +3494,7 @@ class V2C_SidebarView extends BDV2.reactComponent {
             BDV2.react.createElement("div", {className: "content-region"},
                 BDV2.react.createElement("div", {className: "content-transition-wrap"},
                     BDV2.react.createElement("div", {className: "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0"},
-                        BDV2.react.createElement("div", {className: "scroller-fzNley content-region-scroller", ref: "contentScroller"},
+                        BDV2.react.createElement("div", {className: "scroller-fzNley content-region-scroller scroller", ref: "contentScroller"},
                             BDV2.react.createElement("div", {className: "content-column default"}, content.component),
                             tools.component
                         )
