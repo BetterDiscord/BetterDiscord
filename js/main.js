@@ -929,21 +929,13 @@ EmoteModule.prototype.getNodes = function (node) {
 var bemotes = [];
 
 EmoteModule.prototype.injectEmote = async function(node, edited) {
-    //if (!node.parentElement || (!node.parentElement.classList.contains("markup") && !node.parentElement.classList.contains("message-content"))) return;
     let messageScroller = document.querySelector('.messages.scroller');
-    let message = node//.parentElement;
+    let message = node
+    if (message.getElementsByClassName("message-content").length) message = message.getElementsByClassName("message-content")[0];
     let editNode = null;
-    /*if (edited) message.querySelectorAll(".emotewrapper").forEach(node => {
-		let name = node.querySelector(".emote").getAttribute("alt");
-		let last = message.children.length - 2;
-		if (node == message.children[0] && node != message.children[last]) name = name + " ";
-		else if (node == message.children[last] && node != message.children[0]) name = " " + name;
-		else if (node != message.children[0] && node != message.children[last]) name = " " + name + " ";
-		node.outerHTML = name;
-	});*/
 	let textNodes = utils.getTextNodes(message);
 	
-    let words = textNodes.map(n => n.data).join(" ").split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });//message.innerHTML.split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
+    let words = textNodes.map(n => n.data).join(" ").split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
 
     let inject = function(message, messageScroller, category, emoteName, emoteModifier) {
         let inCategory = Object.hasOwnProperty.call(bdEmotes[category], emoteName);
@@ -952,8 +944,7 @@ EmoteModule.prototype.injectEmote = async function(node, edited) {
         let url = bdEmotes[category][emoteName];
         let element = this.createEmoteElement(emoteName, url, emoteModifier);
         let oldHeight = message.offsetHeight;
-        //message.innerHTML = message.innerHTML.replace(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`, "g"), `$1${element}$2`);
-		utils.insertElement(message, new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`), $(element)[0]);
+        utils.insertElement(message, new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`), $(element)[0]);
         messageScroller.scrollTop = messageScroller.scrollTop + (message.offsetHeight - oldHeight);
         return true;
     }
@@ -996,8 +987,6 @@ EmoteModule.prototype.injectEmote = async function(node, edited) {
 
         if (emote == "[!s]") message.classList.add("spoiler");
     }
-
-    // if (edited) $(message).append(editNode);
 };
 
 EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
