@@ -88,6 +88,34 @@ betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
     console.log(arg);
 });
 
+var bdSettings = {};
+var bdSettingsStorage = {};
+bdSettingsStorage.initialize = function() {
+    let fs = require("fs");
+    let data = {};
+    if (fs.existsSync(bdConfig.dataPath + "/bdsettings.json")) data = JSON.parse(fs.readFileSync(bdConfig.dataPath + "/bdsettings.json"));
+    if (data) bdSettings = data;
+    else bdSettings = {};
+}
+
+bdSettingsStorage.get = function(key) {
+    if (bdSettings[key]) return bdSettings[key];
+    else return null;
+}
+
+bdSettingsStorage.set = function(key, data) {
+    let fs = require("fs");
+    bdSettings[key] = data;
+    try {
+        fs.writeFileSync(bdConfig.dataPath + "/bdsettings.json", JSON.stringify(bdSettings, null, 4));
+        return true;
+    }
+    catch(err) {
+        utils.err(err);
+        return false;
+    }
+}
+
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
@@ -298,10 +326,21 @@ Core.prototype.injectExternals = function() {
 };
 
 Core.prototype.initSettings = function () {
-    if ($.cookie("better-discord") == undefined) {
+    // $.removeCookie('the_cookie', { path: '/' });
+    bdSettingsStorage.initialize();
+
+    if ($.cookie("better-discord")) {
+        settingsCookie = JSON.parse($.cookie("better-discord"));
+        this.saveSettings();
+        $.removeCookie("better-discord", { path: '/' });
+        return;
+    }
+
+    if (!bdSettingsStorage.get("settings")) {
         settingsCookie = defaultCookie;
         this.saveSettings();
-    } else {
+    }
+    else {
         this.loadSettings();
         $('<style id="customcss">').html(atob(window.bdStorage.get("bdcustomcss"))).appendTo(document.head);
         for (var setting in defaultCookie) {
@@ -314,14 +353,11 @@ Core.prototype.initSettings = function () {
 };
 
 Core.prototype.saveSettings = function () {
-    $.cookie("better-discord", JSON.stringify(settingsCookie), {
-        expires: 365,
-        path: '/'
-    });
+    bdSettingsStorage.set("settings", settingsCookie);
 };
 
 Core.prototype.loadSettings = function () {
-    settingsCookie = JSON.parse($.cookie("better-discord"));
+    settingsCookie = bdSettingsStorage.get("settings");
 };
 
 Core.prototype.initObserver = function () {
@@ -1468,6 +1504,9 @@ PluginModule.prototype.loadPlugins = function () {
             }
         }
     }
+    for (let plugin in pluginCookie) {
+        if (!bdplugins[plugin]) delete pluginCookie[plugin];
+    }
     this.savePluginData();
 };
 
@@ -1511,17 +1550,21 @@ PluginModule.prototype.togglePlugin = function (plugin) {
 };
 
 PluginModule.prototype.loadPluginData = function () {
-    var cookie = $.cookie("bd-plugins");
-    if (cookie != undefined) {
+    if ($.cookie("bd-plugins")) {
         pluginCookie = JSON.parse($.cookie("bd-plugins"));
+        this.savePluginData();
+        $.removeCookie("bd-plugins", { path: '/' });
+        return;
+    }
+
+    let saved = bdSettingsStorage.get("plugins");
+    if (saved) {
+        pluginCookie = saved;
     }
 };
 
 PluginModule.prototype.savePluginData = function () {
-    $.cookie("bd-plugins", JSON.stringify(pluginCookie), {
-        expires: 365,
-        path: '/'
-    });
+    bdSettingsStorage.set("plugins", pluginCookie);
 };
 
 PluginModule.prototype.newMessage = function () {
@@ -1584,6 +1627,10 @@ ThemeModule.prototype.loadThemes = function () {
         if (!themeCookie[name]) themeCookie[name] = false;
         if (themeCookie[name]) $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name].css)}));
     }
+    for (let theme in themeCookie) {
+        if (!bdthemes[theme]) delete themeCookie[theme];
+    }
+    this.saveThemeData();
 };
 
 ThemeModule.prototype.enableTheme = function (theme) {
@@ -1606,18 +1653,23 @@ ThemeModule.prototype.toggleTheme = function (theme) {
 };
 
 ThemeModule.prototype.loadThemeData = function () {
-    var cookie = $.cookie("bd-themes");
-    if (cookie != undefined) {
+    if ($.cookie("bd-themes")) {
         themeCookie = JSON.parse($.cookie("bd-themes"));
+        this.saveThemeData();
+        $.removeCookie("bd-themes", { path: '/' });
+        return;
+    }
+
+    let saved = bdSettingsStorage.get("themes");
+    if (saved) {
+        themeCookie = saved;
     }
 };
 
 ThemeModule.prototype.saveThemeData = function () {
-    $.cookie("bd-themes", JSON.stringify(themeCookie), {
-        expires: 365,
-        path: '/'
-    });
+    bdSettingsStorage.set("themes", themeCookie);
 };
+
 
 /* BetterDiscordApp API for Plugins
  * Version: 1.0
