@@ -226,6 +226,7 @@ function Core(config) {
 
 Core.prototype.init = async function() {
     var self = this;
+    bdConfig.deferLoaded = false;
 
     var lVersion = (typeof(version) === "undefined") ? bdVersion : version;
 
@@ -236,6 +237,9 @@ Core.prototype.init = async function() {
 
     utils = new Utils();
     utils.getHash();
+    emoteModule = new EmoteModule();
+    utils.log("Initializing EmoteModule");
+    emoteModule.init();
 	publicServersModule = new V2_PublicServers();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
@@ -249,9 +253,7 @@ Core.prototype.init = async function() {
         //console.log(new Date().getTime() + " Defer");
         if (document.querySelectorAll('.guilds .guild').length > 0) {
             //console.log(new Date().getTime() + " Defer Loaded");
-            emoteModule = new EmoteModule();
-            utils.log("Initializing EmoteModule");
-            emoteModule.init();
+            bdConfig.deferLoaded = true;
             self.injectExternals();
 
 
@@ -616,6 +618,7 @@ Core.prototype.showStartupErrors = function() {
  * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
  */
 Core.prototype.showToast = function(content, options = {}) {
+    if (!bdConfig.deferLoaded) return;
     if (!document.querySelector('.bd-toasts')) {
         let toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");
@@ -702,11 +705,12 @@ EmoteModule.prototype.init = async function () {
             oldVariable: 'subEmotesTwitch',
             parser: (data) => {
                 let emotes = {};
+                if (data.channels) data = data.channels;
                 for (let c in data) {
                     let channel = data[c];
                     for (let e = 0, elen = channel.emotes.length; e < elen; e++) {
                         let emote = channel.emotes[e];
-                        emotes[emote.code] = emote.id;
+                        emotes[emote.code] = emote.image_id || emote.id;
                     }
                 }
                 return emotes;
@@ -836,7 +840,13 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     if (exists && !bdConfig.cache.expired) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
         utils.log("[Emotes] Loading emotes from local cache.")
-        let data = _fs.readFileSync(file, "utf8");
+        let data = await new Promise((resolve, reject) => {
+            _fs.readFile(file, "utf8", (err, data) => {
+                utils.log("[Emotes] Emotes loaded from cache.");
+                if (err) data = {};
+                resolve(data)
+            });
+        });
         let isValid = this.testJSON(data);
 
         if (isValid) bdEmotes = JSON.parse(data);
@@ -888,12 +898,24 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
-                    return this.downloadEmotes(emoteMeta);
+                    return resolve(this.downloadEmotes(emoteMeta));
                 }
-                reject({});
+                return reject({});
             }
             else {
-                let parsedData = JSON.parse(body);
+                let parsedData = {};
+                try {
+                    parsedData = JSON.parse(body);
+                }
+                catch(err) {
+                    utils.err("[Emotes] Could not download " + emoteMeta.variable, error)
+                    if (emoteMeta.backup) {
+                        emoteMeta.url = emoteMeta.backup;
+                        emoteMeta.backup = null;
+                        return resolve(this.downloadEmotes(emoteMeta));
+                    }
+                    return reject({});
+                }
                 if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
 
                 for (let emote in parsedData) {
