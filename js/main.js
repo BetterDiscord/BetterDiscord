@@ -705,15 +705,17 @@ EmoteModule.prototype.init = async function () {
             oldVariable: 'subEmotesTwitch',
             parser: (data) => {
                 let emotes = {};
-                if (data.channels) data = data.channels;
                 for (let c in data) {
                     let channel = data[c];
                     for (let e = 0, elen = channel.emotes.length; e < elen; e++) {
                         let emote = channel.emotes[e];
-                        emotes[emote.code] = emote.image_id || emote.id;
+                        emotes[emote.code] = emote.id;
                     }
                 }
                 return emotes;
+            },
+            backupParser: (data) => {
+                return data;
             },
             getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`,
             getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
@@ -898,6 +900,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
+                    if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
                     return resolve(this.downloadEmotes(emoteMeta));
                 }
                 return reject({});
@@ -912,6 +915,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                     if (emoteMeta.backup) {
                         emoteMeta.url = emoteMeta.backup;
                         emoteMeta.backup = null;
+                        if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
                         return resolve(this.downloadEmotes(emoteMeta));
                     }
                     return reject({});
