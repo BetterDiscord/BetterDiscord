@@ -393,8 +393,8 @@ Core.prototype.initObserver = function () {
             }
     
             // Emoji Picker
-            if (node.classList.contains('popout') && !node.classList.contains('popout-left')) {
-                if (node.getElementsByClassName('emoji-picker').length || node.getElementsByClassName('emojiPicker-3g68GS').length) quickEmoteMenu.obsCallback(node);
+            if (node.classList.contains('popout-2RRwAO') && !node.classList.contains('popoutLeft-3EZ_zL')) {
+                if (node.getElementsByClassName('emojiPicker-3g68GS').length) quickEmoteMenu.obsCallback(node);
             }
     
             // onSwitch()
