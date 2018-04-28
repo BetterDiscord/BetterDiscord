@@ -392,9 +392,13 @@ Core.prototype.initObserver = function () {
                 }
             }
     
-            // Emoji Picker
+            // Emoji Picker popout-3sVMXz popoutTopRight-3BzFIE
             if (node.classList.contains('popout-2RRwAO') && !node.classList.contains('popoutLeft-3EZ_zL')) {
                 if (node.getElementsByClassName('emojiPicker-3g68GS').length) quickEmoteMenu.obsCallback(node);
+            }
+
+            if (node.classList.contains('popout-3sVMXz') && node.classList.contains('popoutTopRight-3BzFIE')) {
+                if (node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
             }
     
             // onSwitch()
@@ -1192,7 +1196,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     fav.removeClass("active");
     emojis.removeClass("active");
 
-    $(".emoji-picker, .emojiPicker-3g68GS").hide();
+    $(".emojiPicker-3m1S-j, .emojiPicker-3g68GS").hide();
     $("#bda-qem-favourite-container").hide();
     $("#bda-qem-twitch-container").hide();
 
@@ -1207,8 +1211,8 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
         break;
         case "bda-qem-emojis":
             emojis.addClass("active");
-            $(".emoji-picker, .emojiPicker-3g68GS").show();
-            $(".emoji-picker .search-bar-inner input, .emojiPicker-3g68GS .search-bar-inner input").focus();
+            $(".emojiPicker-3m1S-j, .emojiPicker-3g68GS").show();
+            $(".emojiPicker-3m1S-j .search-bar-inner input, .emojiPicker-3g68GS .search-bar-inner input").focus();
         break;
     }
     this.lastTab = id;
@@ -2175,11 +2179,11 @@ class V2C_Scroller extends BDV2.reactComponent {
     render() {
         //scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW scrollerFade-28dRsO
         let wrapperClass = `scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW${this.props.fade ? ' scrollerFade-28dRsO' : ''}`;
-        let scrollerClass = "scroller-fzNley scroller";
-        if (this.props.sidebar) scrollerClass = "scroller-fzNley sidebar-region-scroller scroller";
+        let scrollerClass = "scroller-fzNley scroller";                                          /* fuck */
+        if (this.props.sidebar) scrollerClass = "scroller-fzNley sidebar-region-scroller scroller scroller-2FKFPG";
         if (this.props.contentColumn) {
-            scrollerClass = "scroller-fzNley content-region-scroller scroller";
-            wrapperClass = "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0";
+            scrollerClass = "scroller-fzNley content-region-scroller scroller scroller-2FKFPG";                                         /* fuck */
+            wrapperClass = "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0 scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
         }
         let { children } = this.props;
         return BDV2.react.createElement(
