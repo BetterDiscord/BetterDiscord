@@ -383,10 +383,10 @@ Core.prototype.initObserver = function () {
     
             let node = mutation.addedNodes[0];
     
-            if (node.classList.contains("layer") || node.classList.contains("layer-kosS71")) {
+            if (node.classList.contains("layer-3QrUeG") || node.classList.contains("layer-kosS71")) {
                 if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute('layer-id', 'server-settings');
     
-                if (node.getElementsByClassName("socialLinks-1oZoF3").length) {
+                if (node.getElementsByClassName("socialLinks-1oZoF3").length || node.getElementsByClassName("socialLinks-3jqNFy").length) {
                     node.setAttribute('layer-id', 'user-settings');
                     if (!document.getElementById("bd-settings-sidebar")) settingsPanel.renderSidebar();
                 }
@@ -3167,8 +3167,8 @@ class V2_SettingsPanel {
     }
 
     injectRoot() {
-        if (!$(".layer .ui-standard-sidebar-view, .layer-kosS71 .ui-standard-sidebar-view").length) return false;
-        $(".layer .ui-standard-sidebar-view, .layer-kosS71 .ui-standard-sidebar-view").append($("<div/>", {
+        if (!$(".layer-3QrUeG .ui-standard-sidebar-view, .layer-kosS71 .ui-standard-sidebar-view").length) return false;
+        $(".layer-3QrUeG .ui-standard-sidebar-view, .layer-kosS71 .ui-standard-sidebar-view").append($("<div/>", {
             class: 'content-region',
             id: 'bd-settingspane-container'
         }));
