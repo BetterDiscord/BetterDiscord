@@ -236,7 +236,7 @@ Core.prototype.init = async function() {
     }
 
     utils = new Utils();
-    utils.getHash();
+    await utils.getHash();
     emoteModule = new EmoteModule();
     utils.log("Initializing EmoteModule");
     emoteModule.init();
@@ -1295,7 +1295,7 @@ function Utils() {
 }
 
 Utils.prototype.getTextArea = function () {
-    return $(".channelTextArea-1HTP3C textarea");
+    return $(".channelTextArea-1LDbYG textarea");
 };
 
 Utils.prototype.insertText = function (textarea, text) {
@@ -1316,9 +1316,12 @@ Utils.prototype.jqDefer = function (fnc) {
 };
 
 Utils.prototype.getHash = function () {
-    $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master", function (data) {
-        _hash = data.sha;
-        bdConfig.hash = _hash;
+    return new Promise((resolve) => {
+        $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master", function (data) {
+            _hash = data.sha;
+            bdConfig.hash = _hash;
+            resolve(_hash);
+        });
     });
 };
 
