@@ -187,7 +187,7 @@ var defaultCookie = {
     "bda-es-5": true,
     "bda-es-6": true,
     "bda-es-7": true,
-    "bda-gs-b": true,
+    "bda-gs-b": false,
     "bda-es-8": true,
     "bda-jd": true,
     "bda-dc-0": false,
@@ -199,8 +199,7 @@ var defaultCookie = {
     "fork-ps-2": true,
 	"fork-ps-3": true,
 	"fork-es-1": true,
-    "fork-es-2": false,
-    "fork-pub-notice": false
+    "fork-es-2": false
 };
 
 
@@ -304,13 +303,6 @@ Core.prototype.init = async function() {
             if (settingsCookie["fork-ps-1"]) {
 				utils.log("Collecting Startup Errors");
                 self.showStartupErrors();
-            }
-
-            if (!bdStorage.get("publicServerNotice")) {
-                settingsCookie["bda-gs-1"] = true;
-                settingsPanel.updateSettings();
-                self.alert("Public Servers Fixed!", "Hey there!<br><br>I just overhauled and fixed the public servers module. Since it was broken for a long time, I've enabled it for you and I suggest you go ahead and check it out!");
-                bdStorage.set("publicServerNotice", true);
             }
         } else {
             setTimeout(gwDefer, 100);
@@ -509,10 +501,10 @@ Core.prototype.removeColoredText = function(node) {
 
 Core.prototype.alert = function(title, content) {
     let modal = $(`<div class="bd-modal-wrapper theme-dark">
-                    <div class="bd-backdrop backdrop-2ohBEd"></div>
-                    <div class="bd-modal modal-2LIEKY">
-                        <div class="bd-modal-inner inner-1_1f7b">
-                            <div class="header header-3sp3cE">
+                    <div class="bd-backdrop backdrop-1ocfXc"></div>
+                    <div class="bd-modal modal-1UGdnR">
+                        <div class="bd-modal-inner inner-1JeGVc">
+                            <div class="header header-1R_AjF">
                                 <div class="title">${title}</div>
                             </div>
                             <div class="bd-modal-body">
@@ -522,7 +514,7 @@ Core.prototype.alert = function(title, content) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="footer footer-1PYmcw">
+                            <div class="footer footer-2yfCgX">
                                 <button type="button">Okay</button>
                             </div>
                         </div>
@@ -543,10 +535,10 @@ Core.prototype.showStartupErrors = function() {
     if (!bdpluginErrors || !bdthemeErrors) return;
     if (!bdpluginErrors.length && !bdthemeErrors.length) return;
     let modal = $(`<div class="bd-modal-wrapper theme-dark">
-                    <div class="bd-backdrop backdrop-2ohBEd"></div>
-                    <div class="bd-modal bd-startup-modal modal-2LIEKY">
-                        <div class="bd-modal-inner inner-1_1f7b">
-                            <div class="header header-3sp3cE"><div class="title">Startup Errors</div></div>
+                    <div class="bd-backdrop backdrop-1ocfXc"></div>
+                    <div class="bd-modal bd-startup-modal modal-1UGdnR">
+                        <div class="bd-modal-inner inner-1JeGVc">
+                            <div class="header header-1R_AjF"><div class="title">Startup Errors</div></div>
                             <div class="bd-modal-body">
                                 <div class="tab-bar-container">
                                     <div class="tab-bar TOP">
@@ -565,7 +557,7 @@ Core.prototype.showStartupErrors = function() {
                                     </div>
                                 </div>
                             </div>
-                            <div class="footer footer-1PYmcw">
+                            <div class="footer footer-2yfCgX">
                                 <button type="button">Okay</button>
                             </div>
                         </div>
@@ -3772,6 +3764,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
     componentDidMount() {
         this.checkConnection();
+        mainCore.alert("Not Working", "Hi there,<br><br> While the public servers module was fixed on our end, DiscordServers.com is having issue with their sessions API that we need for this to work. So unfortunately until they fix that, the public servers module won't work :(")
     }
 
     setInitialState() {
