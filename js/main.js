@@ -384,13 +384,9 @@ Core.prototype.initObserver = function () {
                 }
             }
     
-            // Emoji Picker popout-3sVMXz popoutTopRight-3BzFIE
+            // Emoji Picker
             if (node.classList.contains('popout-3sVMXz') && !node.classList.contains('popoutLeft-30WmrD')) {
                 if (node.getElementsByClassName('emojiPicker-3m1S-j').length) quickEmoteMenu.obsCallback(node);
-            }
-
-            if (node.classList.contains('popout-3sVMXz') && node.classList.contains('popoutTopRight-3BzFIE')) {
-                if (node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
             }
     
             // onSwitch()
