@@ -685,7 +685,7 @@
 .bd-minimal .user-name {
   font-size: small;
 }
-.bd-minimal.bd-minimal-chan .channels-3g2vYe {
+.bd-minimal.bd-minimal-chan .channels-Ie2l6A {
   display: none;
 }
 .bd-minimal .message-group {
@@ -734,7 +734,7 @@
 .bd-minimal .guild-channels header spann {
   font-size: 12px;
 }
-.bd-minimal .channels-3g2vYe .guild-channels {
+.bd-minimal .channels-Ie2l6A .guild-channels {
   padding: 0;
 }
 .bd-minimal .guilds-wrapper .guilds .guild {
@@ -799,35 +799,35 @@
 {
   margin-right: -30px;
 }
-.bd-minimal .container-iksrDt .flex-lFgbSz {
+.bd-minimal .container-2Thooq .flex-1xMQg5 {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 }
 
-.bd-minimal .container-iksrDt .button-1aU9q1 {
+.bd-minimal .container-2Thooq .button-2b6hmh {
 	height: 16px;
 	width: 16px;
 	background-size: 16px 16px;
 }
 
-.bd-minimal .container-iksrDt .button-1aU9q1 {margin-top: 3px;}
+.bd-minimal .container-2Thooq .button-2b6hmh {margin-top: 3px;}
 
-.bd-minimal .channels-3g2vYe {
+.bd-minimal .channels-Ie2l6A {
 	width: 160px;
 }
 
-.bd-minimal .name-2SL4ev {
+.bd-minimal .name-3M0b8v {
 	font-size: 14px;
 }
 
-.bd-minimal .icon-3tVJnl {
+.bd-minimal .icon-sxakjD {
 	width: 14px;
 	height: 14px;
 }
 
-.bd-minimal .channels-3g2vYe .wrapperDefault-1Dl4SS,
-.bd-minimal .channels-3g2vYe .wrapperHovered-1KDCyZ {
+.bd-minimal .channels-Ie2l6A .wrapperDefault-10Jfvz,
+.bd-minimal .channels-Ie2l6A .wrapperHovered-28fu1D {
   display: none;
 }
 
@@ -1596,7 +1596,7 @@
   font-size: 19px;
 }
 
-.emoji-picker, .emojiPicker-3g68GS {
+.emoji-picker, .emojiPicker-3m1S-j {
   box-shadow: none;
   border-top: none;
   border-radius: 0 0 5px 5px;
@@ -1773,35 +1773,35 @@
   background-color: #353535;
 }
 .bda-dark .emoji-picker,
-.bda-dark .emojiPicker-3g68GS {
+.bda-dark .emojiPicker-3m1S-j {
   background-color: #353535;
 }
 .bda-dark .emoji-picker .category,
-.bda-dark .emojiPicker-3g68GS .category-3rCtoh {
+.bda-dark .emojiPicker-3m1S-j .category-2U57w6 {
   background-color: #353535;
 }
 .bda-dark .emoji-picker .header .search-bar,
-.bda-dark .emojiPicker-3g68GS .header-27dQ-e .search-bar {
+.bda-dark .emojiPicker-3m1S-j .header-1nkwgG .search-bar {
   background-color: #2B2B2B;
 }
 .bda-dark .emoji-picker .search-bar input,
-.bda-dark .emojiPicker-3g68GS .search-bar input {
+.bda-dark .emojiPicker-3m1S-j .search-bar input {
   color: #FFF;
 }
 .bda-dark .emoji-picker .search-bar input::-webkit-input-placeholder,
-.bda-dark .emojiPicker-3g68GS .search-bar input::-webkit-input-placeholder {
+.bda-dark .emojiPicker-3m1S-j .search-bar input::-webkit-input-placeholder {
   color: #FFF;
 }
 .bda-dark .emoji-picker .scroller .emoji-item.selected,
-.bda-dark .emojiPicker-3g68GS .scroller-2dsok0 .emojiItem-3l4Fa9.selected-1LQfcZ {
+.bda-dark .emojiPicker-3m1S-j .scroller-3vODG7 .emojiItem-109bjA.selected-39BZ4S {
   background-color: rgba(123, 123, 123, 0.37);
 }
 .bda-dark .emoji-picker .dimmer.visible,
-.bda-dark .emojiPicker-3g68GS .dimmer-jySV_v.visible-1CGy1m {
+.bda-dark .emojiPicker-3m1S-j .dimmer-3iH-5D.visible-3k45bQ {
   background-color: rgba(62, 62, 62, 0.65);
 }
-.bda-dark .emoji-picker .diversity-selector .popout,
-.bda-dark .emojiPicker-3g68GS .diversitySelector-O3ea2c .popout-2lja3I {
+.bda-dark .emoji-picker .diversity-selector .popout-3sVMXz,
+.bda-dark .emojiPicker-3m1S-j .diversitySelector-tmmMv0 .popout-2nUePc {
   background: #353535;
   border-color: #202020;
 }
@@ -1823,16 +1823,16 @@
 .bda-dark .emoji-picker .scroller::-webkit-scrollbar,
 .bda-dark .emoji-picker .scroller::-webkit-scrollbar-track,
 .bda-dark .emoji-picker .scroller::-webkit-scrollbar-track-piece,
-.bda-dark .emojiPicker-3g68GS .scroller-2dsok0::-webkit-scrollbar,
-.bda-dark .emojiPicker-3g68GS .scroller-2dsok0::-webkit-scrollbar-track,
-.bda-dark .emojiPicker-3g68GS .scroller-2dsok0::-webkit-scrollbar-track-piece {
+.bda-dark .emojiPicker-3m1S-j .scroller-3vODG7::-webkit-scrollbar,
+.bda-dark .emojiPicker-3m1S-j .scroller-3vODG7::-webkit-scrollbar-track,
+.bda-dark .emojiPicker-3m1S-j .scroller-3vODG7::-webkit-scrollbar-track-piece {
   background-color: #303030 !important;
   border-color: #303030 !important;
 }
 .bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar-thumb, 
 .bda-dark #bda-qem-favourite-container .scroller::-webkit-scrollbar-thumb, 
 .bda-dark .emoji-picker .scroller::-webkit-scrollbar-thumb,
-.bda-dark emojiPicker-3g68GS .scroller-2dsok0::-webkit-scrollbar-thumb,
+.bda-dark emojiPicker-3g68GS .scroller-3vODG7::-webkit-scrollbar-thumb,
 .bda-dark #pubs-container .scroller::-webkit-scrollbar-thumb {
   border-color: #202020 !important;
   background-color: #202020 !important;
@@ -2567,10 +2567,10 @@
 .bd-blue .clipboard-input-inner input::-moz-selection {background: #3a71c1;}
 .bd-blue .clipboard-input-inner input::selection {background: #3a71c1;}
 .bd-blue .btn-help:hover {background: #3a71c1}
-.bd-blue .popout.popout-left header:before {border-left-color: #3a71c1;}
-.bd-blue .popout.popout-right header:before {border-right-color: #3a71c1;}
-.bd-blue .popout.popout-bottom header:before {border-bottom-color: #3a71c1;}
-.bd-blue .popout.popout-invert:not(.popout-bottom).popout-top header:before {border-top-color: #3a71c1;}
+.bd-blue .popout-3sVMXz.popoutLeft-30WmrD header:before {border-left-color: #3a71c1;}
+.bd-blue .popout-3sVMXz.popout-right header:before {border-right-color: #3a71c1;}
+.bd-blue .popout-3sVMXz.popoutBottom-1YbShG header:before {border-bottom-color: #3a71c1;}
+.bd-blue .popout-3sVMXz.popoutInvert-3UdKhn:not(.popoutBottom-1YbShG).popoutTop-3uu9vG header:before {border-top-color: #3a71c1;}
 .bd-blue .guild-channels .channel-text.selected:before {border-left: 2px solid #3a71c1;}
 .bd-blue .guild-channels .channel-text:hover:not(.unread):before {border-left: 2px solid #3a71c1;}
 .bd-blue .guild-channels .channel-text.unread:not(.selected):not(.channel-muted).selected:before {background-color: #3a71c1}
@@ -2624,7 +2624,7 @@
 .bd-blue .btn-filled {background-color: #3a71c1;}
 .bd-blue .btn-filled.white {color: #3a71c1}
 .bd-blue .emoji-picker .premium-promo .btn {background-color: #3a71c1;}
-.bd-blue .emojiPicker-3g68GS .premium-promo .btn {background-color: #3a71c1;}
+.bd-blue .emojiPicker-3m1S-j .premium-promo .btn {background-color: #3a71c1;}
 .bd-blue .channel-textarea.has-results .channel-textarea-inner {border-color: #3a71c1}
 .bd-blue .channel-textarea-autocomplete-inner {border: 2px solid #3a71c1;}
 .bd-blue .channel-textarea-autocomplete-inner header {background-color: #3a71c1;}
