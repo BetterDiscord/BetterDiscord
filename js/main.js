@@ -373,7 +373,7 @@ Core.prototype.initObserver = function () {
             // leaving Activity Feed/Friends menu
             if (mutation.removedNodes.length && mutation.removedNodes[0] instanceof Element) {
                let node = mutation.removedNodes[0];
-               if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
+               if (node.classList.contains("activityFeed-28jde9") || node.id === "friends") {
                    pluginModule.channelSwitch();
                }
             }
@@ -383,18 +383,18 @@ Core.prototype.initObserver = function () {
     
             let node = mutation.addedNodes[0];
     
-            if (node.classList.contains("layer-3QrUeG") || node.classList.contains("layer-kosS71")) {
+            if (node.classList.contains("layer-3QrUeG")) {
                 if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute('layer-id', 'server-settings');
     
-                if (node.getElementsByClassName("socialLinks-1oZoF3").length || node.getElementsByClassName("socialLinks-3jqNFy").length) {
+                if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
                     node.setAttribute('layer-id', 'user-settings');
                     if (!document.getElementById("bd-settings-sidebar")) settingsPanel.renderSidebar();
                 }
             }
     
             // Emoji Picker popout-3sVMXz popoutTopRight-3BzFIE
-            if (node.classList.contains('popout-2RRwAO') && !node.classList.contains('popoutLeft-3EZ_zL')) {
-                if (node.getElementsByClassName('emojiPicker-3g68GS').length) quickEmoteMenu.obsCallback(node);
+            if (node.classList.contains('popout-3sVMXz') && !node.classList.contains('popoutLeft-30WmrD')) {
+                if (node.getElementsByClassName('emojiPicker-3m1S-j').length) quickEmoteMenu.obsCallback(node);
             }
 
             if (node.classList.contains('popout-3sVMXz') && node.classList.contains('popoutTopRight-3BzFIE')) {
@@ -403,7 +403,7 @@ Core.prototype.initObserver = function () {
     
             // onSwitch()
             // Not a channel, but still a switch (Activity Feed/Friends menu/NSFW check)
-            if (node.classList.contains("activityFeed-HeiGwL") || node.id === "friends") {
+            if (node.classList.contains("activityFeed-28jde9") || node.id === "friends") {
                 pluginModule.channelSwitch();
             }
     
@@ -626,7 +626,7 @@ Core.prototype.showToast = function(content, options = {}) {
     if (!document.querySelector('.bd-toasts')) {
         let toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");
-        let boundingElement = document.querySelector('.chat form, #friends, .noChannel-2EQ0a9, .activityFeed-HeiGwL');
+        let boundingElement = document.querySelector('.chat form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9');
         toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
         toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
         toastWrapper.style.setProperty("bottom", (document.querySelector('.chat form') ? document.querySelector('.chat form').offsetHeight : 80) + "px");
@@ -1068,10 +1068,10 @@ EmoteModule.prototype.autoCapitalize = function () {
 
     var self = this;
 
-    $('body').delegate($(".channelTextArea-1HTP3C textarea:first"), 'keyup change paste', function () {
+    $('body').delegate($(".channelTextArea-1LDbYG textarea:first"), 'keyup change paste', function () {
         if (!settingsCookie["bda-es-4"]) return;
 
-        var text = $(".channelTextArea-1HTP3C textarea:first").val();
+        var text = $(".channelTextArea-1LDbYG textarea:first").val();
         if (text == undefined) return;
 
         var lastWord = text.split(" ").pop();
@@ -1196,7 +1196,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     fav.removeClass("active");
     emojis.removeClass("active");
 
-    $(".emojiPicker-3m1S-j, .emojiPicker-3g68GS").hide();
+    $(".emojiPicker-3m1S-j").hide();
     $("#bda-qem-favourite-container").hide();
     $("#bda-qem-twitch-container").hide();
 
@@ -1211,8 +1211,8 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
         break;
         case "bda-qem-emojis":
             emojis.addClass("active");
-            $(".emojiPicker-3m1S-j, .emojiPicker-3g68GS").show();
-            $(".emojiPicker-3m1S-j .search-bar-inner input, .emojiPicker-3g68GS .search-bar-inner input").focus();
+            $(".emojiPicker-3m1S-j").show();
+            $(".emojiPicker-3m1S-j .search-bar-inner input, .emojiPicker-3m1S-j .search-bar-inner input").focus();
         break;
     }
     this.lastTab = id;
@@ -1805,9 +1805,9 @@ BdApi.showToast = function(content, options = {}) {
          self.lastSelector = parents.join(" ").trim();
 
          function attach() {
-            var cm = $(".contextMenu-uoJTbz");
+            var cm = $(".contextMenu-HLZMGh");
             if(cm.length <= 0) {
-                cm = $('<div class="contextMenu-uoJTbz bd-context-menu"></div>');
+                cm = $('<div class="contextMenu-HLZMGh bd-context-menu"></div>');
                 cm.addClass($('.app').hasClass("theme-dark") ? "theme-dark" : "theme-light");
                 cm.appendTo('.app');
                 cm.css("top", e.clientY);
@@ -1829,10 +1829,10 @@ BdApi.showToast = function(content, options = {}) {
             }
             
             var cmo = $("<div/>", {
-                class: "itemGroup-oViAgA"
+                class: "itemGroup-1tL0uz"
             });
             var cmi = $("<div/>", {
-                class: "item-1XYaYf",
+                class: "item-1Yvehc",
                 click: function() {
                     var t = $("<textarea/>", { text: self.lastSelector }).appendTo("body");
                     t.select();
@@ -2180,13 +2180,13 @@ class V2C_Scroller extends BDV2.reactComponent {
     }
 
     render() {
-        //scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW scrollerFade-28dRsO
-        let wrapperClass = `scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW${this.props.fade ? ' scrollerFade-28dRsO' : ''}`;
-        let scrollerClass = "scroller-fzNley scroller";                                          /* fuck */
-        if (this.props.sidebar) scrollerClass = "scroller-fzNley sidebar-region-scroller scroller scroller-2FKFPG";
+        //scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d scrollerFade-1Ijw5y
+        let wrapperClass = `scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d${this.props.fade ? ' scrollerFade-1Ijw5y' : ''}`;
+        let scrollerClass = "scroller-2FKFPG scroller";                                          /* fuck */
+        if (this.props.sidebar) scrollerClass = "scroller-2FKFPG sidebar-region-scroller scroller scroller-2FKFPG";
         if (this.props.contentColumn) {
-            scrollerClass = "scroller-fzNley content-region-scroller scroller scroller-2FKFPG";                                         /* fuck */
-            wrapperClass = "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0 scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
+            scrollerClass = "scroller-2FKFPG content-region-scroller scroller scroller-2FKFPG";                                         /* fuck */
+            wrapperClass = "scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-10fio9 scrollerTrack-3hhmU0 scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
         }
         let { children } = this.props;
         return BDV2.react.createElement(
@@ -3174,8 +3174,8 @@ class V2_SettingsPanel {
     }
 
     injectRoot() {
-        if (!$(".layer-3QrUeG .ui-standard-sidebar-view, .layer-kosS71 .ui-standard-sidebar-view").length) return false;
-        $(".layer-3QrUeG .ui-standard-sidebar-view, .layer-kosS71 .ui-standard-sidebar-view").append($("<div/>", {
+        if (!$(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").length) return false;
+        $(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").append($("<div/>", {
             class: 'content-region',
             id: 'bd-settingspane-container'
         }));
@@ -3542,7 +3542,7 @@ class V2C_Layer extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "div",
-            { className: "layer bd-layer layer-kosS71", id: this.props.id, ref: "root", style: {opacity: 0, transform: "scale(1.1) translateZ(0px)"} },
+            { className: "layer bd-layer layer-3QrUeG", id: this.props.id, ref: "root", style: {opacity: 0, transform: "scale(1.1) translateZ(0px)"} },
             this.props.children
         );
     }
@@ -3566,8 +3566,8 @@ class V2C_SidebarView extends BDV2.reactComponent {
             ),
             BDV2.react.createElement("div", {className: "content-region"},
                 BDV2.react.createElement("div", {className: "content-transition-wrap"},
-                    BDV2.react.createElement("div", {className: "scrollerWrap-2uBjct content-region-scroller-wrap scrollerThemed-19vinI themeGhost-10fio9 scrollerTrack-3hhmU0"},
-                        BDV2.react.createElement("div", {className: "scroller-fzNley content-region-scroller scroller", ref: "contentScroller"},
+                    BDV2.react.createElement("div", {className: "scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv"},
+                        BDV2.react.createElement("div", {className: "scroller-2FKFPG content-region-scroller scroller", ref: "contentScroller"},
                             BDV2.react.createElement("div", {className: "content-column default"}, content.component),
                             tools.component
                         )
@@ -3597,8 +3597,8 @@ class V2_PublicServers {
     }
 
     injectRoot() {
-        if (!$(".layers, .layers-20RVFW").length) return false;
-        $(".layers, .layers-20RVFW").append($("<div/>", {
+        if (!$(".layers, .layers-3iHuyZ").length) return false;
+        $(".layers, .layers-3iHuyZ").append($("<div/>", {
             id: 'pubslayerroot'
         }));
         return true;
@@ -3662,54 +3662,54 @@ class V2C_ServerCard extends BDV2.reactComponent {
     render() {
         let { server } = this.props;
         return BDV2.react.createElement(
-            "div", // cardPrimary-ZVL9Jr
-            { className: `card-3DrRmC cardPrimary-ZVL9Jr marginBottom8-1mABJ4 bd-server-card${server.pinned ? ' bd-server-card-pinned' : ''}` },
+            "div", // cardPrimary-1Hv-to
+            { className: `card-3Qj_Yx cardPrimary-1Hv-to marginBottom8-AtZOdT bd-server-card${server.pinned ? ' bd-server-card-pinned' : ''}` },
             // BDV2.react.createElement(
                 // "div",
-                // { className: "flex-lFgbSz flex-3B1Tl4 horizontal-2BEEBe horizontal-2VE-Fw flex-3B1Tl4 directionRow-yNbSvJ justifyStart-2yIZo0 alignStretch-1hwxMa noWrap-v6g9vO" },
+                // { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2yIZo0 alignStretch-1hwxMa noWrap-3jynv6" },
                 BDV2.react.createElement("img", { ref: "img", className: "bd-server-image", src: server.iconUrl, onError: this.handleError.bind(this) }),
                 BDV2.react.createElement(
                     "div",
-                    { className: "flexChild-1KGW5q bd-server-content" },
+                    { className: "flexChild-faoVW3 bd-server-content" },
                     BDV2.react.createElement(
                         "div",
-                        { className: "flex-lFgbSz flex-3B1Tl4 horizontal-2BEEBe horizontal-2VE-Fw flex-3B1Tl4 directionRow-yNbSvJ noWrap-v6g9vO bd-server-header" },
+                        { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6 bd-server-header" },
                         BDV2.react.createElement(
                             "h5",
-                            { className: "h5-3KssQU defaultColor-v22dK1 margin-reset bd-server-name" },
+                            { className: "h5-18_1nd defaultColor-1_ajX0 margin-reset bd-server-name" },
                             server.name
                         ),
                         BDV2.react.createElement(
                             "h5",
-                            { className: "h5-3KssQU defaultColor-v22dK1 margin-reset bd-server-member-count" },
+                            { className: "h5-18_1nd defaultColor-1_ajX0 margin-reset bd-server-member-count" },
                             server.members,
                             " Members"
                         )
                     ),
                     BDV2.react.createElement(
                         "div",
-                        { className: "flex-lFgbSz flex-3B1Tl4 horizontal-2BEEBe horizontal-2VE-Fw flex-3B1Tl4 directionRow-yNbSvJ noWrap-v6g9vO" },
+                        { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6" },
                         BDV2.react.createElement(
                             "div",
-                            { className: "scrollerWrap-2uBjct scrollerThemed-19vinI themeGhostHairline-2H8SiW scrollerFade-28dRsO bd-server-description-container"},
+                            { className: "scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d scrollerFade-1Ijw5y bd-server-description-container"},
                             BDV2.react.createElement(
                                 "div",
-                                { className: "scroller-fzNley scroller bd-server-description" },
+                                { className: "scroller-2FKFPG scroller bd-server-description" },
                                     server.description
                             )
                         )
                     ),
                     BDV2.react.createElement(
                         "div",
-                        { className: "flex-lFgbSz flex-3B1Tl4 horizontal-2BEEBe horizontal-2VE-Fw flex-3B1Tl4 directionRow-yNbSvJ noWrap-v6g9vO bd-server-footer" },
+                        { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6 bd-server-footer" },
                         BDV2.react.createElement(
                             "div",
-                            { className: "flexChild-1KGW5q bd-server-tags", style: { flex: "1 1 auto" } },
+                            { className: "flexChild-faoVW3 bd-server-tags", style: { flex: "1 1 auto" } },
                             server.categories.join(', ')
                         ),
                         this.state.joined && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "button-2t3of8 lookFilled-luDKDo colorBrand-3PmwCE sizeMin-1Wh1KC grow-25YQ8u colorGreen-22At8E", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c" } },
+                            { type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN colorGreen-29iAKY", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c" } },
                             BDV2.react.createElement(
                                 "div",
                                 { className: "ui-button-contents" },
@@ -3718,7 +3718,7 @@ class V2C_ServerCard extends BDV2.reactComponent {
                         ),
                         server.error && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "button-2t3of8 lookFilled-luDKDo colorBrand-3PmwCE sizeMin-1Wh1KC grow-25YQ8u disabled-uc2Cqc", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a" } },
+                            { type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN disabled-9aF2ug", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a" } },
                             BDV2.react.createElement(
                                 "div",
                                 { className: "ui-button-contents" },
@@ -3727,7 +3727,7 @@ class V2C_ServerCard extends BDV2.reactComponent {
                         ),
                         !server.error && !this.state.joined && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "button-2t3of8 lookFilled-luDKDo colorBrand-3PmwCE sizeMin-1Wh1KC grow-25YQ8u", style: { minHeight: "12px", marginTop: "4px" }, onClick: () => {this.join();} },
+                            { type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN", style: { minHeight: "12px", marginTop: "4px" }, onClick: () => {this.join();} },
                             BDV2.react.createElement(
                                 "div",
                                 { className: "ui-button-contents" },
