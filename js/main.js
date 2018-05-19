@@ -2015,9 +2015,9 @@ class V2 {
 
     constructor() {
         this.WebpackModules = (() => {
-            const req = webpackJsonp([], {
-                '__extra_id__': (module, exports, req) => exports.default = req
-            }, ['__extra_id__']).default;
+			//__webpack_require__ = window.webpackJsonp.push([[id], {[id]: (module, exports, req) => module.exports = req}, [[id]]]);
+            const req = typeof(webpackJsonp) == "function" ? webpackJsonp([], {'__extra_id__': (module, exports, req) => exports.default = req}, ['__extra_id__']).default :
+						webpackJsonp.push([[], {'__extra_id__': (module, exports, req) => module.exports = req}, [['__extra_id__']]]);
             delete req.m['__extra_id__'];
             delete req.c['__extra_id__'];
             const find = (filter, options = {}) => {
