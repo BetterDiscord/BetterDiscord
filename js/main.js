@@ -149,13 +149,14 @@ var settings = {
     "Developer Mode":         	  { "id": "bda-gs-8",  "info": "Developer Mode",                                    "implemented": true,  "hidden": false, "cat": "core"},
 	
 	
-	"Startup Error Modal":        { "id": "fork-ps-1",  "info": "Show a modal with plugin/theme errors on startup", "implemented": true,  "hidden": false, "cat": "fork"},
+	"Startup Error Modal":        { "id": "fork-ps-1", "info": "Show a modal with plugin/theme errors on startup", "implemented": true,  "hidden": false, "cat": "fork"},
     "Show Toasts":                { "id": "fork-ps-2", "info": "Shows a small notification for starting and stopping plugins & themes", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Scroll To Settings":         { "id": "fork-ps-3", "info": "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Emote Modifier Tooltip":     { "id": "fork-es-1", "info": "Shows the emote modifier in the tooltip.", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Animate On Hover":           { "id": "fork-es-2", "info": "Only animate the emote modifiers on hover", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Copy Selector":			  { "id": "fork-dm-1", "info": "Adds a \"Copy Selector\" option to context menus when developer mode is active", "implemented": true,  "hidden": false, "cat": "fork"},
-	
+    "Download Emotes":            { "id": "fork-es-3", "info": "Download emotes when the cache is expired", "implemented": true,  "hidden": false, "cat": "fork"},
+    
 
     "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
     "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
@@ -199,7 +200,8 @@ var defaultCookie = {
     "fork-ps-2": true,
 	"fork-ps-3": true,
 	"fork-es-1": true,
-    "fork-es-2": false
+    "fork-es-2": false,
+    "fork-es-3": true
 };
 
 
@@ -223,6 +225,8 @@ function Core(config) {
     window.bdConfig = config;
 }
 
+var emoteModulePromise;
+
 Core.prototype.init = async function() {
     var self = this;
     bdConfig.deferLoaded = false;
@@ -236,16 +240,15 @@ Core.prototype.init = async function() {
 
     utils = new Utils();
     await utils.getHash();
+    utils.log("Initializing Settings");
+    this.initSettings();
     emoteModule = new EmoteModule();
     utils.log("Initializing EmoteModule");
-    emoteModule.init();
+    emoteModule.init().then(() => {emoteModule.initialized = true;});
 	publicServersModule = new V2_PublicServers();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
     dMode = new devMode();
-
-	utils.log("Initializing Settings");
-    this.initSettings();
 
     //Incase were too fast
     function gwDefer() {
@@ -859,6 +862,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         _fs.unlinkSync(file);
     }
 
+    if (!settingsCookie["fork-es-3"]) return quickEmoteMenu.init();
     if (settingsCookie["fork-ps-2"]) mainCore.showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
     for (let e in emoteInfo) {
