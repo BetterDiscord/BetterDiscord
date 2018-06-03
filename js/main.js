@@ -1309,11 +1309,14 @@ Utils.prototype.jqDefer = function (fnc) {
 
 Utils.prototype.getHash = function () {
     return new Promise((resolve) => {
-        $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master", function (data) {
+        $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master").done(function (data) {
             _hash = data.sha;
             bdConfig.hash = _hash;
             resolve(_hash);
-        });
+        }).fail(() => {
+			_hash = _bdhash || "2cdaf11a12a8ad91cb8617be20dfb0375b61783b";
+			resolve(_hash)
+		});
     });
 };
 
