@@ -103,11 +103,11 @@ bdSettingsStorage.get = function(key) {
     else return null;
 }
 
-bdSettingsStorage.set = function(key, data) {
+bdSettingsStorage.set = async function(key, data) {
     let fs = require("fs");
     bdSettings[key] = data;
     try {
-        fs.writeFileSync(bdConfig.dataPath + "/bdsettings.json", JSON.stringify(bdSettings, null, 4));
+		await new Promise(resolve => fs.writeFile(bdConfig.dataPath + "/bdsettings.json", JSON.stringify(bdSettings, null, 4), resolve));
         return true;
     }
     catch(err) {
