@@ -163,6 +163,7 @@ var settings = {
 	"Animate On Hover":           { "id": "fork-es-2", "info": "Only animate the emote modifiers on hover", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Copy Selector":			  { "id": "fork-dm-1", "info": "Adds a \"Copy Selector\" option to context menus when developer mode is active", "implemented": true,  "hidden": false, "cat": "fork"},
     "Download Emotes":            { "id": "fork-es-3", "info": "Download emotes when the cache is expired", "implemented": true,  "hidden": false, "cat": "fork"},
+	"Normalize Classes":          { "id": "fork-ps-4", "info": "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", "implemented": true,  "hidden": false, "cat": "fork"},
     
 
     "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
@@ -206,6 +207,7 @@ var defaultCookie = {
     "fork-ps-1": true,
     "fork-ps-2": true,
 	"fork-ps-3": true,
+	"fork-ps-4": true,
 	"fork-es-1": true,
     "fork-es-2": false,
     "fork-es-3": true
@@ -232,7 +234,7 @@ function Core(config) {
     window.bdConfig = config;
 }
 
-var emoteModulePromise;
+var classNormalizer;
 
 Core.prototype.init = async function() {
     var self = this;
@@ -249,6 +251,7 @@ Core.prototype.init = async function() {
     await utils.getHash();
     utils.log("Initializing Settings");
     this.initSettings();
+	classNormalizer = new ClassNormalizer();
     emoteModule = new EmoteModule();
     utils.log("Initializing EmoteModule");
     emoteModule.init().then(() => {emoteModule.initialized = true;});
@@ -277,6 +280,11 @@ Core.prototype.init = async function() {
 			utils.log("Loading Plugins");
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
+			
+			if (settingsCookie["fork-ps-4"]) {
+				utils.log("Loading Themes");
+				classNormalizer.start();
+			}
 			
 			utils.log("Loading Themes");
 			themeModule = new ThemeModule();
@@ -1861,8 +1869,63 @@ BdApi.showToast = function(content, options = {}) {
      $(document).off("contextmenu.bdDevModeCtx");
  };
 
+var ClassNormalizer = class ClassNormalizer {
+	constructor() {
+		this.classFormat = new RegExp(`^(?!da)[A-Za-z]+-([A-Za-z]|[0-9]|-|_){6}$`);
+		this.mainObserver = new MutationObserver((changes) => {
+			for (let c = 0; c < changes.length; c++) {
+				const change = changes[c];
+				const elements = change.addedNodes;
+				if (!elements) continue;
+				for (let n = 0; n < elements.length; n++) {
+					if (!(elements[n] instanceof Element) || !elements[n].classList) continue;
+					this.normalizeClasses(elements[n]);
+				}
+			}
+		});
+		
+		this.isActive = false;
+	}
 
+	stop() {
+		if (!this.isActive) return;
+		this.isActive = false;
+		this.mainObserver.disconnect();
+		this.revertClasses(document.querySelector("#app-mount"));
+	}
 
+	start() {
+		if (this.isActive) return;
+		this.isActive = true;
+		this.normalizeClasses(document.querySelector("#app-mount"));
+		this.mainObserver.observe(document.querySelector('#app-mount'), {childList: true, subtree: true});
+	}
+
+	normalizeClasses(element) {
+		if (!(element instanceof Element)) return;
+		if (element.children && element.children.length) this.normalizeClasses(element.children[0]);
+		if (element.nextElementSibling) this.normalizeClasses(element.nextElementSibling);
+		const classes = element.classList;
+		const toAdd = [];
+		for (let c = 0; c < classes.length; c++) {
+			if (this.classFormat.test(classes[c])) toAdd.push("da-" + classes[c].split("-")[0]);
+		}
+		element.classList.add(...toAdd);
+	}
+	
+	revertClasses(element) {
+		if (!(element instanceof Element)) return;
+		if (element.children && element.children.length) this.normalizeClasses(element.children[0]);
+		if (element.nextElementSibling) this.normalizeClasses(element.nextElementSibling);
+		const classes = element.classList;
+		const toRemove = [];
+		for (let c = 0; c < classes.length; c++) {
+			if (classes[c].startsWith("da-")) toRemove.push(classes[c]);
+		}
+		element.classList.remove(...toRemove);
+	}
+
+};
 
 
 
@@ -3296,6 +3359,9 @@ class V2_SettingsPanel {
                 mainCore.removeColoredText(elem);
             }
         }
+		
+		if (_c["fork-ps-4"]) classNormalizer.start();
+		else classNormalizer.stop();
 		
 		if (_c["fork-es-2"]) {
 			$('.emote').each(() => {
