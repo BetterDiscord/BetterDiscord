@@ -1871,7 +1871,8 @@ BdApi.showToast = function(content, options = {}) {
 
 var ClassNormalizer = class ClassNormalizer {
 	constructor() {
-		this.classFormat = new RegExp(`^(?!da)[A-Za-z]+-([A-Za-z]|[0-9]|-|_){6}$`);
+        this.classFormat = new RegExp(`^(?!da-)[A-Za-z]+-([A-Za-z]|[0-9]|-|_){6}$`);
+        this.normFormat = new RegExp(`^(?!da-)([a-z]|-)+$`);
 		this.mainObserver = new MutationObserver((changes) => {
 			for (let c = 0; c < changes.length; c++) {
 				const change = changes[c];
@@ -1899,7 +1900,19 @@ var ClassNormalizer = class ClassNormalizer {
 		this.isActive = true;
 		this.normalizeClasses(document.querySelector("#app-mount"));
 		this.mainObserver.observe(document.querySelector('#app-mount'), {childList: true, subtree: true});
-	}
+    }
+
+    toCamelCase(className) {
+        return className.split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
+    }
+    
+    isRandomizedClass(className) {
+        return this.classFormat.test(className);
+    }
+
+    isNormalClass(className) {
+        return this.normFormat.test(className);
+    }
 
 	normalizeClasses(element) {
 		if (!(element instanceof Element)) return;
@@ -1908,7 +1921,8 @@ var ClassNormalizer = class ClassNormalizer {
 		const classes = element.classList;
 		const toAdd = [];
 		for (let c = 0; c < classes.length; c++) {
-			if (this.classFormat.test(classes[c])) toAdd.push("da-" + classes[c].split("-")[0]);
+            if (this.isNormalClass(classes[c])) toAdd.push("da-" + this.toCamelCase(classes[c]));
+			else if (this.isRandomizedClass(classes[c])) toAdd.push("da-" + classes[c].split("-")[0]);
 		}
 		element.classList.add(...toAdd);
 	}
