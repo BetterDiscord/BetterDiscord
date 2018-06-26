@@ -1872,7 +1872,7 @@ BdApi.showToast = function(content, options = {}) {
 var ClassNormalizer = class ClassNormalizer {
 	constructor() {
         this.classFormat = new RegExp(`^(?!da-)[A-Za-z]+-([A-Za-z]|[0-9]|-|_){6}$`);
-        this.normFormat = new RegExp(`^(?!da-)([a-z]|-)+$`);
+        this.normFormat = new RegExp(`^(?!da-)(?:-?[a-z])+$`);
 		this.mainObserver = new MutationObserver((changes) => {
 			for (let c = 0; c < changes.length; c++) {
 				const change = changes[c];
@@ -1929,8 +1929,8 @@ var ClassNormalizer = class ClassNormalizer {
 	
 	revertClasses(element) {
 		if (!(element instanceof Element)) return;
-		if (element.children && element.children.length) this.normalizeClasses(element.children[0]);
-		if (element.nextElementSibling) this.normalizeClasses(element.nextElementSibling);
+		if (element.children && element.children.length) this.revertClasses(element.children[0]);
+		if (element.nextElementSibling) this.revertClasses(element.nextElementSibling);
 		const classes = element.classList;
 		const toRemove = [];
 		for (let c = 0; c < classes.length; c++) {
