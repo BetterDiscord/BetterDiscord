@@ -3602,7 +3602,7 @@ class V2C_Layer extends BDV2.reactComponent {
             done: () => {$(`#${this.props.rootId}`).remove();}
         });
         
-        $('[class*="layer-"]').animate({opacity: 1}, {
+        $('[class*="layer-"]').removeClass("publicServersOpen").animate({opacity: 1}, {
             step: function(now, fx) {
               $(this).css("transform", `scale(${0.07*now + 0.93}) translateZ(0px)`); 
             },
@@ -3613,7 +3613,7 @@ class V2C_Layer extends BDV2.reactComponent {
     }
 
     componentWillMount() {
-        $('[class*="layer-"]').animate({opacity: 0}, {
+        $('[class*="layer-"]').addClass("publicServersOpen").animate({opacity: 0}, {
             step: function(now, fx) {
               $(this).css("transform", `scale(${0.07*now + 0.93}) translateZ(0px)`); 
             },

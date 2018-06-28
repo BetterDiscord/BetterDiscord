@@ -817,18 +817,17 @@
 	width: 160px;
 }
 
-.bd-minimal .name-3M0b8v {
-	font-size: 14px;
+.bd-minimal .content-20Aix8 {
+	transform: scale(0.9);
+}
+
+.bd-minimal .containerDefault-3GGEv_ {
+    transform: scale(0.9);
 }
 
 .bd-minimal .icon-sxakjD {
 	width: 14px;
 	height: 14px;
-}
-
-.bd-minimal .channels-Ie2l6A .wrapperDefault-10Jfvz,
-.bd-minimal .channels-Ie2l6A .wrapperHovered-28fu1D {
-  display: none;
 }
 
 .emotewrapper {
