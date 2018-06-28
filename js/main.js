@@ -3957,7 +3957,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
         self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
         let sub = window.location.hostname.split('.')[0];
-        let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
+        let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '') + "?betterDiscord";
         self.joinWindow.webContents.on('did-navigate', (event, url) => {
             if (url != "https://join.discordservers.com/session") return;
             self.joinWindow.close();
@@ -4008,7 +4008,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get connectEndPoint() {
-        return 'https://join.discordservers.com/connect?betterDiscord';
+        return 'https://join.discordservers.com/connect';
     }
 
     checkConnection() {
