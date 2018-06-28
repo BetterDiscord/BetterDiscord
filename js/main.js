@@ -3854,8 +3854,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
     componentDidMount() {
         this.checkConnection();
-        mainCore.alert("Not Working", "Hi there,<br><br> While the public servers module was fixed on our end, DiscordServers.com is having issue with their sessions API that we need for this to work. So unfortunately until they fix that, the public servers module won't work :(")
-    }
+     }
 
     setInitialState() {
         this.state = {
@@ -3960,7 +3959,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
         let sub = window.location.hostname.split('.')[0];
         let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '');
         self.joinWindow.webContents.on('did-navigate', (event, url) => {
-            if (url != "https://discordservers.com/") return;
+            if (url != "https://join.discordservers.com/session") return;
             self.joinWindow.close();
             self.checkConnection();
         });
@@ -3990,7 +3989,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
             "categories": ["community", "programming", "support"],
             "description": "Official BetterDiscord server for support etc",
             "identifier": "86004744966914048",
-            "iconUrl": "https://cdn.discordapp.com/icons/86004744966914048/c8d49dc02248e1f55caeb897c3e1a26e.png",
+            "iconUrl": "https://cdn.discordapp.com/icons/86004744966914048/292e7f6bfff2b71dfd13e508a859aedd.webp",
             "nativejoin": true,
             "invite_code": "0Tmfo5ZbORCRqbAd",
             "pinned": true
@@ -4009,7 +4008,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get connectEndPoint() {
-        return 'https://join.discordservers.com/connect';
+        return 'https://join.discordservers.com/connect?betterDiscord';
     }
 
     checkConnection() {
