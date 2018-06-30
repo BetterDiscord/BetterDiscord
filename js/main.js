@@ -3026,9 +3026,9 @@ class V2C_PluginCard extends BDV2.reactComponent {
             ),
             (website || source || this.hasSettings) && BDV2.react.createElement("div", {className: "bda-footer"},
                 BDV2.react.createElement("span", {className: "bda-links"},
-                    website && BDV2.react.createElement("a", {className: "bda-link", href: website, target: "_blank"}, "Website"),
+                    website && BDV2.react.createElement("a", {className: "bda-link bda-link-website", href: website, target: "_blank"}, "Website"),
                     website && source && " | ",
-                    source && BDV2.react.createElement("a", {className: "bda-link", href: source, target: "_blank"}, "Source")
+                    source && BDV2.react.createElement("a", {className: "bda-link bda-link-source", href: source, target: "_blank"}, "Source")
                 ),
                 this.hasSettings && BDV2.react.createElement("button", {onClick: this.showSettings, className: "bda-settings-button", disabled: !this.state.checked}, "Settings")
             )
