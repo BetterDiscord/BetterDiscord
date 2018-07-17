@@ -795,7 +795,7 @@ EmoteModule.prototype.init = async function () {
         if (this.cancel1) this.cancel1();
         if (this.cancel2) this.cancel2();
 
-        this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {after: (data) => {
+        this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {force: true, after: (data) => {
             if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
@@ -803,7 +803,7 @@ EmoteModule.prototype.init = async function () {
             this.injectEmote(message);
         }});
 
-        this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {after: (data) => {
+        this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {force: true, after: (data) => {
             if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
@@ -1427,10 +1427,14 @@ Utils.suppressErrors = (method, desiption) => (...params) => {
 };
 
 Utils.monkeyPatch = (what, methodName, options) => {
-	const {before, after, instead, once = false, silent = false} = options;
+	const {before, after, instead, once = false, silent = false, force = false} = options;
 	const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
 	if (!silent) console.log('patch', methodName, 'of', displayName); // eslint-disable-line no-console
-	const origMethod = what[methodName];
+	let origMethod = what[methodName];
+	if (!origMethod) {
+		if (force) origMethod = what[methodName] = () => {};
+		else return console.error(methodName, 'does not exist for', displayName); // eslint-disable-line no-console
+	}
 	const cancel = () => {
 		if (!silent) console.log('unpatch', methodName, 'of', displayName); // eslint-disable-line no-console
 		what[methodName] = origMethod;
