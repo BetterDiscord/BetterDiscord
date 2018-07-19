@@ -1329,7 +1329,7 @@ Utils.prototype.getHash = function () {
             bdConfig.hash = _hash;
             resolve(_hash);
         }).fail(() => {
-			_hash = _bdhash || "2cdaf11a12a8ad91cb8617be20dfb0375b61783b";
+			_hash = _bdhash || "48844445d65c6fb5a019eff14d7dcffcc1744071";
 			resolve(_hash)
 		});
     });
