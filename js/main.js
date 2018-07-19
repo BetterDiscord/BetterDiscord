@@ -787,7 +787,7 @@ EmoteModule.prototype.init = async function () {
                 let elem = change.addedNodes[0];
                 if (!elem.querySelector(".message")) continue;
                 observer.disconnect();
-                resolve(BDV2.getInternalInstance(elem.querySelector(".message")).return.type);
+                resolve(BDV2.getInternalInstance(elem.querySelector(".message")).return.return.type);
             }
         });
         observer.observe(document.querySelector('.app') || document.querySelector('#app-mount'), {childList: true, subtree: true})
@@ -795,7 +795,7 @@ EmoteModule.prototype.init = async function () {
         if (this.cancel1) this.cancel1();
         if (this.cancel2) this.cancel2();
 
-        this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {force: true, after: (data) => {
+        this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {after: (data) => {
             if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
@@ -803,7 +803,7 @@ EmoteModule.prototype.init = async function () {
             this.injectEmote(message);
         }});
 
-        this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {force: true, after: (data) => {
+        this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {after: (data) => {
             if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup');
