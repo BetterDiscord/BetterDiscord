@@ -423,7 +423,7 @@ Core.prototype.initObserver = function () {
     
             // onMessage
             // New Message Group
-            if (node.classList.contains("message-group")) {
+            if (node.classList.contains(BDV2.messageClasses.container)) {
                 this.inject24Hour(node);
                 this.injectColoredText(node);
                 // if (!node.getElementsByClassName("message-sending").length && node.parentElement && node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
@@ -437,7 +437,7 @@ Core.prototype.initObserver = function () {
     
             // onMessage
             // Single Message
-            if (node.classList.contains("message")) {
+            if (node.classList.contains(BDV2.messageClasses.message)) {
                 this.injectColoredText(node.parentElement.parentElement);
                 //if (!node.classList.contains("message-sending")) pluginModule.newMessage();
             }
@@ -454,7 +454,7 @@ Core.prototype.initObserver = function () {
 Core.prototype.inject24Hour = function(node) {
     if (!settingsCookie["bda-gs-6"]) return;
 
-    node.querySelectorAll('.timestamp').forEach(elem => {
+    node.querySelectorAll("time").forEach(elem => {
         if (elem.getAttribute("data-24")) return;
         let text = elem.innerText || elem.textContent;
         let matches = /([^0-9]*)([0-9]?[0-9]:[0-9][0-9])([^0-9]*)/.exec(text);
@@ -476,7 +476,7 @@ Core.prototype.inject24Hour = function(node) {
 };
 
 Core.prototype.remove24Hour = function(node) {
-    node.querySelectorAll('.timestamp').forEach(elem => {
+    node.querySelectorAll("time").forEach(elem => {
         if (!elem.getAttribute("data-24")) return;
         let time = elem.getAttribute("data-24");
         elem.removeAttribute("data-24");
@@ -492,10 +492,10 @@ Core.prototype.remove24Hour = function(node) {
 Core.prototype.injectColoredText = function(node) {
     if (!settingsCookie["bda-gs-7"]) return;
 
-    node.querySelectorAll('.user-name').forEach(elem => {
+    node.querySelectorAll("." + BDV2.messageClasses.username).forEach(elem => {
         let color = elem.style.color;
         if (color === "rgb(255, 255, 255)") return;
-        elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
+        elem.closest("." + BDV2.messageClasses.container).querySelectorAll('.markup-2BOw-j').forEach(elem => {
             if (elem.getAttribute("data-colour")) return;
             elem.setAttribute("data-colour", true);
             elem.style.setProperty("color", color);
@@ -504,8 +504,8 @@ Core.prototype.injectColoredText = function(node) {
 };
 
 Core.prototype.removeColoredText = function(node) {
-    node.querySelectorAll('.user-name').forEach(elem => {
-        elem.closest(".message-group").querySelectorAll('.markup').forEach(elem => {
+    node.querySelectorAll("." + BDV2.messageClasses.username).forEach(elem => {
+        elem.closest("." + BDV2.messageClasses.container).querySelectorAll('.markup-2BOw-j').forEach(elem => {
             if (!elem.getAttribute("data-colour")) return;
             elem.removeAttribute("data-colour");
             elem.style.setProperty("color", "");
@@ -782,12 +782,13 @@ EmoteModule.prototype.init = async function () {
 
     new Promise((resolve) => {
         let observer = new MutationObserver((changes) => {
+            const messageSelector = "." + BDV2.messageClasses.message;
 			for (let change of changes) {
                 if (!change.addedNodes.length || !(change.addedNodes[0] instanceof Element) || !change.addedNodes[0].classList) continue;
                 let elem = change.addedNodes[0];
-                if (!elem.querySelector(".message")) continue;
+                if (!elem.querySelector(messageSelector)) continue;
                 observer.disconnect();
-                resolve(BDV2.getInternalInstance(elem.querySelector(".message")).return.return.type);
+                resolve(BDV2.getInternalInstance(elem.querySelector(messageSelector)).return.type);
             }
         });
         observer.observe(document.querySelector('.app') || document.querySelector('#app-mount'), {childList: true, subtree: true})
@@ -798,7 +799,7 @@ EmoteModule.prototype.init = async function () {
         this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {force: true, after: (data) => {
             if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
-            message = message.querySelector('.markup');
+            message = message.querySelector('.markup-2BOw-j');
             if (!message) return;
             this.injectEmote(message);
         }});
@@ -806,7 +807,7 @@ EmoteModule.prototype.init = async function () {
         this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {force: true, after: (data) => {
             if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
-            message = message.querySelector('.markup');
+            message = message.querySelector('.markup-2BOw-j');
             if (!message) return;
             $(message).children('.emotewrapper').remove();
             this.injectEmote(message);
@@ -1003,7 +1004,7 @@ var bemotes = [];
 
 EmoteModule.prototype.injectEmote = async function(node, edited) {
     let messageScroller = document.querySelector('.messages.scroller');
-    let message = node
+    let message = node;
     if (message.getElementsByClassName("message-content").length) message = message.getElementsByClassName("message-content")[0];
     let editNode = null;
 	let textNodes = utils.getTextNodes(message);
@@ -2154,6 +2155,8 @@ class V2 {
             'react-dom': this.WebpackModules.findByUniqueProperties(['findDOMNode'])
         };
         this.getInternalInstance = e => e[Object.keys(e).find(k => k.startsWith("__reactInternalInstance"))];
+
+        this.messageClasses = this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]);
     }
 
     get reactComponent() {
