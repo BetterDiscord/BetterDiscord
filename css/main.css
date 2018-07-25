@@ -667,151 +667,153 @@
   background: #860606;
 }
 
-.bd-minimal .avatar-large {
-  max-width: 20px;
-  max-height: 20px;
-  background-size: 100%;
-  margin-right: 2px;
-  margin-top: 0;
-  border-radius: 0;
+.bd-minimal .divider-32i8lo {opacity: 0;}
+.bd-minimal .large-3ChYtB {
+max-width: 20px;
+max-height: 20px;
+background-size: 100%;
+margin-right: 2px;
+margin-top: 0;
+border-radius: 0;
 }
-.bd-minimal .comment {
-  border-left: 2px solid #EBEBEB;
-  padding-left: 2px;
+.bd-minimal .content-3dzVd8 {
+border-left: 2px solid #EBEBEB;
+padding-left: 2px;
 }
-.bd-minimal .theme-dark .comment {
-  border-left: 2px solid #303030;
+.bd-minimal .theme-dark .content-3dzVd8 {
+border-left: 2px solid #303030;
 }
-.bd-minimal .user-name {
-  font-size: small;
+.bd-minimal .username-_4ZSMR {
+font-size: small;
 }
 .bd-minimal.bd-minimal-chan .channels-Ie2l6A {
-  display: none;
+display: none;
 }
-.bd-minimal .message-group {
-  padding: 5px;
+.bd-minimal .container-1YxwTf {
+padding: 5px;
 }
 .bd-minimal .embed {
-  padding: 2px;
+padding: 2px;
 }
-.bd-minimal .channel-members .avatar-small {
-  max-width: 15px;
-  max-height: 15px;
-  background-size: 15px 15px;
+.bd-minimal .members-1998pB .small-5Os1Bb {
+max-width: 15px;
+max-height: 15px;
+background-size: 15px 15px;
 }
-.bd-minimal .channel-members .avatar-small .status {
-  height: 5px;
-  width: 5px;
+.bd-minimal .members-1998pB .small-5Os1Bb .status-oxiHuE {
+height: 5px;
+width: 5px;
 }
-.bd-minimal .channel-members .member {
-  padding: 5px;
+.bd-minimal .members-1998pB .member-3W1lQa {
+padding: 5px;
 }
-.bd-minimal .channel-members-wrap {
-  min-width: 0px;
+.bd-minimal .members-1998pB .memberInner-2CPc3V {
+	transform: scale(0.9);
 }
-.bd-minimal .channel-members h2 {
-  margin-top: 3px;
+.bd-minimal .membersWrap-2h-GB4 {
+min-width: 0px;
 }
-.bd-minimal .account .avatar-small, .bd-minimal .account .username {
-  display: none;
+.bd-minimal .members-1998pB .membersGroup-v9BXpm {
+margin-top: 3px;
+transform: scale(0.9);
 }
-.bd-minimal .channel-text a {
-  padding: 5px !important;
-  font-size: small;
+
+.bd-minimal .channels-Ie2l6A header span {
+font-size: 12px;
 }
-.bd-minimal .guild-channels ul .channel-text.unread:not(.selected):not(.channel-muted):before
-{
-  width: 10px;
-  top: 8px;
-}
-.bd-minimal .guild-channels ul .channel-voice {
-  padding: 5px !important;
-  font-size: small;
-}
-.bd-minimal .guild-channels h2 {
-  padding: 5px;
-}
-.bd-minimal .guild-channels header spann {
-  font-size: 12px;
-}
-.bd-minimal .channels-Ie2l6A .guild-channels {
-  padding: 0;
+.bd-minimal .channels-Ie2l6A .channels-Ie2l6A {
+padding: 0;
 }
 .bd-minimal .guilds-wrapper .guilds .guild {
-  width: 20px;
-  height: 20px;
-  background-size: 100%;
-  font-size: 15px;
-  line-height: 20px;
+width: 20px;
+height: 20px;
+background-size: 100%;
+font-size: 15px;
+line-height: 20px;
 }
-.bd-minimal .guild .guild-inner a.avatar-small {
-  width: 20px;
-  height: 20px;
-  background-size: 100%;
-  font-size: 15px;
-  line-height: 20px;
+.bd-minimal .guilds-wrapper .guilds .guild .guild-inner a,
+.bd-minimal .guild .guild-inner .guild-icon {
+width: 20px;
+height: 20px;
+background-size: 100%;
+font-size: 15px;
+line-height: 20px;
 }
 .bd-minimal .guild .guild-inner {
-  width: 20px;
-  height: 20px;
-  background-size: 100%;
-  font-size: 15px;
-  line-height: 20px;
+width: 20px;
+height: 20px;
+background-size: 100%;
+font-size: 15px;
+line-height: 20px;
 }
-.bd-minimal .guilds .friends-icon {
-  width: 20px;
-  height: 20px;
-  background-size: 100%;
-  font-size: 15px;
-  line-height: 20px;
+.bd-minimal .guilds .home-icon {
+width: 10px;
+height: 10px;
+background-size: 100%;
+font-size: 15px;
+line-height: 20px;
 }
 .bd-minimal .guilds .friends-online
 {
-  margin-left: -15px;
-  font-size: 7px;
+margin-left: -15px;
+font-size: 7px;
 }
 .bd-minimal .guilds-wrapper {
-  width: 45px;
+width: 45px;
 }
 .bd-minimal .guilds-wrapper .guild-separator
 {
-  margin-left: -15px;
+margin-left: -15px;
 }
 .bd-minimal .guilds-wrapper .guilds .guild.selected:before
 {
-  height: 20px;
-  margin-top: -10px;
+height: 20px;
+margin-top: -10px;
 }
 .bd-minimal .guilds-add {
-  font-size: 20px;
-  line-height: 14px;
+font-size: 20px;
+line-height: 14px;
 }
 .bd-minimal .guilds .audio .guild-inner:after {
-  width: 12px;
-  height: 12px;
-  background-size: 12px;
+width: 12px;
+height: 12px;
+background-size: 12px;
 }
 .bd-minimal .guild-header header span
 {
-  margin-left: -20px;
+margin-left: -20px;
 }
 .bd-minimal .btn-hamburger
 {
-  margin-right: -30px;
+margin-right: -30px;
 }
-.bd-minimal .container-2Thooq .flex-1xMQg5 {
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+
+.bd-minimal .container-2Thooq .avatar-small {
+	width: 15px;
+	height: 15px;
+	background-size: 15px 15px;
+}
+
+.bd-minimal .container-2Thooq .avatar-small .status-oxiHuE {
+	height: 5px;
+	width: 5px;
+}
+
+.bd-minimal .container-2Thooq .accountDetails-3k9g4n {
+	transform: scale(0.8);
 }
 
 .bd-minimal .container-2Thooq .button-2b6hmh {
-	height: 16px;
-	width: 16px;
-	background-size: 16px 16px;
+	height: 14px;
+	width: 14px;
+	background-size: 14px 14px;
+	margin-left: 3px;
 }
 
-.bd-minimal .container-2Thooq .button-2b6hmh {margin-top: 3px;}
+.bd-minimal .container-2Thooq .button-2b6hmh svg {
+	height: 14px;
+	width: 14px;
+}
 
 .bd-minimal .channels-Ie2l6A {
 	width: 160px;
@@ -822,7 +824,7 @@
 }
 
 .bd-minimal .containerDefault-3GGEv_ {
-    transform: scale(0.9);
+	transform: scale(0.9);
 }
 
 .bd-minimal .icon-sxakjD {
