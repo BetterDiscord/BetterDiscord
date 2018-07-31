@@ -263,7 +263,7 @@ Core.prototype.init = async function() {
     //Incase were too fast
     function gwDefer() {
         //console.log(new Date().getTime() + " Defer");
-        if (document.querySelectorAll('.guilds .guild').length > 0) {
+        if (document.querySelectorAll(`.${BDV2.guildClasses.guilds} .${BDV2.guildClasses.guild}`).length > 0) {
             //console.log(new Date().getTime() + " Defer Loaded");
             bdConfig.deferLoaded = true;
             self.injectExternals();
@@ -398,6 +398,7 @@ Core.prototype.initObserver = function () {
     
                 if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
                     node.setAttribute('layer-id', 'user-settings');
+                    node.setAttribute('id', 'user-settings');
                     if (!document.getElementById("bd-settings-sidebar")) settingsPanel.renderSidebar();
                 }
             }
@@ -806,10 +807,14 @@ EmoteModule.prototype.init = async function () {
 
         this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {force: true, after: (data) => {
             if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
+            if (!document.hasFocus()) return;
             let message = BDV2.reactDom.findDOMNode(data.thisObject);
             message = message.querySelector('.markup-2BOw-j');
             if (!message) return;
-            $(message).children('.emotewrapper').remove();
+            // $(message).children('.emotewrapper').replaceWith(function() {
+            //     console.log($(this).attr("alt"))
+            //     return $(this).attr("alt");
+            // });
             this.injectEmote(message);
         }});
 
@@ -1888,9 +1893,10 @@ var ClassNormalizer = class ClassNormalizer {
 					this.normalizeClasses(elements[n]);
 				}
 			}
-		});
-		
-		this.isActive = false;
+        });
+        
+		this.cache = {};
+        this.isActive = false;
 	}
 
 	stop() {
@@ -1926,8 +1932,17 @@ var ClassNormalizer = class ClassNormalizer {
 		const classes = element.classList;
 		const toAdd = [];
 		for (let c = 0; c < classes.length; c++) {
-            if (this.isNormalClass(classes[c])) toAdd.push("da-" + this.toCamelCase(classes[c]));
-			else if (this.isRandomizedClass(classes[c])) toAdd.push("da-" + classes[c].split("-")[0]);
+            if (this.cache[classes[c]]) toAdd.push(this.cache[classes[c]]);
+            else if (this.isNormalClass(classes[c])) {
+                const newClass = "da-" + this.toCamelCase(classes[c]);
+                toAdd.push(newClass);
+                this.cache[classes[c]] = newClass;
+            }
+			else if (this.isRandomizedClass(classes[c])) {
+                const newClass = "da-" + classes[c].split("-")[0];
+                toAdd.push(newClass);
+                this.cache[classes[c]] = newClass;
+            }
 		}
 		element.classList.add(...toAdd);
 	}
@@ -2155,8 +2170,38 @@ class V2 {
             'react-dom': this.WebpackModules.findByUniqueProperties(['findDOMNode'])
         };
         this.getInternalInstance = e => e[Object.keys(e).find(k => k.startsWith("__reactInternalInstance"))];
+    }
 
-        this.messageClasses = this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]);
+    get messageClasses() {
+        return this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]) || {};
+    }
+
+    get guildClasses() {
+        return this.WebpackModules.findByUniqueProperties(["guildsWrapper"]) || {
+            guildsWrapper: "guilds-wrapper",
+            scrollerWrap: "scroller-wrap",
+            guilds: "guilds",
+            friendsIcon: "friends-icon",
+            homeIcon: "home-icon",
+            guildPlaceholder: "guild-placeholder",
+            guild: "guild",
+            selected: "selected",
+            unread: "unread",
+            guildInner: "guild-inner",
+            audio: "audio",
+            video: "video",
+            guildIcon: "guild-icon",
+            badge: "badge",
+            dms: "dms",
+            guildSeparator: "guild-separator",
+            guildsError: "guilds-error",
+            guildsAdd: "guilds-add",
+            guildsAddInner: "guilds-add-inner",
+            unreadMentionsIndicatorBottom: "unread-mentions-indicator-bottom",
+            unreadMentionsIndicatorTop: "unread-mentions-indicator-top",
+            unreadMentionsBar: "unread-mentions-bar",
+            unreadMentionBar: "unread-mention-bar"
+        };
     }
 
     get reactComponent() {
@@ -2184,7 +2229,7 @@ class V2 {
 
 }
 
-window.BDV2 = new V2();
+var BDV2 = new V2();
 
 class V2C_SettingsPanel extends BDV2.reactComponent {
 
@@ -3704,14 +3749,14 @@ class V2_PublicServers {
 
     get button() {
         let btn = $("<div/>", {
-            class: 'guild',
+            class: BDV2.guildClasses.guild,
             id: 'bd-pub-li',
             css: {
                 'height': '20px',
                 'display': settingsCookie['bda-gs-1'] ? "" : "none"
             }
         }).append($("<div/>", {
-            class: 'guild-inner',
+            class: BDV2.guildClasses.guildInner,
             css: {
                 'height': '20px',
                 'border-radius': '4px'
@@ -3732,7 +3777,7 @@ class V2_PublicServers {
     }
 
     initialize() {
-        let guilds = $(".guilds>:first-child");
+        let guilds = $(`.${BDV2.guildClasses.guilds}>:first-child`);
         guilds.after(this.button);
 	}
 }
