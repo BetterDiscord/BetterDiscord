@@ -724,57 +724,57 @@ font-size: 12px;
 .bd-minimal .channels-Ie2l6A .channels-Ie2l6A {
 padding: 0;
 }
-.bd-minimal .guilds-wrapper .guilds .guild {
+.bd-minimal .guildsWrapper-5TJh6A .guilds-1q_RqH .guild-1EfMGQ {
 width: 20px;
 height: 20px;
 background-size: 100%;
 font-size: 15px;
 line-height: 20px;
 }
-.bd-minimal .guilds-wrapper .guilds .guild .guild-inner a,
-.bd-minimal .guild .guild-inner .guild-icon {
+.bd-minimal .guildsWrapper-5TJh6A .guilds-1q_RqH .guild-1EfMGQ .guildInner-3DSoA4 a,
+.bd-minimal .guild-1EfMGQ .guildInner-3DSoA4 .guildIcon-CT-ZDq {
 width: 20px;
 height: 20px;
 background-size: 100%;
 font-size: 15px;
 line-height: 20px;
 }
-.bd-minimal .guild .guild-inner {
+.bd-minimal .guild-1EfMGQ .guildInner-3DSoA4 {
 width: 20px;
 height: 20px;
 background-size: 100%;
 font-size: 15px;
 line-height: 20px;
 }
-.bd-minimal .guilds .home-icon {
+.bd-minimal .guilds-1q_RqH .homeIcon-1FoKUJ {
 width: 10px;
 height: 10px;
 background-size: 100%;
 font-size: 15px;
 line-height: 20px;
 }
-.bd-minimal .guilds .friends-online
+.bd-minimal .guilds-1q_RqH .friendsOnline-_wi_fM
 {
 margin-left: -15px;
 font-size: 7px;
 }
-.bd-minimal .guilds-wrapper {
+.bd-minimal .guildsWrapper-5TJh6A {
 width: 45px;
 }
-.bd-minimal .guilds-wrapper .guild-separator
+.bd-minimal .guildsWrapper-5TJh6A .guildSeparator-1X4GQ1
 {
 margin-left: -15px;
 }
-.bd-minimal .guilds-wrapper .guilds .guild.selected:before
+.bd-minimal .guildsWrapper-5TJh6A .guilds-1q_RqH .guild-1EfMGQ.selected-ML3OIq:before
 {
 height: 20px;
 margin-top: -10px;
 }
-.bd-minimal .guilds-add {
+.bd-minimal .guildsAdd-21_IdK {
 font-size: 20px;
 line-height: 14px;
 }
-.bd-minimal .guilds .audio .guild-inner:after {
+.bd-minimal .guilds-1q_RqH .audio-3vVhBi .guildInner-3DSoA4:after {
 width: 12px;
 height: 12px;
 background-size: 12px;
@@ -832,10 +832,6 @@ margin-right: -30px;
 	height: 14px;
 }
 
-.emotewrapper {
-  display: inline-block;
-  position: relative;
-}
 .emotewrapper:hover .fav {
   display: block;
 }
