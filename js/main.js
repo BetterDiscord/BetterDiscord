@@ -703,12 +703,15 @@ EmoteModule.prototype.init = async function () {
     this.loadEmoteData(emoteInfo);
     this.getBlacklist();
 
+    while (!BDV2.MessageContentComponent)
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
     if (this.cancelEmoteRender) return;
     this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({thisObject, returnValue}) => {
         const markup = returnValue.props.children[1];
         if (!markup.props.children) return;
         const nodes = markup.props.children[1];
-        for (let n = 0, nlen = nodes.length; n < nlen; n++) {
+        for (let n = 0; n < nodes.length; n++) {
             const node = nodes[n];
             if (typeof(node) !== "string") continue;
             const words = node.split(/([^\s]+)([\s]|$)/g);
@@ -744,13 +747,25 @@ EmoteModule.prototype.init = async function () {
                     const pre = nodes[n].substring(0, results.index + results[1].length);
                     const post = nodes[n].substring(results.index + results[0].length - results[2].length);
                     nodes[n] = pre;
-        
                     const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: bdEmotes[cats[c]][emoteName], modifier: emoteModifier});
                     nodes.splice(n+1, 0, post);
                     nodes.splice(n+1, 0, emoteComponent);
                     n = n + 2;
                 }
             }
+        }
+        const onlyEmotes = nodes.every(r => {
+            if (typeof(r) == "string" && r.replace(/\s*/, "") == "") return true;
+            else if (r.type && r.type.name == "BDEmote") return true;
+            else if (r.props && r.props.children && r.props.children.props && r.props.children.props.emojiName) return true;
+            return false;
+        });
+        if (!onlyEmotes) return;
+
+        for (let node of nodes) {
+            if (typeof(node) != "object") continue;
+            if (node.type.name == "BDEmote") node.props.jumboable = true;
+            else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
         }
     }});
 };
@@ -2147,24 +2162,25 @@ var BDV2 = new V2();
 class BDEmote extends BDV2.reactComponent {
     constructor(props) {
         super(props);
+        this.props.label = this.props.modifier ? `${this.props.name}:${this.props.modifier}` : this.props.name;
+        this.props.modifierClass = this.props.modifier ? ` emote${this.props.modifier}` : "";
     }
 
     render() {
         return BDV2.react.createElement(BDV2.TooltipWrapper, {
-                className: "emote-tooltip",
                 color: "black",
                 position: "top",
-                text: this.props.modifier && settingsCookie["fork-es-1"] ? `${this.props.name}:${this.props.modifier}` : this.props.name
+                text: this.props.label,
+                delay: 750
             },
-                BDV2.react.createElement("span", {
-                    className: "emotewrapper"
+                BDV2.react.createElement("div", {
+                    className: "emotewrapper" + (this.props.jumboable ? " jumboable" : "")
                 },
                     BDV2.react.createElement("img", {
                         draggable: false,
-                        className: "emote " + this.props.modifier ? `emote${this.props.modifier}` : "",
-                        style: {maxHeight: "32px"},
+                        className: "emote" + this.props.modifierClass + (this.props.jumboable ? " jumboable" : ""),
                         dataModifier: this.props.modifier,
-                        alt: this.props.name,
+                        alt: this.props.label,
                         src: this.props.url
                     }),
                     BDV2.react.createElement("input", {

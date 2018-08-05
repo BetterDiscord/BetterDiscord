@@ -833,7 +833,25 @@ margin-right: -30px;
 }
 
 .emotewrapper {
+  position: relative;
   display: inline-flex;
+  object-fit: contain;
+  margin: -.1em .05em -.2em .1em;
+  vertical-align: top;
+}
+
+.emotewrapper.jumboable {
+  margin-bottom: 0;
+  margin-top: .2em;
+  vertical-align: -.3em;
+}
+
+.emote {
+  height: 1.45em;
+}
+
+.emote.jumboable {
+  height: 2rem;
 }
 
 .emotewrapper:hover .fav {
