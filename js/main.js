@@ -126,7 +126,7 @@ bdSettingsStorage.set = function(key, data) {
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
-var bbdVersion = "0.0.7";
+var bbdVersion = "0.1.0";
 
 var mainObserver;
 
@@ -379,15 +379,6 @@ Core.prototype.initObserver = function () {
             let mutation = mutations[i];
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
     
-            // onSwitch()
-            // leaving Activity Feed/Friends menu
-            if (mutation.removedNodes.length && mutation.removedNodes[0] instanceof Element) {
-               let node = mutation.removedNodes[0];
-               if (node.classList.contains("activityFeed-28jde9") || node.id === "friends") {
-                   pluginModule.channelSwitch();
-               }
-            }
-    
             // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
     
@@ -407,41 +398,6 @@ Core.prototype.initObserver = function () {
             if (node.classList.contains('popout-3sVMXz') && !node.classList.contains('popoutLeft-30WmrD')) {
                 if (node.getElementsByClassName('emojiPicker-3m1S-j').length) quickEmoteMenu.obsCallback(node);
             }
-    
-            // onSwitch()
-            // Not a channel, but still a switch (Activity Feed/Friends menu/NSFW check)
-            if (node.classList.contains("activityFeed-28jde9") || node.id === "friends") {
-                pluginModule.channelSwitch();
-            }
-    
-            // onSwitch()
-            // New Channel
-            if (node.classList.contains("messages-wrapper") || node.getElementsByClassName("messages-wrapper").length) {
-                this.inject24Hour(node);
-                this.injectColoredText(node);
-                pluginModule.channelSwitch();
-            }
-    
-            // onMessage
-            // New Message Group
-            if (node.classList.contains(BDV2.messageClasses.container)) {
-                this.inject24Hour(node);
-                this.injectColoredText(node);
-                // if (!node.getElementsByClassName("message-sending").length && node.parentElement && node.parentElement.children && node == node.parentElement.children[node.parentElement.children.length - 1]) {
-                //    pluginModule.newMessage();
-                // }
-            }
-    
-            if (node.classList.contains("message-text")) {
-                this.injectColoredText(node.parentElement.parentElement.parentElement.parentElement);
-            }
-    
-            // onMessage
-            // Single Message
-            if (node.classList.contains(BDV2.messageClasses.message)) {
-                this.injectColoredText(node.parentElement.parentElement);
-                //if (!node.classList.contains("message-sending")) pluginModule.newMessage();
-            }
 
         }
     });
@@ -453,64 +409,29 @@ Core.prototype.initObserver = function () {
 };
 
 Core.prototype.inject24Hour = function(node) {
-    if (!settingsCookie["bda-gs-6"]) return;
+    if (this.cancel24Hour) return;
 
-    node.querySelectorAll("time").forEach(elem => {
-        if (elem.getAttribute("data-24")) return;
-        let text = elem.innerText || elem.textContent;
-        let matches = /([^0-9]*)([0-9]?[0-9]:[0-9][0-9])([^0-9]*)/.exec(text);
-        if(matches == null) return;
-        if(matches.length < 4) return;
-
-        let time = matches[2].split(':');
-        let hours = parseInt(time[0]);
-        let minutes = time[1];
-        let timeOfDay = matches[3].toLowerCase();
-
-        if (timeOfDay.includes("am") && hours == 12) hours -= 12;
-        else if (timeOfDay.includes("pm") && hours < 12) hours += 12;
-        
-        hours = ("0" + hours).slice(-2);
-        elem.innerText = matches[1] + hours + ":" + minutes + matches[3];
-        elem.setAttribute("data-24", matches[2]);
-    });
-};
-
-Core.prototype.remove24Hour = function(node) {
-    node.querySelectorAll("time").forEach(elem => {
-        if (!elem.getAttribute("data-24")) return;
-        let time = elem.getAttribute("data-24");
-        elem.removeAttribute("data-24");
-        let text = elem.innerText || elem.textContent;
-        let matches = /([^0-9]*)([0-9]?[0-9]:[0-9][0-9])([^0-9]*)/.exec(text);
-        if(matches == null) return;
-        if(matches.length < 4) return;
-
-        elem.innerText = matches[1] + time + matches[3];
-    });
+    this.cancel24Hour = Utils.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {before: ({methodArguments}) => {
+        if (!settingsCookie["bda-gs-6"]) return;
+        methodArguments[0]._locale._abbr = "en-GB";
+    }});
 };
 
 Core.prototype.injectColoredText = function(node) {
-    if (!settingsCookie["bda-gs-7"]) return;
+    if (this.cancelColoredText) return;
 
-    node.querySelectorAll("." + BDV2.messageClasses.username).forEach(elem => {
-        let color = elem.style.color;
-        if (color === "rgb(255, 255, 255)") return;
-        elem.closest("." + BDV2.messageClasses.container).querySelectorAll('.markup-2BOw-j').forEach(elem => {
-            if (elem.getAttribute("data-colour")) return;
-            elem.setAttribute("data-colour", true);
-            elem.style.setProperty("color", color);
-        });
-    });
+    this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
+        if (!settingsCookie["bda-gs-7"]) return;
+        const markup = data.returnValue.props.children[1];
+        const roleColor = data.thisObject.props.message.colorString;
+        if (markup && roleColor) markup.props.style = {color: roleColor};
+        return data.returnValue;
+    }});
 };
 
 Core.prototype.removeColoredText = function(node) {
-    node.querySelectorAll("." + BDV2.messageClasses.username).forEach(elem => {
-        elem.closest("." + BDV2.messageClasses.container).querySelectorAll('.markup-2BOw-j').forEach(elem => {
-            if (!elem.getAttribute("data-colour")) return;
-            elem.removeAttribute("data-colour");
-            elem.style.setProperty("color", "");
-        });
+    document.querySelectorAll('.markup-2BOw-j').forEach(elem => {
+        elem.style.setProperty("color", "");
     });
 };
 
@@ -779,49 +700,59 @@ EmoteModule.prototype.init = async function () {
         return;
     }
 
-
-
-    new Promise((resolve) => {
-        let observer = new MutationObserver((changes) => {
-            const messageSelector = "." + BDV2.messageClasses.message;
-			for (let change of changes) {
-                if (!change.addedNodes.length || !(change.addedNodes[0] instanceof Element) || !change.addedNodes[0].classList) continue;
-                let elem = change.addedNodes[0];
-                if (!elem.querySelector(messageSelector)) continue;
-                observer.disconnect();
-                resolve(BDV2.getInternalInstance(elem.querySelector(messageSelector)).return.type);
-            }
-        });
-        observer.observe(document.querySelector('.app') || document.querySelector('#app-mount'), {childList: true, subtree: true})
-    }).then(MessageComponent => {
-        if (this.cancel1) this.cancel1();
-        if (this.cancel2) this.cancel2();
-
-        this.cancel1 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidMount", {force: true, after: (data) => {
-            if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
-            let message = BDV2.reactDom.findDOMNode(data.thisObject);
-            message = message.querySelector('.markup-2BOw-j');
-            if (!message) return;
-            this.injectEmote(message);
-        }});
-
-        this.cancel2 = Utils.monkeyPatch(MessageComponent.prototype, "componentDidUpdate", {force: true, after: (data) => {
-            if (!settingsCookie["bda-es-7"] && !settingsCookie["bda-es-2"] && !settingsCookie["bda-es-1"]) return;
-            if (!document.hasFocus()) return;
-            let message = BDV2.reactDom.findDOMNode(data.thisObject);
-            message = message.querySelector('.markup-2BOw-j');
-            if (!message) return;
-            // $(message).children('.emotewrapper').replaceWith(function() {
-            //     console.log($(this).attr("alt"))
-            //     return $(this).attr("alt");
-            // });
-            this.injectEmote(message);
-        }});
-
-    });
-
     this.loadEmoteData(emoteInfo);
     this.getBlacklist();
+
+    if (this.cancelEmoteRender) return;
+    this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({thisObject, returnValue}) => {
+        const markup = returnValue.props.children[1];
+        if (!markup.props.children) return;
+        const nodes = markup.props.children[1];
+        for (let n = 0, nlen = nodes.length; n < nlen; n++) {
+            const node = nodes[n];
+            if (typeof(node) !== "string") continue;
+            const words = node.split(/([^\s]+)([\s]|$)/g);
+            for (let w = 0, wlen = words.length; w < wlen; w++) {
+                let emote = words[w];
+                let emoteSplit = emote.split(':');
+                let emoteName = emoteSplit[0];
+                let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
+                let emoteOverride = emoteModifier.slice(0);
+    
+                if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
+                if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
+                if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
+                else emoteModifier = emoteOverride;
+    
+                let cats = this.categories;
+                if (emoteOverride === "twitch") {
+                    if (bdEmotes.TwitchGlobal[emoteName]) cats = ["TwitchGlobal"];
+                    else if (bdEmotes.TwitchSubscriber[emoteName]) cats = ["TwitchSubscriber"];
+                }
+                else if (emoteOverride === "bttv") {
+                    if (bdEmotes.BTTV[emoteName]) cats = ["BTTV"];
+                    else if (bdEmotes.BTTV2[emoteName]) cats = ["BTTV2"];
+                }
+                else if (emoteOverride === "ffz") {
+                    if (bdEmotes.FrankerFaceZ[emoteName]) cats = ["FrankerFaceZ"];
+                }
+                
+                for (let c = 0, clen = cats.length; c < clen; c++) {
+                    if (!bdEmotes[cats[c]][emoteName] || !settingsCookie[bdEmoteSettingIDs[cats[c]]]) continue;
+                    const results = nodes[n].match(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
+                    if (!results) continue;
+                    const pre = nodes[n].substring(0, results.index + results[1].length);
+                    const post = nodes[n].substring(results.index + results[0].length - results[2].length);
+                    nodes[n] = pre;
+        
+                    const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: bdEmotes[cats[c]][emoteName], modifier: emoteModifier});
+                    nodes.splice(n+1, 0, post);
+                    nodes.splice(n+1, 0, emoteComponent);
+                    n = n + 2;
+                }
+            }
+        }
+    }});
 };
 
 EmoteModule.prototype.clearEmoteData = async function() {
@@ -966,32 +897,6 @@ EmoteModule.prototype.getBlacklist = function () {
     });
 };
 
-EmoteModule.prototype.obsCallback = function (mutation) {
-    return;
-    var self = this;
-    
-    for (var i = 0; i < mutation.addedNodes.length; ++i) {
-        var next = mutation.addedNodes.item(i);
-        if (next) {
-            var nodes = self.getNodes(next);
-            for (var node in nodes) {
-                if (nodes.hasOwnProperty(node)) {
-                    var elem = nodes[node].parentElement;
-                    if (elem && elem.classList.contains('edited')) {
-                        $(elem.parentElement).children('.emotewrapper').remove();
-                        setTimeout(() => {
-                            //$(elem.parentElement).children()
-                            self.injectEmote(elem, true);
-                        }, 200);
-                    } else {
-                        self.injectEmote(nodes[node]);
-                    }
-                }
-            }
-        }
-    }
-};
-
 EmoteModule.prototype.getNodes = function (node) {
     var next;
     var nodes = [];
@@ -1008,7 +913,7 @@ EmoteModule.prototype.getNodes = function (node) {
 var bemotes = [];
 
 EmoteModule.prototype.injectEmote = async function(node, edited) {
-    let messageScroller = document.querySelector('.messages.scroller');
+    let messageScroller = document.querySelector('.messages-3amgkR.scroller');
     let message = node;
     if (message.getElementsByClassName("message-content").length) message = message.getElementsByClassName("message-content")[0];
     let editNode = null;
@@ -1561,6 +1466,8 @@ PluginModule.prototype.loadPlugins = function () {
         if (!bdplugins[plugin]) delete pluginCookie[plugin];
     }
     this.savePluginData();
+
+    require("electron").remote.getCurrentWebContents().on("did-navigate-in-page", this.channelSwitch.bind(this));
 };
 
 PluginModule.prototype.startPlugin = function (plugin) {
@@ -2204,6 +2111,12 @@ class V2 {
         };
     }
 
+    get MessageContentComponent() {return BDV2.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
+
+    get TimeFormatter() {return BDV2.WebpackModules.findByUniqueProperties(["dateFormat"]);}
+
+    get TooltipWrapper() {return BDV2.WebpackModules.find(m => m.prototype && m.prototype.showDelayed);}
+
     get reactComponent() {
         return this.internal['react'].Component;
     }
@@ -2230,6 +2143,44 @@ class V2 {
 }
 
 var BDV2 = new V2();
+
+class BDEmote extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement(BDV2.TooltipWrapper, {
+                className: "emote-tooltip",
+                color: "black",
+                position: "top",
+                text: this.props.modifier && settingsCookie["fork-es-1"] ? `${this.props.name}:${this.props.modifier}` : this.props.name
+            },
+                BDV2.react.createElement("span", {
+                    className: "emotewrapper"
+                },
+                    BDV2.react.createElement("img", {
+                        draggable: false,
+                        className: "emote " + this.props.modifier ? `emote${this.props.modifier}` : "",
+                        style: {maxHeight: "32px"},
+                        dataModifier: this.props.modifier,
+                        alt: this.props.name,
+                        src: this.props.url
+                    }),
+                    BDV2.react.createElement("input", {
+                        className: "fav",
+                        title: "Favorite!",
+                        type: "button",
+                        onClick: (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            quickEmoteMenu.favorite(this.props.name, this.props.url);
+                        }
+                    })
+                )
+            );
+    }
+}
 
 class V2C_SettingsPanel extends BDV2.reactComponent {
 
@@ -3239,7 +3190,7 @@ class V2_SettingsPanel_Sidebar {
             BDV2.react.createElement(
                 "div",
                 { style: { fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px" } },
-                `BD v${bdVersion}, JS v${jsVersion} by `,
+                `BD v${bdVersion} by `,
                 BDV2.react.createElement(
                     "a",
                     { href: "https://github.com/Jiiks/", target: "_blank" },
@@ -3411,19 +3362,15 @@ class V2_SettingsPanel {
             $("#app-mount").removeClass("bda-dark");
         }
 
-        if (document.querySelector('.messages')) {
-            let elem = document.querySelector('.messages');
-            if (_c["bda-gs-6"]) {
-                mainCore.inject24Hour(elem);
-            } else {
-                mainCore.remove24Hour(elem);
-            }
 
-            if (_c["bda-gs-7"] && document.querySelector('.messages')) {
-                mainCore.injectColoredText(elem);
-            } else {
-                mainCore.removeColoredText(elem);
-            }
+        if (_c["bda-gs-6"]) {
+            mainCore.inject24Hour();
+        }
+
+        if (_c["bda-gs-7"]) {
+            mainCore.injectColoredText();
+        } else {
+            mainCore.removeColoredText();
         }
 		
 		if (_c["fork-ps-4"]) classNormalizer.start();
@@ -3439,27 +3386,6 @@ class V2_SettingsPanel {
 				$(this).removeClass("stop-animation");
 			});
 		}
-		$(document).off('mouseover', '.emote');
-		//Pretty emote titles
-		var emoteNamePopup = $("<div class='tipsy tipsy-se' style='display: block; top: 82px; left: 1630.5px; visibility: visible; opacity: 0.8;'><div class='tipsy-inner'></div></div>");
-		$(document).on("mouseover", ".emote", function () {
-			var emote = $(this);
-			if (_c["fork-es-2"] && _c["bda-es-8"]) emote.removeClass("stop-animation");
-			if (!_c["bda-es-6"]) return;
-			var x = emote.offset();
-			var title = emote.attr("alt");
-			var modifier = emote.attr("data-modifier");
-			if (modifier && _c["fork-es-1"]) title = title + ":" + modifier;
-			emoteNamePopup.find(".tipsy-inner").text(title);
-			$(".app").append($(emoteNamePopup));
-			var nodecenter = x.left + (emote.outerWidth() / 2);
-			emoteNamePopup.css("left", nodecenter - (emoteNamePopup.outerWidth() / 2));
-			emoteNamePopup.css('top', x.top - emoteNamePopup.outerHeight());
-		});
-		$(document).on("mouseleave", ".emote", function () {
-			if (_c["bda-es-6"]) $(".tipsy").remove();
-			if (_c["fork-es-2"] && _c["bda-es-8"]) $(this).addClass("stop-animation");
-		});
 
         if (_c["bda-gs-8"]) {
             dMode.enable(_c["fork-dm-1"]);
