@@ -832,6 +832,10 @@ margin-right: -30px;
 	height: 14px;
 }
 
+.emotewrapper {
+  display: inline-flex;
+}
+
 .emotewrapper:hover .fav {
   display: block;
 }
