@@ -884,6 +884,10 @@ margin-right: -30px;
   cursor: pointer;
 }
 
+.fav.active {
+  background-color: yellow;
+}
+
 #bd-ps-container {
   position: fixed;
   width: 50%;

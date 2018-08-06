@@ -83,11 +83,6 @@ window.bdPluginStorage.set = function(pn, i, v) {
     betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'pluginstorage', 'cmd': 'set', 'pn': pn, 'var': i, 'data': v });
 };
 
-betterDiscordIPC.on('asynchronous-reply', (event, arg) => {
-    console.log(event);
-    console.log(arg);
-});
-
 var bdSettings = {};
 var bdSettingsStorage = {};
 bdSettingsStorage.initialize = function() {
@@ -128,14 +123,6 @@ var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
 var bbdVersion = "0.1.0";
 
-var mainObserver;
-
-var twitchEmoteUrlStart = "https://static-cdn.jtvnw.net/emoticons/v1/";
-var twitchEmoteUrlEnd = "/1.0";
-var ffzEmoteUrlStart = "https://cdn.frankerfacez.com/emoticon/";
-var ffzEmoteUrlEnd = "/1";
-var bttvEmoteUrlStart = "https://cdn.betterttv.net/emote/";
-var bttvEmoteUrlEnd = "/1x";
 
 var mainCore;
 
@@ -159,7 +146,6 @@ var settings = {
 	"Startup Error Modal":        { "id": "fork-ps-1", "info": "Show a modal with plugin/theme errors on startup", "implemented": true,  "hidden": false, "cat": "fork"},
     "Show Toasts":                { "id": "fork-ps-2", "info": "Shows a small notification for starting and stopping plugins & themes", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Scroll To Settings":         { "id": "fork-ps-3", "info": "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", "implemented": true,  "hidden": false, "cat": "fork"},
-	"Emote Modifier Tooltip":     { "id": "fork-es-1", "info": "Shows the emote modifier in the tooltip.", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Animate On Hover":           { "id": "fork-es-2", "info": "Only animate the emote modifiers on hover", "implemented": true,  "hidden": false, "cat": "fork"},
 	"Copy Selector":			  { "id": "fork-dm-1", "info": "Adds a \"Copy Selector\" option to context menus when developer mode is active", "implemented": true,  "hidden": false, "cat": "fork"},
     "Download Emotes":            { "id": "fork-es-3", "info": "Download emotes when the cache is expired", "implemented": true,  "hidden": false, "cat": "fork"},
@@ -208,7 +194,6 @@ var defaultCookie = {
     "fork-ps-2": true,
 	"fork-ps-3": true,
 	"fork-ps-4": true,
-	"fork-es-1": true,
     "fork-es-2": false,
     "fork-es-3": true
 };
@@ -221,16 +206,6 @@ var bdpluginErrors, bdthemeErrors; // define for backwards compatibility
 var bdConfig = null;
 
 function Core(config) {
-    if (!config) {
-        config = {
-            branch: "master",
-            repo: "rauenzi",
-            updater: {
-                CDN: "cdn.rawgit.com"
-            }
-        }
-    }
-    else config.newLoader = true;
     window.bdConfig = config;
 }
 
@@ -373,9 +348,9 @@ Core.prototype.loadSettings = function () {
 };
 
 Core.prototype.initObserver = function () {
-    mainObserver = new MutationObserver((mutations) => {
+    const mainObserver = new MutationObserver((mutations) => {
 
-        for (let i = 0; i < mutations.length; i++) {
+        for (let i = 0, mlen = mutations.length; i < mlen; i++) {
             let mutation = mutations[i];
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
     
@@ -554,10 +529,10 @@ Core.prototype.showToast = function(content, options = {}) {
     if (!document.querySelector('.bd-toasts')) {
         let toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");
-        let boundingElement = document.querySelector('.chat form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9');
+        let boundingElement = document.querySelector('.chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9');
         toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
         toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
-        toastWrapper.style.setProperty("bottom", (document.querySelector('.chat form') ? document.querySelector('.chat form').offsetHeight : 80) + "px");
+        toastWrapper.style.setProperty("bottom", (document.querySelector('.chat-3bRxxu form') ? document.querySelector('.chat-3bRxxu form').offsetHeight : 80) + "px");
         document.querySelector('.app').appendChild(toastWrapper);
     }
     const {type = "", icon = true, timeout = 3000} = options;
@@ -683,23 +658,6 @@ EmoteModule.prototype.init = async function () {
         }
     };
 
-    if (!bdConfig.newLoader) {
-        window.bdEmotes = {
-            TwitchGlobal: emotesTwitch,
-            TwitchSubscriber: subEmotesTwitch,
-            BTTV: emotesBTTV,
-            FrankerFaceZ: emotesFfz,
-            BTTV2: emotesBTTV2
-        }
-
-        for (let type in window.bdEmotes) {
-            for (let emote in window.bdEmotes[type]) {
-                window.bdEmotes[type][emote] = emoteInfo[type].getEmoteURL(window.bdEmotes[type][emote]);
-            }
-        }
-        return;
-    }
-
     this.loadEmoteData(emoteInfo);
     this.getBlacklist();
 
@@ -711,43 +669,44 @@ EmoteModule.prototype.init = async function () {
         const markup = returnValue.props.children[1];
         if (!markup.props.children) return;
         const nodes = markup.props.children[1];
+        if (!nodes || !nodes.length) return;
         for (let n = 0; n < nodes.length; n++) {
             const node = nodes[n];
             if (typeof(node) !== "string") continue;
             const words = node.split(/([^\s]+)([\s]|$)/g);
-            for (let w = 0, wlen = words.length; w < wlen; w++) {
-                let emote = words[w];
-                let emoteSplit = emote.split(':');
-                let emoteName = emoteSplit[0];
-                let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
-                let emoteOverride = emoteModifier.slice(0);
-    
-                if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
-                if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
-                if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
-                else emoteModifier = emoteOverride;
-    
-                let cats = this.categories;
-                if (emoteOverride === "twitch") {
-                    if (bdEmotes.TwitchGlobal[emoteName]) cats = ["TwitchGlobal"];
-                    else if (bdEmotes.TwitchSubscriber[emoteName]) cats = ["TwitchSubscriber"];
-                }
-                else if (emoteOverride === "bttv") {
-                    if (bdEmotes.BTTV[emoteName]) cats = ["BTTV"];
-                    else if (bdEmotes.BTTV2[emoteName]) cats = ["BTTV2"];
-                }
-                else if (emoteOverride === "ffz") {
-                    if (bdEmotes.FrankerFaceZ[emoteName]) cats = ["FrankerFaceZ"];
-                }
-                
-                for (let c = 0, clen = cats.length; c < clen; c++) {
-                    if (!bdEmotes[cats[c]][emoteName] || !settingsCookie[bdEmoteSettingIDs[cats[c]]]) continue;
+            for (let c = 0, clen = this.categories.length; c < clen; c++) {
+                for (let w = 0, wlen = words.length; w < wlen; w++) {
+                    let emote = words[w];
+                    let emoteSplit = emote.split(':');
+                    let emoteName = emoteSplit[0];
+                    let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
+                    let emoteOverride = emoteModifier.slice(0);
+        
+                    if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
+                    if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
+                    if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
+                    else emoteModifier = emoteOverride;
+        
+                    let current = this.categories[c];
+                    if (emoteOverride === "twitch") {
+                        if (bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
+                        else if (bdEmotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
+                    }
+                    else if (emoteOverride === "bttv") {
+                        if (bdEmotes.BTTV[emoteName]) current = "BTTV";
+                        else if (bdEmotes.BTTV2[emoteName]) current = "BTTV2";
+                    }
+                    else if (emoteOverride === "ffz") {
+                        if (bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
+                    }
+                    
+                    if (!bdEmotes[current][emoteName] || !settingsCookie[bdEmoteSettingIDs[current]]) continue;
                     const results = nodes[n].match(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                     if (!results) continue;
                     const pre = nodes[n].substring(0, results.index + results[1].length);
                     const post = nodes[n].substring(results.index + results[0].length - results[2].length);
                     nodes[n] = pre;
-                    const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: bdEmotes[cats[c]][emoteName], modifier: emoteModifier});
+                    const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: bdEmotes[current][emoteName], modifier: emoteModifier});
                     nodes.splice(n+1, 0, post);
                     nodes.splice(n+1, 0, emoteComponent);
                     n = n + 2;
@@ -811,7 +770,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
                 resolve(data)
             });
         });
-        let isValid = this.testJSON(data);
+        let isValid = Utils.testJSON(data);
 
         if (isValid) bdEmotes = JSON.parse(data);
 
@@ -895,113 +854,16 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
     });
 }
 
-EmoteModule.prototype.testJSON = function(data) {
-    try {
-        let json = JSON.parse(data);
-        return true;
-    }
-    catch(err) {
-        return false;
-    }
-    return false;
-}
-
 EmoteModule.prototype.getBlacklist = function () {
     $.getJSON("https://cdn.rawgit.com/rauenzi/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
         bemotes = data.blacklist;
     });
 };
 
-EmoteModule.prototype.getNodes = function (node) {
-    var next;
-    var nodes = [];
-
-    var treeWalker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT, null, false);
-
-    // eslint-disable-next-line no-cond-assign
-    while (next = treeWalker.nextNode()) {
-        nodes.push(next);
-    }
-    return nodes;
-};
-
 var bemotes = [];
 
-EmoteModule.prototype.injectEmote = async function(node, edited) {
-    let messageScroller = document.querySelector('.messages-3amgkR.scroller');
-    let message = node;
-    if (message.getElementsByClassName("message-content").length) message = message.getElementsByClassName("message-content")[0];
-    let editNode = null;
-	let textNodes = utils.getTextNodes(message);
-	
-    let words = textNodes.map(n => n.data).join(" ").split(/([^\s]+)([\s]|$)/g).filter(function(e) { return e; });
-
-    let inject = function(message, messageScroller, category, emoteName, emoteModifier) {
-        let inCategory = Object.hasOwnProperty.call(bdEmotes[category], emoteName);
-        if (!inCategory || !settingsCookie[bdEmoteSettingIDs[category]]) return false;
-
-        let url = bdEmotes[category][emoteName];
-        let element = this.createEmoteElement(emoteName, url, emoteModifier);
-        let oldHeight = message.offsetHeight;
-        utils.insertElement(message, new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`), $(element)[0]);
-        messageScroller.scrollTop = messageScroller.scrollTop + (message.offsetHeight - oldHeight);
-        return true;
-    }
-
-    inject = inject.bind(this, message, messageScroller);
-
-    for (let w = 0, len = words.length; w < len; w++) {
-        let emote = words[w];
-        let emoteSplit = emote.split(':');
-        let emoteName = emoteSplit[0];
-        let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
-        let emoteOverride = emoteModifier.slice(0);
-
-        if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
-        if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
-        if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
-
-        if (emoteOverride === "twitch") {
-            let tglobal = false;
-            let tsubscriber = false;
-            tglobal = inject("TwitchGlobal", emoteName, emoteOverride);
-            if (!tglobal) tsubscriber = inject("TwitchSubscriber", emoteName, emoteOverride);
-            if (tglobal || tsubscriber) continue;
-        }
-        else if (emoteOverride === "bttv") {
-            let bttv = false;
-            let bttv2 = false;
-            bttv = inject("BTTV", emoteName, emoteOverride);
-            if (!bttv) bttv2 = inject("BTTV2", emoteName, emoteOverride);
-            if (bttv || bttv2) continue;
-        }
-        else if (emoteOverride === "ffz") {
-            let ffz = inject("FrankerFaceZ", emoteName, emoteOverride);
-            if (ffz) continue;
-        }
-        
-        for (let c = 0, clen = this.categories.length; c < clen; c++) {
-            inject(this.categories[c], emoteName, emoteModifier);
-        }
-
-        if (emote == "[!s]") message.classList.add("spoiler");
-    }
-};
-
-EmoteModule.prototype.createEmoteElement = function(word, url, mod) {
-    var len = Math.round(word.length / 4);
-    var name = word.substr(0, len) + "\uFDD9" + word.substr(len, len) + "\uFDD9" + word.substr(len * 2, len) + "\uFDD9" + word.substr(len * 3);
-    var stopAnim = settingsCookie['fork-es-2'] ? " stop-animation" : "";
-    var modClass = mod ? "emote" + mod : "";
-    var html = '<span class="emotewrapper"><img draggable="false" style="max-height:32px;" data-modifier="' + mod + '" class="emote ' + modClass + stopAnim + '" alt="' + name + '" src="' + url + '"/><input onclick=\'quickEmoteMenu.favorite("' + name + '", "' + url + '");\' class="fav" title="Favorite!" type="button"></span>';
-    return html.replace(new RegExp("\uFDD9", "g"), "");
-};
-
 EmoteModule.prototype.autoCapitalize = function () {
-
-    var self = this;
-
-    $('body').delegate($(".channelTextArea-1LDbYG textarea:first"), 'keyup change paste', function () {
+    $('body').delegate($(".channelTextArea-1LDbYG textarea:first"), 'keyup change paste', () => {
         if (!settingsCookie["bda-es-4"]) return;
 
         var text = $(".channelTextArea-1LDbYG textarea:first").val();
@@ -1010,7 +872,7 @@ EmoteModule.prototype.autoCapitalize = function () {
         var lastWord = text.split(" ").pop();
         if (lastWord.length > 3) {
             if (lastWord == "danSgame") return;
-            var ret = self.capitalize(lastWord.toLowerCase());
+            var ret = this.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
                 utils.insertText(utils.getTextArea()[0], text.replace(lastWord, ret));
             }
@@ -1347,6 +1209,17 @@ Utils.prototype.getTextNodes = function(node) {
 	return textNodes;
 }
 
+Utils.testJSON = function(data) {
+    try {
+        let json = JSON.parse(data);
+        return true;
+    }
+    catch(err) {
+        return false;
+    }
+    return false;
+};
+
 Utils.suppressErrors = (method, desiption) => (...params) => {
 	try { return method(...params);	}
 	catch (e) { console.error('Error occurred in ' + desiption, e); }
@@ -1404,21 +1277,11 @@ function VoiceMode() {
 
 }
 
-VoiceMode.prototype.obsCallback = function () {
-    var self = this;
-    if (settingsCookie["bda-gs-4"]) {
-        self.disable();
-        setTimeout(function () {
-            self.enable();
-        }, 300);
-    }
-};
-
 VoiceMode.prototype.enable = function () {
     $(".scroller.guild-channels ul").first().css("display", "none");
     $(".scroller.guild-channels header").first().css("display", "none");
     $(".app.flex-vertical").first().css("overflow", "hidden");
-    $(".chat.flex-vertical.flex-spacer").first().css("visibility", "hidden").css("min-width", "0px");
+    $(".chat-3bRxxu").first().css("visibility", "hidden").css("min-width", "0px");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
 };
@@ -1427,7 +1290,7 @@ VoiceMode.prototype.disable = function () {
     $(".scroller.guild-channels ul").first().css("display", "");
     $(".scroller.guild-channels header").first().css("display", "");
     $(".app.flex-vertical").first().css("overflow", "");
-    $(".chat.flex-vertical.flex-spacer").first().css("visibility", "").css("min-width", "");
+    $(".chat-3bRxxu").first().css("visibility", "").css("min-width", "");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
@@ -2040,13 +1903,10 @@ var ClassNormalizer = class ClassNormalizer {
 
 /*V2 Premature*/
 
-window.bdtemp = {
-    'editorDetached': false
-};
-
 class V2 {
 
     constructor() {
+        this.editorDetached = false;
         this.WebpackModules = (() => {
 			//__webpack_require__ = window.webpackJsonp.push([[id], {[id]: (module, exports, req) => module.exports = req}, [[id]]]);
             const req = typeof(webpackJsonp) == "function" ? webpackJsonp([], {'__extra_id__': (module, exports, req) => exports.default = req}, ['__extra_id__']).default :
@@ -2164,6 +2024,25 @@ class BDEmote extends BDV2.reactComponent {
         super(props);
         this.props.label = this.props.modifier ? `${this.props.name}:${this.props.modifier}` : this.props.name;
         this.props.modifierClass = this.props.modifier ? ` emote${this.props.modifier}` : "";
+        this.props.animateOnHover = bdSettings.settings["fork-es-2"];
+        const isFav = quickEmoteMenu && quickEmoteMenu.favoriteEmotes && quickEmoteMenu.favoriteEmotes[this.props.label] ? true : false;
+        this.state = {
+            shouldAnimate: !this.props.animateOnHover,
+            isFavorite: isFav
+        };
+
+        this.onMouseEnter = this.onMouseEnter.bind(this);
+        this.onMouseLeave = this.onMouseLeave.bind(this);
+    }
+
+    onMouseEnter() {
+        if (!this.state.shouldAnimate && this.props.animateOnHover) this.setState({shouldAnimate: true});
+        if (!this.state.isFavorite && quickEmoteMenu.favoriteEmotes[this.props.label]) this.setState({isFavorite: true});
+        else if (this.state.isFavorite && !quickEmoteMenu.favoriteEmotes[this.props.label]) this.setState({isFavorite: false});
+    }
+
+    onMouseLeave() {
+        if (this.state.shouldAnimate && this.props.animateOnHover) this.setState({shouldAnimate: false});
     }
 
     render() {
@@ -2174,23 +2053,30 @@ class BDEmote extends BDV2.reactComponent {
                 delay: 750
             },
                 BDV2.react.createElement("div", {
-                    className: "emotewrapper" + (this.props.jumboable ? " jumboable" : "")
+                    className: "emotewrapper" + (this.props.jumboable ? " jumboable" : ""),
+                    onMouseEnter: this.onMouseEnter,
+                    onMouseLeave: this.onMouseLeave
                 },
                     BDV2.react.createElement("img", {
                         draggable: false,
-                        className: "emote" + this.props.modifierClass + (this.props.jumboable ? " jumboable" : ""),
+                        className: "emote" + this.props.modifierClass + (this.props.jumboable ? " jumboable" : "") + (!this.state.shouldAnimate ? " stop-animation" : ""),
                         dataModifier: this.props.modifier,
                         alt: this.props.label,
                         src: this.props.url
                     }),
                     BDV2.react.createElement("input", {
-                        className: "fav",
+                        className: "fav" + (this.state.isFavorite ? " active" : ""),
                         title: "Favorite!",
                         type: "button",
                         onClick: (e) => {
                             e.preventDefault();
                             e.stopPropagation();
-                            quickEmoteMenu.favorite(this.props.name, this.props.url);
+                            if (this.state.isFavorite) {
+                                delete quickEmoteMenu.favoriteEmotes[this.props.label];
+                                quickEmoteMenu.updateFavorites();
+                            }
+                            else quickEmoteMenu.favorite(this.props.label, this.props.url);
+                            this.setState({isFavorite: !this.state.isFavorite});
                         }
                     })
                 )
@@ -2543,7 +2429,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
 
     componentDidMount() {
         $("#app-mount").addClass('bd-detached-editor');
-        window.bdtemp.editorDetached = true;
+        BDV2.editorDetached = true;
         // this.updateLineCount();
         this.editor = ace.edit("bd-customcss-editor-detached");
         this.editor.setTheme("ace/theme/monokai");
@@ -2559,7 +2445,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
 
     componentWillUnmount() {
         $("#app-mount").removeClass('bd-detached-editor');
-        window.bdtemp.editorDetached = false;
+        BDV2.editorDetached = false;
         this.editor.destroy();
     }
 	
@@ -2715,7 +2601,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            'detached': this.props.detached || window.bdtemp.editorDetached
+            'detached': this.props.detached || BDV2.editorDetached
         };
     }
 
@@ -3392,16 +3278,6 @@ class V2_SettingsPanel {
 		if (_c["fork-ps-4"]) classNormalizer.start();
 		else classNormalizer.stop();
 		
-		if (_c["fork-es-2"]) {
-			$('.emote').each(() => {
-				$(this).addClass("stop-animation");
-			});
-		}
-		else {
-			$('.emote').each(() => {
-				$(this).removeClass("stop-animation");
-			});
-		}
 
         if (_c["bda-gs-8"]) {
             dMode.enable(_c["fork-dm-1"]);
