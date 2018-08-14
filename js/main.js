@@ -229,7 +229,7 @@ Core.prototype.init = async function() {
 	classNormalizer = new ClassNormalizer();
     emoteModule = new EmoteModule();
     utils.log("Initializing EmoteModule");
-    emoteModule.init().then(() => {emoteModule.initialized = true;});
+    window.emotePromise = emoteModule.init().then(() => {emoteModule.initialized = true;});
 	publicServersModule = new V2_PublicServers();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
@@ -1591,7 +1591,7 @@ BdApi.showToast = function(content, options = {}) {
      var self = this;
      this.disable();
      $(window).on("keydown.bdDevmode", function(e) {
-         if(e.which === 119) {//F8
+         if(e.which === 119 || e.which == 118) {//F8
             console.log('%c[%cDevMode%c] %cBreak/Resume', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
             debugger; // eslint-disable-line no-debugger
          }
@@ -1599,15 +1599,15 @@ BdApi.showToast = function(content, options = {}) {
      
 	if (!selectorMode) return;
      $(document).on("contextmenu.bdDevmode", function(e) {
-         var parents = [];
-         $(e.toElement).parents().addBack().not('html').each(function() {
-             var entry = "";
-             if (this.classList && this.classList.length) {
-                 entry += "." + Array.prototype.join.call(this.classList, '.');
-                 parents.push(entry);
-             }
-         });
-         self.lastSelector = parents.join(" ").trim();
+        //  var parents = [];
+        //  $(e.toElement).parents().addBack().not('html').each(function() {
+        //      var entry = "";
+        //      if (this.classList && this.classList.length) {
+        //          entry += "." + Array.prototype.join.call(this.classList, '.');
+        //          parents.push(entry);
+        //      }
+        //  });
+         self.lastSelector = self.getSelector(e.toElement);
 
          function attach() {
             var cm = $(".contextMenu-HLZMGh");
@@ -1639,11 +1639,7 @@ BdApi.showToast = function(content, options = {}) {
             var cmi = $("<div/>", {
                 class: "item-1Yvehc",
                 click: function() {
-                    var t = $("<textarea/>", { text: self.lastSelector }).appendTo("body");
-                    t.select();
-                    document.execCommand("copy");
-                    t.remove();
-                    //if (cm.hasClass("bd-context-menu")) cm.remove();
+                    BDV2.NativeModule.copy(self.lastSelector);
                     cm.hide();
                 }
             }).append($("<span/>", { text: "Copy Selector" }));
@@ -1657,6 +1653,20 @@ BdApi.showToast = function(content, options = {}) {
          e.stopPropagation();
      });
  };
+
+devMode.prototype.getRules = function(element, css = element.ownerDocument.styleSheets) {
+    //if (window.getMatchedCSSRules) return window.getMatchedCSSRules(element);
+    return [].concat(...[...css].map(s => [...s.cssRules||[]])).filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8);
+};
+
+devMode.prototype.getSelector = function(element) {
+    if (element.id) return `#${element.id}`;
+    const rules = this.getRules(element);
+    const latestRule = rules[rules.length - 1];
+    if (latestRule) return latestRule.selectorText;
+    else if (element.classList.length) return `.${Array.from(element.classList).join(".")}`;
+    else return `.${Array.from(element.parentElement.classList).join(".")}`;
+};
  
  devMode.prototype.disable = function() {
      $(window).off("keydown.bdDevmode");
@@ -1991,6 +2001,8 @@ class V2 {
     get TimeFormatter() {return BDV2.WebpackModules.findByUniqueProperties(["dateFormat"]);}
 
     get TooltipWrapper() {return BDV2.WebpackModules.find(m => m.prototype && m.prototype.showDelayed);}
+
+    get NativeModule() {return BDV2.WebpackModules.findByUniqueProperties(["setBadge"]);}
 
     get reactComponent() {
         return this.internal['react'].Component;
@@ -2335,18 +2347,17 @@ class V2C_Tools extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement(
-            "div",
-            { className: "tools" },
-            BDV2.react.createElement(
-                "div",
-                { className: "btn-close", onClick: this.onClick },
-                BDV2.react.createElement(V2Components.XSvg, null)
-            ),
-            BDV2.react.createElement(
-                "div",
-                { className: "esc-text" },
-                "ESC"
+        return BDV2.react.createElement("div", { className: "tools-container" },
+            BDV2.react.createElement("div", { className: "tools" },
+                BDV2.react.createElement("div",
+                    { className: "btn-close closeButton-1tv5uR", onClick: this.onClick },
+                    BDV2.react.createElement(V2Components.XSvg, null)
+                ),
+                BDV2.react.createElement(
+                    "div",
+                    { className: "esc-text keybind-KpFkfr" },
+                    "ESC"
+                )
             )
         );
     }
@@ -2355,7 +2366,7 @@ class V2C_Tools extends BDV2.reactComponent {
         if (this.props.onClick) {
             this.props.onClick();
         }
-        $(".btn-close").first().click();
+        $(".closeButton-1tv5uR").first().click();
     }
 }
 
