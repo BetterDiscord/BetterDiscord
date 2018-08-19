@@ -6,30 +6,29 @@
  * https://github.com/Jiiks/BetterDiscordApp
  */
 
- /* global Proxy, bdplugins, bdthemes, betterDiscordIPC, bdVersion, version, BDV2, webpackJsonp */
-
- /* eslint-disable  no-console */
-
-/*Localstorage fix*/
+/* Localstorage fix */
 (function() {
 
     let __fs = window.require("fs");
     let __process = window.require("process");
     let __platform = __process.platform;
-    let __dataPath = (__platform === 'win32' ? __process.env.APPDATA : __platform === 'darwin' ? __process.env.HOME + '/Library/Preferences' : process.env.HOME + '/.config') + '/BetterDiscord/';
+    let __dataPath = (__platform === "win32" ? __process.env.APPDATA : __platform === "darwin" ? __process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config") + "/BetterDiscord/";
     let localStorageFile = "localStorage.json";
 
     let __data = {};
-    if(__fs.existsSync(`${__dataPath}${localStorageFile}`)) {
+    if (__fs.existsSync(`${__dataPath}${localStorageFile}`)) {
         try {
             __data = JSON.parse(__fs.readFileSync(`${__dataPath}${localStorageFile}`));
-        }catch(err) {
+        }
+        catch (err) {
             console.log(err);
         }
-    } else if(__fs.existsSync(localStorageFile)) {
+    }
+    else if (__fs.existsSync(localStorageFile)) {
         try {
             __data = JSON.parse(__fs.readFileSync(localStorageFile));
-        }catch(err) {
+        }
+        catch (err) {
             console.log(err);
         }
     }
@@ -61,7 +60,7 @@
 })();
 
 (() => {
-    let v2Loader = document.createElement('div');
+    let v2Loader = document.createElement("div");
     v2Loader.className = "bd-loaderv2";
     v2Loader.title = "BetterDiscord is loading...";
     document.body.appendChild(v2Loader);
@@ -70,17 +69,17 @@
 
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
-    return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'get', 'var': i });
+    return betterDiscordIPC.sendSync("synchronous-message", {"arg": "storage", "cmd": "get", "var": i});
 };
 window.bdStorage.set = function(i, v) {
-    betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'storage', 'cmd': 'set', 'var': i, 'data': v });
+    betterDiscordIPC.sendSync("synchronous-message", {"arg": "storage", "cmd": "set", "var": i, "data": v});
 };
 window.bdPluginStorage = {};
 window.bdPluginStorage.get = function(pn, i) {
-    return betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'pluginstorage', 'cmd': 'get', 'pn': pn, 'var': i });
+    return betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "get", "pn": pn, "var": i});
 };
 window.bdPluginStorage.set = function(pn, i, v) {
-    betterDiscordIPC.sendSync('synchronous-message', { 'arg': 'pluginstorage', 'cmd': 'set', 'pn': pn, 'var': i, 'data': v });
+    betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "set", "pn": pn, "var": i, "data": v});
 };
 
 var bdSettings = {};
@@ -89,34 +88,34 @@ bdSettingsStorage.initialize = function() {
     let fs = require("fs");
     let data = {};
     if (fs.existsSync(bdConfig.dataPath + "/bdsettings.json")) {
-		try {
-			data = JSON.parse(fs.readFileSync(bdConfig.dataPath + "/bdsettings.json"));
-		}
-		catch (err) {
-			data = {};
-		}
-	}
+        try {
+            data = JSON.parse(fs.readFileSync(bdConfig.dataPath + "/bdsettings.json"));
+        }
+        catch (err) {
+            data = {};
+        }
+    }
     if (data) bdSettings = data;
     else bdSettings = {};
-}
+};
 
 bdSettingsStorage.get = function(key) {
     if (bdSettings[key]) return bdSettings[key];
-    else return null;
-}
+    return null;
+};
 
 bdSettingsStorage.set = function(key, data) {
     let fs = require("fs");
     bdSettings[key] = data;
     try {
-		fs.writeFileSync(bdConfig.dataPath + "/bdsettings.json", JSON.stringify(bdSettings, null, 4));
+        fs.writeFileSync(bdConfig.dataPath + "/bdsettings.json", JSON.stringify(bdSettings, null, 4));
         return true;
     }
-    catch(err) {
+    catch (err) {
         utils.err(err);
         return false;
     }
-}
+};
 
 var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
@@ -127,40 +126,40 @@ var bbdVersion = "0.1.0";
 var mainCore;
 
 var settings = {
-    "Save logs locally":          { "id": "bda-gs-0",  "info": "Saves chat logs locally",                           "implemented": false, "hidden": false, "cat": "core"},
-    "Public Servers":             { "id": "bda-gs-1",  "info": "Display public servers button",                     "implemented": true,  "hidden": false, "cat": "core"},
-    "Minimal Mode":               { "id": "bda-gs-2",  "info": "Hide elements and reduce the size of elements.",    "implemented": true,  "hidden": false, "cat": "core"},
-    "Voice Mode":                 { "id": "bda-gs-4",  "info": "Only show voice chat",                              "implemented": true,  "hidden": false, "cat": "core"},
-    "Hide Channels":              { "id": "bda-gs-3",  "info": "Hide channels in minimal mode",                     "implemented": true,  "hidden": false, "cat": "core"},
-    "Dark Mode":                  { "id": "bda-gs-5",  "info": "Make certain elements dark by default(wip)",        "implemented": true,  "hidden": false, "cat": "core"},
-    "Override Default Emotes":    { "id": "bda-es-5",  "info": "Override default emotes",                           "implemented": false, "hidden": false, "cat": "core"},
-    "Voice Disconnect":           { "id": "bda-dc-0",  "info": "Disconnect from voice server when closing Discord", "implemented": true,  "hidden": false, "cat": "core"},
-    "Custom css live update":     { "id": "bda-css-0", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
-    "Custom css auto udpate":     { "id": "bda-css-1", "info": "",                                                  "implemented": true,  "hidden": true,  "cat": "core"},
-    "24 Hour Timestamps":         { "id": "bda-gs-6",  "info": "Replace 12hr timestamps with proper ones",          "implemented": true,  "hidden": false, "cat": "core"},
-    "Coloured Text":              { "id": "bda-gs-7",  "info": "Make text colour the same as role colour",          "implemented": true,  "hidden": false, "cat": "core"},
-    "BetterDiscord Blue":         { "id": "bda-gs-b",  "info": "Replace Discord blue with BD Blue",                 "implemented": true,  "hidden": false, "cat": "core"},
-    "Developer Mode":         	  { "id": "bda-gs-8",  "info": "Developer Mode",                                    "implemented": true,  "hidden": false, "cat": "core"},
-	
-	
-	"Startup Error Modal":        { "id": "fork-ps-1", "info": "Show a modal with plugin/theme errors on startup", "implemented": true,  "hidden": false, "cat": "fork"},
-    "Show Toasts":                { "id": "fork-ps-2", "info": "Shows a small notification for starting and stopping plugins & themes", "implemented": true,  "hidden": false, "cat": "fork"},
-	"Scroll To Settings":         { "id": "fork-ps-3", "info": "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", "implemented": true,  "hidden": false, "cat": "fork"},
-	"Animate On Hover":           { "id": "fork-es-2", "info": "Only animate the emote modifiers on hover", "implemented": true,  "hidden": false, "cat": "fork"},
-	"Copy Selector":			  { "id": "fork-dm-1", "info": "Adds a \"Copy Selector\" option to context menus when developer mode is active", "implemented": true,  "hidden": false, "cat": "fork"},
-    "Download Emotes":            { "id": "fork-es-3", "info": "Download emotes when the cache is expired", "implemented": true,  "hidden": false, "cat": "fork"},
-	"Normalize Classes":          { "id": "fork-ps-4", "info": "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", "implemented": true,  "hidden": false, "cat": "fork"},
+    "Save logs locally":          {id: "bda-gs-0",  info: "Saves chat logs locally",                           implemented: false, hidden: false, cat: "core"},
+    "Public Servers":             {id: "bda-gs-1",  info: "Display public servers button",                     implemented: true,  hidden: false, cat: "core"},
+    "Minimal Mode":               {id: "bda-gs-2",  info: "Hide elements and reduce the size of elements.",    implemented: true,  hidden: false, cat: "core"},
+    "Voice Mode":                 {id: "bda-gs-4",  info: "Only show voice chat",                              implemented: true,  hidden: false, cat: "core"},
+    "Hide Channels":              {id: "bda-gs-3",  info: "Hide channels in minimal mode",                     implemented: true,  hidden: false, cat: "core"},
+    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: true,  hidden: false, cat: "core"},
+    "Override Default Emotes":    {id: "bda-es-5",  info: "Override default emotes",                           implemented: false, hidden: false, cat: "core"},
+    "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core"},
+    "Custom css live update":     {id: "bda-css-0", info: "",                                                  implemented: true,  hidden: true,  cat: "core"},
+    "Custom css auto udpate":     {id: "bda-css-1", info: "",                                                  implemented: true,  hidden: true,  cat: "core"},
+    "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core"},
+    "Coloured Text":              {id: "bda-gs-7",  info: "Make text colour the same as role colour",          implemented: true,  hidden: false, cat: "core"},
+    "BetterDiscord Blue":         {id: "bda-gs-b",  info: "Replace Discord blue with BD Blue",                 implemented: true,  hidden: false, cat: "core"},
+    "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core"},
+    
+    
+    "Startup Error Modal":        {id: "fork-ps-1", info: "Show a modal with plugin/theme errors on startup", implemented: true,  hidden: false, cat: "fork"},
+    "Show Toasts":                {id: "fork-ps-2", info: "Shows a small notification for starting and stopping plugins & themes", implemented: true,  hidden: false, cat: "fork"},
+    "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "fork"},
+    "Animate On Hover":           {id: "fork-es-2", info: "Only animate the emote modifiers on hover", implemented: true,  hidden: false, cat: "fork"},
+    "Copy Selector":			  {id: "fork-dm-1", info: "Adds a \"Copy Selector\" option to context menus when developer mode is active", implemented: true,  hidden: false, cat: "fork"},
+    "Download Emotes":            {id: "fork-es-3", info: "Download emotes when the cache is expired", implemented: true,  hidden: false, cat: "fork"},
+    "Normalize Classes":          {id: "fork-ps-4", info: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", implemented: true,  hidden: false, cat: "fork"},
     
 
-    "Twitch Emotes":              { "id": "bda-es-7",  "info": "Show Twitch emotes",                                "implemented": true,  "hidden": false, "cat": "emote"},
-    "FrankerFaceZ Emotes":        { "id": "bda-es-1",  "info": "Show FrankerFaceZ Emotes",                          "implemented": true,  "hidden": false, "cat": "emote"},
-    "BetterTTV Emotes":           { "id": "bda-es-2",  "info": "Show BetterTTV Emotes",                             "implemented": true,  "hidden": false, "cat": "emote"},
-    "Emote Menu":                 { "id": "bda-es-0",  "info": "Show Twitch/Favourite emotes in emote menu",        "implemented": true,  "hidden": false, "cat": "emote"},
-    "Emoji Menu":                 { "id": "bda-es-9",  "info": "Show Discord emoji menu",                           "implemented": true,  "hidden": false, "cat": "emote"},
-    "Emote Autocomplete":         { "id": "bda-es-3",  "info": "Autocomplete emote commands",                       "implemented": false, "hidden": false, "cat": "emote"},
-    "Emote Auto Capitalization":  { "id": "bda-es-4",  "info": "Autocapitalize emote commands",                     "implemented": true,  "hidden": false, "cat": "emote"},
-    "Show Names":                 { "id": "bda-es-6",  "info": "Show emote names on hover",                         "implemented": true,  "hidden": false, "cat": "emote"},
-    "Show emote modifiers":       { "id": "bda-es-8",  "info": "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)", "implemented": true,  "hidden": false, "cat": "emote"},
+    "Twitch Emotes":              {id: "bda-es-7",  info: "Show Twitch emotes",                                implemented: true,  hidden: false, cat: "emote"},
+    "FrankerFaceZ Emotes":        {id: "bda-es-1",  info: "Show FrankerFaceZ Emotes",                          implemented: true,  hidden: false, cat: "emote"},
+    "BetterTTV Emotes":           {id: "bda-es-2",  info: "Show BetterTTV Emotes",                             implemented: true,  hidden: false, cat: "emote"},
+    "Emote Menu":                 {id: "bda-es-0",  info: "Show Twitch/Favourite emotes in emote menu",        implemented: true,  hidden: false, cat: "emote"},
+    "Emoji Menu":                 {id: "bda-es-9",  info: "Show Discord emoji menu",                           implemented: true,  hidden: false, cat: "emote"},
+    "Emote Autocomplete":         {id: "bda-es-3",  info: "Autocomplete emote commands",                       implemented: false, hidden: false, cat: "emote"},
+    "Emote Auto Capitalization":  {id: "bda-es-4",  info: "Autocapitalize emote commands",                     implemented: true,  hidden: false, cat: "emote"},
+    "Show Names":                 {id: "bda-es-6",  info: "Show emote names on hover",                         implemented: true,  hidden: false, cat: "emote"},
+    "Show emote modifiers":       {id: "bda-es-8",  info: "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)", implemented: true,  hidden: false, cat: "emote"},
 };
 
 var defaultCookie = {
@@ -189,11 +188,11 @@ var defaultCookie = {
     "bda-css-0": false,
     "bda-css-1": false,
     "bda-es-9": true,
-	"fork-dm-1": false,
+    "fork-dm-1": false,
     "fork-ps-1": true,
     "fork-ps-2": true,
-	"fork-ps-3": true,
-	"fork-ps-4": true,
+    "fork-ps-3": true,
+    "fork-ps-4": true,
     "fork-es-2": false,
     "fork-es-3": true
 };
@@ -226,11 +225,11 @@ Core.prototype.init = async function() {
     await utils.getHash();
     utils.log("Initializing Settings");
     this.initSettings();
-	classNormalizer = new ClassNormalizer();
+    classNormalizer = new ClassNormalizer();
     emoteModule = new EmoteModule();
     utils.log("Initializing EmoteModule");
     window.emotePromise = emoteModule.init().then(() => {emoteModule.initialized = true;});
-	publicServersModule = new V2_PublicServers();
+    publicServersModule = new V2_PublicServers();
     quickEmoteMenu = new QuickEmoteMenu();
     voiceMode = new VoiceMode();
     dMode = new devMode();
@@ -244,7 +243,7 @@ Core.prototype.init = async function() {
             self.injectExternals();
 
 
-			utils.log("Updating Settings");
+            utils.log("Updating Settings");
             settingsPanel = new V2_SettingsPanel();
             settingsPanel.updateSettings();
 
@@ -252,52 +251,51 @@ Core.prototype.init = async function() {
             if (!bdpluginErrors) bdpluginErrors = [];
             if (!bdthemeErrors) bdthemeErrors = [];
 
-			utils.log("Loading Plugins");
+            utils.log("Loading Plugins");
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
-			
-			if (settingsCookie["fork-ps-4"]) {
-				utils.log("Loading Themes");
-				classNormalizer.start();
-			}
-			
-			utils.log("Loading Themes");
-			themeModule = new ThemeModule();
-			themeModule.loadThemes();
+            
+            if (settingsCookie["fork-ps-4"]) {
+                utils.log("Loading Themes");
+                classNormalizer.start();
+            }
+            
+            utils.log("Loading Themes");
+            themeModule = new ThemeModule();
+            themeModule.loadThemes();
 
-			$("#customcss").detach().appendTo(document.head);
+            $("#customcss").detach().appendTo(document.head);
 
-			utils.log("Initializing QuickEmoteMenu");
+            utils.log("Initializing QuickEmoteMenu");
             quickEmoteMenu.init();
             
             window.addEventListener("beforeunload", function(){
-                if(settingsCookie["bda-dc-0"]){
-                    document.querySelector('.btn.btn-disconnect').click();
-                }
+                if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
             });
-			
-			publicServersModule.initialize();
+            
+            publicServersModule.initialize();
 
             emoteModule.autoCapitalize();
 
             /*Display new features in BetterDiscord*/
-            if (settingsCookie["version"] < jsVersion) {
+            if (settingsCookie.version < jsVersion) {
                 //var cl = self.constructChangelog();
-                settingsCookie["version"] = jsVersion;
+                settingsCookie.version = jsVersion;
                 self.saveSettings();
             }
 
-			utils.log("Removing Loading Icon");
+            utils.log("Removing Loading Icon");
             document.getElementsByClassName("bd-loaderv2")[0].remove();
-			utils.log("Initializing Main Observer");
+            utils.log("Initializing Main Observer");
             self.initObserver();
-			
-			// Show loading errors
+            
+            // Show loading errors
             if (settingsCookie["fork-ps-1"]) {
-				utils.log("Collecting Startup Errors");
+                utils.log("Collecting Startup Errors");
                 self.showStartupErrors();
             }
-        } else {
+        }
+        else {
             setTimeout(gwDefer, 100);
         }
     }
@@ -309,7 +307,7 @@ Core.prototype.init = async function() {
 };
 
 Core.prototype.injectExternals = function() {
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js")
+    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
 };
 
 Core.prototype.initSettings = function () {
@@ -319,7 +317,7 @@ Core.prototype.initSettings = function () {
     if ($.cookie("better-discord")) {
         settingsCookie = JSON.parse($.cookie("better-discord"));
         this.saveSettings();
-        $.removeCookie("better-discord", { path: '/' });
+        $.removeCookie("better-discord", {path: "/"});
         return;
     }
 
@@ -329,7 +327,7 @@ Core.prototype.initSettings = function () {
     }
     else {
         this.loadSettings();
-        $('<style id="customcss">').html(atob(window.bdStorage.get("bdcustomcss"))).appendTo(document.head);
+        $("<style id=\"customcss\">").html(atob(window.bdStorage.get("bdcustomcss"))).appendTo(document.head);
         for (var setting in defaultCookie) {
             if (settingsCookie[setting] == undefined) {
                 settingsCookie[setting] = defaultCookie[setting];
@@ -360,19 +358,17 @@ Core.prototype.initObserver = function () {
             let node = mutation.addedNodes[0];
     
             if (node.classList.contains("layer-3QrUeG")) {
-                if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute('layer-id', 'server-settings');
+                if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute("layer-id", "server-settings");
     
                 if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
-                    node.setAttribute('layer-id', 'user-settings');
-                    node.setAttribute('id', 'user-settings');
+                    node.setAttribute("layer-id", "user-settings");
+                    node.setAttribute("id", "user-settings");
                     if (!document.getElementById("bd-settings-sidebar")) settingsPanel.renderSidebar();
                 }
             }
     
             // Emoji Picker
-            if (node.classList.contains('popout-3sVMXz') && !node.classList.contains('popoutLeft-30WmrD')) {
-                if (node.getElementsByClassName('emojiPicker-3m1S-j').length) quickEmoteMenu.obsCallback(node);
-            }
+            if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
 
         }
     });
@@ -383,7 +379,7 @@ Core.prototype.initObserver = function () {
     });
 };
 
-Core.prototype.inject24Hour = function(node) {
+Core.prototype.inject24Hour = function() {
     if (this.cancel24Hour) return;
 
     this.cancel24Hour = Utils.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {before: ({methodArguments}) => {
@@ -392,7 +388,7 @@ Core.prototype.inject24Hour = function(node) {
     }});
 };
 
-Core.prototype.injectColoredText = function(node) {
+Core.prototype.injectColoredText = function() {
     if (this.cancelColoredText) return;
 
     this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
@@ -404,15 +400,15 @@ Core.prototype.injectColoredText = function(node) {
     }});
 };
 
-Core.prototype.removeColoredText = function(node) {
-    document.querySelectorAll('.markup-2BOw-j').forEach(elem => {
+Core.prototype.removeColoredText = function() {
+    document.querySelectorAll(".markup-2BOw-j").forEach(elem => {
         elem.style.setProperty("color", "");
     });
 };
 
 Core.prototype.alert = function(title, content) {
     let modal = $(`<div class="bd-modal-wrapper theme-dark">
-                    <div class="bd-backdrop backdrop-1ocfXc"></div>
+                    <div class="bd-backdrop backdrop-1wrmKB"></div>
                     <div class="bd-modal modal-1UGdnR">
                         <div class="bd-modal-inner inner-1JeGVc">
                             <div class="header header-1R_AjF">
@@ -431,12 +427,12 @@ Core.prototype.alert = function(title, content) {
                         </div>
                     </div>
                 </div>`);
-    modal.find('.footer button').on('click', () => {
-        modal.addClass('closing');
+    modal.find(".footer button").on("click", () => {
+        modal.addClass("closing");
         setTimeout(() => { modal.remove(); }, 300);
     });
-    modal.find('.bd-backdrop').on('click', () => {
-        modal.addClass('closing');
+    modal.find(".bd-backdrop").on("click", () => {
+        modal.addClass("closing");
         setTimeout(() => { modal.remove(); }, 300);
     });
     modal.appendTo("#app-mount");
@@ -446,7 +442,7 @@ Core.prototype.showStartupErrors = function() {
     if (!bdpluginErrors || !bdthemeErrors) return;
     if (!bdpluginErrors.length && !bdthemeErrors.length) return;
     let modal = $(`<div class="bd-modal-wrapper theme-dark">
-                    <div class="bd-backdrop backdrop-1ocfXc"></div>
+                    <div class="bd-backdrop backdrop-1wrmKB"></div>
                     <div class="bd-modal bd-startup-modal modal-1UGdnR">
                         <div class="bd-modal-inner inner-1JeGVc">
                             <div class="header header-1R_AjF"><div class="title">Startup Errors</div></div>
@@ -485,7 +481,7 @@ Core.prototype.showStartupErrors = function() {
                             </div>`);
             container.append(error);
             if (err.error) {
-                error.find('a').on('click', (e) => {
+                error.find("a").on("click", (e) => {
                     e.preventDefault();
                     utils.err(`Error details for ${err.name ? err.name : err.file}.`, err.error);
                 });
@@ -496,23 +492,23 @@ Core.prototype.showStartupErrors = function() {
     
     let tabs = [generateTab(bdpluginErrors), generateTab(bdthemeErrors)];
 
-    modal.find('.tab-bar-item').on('click', (e) => {
+    modal.find(".tab-bar-item").on("click", (e) => {
         e.preventDefault();
-        modal.find('.tab-bar-item').removeClass('selected');
-        $(e.target).addClass('selected');
-        modal.find('.scroller').empty().append(tabs[$(e.target).index()]);
+        modal.find(".tab-bar-item").removeClass("selected");
+        $(e.target).addClass("selected");
+        modal.find(".scroller").empty().append(tabs[$(e.target).index()]);
     });
 
-    modal.find('.footer button').on('click', () => {
-        modal.addClass('closing');
+    modal.find(".footer button").on("click", () => {
+        modal.addClass("closing");
         setTimeout(() => { modal.remove(); }, 300);
     });
-    modal.find('.bd-backdrop').on('click', () => {
-        modal.addClass('closing');
+    modal.find(".bd-backdrop").on("click", () => {
+        modal.addClass("closing");
         setTimeout(() => { modal.remove(); }, 300);
     });
     modal.appendTo("#app-mount");
-    modal.find('.tab-bar-item')[0].click();
+    modal.find(".tab-bar-item")[0].click();
 };
 
 /**
@@ -526,27 +522,27 @@ Core.prototype.showStartupErrors = function() {
  */
 Core.prototype.showToast = function(content, options = {}) {
     if (!bdConfig.deferLoaded) return;
-    if (!document.querySelector('.bd-toasts')) {
+    if (!document.querySelector(".bd-toasts")) {
         let toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");
-        let boundingElement = document.querySelector('.chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9');
+        let boundingElement = document.querySelector(".chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9");
         toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
         toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
-        toastWrapper.style.setProperty("bottom", (document.querySelector('.chat-3bRxxu form') ? document.querySelector('.chat-3bRxxu form').offsetHeight : 80) + "px");
-        document.querySelector('.app').appendChild(toastWrapper);
+        toastWrapper.style.setProperty("bottom", (document.querySelector(".chat-3bRxxu form") ? document.querySelector(".chat-3bRxxu form").offsetHeight : 80) + "px");
+        document.querySelector(".app").appendChild(toastWrapper);
     }
     const {type = "", icon = true, timeout = 3000} = options;
     let toastElem = document.createElement("div");
     toastElem.classList.add("bd-toast");
-	if (type) toastElem.classList.add("toast-" + type);
-	if (type && icon) toastElem.classList.add("icon");
+    if (type) toastElem.classList.add("toast-" + type);
+    if (type && icon) toastElem.classList.add("icon");
     toastElem.innerText = content;
-    document.querySelector('.bd-toasts').appendChild(toastElem);
+    document.querySelector(".bd-toasts").appendChild(toastElem);
     setTimeout(() => {
-        toastElem.classList.add('closing');
+        toastElem.classList.add("closing");
         setTimeout(() => {
             toastElem.remove();
-            if (!document.querySelectorAll('.bd-toasts .bd-toast').length) document.querySelector('.bd-toasts').remove();
+            if (!document.querySelectorAll(".bd-toasts .bd-toast").length) document.querySelector(".bd-toasts").remove();
         }, 300);
     }, timeout);
 };
@@ -567,11 +563,11 @@ Core.prototype.showToast = function(content, options = {}) {
  * --Twitchemotes.com api
  */
 
-var emotesFfz = {};
-var emotesBTTV = {};
-var emotesBTTV2 = {};
-var emotesTwitch = {};
-var subEmotesTwitch = {};
+window.emotesFfz = {};
+window.emotesBTTV = {};
+window.emotesBTTV2 = {};
+window.emotesTwitch = {};
+window.subEmotesTwitch = {};
 
 window.bdEmotes = {
     TwitchGlobal: {},
@@ -579,7 +575,7 @@ window.bdEmotes = {
     BTTV: {},
     FrankerFaceZ: {},
     BTTV2: {}
-}
+};
 
 window.bdEmoteSettingIDs = {
     TwitchGlobal: "bda-es-7",
@@ -587,29 +583,29 @@ window.bdEmoteSettingIDs = {
     BTTV: "bda-es-2",
     FrankerFaceZ: "bda-es-1",
     BTTV2: "bda-es-2"
-}
+};
 
 function EmoteModule() {}
 
 EmoteModule.prototype.init = async function () {
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
-    this.overrides = ['twitch', 'bttv', 'ffz'];
+    this.overrides = ["twitch", "bttv", "ffz"];
     this.categories = ["TwitchGlobal", "TwitchSubscriber", "BTTV", "BTTV2", "FrankerFaceZ"];
 
     let emoteInfo = {
-        'TwitchGlobal': {
-            url: 'https://twitchemotes.com/api_cache/v3/global.json',
-            backup: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_twitch_global.json',
-            variable: 'TwitchGlobal',
-            oldVariable: 'emotesTwitch',
+        TwitchGlobal: {
+            url: "https://twitchemotes.com/api_cache/v3/global.json",
+            backup: "https://" + bdConfig.updater.CDN + "/" + bdConfig.repo + "/BetterDiscordApp/" + bdConfig.hash + "/data/emotedata_twitch_global.json",
+            variable: "TwitchGlobal",
+            oldVariable: "emotesTwitch",
             getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0`,
-            getOldData: (url, name) => { return {id: url.match(/\/([0-9]+)\//)[1], code: name, emoticon_set: 0, description: null} }
+            getOldData: (url, name) => { return {id: url.match(/\/([0-9]+)\//)[1], code: name, emoticon_set: 0, description: null}; }
         },
-        'TwitchSubscriber': {
-            url: 'https://twitchemotes.com/api_cache/v3/subscriber.json',
-            backup: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_twitch_subscriber.json',
-            variable: 'TwitchSubscriber',
-            oldVariable: 'subEmotesTwitch',
+        TwitchSubscriber: {
+            url: "https://twitchemotes.com/api_cache/v3/subscriber.json",
+            backup: "https://" + bdConfig.updater.CDN + "/" + bdConfig.repo + "/BetterDiscordApp/" + bdConfig.hash + "/data/emotedata_twitch_subscriber.json",
+            variable: "TwitchSubscriber",
+            oldVariable: "subEmotesTwitch",
             parser: (data) => {
                 let emotes = {};
                 for (let c in data) {
@@ -627,16 +623,16 @@ EmoteModule.prototype.init = async function () {
             getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`,
             getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
         },
-        'FrankerFaceZ': {
-            url: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_ffz.json',
-            variable: 'FrankerFaceZ',
+        FrankerFaceZ: {
+            url: "https://" + bdConfig.updater.CDN + "/" + bdConfig.repo + "/BetterDiscordApp/" + bdConfig.hash + "/data/emotedata_ffz.json",
+            variable: "FrankerFaceZ",
             oldVariable: "emotesFfz",
             getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`,
             getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
         },
-        'BTTV': {
-            url: 'https://api.betterttv.net/emotes',
-            variable: 'BTTV',
+        BTTV: {
+            url: "https://api.betterttv.net/emotes",
+            variable: "BTTV",
             oldVariable: "emotesBTTV",
             parser: (data) => {
                 let emotes = {};
@@ -649,9 +645,9 @@ EmoteModule.prototype.init = async function () {
             getEmoteURL: (e) => `${e}`,
             getOldData: (url) => url
         },
-        'BTTV2': {
-            url: "https://" + bdConfig.updater.CDN + '/' + bdConfig.repo + '/BetterDiscordApp/' + bdConfig.hash + '/data/emotedata_bttv.json',
-            variable: 'BTTV2',
+        BTTV2: {
+            url: "https://" + bdConfig.updater.CDN + "/" + bdConfig.repo + "/BetterDiscordApp/" + bdConfig.hash + "/data/emotedata_bttv.json",
+            variable: "BTTV2",
             oldVariable: "emotesBTTV2",
             getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`,
             getOldData: (url) => url.match(/emote\/(.+)\//)[1]
@@ -661,11 +657,10 @@ EmoteModule.prototype.init = async function () {
     this.loadEmoteData(emoteInfo);
     this.getBlacklist();
 
-    while (!BDV2.MessageContentComponent)
-        await new Promise(resolve => setTimeout(resolve, 100));
+    while (!BDV2.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
         
     if (this.cancelEmoteRender) return;
-    this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({thisObject, returnValue}) => {
+    this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
         const markup = returnValue.props.children[1];
         if (!markup.props.children) return;
         const nodes = markup.props.children[1];
@@ -677,7 +672,7 @@ EmoteModule.prototype.init = async function () {
             for (let c = 0, clen = this.categories.length; c < clen; c++) {
                 for (let w = 0, wlen = words.length; w < wlen; w++) {
                     let emote = words[w];
-                    let emoteSplit = emote.split(':');
+                    let emoteSplit = emote.split(":");
                     let emoteName = emoteSplit[0];
                     let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
                     let emoteOverride = emoteModifier.slice(0);
@@ -689,26 +684,26 @@ EmoteModule.prototype.init = async function () {
         
                     let current = this.categories[c];
                     if (emoteOverride === "twitch") {
-                        if (bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
-                        else if (bdEmotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
+                        if (window.bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
+                        else if (window.bdEmotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
                     }
                     else if (emoteOverride === "bttv") {
-                        if (bdEmotes.BTTV[emoteName]) current = "BTTV";
-                        else if (bdEmotes.BTTV2[emoteName]) current = "BTTV2";
+                        if (window.bdEmotes.BTTV[emoteName]) current = "BTTV";
+                        else if (window.bdEmotes.BTTV2[emoteName]) current = "BTTV2";
                     }
                     else if (emoteOverride === "ffz") {
-                        if (bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
+                        if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
                     }
                     
-                    if (!bdEmotes[current][emoteName] || !settingsCookie[bdEmoteSettingIDs[current]]) continue;
+                    if (!window.bdEmotes[current][emoteName] || !settingsCookie[window.bdEmoteSettingIDs[current]]) continue;
                     const results = nodes[n].match(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                     if (!results) continue;
                     const pre = nodes[n].substring(0, results.index + results[1].length);
                     const post = nodes[n].substring(results.index + results[0].length - results[2].length);
                     nodes[n] = pre;
-                    const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: bdEmotes[current][emoteName], modifier: emoteModifier});
-                    nodes.splice(n+1, 0, post);
-                    nodes.splice(n+1, 0, emoteComponent);
+                    const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
+                    nodes.splice(n + 1, 0, post);
+                    nodes.splice(n + 1, 0, emoteComponent);
                     n = n + 2;
                 }
             }
@@ -743,16 +738,16 @@ EmoteModule.prototype.clearEmoteData = async function() {
         BTTV: {},
         FrankerFaceZ: {},
         BTTV2: {}
-    }
+    };
 };
 
 EmoteModule.prototype.goBack = async function(emoteInfo) {
     for (let e in emoteInfo) {
-        for (let emote in bdEmotes[emoteInfo[e].variable]) {
-            window[emoteInfo[e].oldVariable][emote] = emoteInfo[e].getOldData(bdEmotes[emoteInfo[e].variable][emote], emote)
+        for (let emote in window.bdEmotes[emoteInfo[e].variable]) {
+            window[emoteInfo[e].oldVariable][emote] = emoteInfo[e].getOldData(window.bdEmotes[emoteInfo[e].variable][emote], emote);
         }
     }
-}
+};
 
 EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     let _fs = require("fs");
@@ -762,29 +757,29 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     
     if (exists && !bdConfig.cache.expired) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
-        utils.log("[Emotes] Loading emotes from local cache.")
-        let data = await new Promise((resolve, reject) => {
+        utils.log("[Emotes] Loading emotes from local cache.");
+        let data = await new Promise(resolve => {
             _fs.readFile(file, "utf8", (err, data) => {
                 utils.log("[Emotes] Emotes loaded from cache.");
                 if (err) data = {};
-                resolve(data)
+                resolve(data);
             });
         });
         let isValid = Utils.testJSON(data);
 
-        if (isValid) bdEmotes = JSON.parse(data);
+        if (isValid) window.bdEmotes = JSON.parse(data);
 
         for (let e in emoteInfo) {
-            isValid = Object.keys(bdEmotes[emoteInfo[e].variable]).length > 0;
+            isValid = Object.keys(window.bdEmotes[emoteInfo[e].variable]).length > 0;
         }
 
         if (isValid) {
-            await this.goBack(emoteInfo)
-            if (settingsCookie["fork-ps-2"]) mainCore.showToast("Emotes successfully loaded.", {type: "success"})
+            await this.goBack(emoteInfo);
+            if (settingsCookie["fork-ps-2"]) mainCore.showToast("Emotes successfully loaded.", {type: "success"});
             return;
         }
 
-        utils.log("[Emotes] Cache was corrupt, downloading...")
+        utils.log("[Emotes] Cache was corrupt, downloading...");
         _fs.unlinkSync(file);
     }
 
@@ -793,18 +788,18 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 
     for (let e in emoteInfo) {
         let data = await this.downloadEmotes(emoteInfo[e]);
-        bdEmotes[emoteInfo[e].variable] = data;
+        window.bdEmotes[emoteInfo[e].variable] = data;
     }
 
-    await this.goBack(emoteInfo)
+    await this.goBack(emoteInfo);
 
     if (settingsCookie["fork-ps-2"]) mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
 
-    try { _fs.writeFileSync(file, JSON.stringify(bdEmotes), "utf8"); }
-    catch(err) { utils.err("[Emotes] Could not save emote data.", err); }
+    try { _fs.writeFileSync(file, JSON.stringify(window.bdEmotes), "utf8"); }
+    catch (err) { utils.err("[Emotes] Could not save emote data.", err); }
 
     quickEmoteMenu.init();
-}
+};
 
 EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
     let request = require("request");
@@ -818,7 +813,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
     return new Promise((resolve, reject) => {
         request(options, (error, response, body) => {
             if (error) {
-                utils.err("[Emotes] Could not download " + emoteMeta.variable, error)
+                utils.err("[Emotes] Could not download " + emoteMeta.variable, error);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -827,32 +822,31 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 }
                 return reject({});
             }
-            else {
-                let parsedData = {};
-                try {
-                    parsedData = JSON.parse(body);
-                }
-                catch(err) {
-                    utils.err("[Emotes] Could not download " + emoteMeta.variable, error)
-                    if (emoteMeta.backup) {
-                        emoteMeta.url = emoteMeta.backup;
-                        emoteMeta.backup = null;
-                        if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
-                        return resolve(this.downloadEmotes(emoteMeta));
-                    }
-                    return reject({});
-                }
-                if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
 
-                for (let emote in parsedData) {
-                    parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
-                }
-                resolve(parsedData);
-                utils.log("[Emotes] Downloaded: " + emoteMeta.variable);
+            let parsedData = {};
+            try {
+                parsedData = JSON.parse(body);
             }
+            catch (err) {
+                utils.err("[Emotes] Could not download " + emoteMeta.variable, error);
+                if (emoteMeta.backup) {
+                    emoteMeta.url = emoteMeta.backup;
+                    emoteMeta.backup = null;
+                    if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
+                    return resolve(this.downloadEmotes(emoteMeta));
+                }
+                return reject({});
+            }
+            if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
+
+            for (let emote in parsedData) {
+                parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
+            }
+            resolve(parsedData);
+            utils.log("[Emotes] Downloaded: " + emoteMeta.variable);
         });
     });
-}
+};
 
 EmoteModule.prototype.getBlacklist = function () {
     $.getJSON("https://cdn.rawgit.com/rauenzi/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
@@ -863,7 +857,7 @@ EmoteModule.prototype.getBlacklist = function () {
 var bemotes = [];
 
 EmoteModule.prototype.autoCapitalize = function () {
-    $('body').delegate($(".channelTextArea-1LDbYG textarea:first"), 'keyup change paste', () => {
+    $("body").delegate($(".channelTextArea-1LDbYG textarea:first"), "keyup change paste", () => {
         if (!settingsCookie["bda-es-4"]) return;
 
         var text = $(".channelTextArea-1LDbYG textarea:first").val();
@@ -881,9 +875,9 @@ EmoteModule.prototype.autoCapitalize = function () {
 };
 
 EmoteModule.prototype.capitalize = function (value) {
-    var res = bdEmotes.TwitchGlobal;
+    var res = window.bdEmotes.TwitchGlobal;
     for (var p in res) {
-        if (res.hasOwnProperty(p) && value == (p + '').toLowerCase()) {
+        if (res.hasOwnProperty(p) && value == (p + "").toLowerCase()) {
             return p;
         }
     }
@@ -904,7 +898,7 @@ function QuickEmoteMenu() {
 QuickEmoteMenu.prototype.init = function() {
 
     $(document).on("mousedown", function(e) {
-        if(e.target.id != "rmenu") $("#rmenu").remove();
+        if (e.target.id != "rmenu") $("#rmenu").remove();
     });
     this.favoriteEmotes = {};
     var fe = window.bdStorage.get("bdfavemotes");
@@ -925,9 +919,10 @@ QuickEmoteMenu.prototype.init = function() {
     teContainer += "    <div class=\"scroller-wrap fade\">";
     teContainer += "        <div class=\"scroller\">";
     teContainer += "            <div class=\"emote-menu-inner\">";
-    for (let emote in bdEmotes.TwitchGlobal) {
-        if (bdEmotes.TwitchGlobal.hasOwnProperty(emote)) {
-            var url = bdEmotes.TwitchGlobal[emote];
+    var url = "";
+    for (let emote in window.bdEmotes.TwitchGlobal) {
+        if (window.bdEmotes.TwitchGlobal.hasOwnProperty(emote)) {
+            url = window.bdEmotes.TwitchGlobal[emote];
             teContainer += "<div class=\"emote-container\">";
             teContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\">";
             teContainer += "    </img>";
@@ -946,7 +941,7 @@ QuickEmoteMenu.prototype.init = function() {
     faContainer += "        <div class=\"scroller\">";
     faContainer += "            <div class=\"emote-menu-inner\">";
     for (let emote in this.favoriteEmotes) {
-        var url = this.favoriteEmotes[emote];
+        url = this.favoriteEmotes[emote];
         faContainer += "<div class=\"emote-container\">";
         faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu='quickEmoteMenu.favContext(event, this);'>";
         faContainer += "    </img>";
@@ -961,7 +956,7 @@ QuickEmoteMenu.prototype.init = function() {
 
 QuickEmoteMenu.prototype.favContext = function(e, em) {
     e.stopPropagation();
-    var menu = $('<div>', { id: "rmenu", "data-emoteid": $(em).prop("title"), text: "Remove", class: "context-menu theme-dark" });
+    var menu = $("<div>", {"id": "rmenu", "data-emoteid": $(em).prop("title"), "text": "Remove", "class": "context-menu theme-dark"});
     menu.css({
         top: e.pageY - $("#bda-qem-favourite-container").offset().top,
         left: e.pageX - $("#bda-qem-favourite-container").offset().left
@@ -995,7 +990,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     $("#bda-qem-favourite-container").hide();
     $("#bda-qem-twitch-container").hide();
 
-    switch(id) {
+    switch (id) {
         case "bda-qem-twitch":
             twitch.addClass("active");
             $("#bda-qem-twitch-container").show();
@@ -1023,19 +1018,20 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
 
 QuickEmoteMenu.prototype.obsCallback = function (elem) {
     var e = $(elem);
-    if(!settingsCookie["bda-es-9"]) {
+    if (!settingsCookie["bda-es-9"]) {
         e.addClass("bda-qme-hidden");
-    } else {
+    }
+    else {
         e.removeClass("bda-qme-hidden");
     }
 
-    if(!settingsCookie["bda-es-0"]) return;
+    if (!settingsCookie["bda-es-0"]) return;
 
     e.prepend(this.qmeHeader);
     e.append(this.teContainer);
     e.append(this.faContainer);
 
-    if(this.lastTab == undefined) {
+    if (this.lastTab == undefined) {
         this.lastTab = "bda-qem-favourite";
     } 
     this.switchQem(this.lastTab);
@@ -1103,7 +1099,8 @@ Utils.prototype.insertText = function (textarea, text) {
 Utils.prototype.jqDefer = function (fnc) {
     if (window.jQuery) {
         fnc();
-    } else {
+    }
+    else {
         setTimeout(function () {
             this.jqDefer(fnc);
         }, 100);
@@ -1117,19 +1114,19 @@ Utils.prototype.getHash = function () {
             bdConfig.hash = _hash;
             resolve(_hash);
         }).fail(() => {
-			_hash = _bdhash || "48844445d65c6fb5a019eff14d7dcffcc1744071";
-			resolve(_hash)
-		});
+            _hash = _bdhash || "48844445d65c6fb5a019eff14d7dcffcc1744071";
+            resolve(_hash);
+        });
     });
 };
 
 Utils.prototype.loadHtml = function (html, callback) {
     var container = $("<div/>", {
-        class: "bd-container"
+        "class": "bd-container"
     }).appendTo("body");
 
     //TODO Inject these in next core update
-    html = '//cdn.rawgit.com/Jiiks/BetterDiscordApp/' + _hash + '/html/' + html + '.html';
+    html = "//cdn.rawgit.com/Jiiks/BetterDiscordApp/" + _hash + "/html/" + html + ".html";
 
     container.load(html, callback());
 };
@@ -1154,20 +1151,20 @@ Utils.prototype.escapeID = function(id) {
 };
 
 Utils.prototype.log = function (message) {
-    console.log('%c[BetterDiscord] %c' + message + '', 'color: #3a71c1; font-weight: 700;', '');
+    console.log("%c[BetterDiscord] %c" + message + "", "color: #3a71c1; font-weight: 700;", "");
 };
 
 Utils.prototype.err = function (message, error) {
-    console.log('%c[BetterDiscord] %c' + message + '', 'color: red; font-weight: 700;', '');
+    console.log("%c[BetterDiscord] %c" + message + "", "color: red; font-weight: 700;", "");
     if (error) {
-        console.groupCollapsed('%cError: ' + error.message, 'color: red;');
+        console.groupCollapsed("%cError: " + error.message, "color: red;");
         console.error(error.stack);
         console.groupEnd();
     }
 };
 
 Utils.prototype.escape = function(s) {
-    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 };
 
 Utils.prototype.insertElement = function(node, regex, element) { 
@@ -1175,20 +1172,20 @@ Utils.prototype.insertElement = function(node, regex, element) {
     var child = node.firstChild;
 
     while (child) {
-		if (child.nodeType != Node.TEXT_NODE) {child = child.nextSibling; continue};
-		var bk = 0;
-		child.data.replace(regex, function(all) {
-			var args = [].slice.call(arguments);
-			var offset = args[args.length - 2];
+        if (child.nodeType != Node.TEXT_NODE) {child = child.nextSibling; continue;}
+        var bk = 0;
+        child.data.replace(regex, function(all) {
+            var args = [].slice.call(arguments);
+            var offset = args[args.length - 2];
             var newTextNode = args[1] ? child.splitText(offset + args[1].length + bk) : child.splitText(offset + bk);
-			bk -= child.data.length + all.length;
+            bk -= child.data.length + all.length;
 
-			newTextNode.data = newTextNode.data.substr(all.trim().length);
-			child.parentNode.insertBefore(element, newTextNode);
-			child = newTextNode;
-		});
-		
-		regex.lastIndex = 0;
+            newTextNode.data = newTextNode.data.substr(all.trim().length);
+            child.parentNode.insertBefore(element, newTextNode);
+            child = newTextNode;
+        });
+        
+        regex.lastIndex = 0;
 
 
         child = child.nextSibling;
@@ -1200,68 +1197,66 @@ Utils.prototype.insertElement = function(node, regex, element) {
 Utils.prototype.getTextNodes = function(node) {
     var textNodes = [];
     if (!node) return textNodes;
-	for (var i = 0; i < node.childNodes.length; i++) {
-		var curNode = node.childNodes[i];
-		if (curNode.nodeType === Node.TEXT_NODE) {
-			textNodes.push(curNode)
-		}
-	}
-	return textNodes;
-}
+    for (var i = 0; i < node.childNodes.length; i++) {
+        var curNode = node.childNodes[i];
+        if (curNode.nodeType === Node.TEXT_NODE) {
+            textNodes.push(curNode);
+        }
+    }
+    return textNodes;
+};
 
 Utils.testJSON = function(data) {
     try {
-        let json = JSON.parse(data);
+        JSON.parse(data);
         return true;
     }
-    catch(err) {
+    catch (err) {
         return false;
     }
-    return false;
 };
 
 Utils.suppressErrors = (method, desiption) => (...params) => {
-	try { return method(...params);	}
-	catch (e) { console.error('Error occurred in ' + desiption, e); }
+    try { return method(...params);	}
+    catch (e) { console.error("Error occurred in " + desiption, e); }
 };
 
 Utils.monkeyPatch = (what, methodName, options) => {
-	const {before, after, instead, once = false, silent = false, force = false} = options;
-	const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
-	if (!silent) console.log('patch', methodName, 'of', displayName); // eslint-disable-line no-console
-	if (!what[methodName]) {
-		if (force) what[methodName] = function() {};
-		else return console.error(methodName, 'does not exist for', displayName); // eslint-disable-line no-console
-	}
-	const origMethod = what[methodName];
-	const cancel = () => {
-		if (!silent) console.log('unpatch', methodName, 'of', displayName); // eslint-disable-line no-console
-		what[methodName] = origMethod;
-	};
-	what[methodName] = function() {
-		const data = {
-			thisObject: this,
-			methodArguments: arguments,
-			cancelPatch: cancel,
-			originalMethod: origMethod,
-			callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
-		};
-		if (instead) {
-			const tempRet = Utils.suppressErrors(instead, '`instead` callback of ' + what[methodName].displayName)(data);
-			if (tempRet !== undefined)
-				data.returnValue = tempRet;
-		}
-		else {
-			if (before) Utils.suppressErrors(before, '`before` callback of ' + what[methodName].displayName)(data);
-			data.callOriginalMethod();
-			if (after) Utils.suppressErrors(after, '`after` callback of ' + what[methodName].displayName)(data);
-		}
-		if (once) cancel();
-		return data.returnValue;
-	};
-	what[methodName].__monkeyPatched = true;
-	what[methodName].displayName = 'patched ' + (what[methodName].displayName || methodName);
-	return cancel;
+    const {before, after, instead, once = false, silent = false, force = false} = options;
+    const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
+    if (!silent) console.log("patch", methodName, "of", displayName); // eslint-disable-line no-console
+    if (!what[methodName]) {
+        if (force) what[methodName] = function() {};
+        else return console.error(methodName, "does not exist for", displayName); // eslint-disable-line no-console
+    }
+    const origMethod = what[methodName];
+    const cancel = () => {
+        if (!silent) console.log("unpatch", methodName, "of", displayName); // eslint-disable-line no-console
+        what[methodName] = origMethod;
+    };
+    what[methodName] = function() {
+        const data = {
+            thisObject: this,
+            methodArguments: arguments,
+            cancelPatch: cancel,
+            originalMethod: origMethod,
+            callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
+        };
+        if (instead) {
+            const tempRet = Utils.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
+            if (tempRet !== undefined) data.returnValue = tempRet;
+        }
+        else {
+            if (before) Utils.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
+            data.callOriginalMethod();
+            if (after) Utils.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
+        }
+        if (once) cancel();
+        return data.returnValue;
+    };
+    what[methodName].__monkeyPatched = true;
+    what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
+    return cancel;
 };
 
 
@@ -1391,7 +1386,7 @@ PluginModule.prototype.loadPluginData = function () {
     if ($.cookie("bd-plugins")) {
         pluginCookie = JSON.parse($.cookie("bd-plugins"));
         this.savePluginData();
-        $.removeCookie("bd-plugins", { path: '/' });
+        $.removeCookie("bd-plugins", {path: "/"});
         return;
     }
 
@@ -1463,7 +1458,7 @@ ThemeModule.prototype.loadThemes = function () {
     for (var i = 0; i < themes.length; i++) {
         var name = bdthemes[themes[i]].name;
         if (!themeCookie[name]) themeCookie[name] = false;
-        if (themeCookie[name]) $("head").append($('<style>', {id: utils.escapeID(name), html: unescape(bdthemes[name].css)}));
+        if (themeCookie[name]) $("head").append($("<style>", {id: utils.escapeID(name), html: unescape(bdthemes[name].css)}));
     }
     for (let theme in themeCookie) {
         if (!bdthemes[theme]) delete themeCookie[theme];
@@ -1494,7 +1489,7 @@ ThemeModule.prototype.loadThemeData = function () {
     if ($.cookie("bd-themes")) {
         themeCookie = JSON.parse($.cookie("bd-themes"));
         this.saveThemeData();
-        $.removeCookie("bd-themes", { path: '/' });
+        $.removeCookie("bd-themes", {path: "/"});
         return;
     }
 
@@ -1525,7 +1520,7 @@ function BdApi() {}
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append($('<style>', {id: utils.escapeID(id), html: css}));
+    $("head").append($("<style>", {id: utils.escapeID(id), html: css}));
 };
 
 //Clear css/remove any element
@@ -1538,7 +1533,7 @@ BdApi.clearCSS = function (id) {
 //id = id of element
 //css = custom css
 BdApi.linkJS = function (id, url) {
-    $("head").append($('<script>', {id: utils.escapeID(id), src: url, type: "text/javascript"}));
+    $("head").append($("<script>", {id: utils.escapeID(id), src: url, type: "text/javascript"}));
 };
 
 //Clear css/remove any element
@@ -1551,7 +1546,7 @@ BdApi.unlinkJS = function (id) {
 //name = name of plugin
 BdApi.getPlugin = function (name) {
     if (bdplugins.hasOwnProperty(name)) {
-        return bdplugins[name]["plugin"];
+        return bdplugins[name].plugin;
     }
     return null;
 };
@@ -1591,13 +1586,13 @@ BdApi.showToast = function(content, options = {}) {
      var self = this;
      this.disable();
      $(window).on("keydown.bdDevmode", function(e) {
-         if(e.which === 119 || e.which == 118) {//F8
-            console.log('%c[%cDevMode%c] %cBreak/Resume', 'color: red;', 'color: #303030; font-weight:700;', 'color:red;', '');
+         if (e.which === 119 || e.which == 118) {//F8
+            console.log("%c[%cDevMode%c] %cBreak/Resume", "color: red;", "color: #303030; font-weight:700;", "color:red;", "");
             debugger; // eslint-disable-line no-debugger
          }
      });
      
-	if (!selectorMode) return;
+    if (!selectorMode) return;
      $(document).on("contextmenu.bdDevmode", function(e) {
         //  var parents = [];
         //  $(e.toElement).parents().addBack().not('html').each(function() {
@@ -1611,38 +1606,38 @@ BdApi.showToast = function(content, options = {}) {
 
          function attach() {
             var cm = $(".contextMenu-HLZMGh");
-            if(cm.length <= 0) {
-                cm = $('<div class="contextMenu-HLZMGh bd-context-menu"></div>');
-                cm.addClass($('.app').hasClass("theme-dark") ? "theme-dark" : "theme-light");
-                cm.appendTo('.app');
+            if (cm.length <= 0) {
+                cm = $("<div class=\"contextMenu-HLZMGh bd-context-menu\"></div>");
+                cm.addClass($(".app").hasClass("theme-dark") ? "theme-dark" : "theme-light");
+                cm.appendTo(".app");
                 cm.css("top", e.clientY);
                 cm.css("left", e.clientX);
-                $(document).on('click.bdDevModeCtx', () => {
+                $(document).on("click.bdDevModeCtx", () => {
                     cm.remove();
-                    $(document).off('.bdDevModeCtx');
+                    $(document).off(".bdDevModeCtx");
                 });
-                $(document).on('contextmenu.bdDevModeCtx', () => {
+                $(document).on("contextmenu.bdDevModeCtx", () => {
                     cm.remove();
-                    $(document).off('.bdDevModeCtx');
+                    $(document).off(".bdDevModeCtx");
                 });
                 $(document).on("keyup.bdDevModeCtx", (e) => {
                     if (e.keyCode === 27) {
                         cm.remove();
-                        $(document).off('.bdDevModeCtx');
+                        $(document).off(".bdDevModeCtx");
                     }
                 });
             }
             
             var cmo = $("<div/>", {
-                class: "itemGroup-1tL0uz"
+                "class": "itemGroup-1tL0uz"
             });
             var cmi = $("<div/>", {
-                class: "item-1Yvehc",
-                click: function() {
+                "class": "item-1Yvehc",
+                "click": function() {
                     BDV2.NativeModule.copy(self.lastSelector);
                     cm.hide();
                 }
-            }).append($("<span/>", { text: "Copy Selector" }));
+            }).append($("<span/>", {text: "Copy Selector"}));
             cmo.append(cmi);
             cm.append(cmo);
             if (cm.hasClass("undefined")) cm.css("top",  "-=" + cmo.outerHeight());
@@ -1656,7 +1651,7 @@ BdApi.showToast = function(content, options = {}) {
 
 devMode.prototype.getRules = function(element, css = element.ownerDocument.styleSheets) {
     //if (window.getMatchedCSSRules) return window.getMatchedCSSRules(element);
-    return [].concat(...[...css].map(s => [...s.cssRules||[]])).filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8);
+    return [].concat(...[...css].map(s => [...s.cssRules || []])).filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8);
 };
 
 devMode.prototype.getSelector = function(element) {
@@ -1665,7 +1660,7 @@ devMode.prototype.getSelector = function(element) {
     const latestRule = rules[rules.length - 1];
     if (latestRule) return latestRule.selectorText;
     else if (element.classList.length) return `.${Array.from(element.classList).join(".")}`;
-    else return `.${Array.from(element.parentElement.classList).join(".")}`;
+    return `.${Array.from(element.parentElement.classList).join(".")}`;
 };
  
  devMode.prototype.disable = function() {
@@ -1675,37 +1670,37 @@ devMode.prototype.getSelector = function(element) {
  };
 
 var ClassNormalizer = class ClassNormalizer {
-	constructor() {
+    constructor() {
         this.classFormat = new RegExp(`^(?!da-)[A-Za-z]+-([A-Za-z]|[0-9]|-|_){6}$`);
         this.normFormat = new RegExp(`^(?!da-)(?:-?[a-z])+$`);
-		this.mainObserver = new MutationObserver((changes) => {
-			for (let c = 0; c < changes.length; c++) {
-				const change = changes[c];
-				const elements = change.addedNodes;
-				if (!elements) continue;
-				for (let n = 0; n < elements.length; n++) {
-					if (!(elements[n] instanceof Element) || !elements[n].classList) continue;
-					this.normalizeClasses(elements[n]);
-				}
-			}
+        this.mainObserver = new MutationObserver((changes) => {
+            for (let c = 0; c < changes.length; c++) {
+                const change = changes[c];
+                const elements = change.addedNodes;
+                if (!elements) continue;
+                for (let n = 0; n < elements.length; n++) {
+                    if (!(elements[n] instanceof Element) || !elements[n].classList) continue;
+                    this.normalizeClasses(elements[n]);
+                }
+            }
         });
         
-		this.cache = {};
+        this.cache = {};
         this.isActive = false;
-	}
+    }
 
-	stop() {
-		if (!this.isActive) return;
-		this.isActive = false;
-		this.mainObserver.disconnect();
-		this.revertClasses(document.querySelector("#app-mount"));
-	}
+    stop() {
+        if (!this.isActive) return;
+        this.isActive = false;
+        this.mainObserver.disconnect();
+        this.revertClasses(document.querySelector("#app-mount"));
+    }
 
-	start() {
-		if (this.isActive) return;
-		this.isActive = true;
-		this.normalizeClasses(document.querySelector("#app-mount"));
-		this.mainObserver.observe(document.querySelector('#app-mount'), {childList: true, subtree: true});
+    start() {
+        if (this.isActive) return;
+        this.isActive = true;
+        this.normalizeClasses(document.querySelector("#app-mount"));
+        this.mainObserver.observe(document.querySelector("#app-mount"), {childList: true, subtree: true});
     }
 
     toCamelCase(className) {
@@ -1720,39 +1715,41 @@ var ClassNormalizer = class ClassNormalizer {
         return this.normFormat.test(className);
     }
 
-	normalizeClasses(element) {
-		if (!(element instanceof Element)) return;
-		if (element.children && element.children.length) this.normalizeClasses(element.children[0]);
-		if (element.nextElementSibling) this.normalizeClasses(element.nextElementSibling);
-		const classes = element.classList;
-		const toAdd = [];
-		for (let c = 0; c < classes.length; c++) {
-            if (this.cache[classes[c]]) toAdd.push(this.cache[classes[c]]);
+    normalizeClasses(element) {
+        if (!(element instanceof Element)) return;
+        if (element.children && element.children.length) this.normalizeClasses(element.children[0]);
+        if (element.nextElementSibling) this.normalizeClasses(element.nextElementSibling);
+        const classes = element.classList;
+        const toAdd = [];
+        for (let c = 0; c < classes.length; c++) {
+            if (this.cache[classes[c]]) {
+                toAdd.push(this.cache[classes[c]]);
+            }
             else if (this.isNormalClass(classes[c])) {
                 const newClass = "da-" + this.toCamelCase(classes[c]);
                 toAdd.push(newClass);
                 this.cache[classes[c]] = newClass;
             }
-			else if (this.isRandomizedClass(classes[c])) {
+            else if (this.isRandomizedClass(classes[c])) {
                 const newClass = "da-" + classes[c].split("-")[0];
                 toAdd.push(newClass);
                 this.cache[classes[c]] = newClass;
             }
-		}
-		element.classList.add(...toAdd);
-	}
-	
-	revertClasses(element) {
-		if (!(element instanceof Element)) return;
-		if (element.children && element.children.length) this.revertClasses(element.children[0]);
-		if (element.nextElementSibling) this.revertClasses(element.nextElementSibling);
-		const classes = element.classList;
-		const toRemove = [];
-		for (let c = 0; c < classes.length; c++) {
-			if (classes[c].startsWith("da-")) toRemove.push(classes[c]);
-		}
-		element.classList.remove(...toRemove);
-	}
+        }
+        element.classList.add(...toAdd);
+    }
+    
+    revertClasses(element) {
+        if (!(element instanceof Element)) return;
+        if (element.children && element.children.length) this.revertClasses(element.children[0]);
+        if (element.nextElementSibling) this.revertClasses(element.nextElementSibling);
+        const classes = element.classList;
+        const toRemove = [];
+        for (let c = 0; c < classes.length; c++) {
+            if (classes[c].startsWith("da-")) toRemove.push(classes[c]);
+        }
+        element.classList.remove(...toRemove);
+    }
 
 };
 
@@ -1918,11 +1915,11 @@ class V2 {
     constructor() {
         this.editorDetached = false;
         this.WebpackModules = (() => {
-			//__webpack_require__ = window.webpackJsonp.push([[id], {[id]: (module, exports, req) => module.exports = req}, [[id]]]);
-            const req = typeof(webpackJsonp) == "function" ? webpackJsonp([], {'__extra_id__': (module, exports, req) => exports.default = req}, ['__extra_id__']).default :
-						webpackJsonp.push([[], {'__extra_id__': (module, exports, req) => module.exports = req}, [['__extra_id__']]]);
-            delete req.m['__extra_id__'];
-            delete req.c['__extra_id__'];
+            //__webpack_require__ = window.webpackJsonp.push([[id], {[id]: (module, exports, req) => module.exports = req}, [[id]]]);
+            const req = typeof(webpackJsonp) == "function" ? webpackJsonp([], {__extra_id__: (module, exports, req) => exports.default = req}, ["__extra_id__"]).default :
+                        webpackJsonp.push([[], {__extra_id__: (module, exports, req) => module.exports = req}, [["__extra_id__"]]]);
+            delete req.m.__extra_id__;
+            delete req.c.__extra_id__;
             const find = (filter, options = {}) => {
                 const {cacheOnly = true} = options;
                 for (let i in req.c) {
@@ -1933,10 +1930,10 @@ class V2 {
                     }
                 }
                 if (cacheOnly) {
-                    console.warn('Cannot find loaded module in cache');
+                    console.warn("Cannot find loaded module in cache");
                     return null;
                 }
-                console.warn('Cannot find loaded module in cache. Loading all modules may have unexpected side effects');
+                console.warn("Cannot find loaded module in cache. Loading all modules may have unexpected side effects");
                 for (let i = 0; i < req.m.length; ++i) {
                     try {
                         let m = req(i);
@@ -1947,7 +1944,7 @@ class V2 {
                         console.error(e);
                     }
                 }
-                console.warn('Cannot find module');
+                console.warn("Cannot find module");
                 return null;
             };
             
@@ -1958,8 +1955,8 @@ class V2 {
         })();
 
         this.internal = {
-            'react': this.WebpackModules.findByUniqueProperties(['Component', 'PureComponent', 'Children', 'createElement', 'cloneElement']),
-            'react-dom': this.WebpackModules.findByUniqueProperties(['findDOMNode'])
+            react: this.WebpackModules.findByUniqueProperties(["Component", "PureComponent", "Children", "createElement", "cloneElement"]),
+            reactDom: this.WebpackModules.findByUniqueProperties(["findDOMNode"])
         };
         this.getInternalInstance = e => e[Object.keys(e).find(k => k.startsWith("__reactInternalInstance"))];
     }
@@ -2005,21 +2002,21 @@ class V2 {
     get NativeModule() {return BDV2.WebpackModules.findByUniqueProperties(["setBadge"]);}
 
     get reactComponent() {
-        return this.internal['react'].Component;
+        return this.internal.react.Component;
     }
 
     get react() {
-        return this.internal['react'];
+        return this.internal.react;
     }
 
     get reactDom() {
-        return this.internal['react-dom'];
+        return this.internal.reactDom;
     }
 
     parseSettings(cat) {
         return Object.keys(settings).reduce((arr, key) => { 
             let setting = settings[key];
-            if(setting.cat === cat && setting.implemented && !setting.hidden) { 
+            if (setting.cat === cat && setting.implemented && !setting.hidden) { 
                 setting.text = key;
                 arr.push(setting);
             } return arr; 
@@ -2087,7 +2084,9 @@ class BDEmote extends BDV2.reactComponent {
                                 delete quickEmoteMenu.favoriteEmotes[this.props.label];
                                 quickEmoteMenu.updateFavorites();
                             }
-                            else quickEmoteMenu.favorite(this.props.label, this.props.url);
+                            else {
+                                quickEmoteMenu.favorite(this.props.label, this.props.url);
+                            }
                             this.setState({isFavorite: !this.state.isFavorite});
                         }
                     })
@@ -2103,16 +2102,16 @@ class V2C_SettingsPanel extends BDV2.reactComponent {
     }
 
     render() {
-        let { settings } = this.props;
+        let {settings} = this.props;
         return BDV2.react.createElement(
             "div",
-            { className: "content-column default" },
-            BDV2.react.createElement(V2Components.SettingsTitle, { text: this.props.title}),
-			this.props.button && BDV2.react.createElement("button", {key: "title-button", className: 'bd-pfbtn', onClick: this.props.button.onClick}, this.props.button.title),
+            {className: "content-column default"},
+            BDV2.react.createElement(V2Components.SettingsTitle, {text: this.props.title}),
+            this.props.button && BDV2.react.createElement("button", {key: "title-button", className: "bd-pfbtn", onClick: this.props.button.onClick}, this.props.button.title),
             settings.map(setting => {
-                return BDV2.react.createElement(V2Components.Switch, { id: setting.id, key: setting.id, data: setting, checked: settingsCookie[setting.id], onChange: (id, checked) => {
+                return BDV2.react.createElement(V2Components.Switch, {id: setting.id, key: setting.id, data: setting, checked: settingsCookie[setting.id], onChange: (id, checked) => {
                         this.props.onChange(id, checked);
-                    } });
+                    }});
             })
         );
     }
@@ -2128,34 +2127,34 @@ class V2C_Switch extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            'checked': this.props.checked
+            checked: this.props.checked
         };
     }
 
     render() {
-        let { text, info } = this.props.data;
-        let { checked } = this.state;
+        let {text, info} = this.props.data;
+        let {checked} = this.state;
         return BDV2.react.createElement(
             "div",
-            { className: "ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item" },
+            {className: "ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item"},
             BDV2.react.createElement(
                 "div",
-                { className: "ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap" },
+                {className: "ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap"},
                 BDV2.react.createElement(
                     "h3",
-                    { className: "ui-form-title h3 margin-reset margin-reset ui-flex-child" },
+                    {className: "ui-form-title h3 margin-reset margin-reset ui-flex-child"},
                     text
                 ),
                 BDV2.react.createElement(
                     "label",
-                    { className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' } },
-                    BDV2.react.createElement("input", { className: "ui-switch-checkbox", type: "checkbox", checked: checked, onChange: e => this.onChange(e) }),
-                    BDV2.react.createElement("div", { className: `ui-switch ${checked ? 'checked' : ''}` })
+                    {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
+                    BDV2.react.createElement("input", {className: "ui-switch-checkbox", type: "checkbox", checked: checked, onChange: e => this.onChange(e)}),
+                    BDV2.react.createElement("div", {className: `ui-switch ${checked ? "checked" : ""}`})
                 )
             ),
             BDV2.react.createElement(
                 "div",
-                { className: "ui-form-text style-description margin-top-4", style: { flex: '1 1 auto' } },
+                {className: "ui-form-text style-description margin-top-4", style: {flex: "1 1 auto"}},
                 info
             )
         );
@@ -2164,7 +2163,7 @@ class V2C_Switch extends BDV2.reactComponent {
     onChange() {
         this.props.onChange(this.props.id, !this.state.checked);
         this.setState({
-            'checked': !this.state.checked
+            checked: !this.state.checked
         });
     }
 }
@@ -2177,20 +2176,20 @@ class V2C_Scroller extends BDV2.reactComponent {
 
     render() {
         //scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d scrollerFade-1Ijw5y
-        let wrapperClass = `scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d${this.props.fade ? ' scrollerFade-1Ijw5y' : ''}`;
+        let wrapperClass = `scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d${this.props.fade ? " scrollerFade-1Ijw5y" : ""}`;
         let scrollerClass = "scroller-2FKFPG scroller";                                          /* fuck */
         if (this.props.sidebar) scrollerClass = "scroller-2FKFPG sidebar-region-scroller scroller scroller-2FKFPG";
         if (this.props.contentColumn) {
             scrollerClass = "scroller-2FKFPG content-region-scroller scroller scroller-2FKFPG";                                         /* fuck */
             wrapperClass = "scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-10fio9 scrollerTrack-3hhmU0 scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
         }
-        let { children } = this.props;
+        let {children} = this.props;
         return BDV2.react.createElement(
             "div",
-            { key: "scrollerwrap", className: wrapperClass },
+            {key: "scrollerwrap", className: wrapperClass},
             BDV2.react.createElement(
                 "div",
-                { key: "scroller", ref: "scroller", className: scrollerClass },
+                {key: "scroller", ref: "scroller", className: scrollerClass},
                 children
             )
         );
@@ -2207,14 +2206,14 @@ class V2C_TabBarItem extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            'selected': this.props.selected || false
+            selected: this.props.selected || false
         };
     }
 
     render() {
         return BDV2.react.createElement(
             "div",
-            { className: `ui-tab-bar-item${this.props.selected ? ' selected' : ''}`, onClick: this.onClick },
+            {className: `ui-tab-bar-item${this.props.selected ? " selected" : ""}`, onClick: this.onClick},
             this.props.text
         );
     }
@@ -2232,7 +2231,7 @@ class V2C_TabBarSeparator extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement("div", { className: "ui-tab-bar-separator margin-top-8 margin-bottom-8" });
+        return BDV2.react.createElement("div", {className: "ui-tab-bar-separator margin-top-8 margin-bottom-8"});
     }
 }
 
@@ -2244,7 +2243,7 @@ class V2C_TabBarHeader extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "div",
-            { className: "ui-tab-bar-header" },
+            {className: "ui-tab-bar-header"},
             this.props.text
         );
     }
@@ -2256,16 +2255,12 @@ class V2C_SideBar extends BDV2.reactComponent {
         super(props);
         let self = this;
         const si = $("[class*=side] > [class*=selected]");
-        if(si.length) {
-            self.scn = si.attr("class");
-        }
+        if (si.length) self.scn = si.attr("class");
         const ns = $("[class*=side] > [class*=notSelected]");
-        if(ns.length) {
-            self.nscn = ns.attr("class");
-        }
+        if (ns.length) self.nscn = ns.attr("class");
         $("[class*='side-'] > [class*='item-']").on("click", () => {
             self.setState({
-                'selected': null
+                selected: null
             });
         });
         self.setInitialState();
@@ -2275,8 +2270,8 @@ class V2C_SideBar extends BDV2.reactComponent {
     setInitialState() {
         let self = this;
         self.state = {
-            'selected': null,
-            'items': self.props.items
+            selected: null,
+            items: self.props.items
         };
 
         let initialSelection = self.props.items.find(item => {
@@ -2289,16 +2284,16 @@ class V2C_SideBar extends BDV2.reactComponent {
 
     render() {
         let self = this;
-        let { headerText } = self.props;
-        let { items, selected } = self.state;
+        let {headerText} = self.props;
+        let {items, selected} = self.state;
         return BDV2.react.createElement(
             "div",
             null,
             BDV2.react.createElement(V2Components.TabBar.Separator, null),
-            BDV2.react.createElement(V2Components.TabBar.Header, { text: headerText }),
+            BDV2.react.createElement(V2Components.TabBar.Header, {text: headerText}),
             items.map(item => {
-                let { id, text } = item;
-                return BDV2.react.createElement(V2Components.TabBar.Item, { key: id, selected: selected === id, text: text, id: id, onClick: self.onClick });
+                let {id, text} = item;
+                return BDV2.react.createElement(V2Components.TabBar.Item, {key: id, selected: selected === id, text: text, id: id, onClick: self.onClick});
             })
         );
     }
@@ -2306,15 +2301,15 @@ class V2C_SideBar extends BDV2.reactComponent {
     onClick(id) {
         let self = this;
         const si = $("[class*=side] > [class*=selected]");
-        if(si.length) {
+        if (si.length) {
             si.off("click.bdsb").on("click.bsb", e => {
                 $(e.target).attr("class", self.scn);
             });
             si.attr("class", self.nscn);
         }
 
-        self.setState({'selected': null});
-        self.setState({'selected': id});
+        self.setState({selected: null});
+        self.setState({selected: id});
 
         if (self.props.onClick) self.props.onClick(id);
     }
@@ -2328,12 +2323,12 @@ class V2C_XSvg extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "svg",
-            { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 12 12", style: { width: "18px", height: "18px" } },
+            {xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 12 12", style: {width: "18px", height: "18px"}},
             BDV2.react.createElement(
                 "g",
-                { className: "background", fill: "none", "fillRule": "evenodd" },
-                BDV2.react.createElement("path", { d: "M0 0h12v12H0" }),
-                BDV2.react.createElement("path", { className: "fill", fill: "#dcddde", d: "M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6" })
+                {className: "background", fill: "none", fillRule: "evenodd"},
+                BDV2.react.createElement("path", {d: "M0 0h12v12H0"}),
+                BDV2.react.createElement("path", {className: "fill", fill: "#dcddde", d: "M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6"})
             )
         );
     }
@@ -2347,15 +2342,15 @@ class V2C_Tools extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement("div", { className: "tools-container" },
-            BDV2.react.createElement("div", { className: "tools" },
+        return BDV2.react.createElement("div", {className: "tools-container"},
+            BDV2.react.createElement("div", {className: "tools"},
                 BDV2.react.createElement("div",
-                    { className: "btn-close closeButton-1tv5uR", onClick: this.onClick },
+                    {className: "btn-close closeButton-1tv5uR", onClick: this.onClick},
                     BDV2.react.createElement(V2Components.XSvg, null)
                 ),
                 BDV2.react.createElement(
                     "div",
-                    { className: "esc-text keybind-KpFkfr" },
+                    {className: "esc-text keybind-KpFkfr"},
                     "ESC"
                 )
             )
@@ -2378,7 +2373,7 @@ class V2C_SettingsTitle extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "h2",
-            { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+            {className: "ui-form-title h2 margin-reset margin-bottom-20"},
             this.props.text
         );
     }
@@ -2393,7 +2388,7 @@ class V2C_Checkbox extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            'checked': this.props.checked || false
+            checked: this.props.checked || false
         };
     }
 
@@ -2403,11 +2398,11 @@ class V2C_Checkbox extends BDV2.reactComponent {
             null,
             BDV2.react.createElement(
                 "div",
-                { className: "checkbox", onClick: this.onClick },
+                {className: "checkbox", onClick: this.onClick},
                 BDV2.react.createElement(
                     "div",
-                    { className: "checkbox-inner" },
-                    BDV2.react.createElement("input", { checked: this.state.checked, onChange: () => {}, type: "checkbox" }),
+                    {className: "checkbox-inner"},
+                    BDV2.react.createElement("input", {checked: this.state.checked, onChange: () => {}, type: "checkbox"}),
                     BDV2.react.createElement("span", null)
                 ),
                 BDV2.react.createElement(
@@ -2422,7 +2417,7 @@ class V2C_Checkbox extends BDV2.reactComponent {
     onClick() {
         this.props.onChange(this.props.id, !this.state.checked);
         this.setState({
-            'checked': !this.state.checked
+            checked: !this.state.checked
         });
     }
 }
@@ -2439,7 +2434,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     componentDidMount() {
-        $("#app-mount").addClass('bd-detached-editor');
+        $("#app-mount").addClass("bd-detached-editor");
         BDV2.editorDetached = true;
         // this.updateLineCount();
         this.editor = ace.edit("bd-customcss-editor-detached");
@@ -2447,7 +2442,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
         this.editor.session.setMode("ace/mode/css");
         this.editor.setShowPrintMargin(false);
         this.editor.setFontSize(14);
-        this.editor.on('change', () => {
+        this.editor.on("change", () => {
             if (!settingsCookie["bda-css-0"]) return;
             this.saveCss();
             this.updateCss();
@@ -2455,25 +2450,25 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     componentWillUnmount() {
-        $("#app-mount").removeClass('bd-detached-editor');
+        $("#app-mount").removeClass("bd-detached-editor");
         BDV2.editorDetached = false;
         this.editor.destroy();
     }
-	
-	updateLineCount() {
-		let lineCount = this.refs.editor.value.split('\n').length;
-		if (lineCount == this.props.lines) return;
-		this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
-		this.props.lines = lineCount;
-	}
+    
+    updateLineCount() {
+        let lineCount = this.refs.editor.value.split("\n").length;
+        if (lineCount == this.props.lines) return;
+        this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
+        this.props.lines = lineCount;
+    }
 
     get options() {
         return {
             lineNumbers: true,
-            mode: 'css',
+            mode: "css",
             indentUnit: 4,
-            theme: 'material',
-            scrollbarStyle: 'simple'
+            theme: "material",
+            scrollbarStyle: "simple"
         };
     }
 
@@ -2498,7 +2493,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     injectRoot() {
         if (!$(".app").length) return false;
         $("<div/>", {
-            id: 'bd-customcss-detach-container'
+            id: "bd-customcss-detach-container"
         }).insertAfter($(".app"));
         return true;
     }
@@ -2507,48 +2502,48 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
         let self = this;
         return BDV2.react.createElement(
             "div",
-            { className: "bd-detached-css-editor", id: "bd-customcss-detach-editor" },
+            {className: "bd-detached-css-editor", id: "bd-customcss-detach-editor"},
             BDV2.react.createElement(
                 "div",
-                { id: "bd-customcss-innerpane" },
+                {id: "bd-customcss-innerpane"},
                 BDV2.react.createElement("div", {className: "editor-wrapper"},
                     BDV2.react.createElement("div", {id: "bd-customcss-editor-detached", className: "editor", ref: "editor"}, self.css)
-				),
+                ),
                 BDV2.react.createElement(
                     "div",
-                    { id: "bd-customcss-attach-controls" },
+                    {id: "bd-customcss-attach-controls"},
                     BDV2.react.createElement(
                         "ul",
-                        { className: "checkbox-group" },
-                        BDV2.react.createElement(V2Components.Checkbox, { id: "live-update", text: "Live Update", onChange: self.onChange, checked: settingsCookie["bda-css-0"] })
+                        {className: "checkbox-group"},
+                        BDV2.react.createElement(V2Components.Checkbox, {id: "live-update", text: "Live Update", onChange: self.onChange, checked: settingsCookie["bda-css-0"]})
                     ),
                     BDV2.react.createElement(
                         "div",
-                        { id: "bd-customcss-detach-controls-button" },
+                        {id: "bd-customcss-detach-controls-button"},
                         BDV2.react.createElement(
                             "button",
-                            { style: { borderRadius: "3px 0 0 3px", borderRight: "1px solid #3f4146" }, className: "btn btn-primary", onClick: () => {
+                            {style: {borderRadius: "3px 0 0 3px", borderRight: "1px solid #3f4146"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("update");
-                                } },
+                                }},
                             "Update"
                         ),
                         BDV2.react.createElement(
                             "button",
-                            { style: { borderRadius: "0", borderLeft: "1px solid #2d2d2d", borderRight: "1px solid #2d2d2d" }, className: "btn btn-primary", onClick: () => {
+                            {style: {borderRadius: "0", borderLeft: "1px solid #2d2d2d", borderRight: "1px solid #2d2d2d"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("save");
-                                } },
+                                }},
                             "Save"
                         ),
                         BDV2.react.createElement(
                             "button",
-                            { style: { borderRadius: "0 3px 3px 0", borderLeft: "1px solid #3f4146" }, className: "btn btn-primary", onClick: () => {
+                            {style: {borderRadius: "0 3px 3px 0", borderLeft: "1px solid #3f4146"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("attach");
-                                } },
+                                }},
                             "Attach"
                         ),
                         BDV2.react.createElement(
                             "span",
-                            { style: { fontSize: "10px", marginLeft: "5px" } },
+                            {style: {fontSize: "10px", marginLeft: "5px"}},
                             "Unsaved changes are lost on attach"
                         )
                     )
@@ -2559,7 +2554,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
 
     onChange(id, checked) {
         switch (id) {
-            case 'live-update':
+            case "live-update":
                 settingsCookie["bda-css-0"] = checked;
                 mainCore.saveSettings();
                 break;
@@ -2569,15 +2564,15 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     onClick(id) {
         let self = this;
         switch (id) {
-            case 'attach':
+            case "attach":
                 if ($("#editor-detached").length) self.props.attach();
                 BDV2.reactDom.unmountComponentAtNode(self.root);
                 self.root.remove();
                 break;
-            case 'update':
+            case "update":
                 self.updateCss();
                 break;
-            case 'save':
+            case "save":
                 self.saveCss();
                 break;
         }
@@ -2585,7 +2580,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
 
     updateCss() {
         if ($("#customcss").length == 0) {
-            $("head").append('<style id="customcss"></style>');
+            $("head").append("<style id=\"customcss\"></style>");
         }
         $("#customcss").html(this.editor.session.getValue()).detach().appendTo(document.head);
     }
@@ -2600,10 +2595,10 @@ class V2C_CssEditor extends BDV2.reactComponent {
     constructor(props) {
         super(props);
         let self = this;
-		self.props.lines = 0;
+        self.props.lines = 0;
         self.setInitialState();
         self.attach = self.attach.bind(self);
-        self.detachedEditor = BDV2.react.createElement(V2C_CssEditorDetached, { attach: self.attach });
+        self.detachedEditor = BDV2.react.createElement(V2C_CssEditorDetached, {attach: self.attach});
         self.onClick = self.onClick.bind(self);
         self.updateCss = self.updateCss.bind(self);
         self.saveCss = self.saveCss.bind(self);
@@ -2612,7 +2607,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            'detached': this.props.detached || BDV2.editorDetached
+            detached: this.props.detached || BDV2.editorDetached
         };
     }
 
@@ -2623,7 +2618,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
         this.editor.session.setMode("ace/mode/css");
         this.editor.setShowPrintMargin(false);
         this.editor.setFontSize(14);
-        this.editor.on('change', () => {
+        this.editor.on("change", () => {
             if (!settingsCookie["bda-css-0"]) return;
             this.saveCss();
             this.updateCss();
@@ -2647,10 +2642,10 @@ class V2C_CssEditor extends BDV2.reactComponent {
     get options() {
         return {
             lineNumbers: true,
-            mode: 'css',
+            mode: "css",
             indentUnit: 4,
-            theme: 'material',
-            scrollbarStyle: 'simple'
+            theme: "material",
+            scrollbarStyle: "simple"
         };
     }
 
@@ -2662,25 +2657,25 @@ class V2C_CssEditor extends BDV2.reactComponent {
         }
         return ccss;
     }
-	
-	updateLineCount() {
-		let lineCount = this.refs.editor.value.split('\n').length;
-		if (lineCount == this.props.lines) return;
-		this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
-		this.props.lines = lineCount;
-	}
+    
+    updateLineCount() {
+        let lineCount = this.refs.editor.value.split("\n").length;
+        if (lineCount == this.props.lines) return;
+        this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
+        this.props.lines = lineCount;
+    }
 
     render() {
         let self = this;
 
-        let { detached } = self.state;
+        let {detached} = self.state;
         return BDV2.react.createElement(
             "div",
-            { className: "content-column default", style: { padding: '60px 40px 0px' } },
+            {className: "content-column default", style: {padding: "60px 40px 0px"}},
             detached && BDV2.react.createElement(
                 "div",
-                { id: "editor-detached" },
-                BDV2.react.createElement(V2Components.SettingsTitle, { text: "Custom CSS Editor" }),
+                {id: "editor-detached"},
+                BDV2.react.createElement(V2Components.SettingsTitle, {text: "Custom CSS Editor"}),
                 BDV2.react.createElement(
                     "h3",
                     null,
@@ -2688,54 +2683,54 @@ class V2C_CssEditor extends BDV2.reactComponent {
                 ),
                 BDV2.react.createElement(
                     "button",
-                    { className: "btn btn-primary", onClick: () => {
+                    {className: "btn btn-primary", onClick: () => {
                             self.attach();
-                        } },
+                        }},
                     "Attach"
                 )
             ),
             !detached && BDV2.react.createElement(
                 "div",
                 null,
-                BDV2.react.createElement(V2Components.SettingsTitle, { text: "Custom CSS Editor" }),
-				BDV2.react.createElement("div", {className: "editor-wrapper"},
-					BDV2.react.createElement("div", {id: "bd-customcss-editor", className: "editor", ref: "editor"}, self.css)
-				),
+                BDV2.react.createElement(V2Components.SettingsTitle, {text: "Custom CSS Editor"}),
+                BDV2.react.createElement("div", {className: "editor-wrapper"},
+                    BDV2.react.createElement("div", {id: "bd-customcss-editor", className: "editor", ref: "editor"}, self.css)
+                ),
                 BDV2.react.createElement(
                     "div",
-                    { id: "bd-customcss-attach-controls" },
+                    {id: "bd-customcss-attach-controls"},
                     BDV2.react.createElement(
                         "ul",
-                        { className: "checkbox-group" },
-                        BDV2.react.createElement(V2Components.Checkbox, { id: "live-update", text: "Live Update", onChange: this.onChange, checked: settingsCookie["bda-css-0"] })
+                        {className: "checkbox-group"},
+                        BDV2.react.createElement(V2Components.Checkbox, {id: "live-update", text: "Live Update", onChange: this.onChange, checked: settingsCookie["bda-css-0"]})
                     ),
                     BDV2.react.createElement(
                         "div",
-                        { id: "bd-customcss-detach-controls-button" },
+                        {id: "bd-customcss-detach-controls-button"},
                         BDV2.react.createElement(
                             "button",
-                            { style: { borderRadius: "3px 0 0 3px", borderRight: "1px solid #3f4146" }, className: "btn btn-primary", onClick: () => {
+                            {style: {borderRadius: "3px 0 0 3px", borderRight: "1px solid #3f4146"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("update");
-                                } },
+                                }},
                             "Update"
                         ),
                         BDV2.react.createElement(
                             "button",
-                            { style: { borderRadius: "0", borderLeft: "1px solid #2d2d2d", borderRight: "1px solid #2d2d2d" }, className: "btn btn-primary", onClick: () => {
+                            {style: {borderRadius: "0", borderLeft: "1px solid #2d2d2d", borderRight: "1px solid #2d2d2d"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("save");
-                                } },
+                                }},
                             "Save"
                         ),
                         BDV2.react.createElement(
                             "button",
-                            { style: { borderRadius: "0 3px 3px 0", borderLeft: "1px solid #3f4146" }, className: "btn btn-primary", onClick: () => {
+                            {style: {borderRadius: "0 3px 3px 0", borderLeft: "1px solid #3f4146"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("detach");
-                                } },
+                                }},
                             "Detach"
                         ),
                         BDV2.react.createElement(
                             "span",
-                            { style: { fontSize: "10px", marginLeft: "5px" } },
+                            {style: {fontSize: "10px", marginLeft: "5px"}},
                             "Unsaved changes are lost on detach"
                         )
                     )
@@ -2747,13 +2742,13 @@ class V2C_CssEditor extends BDV2.reactComponent {
     onClick(arg) {
         let self = this;
         switch (arg) {
-            case 'update':
+            case "update":
                 self.updateCss();
                 break;
-            case 'save':
+            case "save":
                 self.saveCss();
                 break;
-            case 'detach':
+            case "detach":
                 self.detach();
                 break;
         }
@@ -2761,7 +2756,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
 
     onChange(id, checked) {
         switch (id) {
-            case 'live-update':
+            case "live-update":
                 settingsCookie["bda-css-0"] = checked;
                 mainCore.saveSettings();
                 break;
@@ -2770,7 +2765,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
 
     updateCss() {
         if ($("#customcss").length == 0) {
-            $("head").append('<style id="customcss"></style>');
+            $("head").append("<style id=\"customcss\"></style>");
         }
         $("#customcss").html(this.editor.session.getValue()).detach().appendTo(document.head);
     }
@@ -2782,7 +2777,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
     detach() {
         let self = this;
         self.setState({
-            'detached': true
+            detached: true
         });
         let droot = self.detachedRoot;
         if (!droot) {
@@ -2804,7 +2799,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
     injectDetachedRoot() {
         if (!$(".app").length) return false;
         $("<div/>", {
-            id: 'bd-customcss-detach-container'
+            id: "bd-customcss-detach-container"
         }).insertAfter($(".app"));
         return true;
     }
@@ -2812,7 +2807,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
     attach() {
         let self = this;
         self.setState({
-            'detached': false
+            detached: false
         });
     }
 }
@@ -2825,7 +2820,7 @@ class V2C_List extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "ul",
-            { className: this.props.className },
+            {className: this.props.className},
             this.props.children
         );
     }
@@ -2839,10 +2834,10 @@ class V2C_ContentColumn extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "div",
-            { className: "content-column default" },
+            {className: "content-column default"},
             BDV2.react.createElement(
                 "h2",
-                { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+                {className: "ui-form-title h2 margin-reset margin-bottom-20"},
                 this.props.title
             ),
             this.props.children
@@ -2858,14 +2853,14 @@ class V2C_PluginCard extends BDV2.reactComponent {
         self.onChange = self.onChange.bind(self);
         self.showSettings = self.showSettings.bind(self);
         self.setInitialState();
-		self.hasSettings = typeof self.props.plugin.getSettingsPanel === "function";
-		self.settingsPanel = "";
+        self.hasSettings = typeof self.props.plugin.getSettingsPanel === "function";
+        self.settingsPanel = "";
     }
 
     setInitialState() {
         this.state = {
-            'checked': pluginCookie[this.props.plugin.getName()],
-            'settings': false
+            checked: pluginCookie[this.props.plugin.getName()],
+            settings: false
         };
     }
 
@@ -2874,31 +2869,31 @@ class V2C_PluginCard extends BDV2.reactComponent {
             if (typeof this.settingsPanel === "object") {
                 this.refs.settingspanel.appendChild(this.settingsPanel);
             }
-			
-			if (!settingsCookie['fork-ps-3']) return;
-			var isHidden = (container, element) => {
+            
+            if (!settingsCookie["fork-ps-3"]) return;
+            var isHidden = (container, element) => {
 
-				let cTop = container.scrollTop;
-				let cBottom = cTop + container.clientHeight;
+                let cTop = container.scrollTop;
+                let cBottom = cTop + container.clientHeight;
 
-				let eTop = element.offsetTop;
-				let eBottom = eTop + element.clientHeight;
+                let eTop = element.offsetTop;
+                let eBottom = eTop + element.clientHeight;
 
-				return  (eTop < cTop || eBottom > cBottom);
-			};
-			
-			let self = $(BDV2.reactDom.findDOMNode(this));
-			let container = self.parents('.scroller');
-			if (!isHidden(container[0], self[0])) return;
-			container.animate({
-				scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
-			}, 300);
+                return  (eTop < cTop || eBottom > cBottom);
+            };
+            
+            let self = $(BDV2.reactDom.findDOMNode(this));
+            let container = self.parents(".scroller");
+            if (!isHidden(container[0], self[0])) return;
+            container.animate({
+                scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
+            }, 300);
         }
     }
 
     render() {
         let self = this;
-        let { plugin } = this.props;
+        let {plugin} = this.props;
         let name = plugin.getName();
         let author = plugin.getAuthor();
         let description = plugin.getDescription();
@@ -2908,33 +2903,33 @@ class V2C_PluginCard extends BDV2.reactComponent {
         //let { settingsPanel } = this;
 
         if (this.state.settings) {
-			try { self.settingsPanel = plugin.getSettingsPanel(); }
-			catch (err) { utils.err("Unable to get settings panel for " + plugin.getName() + ".", err); }
-			
+            try { self.settingsPanel = plugin.getSettingsPanel(); }
+            catch (err) { utils.err("Unable to get settings panel for " + plugin.getName() + ".", err); }
+            
             return BDV2.react.createElement("li", {className: "settings-open ui-switch-item"},
-                    BDV2.react.createElement("div", {style: { float: "right", cursor: "pointer" }, onClick: () => {
+                    BDV2.react.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
                             this.refs.settingspanel.innerHTML = "";
-                            self.setState({'settings': false });
+                            self.setState({settings: false});
                         }},
                     BDV2.react.createElement(V2Components.XSvg, null)
                 ),
-                typeof self.settingsPanel === 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel" }),
-                typeof self.settingsPanel !== 'object' && BDV2.react.createElement("div", { id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: { __html: self.settingsPanel } })
+                typeof self.settingsPanel === "object" && BDV2.react.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel"}),
+                typeof self.settingsPanel !== "object" && BDV2.react.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: {__html: self.settingsPanel}})
             );
         }
 
-        return BDV2.react.createElement("li", {"data-name": name, "data-version": version, className: "settings-closed ui-switch-item"},
+        return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bda-header"},
-                    BDV2.react.createElement("span", {className: "bda-header-title" },
-                        BDV2.react.createElement("span", {className: "bda-name" }, name),
+                    BDV2.react.createElement("span", {className: "bda-header-title"},
+                        BDV2.react.createElement("span", {className: "bda-name"}, name),
                         " v",
-                        BDV2.react.createElement("span", {className: "bda-version" }, version),
+                        BDV2.react.createElement("span", {className: "bda-version"}, version),
                         " by ",
-                        BDV2.react.createElement("span", {className: "bda-author" }, author)
+                        BDV2.react.createElement("span", {className: "bda-author"}, author)
                     ),
-                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' }},
-                        BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
-                        BDV2.react.createElement("div", { className: this.state.checked ? "ui-switch checked" : "ui-switch" })
+                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
+                        BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
+                        BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
                     )
             ),
             BDV2.react.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
@@ -2952,13 +2947,13 @@ class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     onChange() {
-        this.setState({'checked': !this.state.checked});
+        this.setState({checked: !this.state.checked});
         pluginModule.togglePlugin(this.props.plugin.getName());
     }
 
     showSettings() {		
         if (!this.hasSettings) return;
-        this.setState({'settings': true});
+        this.setState({settings: true});
     }
 }
 
@@ -2972,12 +2967,12 @@ class V2C_ThemeCard extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            'checked': themeCookie[this.props.theme.name]
+            checked: themeCookie[this.props.theme.name]
         };
     }
 
     render() {
-        let { theme } = this.props;
+        let {theme} = this.props;
         let name = theme.name;
         let description = theme.description;
         let version = theme.version;
@@ -2985,18 +2980,18 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         let website = bdthemes[name].website;
         let source = bdthemes[name].source;
 
-        return BDV2.react.createElement("li", {"data-name": name, "data-version": version, className: "settings-closed ui-switch-item"},
+        return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bda-header"},
-                    BDV2.react.createElement("span", {className: "bda-header-title" },
-                        BDV2.react.createElement("span", {className: "bda-name" }, name),
+                    BDV2.react.createElement("span", {className: "bda-header-title"},
+                        BDV2.react.createElement("span", {className: "bda-name"}, name),
                         " v",
-                        BDV2.react.createElement("span", {className: "bda-version" }, version),
+                        BDV2.react.createElement("span", {className: "bda-version"}, version),
                         " by ",
-                        BDV2.react.createElement("span", {className: "bda-author" }, author)
+                        BDV2.react.createElement("span", {className: "bda-author"}, author)
                     ),
-                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: { flex: '0 0 auto' }},
-                        BDV2.react.createElement("input", { checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox" }),
-                        BDV2.react.createElement("div", { className: this.state.checked ? "ui-switch checked" : "ui-switch" })
+                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
+                        BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
+                        BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
                     )
             ),
             BDV2.react.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
@@ -3013,7 +3008,7 @@ class V2C_ThemeCard extends BDV2.reactComponent {
     }
 
     onChange() {
-        this.setState({'checked': !this.state.checked});
+        this.setState({checked: !this.state.checked});
         themeModule.toggleTheme(this.props.theme.name);
     }
 }
@@ -3092,31 +3087,31 @@ class V2_SettingsPanel_Sidebar {
     }
 
     get items() {
-        return [{ 'text': 'Core', 'id': 'core' }, { 'text': 'Zere\'s Fork', 'id': 'fork' }, { 'text': 'Emotes', 'id': 'emotes' }, { 'text': 'Custom CSS', 'id': 'customcss' }, { 'text': 'Plugins', 'id': 'plugins' }, { 'text': 'Themes', 'id': 'themes' }];
+        return [{text: "Core", id: "core"}, {text: "Zere's Fork", id: "fork"}, {text: "Emotes", id: "emotes"}, {text: "Custom CSS", id: "customcss"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}];
     }
 
     get component() {
         return BDV2.react.createElement(
             "span",
             null,
-            BDV2.react.createElement(V2Components.SideBar, { onClick: this.onClick, headerText: "Bandaged BD", items: this.items }),
+            BDV2.react.createElement(V2Components.SideBar, {onClick: this.onClick, headerText: "Bandaged BD", items: this.items}),
             BDV2.react.createElement(
                 "div",
-                { style: { fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px" } },
+                {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
                 `BD v${bdVersion} by `,
                 BDV2.react.createElement(
                     "a",
-                    { href: "https://github.com/Jiiks/", target: "_blank" },
+                    {href: "https://github.com/Jiiks/", target: "_blank"},
                     "Jiiks"
                 )
             ),
-			BDV2.react.createElement(
+            BDV2.react.createElement(
                 "div",
-                { style: { fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px" } },
+                {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
                 `BBD v${bbdVersion} by `,
                 BDV2.react.createElement(
                     "a",
-                    { href: "https://github.com/rauenzi/", target: "_blank" },
+                    {href: "https://github.com/rauenzi/", target: "_blank"},
                     "Zerebos"
                 )
             )
@@ -3135,7 +3130,7 @@ class V2_SettingsPanel_Sidebar {
     injectRoot() {
         let changeLog = $("[class*='side-'] > [class*='item-']:not([class*=Danger])").last();
         if (!changeLog.length) return false;
-        $("<span/>", { 'id': 'bd-settings-sidebar' }).insertBefore(changeLog.prev());
+        $("<span/>", {id: "bd-settings-sidebar"}).insertBefore(changeLog.prev());
         return true;
     }
 
@@ -3171,8 +3166,8 @@ class V2_SettingsPanel {
     injectRoot() {
         if (!$(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").length) return false;
         $(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").append($("<div/>", {
-            class: 'content-region',
-            id: 'bd-settingspane-container'
+            "class": "content-region",
+            "id": "bd-settingspane-container"
         }));
         return true;
     }
@@ -3180,7 +3175,7 @@ class V2_SettingsPanel {
     get coreSettings() {
         return this.getSettings("core");
     }
-	get forkSettings() {
+    get forkSettings() {
         return this.getSettings("fork");
     }
     get emoteSettings() {
@@ -3202,22 +3197,22 @@ class V2_SettingsPanel {
         $(".content-region").first().hide();
         $(self.root).show();
         switch (id) {
-            case 'core':
+            case "core":
                 self.renderCoreSettings();
                 break;
-			case 'fork':
-				self.renderForkSettings();
-				break;
-            case 'emotes':
+            case "fork":
+                self.renderForkSettings();
+                break;
+            case "emotes":
                 self.renderEmoteSettings();
                 break;
-            case 'customcss':
+            case "customcss":
                 self.renderCustomCssEditor();
                 break;
-            case 'plugins':
+            case "plugins":
                 self.renderPluginPane();
                 break;
-            case 'themes':
+            case "themes":
                 self.renderThemePane();
                 break;
         }
@@ -3235,43 +3230,50 @@ class V2_SettingsPanel {
 
         if (_c["bda-es-0"]) {
             $("#twitchcord-button-container").show();
-        } else {
+        }
+        else {
             $("#twitchcord-button-container").hide();
         }
 
         if (_c["bda-gs-b"]) {
             $("body").addClass("bd-blue");
-        } else {
+        }
+        else {
             $("body").removeClass("bd-blue");
         }
 
         if (_c["bda-gs-2"]) {
             $("body").addClass("bd-minimal");
-        } else {
+        }
+        else {
             $("body").removeClass("bd-minimal");
         }
 
         if (_c["bda-gs-3"]) {
             $("body").addClass("bd-minimal-chan");
-        } else {
+        }
+        else {
             $("body").removeClass("bd-minimal-chan");
         }
 
         if (_c["bda-gs-1"]) {
             $("#bd-pub-li").show();
-        } else {
+        }
+        else {
             $("#bd-pub-li").hide();
         }
 
         if (_c["bda-gs-4"]) {
             voiceMode.enable();
-        } else {
+        }
+        else {
             voiceMode.disable();
         }
 
         if (_c["bda-gs-5"]) {
             $("#app-mount").addClass("bda-dark");
-        } else {
+        }
+        else {
             $("#app-mount").removeClass("bda-dark");
         }
 
@@ -3282,17 +3284,19 @@ class V2_SettingsPanel {
 
         if (_c["bda-gs-7"]) {
             mainCore.injectColoredText();
-        } else {
+        }
+        else {
             mainCore.removeColoredText();
         }
-		
-		if (_c["fork-ps-4"]) classNormalizer.start();
-		else classNormalizer.stop();
-		
+        
+        if (_c["fork-ps-4"]) classNormalizer.start();
+        else classNormalizer.stop();
+        
 
         if (_c["bda-gs-8"]) {
             dMode.enable(_c["fork-dm-1"]);
-        } else {
+        }
+        else {
             dMode.disable();
         }
 
@@ -3301,7 +3305,7 @@ class V2_SettingsPanel {
 
     renderSidebar() {
         let self = this;
-        $("[class*='side-'] > [class*='item-']").off('click.v2settingspanel').on('click.v2settingspanel', () => {
+        $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
             BDV2.reactDom.unmountComponentAtNode(self.root);
             $(self.root).hide();
             $(".content-region").first().show();
@@ -3310,51 +3314,51 @@ class V2_SettingsPanel {
     }
 
     get coreComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, {key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
     }
-	
-	get forkComponent() {
+    
+    get forkComponent() {
         return BDV2.react.createElement(V2Components.Scroller, {
                 contentColumn: true, 
-				fade: true,
-				dark: true,
-				children: [
-					BDV2.react.createElement(V2Components.SettingsPanel, { key: "fspanel", title: "Zere's Fork Settings", onChange: this.onChange, settings: this.forkSettings, button: {
-						title: "Clear Emote Cache",
-						onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
-					}}),
-					BDV2.react.createElement(V2Components.Tools, { key: "tools" })
-				]
-			}
-		);
+                fade: true,
+                dark: true,
+                children: [
+                    BDV2.react.createElement(V2Components.SettingsPanel, {key: "fspanel", title: "Zere's Fork Settings", onChange: this.onChange, settings: this.forkSettings, button: {
+                        title: "Clear Emote Cache",
+                        onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
+                    }}),
+                    BDV2.react.createElement(V2Components.Tools, {key: "tools"})
+                ]
+            }
+        );
     }
 
     get emoteComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, { key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
     }
 
     get customCssComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.CssEditor, { key: "csseditor" }), BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.CssEditor, {key: "csseditor"}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
     }
 
     get pluginsComponent() {
         let plugins = Object.keys(bdplugins).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(V2Components.PluginCard, { key: key, plugin: bdplugins[key].plugin }));return arr;
+            arr.push(BDV2.react.createElement(V2Components.PluginCard, {key: key, plugin: bdplugins[key].plugin}));return arr;
         }, []);
-        let list = BDV2.react.createElement(V2Components.List, { key: "plugin-list", className: "bda-slist", children: plugins });
-        let pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'plugindir' }); }}, "Open Plugin Folder");
-        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "pcolumn", title: "Plugins", children: [pfBtn, list] });
-        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        let list = BDV2.react.createElement(V2Components.List, {key: "plugin-list", className: "bda-slist", children: plugins});
+        let pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { betterDiscordIPC.send("asynchronous-message", {arg: "opendir", path: "plugindir"}); }}, "Open Plugin Folder");
+        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, {key: "pcolumn", title: "Plugins", children: [pfBtn, list]});
+        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
     }
 
     get themesComponent() {
         let themes = Object.keys(bdthemes).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(V2Components.ThemeCard, { key: key, theme: bdthemes[key] }));return arr;
+            arr.push(BDV2.react.createElement(V2Components.ThemeCard, {key: key, theme: bdthemes[key]}));return arr;
         }, []);
-        let list = BDV2.react.createElement(V2Components.List, { key: "theme-list", className: "bda-slist", children: themes });
-        let tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: 'bd-pfbtn', onClick: () => { betterDiscordIPC.send('asynchronous-message', { 'arg': 'opendir', 'path': 'themedir' }); }}, "Open Theme Folder");
-        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, { key: "tcolumn", title: "Themes", children: [tfBtn, list] });
-        return BDV2.react.createElement(V2Components.Scroller, { contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, { key: "tools" })] });
+        let list = BDV2.react.createElement(V2Components.List, {key: "theme-list", className: "bda-slist", children: themes});
+        let tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { betterDiscordIPC.send("asynchronous-message", {arg: "opendir", path: "themedir"}); }}, "Open Theme Folder");
+        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, {key: "tcolumn", title: "Themes", children: [tfBtn, list]});
+        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
     }
 
     renderCoreSettings() {
@@ -3365,8 +3369,8 @@ class V2_SettingsPanel {
         }
         BDV2.reactDom.render(this.coreComponent, root);
     }
-	
-	renderForkSettings() {
+    
+    renderForkSettings() {
         let root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
@@ -3465,8 +3469,8 @@ class V2C_Layer extends BDV2.reactComponent {
         });
 
         $(`#${this.props.id}`).animate({opacity: 1}, {
-            step: function(now, fx) {
-              $(this).css("transform", `scale(${1.1 - 0.1*now}) translateZ(0px)`); 
+            step: function(now) {
+              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`); 
             },
             duration: 200,
             done: () => {$(`#${this.props.id}`).css("opacity", "").css("transform", "");}
@@ -3476,27 +3480,27 @@ class V2C_Layer extends BDV2.reactComponent {
     componentWillUnmount() {
         $(window).off(`keyup.${this.props.id}`);
         $(`#${this.props.id}`).animate({opacity: 0}, {
-            step: function(now, fx) {
-              $(this).css("transform", `scale(${1.1 - 0.1*now}) translateZ(0px)`); 
+            step: function(now) {
+              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`); 
             },
             duration: 200,
             done: () => {$(`#${this.props.rootId}`).remove();}
         });
         
-        $('[class*="layer-"]').removeClass("publicServersOpen").animate({opacity: 1}, {
-            step: function(now, fx) {
-              $(this).css("transform", `scale(${0.07*now + 0.93}) translateZ(0px)`); 
+        $("[class*=\"layer-\"]").removeClass("publicServersOpen").animate({opacity: 1}, {
+            step: function(now) {
+              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`); 
             },
             duration: 200,
-            done: () => {$('[class*="layer-"]').css("opacity", "").css("transform", "");}
+            done: () => {$("[class*=\"layer-\"]").css("opacity", "").css("transform", "");}
         });
         
     }
 
     componentWillMount() {
-        $('[class*="layer-"]').addClass("publicServersOpen").animate({opacity: 0}, {
-            step: function(now, fx) {
-              $(this).css("transform", `scale(${0.07*now + 0.93}) translateZ(0px)`); 
+        $("[class*=\"layer-\"]").addClass("publicServersOpen").animate({opacity: 0}, {
+            step: function(now) {
+              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`); 
             },
             duration: 200
         });
@@ -3505,7 +3509,7 @@ class V2C_Layer extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "div",
-            { className: "layer bd-layer layer-3QrUeG", id: this.props.id, ref: "root", style: {opacity: 0, transform: "scale(1.1) translateZ(0px)"} },
+            {className: "layer bd-layer layer-3QrUeG", id: this.props.id, ref: "root", style: {opacity: 0, transform: "scale(1.1) translateZ(0px)"}},
             this.props.children
         );
     }
@@ -3518,14 +3522,14 @@ class V2C_SidebarView extends BDV2.reactComponent {
     }
 
     render() {
-        let { sidebar, content, tools } = this.props.children;
+        let {sidebar, content, tools} = this.props.children;
         return BDV2.react.createElement(
             "div",
-            { className: "ui-standard-sidebar-view" },
+            {className: "ui-standard-sidebar-view"},
             BDV2.react.createElement(
                 "div",
-                { className: "sidebar-region" },
-                BDV2.react.createElement(V2Components.Scroller, { key: "sidebarScroller", ref: "sidebarScroller", sidebar: true, fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component })
+                {className: "sidebar-region"},
+                BDV2.react.createElement(V2Components.Scroller, {key: "sidebarScroller", ref: "sidebarScroller", sidebar: true, fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component})
             ),
             BDV2.react.createElement("div", {className: "content-region"},
                 BDV2.react.createElement("div", {className: "content-transition-wrap"},
@@ -3547,7 +3551,7 @@ class V2_PublicServers {
     constructor() {}
 
     get component() {
-        return BDV2.react.createElement(V2Components.Layer, { rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, { rootId: "pubslayerroot" }) });
+        return BDV2.react.createElement(V2Components.Layer, {rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, {rootId: "pubslayerroot"})});
     }
 
     get root() {
@@ -3562,7 +3566,7 @@ class V2_PublicServers {
     injectRoot() {
         if (!$(".layers, .layers-3iHuyZ").length) return false;
         $(".layers, .layers-3iHuyZ").append($("<div/>", {
-            id: 'pubslayerroot'
+            id: "pubslayerroot"
         }));
         return true;
     }
@@ -3578,26 +3582,26 @@ class V2_PublicServers {
 
     get button() {
         let btn = $("<div/>", {
-            class: BDV2.guildClasses.guild,
-            id: 'bd-pub-li',
-            css: {
-                'height': '20px',
-                'display': settingsCookie['bda-gs-1'] ? "" : "none"
+            "class": BDV2.guildClasses.guild,
+            "id": "bd-pub-li",
+            "css": {
+                height: "20px",
+                display: settingsCookie["bda-gs-1"] ? "" : "none"
             }
         }).append($("<div/>", {
-            class: BDV2.guildClasses.guildInner,
-            css: {
-                'height': '20px',
-                'border-radius': '4px'
+            "class": BDV2.guildClasses.guildInner,
+            "css": {
+                "height": "20px",
+                "border-radius": "4px"
             }
         }).append($("<a/>", {
 
         }).append($("<div/>", {
-            text: 'public',
-            id: 'bd-pub-button',
+            text: "public",
+            id: "bd-pub-button",
             css: {
-                'line-height': '20px',
-                'font-size': '12px'
+                "line-height": "20px",
+                "font-size": "12px"
             },
             click: () => { this.render(); }
         }))));
@@ -3608,7 +3612,7 @@ class V2_PublicServers {
     initialize() {
         let guilds = $(`.${BDV2.guildClasses.guilds}>:first-child`);
         guilds.after(this.button);
-	}
+    }
 }
 
 
@@ -3623,77 +3627,77 @@ class V2C_ServerCard extends BDV2.reactComponent {
     }
 
     render() {
-        let { server } = this.props;
+        let {server} = this.props;
         return BDV2.react.createElement(
             "div", // cardPrimary-1Hv-to
-            { className: `card-3Qj_Yx cardPrimary-1Hv-to marginBottom8-AtZOdT bd-server-card${server.pinned ? ' bd-server-card-pinned' : ''}` },
+            {className: `card-3Qj_Yx cardPrimary-1Hv-to marginBottom8-AtZOdT bd-server-card${server.pinned ? " bd-server-card-pinned" : ""}`},
             // BDV2.react.createElement(
                 // "div",
                 // { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2yIZo0 alignStretch-1hwxMa noWrap-3jynv6" },
-                BDV2.react.createElement("img", { ref: "img", className: "bd-server-image", src: server.iconUrl, onError: this.handleError.bind(this) }),
+                BDV2.react.createElement("img", {ref: "img", className: "bd-server-image", src: server.iconUrl, onError: this.handleError.bind(this)}),
                 BDV2.react.createElement(
                     "div",
-                    { className: "flexChild-faoVW3 bd-server-content" },
+                    {className: "flexChild-faoVW3 bd-server-content"},
                     BDV2.react.createElement(
                         "div",
-                        { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6 bd-server-header" },
+                        {className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6 bd-server-header"},
                         BDV2.react.createElement(
                             "h5",
-                            { className: "h5-18_1nd defaultColor-1_ajX0 margin-reset bd-server-name" },
+                            {className: "h5-18_1nd defaultColor-1_ajX0 margin-reset bd-server-name"},
                             server.name
                         ),
                         BDV2.react.createElement(
                             "h5",
-                            { className: "h5-18_1nd defaultColor-1_ajX0 margin-reset bd-server-member-count" },
+                            {className: "h5-18_1nd defaultColor-1_ajX0 margin-reset bd-server-member-count"},
                             server.members,
                             " Members"
                         )
                     ),
                     BDV2.react.createElement(
                         "div",
-                        { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6" },
+                        {className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6"},
                         BDV2.react.createElement(
                             "div",
-                            { className: "scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d scrollerFade-1Ijw5y bd-server-description-container"},
+                            {className: "scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d scrollerFade-1Ijw5y bd-server-description-container"},
                             BDV2.react.createElement(
                                 "div",
-                                { className: "scroller-2FKFPG scroller bd-server-description" },
+                                {className: "scroller-2FKFPG scroller bd-server-description"},
                                     server.description
                             )
                         )
                     ),
                     BDV2.react.createElement(
                         "div",
-                        { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6 bd-server-footer" },
+                        {className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY directionRow-3v3tfG noWrap-3jynv6 bd-server-footer"},
                         BDV2.react.createElement(
                             "div",
-                            { className: "flexChild-faoVW3 bd-server-tags", style: { flex: "1 1 auto" } },
-                            server.categories.join(', ')
+                            {className: "flexChild-faoVW3 bd-server-tags", style: {flex: "1 1 auto"}},
+                            server.categories.join(", ")
                         ),
                         this.state.joined && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN colorGreen-29iAKY", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c" } },
+                            {type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN colorGreen-29iAKY", style: {minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c"}},
                             BDV2.react.createElement(
                                 "div",
-                                { className: "ui-button-contents" },
+                                {className: "ui-button-contents"},
                                 "Joined"
                             )
                         ),
                         server.error && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN disabled-9aF2ug", style: { minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a" } },
+                            {type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN disabled-9aF2ug", style: {minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a"}},
                             BDV2.react.createElement(
                                 "div",
-                                { className: "ui-button-contents" },
+                                {className: "ui-button-contents"},
                                 "Error"
                             )
                         ),
                         !server.error && !this.state.joined && BDV2.react.createElement(
                             "button",
-                            { type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN", style: { minHeight: "12px", marginTop: "4px" }, onClick: () => {this.join();} },
+                            {type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN", style: {minHeight: "12px", marginTop: "4px"}, onClick: () => {this.join();}},
                             BDV2.react.createElement(
                                 "div",
-                                { className: "ui-button-contents" },
+                                {className: "ui-button-contents"},
                                 "Join"
                             )
                         )
@@ -3729,8 +3733,8 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
         this.GuildStore = BDV2.WebpackModules.findByUniqueProperties(["getGuilds"]);
         this.AvatarDefaults = BDV2.WebpackModules.findByUniqueProperties(["getUserAvatarURL", "DEFAULT_AVATARS"]);
-        this.InviteActions = BDV2.WebpackModules.findByUniqueProperties(['acceptInvite']);
-        this.SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(['getSortedGuilds']);
+        this.InviteActions = BDV2.WebpackModules.findByUniqueProperties(["acceptInvite"]);
+        this.SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
     }
 
     componentDidMount() {
@@ -3739,14 +3743,14 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            'selectedCategory': -1,
-            'title': 'Loading...',
-            'loading': true,
-            'servers': [],
-            'next': null,
-            'connection': {
-                'state': 0,
-                'user': null
+            selectedCategory: -1,
+            title: "Loading...",
+            loading: true,
+            servers: [],
+            next: null,
+            connection: {
+                state: 0,
+                user: null
             }
         };
     }
@@ -3759,7 +3763,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
         let self = this;
 
         $.ajax({
-            method: 'GET',
+            method: "GET",
             url: `${self.endPoint}${query}${query ? "&schema=new" : "?schema=new"}`,
             success: data => {
                 let servers = data.results.reduce((arr, server) => {
@@ -3771,11 +3775,11 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
                 if (!clear) {
                     servers = self.state.servers.concat(servers);
-                } else {
+                }
+                else {
                     //servers.unshift(self.bdServer);
                 }
 
-                let hasNext = true;
                 let end = data.size + data.from;
                 data.next = `?from=${end}`;
                 if (self.state.term) data.next += `&term=${self.state.term}`;
@@ -3789,21 +3793,21 @@ class V2C_PublicServers extends BDV2.reactComponent {
                 if (self.state.term) title += ` for ${self.state.term}`;
 
                 self.setState({
-                    'loading': false,
-                    'title': title,
-                    'servers': servers,
-                    'next': data.next
+                    loading: false,
+                    title: title,
+                    servers: servers,
+                    next: data.next
                 });
 
                 if (clear) {
-					//console.log(self);
+                    //console.log(self);
                     self.refs.sbv.refs.contentScroller.scrollTop = 0;
                 }
             },
-            error: (jqXHR) => {
+            error: () => {
                 self.setState({
-                    'loading': false,
-                    'title': 'Failed to load servers. Check console for details'
+                    loading: false,
+                    title: "Failed to load servers. Check console for details"
                 });
             }
         });
@@ -3812,10 +3816,10 @@ class V2C_PublicServers extends BDV2.reactComponent {
     join(serverCard) {
         if (serverCard.props.pinned) return this.InviteActions.acceptInvite(serverCard.props.invite_code);
         $.ajax({
-            method: 'GET',
+            method: "GET",
             url: `${this.joinEndPoint}/${serverCard.props.server.identifier}`,
             headers: {          
-                Accept: "application/json;",         
+                "Accept": "application/json;",         
                 "Content-Type": "application/json;" ,
                 "x-discord-id": this.state.connection.user.id,
                 "x-discord-token": this.state.connection.user.accessToken
@@ -3824,7 +3828,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
             xhrFields: {
                 withCredentials: true
             },
-            success: data => {
+            success: () => {
                 serverCard.setState({joined: true});
             }
         });
@@ -3836,10 +3840,10 @@ class V2C_PublicServers extends BDV2.reactComponent {
         options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
         options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
 
-        self.joinWindow = new (window.require('electron').remote.BrowserWindow)(options);
-        let sub = window.location.hostname.split('.')[0];
-        let url = self.connectEndPoint + (sub === 'canary' || sub === 'ptb' ? `/${sub}` : '') + "?betterDiscord";
-        self.joinWindow.webContents.on('did-navigate', (event, url) => {
+        self.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
+        let sub = window.location.hostname.split(".")[0];
+        let url = self.connectEndPoint + (sub === "canary" || sub === "ptb" ? `/${sub}` : "") + "?betterDiscord";
+        self.joinWindow.webContents.on("did-navigate", (event, url) => {
             if (url != "https://join.discordservers.com/session") return;
             self.joinWindow.close();
             self.checkConnection();
@@ -3851,7 +3855,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
         return {
             width: 500,
             height: 550,
-            backgroundColor: '#282b30',
+            backgroundColor: "#282b30",
             show: true,
             resizable: false,
             maximizable: false,
@@ -3864,42 +3868,42 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
     get bdServer() {
         let server = {
-            "name": "BetterDiscord",
-            "online": "7500+",
-            "members": "20000+",
-            "categories": ["community", "programming", "support"],
-            "description": "Official BetterDiscord server for support etc",
-            "identifier": "86004744966914048",
-            "iconUrl": "https://cdn.discordapp.com/icons/86004744966914048/292e7f6bfff2b71dfd13e508a859aedd.webp",
-            "nativejoin": true,
-            "invite_code": "0Tmfo5ZbORCRqbAd",
-            "pinned": true
+            name: "BetterDiscord",
+            online: "7500+",
+            members: "20000+",
+            categories: ["community", "programming", "support"],
+            description: "Official BetterDiscord server for support etc",
+            identifier: "86004744966914048",
+            iconUrl: "https://cdn.discordapp.com/icons/86004744966914048/292e7f6bfff2b71dfd13e508a859aedd.webp",
+            nativejoin: true,
+            invite_code: "0Tmfo5ZbORCRqbAd",
+            pinned: true
         };
         let guildList = this.SortedGuildStore.guildPositions;
         let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
-        return BDV2.react.createElement(V2Components.ServerCard, { server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)] });
+        return BDV2.react.createElement(V2Components.ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
     }
 
     get endPoint() {
-        return 'https://search.discordservers.com';
+        return "https://search.discordservers.com";
     }
 
     get joinEndPoint() {
-        return 'https://join.discordservers.com';
+        return "https://join.discordservers.com";
     }
 
     get connectEndPoint() {
-        return 'https://join.discordservers.com/connect';
+        return "https://join.discordservers.com/connect";
     }
 
     checkConnection() {
         let self = this;
         try {
             $.ajax({
-                method: 'GET',
+                method: "GET",
                 url: `${self.joinEndPoint}/session`,
                 headers: {          
-                    Accept: "application/json;",         
+                    "Accept": "application/json;",         
                     "Content-Type": "application/json;"   
                 },
                 crossDomain: true,
@@ -3908,10 +3912,10 @@ class V2C_PublicServers extends BDV2.reactComponent {
                 },
                 success: data => {
                     self.setState({
-                        'selectedCategory': 0,
-                        'connection': {
-                            'state': 2,
-                            'user': data
+                        selectedCategory: 0,
+                        connection: {
+                            state: 2,
+                            user: data
                         }
                     });
                     self.search("", true);
@@ -3921,12 +3925,12 @@ class V2C_PublicServers extends BDV2.reactComponent {
                     if (jqXHR.status === 403 || jqXHR.status === 404) {
                         //Not connected
                         self.setState({
-                            'title': 'Not connected to discordservers.com!',
-                            'loading': true,
-                            'selectedCategory': -1,
-                            'connection': {
-                                'state': 1,
-                                'user': null
+                            title: "Not connected to discordservers.com!",
+                            loading: true,
+                            selectedCategory: -1,
+                            connection: {
+                                state: 1,
+                                user: null
                             }
                         });
                         return;
@@ -3934,33 +3938,33 @@ class V2C_PublicServers extends BDV2.reactComponent {
                 }
             });
         }
-        catch(error) {
+        catch (error) {
             self.setState({
-                'title': 'Not connected to discordservers.com!',
-                'loading': true,
-                'selectedCategory': -1,
-                'connection': {
-                    'state': 1,
-                    'user': null
+                title: "Not connected to discordservers.com!",
+                loading: true,
+                selectedCategory: -1,
+                connection: {
+                    state: 1,
+                    user: null
                 }
             });
         }
     }
 
     render() {
-        return BDV2.react.createElement(V2Components.SidebarView, { ref: "sbv", children: this.component });
+        return BDV2.react.createElement(V2Components.SidebarView, {ref: "sbv", children: this.component});
     }
 
     get component() {
         return {
-            'sidebar': {
-                'component': this.sidebar
+            sidebar: {
+                component: this.sidebar
             },
-            'content': {
-                'component': this.content
+            content: {
+                component: this.content
             },
-            'tools': {
-                'component': BDV2.react.createElement(V2Components.Tools, { key: "pt", ref: "tools", onClick: this.close })
+            tools: {
+                component: BDV2.react.createElement(V2Components.Tools, {key: "pt", ref: "tools", onClick: this.close})
             }
         };
     }
@@ -3968,21 +3972,21 @@ class V2C_PublicServers extends BDV2.reactComponent {
     get sidebar() {
         return BDV2.react.createElement(
             "div",
-            { className: "sidebar", key: "ps" },
+            {className: "sidebar", key: "ps"},
             BDV2.react.createElement(
                 "div",
-                { className: "ui-tab-bar SIDE" },
+                {className: "ui-tab-bar SIDE"},
                 BDV2.react.createElement(
                     "div",
-                    { className: "ui-tab-bar-header", style: { fontSize: "16px" } },
+                    {className: "ui-tab-bar-header", style: {fontSize: "16px"}},
                     "Public Servers"
                 ),
                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
                 this.searchInput,
                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
-                BDV2.react.createElement(V2Components.TabBar.Header, { text: "Categories" }),
+                BDV2.react.createElement(V2Components.TabBar.Header, {text: "Categories"}),
                 this.categoryButtons.map((value, index) => {
-                    return BDV2.react.createElement(V2Components.TabBar.Item, { id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index });
+                    return BDV2.react.createElement(V2Components.TabBar.Item, {id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index});
                 }),
                 BDV2.react.createElement(V2Components.TabBar.Separator, null),
                 this.footer,
@@ -3994,11 +3998,11 @@ class V2C_PublicServers extends BDV2.reactComponent {
     get searchInput() {
         return BDV2.react.createElement(
             "div",
-            { className: "ui-form-item" },
+            {className: "ui-form-item"},
             BDV2.react.createElement(
                 "div",
-                { className: "ui-text-input flex-vertical", style: { width: "172px", marginLeft: "10px" } },
-                BDV2.react.createElement("input", { ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50" })
+                {className: "ui-text-input flex-vertical", style: {width: "172px", marginLeft: "10px"}},
+                BDV2.react.createElement("input", {ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50"})
             )
         );
     }
@@ -4007,9 +4011,9 @@ class V2C_PublicServers extends BDV2.reactComponent {
         let self = this;
         if (self.state.loading || e.which !== 13) return;
         self.setState({
-            'loading': true,
-            'title': 'Loading...',
-            'term': e.target.value
+            loading: true,
+            title: "Loading...",
+            term: e.target.value
         });
         let query = `?term=${e.target.value}`;
         if (self.state.selectedCategory !== 0) {
@@ -4027,10 +4031,10 @@ class V2C_PublicServers extends BDV2.reactComponent {
         if (self.state.loading) return;
         self.refs.searchinput.value = "";
         self.setState({
-            'loading': true,
-            'selectedCategory': id,
-            'title': 'Loading...',
-            'term': null
+            loading: true,
+            selectedCategory: id,
+            title: "Loading...",
+            term: null
         });
         if (id === 0) {
             self.search("", true);
@@ -4046,24 +4050,24 @@ class V2C_PublicServers extends BDV2.reactComponent {
         if (self.state.connection.state === 1) return self.notConnected;
         return [BDV2.react.createElement(
             "div",
-            { ref: "content", key: "pc", className: "content-column default" },
-            BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title }),
+            {ref: "content", key: "pc", className: "content-column default"},
+            BDV2.react.createElement(V2Components.SettingsTitle, {text: self.state.title}),
             self.bdServer,
-            self.state.servers.map((server, index) => {
-                return BDV2.react.createElement(V2Components.ServerCard, { key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)] });
+            self.state.servers.map((server) => {
+                return BDV2.react.createElement(V2Components.ServerCard, {key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
             }),
             self.state.next && BDV2.react.createElement(
                 "button",
-                { type: "button", onClick: () => {
-                        if (self.state.loading) return;self.setState({ 'loading': true }); self.search(self.state.next, false);
-                    }, className: "ui-button filled brand small grow", style: { width: "100%", marginTop: "10px", marginBottom: "10px" } },
+                {type: "button", onClick: () => {
+                        if (self.state.loading) return;self.setState({loading: true}); self.search(self.state.next, false);
+                    }, className: "ui-button filled brand small grow", style: {width: "100%", marginTop: "10px", marginBottom: "10px"}},
                 BDV2.react.createElement(
                     "div",
-                    { className: "ui-button-contents" },
-                    self.state.loading ? 'Loading' : 'Load More'
+                    {className: "ui-button-contents"},
+                    self.state.loading ? "Loading" : "Load More"
                 )
             ),
-            self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title })
+            self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, {text: self.state.title})
         )];
     }
 
@@ -4072,17 +4076,27 @@ class V2C_PublicServers extends BDV2.reactComponent {
         //return BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title });
         return [BDV2.react.createElement(
             "div",
-            { key: "ncc", ref: "content", className: "content-column default" },
+            {key: "ncc", ref: "content", className: "content-column default"},
             BDV2.react.createElement(
                 "h2",
-                { className: "ui-form-title h2 margin-reset margin-bottom-20" },
+                {className: "ui-form-title h2 margin-reset margin-bottom-20"},
                 "Not connected to discordservers.com!",
                 BDV2.react.createElement(
                     "button",
-                    { onClick: self.connect, type: "button", className: "ui-button filled brand small grow", style: { display: "inline-block", minHeight: "18px", marginLeft: "10px", lineHeight: "14px" } },
+                    {
+                        onClick: self.connect,
+                        type: "button",
+                        className: "ui-button filled brand small grow",
+                        style: {
+                            display: "inline-block",
+                            minHeight: "18px",
+                            marginLeft: "10px",
+                            lineHeight: "14px"
+                        }
+                    },
                     BDV2.react.createElement(
                         "div",
-                        { className: "ui-button-contents" },
+                        {className: "ui-button-contents"},
                         "Connect"
                     )
                 )
@@ -4093,10 +4107,10 @@ class V2C_PublicServers extends BDV2.reactComponent {
     get footer() {
         return BDV2.react.createElement(
             "div",
-            { className: "ui-tab-bar-header" },
+            {className: "ui-tab-bar-header"},
             BDV2.react.createElement(
                 "a",
-                { href: "https://discordservers.com", target: "_blank" },
+                {href: "https://discordservers.com", target: "_blank"},
                 "Discordservers.com"
             )
         );
@@ -4104,7 +4118,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
     get connection() {
         let self = this;
-        let { connection } = self.state;
+        let {connection} = self.state;
         if (connection.state !== 2) return BDV2.react.createElement("span", null);
 
         return BDV2.react.createElement(
@@ -4113,19 +4127,19 @@ class V2C_PublicServers extends BDV2.reactComponent {
             BDV2.react.createElement(V2Components.TabBar.Separator, null),
             BDV2.react.createElement(
                 "span",
-                { style: { color: "#b9bbbe", fontSize: "10px", marginLeft: "10px" } },
+                {style: {color: "#b9bbbe", fontSize: "10px", marginLeft: "10px"}},
                 "Connected as: ",
                 `${connection.user.username}#${connection.user.discriminator}`
             ),
             BDV2.react.createElement(
                 "div",
-                { style: { padding: "5px 10px 0 10px" } },
+                {style: {padding: "5px 10px 0 10px"}},
                 BDV2.react.createElement(
                     "button",
-                    { style: { width: "100%", minHeight: "20px" }, type: "button", className: "ui-button filled brand small grow" },
+                    {style: {width: "100%", minHeight: "20px"}, type: "button", className: "ui-button filled brand small grow"},
                     BDV2.react.createElement(
                         "div",
-                        { className: "ui-button-contents", onClick: self.connect },
+                        {className: "ui-button-contents", onClick: self.connect},
                         "Reconnect"
                     )
                 )
