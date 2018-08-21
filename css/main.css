@@ -2029,8 +2029,9 @@ margin-right: -30px;
     font-size: 14px;
     font-weight: 500;
     line-height: 20px;
-    margin-bottom: 20px;
-    padding-bottom: 20px;
+    margin-bottom: 10px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid hsla(218,5%,47%,.3);
 }
 .theme-dark #bd-settingspane-container .ui-switch-item .style-description {
     color: #72767d;
