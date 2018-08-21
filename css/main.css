@@ -2030,14 +2030,16 @@ margin-right: -30px;
     font-weight: 500;
     line-height: 20px;
     margin-bottom: 10px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid hsla(218,5%,47%,.3);
+    padding-bottom: 10px;
+    border-bottom: 1px solid transparent;
 }
 .theme-dark #bd-settingspane-container .ui-switch-item .style-description {
     color: #72767d;
+    border-bottom-color: rgba(114,118,125,.3);
 }
 .theme-light #bd-settingspane-container .ui-switch-item .style-description {
     color: rgba(114,118,125,.6);
+    border-bottom-color: rgba(185,187,190,.3);
 }
 
 #bd-settingspane-container .ui-switch-item .ui-switch-wrapper {
