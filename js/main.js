@@ -3175,12 +3175,6 @@ class V2_SettingsPanel {
         self.sidebar = new V2_SettingsPanel_Sidebar(self.sideBarOnClick);
     }
 
-    componentDidMount() {
-        Utils.onRemoved(this.root, () => {
-            BDV2.reactDom.unmountComponentAtNode(this.root);
-        });
-    }
-
     get root() {
         let _root = $("#bd-settingspane-container");
         if (!_root.length) {
@@ -3192,10 +3186,15 @@ class V2_SettingsPanel {
 
     injectRoot() {
         if (!$(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").length) return false;
-        $(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").append($("<div/>", {
+        const root = $("<div/>", {
             "class": "content-region",
             "id": "bd-settingspane-container"
-        }));
+        });
+        $(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").append(root);
+        
+        Utils.onRemoved(root[0], () => {
+            BDV2.reactDom.unmountComponentAtNode(root[0]);
+        });
         return true;
     }
 
