@@ -1259,6 +1259,23 @@ Utils.monkeyPatch = (what, methodName, options) => {
     return cancel;
 };
 
+Utils.onRemoved = function(node, callback) {
+    const observer = new MutationObserver((mutations) => {
+        for (let m = 0; m < mutations.length; m++) {
+            const mutation = mutations[m];
+            const nodes = Array.from(mutation.removedNodes);
+            const directMatch = nodes.indexOf(node) > -1;
+            const parentMatch = nodes.some(parent => parent.contains(node));
+            if (directMatch || parentMatch) {
+                observer.disconnect();
+                callback();
+            }
+        }
+    });
+
+    observer.observe(document.body, {subtree: true, childList: true});
+}
+
 
 
 /* BetterDiscordApp VoiceMode JavaScript
@@ -2447,6 +2464,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
             this.saveCss();
             this.updateCss();
         });
+
     }
 
     componentWillUnmount() {
@@ -3141,6 +3159,9 @@ class V2_SettingsPanel_Sidebar {
             return;
         }
         BDV2.reactDom.render(this.component, root);
+        Utils.onRemoved(root, () => {
+            BDV2.reactDom.unmountComponentAtNode(root);
+        });
     }
 }
 
@@ -3152,6 +3173,12 @@ class V2_SettingsPanel {
         self.onChange = self.onChange.bind(self);
         self.updateSettings = this.updateSettings.bind(self);
         self.sidebar = new V2_SettingsPanel_Sidebar(self.sideBarOnClick);
+    }
+
+    componentDidMount() {
+        Utils.onRemoved(this.root, () => {
+            BDV2.reactDom.unmountComponentAtNode(this.root);
+        });
     }
 
     get root() {
