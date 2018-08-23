@@ -302,7 +302,7 @@ Core.prototype.init = async function() {
 
 
     $(document).ready(function () {
-        setTimeout(gwDefer, 1000);
+        setTimeout(gwDefer, 100);
     });
 };
 
@@ -654,8 +654,8 @@ EmoteModule.prototype.init = async function () {
         }
     };
 
-    this.loadEmoteData(emoteInfo);
-    this.getBlacklist();
+    await this.getBlacklist();
+    await this.loadEmoteData(emoteInfo);
 
     while (!BDV2.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
         
@@ -758,6 +758,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     if (exists && !bdConfig.cache.expired) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
         utils.log("[Emotes] Loading emotes from local cache.");
+        
         let data = await new Promise(resolve => {
             _fs.readFile(file, "utf8", (err, data) => {
                 utils.log("[Emotes] Emotes loaded from cache.");
@@ -765,8 +766,8 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
                 resolve(data);
             });
         });
+        
         let isValid = Utils.testJSON(data);
-
         if (isValid) window.bdEmotes = JSON.parse(data);
 
         for (let e in emoteInfo) {
@@ -774,7 +775,6 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         }
 
         if (isValid) {
-            await this.goBack(emoteInfo);
             if (settingsCookie["fork-ps-2"]) mainCore.showToast("Emotes successfully loaded.", {type: "success"});
             return;
         }
@@ -787,11 +787,10 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     if (settingsCookie["fork-ps-2"]) mainCore.showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
     for (let e in emoteInfo) {
+        await new Promise(r => setTimeout(r, 1000));
         let data = await this.downloadEmotes(emoteInfo[e]);
         window.bdEmotes[emoteInfo[e].variable] = data;
     }
-
-    await this.goBack(emoteInfo);
 
     if (settingsCookie["fork-ps-2"]) mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
 
@@ -849,8 +848,10 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
 };
 
 EmoteModule.prototype.getBlacklist = function () {
-    $.getJSON("https://cdn.rawgit.com/rauenzi/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
-        bemotes = data.blacklist;
+    return new Promise(resolve => {
+        $.getJSON("https://cdn.rawgit.com/rauenzi/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
+            resolve(bemotes = data.blacklist);
+        });
     });
 };
 
@@ -2048,46 +2049,62 @@ var BDV2 = new V2();
 class BDEmote extends BDV2.reactComponent {
     constructor(props) {
         super(props);
-        this.props.label = this.props.modifier ? `${this.props.name}:${this.props.modifier}` : this.props.name;
-        this.props.modifierClass = this.props.modifier ? ` emote${this.props.modifier}` : "";
-        this.props.animateOnHover = bdSettings.settings["fork-es-2"];
-        const isFav = quickEmoteMenu && quickEmoteMenu.favoriteEmotes && quickEmoteMenu.favoriteEmotes[this.props.label] ? true : false;
+
+        const isFav = quickEmoteMenu && quickEmoteMenu.favoriteEmotes && quickEmoteMenu.favoriteEmotes[this.label] ? true : false;
         this.state = {
-            shouldAnimate: !this.props.animateOnHover,
+            shouldAnimate: !this.animateOnHover,
             isFavorite: isFav
         };
 
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.onClick = this.onClick.bind(this);
+    }
+
+    get animateOnHover() {
+        return bdSettings.settings["fork-es-2"];
+    }
+
+    get label() {
+        return this.props.modifier ? `${this.props.name}:${this.props.modifier}` : this.props.name;
+    }
+
+    get modifierClass() {
+        return this.props.modifier ? ` emote${this.props.modifier}` : "";
     }
 
     onMouseEnter() {
-        if (!this.state.shouldAnimate && this.props.animateOnHover) this.setState({shouldAnimate: true});
-        if (!this.state.isFavorite && quickEmoteMenu.favoriteEmotes[this.props.label]) this.setState({isFavorite: true});
-        else if (this.state.isFavorite && !quickEmoteMenu.favoriteEmotes[this.props.label]) this.setState({isFavorite: false});
+        if (!this.state.shouldAnimate && this.animateOnHover) this.setState({shouldAnimate: true});
+        if (!this.state.isFavorite && quickEmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: true});
+        else if (this.state.isFavorite && !quickEmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: false});
     }
 
     onMouseLeave() {
-        if (this.state.shouldAnimate && this.props.animateOnHover) this.setState({shouldAnimate: false});
+        if (this.state.shouldAnimate && this.animateOnHover) this.setState({shouldAnimate: false});
+    }
+
+    onClick(e) {
+        if (this.props.onClick) this.props.onClick(e);
     }
 
     render() {
         return BDV2.react.createElement(BDV2.TooltipWrapper, {
                 color: "black",
                 position: "top",
-                text: this.props.label,
+                text: this.label,
                 delay: 750
             },
                 BDV2.react.createElement("div", {
                     className: "emotewrapper" + (this.props.jumboable ? " jumboable" : ""),
                     onMouseEnter: this.onMouseEnter,
-                    onMouseLeave: this.onMouseLeave
+                    onMouseLeave: this.onMouseLeave,
+                    onClick: this.onClick
                 },
                     BDV2.react.createElement("img", {
                         draggable: false,
-                        className: "emote" + this.props.modifierClass + (this.props.jumboable ? " jumboable" : "") + (!this.state.shouldAnimate ? " stop-animation" : ""),
+                        className: "emote" + this.modifierClass + (this.props.jumboable ? " jumboable" : "") + (!this.state.shouldAnimate ? " stop-animation" : ""),
                         dataModifier: this.props.modifier,
-                        alt: this.props.label,
+                        alt: this.label,
                         src: this.props.url
                     }),
                     BDV2.react.createElement("input", {
@@ -2098,11 +2115,11 @@ class BDEmote extends BDV2.reactComponent {
                             e.preventDefault();
                             e.stopPropagation();
                             if (this.state.isFavorite) {
-                                delete quickEmoteMenu.favoriteEmotes[this.props.label];
+                                delete quickEmoteMenu.favoriteEmotes[this.label];
                                 quickEmoteMenu.updateFavorites();
                             }
                             else {
-                                quickEmoteMenu.favorite(this.props.label, this.props.url);
+                                quickEmoteMenu.favorite(this.label, this.props.url);
                             }
                             this.setState({isFavorite: !this.state.isFavorite});
                         }
@@ -3191,7 +3208,7 @@ class V2_SettingsPanel {
             "id": "bd-settingspane-container"
         });
         $(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").append(root);
-        
+
         Utils.onRemoved(root[0], () => {
             BDV2.reactDom.unmountComponentAtNode(root[0]);
         });
