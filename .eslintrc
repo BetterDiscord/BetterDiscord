@@ -19,7 +19,7 @@
         "curly": ["error", "multi-line", "consistent"],
         "dot-notation": 2,
         "yoda": 2,
-        "linebreak-style": ["error", "unix"],
+        "linebreak-style": ["error", "windows"],
         "quote-props": ["error", "consistent-as-needed", {"keywords": true}],
         "object-curly-spacing": ["error", "never", { "objectsInObjects": false }]
     },

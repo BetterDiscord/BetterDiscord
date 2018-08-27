@@ -1270,7 +1270,7 @@ Utils.onRemoved = function(node, callback) {
     });
 
     observer.observe(document.body, {subtree: true, childList: true});
-}
+};
 
 
 
@@ -1609,6 +1609,16 @@ BdApi.getInternalInstance = function(node) {
     return BDV2.getInternalInstance(node);
 };
 
+// Gets data
+BdApi.loadData = function(pluginName, key) {
+    return window.bdPluginStorage.get(pluginName, key);
+};
+
+// Gets data
+BdApi.saveData = function(pluginName, key, data) {
+    return window.bdPluginStorage.set(pluginName, key, data);
+};
+
 
 /* BetterDiscordApp DevMode JavaScript
  * Version: 1.0
@@ -1632,14 +1642,6 @@ BdApi.getInternalInstance = function(node) {
      
     if (!selectorMode) return;
      $(document).on("contextmenu.bdDevmode", function(e) {
-        //  var parents = [];
-        //  $(e.toElement).parents().addBack().not('html').each(function() {
-        //      var entry = "";
-        //      if (this.classList && this.classList.length) {
-        //          entry += "." + Array.prototype.join.call(this.classList, '.');
-        //          parents.push(entry);
-        //      }
-        //  });
          self.lastSelector = self.getSelector(e.toElement);
 
          function attach() {
