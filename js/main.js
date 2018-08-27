@@ -255,11 +255,6 @@ Core.prototype.init = async function() {
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
             
-            if (settingsCookie["fork-ps-4"]) {
-                utils.log("Loading Themes");
-                classNormalizer.start();
-            }
-            
             utils.log("Loading Themes");
             themeModule = new ThemeModule();
             themeModule.loadThemes();
@@ -1330,7 +1325,7 @@ PluginModule.prototype.loadPlugins = function () {
         try {
             plugin = bdplugins[plugins[i]].plugin;
             name = plugin.getName();
-            plugin.load();
+            if (plugin.load && typeof(plugin.load) == "function") plugin.load();
         }
         catch (err) {
             pluginCookie[name] = false;
@@ -1532,7 +1527,10 @@ ThemeModule.prototype.saveThemeData = function () {
  * Plugin Template: https://gist.github.com/Jiiks/71edd5af0beafcd08956
  */
 
-function BdApi() {}
+var BdApi = {
+    get React() { return BDV2.react; },
+    get ReactDOM() { return BDV2.reactDom; }
+};
 
 //Inject CSS to document head
 //id = id of element
@@ -1587,6 +1585,28 @@ BdApi.alert = function (title, content) {
 //Show toast alert
 BdApi.showToast = function(content, options = {}) {
     mainCore.showToast(content, options);
+};
+
+// Finds module
+BdApi.findModule = function(filter) {
+    return BDV2.WebpackModules.find(filter);
+};
+
+// Finds module
+BdApi.findAllModules = function(filter) {
+    return BDV2.WebpackModules.findAll(filter);
+};
+
+// Finds module
+BdApi.findModuleByProps = function(...props) {
+    return BDV2.WebpackModules.findByUniqueProperties(props);
+};
+
+// Gets react instance
+BdApi.getInternalInstance = function(node) {
+    if (!(node instanceof window.jQuery) && !(node instanceof Element)) return undefined;
+    if (node instanceof jQuery) node = node[0];
+    return BDV2.getInternalInstance(node);
 };
 
 
@@ -1926,6 +1946,7 @@ var ClassNormalizer = class ClassNormalizer {
 
 
 
+
 /*V2 Premature*/
 
 class V2 {
@@ -1933,13 +1954,10 @@ class V2 {
     constructor() {
         this.editorDetached = false;
         this.WebpackModules = (() => {
-            //__webpack_require__ = window.webpackJsonp.push([[id], {[id]: (module, exports, req) => module.exports = req}, [[id]]]);
-            const req = typeof(webpackJsonp) == "function" ? webpackJsonp([], {__extra_id__: (module, exports, req) => exports.default = req}, ["__extra_id__"]).default :
-                        webpackJsonp.push([[], {__extra_id__: (module, exports, req) => module.exports = req}, [["__extra_id__"]]]);
+            const req = webpackJsonp.push([[], {__extra_id__: (module, exports, req) => module.exports = req}, [["__extra_id__"]]]);
             delete req.m.__extra_id__;
             delete req.c.__extra_id__;
-            const find = (filter, options = {}) => {
-                const {cacheOnly = true} = options;
+            const find = (filter) => {
                 for (let i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
                         let m = req.c[i].exports;
@@ -1947,29 +1965,26 @@ class V2 {
                         if (m && filter(m))	return m;
                     }
                 }
-                if (cacheOnly) {
-                    console.warn("Cannot find loaded module in cache");
-                    return null;
-                }
-                console.warn("Cannot find loaded module in cache. Loading all modules may have unexpected side effects");
-                for (let i = 0; i < req.m.length; ++i) {
-                    try {
-                        let m = req(i);
-                        if (m && m.__esModule && m.default && filter(m.default)) return m.default;
-                        if (m && filter(m))	return m;
-                    }
-                    catch (e) {
-                        console.error(e);
-                    }
-                }
-                console.warn("Cannot find module");
+                console.warn("Cannot find loaded module in cache");
                 return null;
             };
+
+            const findAll = (filter) => {
+                const modules = [];
+                for (let i in req.c) {
+                    if (req.c.hasOwnProperty(i)) {
+                        let m = req.c[i].exports;
+                        if (m && m.__esModule && m.default && filter(m.default)) modules.push(m.default);
+                        else if (m && filter(m)) modules.push(m);
+                    }
+                }
+                return modules;
+            };
             
-            const findByUniqueProperties = (propNames, options) => find(module => propNames.every(prop => module[prop] !== undefined), options);
-            const findByDisplayName = (displayName, options) => find(module => module.displayName === displayName, options);
+            const findByUniqueProperties = (propNames) => find(module => propNames.every(prop => module[prop] !== undefined));
+            const findByDisplayName = (displayName) => find(module => module.displayName === displayName);
                 
-            return {find, findByUniqueProperties, findByDisplayName};
+            return {find, findAll, findByUniqueProperties, findByDisplayName};
         })();
 
         this.internal = {
