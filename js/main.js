@@ -388,10 +388,12 @@ Core.prototype.injectColoredText = function() {
 
     this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
         if (!settingsCookie["bda-gs-7"]) return;
-        const markup = data.returnValue.props.children[1];
-        const roleColor = data.thisObject.props.message.colorString;
-        if (markup && roleColor) markup.props.style = {color: roleColor};
-        return data.returnValue;
+		Utils.monkeyPatch(data.returnValue.props, "children", {silent: true, after: ({returnValue}) => {
+			const markup = returnValue.props.children[1];
+			const roleColor = data.thisObject.props.message.colorString;
+			if (markup && roleColor) markup.props.style = {color: roleColor};
+			return returnValue;
+		}});
     }});
 };
 
@@ -656,66 +658,68 @@ EmoteModule.prototype.init = async function () {
         
     if (this.cancelEmoteRender) return;
     this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
-        const markup = returnValue.props.children[1];
-        if (!markup.props.children) return;
-        const nodes = markup.props.children[1];
-        if (!nodes || !nodes.length) return;
-        for (let n = 0; n < nodes.length; n++) {
-            const node = nodes[n];
-            if (typeof(node) !== "string") continue;
-            const words = node.split(/([^\s]+)([\s]|$)/g);
-            for (let c = 0, clen = this.categories.length; c < clen; c++) {
-                for (let w = 0, wlen = words.length; w < wlen; w++) {
-                    let emote = words[w];
-                    let emoteSplit = emote.split(":");
-                    let emoteName = emoteSplit[0];
-                    let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
-                    let emoteOverride = emoteModifier.slice(0);
-        
-                    if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
-                    if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
-                    if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
-                    else emoteModifier = emoteOverride;
-        
-                    let current = this.categories[c];
-                    if (emoteOverride === "twitch") {
-                        if (window.bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
-                        else if (window.bdEmotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
-                    }
-                    else if (emoteOverride === "bttv") {
-                        if (window.bdEmotes.BTTV[emoteName]) current = "BTTV";
-                        else if (window.bdEmotes.BTTV2[emoteName]) current = "BTTV2";
-                    }
-                    else if (emoteOverride === "ffz") {
-                        if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
-                    }
-                    
-                    if (!window.bdEmotes[current][emoteName] || !settingsCookie[window.bdEmoteSettingIDs[current]]) continue;
-                    const results = nodes[n].match(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
-                    if (!results) continue;
-                    const pre = nodes[n].substring(0, results.index + results[1].length);
-                    const post = nodes[n].substring(results.index + results[0].length - results[2].length);
-                    nodes[n] = pre;
-                    const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
-                    nodes.splice(n + 1, 0, post);
-                    nodes.splice(n + 1, 0, emoteComponent);
-                    n = n + 2;
-                }
-            }
-        }
-        const onlyEmotes = nodes.every(r => {
-            if (typeof(r) == "string" && r.replace(/\s*/, "") == "") return true;
-            else if (r.type && r.type.name == "BDEmote") return true;
-            else if (r.props && r.props.children && r.props.children.props && r.props.children.props.emojiName) return true;
-            return false;
-        });
-        if (!onlyEmotes) return;
+		Utils.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
+			const markup = returnValue.props.children[1];
+			if (!markup.props.children) return;
+			const nodes = markup.props.children[1];
+			if (!nodes || !nodes.length) return;
+			for (let n = 0; n < nodes.length; n++) {
+				const node = nodes[n];
+				if (typeof(node) !== "string") continue;
+				const words = node.split(/([^\s]+)([\s]|$)/g);
+				for (let c = 0, clen = this.categories.length; c < clen; c++) {
+					for (let w = 0, wlen = words.length; w < wlen; w++) {
+						let emote = words[w];
+						let emoteSplit = emote.split(":");
+						let emoteName = emoteSplit[0];
+						let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
+						let emoteOverride = emoteModifier.slice(0);
+			
+						if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
+						if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
+						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
+						else emoteModifier = emoteOverride;
+			
+						let current = this.categories[c];
+						if (emoteOverride === "twitch") {
+							if (window.bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
+							else if (window.bdEmotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
+						}
+						else if (emoteOverride === "bttv") {
+							if (window.bdEmotes.BTTV[emoteName]) current = "BTTV";
+							else if (window.bdEmotes.BTTV2[emoteName]) current = "BTTV2";
+						}
+						else if (emoteOverride === "ffz") {
+							if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
+						}
+						
+						if (!window.bdEmotes[current][emoteName] || !settingsCookie[window.bdEmoteSettingIDs[current]]) continue;
+						const results = nodes[n].match(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
+						if (!results) continue;
+						const pre = nodes[n].substring(0, results.index + results[1].length);
+						const post = nodes[n].substring(results.index + results[0].length - results[2].length);
+						nodes[n] = pre;
+						const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
+						nodes.splice(n + 1, 0, post);
+						nodes.splice(n + 1, 0, emoteComponent);
+						n = n + 2;
+					}
+				}
+			}
+			const onlyEmotes = nodes.every(r => {
+				if (typeof(r) == "string" && r.replace(/\s*/, "") == "") return true;
+				else if (r.type && r.type.name == "BDEmote") return true;
+				else if (r.props && r.props.children && r.props.children.props && r.props.children.props.emojiName) return true;
+				return false;
+			});
+			if (!onlyEmotes) return;
 
-        for (let node of nodes) {
-            if (typeof(node) != "object") continue;
-            if (node.type.name == "BDEmote") node.props.jumboable = true;
-            else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
-        }
+			for (let node of nodes) {
+				if (typeof(node) != "object") continue;
+				if (node.type.name == "BDEmote") node.props.jumboable = true;
+				else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
+			}
+		}});
     }});
 };
 
@@ -1708,6 +1712,7 @@ devMode.prototype.getSelector = function(element) {
      $(document).off("contextmenu.bdDevmode");
      $(document).off("contextmenu.bdDevModeCtx");
  };
+
 
 var ClassNormalizer = class ClassNormalizer {
     constructor() {
