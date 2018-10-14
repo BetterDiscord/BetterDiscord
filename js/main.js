@@ -77,11 +77,16 @@ window.bdStorage.set = function(i, v) {
     betterDiscordIPC.sendSync("synchronous-message", {"arg": "storage", "cmd": "set", "var": i, "data": v});
 };
 window.bdPluginStorage = {};
-window.bdPluginStorage.get = function(pn, i) {
-    return betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "get", "pn": pn, "var": i});
+window.bdPluginStorage.get = function(pluginName, key) {
+    return betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "get", "pn": pluginName, "var": key});
 };
-window.bdPluginStorage.set = function(pn, i, v) {
-    betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "set", "pn": pn, "var": i, "data": v});
+window.bdPluginStorage.set = function(pluginName, key, value) {
+    if (typeof(value) === "undefined") return Utils.warn("Trying to set undefined value in plugin " + pluginName);
+    betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "set", "pn": pluginName, "var": key, "data": value});
+};
+
+window.bdPluginStorage.delete = function(pluginName, key) {
+    betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "delete", "pn": pluginName, "var": key});
 };
 
 var bdSettings = {};
@@ -94,7 +99,7 @@ bdSettingsStorage.initialize = function() {
         try {
             data = JSON.parse(fs.readFileSync(bdConfig.dataPath + "/bdsettings.json"));
 
-            // Convery to new style. To be removed a month from 10/14/2018
+            // Convert to new style. To be removed a month from 10/14/2018
             if (data.hasOwnProperty("settings")) data = {[releaseChannel]: data};
         }
         catch (err) {
@@ -124,7 +129,7 @@ bdSettingsStorage.set = function(key, data) {
 };
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
-var supportedVersion = "0.2.81";
+var minSupportedVersion = "0.2.81";
 var bbdVersion = "0.1.2";
 
 
@@ -215,7 +220,7 @@ function Core(config) {
 var classNormalizer;
 
 Core.prototype.init = async function() {
-    if (bdConfig.version < supportedVersion) {
+    if (bdConfig.version < minSupportedVersion) {
         this.alert("Not Supported", "BetterDiscord v" + bdConfig.version + " (your version)" + " is not supported by the latest js (" + bbdVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
         return;
     }
@@ -1074,12 +1079,13 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
 
 
 /* BetterDiscordApp Utilities JavaScript
- * Version: 1.0
+ * Version:2.0.0
  * Author: Jiiks | http://jiiks.net
  * Date: 26/08/2015 - 15:54
  * https://github.com/Jiiks/BetterDiscordApp
  */
-var Utils = class Utils {
+var Utils = class {
+
     static getTextArea() {
         return $(".channelTextArea-1LDbYG textarea");
     }
@@ -1089,17 +1095,6 @@ var Utils = class Utils {
         textarea.selectionStart = 0;
         textarea.selectionEnd = textarea.value.length;
         document.execCommand("insertText", false, text);
-    }
-
-    static jqDefer(fnc) {
-        if (window.jQuery) {
-            fnc();
-        }
-        else {
-            setTimeout(function () {
-                this.jqDefer(fnc);
-            }, 100);
-        }
     }
 
     static injectCss(uri) {
@@ -1125,6 +1120,10 @@ var Utils = class Utils {
         console.log("%c[BetterDiscord] %c" + message + "", "color: #3a71c1; font-weight: 700;", "");
     }
 
+    static warn(message) {
+        console.warn("%c[BetterDiscord] %c" + message + "", "color: #E8A400; font-weight: 700;", "");
+    }
+
     static err(message, error) {
         console.log("%c[BetterDiscord] %c" + message + "", "color: red; font-weight: 700;", "");
         if (error) {
@@ -1138,45 +1137,6 @@ var Utils = class Utils {
         return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
     }
 
-    static insertElement(node, regex, element) { 
-
-        var child = node.firstChild;
-    
-        while (child) {
-            if (child.nodeType != Node.TEXT_NODE) {child = child.nextSibling; continue;}
-            var bk = 0;
-            child.data.replace(regex, function(all) {
-                var args = [].slice.call(arguments);
-                var offset = args[args.length - 2];
-                var newTextNode = args[1] ? child.splitText(offset + args[1].length + bk) : child.splitText(offset + bk);
-                bk -= child.data.length + all.length;
-    
-                newTextNode.data = newTextNode.data.substr(all.trim().length);
-                child.parentNode.insertBefore(element, newTextNode);
-                child = newTextNode;
-            });
-            
-            regex.lastIndex = 0;
-    
-    
-            child = child.nextSibling;
-        }
-    
-        return node;
-    }
-
-    static getTextNodes(node) {
-        var textNodes = [];
-        if (!node) return textNodes;
-        for (var i = 0; i < node.childNodes.length; i++) {
-            var curNode = node.childNodes[i];
-            if (curNode.nodeType === Node.TEXT_NODE) {
-                textNodes.push(curNode);
-            }
-        }
-        return textNodes;
-    }
-
     static testJSON(data) {
         try {
             JSON.parse(data);
@@ -1187,10 +1147,10 @@ var Utils = class Utils {
         }
     }
 
-    static suppressErrors(method, desiption) {
+    static suppressErrors(method, message) {
         return (...params) => {
             try { return method(...params);	}
-            catch (e) { console.error("Error occurred in " + desiption, e); }
+            catch (e) { console.error("Error occurred in " + message, e); }
         };
     }
 
@@ -1578,9 +1538,34 @@ BdApi.loadData = function(pluginName, key) {
     return window.bdPluginStorage.get(pluginName, key);
 };
 
-// Gets data
+// Sets data
 BdApi.saveData = function(pluginName, key, data) {
     return window.bdPluginStorage.set(pluginName, key, data);
+};
+
+// Deletes data
+BdApi.deleteData = function(pluginName, key) {
+    return window.bdPluginStorage.delete(pluginName, key);
+};
+
+// Patches other functions
+BdApi.monkeyPatch = function(what, methodName, options) {
+    return Utils.monkeyPatch(what, methodName, options);
+};
+
+// Event when element is removed
+BdApi.onRemoved = function(node, callback) {
+    return Utils.onRemoved(node, callback);
+};
+
+// Wraps function in try..catch
+BdApi.suppressErrors = function(method, message) {
+    return Utils.suppressErrors(method, message);
+};
+
+// Tests for valid JSON
+BdApi.testJSON = function(data) {
+    return Utils.testJSON(data);
 };
 
 
@@ -3115,7 +3100,7 @@ class V2_SettingsPanel_Sidebar {
             BDV2.react.createElement(
                 "div",
                 {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
-                `BD v${bdVersion} by `,
+                `BD v${bdConfig.version} by `,
                 BDV2.react.createElement(
                     "a",
                     {href: "https://github.com/Jiiks/", target: "_blank"},
