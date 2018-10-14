@@ -66,6 +66,7 @@
     document.body.appendChild(v2Loader);
 })();
 
+/* global DiscordNative:false */
 
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
@@ -84,43 +85,47 @@ window.bdPluginStorage.set = function(pn, i, v) {
 
 var bdSettings = {};
 var bdSettingsStorage = {};
+var releaseChannel = DiscordNative.globals.releaseChannel;
 bdSettingsStorage.initialize = function() {
     let fs = require("fs");
-    let data = {};
+    let data = {stable: {}, canary: {}, ptb: {}};
     if (fs.existsSync(bdConfig.dataPath + "/bdsettings.json")) {
         try {
             data = JSON.parse(fs.readFileSync(bdConfig.dataPath + "/bdsettings.json"));
+
+            // Convery to new style. To be removed a month from 10/14/2018
+            if (data.hasOwnProperty("settings")) data = {[releaseChannel]: data};
         }
         catch (err) {
-            data = {};
+            data = {stable: {}, canary: {}, ptb: {}};
         }
     }
     if (data) bdSettings = data;
-    else bdSettings = {};
+    else bdSettings = {stable: {}, canary: {}, ptb: {}};
 };
 
 bdSettingsStorage.get = function(key) {
-    if (bdSettings[key]) return bdSettings[key];
+    if (bdSettings[releaseChannel][key]) return bdSettings[releaseChannel][key];
     return null;
 };
 
 bdSettingsStorage.set = function(key, data) {
     let fs = require("fs");
-    bdSettings[key] = data;
+    bdSettings[releaseChannel][key] = data;
     try {
         fs.writeFileSync(bdConfig.dataPath + "/bdsettings.json", JSON.stringify(bdSettings, null, 4));
         return true;
     }
     catch (err) {
-        utils.err(err);
+        Utils.err(err);
         return false;
     }
 };
 
-var settingsPanel, emoteModule, utils, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
+var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
-var bbdVersion = "0.1.0";
+var bbdVersion = "0.1.1";
 
 
 var mainCore;
@@ -221,16 +226,19 @@ Core.prototype.init = async function() {
         return;
     }
 
-    utils = new Utils();
-    await utils.getHash();
-    utils.log("Initializing Settings");
+    Utils.log("Initializing Settings");
     this.initSettings();
     classNormalizer = new ClassNormalizer();
     emoteModule = new EmoteModule();
-    utils.log("Initializing EmoteModule");
-    window.emotePromise = emoteModule.init().then(() => {emoteModule.initialized = true;});
-    publicServersModule = new V2_PublicServers();
     quickEmoteMenu = new QuickEmoteMenu();
+    Utils.log("Initializing EmoteModule");
+    window.emotePromise = emoteModule.init().then(() => {
+        emoteModule.initialized = true;
+        Utils.log("Initializing QuickEmoteMenu");
+        quickEmoteMenu.init();
+    });
+    publicServersModule = new V2_PublicServers();
+    
     voiceMode = new VoiceMode();
     dMode = new devMode();
 
@@ -243,7 +251,7 @@ Core.prototype.init = async function() {
             self.injectExternals();
 
 
-            utils.log("Updating Settings");
+            Utils.log("Updating Settings");
             settingsPanel = new V2_SettingsPanel();
             settingsPanel.updateSettings();
 
@@ -251,18 +259,15 @@ Core.prototype.init = async function() {
             if (!bdpluginErrors) bdpluginErrors = [];
             if (!bdthemeErrors) bdthemeErrors = [];
 
-            utils.log("Loading Plugins");
+            Utils.log("Loading Plugins");
             pluginModule = new PluginModule();
             pluginModule.loadPlugins();
             
-            utils.log("Loading Themes");
+            Utils.log("Loading Themes");
             themeModule = new ThemeModule();
             themeModule.loadThemes();
 
             $("#customcss").detach().appendTo(document.head);
-
-            utils.log("Initializing QuickEmoteMenu");
-            quickEmoteMenu.init();
             
             window.addEventListener("beforeunload", function(){
                 if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
@@ -279,14 +284,14 @@ Core.prototype.init = async function() {
                 self.saveSettings();
             }
 
-            utils.log("Removing Loading Icon");
+            Utils.log("Removing Loading Icon");
             document.getElementsByClassName("bd-loaderv2")[0].remove();
-            utils.log("Initializing Main Observer");
+            Utils.log("Initializing Main Observer");
             self.initObserver();
             
             // Show loading errors
             if (settingsCookie["fork-ps-1"]) {
-                utils.log("Collecting Startup Errors");
+                Utils.log("Collecting Startup Errors");
                 self.showStartupErrors();
             }
         }
@@ -302,20 +307,11 @@ Core.prototype.init = async function() {
 };
 
 Core.prototype.injectExternals = function() {
-    utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
+    Utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
 };
 
 Core.prototype.initSettings = function () {
-    // $.removeCookie('the_cookie', { path: '/' });
     bdSettingsStorage.initialize();
-
-    if ($.cookie("better-discord")) {
-        settingsCookie = JSON.parse($.cookie("better-discord"));
-        this.saveSettings();
-        $.removeCookie("better-discord", {path: "/"});
-        return;
-    }
-
     if (!bdSettingsStorage.get("settings")) {
         settingsCookie = defaultCookie;
         this.saveSettings();
@@ -377,9 +373,14 @@ Core.prototype.initObserver = function () {
 Core.prototype.inject24Hour = function() {
     if (this.cancel24Hour) return;
 
-    this.cancel24Hour = Utils.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {before: ({methodArguments}) => {
+    const twelveHour = new RegExp(`([0-9]{1,2}):([0-9]{1,2})\\s(AM|PM)`);
+
+    this.cancel24Hour = Utils.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {after: (data) => {
         if (!settingsCookie["bda-gs-6"]) return;
-        methodArguments[0]._locale._abbr = "en-GB";
+        const matched = data.returnValue.match(twelveHour);
+        if (!matched || matched.length !== 4) return;
+        if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
+        return data.returnValue = data.returnValue.replace(matched[0], `${parseInt(matched[1]) + 12}:${matched[2]}`);
     }});
 };
 
@@ -480,7 +481,7 @@ Core.prototype.showStartupErrors = function() {
             if (err.error) {
                 error.find("a").on("click", (e) => {
                     e.preventDefault();
-                    utils.err(`Error details for ${err.name ? err.name : err.file}.`, err.error);
+                    Utils.err(`Error details for ${err.name ? err.name : err.file}.`, err.error);
                 });
             }
         }
@@ -592,7 +593,7 @@ EmoteModule.prototype.init = async function () {
     let emoteInfo = {
         TwitchGlobal: {
             url: "https://twitchemotes.com/api_cache/v3/global.json",
-            backup: "https://" + bdConfig.updater.CDN + "/" + bdConfig.repo + "/BetterDiscordApp/" + bdConfig.hash + "/data/emotedata_twitch_global.json",
+            backup: "https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotedata_twitch_global.json",
             variable: "TwitchGlobal",
             oldVariable: "emotesTwitch",
             getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0`,
@@ -600,7 +601,7 @@ EmoteModule.prototype.init = async function () {
         },
         TwitchSubscriber: {
             url: "https://twitchemotes.com/api_cache/v3/subscriber.json",
-            backup: "https://" + bdConfig.updater.CDN + "/" + bdConfig.repo + "/BetterDiscordApp/" + bdConfig.hash + "/data/emotedata_twitch_subscriber.json",
+            backup: "https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotedata_twitch_subscriber.json",
             variable: "TwitchSubscriber",
             oldVariable: "subEmotesTwitch",
             parser: (data) => {
@@ -621,7 +622,7 @@ EmoteModule.prototype.init = async function () {
             getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
         },
         FrankerFaceZ: {
-            url: "https://" + bdConfig.updater.CDN + "/" + bdConfig.repo + "/BetterDiscordApp/" + bdConfig.hash + "/data/emotedata_ffz.json",
+            url: "https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotedata_ffz.json",
             variable: "FrankerFaceZ",
             oldVariable: "emotesFfz",
             getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`,
@@ -643,7 +644,7 @@ EmoteModule.prototype.init = async function () {
             getOldData: (url) => url
         },
         BTTV2: {
-            url: "https://" + bdConfig.updater.CDN + "/" + bdConfig.repo + "/BetterDiscordApp/" + bdConfig.hash + "/data/emotedata_bttv.json",
+            url: "https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotedata_bttv.json",
             variable: "BTTV2",
             oldVariable: "emotesBTTV2",
             getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`,
@@ -666,10 +667,10 @@ EmoteModule.prototype.init = async function () {
 			for (let n = 0; n < nodes.length; n++) {
 				const node = nodes[n];
 				if (typeof(node) !== "string") continue;
-				const words = node.split(/([^\s]+)([\s]|$)/g);
+                const words = node.split(/([^\s]+)([\s]|$)/g);
 				for (let c = 0, clen = this.categories.length; c < clen; c++) {
 					for (let w = 0, wlen = words.length; w < wlen; w++) {
-						let emote = words[w];
+                        let emote = words[w];
 						let emoteSplit = emote.split(":");
 						let emoteName = emoteSplit[0];
 						let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
@@ -694,15 +695,14 @@ EmoteModule.prototype.init = async function () {
 						}
 						
 						if (!window.bdEmotes[current][emoteName] || !settingsCookie[window.bdEmoteSettingIDs[current]]) continue;
-						const results = nodes[n].match(new RegExp(`([\\s]|^)${utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
-						if (!results) continue;
+						const results = nodes[n].match(new RegExp(`([\\s]|^)${Utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
+                        if (!results) continue;
 						const pre = nodes[n].substring(0, results.index + results[1].length);
 						const post = nodes[n].substring(results.index + results[0].length - results[2].length);
 						nodes[n] = pre;
 						const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
 						nodes.splice(n + 1, 0, post);
 						nodes.splice(n + 1, 0, emoteComponent);
-						n = n + 2;
 					}
 				}
 			}
@@ -728,8 +728,8 @@ EmoteModule.prototype.clearEmoteData = async function() {
     let emoteFile = "emote_data.json";
     let file = bdConfig.dataPath + emoteFile;
     let exists = _fs.existsSync(file);
-
     if (exists) _fs.unlinkSync(file);
+    window.bdStorage.set("emoteCacheDate", (new Date()).toJSON());
 
     window.bdEmotes = {
         TwitchGlobal: {},
@@ -748,19 +748,30 @@ EmoteModule.prototype.goBack = async function(emoteInfo) {
     }
 };
 
+EmoteModule.prototype.isCacheValid = function() {
+    const cacheDate = new Date(window.bdStorage.get("emoteCacheDate") || null);
+    const currentDate = new Date();
+    const daysBetween = Math.round(Math.abs((currentDate.getTime() - cacheDate.getTime()) / (24 * 60 * 60 * 1000)));
+    if (daysBetween > bdConfig.cache.days) {
+        window.bdStorage.set("emoteCacheDate", currentDate.toJSON());
+        return false;
+    }
+    return true;
+};
+
 EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
-    let _fs = require("fs");
-    let emoteFile = "emote_data.json";
-    let file = bdConfig.dataPath + emoteFile;
-    let exists = _fs.existsSync(file);
+    const _fs = require("fs");
+    const emoteFile = "emote_data.json";
+    const file = bdConfig.dataPath + emoteFile;
+    const exists = _fs.existsSync(file);
     
-    if (exists && !bdConfig.cache.expired) {
+    if (exists && this.isCacheValid()) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
-        utils.log("[Emotes] Loading emotes from local cache.");
+        Utils.log("[Emotes] Loading emotes from local cache.");
         
-        let data = await new Promise(resolve => {
+        const data = await new Promise(resolve => {
             _fs.readFile(file, "utf8", (err, data) => {
-                utils.log("[Emotes] Emotes loaded from cache.");
+                Utils.log("[Emotes] Emotes loaded from cache.");
                 if (err) data = {};
                 resolve(data);
             });
@@ -769,7 +780,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         let isValid = Utils.testJSON(data);
         if (isValid) window.bdEmotes = JSON.parse(data);
 
-        for (let e in emoteInfo) {
+        for (const e in emoteInfo) {
             isValid = Object.keys(window.bdEmotes[emoteInfo[e].variable]).length > 0;
         }
 
@@ -778,7 +789,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
             return;
         }
 
-        utils.log("[Emotes] Cache was corrupt, downloading...");
+        Utils.log("[Emotes] Cache was corrupt, downloading...");
         _fs.unlinkSync(file);
     }
 
@@ -794,7 +805,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     if (settingsCookie["fork-ps-2"]) mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
 
     try { _fs.writeFileSync(file, JSON.stringify(window.bdEmotes), "utf8"); }
-    catch (err) { utils.err("[Emotes] Could not save emote data.", err); }
+    catch (err) { Utils.err("[Emotes] Could not save emote data.", err); }
 
     quickEmoteMenu.init();
 };
@@ -806,12 +817,12 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
         timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
     };
 
-    utils.log("[Emotes] Downloading: " + emoteMeta.variable);
+    Utils.log("[Emotes] Downloading: " + emoteMeta.variable);
 
     return new Promise((resolve, reject) => {
         request(options, (error, response, body) => {
             if (error) {
-                utils.err("[Emotes] Could not download " + emoteMeta.variable, error);
+                Utils.err("[Emotes] Could not download " + emoteMeta.variable, error);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -826,7 +837,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 parsedData = JSON.parse(body);
             }
             catch (err) {
-                utils.err("[Emotes] Could not download " + emoteMeta.variable, error);
+                Utils.err("[Emotes] Could not download " + emoteMeta.variable, error);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -841,14 +852,14 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
             }
             resolve(parsedData);
-            utils.log("[Emotes] Downloaded: " + emoteMeta.variable);
+            Utils.log("[Emotes] Downloaded: " + emoteMeta.variable);
         });
     });
 };
 
 EmoteModule.prototype.getBlacklist = function () {
     return new Promise(resolve => {
-        $.getJSON("https://cdn.rawgit.com/rauenzi/betterDiscordApp/" + _hash + "/data/emotefilter.json", function (data) {
+        $.getJSON("https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotefilter.json", function (data) {
             resolve(bemotes = data.blacklist);
         });
     });
@@ -868,7 +879,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = this.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                utils.insertText(utils.getTextArea()[0], text.replace(lastWord, ret));
+                Utils.insertText(Utils.getTextArea()[0], text.replace(lastWord, ret));
             }
         }
     });
@@ -1011,8 +1022,8 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     emoteIcon.off();
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
-        var ta = utils.getTextArea();
-        utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
+        var ta = Utils.getTextArea();
+        Utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
 };
 
@@ -1078,202 +1089,175 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
  * Date: 26/08/2015 - 15:54
  * https://github.com/Jiiks/BetterDiscordApp
  */
-
-var _hash;
-
-function Utils() {
-
-}
-
-Utils.prototype.getTextArea = function () {
-    return $(".channelTextArea-1LDbYG textarea");
-};
-
-Utils.prototype.insertText = function (textarea, text) {
-    textarea.focus();
-    textarea.selectionStart = 0;
-    textarea.selectionEnd = textarea.value.length;
-    document.execCommand("insertText", false, text);
-};
-
-Utils.prototype.jqDefer = function (fnc) {
-    if (window.jQuery) {
-        fnc();
-    }
-    else {
-        setTimeout(function () {
-            this.jqDefer(fnc);
-        }, 100);
-    }
-};
-
-Utils.prototype.getHash = function () {
-    return new Promise((resolve) => {
-        $.getJSON("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/master").done(function (data) {
-            _hash = data.sha;
-            bdConfig.hash = _hash;
-            resolve(_hash);
-        }).fail(() => {
-            _hash = _bdhash || "48844445d65c6fb5a019eff14d7dcffcc1744071";
-            resolve(_hash);
-        });
-    });
-};
-
-Utils.prototype.loadHtml = function (html, callback) {
-    var container = $("<div/>", {
-        "class": "bd-container"
-    }).appendTo("body");
-
-    //TODO Inject these in next core update
-    html = "//cdn.rawgit.com/Jiiks/BetterDiscordApp/" + _hash + "/html/" + html + ".html";
-
-    container.load(html, callback());
-};
-
-Utils.prototype.injectJs = function (uri) {
-    $("<script/>", {
-        type: "text/javascript",
-        src: uri
-    }).appendTo($("body"));
-};
-
-Utils.prototype.injectCss = function (uri) {
-    $("<link/>", {
-        type: "text/css",
-        rel: "stylesheet",
-        href: uri
-    }).appendTo($("head"));
-};
-
-Utils.prototype.escapeID = function(id) {
-    return id.replace(/^[^a-z]+|[^\w-]+/gi, "");
-};
-
-Utils.prototype.log = function (message) {
-    console.log("%c[BetterDiscord] %c" + message + "", "color: #3a71c1; font-weight: 700;", "");
-};
-
-Utils.prototype.err = function (message, error) {
-    console.log("%c[BetterDiscord] %c" + message + "", "color: red; font-weight: 700;", "");
-    if (error) {
-        console.groupCollapsed("%cError: " + error.message, "color: red;");
-        console.error(error.stack);
-        console.groupEnd();
-    }
-};
-
-Utils.prototype.escape = function(s) {
-    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
-};
-
-Utils.prototype.insertElement = function(node, regex, element) { 
-
-    var child = node.firstChild;
-
-    while (child) {
-        if (child.nodeType != Node.TEXT_NODE) {child = child.nextSibling; continue;}
-        var bk = 0;
-        child.data.replace(regex, function(all) {
-            var args = [].slice.call(arguments);
-            var offset = args[args.length - 2];
-            var newTextNode = args[1] ? child.splitText(offset + args[1].length + bk) : child.splitText(offset + bk);
-            bk -= child.data.length + all.length;
-
-            newTextNode.data = newTextNode.data.substr(all.trim().length);
-            child.parentNode.insertBefore(element, newTextNode);
-            child = newTextNode;
-        });
-        
-        regex.lastIndex = 0;
-
-
-        child = child.nextSibling;
+var Utils = class Utils {
+    static getTextArea() {
+        return $(".channelTextArea-1LDbYG textarea");
     }
 
-    return node;
-};
-
-Utils.prototype.getTextNodes = function(node) {
-    var textNodes = [];
-    if (!node) return textNodes;
-    for (var i = 0; i < node.childNodes.length; i++) {
-        var curNode = node.childNodes[i];
-        if (curNode.nodeType === Node.TEXT_NODE) {
-            textNodes.push(curNode);
-        }
+    static insertText(textarea, text) {
+        textarea.focus();
+        textarea.selectionStart = 0;
+        textarea.selectionEnd = textarea.value.length;
+        document.execCommand("insertText", false, text);
     }
-    return textNodes;
-};
 
-Utils.testJSON = function(data) {
-    try {
-        JSON.parse(data);
-        return true;
-    }
-    catch (err) {
-        return false;
-    }
-};
-
-Utils.suppressErrors = (method, desiption) => (...params) => {
-    try { return method(...params);	}
-    catch (e) { console.error("Error occurred in " + desiption, e); }
-};
-
-Utils.monkeyPatch = (what, methodName, options) => {
-    const {before, after, instead, once = false, silent = false, force = false} = options;
-    const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
-    if (!silent) console.log("patch", methodName, "of", displayName); // eslint-disable-line no-console
-    if (!what[methodName]) {
-        if (force) what[methodName] = function() {};
-        else return console.error(methodName, "does not exist for", displayName); // eslint-disable-line no-console
-    }
-    const origMethod = what[methodName];
-    const cancel = () => {
-        if (!silent) console.log("unpatch", methodName, "of", displayName); // eslint-disable-line no-console
-        what[methodName] = origMethod;
-    };
-    what[methodName] = function() {
-        const data = {
-            thisObject: this,
-            methodArguments: arguments,
-            cancelPatch: cancel,
-            originalMethod: origMethod,
-            callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
-        };
-        if (instead) {
-            const tempRet = Utils.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
-            if (tempRet !== undefined) data.returnValue = tempRet;
+    static jqDefer(fnc) {
+        if (window.jQuery) {
+            fnc();
         }
         else {
-            if (before) Utils.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
-            data.callOriginalMethod();
-            if (after) Utils.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
+            setTimeout(function () {
+                this.jqDefer(fnc);
+            }, 100);
         }
-        if (once) cancel();
-        return data.returnValue;
-    };
-    what[methodName].__monkeyPatched = true;
-    what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
-    return cancel;
-};
+    }
 
-Utils.onRemoved = function(node, callback) {
-    const observer = new MutationObserver((mutations) => {
-        for (let m = 0; m < mutations.length; m++) {
-            const mutation = mutations[m];
-            const nodes = Array.from(mutation.removedNodes);
-            const directMatch = nodes.indexOf(node) > -1;
-            const parentMatch = nodes.some(parent => parent.contains(node));
-            if (directMatch || parentMatch) {
-                observer.disconnect();
-                callback();
+    static injectCss(uri) {
+        $("<link/>", {
+            type: "text/css",
+            rel: "stylesheet",
+            href: uri
+        }).appendTo($("head"));
+    }
+
+    static injectJs(uri) {
+        $("<script/>", {
+            type: "text/javascript",
+            src: uri
+        }).appendTo($("body"));
+    }
+
+    static escapeID(id) {
+        return id.replace(/^[^a-z]+|[^\w-]+/gi, "");
+    }
+
+    static log(message) {
+        console.log("%c[BetterDiscord] %c" + message + "", "color: #3a71c1; font-weight: 700;", "");
+    }
+
+    static err(message, error) {
+        console.log("%c[BetterDiscord] %c" + message + "", "color: red; font-weight: 700;", "");
+        if (error) {
+            console.groupCollapsed("%cError: " + error.message, "color: red;");
+            console.error(error.stack);
+            console.groupEnd();
+        }
+    }
+
+    static escape(s) {
+        return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
+    }
+
+    static insertElement(node, regex, element) { 
+
+        var child = node.firstChild;
+    
+        while (child) {
+            if (child.nodeType != Node.TEXT_NODE) {child = child.nextSibling; continue;}
+            var bk = 0;
+            child.data.replace(regex, function(all) {
+                var args = [].slice.call(arguments);
+                var offset = args[args.length - 2];
+                var newTextNode = args[1] ? child.splitText(offset + args[1].length + bk) : child.splitText(offset + bk);
+                bk -= child.data.length + all.length;
+    
+                newTextNode.data = newTextNode.data.substr(all.trim().length);
+                child.parentNode.insertBefore(element, newTextNode);
+                child = newTextNode;
+            });
+            
+            regex.lastIndex = 0;
+    
+    
+            child = child.nextSibling;
+        }
+    
+        return node;
+    }
+
+    static getTextNodes(node) {
+        var textNodes = [];
+        if (!node) return textNodes;
+        for (var i = 0; i < node.childNodes.length; i++) {
+            var curNode = node.childNodes[i];
+            if (curNode.nodeType === Node.TEXT_NODE) {
+                textNodes.push(curNode);
             }
         }
-    });
+        return textNodes;
+    }
 
-    observer.observe(document.body, {subtree: true, childList: true});
+    static testJSON(data) {
+        try {
+            JSON.parse(data);
+            return true;
+        }
+        catch (err) {
+            return false;
+        }
+    }
+
+    static suppressErrors(method, desiption) {
+        return (...params) => {
+            try { return method(...params);	}
+            catch (e) { console.error("Error occurred in " + desiption, e); }
+        };
+    }
+
+    static monkeyPatch(what, methodName, options) {
+        const {before, after, instead, once = false, silent = false, force = false} = options;
+        const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
+        if (!silent) console.log("patch", methodName, "of", displayName); // eslint-disable-line no-console
+        if (!what[methodName]) {
+            if (force) what[methodName] = function() {};
+            else return console.error(methodName, "does not exist for", displayName); // eslint-disable-line no-console
+        }
+        const origMethod = what[methodName];
+        const cancel = () => {
+            if (!silent) console.log("unpatch", methodName, "of", displayName); // eslint-disable-line no-console
+            what[methodName] = origMethod;
+        };
+        what[methodName] = function() {
+            const data = {
+                thisObject: this,
+                methodArguments: arguments,
+                cancelPatch: cancel,
+                originalMethod: origMethod,
+                callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
+            };
+            if (instead) {
+                const tempRet = Utils.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
+                if (tempRet !== undefined) data.returnValue = tempRet;
+            }
+            else {
+                if (before) Utils.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
+                data.callOriginalMethod();
+                if (after) Utils.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
+            }
+            if (once) cancel();
+            return data.returnValue;
+        };
+        what[methodName].__monkeyPatched = true;
+        what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
+        return cancel;
+    }
+
+    static onRemoved(node, callback) {
+        const observer = new MutationObserver((mutations) => {
+            for (let m = 0; m < mutations.length; m++) {
+                const mutation = mutations[m];
+                const nodes = Array.from(mutation.removedNodes);
+                const directMatch = nodes.indexOf(node) > -1;
+                const parentMatch = nodes.some(parent => parent.contains(node));
+                if (directMatch || parentMatch) {
+                    observer.disconnect();
+                    callback();
+                }
+            }
+        });
+    
+        observer.observe(document.body, {subtree: true, childList: true});
+    }
 };
 
 
@@ -1333,7 +1317,7 @@ PluginModule.prototype.loadPlugins = function () {
         }
         catch (err) {
             pluginCookie[name] = false;
-            utils.err("Plugin " + name + " could not be loaded.", err);
+            Utils.err("Plugin " + name + " could not be loaded.", err);
             bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, reason: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
             continue;
         }
@@ -1347,7 +1331,7 @@ PluginModule.prototype.loadPlugins = function () {
             }
             catch (err) {
                 pluginCookie[name] = false;
-                utils.err("Plugin " + name + " could not be started.", err);
+                Utils.err("Plugin " + name + " could not be started.", err);
                 bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, reason: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
             }
         }
@@ -1368,7 +1352,7 @@ PluginModule.prototype.startPlugin = function (plugin) {
     catch (err) {
         pluginCookie[plugin] = false;
         this.savePluginData();
-        utils.err("Plugin " + name + " could not be started.", err);
+        Utils.err("Plugin " + name + " could not be started.", err);
     }
 };
 
@@ -1378,7 +1362,7 @@ PluginModule.prototype.stopPlugin = function (plugin) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
     }
     catch (err) {
-        utils.err("Plugin " + name + " could not be stopped.", err);
+        Utils.err("Plugin " + name + " could not be stopped.", err);
     }
 };
 
@@ -1400,13 +1384,6 @@ PluginModule.prototype.togglePlugin = function (plugin) {
 };
 
 PluginModule.prototype.loadPluginData = function () {
-    if ($.cookie("bd-plugins")) {
-        pluginCookie = JSON.parse($.cookie("bd-plugins"));
-        this.savePluginData();
-        $.removeCookie("bd-plugins", {path: "/"});
-        return;
-    }
-
     let saved = bdSettingsStorage.get("plugins");
     if (saved) {
         pluginCookie = saved;
@@ -1424,7 +1401,7 @@ PluginModule.prototype.newMessage = function () {
         if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.onMessage === "function") {
             try { plugin.onMessage(); }
-            catch (err) { utils.err("Unable to fire onMessage for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Unable to fire onMessage for " + plugin.getName() + ".", err); }
         }
     }
 };
@@ -1436,7 +1413,7 @@ PluginModule.prototype.channelSwitch = function () {
         if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.onSwitch === "function") {
             try { plugin.onSwitch(); }
-            catch (err) { utils.err("Unable to fire onSwitch for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Unable to fire onSwitch for " + plugin.getName() + ".", err); }
         }
     }
 };
@@ -1448,7 +1425,7 @@ PluginModule.prototype.rawObserver = function(e) {
         if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.observer === "function") {
             try { plugin.observer(e); }
-            catch (err) { utils.err("Unable to fire observer for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Unable to fire observer for " + plugin.getName() + ".", err); }
         }
     }
 };
@@ -1475,7 +1452,7 @@ ThemeModule.prototype.loadThemes = function () {
     for (var i = 0; i < themes.length; i++) {
         var name = bdthemes[themes[i]].name;
         if (!themeCookie[name]) themeCookie[name] = false;
-        if (themeCookie[name]) $("head").append($("<style>", {id: utils.escapeID(name), html: unescape(bdthemes[name].css)}));
+        if (themeCookie[name]) $("head").append($("<style>", {id: Utils.escapeID(name), html: unescape(bdthemes[name].css)}));
     }
     for (let theme in themeCookie) {
         if (!bdthemes[theme]) delete themeCookie[theme];
@@ -1486,14 +1463,14 @@ ThemeModule.prototype.loadThemes = function () {
 ThemeModule.prototype.enableTheme = function (theme) {
     themeCookie[theme] = true;
     this.saveThemeData();
-    $("head").append(`<style id="${utils.escapeID(bdthemes[theme].name)}">${unescape(bdthemes[theme].css)}</style>`);
+    $("head").append(`<style id="${Utils.escapeID(bdthemes[theme].name)}">${unescape(bdthemes[theme].css)}</style>`);
     if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
 };
 
 ThemeModule.prototype.disableTheme = function (theme) {
     themeCookie[theme] = false;
     this.saveThemeData();
-    $(`#${utils.escapeID(bdthemes[theme].name)}`).remove();
+    $(`#${Utils.escapeID(bdthemes[theme].name)}`).remove();
     if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been removed.`);
 };
 
@@ -1503,13 +1480,6 @@ ThemeModule.prototype.toggleTheme = function (theme) {
 };
 
 ThemeModule.prototype.loadThemeData = function () {
-    if ($.cookie("bd-themes")) {
-        themeCookie = JSON.parse($.cookie("bd-themes"));
-        this.saveThemeData();
-        $.removeCookie("bd-themes", {path: "/"});
-        return;
-    }
-
     let saved = bdSettingsStorage.get("themes");
     if (saved) {
         themeCookie = saved;
@@ -1540,26 +1510,26 @@ var BdApi = {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append($("<style>", {id: utils.escapeID(id), html: css}));
+    $("head").append($("<style>", {id: Utils.escapeID(id), html: css}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    $("#" + utils.escapeID(id)).remove();
+    $("#" + Utils.escapeID(id)).remove();
 };
 
 //Inject CSS to document head
 //id = id of element
 //css = custom css
 BdApi.linkJS = function (id, url) {
-    $("head").append($("<script>", {id: utils.escapeID(id), src: url, type: "text/javascript"}));
+    $("head").append($("<script>", {id: Utils.escapeID(id), src: url, type: "text/javascript"}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.unlinkJS = function (id) {
-    $("#" + utils.escapeID(id)).remove();
+    $("#" + Utils.escapeID(id)).remove();
 };
 
 //Get another plugin
@@ -2084,7 +2054,7 @@ class BDEmote extends BDV2.reactComponent {
     }
 
     get animateOnHover() {
-        return bdSettings.settings["fork-es-2"];
+        return settingsCookie["fork-es-2"];
     }
 
     get label() {
@@ -2961,7 +2931,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
-            catch (err) { utils.err("Unable to get settings panel for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Unable to get settings panel for " + plugin.getName() + ".", err); }
             
             return BDV2.react.createElement("li", {className: "settings-open ui-switch-item"},
                     BDV2.react.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
