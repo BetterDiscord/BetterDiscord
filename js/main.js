@@ -68,6 +68,7 @@
 
 /* global DiscordNative:false */
 
+var betterDiscordIPC = require("electron").ipcRenderer;
 window.bdStorage = {};
 window.bdStorage.get = function(i) {
     return betterDiscordIPC.sendSync("synchronous-message", {"arg": "storage", "cmd": "get", "var": i});
@@ -123,9 +124,8 @@ bdSettingsStorage.set = function(key, data) {
 };
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
-var jsVersion = 1.792;
 var supportedVersion = "0.2.81";
-var bbdVersion = "0.1.1";
+var bbdVersion = "0.1.2";
 
 
 var mainCore;
@@ -168,7 +168,6 @@ var settings = {
 };
 
 var defaultCookie = {
-    "version": jsVersion,
     "bda-gs-0": false,
     "bda-gs-1": true,
     "bda-gs-2": false,
@@ -216,14 +215,16 @@ function Core(config) {
 var classNormalizer;
 
 Core.prototype.init = async function() {
-    var self = this;
-    bdConfig.deferLoaded = false;
-
-    var lVersion = (typeof(version) === "undefined") ? bdVersion : version;
-
-    if (lVersion < supportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + lVersion + "(your version)" + " is not supported by the latest js(" + jsVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
+    if (bdConfig.version < supportedVersion) {
+        this.alert("Not Supported", "BetterDiscord v" + bdConfig.version + " (your version)" + " is not supported by the latest js (" + bbdVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
         return;
+    }
+
+    if (bdConfig.updater.LatestVersion > bdConfig.version) {
+        this.alert("Update Available", `
+            An update for BandagedBD is available (${bdConfig.updater.LatestVersion})! Please Reinstall!<br /><br />
+            <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>
+        `);
     }
 
     Utils.log("Initializing Settings");
@@ -241,68 +242,57 @@ Core.prototype.init = async function() {
     
     voiceMode = new VoiceMode();
     dMode = new devMode();
+    
+    this.injectExternals();
 
-    //Incase were too fast
-    function gwDefer() {
-        //console.log(new Date().getTime() + " Defer");
-        if (document.querySelectorAll(`.${BDV2.guildClasses.guilds} .${BDV2.guildClasses.guild}`).length > 0) {
-            //console.log(new Date().getTime() + " Defer Loaded");
-            bdConfig.deferLoaded = true;
-            self.injectExternals();
+    await this.checkForGuilds();
+    Utils.log("Updating Settings");
+    settingsPanel = new V2_SettingsPanel();
+    settingsPanel.updateSettings();
 
+    // Add check for backwards compatibility
+    if (!bdpluginErrors) bdpluginErrors = [];
+    if (!bdthemeErrors) bdthemeErrors = [];
 
-            Utils.log("Updating Settings");
-            settingsPanel = new V2_SettingsPanel();
-            settingsPanel.updateSettings();
+    Utils.log("Loading Plugins");
+    pluginModule = new PluginModule();
+    pluginModule.loadPlugins();
+    
+    Utils.log("Loading Themes");
+    themeModule = new ThemeModule();
+    themeModule.loadThemes();
 
-            // Add check for backwards compatibility
-            if (!bdpluginErrors) bdpluginErrors = [];
-            if (!bdthemeErrors) bdthemeErrors = [];
+    $("#customcss").detach().appendTo(document.head);
+    
+    window.addEventListener("beforeunload", function() {
+        if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
+    });
+    
+    publicServersModule.initialize();
 
-            Utils.log("Loading Plugins");
-            pluginModule = new PluginModule();
-            pluginModule.loadPlugins();
-            
-            Utils.log("Loading Themes");
-            themeModule = new ThemeModule();
-            themeModule.loadThemes();
+    emoteModule.autoCapitalize();
 
-            $("#customcss").detach().appendTo(document.head);
-            
-            window.addEventListener("beforeunload", function(){
-                if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
-            });
-            
-            publicServersModule.initialize();
-
-            emoteModule.autoCapitalize();
-
-            /*Display new features in BetterDiscord*/
-            if (settingsCookie.version < jsVersion) {
-                //var cl = self.constructChangelog();
-                settingsCookie.version = jsVersion;
-                self.saveSettings();
-            }
-
-            Utils.log("Removing Loading Icon");
-            document.getElementsByClassName("bd-loaderv2")[0].remove();
-            Utils.log("Initializing Main Observer");
-            self.initObserver();
-            
-            // Show loading errors
-            if (settingsCookie["fork-ps-1"]) {
-                Utils.log("Collecting Startup Errors");
-                self.showStartupErrors();
-            }
-        }
-        else {
-            setTimeout(gwDefer, 100);
-        }
+    Utils.log("Removing Loading Icon");
+    document.getElementsByClassName("bd-loaderv2")[0].remove();
+    Utils.log("Initializing Main Observer");
+    this.initObserver();
+    
+    // Show loading errors
+    if (settingsCookie["fork-ps-1"]) {
+        Utils.log("Collecting Startup Errors");
+        this.showStartupErrors();
     }
+};
 
-
-    $(document).ready(function () {
-        setTimeout(gwDefer, 100);
+Core.prototype.checkForGuilds = function() {
+    return new Promise(resolve => {
+        const checkForGuilds = function() {
+            if (document.querySelectorAll(`.${BDV2.guildClasses.guilds} .${BDV2.guildClasses.guild}`).length > 0) return resolve(bdConfig.deferLoaded = true);
+            setTimeout(checkForGuilds, 100);
+        };
+        $(document).ready(function () {
+            setTimeout(checkForGuilds, 100);
+        });
     });
 };
 
