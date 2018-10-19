@@ -3837,13 +3837,11 @@ class V2_SettingsPanel {
             ContentManager.unwatchContent("theme");
         }
 
-        if (_c["fork-wp-1"]) {
-            const current = BdApi.getWindowPreference("transparent");
-            if (current != _c["fork-wp-1"]) {
-                BdApi.setWindowPreference("transparent", _c["fork-wp-1"]);
-                if (_c["fork-wp-1"]) BdApi.setWindowPreference("backgroundColor", null);
-                else BdApi.setWindowPreference("backgroundColor", "#2f3136");
-            }
+        const current = BdApi.getWindowPreference("transparent");
+        if (current != _c["fork-wp-1"]) {
+            BdApi.setWindowPreference("transparent", _c["fork-wp-1"]);
+            if (_c["fork-wp-1"]) BdApi.setWindowPreference("backgroundColor", null);
+            else BdApi.setWindowPreference("backgroundColor", "#2f3136");
         }
 
         if (_c["fork-wp-2"]) {
