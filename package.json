@@ -1,8 +1,8 @@
 {
   "name": "betterdiscord",
-  "description": "Better Discord enhances Discord.",
-  "version": "0.2.81",
-  "homepage": "https://github.com/Jiiks/BetterDiscordApp",
+  "description": "BetterDiscord enhances Discord desktop app with new features.",
+  "version": "0.3.0",
+  "homepage": "https://github.com/rauenzi/BetterDiscordApp",
   "license": "MIT",
   "main": "betterdiscord.js"
 }

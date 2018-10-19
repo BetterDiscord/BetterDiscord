@@ -1,109 +1,54 @@
-Note that this whole branch is deprecated. all further development is going on here: https://github.com/Jiiks/BetterDiscordApp/tree/v2
+# BandagedBD
 
-# BetterDiscordApp
+BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](https://github.com/Jiiks/BetterDiscordApp) by Jiiks. This has a number of improvements over the original which is currently undergoing a full rewrite. In the interim, the current version has been unmaintained hence this fork existing. I will continue to maintain this fork until BDv2 comes out. I am helping to develop BDv2 as well so as release gets closer this fork will become less and less active.
 
-# If you have issues then join the BD Discord server: [Here](https://discord.gg/0Tmfo5ZbORCRqbAd)
+# Installation
 
-# Do not contact Discord support about BD issues. 
+### Windows
+Grab the `exe` file from the latest release on the [releases page](https://github.com/rauenzi/BetterDiscordApp/releases). Be sure you leave the last checkbox "Use Zere's Fork" checked when installing.
 
-## All plugins must be named `*.plugin.js` and all themes must be named `*.theme.css`
+### macOS/OS X
+Grab the `zip` file from the latest release on the [releases page](https://github.com/rauenzi/BetterDiscordApp/releases).
 
-Better Discord App enhances the Discord desktop app with new features.
+### Linux
+See this link: https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77cf31172
 
-![ss](http://i.imgur.com/Gj6oD7z.png)
+# What's Different
 
-## Windows Universal Installer
-* Download the latest installer from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
-* Follow the instructions
-* .NET 4.0 required https://www.microsoft.com/en-us/download/details.aspx?id=30653
-* Windows Installer users asar.net https://github.com/Jiiks/asar.net
+## New Settings
+![Settings](https://i.zackrauen.com/nkb9Qi.png)
 
-## Auto Installation
-* Download the latest package from [releases](https://github.com/Jiiks/BetterDiscordApp/releases)
-* Run the installer
-* Installer requires [node](https://nodejs.org/en/download/) download the binaries and place in the same folder as the installer if you don't have node installed.
-* Installer uses [asar](https://github.com/atom/asar) which is bundled with the installer.
-* Installer uses [wrench](https://github.com/ryanmcgrath/wrench-js) which is bundled with the installer.
+## UI
+ - Redesigned plugin and theme cards with additional classes for themes to use
+ - Additional tab in settings with additional settings.
+ - CustomCSS editor from CodeMirror has been removed due to being bloated and having high cpu usage. Replaced with another lightweight editor
 
-## Manual Installation
-* Extract app.asar
-* Add BetterDiscord as a dependency
-* Add init to Discord load event
-* Move BetterDiscord to node_modules
 
-## Features
+## Plugins/Themes Related
+ - Prevent broken plugins from halting BD from loading
+ - Speed up the loading process
+ - Show startup errors in a modal
 
-**Emotes:**
-BetterDiscord adds all [Twitch.tv](http://twitch.tv), most [FrankerFaceZ](http://frankerfacez.com) and [BetterTTV](http://betterttv.net) emotes to Discord. Supported emotes: https://betterdiscord.net/emotes
+![Startup](https://i.zackrauen.com/PwlQcp.gif)
 
-**Quick Emote Menu:**
-Quick Emote Menu adds a menu for quickly adding twitch emotes and your favorite emotes.
+ - Add `try...catch` blocks to help prevent errors from crashing BD and Discord
+ - Fix internal functions that some functions rely on such as `onSwitch` and `onMessage`
+ - Add `source` and `website` as options for plugin and theme METAs 
+ - Allow themes to use spaces and apostrophes in their names
+ - Prettier errors in console, useful for debugging
 
-**Emote Autocapitalize:**
-Automatically capitalize [Twitch.tv](http://twitch.tv) global emotes.
+## Emote Module
+- Emotes load asynchronously in the background (does not prevent the mod from loading anymore)
+- Several bug fixes including tooltips, modifiers and emote menu
+- Consolidate emotes to a single file
+- Revamp how emotes are injected—speedup
 
-**Emote Autocomplete:**
-Automatically completes/suggests emotes.(soon)
-
-**Minimal Mode:**
-Minimal mode makes elements smaller and hides certain elements.
-
-**Voice Chat Mode:**
-Only display voice channels
-
-**Public Servers:**
-Public server listing provided by: [DiscordServers.com](https://www.discordservers.com/) 
-![ss](http://i.imgur.com/BVUZlu9.png)
-
-**Custom CSS**
-BetterDiscord supports custom CSS for styling Discord to your liking.
-
-**Custom Themes**
-BetterDiscord comes with a theme loader for loading your own or downloading themes made by others.
-
-**Plugins**
-BetterDiscord comes with a JavaScript plugin loader for loading your own or downloading plugins made by others.
-
-**Spoilers**
-Add spoilers to your chat, simply add [!s] to your message.
-
-**Save Logs Locally:**
-Save chatlogs locally.(soon)
-
-## Adding your server to public servers
-As of JS1.60 the public server list is supplied by [DiscordServers.com](https://www.discordservers.com/) 
-Add your server there and it will appear in the list!
-
-## BetterDiscord Uses the following API's
-* https://twitchemotes.com/apidocs for Twitch emotes
-* https://api.betterttv.net/emotes for [BetterTTV](https://nightdev.com/betterttv/) emotes
-
-## Credits
-* MacOS Installer by [Candunc](https://github.com/Candunc) 
-* Emote titles by [pendo324](https://github.com/pendo324)
-* Majority of FFZ emote work by [Pohky](https://github.com/pohky) and [DeathStrikeV](https://github.com/DeathStrikeV)
-* Majority of BTTV emote work by [EhsanKia](https://github.com/EhsanKia)
-
-## License
-
-The MIT License (MIT)
-
-Copyright (c) 2015-present Jiiks | [Jiiks.net](https://jiiks.net)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+## Misc
+ - Fix Minimal Mode
+ - Fix React errors when opening settings
+ - Fix selected class disappearing when clicking an open tab
+ - Create new alert modal for `BdApi`
+ - Add toasts as notification option and in `BdApi`
+ - Remove most jQuery dependency for speedup
+ - Attach to settings when entering from right click
+ - Patch PublicServers
