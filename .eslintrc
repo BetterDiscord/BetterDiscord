@@ -35,6 +35,7 @@
         "bdVersion": false,
         "version": false,
         "_bdhash": true,
-        "ace": false
+        "ace": false,
+        "Reflect": false
     }
 }

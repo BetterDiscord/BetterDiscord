@@ -68,69 +68,107 @@
 
 /* global DiscordNative:false */
 
-var betterDiscordIPC = require("electron").ipcRenderer;
-window.bdStorage = {};
-window.bdStorage.get = function(i) {
-    return betterDiscordIPC.sendSync("synchronous-message", {"arg": "storage", "cmd": "get", "var": i});
-};
-window.bdStorage.set = function(i, v) {
-    betterDiscordIPC.sendSync("synchronous-message", {"arg": "storage", "cmd": "set", "var": i, "data": v});
-};
-window.bdPluginStorage = {};
-window.bdPluginStorage.get = function(pluginName, key) {
-    return betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "get", "pn": pluginName, "var": key});
-};
-window.bdPluginStorage.set = function(pluginName, key, value) {
-    if (typeof(value) === "undefined") return Utils.warn("Trying to set undefined value in plugin " + pluginName);
-    betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "set", "pn": pluginName, "var": key, "data": value});
-};
+var DataStore = (() => {
+    const fs = require("fs");
+    const path = require("path");
+    const releaseChannel = DiscordNative.globals.releaseChannel;
 
-window.bdPluginStorage.delete = function(pluginName, key) {
-    betterDiscordIPC.sendSync("synchronous-message", {"arg": "pluginstorage", "cmd": "delete", "pn": pluginName, "var": key});
-};
-
-var bdSettings = {};
-var bdSettingsStorage = {};
-var releaseChannel = DiscordNative.globals.releaseChannel;
-bdSettingsStorage.initialize = function() {
-    let fs = require("fs");
-    let data = {stable: {}, canary: {}, ptb: {}};
-    if (fs.existsSync(bdConfig.dataPath + "/bdsettings.json")) {
-        try {
-            data = JSON.parse(fs.readFileSync(bdConfig.dataPath + "/bdsettings.json"));
-
-            // Convert to new style. To be removed a month from 10/14/2018
-            if (data.hasOwnProperty("settings")) data = {[releaseChannel]: data};
+    return new class DataStore {
+        constructor() {
+            this.data = {settings: {stable: {}, canary: {}, ptb: {}}};
+            this.pluginData = {};
         }
-        catch (err) {
-            data = {stable: {}, canary: {}, ptb: {}};
+
+        initialize() {
+            if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+            else this.data = require(this.BDFile);
+            if (!fs.existsSync(this.settingsFile)) return;
+            let settings = require(this.settingsFile);
+            fs.unlinkSync(this.settingsFile);
+            if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}}, {[releaseChannel]: settings});
+            else settings = Object.assign({stable: {}, canary: {}, ptb: {}}, settings);
+            this.setBDData("settings", settings);
         }
+
+        get BDFile() {return this._BDFile || (this._BDFile = path.resolve(bdConfig.dataPath, "bdstorage.json"));}
+        get settingsFile() {return this._settingsFile || (this._settingsFile = path.resolve(bdConfig.dataPath, "bdsettings.json"));}
+        getPluginFile(pluginName) {return path.resolve(ContentManager.pluginsFolder, pluginName + ".config.json");}
+
+        getSettingGroup(key) {
+            return this.data.settings[releaseChannel][key] || null;
+        }
+
+        setSettingGroup(key, data) {
+            this.data.settings[releaseChannel][key] = data;
+            fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+        }
+
+        getBDData(key) {
+            return this.data[key] || "";
+        }
+
+        setBDData(key, value) {
+            this.data[key] = value;
+            fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+        }
+
+        getPluginData(pluginName, key) {
+            if (this.pluginData[pluginName] !== undefined) return this.pluginData[pluginName][key] || undefined;
+            if (!fs.existsSync(this.getPluginFile(pluginName))) return undefined;
+            this.pluginData[pluginName] = JSON.parse(fs.readFileSync(this.getPluginFile(pluginName)));
+            return this.pluginData[pluginName][key] || undefined;
+        }
+
+        setPluginData(pluginName, key, value) {
+            if (value === undefined) return;
+            if (this.pluginData[pluginName] === undefined) this.pluginData[pluginName] = {};
+            this.pluginData[pluginName][key] = value;
+            fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4));
+        }
+
+        deletePluginData(pluginName, key) {
+            if (this.pluginData[pluginName] === undefined) this.pluginData[pluginName] = {};
+            delete this.pluginData[pluginName][key];
+            fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4));
+        }
+    };
+})();
+
+
+
+window.bdStorage = class bdPluginStorage {
+    static get(key) {
+        Utils.warn("[Deprecation Notice] Please use BdApi.getBDData(). bdStorage may be removed in future versions.");
+        return DataStore.getBDData(key);
     }
-    if (data) bdSettings = data;
-    else bdSettings = {stable: {}, canary: {}, ptb: {}};
+
+    static set(key, data) {
+        Utils.warn("[Deprecation Notice] Please use BdApi.setBDData(). bdStorage may be removed in future versions.");
+        DataStore.setBDData(key, data);
+    }
 };
 
-bdSettingsStorage.get = function(key) {
-    if (bdSettings[releaseChannel][key]) return bdSettings[releaseChannel][key];
-    return null;
-};
-
-bdSettingsStorage.set = function(key, data) {
-    let fs = require("fs");
-    bdSettings[releaseChannel][key] = data;
-    try {
-        fs.writeFileSync(bdConfig.dataPath + "/bdsettings.json", JSON.stringify(bdSettings, null, 4));
-        return true;
+window.bdPluginStorage = class bdPluginStorage {
+    static get(pluginName, key) {
+        Utils.warn(`[Deprecation Notice] Please use BdApi.loadData() or BdApi.getData(). bdPluginStorage may be removed in future versions.`);
+        return DataStore.getPluginData(pluginName, key) || null;
     }
-    catch (err) {
-        Utils.err(err);
-        return false;
+
+    static set(pluginName, key, data) {
+        Utils.warn("[Deprecation Notice] Please use BdApi.saveData() or BdApi.setData(). bdPluginStorage may be removed in future versions.");
+        if (typeof(value) === "undefined") return Utils.warn("Trying to set undefined value in plugin " + pluginName);
+        DataStore.setPluginData(pluginName, key, data);
+    }
+
+    static delete(pluginName, key) {
+        Utils.warn("[Deprecation Notice] Please use BdApi.deleteData(). bdPluginStorage may be removed in future versions.");
+        DataStore.deletePluginData(pluginName, key);
     }
 };
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
-var minSupportedVersion = "0.2.81";
-var bbdVersion = "0.1.2";
+var minSupportedVersion = "0.3.0";
+var bbdVersion = "0.2.2";
 
 
 var mainCore;
@@ -153,13 +191,14 @@ var settings = {
     
     
     "Startup Error Modal":        {id: "fork-ps-1", info: "Show a modal with plugin/theme errors on startup", implemented: true,  hidden: false, cat: "fork"},
-    "Show Toasts":                {id: "fork-ps-2", info: "Shows a small notification for starting and stopping plugins & themes", implemented: true,  hidden: false, cat: "fork"},
+    "Show Toasts":                {id: "fork-ps-2", info: "Shows a small notification for important information", implemented: true,  hidden: false, cat: "fork"},
     "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "fork"},
     "Animate On Hover":           {id: "fork-es-2", info: "Only animate the emote modifiers on hover", implemented: true,  hidden: false, cat: "fork"},
     "Copy Selector":			  {id: "fork-dm-1", info: "Adds a \"Copy Selector\" option to context menus when developer mode is active", implemented: true,  hidden: false, cat: "fork"},
     "Download Emotes":            {id: "fork-es-3", info: "Download emotes when the cache is expired", implemented: true,  hidden: false, cat: "fork"},
     "Normalize Classes":          {id: "fork-ps-4", info: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", implemented: true,  hidden: false, cat: "fork"},
-    
+    "Automatic Loading":          {id: "fork-ps-5", info: "Automatically loads, reloads, and unloads plugins and themes", implemented: true,  hidden: false, cat: "fork"},
+
 
     "Twitch Emotes":              {id: "bda-es-7",  info: "Show Twitch emotes",                                implemented: true,  hidden: false, cat: "emote"},
     "FrankerFaceZ Emotes":        {id: "bda-es-1",  info: "Show FrankerFaceZ Emotes",                          implemented: true,  hidden: false, cat: "emote"},
@@ -192,7 +231,6 @@ var defaultCookie = {
     "bda-es-7": true,
     "bda-gs-b": false,
     "bda-es-8": true,
-    "bda-jd": true,
     "bda-dc-0": false,
     "bda-css-0": false,
     "bda-css-1": false,
@@ -202,6 +240,7 @@ var defaultCookie = {
     "fork-ps-2": true,
     "fork-ps-3": true,
     "fork-ps-4": true,
+    "fork-ps-5": true,
     "fork-es-2": false,
     "fork-es-3": true
 };
@@ -209,7 +248,7 @@ var defaultCookie = {
 
 var settingsCookie = {};
 
-var bdpluginErrors, bdthemeErrors; // define for backwards compatibility
+var bdpluginErrors = [], bdthemeErrors = []; // define for backwards compatibility
 
 var bdConfig = null;
 
@@ -221,7 +260,7 @@ var classNormalizer;
 
 Core.prototype.init = async function() {
     if (bdConfig.version < minSupportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + bdConfig.version + " (your version)" + " is not supported by the latest js (" + bbdVersion + ").<br><br> Please download the latest version from <a href='https://betterdiscord.net' target='_blank'>BetterDiscord.net</a>");
+        this.alert("Not Supported", "BetterDiscord v" + bdConfig.version + " (your version)" + " is not supported by the latest js (" + bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
         return;
     }
 
@@ -255,10 +294,6 @@ Core.prototype.init = async function() {
     settingsPanel = new V2_SettingsPanel();
     settingsPanel.updateSettings();
 
-    // Add check for backwards compatibility
-    if (!bdpluginErrors) bdpluginErrors = [];
-    if (!bdthemeErrors) bdthemeErrors = [];
-
     Utils.log("Loading Plugins");
     pluginModule = new PluginModule();
     pluginModule.loadPlugins();
@@ -285,7 +320,15 @@ Core.prototype.init = async function() {
     // Show loading errors
     if (settingsCookie["fork-ps-1"]) {
         Utils.log("Collecting Startup Errors");
-        this.showStartupErrors();
+        this.showStartupErrors({plugins: bdpluginErrors, themes: bdthemeErrors});
+    }
+
+    if (!DataStore.getBDData("RNMAnnouncement")) {
+        DataStore.setBDData("RNMAnnouncement", true);
+        this.alert("Significant Changes", `
+            The lastest release of BBD has made a lot of improvements including being able to automatically load, unload, and reload plugins and themes.<br /><br />
+            If you had the RestartNoMore plugin, I suggest removing it (or turning off BBD's loader in settings) so things aren't being loaded multiple times.
+        `);
     }
 };
 
@@ -306,14 +349,14 @@ Core.prototype.injectExternals = function() {
 };
 
 Core.prototype.initSettings = function () {
-    bdSettingsStorage.initialize();
-    if (!bdSettingsStorage.get("settings")) {
+    DataStore.initialize();
+    if (!DataStore.getSettingGroup("settings")) {
         settingsCookie = defaultCookie;
         this.saveSettings();
     }
     else {
         this.loadSettings();
-        $("<style id=\"customcss\">").html(atob(window.bdStorage.get("bdcustomcss"))).appendTo(document.head);
+        $("<style id=\"customcss\">").html(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
         for (var setting in defaultCookie) {
             if (settingsCookie[setting] == undefined) {
                 settingsCookie[setting] = defaultCookie[setting];
@@ -324,11 +367,11 @@ Core.prototype.initSettings = function () {
 };
 
 Core.prototype.saveSettings = function () {
-    bdSettingsStorage.set("settings", settingsCookie);
+    DataStore.setSettingGroup("settings", settingsCookie);
 };
 
 Core.prototype.loadSettings = function () {
-    settingsCookie = bdSettingsStorage.get("settings");
+    settingsCookie = DataStore.getSettingGroup("settings");
 };
 
 Core.prototype.initObserver = function () {
@@ -375,7 +418,7 @@ Core.prototype.inject24Hour = function() {
         const matched = data.returnValue.match(twelveHour);
         if (!matched || matched.length !== 4) return;
         if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
-        return data.returnValue = data.returnValue.replace(matched[0], `${parseInt(matched[1]) + 12}:${matched[2]}`);
+        return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "12" : parseInt(matched[1]) + 12}:${matched[2]}`);
     }});
 };
 
@@ -431,9 +474,9 @@ Core.prototype.alert = function(title, content) {
     modal.appendTo("#app-mount");
 };
 
-Core.prototype.showStartupErrors = function() {
-    if (!bdpluginErrors || !bdthemeErrors) return;
-    if (!bdpluginErrors.length && !bdthemeErrors.length) return;
+Core.prototype.showStartupErrors = function({plugins: pluginErrors, themes: themeErrors}) {
+    if (!pluginErrors || !themeErrors) return;
+    if (!pluginErrors.length && !themeErrors.length) return;
     let modal = $(`<div class="bd-modal-wrapper theme-dark">
                     <div class="bd-backdrop backdrop-1wrmKB"></div>
                     <div class="bd-modal bd-startup-modal modal-1UGdnR">
@@ -483,7 +526,7 @@ Core.prototype.showStartupErrors = function() {
         return container;
     }
     
-    let tabs = [generateTab(bdpluginErrors), generateTab(bdthemeErrors)];
+    let tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
 
     modal.find(".tab-bar-item").on("click", (e) => {
         e.preventDefault();
@@ -501,7 +544,8 @@ Core.prototype.showStartupErrors = function() {
         setTimeout(() => { modal.remove(); }, 300);
     });
     modal.appendTo("#app-mount");
-    modal.find(".tab-bar-item")[0].click();
+    if (pluginErrors.length) modal.find(".tab-bar-item")[0].click();
+    else modal.find(".tab-bar-item")[1].click();
 };
 
 /**
@@ -724,7 +768,7 @@ EmoteModule.prototype.clearEmoteData = async function() {
     let file = bdConfig.dataPath + emoteFile;
     let exists = _fs.existsSync(file);
     if (exists) _fs.unlinkSync(file);
-    window.bdStorage.set("emoteCacheDate", (new Date()).toJSON());
+    DataStore.setBDData("emoteCacheDate", (new Date()).toJSON());
 
     window.bdEmotes = {
         TwitchGlobal: {},
@@ -744,11 +788,11 @@ EmoteModule.prototype.goBack = async function(emoteInfo) {
 };
 
 EmoteModule.prototype.isCacheValid = function() {
-    const cacheDate = new Date(window.bdStorage.get("emoteCacheDate") || null);
+    const cacheDate = new Date(DataStore.getBDData("emoteCacheDate") || null);
     const currentDate = new Date();
     const daysBetween = Math.round(Math.abs((currentDate.getTime() - cacheDate.getTime()) / (24 * 60 * 60 * 1000)));
     if (daysBetween > bdConfig.cache.days) {
-        window.bdStorage.set("emoteCacheDate", currentDate.toJSON());
+        DataStore.setBDData("emoteCacheDate", currentDate.toJSON());
         return false;
     }
     return true;
@@ -907,7 +951,7 @@ QuickEmoteMenu.prototype.init = function() {
         if (e.target.id != "rmenu") $("#rmenu").remove();
     });
     this.favoriteEmotes = {};
-    var fe = window.bdStorage.get("bdfavemotes");
+    var fe = DataStore.getBDData("bdfavemotes");
     if (fe !== "" && fe !== null) {
         this.favoriteEmotes = JSON.parse(atob(fe));
     }
@@ -1073,7 +1117,7 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     this.faContainer = faContainer;
 
     $("#bda-qem-favourite-container").replaceWith(faContainer);
-    window.bdStorage.set("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
+    DataStore.setBDData("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
 };
 
 
@@ -1085,6 +1129,17 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
  * https://github.com/Jiiks/BetterDiscordApp
  */
 var Utils = class {
+    /** Document/window width */
+    static get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); }
+    /** Document/window height */
+    static get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
+
+    static stripBOM(content) {
+        if (content.charCodeAt(0) === 0xFEFF) {
+            content = content.slice(1);
+        }
+        return content;
+    }
 
     static getTextArea() {
         return $(".channelTextArea-1LDbYG textarea");
@@ -1240,6 +1295,207 @@ VoiceMode.prototype.disable = function () {
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
 };
+
+
+
+
+// e.remote.app.getAppPath()
+// path = require("path")
+// require("path").resolve(require("electron").remote.app.getAppPath(), "node_modules", "request", "index.js");
+window.bdthemes = {};
+window.bdplugins = {};
+var ContentManager = (() => {
+    const path = require("path");
+    const fs = require("fs");
+    const Module = require("module").Module;
+    Module.globalPaths.push(path.resolve(require("electron").remote.app.getAppPath(), "node_modules"));
+    class MetaError extends Error {
+        constructor(message) {
+            super(message);
+            this.name = "MetaError";
+        }
+    }
+    const originalJSRequire = require("module").Module._extensions[".js"];
+    const originalCSSRequire = Module._extensions[".css"] ? Module._extensions[".css"] : () => {return null;};
+
+
+
+    return new class ContentManager {
+
+        constructor() {
+            this.timeCache = {};
+            this.watchers = {};
+            Module._extensions[".js"] = this.getContentRequire("plugin");
+            Module._extensions[".css"] = this.getContentRequire("theme");
+        }
+
+        get pluginsFolder() {return this._pluginsFolder || (this._pluginsFolder = fs.realpathSync(path.resolve(bdConfig.dataPath + "plugins/")));}
+        get themesFolder() {return this._themesFolder || (this._themesFolder = fs.realpathSync(path.resolve(bdConfig.dataPath + "themes/")));}
+
+        watchContent(contentType) {
+            if (this.watchers[contentType]) return;
+            const isPlugin = contentType === "plugin";
+            const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
+            const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
+            this.watchers[contentType] = fs.watch(baseFolder, {persistent: false}, async (eventType, filename) => {
+                if (!eventType || !filename || !filename.endsWith(fileEnding)) return;
+                await new Promise(r => setTimeout(r, 50));
+                try {fs.lstatSync(path.resolve(baseFolder, filename));}
+                catch (err) {
+                    if (err.code !== "ENOENT") return;
+                    delete this.timeCache[filename];
+                    if (isPlugin) return pluginModule.unloadPlugin(Object.values(bdplugins).find(p => p.filename == filename).plugin.getName());
+                    return themeModule.unloadTheme(Object.values(bdthemes).find(p => p.filename == filename).name);
+                }
+                if (!fs.lstatSync(path.resolve(baseFolder, filename)).isFile()) return;
+                const stats = fs.lstatSync(path.resolve(baseFolder, filename));
+                if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
+                if (typeof(stats.mtime.getTime()) !== "number") return;
+                if (this.timeCache[filename] == stats.mtime.getTime()) return;
+                this.timeCache[filename] = stats.mtime.getTime();
+                if (eventType == "rename") {
+                    if (isPlugin) pluginModule.loadPlugin(filename);
+                    else themeModule.loadTheme(filename);
+                }
+                if (eventType == "change") {
+                    if (isPlugin) pluginModule.reloadPlugin(Object.values(bdplugins).find(p => p.filename == filename).plugin.getName());
+                    else themeModule.reloadTheme(Object.values(bdthemes).find(p => p.filename == filename).name);
+                }
+            });
+        }
+
+        unwatchContent(contentType) {
+            if (!this.watchers[contentType]) return;
+            this.watchers[contentType].close();
+            delete this.watcher[contentType];
+        }
+
+        extractMeta(content) {
+            const meta = content.split("\n")[0];
+            const rawMeta = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
+            if (meta.indexOf("META") < 0) throw new MetaError("META was not found.");
+            if (!Utils.testJSON(rawMeta)) throw new MetaError("META could not be parsed.");
+        
+            const parsed = JSON.parse(rawMeta);
+            if (!parsed.name) throw new MetaError("META missing name data.");
+            return parsed;
+        }
+
+        getContentRequire(type) {
+            const isPlugin = type === "plugin";
+            const self = this;
+            const originalRequire = isPlugin ? originalJSRequire : originalCSSRequire;
+            return function(module, filename) {
+                // console.log("Trying " + path.dirname(filename));
+                // console.log("Trying with " + (isPlugin ? self.pluginsFolder : self.themesFolder));
+                // console.log(path.dirname(filename) !== isPlugin ? self.pluginsFolder : self.themesFolder);
+                if (path.dirname(filename) !== (isPlugin ? self.pluginsFolder : self.themesFolder)) return Reflect.apply(originalRequire, this, arguments);
+                // if (path.dirname(filename) !== fs.realpathSync(path.resolve(isPlugin ? self.pluginsFolder : self.themesFolder))) return Reflect.apply(originalRequire, this, arguments);
+                // if (!path.relative(isPlugin ? self.pluginsFolder : self.themesFolder, filename)) return Reflect.apply(isPlugin ? originalJSRequire : originalCSSRequire, this, arguments);
+                let content = fs.readFileSync(filename, "utf8");
+                content = Utils.stripBOM(content);
+    
+                const meta = self.extractMeta(content);
+                meta.filename = path.basename(filename);
+                if (!isPlugin) {
+                    meta.css = content.split("\n").slice(1).join("\n");
+                    content = `module.exports = ${JSON.stringify(meta)};`;
+                }
+                if (isPlugin) {
+                    content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.name};`;
+                }
+                module._compile(content, filename);
+            };
+        }
+
+        makePlaceholderPlugin(data) {
+            return {plugin: {
+                    start: () => {},
+                    getName: () => {return data.name || data.filename;},
+                    getAuthor: () => {return "???";},
+                    getDescription: () => {return data.message ? data.message : "This plugin was unable to be loaded. Check the author's page for updates.";},
+                    getVersion: () => {return "???";}
+                },
+                name: data.name || data.filename,
+                filename: data.filename,
+                source: data.source ? data.source : "",
+                website: data.website ? data.website : ""
+            };
+        }
+
+        loadContent(filename, type) {
+            if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
+            const isPlugin = type === "plugin";
+            const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
+            try {require(path.resolve(baseFolder, filename));}
+            catch (error) {return error;}
+            const content = require(path.resolve(baseFolder, filename));
+            if (isPlugin) {
+                if (!content.type) return;
+                content.plugin = new content.type();
+                delete bdplugins[content.plugin.getName()];
+                bdplugins[content.plugin.getName()] = content;
+            }
+            else {
+                delete bdthemes[content.name];
+                bdthemes[content.name] = content;
+            }
+        }
+
+        unloadContent(filename, type) {
+            if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
+            const isPlugin = type === "plugin";
+            const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
+            try {
+                delete require.original.cache[require.original.resolve(path.resolve(baseFolder, filename))];
+            }
+            catch (err) {return err;}
+        }
+
+        isLoaded(filename, type) {
+            const isPlugin = type === "plugin";
+            const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
+            try {require.original.cache[require.original.resolve(path.resolve(baseFolder, filename))];}
+            catch (err) {return false;}
+            return true;
+        }
+
+        reloadContent(filename, type) {
+            if (this.unloadContent(filename, type)) return;
+            return this.loadContent(filename, type);
+        }
+
+        loadNewContent(type) {
+            const isPlugin = type === "plugin";
+            const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
+            const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
+            const files = fs.readdirSync(basedir);
+            const contentList = Object.values(isPlugin ? bdplugins : bdthemes);
+            const removed = contentList.filter(t => !files.includes(t.filename)).map(c => isPlugin ? c.plugin.getName() : c.name);
+            const added = files.filter(f => !contentList.find(t => t.filename == f) && f.endsWith(fileEnding) && fs.statSync(path.resolve(basedir, f)).isFile());
+            return {added, removed};
+        }
+
+        loadAllContent(type) {
+            const isPlugin = type === "plugin";
+            const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
+            const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
+            const errors = [];
+            const files = fs.readdirSync(basedir);
+
+            for (const filename of files) {
+                if (!fs.statSync(path.resolve(basedir, filename)).isFile() || !filename.endsWith(fileEnding)) continue;
+                const error = this.loadContent(filename, type);
+                if (error) errors.push(error);
+            }
+
+            return errors;
+        }
+
+        loadPlugins() {return this.loadAllContent("plugin");}
+        loadThemes() {return this.loadAllContent("theme");}
+    };
+})();
 /* BetterDiscordApp PluginModule JavaScript
  * Version: 1.0
  * Author: Jiiks | http://jiiks.net
@@ -1250,12 +1506,12 @@ VoiceMode.prototype.disable = function () {
 var pluginCookie = {};
 
 function PluginModule() {
-
+    
 }
 
 PluginModule.prototype.loadPlugins = function () {
     this.loadPluginData();
-
+    bdpluginErrors = ContentManager.loadPlugins();
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin, name;
@@ -1286,18 +1542,16 @@ PluginModule.prototype.loadPlugins = function () {
             }
         }
     }
-    for (let plugin in pluginCookie) {
-        if (!bdplugins[plugin]) delete pluginCookie[plugin];
-    }
     this.savePluginData();
 
     require("electron").remote.getCurrentWebContents().on("did-navigate-in-page", this.channelSwitch.bind(this));
+    // if (settingsCookie["fork-ps-5"]) ContentManager.watchContent("plugin");
 };
 
-PluginModule.prototype.startPlugin = function (plugin) {
+PluginModule.prototype.startPlugin = function(plugin, reload = false) {
     try {
         bdplugins[plugin].plugin.start();
-        if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
+        if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
     }
     catch (err) {
         pluginCookie[plugin] = false;
@@ -1306,26 +1560,28 @@ PluginModule.prototype.startPlugin = function (plugin) {
     }
 };
 
-PluginModule.prototype.stopPlugin = function (plugin) {
+PluginModule.prototype.stopPlugin = function(plugin, reload = false) {
     try {
         bdplugins[plugin].plugin.stop();
-        if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
+        if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
     }
     catch (err) {
         Utils.err("Plugin " + name + " could not be stopped.", err);
     }
 };
 
-PluginModule.prototype.enablePlugin = function (plugin) {
+PluginModule.prototype.enablePlugin = function (plugin, reload = false) {
+    if (pluginCookie[plugin]) return;
     pluginCookie[plugin] = true;
     this.savePluginData();
-    this.startPlugin(plugin);
+    this.startPlugin(plugin, reload);
 };
 
-PluginModule.prototype.disablePlugin = function (plugin) {
+PluginModule.prototype.disablePlugin = function (plugin, reload = false) {
+    if (!pluginCookie[plugin]) return;
     pluginCookie[plugin] = false;
     this.savePluginData();
-    this.stopPlugin(plugin);
+    this.stopPlugin(plugin, reload);
 };
 
 PluginModule.prototype.togglePlugin = function (plugin) {
@@ -1333,15 +1589,55 @@ PluginModule.prototype.togglePlugin = function (plugin) {
     else this.enablePlugin(plugin);
 };
 
+PluginModule.prototype.loadPlugin = function(filename) {
+    const error = ContentManager.loadContent(filename, "plugin");
+    if (error && settingsCookie["fork-ps-2"]) {
+        Utils.err(`${filename} could not be loaded.`, error);
+        return BdApi.showToast(`${filename} could not be loaded.`, {type: "error"});
+    }
+
+    const plugin = Object.values(bdplugins).find(p => p.filename == filename).plugin;
+    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
+};
+
+PluginModule.prototype.unloadPlugin = function(plugin) {
+    if (pluginCookie[plugin]) this.disablePlugin(plugin, true);
+    const error = ContentManager.unloadContent(bdplugins[plugin].filename, "plugin");
+    delete bdplugins[plugin];
+    if (error && settingsCookie["fork-ps-2"]) {
+        Utils.err(`${plugin} could not be unloaded. It may have not been loaded yet.`, error);
+        return BdApi.showToast(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+    }
+    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} was unloaded.`, {type: "success"});
+};
+
+PluginModule.prototype.reloadPlugin = function(plugin) {
+    const enabled = pluginCookie[plugin];
+    if (enabled) this.stopPlugin(plugin, true);
+    const error = ContentManager.reloadContent(bdplugins[plugin].filename, "plugin");
+    if (enabled) this.startPlugin(plugin, true);
+    if (error && settingsCookie["fork-ps-2"]) {
+        Utils.err(`${plugin} could not be reloaded.`, error);
+        return BdApi.showToast(`${plugin} could not be reloaded.`, {type: "error"});
+    }
+    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
+};
+
+PluginModule.prototype.updatePluginList = function() {
+    const results = ContentManager.loadNewContent("plugin");
+    for (const filename of results.added) this.loadPlugin(filename);
+    for (const name of results.removed) this.unloadPlugin(name);
+};
+
 PluginModule.prototype.loadPluginData = function () {
-    let saved = bdSettingsStorage.get("plugins");
+    let saved = DataStore.getSettingGroup("plugins");
     if (saved) {
         pluginCookie = saved;
     }
 };
 
 PluginModule.prototype.savePluginData = function () {
-    bdSettingsStorage.set("plugins", pluginCookie);
+    DataStore.setSettingGroup("plugins", pluginCookie);
 };
 
 PluginModule.prototype.newMessage = function () {
@@ -1396,7 +1692,7 @@ function ThemeModule() {
 
 ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
-
+    bdthemeErrors = ContentManager.loadThemes();
     var themes = Object.keys(bdthemes);
     
     for (var i = 0; i < themes.length; i++) {
@@ -1408,36 +1704,75 @@ ThemeModule.prototype.loadThemes = function () {
         if (!bdthemes[theme]) delete themeCookie[theme];
     }
     this.saveThemeData();
+    // if (settingsCookie["fork-ps-5"]) ContentManager.watchContent("theme");
 };
 
-ThemeModule.prototype.enableTheme = function (theme) {
+ThemeModule.prototype.enableTheme = function(theme, reload = false) {
     themeCookie[theme] = true;
     this.saveThemeData();
     $("head").append(`<style id="${Utils.escapeID(bdthemes[theme].name)}">${unescape(bdthemes[theme].css)}</style>`);
-    if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
+    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
 };
 
-ThemeModule.prototype.disableTheme = function (theme) {
+ThemeModule.prototype.disableTheme = function(theme, reload = false) {
     themeCookie[theme] = false;
     this.saveThemeData();
     $(`#${Utils.escapeID(bdthemes[theme].name)}`).remove();
-    if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been removed.`);
+    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been disabled.`);
 };
 
-ThemeModule.prototype.toggleTheme = function (theme) {
+ThemeModule.prototype.toggleTheme = function(theme) {
     if (themeCookie[theme]) this.disableTheme(theme);
     else this.enableTheme(theme);
 };
 
-ThemeModule.prototype.loadThemeData = function () {
-    let saved = bdSettingsStorage.get("themes");
+ThemeModule.prototype.loadTheme = function(filename) {
+    const error = ContentManager.loadContent(filename, "theme");
+    if (error && settingsCookie["fork-ps-2"]) {
+        Utils.err(`${filename} could not be loaded.`, error);
+        return BdApi.showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
+    }
+
+    const theme = Object.values(bdthemes).find(p => p.filename == filename);
+    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme.name} v${theme.version} was loaded.`, {type: "success"});
+};
+
+ThemeModule.prototype.unloadTheme = function(theme) {
+    if (themeCookie[theme]) this.disableTheme(theme, true);
+    const error = ContentManager.unloadContent(bdthemes[theme].filename, "theme");
+    delete bdthemes[theme];
+    if (error && settingsCookie["fork-ps-2"]) {
+        Utils.err(`${theme} could not be unloaded. It may have not been loaded yet.`, error);
+        return BdApi.showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+    }
+    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} was unloaded.`, {type: "success"});
+};
+
+ThemeModule.prototype.reloadTheme = function(theme) {
+    const error = ContentManager.reloadContent(bdthemes[theme].filename, "theme");
+    if (themeCookie[theme]) this.disableTheme(theme, true), this.enableTheme(theme, true);
+    if (error && settingsCookie["fork-ps-2"]) {
+        Utils.err(`${theme} could not be reloaded.`, error);
+        return BdApi.showToast(`${theme} could not be reloaded.`, {type: "error"});
+    }
+    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} v${bdthemes[theme].version} was reloaded.`, {type: "success"});
+};
+
+ThemeModule.prototype.updateThemeList = function() {
+    const results = ContentManager.loadNewContent("theme");
+    for (const filename of results.added) this.loadTheme(filename);
+    for (const name of results.removed) this.unloadTheme(name);
+};
+
+ThemeModule.prototype.loadThemeData = function() {
+    let saved = DataStore.getSettingGroup("themes");
     if (saved) {
         themeCookie = saved;
     }
 };
 
 ThemeModule.prototype.saveThemeData = function () {
-    bdSettingsStorage.set("themes", themeCookie);
+    DataStore.setSettingGroup("themes", themeCookie);
 };
 
 
@@ -1491,8 +1826,10 @@ BdApi.getPlugin = function (name) {
     return null;
 };
 
+var betterDiscordIPC = require("electron").ipcRenderer;
 //Get ipc for reason
 BdApi.getIpc = function () {
+    Utils.warn("[Deprecation Notice] BetterDiscord's IPC has been deprecated and may be removed in future versions.");
     return betterDiscordIPC;
 };
 
@@ -1535,17 +1872,21 @@ BdApi.getInternalInstance = function(node) {
 
 // Gets data
 BdApi.loadData = function(pluginName, key) {
-    return window.bdPluginStorage.get(pluginName, key);
+    return DataStore.getPluginData(pluginName, key);
 };
+
+BdApi.getData = BdApi.loadData;
 
 // Sets data
 BdApi.saveData = function(pluginName, key, data) {
-    return window.bdPluginStorage.set(pluginName, key, data);
+    return DataStore.setPluginData(pluginName, key, data);
 };
+
+BdApi.setData = BdApi.saveData;
 
 // Deletes data
 BdApi.deleteData = function(pluginName, key) {
-    return window.bdPluginStorage.delete(pluginName, key);
+    return DataStore.deletePluginData(pluginName, key);
 };
 
 // Patches other functions
@@ -1568,6 +1909,40 @@ BdApi.testJSON = function(data) {
     return Utils.testJSON(data);
 };
 
+BdApi.isPluginEnabled = function(name) {
+    return !!pluginCookie[name];
+};
+
+BdApi.isThemeEnabled = function(name) {
+    return !!themeCookie[name];
+};
+
+BdApi.isSettingEnabled = function(id) {
+    return !!settingsCookie[id];
+};
+
+// Gets data
+BdApi.getBDData = function(key) {
+    return DataStore.getBDData(key);
+};
+
+// Sets data
+BdApi.setBDData = function(key, data) {
+    return DataStore.setBDData(key, data);
+};
+
+
+/**
+ * 
+ * @constructor
+ * @param {(HTMLElement|jQuery)} node - DOM node to monitor and show the tooltip on
+ * @param {string} tip - string to show in the tooltip
+ * @param {object} options - additional options for the tooltip
+ * @param {string} [options.style=black] - correlates to the discord styling
+ * @param {string} [options.side=top] - can be any of top, right, bottom, left
+ * @param {boolean} [options.preventFlip=false] - prevents moving the tooltip to the opposite side if it is too big or goes offscreen
+ * @param {boolean} [options.disabled=false] - whether the tooltip should be disabled from showing on hover
+ */
 
 /* BetterDiscordApp DevMode JavaScript
  * Version: 1.0
@@ -1986,6 +2361,10 @@ class V2 {
 
     get NativeModule() {return BDV2.WebpackModules.findByUniqueProperties(["setBadge"]);}
 
+    get Tooltips() {return BDV2.WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
+
+    get KeyGenerator() {return BDV2.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
+
     get reactComponent() {
         return this.internal.react.Component;
     }
@@ -2316,6 +2695,26 @@ class V2C_SideBar extends BDV2.reactComponent {
     }
 }
 
+class V2C_ReloadIcon extends BDV2.reactComponent {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement("svg", {
+                xmlns: "http://www.w3.org/2000/svg",
+                viewBox: "0 0 24 24",
+                fill: "#dcddde",
+                className: "bd-reload " + this.props.className,
+                onClick: this.props.onClick,
+                style: {width: this.props.size || "24px", height: this.props.size || "24px"}
+            },
+            BDV2.react.createElement("path", {d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"}),
+            BDV2.react.createElement("path", {fill: "none", d: "M0 0h24v24H0z"})
+        );
+    }
+}
+
 class V2C_XSvg extends BDV2.reactComponent {
     constructor(props) {
         super(props);
@@ -2475,7 +2874,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     get css() {
-        let _ccss = window.bdStorage.get("bdcustomcss");
+        let _ccss = DataStore.getBDData("bdcustomcss");
         let ccss = "";
         if (_ccss && _ccss !== "") {
             ccss = atob(_ccss);
@@ -2588,7 +2987,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     saveCss() {
-        window.bdStorage.set("bdcustomcss", btoa(this.editor.session.getValue()));
+        DataStore.setBDData("bdcustomcss", btoa(this.editor.session.getValue()));
     }
 }
 
@@ -2652,7 +3051,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     get css() {
-        let _ccss = window.bdStorage.get("bdcustomcss");
+        let _ccss = DataStore.getBDData("bdcustomcss");
         let ccss = "";
         if (_ccss && _ccss !== "") {
             ccss = atob(_ccss);
@@ -2773,7 +3172,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     saveCss() {
-        window.bdStorage.set("bdcustomcss", btoa(this.editor.session.getValue()));
+        DataStore.setBDData("bdcustomcss", btoa(this.editor.session.getValue()));
     }
 
     detach() {
@@ -2857,12 +3256,15 @@ class V2C_PluginCard extends BDV2.reactComponent {
         self.setInitialState();
         self.hasSettings = typeof self.props.plugin.getSettingsPanel === "function";
         self.settingsPanel = "";
+
+        this.reload = this.reload.bind(this);
     }
 
     setInitialState() {
         this.state = {
             checked: pluginCookie[this.props.plugin.getName()],
-            settings: false
+            settings: false,
+            reloads: 0
         };
     }
 
@@ -2892,6 +3294,13 @@ class V2C_PluginCard extends BDV2.reactComponent {
             }, 300);
         }
     }
+    
+    reload() {
+        const plugin = this.props.plugin.getName();
+        pluginModule.reloadPlugin(plugin);
+        this.props.plugin = bdplugins[plugin].plugin;
+        this.setState({reloads: this.state.reloads + 1});
+    }
 
     render() {
         let self = this;
@@ -2902,7 +3311,6 @@ class V2C_PluginCard extends BDV2.reactComponent {
         let version = plugin.getVersion();
         let website = bdplugins[name].website;
         let source = bdplugins[name].source;
-        //let { settingsPanel } = this;
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
@@ -2929,9 +3337,12 @@ class V2C_PluginCard extends BDV2.reactComponent {
                         " by ",
                         BDV2.react.createElement("span", {className: "bda-author"}, author)
                     ),
-                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
-                        BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
-                        BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
+                    BDV2.react.createElement("div", {className: "bda-controls"},
+                        !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload"}), {className: "bd-reload-card", onClick: this.reload}),
+                        BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
+                            BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
+                            BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
+                        )
                     )
             ),
             BDV2.react.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
@@ -2965,12 +3376,24 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         super(props);
         this.setInitialState();
         this.onChange = this.onChange.bind(this);
+        this.reload = this.reload.bind(this);
     }
 
     setInitialState() {
         this.state = {
-            checked: themeCookie[this.props.theme.name]
+            checked: themeCookie[this.props.theme.name],
+            reloads: 0
         };
+    }
+
+    reload() {
+        const theme = this.props.theme.name;
+        const error = themeModule.reloadTheme(theme);
+        if (error) mainCore.showToast(`Could not reload ${bdthemes[theme].name}. Check console for details.`, {type: "error"});
+        else mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been reloaded.`, {type: "success"});
+        // this.setState(this.state);
+        this.props.theme = bdthemes[theme];
+        this.setState({reloads: this.state.reloads + 1});
     }
 
     render() {
@@ -2991,9 +3414,12 @@ class V2C_ThemeCard extends BDV2.reactComponent {
                         " by ",
                         BDV2.react.createElement("span", {className: "bda-author"}, author)
                     ),
-                    BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
-                        BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
-                        BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
+                    BDV2.react.createElement("div", {className: "bda-controls"},
+                        !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload"}), {className: "bd-reload-card", onClick: this.reload}),
+                        BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
+                            BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
+                            BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
+                        )
                     )
             ),
             BDV2.react.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
@@ -3068,6 +3494,9 @@ class V2Components {
     static get ContentColumn() {
         return V2C_ContentColumn;
     }
+    static get ReloadIcon() {
+        return V2C_ReloadIcon;
+    }
     static get XSvg() {
         return V2C_XSvg;
     }
@@ -3079,6 +3508,68 @@ class V2Components {
     }
     static get ServerCard() {
         return V2C_ServerCard;
+    }
+
+    static TooltipWrap(Component, options) {
+
+        const {style = "black", side = "top", text = ""} = options;
+        const id = BDV2.KeyGenerator();    
+    
+        return class extends BDV2.reactComponent {
+            constructor(props) {
+                super(props);
+                this.onMouseEnter = this.onMouseEnter.bind(this);
+                this.onMouseLeave = this.onMouseLeave.bind(this);
+            }
+    
+            componentDidMount() {
+                this.node = BDV2.reactDom.findDOMNode(this);
+                this.node.addEventListener("mouseenter", this.onMouseEnter);
+                this.node.addEventListener("mouseleave", this.onMouseLeave);
+            }
+    
+            componentWillUnmount() {
+                this.node.removeEventListener("mouseenter", this.onMouseEnter);
+                this.node.removeEventListener("mouseleave", this.onMouseLeave);
+            }
+    
+            onMouseEnter() {
+                const {left, top, width, height} = this.node.getBoundingClientRect();
+                BDV2.Tooltips.show(id, {
+                    position: side,
+                    text: text,
+                    color: style,
+                    targetWidth: width,
+                    targetHeight: height,
+                    windowWidth: Utils.screenWidth,
+                    windowHeight: Utils.screenHeight,
+                    x: left,
+                    y: top
+                });
+
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        const nodes = Array.from(mutation.removedNodes);
+                        const directMatch = nodes.indexOf(this.node) > -1;
+                        const parentMatch = nodes.some(parent => parent.contains(this.node));
+                        if (directMatch || parentMatch) {
+                            this.onMouseLeave();
+                            observer.disconnect();
+                        }
+                    });
+                });
+    
+                observer.observe(document.body, {subtree: true, childList: true});
+            }
+    
+            onMouseLeave() {
+                BDV2.Tooltips.hide(id);
+            }
+    
+            render() {
+                return BDV2.react.createElement(Component, this.props);
+            }
+        };
     }
 }
 
@@ -3301,6 +3792,15 @@ class V2_SettingsPanel {
         
         if (_c["fork-ps-4"]) classNormalizer.start();
         else classNormalizer.stop();
+
+        if (_c["fork-ps-5"]) {
+            ContentManager.watchContent("plugin");
+            ContentManager.watchContent("theme");
+        }
+        else {
+            ContentManager.unwatchContent("plugin");
+            ContentManager.unwatchContent("theme");
+        }
         
 
         if (_c["bda-gs-8"]) {
@@ -3352,22 +3852,30 @@ class V2_SettingsPanel {
     }
 
     get pluginsComponent() {
-        let plugins = Object.keys(bdplugins).reduce((arr, key) => {
+        let plugins = Object.keys(bdplugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
             arr.push(BDV2.react.createElement(V2Components.PluginCard, {key: key, plugin: bdplugins[key].plugin}));return arr;
         }, []);
         let list = BDV2.react.createElement(V2Components.List, {key: "plugin-list", className: "bda-slist", children: plugins});
-        let pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { betterDiscordIPC.send("asynchronous-message", {arg: "opendir", path: "plugindir"}); }}, "Open Plugin Folder");
-        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, {key: "pcolumn", title: "Plugins", children: [pfBtn, list]});
+        let refreshIcon = !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload Plugin List"}), {className: "bd-reload-header", size: "18px", onClick: async () => {
+            pluginModule.updatePluginList();
+            this.sideBarOnClick("plugins");
+        }});
+        let pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
+        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
         return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
     }
 
     get themesComponent() {
-        let themes = Object.keys(bdthemes).reduce((arr, key) => {
+        let themes = Object.keys(bdthemes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
             arr.push(BDV2.react.createElement(V2Components.ThemeCard, {key: key, theme: bdthemes[key]}));return arr;
         }, []);
         let list = BDV2.react.createElement(V2Components.List, {key: "theme-list", className: "bda-slist", children: themes});
-        let tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { betterDiscordIPC.send("asynchronous-message", {arg: "opendir", path: "themedir"}); }}, "Open Theme Folder");
-        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, {key: "tcolumn", title: "Themes", children: [tfBtn, list]});
+        let refreshIcon = !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload Theme List"}), {className: "bd-reload-header", size: "18px", onClick: async () => {
+            themeModule.updateThemeList();
+            this.sideBarOnClick("themes");
+        }});
+        let tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");
+        let contentColumn = BDV2.react.createElement(V2Components.ContentColumn, {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
         return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
     }
 

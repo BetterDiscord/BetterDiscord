@@ -17,6 +17,29 @@
     50% { opacity: 0.6; }
     100% { opacity: 0.05; }
 }
+/* // */
+
+.bd-reload {
+  cursor: pointer;
+  vertical-align: top;
+  fill: #dcddde;
+}
+
+.bd-reload:hover {
+  fill: #fff;
+}
+
+.bd-reload-header {
+  margin-left: 5px;
+}
+
+.bd-reload-card {
+  margin-right: 5px;
+}
+
+.bda-controls {
+  display: flex;
+}
 
 .ui-standard-sidebar-view .bd-psm {
     background-color: #292b2f;
