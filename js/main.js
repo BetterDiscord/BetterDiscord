@@ -198,6 +198,8 @@ var settings = {
     "Download Emotes":            {id: "fork-es-3", info: "Download emotes when the cache is expired", implemented: true,  hidden: false, cat: "fork"},
     "Normalize Classes":          {id: "fork-ps-4", info: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", implemented: true,  hidden: false, cat: "fork"},
     "Automatic Loading":          {id: "fork-ps-5", info: "Automatically loads, reloads, and unloads plugins and themes", implemented: true,  hidden: false, cat: "fork"},
+    "Enable Transparency":        {id: "fork-wp-1", info: "Enables the main window to be see-through (requires restart)", implemented: true,  hidden: false, cat: "fork"},
+    "Window Frame":               {id: "fork-wp-2", info: "Adds the native os window frame to the main window", implemented: false,  hidden: true, cat: "fork"},
 
 
     "Twitch Emotes":              {id: "bda-es-7",  info: "Show Twitch emotes",                                implemented: true,  hidden: false, cat: "emote"},
@@ -242,7 +244,9 @@ var defaultCookie = {
     "fork-ps-4": true,
     "fork-ps-5": true,
     "fork-es-2": false,
-    "fork-es-3": true
+    "fork-es-3": true,
+    "fork-wp-1": false,
+    "fork-wp-2": false
 };
 
 
@@ -1428,13 +1432,16 @@ var ContentManager = (() => {
             const isPlugin = type === "plugin";
             const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
             try {require(path.resolve(baseFolder, filename));}
-            catch (error) {return error;}
+            catch (error) {return {name: filename, file: filename, reason: "Could not be compiled.", error: {message: error.message, stack: error.stack}};}
             const content = require(path.resolve(baseFolder, filename));
             if (isPlugin) {
                 if (!content.type) return;
-                content.plugin = new content.type();
-                delete bdplugins[content.plugin.getName()];
-                bdplugins[content.plugin.getName()] = content;
+                try {
+                    content.plugin = new content.type();
+                    delete bdplugins[content.plugin.getName()];
+                    bdplugins[content.plugin.getName()] = content;
+                }
+                catch (error) {return {name: filename, file: filename, reason: "Could not be constructed.", error: {message: error.message, stack: error.stack}};}
             }
             else {
                 delete bdthemes[content.name];
@@ -1615,7 +1622,10 @@ PluginModule.prototype.reloadPlugin = function(plugin) {
     const enabled = pluginCookie[plugin];
     if (enabled) this.stopPlugin(plugin, true);
     const error = ContentManager.reloadContent(bdplugins[plugin].filename, "plugin");
-    if (enabled) this.startPlugin(plugin, true);
+    if (enabled) {
+        if (bdplugins[plugin].plugin.load && typeof(bdplugins[plugin].plugin.load) == "function") bdplugins[plugin].plugin.load();
+        this.startPlugin(plugin, true);
+    }
     if (error && settingsCookie["fork-ps-2"]) {
         Utils.err(`${plugin} could not be reloaded.`, error);
         return BdApi.showToast(`${plugin} could not be reloaded.`, {type: "error"});
@@ -1788,7 +1798,32 @@ ThemeModule.prototype.saveThemeData = function () {
 
 var BdApi = {
     get React() { return BDV2.react; },
-    get ReactDOM() { return BDV2.reactDom; }
+    get ReactDOM() { return BDV2.reactDom; },
+    get WindowConfigFile() {
+        if (this._windowConfigFile) return this._windowConfigFile;
+        const base = require("electron").remote.app.getAppPath();
+        const path = require("path");
+        const location = path.resolve(base, "..", "app", "config.json");
+        const fs = require("fs");
+        if (!fs.existsSync(location)) fs.writeFileSync(location, JSON.stringify({}));
+        return this._windowConfigFile = location;
+    }
+};
+
+BdApi.getAllWindowPreferences = function() {
+    return require(this.WindowConfigFile);
+};
+
+BdApi.getWindowPreference = function(key) {
+    return this.getAllWindowPreferences()[key];
+};
+
+BdApi.setWindowPreference = function(key, value) {
+    const fs = require("fs");
+    const prefs = this.getAllWindowPreferences();
+    prefs[key] = value;
+    delete require.original.cache[this.WindowConfigFile];
+    fs.writeFileSync(this.WindowConfigFile, JSON.stringify(prefs, null, 4));
 };
 
 //Inject CSS to document head
@@ -3800,6 +3835,16 @@ class V2_SettingsPanel {
         else {
             ContentManager.unwatchContent("plugin");
             ContentManager.unwatchContent("theme");
+        }
+
+        if (_c["fork-wp-1"]) {
+            const current = BdApi.getWindowPreference("transparent");
+            if (current != _c["fork-wp-1"]) BdApi.setWindowPreference("transparent", _c["fork-wp-1"]);
+        }
+
+        if (_c["fork-wp-2"]) {
+            const current = BdApi.getWindowPreference("frame");
+            if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
         }
         
 
