@@ -2520,7 +2520,7 @@ class V2C_SettingsPanel extends BDV2.reactComponent {
         let {settings} = this.props;
         return BDV2.react.createElement(
             "div",
-            {className: "content-column default"},
+            {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM"},
             BDV2.react.createElement(V2Components.SettingsTitle, {text: this.props.title}),
             this.props.button && BDV2.react.createElement("button", {key: "title-button", className: "bd-pfbtn", onClick: this.props.button.onClick}, this.props.button.title),
             settings.map(setting => {
@@ -2593,10 +2593,10 @@ class V2C_Scroller extends BDV2.reactComponent {
         //scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d scrollerFade-1Ijw5y
         let wrapperClass = `scrollerWrap-2lJEkd scrollerThemed-2oenus themeGhostHairline-DBD-2d${this.props.fade ? " scrollerFade-1Ijw5y" : ""}`;
         let scrollerClass = "scroller-2FKFPG scroller";                                          /* fuck */
-        if (this.props.sidebar) scrollerClass = "scroller-2FKFPG sidebar-region-scroller scroller scroller-2FKFPG";
+        if (this.props.sidebar) scrollerClass = "scroller-2FKFPG firefoxFixScrollFlex-cnI2ix sidebarRegionScroller-3MXcoP scroller";
         if (this.props.contentColumn) {
-            scrollerClass = "scroller-2FKFPG content-region-scroller scroller scroller-2FKFPG";                                         /* fuck */
-            wrapperClass = "scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-10fio9 scrollerTrack-3hhmU0 scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
+            scrollerClass = "scroller-2FKFPG firefoxFixScrollFlex-cnI2ix contentRegionScroller-26nc1e scroller";                                         /* fuck */
+            wrapperClass = "scrollerWrap-2lJEkd firefoxFixScrollFlex-cnI2ix contentRegionScrollerWrap-3YZXdm scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
         }
         let {children} = this.props;
         return BDV2.react.createElement(
@@ -2777,16 +2777,18 @@ class V2C_Tools extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement("div", {className: "tools-container"},
-            BDV2.react.createElement("div", {className: "tools"},
-                BDV2.react.createElement("div",
-                    {className: "btn-close closeButton-1tv5uR", onClick: this.onClick},
-                    BDV2.react.createElement(V2Components.XSvg, null)
-                ),
-                BDV2.react.createElement(
-                    "div",
-                    {className: "esc-text keybind-KpFkfr"},
-                    "ESC"
+        return BDV2.react.createElement("div", {className: "tools-container toolsContainer-1edPuj"},
+            BDV2.react.createElement("div", {className: "tools tools-3-3s-N"},
+                BDV2.react.createElement("div", {className: "container-1sFeqf"},
+                    BDV2.react.createElement("div",
+                        {className: "btn-close closeButton-1tv5uR", onClick: this.onClick},
+                        BDV2.react.createElement(V2Components.XSvg, null)
+                    ),
+                    BDV2.react.createElement(
+                        "div",
+                        {className: "esc-text keybind-KpFkfr"},
+                        "ESC"
+                    )
                 )
             )
         );
@@ -3107,7 +3109,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
         let {detached} = self.state;
         return BDV2.react.createElement(
             "div",
-            {className: "content-column default", style: {padding: "60px 40px 0px"}},
+            {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM", style: {padding: "60px 40px 0px"}},
             detached && BDV2.react.createElement(
                 "div",
                 {id: "editor-detached"},
@@ -3270,7 +3272,7 @@ class V2C_ContentColumn extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(
             "div",
-            {className: "content-column default"},
+            {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM"},
             BDV2.react.createElement(
                 "h2",
                 {className: "ui-form-title h2 margin-reset margin-bottom-20"},
@@ -3695,12 +3697,12 @@ class V2_SettingsPanel {
     }
 
     injectRoot() {
-        if (!$(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").length) return false;
+        if (!$(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .standardSidebarView-3F1I7i").length) return false;
         const root = $("<div/>", {
-            "class": "content-region",
+            "class": "contentRegion-3nDuYy",
             "id": "bd-settingspane-container"
         });
-        $(".layer-3QrUeG .ui-standard-sidebar-view, .layer-3QrUeG .ui-standard-sidebar-view").append(root);
+        $(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .standardSidebarView-3F1I7i").append(root);
 
         Utils.onRemoved(root[0], () => {
             BDV2.reactDom.unmountComponentAtNode(root[0]);
@@ -3730,7 +3732,7 @@ class V2_SettingsPanel {
 
     sideBarOnClick(id) {
         let self = this;
-        $(".content-region").first().hide();
+        $(".contentRegion-3nDuYy").first().hide();
         $(self.root).show();
         switch (id) {
             case "core":
@@ -3865,7 +3867,7 @@ class V2_SettingsPanel {
         $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
             BDV2.reactDom.unmountComponentAtNode(self.root);
             $(self.root).hide();
-            $(".content-region").first().show();
+            $(".contentRegion-3nDuYy").first().show();
         });
         self.sidebar.render();
     }
@@ -3929,7 +3931,7 @@ class V2_SettingsPanel {
     renderCoreSettings() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
         BDV2.reactDom.render(this.coreComponent, root);
@@ -3938,7 +3940,7 @@ class V2_SettingsPanel {
     renderForkSettings() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
         BDV2.reactDom.render(this.forkComponent, root);
@@ -3947,7 +3949,7 @@ class V2_SettingsPanel {
     renderEmoteSettings() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
         BDV2.reactDom.render(this.emoteComponent, root);
@@ -3956,7 +3958,7 @@ class V2_SettingsPanel {
     renderCustomCssEditor() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
         BDV2.reactDom.render(this.customCssComponent, root);
@@ -3965,7 +3967,7 @@ class V2_SettingsPanel {
     renderPluginPane() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
         BDV2.reactDom.render(this.pluginsComponent, root);
@@ -3974,7 +3976,7 @@ class V2_SettingsPanel {
     renderThemePane() {
         let root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer .ui-standard-sidebar-view");
+            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
         BDV2.reactDom.render(this.themesComponent, root);
@@ -4090,17 +4092,17 @@ class V2C_SidebarView extends BDV2.reactComponent {
         let {sidebar, content, tools} = this.props.children;
         return BDV2.react.createElement(
             "div",
-            {className: "ui-standard-sidebar-view"},
+            {className: "standardSidebarView-3F1I7i"},
             BDV2.react.createElement(
                 "div",
-                {className: "sidebar-region"},
+                {className: "sidebarRegion-VFTUkN"},
                 BDV2.react.createElement(V2Components.Scroller, {key: "sidebarScroller", ref: "sidebarScroller", sidebar: true, fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component})
             ),
-            BDV2.react.createElement("div", {className: "content-region"},
-                BDV2.react.createElement("div", {className: "content-transition-wrap"},
-                    BDV2.react.createElement("div", {className: "scrollerWrap-2lJEkd content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv"},
-                        BDV2.react.createElement("div", {className: "scroller-2FKFPG content-region-scroller scroller", ref: "contentScroller"},
-                            BDV2.react.createElement("div", {className: "content-column default"}, content.component),
+            BDV2.react.createElement("div", {className: "contentRegion-3nDuYy"},
+                BDV2.react.createElement("div", {className: "contentTransitionWrap-3hqOEW"},
+                    BDV2.react.createElement("div", {className: "scrollerWrap-2lJEkd firefoxFixScrollFlex-cnI2ix contentRegionScrollerWrap-3YZXdm scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv"},
+                        BDV2.react.createElement("div", {className: "scroller-2FKFPG firefoxFixScrollFlex-cnI2ix contentRegionScroller-26nc1e scroller", ref: "contentScroller"},
+                            BDV2.react.createElement("div", {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM"}, content.component),
                             tools.component
                         )
                     )
@@ -4615,7 +4617,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
         if (self.state.connection.state === 1) return self.notConnected;
         return [BDV2.react.createElement(
             "div",
-            {ref: "content", key: "pc", className: "content-column default"},
+            {ref: "content", key: "pc", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM"},
             BDV2.react.createElement(V2Components.SettingsTitle, {text: self.state.title}),
             self.bdServer,
             self.state.servers.map((server) => {
@@ -4641,7 +4643,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
         //return BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title });
         return [BDV2.react.createElement(
             "div",
-            {key: "ncc", ref: "content", className: "content-column default"},
+            {key: "ncc", ref: "content", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM"},
             BDV2.react.createElement(
                 "h2",
                 {className: "ui-form-title h2 margin-reset margin-bottom-20"},

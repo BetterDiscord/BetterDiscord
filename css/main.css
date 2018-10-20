@@ -41,7 +41,7 @@
   display: flex;
 }
 
-.ui-standard-sidebar-view .bd-psm {
+.standardSidebarView-3F1I7i .bd-psm {
     background-color: #292b2f;
     box-shadow: 0 0 12px 6px rgba(31, 31, 31, 0.32);
     border: 1px solid #3f4146;
@@ -50,7 +50,7 @@
     border-radius: 6px;
 }
 
-.ui-standard-sidebar-view #bd-customcss-attach-controls button,
+.standardSidebarView-3F1I7i #bd-customcss-attach-controls button,
 .bd-detached-css-editor #bd-customcss-attach-controls button {
     margin: 0;
     width: 100px;
@@ -62,7 +62,7 @@
     border-radius: 3px;
 }
 
-.ui-standard-sidebar-view #bd-customcss-attach-controls button:hover,
+.standardSidebarView-3F1I7i #bd-customcss-attach-controls button:hover,
 .bd-detached-css-editor #bd-customcss-attach-controls button:hover {
   background: #3b3e44;
 }
@@ -74,14 +74,14 @@
   font-family: "Consolas";
 }
 
-.content-region .CodeMirror,
-.content-region .cm-s-material .CodeMirror-gutters,
+.contentRegion-3nDuYy .CodeMirror,
+.contentRegion-3nDuYy .cm-s-material .CodeMirror-gutters,
 #bd-customcss-detach-container .CodeMirror,
 #bd-customcss-detach-container .cm-s-material .CodeMirror-gutters{
     background: #292b2f !important;
 }
 
-.content-region #bd-customcss-attach-controls,
+.contentRegion-3nDuYy #bd-customcss-attach-controls,
 #bd-customcss-detach-container #bd-customcss-attach-controls {
   background: #272822;
   color: #FFF;
@@ -90,37 +90,37 @@
 }
 
 
-.content-region #bd-customcss-pane,
-.content-region #bd-customcss-innerpane,
+.contentRegion-3nDuYy #bd-customcss-pane,
+.contentRegion-3nDuYy #bd-customcss-innerpane,
 #bd-customcss-detach-container #bd-customcss-pane,
 #bd-customcss-detach-container #bd-customcss-innerpane {
     min-height: calc(80vh - 165px);
 }
 
-.content-region .CodeMirror,
-.content-region .CodeMirror-scroll{
+.contentRegion-3nDuYy .CodeMirror,
+.contentRegion-3nDuYy .CodeMirror-scroll{
     max-height: calc(95vh - 165px);
     min-height: calc(95vh - 165px);
     height: auto;
 }
 
-.content-region .CodeMirror-simplescroll-vertical,
-.content-region .CodeMirror-simplescroll-horizontal,
+.contentRegion-3nDuYy .CodeMirror-simplescroll-vertical,
+.contentRegion-3nDuYy .CodeMirror-simplescroll-horizontal,
 #bd-customcss-detach-container .CodeMirror-simplescroll-vertical,
 #bd-customcss-detach-container .CodeMirror-simplescroll-horizontal {
     background: transparent !important;
 }
-.content-region .CodeMirror-simplescroll-vertical,
+.contentRegion-3nDuYy .CodeMirror-simplescroll-vertical,
 #bd-customcss-detach-container .CodeMirror-simplescroll-vertical {
     margin-right: 3px !important;
 }
-.content-region .CodeMirror-simplescroll-horizontal,
+.contentRegion-3nDuYy .CodeMirror-simplescroll-horizontal,
 #bd-customcss-detach-container .CodeMirror-simplescroll-horizontal {
     margin-bottom: 3px !important;
 }
 
-.content-region .CodeMirror-simplescroll-vertical div,
-.content-region .CodeMirror-simplescroll-horizontal div,
+.contentRegion-3nDuYy .CodeMirror-simplescroll-vertical div,
+.contentRegion-3nDuYy .CodeMirror-simplescroll-horizontal div,
 #bd-customcss-detach-container .CodeMirror-simplescroll-vertical div,
 #bd-customcss-detach-container .CodeMirror-simplescroll-horizontal div {
     background: #18191c !important;
@@ -128,17 +128,17 @@
     border-radius: 5px !important;
 }
 
-.content-region .CodeMirror-scrollbar-filler,
+.contentRegion-3nDuYy .CodeMirror-scrollbar-filler,
 #bd-customcss-detach-container .CodeMirror-scrollbar-filler {
     display: none !important;
 }
 
-.ui-standard-sidebar-view #editor-detached h3 {
+.standardSidebarView-3F1I7i #editor-detached h3 {
     color: #87909c;
     font-weight: 600;
     font-size: 22px;
 }
-.ui-standard-sidebar-view #editor-detached button {
+.standardSidebarView-3F1I7i #editor-detached button {
   margin: auto;
   margin-left: calc(50% - 100px);
   margin-top: 20px;
@@ -149,11 +149,11 @@
   font-size: 20px;
 }
 
-.bd-blue .ui-standard-sidebar-view #editor-detached button {
+.bd-blue .standardSidebarView-3F1I7i #editor-detached button {
   background: #3a71c1;
 }
 
-.ui-standard-sidebar-view .bd-versioninfo-wrapper {
+.standardSidebarView-3F1I7i .bd-versioninfo-wrapper {
   bottom: 0;
   left: 0;
   position: fixed;
@@ -162,13 +162,13 @@
   padding: 5px;
 }
 
-.ui-standard-sidebar-view .bd-versioninfo-wrapper span {
+.standardSidebarView-3F1I7i .bd-versioninfo-wrapper span {
   color: #b9bbbe;
   font-weight: 600;
   font-size: 11px;
 }
 
-.ui-standard-sidebar-view .bd-versioninfo-wrapper a {
+.standardSidebarView-3F1I7i .bd-versioninfo-wrapper a {
   font-size: 11px;
 }
 
