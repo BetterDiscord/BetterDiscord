@@ -1720,7 +1720,7 @@ ThemeModule.prototype.loadThemes = function () {
 ThemeModule.prototype.enableTheme = function(theme, reload = false) {
     themeCookie[theme] = true;
     this.saveThemeData();
-    $("head").append(`<style id="${Utils.escapeID(bdthemes[theme].name)}">${unescape(bdthemes[theme].css)}</style>`);
+    $("head").append($("<style>", {id: Utils.escapeID(name), html: unescape(bdthemes[name].css)}));
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
 };
 
@@ -1811,14 +1811,17 @@ var BdApi = {
 };
 
 BdApi.getAllWindowPreferences = function() {
+    if (bdConfig.os !== "win32") return {}; // Tempfix until new injection on other platforms
     return require(this.WindowConfigFile);
 };
 
 BdApi.getWindowPreference = function(key) {
+    if (bdConfig.os !== "win32") return undefined; // Tempfix until new injection on other platforms
     return this.getAllWindowPreferences()[key];
 };
 
 BdApi.setWindowPreference = function(key, value) {
+    if (bdConfig.os !== "win32") return // Tempfix until new injection on other platforms
     const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
@@ -3846,10 +3849,10 @@ class V2_SettingsPanel {
             else BdApi.setWindowPreference("backgroundColor", "#2f3136");
         }
 
-        if (_c["fork-wp-2"]) {
+        /*if (_c["fork-wp-2"]) {
             const current = BdApi.getWindowPreference("frame");
             if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
-        }
+        }*/
         
 
         if (_c["bda-gs-8"]) {
