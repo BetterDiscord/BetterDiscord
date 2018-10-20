@@ -1720,7 +1720,7 @@ ThemeModule.prototype.loadThemes = function () {
 ThemeModule.prototype.enableTheme = function(theme, reload = false) {
     themeCookie[theme] = true;
     this.saveThemeData();
-    $("head").append($("<style>", {id: Utils.escapeID(name), html: unescape(bdthemes[name].css)}));
+    $("head").append($("<style>", {id: Utils.escapeID(theme), html: unescape(bdthemes[theme].css)}));
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
 };
 
