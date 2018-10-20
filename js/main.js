@@ -1344,15 +1344,15 @@ var ContentManager = (() => {
             this.watchers[contentType] = fs.watch(baseFolder, {persistent: false}, async (eventType, filename) => {
                 if (!eventType || !filename || !filename.endsWith(fileEnding)) return;
                 await new Promise(r => setTimeout(r, 50));
-                try {fs.lstatSync(path.resolve(baseFolder, filename));}
+                try {fs.statSync(path.resolve(baseFolder, filename));}
                 catch (err) {
                     if (err.code !== "ENOENT") return;
                     delete this.timeCache[filename];
                     if (isPlugin) return pluginModule.unloadPlugin(Object.values(bdplugins).find(p => p.filename == filename).plugin.getName());
                     return themeModule.unloadTheme(Object.values(bdthemes).find(p => p.filename == filename).name);
                 }
-                if (!fs.lstatSync(path.resolve(baseFolder, filename)).isFile()) return;
-                const stats = fs.lstatSync(path.resolve(baseFolder, filename));
+                if (!fs.statSync(path.resolve(baseFolder, filename)).isFile()) return;
+                const stats = fs.statSync(path.resolve(baseFolder, filename));
                 if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
                 if (typeof(stats.mtime.getTime()) !== "number") return;
                 if (this.timeCache[filename] == stats.mtime.getTime()) return;
