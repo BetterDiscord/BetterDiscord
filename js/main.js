@@ -1805,23 +1805,24 @@ var BdApi = {
         const path = require("path");
         const location = path.resolve(base, "..", "app", "config.json");
         const fs = require("fs");
+        if (!fs.existsSync(path.resolve(base, "..", "app"))) return this._windowConfigFile = null;
         if (!fs.existsSync(location)) fs.writeFileSync(location, JSON.stringify({}));
         return this._windowConfigFile = location;
     }
 };
 
 BdApi.getAllWindowPreferences = function() {
-    if (bdConfig.os !== "win32") return {}; // Tempfix until new injection on other platforms
+    if (bdConfig.os !== "win32" || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
     return require(this.WindowConfigFile);
 };
 
 BdApi.getWindowPreference = function(key) {
-    if (bdConfig.os !== "win32") return undefined; // Tempfix until new injection on other platforms
+    if (bdConfig.os !== "win32" || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
     return this.getAllWindowPreferences()[key];
 };
 
 BdApi.setWindowPreference = function(key, value) {
-    if (bdConfig.os !== "win32") return // Tempfix until new injection on other platforms
+    if (bdConfig.os !== "win32" || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
     const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
