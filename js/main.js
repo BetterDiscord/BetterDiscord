@@ -80,14 +80,19 @@ var DataStore = (() => {
         }
 
         initialize() {
-            if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
-            else this.data = require(this.BDFile);
-            if (!fs.existsSync(this.settingsFile)) return;
-            let settings = require(this.settingsFile);
-            fs.unlinkSync(this.settingsFile);
-            if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}}, {[releaseChannel]: settings});
-            else settings = Object.assign({stable: {}, canary: {}, ptb: {}}, settings);
-            this.setBDData("settings", settings);
+            try {
+                if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+                else this.data = require(this.BDFile);
+                if (!fs.existsSync(this.settingsFile)) return;
+                let settings = require(this.settingsFile);
+                fs.unlinkSync(this.settingsFile);
+                if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}}, {[releaseChannel]: settings});
+                else settings = Object.assign({stable: {}, canary: {}, ptb: {}}, settings);
+                this.setBDData("settings", settings);
+            }
+            catch (err) {
+                BdApi.alert("Corrupt Storage", "The bd storage has somehow become corrupt. You may either try to salvage the file or delete it then reload.");
+            }
         }
 
         get BDFile() {return this._BDFile || (this._BDFile = path.resolve(bdConfig.dataPath, "bdstorage.json"));}
@@ -1390,12 +1395,9 @@ var ContentManager = (() => {
             const self = this;
             const originalRequire = isPlugin ? originalJSRequire : originalCSSRequire;
             return function(module, filename) {
-                // console.log("Trying " + path.dirname(filename));
-                // console.log("Trying with " + (isPlugin ? self.pluginsFolder : self.themesFolder));
-                // console.log(path.dirname(filename) !== isPlugin ? self.pluginsFolder : self.themesFolder);
-                if (path.dirname(filename) !== (isPlugin ? self.pluginsFolder : self.themesFolder)) return Reflect.apply(originalRequire, this, arguments);
-                // if (path.dirname(filename) !== fs.realpathSync(path.resolve(isPlugin ? self.pluginsFolder : self.themesFolder))) return Reflect.apply(originalRequire, this, arguments);
-                // if (!path.relative(isPlugin ? self.pluginsFolder : self.themesFolder, filename)) return Reflect.apply(isPlugin ? originalJSRequire : originalCSSRequire, this, arguments);
+                const baseFolder = isPlugin ? self.pluginsFolder : self.themesFolder;
+                const possiblePath = path.resolve(baseFolder, path.basename(filename));
+                if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
                 let content = fs.readFileSync(filename, "utf8");
                 content = Utils.stripBOM(content);
     
