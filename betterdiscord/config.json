@@ -1,0 +1,9 @@
+{
+	"local": false,
+	"localServer": "//localhost:8080",
+	"version": "0.3.0",
+	"cache": {
+		"expired": true,
+		"days": 7
+	}
+}
