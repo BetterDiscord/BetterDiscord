@@ -62,7 +62,7 @@
 (() => {
     let v2Loader = document.createElement("div");
     v2Loader.className = "bd-loaderv2";
-    v2Loader.title = "BetterDiscord is loading...";
+    v2Loader.title = "BandagedBD is loading...";
     document.body.appendChild(v2Loader);
 })();
 
@@ -139,6 +139,14 @@ var DataStore = (() => {
     };
 })();
 
+var BDEvents = (() => {
+    const EventEmitter = require("events");
+    return new class BDEvents extends EventEmitter {
+        dispatch(eventName, ...args) {this.emit(eventName, ...args);}
+        off(eventName, eventAction) {this.removeListener(eventName, eventAction);}
+    };
+})();
+
 
 
 window.bdStorage = class bdPluginStorage {
@@ -161,7 +169,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
     static set(pluginName, key, data) {
         Utils.warn("[Deprecation Notice] Please use BdApi.saveData() or BdApi.setData(). bdPluginStorage may be removed in future versions.");
-        if (typeof(value) === "undefined") return Utils.warn("Trying to set undefined value in plugin " + pluginName);
+        if (typeof(data) === "undefined") return Utils.warn("Trying to set undefined value in plugin " + pluginName);
         DataStore.setPluginData(pluginName, key, data);
     }
 
@@ -195,7 +203,7 @@ var settings = {
     "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core"},
     
     
-    "Startup Error Modal":        {id: "fork-ps-1", info: "Show a modal with plugin/theme errors on startup", implemented: true,  hidden: false, cat: "fork"},
+    "Content Error Modal":        {id: "fork-ps-1", info: "Shows a modal with plugin/theme errors", implemented: true,  hidden: false, cat: "fork"},
     "Show Toasts":                {id: "fork-ps-2", info: "Shows a small notification for important information", implemented: true,  hidden: false, cat: "fork"},
     "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "fork"},
     "Animate On Hover":           {id: "fork-es-2", info: "Only animate the emote modifiers on hover", implemented: true,  hidden: false, cat: "fork"},
@@ -329,7 +337,7 @@ Core.prototype.init = async function() {
     // Show loading errors
     if (settingsCookie["fork-ps-1"]) {
         Utils.log("Collecting Startup Errors");
-        this.showStartupErrors({plugins: bdpluginErrors, themes: bdthemeErrors});
+        this.showContentErrors({plugins: bdpluginErrors, themes: bdthemeErrors});
     }
 
     if (!DataStore.getBDData("RNMAnnouncement")) {
@@ -353,8 +361,9 @@ Core.prototype.checkForGuilds = function() {
     });
 };
 
-Core.prototype.injectExternals = function() {
-    Utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
+Core.prototype.injectExternals = async function() {
+    await Utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
+    if (require.original) window.require = require.original;
 };
 
 Core.prototype.initSettings = function () {
@@ -483,14 +492,14 @@ Core.prototype.alert = function(title, content) {
     modal.appendTo("#app-mount");
 };
 
-Core.prototype.showStartupErrors = function({plugins: pluginErrors, themes: themeErrors}) {
+Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes: themeErrors = []}) {
     if (!pluginErrors || !themeErrors) return;
     if (!pluginErrors.length && !themeErrors.length) return;
     let modal = $(`<div class="bd-modal-wrapper theme-dark">
                     <div class="bd-backdrop backdrop-1wrmKB"></div>
-                    <div class="bd-modal bd-startup-modal modal-1UGdnR">
+                    <div class="bd-modal bd-content-modal modal-1UGdnR">
                         <div class="bd-modal-inner inner-1JeGVc">
-                            <div class="header header-1R_AjF"><div class="title">Startup Errors</div></div>
+                            <div class="header header-1R_AjF"><div class="title">Content Errors</div></div>
                             <div class="bd-modal-body">
                                 <div class="tab-bar-container">
                                     <div class="tab-bar TOP">
@@ -500,7 +509,7 @@ Core.prototype.showStartupErrors = function({plugins: pluginErrors, themes: them
                                 </div>
                                 <div class="table-header">
                                     <div class="table-column column-name">Name</div>
-                                    <div class="table-column column-reason">Reason</div>
+                                    <div class="table-column column-message">Message</div>
                                     <div class="table-column column-error">Error</div>
                                 </div>
                                 <div class="scroller-wrap fade">
@@ -521,7 +530,7 @@ Core.prototype.showStartupErrors = function({plugins: pluginErrors, themes: them
         for (let err of errors) {
             let error = $(`<div class="error">
                                 <div class="table-column column-name">${err.name ? err.name : err.file}</div>
-                                <div class="table-column column-reason">${err.reason}</div>
+                                <div class="table-column column-message">${err.message}</div>
                                 <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
                             </div>`);
             container.append(error);
@@ -1170,10 +1179,13 @@ var Utils = class {
     }
 
     static injectJs(uri) {
-        $("<script/>", {
-            type: "text/javascript",
-            src: uri
-        }).appendTo($("body"));
+        return new Promise(resolve => {
+            $("<script/>", {
+                type: "text/javascript",
+                src: uri,
+                onload: resolve
+            }).appendTo($("body"));
+        });
     }
 
     static escapeID(id) {
@@ -1181,15 +1193,15 @@ var Utils = class {
     }
 
     static log(message) {
-        console.log("%c[BetterDiscord] %c" + message + "", "color: #3a71c1; font-weight: 700;", "");
+        console.log("%c[BandagedBD] %c" + message + "", "color: #3a71c1; font-weight: 700;", "");
     }
 
     static warn(message) {
-        console.warn("%c[BetterDiscord] %c" + message + "", "color: #E8A400; font-weight: 700;", "");
+        console.warn("%c[BandagedBD] %c" + message + "", "color: #E8A400; font-weight: 700;", "");
     }
 
     static err(message, error) {
-        console.log("%c[BetterDiscord] %c" + message + "", "color: red; font-weight: 700;", "");
+        console.log("%c[BandagedBD] %c" + message + "", "color: red; font-weight: 700;", "");
         if (error) {
             console.groupCollapsed("%cError: " + error.message, "color: red;");
             console.error(error.stack);
@@ -1324,7 +1336,7 @@ var ContentManager = (() => {
             this.name = "MetaError";
         }
     }
-    const originalJSRequire = require("module").Module._extensions[".js"];
+    const originalJSRequire = Module._extensions[".js"];
     const originalCSSRequire = Module._extensions[".css"] ? Module._extensions[".css"] : () => {return null;};
 
 
@@ -1353,8 +1365,8 @@ var ContentManager = (() => {
                 catch (err) {
                     if (err.code !== "ENOENT") return;
                     delete this.timeCache[filename];
-                    if (isPlugin) return pluginModule.unloadPlugin(Object.values(bdplugins).find(p => p.filename == filename).plugin.getName());
-                    return themeModule.unloadTheme(Object.values(bdthemes).find(p => p.filename == filename).name);
+                    if (isPlugin) return pluginModule.unloadPlugin(filename);
+                    return themeModule.unloadTheme(filename);
                 }
                 if (!fs.statSync(path.resolve(baseFolder, filename)).isFile()) return;
                 const stats = fs.statSync(path.resolve(baseFolder, filename));
@@ -1367,8 +1379,8 @@ var ContentManager = (() => {
                     else themeModule.loadTheme(filename);
                 }
                 if (eventType == "change") {
-                    if (isPlugin) pluginModule.reloadPlugin(Object.values(bdplugins).find(p => p.filename == filename).plugin.getName());
-                    else themeModule.reloadTheme(Object.values(bdthemes).find(p => p.filename == filename).name);
+                    if (isPlugin) pluginModule.reloadPlugin(filename);
+                    else themeModule.reloadTheme(filename);
                 }
             });
         }
@@ -1434,7 +1446,7 @@ var ContentManager = (() => {
             const isPlugin = type === "plugin";
             const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
             try {require(path.resolve(baseFolder, filename));}
-            catch (error) {return {name: filename, file: filename, reason: "Could not be compiled.", error: {message: error.message, stack: error.stack}};}
+            catch (error) {return {name: filename, file: filename, message: "Could not be compiled.", error: {message: error.message, stack: error.stack}};}
             const content = require(path.resolve(baseFolder, filename));
             if (isPlugin) {
                 if (!content.type) return;
@@ -1443,7 +1455,7 @@ var ContentManager = (() => {
                     delete bdplugins[content.plugin.getName()];
                     bdplugins[content.plugin.getName()] = content;
                 }
-                catch (error) {return {name: filename, file: filename, reason: "Could not be constructed.", error: {message: error.message, stack: error.stack}};}
+                catch (error) {return {name: filename, file: filename, message: "Could not be constructed.", error: {message: error.message, stack: error.stack}};}
             }
             else {
                 delete bdthemes[content.name];
@@ -1456,21 +1468,22 @@ var ContentManager = (() => {
             const isPlugin = type === "plugin";
             const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
             try {
-                delete require.original.cache[require.original.resolve(path.resolve(baseFolder, filename))];
+                delete require.cache[require.resolve(path.resolve(baseFolder, filename))];
             }
-            catch (err) {return err;}
+            catch (err) {return {name: filename, file: filename, message: "Could not be unloaded.", error: {message: err.message, stack: err.stack}};}
         }
 
         isLoaded(filename, type) {
             const isPlugin = type === "plugin";
             const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-            try {require.original.cache[require.original.resolve(path.resolve(baseFolder, filename))];}
+            try {require.cache[require.resolve(path.resolve(baseFolder, filename))];}
             catch (err) {return false;}
             return true;
         }
 
         reloadContent(filename, type) {
-            if (this.unloadContent(filename, type)) return;
+            const cantUnload = this.unloadContent(filename, type);
+            if (cantUnload) return cantUnload;
             return this.loadContent(filename, type);
         }
 
@@ -1533,7 +1546,7 @@ PluginModule.prototype.loadPlugins = function () {
         catch (err) {
             pluginCookie[name] = false;
             Utils.err("Plugin " + name + " could not be loaded.", err);
-            bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, reason: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
+            bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, message: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
             continue;
         }
 
@@ -1547,7 +1560,7 @@ PluginModule.prototype.loadPlugins = function () {
             catch (err) {
                 pluginCookie[name] = false;
                 Utils.err("Plugin " + name + " could not be started.", err);
-                bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, reason: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
+                bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, message: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
             }
         }
     }
@@ -1600,27 +1613,36 @@ PluginModule.prototype.togglePlugin = function (plugin) {
 
 PluginModule.prototype.loadPlugin = function(filename) {
     const error = ContentManager.loadContent(filename, "plugin");
-    if (error && settingsCookie["fork-ps-2"]) {
-        Utils.err(`${filename} could not be loaded.`, error);
-        return BdApi.showToast(`${filename} could not be loaded.`, {type: "error"});
+    if (error) {
+        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
+        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${filename} could not be loaded.`, {type: "error"});
+        return Utils.err(`${filename} could not be loaded.`, error);
     }
-
     const plugin = Object.values(bdplugins).find(p => p.filename == filename).plugin;
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
+    BDEvents.dispatch("plugin-loaded", plugin.getName());
 };
 
-PluginModule.prototype.unloadPlugin = function(plugin) {
+PluginModule.prototype.unloadPlugin = function(filenameOrName) {
+    const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
+    if (!bdplugin) return;
+    const plugin = bdplugin.plugin.getName();
     if (pluginCookie[plugin]) this.disablePlugin(plugin, true);
     const error = ContentManager.unloadContent(bdplugins[plugin].filename, "plugin");
     delete bdplugins[plugin];
-    if (error && settingsCookie["fork-ps-2"]) {
-        Utils.err(`${plugin} could not be unloaded. It may have not been loaded yet.`, error);
-        return BdApi.showToast(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+    if (error) {
+        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
+        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+        return Utils.err(`${plugin} could not be unloaded. It may have not been loaded yet.`, error);
     }
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} was unloaded.`, {type: "success"});
+    BDEvents.dispatch("plugin-unloaded", plugin);
 };
 
-PluginModule.prototype.reloadPlugin = function(plugin) {
+PluginModule.prototype.reloadPlugin = function(filenameOrName) {
+    const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
+    if (!bdplugin) return this.loadPlugin(filenameOrName);
+    const plugin = bdplugin.plugin.getName();
     const enabled = pluginCookie[plugin];
     if (enabled) this.stopPlugin(plugin, true);
     const error = ContentManager.reloadContent(bdplugins[plugin].filename, "plugin");
@@ -1628,11 +1650,13 @@ PluginModule.prototype.reloadPlugin = function(plugin) {
         if (bdplugins[plugin].plugin.load && typeof(bdplugins[plugin].plugin.load) == "function") bdplugins[plugin].plugin.load();
         this.startPlugin(plugin, true);
     }
-    if (error && settingsCookie["fork-ps-2"]) {
-        Utils.err(`${plugin} could not be reloaded.`, error);
-        return BdApi.showToast(`${plugin} could not be reloaded.`, {type: "error"});
+    if (error) {
+        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
+        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} could not be reloaded.`, {type: "error"});
+        return Utils.err(`${plugin} could not be reloaded.`, error);
     }
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
+    BDEvents.dispatch("plugin-reloaded", plugin);
 };
 
 PluginModule.prototype.updatePluginList = function() {
@@ -1740,34 +1764,45 @@ ThemeModule.prototype.toggleTheme = function(theme) {
 
 ThemeModule.prototype.loadTheme = function(filename) {
     const error = ContentManager.loadContent(filename, "theme");
-    if (error && settingsCookie["fork-ps-2"]) {
-        Utils.err(`${filename} could not be loaded.`, error);
-        return BdApi.showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
+    if (error) {
+        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
+        if (settingsCookie["fork-ps-2"])BdApi.showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
+        return Utils.err(`${filename} could not be loaded.`, error);
     }
-
     const theme = Object.values(bdthemes).find(p => p.filename == filename);
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme.name} v${theme.version} was loaded.`, {type: "success"});
+    BDEvents.dispatch("theme-loaded", theme.name);
 };
 
-ThemeModule.prototype.unloadTheme = function(theme) {
+ThemeModule.prototype.unloadTheme = function(filenameOrName) {
+    const bdtheme = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
+    if (!bdtheme) return;
+    const theme = bdtheme.name;
     if (themeCookie[theme]) this.disableTheme(theme, true);
     const error = ContentManager.unloadContent(bdthemes[theme].filename, "theme");
     delete bdthemes[theme];
-    if (error && settingsCookie["fork-ps-2"]) {
-        Utils.err(`${theme} could not be unloaded. It may have not been loaded yet.`, error);
-        return BdApi.showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+    if (error) {
+        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
+        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+        return Utils.err(`${theme} could not be unloaded. It may have not been loaded yet.`, error);
     }
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} was unloaded.`, {type: "success"});
+    BDEvents.dispatch("theme-unloaded", theme);
 };
 
-ThemeModule.prototype.reloadTheme = function(theme) {
+ThemeModule.prototype.reloadTheme = function(filenameOrName) {
+    const bdtheme = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
+    if (!bdtheme) return this.loadtheme(filenameOrName);
+    const theme = bdtheme.name;
     const error = ContentManager.reloadContent(bdthemes[theme].filename, "theme");
     if (themeCookie[theme]) this.disableTheme(theme, true), this.enableTheme(theme, true);
-    if (error && settingsCookie["fork-ps-2"]) {
-        Utils.err(`${theme} could not be reloaded.`, error);
-        return BdApi.showToast(`${theme} could not be reloaded.`, {type: "error"});
+    if (error) {
+        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
+        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be reloaded.`, {type: "error"});
+        return Utils.err(`${theme} could not be reloaded.`, error);
     }
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} v${bdthemes[theme].version} was reloaded.`, {type: "success"});
+    BDEvents.dispatch("theme-reloaded", theme);
 };
 
 ThemeModule.prototype.updateThemeList = function() {
@@ -1828,7 +1863,7 @@ BdApi.setWindowPreference = function(key, value) {
     const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
-    delete require.original.cache[this.WindowConfigFile];
+    delete require.cache[this.WindowConfigFile];
     fs.writeFileSync(this.WindowConfigFile, JSON.stringify(prefs, null, 4));
 };
 
@@ -1881,6 +1916,12 @@ BdApi.getCore = function () {
 
 //Show modal alert
 BdApi.alert = function (title, content) {
+    // const ModalStack = EDApi.findModuleByProps("push", "update", "pop", "popWithKey");
+    //     const AlertModal = EDApi.findModule(m => m.prototype && m.prototype.handleCancel && m.prototype.handleSubmit && m.prototype.handleMinorConfirm);
+    //     if (!ModalStack || !AlertModal) return window.alert(body);
+    //     ModalStack.push(function(props) {
+    //         return EDApi.React.createElement(AlertModal, Object.assign({title, body}, props));
+    //     });
     mainCore.alert(title, content);
 };
 
@@ -3301,6 +3342,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         self.settingsPanel = "";
 
         this.reload = this.reload.bind(this);
+        this.onReload = this.onReload.bind(this);
     }
 
     setInitialState() {
@@ -3309,6 +3351,19 @@ class V2C_PluginCard extends BDV2.reactComponent {
             settings: false,
             reloads: 0
         };
+    }
+
+    // componentDidMount() {
+    //     BDEvents.on("plugin-reloaded", this.onReload);
+    // }
+
+    // componentWillUnmount() {
+    //     BDEvents.off("plugin-reloaded", this.onReload);
+    // }
+
+    onReload(pluginName) {
+        if (pluginName !== this.props.plugin.getName()) return;
+        this.setState({reloads: this.state.reloads + 1});
     }
 
     componentDidUpdate() {
@@ -3342,7 +3397,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         const plugin = this.props.plugin.getName();
         pluginModule.reloadPlugin(plugin);
         this.props.plugin = bdplugins[plugin].plugin;
-        this.setState({reloads: this.state.reloads + 1});
+        this.onReload(this.props.plugin.getName());
     }
 
     render() {
@@ -3429,6 +3484,19 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         };
     }
 
+    // componentDidMount() {
+    //     BDEvents.on("theme-reloaded", this.onReload);
+    // }
+
+    // componentWillUnmount() {
+    //     BDEvents.off("theme-reloaded", this.onReload);
+    // }
+
+    onReload(themeName) {
+        if (themeName !== this.props.theme.name) return;
+        this.setState({reloads: this.state.reloads + 1});
+    }
+
     reload() {
         const theme = this.props.theme.name;
         const error = themeModule.reloadTheme(theme);
@@ -3436,7 +3504,7 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         else mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been reloaded.`, {type: "success"});
         // this.setState(this.state);
         this.props.theme = bdthemes[theme];
-        this.setState({reloads: this.state.reloads + 1});
+        this.onReload(this.props.theme.name);
     }
 
     render() {
@@ -3623,7 +3691,7 @@ class V2_SettingsPanel_Sidebar {
     }
 
     get items() {
-        return [{text: "Core", id: "core"}, {text: "Zere's Fork", id: "fork"}, {text: "Emotes", id: "emotes"}, {text: "Custom CSS", id: "customcss"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}];
+        return [{text: "Core", id: "core"}, {text: "Bandages", id: "fork"}, {text: "Emotes", id: "emotes"}, {text: "Custom CSS", id: "customcss"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}];
     }
 
     get component() {
@@ -3888,7 +3956,7 @@ class V2_SettingsPanel {
                 fade: true,
                 dark: true,
                 children: [
-                    BDV2.react.createElement(V2Components.SettingsPanel, {key: "fspanel", title: "Zere's Fork Settings", onChange: this.onChange, settings: this.forkSettings, button: {
+                    BDV2.react.createElement(V2Components.SettingsPanel, {key: "fspanel", title: "BandagedBD Settings", onChange: this.onChange, settings: this.forkSettings, button: {
                         title: "Clear Emote Cache",
                         onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
                     }}),
@@ -3904,6 +3972,37 @@ class V2_SettingsPanel {
 
     get customCssComponent() {
         return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.CssEditor, {key: "csseditor"}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
+    }
+
+    contentComponent(type) {
+        const componentElement = type == "plugins" ? this.pluginsComponent : this.themesComponent;
+        const prefix = type.replace("s", "");
+        const settingsList = this;
+        class ContentList extends BDV2.react.Component {
+            constructor(props) {
+                super(props);
+                this.onChange = this.onChange.bind(this);
+            }
+
+            componentDidMount() {
+                BDEvents.on(`${prefix}-reloaded`, this.onChange);
+                BDEvents.on(`${prefix}-loaded`, this.onChange);
+                BDEvents.on(`${prefix}-unloaded`, this.onChange);
+            }
+        
+            componentWillUnmount() {
+                BDEvents.off(`${prefix}-reloaded`, this.onChange);
+                BDEvents.off(`${prefix}-loaded`, this.onChange);
+                BDEvents.off(`${prefix}-unloaded`, this.onChange);
+            }
+        
+            onChange() {
+                settingsList.sideBarOnClick(type);
+            }
+
+            render() {return componentElement;}
+        }
+        return BDV2.react.createElement(ContentList);
     }
 
     get pluginsComponent() {
@@ -3976,7 +4075,7 @@ class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        BDV2.reactDom.render(this.pluginsComponent, root);
+        BDV2.reactDom.render(this.contentComponent("plugins"), root);
     }
 
     renderThemePane() {
@@ -3985,7 +4084,7 @@ class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        BDV2.reactDom.render(this.themesComponent, root);
+        BDV2.reactDom.render(this.contentComponent("themes"), root);
     }
 }
 
