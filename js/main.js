@@ -181,7 +181,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.4";
+var bbdVersion = "0.3.1";
 
 
 var mainCore;
