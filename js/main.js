@@ -1376,7 +1376,7 @@ var ContentManager = (() => {
         unwatchContent(contentType) {
             if (!this.watchers[contentType]) return;
             this.watchers[contentType].close();
-            delete this.watcher[contentType];
+            delete this.watchers[contentType];
         }
 
         extractMeta(content) {
