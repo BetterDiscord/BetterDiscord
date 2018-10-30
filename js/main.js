@@ -1779,7 +1779,7 @@ ThemeModule.prototype.unloadTheme = function(filenameOrName) {
 };
 
 ThemeModule.prototype.reloadTheme = function(filenameOrName) {
-    const bdtheme = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
+    const bdtheme = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
     if (!bdtheme) return this.loadTheme(filenameOrName);
     const theme = bdtheme.name;
     const error = ContentManager.reloadContent(bdthemes[theme].filename, "theme");
