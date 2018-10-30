@@ -38,7 +38,9 @@ module.exports = class Utils {
 	static async getCommitHash() {
 		const data = await this.getFile("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits");
 		if (!this.testJSON(data)) return null;
-        return JSON.parse(data)[0].sha;
+		const parsed = JSON.parse(data);
+		if (!parsed || !Array.isArray(parsed)) return null;
+		return parsed[0].sha;
 	}
 
     static async getUpdater() {
