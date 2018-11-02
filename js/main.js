@@ -82,7 +82,8 @@ var DataStore = (() => {
         initialize() {
             try {
                 if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
-                else this.data = require(this.BDFile);
+                const data = require(this.BDFile);
+                if (data.hasOwnProperty("settings")) this.data = data;
                 if (!fs.existsSync(this.settingsFile)) return;
                 let settings = require(this.settingsFile);
                 fs.unlinkSync(this.settingsFile);
