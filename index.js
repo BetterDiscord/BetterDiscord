@@ -17,8 +17,15 @@ class BrowserWindow extends electron.BrowserWindow {
     }
 }
 
+Object.assign(BrowserWindow, electron.BrowserWindow); // Retains the original functions
+
 const electron_path = require.resolve("electron");
+electron.app.once("ready", () => {
+	Object.assign(BrowserWindow, electron.BrowserWindow); // Assigns the new chrome-specific ones
+	require.cache[electron_path].exports = Object.assign({}, electron, {BrowserWindow});
+});
 const browser_window_path = require.resolve(path.resolve(electron_path, "..", "..", "browser-window.js"));
 require.cache[browser_window_path].exports = BrowserWindow;
+Module._cache[browser_window_path].exports = BrowserWindow;
 electron.app.getAppPath = () => basePath;
 Module._load(path.join(basePath, pkg.main), null, true);
