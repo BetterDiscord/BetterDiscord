@@ -1635,15 +1635,13 @@ PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     const enabled = pluginCookie[plugin];
     if (enabled) this.stopPlugin(plugin, true);
     const error = ContentManager.reloadContent(bdplugins[plugin].filename, "plugin");
-    if (enabled) {
-        if (bdplugins[plugin].plugin.load && typeof(bdplugins[plugin].plugin.load) == "function") bdplugins[plugin].plugin.load();
-        this.startPlugin(plugin, true);
-    }
     if (error) {
         if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
         if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} could not be reloaded.`, {type: "error"});
         return Utils.err(`${plugin} could not be reloaded.`, error);
     }
+    if (bdplugins[plugin].plugin.load && typeof(bdplugins[plugin].plugin.load) == "function") bdplugins[plugin].plugin.load();
+    if (enabled) this.startPlugin(plugin, true);
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
     BDEvents.dispatch("plugin-reloaded", plugin);
 };
