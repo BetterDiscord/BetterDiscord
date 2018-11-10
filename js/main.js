@@ -152,30 +152,30 @@ var BDEvents = (() => {
 
 window.bdStorage = class bdPluginStorage {
     static get(key) {
-        Utils.warn("[Deprecation Notice] Please use BdApi.getBDData(). bdStorage may be removed in future versions.");
+        Utils.warn("Deprecation Notice", "Please use BdApi.getBDData(). bdStorage may be removed in future versions.");
         return DataStore.getBDData(key);
     }
 
     static set(key, data) {
-        Utils.warn("[Deprecation Notice] Please use BdApi.setBDData(). bdStorage may be removed in future versions.");
+        Utils.warn("Deprecation Notice", "Please use BdApi.setBDData(). bdStorage may be removed in future versions.");
         DataStore.setBDData(key, data);
     }
 };
 
 window.bdPluginStorage = class bdPluginStorage {
     static get(pluginName, key) {
-        Utils.warn(`[Deprecation Notice] Please use BdApi.loadData() or BdApi.getData(). bdPluginStorage may be removed in future versions.`);
+        Utils.warn("Deprecation Notice", `${pluginName}, please use BdApi.loadData() or BdApi.getData(). bdPluginStorage may be removed in future versions.`);
         return DataStore.getPluginData(pluginName, key) || null;
     }
 
     static set(pluginName, key, data) {
-        Utils.warn("[Deprecation Notice] Please use BdApi.saveData() or BdApi.setData(). bdPluginStorage may be removed in future versions.");
-        if (typeof(data) === "undefined") return Utils.warn("Trying to set undefined value in plugin " + pluginName);
+        Utils.warn("Deprecation Notice", `${pluginName}, please use BdApi.saveData() or BdApi.setData(). bdPluginStorage may be removed in future versions.`);
+        if (typeof(data) === "undefined") return Utils.warn("Deprecation Notice", "Trying to set undefined value in plugin " + pluginName);
         DataStore.setPluginData(pluginName, key, data);
     }
 
     static delete(pluginName, key) {
-        Utils.warn("[Deprecation Notice] Please use BdApi.deleteData(). bdPluginStorage may be removed in future versions.");
+        Utils.warn("Deprecation Notice", `${pluginName}, please use BdApi.deleteData(). bdPluginStorage may be removed in future versions.`);
         DataStore.deletePluginData(pluginName, key);
     }
 };
@@ -287,14 +287,14 @@ Core.prototype.init = async function() {
         `);
     }
 
-    Utils.log("Initializing Settings");
+    Utils.log("Startup", "Initializing Settings");
     this.initSettings();
     emoteModule = new EmoteModule();
     quickEmoteMenu = new QuickEmoteMenu();
-    Utils.log("Initializing EmoteModule");
+    Utils.log("Startup", "Initializing EmoteModule");
     window.emotePromise = emoteModule.init().then(() => {
         emoteModule.initialized = true;
-        Utils.log("Initializing QuickEmoteMenu");
+        Utils.log("Startup", "Initializing QuickEmoteMenu");
         quickEmoteMenu.init();
     });
     publicServersModule = new V2_PublicServers();
@@ -306,15 +306,15 @@ Core.prototype.init = async function() {
 
     await this.checkForGuilds();
     BDV2.initialize();
-    Utils.log("Updating Settings");
+    Utils.log("Startup", "Updating Settings");
     settingsPanel = new V2_SettingsPanel();
-    settingsPanel.updateSettings();
+    settingsPanel.initializeSettings();
 
-    Utils.log("Loading Plugins");
+    Utils.log("Startup", "Loading Plugins");
     pluginModule = new PluginModule();
     pluginModule.loadPlugins();
     
-    Utils.log("Loading Themes");
+    Utils.log("Startup", "Loading Themes");
     themeModule = new ThemeModule();
     themeModule.loadThemes();
 
@@ -328,14 +328,14 @@ Core.prototype.init = async function() {
 
     emoteModule.autoCapitalize();
 
-    Utils.log("Removing Loading Icon");
+    Utils.log("Startup", "Removing Loading Icon");
     document.getElementsByClassName("bd-loaderv2")[0].remove();
-    Utils.log("Initializing Main Observer");
+    Utils.log("Startup", "Initializing Main Observer");
     this.initObserver();
     
     // Show loading errors
     if (settingsCookie["fork-ps-1"]) {
-        Utils.log("Collecting Startup Errors");
+        Utils.log("Startup", "Collecting Startup Errors");
         this.showContentErrors({plugins: bdpluginErrors, themes: bdthemeErrors});
     }
 };
@@ -528,7 +528,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
             if (err.error) {
                 error.find("a").on("click", (e) => {
                     e.preventDefault();
-                    Utils.err(`Error details for ${err.name ? err.name : err.file}.`, err.error);
+                    Utils.err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
                 });
             }
         }
@@ -636,7 +636,15 @@ function EmoteModule() {}
 EmoteModule.prototype.init = async function () {
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
     this.overrides = ["twitch", "bttv", "ffz"];
-    this.categories = ["TwitchGlobal", "TwitchSubscriber", "BTTV", "BTTV2", "FrankerFaceZ"];
+    Object.defineProperty(this, "categories", {
+        get: function() {
+            const cats = [];
+            for (const current in window.bdEmoteSettingIDs) {
+                if (settingsCookie[window.bdEmoteSettingIDs[current]]) cats.push(current);
+            }
+            return cats;
+        }
+    });
 
     let emoteInfo = {
         TwitchGlobal: {
@@ -708,6 +716,7 @@ EmoteModule.prototype.init = async function () {
     if (this.cancelEmoteRender) return;
     this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
 		Utils.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
+            if (this.categories.length == 0) return;
 			const markup = returnValue.props.children[1];
 			if (!markup.props.children) return;
 			const nodes = markup.props.children[1];
@@ -724,7 +733,7 @@ EmoteModule.prototype.init = async function () {
 						let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
 						let emoteOverride = emoteModifier.slice(0);
 			
-						if (bemotes.includes(emoteName) || emoteName.length < 4) continue;
+						if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
 						if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
 						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
 						else emoteModifier = emoteOverride;
@@ -771,6 +780,13 @@ EmoteModule.prototype.init = async function () {
     }});
 };
 
+EmoteModule.prototype.disable = function() {
+    this.disableAutoCapitalize();
+    if (this.cancelEmoteRender) return;
+    this.cancelEmoteRender();
+    this.cancelEmoteRender = null;
+};
+
 EmoteModule.prototype.clearEmoteData = async function() {
     let _fs = require("fs");
     let emoteFile = "emote_data.json";
@@ -815,11 +831,11 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     
     if (exists && this.isCacheValid()) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
-        Utils.log("[Emotes] Loading emotes from local cache.");
+        Utils.log("Emotes", "Loading emotes from local cache.");
         
         const data = await new Promise(resolve => {
             _fs.readFile(file, "utf8", (err, data) => {
-                Utils.log("[Emotes] Emotes loaded from cache.");
+                Utils.log("Emotes", "Emotes loaded from cache.");
                 if (err) data = {};
                 resolve(data);
             });
@@ -837,7 +853,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
             return;
         }
 
-        Utils.log("[Emotes] Cache was corrupt, downloading...");
+        Utils.log("Emotes", "Cache was corrupt, downloading...");
         _fs.unlinkSync(file);
     }
 
@@ -853,7 +869,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     if (settingsCookie["fork-ps-2"]) mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
 
     try { _fs.writeFileSync(file, JSON.stringify(window.bdEmotes), "utf8"); }
-    catch (err) { Utils.err("[Emotes] Could not save emote data.", err); }
+    catch (err) { Utils.err("Emotes", "Could not save emote data.", err); }
 };
 
 EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
@@ -863,12 +879,12 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
         timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
     };
 
-    Utils.log("[Emotes] Downloading: " + emoteMeta.variable);
+    Utils.log("Emotes", "Downloading: " + emoteMeta.variable);
 
     return new Promise((resolve, reject) => {
         request(options, (error, response, body) => {
             if (error) {
-                Utils.err("[Emotes] Could not download " + emoteMeta.variable, error);
+                Utils.err("Emotes", "Could not download " + emoteMeta.variable, error);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -883,7 +899,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 parsedData = JSON.parse(body);
             }
             catch (err) {
-                Utils.err("[Emotes] Could not download " + emoteMeta.variable, error);
+                Utils.err("Emotes", "Could not download " + emoteMeta.variable, error);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -895,10 +911,14 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
             if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
 
             for (let emote in parsedData) {
+                if (emote.length < 4 || bemotes.includes(emote)) {
+                    delete parsedData[emote];
+                    continue;
+                }
                 parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
             }
             resolve(parsedData);
-            Utils.log("[Emotes] Downloaded: " + emoteMeta.variable);
+            Utils.log("Emotes", "Downloaded: " + emoteMeta.variable);
         });
     });
 };
@@ -914,9 +934,8 @@ EmoteModule.prototype.getBlacklist = function () {
 var bemotes = [];
 
 EmoteModule.prototype.autoCapitalize = function () {
-    $("body").delegate($(".channelTextArea-1LDbYG textarea:first"), "keyup change paste", () => {
-        if (!settingsCookie["bda-es-4"]) return;
-
+    if (!settingsCookie["bda-es-4"] || this.autoCapitalizeActive) return;
+    $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-1LDbYG textarea:first"), () => {
         var text = $(".channelTextArea-1LDbYG textarea:first").val();
         if (text == undefined) return;
 
@@ -929,6 +948,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             }
         }
     });
+    this.autoCapitalizeActive = true;
 };
 
 EmoteModule.prototype.capitalize = function (value) {
@@ -938,6 +958,11 @@ EmoteModule.prototype.capitalize = function (value) {
             return p;
         }
     }
+};
+
+EmoteModule.prototype.disableAutoCapitalize = function() {
+    this.autoCapitalizeActive = false;
+    $("body").off(".bdac");
 };
 
 /* BetterDiscordApp QuickEmoteMenu JavaScript
@@ -1181,16 +1206,16 @@ var Utils = class {
         return id.replace(/^[^a-z]+|[^\w-]+/gi, "");
     }
 
-    static log(message) {
-        console.log("%c[BandagedBD] %c" + message + "", "color: #3a71c1; font-weight: 700;", "");
+    static log(moduleName, message) {
+        console.log(`%c[BandagedBD]%c [${moduleName}]%c ${message}`, "color: #3a71c1; font-weight: 700;", "color: #3a71c1;", "");
     }
 
-    static warn(message) {
-        console.warn("%c[BandagedBD] %c" + message + "", "color: #E8A400; font-weight: 700;", "");
+    static warn(moduleName, message) {
+        console.warn(`%c[BandagedBD]%c [${moduleName}]%c ${message}`, "color: #E8A400; font-weight: 700;", "color: #E8A400;", "");
     }
 
-    static err(message, error) {
-        console.log("%c[BandagedBD] %c" + message + "", "color: red; font-weight: 700;", "");
+    static err(moduleName, message, error) {
+        console.log(`%c[BandagedBD]%c [${moduleName}]%c ${message}`, "color: red; font-weight: 700;", "color: red;", "");
         if (error) {
             console.groupCollapsed("%cError: " + error.message, "color: red;");
             console.error(error.stack);
@@ -1534,7 +1559,7 @@ PluginModule.prototype.loadPlugins = function () {
         }
         catch (err) {
             pluginCookie[name] = false;
-            Utils.err("Plugin " + name + " could not be loaded.", err);
+            Utils.err("Plugins", name + " could not be loaded.", err);
             bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, message: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
             continue;
         }
@@ -1548,7 +1573,7 @@ PluginModule.prototype.loadPlugins = function () {
             }
             catch (err) {
                 pluginCookie[name] = false;
-                Utils.err("Plugin " + name + " could not be started.", err);
+                Utils.err("Plugins", name + " could not be started.", err);
                 bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, message: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
             }
         }
@@ -1565,9 +1590,10 @@ PluginModule.prototype.startPlugin = function(plugin, reload = false) {
         if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
     }
     catch (err) {
+        if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
         pluginCookie[plugin] = false;
         this.savePluginData();
-        Utils.err("Plugin " + name + " could not be started.", err);
+        Utils.err("Plugins", name + " could not be started.", err);
     }
 };
 
@@ -1577,7 +1603,8 @@ PluginModule.prototype.stopPlugin = function(plugin, reload = false) {
         if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
     }
     catch (err) {
-        Utils.err("Plugin " + name + " could not be stopped.", err);
+        if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be stopped.`, {type: "error"});
+        Utils.err("Plugins", bdplugins[plugin].plugin.getName() + " could not be stopped.", err);
     }
 };
 
@@ -1605,9 +1632,12 @@ PluginModule.prototype.loadPlugin = function(filename) {
     if (error) {
         if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
         if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${filename} could not be loaded.`, {type: "error"});
-        return Utils.err(`${filename} could not be loaded.`, error);
+        return Utils.err("ContentManager", `${filename} could not be loaded.`, error);
     }
     const plugin = Object.values(bdplugins).find(p => p.filename == filename).plugin;
+    try { if (plugin.load && typeof(plugin.load) == "function") plugin.load();}
+    catch (err) {if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [err]});}
+    Utils.log("ContentManager", `${plugin.getName()} v${plugin.getVersion()} was loaded.`);
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
     BDEvents.dispatch("plugin-loaded", plugin.getName());
 };
@@ -1622,8 +1652,9 @@ PluginModule.prototype.unloadPlugin = function(filenameOrName) {
     if (error) {
         if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
         if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
-        return Utils.err(`${plugin} could not be unloaded. It may have not been loaded yet.`, error);
+        return Utils.err("ContentManager", `${plugin} could not be unloaded. It may have not been loaded yet.`, error);
     }
+    Utils.log("ContentManager", `${plugin} was unloaded.`);
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} was unloaded.`, {type: "success"});
     BDEvents.dispatch("plugin-unloaded", plugin);
 };
@@ -1638,10 +1669,11 @@ PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     if (error) {
         if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
         if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} could not be reloaded.`, {type: "error"});
-        return Utils.err(`${plugin} could not be reloaded.`, error);
+        return Utils.err("ContentManager", `${plugin} could not be reloaded.`, error);
     }
     if (bdplugins[plugin].plugin.load && typeof(bdplugins[plugin].plugin.load) == "function") bdplugins[plugin].plugin.load();
     if (enabled) this.startPlugin(plugin, true);
+    Utils.log("ContentManager", `${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`);
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
     BDEvents.dispatch("plugin-reloaded", plugin);
 };
@@ -1670,7 +1702,7 @@ PluginModule.prototype.newMessage = function () {
         if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.onMessage === "function") {
             try { plugin.onMessage(); }
-            catch (err) { Utils.err("Unable to fire onMessage for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Plugins", "Unable to fire onMessage for " + plugin.getName() + ".", err); }
         }
     }
 };
@@ -1682,7 +1714,7 @@ PluginModule.prototype.channelSwitch = function () {
         if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.onSwitch === "function") {
             try { plugin.onSwitch(); }
-            catch (err) { Utils.err("Unable to fire onSwitch for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Plugins", "Unable to fire onSwitch for " + plugin.getName() + ".", err); }
         }
     }
 };
@@ -1694,7 +1726,7 @@ PluginModule.prototype.rawObserver = function(e) {
         if (!pluginCookie[plugin.getName()]) continue;
         if (typeof plugin.observer === "function") {
             try { plugin.observer(e); }
-            catch (err) { Utils.err("Unable to fire observer for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Plugins", "Unable to fire observer for " + plugin.getName() + ".", err); }
         }
     }
 };
@@ -1753,10 +1785,11 @@ ThemeModule.prototype.loadTheme = function(filename) {
     const error = ContentManager.loadContent(filename, "theme");
     if (error) {
         if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
-        if (settingsCookie["fork-ps-2"])BdApi.showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
-        return Utils.err(`${filename} could not be loaded.`, error);
+        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
+        return Utils.err("ContentManager", `${filename} could not be loaded.`, error);
     }
     const theme = Object.values(bdthemes).find(p => p.filename == filename);
+    Utils.log("ContentManager", `${theme.name} v${theme.version} was loaded.`);
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme.name} v${theme.version} was loaded.`, {type: "success"});
     BDEvents.dispatch("theme-loaded", theme.name);
 };
@@ -1771,8 +1804,9 @@ ThemeModule.prototype.unloadTheme = function(filenameOrName) {
     if (error) {
         if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
         if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
-        return Utils.err(`${theme} could not be unloaded. It may have not been loaded yet.`, error);
+        return Utils.err("ContentManager", `${theme} could not be unloaded. It may have not been loaded yet.`, error);
     }
+    Utils.log("ContentManager", `${theme} was unloaded.`);
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} was unloaded.`, {type: "success"});
     BDEvents.dispatch("theme-unloaded", theme);
 };
@@ -1786,8 +1820,9 @@ ThemeModule.prototype.reloadTheme = function(filenameOrName) {
     if (error) {
         if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
         if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be reloaded.`, {type: "error"});
-        return Utils.err(`${theme} could not be reloaded.`, error);
+        return Utils.err("ContentManager", `${theme} could not be reloaded.`, error);
     }
+    Utils.log("ContentManager", `${theme} v${bdthemes[theme].version} was reloaded.`);
     if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} v${bdthemes[theme].version} was reloaded.`, {type: "success"});
     BDEvents.dispatch("theme-reloaded", theme);
 };
@@ -1892,7 +1927,7 @@ BdApi.getPlugin = function (name) {
 var betterDiscordIPC = require("electron").ipcRenderer;
 //Get ipc for reason
 BdApi.getIpc = function () {
-    Utils.warn("[Deprecation Notice] BetterDiscord's IPC has been deprecated and may be removed in future versions.");
+    Utils.warn("Deprecation Notice", "BetterDiscord's IPC has been deprecated and may be removed in future versions.");
     return betterDiscordIPC;
 };
 
@@ -3427,7 +3462,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
-            catch (err) { Utils.err("Unable to get settings panel for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + plugin.getName() + ".", err); }
             
             return BDV2.react.createElement("li", {className: "settings-open ui-switch-item"},
                     BDV2.react.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
@@ -3848,90 +3883,78 @@ class V2_SettingsPanel {
     onClick() {}
 
     onChange(id, checked) {
-        settingsCookie[id] = checked;
-        this.updateSettings();
+        this.updateSettings(id, checked);
     }
 
-    updateSettings() {
-        let _c = settingsCookie;
+    updateSettings(id, enabled) {
+        settingsCookie[id] = enabled;
 
-        if (_c["bda-es-0"]) {
-            $("#twitchcord-button-container").show();
-        }
-        else {
-            $("#twitchcord-button-container").hide();
+        if (id == "bda-es-0") {
+            if (enabled) $("#twitchcord-button-container").show();
+            else $("#twitchcord-button-container").hide();
         }
 
-        if (_c["bda-gs-b"]) {
-            $("body").addClass("bd-blue");
-        }
-        else {
-            $("body").removeClass("bd-blue");
+        if (id == "bda-gs-b") {
+            if (enabled) $("body").addClass("bd-blue");
+            else $("body").removeClass("bd-blue");
         }
 
-        if (_c["bda-gs-2"]) {
-            $("body").addClass("bd-minimal");
-        }
-        else {
-            $("body").removeClass("bd-minimal");
+        if (id == "bda-gs-2") {
+            if (enabled) $("body").addClass("bd-minimal");
+            else $("body").removeClass("bd-minimal");
         }
 
-        if (_c["bda-gs-3"]) {
-            $("body").addClass("bd-minimal-chan");
-        }
-        else {
-            $("body").removeClass("bd-minimal-chan");
+        if (id == "bda-gs-3") {
+            if (enabled) $("body").addClass("bd-minimal-chan");
+            else $("body").removeClass("bd-minimal-chan");
         }
 
-        if (_c["bda-gs-1"]) {
-            $("#bd-pub-li").show();
-        }
-        else {
-            $("#bd-pub-li").hide();
+        if (id == "bda-gs-1") {
+            if (enabled) $("#bd-pub-li").show();
+            else $("#bd-pub-li").hide();
         }
 
-        if (_c["bda-gs-4"]) {
-            voiceMode.enable();
-        }
-        else {
-            voiceMode.disable();
+        if (id == "bda-gs-4") {
+            if (enabled) voiceMode.enable();
+            else voiceMode.disable();
         }
 
-        if (_c["bda-gs-5"]) {
-            $("#app-mount").addClass("bda-dark");
-        }
-        else {
-            $("#app-mount").removeClass("bda-dark");
+        if (id == "bda-gs-5") {
+            if (enabled) $("#app-mount").addClass("bda-dark");
+            else $("#app-mount").removeClass("bda-dark");
         }
 
+        if (enabled && id == "bda-gs-6") mainCore.inject24Hour();
 
-        if (_c["bda-gs-6"]) {
-            mainCore.inject24Hour();
+        if (id == "bda-gs-7") {
+            if (enabled) mainCore.injectColoredText();
+            else mainCore.removeColoredText();
         }
 
-        if (_c["bda-gs-7"]) {
-            mainCore.injectColoredText();
-        }
-        else {
-            mainCore.removeColoredText();
+        if (id == "bda-es-4") {
+            if (enabled) emoteModule.autoCapitalize();
+            else emoteModule.disableAutoCapitalize();
         }
         
-        if (_c["fork-ps-4"]) ClassNormalizer.start();
-        else ClassNormalizer.stop();
-
-        if (_c["fork-ps-5"]) {
-            ContentManager.watchContent("plugin");
-            ContentManager.watchContent("theme");
-        }
-        else {
-            ContentManager.unwatchContent("plugin");
-            ContentManager.unwatchContent("theme");
+        if (id == "fork-ps-4") {
+            if (enabled) ClassNormalizer.start();
+            else ClassNormalizer.stop();
         }
 
-        const current = BdApi.getWindowPreference("transparent");
-        if (current != _c["fork-wp-1"]) {
-            BdApi.setWindowPreference("transparent", _c["fork-wp-1"]);
-            if (_c["fork-wp-1"]) BdApi.setWindowPreference("backgroundColor", null);
+        if (id == "fork-ps-5") {
+            if (enabled) {
+                ContentManager.watchContent("plugin");
+                ContentManager.watchContent("theme");
+            }
+            else {
+                ContentManager.unwatchContent("plugin");
+                ContentManager.unwatchContent("theme");
+            }
+        }
+
+        if (id == "fork-wp-1") {
+            BdApi.setWindowPreference("transparent", enabled);
+            if (enabled) BdApi.setWindowPreference("backgroundColor", null);
             else BdApi.setWindowPreference("backgroundColor", "#2f3136");
         }
 
@@ -3941,12 +3964,33 @@ class V2_SettingsPanel {
         }*/
         
 
-        if (_c["bda-gs-8"]) {
-            dMode.enable(_c["fork-dm-1"]);
+        if (id == "bda-gs-8") {
+            if (enabled) dMode.enable(settingsCookie["fork-dm-1"]);
+            else dMode.disable();
         }
-        else {
-            dMode.disable();
+
+        mainCore.saveSettings();
+    }
+
+    initializeSettings() {
+        if (settingsCookie["bda-es-0"]) $("#twitchcord-button-container").show();
+        if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
+        if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
+        if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
+        if (settingsCookie["bda-gs-1"]) $("#bd-pub-li").show();
+        if (settingsCookie["bda-gs-4"]) voiceMode.enable();
+        if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
+        if (settingsCookie["bda-gs-6"]) mainCore.inject24Hour();
+        if (settingsCookie["bda-gs-7"]) mainCore.injectColoredText();
+        if (settingsCookie["bda-es-4"]) emoteModule.autoCapitalize();
+        if (settingsCookie["fork-ps-4"]) ClassNormalizer.start();
+
+        if (settingsCookie["fork-ps-5"]) {
+            ContentManager.watchContent("plugin");
+            ContentManager.watchContent("theme");
         }
+
+        if (settingsCookie["bda-gs-8"]) dMode.enable(settingsCookie["fork-dm-1"]);
 
         mainCore.saveSettings();
     }
