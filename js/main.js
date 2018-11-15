@@ -1871,17 +1871,17 @@ var BdApi = {
 };
 
 BdApi.getAllWindowPreferences = function() {
-    if (bdConfig.os !== "win32" || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
+    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
     return require(this.WindowConfigFile);
 };
 
 BdApi.getWindowPreference = function(key) {
-    if (bdConfig.os !== "win32" || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
+    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
     return this.getAllWindowPreferences()[key];
 };
 
 BdApi.setWindowPreference = function(key, value) {
-    if (bdConfig.os !== "win32" || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
+    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
     const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
