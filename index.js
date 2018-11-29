@@ -5,15 +5,14 @@ const basePath = path.join(__dirname, "..", "app.asar");
 const pkg = require(path.join(basePath, "package.json"));
 const BetterDiscord = require("./betterdiscord");
 const config = require("./config");
-let bd = null;
 
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
-		if (!options || !options.webPreferences|| !options.title) return super(options);
-        delete options.webPreferences.nodeIntegration;
-        if (!bd) Object.assign(options, config)
+        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
+        options.webPreferences.nodeIntegration = true;
+        Object.assign(options, config)
         super(options);
-        if (!bd) bd = new BetterDiscord(this);
+        new BetterDiscord(this);
     }
 }
 
@@ -27,5 +26,6 @@ electron.app.once("ready", () => {
 const browser_window_path = require.resolve(path.resolve(electron_path, "..", "..", "browser-window.js"));
 require.cache[browser_window_path].exports = BrowserWindow;
 Module._cache[browser_window_path].exports = BrowserWindow;
-electron.app.getAppPath = () => basePath;
+electron.app.setAppPath(basePath);
+electron.app.setName(pkg.name);
 Module._load(path.join(basePath, pkg.main), null, true);
