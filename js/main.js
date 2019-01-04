@@ -631,11 +631,7 @@ window.bdEmoteSettingIDs = {
     BTTV2: "bda-es-2"
 };
 
-function EmoteModule() {}
-
-EmoteModule.prototype.init = async function () {
-    this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
-    this.overrides = ["twitch", "bttv", "ffz"];
+function EmoteModule() {
     Object.defineProperty(this, "categories", {
         get: function() {
             const cats = [];
@@ -645,11 +641,16 @@ EmoteModule.prototype.init = async function () {
             return cats;
         }
     });
+}
+
+EmoteModule.prototype.init = async function () {
+    this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
+    this.overrides = ["twitch", "bttv", "ffz"];
 
     let emoteInfo = {
         TwitchGlobal: {
             url: "https://twitchemotes.com/api_cache/v3/global.json",
-            backup: "https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotedata_twitch_global.json",
+            backup: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_global.json`,
             variable: "TwitchGlobal",
             oldVariable: "emotesTwitch",
             getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0`,
@@ -657,7 +658,7 @@ EmoteModule.prototype.init = async function () {
         },
         TwitchSubscriber: {
             url: "https://twitchemotes.com/api_cache/v3/subscriber.json",
-            backup: "https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotedata_twitch_subscriber.json",
+            backup: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_subscriber.json`,
             variable: "TwitchSubscriber",
             oldVariable: "subEmotesTwitch",
             parser: (data) => {
@@ -678,7 +679,7 @@ EmoteModule.prototype.init = async function () {
             getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
         },
         FrankerFaceZ: {
-            url: "https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotedata_ffz.json",
+            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_ffz.json`,
             variable: "FrankerFaceZ",
             oldVariable: "emotesFfz",
             getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`,
@@ -700,7 +701,7 @@ EmoteModule.prototype.init = async function () {
             getOldData: (url) => url
         },
         BTTV2: {
-            url: "https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotedata_bttv.json",
+            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_ffz.json`,
             variable: "BTTV2",
             oldVariable: "emotesBTTV2",
             getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`,
@@ -879,7 +880,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
         timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
     };
 
-    Utils.log("Emotes", "Downloading: " + emoteMeta.variable);
+    Utils.log("Emotes", `Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
 
     return new Promise((resolve, reject) => {
         request(options, (error, response, body) => {
@@ -899,7 +900,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 parsedData = JSON.parse(body);
             }
             catch (err) {
-                Utils.err("Emotes", "Could not download " + emoteMeta.variable, error);
+                Utils.err("Emotes", "Could not download " + emoteMeta.variable, err);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -925,7 +926,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
 
 EmoteModule.prototype.getBlacklist = function () {
     return new Promise(resolve => {
-        $.getJSON("https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/master/data/emotefilter.json", function (data) {
+        $.getJSON(`https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json`, function (data) {
             resolve(bemotes = data.blacklist);
         });
     });
@@ -978,7 +979,7 @@ function QuickEmoteMenu() {
 }
 
 QuickEmoteMenu.prototype.init = function() {
-
+    this.initialized = true;
     $(document).on("mousedown", function(e) {
         if (e.target.id != "rmenu") $("#rmenu").remove();
     });
@@ -1099,6 +1100,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
 };
 
 QuickEmoteMenu.prototype.obsCallback = function (elem) {
+    if (!this.initialized) return;
     var e = $(elem);
     if (!settingsCookie["bda-es-9"]) {
         e.addClass("bda-qme-hidden");
@@ -4303,12 +4305,13 @@ class V2_PublicServers {
     }
 
     render() {
-        let root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layers");
-            return;
-        }
-        BDV2.reactDom.render(this.component, root);
+        BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
+        // let root = this.root;
+        // if (!root) {
+        //     console.log("FAILED TO LOCATE ROOT: .layers");
+        //     return;
+        // }
+        // BDV2.reactDom.render(this.component, root);
     }
 
     get button() {

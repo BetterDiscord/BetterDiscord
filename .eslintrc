@@ -6,7 +6,8 @@
         "jquery": true
     },
     "parserOptions": {
-        "ecmaVersion": 8
+        "ecmaVersion": 8,
+        "sourceType": "module"
     },
     "rules": {
         "semi": 2,
@@ -36,6 +37,7 @@
         "version": false,
         "_bdhash": true,
         "ace": false,
-        "Reflect": false
+        "Reflect": false,
+        "DiscordNative": false
     }
 }
