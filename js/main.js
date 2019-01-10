@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.4";
+var bbdVersion = "0.2.5";
 
 
 var mainCore;
@@ -701,7 +701,7 @@ EmoteModule.prototype.init = async function () {
             getOldData: (url) => url
         },
         BTTV2: {
-            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_ffz.json`,
+            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_bttv.json`,
             variable: "BTTV2",
             oldVariable: "emotesBTTV2",
             getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`,
