@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.5";
+var bbdVersion = "0.2.6";
 
 
 var mainCore;
@@ -575,7 +575,7 @@ Core.prototype.showToast = function(content, options = {}) {
         toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
         toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
         toastWrapper.style.setProperty("bottom", (document.querySelector(".chat-3bRxxu form") ? document.querySelector(".chat-3bRxxu form").offsetHeight : 80) + "px");
-        document.querySelector(".app").appendChild(toastWrapper);
+        document.querySelector(".app, .app-2rEoOp").appendChild(toastWrapper);
     }
     const {type = "", icon = true, timeout = 3000} = options;
     let toastElem = document.createElement("div");
@@ -1318,7 +1318,7 @@ function VoiceMode() {
 VoiceMode.prototype.enable = function () {
     $(".scroller.guild-channels ul").first().css("display", "none");
     $(".scroller.guild-channels header").first().css("display", "none");
-    $(".app.flex-vertical").first().css("overflow", "hidden");
+    $(".app.flex-vertical, .app-2rEoOp").first().css("overflow", "hidden");
     $(".chat-3bRxxu").first().css("visibility", "hidden").css("min-width", "0px");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
@@ -1327,7 +1327,7 @@ VoiceMode.prototype.enable = function () {
 VoiceMode.prototype.disable = function () {
     $(".scroller.guild-channels ul").first().css("display", "");
     $(".scroller.guild-channels header").first().css("display", "");
-    $(".app.flex-vertical").first().css("overflow", "");
+    $(".app.flex-vertical, .app-2rEoOp").first().css("overflow", "");
     $(".chat-3bRxxu").first().css("visibility", "").css("min-width", "");
     $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
     $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
@@ -2078,8 +2078,8 @@ BdApi.setBDData = function(key, data) {
             var cm = $(".contextMenu-HLZMGh");
             if (cm.length <= 0) {
                 cm = $("<div class=\"contextMenu-HLZMGh bd-context-menu\"></div>");
-                cm.addClass($(".app").hasClass("theme-dark") ? "theme-dark" : "theme-light");
-                cm.appendTo(".app");
+                cm.addClass($(".app, .app-2rEoOp").hasClass("theme-dark") ? "theme-dark" : "theme-light");
+                cm.appendTo(".app, .app-2rEoOp");
                 cm.css("top", e.clientY);
                 cm.css("left", e.clientX);
                 $(document).on("click.bdDevModeCtx", () => {
@@ -3028,10 +3028,10 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     injectRoot() {
-        if (!$(".app").length) return false;
+        if (!$(".app, .app-2rEoOp").length) return false;
         $("<div/>", {
             id: "bd-customcss-detach-container"
-        }).insertAfter($(".app"));
+        }).insertAfter($(".app, .app-2rEoOp"));
         return true;
     }
 
@@ -3334,10 +3334,10 @@ class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     injectDetachedRoot() {
-        if (!$(".app").length) return false;
+        if (!$(".app, .app-2rEoOp").length) return false;
         $("<div/>", {
             id: "bd-customcss-detach-container"
-        }).insertAfter($(".app"));
+        }).insertAfter($(".app, .app-2rEoOp"));
         return true;
     }
 
