@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.6";
+var bbdVersion = "0.2.7";
 
 
 var mainCore;
@@ -999,8 +999,8 @@ QuickEmoteMenu.prototype.init = function() {
 
     var teContainer = "";
     teContainer += "<div id=\"bda-qem-twitch-container\">";
-    teContainer += "    <div class=\"scroller-wrap fade\">";
-    teContainer += "        <div class=\"scroller\">";
+    teContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
+    teContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     teContainer += "            <div class=\"emote-menu-inner\">";
     var url = "";
     for (let emote in window.bdEmotes.TwitchGlobal) {
@@ -1020,8 +1020,8 @@ QuickEmoteMenu.prototype.init = function() {
 
     var faContainer = "";
     faContainer += "<div id=\"bda-qem-favourite-container\">";
-    faContainer += "    <div class=\"scroller-wrap fade\">";
-    faContainer += "        <div class=\"scroller\">";
+    faContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
+    faContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     faContainer += "            <div class=\"emote-menu-inner\">";
     for (let emote in this.favoriteEmotes) {
         url = this.favoriteEmotes[emote];
@@ -1134,8 +1134,8 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
 
     var faContainer = "";
     faContainer += "<div id=\"bda-qem-favourite-container\">";
-    faContainer += "    <div class=\"scroller-wrap fade\">";
-    faContainer += "        <div class=\"scroller\">";
+    faContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
+    faContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     faContainer += "            <div class=\"emote-menu-inner\">";
     for (var emote in this.favoriteEmotes) {
         var url = this.favoriteEmotes[emote];
@@ -2934,11 +2934,11 @@ class V2C_Checkbox extends BDV2.reactComponent {
             null,
             BDV2.react.createElement(
                 "div",
-                {className: "checkbox", onClick: this.onClick},
+                {className: "checkbox checkbox-3kaeSU da-checkbox checkbox-3EVISJ da-checkbox", onClick: this.onClick},
                 BDV2.react.createElement(
                     "div",
-                    {className: "checkbox-inner"},
-                    BDV2.react.createElement("input", {checked: this.state.checked, onChange: () => {}, type: "checkbox"}),
+                    {className: "checkbox-inner checkboxInner-3yjcPe da-checkboxInner"},
+                    BDV2.react.createElement("input", {className: "checkboxElement-1qV33p da-checkboxElement", checked: this.state.checked, onChange: () => {}, type: "checkbox"}),
                     BDV2.react.createElement("span", null)
                 ),
                 BDV2.react.createElement(
