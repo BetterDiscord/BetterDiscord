@@ -2027,6 +2027,10 @@ margin-right: -30px;
     background-color: rgba(185,187,190,.3);
 }
 
+.ui-flex {
+  display: flex;
+}
+
 #bd-settingspane-container h2.ui-form-title {
     font-size: 16px;
     font-weight: 600;
