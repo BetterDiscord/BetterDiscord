@@ -657,24 +657,9 @@ EmoteModule.prototype.init = async function () {
             getOldData: (url, name) => { return {id: url.match(/\/([0-9]+)\//)[1], code: name, emoticon_set: 0, description: null}; }
         },
         TwitchSubscriber: {
-            url: "https://twitchemotes.com/api_cache/v3/subscriber.json",
-            backup: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_subscriber.json`,
+            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_subscriber.json`,
             variable: "TwitchSubscriber",
             oldVariable: "subEmotesTwitch",
-            parser: (data) => {
-                let emotes = {};
-                for (let c in data) {
-                    let channel = data[c];
-                    for (let e = 0, elen = channel.emotes.length; e < elen; e++) {
-                        let emote = channel.emotes[e];
-                        emotes[emote.code] = emote.id;
-                    }
-                }
-                return emotes;
-            },
-            backupParser: (data) => {
-                return data;
-            },
             getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`,
             getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
         },
