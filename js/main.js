@@ -343,7 +343,9 @@ Core.prototype.init = async function() {
 Core.prototype.checkForGuilds = function() {
     return new Promise(resolve => {
         const checkForGuilds = function() {
-            if (document.querySelectorAll(`.${BDV2.guildClasses.guilds.split(" ")[0]} .${BDV2.guildClasses.guild.split(" ")[0]}`).length > 0) return resolve(bdConfig.deferLoaded = true);
+            const wrapper = (BDV2.guildClasses.guilds ? BDV2.guildClasses.guilds : BDV2.guildClasses.wrapper).split(" ")[0];
+            const guild = (BDV2.guildClasses.guild ? BDV2.guildClasses.guild : BDV2.guildClasses.container).split(" ")[0];
+            if (document.querySelectorAll(`.${wrapper} .${guild}`).length > 0) return resolve(bdConfig.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
         $(document).ready(function () {
@@ -2447,7 +2449,14 @@ class V2 {
     get reactComponent() {return this.internal.react.Component;}
     
     get messageClasses() {return this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]);}
-    get guildClasses() {return this.WebpackModules.findByUniqueProperties(["guildsWrapper"]);}
+    get guildClasses() {
+		const normal = this.WebpackModules.findByUniqueProperties(["guildsWrapper"]);
+		if (normal) return normal;
+		const guildsWrapper = this.WebpackModules.findByUniqueProperties(["wrapper", "unreadMentionsBar"]);
+		const guilds = this.WebpackModules.findByUniqueProperties(["guildIcon", "unread"]);
+		return Object.assign({}, guildsWrapper, guilds);
+	}
+	
     get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
     get TimeFormatter() {return this.WebpackModules.findByUniqueProperties(["dateFormat"]);}
     get TooltipWrapper() {return this.WebpackModules.find(m => m.prototype && m.prototype.showDelayed);}
@@ -4301,14 +4310,14 @@ class V2_PublicServers {
 
     get button() {
         let btn = $("<div/>", {
-            "class": BDV2.guildClasses.guild,
+            "class": BDV2.guildClasses.guild || BDV2.guildClasses.container,
             "id": "bd-pub-li",
             "css": {
                 height: "20px",
                 display: settingsCookie["bda-gs-1"] ? "" : "none"
             }
         }).append($("<div/>", {
-            "class": BDV2.guildClasses.guildInner,
+            "class": BDV2.guildClasses.guildInner || "wrapper-2lTRaf",
             "css": {
                 "height": "20px",
                 "border-radius": "4px"
@@ -4329,7 +4338,8 @@ class V2_PublicServers {
     }
 
     initialize() {
-        let guilds = $(`.${BDV2.guildClasses.guilds.split(" ")[0]}>:first-child`);
+        const wrapper = (BDV2.guildClasses.guilds ? BDV2.guildClasses.guilds : BDV2.guildClasses.wrapper).split(" ")[0];
+        const guilds = $(`.${wrapper}>:first-child`);
         guilds.after(this.button);
     }
 }
