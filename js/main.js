@@ -34,7 +34,7 @@
     }
 
     var __ls = __data;
-    __ls.setItem = function(i, v) { 
+    __ls.setItem = function(i, v) {
         __ls[i] = v;
         this.save();
     };
@@ -202,8 +202,8 @@ var settings = {
     "Coloured Text":              {id: "bda-gs-7",  info: "Make text colour the same as role colour",          implemented: true,  hidden: false, cat: "core"},
     "BetterDiscord Blue":         {id: "bda-gs-b",  info: "Replace Discord blue with BD Blue",                 implemented: true,  hidden: false, cat: "core"},
     "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core"},
-    
-    
+
+
     "Content Error Modal":        {id: "fork-ps-1", info: "Shows a modal with plugin/theme errors", implemented: true,  hidden: false, cat: "fork"},
     "Show Toasts":                {id: "fork-ps-2", info: "Shows a small notification for important information", implemented: true,  hidden: false, cat: "fork"},
     "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "fork"},
@@ -313,17 +313,17 @@ Core.prototype.init = async function() {
     Utils.log("Startup", "Loading Plugins");
     pluginModule = new PluginModule();
     pluginModule.loadPlugins();
-    
+
     Utils.log("Startup", "Loading Themes");
     themeModule = new ThemeModule();
     themeModule.loadThemes();
 
     $("#customcss").detach().appendTo(document.head);
-    
+
     window.addEventListener("beforeunload", function() {
         if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
     });
-    
+
     publicServersModule.initialize();
 
     emoteModule.autoCapitalize();
@@ -332,7 +332,7 @@ Core.prototype.init = async function() {
     document.getElementsByClassName("bd-loaderv2")[0].remove();
     Utils.log("Startup", "Initializing Main Observer");
     this.initObserver();
-    
+
     // Show loading errors
     if (settingsCookie["fork-ps-1"]) {
         Utils.log("Startup", "Collecting Startup Errors");
@@ -391,22 +391,22 @@ Core.prototype.initObserver = function () {
         for (let i = 0, mlen = mutations.length; i < mlen; i++) {
             let mutation = mutations[i];
             if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
-    
+
             // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
-    
+
             let node = mutation.addedNodes[0];
-    
+
             if (node.classList.contains("layer-3QrUeG")) {
                 if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute("layer-id", "server-settings");
-    
+
                 if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
                     node.setAttribute("layer-id", "user-settings");
                     node.setAttribute("id", "user-settings");
                     if (!document.getElementById("bd-settings-sidebar")) settingsPanel.renderSidebar();
                 }
             }
-    
+
             // Emoji Picker
             if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
 
@@ -536,7 +536,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
         }
         return container;
     }
-    
+
     let tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
 
     modal.find(".tab-bar-item").on("click", (e) => {
@@ -561,7 +561,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
 
 /**
  * This shows a toast similar to android towards the bottom of the screen.
- * 
+ *
  * @param {string} content The string to show in the toast.
  * @param {object} options Options object. Optional parameter.
  * @param {string} options.type Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
@@ -700,7 +700,7 @@ EmoteModule.prototype.init = async function () {
     await this.loadEmoteData(emoteInfo);
 
     while (!BDV2.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
-        
+
     if (this.cancelEmoteRender) return;
     this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
 		Utils.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
@@ -720,12 +720,12 @@ EmoteModule.prototype.init = async function () {
 						let emoteName = emoteSplit[0];
 						let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
 						let emoteOverride = emoteModifier.slice(0);
-			
+
 						if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
 						if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
 						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
 						else emoteModifier = emoteOverride;
-			
+
 						let current = this.categories[c];
 						if (emoteOverride === "twitch") {
 							if (window.bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
@@ -738,7 +738,7 @@ EmoteModule.prototype.init = async function () {
 						else if (emoteOverride === "ffz") {
 							if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
 						}
-						
+
 						if (!window.bdEmotes[current][emoteName] || !settingsCookie[window.bdEmoteSettingIDs[current]]) continue;
 						const results = nodes[n].match(new RegExp(`([\\s]|^)${Utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                         if (!results) continue;
@@ -816,11 +816,11 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     const emoteFile = "emote_data.json";
     const file = bdConfig.dataPath + emoteFile;
     const exists = _fs.existsSync(file);
-    
+
     if (exists && this.isCacheValid()) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
         Utils.log("Emotes", "Loading emotes from local cache.");
-        
+
         const data = await new Promise(resolve => {
             _fs.readFile(file, "utf8", (err, data) => {
                 Utils.log("Emotes", "Emotes loaded from cache.");
@@ -828,7 +828,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
                 resolve(data);
             });
         });
-        
+
         let isValid = Utils.testJSON(data);
         if (isValid) window.bdEmotes = JSON.parse(data);
 
@@ -1104,7 +1104,7 @@ QuickEmoteMenu.prototype.obsCallback = function (elem) {
 
     if (this.lastTab == undefined) {
         this.lastTab = "bda-qem-favourite";
-    } 
+    }
     this.switchQem(this.lastTab);
 };
 
@@ -1267,6 +1267,7 @@ var Utils = class {
             return data.returnValue;
         };
         what[methodName].__monkeyPatched = true;
+        if (!what[methodName].__originalMethod) what[methodName].__originalMethod = origMethod;
         what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
         return cancel;
     }
@@ -1284,7 +1285,7 @@ var Utils = class {
                 }
             }
         });
-    
+
         observer.observe(document.body, {subtree: true, childList: true});
     }
 };
@@ -1399,7 +1400,7 @@ var ContentManager = (() => {
             const rawMeta = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
             if (meta.indexOf("META") < 0) throw new MetaError("META was not found.");
             if (!Utils.testJSON(rawMeta)) throw new MetaError("META could not be parsed.");
-        
+
             const parsed = JSON.parse(rawMeta);
             if (!parsed.name) throw new MetaError("META missing name data.");
             return parsed;
@@ -1415,7 +1416,7 @@ var ContentManager = (() => {
                 if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
                 let content = fs.readFileSync(filename, "utf8");
                 content = Utils.stripBOM(content);
-    
+
                 const meta = self.extractMeta(content);
                 meta.filename = path.basename(filename);
                 if (!isPlugin) {
@@ -1531,7 +1532,7 @@ var ContentManager = (() => {
 var pluginCookie = {};
 
 function PluginModule() {
-    
+
 }
 
 PluginModule.prototype.loadPlugins = function () {
@@ -1738,7 +1739,7 @@ ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
     bdthemeErrors = ContentManager.loadThemes();
     var themes = Object.keys(bdthemes);
-    
+
     for (var i = 0; i < themes.length; i++) {
         var name = bdthemes[themes[i]].name;
         if (!themeCookie[name]) themeCookie[name] = false;
@@ -1840,7 +1841,7 @@ ThemeModule.prototype.saveThemeData = function () {
  * Date: 11/12/2015
  * Last Update: 11/12/2015
  * https://github.com/Jiiks/BetterDiscordApp
- * 
+ *
  * Plugin Template: https://gist.github.com/Jiiks/71edd5af0beafcd08956
  */
 
@@ -2026,7 +2027,7 @@ BdApi.setBDData = function(key, data) {
 
 
 /**
- * 
+ *
  * @constructor
  * @param {(HTMLElement|jQuery)} node - DOM node to monitor and show the tooltip on
  * @param {string} tip - string to show in the tooltip
@@ -2044,9 +2045,9 @@ BdApi.setBDData = function(key, data) {
  * Last Update: 22/05/2016
  * https://github.com/Jiiks/BetterDiscordApp
  */
- 
+
  function devMode() {}
- 
+
  devMode.prototype.enable = function(selectorMode) {
      var self = this;
      this.disable();
@@ -2056,7 +2057,7 @@ BdApi.setBDData = function(key, data) {
             debugger; // eslint-disable-line no-debugger
          }
      });
-     
+
     if (!selectorMode) return;
      $(document).on("contextmenu.bdDevmode", function(e) {
          self.lastSelector = self.getSelector(e.toElement);
@@ -2084,7 +2085,7 @@ BdApi.setBDData = function(key, data) {
                     }
                 });
             }
-            
+
             var cmo = $("<div/>", {
                 "class": "itemGroup-1tL0uz"
             });
@@ -2099,9 +2100,9 @@ BdApi.setBDData = function(key, data) {
             cm.append(cmo);
             if (cm.hasClass("undefined")) cm.css("top",  "-=" + cmo.outerHeight());
          }
-         
+
          setImmediate(attach);
-         
+
          e.stopPropagation();
      });
  };
@@ -2119,7 +2120,7 @@ devMode.prototype.getSelector = function(element) {
     else if (element.classList.length) return `.${Array.from(element.classList).join(".")}`;
     return `.${Array.from(element.parentElement.classList).join(".")}`;
 };
- 
+
  devMode.prototype.disable = function() {
      $(window).off("keydown.bdDevmode");
      $(document).off("contextmenu.bdDevmode");
@@ -2130,7 +2131,7 @@ devMode.prototype.getSelector = function(element) {
 var ClassNormalizer = (() => {
     const normalizedPrefix = "da";
     const randClass = new RegExp(`^(?!${normalizedPrefix}-)((?:[A-Za-z]|[0-9]|-)+)-(?:[A-Za-z]|[0-9]|-|_){6}$`);
-    
+
     return new class ClassNormalizer {
 
         stop() {
@@ -2139,14 +2140,14 @@ var ClassNormalizer = (() => {
             this.revertElement(document.querySelector("#app-mount"));
             this.hasPatched = false;
         }
-    
+
         start() {
             if (this.hasPatched) return;
             this.patchClassModules(BdApi.findAllModules(this.moduleFilter.bind(this)));
             this.normalizeElement(document.querySelector("#app-mount"));
             this.hasPatched = true;
         }
-    
+
         patchClassModules(modules) {
             for (const module of modules) {
                 this.patchClassModule(normalizedPrefix, module);
@@ -2158,7 +2159,7 @@ var ClassNormalizer = (() => {
                 this.unpatchClassModule(normalizedPrefix, module);
             }
         }
-    
+
         shouldIgnore(value) {
             if (!isNaN(value)) return true;
             if (value.endsWith("px") || value.endsWith("ch") || value.endsWith("em") || value.endsWith("ms")) return true;
@@ -2166,7 +2167,7 @@ var ClassNormalizer = (() => {
             if (value.includes("calc(") || value.includes("rgba")) return true;
             return false;
         }
-    
+
         moduleFilter(module) {
             if (typeof module !== "object" || Array.isArray(module)) return false;
             if (module.__esModule) return false;
@@ -2178,10 +2179,10 @@ var ClassNormalizer = (() => {
                 if (value.split("-").length === 1) return false;
                 if (!randClass.test(value.split(" ")[0])) return false;
             }
-    
+
             return true;
         }
-    
+
         patchClassModule(componentName, classNames) {
             for (const baseClassName in classNames) {
                 const value = classNames[baseClassName];
@@ -2209,7 +2210,7 @@ var ClassNormalizer = (() => {
                 classNames[baseClassName] = newString.trim();
             }
         }
-    
+
         normalizeElement(element) {
             if (!(element instanceof Element)) return;
             const classes = element.classList;
@@ -2233,7 +2234,7 @@ var ClassNormalizer = (() => {
             }
             element.classList.remove(...toRemove);
         }
-    
+
     };
 })();
 
@@ -2426,10 +2427,10 @@ class V2 {
                 }
                 return modules;
             };
-            
+
             const findByUniqueProperties = (propNames) => find(module => propNames.every(prop => module[prop] !== undefined));
             const findByDisplayName = (displayName) => find(module => module.displayName === displayName);
-                
+
             return {find, findAll, findByUniqueProperties, findByDisplayName};
         })();
 
@@ -2447,7 +2448,7 @@ class V2 {
     get react() {return this.internal.react;}
     get reactDom() {return this.internal.reactDom;}
     get reactComponent() {return this.internal.react.Component;}
-    
+
     get messageClasses() {return this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]);}
     get guildClasses() {
 		const normal = this.WebpackModules.findByUniqueProperties(["guildsWrapper"]);
@@ -2456,7 +2457,7 @@ class V2 {
 		const guilds = this.WebpackModules.findByUniqueProperties(["guildIcon", "unread"]);
 		return Object.assign({}, guildsWrapper, guilds);
 	}
-	
+
     get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
     get TimeFormatter() {return this.WebpackModules.findByUniqueProperties(["dateFormat"]);}
     get TooltipWrapper() {return this.WebpackModules.find(m => m.prototype && m.prototype.showDelayed);}
@@ -2465,12 +2466,12 @@ class V2 {
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
 
     parseSettings(cat) {
-        return Object.keys(settings).reduce((arr, key) => { 
+        return Object.keys(settings).reduce((arr, key) => {
             let setting = settings[key];
-            if (setting.cat === cat && setting.implemented && !setting.hidden) { 
+            if (setting.cat === cat && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);
-            } return arr; 
+            } return arr;
         }, []);
     }
 
@@ -2985,7 +2986,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
         BDV2.editorDetached = false;
         this.editor.destroy();
     }
-    
+
     updateLineCount() {
         let lineCount = this.refs.editor.value.split("\n").length;
         if (lineCount == this.props.lines) return;
@@ -3188,7 +3189,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
         }
         return ccss;
     }
-    
+
     updateLineCount() {
         let lineCount = this.refs.editor.value.split("\n").length;
         if (lineCount == this.props.lines) return;
@@ -3417,7 +3418,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
             if (typeof this.settingsPanel === "object") {
                 this.refs.settingspanel.appendChild(this.settingsPanel);
             }
-            
+
             if (!settingsCookie["fork-ps-3"]) return;
             var isHidden = (container, element) => {
 
@@ -3429,7 +3430,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
 
                 return  (eTop < cTop || eBottom > cBottom);
             };
-            
+
             let self = $(BDV2.reactDom.findDOMNode(this));
             let container = self.parents(".scroller");
             if (!isHidden(container[0], self[0])) return;
@@ -3438,7 +3439,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
             }, 300);
         }
     }
-    
+
     reload() {
         const plugin = this.props.plugin.getName();
         pluginModule.reloadPlugin(plugin);
@@ -3459,7 +3460,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
             catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + plugin.getName() + ".", err); }
-            
+
             return BDV2.react.createElement("li", {className: "settings-open ui-switch-item"},
                     BDV2.react.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
                             this.refs.settingspanel.innerHTML = "";
@@ -3508,7 +3509,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
         pluginModule.togglePlugin(this.props.plugin.getName());
     }
 
-    showSettings() {		
+    showSettings() {
         if (!this.hasSettings) return;
         this.setState({settings: true});
     }
@@ -3670,26 +3671,26 @@ class V2Components {
     static TooltipWrap(Component, options) {
 
         const {style = "black", side = "top", text = ""} = options;
-        const id = BDV2.KeyGenerator();    
-    
+        const id = BDV2.KeyGenerator();
+
         return class extends BDV2.reactComponent {
             constructor(props) {
                 super(props);
                 this.onMouseEnter = this.onMouseEnter.bind(this);
                 this.onMouseLeave = this.onMouseLeave.bind(this);
             }
-    
+
             componentDidMount() {
                 this.node = BDV2.reactDom.findDOMNode(this);
                 this.node.addEventListener("mouseenter", this.onMouseEnter);
                 this.node.addEventListener("mouseleave", this.onMouseLeave);
             }
-    
+
             componentWillUnmount() {
                 this.node.removeEventListener("mouseenter", this.onMouseEnter);
                 this.node.removeEventListener("mouseleave", this.onMouseLeave);
             }
-    
+
             onMouseEnter() {
                 const {left, top, width, height} = this.node.getBoundingClientRect();
                 BDV2.Tooltips.show(id, {
@@ -3715,14 +3716,14 @@ class V2Components {
                         }
                     });
                 });
-    
+
                 observer.observe(document.body, {subtree: true, childList: true});
             }
-    
+
             onMouseLeave() {
                 BDV2.Tooltips.hide(id);
             }
-    
+
             render() {
                 return BDV2.react.createElement(Component, this.props);
             }
@@ -3931,7 +3932,7 @@ class V2_SettingsPanel {
             if (enabled) emoteModule.autoCapitalize();
             else emoteModule.disableAutoCapitalize();
         }
-        
+
         if (id == "fork-ps-4") {
             if (enabled) ClassNormalizer.start();
             else ClassNormalizer.stop();
@@ -3958,7 +3959,7 @@ class V2_SettingsPanel {
             const current = BdApi.getWindowPreference("frame");
             if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
         }*/
-        
+
 
         if (id == "bda-gs-8") {
             if (enabled) dMode.enable(settingsCookie["fork-dm-1"]);
@@ -4004,10 +4005,10 @@ class V2_SettingsPanel {
     get coreComponent() {
         return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, {key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
     }
-    
+
     get forkComponent() {
         return BDV2.react.createElement(V2Components.Scroller, {
-                contentColumn: true, 
+                contentColumn: true,
                 fade: true,
                 dark: true,
                 children: [
@@ -4044,13 +4045,13 @@ class V2_SettingsPanel {
                 BDEvents.on(`${prefix}-loaded`, this.onChange);
                 BDEvents.on(`${prefix}-unloaded`, this.onChange);
             }
-        
+
             componentWillUnmount() {
                 BDEvents.off(`${prefix}-reloaded`, this.onChange);
                 BDEvents.off(`${prefix}-loaded`, this.onChange);
                 BDEvents.off(`${prefix}-unloaded`, this.onChange);
             }
-        
+
             onChange() {
                 settingsList.sideBarOnClick(type);
             }
@@ -4096,7 +4097,7 @@ class V2_SettingsPanel {
         }
         BDV2.reactDom.render(this.coreComponent, root);
     }
-    
+
     renderForkSettings() {
         let root = this.root;
         if (!root) {
@@ -4197,7 +4198,7 @@ class V2C_Layer extends BDV2.reactComponent {
 
         $(`#${this.props.id}`).animate({opacity: 1}, {
             step: function(now) {
-              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`); 
+              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`);
             },
             duration: 200,
             done: () => {$(`#${this.props.id}`).css("opacity", "").css("transform", "");}
@@ -4208,26 +4209,26 @@ class V2C_Layer extends BDV2.reactComponent {
         $(window).off(`keyup.${this.props.id}`);
         $(`#${this.props.id}`).animate({opacity: 0}, {
             step: function(now) {
-              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`); 
+              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`);
             },
             duration: 200,
             done: () => {$(`#${this.props.rootId}`).remove();}
         });
-        
+
         $("[class*=\"layer-\"]").removeClass("publicServersOpen").animate({opacity: 1}, {
             step: function(now) {
-              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`); 
+              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
             },
             duration: 200,
             done: () => {$("[class*=\"layer-\"]").css("opacity", "").css("transform", "");}
         });
-        
+
     }
 
     componentWillMount() {
         $("[class*=\"layer-\"]").addClass("publicServersOpen").animate({opacity: 0}, {
             step: function(now) {
-              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`); 
+              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
             },
             duration: 200
         });
@@ -4547,8 +4548,8 @@ class V2C_PublicServers extends BDV2.reactComponent {
         $.ajax({
             method: "GET",
             url: `${this.joinEndPoint}/${serverCard.props.server.identifier}`,
-            headers: {          
-                "Accept": "application/json;",         
+            headers: {
+                "Accept": "application/json;",
                 "Content-Type": "application/json;" ,
                 "x-discord-id": this.state.connection.user.id,
                 "x-discord-token": this.state.connection.user.accessToken
@@ -4631,9 +4632,9 @@ class V2C_PublicServers extends BDV2.reactComponent {
             $.ajax({
                 method: "GET",
                 url: `${self.joinEndPoint}/session`,
-                headers: {          
-                    "Accept": "application/json;",         
-                    "Content-Type": "application/json;"   
+                headers: {
+                    "Accept": "application/json;",
+                    "Content-Type": "application/json;"
                 },
                 crossDomain: true,
                 xhrFields: {
@@ -4648,7 +4649,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
                         }
                     });
                     self.search("", true);
-                    
+
                 },
                 error: jqXHR => {
                     if (jqXHR.status === 403 || jqXHR.status === 404) {
