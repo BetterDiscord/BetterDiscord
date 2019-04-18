@@ -2460,7 +2460,8 @@ class V2 {
 
     get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
     get TimeFormatter() {return this.WebpackModules.findByUniqueProperties(["dateFormat"]);}
-    get TooltipWrapper() {return this.WebpackModules.find(m => m.prototype && m.prototype.showDelayed);}
+    get TooltipWrapper() {return this.WebpackModules.find(m => m.prototype && m.prototype.showDelayed) || this.WebpackModules.find(m => m.prototype && m.prototype.renderTooltip)
+;}
     get NativeModule() {return this.WebpackModules.findByUniqueProperties(["setBadge"]);}
     get Tooltips() {return this.WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
@@ -3692,6 +3693,7 @@ class V2Components {
             }
 
             onMouseEnter() {
+		if (!BDV2.Tooltips) return;
                 const {left, top, width, height} = this.node.getBoundingClientRect();
                 BDV2.Tooltips.show(id, {
                     position: side,
@@ -3721,6 +3723,7 @@ class V2Components {
             }
 
             onMouseLeave() {
+		if (!BDV2.Tooltips) return;
                 BDV2.Tooltips.hide(id);
             }
 
