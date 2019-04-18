@@ -2163,6 +2163,7 @@ var ClassNormalizer = (() => {
         shouldIgnore(value) {
             if (!isNaN(value)) return true;
             if (value.endsWith("px") || value.endsWith("ch") || value.endsWith("em") || value.endsWith("ms")) return true;
+            if (value.startsWith("layerContainer-")) return true;
             if (value.startsWith("#") && (value.length == 7 || value.length == 4)) return true;
             if (value.includes("calc(") || value.includes("rgba")) return true;
             return false;
