@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.7";
+var bbdVersion = "0.2.8";
 
 
 var mainCore;
@@ -646,6 +646,7 @@ function EmoteModule() {
 }
 
 EmoteModule.prototype.init = async function () {
+    return;
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
     this.overrides = ["twitch", "bttv", "ffz"];
 
