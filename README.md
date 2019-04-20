@@ -102,7 +102,7 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
 <table>
 <tr>
 <td align="center">
-<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png?size=128" style="width: 50px;" alt="Kraken"/><br />
+<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png?size=128" width="50px;" alt="Kraken"/><br />
 <strong>William JCM</strong>
 </td>
 </tr>
@@ -115,23 +115,23 @@ These people have either donated or subscribed to the most basic patron tier to 
 <table>
 <tr>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/284122164582416385/4f12bf80cac47656ad7fc6a82fbd5f3b.png?size=128" style="width: 25px; border-radius: 50%;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/284122164582416385/4f12bf80cac47656ad7fc6a82fbd5f3b.png?size=128" width="25px;" /><br />
         <strong>aetheryx</strong>
     </td>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/216782345779281921/d4b651b606f108cd2f96a19af68f942f.png?size=128" style="width: 25px; border-radius: 50%;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/216782345779281921/d4b651b606f108cd2f96a19af68f942f.png?size=128" width="25px;" /><br />
         <strong>JBeauDee</strong>
     </td>
         <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/261673576216789004/31d590fb92329e270a6225a13d500c1d.png?size=128" style="width: 25px; border-radius: 50%;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/261673576216789004/31d590fb92329e270a6225a13d500c1d.png?size=128" width="25px;" /><br />
         <strong>vantiss</strong>
     </td>
         <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/122204411962327043/bd773f79607316e6be10e12682a6c10f.png?size=128" style="width: 25px; border-radius: 50%;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/122204411962327043/bd773f79607316e6be10e12682a6c10f.png?size=128" width="25px;" /><br />
         <strong>xstefen</strong>
     </td>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/219400174869413888/a_58438b5a8e939e997902dc1e4b81e09e.png?size=128" style="width: 25px; border-radius: 50%;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/219400174869413888/a_58438b5a8e939e997902dc1e4b81e09e.png?size=128" width="25px;" /><br />
         <strong>『Sorey』</strong>
     </td>
 </tr>
