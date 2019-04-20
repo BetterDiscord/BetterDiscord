@@ -23,7 +23,7 @@
     },
     "homepage": "https://github.com/rauenzi/BetterDiscordApp#readme",
     "devDependencies": {
-        "gulp": "^3.9.1",
+        "gulp": "^4.0.0",
         "gulp-babel-minify": "^0.5.0",
         "gulp-csso": "^3.0.1",
         "gulp-rename": "^1.4.0"
