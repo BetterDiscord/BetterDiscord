@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.8";
+var bbdVersion = "0.2.9";
 
 
 var mainCore;
@@ -646,7 +646,6 @@ function EmoteModule() {
 }
 
 EmoteModule.prototype.init = async function () {
-    return;
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
     this.overrides = ["twitch", "bttv", "ffz"];
 
@@ -2462,8 +2461,7 @@ class V2 {
 
     get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
     get TimeFormatter() {return this.WebpackModules.findByUniqueProperties(["dateFormat"]);}
-    get TooltipWrapper() {return this.WebpackModules.find(m => m.prototype && m.prototype.showDelayed) || this.WebpackModules.find(m => m.prototype && m.prototype.renderTooltip)
-;}
+    get TooltipWrapper() {return this.WebpackModules.find(m => m.prototype && m.prototype.showDelayed) || this.WebpackModules.findByDisplayName("TooltipDeprecated");}
     get NativeModule() {return this.WebpackModules.findByUniqueProperties(["setBadge"]);}
     get Tooltips() {return this.WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
