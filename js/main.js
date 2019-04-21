@@ -343,8 +343,8 @@ Core.prototype.init = async function() {
 Core.prototype.checkForGuilds = function() {
     return new Promise(resolve => {
         const checkForGuilds = function() {
-            const wrapper = (BDV2.guildClasses.guilds ? BDV2.guildClasses.guilds : BDV2.guildClasses.wrapper).split(" ")[0];
-            const guild = (BDV2.guildClasses.guild ? BDV2.guildClasses.guild : BDV2.guildClasses.listItem).split(" ")[0];
+            const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
+            const guild = (BDV2.guildClasses.container ? BDV2.guildClasses.container : BDV2.guildClasses.listItem).split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild}`).length > 0) return resolve(bdConfig.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
@@ -4314,14 +4314,14 @@ class V2_PublicServers {
 
     get button() {
         let btn = $("<div/>", {
-            "class": BDV2.guildClasses.guild || BDV2.guildClasses.listItem,
+            "class": BDV2.guildClasses.container || BDV2.guildClasses.listItem,
             "id": "bd-pub-li",
             "css": {
                 height: "20px",
                 display: settingsCookie["bda-gs-1"] ? "" : "none"
             }
         }).append($("<div/>", {
-            "class": BDV2.guildClasses.guildInner || "wrapper-25eVIn",
+            "class": "wrapper-25eVIn",
             "css": {
                 "height": "20px",
                 "border-radius": "4px"
@@ -4342,7 +4342,7 @@ class V2_PublicServers {
     }
 
     initialize() {
-        const wrapper = (BDV2.guildClasses.guilds ? BDV2.guildClasses.guilds : BDV2.guildClasses.wrapper).split(" ")[0];
+        const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
         const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
         guilds.after(this.button);
     }
