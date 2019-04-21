@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.9";
+var bbdVersion = "0.2.10";
 
 
 var mainCore;
@@ -344,7 +344,7 @@ Core.prototype.checkForGuilds = function() {
     return new Promise(resolve => {
         const checkForGuilds = function() {
             const wrapper = (BDV2.guildClasses.guilds ? BDV2.guildClasses.guilds : BDV2.guildClasses.wrapper).split(" ")[0];
-            const guild = (BDV2.guildClasses.guild ? BDV2.guildClasses.guild : BDV2.guildClasses.container).split(" ")[0];
+            const guild = (BDV2.guildClasses.guild ? BDV2.guildClasses.guild : BDV2.guildClasses.listItem).split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild}`).length > 0) return resolve(bdConfig.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
@@ -2455,7 +2455,7 @@ class V2 {
 		const normal = this.WebpackModules.findByUniqueProperties(["guildsWrapper"]);
 		if (normal) return normal;
 		const guildsWrapper = this.WebpackModules.findByUniqueProperties(["wrapper", "unreadMentionsBar"]);
-		const guilds = this.WebpackModules.findByUniqueProperties(["guildIcon", "unread"]);
+		const guilds = this.WebpackModules.findByUniqueProperties(["guildIcon", "unread"]) || this.WebpackModules.findByUniqueProperties(["guildsError", "selected"]);
 		return Object.assign({}, guildsWrapper, guilds);
 	}
 
@@ -4314,14 +4314,14 @@ class V2_PublicServers {
 
     get button() {
         let btn = $("<div/>", {
-            "class": BDV2.guildClasses.guild || BDV2.guildClasses.container,
+            "class": BDV2.guildClasses.guild || BDV2.guildClasses.listItem,
             "id": "bd-pub-li",
             "css": {
                 height: "20px",
                 display: settingsCookie["bda-gs-1"] ? "" : "none"
             }
         }).append($("<div/>", {
-            "class": BDV2.guildClasses.guildInner || "wrapper-2lTRaf",
+            "class": BDV2.guildClasses.guildInner || "wrapper-25eVIn",
             "css": {
                 "height": "20px",
                 "border-radius": "4px"
@@ -4343,7 +4343,7 @@ class V2_PublicServers {
 
     initialize() {
         const wrapper = (BDV2.guildClasses.guilds ? BDV2.guildClasses.guilds : BDV2.guildClasses.wrapper).split(" ")[0];
-        const guilds = $(`.${wrapper}>:first-child`);
+        const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
         guilds.after(this.button);
     }
 }

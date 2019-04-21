@@ -101,10 +101,10 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
 
 <table>
 <tr>
-<td align="center">
-<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png?size=128" width="50px;" alt="Kraken"/><br />
-<strong>William JCM</strong>
-</td>
+	<td align="center">
+		<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png?size=128" width="50px;" alt="Kraken"/><br />
+		<a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
+	</td>
 </tr>
 </table>
 
