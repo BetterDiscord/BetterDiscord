@@ -367,7 +367,7 @@ Core.prototype.initSettings = function () {
     }
     else {
         this.loadSettings();
-        $("<style id=\"customcss\">").html(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
+        $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
         for (var setting in defaultCookie) {
             if (settingsCookie[setting] == undefined) {
                 settingsCookie[setting] = defaultCookie[setting];
@@ -1743,7 +1743,7 @@ ThemeModule.prototype.loadThemes = function () {
     for (var i = 0; i < themes.length; i++) {
         var name = bdthemes[themes[i]].name;
         if (!themeCookie[name]) themeCookie[name] = false;
-        if (themeCookie[name]) $("head").append($("<style>", {id: Utils.escapeID(name), html: unescape(bdthemes[name].css)}));
+        if (themeCookie[name]) $("head").append($("<style>", {id: Utils.escapeID(name), text: unescape(bdthemes[name].css)}));
     }
     for (let theme in themeCookie) {
         if (!bdthemes[theme]) delete themeCookie[theme];
@@ -1755,7 +1755,7 @@ ThemeModule.prototype.loadThemes = function () {
 ThemeModule.prototype.enableTheme = function(theme, reload = false) {
     themeCookie[theme] = true;
     this.saveThemeData();
-    $("head").append($("<style>", {id: Utils.escapeID(theme), html: unescape(bdthemes[theme].css)}));
+    $("head").append($("<style>", {id: Utils.escapeID(theme), text: unescape(bdthemes[theme].css)}));
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
 };
 
@@ -1883,7 +1883,7 @@ BdApi.setWindowPreference = function(key, value) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append($("<style>", {id: Utils.escapeID(id), html: css}));
+    $("head").append($("<style>", {id: Utils.escapeID(id), text: css}));
 };
 
 //Clear css/remove any element
@@ -3115,7 +3115,7 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
         if ($("#customcss").length == 0) {
             $("head").append("<style id=\"customcss\"></style>");
         }
-        $("#customcss").html(this.editor.session.getValue()).detach().appendTo(document.head);
+        $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
     }
 
     saveCss() {
@@ -3300,7 +3300,7 @@ class V2C_CssEditor extends BDV2.reactComponent {
         if ($("#customcss").length == 0) {
             $("head").append("<style id=\"customcss\"></style>");
         }
-        $("#customcss").html(this.editor.session.getValue()).detach().appendTo(document.head);
+        $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
     }
 
     saveCss() {
