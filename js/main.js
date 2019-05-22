@@ -182,25 +182,23 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.10";
+var bbdVersion = "0.2.15";
 
 
 var mainCore;
 
 var settings = {
-    "Save logs locally":          {id: "bda-gs-0",  info: "Saves chat logs locally",                           implemented: false, hidden: false, cat: "core"},
     "Public Servers":             {id: "bda-gs-1",  info: "Display public servers button",                     implemented: true,  hidden: false, cat: "core"},
     "Minimal Mode":               {id: "bda-gs-2",  info: "Hide elements and reduce the size of elements.",    implemented: true,  hidden: false, cat: "core"},
     "Voice Mode":                 {id: "bda-gs-4",  info: "Only show voice chat",                              implemented: true,  hidden: false, cat: "core"},
     "Hide Channels":              {id: "bda-gs-3",  info: "Hide channels in minimal mode",                     implemented: true,  hidden: false, cat: "core"},
     "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: true,  hidden: false, cat: "core"},
-    "Override Default Emotes":    {id: "bda-es-5",  info: "Override default emotes",                           implemented: false, hidden: false, cat: "core"},
     "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core"},
     "Custom css live update":     {id: "bda-css-0", info: "",                                                  implemented: true,  hidden: true,  cat: "core"},
     "Custom css auto udpate":     {id: "bda-css-1", info: "",                                                  implemented: true,  hidden: true,  cat: "core"},
     "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core"},
     "Coloured Text":              {id: "bda-gs-7",  info: "Make text colour the same as role colour",          implemented: true,  hidden: false, cat: "core"},
-    "BetterDiscord Blue":         {id: "bda-gs-b",  info: "Replace Discord blue with BD Blue",                 implemented: true,  hidden: false, cat: "core"},
+    "BetterDiscord Blue":         {id: "bda-gs-b",  info: "Replace Discord blue with BD Blue",                 implemented: false,  hidden: false, cat: "core"},
     "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core"},
 
 
@@ -221,14 +219,12 @@ var settings = {
     "BetterTTV Emotes":           {id: "bda-es-2",  info: "Show BetterTTV Emotes",                             implemented: true,  hidden: false, cat: "emote"},
     "Emote Menu":                 {id: "bda-es-0",  info: "Show Twitch/Favourite emotes in emote menu",        implemented: true,  hidden: false, cat: "emote"},
     "Emoji Menu":                 {id: "bda-es-9",  info: "Show Discord emoji menu",                           implemented: true,  hidden: false, cat: "emote"},
-    "Emote Autocomplete":         {id: "bda-es-3",  info: "Autocomplete emote commands",                       implemented: false, hidden: false, cat: "emote"},
     "Emote Auto Capitalization":  {id: "bda-es-4",  info: "Autocapitalize emote commands",                     implemented: true,  hidden: false, cat: "emote"},
     "Show Names":                 {id: "bda-es-6",  info: "Show emote names on hover",                         implemented: true,  hidden: false, cat: "emote"},
     "Show emote modifiers":       {id: "bda-es-8",  info: "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)", implemented: true,  hidden: false, cat: "emote"},
 };
 
 var defaultCookie = {
-    "bda-gs-0": false,
     "bda-gs-1": true,
     "bda-gs-2": false,
     "bda-gs-3": false,
@@ -240,9 +236,7 @@ var defaultCookie = {
     "bda-es-0": true,
     "bda-es-1": true,
     "bda-es-2": true,
-    "bda-es-3": false,
     "bda-es-4": false,
-    "bda-es-5": true,
     "bda-es-6": true,
     "bda-es-7": true,
     "bda-gs-b": false,
@@ -338,6 +332,11 @@ Core.prototype.init = async function() {
         Utils.log("Startup", "Collecting Startup Errors");
         this.showContentErrors({plugins: bdpluginErrors, themes: bdthemeErrors});
     }
+
+    if (!DataStore.getBDData(bbdVersion)) {
+        BdApi.alert("BBD Updated!", ["Lots of things were fixed in this update like Public Servers, Minimal Mode, Dark Mode and 24 Hour Timestamps.", BdApi.React.createElement("br"), BdApi.React.createElement("br"), "Feel free to test them all out!"]);
+        DataStore.setBDData(bbdVersion, true);
+    }
 };
 
 Core.prototype.checkForGuilds = function() {
@@ -423,14 +422,18 @@ Core.prototype.inject24Hour = function() {
     if (this.cancel24Hour) return;
 
     const twelveHour = new RegExp(`([0-9]{1,2}):([0-9]{1,2})\\s(AM|PM)`);
-
-    this.cancel24Hour = Utils.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {after: (data) => {
+    const convert = (data) => {
         if (!settingsCookie["bda-gs-6"]) return;
         const matched = data.returnValue.match(twelveHour);
         if (!matched || matched.length !== 4) return;
         if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
         return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "12" : parseInt(matched[1]) + 12}:${matched[2]}`);
-    }});
+    };
+
+
+    const cancelCozy = Utils.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {after: convert}); // Called in Cozy mode
+    const cancelCompact = Utils.monkeyPatch(BDV2.TimeFormatter, "dateFormat", {after: convert}); // Called in Compact mode
+    this.cancel24Hour = () => {cancelCozy(); cancelCompact();}; // Cancel both
 };
 
 Core.prototype.injectColoredText = function() {
@@ -1026,7 +1029,7 @@ QuickEmoteMenu.prototype.init = function() {
 
 QuickEmoteMenu.prototype.favContext = function(e, em) {
     e.stopPropagation();
-    var menu = $("<div>", {"id": "rmenu", "data-emoteid": $(em).prop("title"), "text": "Remove", "class": "context-menu theme-dark"});
+    var menu = $("<div>", {"id": "removemenu", "data-emoteid": $(em).prop("title"), "text": "Remove", "class": "bd-context-menu context-menu theme-dark"});
     menu.css({
         top: e.pageY - $("#bda-qem-favourite-container").offset().top,
         left: e.pageX - $("#bda-qem-favourite-container").offset().left
@@ -1103,7 +1106,7 @@ QuickEmoteMenu.prototype.obsCallback = function (elem) {
     e.append(this.faContainer);
 
     if (this.lastTab == undefined) {
-        this.lastTab = "bda-qem-favourite";
+        this.lastTab = "bda-qem-emojis";
     }
     this.switchQem(this.lastTab);
 };
@@ -1926,15 +1929,58 @@ BdApi.getCore = function () {
     return mainCore;
 };
 
-//Show modal alert
+/**
+ * Shows a generic but very customizable modal.
+ * @param {string} title - title of the modal
+ * @param {string} content - a string of text to display in the modal
+ */
 BdApi.alert = function (title, content) {
-    // const ModalStack = EDApi.findModuleByProps("push", "update", "pop", "popWithKey");
-    //     const AlertModal = EDApi.findModule(m => m.prototype && m.prototype.handleCancel && m.prototype.handleSubmit && m.prototype.handleMinorConfirm);
-    //     if (!ModalStack || !AlertModal) return window.alert(body);
-    //     ModalStack.push(function(props) {
-    //         return EDApi.React.createElement(AlertModal, Object.assign({title, body}, props));
-    //     });
-    mainCore.alert(title, content);
+    const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
+    const AlertModal = BdApi.findModuleByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");
+    if (!ModalStack || !AlertModal) return mainCore.alert(title, content);
+
+    ModalStack.push(function(props) {
+        return BdApi.React.createElement(AlertModal, Object.assign({
+            title: title,
+            body: content,
+        }, props));
+    });
+};
+
+/**
+ * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
+ * @param {string} title - title of the modal
+ * @param {(string|ReactElement|Array<string|ReactElement>)} children - a single or mixed array of react elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
+ * @param {object} [options] - options to modify the modal
+ * @param {boolean} [options.danger=false] - whether the main button should be red or not
+ * @param {string} [options.confirmText=Okay] - text for the confirmation/submit button
+ * @param {string} [options.cancelText=Cancel] - text for the cancel button
+ * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
+ * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
+ */
+BdApi.showConfirmationModal = function (title, content, options = {}) {
+    const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
+    const TextElement = BdApi.findModuleByProps("Sizes", "Weights");
+    const ConfirmationModal = BdApi.findModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");
+    if (!ModalStack || !ConfirmationModal || !TextElement) return mainCore.alert(title, content);
+
+    const {onConfirm, onCancel, confirmText, cancelText, danger = false} = options;
+    if (typeof(content) == "string") content = TextElement({color: TextElement.Colors.PRIMARY, children: [content]});
+    else if (Array.isArray(content)) content = TextElement({color: TextElement.Colors.PRIMARY, children: content});
+    content = [content];
+
+    const emptyFunction = () => {};
+    ModalStack.push(function(props) {
+        return BdApi.React.createElement(ConfirmationModal, Object.assign({
+            header: title,
+            children: content,
+            red: danger,
+            confirmText: confirmText ? confirmText : "Okay",
+            cancelText: cancelText ? cancelText : "Cancel",
+            onConfirm: onConfirm ? onConfirm : emptyFunction,
+            onCancel: onCancel ? onCancel : emptyFunction
+        }, props));
+    });
 };
 
 //Show toast alert
@@ -1955,6 +2001,14 @@ BdApi.findAllModules = function(filter) {
 // Finds module
 BdApi.findModuleByProps = function(...props) {
     return BDV2.WebpackModules.findByUniqueProperties(props);
+};
+
+BdApi.findModuleByPrototypes = function(...protos) {
+    return BDV2.WebpackModules.findByPrototypes(protos);
+};
+
+BdApi.findModuleByDisplayName = function(name) {
+    return BDV2.WebpackModules.findByDisplayName(name);
 };
 
 // Gets react instance
@@ -2026,17 +2080,10 @@ BdApi.setBDData = function(key, data) {
 };
 
 
-/**
- *
- * @constructor
- * @param {(HTMLElement|jQuery)} node - DOM node to monitor and show the tooltip on
- * @param {string} tip - string to show in the tooltip
- * @param {object} options - additional options for the tooltip
- * @param {string} [options.style=black] - correlates to the discord styling
- * @param {string} [options.side=top] - can be any of top, right, bottom, left
- * @param {boolean} [options.preventFlip=false] - prevents moving the tooltip to the opposite side if it is too big or goes offscreen
- * @param {boolean} [options.disabled=false] - whether the tooltip should be disabled from showing on hover
- */
+
+
+
+
 
 /* BetterDiscordApp DevMode JavaScript
  * Version: 1.0
@@ -2430,9 +2477,10 @@ class V2 {
             };
 
             const findByUniqueProperties = (propNames) => find(module => propNames.every(prop => module[prop] !== undefined));
+            const findByPrototypes = (protoNames) => find(module => module.prototype && protoNames.every(protoProp => module.prototype[protoProp] !== undefined));
             const findByDisplayName = (displayName) => find(module => module.displayName === displayName);
 
-            return {find, findAll, findByUniqueProperties, findByDisplayName};
+            return {find, findAll, findByUniqueProperties, findByPrototypes, findByDisplayName};
         })();
 
         this.internal = {
@@ -2452,16 +2500,14 @@ class V2 {
 
     get messageClasses() {return this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]);}
     get guildClasses() {
-		const normal = this.WebpackModules.findByUniqueProperties(["guildsWrapper"]);
-		if (normal) return normal;
 		const guildsWrapper = this.WebpackModules.findByUniqueProperties(["wrapper", "unreadMentionsBar"]);
-		const guilds = this.WebpackModules.findByUniqueProperties(["guildIcon", "unread"]) || this.WebpackModules.findByUniqueProperties(["guildsError", "selected"]);
+		const guilds = this.WebpackModules.findByUniqueProperties(["guildsError", "selected"]);
 		return Object.assign({}, guildsWrapper, guilds);
 	}
 
     get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
     get TimeFormatter() {return this.WebpackModules.findByUniqueProperties(["dateFormat"]);}
-    get TooltipWrapper() {return this.WebpackModules.find(m => m.prototype && m.prototype.showDelayed) || this.WebpackModules.findByDisplayName("TooltipDeprecated");}
+    get TooltipWrapper() {return this.WebpackModules.findByDisplayName("TooltipDeprecated");}
     get NativeModule() {return this.WebpackModules.findByUniqueProperties(["setBadge"]);}
     get Tooltips() {return this.WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
@@ -2484,7 +2530,7 @@ class V2 {
         this.socialPatch = BdApi.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
             const children = data.returnValue.props.children;
             if (!children || !children.length) return;
-            if (children[children.length - 1].type.displayName !== "SocialLinks") return;
+            if (children[children.length - 2].type.displayName !== "Separator") return;
             const original = children[children.length - 1].type;
             const newOne = function() {
                 const returnVal = original(...arguments);
@@ -3265,6 +3311,13 @@ class V2C_CssEditor extends BDV2.reactComponent {
                             "span",
                             {style: {fontSize: "10px", marginLeft: "5px"}},
                             "Unsaved changes are lost on detach"
+                        ),
+                        BDV2.react.createElement("div", {className: "help-text"},
+                            "Press ",
+                            BDV2.react.createElement("code", {className: "inline"}, "ctrl"),
+                            "+",
+                            BDV2.react.createElement("span", {className: "inline"}, ","),
+                            " with the editor focused to access the editor's settings."
                         )
                     )
                 )
@@ -3448,13 +3501,17 @@ class V2C_PluginCard extends BDV2.reactComponent {
         this.onReload(this.props.plugin.getName());
     }
 
+    getString(value) {
+        return typeof value == "string" ? value : value.toString();
+    }
+
     render() {
         let self = this;
         let {plugin} = this.props;
-        let name = plugin.getName();
-        let author = plugin.getAuthor();
-        let description = plugin.getDescription();
-        let version = plugin.getVersion();
+        let name = this.getString(plugin.getName());
+        let author = this.getString(plugin.getAuthor());
+        let description = this.getString(plugin.getDescription());
+        let version = this.getString(plugin.getVersion());
         let website = bdplugins[name].website;
         let source = bdplugins[name].source;
 
@@ -3894,10 +3951,10 @@ class V2_SettingsPanel {
             else $("#twitchcord-button-container").hide();
         }
 
-        if (id == "bda-gs-b") {
-            if (enabled) $("body").addClass("bd-blue");
-            else $("body").removeClass("bd-blue");
-        }
+        // if (id == "bda-gs-b") {
+        //     if (enabled) $("body").addClass("bd-blue");
+        //     else $("body").removeClass("bd-blue");
+        // }
 
         if (id == "bda-gs-2") {
             if (enabled) $("body").addClass("bd-minimal");
@@ -3974,7 +4031,7 @@ class V2_SettingsPanel {
 
     initializeSettings() {
         if (settingsCookie["bda-es-0"]) $("#twitchcord-button-container").show();
-        if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
+        // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
         if (settingsCookie["bda-gs-1"]) $("#bd-pub-li").show();
@@ -4303,40 +4360,25 @@ class V2_PublicServers {
     }
 
     render() {
-        BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
-        // let root = this.root;
-        // if (!root) {
-        //     console.log("FAILED TO LOCATE ROOT: .layers");
-        //     return;
-        // }
-        // BDV2.reactDom.render(this.component, root);
+        // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layers");
+            return;
+        }
+        BDV2.reactDom.render(this.component, root);
     }
 
     get button() {
         let btn = $("<div/>", {
-            "class": BDV2.guildClasses.container || BDV2.guildClasses.listItem,
-            "id": "bd-pub-li",
-            "css": {
-                height: "20px",
-                display: settingsCookie["bda-gs-1"] ? "" : "none"
-            }
+            "class": BDV2.guildClasses.listItem,
+            "id": "bd-pub-li"
         }).append($("<div/>", {
-            "class": "wrapper-25eVIn",
-            "css": {
-                "height": "20px",
-                "border-radius": "4px"
-            }
-        }).append($("<a/>", {
-
-        }).append($("<div/>", {
-            text: "public",
-            id: "bd-pub-button",
-            css: {
-                "line-height": "20px",
-                "font-size": "12px"
-            },
-            click: () => { this.render(); }
-        }))));
+            "class": "wrapper-25eVIn " + BDV2.guildClasses.circleButtonMask,
+            "text": "public",
+            "id": "bd-pub-button",
+            "click": () => { this.render(); }
+        }));
 
         return btn;
     }
@@ -4554,7 +4596,6 @@ class V2C_PublicServers extends BDV2.reactComponent {
             headers: {
                 "Accept": "application/json;",
                 "Content-Type": "application/json;" ,
-                "x-discord-id": this.state.connection.user.id,
                 "x-discord-token": this.state.connection.user.accessToken
             },
             crossDomain: true,
@@ -4574,10 +4615,9 @@ class V2C_PublicServers extends BDV2.reactComponent {
         options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
 
         self.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
-        let sub = window.location.hostname.split(".")[0];
-        let url = self.connectEndPoint + (sub === "canary" || sub === "ptb" ? `/${sub}` : "") + "?betterDiscord";
+        const url = "https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=https://auth.discordservers.com/info";
         self.joinWindow.webContents.on("did-navigate", (event, url) => {
-            if (url != "https://join.discordservers.com/session") return;
+            if (url != "https://auth.discordservers.com/info") return;
             self.joinWindow.close();
             self.checkConnection();
         });
@@ -4595,7 +4635,10 @@ class V2C_PublicServers extends BDV2.reactComponent {
             minimizable: false,
             alwaysOnTop: true,
             frame: false,
-            center: false
+            center: false,
+            webPreferences: {
+                nodeIntegration: false
+            }
         };
     }
 
@@ -4622,7 +4665,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get joinEndPoint() {
-        return "https://join.discordservers.com";
+        return "https://j.discordservers.com";
     }
 
     get connectEndPoint() {
@@ -4634,7 +4677,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
         try {
             $.ajax({
                 method: "GET",
-                url: `${self.joinEndPoint}/session`,
+                url: `https://auth.discordservers.com/info`,
                 headers: {
                     "Accept": "application/json;",
                     "Content-Type": "application/json;"
@@ -4756,7 +4799,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get categoryButtons() {
-        return ["All", "FPS Games", "MMO Games", "Strategy Games", "Sports Games", "Puzzle Games", "Retro Games", "Party Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Community", "Language", "Programming", "Other"];
+        return ["All", "FPS Games", "MMO Games", "Strategy Games", "MOBA Games", "RPG Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Music", "Community", "Language", "Programming", "Other"];
     }
 
     changeCategory(id) {
