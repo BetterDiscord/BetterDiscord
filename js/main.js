@@ -2531,6 +2531,7 @@ class V2 {
             const children = data.returnValue.props.children;
             if (!children || !children.length) return;
             if (children[children.length - 2].type.displayName !== "Separator") return;
+            if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
             const original = children[children.length - 1].type;
             const newOne = function() {
                 const returnVal = original(...arguments);
