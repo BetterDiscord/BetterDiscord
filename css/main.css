@@ -721,7 +721,7 @@ color: #f6f6f7;
 }
 
 /* Ace Editor Settings */
-body > div:not[class]:last-of-type {
+body > div:not([class]):last-of-type {
   background: rgba(0,0,0, 0.7)!important;
 }
 
