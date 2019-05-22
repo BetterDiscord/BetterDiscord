@@ -1645,6 +1645,7 @@ body .ace_closeButton:active {
 .bd-minimal #bd-pub-button {
   font-size: 8px;
   line-height: 16px;
+  height: 16px;
 }
 
 /* guild list */
