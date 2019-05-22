@@ -340,12 +340,13 @@
 }
 
 #bd-pub-button {
-  border-radius: 0px;
+  border-radius: 4px;
   background-color: rgb(47, 49, 54);
-  color: white;
+  color: #b9bbbe;
   text-align: center;
   font-size: 12px;
   line-height: 20px;
+  height: 20px;
 }
 
 .bd-server-card .bd-server-tags {
@@ -720,7 +721,7 @@ color: #f6f6f7;
 }
 
 /* Ace Editor Settings */
-body > div:last-of-type {
+body > div:not[class]:last-of-type {
   background: rgba(0,0,0, 0.7)!important;
 }
 
