@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.16";
+var bbdVersion = "0.2.17";
 
 
 var mainCore;
@@ -2495,6 +2495,7 @@ class V2 {
         BdApi.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
         BdApi.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
         BdApi.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
+        BdApi.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
     }
 
     get react() {return this.internal.react;}
@@ -2558,12 +2559,13 @@ class V2 {
         this.guildListItemsPatch = BdApi.monkeyPatch(GuildComponent.prototype, "render", {after: (data) => {
             const returnValue = data.returnValue;
             const guildData = data.thisObject.props;
-            if (guildData.unread) returnValue.props.className += " unread";
-            if (guildData.selected) returnValue.props.className += " selected";
-            if (guildData.audio) returnValue.props.className += " audio";
-            if (guildData.video) returnValue.props.className += " video";
-            if (guildData.badge) returnValue.props.className += " badge";
-            if (guildData.animatable) returnValue.props.className += " animatable";
+            returnValue.props.className += " bd-guild";
+            if (guildData.unread) returnValue.props.className += " bd-unread";
+            if (guildData.selected) returnValue.props.className += " bd-selected";
+            if (guildData.audio) returnValue.props.className += " bd-audio";
+            if (guildData.video) returnValue.props.className += " bd-video";
+            if (guildData.badge) returnValue.props.className += " bd-badge";
+            if (guildData.animatable) returnValue.props.className += " bd-animatable";
             return returnValue;
         }});
     }
@@ -2574,13 +2576,27 @@ class V2 {
         if (!guildPill) return;
         this.guildPillPatch = BdApi.monkeyPatch(guildPill, "default", {after: (data) => {
             const props = data.methodArguments[0];
-            if (props.unread) data.returnValue.props.className += " unread";
-            if (props.selected) data.returnValue.props.className += " selected";
-            if (props.hovered) data.returnValue.props.className += " hovered";
+            if (props.unread) data.returnValue.props.className += " bd-unread";
+            if (props.selected) data.returnValue.props.className += " bd-selected";
+            if (props.hovered) data.returnValue.props.className += " bd-hovered";
             return data.returnValue;
         }});
     }
 
+    patchGuildSeparator() {
+        if (this.guildSeparatorPatch) return;
+        const Guilds = BdApi.findModuleByDisplayName("Guilds");
+        const guildComponents = BdApi.findModuleByProps("renderListItem");
+        if (!guildComponents || !Guilds) return;
+        const GuildSeparator = function() {
+            const returnValue = guildComponents.Separator(...arguments);
+            returnValue.props.className += " bd-guild-separator";
+            return returnValue;
+        };
+        this.guildSeparatorPatch = BdApi.monkeyPatch(Guilds.prototype, "render", {after: (data) => {
+            data.returnValue.props.children[1].props.children[3].type = GuildSeparator;
+        }});
+    }
 
 }
 
@@ -3957,6 +3973,9 @@ class V2_SettingsPanel {
             case "core":
                 self.renderCoreSettings();
                 break;
+            case "fork":
+                self.renderForkSettings();
+                break;
             case "emotes":
                 self.renderEmoteSettings();
                 break;
@@ -4107,10 +4126,7 @@ class V2_SettingsPanel {
                 fade: true,
                 dark: true,
                 children: [
-                    BDV2.react.createElement(V2Components.SettingsPanel, {key: "fspanel", title: "BandagedBD Settings", onChange: this.onChange, settings: this.forkSettings, button: {
-                        title: "Clear Emote Cache",
-                        onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
-                    }}),
+                    BDV2.react.createElement(V2Components.SettingsPanel, {key: "fspanel", title: "BandagedBD Settings", onChange: this.onChange, settings: this.forkSettings}),
                     BDV2.react.createElement(V2Components.Tools, {key: "tools"})
                 ]
             }
