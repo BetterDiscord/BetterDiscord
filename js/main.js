@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.15";
+var bbdVersion = "0.2.16";
 
 
 var mainCore;
@@ -333,18 +333,19 @@ Core.prototype.init = async function() {
         this.showContentErrors({plugins: bdpluginErrors, themes: bdthemeErrors});
     }
 
-    if (!DataStore.getBDData(bbdVersion)) {
-        BdApi.alert("BBD Updated!", ["Lots of things were fixed in this update like Public Servers, Minimal Mode, Dark Mode and 24 Hour Timestamps.", BdApi.React.createElement("br"), BdApi.React.createElement("br"), "Feel free to test them all out!"]);
-        DataStore.setBDData(bbdVersion, true);
-    }
+    // if (!DataStore.getBDData(bbdVersion)) {
+    //     BdApi.alert("BBD Updated!", ["Lots of things were fixed in this update like Public Servers, Minimal Mode, Dark Mode and 24 Hour Timestamps.", BdApi.React.createElement("br"), BdApi.React.createElement("br"), "Feel free to test them all out!"]);
+    //     DataStore.setBDData(bbdVersion, true);
+    // }
 };
 
 Core.prototype.checkForGuilds = function() {
     return new Promise(resolve => {
         const checkForGuilds = function() {
             const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
-            const guild = (BDV2.guildClasses.container ? BDV2.guildClasses.container : BDV2.guildClasses.listItem).split(" ")[0];
-            if (document.querySelectorAll(`.${wrapper} .${guild}`).length > 0) return resolve(bdConfig.deferLoaded = true);
+            const guild = BDV2.guildClasses.listItem.split(" ")[0];
+            const blob = BDV2.guildClasses.blobContainer.split(" ")[0];
+            if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(bdConfig.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
         $(document).ready(function () {
@@ -1232,7 +1233,7 @@ var Utils = class {
     static suppressErrors(method, message) {
         return (...params) => {
             try { return method(...params);	}
-            catch (e) { console.error("Error occurred in " + message, e); }
+            catch (e) { this.err("SuppressedError", "Error occurred in " + message, e); }
         };
     }
 
@@ -2491,7 +2492,9 @@ class V2 {
     }
 
     initialize() {
-        this.patchSocial();
+        BdApi.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
+        BdApi.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
+        BdApi.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
     }
 
     get react() {return this.internal.react;}
@@ -2501,8 +2504,9 @@ class V2 {
     get messageClasses() {return this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]);}
     get guildClasses() {
 		const guildsWrapper = this.WebpackModules.findByUniqueProperties(["wrapper", "unreadMentionsBar"]);
-		const guilds = this.WebpackModules.findByUniqueProperties(["guildsError", "selected"]);
-		return Object.assign({}, guildsWrapper, guilds);
+        const guilds = this.WebpackModules.findByUniqueProperties(["guildsError", "selected"]);
+        const pill = this.WebpackModules.findByUniqueProperties(["blobContainer"]);
+        return Object.assign({}, guildsWrapper, guilds, pill);
 	}
 
     get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
@@ -2541,6 +2545,39 @@ class V2 {
                 return returnVal;
             };
             children[children.length - 1].type = newOne;
+        }});
+    }
+
+    patchGuildListItems() {
+        if (this.guildListItemsPatch) return;
+        const listItemClass = this.guildClasses.listItem.split(" ")[0];
+        const blobClass = this.guildClasses.blobContainer.split(" ")[0];
+        const reactInstance = BdApi.getInternalInstance(document.querySelector(`.${listItemClass} .${blobClass}`).parentElement);
+        const GuildComponent = reactInstance.return.type;
+        if (!GuildComponent) return;
+        this.guildListItemsPatch = BdApi.monkeyPatch(GuildComponent.prototype, "render", {after: (data) => {
+            const returnValue = data.returnValue;
+            const guildData = data.thisObject.props;
+            if (guildData.unread) returnValue.props.className += " unread";
+            if (guildData.selected) returnValue.props.className += " selected";
+            if (guildData.audio) returnValue.props.className += " audio";
+            if (guildData.video) returnValue.props.className += " video";
+            if (guildData.badge) returnValue.props.className += " badge";
+            if (guildData.animatable) returnValue.props.className += " animatable";
+            return returnValue;
+        }});
+    }
+
+    patchGuildPills() {
+        if (this.guildPillPatch) return;
+        const guildPill = BdApi.findModule(m => m.default && m.default.toString && m.default.toString().includes("translate3d"));
+        if (!guildPill) return;
+        this.guildPillPatch = BdApi.monkeyPatch(guildPill, "default", {after: (data) => {
+            const props = data.methodArguments[0];
+            if (props.unread) data.returnValue.props.className += " unread";
+            if (props.selected) data.returnValue.props.className += " selected";
+            if (props.hovered) data.returnValue.props.className += " hovered";
+            return data.returnValue;
         }});
     }
 
@@ -3799,7 +3836,7 @@ class V2_SettingsPanel_Sidebar {
     }
 
     get items() {
-        return [{text: "Core", id: "core"}, {text: "Bandages", id: "fork"}, {text: "Emotes", id: "emotes"}, {text: "Custom CSS", id: "customcss"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}];
+        return [{text: "Settings", id: "core"}, {text: "Bandages", id: "fork"}, {text: "Emotes", id: "emotes"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}, {text: "Custom CSS", id: "customcss"}];
     }
 
     get component() {
@@ -3919,9 +3956,6 @@ class V2_SettingsPanel {
         switch (id) {
             case "core":
                 self.renderCoreSettings();
-                break;
-            case "fork":
-                self.renderForkSettings();
                 break;
             case "emotes":
                 self.renderEmoteSettings();
@@ -4084,7 +4118,14 @@ class V2_SettingsPanel {
     }
 
     get emoteComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
+        return BDV2.react.createElement(V2Components.Scroller, {
+            contentColumn: true, fade: true, dark: true, children: [
+                BDV2.react.createElement(V2Components.SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
+                    title: "Clear Emote Cache",
+                    onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
+                }}),
+                BDV2.react.createElement(V2Components.Tools, {key: "tools"})
+        ]});
     }
 
     get customCssComponent() {
