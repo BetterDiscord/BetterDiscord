@@ -4430,7 +4430,8 @@ class V2_PublicServers {
     get button() {
         let btn = $("<div/>", {
             "class": BDV2.guildClasses.listItem,
-            "id": "bd-pub-li"
+            "id": "bd-pub-li",
+            "style": settingsCookie["bda-gs-1"] ? "" : "display: none;"
         }).append($("<div/>", {
             "class": "wrapper-25eVIn " + BDV2.guildClasses.circleButtonMask,
             "text": "public",
