@@ -4746,6 +4746,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
                     withCredentials: true
                 },
                 success: data => {
+                    // Utils.log("PublicServer", "Got data: " + JSON.stringify(data));
                     self.setState({
                         selectedCategory: 0,
                         connection: {
@@ -4757,7 +4758,8 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
                 },
                 error: jqXHR => {
-                    if (jqXHR.status === 403 || jqXHR.status === 404) {
+                    // Utils.err("PublicServers", "Error on connection.", jqXHR);
+                    // if (jqXHR.status === 403 || jqXHR.status === 404) {
                         //Not connected
                         self.setState({
                             title: "Not connected to discordservers.com!",
@@ -4768,8 +4770,8 @@ class V2C_PublicServers extends BDV2.reactComponent {
                                 user: null
                             }
                         });
-                        return;
-                    }
+                    //     return;
+                    // }
                 }
             });
         }
