@@ -989,6 +989,9 @@ body .ace_closeButton:active {
 #bd-settingspane-container .scroller-wrap .scroller {
   display: flex;
 }
+.content-column .ui-form-title:first-child {
+  margin-top: 0;
+}
 /* ================= */
 /*  END BD SETTINGS  */
 

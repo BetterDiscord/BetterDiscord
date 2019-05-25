@@ -188,32 +188,40 @@ var bbdVersion = "0.2.17";
 var mainCore;
 
 var settings = {
-    "Public Servers":             {id: "bda-gs-1",  info: "Display public servers button",                     implemented: true,  hidden: false, cat: "core"},
-    "Minimal Mode":               {id: "bda-gs-2",  info: "Hide elements and reduce the size of elements.",    implemented: true,  hidden: false, cat: "core"},
-    "Voice Mode":                 {id: "bda-gs-4",  info: "Only show voice chat",                              implemented: true,  hidden: false, cat: "core"},
-    "Hide Channels":              {id: "bda-gs-3",  info: "Hide channels in minimal mode",                     implemented: true,  hidden: false, cat: "core"},
-    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: true,  hidden: false, cat: "core"},
-    "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core"},
     "Custom css live update":     {id: "bda-css-0", info: "",                                                  implemented: true,  hidden: true,  cat: "core"},
     "Custom css auto udpate":     {id: "bda-css-1", info: "",                                                  implemented: true,  hidden: true,  cat: "core"},
-    "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core"},
-    "Coloured Text":              {id: "bda-gs-7",  info: "Make text colour the same as role colour",          implemented: true,  hidden: false, cat: "core"},
     "BetterDiscord Blue":         {id: "bda-gs-b",  info: "Replace Discord blue with BD Blue",                 implemented: false,  hidden: false, cat: "core"},
-    "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core"},
+
+    /* Core */
+    /* ====== */
+    "Public Servers":             {id: "bda-gs-1",  info: "Display public servers button",                     implemented: true,  hidden: false, cat: "core", category: "core"},
+    "Minimal Mode":               {id: "bda-gs-2",  info: "Hide elements and reduce the size of elements.",    implemented: true,  hidden: false, cat: "core", category: "core"},
+    "Voice Mode":                 {id: "bda-gs-4",  info: "Only show voice chat",                              implemented: true,  hidden: false, cat: "core", category: "core"},
+    "Hide Channels":              {id: "bda-gs-3",  info: "Hide channels in minimal mode",                     implemented: true,  hidden: false, cat: "core", category: "core"},
+    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: true,  hidden: false, cat: "core", category: "core"},
+    "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core", category: "core"},
+    "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core", category: "core"},
+    "Coloured Text":              {id: "bda-gs-7",  info: "Make text colour the same as role colour",          implemented: true,  hidden: false, cat: "core", category: "core"},
+    "Normalize Classes":          {id: "fork-ps-4", info: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", implemented: true,  hidden: false, cat: "core", category: "core"},
+    
+    /* Content */
+    "Content Error Modal":        {id: "fork-ps-1", info: "Shows a modal with plugin/theme errors", implemented: true,  hidden: false, cat: "core", category: "plugins & themes"},
+    "Show Toasts":                {id: "fork-ps-2", info: "Shows a small notification for important information", implemented: true,  hidden: false, cat: "core", category: "plugins & themes"},
+    "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "core", category: "plugins & themes"},
+    "Automatic Loading":          {id: "fork-ps-5", info: "Automatically loads, reloads, and unloads plugins and themes", implemented: true,  hidden: false, cat: "core", category: "plugins & themes"},
+    
+    /* Developer */
+    "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core", category: "developer settings"},
+    "Copy Selector":			  {id: "fork-dm-1", info: "Adds a \"Copy Selector\" option to context menus when developer mode is active", implemented: true,  hidden: false, cat: "core", category: "developer settings"},
+
+    /* Window Prefs */
+    "Enable Transparency":        {id: "fork-wp-1", info: "Enables the main window to be see-through (requires restart)", implemented: true,  hidden: false, cat: "core", category: "window preferences"},
+    "Window Frame":               {id: "fork-wp-2", info: "Adds the native os window frame to the main window", implemented: false,  hidden: true, cat: "core", category: "window preferences"},
 
 
-    "Content Error Modal":        {id: "fork-ps-1", info: "Shows a modal with plugin/theme errors", implemented: true,  hidden: false, cat: "fork"},
-    "Show Toasts":                {id: "fork-ps-2", info: "Shows a small notification for important information", implemented: true,  hidden: false, cat: "fork"},
-    "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "fork"},
-    "Animate On Hover":           {id: "fork-es-2", info: "Only animate the emote modifiers on hover", implemented: true,  hidden: false, cat: "fork"},
-    "Copy Selector":			  {id: "fork-dm-1", info: "Adds a \"Copy Selector\" option to context menus when developer mode is active", implemented: true,  hidden: false, cat: "fork"},
-    "Download Emotes":            {id: "fork-es-3", info: "Download emotes when the cache is expired", implemented: true,  hidden: false, cat: "fork"},
-    "Normalize Classes":          {id: "fork-ps-4", info: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", implemented: true,  hidden: false, cat: "fork"},
-    "Automatic Loading":          {id: "fork-ps-5", info: "Automatically loads, reloads, and unloads plugins and themes", implemented: true,  hidden: false, cat: "fork"},
-    "Enable Transparency":        {id: "fork-wp-1", info: "Enables the main window to be see-through (requires restart)", implemented: true,  hidden: false, cat: "fork"},
-    "Window Frame":               {id: "fork-wp-2", info: "Adds the native os window frame to the main window", implemented: false,  hidden: true, cat: "fork"},
-
-
+    /* Emotes */
+    /* ====== */
+    "Download Emotes":            {id: "fork-es-3", info: "Download emotes when the cache is expired", implemented: true,  hidden: false, cat: "emote"},
     "Twitch Emotes":              {id: "bda-es-7",  info: "Show Twitch emotes",                                implemented: true,  hidden: false, cat: "emote"},
     "FrankerFaceZ Emotes":        {id: "bda-es-1",  info: "Show FrankerFaceZ Emotes",                          implemented: true,  hidden: false, cat: "emote"},
     "BetterTTV Emotes":           {id: "bda-es-2",  info: "Show BetterTTV Emotes",                             implemented: true,  hidden: false, cat: "emote"},
@@ -222,6 +230,7 @@ var settings = {
     "Emote Auto Capitalization":  {id: "bda-es-4",  info: "Autocapitalize emote commands",                     implemented: true,  hidden: false, cat: "emote"},
     "Show Names":                 {id: "bda-es-6",  info: "Show emote names on hover",                         implemented: true,  hidden: false, cat: "emote"},
     "Show emote modifiers":       {id: "bda-es-8",  info: "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)", implemented: true,  hidden: false, cat: "emote"},
+    "Animate On Hover":           {id: "fork-es-2", info: "Only animate the emote modifiers on hover", implemented: true,  hidden: false, cat: "emote"}
 };
 
 var defaultCookie = {
@@ -2727,6 +2736,41 @@ class V2C_SettingsPanel extends BDV2.reactComponent {
     }
 }
 
+class V2C_SettingsGroup extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        const {title, settings, button} = this.props;
+        const buttonComponent = button ? BDV2.react.createElement("button", {key: "title-button", className: "bd-pfbtn", onClick: button.onClick}, button.title) : null;
+        return [BDV2.react.createElement(V2Components.SettingsTitle, {text: title}),
+                buttonComponent,
+                settings.map(setting => {
+                    return BDV2.react.createElement(V2Components.Switch, {id: setting.id, key: setting.id, data: setting, checked: settingsCookie[setting.id], onChange: (id, checked) => {
+                        this.props.onChange(id, checked);
+                    }});
+                })];
+    }
+}
+
+class V2C_SectionedSettingsPanel extends BDV2.reactComponent {
+
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return BDV2.react.createElement(
+            "div", {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
+            this.props.sections.map(section => {
+                return BDV2.react.createElement(V2Components.SettingsGroup, Object.assign({}, section, this.props.onChange));
+            })
+        );
+    }
+}
+
 class V2C_Switch extends BDV2.reactComponent {
 
     constructor(props) {
@@ -3001,11 +3045,11 @@ class V2C_SettingsTitle extends BDV2.reactComponent {
     constructor(props) {
         super(props);
     }
-
+//h2-2gWE-o title-3sZWYQ size16-14cGz5 height20-mO2eIN weightSemiBold-NJexzi da-h2 da-title da-size16 da-height20 da-weightSemiBold defaultColor-1_ajX0 da-defaultColor marginTop60-3PGbtK da-marginTop60 marginBottom20-32qID7 da-marginBottom20
     render() {
         return BDV2.react.createElement(
             "h2",
-            {className: "ui-form-title h2 margin-reset margin-bottom-20"},
+            {className: "ui-form-title h2 margin-reset margin-bottom-20 marginTop60-3PGbtK da-marginTop6"},
             this.props.text
         );
     }
@@ -3725,6 +3769,12 @@ class V2Cs_TabBar {
 
 
 class V2Components {
+    static get SettingsGroup() {
+        return V2C_SettingsGroup;
+    }
+    static get SectionedSettingsPanel() {
+        return V2C_SectionedSettingsPanel;
+    }
     static get SettingsPanel() {
         return V2C_SettingsPanel;
     }
@@ -3852,7 +3902,7 @@ class V2_SettingsPanel_Sidebar {
     }
 
     get items() {
-        return [{text: "Settings", id: "core"}, {text: "Bandages", id: "fork"}, {text: "Emotes", id: "emotes"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}, {text: "Custom CSS", id: "customcss"}];
+        return [{text: "Settings", id: "core"}, {text: "Emotes", id: "emotes"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}, {text: "Custom CSS", id: "customcss"}];
     }
 
     get component() {
@@ -3946,11 +3996,12 @@ class V2_SettingsPanel {
     }
 
     get coreSettings() {
-        return this.getSettings("core");
+        const settings = this.getSettings("core");
+        const categories = [...new Set(settings.map(s => s.category))];
+        const sections = categories.map(c => {return {title: c, settings: settings.filter(s => s.category == c)};});
+        return sections;
     }
-    get forkSettings() {
-        return this.getSettings("fork");
-    }
+
     get emoteSettings() {
         return this.getSettings("emote");
     }
@@ -3972,9 +4023,6 @@ class V2_SettingsPanel {
         switch (id) {
             case "core":
                 self.renderCoreSettings();
-                break;
-            case "fork":
-                self.renderForkSettings();
                 break;
             case "emotes":
                 self.renderEmoteSettings();
@@ -4117,20 +4165,10 @@ class V2_SettingsPanel {
     }
 
     get coreComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, {key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
-    }
-
-    get forkComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, {
-                contentColumn: true,
-                fade: true,
-                dark: true,
-                children: [
-                    BDV2.react.createElement(V2Components.SettingsPanel, {key: "fspanel", title: "BandagedBD Settings", onChange: this.onChange, settings: this.forkSettings}),
-                    BDV2.react.createElement(V2Components.Tools, {key: "tools"})
-                ]
-            }
-        );
+        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [
+            BDV2.react.createElement(V2Components.SectionedSettingsPanel, {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
+            BDV2.react.createElement(V2Components.Tools, {key: "tools"})
+        ]});
     }
 
     get emoteComponent() {
@@ -4214,15 +4252,6 @@ class V2_SettingsPanel {
             return;
         }
         BDV2.reactDom.render(this.coreComponent, root);
-    }
-
-    renderForkSettings() {
-        let root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-            return;
-        }
-        BDV2.reactDom.render(this.forkComponent, root);
     }
 
     renderEmoteSettings() {
@@ -4757,21 +4786,16 @@ class V2C_PublicServers extends BDV2.reactComponent {
                     self.search("", true);
 
                 },
-                error: jqXHR => {
-                    // Utils.err("PublicServers", "Error on connection.", jqXHR);
-                    // if (jqXHR.status === 403 || jqXHR.status === 404) {
-                        //Not connected
-                        self.setState({
-                            title: "Not connected to discordservers.com!",
-                            loading: true,
-                            selectedCategory: -1,
-                            connection: {
-                                state: 1,
-                                user: null
-                            }
-                        });
-                    //     return;
-                    // }
+                error: () => {
+                    self.setState({
+                        title: "Not connected to discordservers.com!",
+                        loading: true,
+                        selectedCategory: -1,
+                        connection: {
+                            state: 1,
+                            user: null
+                        }
+                    });
                 }
             });
         }
