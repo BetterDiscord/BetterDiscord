@@ -1,0 +1,43 @@
+{
+	"extends": "eslint:recommended",
+	"env": {
+        "browser": true,
+        "node": true,
+        "jquery": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 8,
+        "sourceType": "module"
+    },
+    "rules": {
+        "semi": 2,
+        "space-infix-ops": ["error", {"int32Hint": false}],
+        "quotes": ["error", "double", {"allowTemplateLiterals": true}],
+        "no-console": 0,
+        "brace-style": ["error", "stroustrup", {"allowSingleLine": true}],
+        "keyword-spacing": 2,
+        "no-else-return": 2,
+        "curly": ["error", "multi-line", "consistent"],
+        "dot-notation": 2,
+        "yoda": 2,
+        "linebreak-style": ["error", "windows"],
+        "quote-props": ["error", "consistent-as-needed", {"keywords": true}],
+        "object-curly-spacing": ["error", "never", { "objectsInObjects": false }]
+    },
+    "globals": {
+        "webpackJsonp": false,
+        "Proxy": false,
+        "Set": false,
+        "WeakMap": false,
+        "Promise": false,
+        "bdplugins": false,
+        "bdthemes": false,
+        "betterDiscordIPC": false,
+        "bdVersion": false,
+        "version": false,
+        "_bdhash": true,
+        "ace": false,
+        "Reflect": false,
+        "DiscordNative": false
+    }
+}

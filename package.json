@@ -1,0 +1,31 @@
+{
+    "name": "bandagedbd",
+    "version": "0.2.3",
+    "description": "Enhances Discord adding functionality and themes.",
+    "main": "js/main.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "minify": "gulp minify-js && gulp minify-css",
+        "minify-js": "gulp minify-js",
+        "minify-css": "gulp minify-css",
+        "watch": "gulp watch",
+        "watch-js": "gulp watch-js",
+        "watch-css": "gulp watch-css"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/rauenzi/BetterDiscordApp.git"
+    },
+    "author": "rauenzi",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/rauenzi/BetterDiscordApp/issues"
+    },
+    "homepage": "https://github.com/rauenzi/BetterDiscordApp#readme",
+    "devDependencies": {
+        "gulp": "^4.0.0",
+        "gulp-babel-minify": "^0.5.0",
+        "gulp-csso": "^3.0.1",
+        "gulp-rename": "^1.4.0"
+    }
+}
