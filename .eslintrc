@@ -38,6 +38,7 @@
         "_bdhash": true,
         "ace": false,
         "Reflect": false,
-        "DiscordNative": false
+        "DiscordNative": false,
+        "__non_webpack_require__": false
     }
 }

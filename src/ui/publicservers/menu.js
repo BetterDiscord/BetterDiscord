@@ -1,3 +1,10 @@
+import {BDV2} from "modules";
+import SidebarView from "../sidebarview";
+import Tools from "../settings/exitbutton";
+import TabBar from "../settings/tabbar";
+import SettingsTitle from "../settings/title";
+import ServerCard from "./card";
+
 export default class V2C_PublicServers extends BDV2.reactComponent {
 
     constructor(props) {
@@ -49,7 +56,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
                 let servers = data.results.reduce((arr, server) => {
                     server.joined = false;
                     arr.push(server);
-                    // arr.push(<V2Components.ServerCard server={server} join={self.join}/>);
+                    // arr.push(<ServerCard server={server} join={self.join}/>);
                     return arr;
                 }, []);
 
@@ -162,7 +169,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         };
         let guildList = this.SortedGuildStore.guildPositions;
         let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
-        return BDV2.react.createElement(V2Components.ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
+        return BDV2.react.createElement(ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
     }
 
     get endPoint() {
@@ -230,7 +237,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement(V2Components.SidebarView, {ref: "sbv", children: this.component});
+        return BDV2.react.createElement(SidebarView, {ref: "sbv", children: this.component});
     }
 
     get component() {
@@ -242,7 +249,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
                 component: this.content
             },
             tools: {
-                component: BDV2.react.createElement(V2Components.Tools, {key: "pt", ref: "tools", onClick: this.close})
+                component: BDV2.react.createElement(Tools, {key: "pt", ref: "tools", onClick: this.close})
             }
         };
     }
@@ -259,14 +266,14 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
                     {className: "ui-tab-bar-header", style: {fontSize: "16px"}},
                     "Public Servers"
                 ),
-                BDV2.react.createElement(V2Components.TabBar.Separator, null),
+                BDV2.react.createElement(TabBar.Separator, null),
                 this.searchInput,
-                BDV2.react.createElement(V2Components.TabBar.Separator, null),
-                BDV2.react.createElement(V2Components.TabBar.Header, {text: "Categories"}),
+                BDV2.react.createElement(TabBar.Separator, null),
+                BDV2.react.createElement(TabBar.Header, {text: "Categories"}),
                 this.categoryButtons.map((value, index) => {
-                    return BDV2.react.createElement(V2Components.TabBar.Item, {id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index});
+                    return BDV2.react.createElement(TabBar.Item, {id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index});
                 }),
-                BDV2.react.createElement(V2Components.TabBar.Separator, null),
+                BDV2.react.createElement(TabBar.Separator, null),
                 this.footer,
                 this.connection
             )
@@ -329,10 +336,10 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         return [BDV2.react.createElement(
             "div",
             {ref: "content", key: "pc", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
-            BDV2.react.createElement(V2Components.SettingsTitle, {text: self.state.title}),
+            BDV2.react.createElement(SettingsTitle, {text: self.state.title}),
             self.bdServer,
             self.state.servers.map((server) => {
-                return BDV2.react.createElement(V2Components.ServerCard, {key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
+                return BDV2.react.createElement(ServerCard, {key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
             }),
             self.state.next && BDV2.react.createElement(
                 "button",
@@ -345,13 +352,13 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
                     self.state.loading ? "Loading" : "Load More"
                 )
             ),
-            self.state.servers.length > 0 && BDV2.react.createElement(V2Components.SettingsTitle, {text: self.state.title})
+            self.state.servers.length > 0 && BDV2.react.createElement(SettingsTitle, {text: self.state.title})
         )];
     }
 
     get notConnected() {
         let self = this;
-        //return BDV2.react.createElement(V2Components.SettingsTitle, { text: self.state.title });
+        //return BDV2.react.createElement(SettingsTitle, { text: self.state.title });
         return [BDV2.react.createElement(
             "div",
             {key: "ncc", ref: "content", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
@@ -402,7 +409,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         return BDV2.react.createElement(
             "span",
             null,
-            BDV2.react.createElement(V2Components.TabBar.Separator, null),
+            BDV2.react.createElement(TabBar.Separator, null),
             BDV2.react.createElement(
                 "span",
                 {style: {color: "#b9bbbe", fontSize: "10px", marginLeft: "10px"}},

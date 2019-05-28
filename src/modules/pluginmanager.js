@@ -6,7 +6,7 @@ function PluginModule() {
 
 PluginModule.prototype.loadPlugins = function () {
     this.loadPluginData();
-    bdpluginErrors = ContentManager.loadPlugins();
+    const errors = ContentManager.loadPlugins();
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin, name;
@@ -19,7 +19,7 @@ PluginModule.prototype.loadPlugins = function () {
         catch (err) {
             pluginCookie[name] = false;
             Utils.err("Plugins", name + " could not be loaded.", err);
-            bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, message: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
+            errors.push({name: name, file: bdplugins[plugins[i]].filename, message: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
             continue;
         }
 
@@ -33,7 +33,7 @@ PluginModule.prototype.loadPlugins = function () {
             catch (err) {
                 pluginCookie[name] = false;
                 Utils.err("Plugins", name + " could not be started.", err);
-                bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, message: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
+                errors.push({name: name, file: bdplugins[plugins[i]].filename, message: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
             }
         }
     }
@@ -41,6 +41,7 @@ PluginModule.prototype.loadPlugins = function () {
 
     require("electron").remote.getCurrentWebContents().on("did-navigate-in-page", this.channelSwitch.bind(this));
     // if (settingsCookie["fork-ps-5"]) ContentManager.watchContent("plugin");
+    return errors;
 };
 
 PluginModule.prototype.startPlugin = function(plugin, reload = false) {
@@ -189,3 +190,5 @@ PluginModule.prototype.rawObserver = function(e) {
         }
     }
 };
+
+export default PluginModule;

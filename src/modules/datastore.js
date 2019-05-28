@@ -1,4 +1,5 @@
-const Config = require("../data/config.json");
+import Config from "../data/config";
+import BdApi from "./pluginapi";
 const fs = require("fs");
 const path = require("path");
 const releaseChannel = DiscordNative.globals.releaseChannel;
@@ -12,10 +13,10 @@ export default class DataStore {
     initialize() {
         try {
             if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
-            const data = require(this.BDFile);
+            const data = __non_webpack_require__(this.BDFile);
             if (data.hasOwnProperty("settings")) this.data = data;
             if (!fs.existsSync(this.settingsFile)) return;
-            let settings = require(this.settingsFile);
+            let settings = __non_webpack_require__(this.settingsFile);
             fs.unlinkSync(this.settingsFile);
             if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}}, {[releaseChannel]: settings});
             else settings = Object.assign({stable: {}, canary: {}, ptb: {}}, settings);

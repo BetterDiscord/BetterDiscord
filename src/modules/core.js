@@ -1,70 +1,83 @@
+import Utilties from "./utilities";
+import Config from "../data/config";
+import Settings from "../data/settingscookie";
+import BDV2 from "./bdv2";
+import EmoteModule from "./emotes";
+import QuickEmoteMenu from "./emotemenu";
+import VoiceMode from "./voicemode";
+import DevMode from "./devmode";
+import PluginModule from "./pluginmanager";
+import ThemeModule from "./thememanager";
+import DataStore from "./datastore";
+import {PublicServers, SettingsPanel} from "ui";
+
 function Core(config) {
-    window.bdConfig = config;
+    Object.assign(Config, config);
 }
 
 Core.prototype.init = async function() {
-    if (bdConfig.version < minSupportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + bdConfig.version + " (your version)" + " is not supported by the latest js (" + bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
+    if (Config.version < Config.minSupportedVersion) {
+        this.alert("Not Supported", "BetterDiscord v" + Config.version + " (your version)" + " is not supported by the latest js (" + Config.bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
         return;
     }
 
-    if (bdConfig.updater.LatestVersion > bdConfig.version) {
+    if (Config.updater.LatestVersion > Config.version) {
         this.alert("Update Available", `
-            An update for BandagedBD is available (${bdConfig.updater.LatestVersion})! Please Reinstall!<br /><br />
+            An update for BandagedBD is available (${Config.updater.LatestVersion})! Please Reinstall!<br /><br />
             <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>
         `);
     }
 
-    Utils.log("Startup", "Initializing Settings");
+    Utilties.log("Startup", "Initializing Settings");
     this.initSettings();
-    emoteModule = new EmoteModule();
-    quickEmoteMenu = new QuickEmoteMenu();
-    Utils.log("Startup", "Initializing EmoteModule");
-    window.emotePromise = emoteModule.init().then(() => {
-        emoteModule.initialized = true;
-        Utils.log("Startup", "Initializing QuickEmoteMenu");
-        quickEmoteMenu.init();
+    this.emoteModule = new EmoteModule();
+    this.quickEmoteMenu = new QuickEmoteMenu();
+    Utilties.log("Startup", "Initializing EmoteModule");
+    window.emotePromise = this.emoteModule.init().then(() => {
+        this.emoteModule.initialized = true;
+        Utilties.log("Startup", "Initializing QuickEmoteMenu");
+        this.quickEmoteMenu.init();
     });
-    publicServersModule = new V2_PublicServers();
+    this.publicServersModule = new PublicServers();
 
-    voiceMode = new VoiceMode();
-    dMode = new devMode();
+    this.voiceMode = new VoiceMode();
+    this.dMode = new DevMode();
 
     this.injectExternals();
 
     await this.checkForGuilds();
     BDV2.initialize();
-    Utils.log("Startup", "Updating Settings");
-    settingsPanel = new V2_SettingsPanel();
-    settingsPanel.initializeSettings();
+    Utilties.log("Startup", "Updating Settings");
+    this.settingsPanel = new SettingsPanel();
+    this.settingsPanel.initializeSettings();
 
-    Utils.log("Startup", "Loading Plugins");
-    pluginModule = new PluginModule();
-    pluginModule.loadPlugins();
+    Utilties.log("Startup", "Loading Plugins");
+    this.pluginModule = new PluginModule();
+    const pluginErrors = this.pluginModule.loadPlugins();
 
-    Utils.log("Startup", "Loading Themes");
-    themeModule = new ThemeModule();
-    themeModule.loadThemes();
+    Utilties.log("Startup", "Loading Themes");
+    this.themeModule = new ThemeModule();
+    const themeErrors = this.themeModule.loadThemes();
 
     $("#customcss").detach().appendTo(document.head);
 
     window.addEventListener("beforeunload", function() {
-        if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
+        if (Settings["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
     });
 
-    publicServersModule.initialize();
+    this.publicServersModule.initialize();
 
-    emoteModule.autoCapitalize();
+    this.emoteModule.autoCapitalize();
 
-    Utils.log("Startup", "Removing Loading Icon");
+    Utilties.log("Startup", "Removing Loading Icon");
     document.getElementsByClassName("bd-loaderv2")[0].remove();
-    Utils.log("Startup", "Initializing Main Observer");
+    Utilties.log("Startup", "Initializing Main Observer");
     this.initObserver();
 
     // Show loading errors
-    if (settingsCookie["fork-ps-1"]) {
-        Utils.log("Startup", "Collecting Startup Errors");
-        this.showContentErrors({plugins: bdpluginErrors, themes: bdthemeErrors});
+    if (Settings["fork-ps-1"]) {
+        Utilties.log("Startup", "Collecting Startup Errors");
+        this.showContentErrors({plugins: pluginErrors, themes: themeErrors});
     }
 
     // if (!DataStore.getBDData(bbdVersion)) {
@@ -79,7 +92,7 @@ Core.prototype.checkForGuilds = function() {
             const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
             const guild = BDV2.guildClasses.listItem.split(" ")[0];
             const blob = BDV2.guildClasses.blobContainer.split(" ")[0];
-            if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(bdConfig.deferLoaded = true);
+            if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(Config.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
         $(document).ready(function () {
@@ -89,34 +102,28 @@ Core.prototype.checkForGuilds = function() {
 };
 
 Core.prototype.injectExternals = async function() {
-    await Utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
-    if (require.original) window.require = require.original;
+    await Utilties.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
+    // if (require.original) window.require = require.original;
 };
 
 Core.prototype.initSettings = function () {
     DataStore.initialize();
-    if (!DataStore.getSettingGroup("settings")) {
-        settingsCookie = defaultCookie;
-        this.saveSettings();
+    if (!DataStore.getSettingGroup("settings")) return this.saveSettings();
+    const savedSettings = this.loadSettings();
+    $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
+    for (const setting in savedSettings) {
+        if (savedSettings[setting] !== undefined) Settings[setting] = savedSettings[setting];
     }
-    else {
-        this.loadSettings();
-        $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
-        for (var setting in defaultCookie) {
-            if (settingsCookie[setting] == undefined) {
-                settingsCookie[setting] = defaultCookie[setting];
-                this.saveSettings();
-            }
-        }
-    }
+    this.saveSettings();
+
 };
 
 Core.prototype.saveSettings = function () {
-    DataStore.setSettingGroup("settings", settingsCookie);
+    DataStore.setSettingGroup("settings", Settings);
 };
 
 Core.prototype.loadSettings = function () {
-    settingsCookie = DataStore.getSettingGroup("settings");
+    Settings = DataStore.getSettingGroup("settings");
 };
 
 Core.prototype.initObserver = function () {
@@ -124,7 +131,7 @@ Core.prototype.initObserver = function () {
 
         for (let i = 0, mlen = mutations.length; i < mlen; i++) {
             let mutation = mutations[i];
-            if (typeof pluginModule !== "undefined") pluginModule.rawObserver(mutation);
+            if (typeof pluginModule !== "undefined") this.pluginModule.rawObserver(mutation);
 
             // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
@@ -137,12 +144,12 @@ Core.prototype.initObserver = function () {
                 if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
                     node.setAttribute("layer-id", "user-settings");
                     node.setAttribute("id", "user-settings");
-                    if (!document.getElementById("bd-settings-sidebar")) settingsPanel.renderSidebar();
+                    if (!document.getElementById("bd-settings-sidebar")) this.settingsPanel.renderSidebar();
                 }
             }
 
             // Emoji Picker
-            if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
+            if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) this.quickEmoteMenu.obsCallback(node);
 
         }
     });
@@ -158,7 +165,7 @@ Core.prototype.inject24Hour = function() {
 
     const twelveHour = new RegExp(`([0-9]{1,2}):([0-9]{1,2})\\s(AM|PM)`);
     const convert = (data) => {
-        if (!settingsCookie["bda-gs-6"]) return;
+        if (!Settings["bda-gs-6"]) return;
         const matched = data.returnValue.match(twelveHour);
         if (!matched || matched.length !== 4) return;
         if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
@@ -166,17 +173,17 @@ Core.prototype.inject24Hour = function() {
     };
 
 
-    const cancelCozy = Utils.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {after: convert}); // Called in Cozy mode
-    const cancelCompact = Utils.monkeyPatch(BDV2.TimeFormatter, "dateFormat", {after: convert}); // Called in Compact mode
+    const cancelCozy = Utilties.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {after: convert}); // Called in Cozy mode
+    const cancelCompact = Utilties.monkeyPatch(BDV2.TimeFormatter, "dateFormat", {after: convert}); // Called in Compact mode
     this.cancel24Hour = () => {cancelCozy(); cancelCompact();}; // Cancel both
 };
 
 Core.prototype.injectColoredText = function() {
     if (this.cancelColoredText) return;
 
-    this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
-        if (!settingsCookie["bda-gs-7"]) return;
-		Utils.monkeyPatch(data.returnValue.props, "children", {silent: true, after: ({returnValue}) => {
+    this.cancelColoredText = Utilties.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
+        if (!Settings["bda-gs-7"]) return;
+		Utilties.monkeyPatch(data.returnValue.props, "children", {silent: true, after: ({returnValue}) => {
 			const markup = returnValue.props.children[1];
 			const roleColor = data.thisObject.props.message.colorString;
 			if (markup && roleColor) markup.props.style = {color: roleColor};
@@ -268,7 +275,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
             if (err.error) {
                 error.find("a").on("click", (e) => {
                     e.preventDefault();
-                    Utils.err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
+                    Utilties.err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
                 });
             }
         }
@@ -307,7 +314,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
  * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
  */
 Core.prototype.showToast = function(content, options = {}) {
-    if (!bdConfig.deferLoaded) return;
+    if (!Config.deferLoaded) return;
     if (!document.querySelector(".bd-toasts")) {
         let toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");
@@ -332,3 +339,6 @@ Core.prototype.showToast = function(content, options = {}) {
         }, 300);
     }, timeout);
 };
+
+
+export default Core;

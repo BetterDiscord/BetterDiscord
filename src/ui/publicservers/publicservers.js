@@ -1,9 +1,14 @@
+import Settings from "../../data/settingscookie";
+import {BDV2} from "modules";
+import Layer from "../layer";
+import Menu from "./menu";
+
 export default class V2_PublicServers {
 
     constructor() {}
 
     get component() {
-        return BDV2.react.createElement(V2Components.Layer, {rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, {rootId: "pubslayerroot"})});
+        return BDV2.react.createElement(Layer, {rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(Menu, {rootId: "pubslayerroot"})});
     }
 
     get root() {
@@ -37,7 +42,7 @@ export default class V2_PublicServers {
         let btn = $("<div/>", {
             "class": BDV2.guildClasses.listItem,
             "id": "bd-pub-li",
-            "style": settingsCookie["bda-gs-1"] ? "" : "display: none;"
+            "style": Settings["bda-gs-1"] ? "" : "display: none;"
         }).append($("<div/>", {
             "class": "wrapper-25eVIn " + BDV2.guildClasses.circleButtonMask,
             "text": "public",

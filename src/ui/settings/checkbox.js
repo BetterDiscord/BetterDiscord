@@ -1,3 +1,5 @@
+import {BDV2} from "modules";
+
 export default class V2C_Checkbox extends BDV2.reactComponent {
     constructor(props) {
         super(props);

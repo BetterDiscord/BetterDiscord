@@ -1,3 +1,11 @@
+import Config from "../data/config";
+import Settings from "../data/settingscookie";
+import Utilities from "./utilities";
+import BDV2 from "./bdv2";
+import BDEmote from "../ui/emote";
+import BdApi from "./pluginapi";
+import DataStore from "./datastore";
+
 window.emotesFfz = {};
 window.emotesBTTV = {};
 window.emotesBTTV2 = {};
@@ -25,7 +33,7 @@ function EmoteModule() {
         get: function() {
             const cats = [];
             for (const current in window.bdEmoteSettingIDs) {
-                if (settingsCookie[window.bdEmoteSettingIDs[current]]) cats.push(current);
+                if (Settings[window.bdEmoteSettingIDs[current]]) cats.push(current);
             }
             return cats;
         }
@@ -89,8 +97,8 @@ EmoteModule.prototype.init = async function () {
     while (!BDV2.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
 
     if (this.cancelEmoteRender) return;
-    this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
-		Utils.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
+    this.cancelEmoteRender = Utilities.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
+		Utilities.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
             if (this.categories.length == 0) return;
 			const markup = returnValue.props.children[1];
 			if (!markup.props.children) return;
@@ -109,7 +117,7 @@ EmoteModule.prototype.init = async function () {
 						let emoteOverride = emoteModifier.slice(0);
 
 						if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
-						if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
+						if (!this.modifiers.includes(emoteModifier) || !Settings["bda-es-8"]) emoteModifier = "";
 						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
 						else emoteModifier = emoteOverride;
 
@@ -126,8 +134,8 @@ EmoteModule.prototype.init = async function () {
 							if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
 						}
 
-						if (!window.bdEmotes[current][emoteName] || !settingsCookie[window.bdEmoteSettingIDs[current]]) continue;
-						const results = nodes[n].match(new RegExp(`([\\s]|^)${Utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
+						if (!window.bdEmotes[current][emoteName] || !Settings[window.bdEmoteSettingIDs[current]]) continue;
+						const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                         if (!results) continue;
 						const pre = nodes[n].substring(0, results.index + results[1].length);
 						const post = nodes[n].substring(results.index + results[0].length - results[2].length);
@@ -165,7 +173,7 @@ EmoteModule.prototype.disable = function() {
 EmoteModule.prototype.clearEmoteData = async function() {
     let _fs = require("fs");
     let emoteFile = "emote_data.json";
-    let file = bdConfig.dataPath + emoteFile;
+    let file = Config.dataPath + emoteFile;
     let exists = _fs.existsSync(file);
     if (exists) _fs.unlinkSync(file);
     DataStore.setBDData("emoteCacheDate", (new Date()).toJSON());
@@ -191,7 +199,7 @@ EmoteModule.prototype.isCacheValid = function() {
     const cacheDate = new Date(DataStore.getBDData("emoteCacheDate") || null);
     const currentDate = new Date();
     const daysBetween = Math.round(Math.abs((currentDate.getTime() - cacheDate.getTime()) / (24 * 60 * 60 * 1000)));
-    if (daysBetween > bdConfig.cache.days) {
+    if (daysBetween > Config.cache.days) {
         DataStore.setBDData("emoteCacheDate", currentDate.toJSON());
         return false;
     }
@@ -201,22 +209,22 @@ EmoteModule.prototype.isCacheValid = function() {
 EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     const _fs = require("fs");
     const emoteFile = "emote_data.json";
-    const file = bdConfig.dataPath + emoteFile;
+    const file = Config.dataPath + emoteFile;
     const exists = _fs.existsSync(file);
 
     if (exists && this.isCacheValid()) {
-        if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
-        Utils.log("Emotes", "Loading emotes from local cache.");
+        if (Settings["fork-ps-2"]) BdApi.showToast("Loading emotes from cache.", {type: "info"});
+        Utilities.log("Emotes", "Loading emotes from local cache.");
 
         const data = await new Promise(resolve => {
             _fs.readFile(file, "utf8", (err, data) => {
-                Utils.log("Emotes", "Emotes loaded from cache.");
+                Utilities.log("Emotes", "Emotes loaded from cache.");
                 if (err) data = {};
                 resolve(data);
             });
         });
 
-        let isValid = Utils.testJSON(data);
+        let isValid = Utilities.testJSON(data);
         if (isValid) window.bdEmotes = JSON.parse(data);
 
         for (const e in emoteInfo) {
@@ -224,16 +232,16 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         }
 
         if (isValid) {
-            if (settingsCookie["fork-ps-2"]) mainCore.showToast("Emotes successfully loaded.", {type: "success"});
+            if (Settings["fork-ps-2"]) BdApi.showToast("Emotes successfully loaded.", {type: "success"});
             return;
         }
 
-        Utils.log("Emotes", "Cache was corrupt, downloading...");
+        Utilities.log("Emotes", "Cache was corrupt, downloading...");
         _fs.unlinkSync(file);
     }
 
-    if (!settingsCookie["fork-es-3"]) return;
-    if (settingsCookie["fork-ps-2"]) mainCore.showToast("Downloading emotes in the background do not reload.", {type: "info"});
+    if (!Settings["fork-es-3"]) return;
+    if (Settings["fork-ps-2"]) BdApi.showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
     for (let e in emoteInfo) {
         await new Promise(r => setTimeout(r, 1000));
@@ -241,10 +249,10 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         window.bdEmotes[emoteInfo[e].variable] = data;
     }
 
-    if (settingsCookie["fork-ps-2"]) mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
+    if (Settings["fork-ps-2"]) BdApi.showToast("All emotes successfully downloaded.", {type: "success"});
 
     try { _fs.writeFileSync(file, JSON.stringify(window.bdEmotes), "utf8"); }
-    catch (err) { Utils.err("Emotes", "Could not save emote data.", err); }
+    catch (err) { Utilities.err("Emotes", "Could not save emote data.", err); }
 };
 
 EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
@@ -254,12 +262,12 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
         timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
     };
 
-    Utils.log("Emotes", `Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
+    Utilities.log("Emotes", `Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
 
     return new Promise((resolve, reject) => {
         request(options, (error, response, body) => {
             if (error) {
-                Utils.err("Emotes", "Could not download " + emoteMeta.variable, error);
+                Utilities.err("Emotes", "Could not download " + emoteMeta.variable, error);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -274,7 +282,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 parsedData = JSON.parse(body);
             }
             catch (err) {
-                Utils.err("Emotes", "Could not download " + emoteMeta.variable, err);
+                Utilities.err("Emotes", "Could not download " + emoteMeta.variable, err);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -293,7 +301,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
             }
             resolve(parsedData);
-            Utils.log("Emotes", "Downloaded: " + emoteMeta.variable);
+            Utilities.log("Emotes", "Downloaded: " + emoteMeta.variable);
         });
     });
 };
@@ -309,7 +317,7 @@ EmoteModule.prototype.getBlacklist = function () {
 var bemotes = [];
 
 EmoteModule.prototype.autoCapitalize = function () {
-    if (!settingsCookie["bda-es-4"] || this.autoCapitalizeActive) return;
+    if (!Settings["bda-es-4"] || this.autoCapitalizeActive) return;
     $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-1LDbYG textarea:first"), () => {
         var text = $(".channelTextArea-1LDbYG textarea:first").val();
         if (text == undefined) return;
@@ -319,7 +327,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = this.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                Utils.insertText(Utils.getTextArea()[0], text.replace(lastWord, ret));
+                Utilities.insertText(Utilities.getTextArea()[0], text.replace(lastWord, ret));
             }
         }
     });
@@ -339,3 +347,5 @@ EmoteModule.prototype.disableAutoCapitalize = function() {
     this.autoCapitalizeActive = false;
     $("body").off(".bdac");
 };
+
+export default EmoteModule;

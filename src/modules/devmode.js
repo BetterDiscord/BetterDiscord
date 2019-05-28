@@ -1,3 +1,5 @@
+import BDV2 from "./bdv2";
+
 function devMode() {}
 
  devMode.prototype.enable = function(selectorMode) {
@@ -78,3 +80,5 @@ devMode.prototype.getSelector = function(element) {
      $(document).off("contextmenu.bdDevmode");
      $(document).off("contextmenu.bdDevModeCtx");
  };
+
+ export default devMode;
