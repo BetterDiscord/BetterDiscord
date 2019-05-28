@@ -1,0 +1,37 @@
+{
+    "core": {
+        "PublicServers": true,
+        "MinimalMode": false,
+        "VoiceMode": false,
+        "HideChannels": false,
+        "DarkMode": true,
+        "VoiceDisconnect": false,
+        "Timestamps": false,
+        "ColoredText": false,
+        "BDBlue": false,
+        "DeveloperMode": false
+    },
+    
+    "fork": {
+        "ContentErrors": true,
+        "Toasts": true,
+        "Scroll": true,
+        "AnimateOnHover": false,
+        "CopySelector": false,
+        "DownloadEmotes": true,
+        "NormalizeClasses": true,
+        "AutomaticLoading": true,
+        "Transparency": false
+    },
+
+    "emote": {
+        "Twitch": true,
+        "FFZ": true,
+        "BTTV": true,
+        "EmoteMenu": true,
+        "EmojiMenu": true,
+        "AutoCaps": false,
+        "ShowNames": true,
+        "Modifiers": true
+    }
+}
