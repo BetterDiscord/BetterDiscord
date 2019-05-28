@@ -1,3 +1,6 @@
+import {BDV2} from "modules";
+import Scroller from "./scroller";
+
 export default class V2C_SidebarView extends BDV2.reactComponent {
 
     constructor(props) {
@@ -12,7 +15,7 @@ export default class V2C_SidebarView extends BDV2.reactComponent {
             BDV2.react.createElement(
                 "div",
                 {className: "sidebarRegion-VFTUkN sidebar-region"},
-                BDV2.react.createElement(V2Components.Scroller, {key: "sidebarScroller", ref: "sidebarScroller", sidebar: true, fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component})
+                BDV2.react.createElement(Scroller, {key: "sidebarScroller", ref: "sidebarScroller", sidebar: true, fade: sidebar.fade || true, dark: sidebar.dark || true, children: sidebar.component})
             ),
             BDV2.react.createElement("div", {className: "contentRegion-3nDuYy content-region"},
                 BDV2.react.createElement("div", {className: "contentTransitionWrap-3hqOEW content-transition-wrap"},

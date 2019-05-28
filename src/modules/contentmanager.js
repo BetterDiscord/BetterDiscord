@@ -120,9 +120,9 @@ var ContentManager = (() => {
             if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
             const isPlugin = type === "plugin";
             const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-            try {require(path.resolve(baseFolder, filename));}
+            try {__non_webpack_require__(path.resolve(baseFolder, filename));}
             catch (error) {return {name: filename, file: filename, message: "Could not be compiled.", error: {message: error.message, stack: error.stack}};}
-            const content = require(path.resolve(baseFolder, filename));
+            const content = __non_webpack_require__(path.resolve(baseFolder, filename));
             if (isPlugin) {
                 if (!content.type) return;
                 try {
@@ -143,7 +143,7 @@ var ContentManager = (() => {
             const isPlugin = type === "plugin";
             const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
             try {
-                delete require.cache[require.resolve(path.resolve(baseFolder, filename))];
+                delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(baseFolder, filename))];
             }
             catch (err) {return {name: filename, file: filename, message: "Could not be unloaded.", error: {message: err.message, stack: err.stack}};}
         }
@@ -151,7 +151,7 @@ var ContentManager = (() => {
         isLoaded(filename, type) {
             const isPlugin = type === "plugin";
             const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-            try {require.cache[require.resolve(path.resolve(baseFolder, filename))];}
+            try {__non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(baseFolder, filename))];}
             catch (err) {return false;}
             return true;
         }

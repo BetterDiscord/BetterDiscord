@@ -1,3 +1,5 @@
+import {BDV2} from "modules";
+
 export default class BDLogo extends BDV2.reactComponent {
     render() {
         return BDV2.react.createElement(

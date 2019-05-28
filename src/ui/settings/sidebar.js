@@ -1,3 +1,8 @@
+import Config from "../../data/config";
+
+import {BDV2, Utilities} from "modules";
+import SideBar from "./sidebarmenu";
+
 export default class V2_SettingsPanel_Sidebar {
 
     constructor(onClick) {
@@ -12,11 +17,11 @@ export default class V2_SettingsPanel_Sidebar {
         return BDV2.react.createElement(
             "span",
             null,
-            BDV2.react.createElement(V2Components.SideBar, {onClick: this.onClick, headerText: "Bandaged BD", items: this.items}),
+            BDV2.react.createElement(SideBar, {onClick: this.onClick, headerText: "Bandaged BD", items: this.items}),
             BDV2.react.createElement(
                 "div",
                 {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
-                `BD v${bdConfig.version} by `,
+                `BD v${Config.version} by `,
                 BDV2.react.createElement(
                     "a",
                     {href: "https://github.com/Jiiks/", target: "_blank"},
@@ -26,7 +31,7 @@ export default class V2_SettingsPanel_Sidebar {
             BDV2.react.createElement(
                 "div",
                 {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
-                `BBD v${bbdVersion} by `,
+                `BBD v${Config.bbdVersion} by `,
                 BDV2.react.createElement(
                     "a",
                     {href: "https://github.com/rauenzi/", target: "_blank"},
@@ -59,7 +64,7 @@ export default class V2_SettingsPanel_Sidebar {
             return;
         }
         BDV2.reactDom.render(this.component, root);
-        Utils.onRemoved(root, () => {
+        Utilities.onRemoved(root, () => {
             BDV2.reactDom.unmountComponentAtNode(root);
         });
     }

@@ -1,3 +1,7 @@
+import Settings from "../data/settingscookie";
+import DataStore from "./datastore";
+import Utilities from "./utilities";
+
 function QuickEmoteMenu() {
 
 }
@@ -74,8 +78,8 @@ QuickEmoteMenu.prototype.favContext = function(e, em) {
         e.stopPropagation();
         $(this).remove();
 
-        delete quickEmoteMenu.favoriteEmotes[$(this).data("emoteid")];
-        quickEmoteMenu.updateFavorites();
+        delete this.favoriteEmotes[$(this).data("emoteid")];
+        this.updateFavorites();
         return false;
     });
     return false;
@@ -118,22 +122,22 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     emoteIcon.off();
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
-        var ta = Utils.getTextArea();
-        Utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
+        var ta = Utilities.getTextArea();
+        Utilities.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
 };
 
 QuickEmoteMenu.prototype.obsCallback = function (elem) {
     if (!this.initialized) return;
     var e = $(elem);
-    if (!settingsCookie["bda-es-9"]) {
+    if (!Settings["bda-es-9"]) {
         e.addClass("bda-qme-hidden");
     }
     else {
         e.removeClass("bda-qme-hidden");
     }
 
-    if (!settingsCookie["bda-es-0"]) return;
+    if (!Settings["bda-es-0"]) return;
 
     e.prepend(this.qmeHeader);
     e.append(this.teContainer);
@@ -177,3 +181,5 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     $("#bda-qem-favourite-container").replaceWith(faContainer);
     DataStore.setBDData("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
 };
+
+export default QuickEmoteMenu;

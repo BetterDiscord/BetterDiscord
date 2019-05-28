@@ -1,3 +1,5 @@
+import {BDV2} from "modules";
+
 class V2C_TabBarItem extends BDV2.reactComponent {
 
     constructor(props) {

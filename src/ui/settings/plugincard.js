@@ -1,3 +1,8 @@
+import Settings from "../../data/settingscookie";
+import {BDV2, Utilities} from "modules";
+import CloseButton from "../icons/close";
+import ReloadIcon from "../icons/reload";
+
 export default class V2C_PluginCard extends BDV2.reactComponent {
 
     constructor(props) {
@@ -40,7 +45,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
                 this.refs.settingspanel.appendChild(this.settingsPanel);
             }
 
-            if (!settingsCookie["fork-ps-3"]) return;
+            if (!Settings["fork-ps-3"]) return;
             var isHidden = (container, element) => {
 
                 let cTop = container.scrollTop;
@@ -63,7 +68,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     reload() {
         const plugin = this.props.plugin.getName();
-        pluginModule.reloadPlugin(plugin);
+        window.mainCore.pluginModule.reloadPlugin(plugin);
         this.props.plugin = bdplugins[plugin].plugin;
         this.onReload(this.props.plugin.getName());
     }
@@ -84,14 +89,14 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
-            catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + plugin.getName() + ".", err); }
+            catch (err) { Utilities.err("Plugins", "Unable to get settings panel for " + plugin.getName() + ".", err); }
 
             return BDV2.react.createElement("li", {className: "settings-open ui-switch-item"},
                     BDV2.react.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
                             this.refs.settingspanel.innerHTML = "";
                             self.setState({settings: false});
                         }},
-                    BDV2.react.createElement(V2Components.XSvg, null)
+                    BDV2.react.createElement(CloseButton, null)
                 ),
                 typeof self.settingsPanel === "object" && BDV2.react.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel"}),
                 typeof self.settingsPanel !== "object" && BDV2.react.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: {__html: self.settingsPanel}})
@@ -108,7 +113,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
                         BDV2.react.createElement("span", {className: "bda-author"}, author)
                     ),
                     BDV2.react.createElement("div", {className: "bda-controls"},
-                        !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload"}), {className: "bd-reload-card", onClick: this.reload}),
+                        !Settings["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
                         BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
@@ -131,7 +136,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     onChange() {
         this.setState({checked: !this.state.checked});
-        pluginModule.togglePlugin(this.props.plugin.getName());
+        window.mainCore.pluginModule.togglePlugin(this.props.plugin.getName());
     }
 
     showSettings() {

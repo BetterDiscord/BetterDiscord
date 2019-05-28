@@ -1,3 +1,10 @@
+import Settings from "../../data/settingscookie";
+import {BDV2, DataStore} from "modules";
+
+import EditorDetached from "./detached";
+import Checkbox from "../settings/checkbox";
+import SettingsTitle from "../settings/title";
+
 export default class V2C_CssEditor extends BDV2.reactComponent {
 
     constructor(props) {
@@ -6,7 +13,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
         self.props.lines = 0;
         self.setInitialState();
         self.attach = self.attach.bind(self);
-        self.detachedEditor = BDV2.react.createElement(V2C_CssEditorDetached, {attach: self.attach});
+        self.detachedEditor = BDV2.react.createElement(EditorDetached, {attach: self.attach});
         self.onClick = self.onClick.bind(self);
         self.updateCss = self.updateCss.bind(self);
         self.saveCss = self.saveCss.bind(self);
@@ -27,7 +34,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
         this.editor.setShowPrintMargin(false);
         this.editor.setFontSize(14);
         this.editor.on("change", () => {
-            if (!settingsCookie["bda-css-0"]) return;
+            if (!Settings["bda-css-0"]) return;
             this.saveCss();
             this.updateCss();
         });
@@ -83,7 +90,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
             detached && BDV2.react.createElement(
                 "div",
                 {id: "editor-detached"},
-                BDV2.react.createElement(V2Components.SettingsTitle, {text: "Custom CSS Editor"}),
+                BDV2.react.createElement(SettingsTitle, {text: "Custom CSS Editor"}),
                 BDV2.react.createElement(
                     "h3",
                     null,
@@ -100,7 +107,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
             !detached && BDV2.react.createElement(
                 "div",
                 null,
-                BDV2.react.createElement(V2Components.SettingsTitle, {text: "Custom CSS Editor"}),
+                BDV2.react.createElement(SettingsTitle, {text: "Custom CSS Editor"}),
                 BDV2.react.createElement("div", {className: "editor-wrapper"},
                     BDV2.react.createElement("div", {id: "bd-customcss-editor", className: "editor", ref: "editor"}, self.css)
                 ),
@@ -110,7 +117,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
                     BDV2.react.createElement(
                         "ul",
                         {className: "checkbox-group"},
-                        BDV2.react.createElement(V2Components.Checkbox, {id: "live-update", text: "Live Update", onChange: this.onChange, checked: settingsCookie["bda-css-0"]})
+                        BDV2.react.createElement(Checkbox, {id: "live-update", text: "Live Update", onChange: this.onChange, checked: Settings["bda-css-0"]})
                     ),
                     BDV2.react.createElement(
                         "div",
@@ -172,8 +179,8 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     onChange(id, checked) {
         switch (id) {
             case "live-update":
-                settingsCookie["bda-css-0"] = checked;
-                mainCore.saveSettings();
+                Settings["bda-css-0"] = checked;
+                window.mainCore.saveSettings();
                 break;
         }
     }

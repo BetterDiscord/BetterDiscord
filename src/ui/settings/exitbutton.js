@@ -1,3 +1,6 @@
+import {BDV2} from "modules";
+import CloseButton from "../icons/close";
+
 export default class V2C_Tools extends BDV2.reactComponent {
 
     constructor(props) {
@@ -11,7 +14,7 @@ export default class V2C_Tools extends BDV2.reactComponent {
                 BDV2.react.createElement("div", {className: "container-1sFeqf"},
                     BDV2.react.createElement("div",
                         {className: "btn-close closeButton-1tv5uR", onClick: this.onClick},
-                        BDV2.react.createElement(V2Components.XSvg, null)
+                        BDV2.react.createElement(CloseButton, null)
                     ),
                     BDV2.react.createElement(
                         "div",

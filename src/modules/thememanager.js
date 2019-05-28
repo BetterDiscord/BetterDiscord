@@ -6,7 +6,7 @@ function ThemeModule() {
 
 ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
-    bdthemeErrors = ContentManager.loadThemes();
+    const errors = ContentManager.loadThemes();
     var themes = Object.keys(bdthemes);
 
     for (var i = 0; i < themes.length; i++) {
@@ -18,6 +18,7 @@ ThemeModule.prototype.loadThemes = function () {
         if (!bdthemes[theme]) delete themeCookie[theme];
     }
     this.saveThemeData();
+    return errors;
     // if (settingsCookie["fork-ps-5"]) ContentManager.watchContent("theme");
 };
 
@@ -102,3 +103,5 @@ ThemeModule.prototype.loadThemeData = function() {
 ThemeModule.prototype.saveThemeData = function () {
     DataStore.setSettingGroup("themes", themeCookie);
 };
+
+export default ThemeModule;

@@ -1,4 +1,4 @@
-var defaultCookie = {
+export default {
     "bda-gs-1": true,
     "bda-gs-2": false,
     "bda-gs-3": false,

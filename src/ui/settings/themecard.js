@@ -1,3 +1,7 @@
+import Settings from "../../data/settingscookie";
+import {BDV2} from "modules";
+import ReloadIcon from "../icons/reload";
+
 export default class V2C_ThemeCard extends BDV2.reactComponent {
 
     constructor(props) {
@@ -29,9 +33,9 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
 
     reload() {
         const theme = this.props.theme.name;
-        const error = themeModule.reloadTheme(theme);
-        if (error) mainCore.showToast(`Could not reload ${bdthemes[theme].name}. Check console for details.`, {type: "error"});
-        else mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been reloaded.`, {type: "success"});
+        const error = window.mainCore.themeModule.reloadTheme(theme);
+        if (error) window.mainCore.showToast(`Could not reload ${bdthemes[theme].name}. Check console for details.`, {type: "error"});
+        else window.mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been reloaded.`, {type: "success"});
         // this.setState(this.state);
         this.props.theme = bdthemes[theme];
         this.onReload(this.props.theme.name);
@@ -56,7 +60,7 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
                         BDV2.react.createElement("span", {className: "bda-author"}, author)
                     ),
                     BDV2.react.createElement("div", {className: "bda-controls"},
-                        !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload"}), {className: "bd-reload-card", onClick: this.reload}),
+                        !Settings["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
                         BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
@@ -78,6 +82,6 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
 
     onChange() {
         this.setState({checked: !this.state.checked});
-        themeModule.toggleTheme(this.props.theme.name);
+        window.mainCore.themeModule.toggleTheme(this.props.theme.name);
     }
 }

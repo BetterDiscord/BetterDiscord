@@ -1,4 +1,9 @@
-var BdApi = {
+import Config from "../data/config";
+import Utilities from "./utilities";
+import BDV2 from "./bdv2";
+import DataStore from "./datastore";
+
+const BdApi = {
     get React() { return BDV2.react; },
     get ReactDOM() { return BDV2.reactDom; },
     get WindowConfigFile() {
@@ -14,17 +19,17 @@ var BdApi = {
 };
 
 BdApi.getAllWindowPreferences = function() {
-    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
-    return require(this.WindowConfigFile);
+    if ((Config.os !== "win32" && Config.os !== "darwin") || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
+    return __non_webpack_require__(this.WindowConfigFile);
 };
 
 BdApi.getWindowPreference = function(key) {
-    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
+    if ((Config.os !== "win32" && Config.os !== "darwin") || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
     return this.getAllWindowPreferences()[key];
 };
 
 BdApi.setWindowPreference = function(key, value) {
-    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
+    if ((Config.os !== "win32" && Config.os !== "darwin") || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
     const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
@@ -36,26 +41,26 @@ BdApi.setWindowPreference = function(key, value) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append($("<style>", {id: Utils.escapeID(id), text: css}));
+    $("head").append($("<style>", {id: Utilities.escapeID(id), text: css}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    $("#" + Utils.escapeID(id)).remove();
+    $("#" + Utilities.escapeID(id)).remove();
 };
 
 //Inject CSS to document head
 //id = id of element
 //css = custom css
 BdApi.linkJS = function (id, url) {
-    $("head").append($("<script>", {id: Utils.escapeID(id), src: url, type: "text/javascript"}));
+    $("head").append($("<script>", {id: Utilities.escapeID(id), src: url, type: "text/javascript"}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.unlinkJS = function (id) {
-    $("#" + Utils.escapeID(id)).remove();
+    $("#" + Utilities.escapeID(id)).remove();
 };
 
 //Get another plugin
@@ -70,13 +75,13 @@ BdApi.getPlugin = function (name) {
 var betterDiscordIPC = require("electron").ipcRenderer;
 //Get ipc for reason
 BdApi.getIpc = function () {
-    Utils.warn("Deprecation Notice", "BetterDiscord's IPC has been deprecated and may be removed in future versions.");
+    Utilities.warn("Deprecation Notice", "BetterDiscord's IPC has been deprecated and may be removed in future versions.");
     return betterDiscordIPC;
 };
 
 //Get BetterDiscord Core
 BdApi.getCore = function () {
-    return mainCore;
+    return window.mainCore;
 };
 
 /**
@@ -87,7 +92,7 @@ BdApi.getCore = function () {
 BdApi.alert = function (title, content) {
     const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
     const AlertModal = BdApi.findModuleByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");
-    if (!ModalStack || !AlertModal) return mainCore.alert(title, content);
+    if (!ModalStack || !AlertModal) return window.mainCore.alert(title, content);
 
     ModalStack.push(function(props) {
         return BdApi.React.createElement(AlertModal, Object.assign({
@@ -112,7 +117,7 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
     const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
     const TextElement = BdApi.findModuleByProps("Sizes", "Weights");
     const ConfirmationModal = BdApi.findModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");
-    if (!ModalStack || !ConfirmationModal || !TextElement) return mainCore.alert(title, content);
+    if (!ModalStack || !ConfirmationModal || !TextElement) return window.mainCore.alert(title, content);
 
     const {onConfirm, onCancel, confirmText, cancelText, danger = false} = options;
     if (typeof(content) == "string") content = TextElement({color: TextElement.Colors.PRIMARY, children: [content]});
@@ -135,7 +140,7 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
 
 //Show toast alert
 BdApi.showToast = function(content, options = {}) {
-    mainCore.showToast(content, options);
+    window.mainCore.showToast(content, options);
 };
 
 // Finds module
@@ -189,35 +194,35 @@ BdApi.deleteData = function(pluginName, key) {
 
 // Patches other functions
 BdApi.monkeyPatch = function(what, methodName, options) {
-    return Utils.monkeyPatch(what, methodName, options);
+    return Utilities.monkeyPatch(what, methodName, options);
 };
 
 // Event when element is removed
 BdApi.onRemoved = function(node, callback) {
-    return Utils.onRemoved(node, callback);
+    return Utilities.onRemoved(node, callback);
 };
 
 // Wraps function in try..catch
 BdApi.suppressErrors = function(method, message) {
-    return Utils.suppressErrors(method, message);
+    return Utilities.suppressErrors(method, message);
 };
 
 // Tests for valid JSON
 BdApi.testJSON = function(data) {
-    return Utils.testJSON(data);
+    return Utilities.testJSON(data);
 };
 
-BdApi.isPluginEnabled = function(name) {
-    return !!pluginCookie[name];
-};
+// BdApi.isPluginEnabled = function(name) {
+//     return !!pluginCookie[name];
+// };
 
-BdApi.isThemeEnabled = function(name) {
-    return !!themeCookie[name];
-};
+// BdApi.isThemeEnabled = function(name) {
+//     return !!themeCookie[name];
+// };
 
-BdApi.isSettingEnabled = function(id) {
-    return !!settingsCookie[id];
-};
+// BdApi.isSettingEnabled = function(id) {
+//     return !!settingsCookie[id];
+// };
 
 // Gets data
 BdApi.getBDData = function(key) {
@@ -228,3 +233,5 @@ BdApi.getBDData = function(key) {
 BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
 };
+
+export default BdApi;

@@ -1,4 +1,8 @@
-var BDV2 = new class V2 {
+import Settings from "../data/settings";
+import BdApi from "./pluginapi";
+import BDLogo from "../ui/icons/bdlogo";
+
+export default new class V2 {
 
     constructor() {
         this.editorDetached = false;
@@ -71,8 +75,8 @@ var BDV2 = new class V2 {
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
 
     parseSettings(cat) {
-        return Object.keys(settings).reduce((arr, key) => {
-            let setting = settings[key];
+        return Object.keys(Settings).reduce((arr, key) => {
+            let setting = Settings[key];
             if (setting.cat === cat && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);
@@ -151,4 +155,4 @@ var BDV2 = new class V2 {
         }});
     }
 
-}
+};
