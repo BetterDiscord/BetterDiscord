@@ -48,14 +48,14 @@ const BetterDiscord = class BetterDiscord {
             },
             {
                 type: "style",
-                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/css/main.min.css",
-                backup: "//rauenzi.github.io/BetterDiscordApp/css/main.min.css",
+                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/css/main{{minified}}.css",
+                backup: "//rauenzi.github.io/BetterDiscordApp/css/main{{minified}}.css",
                 local: config.localServer + "/BetterDiscordApp/css/main.css"
             },
             {
                 type: "script",
-                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/js/main.min.js",
-                backup: "//rauenzi.github.io/BetterDiscordApp/js/main.min.js",
+                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/js/main{{minified}}.js",
+                backup: "//rauenzi.github.io/BetterDiscordApp/js/main{{minified}}.js",
                 local: config.localServer + "/BetterDiscordApp/js/main.js"
             }
         ];
@@ -84,7 +84,7 @@ const BetterDiscord = class BetterDiscord {
 
     async getUpdater() {
         Utils.log("Getting updater");
-        let remoteConfig = await Utils.getUpdater(config.repo, config.branch);
+        let remoteConfig = await Utils.getUpdater(config.repo, config.injectorBranch);
         if (!remoteConfig)  {
             Utils.log("Could not load updater, using backup");
             remoteConfig = {
@@ -117,26 +117,17 @@ const BetterDiscord = class BetterDiscord {
 
     async loadApp() {
         for (const data of this.externalData) {
-            const url = Utils.formatString((config.local && data.local != null) ? data.local : data.url, {repo: config.repo, hash: config.hash});
+            const url = Utils.formatString((config.local && data.local != null) ? data.local : data.url, {repo: config.repo, hash: config.hash, minified: config.minified ? ".min" : ""});
             Utils.log(`Loading Resource (${url})`);
-            if (data.type == "script") {
-                try {
-                    await Utils.injectScript(url);
-                }
-                catch (err) {
-                    Utils.warn(`Could not load ${url}. Using backup ${data.backup}`);
-                    await Utils.injectScript(data.backup);
-                }
-            }
-            if (data.type == "style") {
-                try {
-                    await Utils.injectStyle(url);
-                }
-                catch (err) {
-                    Utils.warn(`Could not load ${url}. Using backup ${data.backup}`);
-                    await Utils.injectStyle(data.backup);
-                }
-            }
+			const injector = (data.type == "script" ? Utils.injectScript : Utils.injectStyle).bind(Utils);
+			try {
+				await injector(url);
+			}
+			catch (err) {
+				const backup = Utils.formatString(data.backup, {minified: config.minified ? ".min" : ""});
+				Utils.warn(`Could not load ${url}. Using backup ${backup}`);
+				await injector(backup);
+			}
         }
 
         Utils.log("Starting Up");

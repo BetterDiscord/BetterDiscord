@@ -4,5 +4,6 @@
 	"repo": "rauenzi",
 	"branch": "master",
 	"injectorBranch": "injector",
+	"minified": true,
 	"version": "0.3.2"
 }
