@@ -17,11 +17,11 @@ export default class V2C_Checkbox extends BDV2.reactComponent {
             null,
             BDV2.react.createElement(
                 "div",
-                {className: "checkbox", onClick: this.onClick},
+                {className: "checkbox checkbox-3kaeSU da-checkbox checkbox-3EVISJ da-checkbox", onClick: this.onClick},
                 BDV2.react.createElement(
                     "div",
-                    {className: "checkbox-inner"},
-                    BDV2.react.createElement("input", {checked: this.state.checked, onChange: () => {}, type: "checkbox"}),
+                    {className: "checkbox-inner checkboxInner-3yjcPe da-checkboxInner"},
+                    BDV2.react.createElement("input", {className: "checkboxElement-1qV33p da-checkboxElement", checked: this.state.checked, onChange: () => {}, type: "checkbox"}),
                     BDV2.react.createElement("span", null)
                 ),
                 BDV2.react.createElement(

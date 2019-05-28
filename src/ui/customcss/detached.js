@@ -31,7 +31,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
         BDV2.editorDetached = false;
         this.editor.destroy();
     }
-    
+
     updateLineCount() {
         let lineCount = this.refs.editor.value.split("\n").length;
         if (lineCount == this.props.lines) return;
@@ -68,10 +68,10 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     injectRoot() {
-        if (!$(".app").length) return false;
+        if (!$(".app, .app-2rEoOp").length) return false;
         $("<div/>", {
             id: "bd-customcss-detach-container"
-        }).insertAfter($(".app"));
+        }).insertAfter($(".app, .app-2rEoOp"));
         return true;
     }
 
@@ -159,7 +159,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
         if ($("#customcss").length == 0) {
             $("head").append("<style id=\"customcss\"></style>");
         }
-        $("#customcss").html(this.editor.session.getValue()).detach().appendTo(document.head);
+        $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
     }
 
     saveCss() {

@@ -98,10 +98,9 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         $.ajax({
             method: "GET",
             url: `${this.joinEndPoint}/${serverCard.props.server.identifier}`,
-            headers: {          
-                "Accept": "application/json;",         
+            headers: {
+                "Accept": "application/json;",
                 "Content-Type": "application/json;" ,
-                "x-discord-id": this.state.connection.user.id,
                 "x-discord-token": this.state.connection.user.accessToken
             },
             crossDomain: true,
@@ -121,10 +120,9 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
 
         self.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
-        let sub = window.location.hostname.split(".")[0];
-        let url = self.connectEndPoint + (sub === "canary" || sub === "ptb" ? `/${sub}` : "") + "?betterDiscord";
+        const url = "https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=https://auth.discordservers.com/info";
         self.joinWindow.webContents.on("did-navigate", (event, url) => {
-            if (url != "https://join.discordservers.com/session") return;
+            if (url != "https://auth.discordservers.com/info") return;
             self.joinWindow.close();
             self.checkConnection();
         });
@@ -142,7 +140,10 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
             minimizable: false,
             alwaysOnTop: true,
             frame: false,
-            center: false
+            center: false,
+            webPreferences: {
+                nodeIntegration: false
+            }
         };
     }
 
@@ -169,7 +170,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get joinEndPoint() {
-        return "https://join.discordservers.com";
+        return "https://j.discordservers.com";
     }
 
     get connectEndPoint() {
@@ -181,16 +182,17 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         try {
             $.ajax({
                 method: "GET",
-                url: `${self.joinEndPoint}/session`,
-                headers: {          
-                    "Accept": "application/json;",         
-                    "Content-Type": "application/json;"   
+                url: `https://auth.discordservers.com/info`,
+                headers: {
+                    "Accept": "application/json;",
+                    "Content-Type": "application/json;"
                 },
                 crossDomain: true,
                 xhrFields: {
                     withCredentials: true
                 },
                 success: data => {
+                    // Utils.log("PublicServer", "Got data: " + JSON.stringify(data));
                     self.setState({
                         selectedCategory: 0,
                         connection: {
@@ -199,22 +201,18 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
                         }
                     });
                     self.search("", true);
-                    
+
                 },
-                error: jqXHR => {
-                    if (jqXHR.status === 403 || jqXHR.status === 404) {
-                        //Not connected
-                        self.setState({
-                            title: "Not connected to discordservers.com!",
-                            loading: true,
-                            selectedCategory: -1,
-                            connection: {
-                                state: 1,
-                                user: null
-                            }
-                        });
-                        return;
-                    }
+                error: () => {
+                    self.setState({
+                        title: "Not connected to discordservers.com!",
+                        loading: true,
+                        selectedCategory: -1,
+                        connection: {
+                            state: 1,
+                            user: null
+                        }
+                    });
                 }
             });
         }
@@ -303,7 +301,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get categoryButtons() {
-        return ["All", "FPS Games", "MMO Games", "Strategy Games", "Sports Games", "Puzzle Games", "Retro Games", "Party Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Community", "Language", "Programming", "Other"];
+        return ["All", "FPS Games", "MMO Games", "Strategy Games", "MOBA Games", "RPG Games", "Tabletop Games", "Sandbox Games", "Simulation Games", "Music", "Community", "Language", "Programming", "Other"];
     }
 
     changeCategory(id) {

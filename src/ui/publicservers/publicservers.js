@@ -24,6 +24,7 @@ export default class V2_PublicServers {
     }
 
     render() {
+        // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
         let root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layers");
@@ -34,35 +35,22 @@ export default class V2_PublicServers {
 
     get button() {
         let btn = $("<div/>", {
-            "class": BDV2.guildClasses.guild,
+            "class": BDV2.guildClasses.listItem,
             "id": "bd-pub-li",
-            "css": {
-                height: "20px",
-                display: settingsCookie["bda-gs-1"] ? "" : "none"
-            }
+            "style": settingsCookie["bda-gs-1"] ? "" : "display: none;"
         }).append($("<div/>", {
-            "class": BDV2.guildClasses.guildInner,
-            "css": {
-                "height": "20px",
-                "border-radius": "4px"
-            }
-        }).append($("<a/>", {
-
-        }).append($("<div/>", {
-            text: "public",
-            id: "bd-pub-button",
-            css: {
-                "line-height": "20px",
-                "font-size": "12px"
-            },
-            click: () => { this.render(); }
-        }))));
+            "class": "wrapper-25eVIn " + BDV2.guildClasses.circleButtonMask,
+            "text": "public",
+            "id": "bd-pub-button",
+            "click": () => { this.render(); }
+        }));
 
         return btn;
     }
 
     initialize() {
-        let guilds = $(`.${BDV2.guildClasses.guilds.split(" ")[0]}>:first-child`);
+        const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
+        const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
         guilds.after(this.button);
     }
 }
