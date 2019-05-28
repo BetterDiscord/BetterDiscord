@@ -88,10 +88,10 @@ const BetterDiscord = class BetterDiscord {
         if (!remoteConfig)  {
             Utils.log("Could not load updater, using backup");
             remoteConfig = {
-                latestVersion: "0.3.2"
+                version: "0.3.2"
             };
         }
-        config.latestVersion = remoteConfig.latestVersion;
+        config.latestVersion = remoteConfig.version;
         Utils.log("Latest Version: " + config.latestVersion);
     }
 
