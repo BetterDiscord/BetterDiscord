@@ -34,17 +34,19 @@ module.exports = class Utils {
             return false;
         }
     }
-	
-	static async getCommitHash() {
-		const data = await this.getFile("https://api.github.com/repos/rauenzi/BetterDiscordApp/commits");
+
+	static async getCommitHash(repo, branch) {
+		const data = await this.getFile(Utils.formatString("https://api.github.com/repos/{{repo}}/BetterDiscordApp/commits/{{branch}}", {repo, branch}));
 		if (!this.testJSON(data)) return null;
 		const parsed = JSON.parse(data);
 		if (!parsed || !Array.isArray(parsed)) return null;
 		return parsed[0].sha;
 	}
 
-    static async getUpdater() {
-        const data = await this.getFile(`https://rauenzi.github.io/BetterDiscordApp/data/updater.json`);
+    static async getUpdater(repo, branch) {
+        let hash = await Utils.getCommitHash(repo, branch);
+        if (!hash) hash = "injector";
+        const data = await this.getFile(Utils.formatString("https://cdn.statically.io/gh/{{repo}}/BetterDiscordApp/{{hash}}/betterdiscord/config.json", {repo, hash}));
         if (!this.testJSON(data)) return null;
         return JSON.parse(data);
     }
@@ -94,7 +96,7 @@ module.exports = class Utils {
             Utils.error(err);
         }
     }
-	
+
 	static formatString(string, values) {
         for (let val in values) {
             string = string.replace(new RegExp(`{{${val}}}`, "g"), values[val]);

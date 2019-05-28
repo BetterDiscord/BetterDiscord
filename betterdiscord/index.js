@@ -48,13 +48,13 @@ const BetterDiscord = class BetterDiscord {
             },
             {
                 type: "style",
-                url: "//cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/{{hash}}/css/main.min.css",
+                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/css/main.min.css",
                 backup: "//rauenzi.github.io/BetterDiscordApp/css/main.min.css",
                 local: config.localServer + "/BetterDiscordApp/css/main.css"
             },
             {
                 type: "script",
-                url: "//cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/{{hash}}/js/main.min.js",
+                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/js/main.min.js",
                 backup: "//rauenzi.github.io/BetterDiscordApp/js/main.min.js",
                 local: config.localServer + "/BetterDiscordApp/js/main.js"
             }
@@ -69,10 +69,10 @@ const BetterDiscord = class BetterDiscord {
             callback({cancel: false, responseHeaders: details.responseHeaders});
         });
     }
-	
+
 	async getCommitHash() {
         Utils.log("Getting commit hash");
-        let hash = await Utils.getCommitHash();
+        let hash = await Utils.getCommitHash(config.repo, config.branch);
 		Utils.log(hash);
         if (!hash)  {
             Utils.log("Could not get commit hash, using backup");
@@ -84,15 +84,15 @@ const BetterDiscord = class BetterDiscord {
 
     async getUpdater() {
         Utils.log("Getting updater");
-        let updater = await Utils.getUpdater();
+        let remoteConfig = await Utils.getUpdater(config.repo, config.branch);
         if (!updater)  {
             Utils.log("Could not load updater, using backup");
-            updater = {
-                LatestVersion: "0.3.0"
+            remoteConfig = {
+                latestVersion: "0.3.2"
             };
         }
-        config.updater = updater;
-        Utils.log("Latest Version: " + config.updater.LatestVersion);
+        config.latestVersion = remoteConfig.latestVersion;
+        Utils.log("Latest Version: " + config.latestVersion);
     }
 
     ensureFolders() {
@@ -115,7 +115,7 @@ const BetterDiscord = class BetterDiscord {
         `);
     }
 
-    async loadApp() {   
+    async loadApp() {
         for (const data of this.externalData) {
             const url = Utils.formatString((config.local && data.local != null) ? data.local : data.url, {hash: config.hash});
             Utils.log(`Loading Resource (${url})`);
@@ -138,7 +138,7 @@ const BetterDiscord = class BetterDiscord {
                 }
             }
         }
-        
+
         Utils.log("Starting Up");
         Utils.runJS(`var mainCore = new Core(${JSON.stringify(config)}); mainCore.init();`);
     }
@@ -154,7 +154,7 @@ const BetterDiscord = class BetterDiscord {
         await this.loadApp();
         Utils.saveLogs();
     }
-       
+
 };
 
 module.exports = BetterDiscord;

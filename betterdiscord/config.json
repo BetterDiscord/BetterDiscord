@@ -1,9 +1,8 @@
 {
 	"local": false,
 	"localServer": "//localhost:8080",
-	"version": "0.3.1",
-	"cache": {
-		"expired": true,
-		"days": 7
-	}
+	"repo": "rauenzi",
+	"branch": "master",
+	"injectorBranch": "injector",
+	"version": "0.3.2"
 }
