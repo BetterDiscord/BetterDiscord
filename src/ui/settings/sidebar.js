@@ -5,7 +5,7 @@ export default class V2_SettingsPanel_Sidebar {
     }
 
     get items() {
-        return [{text: "Core", id: "core"}, {text: "Bandages", id: "fork"}, {text: "Emotes", id: "emotes"}, {text: "Custom CSS", id: "customcss"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}];
+        return [{text: "Settings", id: "core"}, {text: "Emotes", id: "emotes"}, {text: "Plugins", id: "plugins"}, {text: "Themes", id: "themes"}, {text: "Custom CSS", id: "customcss"}];
     }
 
     get component() {

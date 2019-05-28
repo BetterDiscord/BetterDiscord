@@ -13,7 +13,7 @@ export default class V2C_Layer extends BDV2.reactComponent {
 
         $(`#${this.props.id}`).animate({opacity: 1}, {
             step: function(now) {
-              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`); 
+              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`);
             },
             duration: 200,
             done: () => {$(`#${this.props.id}`).css("opacity", "").css("transform", "");}
@@ -24,26 +24,26 @@ export default class V2C_Layer extends BDV2.reactComponent {
         $(window).off(`keyup.${this.props.id}`);
         $(`#${this.props.id}`).animate({opacity: 0}, {
             step: function(now) {
-              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`); 
+              $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`);
             },
             duration: 200,
             done: () => {$(`#${this.props.rootId}`).remove();}
         });
-        
+
         $("[class*=\"layer-\"]").removeClass("publicServersOpen").animate({opacity: 1}, {
             step: function(now) {
-              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`); 
+              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
             },
             duration: 200,
             done: () => {$("[class*=\"layer-\"]").css("opacity", "").css("transform", "");}
         });
-        
+
     }
 
     componentWillMount() {
         $("[class*=\"layer-\"]").addClass("publicServersOpen").animate({opacity: 0}, {
             step: function(now) {
-              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`); 
+              $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
             },
             duration: 200
         });

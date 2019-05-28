@@ -65,7 +65,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
         }
         return ccss;
     }
-    
+
     updateLineCount() {
         let lineCount = this.refs.editor.value.split("\n").length;
         if (lineCount == this.props.lines) return;
@@ -140,6 +140,13 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
                             "span",
                             {style: {fontSize: "10px", marginLeft: "5px"}},
                             "Unsaved changes are lost on detach"
+                        ),
+                        BDV2.react.createElement("div", {className: "help-text"},
+                            "Press ",
+                            BDV2.react.createElement("code", {className: "inline"}, "ctrl"),
+                            "+",
+                            BDV2.react.createElement("span", {className: "inline"}, ","),
+                            " with the editor focused to access the editor's settings."
                         )
                     )
                 )
@@ -175,7 +182,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
         if ($("#customcss").length == 0) {
             $("head").append("<style id=\"customcss\"></style>");
         }
-        $("#customcss").html(this.editor.session.getValue()).detach().appendTo(document.head);
+        $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
     }
 
     saveCss() {
@@ -205,10 +212,10 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     injectDetachedRoot() {
-        if (!$(".app").length) return false;
+        if (!$(".app, .app-2rEoOp").length) return false;
         $("<div/>", {
             id: "bd-customcss-detach-container"
-        }).insertAfter($(".app"));
+        }).insertAfter($(".app, .app-2rEoOp"));
         return true;
     }
 

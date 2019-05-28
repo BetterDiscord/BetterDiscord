@@ -32,11 +32,12 @@ export default class V2_SettingsPanel {
     }
 
     get coreSettings() {
-        return this.getSettings("core");
+        const settings = this.getSettings("core");
+        const categories = [...new Set(settings.map(s => s.category))];
+        const sections = categories.map(c => {return {title: c, settings: settings.filter(s => s.category == c)};});
+        return sections;
     }
-    get forkSettings() {
-        return this.getSettings("fork");
-    }
+
     get emoteSettings() {
         return this.getSettings("emote");
     }
@@ -58,9 +59,6 @@ export default class V2_SettingsPanel {
         switch (id) {
             case "core":
                 self.renderCoreSettings();
-                break;
-            case "fork":
-                self.renderForkSettings();
                 break;
             case "emotes":
                 self.renderEmoteSettings();
@@ -91,10 +89,10 @@ export default class V2_SettingsPanel {
             else $("#twitchcord-button-container").hide();
         }
 
-        if (id == "bda-gs-b") {
-            if (enabled) $("body").addClass("bd-blue");
-            else $("body").removeClass("bd-blue");
-        }
+        // if (id == "bda-gs-b") {
+        //     if (enabled) $("body").addClass("bd-blue");
+        //     else $("body").removeClass("bd-blue");
+        // }
 
         if (id == "bda-gs-2") {
             if (enabled) $("body").addClass("bd-minimal");
@@ -132,7 +130,7 @@ export default class V2_SettingsPanel {
             if (enabled) emoteModule.autoCapitalize();
             else emoteModule.disableAutoCapitalize();
         }
-        
+
         if (id == "fork-ps-4") {
             if (enabled) ClassNormalizer.start();
             else ClassNormalizer.stop();
@@ -159,7 +157,7 @@ export default class V2_SettingsPanel {
             const current = BdApi.getWindowPreference("frame");
             if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
         }*/
-        
+
 
         if (id == "bda-gs-8") {
             if (enabled) dMode.enable(settingsCookie["fork-dm-1"]);
@@ -171,7 +169,7 @@ export default class V2_SettingsPanel {
 
     initializeSettings() {
         if (settingsCookie["bda-es-0"]) $("#twitchcord-button-container").show();
-        if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
+        // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
         if (settingsCookie["bda-gs-1"]) $("#bd-pub-li").show();
@@ -203,27 +201,21 @@ export default class V2_SettingsPanel {
     }
 
     get coreComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, {key: "cspanel", title: "Core Settings", onChange: this.onChange, settings: this.coreSettings}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
-    }
-    
-    get forkComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, {
-                contentColumn: true, 
-                fade: true,
-                dark: true,
-                children: [
-                    BDV2.react.createElement(V2Components.SettingsPanel, {key: "fspanel", title: "BandagedBD Settings", onChange: this.onChange, settings: this.forkSettings, button: {
-                        title: "Clear Emote Cache",
-                        onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
-                    }}),
-                    BDV2.react.createElement(V2Components.Tools, {key: "tools"})
-                ]
-            }
-        );
+        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [
+            BDV2.react.createElement(V2Components.SectionedSettingsPanel, {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
+            BDV2.react.createElement(V2Components.Tools, {key: "tools"})
+        ]});
     }
 
     get emoteComponent() {
-        return BDV2.react.createElement(V2Components.Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(V2Components.SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings}), BDV2.react.createElement(V2Components.Tools, {key: "tools"})]});
+        return BDV2.react.createElement(V2Components.Scroller, {
+            contentColumn: true, fade: true, dark: true, children: [
+                BDV2.react.createElement(V2Components.SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
+                    title: "Clear Emote Cache",
+                    onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
+                }}),
+                BDV2.react.createElement(V2Components.Tools, {key: "tools"})
+        ]});
     }
 
     get customCssComponent() {
@@ -245,13 +237,13 @@ export default class V2_SettingsPanel {
                 BDEvents.on(`${prefix}-loaded`, this.onChange);
                 BDEvents.on(`${prefix}-unloaded`, this.onChange);
             }
-        
+
             componentWillUnmount() {
                 BDEvents.off(`${prefix}-reloaded`, this.onChange);
                 BDEvents.off(`${prefix}-loaded`, this.onChange);
                 BDEvents.off(`${prefix}-unloaded`, this.onChange);
             }
-        
+
             onChange() {
                 settingsList.sideBarOnClick(type);
             }
@@ -296,15 +288,6 @@ export default class V2_SettingsPanel {
             return;
         }
         BDV2.reactDom.render(this.coreComponent, root);
-    }
-    
-    renderForkSettings() {
-        let root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-            return;
-        }
-        BDV2.reactDom.render(this.forkComponent, root);
     }
 
     renderEmoteSettings() {

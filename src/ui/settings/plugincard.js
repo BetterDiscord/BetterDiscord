@@ -39,7 +39,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
             if (typeof this.settingsPanel === "object") {
                 this.refs.settingspanel.appendChild(this.settingsPanel);
             }
-            
+
             if (!settingsCookie["fork-ps-3"]) return;
             var isHidden = (container, element) => {
 
@@ -51,7 +51,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
                 return  (eTop < cTop || eBottom > cBottom);
             };
-            
+
             let self = $(BDV2.reactDom.findDOMNode(this));
             let container = self.parents(".scroller");
             if (!isHidden(container[0], self[0])) return;
@@ -60,7 +60,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
             }, 300);
         }
     }
-    
+
     reload() {
         const plugin = this.props.plugin.getName();
         pluginModule.reloadPlugin(plugin);
@@ -68,20 +68,24 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         this.onReload(this.props.plugin.getName());
     }
 
+    getString(value) {
+        return typeof value == "string" ? value : value.toString();
+    }
+
     render() {
         let self = this;
         let {plugin} = this.props;
-        let name = plugin.getName();
-        let author = plugin.getAuthor();
-        let description = plugin.getDescription();
-        let version = plugin.getVersion();
+        let name = this.getString(plugin.getName());
+        let author = this.getString(plugin.getAuthor());
+        let description = this.getString(plugin.getDescription());
+        let version = this.getString(plugin.getVersion());
         let website = bdplugins[name].website;
         let source = bdplugins[name].source;
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
             catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + plugin.getName() + ".", err); }
-            
+
             return BDV2.react.createElement("li", {className: "settings-open ui-switch-item"},
                     BDV2.react.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
                             this.refs.settingspanel.innerHTML = "";
@@ -130,7 +134,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         pluginModule.togglePlugin(this.props.plugin.getName());
     }
 
-    showSettings() {		
+    showSettings() {
         if (!this.hasSettings) return;
         this.setState({settings: true});
     }
