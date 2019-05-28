@@ -36,7 +36,7 @@ module.exports = class Utils {
     }
 
 	static async getCommitHash(repo, branch) {
-		const data = await this.getFile(Utils.formatString("https://api.github.com/repos/{{repo}}/BetterDiscordApp/commits/{{branch}}", {repo, branch}));
+		const data = await this.getFile(this.formatString("https://api.github.com/repos/{{repo}}/BetterDiscordApp/commits/{{branch}}", {repo, branch}));
 		if (!this.testJSON(data)) return null;
 		const parsed = JSON.parse(data);
 		if (!parsed || !Array.isArray(parsed)) return null;
@@ -44,9 +44,9 @@ module.exports = class Utils {
 	}
 
     static async getUpdater(repo, branch) {
-        let hash = await Utils.getCommitHash(repo, branch);
+        let hash = await this.getCommitHash(repo, branch);
         if (!hash) hash = "injector";
-        const data = await this.getFile(Utils.formatString("https://cdn.statically.io/gh/{{repo}}/BetterDiscordApp/{{hash}}/betterdiscord/config.json", {repo, hash}));
+        const data = await this.getFile(this.formatString("https://cdn.statically.io/gh/{{repo}}/BetterDiscordApp/{{hash}}/betterdiscord/config.json", {repo, hash}));
         if (!this.testJSON(data)) return null;
         return JSON.parse(data);
     }
@@ -93,7 +93,7 @@ module.exports = class Utils {
             fs.mkdirSync(path);
         }
         catch (err) {
-            Utils.error(err);
+            this.error(err);
         }
     }
 

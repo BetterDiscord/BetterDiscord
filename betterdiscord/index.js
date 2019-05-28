@@ -85,7 +85,7 @@ const BetterDiscord = class BetterDiscord {
     async getUpdater() {
         Utils.log("Getting updater");
         let remoteConfig = await Utils.getUpdater(config.repo, config.branch);
-        if (!updater)  {
+        if (!remoteConfig)  {
             Utils.log("Could not load updater, using backup");
             remoteConfig = {
                 latestVersion: "0.3.2"
@@ -117,7 +117,7 @@ const BetterDiscord = class BetterDiscord {
 
     async loadApp() {
         for (const data of this.externalData) {
-            const url = Utils.formatString((config.local && data.local != null) ? data.local : data.url, {hash: config.hash});
+            const url = Utils.formatString((config.local && data.local != null) ? data.local : data.url, {repo: config.repo, hash: config.hash});
             Utils.log(`Loading Resource (${url})`);
             if (data.type == "script") {
                 try {
