@@ -5,6 +5,7 @@
     "main": "js/main.js",
     "scripts": {
         "build": "webpack --progress --colors",
+        "build_prod": "webpack --progress --colors --mode production -o js/main.min.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "minify": "gulp minify-js && gulp minify-css",
         "minify-js": "gulp minify-js",
