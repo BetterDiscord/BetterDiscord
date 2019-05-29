@@ -1,7 +1,8 @@
-import Config from "../data/config";
+import {Config, Plugins, SettingsCookie, PluginCookie, ThemeCookie} from "data";
 import Utilities from "./utilities";
 import BDV2 from "./bdv2";
 import DataStore from "./datastore";
+import Core from "./core";
 
 const BdApi = {
     get React() { return BDV2.react; },
@@ -66,22 +67,16 @@ BdApi.unlinkJS = function (id) {
 //Get another plugin
 //name = name of plugin
 BdApi.getPlugin = function (name) {
-    if (bdplugins.hasOwnProperty(name)) {
-        return bdplugins[name].plugin;
+    if (Plugins.hasOwnProperty(name)) {
+        return Plugins[name].plugin;
     }
     return null;
 };
 
-var betterDiscordIPC = require("electron").ipcRenderer;
-//Get ipc for reason
-BdApi.getIpc = function () {
-    Utilities.warn("Deprecation Notice", "BetterDiscord's IPC has been deprecated and may be removed in future versions.");
-    return betterDiscordIPC;
-};
 
 //Get BetterDiscord Core
 BdApi.getCore = function () {
-    return window.mainCore;
+    return Core;
 };
 
 /**
@@ -92,7 +87,7 @@ BdApi.getCore = function () {
 BdApi.alert = function (title, content) {
     const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
     const AlertModal = BdApi.findModuleByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");
-    if (!ModalStack || !AlertModal) return window.mainCore.alert(title, content);
+    if (!ModalStack || !AlertModal) return Core.alert(title, content);
 
     ModalStack.push(function(props) {
         return BdApi.React.createElement(AlertModal, Object.assign({
@@ -117,7 +112,7 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
     const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
     const TextElement = BdApi.findModuleByProps("Sizes", "Weights");
     const ConfirmationModal = BdApi.findModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");
-    if (!ModalStack || !ConfirmationModal || !TextElement) return window.mainCore.alert(title, content);
+    if (!ModalStack || !ConfirmationModal || !TextElement) return Core.alert(title, content);
 
     const {onConfirm, onCancel, confirmText, cancelText, danger = false} = options;
     if (typeof(content) == "string") content = TextElement({color: TextElement.Colors.PRIMARY, children: [content]});
@@ -140,7 +135,7 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
 
 //Show toast alert
 BdApi.showToast = function(content, options = {}) {
-    window.mainCore.showToast(content, options);
+    Core.showToast(content, options);
 };
 
 // Finds module
@@ -212,17 +207,17 @@ BdApi.testJSON = function(data) {
     return Utilities.testJSON(data);
 };
 
-// BdApi.isPluginEnabled = function(name) {
-//     return !!pluginCookie[name];
-// };
+BdApi.isPluginEnabled = function(name) {
+    return !!PluginCookie[name];
+};
 
-// BdApi.isThemeEnabled = function(name) {
-//     return !!themeCookie[name];
-// };
+BdApi.isThemeEnabled = function(name) {
+    return !!ThemeCookie[name];
+};
 
-// BdApi.isSettingEnabled = function(id) {
-//     return !!settingsCookie[id];
-// };
+BdApi.isSettingEnabled = function(id) {
+    return !!SettingsCookie[id];
+};
 
 // Gets data
 BdApi.getBDData = function(key) {

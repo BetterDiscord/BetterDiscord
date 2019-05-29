@@ -1,4 +1,4 @@
-import Config from "../../data/config";
+import {Config} from "data";
 
 import {BDV2, Utilities} from "modules";
 import SideBar from "./sidebarmenu";

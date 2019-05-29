@@ -1,4 +1,4 @@
-export default class {
+export default new class {
     enable() {
         $(".scroller.guild-channels ul").first().css("display", "none");
         $(".scroller.guild-channels header").first().css("display", "none");
@@ -16,4 +16,4 @@ export default class {
         $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
         $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
     }
-}
+};

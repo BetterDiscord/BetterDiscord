@@ -1,4 +1,4 @@
-import Settings from "../data/settingscookie";
+import {SettingsCookie} from "data";
 import DataStore from "./datastore";
 import Utilities from "./utilities";
 
@@ -130,14 +130,14 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
 QuickEmoteMenu.prototype.obsCallback = function (elem) {
     if (!this.initialized) return;
     var e = $(elem);
-    if (!Settings["bda-es-9"]) {
+    if (!SettingsCookie["bda-es-9"]) {
         e.addClass("bda-qme-hidden");
     }
     else {
         e.removeClass("bda-qme-hidden");
     }
 
-    if (!Settings["bda-es-0"]) return;
+    if (!SettingsCookie["bda-es-0"]) return;
 
     e.prepend(this.qmeHeader);
     e.append(this.teContainer);
@@ -182,4 +182,4 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     DataStore.setBDData("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
 };
 
-export default QuickEmoteMenu;
+export default new QuickEmoteMenu();

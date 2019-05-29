@@ -1,19 +1,22 @@
-import Utilties from "./utilities";
-import Config from "../data/config";
-import Settings from "../data/settingscookie";
 import BDV2 from "./bdv2";
+import Utilties from "./utilities";
+import {Config, SettingsCookie} from "data";
 import EmoteModule from "./emotes";
 import QuickEmoteMenu from "./emotemenu";
-import VoiceMode from "./voicemode";
-import DevMode from "./devmode";
-import PluginModule from "./pluginmanager";
-import ThemeModule from "./thememanager";
+// import VoiceMode from "./voicemode";
+// import DevMode from "./devmode";
+import PluginManager from "./pluginmanager";
+import ThemeManager from "./thememanager";
 import DataStore from "./datastore";
-import {PublicServers, SettingsPanel} from "ui";
+import PublicServers from "./publicservers";
+import SettingsPanel from "./settingspanel";
 
-function Core(config) {
-    Object.assign(Config, config);
+function Core() {
 }
+
+Core.prototype.setConfig = function(config) {
+    Object.assign(Config, config);
+};
 
 Core.prototype.init = async function() {
     if (Config.version < Config.minSupportedVersion) {
@@ -21,53 +24,44 @@ Core.prototype.init = async function() {
         return;
     }
 
-    if (Config.updater.LatestVersion > Config.version) {
+    const latestLocalVersion = Config.updater ? Config.updater.LatestVersion : Config.latestVersion;
+    if (latestLocalVersion > Config.version) {
         this.alert("Update Available", `
-            An update for BandagedBD is available (${Config.updater.LatestVersion})! Please Reinstall!<br /><br />
+            An update for BandagedBD is available (${latestLocalVersion})! Please Reinstall!<br /><br />
             <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>
         `);
     }
 
     Utilties.log("Startup", "Initializing Settings");
     this.initSettings();
-    this.emoteModule = new EmoteModule();
-    this.quickEmoteMenu = new QuickEmoteMenu();
     Utilties.log("Startup", "Initializing EmoteModule");
-    window.emotePromise = this.emoteModule.init().then(() => {
-        this.emoteModule.initialized = true;
+    window.emotePromise = EmoteModule.init().then(() => {
+        EmoteModule.initialized = true;
         Utilties.log("Startup", "Initializing QuickEmoteMenu");
-        this.quickEmoteMenu.init();
+        QuickEmoteMenu.init();
     });
-    this.publicServersModule = new PublicServers();
-
-    this.voiceMode = new VoiceMode();
-    this.dMode = new DevMode();
 
     this.injectExternals();
 
     await this.checkForGuilds();
     BDV2.initialize();
     Utilties.log("Startup", "Updating Settings");
-    this.settingsPanel = new SettingsPanel();
-    this.settingsPanel.initializeSettings();
+    SettingsPanel.initializeSettings();
 
     Utilties.log("Startup", "Loading Plugins");
-    this.pluginModule = new PluginModule();
-    const pluginErrors = this.pluginModule.loadPlugins();
+    const pluginErrors = PluginManager.loadPlugins();
 
     Utilties.log("Startup", "Loading Themes");
-    this.themeModule = new ThemeModule();
-    const themeErrors = this.themeModule.loadThemes();
+    const themeErrors = ThemeManager.loadThemes();
 
     $("#customcss").detach().appendTo(document.head);
 
     window.addEventListener("beforeunload", function() {
-        if (Settings["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
+        if (SettingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
     });
 
-    this.publicServersModule.initialize();
-
-    this.emoteModule.autoCapitalize();
+    PublicServers.initialize();
+    EmoteModule.autoCapitalize();
 
     Utilties.log("Startup", "Removing Loading Icon");
     document.getElementsByClassName("bd-loaderv2")[0].remove();
@@ -75,7 +69,7 @@ Core.prototype.init = async function() {
     this.initObserver();
 
     // Show loading errors
-    if (Settings["fork-ps-1"]) {
+    if (SettingsCookie["fork-ps-1"]) {
         Utilties.log("Startup", "Collecting Startup Errors");
         this.showContentErrors({plugins: pluginErrors, themes: themeErrors});
     }
@@ -112,18 +106,18 @@ Core.prototype.initSettings = function () {
     const savedSettings = this.loadSettings();
     $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
     for (const setting in savedSettings) {
-        if (savedSettings[setting] !== undefined) Settings[setting] = savedSettings[setting];
+        if (savedSettings[setting] !== undefined) SettingsCookie[setting] = savedSettings[setting];
     }
     this.saveSettings();
 
 };
 
 Core.prototype.saveSettings = function () {
-    DataStore.setSettingGroup("settings", Settings);
+    DataStore.setSettingGroup("settings", SettingsCookie);
 };
 
 Core.prototype.loadSettings = function () {
-    Settings = DataStore.getSettingGroup("settings");
+    return DataStore.getSettingGroup("settings");
 };
 
 Core.prototype.initObserver = function () {
@@ -131,7 +125,7 @@ Core.prototype.initObserver = function () {
 
         for (let i = 0, mlen = mutations.length; i < mlen; i++) {
             let mutation = mutations[i];
-            if (typeof pluginModule !== "undefined") this.pluginModule.rawObserver(mutation);
+            if (typeof PluginManager !== "undefined") PluginManager.rawObserver(mutation);
 
             // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
@@ -144,12 +138,12 @@ Core.prototype.initObserver = function () {
                 if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
                     node.setAttribute("layer-id", "user-settings");
                     node.setAttribute("id", "user-settings");
-                    if (!document.getElementById("bd-settings-sidebar")) this.settingsPanel.renderSidebar();
+                    if (!document.getElementById("bd-settings-sidebar")) SettingsPanel.renderSidebar();
                 }
             }
 
             // Emoji Picker
-            if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) this.quickEmoteMenu.obsCallback(node);
+            if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) QuickEmoteMenu.obsCallback(node);
 
         }
     });
@@ -165,7 +159,7 @@ Core.prototype.inject24Hour = function() {
 
     const twelveHour = new RegExp(`([0-9]{1,2}):([0-9]{1,2})\\s(AM|PM)`);
     const convert = (data) => {
-        if (!Settings["bda-gs-6"]) return;
+        if (!SettingsCookie["bda-gs-6"]) return;
         const matched = data.returnValue.match(twelveHour);
         if (!matched || matched.length !== 4) return;
         if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
@@ -182,7 +176,7 @@ Core.prototype.injectColoredText = function() {
     if (this.cancelColoredText) return;
 
     this.cancelColoredText = Utilties.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
-        if (!Settings["bda-gs-7"]) return;
+        if (!SettingsCookie["bda-gs-7"]) return;
 		Utilties.monkeyPatch(data.returnValue.props, "children", {silent: true, after: ({returnValue}) => {
 			const markup = returnValue.props.children[1];
 			const roleColor = data.thisObject.props.message.colorString;
@@ -341,4 +335,4 @@ Core.prototype.showToast = function(content, options = {}) {
 };
 
 
-export default Core;
+export default new Core();

@@ -1,5 +1,5 @@
-import Settings from "../../data/settingscookie";
-import {BDV2} from "modules";
+import {SettingsCookie, ThemeCookie, Themes} from "data";
+import {BDV2, Core, ThemeManager} from "modules";
 import ReloadIcon from "../icons/reload";
 
 export default class V2C_ThemeCard extends BDV2.reactComponent {
@@ -13,7 +13,7 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            checked: themeCookie[this.props.theme.name],
+            checked: ThemeCookie[this.props.theme.name],
             reloads: 0
         };
     }
@@ -33,11 +33,11 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
 
     reload() {
         const theme = this.props.theme.name;
-        const error = window.mainCore.themeModule.reloadTheme(theme);
-        if (error) window.mainCore.showToast(`Could not reload ${bdthemes[theme].name}. Check console for details.`, {type: "error"});
-        else window.mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been reloaded.`, {type: "success"});
+        const error = ThemeManager.reloadTheme(theme);
+        if (error) Core.showToast(`Could not reload ${Themes[theme].name}. Check console for details.`, {type: "error"});
+        else Core.showToast(`${Themes[theme].name} v${Themes[theme].version} has been reloaded.`, {type: "success"});
         // this.setState(this.state);
-        this.props.theme = bdthemes[theme];
+        this.props.theme = Themes[theme];
         this.onReload(this.props.theme.name);
     }
 
@@ -47,8 +47,8 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
         let description = theme.description;
         let version = theme.version;
         let author = theme.author;
-        let website = bdthemes[name].website;
-        let source = bdthemes[name].source;
+        let website = Themes[name].website;
+        let source = Themes[name].source;
 
         return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bda-header"},
@@ -60,7 +60,7 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
                         BDV2.react.createElement("span", {className: "bda-author"}, author)
                     ),
                     BDV2.react.createElement("div", {className: "bda-controls"},
-                        !Settings["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
+                        !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
                         BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
@@ -82,6 +82,6 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
 
     onChange() {
         this.setState({checked: !this.state.checked});
-        window.mainCore.themeModule.toggleTheme(this.props.theme.name);
+        ThemeManager.toggleTheme(this.props.theme.name);
     }
 }

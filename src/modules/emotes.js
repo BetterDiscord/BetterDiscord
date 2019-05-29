@@ -1,5 +1,4 @@
-import Config from "../data/config";
-import Settings from "../data/settingscookie";
+import {Config, SettingsCookie} from "data";
 import Utilities from "./utilities";
 import BDV2 from "./bdv2";
 import BDEmote from "../ui/emote";
@@ -33,7 +32,7 @@ function EmoteModule() {
         get: function() {
             const cats = [];
             for (const current in window.bdEmoteSettingIDs) {
-                if (Settings[window.bdEmoteSettingIDs[current]]) cats.push(current);
+                if (SettingsCookie[window.bdEmoteSettingIDs[current]]) cats.push(current);
             }
             return cats;
         }
@@ -117,7 +116,7 @@ EmoteModule.prototype.init = async function () {
 						let emoteOverride = emoteModifier.slice(0);
 
 						if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
-						if (!this.modifiers.includes(emoteModifier) || !Settings["bda-es-8"]) emoteModifier = "";
+						if (!this.modifiers.includes(emoteModifier) || !SettingsCookie["bda-es-8"]) emoteModifier = "";
 						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
 						else emoteModifier = emoteOverride;
 
@@ -134,7 +133,7 @@ EmoteModule.prototype.init = async function () {
 							if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
 						}
 
-						if (!window.bdEmotes[current][emoteName] || !Settings[window.bdEmoteSettingIDs[current]]) continue;
+						if (!window.bdEmotes[current][emoteName] || !SettingsCookie[window.bdEmoteSettingIDs[current]]) continue;
 						const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                         if (!results) continue;
 						const pre = nodes[n].substring(0, results.index + results[1].length);
@@ -196,10 +195,11 @@ EmoteModule.prototype.goBack = async function(emoteInfo) {
 };
 
 EmoteModule.prototype.isCacheValid = function() {
+    const cacheLength = DataStore.getBDData("emoteCacheDays") || DataStore.setBDData("emoteCacheDays", 7) || 7;
     const cacheDate = new Date(DataStore.getBDData("emoteCacheDate") || null);
     const currentDate = new Date();
     const daysBetween = Math.round(Math.abs((currentDate.getTime() - cacheDate.getTime()) / (24 * 60 * 60 * 1000)));
-    if (daysBetween > Config.cache.days) {
+    if (daysBetween > cacheLength) {
         DataStore.setBDData("emoteCacheDate", currentDate.toJSON());
         return false;
     }
@@ -213,7 +213,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     const exists = _fs.existsSync(file);
 
     if (exists && this.isCacheValid()) {
-        if (Settings["fork-ps-2"]) BdApi.showToast("Loading emotes from cache.", {type: "info"});
+        if (SettingsCookie["fork-ps-2"]) BdApi.showToast("Loading emotes from cache.", {type: "info"});
         Utilities.log("Emotes", "Loading emotes from local cache.");
 
         const data = await new Promise(resolve => {
@@ -232,7 +232,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         }
 
         if (isValid) {
-            if (Settings["fork-ps-2"]) BdApi.showToast("Emotes successfully loaded.", {type: "success"});
+            if (SettingsCookie["fork-ps-2"]) BdApi.showToast("Emotes successfully loaded.", {type: "success"});
             return;
         }
 
@@ -240,8 +240,8 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         _fs.unlinkSync(file);
     }
 
-    if (!Settings["fork-es-3"]) return;
-    if (Settings["fork-ps-2"]) BdApi.showToast("Downloading emotes in the background do not reload.", {type: "info"});
+    if (!SettingsCookie["fork-es-3"]) return;
+    if (SettingsCookie["fork-ps-2"]) BdApi.showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
     for (let e in emoteInfo) {
         await new Promise(r => setTimeout(r, 1000));
@@ -249,7 +249,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         window.bdEmotes[emoteInfo[e].variable] = data;
     }
 
-    if (Settings["fork-ps-2"]) BdApi.showToast("All emotes successfully downloaded.", {type: "success"});
+    if (SettingsCookie["fork-ps-2"]) BdApi.showToast("All emotes successfully downloaded.", {type: "success"});
 
     try { _fs.writeFileSync(file, JSON.stringify(window.bdEmotes), "utf8"); }
     catch (err) { Utilities.err("Emotes", "Could not save emote data.", err); }
@@ -317,7 +317,7 @@ EmoteModule.prototype.getBlacklist = function () {
 var bemotes = [];
 
 EmoteModule.prototype.autoCapitalize = function () {
-    if (!Settings["bda-es-4"] || this.autoCapitalizeActive) return;
+    if (!SettingsCookie["bda-es-4"] || this.autoCapitalizeActive) return;
     $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-1LDbYG textarea:first"), () => {
         var text = $(".channelTextArea-1LDbYG textarea:first").val();
         if (text == undefined) return;
@@ -348,4 +348,4 @@ EmoteModule.prototype.disableAutoCapitalize = function() {
     $("body").off(".bdac");
 };
 
-export default EmoteModule;
+export default new EmoteModule();

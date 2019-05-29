@@ -1,11 +1,11 @@
-import Settings from "../data/settingscookie";
-import {BDV2} from "modules";
+import {SettingsCookie} from "data";
+import {BDV2, EmoteMenu} from "modules";
 
 export default class BDEmote extends BDV2.reactComponent {
     constructor(props) {
         super(props);
 
-        const isFav = window.mainCore.quickEmoteMenu && window.mainCore.quickEmoteMenu.favoriteEmotes && window.mainCore.quickEmoteMenu.favoriteEmotes[this.label] ? true : false;
+        const isFav = EmoteMenu && EmoteMenu.favoriteEmotes && EmoteMenu.favoriteEmotes[this.label] ? true : false;
         this.state = {
             shouldAnimate: !this.animateOnHover,
             isFavorite: isFav
@@ -17,7 +17,7 @@ export default class BDEmote extends BDV2.reactComponent {
     }
 
     get animateOnHover() {
-        return Settings["fork-es-2"];
+        return SettingsCookie["fork-es-2"];
     }
 
     get label() {
@@ -30,8 +30,8 @@ export default class BDEmote extends BDV2.reactComponent {
 
     onMouseEnter() {
         if (!this.state.shouldAnimate && this.animateOnHover) this.setState({shouldAnimate: true});
-        if (!this.state.isFavorite && window.mainCore.quickEmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: true});
-        else if (this.state.isFavorite && !window.mainCore.quickEmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: false});
+        if (!this.state.isFavorite && EmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: true});
+        else if (this.state.isFavorite && !EmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: false});
     }
 
     onMouseLeave() {
@@ -70,11 +70,11 @@ export default class BDEmote extends BDV2.reactComponent {
                             e.preventDefault();
                             e.stopPropagation();
                             if (this.state.isFavorite) {
-                                delete window.mainCore.quickEmoteMenu.favoriteEmotes[this.label];
-                                window.mainCore.quickEmoteMenu.updateFavorites();
+                                delete EmoteMenu.favoriteEmotes[this.label];
+                                EmoteMenu.updateFavorites();
                             }
                             else {
-                                window.mainCore.quickEmoteMenu.favorite(this.label, this.props.url);
+                                EmoteMenu.favorite(this.label, this.props.url);
                             }
                             this.setState({isFavorite: !this.state.isFavorite});
                         }

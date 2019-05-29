@@ -1,22 +1,22 @@
-import Modules from "./webpackmodules";
+import BdApi from "./pluginapi";
 
 const normalizedPrefix = "da";
 const randClass = new RegExp(`^(?!${normalizedPrefix}-)((?:[A-Za-z]|[0-9]|-)+)-(?:[A-Za-z]|[0-9]|-|_){6}$`);
 
-export default class ClassNormalizer {
+export default new class ClassNormalizer {
     get id() {return "fork-ps-4";}
     get name() {return "ClassNormalizer";}
 
     stop() {
         if (!this.hasPatched) return;
-        this.unpatchClassModules(Modules.getModules(this.moduleFilter.bind(this)));
+        this.unpatchClassModules(BdApi.findAllModules(this.moduleFilter.bind(this)));
         this.revertElement(document.querySelector("#app-mount"));
         this.hasPatched = false;
     }
 
     start() {
         if (this.hasPatched) return;
-        this.patchClassModules(Modules.getModules(this.moduleFilter.bind(this)));
+        this.patchClassModules(BdApi.findAllModules(this.moduleFilter.bind(this)));
         this.normalizeElement(document.querySelector("#app-mount"));
         this.hasPatched = true;
     }
@@ -109,4 +109,4 @@ export default class ClassNormalizer {
         element.classList.remove(...toRemove);
     }
 
-}
+};
