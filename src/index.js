@@ -1,9 +1,10 @@
-import {SettingsCookie, SettingsInfo, PluginCookie, ThemeCookie, Plugins, Themes} from "data";
+import {SettingsCookie, SettingsInfo, PluginCookie, ThemeCookie, Plugins, Themes, EmoteBlacklist} from "data";
 import proxyLocalStorage from "./localstorage";
 import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
 import PluginManager from "./modules/pluginmanager";
 import ThemeManager from "./modules/thememanager";
+import {bdPluginStorage} from "./modules/oldstorage";
 
 // Perform some setup
 proxyLocalStorage();
@@ -20,8 +21,10 @@ window.pluginCookie = PluginCookie;
 window.themeCookie = ThemeCookie;
 window.pluginModule = PluginManager;
 window.themeModule = ThemeManager;
-window.bdthemes = Plugins;
-window.bdplugins = Themes;
+window.bdthemes = Themes;
+window.bdplugins = Plugins;
+window.bemotes = EmoteBlacklist;
+window.bdPluginStorage = bdPluginStorage;
 
 export default class CoreWrapper {
     constructor(config) {

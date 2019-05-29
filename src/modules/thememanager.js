@@ -13,14 +13,14 @@ function ThemeModule() {
 ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
     const errors = ContentManager.loadThemes();
-    var themes = Object.keys(Themes);
+    const themes = Object.keys(Themes);
 
-    for (var i = 0; i < themes.length; i++) {
-        var name = Themes[themes[i]].name;
+    for (let i = 0; i < themes.length; i++) {
+        const name = Themes[themes[i]].name;
         if (!ThemeCookie[name]) ThemeCookie[name] = false;
         if (ThemeCookie[name]) $("head").append($("<style>", {id: Utilities.escapeID(name), text: unescape(Themes[name].css)}));
     }
-    for (let theme in ThemeCookie) {
+    for (const theme in ThemeCookie) {
         if (!Themes[theme]) delete ThemeCookie[theme];
     }
     this.saveThemeData();

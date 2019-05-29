@@ -11,9 +11,9 @@ export default new class V2 {
             delete req.m.__extra_id__;
             delete req.c.__extra_id__;
             const find = (filter) => {
-                for (let i in req.c) {
+                for (const i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
-                        let m = req.c[i].exports;
+                        const m = req.c[i].exports;
                         if (m && m.__esModule && m.default && filter(m.default)) return m.default;
                         if (m && filter(m))	return m;
                     }
@@ -24,9 +24,9 @@ export default new class V2 {
 
             const findAll = (filter) => {
                 const modules = [];
-                for (let i in req.c) {
+                for (const i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
-                        let m = req.c[i].exports;
+                        const m = req.c[i].exports;
                         if (m && m.__esModule && m.default && filter(m.default)) modules.push(m.default);
                         else if (m && filter(m)) modules.push(m);
                     }
@@ -76,7 +76,7 @@ export default new class V2 {
 
     parseSettings(cat) {
         return Object.keys(SettingsInfo).reduce((arr, key) => {
-            let setting = SettingsInfo[key];
+            const setting = SettingsInfo[key];
             if (setting.cat === cat && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);

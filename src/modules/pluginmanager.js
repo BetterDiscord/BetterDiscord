@@ -13,9 +13,9 @@ function PluginModule() {
 PluginModule.prototype.loadPlugins = function () {
     this.loadPluginData();
     const errors = ContentManager.loadPlugins();
-    var plugins = Object.keys(Plugins);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin, name;
+    const plugins = Object.keys(Plugins);
+    for (let i = 0; i < plugins.length; i++) {
+        let plugin, name;
 
         try {
             plugin = Plugins[plugins[i]].plugin;
@@ -161,9 +161,9 @@ PluginModule.prototype.savePluginData = function () {
 };
 
 PluginModule.prototype.newMessage = function () {
-    var plugins = Object.keys(Plugins);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin = Plugins[plugins[i]].plugin;
+    const plugins = Object.keys(Plugins);
+    for (let i = 0; i < plugins.length; i++) {
+        const plugin = Plugins[plugins[i]].plugin;
         if (!PluginCookie[plugin.getName()]) continue;
         if (typeof plugin.onMessage === "function") {
             try { plugin.onMessage(); }
@@ -173,9 +173,9 @@ PluginModule.prototype.newMessage = function () {
 };
 
 PluginModule.prototype.channelSwitch = function () {
-    var plugins = Object.keys(Plugins);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin = Plugins[plugins[i]].plugin;
+    const plugins = Object.keys(Plugins);
+    for (let i = 0; i < plugins.length; i++) {
+        const plugin = Plugins[plugins[i]].plugin;
         if (!PluginCookie[plugin.getName()]) continue;
         if (typeof plugin.onSwitch === "function") {
             try { plugin.onSwitch(); }
@@ -185,9 +185,9 @@ PluginModule.prototype.channelSwitch = function () {
 };
 
 PluginModule.prototype.rawObserver = function(e) {
-    var plugins = Object.keys(Plugins);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin = Plugins[plugins[i]].plugin;
+    const plugins = Object.keys(Plugins);
+    for (let i = 0; i < plugins.length; i++) {
+        const plugin = Plugins[plugins[i]].plugin;
         if (!PluginCookie[plugin.getName()]) continue;
         if (typeof plugin.observer === "function") {
             try { plugin.observer(e); }
