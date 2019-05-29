@@ -7,9 +7,7 @@ const Utils = require("./utils");
 const config = require("./config.json");
 Object.assign(config, {
     os: process.platform,
-    dataPath: (process.platform == "win32" ? process.env.APPDATA : process.platform == "darwin" ? process.env.HOME + "/Library/Preferences" :  process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : process.env.HOME + "/.config") + "/BetterDiscord/",
-    branch: "master",
-    repo: "rauenzi"
+    dataPath: (process.platform == "win32" ? process.env.APPDATA : process.platform == "darwin" ? process.env.HOME + "/Library/Preferences" :  process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : process.env.HOME + "/.config") + "/BetterDiscord/"
 });
 Utils.makeFolder(config.dataPath);
 Utils.setLogFile(config.dataPath + "/logs.log");
