@@ -8,7 +8,7 @@ export default class V2C_SidebarView extends BDV2.reactComponent {
     }
 
     render() {
-        let {sidebar, content, tools} = this.props.children;
+        const {sidebar, content, tools} = this.props.children;
         return BDV2.react.createElement(
             "div",
             {className: "standardSidebarView-3F1I7i ui-standard-sidebar-view"},

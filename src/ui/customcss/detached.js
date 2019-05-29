@@ -7,11 +7,10 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
 
     constructor(props) {
         super(props);
-        let self = this;
-        self.onClick = self.onClick.bind(self);
-        self.updateCss = self.updateCss.bind(self);
-        self.saveCss = self.saveCss.bind(self);
-        self.onChange = self.onChange.bind(self);
+        this.onClick = this.onClick.bind(this);
+        this.updateCss = this.updateCss.bind(this);
+        this.saveCss = this.saveCss.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     componentDidMount() {
@@ -38,7 +37,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     updateLineCount() {
-        let lineCount = this.refs.editor.value.split("\n").length;
+        const lineCount = this.refs.editor.value.split("\n").length;
         if (lineCount == this.props.lines) return;
         this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
         this.props.lines = lineCount;
@@ -55,7 +54,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     get css() {
-        let _ccss = DataStore.getBDData("bdcustomcss");
+        const _ccss = DataStore.getBDData("bdcustomcss");
         let ccss = "";
         if (_ccss && _ccss !== "") {
             ccss = atob(_ccss);
@@ -64,7 +63,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     get root() {
-        let _root = $("#bd-customcss-detach-container");
+        const _root = $("#bd-customcss-detach-container");
         if (!_root.length) {
             if (!this.injectRoot()) return null;
             return this.detachedRoot;
@@ -81,7 +80,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     render() {
-        let self = this;
+        const self = this;
         return BDV2.react.createElement(
             "div",
             {className: "bd-detached-css-editor", id: "bd-customcss-detach-editor"},
@@ -144,7 +143,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     onClick(id) {
-        let self = this;
+        const self = this;
         switch (id) {
             case "attach":
                 if ($("#editor-detached").length) self.props.attach();

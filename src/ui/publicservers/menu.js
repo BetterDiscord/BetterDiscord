@@ -47,7 +47,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     search(query, clear) {
-        let self = this;
+        const self = this;
 
         $.ajax({
             method: "GET",
@@ -121,19 +121,18 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     connect() {
-        let self = this;
-        let options = self.windowOptions;
+        const options = this.windowOptions;
         options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
         options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
 
-        self.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
+        this.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
         const url = "https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=https://auth.discordservers.com/info";
-        self.joinWindow.webContents.on("did-navigate", (event, url) => {
+        this.joinWindow.webContents.on("did-navigate", (event, url) => {
             if (url != "https://auth.discordservers.com/info") return;
-            self.joinWindow.close();
-            self.checkConnection();
+            this.joinWindow.close();
+            this.checkConnection();
         });
-        self.joinWindow.loadURL(url);
+        this.joinWindow.loadURL(url);
     }
 
     get windowOptions() {
@@ -155,7 +154,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get bdServer() {
-        let server = {
+        const server = {
             name: "BetterDiscord",
             online: "7500+",
             members: "20000+",
@@ -167,8 +166,8 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
             invite_code: "0Tmfo5ZbORCRqbAd",
             pinned: true
         };
-        let guildList = this.SortedGuildStore.guildPositions;
-        let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
+        const guildList = this.SortedGuildStore.guildPositions;
+        const defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         return BDV2.react.createElement(ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
     }
 
@@ -185,7 +184,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     checkConnection() {
-        let self = this;
+        const self = this;
         try {
             $.ajax({
                 method: "GET",
@@ -293,7 +292,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     searchKeyDown(e) {
-        let self = this;
+        const self = this;
         if (self.state.loading || e.which !== 13) return;
         self.setState({
             loading: true,
@@ -312,7 +311,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     changeCategory(id) {
-        let self = this;
+        const self = this;
         if (self.state.loading) return;
         self.refs.searchinput.value = "";
         self.setState({
@@ -329,9 +328,9 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get content() {
-        let self = this;
-        let guildList = this.SortedGuildStore.guildPositions;
-        let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
+        const self = this;
+        const guildList = this.SortedGuildStore.guildPositions;
+        const defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         if (self.state.connection.state === 1) return self.notConnected;
         return [BDV2.react.createElement(
             "div",
@@ -357,7 +356,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get notConnected() {
-        let self = this;
+        const self = this;
         //return BDV2.react.createElement(SettingsTitle, { text: self.state.title });
         return [BDV2.react.createElement(
             "div",
@@ -402,8 +401,8 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get connection() {
-        let self = this;
-        let {connection} = self.state;
+        const self = this;
+        const {connection} = self.state;
         if (connection.state !== 2) return BDV2.react.createElement("span", null);
 
         return BDV2.react.createElement(

@@ -11,7 +11,7 @@ export default class V2C_ServerCard extends BDV2.reactComponent {
     }
 
     render() {
-        let {server} = this.props;
+        const {server} = this.props;
         return BDV2.react.createElement(
             "div", // cardPrimary-1Hv-to
             {className: `card-3Qj_Yx cardPrimary-1Hv-to marginBottom8-AtZOdT bd-server-card${server.pinned ? " bd-server-card-pinned" : ""}`},

@@ -5,7 +5,7 @@ export default class V2C_SideBar extends BDV2.reactComponent {
 
     constructor(props) {
         super(props);
-        let self = this;
+        const self = this;
         const si = $("[class*=side] > [class*=selected]");
         if (si.length) self.scn = si.attr("class");
         const ns = $("[class*=side] > [class*=notSelected]");
@@ -20,13 +20,13 @@ export default class V2C_SideBar extends BDV2.reactComponent {
     }
 
     setInitialState() {
-        let self = this;
+        const self = this;
         self.state = {
             selected: null,
             items: self.props.items
         };
 
-        let initialSelection = self.props.items.find(item => {
+        const initialSelection = self.props.items.find(item => {
             return item.selected;
         });
         if (initialSelection) {
@@ -35,23 +35,23 @@ export default class V2C_SideBar extends BDV2.reactComponent {
     }
 
     render() {
-        let self = this;
-        let {headerText} = self.props;
-        let {items, selected} = self.state;
+        const self = this;
+        const {headerText} = self.props;
+        const {items, selected} = self.state;
         return BDV2.react.createElement(
             "div",
             null,
             BDV2.react.createElement(TabBar.Separator, null),
             BDV2.react.createElement(TabBar.Header, {text: headerText}),
             items.map(item => {
-                let {id, text} = item;
+                const {id, text} = item;
                 return BDV2.react.createElement(TabBar.Item, {key: id, selected: selected === id, text: text, id: id, onClick: self.onClick});
             })
         );
     }
 
     onClick(id) {
-        let self = this;
+        const self = this;
         const si = $("[class*=side] > [class*=selected]");
         if (si.length) {
             si.off("click.bdsb").on("click.bsb", e => {

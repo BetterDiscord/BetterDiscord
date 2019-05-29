@@ -10,7 +10,7 @@ export default class V2C_SettingsPanel extends BDV2.reactComponent {
     }
 
     render() {
-        let {settings} = this.props;
+        const {settings} = this.props;
         return BDV2.react.createElement(
             "div",
             {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},

@@ -7,12 +7,11 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     constructor(props) {
         super(props);
-        let self = this;
-        self.onChange = self.onChange.bind(self);
-        self.showSettings = self.showSettings.bind(self);
-        self.setInitialState();
-        self.hasSettings = typeof self.props.plugin.getSettingsPanel === "function";
-        self.settingsPanel = "";
+        this.onChange = this.onChange.bind(this);
+        this.showSettings = this.showSettings.bind(this);
+        this.setInitialState();
+        this.hasSettings = typeof this.props.plugin.getSettingsPanel === "function";
+        this.settingsPanel = "";
 
         this.reload = this.reload.bind(this);
         this.onReload = this.onReload.bind(this);
@@ -46,19 +45,19 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
             }
 
             if (!SettingsCookie["fork-ps-3"]) return;
-            var isHidden = (container, element) => {
+            const isHidden = (container, element) => {
 
-                let cTop = container.scrollTop;
-                let cBottom = cTop + container.clientHeight;
+                const cTop = container.scrollTop;
+                const cBottom = cTop + container.clientHeight;
 
-                let eTop = element.offsetTop;
-                let eBottom = eTop + element.clientHeight;
+                const eTop = element.offsetTop;
+                const eBottom = eTop + element.clientHeight;
 
                 return  (eTop < cTop || eBottom > cBottom);
             };
 
-            let self = $(BDV2.reactDom.findDOMNode(this));
-            let container = self.parents(".scroller");
+            const self = $(BDV2.reactDom.findDOMNode(this));
+            const container = self.parents(".scroller");
             if (!isHidden(container[0], self[0])) return;
             container.animate({
                 scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
@@ -78,14 +77,14 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     render() {
-        let self = this;
-        let {plugin} = this.props;
-        let name = this.getString(plugin.getName());
-        let author = this.getString(plugin.getAuthor());
-        let description = this.getString(plugin.getDescription());
-        let version = this.getString(plugin.getVersion());
-        let website = Plugins[name].website;
-        let source = Plugins[name].source;
+        const self = this;
+        const {plugin} = this.props;
+        const name = this.getString(plugin.getName());
+        const author = this.getString(plugin.getAuthor());
+        const description = this.getString(plugin.getDescription());
+        const version = this.getString(plugin.getVersion());
+        const website = Plugins[name].website;
+        const source = Plugins[name].source;
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }

@@ -42,7 +42,7 @@ export default class V2_SettingsPanel_Sidebar {
     }
 
     get root() {
-        let _root = $("#bd-settings-sidebar");
+        const _root = $("#bd-settings-sidebar");
         if (!_root.length) {
             if (!this.injectRoot()) return null;
             return this.root;
@@ -51,14 +51,14 @@ export default class V2_SettingsPanel_Sidebar {
     }
 
     injectRoot() {
-        let changeLog = $("[class*='side-'] > [class*='item-']:not([class*=Danger])").last();
+        const changeLog = $("[class*='side-'] > [class*='item-']:not([class*=Danger])").last();
         if (!changeLog.length) return false;
         $("<span/>", {id: "bd-settings-sidebar"}).insertBefore(changeLog.prev());
         return true;
     }
 
     render() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: [class*='side-'] > [class*='item-']:not([class*=Danger])");
             return;
