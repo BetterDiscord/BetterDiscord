@@ -123,6 +123,7 @@ module.exports = class Utils {
     }
 
     static _log(message) {
+        console.log("[BetterDiscord]" + message);
         if (!this.logFile) return;
         this.logData += message;
     }
