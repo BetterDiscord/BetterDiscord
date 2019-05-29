@@ -1,10 +1,10 @@
-import Config from "../data/config";
+import {Config} from "data";
 import BdApi from "./pluginapi";
 const fs = require("fs");
 const path = require("path");
 const releaseChannel = DiscordNative.globals.releaseChannel;
 
-export default class DataStore {
+export default new class DataStore {
     constructor() {
         this.data = {settings: {stable: {}, canary: {}, ptb: {}}};
         this.pluginData = {};
@@ -68,4 +68,4 @@ export default class DataStore {
         delete this.pluginData[pluginName][key];
         fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4));
     }
-}
+};

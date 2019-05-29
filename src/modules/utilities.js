@@ -1,4 +1,4 @@
-var Utils = class {
+export default class Utilities {
     /** Document/window width */
     static get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); }
     /** Document/window height */
@@ -108,13 +108,13 @@ var Utils = class {
                 callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
             };
             if (instead) {
-                const tempRet = Utils.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
+                const tempRet = Utilities.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
                 if (tempRet !== undefined) data.returnValue = tempRet;
             }
             else {
-                if (before) Utils.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
+                if (before) Utilities.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
                 data.callOriginalMethod();
-                if (after) Utils.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
+                if (after) Utilities.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
             }
             if (once) cancel();
             return data.returnValue;
@@ -172,4 +172,4 @@ var Utils = class {
 
         return proxy;
     }
-};
+}

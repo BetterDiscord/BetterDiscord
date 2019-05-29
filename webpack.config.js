@@ -8,7 +8,7 @@ module.exports = env => {
     devtool: "none",
     entry: "./src/index.js",
     output: {
-      filename: "release.js",
+      filename: "main.js",
       path: path.resolve(__dirname, "js"),
       library: "Core",
       libraryTarget: "var",
@@ -18,13 +18,14 @@ module.exports = env => {
       electron: `require("electron")`,
       fs: `require("fs")`,
       path: `require("path")`,
-      request: `require("request")`
+      request: `require("request")`,
+      events: `require("events")`
     },
     resolve: {
       extensions: [".js"],
       modules: [
+        path.resolve("src", "data"),
         path.resolve("src", "modules"),
-        path.resolve("src", "structs"),
         path.resolve("src", "ui")
       ]
     }

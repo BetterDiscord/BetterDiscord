@@ -81,4 +81,4 @@ devMode.prototype.getSelector = function(element) {
      $(document).off("contextmenu.bdDevModeCtx");
  };
 
- export default devMode;
+ export default new devMode();

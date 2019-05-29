@@ -1,7 +1,7 @@
 /* Localstorage fix */
 export default function() {
 
-    const fs = window.require("fs");
+    const fs = require("fs");
     const platform = process.platform;
     const dataPath = (platform === "win32" ? process.env.APPDATA : platform === "darwin" ? process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config") + "/BetterDiscord/";
     const localStorageFile = "localStorage.json";
@@ -25,7 +25,7 @@ export default function() {
     }
 
     const storage = data;
-    storage.setItem = function(i, v) { 
+    storage.setItem = function(i, v) {
         storage[i] = v;
         this.save();
     };

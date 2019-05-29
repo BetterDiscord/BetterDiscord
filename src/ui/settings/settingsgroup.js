@@ -1,4 +1,4 @@
-import Settings from "../../data/settingscookie";
+import {SettingsCookie} from "data";
 import {BDV2} from "modules";
 import SettingsTitle from "./title";
 import Switch from "./switch";
@@ -15,7 +15,7 @@ export default class V2C_SettingsGroup extends BDV2.reactComponent {
         return [BDV2.react.createElement(SettingsTitle, {text: title}),
                 buttonComponent,
                 settings.map(setting => {
-                    return BDV2.react.createElement(Switch, {id: setting.id, key: setting.id, data: setting, checked: Settings[setting.id], onChange: (id, checked) => {
+                    return BDV2.react.createElement(Switch, {id: setting.id, key: setting.id, data: setting, checked: SettingsCookie[setting.id], onChange: (id, checked) => {
                         this.props.onChange(id, checked);
                     }});
                 })];

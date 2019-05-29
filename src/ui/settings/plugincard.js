@@ -1,5 +1,5 @@
-import Settings from "../../data/settingscookie";
-import {BDV2, Utilities} from "modules";
+import {SettingsCookie, PluginCookie, Plugins} from "data";
+import {BDV2, Utilities, PluginManager} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
 
@@ -20,7 +20,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     setInitialState() {
         this.state = {
-            checked: pluginCookie[this.props.plugin.getName()],
+            checked: PluginCookie[this.props.plugin.getName()],
             settings: false,
             reloads: 0
         };
@@ -45,7 +45,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
                 this.refs.settingspanel.appendChild(this.settingsPanel);
             }
 
-            if (!Settings["fork-ps-3"]) return;
+            if (!SettingsCookie["fork-ps-3"]) return;
             var isHidden = (container, element) => {
 
                 let cTop = container.scrollTop;
@@ -68,8 +68,8 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     reload() {
         const plugin = this.props.plugin.getName();
-        window.mainCore.pluginModule.reloadPlugin(plugin);
-        this.props.plugin = bdplugins[plugin].plugin;
+        PluginManager.reloadPlugin(plugin);
+        this.props.plugin = Plugins[plugin].plugin;
         this.onReload(this.props.plugin.getName());
     }
 
@@ -84,8 +84,8 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         let author = this.getString(plugin.getAuthor());
         let description = this.getString(plugin.getDescription());
         let version = this.getString(plugin.getVersion());
-        let website = bdplugins[name].website;
-        let source = bdplugins[name].source;
+        let website = Plugins[name].website;
+        let source = Plugins[name].source;
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
@@ -113,7 +113,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
                         BDV2.react.createElement("span", {className: "bda-author"}, author)
                     ),
                     BDV2.react.createElement("div", {className: "bda-controls"},
-                        !Settings["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
+                        !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
                         BDV2.react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             BDV2.react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             BDV2.react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
@@ -136,7 +136,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     onChange() {
         this.setState({checked: !this.state.checked});
-        window.mainCore.pluginModule.togglePlugin(this.props.plugin.getName());
+        PluginManager.togglePlugin(this.props.plugin.getName());
     }
 
     showSettings() {

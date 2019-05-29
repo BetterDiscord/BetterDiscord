@@ -1,6 +1,6 @@
-import Settings from "../data/settings";
+import {SettingsInfo} from "data";
 import BdApi from "./pluginapi";
-import BDLogo from "../ui/icons/bdlogo";
+// import BDLogo from "../ui/icons/bdlogo";
 
 export default new class V2 {
 
@@ -49,7 +49,7 @@ export default new class V2 {
     }
 
     initialize() {
-        BdApi.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
+        // BdApi.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
         BdApi.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
         BdApi.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
         BdApi.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
@@ -75,8 +75,8 @@ export default new class V2 {
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
 
     parseSettings(cat) {
-        return Object.keys(Settings).reduce((arr, key) => {
-            let setting = Settings[key];
+        return Object.keys(SettingsInfo).reduce((arr, key) => {
+            let setting = SettingsInfo[key];
             if (setting.cat === cat && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);
@@ -84,27 +84,27 @@ export default new class V2 {
         }, []);
     }
 
-    patchSocial() {
-        if (this.socialPatch) return;
-        const TabBar = BdApi.findModule(m => m.displayName == "TabBar");
-        const Anchor = BdApi.findModule(m => m.displayName == "Anchor");
-        if (!TabBar || !Anchor) return;
-        this.socialPatch = BdApi.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
-            const children = data.returnValue.props.children;
-            if (!children || !children.length) return;
-            if (children[children.length - 2].type.displayName !== "Separator") return;
-            if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
-            const original = children[children.length - 1].type;
-            const newOne = function() {
-                const returnVal = original(...arguments);
-                returnVal.props.children.push(BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", rel: "author", title: "BandagedBD", target: "_blank"},
-                    BdApi.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
-                ));
-                return returnVal;
-            };
-            children[children.length - 1].type = newOne;
-        }});
-    }
+    // patchSocial() {
+    //     if (this.socialPatch) return;
+    //     const TabBar = BdApi.findModule(m => m.displayName == "TabBar");
+    //     const Anchor = BdApi.findModule(m => m.displayName == "Anchor");
+    //     if (!TabBar || !Anchor) return;
+    //     this.socialPatch = BdApi.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
+    //         const children = data.returnValue.props.children;
+    //         if (!children || !children.length) return;
+    //         if (children[children.length - 2].type.displayName !== "Separator") return;
+    //         if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
+    //         const original = children[children.length - 1].type;
+    //         const newOne = function() {
+    //             const returnVal = original(...arguments);
+    //             returnVal.props.children.push(BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", rel: "author", title: "BandagedBD", target: "_blank"},
+    //                 BdApi.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+    //             ));
+    //             return returnVal;
+    //         };
+    //         children[children.length - 1].type = newOne;
+    //     }});
+    // }
 
     patchGuildListItems() {
         if (this.guildListItemsPatch) return;

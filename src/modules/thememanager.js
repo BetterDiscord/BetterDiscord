@@ -1,4 +1,10 @@
-var themeCookie = {};
+import {SettingsCookie, ThemeCookie, Themes} from "data";
+import ContentManager from "./contentmanager";
+import Utilities from "./utilities";
+import Core from "./core";
+import BdApi from "./pluginapi";
+import Emitter from "./emitter";
+import DataStore from "./datastore";
 
 function ThemeModule() {
 
@@ -7,84 +13,84 @@ function ThemeModule() {
 ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
     const errors = ContentManager.loadThemes();
-    var themes = Object.keys(bdthemes);
+    var themes = Object.keys(Themes);
 
     for (var i = 0; i < themes.length; i++) {
-        var name = bdthemes[themes[i]].name;
-        if (!themeCookie[name]) themeCookie[name] = false;
-        if (themeCookie[name]) $("head").append($("<style>", {id: Utils.escapeID(name), text: unescape(bdthemes[name].css)}));
+        var name = Themes[themes[i]].name;
+        if (!ThemeCookie[name]) ThemeCookie[name] = false;
+        if (ThemeCookie[name]) $("head").append($("<style>", {id: Utilities.escapeID(name), text: unescape(Themes[name].css)}));
     }
-    for (let theme in themeCookie) {
-        if (!bdthemes[theme]) delete themeCookie[theme];
+    for (let theme in ThemeCookie) {
+        if (!Themes[theme]) delete ThemeCookie[theme];
     }
     this.saveThemeData();
     return errors;
-    // if (settingsCookie["fork-ps-5"]) ContentManager.watchContent("theme");
+    // if (SettingsCookie["fork-ps-5"]) ContentManager.watchContent("theme");
 };
 
 ThemeModule.prototype.enableTheme = function(theme, reload = false) {
-    themeCookie[theme] = true;
+    ThemeCookie[theme] = true;
     this.saveThemeData();
-    $("head").append($("<style>", {id: Utils.escapeID(theme), text: unescape(bdthemes[theme].css)}));
-    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
+    $("head").append($("<style>", {id: Utilities.escapeID(theme), text: unescape(Themes[theme].css)}));
+    if (SettingsCookie["fork-ps-2"] && !reload) Core.showToast(`${Themes[theme].name} v${Themes[theme].version} has been applied.`);
 };
 
 ThemeModule.prototype.disableTheme = function(theme, reload = false) {
-    themeCookie[theme] = false;
+    ThemeCookie[theme] = false;
     this.saveThemeData();
-    $(`#${Utils.escapeID(bdthemes[theme].name)}`).remove();
-    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been disabled.`);
+    $(`#${Utilities.escapeID(Themes[theme].name)}`).remove();
+    if (SettingsCookie["fork-ps-2"] && !reload) Core.showToast(`${Themes[theme].name} v${Themes[theme].version} has been disabled.`);
 };
 
 ThemeModule.prototype.toggleTheme = function(theme) {
-    if (themeCookie[theme]) this.disableTheme(theme);
+    if (ThemeCookie[theme]) this.disableTheme(theme);
     else this.enableTheme(theme);
 };
 
 ThemeModule.prototype.loadTheme = function(filename) {
     const error = ContentManager.loadContent(filename, "theme");
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
-        return Utils.err("ContentManager", `${filename} could not be loaded.`, error);
+        if (SettingsCookie["fork-ps-1"]) Core.showContentErrors({themes: [error]});
+        if (SettingsCookie["fork-ps-2"]) BdApi.showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
+        return Utilities.err("ContentManager", `${filename} could not be loaded.`, error);
     }
-    const theme = Object.values(bdthemes).find(p => p.filename == filename);
-    Utils.log("ContentManager", `${theme.name} v${theme.version} was loaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme.name} v${theme.version} was loaded.`, {type: "success"});
-    BDEvents.dispatch("theme-loaded", theme.name);
+    const theme = Object.values(Themes).find(p => p.filename == filename);
+    Utilities.log("ContentManager", `${theme.name} v${theme.version} was loaded.`);
+    if (SettingsCookie["fork-ps-2"]) BdApi.showToast(`${theme.name} v${theme.version} was loaded.`, {type: "success"});
+    Emitter.dispatch("theme-loaded", theme.name);
 };
 
 ThemeModule.prototype.unloadTheme = function(filenameOrName) {
-    const bdtheme = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
+    const bdtheme = Object.values(Themes).find(p => p.filename == filenameOrName) || Themes[filenameOrName];
     if (!bdtheme) return;
     const theme = bdtheme.name;
-    if (themeCookie[theme]) this.disableTheme(theme, true);
-    const error = ContentManager.unloadContent(bdthemes[theme].filename, "theme");
-    delete bdthemes[theme];
+    if (ThemeCookie[theme]) this.disableTheme(theme, true);
+    const error = ContentManager.unloadContent(Themes[theme].filename, "theme");
+    delete Themes[theme];
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
-        return Utils.err("ContentManager", `${theme} could not be unloaded. It may have not been loaded yet.`, error);
+        if (SettingsCookie["fork-ps-1"]) Core.showContentErrors({themes: [error]});
+        if (SettingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+        return Utilities.err("ContentManager", `${theme} could not be unloaded. It may have not been loaded yet.`, error);
     }
-    Utils.log("ContentManager", `${theme} was unloaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} was unloaded.`, {type: "success"});
-    BDEvents.dispatch("theme-unloaded", theme);
+    Utilities.log("ContentManager", `${theme} was unloaded.`);
+    if (SettingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} was unloaded.`, {type: "success"});
+    Emitter.dispatch("theme-unloaded", theme);
 };
 
 ThemeModule.prototype.reloadTheme = function(filenameOrName) {
-    const bdtheme = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
+    const bdtheme = Object.values(Themes).find(p => p.filename == filenameOrName) || Themes[filenameOrName];
     if (!bdtheme) return this.loadTheme(filenameOrName);
     const theme = bdtheme.name;
-    const error = ContentManager.reloadContent(bdthemes[theme].filename, "theme");
-    if (themeCookie[theme]) this.disableTheme(theme, true), this.enableTheme(theme, true);
+    const error = ContentManager.reloadContent(Themes[theme].filename, "theme");
+    if (ThemeCookie[theme]) this.disableTheme(theme, true), this.enableTheme(theme, true);
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be reloaded.`, {type: "error"});
-        return Utils.err("ContentManager", `${theme} could not be reloaded.`, error);
+        if (SettingsCookie["fork-ps-1"]) Core.showContentErrors({themes: [error]});
+        if (SettingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be reloaded.`, {type: "error"});
+        return Utilities.err("ContentManager", `${theme} could not be reloaded.`, error);
     }
-    Utils.log("ContentManager", `${theme} v${bdthemes[theme].version} was reloaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} v${bdthemes[theme].version} was reloaded.`, {type: "success"});
-    BDEvents.dispatch("theme-reloaded", theme);
+    Utilities.log("ContentManager", `${theme} v${Themes[theme].version} was reloaded.`);
+    if (SettingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} v${Themes[theme].version} was reloaded.`, {type: "success"});
+    Emitter.dispatch("theme-reloaded", theme);
 };
 
 ThemeModule.prototype.updateThemeList = function() {
@@ -94,14 +100,13 @@ ThemeModule.prototype.updateThemeList = function() {
 };
 
 ThemeModule.prototype.loadThemeData = function() {
-    let saved = DataStore.getSettingGroup("themes");
-    if (saved) {
-        themeCookie = saved;
-    }
+    const saved = DataStore.getSettingGroup("themes");
+    if (!saved) return;
+    Object.assign(ThemeCookie, saved);
 };
 
 ThemeModule.prototype.saveThemeData = function () {
-    DataStore.setSettingGroup("themes", themeCookie);
+    DataStore.setSettingGroup("themes", ThemeCookie);
 };
 
-export default ThemeModule;
+export default new ThemeModule();

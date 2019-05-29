@@ -1,5 +1,5 @@
-import Settings from "../../data/settingscookie";
-import {BDV2, DataStore} from "modules";
+import {SettingsCookie} from "data";
+import {BDV2, DataStore, Core} from "modules";
 
 import Checkbox from "../settings/checkbox";
 
@@ -24,7 +24,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
         this.editor.setShowPrintMargin(false);
         this.editor.setFontSize(14);
         this.editor.on("change", () => {
-            if (!Settings["bda-css-0"]) return;
+            if (!SettingsCookie["bda-css-0"]) return;
             this.saveCss();
             this.updateCss();
         });
@@ -97,7 +97,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
                     BDV2.react.createElement(
                         "ul",
                         {className: "checkbox-group"},
-                        BDV2.react.createElement(Checkbox, {id: "live-update", text: "Live Update", onChange: self.onChange, checked: Settings["bda-css-0"]})
+                        BDV2.react.createElement(Checkbox, {id: "live-update", text: "Live Update", onChange: self.onChange, checked: SettingsCookie["bda-css-0"]})
                     ),
                     BDV2.react.createElement(
                         "div",
@@ -137,8 +137,8 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     onChange(id, checked) {
         switch (id) {
             case "live-update":
-                Settings["bda-css-0"] = checked;
-                window.mainCore.saveSettings();
+                SettingsCookie["bda-css-0"] = checked;
+                Core.saveSettings();
                 break;
         }
     }

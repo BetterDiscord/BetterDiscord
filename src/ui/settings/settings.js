@@ -1,6 +1,5 @@
-import SettingsInfo from "../../data/settings";
-import Settings from "../../data/settingscookie";
-import {BDV2, Utilities, BdApi, ClassNormalizer, ContentManager, Emitter} from "modules";
+import {SettingsInfo, SettingsCookie, Plugins, Themes} from "data";
+import {BDV2, Utilities, ContentManager, Emitter, EmoteModule, EmoteMenu, PluginManager, ThemeManager} from "modules";
 import Sidebar from "./sidebar";
 import Scroller from "../scroller";
 import List from "../list";
@@ -16,12 +15,10 @@ import CssEditor from "../customcss/editor";
 
 export default class V2_SettingsPanel {
 
-    constructor() {
-        let self = this;
-        self.sideBarOnClick = self.sideBarOnClick.bind(self);
-        self.onChange = self.onChange.bind(self);
-        self.updateSettings = this.updateSettings.bind(self);
-        self.sidebar = new Sidebar(self.sideBarOnClick);
+    constructor(props) {
+        this.sideBarOnClick = this.sideBarOnClick.bind(this);
+        this.onChange = props.onChange;
+        this.sidebar = new Sidebar(this.sideBarOnClick);
     }
 
     get root() {
@@ -91,121 +88,6 @@ export default class V2_SettingsPanel {
         }
     }
 
-    onClick() {}
-
-    onChange(id, checked) {
-        this.updateSettings(id, checked);
-    }
-
-    updateSettings(id, enabled) {
-        Settings[id] = enabled;
-
-        if (id == "bda-es-0") {
-            if (enabled) $("#twitchcord-button-container").show();
-            else $("#twitchcord-button-container").hide();
-        }
-
-        // if (id == "bda-gs-b") {
-        //     if (enabled) $("body").addClass("bd-blue");
-        //     else $("body").removeClass("bd-blue");
-        // }
-
-        if (id == "bda-gs-2") {
-            if (enabled) $("body").addClass("bd-minimal");
-            else $("body").removeClass("bd-minimal");
-        }
-
-        if (id == "bda-gs-3") {
-            if (enabled) $("body").addClass("bd-minimal-chan");
-            else $("body").removeClass("bd-minimal-chan");
-        }
-
-        if (id == "bda-gs-1") {
-            if (enabled) $("#bd-pub-li").show();
-            else $("#bd-pub-li").hide();
-        }
-
-        if (id == "bda-gs-4") {
-            if (enabled) window.mainCore.voiceMode.enable();
-            else window.mainCore.voiceMode.disable();
-        }
-
-        if (id == "bda-gs-5") {
-            if (enabled) $("#app-mount").addClass("bda-dark");
-            else $("#app-mount").removeClass("bda-dark");
-        }
-
-        if (enabled && id == "bda-gs-6") window.mainCore.inject24Hour();
-
-        if (id == "bda-gs-7") {
-            if (enabled) window.mainCore.injectColoredText();
-            else window.mainCore.removeColoredText();
-        }
-
-        if (id == "bda-es-4") {
-            if (enabled) window.mainCore.emoteModule.autoCapitalize();
-            else window.mainCore.emoteModule.disableAutoCapitalize();
-        }
-
-        if (id == "fork-ps-4") {
-            if (enabled) ClassNormalizer.start();
-            else ClassNormalizer.stop();
-        }
-
-        if (id == "fork-ps-5") {
-            if (enabled) {
-                ContentManager.watchContent("plugin");
-                ContentManager.watchContent("theme");
-            }
-            else {
-                ContentManager.unwatchContent("plugin");
-                ContentManager.unwatchContent("theme");
-            }
-        }
-
-        if (id == "fork-wp-1") {
-            BdApi.setWindowPreference("transparent", enabled);
-            if (enabled) BdApi.setWindowPreference("backgroundColor", null);
-            else BdApi.setWindowPreference("backgroundColor", "#2f3136");
-        }
-
-        /*if (_c["fork-wp-2"]) {
-            const current = BdApi.getWindowPreference("frame");
-            if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
-        }*/
-
-
-        if (id == "bda-gs-8") {
-            if (enabled) window.mainCore.dMode.enable(Settings["fork-dm-1"]);
-            else window.mainCore.dMode.disable();
-        }
-
-        window.mainCore.saveSettings();
-    }
-
-    initializeSettings() {
-        if (Settings["bda-es-0"]) $("#twitchcord-button-container").show();
-        // if (Settings["bda-gs-b"]) $("body").addClass("bd-blue");
-        if (Settings["bda-gs-2"]) $("body").addClass("bd-minimal");
-        if (Settings["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
-        if (Settings["bda-gs-1"]) $("#bd-pub-li").show();
-        if (Settings["bda-gs-4"]) window.mainCore.voiceMode.enable();
-        if (Settings["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
-        if (Settings["bda-gs-6"]) window.mainCore.inject24Hour();
-        if (Settings["bda-gs-7"]) window.mainCore.injectColoredText();
-        if (Settings["bda-es-4"]) window.mainCore.emoteModule.autoCapitalize();
-        if (Settings["fork-ps-4"]) ClassNormalizer.start();
-
-        if (Settings["fork-ps-5"]) {
-            ContentManager.watchContent("plugin");
-            ContentManager.watchContent("theme");
-        }
-
-        if (Settings["bda-gs-8"]) window.mainCore.dMode.enable(Settings["fork-dm-1"]);
-
-        window.mainCore.saveSettings();
-    }
-
     renderSidebar() {
         let self = this;
         $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
@@ -228,7 +110,7 @@ export default class V2_SettingsPanel {
             contentColumn: true, fade: true, dark: true, children: [
                 BDV2.react.createElement(SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
                     title: "Clear Emote Cache",
-                    onClick: () => { window.mainCore.emoteModule.clearEmoteData(); window.mainCore.emoteModule.init(); window.mainCore.quickEmoteMenu.init(); }
+                    onClick: () => { EmoteModule.clearEmoteData(); EmoteModule.init(); EmoteMenu.init(); }
                 }}),
                 BDV2.react.createElement(Tools, {key: "tools"})
         ]});
@@ -270,12 +152,12 @@ export default class V2_SettingsPanel {
     }
 
     get pluginsComponent() {
-        let plugins = Object.keys(bdplugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(PluginCard, {key: key, plugin: bdplugins[key].plugin}));return arr;
+        let plugins = Object.keys(Plugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+            arr.push(BDV2.react.createElement(PluginCard, {key: key, plugin: Plugins[key].plugin}));return arr;
         }, []);
         let list = BDV2.react.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
-        let refreshIcon = !Settings["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
-            window.mainCore.pluginModule.updatePluginList();
+        let refreshIcon = !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+            PluginManager.updatePluginList();
             this.sideBarOnClick("plugins");
         }});
         let pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
@@ -284,12 +166,12 @@ export default class V2_SettingsPanel {
     }
 
     get themesComponent() {
-        let themes = Object.keys(bdthemes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(ThemeCard, {key: key, theme: bdthemes[key]}));return arr;
+        let themes = Object.keys(Themes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+            arr.push(BDV2.react.createElement(ThemeCard, {key: key, theme: Themes[key]}));return arr;
         }, []);
         let list = BDV2.react.createElement(List, {key: "theme-list", className: "bda-slist", children: themes});
-        let refreshIcon = !Settings["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
-            window.mainCore.themeModule.updateThemeList();
+        let refreshIcon = !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+            ThemeManager.updateThemeList();
             this.sideBarOnClick("themes");
         }});
         let tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");

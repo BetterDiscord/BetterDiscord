@@ -109,6 +109,53 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/data/data.js":
+/*!**************************!*\
+  !*** ./src/data/data.js ***!
+  \**************************/
+/*! exports provided: SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _settings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./settings */ "./src/data/settings.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingsInfo", function() { return _settings__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+/* harmony import */ var _settingscookie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./settingscookie */ "./src/data/settingscookie.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingsCookie", function() { return _settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]; });
+
+/* harmony import */ var _config__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./config */ "./src/data/config.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Config", function() { return _config__WEBPACK_IMPORTED_MODULE_2__["default"]; });
+
+/* harmony import */ var _plugincookie__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./plugincookie */ "./src/data/plugincookie.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PluginCookie", function() { return _plugincookie__WEBPACK_IMPORTED_MODULE_3__["default"]; });
+
+/* harmony import */ var _themecookie__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./themecookie */ "./src/data/themecookie.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ThemeCookie", function() { return _themecookie__WEBPACK_IMPORTED_MODULE_4__["default"]; });
+
+
+
+
+
+
+
+
+
+/***/ }),
+
+/***/ "./src/data/plugincookie.js":
+/*!**********************************!*\
+  !*** ./src/data/plugincookie.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({});
+
+/***/ }),
+
 /***/ "./src/data/settings.js":
 /*!******************************!*\
   !*** ./src/data/settings.js ***!
@@ -210,6 +257,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/data/themecookie.js":
+/*!*********************************!*\
+  !*** ./src/data/themecookie.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({});
+
+/***/ }),
+
 /***/ "./src/index.js":
 /*!**********************!*\
   !*** ./src/index.js ***!
@@ -219,6 +279,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CoreWrapper; });
 /* harmony import */ var _localstorage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./localstorage */ "./src/localstorage.js");
 /* harmony import */ var _modules_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/core */ "./src/modules/core.js");
 
@@ -231,9 +292,17 @@ loadingIcon.className = "bd-loaderv2";
 loadingIcon.title = "BandagedBD is loading...";
 document.body.appendChild(loadingIcon);
 
-window.Core = _modules_core__WEBPACK_IMPORTED_MODULE_1__["default"];
+// window.Core = Core;
 
-/* harmony default export */ __webpack_exports__["default"] = (_modules_core__WEBPACK_IMPORTED_MODULE_1__["default"]);
+class CoreWrapper {
+    constructor(config) {
+        _modules_core__WEBPACK_IMPORTED_MODULE_1__["default"].setConfig(config);
+    }
+
+    init() {
+        _modules_core__WEBPACK_IMPORTED_MODULE_1__["default"].init();
+    }
+}
 
 /***/ }),
 
@@ -309,7 +378,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _data_settings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../data/settings */ "./src/data/settings.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
 /* harmony import */ var _ui_icons_bdlogo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ui/icons/bdlogo */ "./src/ui/icons/bdlogo.js");
 
@@ -389,8 +458,8 @@ __webpack_require__.r(__webpack_exports__);
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
 
     parseSettings(cat) {
-        return Object.keys(_data_settings__WEBPACK_IMPORTED_MODULE_0__["default"]).reduce((arr, key) => {
-            let setting = _data_settings__WEBPACK_IMPORTED_MODULE_0__["default"][key];
+        return Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"]).reduce((arr, key) => {
+            let setting = data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"][key];
             if (setting.cat === cat && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);
@@ -483,7 +552,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ClassNormalizer; });
-/* harmony import */ var _webpackmodules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./webpackmodules */ "./src/modules/webpackmodules.js");
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
 
 
 const normalizedPrefix = "da";
@@ -495,14 +564,14 @@ class ClassNormalizer {
 
     stop() {
         if (!this.hasPatched) return;
-        this.unpatchClassModules(_webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getModules(this.moduleFilter.bind(this)));
+        this.unpatchClassModules(_pluginapi__WEBPACK_IMPORTED_MODULE_0__["default"].findAllModules(this.moduleFilter.bind(this)));
         this.revertElement(document.querySelector("#app-mount"));
         this.hasPatched = false;
     }
 
     start() {
         if (this.hasPatched) return;
-        this.patchClassModules(_webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getModules(this.moduleFilter.bind(this)));
+        this.patchClassModules(_pluginapi__WEBPACK_IMPORTED_MODULE_0__["default"].findAllModules(this.moduleFilter.bind(this)));
         this.normalizeElement(document.querySelector("#app-mount"));
         this.hasPatched = true;
     }
@@ -603,204 +672,213 @@ class ClassNormalizer {
 /*!***************************************!*\
   !*** ./src/modules/contentmanager.js ***!
   \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
+/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
+
+
+
+
 
 window.bdthemes = {};
 window.bdplugins = {};
-var ContentManager = (() => {
-    const path = __webpack_require__(/*! path */ "path");
-    const fs = __webpack_require__(/*! fs */ "fs");
-    const Module = __webpack_require__(/*! module */ "module").Module;
-    Module.globalPaths.push(path.resolve(__webpack_require__(/*! electron */ "electron").remote.app.getAppPath(), "node_modules"));
-    class MetaError extends Error {
-        constructor(message) {
-            super(message);
-            this.name = "MetaError";
+
+const path = __webpack_require__(/*! path */ "path");
+const fs = __webpack_require__(/*! fs */ "fs");
+const Module = __webpack_require__(/*! module */ "module").Module;
+Module.globalPaths.push(path.resolve(__webpack_require__(/*! electron */ "electron").remote.app.getAppPath(), "node_modules"));
+class MetaError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = "MetaError";
+    }
+}
+const originalJSRequire = Module._extensions[".js"];
+const originalCSSRequire = Module._extensions[".css"] ? Module._extensions[".css"] : () => {return null;};
+
+/* harmony default export */ __webpack_exports__["default"] = (new class ContentManager {
+
+    constructor() {
+        this.timeCache = {};
+        this.watchers = {};
+        Module._extensions[".js"] = this.getContentRequire("plugin");
+        Module._extensions[".css"] = this.getContentRequire("theme");
+    }
+
+    get pluginsFolder() {return this._pluginsFolder || (this._pluginsFolder = fs.realpathSync(path.resolve(data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath + "plugins/")));}
+    get themesFolder() {return this._themesFolder || (this._themesFolder = fs.realpathSync(path.resolve(data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath + "themes/")));}
+
+    watchContent(contentType) {
+        if (this.watchers[contentType]) return;
+        const isPlugin = contentType === "plugin";
+        const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
+        const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
+        this.watchers[contentType] = fs.watch(baseFolder, {persistent: false}, async (eventType, filename) => {
+            if (!eventType || !filename || !filename.endsWith(fileEnding)) return;
+            await new Promise(r => setTimeout(r, 50));
+            try {fs.statSync(path.resolve(baseFolder, filename));}
+            catch (err) {
+                if (err.code !== "ENOENT") return;
+                delete this.timeCache[filename];
+                if (isPlugin) return _pluginmanager__WEBPACK_IMPORTED_MODULE_2__["default"].unloadPlugin(filename);
+                return _thememanager__WEBPACK_IMPORTED_MODULE_3__["default"].unloadTheme(filename);
+            }
+            if (!fs.statSync(path.resolve(baseFolder, filename)).isFile()) return;
+            const stats = fs.statSync(path.resolve(baseFolder, filename));
+            if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
+            if (typeof(stats.mtime.getTime()) !== "number") return;
+            if (this.timeCache[filename] == stats.mtime.getTime()) return;
+            this.timeCache[filename] = stats.mtime.getTime();
+            if (eventType == "rename") {
+                if (isPlugin) _pluginmanager__WEBPACK_IMPORTED_MODULE_2__["default"].loadPlugin(filename);
+                else _thememanager__WEBPACK_IMPORTED_MODULE_3__["default"].loadTheme(filename);
+            }
+            if (eventType == "change") {
+                if (isPlugin) _pluginmanager__WEBPACK_IMPORTED_MODULE_2__["default"].reloadPlugin(filename);
+                else _thememanager__WEBPACK_IMPORTED_MODULE_3__["default"].reloadTheme(filename);
+            }
+        });
+    }
+
+    unwatchContent(contentType) {
+        if (!this.watchers[contentType]) return;
+        this.watchers[contentType].close();
+        delete this.watchers[contentType];
+    }
+
+    extractMeta(content) {
+        const meta = content.split("\n")[0];
+        const rawMeta = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
+        if (meta.indexOf("META") < 0) throw new MetaError("META was not found.");
+        if (!_utilities__WEBPACK_IMPORTED_MODULE_1___default.a.testJSON(rawMeta)) throw new MetaError("META could not be parsed.");
+
+        const parsed = JSON.parse(rawMeta);
+        if (!parsed.name) throw new MetaError("META missing name data.");
+        return parsed;
+    }
+
+    getContentRequire(type) {
+        const isPlugin = type === "plugin";
+        const self = this;
+        const originalRequire = isPlugin ? originalJSRequire : originalCSSRequire;
+        return function(module, filename) {
+            const baseFolder = isPlugin ? self.pluginsFolder : self.themesFolder;
+            const possiblePath = path.resolve(baseFolder, path.basename(filename));
+            if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
+            let content = fs.readFileSync(filename, "utf8");
+            content = _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.stripBOM(content);
+
+            const meta = self.extractMeta(content);
+            meta.filename = path.basename(filename);
+            if (!isPlugin) {
+                meta.css = content.split("\n").slice(1).join("\n");
+                content = `module.exports = ${JSON.stringify(meta)};`;
+            }
+            if (isPlugin) {
+                content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.name};`;
+            }
+            module._compile(content, filename);
+        };
+    }
+
+    makePlaceholderPlugin(data) {
+        return {plugin: {
+                start: () => {},
+                getName: () => {return data.name || data.filename;},
+                getAuthor: () => {return "???";},
+                getDescription: () => {return data.message ? data.message : "This plugin was unable to be loaded. Check the author's page for updates.";},
+                getVersion: () => {return "???";}
+            },
+            name: data.name || data.filename,
+            filename: data.filename,
+            source: data.source ? data.source : "",
+            website: data.website ? data.website : ""
+        };
+    }
+
+    loadContent(filename, type) {
+        if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
+        const isPlugin = type === "plugin";
+        const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
+        try {require(path.resolve(baseFolder, filename));}
+        catch (error) {return {name: filename, file: filename, message: "Could not be compiled.", error: {message: error.message, stack: error.stack}};}
+        const content = require(path.resolve(baseFolder, filename));
+        if (isPlugin) {
+            if (!content.type) return;
+            try {
+                content.plugin = new content.type();
+                delete bdplugins[content.plugin.getName()];
+                bdplugins[content.plugin.getName()] = content;
+            }
+            catch (error) {return {name: filename, file: filename, message: "Could not be constructed.", error: {message: error.message, stack: error.stack}};}
+        }
+        else {
+            delete bdthemes[content.name];
+            bdthemes[content.name] = content;
         }
     }
-    const originalJSRequire = Module._extensions[".js"];
-    const originalCSSRequire = Module._extensions[".css"] ? Module._extensions[".css"] : () => {return null;};
 
+    unloadContent(filename, type) {
+        if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
+        const isPlugin = type === "plugin";
+        const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
+        try {
+            delete require.cache[require.resolve(path.resolve(baseFolder, filename))];
+        }
+        catch (err) {return {name: filename, file: filename, message: "Could not be unloaded.", error: {message: err.message, stack: err.stack}};}
+    }
 
+    isLoaded(filename, type) {
+        const isPlugin = type === "plugin";
+        const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
+        try {require.cache[require.resolve(path.resolve(baseFolder, filename))];}
+        catch (err) {return false;}
+        return true;
+    }
 
-    return new class ContentManager {
+    reloadContent(filename, type) {
+        const cantUnload = this.unloadContent(filename, type);
+        if (cantUnload) return cantUnload;
+        return this.loadContent(filename, type);
+    }
 
-        constructor() {
-            this.timeCache = {};
-            this.watchers = {};
-            Module._extensions[".js"] = this.getContentRequire("plugin");
-            Module._extensions[".css"] = this.getContentRequire("theme");
+    loadNewContent(type) {
+        const isPlugin = type === "plugin";
+        const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
+        const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
+        const files = fs.readdirSync(basedir);
+        const contentList = Object.values(isPlugin ? bdplugins : bdthemes);
+        const removed = contentList.filter(t => !files.includes(t.filename)).map(c => isPlugin ? c.plugin.getName() : c.name);
+        const added = files.filter(f => !contentList.find(t => t.filename == f) && f.endsWith(fileEnding) && fs.statSync(path.resolve(basedir, f)).isFile());
+        return {added, removed};
+    }
+
+    loadAllContent(type) {
+        const isPlugin = type === "plugin";
+        const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
+        const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
+        const errors = [];
+        const files = fs.readdirSync(basedir);
+
+        for (const filename of files) {
+            if (!fs.statSync(path.resolve(basedir, filename)).isFile() || !filename.endsWith(fileEnding)) continue;
+            const error = this.loadContent(filename, type);
+            if (error) errors.push(error);
         }
 
-        get pluginsFolder() {return this._pluginsFolder || (this._pluginsFolder = fs.realpathSync(path.resolve(bdConfig.dataPath + "plugins/")));}
-        get themesFolder() {return this._themesFolder || (this._themesFolder = fs.realpathSync(path.resolve(bdConfig.dataPath + "themes/")));}
+        return errors;
+    }
 
-        watchContent(contentType) {
-            if (this.watchers[contentType]) return;
-            const isPlugin = contentType === "plugin";
-            const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-            const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
-            this.watchers[contentType] = fs.watch(baseFolder, {persistent: false}, async (eventType, filename) => {
-                if (!eventType || !filename || !filename.endsWith(fileEnding)) return;
-                await new Promise(r => setTimeout(r, 50));
-                try {fs.statSync(path.resolve(baseFolder, filename));}
-                catch (err) {
-                    if (err.code !== "ENOENT") return;
-                    delete this.timeCache[filename];
-                    if (isPlugin) return pluginModule.unloadPlugin(filename);
-                    return themeModule.unloadTheme(filename);
-                }
-                if (!fs.statSync(path.resolve(baseFolder, filename)).isFile()) return;
-                const stats = fs.statSync(path.resolve(baseFolder, filename));
-                if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
-                if (typeof(stats.mtime.getTime()) !== "number") return;
-                if (this.timeCache[filename] == stats.mtime.getTime()) return;
-                this.timeCache[filename] = stats.mtime.getTime();
-                if (eventType == "rename") {
-                    if (isPlugin) pluginModule.loadPlugin(filename);
-                    else themeModule.loadTheme(filename);
-                }
-                if (eventType == "change") {
-                    if (isPlugin) pluginModule.reloadPlugin(filename);
-                    else themeModule.reloadTheme(filename);
-                }
-            });
-        }
-
-        unwatchContent(contentType) {
-            if (!this.watchers[contentType]) return;
-            this.watchers[contentType].close();
-            delete this.watchers[contentType];
-        }
-
-        extractMeta(content) {
-            const meta = content.split("\n")[0];
-            const rawMeta = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
-            if (meta.indexOf("META") < 0) throw new MetaError("META was not found.");
-            if (!Utils.testJSON(rawMeta)) throw new MetaError("META could not be parsed.");
-
-            const parsed = JSON.parse(rawMeta);
-            if (!parsed.name) throw new MetaError("META missing name data.");
-            return parsed;
-        }
-
-        getContentRequire(type) {
-            const isPlugin = type === "plugin";
-            const self = this;
-            const originalRequire = isPlugin ? originalJSRequire : originalCSSRequire;
-            return function(module, filename) {
-                const baseFolder = isPlugin ? self.pluginsFolder : self.themesFolder;
-                const possiblePath = path.resolve(baseFolder, path.basename(filename));
-                if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
-                let content = fs.readFileSync(filename, "utf8");
-                content = Utils.stripBOM(content);
-
-                const meta = self.extractMeta(content);
-                meta.filename = path.basename(filename);
-                if (!isPlugin) {
-                    meta.css = content.split("\n").slice(1).join("\n");
-                    content = `module.exports = ${JSON.stringify(meta)};`;
-                }
-                if (isPlugin) {
-                    content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.name};`;
-                }
-                module._compile(content, filename);
-            };
-        }
-
-        makePlaceholderPlugin(data) {
-            return {plugin: {
-                    start: () => {},
-                    getName: () => {return data.name || data.filename;},
-                    getAuthor: () => {return "???";},
-                    getDescription: () => {return data.message ? data.message : "This plugin was unable to be loaded. Check the author's page for updates.";},
-                    getVersion: () => {return "???";}
-                },
-                name: data.name || data.filename,
-                filename: data.filename,
-                source: data.source ? data.source : "",
-                website: data.website ? data.website : ""
-            };
-        }
-
-        loadContent(filename, type) {
-            if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
-            const isPlugin = type === "plugin";
-            const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-            try {require(path.resolve(baseFolder, filename));}
-            catch (error) {return {name: filename, file: filename, message: "Could not be compiled.", error: {message: error.message, stack: error.stack}};}
-            const content = require(path.resolve(baseFolder, filename));
-            if (isPlugin) {
-                if (!content.type) return;
-                try {
-                    content.plugin = new content.type();
-                    delete bdplugins[content.plugin.getName()];
-                    bdplugins[content.plugin.getName()] = content;
-                }
-                catch (error) {return {name: filename, file: filename, message: "Could not be constructed.", error: {message: error.message, stack: error.stack}};}
-            }
-            else {
-                delete bdthemes[content.name];
-                bdthemes[content.name] = content;
-            }
-        }
-
-        unloadContent(filename, type) {
-            if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
-            const isPlugin = type === "plugin";
-            const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-            try {
-                delete require.cache[require.resolve(path.resolve(baseFolder, filename))];
-            }
-            catch (err) {return {name: filename, file: filename, message: "Could not be unloaded.", error: {message: err.message, stack: err.stack}};}
-        }
-
-        isLoaded(filename, type) {
-            const isPlugin = type === "plugin";
-            const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-            try {require.cache[require.resolve(path.resolve(baseFolder, filename))];}
-            catch (err) {return false;}
-            return true;
-        }
-
-        reloadContent(filename, type) {
-            const cantUnload = this.unloadContent(filename, type);
-            if (cantUnload) return cantUnload;
-            return this.loadContent(filename, type);
-        }
-
-        loadNewContent(type) {
-            const isPlugin = type === "plugin";
-            const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
-            const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
-            const files = fs.readdirSync(basedir);
-            const contentList = Object.values(isPlugin ? bdplugins : bdthemes);
-            const removed = contentList.filter(t => !files.includes(t.filename)).map(c => isPlugin ? c.plugin.getName() : c.name);
-            const added = files.filter(f => !contentList.find(t => t.filename == f) && f.endsWith(fileEnding) && fs.statSync(path.resolve(basedir, f)).isFile());
-            return {added, removed};
-        }
-
-        loadAllContent(type) {
-            const isPlugin = type === "plugin";
-            const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
-            const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
-            const errors = [];
-            const files = fs.readdirSync(basedir);
-
-            for (const filename of files) {
-                if (!fs.statSync(path.resolve(basedir, filename)).isFile() || !filename.endsWith(fileEnding)) continue;
-                const error = this.loadContent(filename, type);
-                if (error) errors.push(error);
-            }
-
-            return errors;
-        }
-
-        loadPlugins() {return this.loadAllContent("plugin");}
-        loadThemes() {return this.loadAllContent("theme");}
-    };
-})();
+    loadPlugins() {return this.loadAllContent("plugin");}
+    loadThemes() {return this.loadAllContent("theme");}
+});
 
 /***/ }),
 
@@ -815,87 +893,80 @@ var ContentManager = (() => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _data_config__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../data/config */ "./src/data/config.js");
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../data/settingscookie */ "./src/data/settingscookie.js");
-/* harmony import */ var _bdv2__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./bdv2 */ "./src/modules/bdv2.js");
-/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
-/* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./emotemenu */ "./src/modules/emotemenu.js");
-/* harmony import */ var _voicemode__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./voicemode */ "./src/modules/voicemode.js");
-/* harmony import */ var _devmode__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./devmode */ "./src/modules/devmode.js");
-/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
-/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
-/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _bdv2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./bdv2 */ "./src/modules/bdv2.js");
+/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
+/* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./emotemenu */ "./src/modules/emotemenu.js");
+/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
+/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+/* harmony import */ var _publicservers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./publicservers */ "./src/modules/publicservers.js");
+/* harmony import */ var _settingspanel__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./settingspanel */ "./src/modules/settingspanel.js");
+
+
+
+
+
+// import VoiceMode from "./voicemode";
+// import DevMode from "./devmode";
 
 
 
 
 
 
-
-
-
-
-
-
-
-function Core(config) {
-    Object.assign(_data_config__WEBPACK_IMPORTED_MODULE_1__["default"], config);
+function Core() {
 }
 
+Core.prototype.setConfig = function(config) {
+    Object.assign(data__WEBPACK_IMPORTED_MODULE_1__["Config"], config);
+};
+
 Core.prototype.init = async function() {
-    if (_data_config__WEBPACK_IMPORTED_MODULE_1__["default"].version < _data_config__WEBPACK_IMPORTED_MODULE_1__["default"].minSupportedVersion) {
-        this.alert("Not Supported", "BetterDiscord v" + _data_config__WEBPACK_IMPORTED_MODULE_1__["default"].version + " (your version)" + " is not supported by the latest js (" + _data_config__WEBPACK_IMPORTED_MODULE_1__["default"].bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
+    if (data__WEBPACK_IMPORTED_MODULE_1__["Config"].version < data__WEBPACK_IMPORTED_MODULE_1__["Config"].minSupportedVersion) {
+        this.alert("Not Supported", "BetterDiscord v" + data__WEBPACK_IMPORTED_MODULE_1__["Config"].version + " (your version)" + " is not supported by the latest js (" + data__WEBPACK_IMPORTED_MODULE_1__["Config"].bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
         return;
     }
 
-    if (_data_config__WEBPACK_IMPORTED_MODULE_1__["default"].updater.LatestVersion > _data_config__WEBPACK_IMPORTED_MODULE_1__["default"].version) {
+    if (data__WEBPACK_IMPORTED_MODULE_1__["Config"].updater.LatestVersion > data__WEBPACK_IMPORTED_MODULE_1__["Config"].version) {
         this.alert("Update Available", `
-            An update for BandagedBD is available (${_data_config__WEBPACK_IMPORTED_MODULE_1__["default"].updater.LatestVersion})! Please Reinstall!<br /><br />
+            An update for BandagedBD is available (${data__WEBPACK_IMPORTED_MODULE_1__["Config"].updater.LatestVersion})! Please Reinstall!<br /><br />
             <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>
         `);
     }
 
     _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.log("Startup", "Initializing Settings");
     this.initSettings();
-    this.emoteModule = new _emotes__WEBPACK_IMPORTED_MODULE_4__["default"]();
-    this.quickEmoteMenu = new _emotemenu__WEBPACK_IMPORTED_MODULE_5__["default"]();
     _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.log("Startup", "Initializing EmoteModule");
-    window.emotePromise = this.emoteModule.init().then(() => {
-        this.emoteModule.initialized = true;
+    window.emotePromise = _emotes__WEBPACK_IMPORTED_MODULE_3__["default"].init().then(() => {
+        _emotes__WEBPACK_IMPORTED_MODULE_3__["default"].initialized = true;
         _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.log("Startup", "Initializing QuickEmoteMenu");
-        this.quickEmoteMenu.init();
+        _emotemenu__WEBPACK_IMPORTED_MODULE_4__["default"].init();
     });
-    this.publicServersModule = new ui__WEBPACK_IMPORTED_MODULE_11__["PublicServers"]();
-
-    this.voiceMode = new _voicemode__WEBPACK_IMPORTED_MODULE_6__["default"]();
-    this.dMode = new _devmode__WEBPACK_IMPORTED_MODULE_7__["default"]();
 
     this.injectExternals();
 
     await this.checkForGuilds();
-    _bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].initialize();
+    _bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].initialize();
     _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.log("Startup", "Updating Settings");
-    this.settingsPanel = new ui__WEBPACK_IMPORTED_MODULE_11__["SettingsPanel"]();
-    this.settingsPanel.initializeSettings();
+    _settingspanel__WEBPACK_IMPORTED_MODULE_9__["default"].initializeSettings();
 
     _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.log("Startup", "Loading Plugins");
-    this.pluginModule = new _pluginmanager__WEBPACK_IMPORTED_MODULE_8__["default"]();
+    this.pluginModule = new _pluginmanager__WEBPACK_IMPORTED_MODULE_5__["default"]();
     const pluginErrors = this.pluginModule.loadPlugins();
 
     _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.log("Startup", "Loading Themes");
-    this.themeModule = new _thememanager__WEBPACK_IMPORTED_MODULE_9__["default"]();
+    this.themeModule = new _thememanager__WEBPACK_IMPORTED_MODULE_6__["default"]();
     const themeErrors = this.themeModule.loadThemes();
 
     $("#customcss").detach().appendTo(document.head);
 
     window.addEventListener("beforeunload", function() {
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_2__["default"]["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
+        if (data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"]["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
     });
 
-    this.publicServersModule.initialize();
-
-    this.emoteModule.autoCapitalize();
+    _publicservers__WEBPACK_IMPORTED_MODULE_8__["default"].initialize();
+    _emotes__WEBPACK_IMPORTED_MODULE_3__["default"].autoCapitalize();
 
     _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.log("Startup", "Removing Loading Icon");
     document.getElementsByClassName("bd-loaderv2")[0].remove();
@@ -903,7 +974,7 @@ Core.prototype.init = async function() {
     this.initObserver();
 
     // Show loading errors
-    if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_2__["default"]["fork-ps-1"]) {
+    if (data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"]["fork-ps-1"]) {
         _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.log("Startup", "Collecting Startup Errors");
         this.showContentErrors({plugins: pluginErrors, themes: themeErrors});
     }
@@ -917,10 +988,10 @@ Core.prototype.init = async function() {
 Core.prototype.checkForGuilds = function() {
     return new Promise(resolve => {
         const checkForGuilds = function() {
-            const wrapper = _bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].guildClasses.wrapper.split(" ")[0];
-            const guild = _bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].guildClasses.listItem.split(" ")[0];
-            const blob = _bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].guildClasses.blobContainer.split(" ")[0];
-            if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(_data_config__WEBPACK_IMPORTED_MODULE_1__["default"].deferLoaded = true);
+            const wrapper = _bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].guildClasses.wrapper.split(" ")[0];
+            const guild = _bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].guildClasses.listItem.split(" ")[0];
+            const blob = _bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].guildClasses.blobContainer.split(" ")[0];
+            if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(data__WEBPACK_IMPORTED_MODULE_1__["Config"].deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
         $(document).ready(function () {
@@ -935,23 +1006,23 @@ Core.prototype.injectExternals = async function() {
 };
 
 Core.prototype.initSettings = function () {
-    _datastore__WEBPACK_IMPORTED_MODULE_10__["default"].initialize();
-    if (!_datastore__WEBPACK_IMPORTED_MODULE_10__["default"].getSettingGroup("settings")) return this.saveSettings();
+    _datastore__WEBPACK_IMPORTED_MODULE_7__["default"].initialize();
+    if (!_datastore__WEBPACK_IMPORTED_MODULE_7__["default"].getSettingGroup("settings")) return this.saveSettings();
     const savedSettings = this.loadSettings();
-    $("<style id=\"customcss\">").text(atob(_datastore__WEBPACK_IMPORTED_MODULE_10__["default"].getBDData("bdcustomcss"))).appendTo(document.head);
+    $("<style id=\"customcss\">").text(atob(_datastore__WEBPACK_IMPORTED_MODULE_7__["default"].getBDData("bdcustomcss"))).appendTo(document.head);
     for (const setting in savedSettings) {
-        if (savedSettings[setting] !== undefined) _data_settingscookie__WEBPACK_IMPORTED_MODULE_2__["default"][setting] = savedSettings[setting];
+        if (savedSettings[setting] !== undefined) data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"][setting] = savedSettings[setting];
     }
     this.saveSettings();
 
 };
 
 Core.prototype.saveSettings = function () {
-    _datastore__WEBPACK_IMPORTED_MODULE_10__["default"].setSettingGroup("settings", _data_settingscookie__WEBPACK_IMPORTED_MODULE_2__["default"]);
+    _datastore__WEBPACK_IMPORTED_MODULE_7__["default"].setSettingGroup("settings", data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"]);
 };
 
 Core.prototype.loadSettings = function () {
-    Settings = _datastore__WEBPACK_IMPORTED_MODULE_10__["default"].getSettingGroup("settings");
+    return _datastore__WEBPACK_IMPORTED_MODULE_7__["default"].getSettingGroup("settings");
 };
 
 Core.prototype.initObserver = function () {
@@ -972,12 +1043,12 @@ Core.prototype.initObserver = function () {
                 if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
                     node.setAttribute("layer-id", "user-settings");
                     node.setAttribute("id", "user-settings");
-                    if (!document.getElementById("bd-settings-sidebar")) this.settingsPanel.renderSidebar();
+                    if (!document.getElementById("bd-settings-sidebar")) _settingspanel__WEBPACK_IMPORTED_MODULE_9__["default"].renderSidebar();
                 }
             }
 
             // Emoji Picker
-            if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) this.quickEmoteMenu.obsCallback(node);
+            if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) _emotemenu__WEBPACK_IMPORTED_MODULE_4__["default"].obsCallback(node);
 
         }
     });
@@ -993,7 +1064,7 @@ Core.prototype.inject24Hour = function() {
 
     const twelveHour = new RegExp(`([0-9]{1,2}):([0-9]{1,2})\\s(AM|PM)`);
     const convert = (data) => {
-        if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_2__["default"]["bda-gs-6"]) return;
+        if (!data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"]["bda-gs-6"]) return;
         const matched = data.returnValue.match(twelveHour);
         if (!matched || matched.length !== 4) return;
         if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
@@ -1001,16 +1072,16 @@ Core.prototype.inject24Hour = function() {
     };
 
 
-    const cancelCozy = _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].TimeFormatter, "calendarFormat", {after: convert}); // Called in Cozy mode
-    const cancelCompact = _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].TimeFormatter, "dateFormat", {after: convert}); // Called in Compact mode
+    const cancelCozy = _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].TimeFormatter, "calendarFormat", {after: convert}); // Called in Cozy mode
+    const cancelCompact = _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].TimeFormatter, "dateFormat", {after: convert}); // Called in Compact mode
     this.cancel24Hour = () => {cancelCozy(); cancelCompact();}; // Cancel both
 };
 
 Core.prototype.injectColoredText = function() {
     if (this.cancelColoredText) return;
 
-    this.cancelColoredText = _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].MessageContentComponent.prototype, "render", {after: (data) => {
-        if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_2__["default"]["bda-gs-7"]) return;
+    this.cancelColoredText = _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].MessageContentComponent.prototype, "render", {after: (data) => {
+        if (!data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"]["bda-gs-7"]) return;
 		_utilities__WEBPACK_IMPORTED_MODULE_0___default.a.monkeyPatch(data.returnValue.props, "children", {silent: true, after: ({returnValue}) => {
 			const markup = returnValue.props.children[1];
 			const roleColor = data.thisObject.props.message.colorString;
@@ -1142,7 +1213,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
  * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
  */
 Core.prototype.showToast = function(content, options = {}) {
-    if (!_data_config__WEBPACK_IMPORTED_MODULE_1__["default"].deferLoaded) return;
+    if (!data__WEBPACK_IMPORTED_MODULE_1__["Config"].deferLoaded) return;
     if (!document.querySelector(".bd-toasts")) {
         let toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");
@@ -1169,7 +1240,7 @@ Core.prototype.showToast = function(content, options = {}) {
 };
 
 
-/* harmony default export */ __webpack_exports__["default"] = (Core);
+/* harmony default export */ __webpack_exports__["default"] = (new Core());
 
 /***/ }),
 
@@ -1183,7 +1254,7 @@ Core.prototype.showToast = function(content, options = {}) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return DataStore; });
-/* harmony import */ var _data_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../data/config */ "./src/data/config.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
 
 
@@ -1214,9 +1285,9 @@ class DataStore {
         }
     }
 
-    get BDFile() {return this._BDFile || (this._BDFile = path.resolve(_data_config__WEBPACK_IMPORTED_MODULE_0__["default"].dataPath, "bdstorage.json"));}
-    get settingsFile() {return this._settingsFile || (this._settingsFile = path.resolve(_data_config__WEBPACK_IMPORTED_MODULE_0__["default"].dataPath, "bdsettings.json"));}
-    getPluginFile(pluginName) {return path.resolve(_data_config__WEBPACK_IMPORTED_MODULE_0__["default"].dataPath, "plugins", pluginName + ".config.json");}
+    get BDFile() {return this._BDFile || (this._BDFile = path.resolve(data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath, "bdstorage.json"));}
+    get settingsFile() {return this._settingsFile || (this._settingsFile = path.resolve(data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath, "bdsettings.json"));}
+    getPluginFile(pluginName) {return path.resolve(data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath, "plugins", pluginName + ".config.json");}
 
     getSettingGroup(key) {
         return this.data.settings[releaseChannel][key] || null;
@@ -1352,7 +1423,7 @@ devMode.prototype.getSelector = function(element) {
      $(document).off("contextmenu.bdDevModeCtx");
  };
 
- /* harmony default export */ __webpack_exports__["default"] = (devMode);
+ /* harmony default export */ __webpack_exports__["default"] = (new devMode());
 
 /***/ }),
 
@@ -1387,7 +1458,7 @@ const EventEmitter = __webpack_require__(/*! events */ "events");
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../data/settingscookie */ "./src/data/settingscookie.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_2__);
@@ -1523,14 +1594,14 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
 QuickEmoteMenu.prototype.obsCallback = function (elem) {
     if (!this.initialized) return;
     var e = $(elem);
-    if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-es-9"]) {
+    if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-9"]) {
         e.addClass("bda-qme-hidden");
     }
     else {
         e.removeClass("bda-qme-hidden");
     }
 
-    if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-es-0"]) return;
+    if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-0"]) return;
 
     e.prepend(this.qmeHeader);
     e.append(this.teContainer);
@@ -1575,7 +1646,7 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
     _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].setBDData("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (QuickEmoteMenu);
+/* harmony default export */ __webpack_exports__["default"] = (new QuickEmoteMenu());
 
 /***/ }),
 
@@ -1588,15 +1659,13 @@ QuickEmoteMenu.prototype.updateFavorites = function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _data_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../data/config */ "./src/data/config.js");
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../data/settingscookie */ "./src/data/settingscookie.js");
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _bdv2__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./bdv2 */ "./src/modules/bdv2.js");
-/* harmony import */ var _ui_emote__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../ui/emote */ "./src/ui/emote.js");
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _bdv2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./bdv2 */ "./src/modules/bdv2.js");
+/* harmony import */ var _ui_emote__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ui/emote */ "./src/ui/emote.js");
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
 
 
 
@@ -1631,7 +1700,7 @@ function EmoteModule() {
         get: function() {
             const cats = [];
             for (const current in window.bdEmoteSettingIDs) {
-                if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"][window.bdEmoteSettingIDs[current]]) cats.push(current);
+                if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][window.bdEmoteSettingIDs[current]]) cats.push(current);
             }
             return cats;
         }
@@ -1692,11 +1761,11 @@ EmoteModule.prototype.init = async function () {
     await this.getBlacklist();
     await this.loadEmoteData(emoteInfo);
 
-    while (!_bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
+    while (!_bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
 
     if (this.cancelEmoteRender) return;
-    this.cancelEmoteRender = _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
-		_utilities__WEBPACK_IMPORTED_MODULE_2___default.a.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
+    this.cancelEmoteRender = _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
+		_utilities__WEBPACK_IMPORTED_MODULE_1___default.a.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
             if (this.categories.length == 0) return;
 			const markup = returnValue.props.children[1];
 			if (!markup.props.children) return;
@@ -1715,7 +1784,7 @@ EmoteModule.prototype.init = async function () {
 						let emoteOverride = emoteModifier.slice(0);
 
 						if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
-						if (!this.modifiers.includes(emoteModifier) || !_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-es-8"]) emoteModifier = "";
+						if (!this.modifiers.includes(emoteModifier) || !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-8"]) emoteModifier = "";
 						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
 						else emoteModifier = emoteOverride;
 
@@ -1732,13 +1801,13 @@ EmoteModule.prototype.init = async function () {
 							if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
 						}
 
-						if (!window.bdEmotes[current][emoteName] || !_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"][window.bdEmoteSettingIDs[current]]) continue;
-						const results = nodes[n].match(new RegExp(`([\\s]|^)${_utilities__WEBPACK_IMPORTED_MODULE_2___default.a.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
+						if (!window.bdEmotes[current][emoteName] || !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][window.bdEmoteSettingIDs[current]]) continue;
+						const results = nodes[n].match(new RegExp(`([\\s]|^)${_utilities__WEBPACK_IMPORTED_MODULE_1___default.a.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                         if (!results) continue;
 						const pre = nodes[n].substring(0, results.index + results[1].length);
 						const post = nodes[n].substring(results.index + results[0].length - results[2].length);
 						nodes[n] = pre;
-						const emoteComponent = _bdv2__WEBPACK_IMPORTED_MODULE_3__["default"].react.createElement(_ui_emote__WEBPACK_IMPORTED_MODULE_4__["default"], {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
+						const emoteComponent = _bdv2__WEBPACK_IMPORTED_MODULE_2__["default"].react.createElement(_ui_emote__WEBPACK_IMPORTED_MODULE_3__["default"], {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
 						nodes.splice(n + 1, 0, post);
 						nodes.splice(n + 1, 0, emoteComponent);
 					}
@@ -1771,10 +1840,10 @@ EmoteModule.prototype.disable = function() {
 EmoteModule.prototype.clearEmoteData = async function() {
     let _fs = __webpack_require__(/*! fs */ "fs");
     let emoteFile = "emote_data.json";
-    let file = _data_config__WEBPACK_IMPORTED_MODULE_0__["default"].dataPath + emoteFile;
+    let file = data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath + emoteFile;
     let exists = _fs.existsSync(file);
     if (exists) _fs.unlinkSync(file);
-    _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].setBDData("emoteCacheDate", (new Date()).toJSON());
+    _datastore__WEBPACK_IMPORTED_MODULE_5__["default"].setBDData("emoteCacheDate", (new Date()).toJSON());
 
     window.bdEmotes = {
         TwitchGlobal: {},
@@ -1794,11 +1863,11 @@ EmoteModule.prototype.goBack = async function(emoteInfo) {
 };
 
 EmoteModule.prototype.isCacheValid = function() {
-    const cacheDate = new Date(_datastore__WEBPACK_IMPORTED_MODULE_6__["default"].getBDData("emoteCacheDate") || null);
+    const cacheDate = new Date(_datastore__WEBPACK_IMPORTED_MODULE_5__["default"].getBDData("emoteCacheDate") || null);
     const currentDate = new Date();
     const daysBetween = Math.round(Math.abs((currentDate.getTime() - cacheDate.getTime()) / (24 * 60 * 60 * 1000)));
-    if (daysBetween > _data_config__WEBPACK_IMPORTED_MODULE_0__["default"].cache.days) {
-        _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].setBDData("emoteCacheDate", currentDate.toJSON());
+    if (daysBetween > data__WEBPACK_IMPORTED_MODULE_0__["Config"].cache.days) {
+        _datastore__WEBPACK_IMPORTED_MODULE_5__["default"].setBDData("emoteCacheDate", currentDate.toJSON());
         return false;
     }
     return true;
@@ -1807,22 +1876,22 @@ EmoteModule.prototype.isCacheValid = function() {
 EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     const _fs = __webpack_require__(/*! fs */ "fs");
     const emoteFile = "emote_data.json";
-    const file = _data_config__WEBPACK_IMPORTED_MODULE_0__["default"].dataPath + emoteFile;
+    const file = data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath + emoteFile;
     const exists = _fs.existsSync(file);
 
     if (exists && this.isCacheValid()) {
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_5__["default"].showToast("Loading emotes from cache.", {type: "info"});
-        _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("Emotes", "Loading emotes from local cache.");
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("Loading emotes from cache.", {type: "info"});
+        _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.log("Emotes", "Loading emotes from local cache.");
 
         const data = await new Promise(resolve => {
             _fs.readFile(file, "utf8", (err, data) => {
-                _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("Emotes", "Emotes loaded from cache.");
+                _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.log("Emotes", "Emotes loaded from cache.");
                 if (err) data = {};
                 resolve(data);
             });
         });
 
-        let isValid = _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.testJSON(data);
+        let isValid = _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.testJSON(data);
         if (isValid) window.bdEmotes = JSON.parse(data);
 
         for (const e in emoteInfo) {
@@ -1830,16 +1899,16 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         }
 
         if (isValid) {
-            if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_5__["default"].showToast("Emotes successfully loaded.", {type: "success"});
+            if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("Emotes successfully loaded.", {type: "success"});
             return;
         }
 
-        _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("Emotes", "Cache was corrupt, downloading...");
+        _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.log("Emotes", "Cache was corrupt, downloading...");
         _fs.unlinkSync(file);
     }
 
-    if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-es-3"]) return;
-    if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_5__["default"].showToast("Downloading emotes in the background do not reload.", {type: "info"});
+    if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-es-3"]) return;
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
     for (let e in emoteInfo) {
         await new Promise(r => setTimeout(r, 1000));
@@ -1847,10 +1916,10 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         window.bdEmotes[emoteInfo[e].variable] = data;
     }
 
-    if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_5__["default"].showToast("All emotes successfully downloaded.", {type: "success"});
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("All emotes successfully downloaded.", {type: "success"});
 
     try { _fs.writeFileSync(file, JSON.stringify(window.bdEmotes), "utf8"); }
-    catch (err) { _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Emotes", "Could not save emote data.", err); }
+    catch (err) { _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.err("Emotes", "Could not save emote data.", err); }
 };
 
 EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
@@ -1860,12 +1929,12 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
         timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
     };
 
-    _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("Emotes", `Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
+    _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.log("Emotes", `Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
 
     return new Promise((resolve, reject) => {
         request(options, (error, response, body) => {
             if (error) {
-                _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Emotes", "Could not download " + emoteMeta.variable, error);
+                _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.err("Emotes", "Could not download " + emoteMeta.variable, error);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -1880,7 +1949,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 parsedData = JSON.parse(body);
             }
             catch (err) {
-                _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Emotes", "Could not download " + emoteMeta.variable, err);
+                _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.err("Emotes", "Could not download " + emoteMeta.variable, err);
                 if (emoteMeta.backup) {
                     emoteMeta.url = emoteMeta.backup;
                     emoteMeta.backup = null;
@@ -1899,7 +1968,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
             }
             resolve(parsedData);
-            _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("Emotes", "Downloaded: " + emoteMeta.variable);
+            _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.log("Emotes", "Downloaded: " + emoteMeta.variable);
         });
     });
 };
@@ -1915,7 +1984,7 @@ EmoteModule.prototype.getBlacklist = function () {
 var bemotes = [];
 
 EmoteModule.prototype.autoCapitalize = function () {
-    if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-es-4"] || this.autoCapitalizeActive) return;
+    if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-4"] || this.autoCapitalizeActive) return;
     $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-1LDbYG textarea:first"), () => {
         var text = $(".channelTextArea-1LDbYG textarea:first").val();
         if (text == undefined) return;
@@ -1925,7 +1994,7 @@ EmoteModule.prototype.autoCapitalize = function () {
             if (lastWord == "danSgame") return;
             var ret = this.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
-                _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.insertText(_utilities__WEBPACK_IMPORTED_MODULE_2___default.a.getTextArea()[0], text.replace(lastWord, ret));
+                _utilities__WEBPACK_IMPORTED_MODULE_1___default.a.insertText(_utilities__WEBPACK_IMPORTED_MODULE_1___default.a.getTextArea()[0], text.replace(lastWord, ret));
             }
         }
     });
@@ -1946,7 +2015,7 @@ EmoteModule.prototype.disableAutoCapitalize = function() {
     $("body").off(".bdac");
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (EmoteModule);
+/* harmony default export */ __webpack_exports__["default"] = (new EmoteModule());
 
 /***/ }),
 
@@ -1954,7 +2023,7 @@ EmoteModule.prototype.disableAutoCapitalize = function() {
 /*!********************************!*\
   !*** ./src/modules/modules.js ***!
   \********************************/
-/*! exports provided: BDV2, Utilities, BdApi, ClassNormalizer, ContentManager, Emitter, DataStore */
+/*! exports provided: BDV2, BdApi, Core, ClassNormalizer, ContentManager, DataStore, DevMode, Emitter, EmoteMenu, EmoteModule, PluginManager, PublicServer, ThemeManager, VoiceMode, Utilities */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1962,23 +2031,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _bdv2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bdv2 */ "./src/modules/bdv2.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BDV2", function() { return _bdv2__WEBPACK_IMPORTED_MODULE_0__["default"]; });
 
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony reexport (default from non-harmony) */ __webpack_require__.d(__webpack_exports__, "Utilities", function() { return _utilities__WEBPACK_IMPORTED_MODULE_1___default.a; });
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BdApi", function() { return _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"]; });
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "BdApi", function() { return _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"]; });
+
+/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Core", function() { return _core__WEBPACK_IMPORTED_MODULE_2__["default"]; });
 
 /* harmony import */ var _classnormalizer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./classnormalizer */ "./src/modules/classnormalizer.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ClassNormalizer", function() { return _classnormalizer__WEBPACK_IMPORTED_MODULE_3__["default"]; });
 
 /* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
-/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_contentmanager__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony reexport (default from non-harmony) */ __webpack_require__.d(__webpack_exports__, "ContentManager", function() { return _contentmanager__WEBPACK_IMPORTED_MODULE_4___default.a; });
-/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Emitter", function() { return _emitter__WEBPACK_IMPORTED_MODULE_5__["default"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ContentManager", function() { return _contentmanager__WEBPACK_IMPORTED_MODULE_4__["default"]; });
 
-/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataStore", function() { return _datastore__WEBPACK_IMPORTED_MODULE_6__["default"]; });
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataStore", function() { return _datastore__WEBPACK_IMPORTED_MODULE_5__["default"]; });
+
+/* harmony import */ var _devmode__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./devmode */ "./src/modules/devmode.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DevMode", function() { return _devmode__WEBPACK_IMPORTED_MODULE_6__["default"]; });
+
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Emitter", function() { return _emitter__WEBPACK_IMPORTED_MODULE_7__["default"]; });
+
+/* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./emotemenu */ "./src/modules/emotemenu.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteMenu", function() { return _emotemenu__WEBPACK_IMPORTED_MODULE_8__["default"]; });
+
+/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteModule", function() { return _emotes__WEBPACK_IMPORTED_MODULE_9__["default"]; });
+
+/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PluginManager", function() { return _pluginmanager__WEBPACK_IMPORTED_MODULE_10__["default"]; });
+
+/* harmony import */ var _publicservers__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./publicservers */ "./src/modules/publicservers.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PublicServer", function() { return _publicservers__WEBPACK_IMPORTED_MODULE_11__["default"]; });
+
+/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ThemeManager", function() { return _thememanager__WEBPACK_IMPORTED_MODULE_12__["default"]; });
+
+/* harmony import */ var _voicemode__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./voicemode */ "./src/modules/voicemode.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "VoiceMode", function() { return _voicemode__WEBPACK_IMPORTED_MODULE_13__["default"]; });
+
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony reexport (default from non-harmony) */ __webpack_require__.d(__webpack_exports__, "Utilities", function() { return _utilities__WEBPACK_IMPORTED_MODULE_14___default.a; });
+
+
+
+
+
+
+
 
 
 
@@ -2001,11 +2102,13 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _data_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../data/config */ "./src/data/config.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _bdv2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./bdv2 */ "./src/modules/bdv2.js");
 /* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
+
 
 
 
@@ -2027,17 +2130,17 @@ const BdApi = {
 };
 
 BdApi.getAllWindowPreferences = function() {
-    if ((_data_config__WEBPACK_IMPORTED_MODULE_0__["default"].os !== "win32" && _data_config__WEBPACK_IMPORTED_MODULE_0__["default"].os !== "darwin") || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
+    if ((data__WEBPACK_IMPORTED_MODULE_0__["Config"].os !== "win32" && data__WEBPACK_IMPORTED_MODULE_0__["Config"].os !== "darwin") || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
     return require(this.WindowConfigFile);
 };
 
 BdApi.getWindowPreference = function(key) {
-    if ((_data_config__WEBPACK_IMPORTED_MODULE_0__["default"].os !== "win32" && _data_config__WEBPACK_IMPORTED_MODULE_0__["default"].os !== "darwin") || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
+    if ((data__WEBPACK_IMPORTED_MODULE_0__["Config"].os !== "win32" && data__WEBPACK_IMPORTED_MODULE_0__["Config"].os !== "darwin") || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
     return this.getAllWindowPreferences()[key];
 };
 
 BdApi.setWindowPreference = function(key, value) {
-    if ((_data_config__WEBPACK_IMPORTED_MODULE_0__["default"].os !== "win32" && _data_config__WEBPACK_IMPORTED_MODULE_0__["default"].os !== "darwin") || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
+    if ((data__WEBPACK_IMPORTED_MODULE_0__["Config"].os !== "win32" && data__WEBPACK_IMPORTED_MODULE_0__["Config"].os !== "darwin") || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
     const fs = __webpack_require__(/*! fs */ "fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
@@ -2089,7 +2192,7 @@ BdApi.getIpc = function () {
 
 //Get BetterDiscord Core
 BdApi.getCore = function () {
-    return window.mainCore;
+    return _core__WEBPACK_IMPORTED_MODULE_4__["default"];
 };
 
 /**
@@ -2100,7 +2203,7 @@ BdApi.getCore = function () {
 BdApi.alert = function (title, content) {
     const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
     const AlertModal = BdApi.findModuleByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");
-    if (!ModalStack || !AlertModal) return window.mainCore.alert(title, content);
+    if (!ModalStack || !AlertModal) return _core__WEBPACK_IMPORTED_MODULE_4__["default"].alert(title, content);
 
     ModalStack.push(function(props) {
         return BdApi.React.createElement(AlertModal, Object.assign({
@@ -2125,7 +2228,7 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
     const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
     const TextElement = BdApi.findModuleByProps("Sizes", "Weights");
     const ConfirmationModal = BdApi.findModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");
-    if (!ModalStack || !ConfirmationModal || !TextElement) return window.mainCore.alert(title, content);
+    if (!ModalStack || !ConfirmationModal || !TextElement) return _core__WEBPACK_IMPORTED_MODULE_4__["default"].alert(title, content);
 
     const {onConfirm, onCancel, confirmText, cancelText, danger = false} = options;
     if (typeof(content) == "string") content = TextElement({color: TextElement.Colors.PRIMARY, children: [content]});
@@ -2148,7 +2251,7 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
 
 //Show toast alert
 BdApi.showToast = function(content, options = {}) {
-    window.mainCore.showToast(content, options);
+    _core__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(content, options);
 };
 
 // Finds module
@@ -2255,7 +2358,21 @@ BdApi.setBDData = function(key, data) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-var pluginCookie = {};
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+
+
+
+
+
+
+
 
 function PluginModule() {
 
@@ -2263,7 +2380,7 @@ function PluginModule() {
 
 PluginModule.prototype.loadPlugins = function () {
     this.loadPluginData();
-    const errors = ContentManager.loadPlugins();
+    const errors = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadPlugins();
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin, name;
@@ -2274,22 +2391,22 @@ PluginModule.prototype.loadPlugins = function () {
             if (plugin.load && typeof(plugin.load) == "function") plugin.load();
         }
         catch (err) {
-            pluginCookie[name] = false;
-            Utils.err("Plugins", name + " could not be loaded.", err);
+            data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][name] = false;
+            _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Plugins", name + " could not be loaded.", err);
             errors.push({name: name, file: bdplugins[plugins[i]].filename, message: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
             continue;
         }
 
-        if (!pluginCookie[name]) pluginCookie[name] = false;
+        if (!data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][name]) data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][name] = false;
 
-        if (pluginCookie[name]) {
+        if (data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][name]) {
             try {
                 plugin.start();
-                if (settingsCookie["fork-ps-2"]) mainCore.showToast(`${plugin.getName()} v${plugin.getVersion()} has started.`);
+                if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${plugin.getName()} v${plugin.getVersion()} has started.`);
             }
             catch (err) {
-                pluginCookie[name] = false;
-                Utils.err("Plugins", name + " could not be started.", err);
+                data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][name] = false;
+                _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Plugins", name + " could not be started.", err);
                 errors.push({name: name, file: bdplugins[plugins[i]].filename, message: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
             }
         }
@@ -2297,129 +2414,129 @@ PluginModule.prototype.loadPlugins = function () {
     this.savePluginData();
 
     __webpack_require__(/*! electron */ "electron").remote.getCurrentWebContents().on("did-navigate-in-page", this.channelSwitch.bind(this));
-    // if (settingsCookie["fork-ps-5"]) ContentManager.watchContent("plugin");
+    // if (SettingsCookie["fork-ps-5"]) ContentManager.watchContent("plugin");
     return errors;
 };
 
 PluginModule.prototype.startPlugin = function(plugin, reload = false) {
     try {
         bdplugins[plugin].plugin.start();
-        if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
     }
     catch (err) {
-        if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
-        pluginCookie[plugin] = false;
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
+        data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin] = false;
         this.savePluginData();
-        Utils.err("Plugins", name + " could not be started.", err);
+        _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Plugins", name + " could not be started.", err);
     }
 };
 
 PluginModule.prototype.stopPlugin = function(plugin, reload = false) {
     try {
         bdplugins[plugin].plugin.stop();
-        if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
     }
     catch (err) {
-        if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be stopped.`, {type: "error"});
-        Utils.err("Plugins", bdplugins[plugin].plugin.getName() + " could not be stopped.", err);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be stopped.`, {type: "error"});
+        _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Plugins", bdplugins[plugin].plugin.getName() + " could not be stopped.", err);
     }
 };
 
 PluginModule.prototype.enablePlugin = function (plugin, reload = false) {
-    if (pluginCookie[plugin]) return;
-    pluginCookie[plugin] = true;
+    if (data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin]) return;
+    data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin] = true;
     this.savePluginData();
     this.startPlugin(plugin, reload);
 };
 
 PluginModule.prototype.disablePlugin = function (plugin, reload = false) {
-    if (!pluginCookie[plugin]) return;
-    pluginCookie[plugin] = false;
+    if (!data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin]) return;
+    data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin] = false;
     this.savePluginData();
     this.stopPlugin(plugin, reload);
 };
 
 PluginModule.prototype.togglePlugin = function (plugin) {
-    if (pluginCookie[plugin]) this.disablePlugin(plugin);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin]) this.disablePlugin(plugin);
     else this.enablePlugin(plugin);
 };
 
 PluginModule.prototype.loadPlugin = function(filename) {
-    const error = ContentManager.loadContent(filename, "plugin");
+    const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadContent(filename, "plugin");
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${filename} could not be loaded.`, {type: "error"});
-        return Utils.err("ContentManager", `${filename} could not be loaded.`, error);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({plugins: [error]});
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${filename} could not be loaded.`, {type: "error"});
+        return _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("ContentManager", `${filename} could not be loaded.`, error);
     }
     const plugin = Object.values(bdplugins).find(p => p.filename == filename).plugin;
     try { if (plugin.load && typeof(plugin.load) == "function") plugin.load();}
-    catch (err) {if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [err]});}
-    Utils.log("ContentManager", `${plugin.getName()} v${plugin.getVersion()} was loaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
-    BDEvents.dispatch("plugin-loaded", plugin.getName());
+    catch (err) {if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({plugins: [err]});}
+    _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("ContentManager", `${plugin.getName()} v${plugin.getVersion()} was loaded.`);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
+    _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("plugin-loaded", plugin.getName());
 };
 
 PluginModule.prototype.unloadPlugin = function(filenameOrName) {
     const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
     if (!bdplugin) return;
     const plugin = bdplugin.plugin.getName();
-    if (pluginCookie[plugin]) this.disablePlugin(plugin, true);
-    const error = ContentManager.unloadContent(bdplugins[plugin].filename, "plugin");
+    if (data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin]) this.disablePlugin(plugin, true);
+    const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].unloadContent(bdplugins[plugin].filename, "plugin");
     delete bdplugins[plugin];
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
-        return Utils.err("ContentManager", `${plugin} could not be unloaded. It may have not been loaded yet.`, error);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({plugins: [error]});
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+        return _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("ContentManager", `${plugin} could not be unloaded. It may have not been loaded yet.`, error);
     }
-    Utils.log("ContentManager", `${plugin} was unloaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} was unloaded.`, {type: "success"});
-    BDEvents.dispatch("plugin-unloaded", plugin);
+    _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("ContentManager", `${plugin} was unloaded.`);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin} was unloaded.`, {type: "success"});
+    _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("plugin-unloaded", plugin);
 };
 
 PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
     if (!bdplugin) return this.loadPlugin(filenameOrName);
     const plugin = bdplugin.plugin.getName();
-    const enabled = pluginCookie[plugin];
+    const enabled = data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin];
     if (enabled) this.stopPlugin(plugin, true);
-    const error = ContentManager.reloadContent(bdplugins[plugin].filename, "plugin");
+    const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].reloadContent(bdplugins[plugin].filename, "plugin");
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({plugins: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} could not be reloaded.`, {type: "error"});
-        return Utils.err("ContentManager", `${plugin} could not be reloaded.`, error);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({plugins: [error]});
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin} could not be reloaded.`, {type: "error"});
+        return _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("ContentManager", `${plugin} could not be reloaded.`, error);
     }
     if (bdplugins[plugin].plugin.load && typeof(bdplugins[plugin].plugin.load) == "function") bdplugins[plugin].plugin.load();
     if (enabled) this.startPlugin(plugin, true);
-    Utils.log("ContentManager", `${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
-    BDEvents.dispatch("plugin-reloaded", plugin);
+    _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("ContentManager", `${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
+    _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("plugin-reloaded", plugin);
 };
 
 PluginModule.prototype.updatePluginList = function() {
-    const results = ContentManager.loadNewContent("plugin");
+    const results = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadNewContent("plugin");
     for (const filename of results.added) this.loadPlugin(filename);
     for (const name of results.removed) this.unloadPlugin(name);
 };
 
 PluginModule.prototype.loadPluginData = function () {
-    let saved = DataStore.getSettingGroup("plugins");
+    let saved = _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].getSettingGroup("plugins");
     if (saved) {
-        pluginCookie = saved;
+        PluginCookie = saved;
     }
 };
 
 PluginModule.prototype.savePluginData = function () {
-    DataStore.setSettingGroup("plugins", pluginCookie);
+    _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].setSettingGroup("plugins", data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"]);
 };
 
 PluginModule.prototype.newMessage = function () {
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) continue;
+        if (!data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin.getName()]) continue;
         if (typeof plugin.onMessage === "function") {
             try { plugin.onMessage(); }
-            catch (err) { Utils.err("Plugins", "Unable to fire onMessage for " + plugin.getName() + ".", err); }
+            catch (err) { _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Plugins", "Unable to fire onMessage for " + plugin.getName() + ".", err); }
         }
     }
 };
@@ -2428,10 +2545,10 @@ PluginModule.prototype.channelSwitch = function () {
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) continue;
+        if (!data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin.getName()]) continue;
         if (typeof plugin.onSwitch === "function") {
             try { plugin.onSwitch(); }
-            catch (err) { Utils.err("Plugins", "Unable to fire onSwitch for " + plugin.getName() + ".", err); }
+            catch (err) { _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Plugins", "Unable to fire onSwitch for " + plugin.getName() + ".", err); }
         }
     }
 };
@@ -2440,15 +2557,230 @@ PluginModule.prototype.rawObserver = function(e) {
     var plugins = Object.keys(bdplugins);
     for (var i = 0; i < plugins.length; i++) {
         var plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) continue;
+        if (!data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin.getName()]) continue;
         if (typeof plugin.observer === "function") {
             try { plugin.observer(e); }
-            catch (err) { Utils.err("Plugins", "Unable to fire observer for " + plugin.getName() + ".", err); }
+            catch (err) { _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("Plugins", "Unable to fire observer for " + plugin.getName() + ".", err); }
         }
     }
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (PluginModule);
+
+/***/ }),
+
+/***/ "./src/modules/publicservers.js":
+/*!**************************************!*\
+  !*** ./src/modules/publicservers.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = (new class {
+
+    initialize() {
+        const wrapper = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.wrapper.split(" ")[0];
+        const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
+        guilds.after(this.button);
+    }
+
+    get component() {
+        return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(ui__WEBPACK_IMPORTED_MODULE_2__["PublicServers"].Layer, {
+            rootId: "pubslayerroot",
+            id: "pubslayer",
+            children: modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(ui__WEBPACK_IMPORTED_MODULE_2__["PublicServers"].Menu, {rootId: "pubslayerroot"})
+        });
+    }
+
+    get root() {
+        let _root = document.getElementById("pubslayerroot");
+        if (!_root) {
+            if (!this.injectRoot()) return null;
+            return this.root;
+        }
+        return _root;
+    }
+
+    injectRoot() {
+        if (!$(".layers, .layers-3iHuyZ").length) return false;
+        $(".layers, .layers-3iHuyZ").append($("<div/>", {
+            id: "pubslayerroot"
+        }));
+        return true;
+    }
+
+    render() {
+        // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
+        let root = this.root;
+        if (!root) {
+            console.log("FAILED TO LOCATE ROOT: .layers");
+            return;
+        }
+        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(this.component, root);
+    }
+
+    get button() {
+        let btn = $("<div/>", {
+            "class": modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.listItem,
+            "id": "bd-pub-li",
+            "style": data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-1"] ? "" : "display: none;"
+        }).append($("<div/>", {
+            "class": "wrapper-25eVIn " + modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.circleButtonMask,
+            "text": "public",
+            "id": "bd-pub-button",
+            "click": () => { this.render(); }
+        }));
+
+        return btn;
+    }
+});
+
+/***/ }),
+
+/***/ "./src/modules/settingspanel.js":
+/*!**************************************!*\
+  !*** ./src/modules/settingspanel.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _classnormalizer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./classnormalizer */ "./src/modules/classnormalizer.js");
+/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+
+
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = (new class SettingsPanel {
+
+    constructor() {
+        this.renderer = new ui__WEBPACK_IMPORTED_MODULE_4__["SettingsPanel"]({onChange: this.updateSettings.bind(this)});
+    }
+
+    renderSidebar() {
+        this.renderer.renderSidebar();
+    }
+
+    updateSettings(id, enabled) {
+        data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][id] = enabled;
+
+        if (id == "bda-es-0") {
+            if (enabled) $("#twitchcord-button-container").show();
+            else $("#twitchcord-button-container").hide();
+        }
+
+        if (id == "bda-gs-2") {
+            if (enabled) $("body").addClass("bd-minimal");
+            else $("body").removeClass("bd-minimal");
+        }
+
+        if (id == "bda-gs-3") {
+            if (enabled) $("body").addClass("bd-minimal-chan");
+            else $("body").removeClass("bd-minimal-chan");
+        }
+
+        if (id == "bda-gs-1") {
+            if (enabled) $("#bd-pub-li").show();
+            else $("#bd-pub-li").hide();
+        }
+
+        if (id == "bda-gs-4") {
+            if (enabled) window.mainCore.voiceMode.enable();
+            else window.mainCore.voiceMode.disable();
+        }
+
+        if (id == "bda-gs-5") {
+            if (enabled) $("#app-mount").addClass("bda-dark");
+            else $("#app-mount").removeClass("bda-dark");
+        }
+
+        if (enabled && id == "bda-gs-6") window.mainCore.inject24Hour();
+
+        if (id == "bda-gs-7") {
+            if (enabled) window.mainCore.injectColoredText();
+            else window.mainCore.removeColoredText();
+        }
+
+        if (id == "bda-es-4") {
+            if (enabled) window.mainCore.emoteModule.autoCapitalize();
+            else window.mainCore.emoteModule.disableAutoCapitalize();
+        }
+
+        if (id == "fork-ps-4") {
+            if (enabled) _classnormalizer__WEBPACK_IMPORTED_MODULE_1__["default"].start();
+            else _classnormalizer__WEBPACK_IMPORTED_MODULE_1__["default"].stop();
+        }
+
+        if (id == "fork-ps-5") {
+            if (enabled) {
+                _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("plugin");
+                _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("theme");
+            }
+            else {
+                _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].unwatchContent("plugin");
+                _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].unwatchContent("theme");
+            }
+        }
+
+        if (id == "fork-wp-1") {
+            _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("transparent", enabled);
+            if (enabled) _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("backgroundColor", null);
+            else _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("backgroundColor", "#2f3136");
+        }
+
+        /*if (_c["fork-wp-2"]) {
+            const current = BdApi.getWindowPreference("frame");
+            if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
+        }*/
+
+
+        if (id == "bda-gs-8") {
+            if (enabled) window.mainCore.dMode.enable(data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-dm-1"]);
+            else window.mainCore.dMode.disable();
+        }
+
+        window.mainCore.saveSettings();
+    }
+
+    initializeSettings() {
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-0"]) $("#twitchcord-button-container").show();
+        // if (SettingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-2"]) $("body").addClass("bd-minimal");
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-1"]) $("#bd-pub-li").show();
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-4"]) window.mainCore.voiceMode.enable();
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-6"]) window.mainCore.inject24Hour();
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-7"]) window.mainCore.injectColoredText();
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-4"]) window.mainCore.emoteModule.autoCapitalize();
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-4"]) _classnormalizer__WEBPACK_IMPORTED_MODULE_1__["default"].start();
+
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"]) {
+            _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("plugin");
+            _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("theme");
+        }
+
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-8"]) window.mainCore.dMode.enable(data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-dm-1"]);
+
+        window.mainCore.saveSettings();
+    }
+});
 
 /***/ }),
 
@@ -2461,7 +2793,21 @@ PluginModule.prototype.rawObserver = function(e) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-var themeCookie = {};
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+
+
+
+
+
+
+
 
 function ThemeModule() {
 
@@ -2469,102 +2815,102 @@ function ThemeModule() {
 
 ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
-    const errors = ContentManager.loadThemes();
+    const errors = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadThemes();
     var themes = Object.keys(bdthemes);
 
     for (var i = 0; i < themes.length; i++) {
         var name = bdthemes[themes[i]].name;
-        if (!themeCookie[name]) themeCookie[name] = false;
-        if (themeCookie[name]) $("head").append($("<style>", {id: Utils.escapeID(name), text: unescape(bdthemes[name].css)}));
+        if (!data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][name]) data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][name] = false;
+        if (data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][name]) $("head").append($("<style>", {id: _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.escapeID(name), text: unescape(bdthemes[name].css)}));
     }
-    for (let theme in themeCookie) {
-        if (!bdthemes[theme]) delete themeCookie[theme];
+    for (let theme in data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"]) {
+        if (!bdthemes[theme]) delete data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme];
     }
     this.saveThemeData();
     return errors;
-    // if (settingsCookie["fork-ps-5"]) ContentManager.watchContent("theme");
+    // if (SettingsCookie["fork-ps-5"]) ContentManager.watchContent("theme");
 };
 
 ThemeModule.prototype.enableTheme = function(theme, reload = false) {
-    themeCookie[theme] = true;
+    data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme] = true;
     this.saveThemeData();
-    $("head").append($("<style>", {id: Utils.escapeID(theme), text: unescape(bdthemes[theme].css)}));
-    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
+    $("head").append($("<style>", {id: _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.escapeID(theme), text: unescape(bdthemes[theme].css)}));
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
 };
 
 ThemeModule.prototype.disableTheme = function(theme, reload = false) {
-    themeCookie[theme] = false;
+    data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme] = false;
     this.saveThemeData();
-    $(`#${Utils.escapeID(bdthemes[theme].name)}`).remove();
-    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been disabled.`);
+    $(`#${_utilities__WEBPACK_IMPORTED_MODULE_2___default.a.escapeID(bdthemes[theme].name)}`).remove();
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been disabled.`);
 };
 
 ThemeModule.prototype.toggleTheme = function(theme) {
-    if (themeCookie[theme]) this.disableTheme(theme);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme]) this.disableTheme(theme);
     else this.enableTheme(theme);
 };
 
 ThemeModule.prototype.loadTheme = function(filename) {
-    const error = ContentManager.loadContent(filename, "theme");
+    const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadContent(filename, "theme");
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
-        return Utils.err("ContentManager", `${filename} could not be loaded.`, error);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({themes: [error]});
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
+        return _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("ContentManager", `${filename} could not be loaded.`, error);
     }
     const theme = Object.values(bdthemes).find(p => p.filename == filename);
-    Utils.log("ContentManager", `${theme.name} v${theme.version} was loaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme.name} v${theme.version} was loaded.`, {type: "success"});
-    BDEvents.dispatch("theme-loaded", theme.name);
+    _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("ContentManager", `${theme.name} v${theme.version} was loaded.`);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme.name} v${theme.version} was loaded.`, {type: "success"});
+    _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("theme-loaded", theme.name);
 };
 
 ThemeModule.prototype.unloadTheme = function(filenameOrName) {
     const bdtheme = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
     if (!bdtheme) return;
     const theme = bdtheme.name;
-    if (themeCookie[theme]) this.disableTheme(theme, true);
-    const error = ContentManager.unloadContent(bdthemes[theme].filename, "theme");
+    if (data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme]) this.disableTheme(theme, true);
+    const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].unloadContent(bdthemes[theme].filename, "theme");
     delete bdthemes[theme];
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
-        return Utils.err("ContentManager", `${theme} could not be unloaded. It may have not been loaded yet.`, error);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({themes: [error]});
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+        return _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("ContentManager", `${theme} could not be unloaded. It may have not been loaded yet.`, error);
     }
-    Utils.log("ContentManager", `${theme} was unloaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} was unloaded.`, {type: "success"});
-    BDEvents.dispatch("theme-unloaded", theme);
+    _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("ContentManager", `${theme} was unloaded.`);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme} was unloaded.`, {type: "success"});
+    _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("theme-unloaded", theme);
 };
 
 ThemeModule.prototype.reloadTheme = function(filenameOrName) {
     const bdtheme = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
     if (!bdtheme) return this.loadTheme(filenameOrName);
     const theme = bdtheme.name;
-    const error = ContentManager.reloadContent(bdthemes[theme].filename, "theme");
-    if (themeCookie[theme]) this.disableTheme(theme, true), this.enableTheme(theme, true);
+    const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].reloadContent(bdthemes[theme].filename, "theme");
+    if (data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme]) this.disableTheme(theme, true), this.enableTheme(theme, true);
     if (error) {
-        if (settingsCookie["fork-ps-1"]) mainCore.showContentErrors({themes: [error]});
-        if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} could not be reloaded.`, {type: "error"});
-        return Utils.err("ContentManager", `${theme} could not be reloaded.`, error);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({themes: [error]});
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme} could not be reloaded.`, {type: "error"});
+        return _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.err("ContentManager", `${theme} could not be reloaded.`, error);
     }
-    Utils.log("ContentManager", `${theme} v${bdthemes[theme].version} was reloaded.`);
-    if (settingsCookie["fork-ps-2"]) BdApi.showToast(`${theme} v${bdthemes[theme].version} was reloaded.`, {type: "success"});
-    BDEvents.dispatch("theme-reloaded", theme);
+    _utilities__WEBPACK_IMPORTED_MODULE_2___default.a.log("ContentManager", `${theme} v${bdthemes[theme].version} was reloaded.`);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme} v${bdthemes[theme].version} was reloaded.`, {type: "success"});
+    _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("theme-reloaded", theme);
 };
 
 ThemeModule.prototype.updateThemeList = function() {
-    const results = ContentManager.loadNewContent("theme");
+    const results = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadNewContent("theme");
     for (const filename of results.added) this.loadTheme(filename);
     for (const name of results.removed) this.unloadTheme(name);
 };
 
 ThemeModule.prototype.loadThemeData = function() {
-    let saved = DataStore.getSettingGroup("themes");
+    let saved = _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].getSettingGroup("themes");
     if (saved) {
-        themeCookie = saved;
+        ThemeCookie = saved;
     }
 };
 
 ThemeModule.prototype.saveThemeData = function () {
-    DataStore.setSettingGroup("themes", themeCookie);
+    _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].setSettingGroup("themes", data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"]);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (ThemeModule);
@@ -2765,7 +3111,7 @@ var Utils = class {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (class {
+/* harmony default export */ __webpack_exports__["default"] = (new class {
     enable() {
         $(".scroller.guild-channels ul").first().css("display", "none");
         $(".scroller.guild-channels header").first().css("display", "none");
@@ -2787,434 +3133,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/modules/webpackmodules.js":
-/*!***************************************!*\
-  !*** ./src/modules/webpackmodules.js ***!
-  \***************************************/
-/*! exports provided: KnownModules, Filters, default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "KnownModules", function() { return KnownModules; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Filters", function() { return Filters; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return WebpackModules; });
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_utilities__WEBPACK_IMPORTED_MODULE_0__);
-/**
- * Allows for grabbing and searching through Discord's webpacked modules.
- * @module WebpackModules
- * @version 0.0.2
- */
-
-
-
-const KnownModules = _utilities__WEBPACK_IMPORTED_MODULE_0___default.a.memoizeObject({
-    get React() {return WebpackModules.getByProps("createElement", "cloneElement");},
-    get ReactDOM() {return WebpackModules.getByProps("render", "findDOMNode");},
-    get Events() {return WebpackModules.getByPrototypes("setMaxListeners", "emit");},
-
-    /* Guild Info, Stores, and Utilities */
-    get GuildStore() {return WebpackModules.getByProps("getGuild");},
-    get SortedGuildStore() {return WebpackModules.getByProps("getSortedGuilds");},
-    get SelectedGuildStore() {return WebpackModules.getByProps("getLastSelectedGuildId");},
-    get GuildSync() {return WebpackModules.getByProps("getSyncedGuilds");},
-    get GuildInfo() {return WebpackModules.getByProps("getAcronym");},
-    get GuildChannelsStore() {return WebpackModules.getByProps("getChannels", "getDefaultChannel");},
-    get GuildMemberStore() {return WebpackModules.getByProps("getMember");},
-    get MemberCountStore() {return WebpackModules.getByProps("getMemberCounts");},
-    get GuildEmojiStore() {return WebpackModules.getByProps("getEmojis");},
-    get GuildActions() {return WebpackModules.getByProps("markGuildAsRead");},
-    get GuildPermissions() {return WebpackModules.getByProps("getGuildPermissions");},
-
-    /* Channel Store & Actions */
-    get ChannelStore() {return WebpackModules.getByProps("getChannels", "getDMFromUserId");},
-    get SelectedChannelStore() {return WebpackModules.getByProps("getLastSelectedChannelId");},
-    get ChannelActions() {return WebpackModules.getByProps("selectChannel");},
-    get PrivateChannelActions() {return WebpackModules.getByProps("openPrivateChannel");},
-    get ChannelSelector() {return WebpackModules.getByProps("selectGuild", "selectChannel");},
-
-    /* Current User Info, State and Settings */
-    get UserInfoStore() {return WebpackModules.getByProps("getToken");},
-    get UserSettingsStore() {return WebpackModules.getByProps("guildPositions");},
-    get AccountManager() {return WebpackModules.getByProps("register", "login");},
-    get UserSettingsUpdater() {return WebpackModules.getByProps("updateRemoteSettings");},
-    get OnlineWatcher() {return WebpackModules.getByProps("isOnline");},
-    get CurrentUserIdle() {return WebpackModules.getByProps("getIdleTime");},
-    get RelationshipStore() {return WebpackModules.getByProps("isBlocked", "getFriendIDs");},
-    get RelationshipManager() {return WebpackModules.getByProps("addRelationship");},
-    get MentionStore() {return WebpackModules.getByProps("getMentions");},
-
-    /* User Stores and Utils */
-    get UserStore() {return WebpackModules.getByProps("getCurrentUser");},
-    get UserStatusStore() {return WebpackModules.getByProps("getStatus", "getState");},
-    get UserTypingStore() {return WebpackModules.getByProps("isTyping");},
-    get UserActivityStore() {return WebpackModules.getByProps("getActivity");},
-    get UserNameResolver() {return WebpackModules.getByProps("getName");},
-    get UserNoteStore() {return WebpackModules.getByProps("getNote");},
-    get UserNoteActions() {return WebpackModules.getByProps("updateNote");},
-
-    /* Emoji Store and Utils */
-    get EmojiInfo() {return WebpackModules.getByProps("isEmojiDisabled");},
-    get EmojiUtils() {return WebpackModules.getByProps("getGuildEmoji");},
-    get EmojiStore() {return WebpackModules.getByProps("getByCategory", "EMOJI_NAME_RE");},
-
-    /* Invite Store and Utils */
-    get InviteStore() {return WebpackModules.getByProps("getInvites");},
-    get InviteResolver() {return WebpackModules.getByProps("findInvite");},
-    get InviteActions() {return WebpackModules.getByProps("acceptInvite");},
-
-    /* Discord Objects & Utils */
-    get DiscordConstants() {return WebpackModules.getByProps("Permissions", "ActivityTypes", "StatusTypes");},
-    get DiscordPermissions() {return WebpackModules.getByProps("Permissions", "ActivityTypes", "StatusTypes").Permissions;},
-    get Permissions() {return WebpackModules.getByProps("getHighestRole");},
-    get ColorConverter() {return WebpackModules.getByProps("hex2int");},
-    get ColorShader() {return WebpackModules.getByProps("darken");},
-    get TinyColor() {return WebpackModules.getByPrototypes("toRgb");},
-    get ClassResolver() {return WebpackModules.getByProps("getClass");},
-    get ButtonData() {return WebpackModules.getByProps("ButtonSizes");},
-    get IconNames() {return WebpackModules.getByProps("IconNames");},
-    get NavigationUtils() {return WebpackModules.getByProps("transitionTo", "replaceWith", "getHistory");},
-
-    /* Discord Messages */
-    get MessageStore() {return WebpackModules.getByProps("getMessages");},
-    get MessageActions() {return WebpackModules.getByProps("jumpToMessage", "_sendMessage");},
-    get MessageQueue() {return WebpackModules.getByProps("enqueue");},
-    get MessageParser() {return WebpackModules.getByProps("createMessage", "parse", "unparse");},
-
-    /* In-Game Overlay */
-    get OverlayUserPopoutSettings() {return WebpackModules.getByProps("openUserPopout");},
-    get OverlayUserPopoutInfo() {return WebpackModules.getByProps("getOpenedUserPopout");},
-
-    /* Experiments */
-    get ExperimentStore() {return WebpackModules.getByProps("getExperimentOverrides");},
-    get ExperimentsManager() {return WebpackModules.getByProps("isDeveloper");},
-    get CurrentExperiment() {return WebpackModules.getByProps("getExperimentId");},
-
-    /* Images, Avatars and Utils */
-    get ImageResolver() {return WebpackModules.getByProps("getUserAvatarURL", "getGuildIconURL");},
-    get ImageUtils() {return WebpackModules.getByProps("getSizedImageSrc");},
-    get AvatarDefaults() {return WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");},
-
-    /* Drag & Drop */
-    get DNDActions() {return WebpackModules.getByProps("beginDrag");},
-    get DNDSources() {return WebpackModules.getByProps("addTarget");},
-    get DNDObjects() {return WebpackModules.getByProps("DragSource");},
-
-    /* Electron & Other Internals with Utils*/
-    get ElectronModule() {return WebpackModules.getByProps("setBadge");},
-    get Dispatcher() {return WebpackModules.getByProps("dirtyDispatch");},
-    get PathUtils() {return WebpackModules.getByProps("hasBasename");},
-    get NotificationModule() {return WebpackModules.getByProps("showNotification");},
-    get RouterModule() {return WebpackModules.getByProps("Router");},
-    get APIModule() {return WebpackModules.getByProps("getAPIBaseURL");},
-    get AnalyticEvents() {return WebpackModules.getByProps("AnalyticEventConfigs");},
-    get KeyGenerator() {return WebpackModules.getByRegex(/"binary"/);},
-    get Buffers() {return WebpackModules.getByProps("Buffer", "kMaxLength");},
-    get DeviceStore() {return WebpackModules.getByProps("getDevices");},
-    get SoftwareInfo() {return WebpackModules.getByProps("os");},
-    get CurrentContext() {return WebpackModules.getByProps("setTagsContext");},
-
-    /* Media Stuff (Audio/Video) */
-    get MediaDeviceInfo() {return WebpackModules.getByProps("Codecs", "SUPPORTED_BROWSERS");},
-    get MediaInfo() {return WebpackModules.getByProps("getOutputVolume");},
-    get MediaEngineInfo() {return WebpackModules.getByProps("MediaEngineFeatures");},
-    get VoiceInfo() {return WebpackModules.getByProps("EchoCancellation");},
-    get VideoStream() {return WebpackModules.getByProps("getVideoStream");},
-    get SoundModule() {return WebpackModules.getByProps("playSound");},
-
-    /* Window, DOM, HTML */
-    get WindowInfo() {return WebpackModules.getByProps("isFocused", "windowSize");},
-    get TagInfo() {return WebpackModules.getByProps("VALID_TAG_NAMES");},
-    get DOMInfo() {return WebpackModules.getByProps("canUseDOM");},
-
-    /* Locale/Location and Time */
-    get LocaleManager() {return WebpackModules.getByProps("setLocale");},
-    get Moment() {return WebpackModules.getByProps("parseZone");},
-    get LocationManager() {return WebpackModules.getByProps("createLocation");},
-    get Timestamps() {return WebpackModules.getByProps("fromTimestamp");},
-
-    /* Strings and Utils */
-    get Strings() {return WebpackModules.getByProps("Messages").Messages;},
-    get StringFormats() {return WebpackModules.getByProps("a", "z");},
-    get StringUtils() {return WebpackModules.getByProps("toASCII");},
-
-    /* URLs and Utils */
-    get URLParser() {return WebpackModules.getByProps("Url", "parse");},
-    get ExtraURLs() {return WebpackModules.getByProps("getArticleURL");},
-
-    /* Text Processing */
-    get hljs() {return WebpackModules.getByProps("highlight", "highlightBlock");},
-    get SimpleMarkdown() {return WebpackModules.getByProps("parseBlock", "parseInline", "defaultOutput");},
-
-    /* DOM/React Components */
-    /* ==================== */
-    get LayerManager() {return WebpackModules.getByProps("popLayer", "pushLayer");},
-    get Tooltips() {return WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);},
-    get UserSettingsWindow() {return WebpackModules.getByProps("open", "updateAccount");},
-    get ChannelSettingsWindow() {return WebpackModules.getByProps("open", "updateChannel");},
-    get GuildSettingsWindow() {return WebpackModules.getByProps("open", "updateGuild");},
-
-    /* Modals */
-    get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");},
-    get UserProfileModals() {return WebpackModules.getByProps("fetchMutualFriends", "setSection");},
-    get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");},
-    get ConfirmationModal() {return WebpackModules.getModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");},
-    get UserProfileModal() {
-        return WebpackModules.find(m => {
-            try {return m.modalConfig && m.prototype.render().type.displayName == "FluxContainer(Component)";}
-            catch (err) {return false;}
-        });
-    },
-    get ChangeNicknameModal() {return WebpackModules.getByProps("open", "changeNickname");},
-    get CreateChannelModal() {return WebpackModules.getByProps("open", "createChannel");},
-    get PruneMembersModal() {return WebpackModules.getByProps("open", "prune");},
-    get NotificationSettingsModal() {return WebpackModules.getByProps("open", "updateNotificationSettings");},
-    get PrivacySettingsModal() {return WebpackModules.getByRegex(/PRIVACY_SETTINGS_MODAL_OPEN/, m => m.open);},
-    get CreateInviteModal() {return WebpackModules.getByProps("open", "createInvite");},
-    get Changelog() {return WebpackModules.getModule((m => m.defaultProps && m.defaultProps.selectable == false));},
-    get Avatar() {
-        return WebpackModules.find(m => {
-            if (m.displayName != "FluxContainer(t)") return false;
-            try {
-                const temp = new m();
-                return temp && temp.state && temp.state.hasOwnProperty("isFocused");
-            }
-            catch (err) {return false;}
-        });
-    },
-
-    /* Popouts */
-    get PopoutStack() {return WebpackModules.getByProps("open", "close", "closeAll");},
-    get PopoutOpener() {return WebpackModules.getByProps("openPopout");},
-    get EmojiPicker() {return WebpackModules.getByDisplayName("FluxContainer(EmojiPicker)");},
-    get UserPopout() {
-        return WebpackModules.find(m => {
-            try {return m.displayName == "FluxContainer(Component)" && !(new m());}
-            catch (e) {return e.toString().includes("user");}
-        });
-    },
-
-    /* Context Menus */
-    get ContextMenuActions() {return WebpackModules.getByProps("openContextMenu");},
-    get ContextMenuItemsGroup() {return WebpackModules.getByRegex(/itemGroup/);},
-    get ContextMenuItem() {return WebpackModules.getByRegex(/\.label\b.*\.hint\b.*\.action\b/);},
-
-    /* Misc */
-    get ExternalLink() {return WebpackModules.getByRegex(/trusted/);},
-    get TextElement() {return WebpackModules.getByProps("Sizes", "Weights");},
-    get FlexChild() {return WebpackModules.getByProps("Child");},
-    get Titles() {return WebpackModules.getByProps("Tags", "default");},
-
-    /* Settings */
-    get SettingsWrapper() {return WebpackModules.getModule(m => m.prototype && m.prototype.render && m.prototype.render.toString().includes("required:"));},
-    get SettingsNote() {return WebpackModules.getModule(m => m.Types && m.defaultProps);},
-    get SettingsDivider() {return WebpackModules.getModule(m => !m.defaultProps && m.prototype && m.prototype.render && m.prototype.render.toString().includes("default.divider"));},
-
-    get ColorPicker() {return WebpackModules.getByPrototypes("renderCustomColorPopout");},
-    get Dropdown() {return WebpackModules.getModule(m => m.prototype && !m.prototype.handleClick && m.prototype.render && m.prototype.render.toString().includes("default.select"));},
-    get Keybind() {return WebpackModules.getByPrototypes("handleComboChange");},
-    get RadioGroup() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.options && m.defaultProps.size);},
-    get Slider() {return WebpackModules.getByPrototypes("renderMark");},
-    get SwitchRow() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hideBorder == false);},
-    get Textbox() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.type == "text");},
-});
-
-
-
-
- /**
- * Checks if a given module matches a set of parameters.
- * @callback module:WebpackModules.Filters~filter
- * @param {*} module - module to check
- * @returns {boolean} - True if the module matches the filter, false otherwise
- */
-
-/**
- * Filters for use with {@link module:WebpackModules} but may prove useful elsewhere.
- */
-class Filters {
-    /**
-     * Generates a {@link module:WebpackModules.Filters~filter} that filters by a set of properties.
-     * @param {Array<string>} props - Array of property names
-     * @param {module:WebpackModules.Filters~filter} filter - Additional filter
-     * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
-     */
-    static byProperties(props, filter = m => m) {
-        return module => {
-            const component = filter(module);
-            if (!component) return false;
-            return props.every(property => component[property] !== undefined);
-        };
-    }
-
-    /**
-     * Generates a {@link module:WebpackModules.Filters~filter} that filters by a set of properties on the object's prototype.
-     * @param {Array<string>} fields - Array of property names
-     * @param {module:WebpackModules.Filters~filter} filter - Additional filter
-     * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties on the object's prototype
-     */
-    static byPrototypeFields(fields, filter = m => m) {
-        return module => {
-            const component = filter(module);
-            if (!component) return false;
-            if (!component.prototype) return false;
-            return fields.every(field => component.prototype[field] !== undefined);
-        };
-    }
-
-    /**
-     * Generates a {@link module:WebpackModules.Filters~filter} that filters by a regex.
-     * @param {RegExp} search - A RegExp to check on the module
-     * @param {module:WebpackModules.Filters~filter} filter - Additional filter
-     * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
-     */
-    static byCode(search, filter = m => m) {
-        return module => {
-            const method = filter(module);
-            if (!method) return false;
-            return method.toString([]).search(search) !== -1;
-        };
-    }
-
-    /**
-     * Generates a {@link module:WebpackModules.Filters~filter} that filters by a set of properties.
-     * @param {string} name - Name the module should have
-     * @param {module:WebpackModules.Filters~filter} filter - Additional filter
-     * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
-     */
-    static byDisplayName(name) {
-        return module => {
-            return module && module.displayName === name;
-        };
-    }
-
-    /**
-     * Generates a combined {@link module:WebpackModules.Filters~filter} from a list of filters.
-     * @param {...module:WebpackModules.Filters~filter} filters - A list of filters
-     * @returns {module:WebpackModules.Filters~filter} - Combinatory filter of all arguments
-     */
-    static combine(...filters) {
-        return module => {
-            return filters.every(filter => filter(module));
-        };
-    }
-}
-
-class WebpackModules {
-
-    static find(filter, first = true) {return this.getModule(filter, first);}
-    static findByUniqueProperties(props, first = true) {return first ? this.getByProps(...props) : this.getAllByProps(...props);}
-    static findByDisplayName(name) {return this.getByDisplayName(name);}
-
-    /**
-     * Finds a module using a filter function.
-     * @param {Function} filter A function to use to filter modules
-     * @param {Boolean} first Whether to return only the first matching module
-     * @return {Any}
-     */
-    static getModule(filter, first = true) {
-        const modules = this.getAllModules();
-        const rm = [];
-        for (let index in modules) {
-            if (!modules.hasOwnProperty(index)) continue;
-            const module = modules[index];
-            const {exports} = module;
-            let foundModule = null;
-
-            if (!exports) continue;
-            if (exports.__esModule && exports.default && filter(exports.default)) foundModule = exports.default;
-            if (filter(exports)) foundModule = exports;
-            if (!foundModule) continue;
-            if (first) return foundModule;
-            rm.push(foundModule);
-        }
-        return first || rm.length == 0 ? undefined : rm;
-    }
-
-    /**
-     * Finds a module by its display name.
-     * @param {String} name The display name of the module
-     * @return {Any}
-     */
-    static getByDisplayName(name) {
-        return this.getModule(Filters.byDisplayName(name), true);
-    }
-
-    /**
-     * Finds a module using its code.
-     * @param {RegEx} regex A regular expression to use to filter modules
-     * @param {Boolean} first Whether to return the only the first matching module
-     * @return {Any}
-     */
-    static getByRegex(regex, first = true) {
-        return this.getModule(Filters.byCode(regex), first);
-    }
-
-    /**
-     * Finds a single module using properties on its prototype.
-     * @param {...string} prototypes Properties to use to filter modules
-     * @return {Any}
-     */
-    static getByPrototypes(...prototypes) {
-        return this.getModule(Filters.byPrototypeFields(prototypes), true);
-    }
-
-    /**
-     * Finds all modules with a set of properties of its prototype.
-     * @param {...string} prototypes Properties to use to filter modules
-     * @return {Any}
-     */
-    static getAllByPrototypes(...prototypes) {
-        return this.getModule(Filters.byPrototypeFields(prototypes), false);
-    }
-
-    /**
-     * Finds a single module using its own properties.
-     * @param {...string} props Properties to use to filter modules
-     * @return {Any}
-     */
-    static getByProps(...props) {
-        return this.getModule(Filters.byProperties(props), true);
-    }
-
-    /**
-     * Finds all modules with a set of properties.
-     * @param {...string} props Properties to use to filter modules
-     * @return {Any}
-     */
-    static getAllByProps(...props) {
-        return this.getModule(Filters.byProperties(props), false);
-    }
-
-    /**
-     * Discord's __webpack_require__ function.
-     */
-    static get require() {
-        if (this._require) return this._require;
-        const id = "zl-webpackmodules";
-        const __webpack_require__ = typeof(window.webpackJsonp) == "function" ? window.webpackJsonp([], {
-            [id]: (module, exports, __webpack_require__) => exports.default = __webpack_require__
-        }, [id]).default : window.webpackJsonp.push([[], {
-            [id]: (module, exports, __webpack_require__) => module.exports = __webpack_require__
-        }, [[id]]]);
-        delete __webpack_require__.m[id];
-        delete __webpack_require__.c[id];
-        return this._require = __webpack_require__;
-    }
-
-    /**
-     * Returns all loaded modules.
-     * @return {Array}
-     */
-    static getAllModules() {
-        return this.require.c;
-    }
-
-}
-
-/***/ }),
-
 /***/ "./src/ui/customcss/detached.js":
 /*!**************************************!*\
   !*** ./src/ui/customcss/detached.js ***!
@@ -3225,7 +3143,7 @@ class WebpackModules {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_CssEditorDetached; });
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/settingscookie */ "./src/data/settingscookie.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _settings_checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../settings/checkbox */ "./src/ui/settings/checkbox.js");
 
@@ -3254,7 +3172,7 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
         this.editor.setShowPrintMargin(false);
         this.editor.setFontSize(14);
         this.editor.on("change", () => {
-            if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-css-0"]) return;
+            if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"]) return;
             this.saveCss();
             this.updateCss();
         });
@@ -3327,7 +3245,7 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
                     modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
                         "ul",
                         {className: "checkbox-group"},
-                        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_settings_checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {id: "live-update", text: "Live Update", onChange: self.onChange, checked: _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-css-0"]})
+                        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_settings_checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {id: "live-update", text: "Live Update", onChange: self.onChange, checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"]})
                     ),
                     modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
                         "div",
@@ -3367,8 +3285,8 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
     onChange(id, checked) {
         switch (id) {
             case "live-update":
-                _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-css-0"] = checked;
-                window.mainCore.saveSettings();
+                data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"] = checked;
+                modules__WEBPACK_IMPORTED_MODULE_1__["Core"].saveSettings();
                 break;
         }
     }
@@ -3414,7 +3332,7 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_CssEditor; });
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/settingscookie */ "./src/data/settingscookie.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _detached__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./detached */ "./src/ui/customcss/detached.js");
 /* harmony import */ var _settings_checkbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../settings/checkbox */ "./src/ui/settings/checkbox.js");
@@ -3455,7 +3373,7 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
         this.editor.setShowPrintMargin(false);
         this.editor.setFontSize(14);
         this.editor.on("change", () => {
-            if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-css-0"]) return;
+            if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"]) return;
             this.saveCss();
             this.updateCss();
         });
@@ -3538,7 +3456,7 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
                     modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
                         "ul",
                         {className: "checkbox-group"},
-                        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_settings_checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {id: "live-update", text: "Live Update", onChange: this.onChange, checked: _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-css-0"]})
+                        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_settings_checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {id: "live-update", text: "Live Update", onChange: this.onChange, checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"]})
                     ),
                     modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
                         "div",
@@ -3600,8 +3518,8 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
     onChange(id, checked) {
         switch (id) {
             case "live-update":
-                _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-css-0"] = checked;
-                window.mainCore.saveSettings();
+                data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"] = checked;
+                modules__WEBPACK_IMPORTED_MODULE_1__["Core"].saveSettings();
                 break;
         }
     }
@@ -3667,7 +3585,7 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BDEmote; });
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../data/settingscookie */ "./src/data/settingscookie.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 
 
@@ -3676,7 +3594,7 @@ class BDEmote extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactComponen
     constructor(props) {
         super(props);
 
-        const isFav = window.mainCore.quickEmoteMenu && window.mainCore.quickEmoteMenu.favoriteEmotes && window.mainCore.quickEmoteMenu.favoriteEmotes[this.label] ? true : false;
+        const isFav = modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"] && modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes && modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes[this.label] ? true : false;
         this.state = {
             shouldAnimate: !this.animateOnHover,
             isFavorite: isFav
@@ -3688,7 +3606,7 @@ class BDEmote extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactComponen
     }
 
     get animateOnHover() {
-        return _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["fork-es-2"];
+        return data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-es-2"];
     }
 
     get label() {
@@ -3701,8 +3619,8 @@ class BDEmote extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactComponen
 
     onMouseEnter() {
         if (!this.state.shouldAnimate && this.animateOnHover) this.setState({shouldAnimate: true});
-        if (!this.state.isFavorite && window.mainCore.quickEmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: true});
-        else if (this.state.isFavorite && !window.mainCore.quickEmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: false});
+        if (!this.state.isFavorite && modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes[this.label]) this.setState({isFavorite: true});
+        else if (this.state.isFavorite && !modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes[this.label]) this.setState({isFavorite: false});
     }
 
     onMouseLeave() {
@@ -3741,11 +3659,11 @@ class BDEmote extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactComponen
                             e.preventDefault();
                             e.stopPropagation();
                             if (this.state.isFavorite) {
-                                delete window.mainCore.quickEmoteMenu.favoriteEmotes[this.label];
-                                window.mainCore.quickEmoteMenu.updateFavorites();
+                                delete modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes[this.label];
+                                modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].updateFavorites();
                             }
                             else {
-                                window.mainCore.quickEmoteMenu.favorite(this.label, this.props.url);
+                                modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favorite(this.label, this.props.url);
                             }
                             this.setState({isFavorite: !this.state.isFavorite});
                         }
@@ -4540,77 +4458,25 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
 /*!***********************************************!*\
   !*** ./src/ui/publicservers/publicservers.js ***!
   \***********************************************/
-/*! exports provided: default */
+/*! exports provided: Menu, Card, Layer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2_PublicServers; });
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/settingscookie */ "./src/data/settingscookie.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./menu */ "./src/ui/publicservers/menu.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Menu", function() { return _menu__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+/* harmony import */ var _card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./card */ "./src/ui/publicservers/card.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Card", function() { return _card__WEBPACK_IMPORTED_MODULE_1__["default"]; });
+
 /* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layer */ "./src/ui/layer.js");
-/* harmony import */ var _menu__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./menu */ "./src/ui/publicservers/menu.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Layer", function() { return _layer__WEBPACK_IMPORTED_MODULE_2__["default"]; });
 
 
 
 
 
-class V2_PublicServers {
 
-    constructor() {}
-
-    get component() {
-        return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_layer__WEBPACK_IMPORTED_MODULE_2__["default"], {rootId: "pubslayerroot", id: "pubslayer", children: modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_menu__WEBPACK_IMPORTED_MODULE_3__["default"], {rootId: "pubslayerroot"})});
-    }
-
-    get root() {
-        let _root = document.getElementById("pubslayerroot");
-        if (!_root) {
-            if (!this.injectRoot()) return null;
-            return this.root;
-        }
-        return _root;
-    }
-
-    injectRoot() {
-        if (!$(".layers, .layers-3iHuyZ").length) return false;
-        $(".layers, .layers-3iHuyZ").append($("<div/>", {
-            id: "pubslayerroot"
-        }));
-        return true;
-    }
-
-    render() {
-        // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
-        let root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layers");
-            return;
-        }
-        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(this.component, root);
-    }
-
-    get button() {
-        let btn = $("<div/>", {
-            "class": modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.listItem,
-            "id": "bd-pub-li",
-            "style": _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["bda-gs-1"] ? "" : "display: none;"
-        }).append($("<div/>", {
-            "class": "wrapper-25eVIn " + modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.circleButtonMask,
-            "text": "public",
-            "id": "bd-pub-button",
-            "click": () => { this.render(); }
-        }));
-
-        return btn;
-    }
-
-    initialize() {
-        const wrapper = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.wrapper.split(" ")[0];
-        const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
-        guilds.after(this.button);
-    }
-}
 
 /***/ }),
 
@@ -4809,7 +4675,7 @@ class V2C_Tools extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].reactCompon
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SettingsPanel; });
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/settingscookie */ "./src/data/settingscookie.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.js");
 /* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.js");
@@ -4832,7 +4698,7 @@ class V2C_SettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].rea
             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_title__WEBPACK_IMPORTED_MODULE_2__["default"], {text: this.props.title}),
             this.props.button && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("button", {key: "title-button", className: "bd-pfbtn", onClick: this.props.button.onClick}, this.props.button.title),
             settings.map(setting => {
-                return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {id: setting.id, key: setting.id, data: setting, checked: _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"][setting.id], onChange: (id, checked) => {
+                return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {id: setting.id, key: setting.id, data: setting, checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting.id], onChange: (id, checked) => {
                         this.props.onChange(id, checked);
                     }});
             })
@@ -4852,7 +4718,7 @@ class V2C_SettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].rea
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_PluginCard; });
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/settingscookie */ "./src/data/settingscookie.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _icons_close__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../icons/close */ "./src/ui/icons/close.js");
 /* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
@@ -4878,7 +4744,7 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactC
 
     setInitialState() {
         this.state = {
-            checked: pluginCookie[this.props.plugin.getName()],
+            checked: data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][this.props.plugin.getName()],
             settings: false,
             reloads: 0
         };
@@ -4903,7 +4769,7 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactC
                 this.refs.settingspanel.appendChild(this.settingsPanel);
             }
 
-            if (!_data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["fork-ps-3"]) return;
+            if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-3"]) return;
             var isHidden = (container, element) => {
 
                 let cTop = container.scrollTop;
@@ -4926,7 +4792,7 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactC
 
     reload() {
         const plugin = this.props.plugin.getName();
-        window.mainCore.pluginModule.reloadPlugin(plugin);
+        modules__WEBPACK_IMPORTED_MODULE_1__["PluginManager"].reloadPlugin(plugin);
         this.props.plugin = bdplugins[plugin].plugin;
         this.onReload(this.props.plugin.getName());
     }
@@ -4971,7 +4837,7 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactC
                         modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("span", {className: "bda-author"}, author)
                     ),
                     modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("div", {className: "bda-controls"},
-                        !_data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_3__["default"], {className: "bd-reload-card", onClick: this.reload}),
+                        !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_3__["default"], {className: "bd-reload-card", onClick: this.reload}),
                         modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
@@ -4994,7 +4860,7 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactC
 
     onChange() {
         this.setState({checked: !this.state.checked});
-        window.mainCore.pluginModule.togglePlugin(this.props.plugin.getName());
+        modules__WEBPACK_IMPORTED_MODULE_1__["PluginManager"].togglePlugin(this.props.plugin.getName());
     }
 
     showSettings() {
@@ -5048,21 +4914,19 @@ class V2C_SectionedSettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_0__["B
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2_SettingsPanel; });
-/* harmony import */ var _data_settings__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/settings */ "./src/data/settings.js");
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../data/settingscookie */ "./src/data/settingscookie.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _sidebar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./sidebar */ "./src/ui/settings/sidebar.js");
-/* harmony import */ var _scroller__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../scroller */ "./src/ui/scroller.js");
-/* harmony import */ var _list__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../list */ "./src/ui/list.js");
-/* harmony import */ var _contentcolumn__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./contentcolumn */ "./src/ui/settings/contentcolumn.js");
-/* harmony import */ var _sectionedsettings__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./sectionedsettings */ "./src/ui/settings/sectionedsettings.js");
-/* harmony import */ var _exitbutton__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./exitbutton */ "./src/ui/settings/exitbutton.js");
-/* harmony import */ var _panel__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./panel */ "./src/ui/settings/panel.js");
-/* harmony import */ var _plugincard__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./plugincard */ "./src/ui/settings/plugincard.js");
-/* harmony import */ var _themecard__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./themecard */ "./src/ui/settings/themecard.js");
-/* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
-/* harmony import */ var _customcss_editor__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../customcss/editor */ "./src/ui/customcss/editor.js");
-
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var _sidebar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sidebar */ "./src/ui/settings/sidebar.js");
+/* harmony import */ var _scroller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../scroller */ "./src/ui/scroller.js");
+/* harmony import */ var _list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../list */ "./src/ui/list.js");
+/* harmony import */ var _contentcolumn__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./contentcolumn */ "./src/ui/settings/contentcolumn.js");
+/* harmony import */ var _sectionedsettings__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./sectionedsettings */ "./src/ui/settings/sectionedsettings.js");
+/* harmony import */ var _exitbutton__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./exitbutton */ "./src/ui/settings/exitbutton.js");
+/* harmony import */ var _panel__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./panel */ "./src/ui/settings/panel.js");
+/* harmony import */ var _plugincard__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./plugincard */ "./src/ui/settings/plugincard.js");
+/* harmony import */ var _themecard__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./themecard */ "./src/ui/settings/themecard.js");
+/* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
+/* harmony import */ var _customcss_editor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../customcss/editor */ "./src/ui/customcss/editor.js");
 
 
 
@@ -5080,12 +4944,10 @@ __webpack_require__.r(__webpack_exports__);
 
 class V2_SettingsPanel {
 
-    constructor() {
-        let self = this;
-        self.sideBarOnClick = self.sideBarOnClick.bind(self);
-        self.onChange = self.onChange.bind(self);
-        self.updateSettings = this.updateSettings.bind(self);
-        self.sidebar = new _sidebar__WEBPACK_IMPORTED_MODULE_3__["default"](self.sideBarOnClick);
+    constructor(props) {
+        this.sideBarOnClick = this.sideBarOnClick.bind(this);
+        this.onChange = props.onChange;
+        this.sidebar = new _sidebar__WEBPACK_IMPORTED_MODULE_2__["default"](this.sideBarOnClick);
     }
 
     get root() {
@@ -5105,8 +4967,8 @@ class V2_SettingsPanel {
         });
         $(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .ui-standard-sidebar-view").append(root);
 
-        modules__WEBPACK_IMPORTED_MODULE_2__["Utilities"].onRemoved(root[0], () => {
-            modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].reactDom.unmountComponentAtNode(root[0]);
+        modules__WEBPACK_IMPORTED_MODULE_1__["Utilities"].onRemoved(root[0], () => {
+            modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.unmountComponentAtNode(root[0]);
         });
         return true;
     }
@@ -5122,8 +4984,8 @@ class V2_SettingsPanel {
         return this.getSettings("emote");
     }
     getSettings(category) {
-        return Object.keys(_data_settings__WEBPACK_IMPORTED_MODULE_0__["default"]).reduce((arr, key) => {
-            let setting = _data_settings__WEBPACK_IMPORTED_MODULE_0__["default"][key];
+        return Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"]).reduce((arr, key) => {
+            let setting = data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"][key];
             if (setting.cat === category && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);
@@ -5155,125 +5017,10 @@ class V2_SettingsPanel {
         }
     }
 
-    onClick() {}
-
-    onChange(id, checked) {
-        this.updateSettings(id, checked);
-    }
-
-    updateSettings(id, enabled) {
-        _data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"][id] = enabled;
-
-        if (id == "bda-es-0") {
-            if (enabled) $("#twitchcord-button-container").show();
-            else $("#twitchcord-button-container").hide();
-        }
-
-        // if (id == "bda-gs-b") {
-        //     if (enabled) $("body").addClass("bd-blue");
-        //     else $("body").removeClass("bd-blue");
-        // }
-
-        if (id == "bda-gs-2") {
-            if (enabled) $("body").addClass("bd-minimal");
-            else $("body").removeClass("bd-minimal");
-        }
-
-        if (id == "bda-gs-3") {
-            if (enabled) $("body").addClass("bd-minimal-chan");
-            else $("body").removeClass("bd-minimal-chan");
-        }
-
-        if (id == "bda-gs-1") {
-            if (enabled) $("#bd-pub-li").show();
-            else $("#bd-pub-li").hide();
-        }
-
-        if (id == "bda-gs-4") {
-            if (enabled) window.mainCore.voiceMode.enable();
-            else window.mainCore.voiceMode.disable();
-        }
-
-        if (id == "bda-gs-5") {
-            if (enabled) $("#app-mount").addClass("bda-dark");
-            else $("#app-mount").removeClass("bda-dark");
-        }
-
-        if (enabled && id == "bda-gs-6") window.mainCore.inject24Hour();
-
-        if (id == "bda-gs-7") {
-            if (enabled) window.mainCore.injectColoredText();
-            else window.mainCore.removeColoredText();
-        }
-
-        if (id == "bda-es-4") {
-            if (enabled) window.mainCore.emoteModule.autoCapitalize();
-            else window.mainCore.emoteModule.disableAutoCapitalize();
-        }
-
-        if (id == "fork-ps-4") {
-            if (enabled) modules__WEBPACK_IMPORTED_MODULE_2__["ClassNormalizer"].start();
-            else modules__WEBPACK_IMPORTED_MODULE_2__["ClassNormalizer"].stop();
-        }
-
-        if (id == "fork-ps-5") {
-            if (enabled) {
-                modules__WEBPACK_IMPORTED_MODULE_2__["ContentManager"].watchContent("plugin");
-                modules__WEBPACK_IMPORTED_MODULE_2__["ContentManager"].watchContent("theme");
-            }
-            else {
-                modules__WEBPACK_IMPORTED_MODULE_2__["ContentManager"].unwatchContent("plugin");
-                modules__WEBPACK_IMPORTED_MODULE_2__["ContentManager"].unwatchContent("theme");
-            }
-        }
-
-        if (id == "fork-wp-1") {
-            modules__WEBPACK_IMPORTED_MODULE_2__["BdApi"].setWindowPreference("transparent", enabled);
-            if (enabled) modules__WEBPACK_IMPORTED_MODULE_2__["BdApi"].setWindowPreference("backgroundColor", null);
-            else modules__WEBPACK_IMPORTED_MODULE_2__["BdApi"].setWindowPreference("backgroundColor", "#2f3136");
-        }
-
-        /*if (_c["fork-wp-2"]) {
-            const current = BdApi.getWindowPreference("frame");
-            if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
-        }*/
-
-
-        if (id == "bda-gs-8") {
-            if (enabled) window.mainCore.dMode.enable(_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-dm-1"]);
-            else window.mainCore.dMode.disable();
-        }
-
-        window.mainCore.saveSettings();
-    }
-
-    initializeSettings() {
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-es-0"]) $("#twitchcord-button-container").show();
-        // if (Settings["bda-gs-b"]) $("body").addClass("bd-blue");
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-gs-2"]) $("body").addClass("bd-minimal");
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-gs-1"]) $("#bd-pub-li").show();
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-gs-4"]) window.mainCore.voiceMode.enable();
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-gs-6"]) window.mainCore.inject24Hour();
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-gs-7"]) window.mainCore.injectColoredText();
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-es-4"]) window.mainCore.emoteModule.autoCapitalize();
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-ps-4"]) modules__WEBPACK_IMPORTED_MODULE_2__["ClassNormalizer"].start();
-
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-ps-5"]) {
-            modules__WEBPACK_IMPORTED_MODULE_2__["ContentManager"].watchContent("plugin");
-            modules__WEBPACK_IMPORTED_MODULE_2__["ContentManager"].watchContent("theme");
-        }
-
-        if (_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["bda-gs-8"]) window.mainCore.dMode.enable(_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-dm-1"]);
-
-        window.mainCore.saveSettings();
-    }
-
     renderSidebar() {
         let self = this;
         $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
-            modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].reactDom.unmountComponentAtNode(self.root);
+            modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.unmountComponentAtNode(self.root);
             $(self.root).hide();
             $(".contentRegion-3nDuYy, .content-region").first().show();
         });
@@ -5281,47 +5028,47 @@ class V2_SettingsPanel {
     }
 
     get coreComponent() {
-        return modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_4__["default"], {contentColumn: true, fade: true, dark: true, children: [
-            modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_sectionedsettings__WEBPACK_IMPORTED_MODULE_7__["default"], {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
-            modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_8__["default"], {key: "tools"})
+        return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {contentColumn: true, fade: true, dark: true, children: [
+            modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_sectionedsettings__WEBPACK_IMPORTED_MODULE_6__["default"], {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
+            modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {key: "tools"})
         ]});
     }
 
     get emoteComponent() {
-        return modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {
             contentColumn: true, fade: true, dark: true, children: [
-                modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_panel__WEBPACK_IMPORTED_MODULE_9__["default"], {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
+                modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_panel__WEBPACK_IMPORTED_MODULE_8__["default"], {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
                     title: "Clear Emote Cache",
                     onClick: () => { window.mainCore.emoteModule.clearEmoteData(); window.mainCore.emoteModule.init(); window.mainCore.quickEmoteMenu.init(); }
                 }}),
-                modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_8__["default"], {key: "tools"})
+                modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {key: "tools"})
         ]});
     }
 
     get customCssComponent() {
-        return modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_4__["default"], {contentColumn: true, fade: true, dark: true, children: [modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_customcss_editor__WEBPACK_IMPORTED_MODULE_13__["default"], {key: "csseditor"}), modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_8__["default"], {key: "tools"})]});
+        return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {contentColumn: true, fade: true, dark: true, children: [modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_customcss_editor__WEBPACK_IMPORTED_MODULE_12__["default"], {key: "csseditor"}), modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {key: "tools"})]});
     }
 
     contentComponent(type) {
         const componentElement = type == "plugins" ? this.pluginsComponent : this.themesComponent;
         const prefix = type.replace("s", "");
         const settingsList = this;
-        class ContentList extends modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.Component {
+        class ContentList extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.Component {
             constructor(props) {
                 super(props);
                 this.onChange = this.onChange.bind(this);
             }
 
             componentDidMount() {
-                modules__WEBPACK_IMPORTED_MODULE_2__["Emitter"].on(`${prefix}-reloaded`, this.onChange);
-                modules__WEBPACK_IMPORTED_MODULE_2__["Emitter"].on(`${prefix}-loaded`, this.onChange);
-                modules__WEBPACK_IMPORTED_MODULE_2__["Emitter"].on(`${prefix}-unloaded`, this.onChange);
+                modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].on(`${prefix}-reloaded`, this.onChange);
+                modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].on(`${prefix}-loaded`, this.onChange);
+                modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].on(`${prefix}-unloaded`, this.onChange);
             }
 
             componentWillUnmount() {
-                modules__WEBPACK_IMPORTED_MODULE_2__["Emitter"].off(`${prefix}-reloaded`, this.onChange);
-                modules__WEBPACK_IMPORTED_MODULE_2__["Emitter"].off(`${prefix}-loaded`, this.onChange);
-                modules__WEBPACK_IMPORTED_MODULE_2__["Emitter"].off(`${prefix}-unloaded`, this.onChange);
+                modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].off(`${prefix}-reloaded`, this.onChange);
+                modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].off(`${prefix}-loaded`, this.onChange);
+                modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].off(`${prefix}-unloaded`, this.onChange);
             }
 
             onChange() {
@@ -5330,35 +5077,35 @@ class V2_SettingsPanel {
 
             render() {return componentElement;}
         }
-        return modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(ContentList);
+        return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(ContentList);
     }
 
     get pluginsComponent() {
         let plugins = Object.keys(bdplugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_plugincard__WEBPACK_IMPORTED_MODULE_10__["default"], {key: key, plugin: bdplugins[key].plugin}));return arr;
+            arr.push(modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_plugincard__WEBPACK_IMPORTED_MODULE_9__["default"], {key: key, plugin: bdplugins[key].plugin}));return arr;
         }, []);
-        let list = modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_list__WEBPACK_IMPORTED_MODULE_5__["default"], {key: "plugin-list", className: "bda-slist", children: plugins});
-        let refreshIcon = !_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_12__["default"], {className: "bd-reload-header", size: "18px", onClick: async () => {
+        let list = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_list__WEBPACK_IMPORTED_MODULE_4__["default"], {key: "plugin-list", className: "bda-slist", children: plugins});
+        let refreshIcon = !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_11__["default"], {className: "bd-reload-header", size: "18px", onClick: async () => {
             window.mainCore.pluginModule.updatePluginList();
             this.sideBarOnClick("plugins");
         }});
-        let pfBtn = modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_2__["ContentManager"].pluginsFolder); }}, "Open Plugin Folder");
-        let contentColumn = modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_6__["default"], {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
-        return modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_4__["default"], {contentColumn: true, fade: true, dark: true, children: [contentColumn, modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_8__["default"], {key: "tools"})]});
+        let pfBtn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_1__["ContentManager"].pluginsFolder); }}, "Open Plugin Folder");
+        let contentColumn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_5__["default"], {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
+        return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {contentColumn: true, fade: true, dark: true, children: [contentColumn, modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {key: "tools"})]});
     }
 
     get themesComponent() {
         let themes = Object.keys(bdthemes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_themecard__WEBPACK_IMPORTED_MODULE_11__["default"], {key: key, theme: bdthemes[key]}));return arr;
+            arr.push(modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_themecard__WEBPACK_IMPORTED_MODULE_10__["default"], {key: key, theme: bdthemes[key]}));return arr;
         }, []);
-        let list = modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_list__WEBPACK_IMPORTED_MODULE_5__["default"], {key: "theme-list", className: "bda-slist", children: themes});
-        let refreshIcon = !_data_settingscookie__WEBPACK_IMPORTED_MODULE_1__["default"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_12__["default"], {className: "bd-reload-header", size: "18px", onClick: async () => {
+        let list = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_list__WEBPACK_IMPORTED_MODULE_4__["default"], {key: "theme-list", className: "bda-slist", children: themes});
+        let refreshIcon = !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_11__["default"], {className: "bd-reload-header", size: "18px", onClick: async () => {
             window.mainCore.themeModule.updateThemeList();
             this.sideBarOnClick("themes");
         }});
-        let tfBtn = modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_2__["ContentManager"].themesFolder); }}, "Open Theme Folder");
-        let contentColumn = modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_6__["default"], {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
-        return modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_4__["default"], {contentColumn: true, fade: true, dark: true, children: [contentColumn, modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_8__["default"], {key: "tools"})]});
+        let tfBtn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_1__["ContentManager"].themesFolder); }}, "Open Theme Folder");
+        let contentColumn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_5__["default"], {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
+        return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {contentColumn: true, fade: true, dark: true, children: [contentColumn, modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {key: "tools"})]});
     }
 
     renderCoreSettings() {
@@ -5367,7 +5114,7 @@ class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].reactDom.render(this.coreComponent, root);
+        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(this.coreComponent, root);
     }
 
     renderEmoteSettings() {
@@ -5376,7 +5123,7 @@ class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].reactDom.render(this.emoteComponent, root);
+        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(this.emoteComponent, root);
     }
 
     renderCustomCssEditor() {
@@ -5385,7 +5132,7 @@ class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].reactDom.render(this.customCssComponent, root);
+        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(this.customCssComponent, root);
     }
 
     renderPluginPane() {
@@ -5394,7 +5141,7 @@ class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].reactDom.render(this.contentComponent("plugins"), root);
+        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(this.contentComponent("plugins"), root);
     }
 
     renderThemePane() {
@@ -5403,7 +5150,7 @@ class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].reactDom.render(this.contentComponent("themes"), root);
+        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(this.contentComponent("themes"), root);
     }
 }
 
@@ -5419,7 +5166,7 @@ class V2_SettingsPanel {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SettingsGroup; });
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/settingscookie */ "./src/data/settingscookie.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.js");
 /* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.js");
@@ -5440,7 +5187,7 @@ class V2C_SettingsGroup extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].rea
         return [modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_title__WEBPACK_IMPORTED_MODULE_2__["default"], {text: title}),
                 buttonComponent,
                 settings.map(setting => {
-                    return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {id: setting.id, key: setting.id, data: setting, checked: _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"][setting.id], onChange: (id, checked) => {
+                    return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {id: setting.id, key: setting.id, data: setting, checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting.id], onChange: (id, checked) => {
                         this.props.onChange(id, checked);
                     }});
                 })];
@@ -5459,7 +5206,7 @@ class V2C_SettingsGroup extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].rea
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2_SettingsPanel_Sidebar; });
-/* harmony import */ var _data_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/config */ "./src/data/config.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _sidebarmenu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sidebarmenu */ "./src/ui/settings/sidebarmenu.js");
 
@@ -5485,7 +5232,7 @@ class V2_SettingsPanel_Sidebar {
             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
                 "div",
                 {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
-                `BD v${_data_config__WEBPACK_IMPORTED_MODULE_0__["default"].version} by `,
+                `BD v${data__WEBPACK_IMPORTED_MODULE_0__["Config"].version} by `,
                 modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
                     "a",
                     {href: "https://github.com/Jiiks/", target: "_blank"},
@@ -5495,7 +5242,7 @@ class V2_SettingsPanel_Sidebar {
             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
                 "div",
                 {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
-                `BBD v${_data_config__WEBPACK_IMPORTED_MODULE_0__["default"].bbdVersion} by `,
+                `BBD v${data__WEBPACK_IMPORTED_MODULE_0__["Config"].bbdVersion} by `,
                 modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
                     "a",
                     {href: "https://github.com/rauenzi/", target: "_blank"},
@@ -5775,7 +5522,7 @@ class V2Cs_TabBar {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_ThemeCard; });
-/* harmony import */ var _data_settingscookie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../data/settingscookie */ "./src/data/settingscookie.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
 
@@ -5793,7 +5540,7 @@ class V2C_ThemeCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
 
     setInitialState() {
         this.state = {
-            checked: themeCookie[this.props.theme.name],
+            checked: data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][this.props.theme.name],
             reloads: 0
         };
     }
@@ -5813,9 +5560,9 @@ class V2C_ThemeCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
 
     reload() {
         const theme = this.props.theme.name;
-        const error = window.mainCore.themeModule.reloadTheme(theme);
-        if (error) window.mainCore.showToast(`Could not reload ${bdthemes[theme].name}. Check console for details.`, {type: "error"});
-        else window.mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been reloaded.`, {type: "success"});
+        const error = modules__WEBPACK_IMPORTED_MODULE_1__["ThemeManager"].reloadTheme(theme);
+        if (error) modules__WEBPACK_IMPORTED_MODULE_1__["Core"].showToast(`Could not reload ${bdthemes[theme].name}. Check console for details.`, {type: "error"});
+        else modules__WEBPACK_IMPORTED_MODULE_1__["Core"].showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been reloaded.`, {type: "success"});
         // this.setState(this.state);
         this.props.theme = bdthemes[theme];
         this.onReload(this.props.theme.name);
@@ -5840,7 +5587,7 @@ class V2C_ThemeCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
                         modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("span", {className: "bda-author"}, author)
                     ),
                     modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("div", {className: "bda-controls"},
-                        !_data_settingscookie__WEBPACK_IMPORTED_MODULE_0__["default"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_2__["default"], {className: "bd-reload-card", onClick: this.reload}),
+                        !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_2__["default"], {className: "bd-reload-card", onClick: this.reload}),
                         modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
@@ -5862,7 +5609,7 @@ class V2C_ThemeCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
 
     onChange() {
         this.setState({checked: !this.state.checked});
-        window.mainCore.themeModule.toggleTheme(this.props.theme.name);
+        modules__WEBPACK_IMPORTED_MODULE_1__["ThemeManager"].toggleTheme(this.props.theme.name);
     }
 }
 
@@ -5957,8 +5704,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "SettingsPanel", function() { return _settings_settings__WEBPACK_IMPORTED_MODULE_0__["default"]; });
 
 /* harmony import */ var _publicservers_publicservers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./publicservers/publicservers */ "./src/ui/publicservers/publicservers.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PublicServers", function() { return _publicservers_publicservers__WEBPACK_IMPORTED_MODULE_1__["default"]; });
-
+/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "PublicServers", function() { return _publicservers_publicservers__WEBPACK_IMPORTED_MODULE_1__; });
 
 
 
