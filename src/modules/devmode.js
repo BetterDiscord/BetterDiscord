@@ -3,7 +3,7 @@ import BDV2 from "./bdv2";
 function devMode() {}
 
  devMode.prototype.enable = function(selectorMode) {
-     var self = this;
+    const self = this;
      this.disable();
      $(window).on("keydown.bdDevmode", function(e) {
          if (e.which === 119 || e.which == 118) {//F8
@@ -17,7 +17,7 @@ function devMode() {}
          self.lastSelector = self.getSelector(e.toElement);
 
          function attach() {
-            var cm = $(".contextMenu-HLZMGh");
+            let cm = $(".contextMenu-HLZMGh");
             if (cm.length <= 0) {
                 cm = $("<div class=\"contextMenu-HLZMGh bd-context-menu\"></div>");
                 cm.addClass($(".app, .app-2rEoOp").hasClass("theme-dark") ? "theme-dark" : "theme-light");
@@ -40,10 +40,10 @@ function devMode() {}
                 });
             }
 
-            var cmo = $("<div/>", {
+            const cmo = $("<div/>", {
                 "class": "itemGroup-1tL0uz"
             });
-            var cmi = $("<div/>", {
+            const cmi = $("<div/>", {
                 "class": "item-1Yvehc",
                 "click": function() {
                     BDV2.NativeModule.copy(self.lastSelector);

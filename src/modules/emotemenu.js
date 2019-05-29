@@ -12,12 +12,12 @@ QuickEmoteMenu.prototype.init = function() {
         if (e.target.id != "rmenu") $("#rmenu").remove();
     });
     this.favoriteEmotes = {};
-    var fe = DataStore.getBDData("bdfavemotes");
+    const fe = DataStore.getBDData("bdfavemotes");
     if (fe !== "" && fe !== null) {
         this.favoriteEmotes = JSON.parse(atob(fe));
     }
 
-    var qmeHeader = "";
+    let qmeHeader = "";
     qmeHeader += "<div id=\"bda-qem\">";
     qmeHeader += "    <button class=\"active\" id=\"bda-qem-twitch\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Twitch</button>";
     qmeHeader += "    <button id=\"bda-qem-favourite\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Favourite</button>";
@@ -25,13 +25,13 @@ QuickEmoteMenu.prototype.init = function() {
     qmeHeader += "</div>";
     this.qmeHeader = qmeHeader;
 
-    var teContainer = "";
+    let teContainer = "";
     teContainer += "<div id=\"bda-qem-twitch-container\">";
     teContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
     teContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     teContainer += "            <div class=\"emote-menu-inner\">";
-    var url = "";
-    for (let emote in window.bdEmotes.TwitchGlobal) {
+    let url = "";
+    for (const emote in window.bdEmotes.TwitchGlobal) {
         if (window.bdEmotes.TwitchGlobal.hasOwnProperty(emote)) {
             url = window.bdEmotes.TwitchGlobal[emote];
             teContainer += "<div class=\"emote-container\">";
@@ -46,12 +46,12 @@ QuickEmoteMenu.prototype.init = function() {
     teContainer += "</div>";
     this.teContainer = teContainer;
 
-    var faContainer = "";
+    let faContainer = "";
     faContainer += "<div id=\"bda-qem-favourite-container\">";
     faContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
     faContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     faContainer += "            <div class=\"emote-menu-inner\">";
-    for (let emote in this.favoriteEmotes) {
+    for (const emote in this.favoriteEmotes) {
         url = this.favoriteEmotes[emote];
         faContainer += "<div class=\"emote-container\">";
         faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu='quickEmoteMenu.favContext(event, this);'>";
@@ -67,7 +67,7 @@ QuickEmoteMenu.prototype.init = function() {
 
 QuickEmoteMenu.prototype.favContext = function(e, em) {
     e.stopPropagation();
-    var menu = $("<div>", {"id": "removemenu", "data-emoteid": $(em).prop("title"), "text": "Remove", "class": "bd-context-menu context-menu theme-dark"});
+    const menu = $("<div>", {"id": "removemenu", "data-emoteid": $(em).prop("title"), "text": "Remove", "class": "bd-context-menu context-menu theme-dark"});
     menu.css({
         top: e.pageY - $("#bda-qem-favourite-container").offset().top,
         left: e.pageX - $("#bda-qem-favourite-container").offset().left
@@ -90,9 +90,9 @@ QuickEmoteMenu.prototype.switchHandler = function(e) {
 };
 
 QuickEmoteMenu.prototype.switchQem = function(id) {
-    var twitch = $("#bda-qem-twitch");
-    var fav = $("#bda-qem-favourite");
-    var emojis = $("#bda-qem-emojis");
+    const twitch = $("#bda-qem-twitch");
+    const fav = $("#bda-qem-favourite");
+    const emojis = $("#bda-qem-emojis");
     twitch.removeClass("active");
     fav.removeClass("active");
     emojis.removeClass("active");
@@ -118,18 +118,18 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     }
     this.lastTab = id;
 
-    var emoteIcon = $(".emote-icon");
+    const emoteIcon = $(".emote-icon");
     emoteIcon.off();
     emoteIcon.on("click", function () {
-        var emote = $(this).attr("title");
-        var ta = Utilities.getTextArea();
+        const emote = $(this).attr("title");
+        const ta = Utilities.getTextArea();
         Utilities.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
 };
 
 QuickEmoteMenu.prototype.obsCallback = function (elem) {
     if (!this.initialized) return;
-    var e = $(elem);
+    const e = $(elem);
     if (!SettingsCookie["bda-es-9"]) {
         e.addClass("bda-qme-hidden");
     }
@@ -160,13 +160,13 @@ QuickEmoteMenu.prototype.favorite = function (name, url) {
 
 QuickEmoteMenu.prototype.updateFavorites = function () {
 
-    var faContainer = "";
+    let faContainer = "";
     faContainer += "<div id=\"bda-qem-favourite-container\">";
     faContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
     faContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     faContainer += "            <div class=\"emote-menu-inner\">";
-    for (var emote in this.favoriteEmotes) {
-        var url = this.favoriteEmotes[emote];
+    for (const emote in this.favoriteEmotes) {
+        const url = this.favoriteEmotes[emote];
         faContainer += "<div class=\"emote-container\">";
         faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu=\"quickEmoteMenu.favContext(event, this);\">";
         faContainer += "    </img>";

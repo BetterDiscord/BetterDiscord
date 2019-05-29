@@ -1,4 +1,4 @@
-import {Config, SettingsCookie} from "data";
+import {Config, SettingsCookie, EmoteBlacklist} from "data";
 import Utilities from "./utilities";
 import BDV2 from "./bdv2";
 import BDEmote from "../ui/emote";
@@ -43,7 +43,7 @@ EmoteModule.prototype.init = async function () {
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
     this.overrides = ["twitch", "bttv", "ffz"];
 
-    let emoteInfo = {
+    const emoteInfo = {
         TwitchGlobal: {
             url: "https://twitchemotes.com/api_cache/v3/global.json",
             backup: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_global.json`,
@@ -71,9 +71,9 @@ EmoteModule.prototype.init = async function () {
             variable: "BTTV",
             oldVariable: "emotesBTTV",
             parser: (data) => {
-                let emotes = {};
+                const emotes = {};
                 for (let e = 0, len = data.emotes.length; e < len; e++) {
-                    let emote = data.emotes[e];
+                    const emote = data.emotes[e];
                     emotes[emote.regex] = emote.url;
                 }
                 return emotes;
@@ -109,13 +109,13 @@ EmoteModule.prototype.init = async function () {
                 const words = node.split(/([^\s]+)([\s]|$)/g);
 				for (let c = 0, clen = this.categories.length; c < clen; c++) {
 					for (let w = 0, wlen = words.length; w < wlen; w++) {
-                        let emote = words[w];
-						let emoteSplit = emote.split(":");
-						let emoteName = emoteSplit[0];
+                        const emote = words[w];
+						const emoteSplit = emote.split(":");
+						const emoteName = emoteSplit[0];
 						let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
 						let emoteOverride = emoteModifier.slice(0);
 
-						if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
+						if (emoteName.length < 4 || EmoteBlacklist.includes(emoteName)) continue;
 						if (!this.modifiers.includes(emoteModifier) || !SettingsCookie["bda-es-8"]) emoteModifier = "";
 						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
 						else emoteModifier = emoteOverride;
@@ -153,7 +153,7 @@ EmoteModule.prototype.init = async function () {
 			});
 			if (!onlyEmotes) return;
 
-			for (let node of nodes) {
+			for (const node of nodes) {
 				if (typeof(node) != "object") continue;
 				if (node.type.name == "BDEmote") node.props.jumboable = true;
 				else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
@@ -170,10 +170,10 @@ EmoteModule.prototype.disable = function() {
 };
 
 EmoteModule.prototype.clearEmoteData = async function() {
-    let _fs = require("fs");
-    let emoteFile = "emote_data.json";
-    let file = Config.dataPath + emoteFile;
-    let exists = _fs.existsSync(file);
+    const _fs = require("fs");
+    const emoteFile = "emote_data.json";
+    const file = Config.dataPath + emoteFile;
+    const exists = _fs.existsSync(file);
     if (exists) _fs.unlinkSync(file);
     DataStore.setBDData("emoteCacheDate", (new Date()).toJSON());
 
@@ -187,8 +187,8 @@ EmoteModule.prototype.clearEmoteData = async function() {
 };
 
 EmoteModule.prototype.goBack = async function(emoteInfo) {
-    for (let e in emoteInfo) {
-        for (let emote in window.bdEmotes[emoteInfo[e].variable]) {
+    for (const e in emoteInfo) {
+        for (const emote in window.bdEmotes[emoteInfo[e].variable]) {
             window[emoteInfo[e].oldVariable][emote] = emoteInfo[e].getOldData(window.bdEmotes[emoteInfo[e].variable][emote], emote);
         }
     }
@@ -243,9 +243,9 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     if (!SettingsCookie["fork-es-3"]) return;
     if (SettingsCookie["fork-ps-2"]) BdApi.showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
-    for (let e in emoteInfo) {
+    for (const e in emoteInfo) {
         await new Promise(r => setTimeout(r, 1000));
-        let data = await this.downloadEmotes(emoteInfo[e]);
+        const data = await this.downloadEmotes(emoteInfo[e]);
         window.bdEmotes[emoteInfo[e].variable] = data;
     }
 
@@ -256,8 +256,8 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 };
 
 EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
-    let request = require("request");
-    let options = {
+    const request = require("request");
+    const options = {
         url: emoteMeta.url,
         timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
     };
@@ -293,8 +293,8 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
             }
             if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
 
-            for (let emote in parsedData) {
-                if (emote.length < 4 || bemotes.includes(emote)) {
+            for (const emote in parsedData) {
+                if (emote.length < 4 || EmoteBlacklist.includes(emote)) {
                     delete parsedData[emote];
                     continue;
                 }
@@ -309,23 +309,21 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
 EmoteModule.prototype.getBlacklist = function () {
     return new Promise(resolve => {
         $.getJSON(`https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json`, function (data) {
-            resolve(bemotes = data.blacklist);
+            resolve(EmoteBlacklist.push(...data.blacklist));
         });
     });
 };
 
-var bemotes = [];
-
 EmoteModule.prototype.autoCapitalize = function () {
     if (!SettingsCookie["bda-es-4"] || this.autoCapitalizeActive) return;
     $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-1LDbYG textarea:first"), () => {
-        var text = $(".channelTextArea-1LDbYG textarea:first").val();
+        const text = $(".channelTextArea-1LDbYG textarea:first").val();
         if (text == undefined) return;
 
-        var lastWord = text.split(" ").pop();
+        const lastWord = text.split(" ").pop();
         if (lastWord.length > 3) {
             if (lastWord == "danSgame") return;
-            var ret = this.capitalize(lastWord.toLowerCase());
+            const ret = this.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
                 Utilities.insertText(Utilities.getTextArea()[0], text.replace(lastWord, ret));
             }
@@ -335,8 +333,8 @@ EmoteModule.prototype.autoCapitalize = function () {
 };
 
 EmoteModule.prototype.capitalize = function (value) {
-    var res = window.bdEmotes.TwitchGlobal;
-    for (var p in res) {
+    const res = window.bdEmotes.TwitchGlobal;
+    for (const p in res) {
         if (res.hasOwnProperty(p) && value == (p + "").toLowerCase()) {
             return p;
         }

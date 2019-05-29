@@ -113,7 +113,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!**************************!*\
   !*** ./src/data/data.js ***!
   \**************************/
-/*! exports provided: SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins */
+/*! exports provided: SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins, EmoteBlacklist */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -139,6 +139,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _plugins__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./plugins */ "./src/data/plugins.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Plugins", function() { return _plugins__WEBPACK_IMPORTED_MODULE_6__["default"]; });
 
+/* harmony import */ var _emoteblacklist__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./emoteblacklist */ "./src/data/emoteblacklist.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteBlacklist", function() { return _emoteblacklist__WEBPACK_IMPORTED_MODULE_7__["default"]; });
 
 
 
@@ -148,6 +150,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+/***/ }),
+
+/***/ "./src/data/emoteblacklist.js":
+/*!************************************!*\
+  !*** ./src/data/emoteblacklist.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ([]);
 
 /***/ }),
 
@@ -320,6 +337,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_pluginapi__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/pluginapi */ "./src/modules/pluginapi.js");
 /* harmony import */ var _modules_pluginmanager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/pluginmanager */ "./src/modules/pluginmanager.js");
 /* harmony import */ var _modules_thememanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/thememanager */ "./src/modules/thememanager.js");
+/* harmony import */ var _modules_oldstorage__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/oldstorage */ "./src/modules/oldstorage.js");
+
 
 
 
@@ -342,8 +361,10 @@ window.pluginCookie = data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"];
 window.themeCookie = data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"];
 window.pluginModule = _modules_pluginmanager__WEBPACK_IMPORTED_MODULE_4__["default"];
 window.themeModule = _modules_thememanager__WEBPACK_IMPORTED_MODULE_5__["default"];
-window.bdthemes = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"];
-window.bdplugins = data__WEBPACK_IMPORTED_MODULE_0__["Themes"];
+window.bdthemes = data__WEBPACK_IMPORTED_MODULE_0__["Themes"];
+window.bdplugins = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"];
+window.bemotes = data__WEBPACK_IMPORTED_MODULE_0__["EmoteBlacklist"];
+window.bdPluginStorage = _modules_oldstorage__WEBPACK_IMPORTED_MODULE_6__["bdPluginStorage"];
 
 class CoreWrapper {
     constructor(config) {
@@ -447,9 +468,9 @@ __webpack_require__.r(__webpack_exports__);
             delete req.m.__extra_id__;
             delete req.c.__extra_id__;
             const find = (filter) => {
-                for (let i in req.c) {
+                for (const i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
-                        let m = req.c[i].exports;
+                        const m = req.c[i].exports;
                         if (m && m.__esModule && m.default && filter(m.default)) return m.default;
                         if (m && filter(m))	return m;
                     }
@@ -460,9 +481,9 @@ __webpack_require__.r(__webpack_exports__);
 
             const findAll = (filter) => {
                 const modules = [];
-                for (let i in req.c) {
+                for (const i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
-                        let m = req.c[i].exports;
+                        const m = req.c[i].exports;
                         if (m && m.__esModule && m.default && filter(m.default)) modules.push(m.default);
                         else if (m && filter(m)) modules.push(m);
                     }
@@ -512,7 +533,7 @@ __webpack_require__.r(__webpack_exports__);
 
     parseSettings(cat) {
         return Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"]).reduce((arr, key) => {
-            let setting = data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"][key];
+            const setting = data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"][key];
             if (setting.cat === cat && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);
@@ -1048,7 +1069,7 @@ Core.prototype.checkForGuilds = function() {
 
 Core.prototype.injectExternals = async function() {
     await _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
-    // if (require.original) window.require = require.original;
+    if (window.__non_webpack_require__.original) window.require = window.require.original;
 };
 
 Core.prototype.initSettings = function () {
@@ -1075,13 +1096,13 @@ Core.prototype.initObserver = function () {
     const mainObserver = new MutationObserver((mutations) => {
 
         for (let i = 0, mlen = mutations.length; i < mlen; i++) {
-            let mutation = mutations[i];
+            const mutation = mutations[i];
             if (typeof _pluginmanager__WEBPACK_IMPORTED_MODULE_5__["default"] !== "undefined") _pluginmanager__WEBPACK_IMPORTED_MODULE_5__["default"].rawObserver(mutation);
 
             // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
 
-            let node = mutation.addedNodes[0];
+            const node = mutation.addedNodes[0];
 
             if (node.classList.contains("layer-3QrUeG")) {
                 if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute("layer-id", "server-settings");
@@ -1144,7 +1165,7 @@ Core.prototype.removeColoredText = function() {
 };
 
 Core.prototype.alert = function(title, content) {
-    let modal = $(`<div class="bd-modal-wrapper theme-dark">
+    const modal = $(`<div class="bd-modal-wrapper theme-dark">
                     <div class="bd-backdrop backdrop-1wrmKB"></div>
                     <div class="bd-modal modal-1UGdnR">
                         <div class="bd-modal-inner inner-1JeGVc">
@@ -1178,7 +1199,7 @@ Core.prototype.alert = function(title, content) {
 Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes: themeErrors = []}) {
     if (!pluginErrors || !themeErrors) return;
     if (!pluginErrors.length && !themeErrors.length) return;
-    let modal = $(`<div class="bd-modal-wrapper theme-dark">
+    const modal = $(`<div class="bd-modal-wrapper theme-dark">
                     <div class="bd-backdrop backdrop-1wrmKB"></div>
                     <div class="bd-modal bd-content-modal modal-1UGdnR">
                         <div class="bd-modal-inner inner-1JeGVc">
@@ -1209,9 +1230,9 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
                 </div>`);
 
     function generateTab(errors) {
-        let container = $(`<div class="errors">`);
-        for (let err of errors) {
-            let error = $(`<div class="error">
+        const container = $(`<div class="errors">`);
+        for (const err of errors) {
+            const error = $(`<div class="error">
                                 <div class="table-column column-name">${err.name ? err.name : err.file}</div>
                                 <div class="table-column column-message">${err.message}</div>
                                 <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
@@ -1227,7 +1248,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
         return container;
     }
 
-    let tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
+    const tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
 
     modal.find(".tab-bar-item").on("click", (e) => {
         e.preventDefault();
@@ -1261,16 +1282,16 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
 Core.prototype.showToast = function(content, options = {}) {
     if (!data__WEBPACK_IMPORTED_MODULE_2__["Config"].deferLoaded) return;
     if (!document.querySelector(".bd-toasts")) {
-        let toastWrapper = document.createElement("div");
+        const toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");
-        let boundingElement = document.querySelector(".chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9");
+        const boundingElement = document.querySelector(".chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9");
         toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
         toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
         toastWrapper.style.setProperty("bottom", (document.querySelector(".chat-3bRxxu form") ? document.querySelector(".chat-3bRxxu form").offsetHeight : 80) + "px");
         document.querySelector(".app, .app-2rEoOp").appendChild(toastWrapper);
     }
     const {type = "", icon = true, timeout = 3000} = options;
-    let toastElem = document.createElement("div");
+    const toastElem = document.createElement("div");
     toastElem.classList.add("bd-toast");
     if (type) toastElem.classList.add("toast-" + type);
     if (type && icon) toastElem.classList.add("icon");
@@ -1390,7 +1411,7 @@ __webpack_require__.r(__webpack_exports__);
 function devMode() {}
 
  devMode.prototype.enable = function(selectorMode) {
-     var self = this;
+    const self = this;
      this.disable();
      $(window).on("keydown.bdDevmode", function(e) {
          if (e.which === 119 || e.which == 118) {//F8
@@ -1404,7 +1425,7 @@ function devMode() {}
          self.lastSelector = self.getSelector(e.toElement);
 
          function attach() {
-            var cm = $(".contextMenu-HLZMGh");
+            let cm = $(".contextMenu-HLZMGh");
             if (cm.length <= 0) {
                 cm = $("<div class=\"contextMenu-HLZMGh bd-context-menu\"></div>");
                 cm.addClass($(".app, .app-2rEoOp").hasClass("theme-dark") ? "theme-dark" : "theme-light");
@@ -1427,10 +1448,10 @@ function devMode() {}
                 });
             }
 
-            var cmo = $("<div/>", {
+            const cmo = $("<div/>", {
                 "class": "itemGroup-1tL0uz"
             });
-            var cmi = $("<div/>", {
+            const cmi = $("<div/>", {
                 "class": "item-1Yvehc",
                 "click": function() {
                     _bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].NativeModule.copy(self.lastSelector);
@@ -1520,12 +1541,12 @@ QuickEmoteMenu.prototype.init = function() {
         if (e.target.id != "rmenu") $("#rmenu").remove();
     });
     this.favoriteEmotes = {};
-    var fe = _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getBDData("bdfavemotes");
+    const fe = _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getBDData("bdfavemotes");
     if (fe !== "" && fe !== null) {
         this.favoriteEmotes = JSON.parse(atob(fe));
     }
 
-    var qmeHeader = "";
+    let qmeHeader = "";
     qmeHeader += "<div id=\"bda-qem\">";
     qmeHeader += "    <button class=\"active\" id=\"bda-qem-twitch\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Twitch</button>";
     qmeHeader += "    <button id=\"bda-qem-favourite\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Favourite</button>";
@@ -1533,13 +1554,13 @@ QuickEmoteMenu.prototype.init = function() {
     qmeHeader += "</div>";
     this.qmeHeader = qmeHeader;
 
-    var teContainer = "";
+    let teContainer = "";
     teContainer += "<div id=\"bda-qem-twitch-container\">";
     teContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
     teContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     teContainer += "            <div class=\"emote-menu-inner\">";
-    var url = "";
-    for (let emote in window.bdEmotes.TwitchGlobal) {
+    let url = "";
+    for (const emote in window.bdEmotes.TwitchGlobal) {
         if (window.bdEmotes.TwitchGlobal.hasOwnProperty(emote)) {
             url = window.bdEmotes.TwitchGlobal[emote];
             teContainer += "<div class=\"emote-container\">";
@@ -1554,12 +1575,12 @@ QuickEmoteMenu.prototype.init = function() {
     teContainer += "</div>";
     this.teContainer = teContainer;
 
-    var faContainer = "";
+    let faContainer = "";
     faContainer += "<div id=\"bda-qem-favourite-container\">";
     faContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
     faContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     faContainer += "            <div class=\"emote-menu-inner\">";
-    for (let emote in this.favoriteEmotes) {
+    for (const emote in this.favoriteEmotes) {
         url = this.favoriteEmotes[emote];
         faContainer += "<div class=\"emote-container\">";
         faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu='quickEmoteMenu.favContext(event, this);'>";
@@ -1575,7 +1596,7 @@ QuickEmoteMenu.prototype.init = function() {
 
 QuickEmoteMenu.prototype.favContext = function(e, em) {
     e.stopPropagation();
-    var menu = $("<div>", {"id": "removemenu", "data-emoteid": $(em).prop("title"), "text": "Remove", "class": "bd-context-menu context-menu theme-dark"});
+    const menu = $("<div>", {"id": "removemenu", "data-emoteid": $(em).prop("title"), "text": "Remove", "class": "bd-context-menu context-menu theme-dark"});
     menu.css({
         top: e.pageY - $("#bda-qem-favourite-container").offset().top,
         left: e.pageX - $("#bda-qem-favourite-container").offset().left
@@ -1598,9 +1619,9 @@ QuickEmoteMenu.prototype.switchHandler = function(e) {
 };
 
 QuickEmoteMenu.prototype.switchQem = function(id) {
-    var twitch = $("#bda-qem-twitch");
-    var fav = $("#bda-qem-favourite");
-    var emojis = $("#bda-qem-emojis");
+    const twitch = $("#bda-qem-twitch");
+    const fav = $("#bda-qem-favourite");
+    const emojis = $("#bda-qem-emojis");
     twitch.removeClass("active");
     fav.removeClass("active");
     emojis.removeClass("active");
@@ -1626,18 +1647,18 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     }
     this.lastTab = id;
 
-    var emoteIcon = $(".emote-icon");
+    const emoteIcon = $(".emote-icon");
     emoteIcon.off();
     emoteIcon.on("click", function () {
-        var emote = $(this).attr("title");
-        var ta = _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].getTextArea();
+        const emote = $(this).attr("title");
+        const ta = _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].getTextArea();
         _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
     });
 };
 
 QuickEmoteMenu.prototype.obsCallback = function (elem) {
     if (!this.initialized) return;
-    var e = $(elem);
+    const e = $(elem);
     if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-9"]) {
         e.addClass("bda-qme-hidden");
     }
@@ -1668,13 +1689,13 @@ QuickEmoteMenu.prototype.favorite = function (name, url) {
 
 QuickEmoteMenu.prototype.updateFavorites = function () {
 
-    var faContainer = "";
+    let faContainer = "";
     faContainer += "<div id=\"bda-qem-favourite-container\">";
     faContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
     faContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     faContainer += "            <div class=\"emote-menu-inner\">";
-    for (var emote in this.favoriteEmotes) {
-        var url = this.favoriteEmotes[emote];
+    for (const emote in this.favoriteEmotes) {
+        const url = this.favoriteEmotes[emote];
         faContainer += "<div class=\"emote-container\">";
         faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu=\"quickEmoteMenu.favContext(event, this);\">";
         faContainer += "    </img>";
@@ -1754,7 +1775,7 @@ EmoteModule.prototype.init = async function () {
     this.modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
     this.overrides = ["twitch", "bttv", "ffz"];
 
-    let emoteInfo = {
+    const emoteInfo = {
         TwitchGlobal: {
             url: "https://twitchemotes.com/api_cache/v3/global.json",
             backup: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_global.json`,
@@ -1782,9 +1803,9 @@ EmoteModule.prototype.init = async function () {
             variable: "BTTV",
             oldVariable: "emotesBTTV",
             parser: (data) => {
-                let emotes = {};
+                const emotes = {};
                 for (let e = 0, len = data.emotes.length; e < len; e++) {
-                    let emote = data.emotes[e];
+                    const emote = data.emotes[e];
                     emotes[emote.regex] = emote.url;
                 }
                 return emotes;
@@ -1820,13 +1841,13 @@ EmoteModule.prototype.init = async function () {
                 const words = node.split(/([^\s]+)([\s]|$)/g);
 				for (let c = 0, clen = this.categories.length; c < clen; c++) {
 					for (let w = 0, wlen = words.length; w < wlen; w++) {
-                        let emote = words[w];
-						let emoteSplit = emote.split(":");
-						let emoteName = emoteSplit[0];
+                        const emote = words[w];
+						const emoteSplit = emote.split(":");
+						const emoteName = emoteSplit[0];
 						let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
 						let emoteOverride = emoteModifier.slice(0);
 
-						if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
+						if (emoteName.length < 4 || data__WEBPACK_IMPORTED_MODULE_0__["EmoteBlacklist"].includes(emoteName)) continue;
 						if (!this.modifiers.includes(emoteModifier) || !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-8"]) emoteModifier = "";
 						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
 						else emoteModifier = emoteOverride;
@@ -1864,7 +1885,7 @@ EmoteModule.prototype.init = async function () {
 			});
 			if (!onlyEmotes) return;
 
-			for (let node of nodes) {
+			for (const node of nodes) {
 				if (typeof(node) != "object") continue;
 				if (node.type.name == "BDEmote") node.props.jumboable = true;
 				else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
@@ -1881,10 +1902,10 @@ EmoteModule.prototype.disable = function() {
 };
 
 EmoteModule.prototype.clearEmoteData = async function() {
-    let _fs = __webpack_require__(/*! fs */ "fs");
-    let emoteFile = "emote_data.json";
-    let file = data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath + emoteFile;
-    let exists = _fs.existsSync(file);
+    const _fs = __webpack_require__(/*! fs */ "fs");
+    const emoteFile = "emote_data.json";
+    const file = data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath + emoteFile;
+    const exists = _fs.existsSync(file);
     if (exists) _fs.unlinkSync(file);
     _datastore__WEBPACK_IMPORTED_MODULE_5__["default"].setBDData("emoteCacheDate", (new Date()).toJSON());
 
@@ -1898,8 +1919,8 @@ EmoteModule.prototype.clearEmoteData = async function() {
 };
 
 EmoteModule.prototype.goBack = async function(emoteInfo) {
-    for (let e in emoteInfo) {
-        for (let emote in window.bdEmotes[emoteInfo[e].variable]) {
+    for (const e in emoteInfo) {
+        for (const emote in window.bdEmotes[emoteInfo[e].variable]) {
             window[emoteInfo[e].oldVariable][emote] = emoteInfo[e].getOldData(window.bdEmotes[emoteInfo[e].variable][emote], emote);
         }
     }
@@ -1954,9 +1975,9 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-es-3"]) return;
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("Downloading emotes in the background do not reload.", {type: "info"});
 
-    for (let e in emoteInfo) {
+    for (const e in emoteInfo) {
         await new Promise(r => setTimeout(r, 1000));
-        let data = await this.downloadEmotes(emoteInfo[e]);
+        const data = await this.downloadEmotes(emoteInfo[e]);
         window.bdEmotes[emoteInfo[e].variable] = data;
     }
 
@@ -1967,8 +1988,8 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 };
 
 EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
-    let request = __webpack_require__(/*! request */ "request");
-    let options = {
+    const request = __webpack_require__(/*! request */ "request");
+    const options = {
         url: emoteMeta.url,
         timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
     };
@@ -2004,8 +2025,8 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
             }
             if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
 
-            for (let emote in parsedData) {
-                if (emote.length < 4 || bemotes.includes(emote)) {
+            for (const emote in parsedData) {
+                if (emote.length < 4 || data__WEBPACK_IMPORTED_MODULE_0__["EmoteBlacklist"].includes(emote)) {
                     delete parsedData[emote];
                     continue;
                 }
@@ -2020,23 +2041,21 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
 EmoteModule.prototype.getBlacklist = function () {
     return new Promise(resolve => {
         $.getJSON(`https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json`, function (data) {
-            resolve(bemotes = data.blacklist);
+            resolve(data__WEBPACK_IMPORTED_MODULE_0__["EmoteBlacklist"].push(...data.blacklist));
         });
     });
 };
 
-var bemotes = [];
-
 EmoteModule.prototype.autoCapitalize = function () {
     if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-4"] || this.autoCapitalizeActive) return;
     $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-1LDbYG textarea:first"), () => {
-        var text = $(".channelTextArea-1LDbYG textarea:first").val();
+        const text = $(".channelTextArea-1LDbYG textarea:first").val();
         if (text == undefined) return;
 
-        var lastWord = text.split(" ").pop();
+        const lastWord = text.split(" ").pop();
         if (lastWord.length > 3) {
             if (lastWord == "danSgame") return;
-            var ret = this.capitalize(lastWord.toLowerCase());
+            const ret = this.capitalize(lastWord.toLowerCase());
             if (ret !== null && ret !== undefined) {
                 _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].insertText(_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].getTextArea()[0], text.replace(lastWord, ret));
             }
@@ -2046,8 +2065,8 @@ EmoteModule.prototype.autoCapitalize = function () {
 };
 
 EmoteModule.prototype.capitalize = function (value) {
-    var res = window.bdEmotes.TwitchGlobal;
-    for (var p in res) {
+    const res = window.bdEmotes.TwitchGlobal;
+    for (const p in res) {
         if (res.hasOwnProperty(p) && value == (p + "").toLowerCase()) {
             return p;
         }
@@ -2134,6 +2153,54 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/***/ }),
+
+/***/ "./src/modules/oldstorage.js":
+/*!***********************************!*\
+  !*** ./src/modules/oldstorage.js ***!
+  \***********************************/
+/*! exports provided: bdStorage, bdPluginStorage */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bdStorage", function() { return bdStorage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "bdPluginStorage", function() { return bdPluginStorage; });
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+
+
+
+class bdStorage {
+    static get(key) {
+        _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].warn("Deprecation Notice", "Please use BdApi.getBDData(). bdStorage may be removed in future versions.");
+        return _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getBDData(key);
+    }
+
+    static set(key, data) {
+        _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].warn("Deprecation Notice", "Please use BdApi.setBDData(). bdStorage may be removed in future versions.");
+        _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].setBDData(key, data);
+    }
+}
+
+class bdPluginStorage {
+    static get(pluginName, key) {
+        _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].warn("Deprecation Notice", `${pluginName}, please use BdApi.loadData() or BdApi.getData(). bdPluginStorage may be removed in future versions.`);
+        return _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getPluginData(pluginName, key) || null;
+    }
+
+    static set(pluginName, key, data) {
+        _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].warn("Deprecation Notice", `${pluginName}, please use BdApi.saveData() or BdApi.setData(). bdPluginStorage may be removed in future versions.`);
+        if (typeof(data) === "undefined") return _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].warn("Deprecation Notice", "Trying to set undefined value in plugin " + pluginName);
+        _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].setPluginData(pluginName, key, data);
+    }
+
+    static delete(pluginName, key) {
+        _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].warn("Deprecation Notice", `${pluginName}, please use BdApi.deleteData(). bdPluginStorage may be removed in future versions.`);
+        _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].deletePluginData(pluginName, key);
+    }
+}
 
 /***/ }),
 
@@ -2417,9 +2484,9 @@ function PluginModule() {
 PluginModule.prototype.loadPlugins = function () {
     this.loadPluginData();
     const errors = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadPlugins();
-    var plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin, name;
+    const plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]);
+    for (let i = 0; i < plugins.length; i++) {
+        let plugin, name;
 
         try {
             plugin = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugins[i]].plugin;
@@ -2565,9 +2632,9 @@ PluginModule.prototype.savePluginData = function () {
 };
 
 PluginModule.prototype.newMessage = function () {
-    var plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugins[i]].plugin;
+    const plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]);
+    for (let i = 0; i < plugins.length; i++) {
+        const plugin = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugins[i]].plugin;
         if (!data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin.getName()]) continue;
         if (typeof plugin.onMessage === "function") {
             try { plugin.onMessage(); }
@@ -2577,9 +2644,9 @@ PluginModule.prototype.newMessage = function () {
 };
 
 PluginModule.prototype.channelSwitch = function () {
-    var plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugins[i]].plugin;
+    const plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]);
+    for (let i = 0; i < plugins.length; i++) {
+        const plugin = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugins[i]].plugin;
         if (!data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin.getName()]) continue;
         if (typeof plugin.onSwitch === "function") {
             try { plugin.onSwitch(); }
@@ -2589,9 +2656,9 @@ PluginModule.prototype.channelSwitch = function () {
 };
 
 PluginModule.prototype.rawObserver = function(e) {
-    var plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugins[i]].plugin;
+    const plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]);
+    for (let i = 0; i < plugins.length; i++) {
+        const plugin = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugins[i]].plugin;
         if (!data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin.getName()]) continue;
         if (typeof plugin.observer === "function") {
             try { plugin.observer(e); }
@@ -2637,7 +2704,7 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     get root() {
-        let _root = document.getElementById("pubslayerroot");
+        const _root = document.getElementById("pubslayerroot");
         if (!_root) {
             if (!this.injectRoot()) return null;
             return this.root;
@@ -2655,7 +2722,7 @@ __webpack_require__.r(__webpack_exports__);
 
     render() {
         // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layers");
             return;
@@ -2664,7 +2731,7 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     get button() {
-        let btn = $("<div/>", {
+        const btn = $("<div/>", {
             "class": modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.listItem,
             "id": "bd-pub-li",
             "style": data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-1"] ? "" : "display: none;"
@@ -2858,14 +2925,14 @@ function ThemeModule() {
 ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
     const errors = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadThemes();
-    var themes = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Themes"]);
+    const themes = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Themes"]);
 
-    for (var i = 0; i < themes.length; i++) {
-        var name = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][themes[i]].name;
+    for (let i = 0; i < themes.length; i++) {
+        const name = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][themes[i]].name;
         if (!data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][name]) data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][name] = false;
         if (data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][name]) $("head").append($("<style>", {id: _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].escapeID(name), text: unescape(data__WEBPACK_IMPORTED_MODULE_0__["Themes"][name].css)}));
     }
-    for (let theme in data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"]) {
+    for (const theme in data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"]) {
         if (!data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme]) delete data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme];
     }
     this.saveThemeData();

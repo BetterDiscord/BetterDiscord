@@ -97,7 +97,7 @@ Core.prototype.checkForGuilds = function() {
 
 Core.prototype.injectExternals = async function() {
     await Utilties.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
-    // if (require.original) window.require = require.original;
+    if (window.__non_webpack_require__.original) window.require = window.require.original;
 };
 
 Core.prototype.initSettings = function () {
@@ -124,13 +124,13 @@ Core.prototype.initObserver = function () {
     const mainObserver = new MutationObserver((mutations) => {
 
         for (let i = 0, mlen = mutations.length; i < mlen; i++) {
-            let mutation = mutations[i];
+            const mutation = mutations[i];
             if (typeof PluginManager !== "undefined") PluginManager.rawObserver(mutation);
 
             // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
 
-            let node = mutation.addedNodes[0];
+            const node = mutation.addedNodes[0];
 
             if (node.classList.contains("layer-3QrUeG")) {
                 if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute("layer-id", "server-settings");
@@ -193,7 +193,7 @@ Core.prototype.removeColoredText = function() {
 };
 
 Core.prototype.alert = function(title, content) {
-    let modal = $(`<div class="bd-modal-wrapper theme-dark">
+    const modal = $(`<div class="bd-modal-wrapper theme-dark">
                     <div class="bd-backdrop backdrop-1wrmKB"></div>
                     <div class="bd-modal modal-1UGdnR">
                         <div class="bd-modal-inner inner-1JeGVc">
@@ -227,7 +227,7 @@ Core.prototype.alert = function(title, content) {
 Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes: themeErrors = []}) {
     if (!pluginErrors || !themeErrors) return;
     if (!pluginErrors.length && !themeErrors.length) return;
-    let modal = $(`<div class="bd-modal-wrapper theme-dark">
+    const modal = $(`<div class="bd-modal-wrapper theme-dark">
                     <div class="bd-backdrop backdrop-1wrmKB"></div>
                     <div class="bd-modal bd-content-modal modal-1UGdnR">
                         <div class="bd-modal-inner inner-1JeGVc">
@@ -258,9 +258,9 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
                 </div>`);
 
     function generateTab(errors) {
-        let container = $(`<div class="errors">`);
-        for (let err of errors) {
-            let error = $(`<div class="error">
+        const container = $(`<div class="errors">`);
+        for (const err of errors) {
+            const error = $(`<div class="error">
                                 <div class="table-column column-name">${err.name ? err.name : err.file}</div>
                                 <div class="table-column column-message">${err.message}</div>
                                 <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
@@ -276,7 +276,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
         return container;
     }
 
-    let tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
+    const tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
 
     modal.find(".tab-bar-item").on("click", (e) => {
         e.preventDefault();
@@ -310,16 +310,16 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
 Core.prototype.showToast = function(content, options = {}) {
     if (!Config.deferLoaded) return;
     if (!document.querySelector(".bd-toasts")) {
-        let toastWrapper = document.createElement("div");
+        const toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");
-        let boundingElement = document.querySelector(".chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9");
+        const boundingElement = document.querySelector(".chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9");
         toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
         toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
         toastWrapper.style.setProperty("bottom", (document.querySelector(".chat-3bRxxu form") ? document.querySelector(".chat-3bRxxu form").offsetHeight : 80) + "px");
         document.querySelector(".app, .app-2rEoOp").appendChild(toastWrapper);
     }
     const {type = "", icon = true, timeout = 3000} = options;
-    let toastElem = document.createElement("div");
+    const toastElem = document.createElement("div");
     toastElem.classList.add("bd-toast");
     if (type) toastElem.classList.add("toast-" + type);
     if (type && icon) toastElem.classList.add("icon");

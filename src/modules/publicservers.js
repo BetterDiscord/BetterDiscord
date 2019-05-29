@@ -19,7 +19,7 @@ export default new class {
     }
 
     get root() {
-        let _root = document.getElementById("pubslayerroot");
+        const _root = document.getElementById("pubslayerroot");
         if (!_root) {
             if (!this.injectRoot()) return null;
             return this.root;
@@ -37,7 +37,7 @@ export default new class {
 
     render() {
         // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layers");
             return;
@@ -46,7 +46,7 @@ export default new class {
     }
 
     get button() {
-        let btn = $("<div/>", {
+        const btn = $("<div/>", {
             "class": BDV2.guildClasses.listItem,
             "id": "bd-pub-li",
             "style": SettingsCookie["bda-gs-1"] ? "" : "display: none;"
