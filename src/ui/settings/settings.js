@@ -22,7 +22,7 @@ export default class V2_SettingsPanel {
     }
 
     get root() {
-        let _root = $("#bd-settingspane-container");
+        const _root = $("#bd-settingspane-container");
         if (!_root.length) {
             if (!this.injectRoot()) return null;
             return this.root;
@@ -56,7 +56,7 @@ export default class V2_SettingsPanel {
     }
     getSettings(category) {
         return Object.keys(SettingsInfo).reduce((arr, key) => {
-            let setting = SettingsInfo[key];
+            const setting = SettingsInfo[key];
             if (setting.cat === category && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);
@@ -66,7 +66,7 @@ export default class V2_SettingsPanel {
     }
 
     sideBarOnClick(id) {
-        let self = this;
+        const self = this;
         $(".contentRegion-3nDuYy, .content-region").first().hide();
         $(self.root).show();
         switch (id) {
@@ -89,7 +89,7 @@ export default class V2_SettingsPanel {
     }
 
     renderSidebar() {
-        let self = this;
+        const self = this;
         $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
             BDV2.reactDom.unmountComponentAtNode(self.root);
             $(self.root).hide();
@@ -152,35 +152,35 @@ export default class V2_SettingsPanel {
     }
 
     get pluginsComponent() {
-        let plugins = Object.keys(Plugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+        const plugins = Object.keys(Plugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
             arr.push(BDV2.react.createElement(PluginCard, {key: key, plugin: Plugins[key].plugin}));return arr;
         }, []);
-        let list = BDV2.react.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
-        let refreshIcon = !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+        const list = BDV2.react.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
+        const refreshIcon = !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
             PluginManager.updatePluginList();
             this.sideBarOnClick("plugins");
         }});
-        let pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
-        let contentColumn = BDV2.react.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
+        const pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
+        const contentColumn = BDV2.react.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
         return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
     }
 
     get themesComponent() {
-        let themes = Object.keys(Themes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+        const themes = Object.keys(Themes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
             arr.push(BDV2.react.createElement(ThemeCard, {key: key, theme: Themes[key]}));return arr;
         }, []);
-        let list = BDV2.react.createElement(List, {key: "theme-list", className: "bda-slist", children: themes});
-        let refreshIcon = !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+        const list = BDV2.react.createElement(List, {key: "theme-list", className: "bda-slist", children: themes});
+        const refreshIcon = !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
             ThemeManager.updateThemeList();
             this.sideBarOnClick("themes");
         }});
-        let tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");
-        let contentColumn = BDV2.react.createElement(ContentColumn, {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
+        const tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");
+        const contentColumn = BDV2.react.createElement(ContentColumn, {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
         return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
     }
 
     renderCoreSettings() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -189,7 +189,7 @@ export default class V2_SettingsPanel {
     }
 
     renderEmoteSettings() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -198,7 +198,7 @@ export default class V2_SettingsPanel {
     }
 
     renderCustomCssEditor() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -207,7 +207,7 @@ export default class V2_SettingsPanel {
     }
 
     renderPluginPane() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -216,7 +216,7 @@ export default class V2_SettingsPanel {
     }
 
     renderThemePane() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;

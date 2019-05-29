@@ -15,8 +15,8 @@ export default class V2C_Switch extends BDV2.reactComponent {
     }
 
     render() {
-        let {text, info} = this.props.data;
-        let {checked} = this.state;
+        const {text, info} = this.props.data;
+        const {checked} = this.state;
         return BDV2.react.createElement(
             "div",
             {className: "ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item"},

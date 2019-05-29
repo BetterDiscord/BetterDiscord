@@ -42,13 +42,13 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
     }
 
     render() {
-        let {theme} = this.props;
-        let name = theme.name;
-        let description = theme.description;
-        let version = theme.version;
-        let author = theme.author;
-        let website = Themes[name].website;
-        let source = Themes[name].source;
+        const {theme} = this.props;
+        const name = theme.name;
+        const description = theme.description;
+        const version = theme.version;
+        const author = theme.author;
+        const website = Themes[name].website;
+        const source = Themes[name].source;
 
         return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bda-header"},

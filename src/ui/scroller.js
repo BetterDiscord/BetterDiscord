@@ -15,7 +15,7 @@ export default class V2C_Scroller extends BDV2.reactComponent {
             scrollerClass = "scroller-2FKFPG firefoxFixScrollFlex-cnI2ix contentRegionScroller-26nc1e content-region-scroller scroller";                                         /* fuck */
             wrapperClass = "scrollerWrap-2lJEkd firefoxFixScrollFlex-cnI2ix contentRegionScrollerWrap-3YZXdm content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
         }
-        let {children} = this.props;
+        const {children} = this.props;
         return BDV2.react.createElement(
             "div",
             {key: "scrollerwrap", className: wrapperClass},

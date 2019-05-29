@@ -9,15 +9,14 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
 
     constructor(props) {
         super(props);
-        let self = this;
-        self.props.lines = 0;
-        self.setInitialState();
-        self.attach = self.attach.bind(self);
-        self.detachedEditor = BDV2.react.createElement(EditorDetached, {attach: self.attach});
-        self.onClick = self.onClick.bind(self);
-        self.updateCss = self.updateCss.bind(self);
-        self.saveCss = self.saveCss.bind(self);
-        self.detach = self.detach.bind(self);
+        this.props.lines = 0;
+        this.setInitialState();
+        this.attach = this.attach.bind(this);
+        this.detachedEditor = BDV2.react.createElement(EditorDetached, {attach: this.attach});
+        this.onClick = this.onClick.bind(this);
+        this.updateCss = this.updateCss.bind(this);
+        this.saveCss = this.saveCss.bind(this);
+        this.detach = this.detach.bind(this);
     }
 
     setInitialState() {
@@ -45,9 +44,8 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        let self = this;
-        if (prevState.detached && !self.state.detached) {
-            BDV2.reactDom.unmountComponentAtNode(self.detachedRoot);
+        if (prevState.detached && !this.state.detached) {
+            BDV2.reactDom.unmountComponentAtNode(this.detachedRoot);
         }
     }
 
@@ -65,7 +63,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     get css() {
-        let _ccss = DataStore.getBDData("bdcustomcss");
+        const _ccss = DataStore.getBDData("bdcustomcss");
         let ccss = "";
         if (_ccss && _ccss !== "") {
             ccss = atob(_ccss);
@@ -74,16 +72,16 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     updateLineCount() {
-        let lineCount = this.refs.editor.value.split("\n").length;
+        const lineCount = this.refs.editor.value.split("\n").length;
         if (lineCount == this.props.lines) return;
         this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
         this.props.lines = lineCount;
     }
 
     render() {
-        let self = this;
+        const self = this;
 
-        let {detached} = self.state;
+        const {detached} = self.state;
         return BDV2.react.createElement(
             "div",
             {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default", style: {padding: "60px 40px 0px"}},
@@ -162,16 +160,15 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     onClick(arg) {
-        let self = this;
         switch (arg) {
             case "update":
-                self.updateCss();
+                this.updateCss();
                 break;
             case "save":
-                self.saveCss();
+                this.saveCss();
                 break;
             case "detach":
-                self.detach();
+                this.detach();
                 break;
         }
     }
@@ -197,20 +194,19 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     detach() {
-        let self = this;
-        self.setState({
+        this.setState({
             detached: true
         });
-        let droot = self.detachedRoot;
+        const droot = this.detachedRoot;
         if (!droot) {
             console.log("FAILED TO INJECT ROOT: .app");
             return;
         }
-        BDV2.reactDom.render(self.detachedEditor, droot);
+        BDV2.reactDom.render(this.detachedEditor, droot);
     }
 
     get detachedRoot() {
-        let _root = $("#bd-customcss-detach-container");
+        const _root = $("#bd-customcss-detach-container");
         if (!_root.length) {
             if (!this.injectDetachedRoot()) return null;
             return this.detachedRoot;
@@ -227,8 +223,7 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     attach() {
-        let self = this;
-        self.setState({
+        this.setState({
             detached: false
         });
     }

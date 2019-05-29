@@ -1069,7 +1069,7 @@ Core.prototype.checkForGuilds = function() {
 
 Core.prototype.injectExternals = async function() {
     await _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
-    if (window.__non_webpack_require__.original) window.require = window.require.original;
+    if (window.require.original) window.require = window.require.original;
 };
 
 Core.prototype.initSettings = function () {
@@ -3266,11 +3266,10 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
 
     constructor(props) {
         super(props);
-        let self = this;
-        self.onClick = self.onClick.bind(self);
-        self.updateCss = self.updateCss.bind(self);
-        self.saveCss = self.saveCss.bind(self);
-        self.onChange = self.onChange.bind(self);
+        this.onClick = this.onClick.bind(this);
+        this.updateCss = this.updateCss.bind(this);
+        this.saveCss = this.saveCss.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     componentDidMount() {
@@ -3297,7 +3296,7 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
     }
 
     updateLineCount() {
-        let lineCount = this.refs.editor.value.split("\n").length;
+        const lineCount = this.refs.editor.value.split("\n").length;
         if (lineCount == this.props.lines) return;
         this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
         this.props.lines = lineCount;
@@ -3314,7 +3313,7 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
     }
 
     get css() {
-        let _ccss = modules__WEBPACK_IMPORTED_MODULE_1__["DataStore"].getBDData("bdcustomcss");
+        const _ccss = modules__WEBPACK_IMPORTED_MODULE_1__["DataStore"].getBDData("bdcustomcss");
         let ccss = "";
         if (_ccss && _ccss !== "") {
             ccss = atob(_ccss);
@@ -3323,7 +3322,7 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
     }
 
     get root() {
-        let _root = $("#bd-customcss-detach-container");
+        const _root = $("#bd-customcss-detach-container");
         if (!_root.length) {
             if (!this.injectRoot()) return null;
             return this.detachedRoot;
@@ -3340,7 +3339,7 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
     }
 
     render() {
-        let self = this;
+        const self = this;
         return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
             "div",
             {className: "bd-detached-css-editor", id: "bd-customcss-detach-editor"},
@@ -3403,7 +3402,7 @@ class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"]
     }
 
     onClick(id) {
-        let self = this;
+        const self = this;
         switch (id) {
             case "attach":
                 if ($("#editor-detached").length) self.props.attach();
@@ -3459,15 +3458,14 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
 
     constructor(props) {
         super(props);
-        let self = this;
-        self.props.lines = 0;
-        self.setInitialState();
-        self.attach = self.attach.bind(self);
-        self.detachedEditor = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_detached__WEBPACK_IMPORTED_MODULE_2__["default"], {attach: self.attach});
-        self.onClick = self.onClick.bind(self);
-        self.updateCss = self.updateCss.bind(self);
-        self.saveCss = self.saveCss.bind(self);
-        self.detach = self.detach.bind(self);
+        this.props.lines = 0;
+        this.setInitialState();
+        this.attach = this.attach.bind(this);
+        this.detachedEditor = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_detached__WEBPACK_IMPORTED_MODULE_2__["default"], {attach: this.attach});
+        this.onClick = this.onClick.bind(this);
+        this.updateCss = this.updateCss.bind(this);
+        this.saveCss = this.saveCss.bind(this);
+        this.detach = this.detach.bind(this);
     }
 
     setInitialState() {
@@ -3495,9 +3493,8 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
     }
 
     componentDidUpdate(prevProps, prevState) {
-        let self = this;
-        if (prevState.detached && !self.state.detached) {
-            modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.unmountComponentAtNode(self.detachedRoot);
+        if (prevState.detached && !this.state.detached) {
+            modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.unmountComponentAtNode(this.detachedRoot);
         }
     }
 
@@ -3515,7 +3512,7 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
     }
 
     get css() {
-        let _ccss = modules__WEBPACK_IMPORTED_MODULE_1__["DataStore"].getBDData("bdcustomcss");
+        const _ccss = modules__WEBPACK_IMPORTED_MODULE_1__["DataStore"].getBDData("bdcustomcss");
         let ccss = "";
         if (_ccss && _ccss !== "") {
             ccss = atob(_ccss);
@@ -3524,16 +3521,16 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
     }
 
     updateLineCount() {
-        let lineCount = this.refs.editor.value.split("\n").length;
+        const lineCount = this.refs.editor.value.split("\n").length;
         if (lineCount == this.props.lines) return;
         this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
         this.props.lines = lineCount;
     }
 
     render() {
-        let self = this;
+        const self = this;
 
-        let {detached} = self.state;
+        const {detached} = self.state;
         return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
             "div",
             {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default", style: {padding: "60px 40px 0px"}},
@@ -3612,16 +3609,15 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
     }
 
     onClick(arg) {
-        let self = this;
         switch (arg) {
             case "update":
-                self.updateCss();
+                this.updateCss();
                 break;
             case "save":
-                self.saveCss();
+                this.saveCss();
                 break;
             case "detach":
-                self.detach();
+                this.detach();
                 break;
         }
     }
@@ -3647,20 +3643,19 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
     }
 
     detach() {
-        let self = this;
-        self.setState({
+        this.setState({
             detached: true
         });
-        let droot = self.detachedRoot;
+        const droot = this.detachedRoot;
         if (!droot) {
             console.log("FAILED TO INJECT ROOT: .app");
             return;
         }
-        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(self.detachedEditor, droot);
+        modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.render(this.detachedEditor, droot);
     }
 
     get detachedRoot() {
-        let _root = $("#bd-customcss-detach-container");
+        const _root = $("#bd-customcss-detach-container");
         if (!_root.length) {
             if (!this.injectDetachedRoot()) return null;
             return this.detachedRoot;
@@ -3677,8 +3672,7 @@ class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
     }
 
     attach() {
-        let self = this;
-        self.setState({
+        this.setState({
             detached: false
         });
     }
@@ -3983,7 +3977,7 @@ class V2C_ServerCard extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].reactC
     }
 
     render() {
-        let {server} = this.props;
+        const {server} = this.props;
         return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(
             "div", // cardPrimary-1Hv-to
             {className: `card-3Qj_Yx cardPrimary-1Hv-to marginBottom8-AtZOdT bd-server-card${server.pinned ? " bd-server-card-pinned" : ""}`},
@@ -4141,7 +4135,7 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     search(query, clear) {
-        let self = this;
+        const self = this;
 
         $.ajax({
             method: "GET",
@@ -4215,19 +4209,18 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     connect() {
-        let self = this;
-        let options = self.windowOptions;
+        const options = this.windowOptions;
         options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
         options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
 
-        self.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
+        this.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
         const url = "https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=https://auth.discordservers.com/info";
-        self.joinWindow.webContents.on("did-navigate", (event, url) => {
+        this.joinWindow.webContents.on("did-navigate", (event, url) => {
             if (url != "https://auth.discordservers.com/info") return;
-            self.joinWindow.close();
-            self.checkConnection();
+            this.joinWindow.close();
+            this.checkConnection();
         });
-        self.joinWindow.loadURL(url);
+        this.joinWindow.loadURL(url);
     }
 
     get windowOptions() {
@@ -4249,7 +4242,7 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     get bdServer() {
-        let server = {
+        const server = {
             name: "BetterDiscord",
             online: "7500+",
             members: "20000+",
@@ -4261,8 +4254,8 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
             invite_code: "0Tmfo5ZbORCRqbAd",
             pinned: true
         };
-        let guildList = this.SortedGuildStore.guildPositions;
-        let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
+        const guildList = this.SortedGuildStore.guildPositions;
+        const defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(_card__WEBPACK_IMPORTED_MODULE_5__["default"], {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
     }
 
@@ -4279,7 +4272,7 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     checkConnection() {
-        let self = this;
+        const self = this;
         try {
             $.ajax({
                 method: "GET",
@@ -4387,7 +4380,7 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     searchKeyDown(e) {
-        let self = this;
+        const self = this;
         if (self.state.loading || e.which !== 13) return;
         self.setState({
             loading: true,
@@ -4406,7 +4399,7 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     changeCategory(id) {
-        let self = this;
+        const self = this;
         if (self.state.loading) return;
         self.refs.searchinput.value = "";
         self.setState({
@@ -4423,9 +4416,9 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     get content() {
-        let self = this;
-        let guildList = this.SortedGuildStore.guildPositions;
-        let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
+        const self = this;
+        const guildList = this.SortedGuildStore.guildPositions;
+        const defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         if (self.state.connection.state === 1) return self.notConnected;
         return [modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(
             "div",
@@ -4451,7 +4444,7 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     get notConnected() {
-        let self = this;
+        const self = this;
         //return BDV2.react.createElement(SettingsTitle, { text: self.state.title });
         return [modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(
             "div",
@@ -4496,8 +4489,8 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].rea
     }
 
     get connection() {
-        let self = this;
-        let {connection} = self.state;
+        const self = this;
+        const {connection} = self.state;
         if (connection.state !== 2) return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement("span", null);
 
         return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(
@@ -4584,7 +4577,7 @@ class V2C_Scroller extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].reactCom
             scrollerClass = "scroller-2FKFPG firefoxFixScrollFlex-cnI2ix contentRegionScroller-26nc1e content-region-scroller scroller";                                         /* fuck */
             wrapperClass = "scrollerWrap-2lJEkd firefoxFixScrollFlex-cnI2ix contentRegionScrollerWrap-3YZXdm content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
         }
-        let {children} = this.props;
+        const {children} = this.props;
         return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(
             "div",
             {key: "scrollerwrap", className: wrapperClass},
@@ -4767,7 +4760,7 @@ class V2C_SettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].rea
     }
 
     render() {
-        let {settings} = this.props;
+        const {settings} = this.props;
         return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(
             "div",
             {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
@@ -4807,12 +4800,11 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactC
 
     constructor(props) {
         super(props);
-        let self = this;
-        self.onChange = self.onChange.bind(self);
-        self.showSettings = self.showSettings.bind(self);
-        self.setInitialState();
-        self.hasSettings = typeof self.props.plugin.getSettingsPanel === "function";
-        self.settingsPanel = "";
+        this.onChange = this.onChange.bind(this);
+        this.showSettings = this.showSettings.bind(this);
+        this.setInitialState();
+        this.hasSettings = typeof this.props.plugin.getSettingsPanel === "function";
+        this.settingsPanel = "";
 
         this.reload = this.reload.bind(this);
         this.onReload = this.onReload.bind(this);
@@ -4846,19 +4838,19 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactC
             }
 
             if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-3"]) return;
-            var isHidden = (container, element) => {
+            const isHidden = (container, element) => {
 
-                let cTop = container.scrollTop;
-                let cBottom = cTop + container.clientHeight;
+                const cTop = container.scrollTop;
+                const cBottom = cTop + container.clientHeight;
 
-                let eTop = element.offsetTop;
-                let eBottom = eTop + element.clientHeight;
+                const eTop = element.offsetTop;
+                const eBottom = eTop + element.clientHeight;
 
                 return  (eTop < cTop || eBottom > cBottom);
             };
 
-            let self = $(modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.findDOMNode(this));
-            let container = self.parents(".scroller");
+            const self = $(modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.findDOMNode(this));
+            const container = self.parents(".scroller");
             if (!isHidden(container[0], self[0])) return;
             container.animate({
                 scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
@@ -4878,14 +4870,14 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactC
     }
 
     render() {
-        let self = this;
-        let {plugin} = this.props;
-        let name = this.getString(plugin.getName());
-        let author = this.getString(plugin.getAuthor());
-        let description = this.getString(plugin.getDescription());
-        let version = this.getString(plugin.getVersion());
-        let website = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][name].website;
-        let source = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][name].source;
+        const self = this;
+        const {plugin} = this.props;
+        const name = this.getString(plugin.getName());
+        const author = this.getString(plugin.getAuthor());
+        const description = this.getString(plugin.getDescription());
+        const version = this.getString(plugin.getVersion());
+        const website = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][name].website;
+        const source = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][name].source;
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
@@ -5027,7 +5019,7 @@ class V2_SettingsPanel {
     }
 
     get root() {
-        let _root = $("#bd-settingspane-container");
+        const _root = $("#bd-settingspane-container");
         if (!_root.length) {
             if (!this.injectRoot()) return null;
             return this.root;
@@ -5061,7 +5053,7 @@ class V2_SettingsPanel {
     }
     getSettings(category) {
         return Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"]).reduce((arr, key) => {
-            let setting = data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"][key];
+            const setting = data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"][key];
             if (setting.cat === category && setting.implemented && !setting.hidden) {
                 setting.text = key;
                 arr.push(setting);
@@ -5071,7 +5063,7 @@ class V2_SettingsPanel {
     }
 
     sideBarOnClick(id) {
-        let self = this;
+        const self = this;
         $(".contentRegion-3nDuYy, .content-region").first().hide();
         $(self.root).show();
         switch (id) {
@@ -5094,7 +5086,7 @@ class V2_SettingsPanel {
     }
 
     renderSidebar() {
-        let self = this;
+        const self = this;
         $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactDom.unmountComponentAtNode(self.root);
             $(self.root).hide();
@@ -5157,35 +5149,35 @@ class V2_SettingsPanel {
     }
 
     get pluginsComponent() {
-        let plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+        const plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
             arr.push(modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_plugincard__WEBPACK_IMPORTED_MODULE_9__["default"], {key: key, plugin: data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][key].plugin}));return arr;
         }, []);
-        let list = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_list__WEBPACK_IMPORTED_MODULE_4__["default"], {key: "plugin-list", className: "bda-slist", children: plugins});
-        let refreshIcon = !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_11__["default"], {className: "bd-reload-header", size: "18px", onClick: async () => {
+        const list = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_list__WEBPACK_IMPORTED_MODULE_4__["default"], {key: "plugin-list", className: "bda-slist", children: plugins});
+        const refreshIcon = !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_11__["default"], {className: "bd-reload-header", size: "18px", onClick: async () => {
             modules__WEBPACK_IMPORTED_MODULE_1__["PluginManager"].updatePluginList();
             this.sideBarOnClick("plugins");
         }});
-        let pfBtn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_1__["ContentManager"].pluginsFolder); }}, "Open Plugin Folder");
-        let contentColumn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_5__["default"], {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
+        const pfBtn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_1__["ContentManager"].pluginsFolder); }}, "Open Plugin Folder");
+        const contentColumn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_5__["default"], {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
         return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {contentColumn: true, fade: true, dark: true, children: [contentColumn, modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {key: "tools"})]});
     }
 
     get themesComponent() {
-        let themes = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Themes"]).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+        const themes = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Themes"]).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
             arr.push(modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_themecard__WEBPACK_IMPORTED_MODULE_10__["default"], {key: key, theme: data__WEBPACK_IMPORTED_MODULE_0__["Themes"][key]}));return arr;
         }, []);
-        let list = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_list__WEBPACK_IMPORTED_MODULE_4__["default"], {key: "theme-list", className: "bda-slist", children: themes});
-        let refreshIcon = !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_11__["default"], {className: "bd-reload-header", size: "18px", onClick: async () => {
+        const list = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_list__WEBPACK_IMPORTED_MODULE_4__["default"], {key: "theme-list", className: "bda-slist", children: themes});
+        const refreshIcon = !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_11__["default"], {className: "bd-reload-header", size: "18px", onClick: async () => {
             modules__WEBPACK_IMPORTED_MODULE_1__["ThemeManager"].updateThemeList();
             this.sideBarOnClick("themes");
         }});
-        let tfBtn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_1__["ContentManager"].themesFolder); }}, "Open Theme Folder");
-        let contentColumn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_5__["default"], {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
+        const tfBtn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_1__["ContentManager"].themesFolder); }}, "Open Theme Folder");
+        const contentColumn = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_5__["default"], {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
         return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {contentColumn: true, fade: true, dark: true, children: [contentColumn, modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {key: "tools"})]});
     }
 
     renderCoreSettings() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -5194,7 +5186,7 @@ class V2_SettingsPanel {
     }
 
     renderEmoteSettings() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -5203,7 +5195,7 @@ class V2_SettingsPanel {
     }
 
     renderCustomCssEditor() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -5212,7 +5204,7 @@ class V2_SettingsPanel {
     }
 
     renderPluginPane() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -5221,7 +5213,7 @@ class V2_SettingsPanel {
     }
 
     renderThemePane() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
@@ -5329,7 +5321,7 @@ class V2_SettingsPanel_Sidebar {
     }
 
     get root() {
-        let _root = $("#bd-settings-sidebar");
+        const _root = $("#bd-settings-sidebar");
         if (!_root.length) {
             if (!this.injectRoot()) return null;
             return this.root;
@@ -5338,14 +5330,14 @@ class V2_SettingsPanel_Sidebar {
     }
 
     injectRoot() {
-        let changeLog = $("[class*='side-'] > [class*='item-']:not([class*=Danger])").last();
+        const changeLog = $("[class*='side-'] > [class*='item-']:not([class*=Danger])").last();
         if (!changeLog.length) return false;
         $("<span/>", {id: "bd-settings-sidebar"}).insertBefore(changeLog.prev());
         return true;
     }
 
     render() {
-        let root = this.root;
+        const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: [class*='side-'] > [class*='item-']:not([class*=Danger])");
             return;
@@ -5378,7 +5370,7 @@ class V2C_SideBar extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].reactComp
 
     constructor(props) {
         super(props);
-        let self = this;
+        const self = this;
         const si = $("[class*=side] > [class*=selected]");
         if (si.length) self.scn = si.attr("class");
         const ns = $("[class*=side] > [class*=notSelected]");
@@ -5393,13 +5385,13 @@ class V2C_SideBar extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].reactComp
     }
 
     setInitialState() {
-        let self = this;
+        const self = this;
         self.state = {
             selected: null,
             items: self.props.items
         };
 
-        let initialSelection = self.props.items.find(item => {
+        const initialSelection = self.props.items.find(item => {
             return item.selected;
         });
         if (initialSelection) {
@@ -5408,23 +5400,23 @@ class V2C_SideBar extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].reactComp
     }
 
     render() {
-        let self = this;
-        let {headerText} = self.props;
-        let {items, selected} = self.state;
+        const self = this;
+        const {headerText} = self.props;
+        const {items, selected} = self.state;
         return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(
             "div",
             null,
             modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(_tabbar__WEBPACK_IMPORTED_MODULE_1__["default"].Separator, null),
             modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(_tabbar__WEBPACK_IMPORTED_MODULE_1__["default"].Header, {text: headerText}),
             items.map(item => {
-                let {id, text} = item;
+                const {id, text} = item;
                 return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(_tabbar__WEBPACK_IMPORTED_MODULE_1__["default"].Item, {key: id, selected: selected === id, text: text, id: id, onClick: self.onClick});
             })
         );
     }
 
     onClick(id) {
-        let self = this;
+        const self = this;
         const si = $("[class*=side] > [class*=selected]");
         if (si.length) {
             si.off("click.bdsb").on("click.bsb", e => {
@@ -5470,8 +5462,8 @@ class V2C_Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].reactCompo
     }
 
     render() {
-        let {text, info} = this.props.data;
-        let {checked} = this.state;
+        const {text, info} = this.props.data;
+        const {checked} = this.state;
         return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(
             "div",
             {className: "ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item"},
@@ -5645,13 +5637,13 @@ class V2C_ThemeCard extends modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].reactCo
     }
 
     render() {
-        let {theme} = this.props;
-        let name = theme.name;
-        let description = theme.description;
-        let version = theme.version;
-        let author = theme.author;
-        let website = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][name].website;
-        let source = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][name].source;
+        const {theme} = this.props;
+        const name = theme.name;
+        const description = theme.description;
+        const version = theme.version;
+        const author = theme.author;
+        const website = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][name].website;
+        const source = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][name].source;
 
         return modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].react.createElement("div", {className: "bda-header"},
@@ -5742,7 +5734,7 @@ class V2C_SidebarView extends modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react
     }
 
     render() {
-        let {sidebar, content, tools} = this.props.children;
+        const {sidebar, content, tools} = this.props.children;
         return modules__WEBPACK_IMPORTED_MODULE_0__["BDV2"].react.createElement(
             "div",
             {className: "standardSidebarView-3F1I7i ui-standard-sidebar-view"},
