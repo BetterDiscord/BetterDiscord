@@ -1865,28 +1865,31 @@ var BdApi = {
     get ReactDOM() { return BDV2.reactDom; },
     get WindowConfigFile() {
         if (this._windowConfigFile) return this._windowConfigFile;
-        const base = require("electron").remote.app.getAppPath();
+        const electron = require("electron").remote.app;
         const path = require("path");
+        const base = electron.getAppPath();
+        const roamingBase = electron.getPath("userData");
+        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json")
         const location = path.resolve(base, "..", "app", "config.json");
         const fs = require("fs");
-        if (!fs.existsSync(path.resolve(base, "..", "app"))) return this._windowConfigFile = null;
-        if (!fs.existsSync(location)) fs.writeFileSync(location, JSON.stringify({}));
-        return this._windowConfigFile = location;
+        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
+        if (!realLocation) return this._windowConfigFile = null;
+        return this._windowConfigFile = realLocation;
     }
 };
 
 BdApi.getAllWindowPreferences = function() {
-    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
+    if (!this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
     return require(this.WindowConfigFile);
 };
 
 BdApi.getWindowPreference = function(key) {
-    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
+    if (!this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
     return this.getAllWindowPreferences()[key];
 };
 
 BdApi.setWindowPreference = function(key, value) {
-    if ((bdConfig.os !== "win32" && bdConfig.os !== "darwin") || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
+    if (!this.WindowConfigFile) return; // Tempfix until new injection on other platforms
     const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
