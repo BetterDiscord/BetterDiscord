@@ -11,7 +11,7 @@ import ClassNormalizer from "./classnormalizer";
 import ContentManager from "./contentmanager";
 import DataStore from "./datastore";
 import DevMode from "./devmode";
-import Emitter from "./emitter";
+import Events from "./emitter";
 import EmoteMenu from "./emotemenu";
 import EmoteModule from "./emotes";
 import PluginManager from "./pluginmanager";
@@ -23,7 +23,7 @@ export const React = DiscordModules.React;
 export const ReactDOM = DiscordModules.ReactDOM;
 
 export {BDV2, BdApi, Core, ClassNormalizer, ContentManager, DataStore, DevMode,
-        Emitter, EmoteMenu, EmoteModule, PluginManager, /*PublicServers,*/ ThemeManager,
+        Events, EmoteMenu, EmoteModule, PluginManager, /*PublicServers,*/ ThemeManager,
         VoiceMode, Utilities, WebpackModules, DiscordModules};
 
 

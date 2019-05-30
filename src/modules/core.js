@@ -10,6 +10,7 @@ import ThemeManager from "./thememanager";
 import DataStore from "./datastore";
 import PublicServers from "./publicservers";
 import SettingsPanel from "./settingspanel";
+import VoiceMode from "../builtins/voicemode";
 
 function Core() {
 }
@@ -47,6 +48,7 @@ Core.prototype.init = async function() {
     BDV2.initialize();
     Utilties.log("Startup", "Updating Settings");
     SettingsPanel.initializeSettings();
+    VoiceMode.init();
 
     Utilties.log("Startup", "Loading Plugins");
     const pluginErrors = PluginManager.loadPlugins();

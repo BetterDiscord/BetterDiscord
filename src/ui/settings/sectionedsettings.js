@@ -11,7 +11,7 @@ export default class V2C_SectionedSettingsPanel extends React.Component {
         return React.createElement(
             "div", {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
             this.props.sections.map(section => {
-                return React.createElement(SettingsGroup, Object.assign({}, section, this.props.onChange));
+                return React.createElement(SettingsGroup, Object.assign({}, section, {onChange: this.props.onChange}));
             })
         );
     }

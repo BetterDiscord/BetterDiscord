@@ -5,6 +5,7 @@ import BdApi from "./modules/pluginapi";
 import PluginManager from "./modules/pluginmanager";
 import ThemeManager from "./modules/thememanager";
 import {bdPluginStorage} from "./modules/oldstorage";
+import Events from "./modules/emitter";
 
 // Perform some setup
 proxyLocalStorage();
@@ -26,6 +27,7 @@ window.bdplugins = Plugins;
 window.bdEmotes = Emotes;
 window.bemotes = EmoteBlacklist;
 window.bdPluginStorage = bdPluginStorage;
+window.BDEvents = Events;
 
 export default class CoreWrapper {
     constructor(config) {

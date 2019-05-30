@@ -30,7 +30,6 @@
         "@babel/preset-react": "^7.0.0",
         "@babel/register": "^7.0.0",
         "babel-loader": "^8.0.6",
-        "eslint-plugin-react": "^7.13.0",
         "gulp": "^4.0.0",
         "gulp-babel-minify": "^0.5.0",
         "gulp-csso": "^3.0.1",

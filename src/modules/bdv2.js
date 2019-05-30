@@ -1,5 +1,4 @@
-import {SettingsInfo} from "data";
-import WebpackModules, {DiscordModules} from "./webpackmodules";
+import WebpackModules from "./webpackmodules";
 import BdApi from "./pluginapi";
 import BDLogo from "../ui/icons/bdlogo";
 

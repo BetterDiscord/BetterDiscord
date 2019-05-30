@@ -1,5 +1,5 @@
 import {SettingsInfo, SettingsCookie, Plugins, Themes} from "data";
-import {React, ReactDOM, Utilities, ContentManager, Emitter, EmoteModule, EmoteMenu, PluginManager, ThemeManager} from "modules";
+import {React, ReactDOM, Utilities, ContentManager, Events, EmoteModule, EmoteMenu, PluginManager, ThemeManager} from "modules";
 import Sidebar from "./sidebar";
 import Scroller from "../scroller";
 import List from "../list";
@@ -131,15 +131,15 @@ export default class V2_SettingsPanel {
             }
 
             componentDidMount() {
-                Emitter.on(`${prefix}-reloaded`, this.onChange);
-                Emitter.on(`${prefix}-loaded`, this.onChange);
-                Emitter.on(`${prefix}-unloaded`, this.onChange);
+                Events.on(`${prefix}-reloaded`, this.onChange);
+                Events.on(`${prefix}-loaded`, this.onChange);
+                Events.on(`${prefix}-unloaded`, this.onChange);
             }
 
             componentWillUnmount() {
-                Emitter.off(`${prefix}-reloaded`, this.onChange);
-                Emitter.off(`${prefix}-loaded`, this.onChange);
-                Emitter.off(`${prefix}-unloaded`, this.onChange);
+                Events.off(`${prefix}-reloaded`, this.onChange);
+                Events.off(`${prefix}-loaded`, this.onChange);
+                Events.off(`${prefix}-unloaded`, this.onChange);
             }
 
             onChange() {
