@@ -1,6 +1,6 @@
-import {BDV2} from "modules";
+import {React} from "modules";
 
-class V2C_TabBarItem extends BDV2.reactComponent {
+class V2C_TabBarItem extends React.Component {
 
     constructor(props) {
         super(props);
@@ -15,7 +15,7 @@ class V2C_TabBarItem extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             {className: `ui-tab-bar-item${this.props.selected ? " selected" : ""}`, onClick: this.onClick},
             this.props.text
@@ -29,23 +29,23 @@ class V2C_TabBarItem extends BDV2.reactComponent {
     }
 }
 
-class V2C_TabBarSeparator extends BDV2.reactComponent {
+class V2C_TabBarSeparator extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        return BDV2.react.createElement("div", {className: "ui-tab-bar-separator margin-top-8 margin-bottom-8"});
+        return React.createElement("div", {className: "ui-tab-bar-separator margin-top-8 margin-bottom-8"});
     }
 }
 
-class V2C_TabBarHeader extends BDV2.reactComponent {
+class V2C_TabBarHeader extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             {className: "ui-tab-bar-header"},
             this.props.text

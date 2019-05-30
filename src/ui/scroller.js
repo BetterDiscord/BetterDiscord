@@ -1,6 +1,6 @@
-import {BDV2} from "modules";
+import {React} from "modules";
 
-export default class V2C_Scroller extends BDV2.reactComponent {
+export default class V2C_Scroller extends React.Component {
 
     constructor(props) {
         super(props);
@@ -16,10 +16,10 @@ export default class V2C_Scroller extends BDV2.reactComponent {
             wrapperClass = "scrollerWrap-2lJEkd firefoxFixScrollFlex-cnI2ix contentRegionScrollerWrap-3YZXdm content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv";
         }
         const {children} = this.props;
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             {key: "scrollerwrap", className: wrapperClass},
-            BDV2.react.createElement(
+            React.createElement(
                 "div",
                 {key: "scroller", ref: "scroller", className: scrollerClass},
                 children

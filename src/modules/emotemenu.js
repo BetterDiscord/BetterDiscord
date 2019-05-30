@@ -1,4 +1,4 @@
-import {SettingsCookie} from "data";
+import {SettingsCookie, Emotes} from "data";
 import DataStore from "./datastore";
 import Utilities from "./utilities";
 
@@ -31,9 +31,9 @@ QuickEmoteMenu.prototype.init = function() {
     teContainer += "        <div class=\"scroller scroller-2FKFPG\">";
     teContainer += "            <div class=\"emote-menu-inner\">";
     let url = "";
-    for (const emote in window.bdEmotes.TwitchGlobal) {
-        if (window.bdEmotes.TwitchGlobal.hasOwnProperty(emote)) {
-            url = window.bdEmotes.TwitchGlobal[emote];
+    for (const emote in Emotes.TwitchGlobal) {
+        if (Emotes.TwitchGlobal.hasOwnProperty(emote)) {
+            url = Emotes.TwitchGlobal[emote];
             teContainer += "<div class=\"emote-container\">";
             teContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\">";
             teContainer += "    </img>";

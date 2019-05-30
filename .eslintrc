@@ -1,5 +1,5 @@
 {
-	"extends": "eslint:recommended",
+	"extends": ["eslint:recommended", "plugin:react/recommended"],
 	"env": {
         "browser": true,
         "node": true,
@@ -7,7 +7,10 @@
     },
     "parserOptions": {
         "ecmaVersion": 8,
-        "sourceType": "module"
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     "rules": {
         "semi": 2,
@@ -24,7 +27,9 @@
         "quote-props": ["error", "consistent-as-needed", {"keywords": true}],
         "object-curly-spacing": ["error", "never", { "objectsInObjects": false }],
         "no-var": "error",
-        "prefer-const": "error"
+        "prefer-const": "error",
+        "react/jsx-uses-react": "error",
+        "react/jsx-uses-vars": "error"
     },
     "globals": {
         "webpackJsonp": false,

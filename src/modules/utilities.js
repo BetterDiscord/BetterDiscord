@@ -153,7 +153,7 @@ export default class Utilities {
             get: function(obj, mod) {
                 if (!obj.hasOwnProperty(mod)) return undefined;
                 if (Object.getOwnPropertyDescriptor(obj, mod).get) {
-                    let value = obj[mod];
+                    const value = obj[mod];
                     delete obj[mod];
                     obj[mod] = value;
                 }

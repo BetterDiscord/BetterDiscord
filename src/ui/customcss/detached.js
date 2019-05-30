@@ -1,9 +1,9 @@
 import {SettingsCookie} from "data";
-import {BDV2, DataStore, Core} from "modules";
+import {BDV2, DataStore, Core, DiscordModules} from "modules";
 
 import Checkbox from "../settings/checkbox";
 
-export default class V2C_CssEditorDetached extends BDV2.reactComponent {
+export default class V2C_CssEditorDetached extends DiscordModules.React.Component {
 
     constructor(props) {
         super(props);
@@ -81,48 +81,48 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
 
     render() {
         const self = this;
-        return BDV2.react.createElement(
+        return DiscordModules.React.createElement(
             "div",
             {className: "bd-detached-css-editor", id: "bd-customcss-detach-editor"},
-            BDV2.react.createElement(
+            DiscordModules.React.createElement(
                 "div",
                 {id: "bd-customcss-innerpane"},
-                BDV2.react.createElement("div", {className: "editor-wrapper"},
-                    BDV2.react.createElement("div", {id: "bd-customcss-editor-detached", className: "editor", ref: "editor"}, self.css)
+                DiscordModules.React.createElement("div", {className: "editor-wrapper"},
+                    DiscordModules.React.createElement("div", {id: "bd-customcss-editor-detached", className: "editor", ref: "editor"}, self.css)
                 ),
-                BDV2.react.createElement(
+                DiscordModules.React.createElement(
                     "div",
                     {id: "bd-customcss-attach-controls"},
-                    BDV2.react.createElement(
+                    DiscordModules.React.createElement(
                         "ul",
                         {className: "checkbox-group"},
-                        BDV2.react.createElement(Checkbox, {id: "live-update", text: "Live Update", onChange: self.onChange, checked: SettingsCookie["bda-css-0"]})
+                        DiscordModules.React.createElement(Checkbox, {id: "live-update", text: "Live Update", onChange: self.onChange, checked: SettingsCookie["bda-css-0"]})
                     ),
-                    BDV2.react.createElement(
+                    DiscordModules.React.createElement(
                         "div",
                         {id: "bd-customcss-detach-controls-button"},
-                        BDV2.react.createElement(
+                        DiscordModules.React.createElement(
                             "button",
                             {style: {borderRadius: "3px 0 0 3px", borderRight: "1px solid #3f4146"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("update");
                                 }},
                             "Update"
                         ),
-                        BDV2.react.createElement(
+                        DiscordModules.React.createElement(
                             "button",
                             {style: {borderRadius: "0", borderLeft: "1px solid #2d2d2d", borderRight: "1px solid #2d2d2d"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("save");
                                 }},
                             "Save"
                         ),
-                        BDV2.react.createElement(
+                        DiscordModules.React.createElement(
                             "button",
                             {style: {borderRadius: "0 3px 3px 0", borderLeft: "1px solid #3f4146"}, className: "btn btn-primary", onClick: () => {
                                     self.onClick("attach");
                                 }},
                             "Attach"
                         ),
-                        BDV2.react.createElement(
+                        DiscordModules.React.createElement(
                             "span",
                             {style: {fontSize: "10px", marginLeft: "5px"}},
                             "Unsaved changes are lost on attach"
@@ -147,7 +147,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
         switch (id) {
             case "attach":
                 if ($("#editor-detached").length) self.props.attach();
-                BDV2.reactDom.unmountComponentAtNode(self.root);
+                DiscordModules.ReactDOM.unmountComponentAtNode(self.root);
                 self.root.remove();
                 break;
             case "update":

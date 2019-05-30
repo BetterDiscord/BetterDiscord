@@ -1,25 +1,12 @@
-import {Config, SettingsCookie, EmoteBlacklist} from "data";
+import {Config, SettingsCookie, Emotes, EmoteBlacklist} from "data";
 import Utilities from "./utilities";
 import BDV2 from "./bdv2";
 import BDEmote from "../ui/emote";
 import BdApi from "./pluginapi";
 import DataStore from "./datastore";
+import {DiscordModules} from "./webpackmodules";
 
-window.emotesFfz = {};
-window.emotesBTTV = {};
-window.emotesBTTV2 = {};
-window.emotesTwitch = {};
-window.subEmotesTwitch = {};
-
-window.bdEmotes = {
-    TwitchGlobal: {},
-    TwitchSubscriber: {},
-    BTTV: {},
-    FrankerFaceZ: {},
-    BTTV2: {}
-};
-
-window.bdEmoteSettingIDs = {
+const bdEmoteSettingIDs = {
     TwitchGlobal: "bda-es-7",
     TwitchSubscriber: "bda-es-7",
     BTTV: "bda-es-2",
@@ -31,8 +18,8 @@ function EmoteModule() {
     Object.defineProperty(this, "categories", {
         get: function() {
             const cats = [];
-            for (const current in window.bdEmoteSettingIDs) {
-                if (SettingsCookie[window.bdEmoteSettingIDs[current]]) cats.push(current);
+            for (const current in bdEmoteSettingIDs) {
+                if (SettingsCookie[bdEmoteSettingIDs[current]]) cats.push(current);
             }
             return cats;
         }
@@ -122,24 +109,24 @@ EmoteModule.prototype.init = async function () {
 
 						let current = this.categories[c];
 						if (emoteOverride === "twitch") {
-							if (window.bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
-							else if (window.bdEmotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
+							if (Emotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
+							else if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
 						}
 						else if (emoteOverride === "bttv") {
-							if (window.bdEmotes.BTTV[emoteName]) current = "BTTV";
-							else if (window.bdEmotes.BTTV2[emoteName]) current = "BTTV2";
+							if (Emotes.BTTV[emoteName]) current = "BTTV";
+							else if (Emotes.BTTV2[emoteName]) current = "BTTV2";
 						}
 						else if (emoteOverride === "ffz") {
-							if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
+							if (Emotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
 						}
 
-						if (!window.bdEmotes[current][emoteName] || !SettingsCookie[window.bdEmoteSettingIDs[current]]) continue;
+						if (!Emotes[current][emoteName] || !SettingsCookie[bdEmoteSettingIDs[current]]) continue;
 						const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                         if (!results) continue;
 						const pre = nodes[n].substring(0, results.index + results[1].length);
 						const post = nodes[n].substring(results.index + results[0].length - results[2].length);
 						nodes[n] = pre;
-						const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
+						const emoteComponent = DiscordModules.React.createElement(BDEmote, {name: emoteName, url: Emotes[current][emoteName], modifier: emoteModifier});
 						nodes.splice(n + 1, 0, post);
 						nodes.splice(n + 1, 0, emoteComponent);
 					}
@@ -177,21 +164,13 @@ EmoteModule.prototype.clearEmoteData = async function() {
     if (exists) _fs.unlinkSync(file);
     DataStore.setBDData("emoteCacheDate", (new Date()).toJSON());
 
-    window.bdEmotes = {
+    Object.assign(Emotes, {
         TwitchGlobal: {},
         TwitchSubscriber: {},
         BTTV: {},
         FrankerFaceZ: {},
         BTTV2: {}
-    };
-};
-
-EmoteModule.prototype.goBack = async function(emoteInfo) {
-    for (const e in emoteInfo) {
-        for (const emote in window.bdEmotes[emoteInfo[e].variable]) {
-            window[emoteInfo[e].oldVariable][emote] = emoteInfo[e].getOldData(window.bdEmotes[emoteInfo[e].variable][emote], emote);
-        }
-    }
+    });
 };
 
 EmoteModule.prototype.isCacheValid = function() {
@@ -225,10 +204,10 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         });
 
         let isValid = Utilities.testJSON(data);
-        if (isValid) window.bdEmotes = JSON.parse(data);
+        if (isValid) Object.assign(Emotes, JSON.parse(data));
 
         for (const e in emoteInfo) {
-            isValid = Object.keys(window.bdEmotes[emoteInfo[e].variable]).length > 0;
+            isValid = Object.keys(Emotes[emoteInfo[e].variable]).length > 0;
         }
 
         if (isValid) {
@@ -246,12 +225,12 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     for (const e in emoteInfo) {
         await new Promise(r => setTimeout(r, 1000));
         const data = await this.downloadEmotes(emoteInfo[e]);
-        window.bdEmotes[emoteInfo[e].variable] = data;
+        Emotes[emoteInfo[e].variable] = data;
     }
 
     if (SettingsCookie["fork-ps-2"]) BdApi.showToast("All emotes successfully downloaded.", {type: "success"});
 
-    try { _fs.writeFileSync(file, JSON.stringify(window.bdEmotes), "utf8"); }
+    try { _fs.writeFileSync(file, JSON.stringify(Emotes), "utf8"); }
     catch (err) { Utilities.err("Emotes", "Could not save emote data.", err); }
 };
 
@@ -333,7 +312,7 @@ EmoteModule.prototype.autoCapitalize = function () {
 };
 
 EmoteModule.prototype.capitalize = function (value) {
-    const res = window.bdEmotes.TwitchGlobal;
+    const res = Emotes.TwitchGlobal;
     for (const p in res) {
         if (res.hasOwnProperty(p) && value == (p + "").toLowerCase()) {
             return p;

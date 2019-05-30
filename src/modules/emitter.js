@@ -7,4 +7,4 @@ export default new class BDEvents extends EventEmitter {
     off(eventName, eventAction) {
         this.removeListener(eventName, eventAction);
     }
-}
+};

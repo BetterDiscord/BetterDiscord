@@ -1,110 +1,57 @@
 import {SettingsInfo} from "data";
+import WebpackModules, {DiscordModules} from "./webpackmodules";
 import BdApi from "./pluginapi";
-// import BDLogo from "../ui/icons/bdlogo";
+import BDLogo from "../ui/icons/bdlogo";
 
 export default new class V2 {
 
     constructor() {
         this.editorDetached = false;
-        this.WebpackModules = (() => {
-            const req = webpackJsonp.push([[], {__extra_id__: (module, exports, req) => module.exports = req}, [["__extra_id__"]]]);
-            delete req.m.__extra_id__;
-            delete req.c.__extra_id__;
-            const find = (filter) => {
-                for (const i in req.c) {
-                    if (req.c.hasOwnProperty(i)) {
-                        const m = req.c[i].exports;
-                        if (m && m.__esModule && m.default && filter(m.default)) return m.default;
-                        if (m && filter(m))	return m;
-                    }
-                }
-                console.warn("Cannot find loaded module in cache");
-                return null;
-            };
-
-            const findAll = (filter) => {
-                const modules = [];
-                for (const i in req.c) {
-                    if (req.c.hasOwnProperty(i)) {
-                        const m = req.c[i].exports;
-                        if (m && m.__esModule && m.default && filter(m.default)) modules.push(m.default);
-                        else if (m && filter(m)) modules.push(m);
-                    }
-                }
-                return modules;
-            };
-
-            const findByUniqueProperties = (propNames) => find(module => propNames.every(prop => module[prop] !== undefined));
-            const findByPrototypes = (protoNames) => find(module => module.prototype && protoNames.every(protoProp => module.prototype[protoProp] !== undefined));
-            const findByDisplayName = (displayName) => find(module => module.displayName === displayName);
-
-            return {find, findAll, findByUniqueProperties, findByPrototypes, findByDisplayName};
-        })();
-
-        this.internal = {
-            react: this.WebpackModules.findByUniqueProperties(["Component", "PureComponent", "Children", "createElement", "cloneElement"]),
-            reactDom: this.WebpackModules.findByUniqueProperties(["findDOMNode"])
-        };
-        this.getInternalInstance = e => e[Object.keys(e).find(k => k.startsWith("__reactInternalInstance"))];
     }
 
     initialize() {
-        // BdApi.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
+        BdApi.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
         BdApi.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
         BdApi.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
         BdApi.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
     }
 
-    get react() {return this.internal.react;}
-    get reactDom() {return this.internal.reactDom;}
-    get reactComponent() {return this.internal.react.Component;}
-
-    get messageClasses() {return this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]);}
+    get messageClasses() {return WebpackModules.getByProps("message", "containerCozy");}
     get guildClasses() {
-		const guildsWrapper = this.WebpackModules.findByUniqueProperties(["wrapper", "unreadMentionsBar"]);
-        const guilds = this.WebpackModules.findByUniqueProperties(["guildsError", "selected"]);
-        const pill = this.WebpackModules.findByUniqueProperties(["blobContainer"]);
+		const guildsWrapper = WebpackModules.getByProps("wrapper", "unreadMentionsBar");
+        const guilds = WebpackModules.getByProps("guildsError", "selected");
+        const pill = WebpackModules.getByProps("blobContainer");
         return Object.assign({}, guildsWrapper, guilds, pill);
 	}
 
-    get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
-    get TimeFormatter() {return this.WebpackModules.findByUniqueProperties(["dateFormat"]);}
-    get TooltipWrapper() {return this.WebpackModules.findByDisplayName("TooltipDeprecated");}
-    get NativeModule() {return this.WebpackModules.findByUniqueProperties(["setBadge"]);}
-    get Tooltips() {return this.WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
-    get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
+    get MessageContentComponent() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
+    get TimeFormatter() {return WebpackModules.getByProps("dateFormat");}
+    get TooltipWrapper() {return WebpackModules.getByDisplayName("TooltipDeprecated");}
+    get NativeModule() {return WebpackModules.getByProps("setBadge");}
+    get Tooltips() {return WebpackModules.getModule(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
+    get KeyGenerator() {return WebpackModules.getModule(m => m.toString && /"binary"/.test(m.toString()));}
 
-    parseSettings(cat) {
-        return Object.keys(SettingsInfo).reduce((arr, key) => {
-            const setting = SettingsInfo[key];
-            if (setting.cat === cat && setting.implemented && !setting.hidden) {
-                setting.text = key;
-                arr.push(setting);
-            } return arr;
-        }, []);
+    patchSocial() {
+        if (this.socialPatch) return;
+        const TabBar = BdApi.findModule(m => m.displayName == "TabBar");
+        const Anchor = BdApi.findModule(m => m.displayName == "Anchor");
+        if (!TabBar || !Anchor) return;
+        this.socialPatch = BdApi.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
+            const children = data.returnValue.props.children;
+            if (!children || !children.length) return;
+            if (children[children.length - 2].type.displayName !== "Separator") return;
+            if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
+            const original = children[children.length - 1].type;
+            const newOne = function() {
+                const returnVal = original(...arguments);
+                returnVal.props.children.push(BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", rel: "author", title: "BandagedBD", target: "_blank"},
+                    BdApi.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                ));
+                return returnVal;
+            };
+            children[children.length - 1].type = newOne;
+        }});
     }
-
-    // patchSocial() {
-    //     if (this.socialPatch) return;
-    //     const TabBar = BdApi.findModule(m => m.displayName == "TabBar");
-    //     const Anchor = BdApi.findModule(m => m.displayName == "Anchor");
-    //     if (!TabBar || !Anchor) return;
-    //     this.socialPatch = BdApi.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
-    //         const children = data.returnValue.props.children;
-    //         if (!children || !children.length) return;
-    //         if (children[children.length - 2].type.displayName !== "Separator") return;
-    //         if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
-    //         const original = children[children.length - 1].type;
-    //         const newOne = function() {
-    //             const returnVal = original(...arguments);
-    //             returnVal.props.children.push(BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", rel: "author", title: "BandagedBD", target: "_blank"},
-    //                 BdApi.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
-    //             ));
-    //             return returnVal;
-    //         };
-    //         children[children.length - 1].type = newOne;
-    //     }});
-    // }
 
     patchGuildListItems() {
         if (this.guildListItemsPatch) return;

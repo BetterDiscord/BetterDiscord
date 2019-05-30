@@ -1,7 +1,7 @@
-import {BDV2} from "modules";
+import {React} from "modules";
 import CloseButton from "../icons/close";
 
-export default class V2C_Tools extends BDV2.reactComponent {
+export default class V2C_Tools extends React.Component {
 
     constructor(props) {
         super(props);
@@ -9,14 +9,14 @@ export default class V2C_Tools extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement("div", {className: "tools-container toolsContainer-1edPuj"},
-            BDV2.react.createElement("div", {className: "tools tools-3-3s-N"},
-                BDV2.react.createElement("div", {className: "container-1sFeqf"},
-                    BDV2.react.createElement("div",
+        return React.createElement("div", {className: "tools-container toolsContainer-1edPuj"},
+            React.createElement("div", {className: "tools tools-3-3s-N"},
+                React.createElement("div", {className: "container-1sFeqf"},
+                    React.createElement("div",
                         {className: "btn-close closeButton-1tv5uR", onClick: this.onClick},
-                        BDV2.react.createElement(CloseButton, null)
+                        React.createElement(CloseButton, null)
                     ),
-                    BDV2.react.createElement(
+                    React.createElement(
                         "div",
                         {className: "esc-text keybind-KpFkfr"},
                         "ESC"

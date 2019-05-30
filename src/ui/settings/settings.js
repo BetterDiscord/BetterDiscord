@@ -1,5 +1,5 @@
 import {SettingsInfo, SettingsCookie, Plugins, Themes} from "data";
-import {BDV2, Utilities, ContentManager, Emitter, EmoteModule, EmoteMenu, PluginManager, ThemeManager} from "modules";
+import {React, ReactDOM, Utilities, ContentManager, Emitter, EmoteModule, EmoteMenu, PluginManager, ThemeManager} from "modules";
 import Sidebar from "./sidebar";
 import Scroller from "../scroller";
 import List from "../list";
@@ -39,7 +39,7 @@ export default class V2_SettingsPanel {
         $(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .ui-standard-sidebar-view").append(root);
 
         Utilities.onRemoved(root[0], () => {
-            BDV2.reactDom.unmountComponentAtNode(root[0]);
+            ReactDOM.unmountComponentAtNode(root[0]);
         });
         return true;
     }
@@ -91,7 +91,7 @@ export default class V2_SettingsPanel {
     renderSidebar() {
         const self = this;
         $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
-            BDV2.reactDom.unmountComponentAtNode(self.root);
+            ReactDOM.unmountComponentAtNode(self.root);
             $(self.root).hide();
             $(".contentRegion-3nDuYy, .content-region").first().show();
         });
@@ -99,32 +99,32 @@ export default class V2_SettingsPanel {
     }
 
     get coreComponent() {
-        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [
-            BDV2.react.createElement(SectionedSettingsPanel, {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
-            BDV2.react.createElement(Tools, {key: "tools"})
+        return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [
+            React.createElement(SectionedSettingsPanel, {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
+            React.createElement(Tools, {key: "tools"})
         ]});
     }
 
     get emoteComponent() {
-        return BDV2.react.createElement(Scroller, {
+        return React.createElement(Scroller, {
             contentColumn: true, fade: true, dark: true, children: [
-                BDV2.react.createElement(SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
+                React.createElement(SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
                     title: "Clear Emote Cache",
                     onClick: () => { EmoteModule.clearEmoteData(); EmoteModule.init(); EmoteMenu.init(); }
                 }}),
-                BDV2.react.createElement(Tools, {key: "tools"})
+                React.createElement(Tools, {key: "tools"})
         ]});
     }
 
     get customCssComponent() {
-        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(CssEditor, {key: "csseditor"}), BDV2.react.createElement(Tools, {key: "tools"})]});
+        return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [React.createElement(CssEditor, {key: "csseditor"}), React.createElement(Tools, {key: "tools"})]});
     }
 
     contentComponent(type) {
         const componentElement = type == "plugins" ? this.pluginsComponent : this.themesComponent;
         const prefix = type.replace("s", "");
         const settingsList = this;
-        class ContentList extends BDV2.react.Component {
+        class ContentList extends React.Component {
             constructor(props) {
                 super(props);
                 this.onChange = this.onChange.bind(this);
@@ -148,35 +148,35 @@ export default class V2_SettingsPanel {
 
             render() {return componentElement;}
         }
-        return BDV2.react.createElement(ContentList);
+        return React.createElement(ContentList);
     }
 
     get pluginsComponent() {
         const plugins = Object.keys(Plugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(PluginCard, {key: key, plugin: Plugins[key].plugin}));return arr;
+            arr.push(React.createElement(PluginCard, {key: key, plugin: Plugins[key].plugin}));return arr;
         }, []);
-        const list = BDV2.react.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
-        const refreshIcon = !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+        const list = React.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
+        const refreshIcon = !SettingsCookie["fork-ps-5"] && React.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
             PluginManager.updatePluginList();
             this.sideBarOnClick("plugins");
         }});
-        const pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
-        const contentColumn = BDV2.react.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
-        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
+        const pfBtn = React.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
+        const contentColumn = React.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
+        return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, React.createElement(Tools, {key: "tools"})]});
     }
 
     get themesComponent() {
         const themes = Object.keys(Themes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(ThemeCard, {key: key, theme: Themes[key]}));return arr;
+            arr.push(React.createElement(ThemeCard, {key: key, theme: Themes[key]}));return arr;
         }, []);
-        const list = BDV2.react.createElement(List, {key: "theme-list", className: "bda-slist", children: themes});
-        const refreshIcon = !SettingsCookie["fork-ps-5"] && BDV2.react.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+        const list = React.createElement(List, {key: "theme-list", className: "bda-slist", children: themes});
+        const refreshIcon = !SettingsCookie["fork-ps-5"] && React.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
             ThemeManager.updateThemeList();
             this.sideBarOnClick("themes");
         }});
-        const tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");
-        const contentColumn = BDV2.react.createElement(ContentColumn, {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
-        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
+        const tfBtn = React.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");
+        const contentColumn = React.createElement(ContentColumn, {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
+        return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, React.createElement(Tools, {key: "tools"})]});
     }
 
     renderCoreSettings() {
@@ -185,7 +185,7 @@ export default class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        BDV2.reactDom.render(this.coreComponent, root);
+        ReactDOM.render(this.coreComponent, root);
     }
 
     renderEmoteSettings() {
@@ -194,7 +194,7 @@ export default class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        BDV2.reactDom.render(this.emoteComponent, root);
+        ReactDOM.render(this.emoteComponent, root);
     }
 
     renderCustomCssEditor() {
@@ -203,7 +203,7 @@ export default class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        BDV2.reactDom.render(this.customCssComponent, root);
+        ReactDOM.render(this.customCssComponent, root);
     }
 
     renderPluginPane() {
@@ -212,7 +212,7 @@ export default class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        BDV2.reactDom.render(this.contentComponent("plugins"), root);
+        ReactDOM.render(this.contentComponent("plugins"), root);
     }
 
     renderThemePane() {
@@ -221,6 +221,6 @@ export default class V2_SettingsPanel {
             console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
             return;
         }
-        BDV2.reactDom.render(this.contentComponent("themes"), root);
+        ReactDOM.render(this.contentComponent("themes"), root);
     }
 }

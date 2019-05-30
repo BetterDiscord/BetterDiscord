@@ -59,7 +59,7 @@ PluginModule.prototype.startPlugin = function(plugin, reload = false) {
         if (SettingsCookie["fork-ps-2"] && !reload) Core.showToast(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
         PluginCookie[plugin] = false;
         this.savePluginData();
-        Utilities.err("Plugins", name + " could not be started.", err);
+        Utilities.err("Plugins", plugin + " could not be started.", err);
     }
 };
 

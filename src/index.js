@@ -1,4 +1,4 @@
-import {SettingsCookie, SettingsInfo, PluginCookie, ThemeCookie, Plugins, Themes, EmoteBlacklist} from "data";
+import {SettingsCookie, SettingsInfo, PluginCookie, ThemeCookie, Plugins, Themes, Emotes, EmoteBlacklist} from "data";
 import proxyLocalStorage from "./localstorage";
 import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
@@ -23,6 +23,7 @@ window.pluginModule = PluginManager;
 window.themeModule = ThemeManager;
 window.bdthemes = Themes;
 window.bdplugins = Plugins;
+window.bdEmotes = Emotes;
 window.bemotes = EmoteBlacklist;
 window.bdPluginStorage = bdPluginStorage;
 
@@ -35,6 +36,44 @@ export default class CoreWrapper {
         Core.init();
     }
 }
+
+export function patchModuleLoad() {
+    const namespace = "betterdiscord";
+    const prefix = `${namespace}/`;
+    const Module = require("module");
+    const load = Module._load;
+    // const resolveFilename = Module._resolveFilename;
+
+    Module._load = function (request) {
+        if (request === namespace || request.startsWith(prefix)) {
+            const requested = request.substr(prefix.length);
+            if (requested == "api") return BdApi;
+        }
+
+        return load.apply(this, arguments);
+    };
+
+    // Module._resolveFilename = function (request, parent, isMain) {
+    //     if (request === "betterdiscord" || request.startsWith("betterdiscord/")) {
+    //         const contentPath = PluginManager.getPluginPathByModule(parent);
+    //         if (contentPath) return request;
+    //     }
+
+    //     return resolveFilename.apply(this, arguments);
+    // };
+
+    return function() {
+        Module._load = load;
+    };
+}
+
+// export function getPluginByModule(module) {
+//     return this.localContent.find(plugin => module.filename === plugin.contentPath || module.filename.startsWith(plugin.contentPath + path.sep));
+// }
+
+// export function getPluginPathByModule(module) {
+//     return Object.keys(this.pluginApiInstances).find(contentPath => module.filename === contentPath || module.filename.startsWith(contentPath + path.sep));
+// }
 
 // var settingsPanel, emoteModule, quickEmoteMenu, voiceMode,, dMode, publicServersModule;
 // var bdConfig = null;

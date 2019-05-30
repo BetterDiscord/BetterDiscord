@@ -20,11 +20,28 @@ module.exports = {
     events: `require("events")`
   },
   resolve: {
-    extensions: [".js"],
+    extensions: [".js", ".jsx"],
     modules: [
       path.resolve("src", "data"),
       path.resolve("src", "modules"),
       path.resolve("src", "ui")
+    ]
+  },
+  module: {
+    rules: [
+      {
+        test: /.jsx?$/,
+        loader: "babel-loader",
+        exclude: /node_modules/,
+        query: {
+          presets: [["@babel/env", {
+            targets: {
+                node: "10.11.0",
+                chrome: "69"
+            }
+        }], "@babel/react"]
+        }
+      }
     ]
   }
 };

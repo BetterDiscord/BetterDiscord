@@ -25,13 +25,16 @@
     },
     "homepage": "https://github.com/rauenzi/BetterDiscordApp#readme",
     "devDependencies": {
+        "@babel/core": "^7.3.4",
+        "@babel/preset-env": "^7.3.4",
+        "@babel/preset-react": "^7.0.0",
+        "@babel/register": "^7.0.0",
+        "babel-loader": "^8.0.6",
+        "eslint-plugin-react": "^7.13.0",
         "gulp": "^4.0.0",
         "gulp-babel-minify": "^0.5.0",
         "gulp-csso": "^3.0.1",
         "gulp-rename": "^1.4.0",
-        "@babel/core": "^7.3.4",
-        "@babel/preset-env": "^7.3.4",
-        "@babel/register": "^7.0.0",
         "webpack": "^4.29.6",
         "webpack-cli": "^3.2.3"
     }
