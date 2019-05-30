@@ -1,11 +1,11 @@
-import {BDV2} from "modules";
+import {React, ReactDOM, WebpackModules} from "modules";
 import SidebarView from "../sidebarview";
 import Tools from "../settings/exitbutton";
 import TabBar from "../settings/tabbar";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
 
-export default class V2C_PublicServers extends BDV2.reactComponent {
+export default class V2C_PublicServers extends React.Component {
 
     constructor(props) {
         super(props);
@@ -18,10 +18,10 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         this.join = this.join.bind(this);
         this.connect = this.connect.bind(this);
 
-        this.GuildStore = BDV2.WebpackModules.findByUniqueProperties(["getGuilds"]);
-        this.AvatarDefaults = BDV2.WebpackModules.findByUniqueProperties(["getUserAvatarURL", "DEFAULT_AVATARS"]);
-        this.InviteActions = BDV2.WebpackModules.findByUniqueProperties(["acceptInvite"]);
-        this.SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
+        this.GuildStore = WebpackModules.getByProps("getGuilds");
+        this.AvatarDefaults = WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");
+        this.InviteActions = WebpackModules.getByProps("acceptInvite");
+        this.SortedGuildStore = WebpackModules.getByProps("getSortedGuilds");
     }
 
     componentDidMount() {
@@ -43,7 +43,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     close() {
-        BDV2.reactDom.unmountComponentAtNode(document.getElementById(this.props.rootId));
+        ReactDOM.unmountComponentAtNode(document.getElementById(this.props.rootId));
     }
 
     search(query, clear) {
@@ -168,7 +168,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         };
         const guildList = this.SortedGuildStore.guildPositions;
         const defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
-        return BDV2.react.createElement(ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
+        return React.createElement(ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
     }
 
     get endPoint() {
@@ -236,7 +236,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement(SidebarView, {ref: "sbv", children: this.component});
+        return React.createElement(SidebarView, {ref: "sbv", children: this.component});
     }
 
     get component() {
@@ -248,31 +248,31 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
                 component: this.content
             },
             tools: {
-                component: BDV2.react.createElement(Tools, {key: "pt", ref: "tools", onClick: this.close})
+                component: React.createElement(Tools, {key: "pt", ref: "tools", onClick: this.close})
             }
         };
     }
 
     get sidebar() {
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             {className: "sidebar", key: "ps"},
-            BDV2.react.createElement(
+            React.createElement(
                 "div",
                 {className: "ui-tab-bar SIDE"},
-                BDV2.react.createElement(
+                React.createElement(
                     "div",
                     {className: "ui-tab-bar-header", style: {fontSize: "16px"}},
                     "Public Servers"
                 ),
-                BDV2.react.createElement(TabBar.Separator, null),
+                React.createElement(TabBar.Separator, null),
                 this.searchInput,
-                BDV2.react.createElement(TabBar.Separator, null),
-                BDV2.react.createElement(TabBar.Header, {text: "Categories"}),
+                React.createElement(TabBar.Separator, null),
+                React.createElement(TabBar.Header, {text: "Categories"}),
                 this.categoryButtons.map((value, index) => {
-                    return BDV2.react.createElement(TabBar.Item, {id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index});
+                    return React.createElement(TabBar.Item, {id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index});
                 }),
-                BDV2.react.createElement(TabBar.Separator, null),
+                React.createElement(TabBar.Separator, null),
                 this.footer,
                 this.connection
             )
@@ -280,13 +280,13 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get searchInput() {
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             {className: "ui-form-item"},
-            BDV2.react.createElement(
+            React.createElement(
                 "div",
                 {className: "ui-text-input flex-vertical", style: {width: "172px", marginLeft: "10px"}},
-                BDV2.react.createElement("input", {ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50"})
+                React.createElement("input", {ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50"})
             )
         );
     }
@@ -332,40 +332,40 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         const guildList = this.SortedGuildStore.guildPositions;
         const defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         if (self.state.connection.state === 1) return self.notConnected;
-        return [BDV2.react.createElement(
+        return [React.createElement(
             "div",
             {ref: "content", key: "pc", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
-            BDV2.react.createElement(SettingsTitle, {text: self.state.title}),
+            React.createElement(SettingsTitle, {text: self.state.title}),
             self.bdServer,
             self.state.servers.map((server) => {
-                return BDV2.react.createElement(ServerCard, {key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
+                return React.createElement(ServerCard, {key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
             }),
-            self.state.next && BDV2.react.createElement(
+            self.state.next && React.createElement(
                 "button",
                 {type: "button", onClick: () => {
                         if (self.state.loading) return;self.setState({loading: true}); self.search(self.state.next, false);
                     }, className: "ui-button filled brand small grow", style: {width: "100%", marginTop: "10px", marginBottom: "10px"}},
-                BDV2.react.createElement(
+                React.createElement(
                     "div",
                     {className: "ui-button-contents"},
                     self.state.loading ? "Loading" : "Load More"
                 )
             ),
-            self.state.servers.length > 0 && BDV2.react.createElement(SettingsTitle, {text: self.state.title})
+            self.state.servers.length > 0 && React.createElement(SettingsTitle, {text: self.state.title})
         )];
     }
 
     get notConnected() {
         const self = this;
-        //return BDV2.react.createElement(SettingsTitle, { text: self.state.title });
-        return [BDV2.react.createElement(
+        //return React.createElement(SettingsTitle, { text: self.state.title });
+        return [React.createElement(
             "div",
             {key: "ncc", ref: "content", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
-            BDV2.react.createElement(
+            React.createElement(
                 "h2",
                 {className: "ui-form-title h2 margin-reset margin-bottom-20"},
                 "Not connected to discordservers.com!",
-                BDV2.react.createElement(
+                React.createElement(
                     "button",
                     {
                         onClick: self.connect,
@@ -378,7 +378,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
                             lineHeight: "14px"
                         }
                     },
-                    BDV2.react.createElement(
+                    React.createElement(
                         "div",
                         {className: "ui-button-contents"},
                         "Connect"
@@ -389,10 +389,10 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     get footer() {
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             {className: "ui-tab-bar-header"},
-            BDV2.react.createElement(
+            React.createElement(
                 "a",
                 {href: "https://discordservers.com", target: "_blank"},
                 "Discordservers.com"
@@ -403,25 +403,25 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     get connection() {
         const self = this;
         const {connection} = self.state;
-        if (connection.state !== 2) return BDV2.react.createElement("span", null);
+        if (connection.state !== 2) return React.createElement("span", null);
 
-        return BDV2.react.createElement(
+        return React.createElement(
             "span",
             null,
-            BDV2.react.createElement(TabBar.Separator, null),
-            BDV2.react.createElement(
+            React.createElement(TabBar.Separator, null),
+            React.createElement(
                 "span",
                 {style: {color: "#b9bbbe", fontSize: "10px", marginLeft: "10px"}},
                 "Connected as: ",
                 `${connection.user.username}#${connection.user.discriminator}`
             ),
-            BDV2.react.createElement(
+            React.createElement(
                 "div",
                 {style: {padding: "5px 10px 0 10px"}},
-                BDV2.react.createElement(
+                React.createElement(
                     "button",
                     {style: {width: "100%", minHeight: "20px"}, type: "button", className: "ui-button filled brand small grow"},
-                    BDV2.react.createElement(
+                    React.createElement(
                         "div",
                         {className: "ui-button-contents", onClick: self.connect},
                         "Reconnect"

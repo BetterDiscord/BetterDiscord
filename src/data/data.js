@@ -1,10 +1,11 @@
 import SettingsInfo from "./settings";
-import SettingsCookie from "./settingscookie";
+import SettingsCookie from "./cookies/settingscookie";
 import Config from "./config";
-import PluginCookie from "./plugincookie";
-import ThemeCookie from "./themecookie";
+import PluginCookie from "./cookies/plugincookie";
+import ThemeCookie from "./cookies/themecookie";
 import Themes from "./themes";
 import Plugins from "./plugins";
-import EmoteBlacklist from "./emoteblacklist";
+import Emotes from "./emotes/emotes";
+import EmoteBlacklist from "./emotes/blacklist";
 
-export {SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins, EmoteBlacklist};
+export {SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins, Emotes, EmoteBlacklist};

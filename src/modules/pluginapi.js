@@ -1,36 +1,39 @@
-import {Config, Plugins, SettingsCookie, PluginCookie, ThemeCookie} from "data";
+import {Plugins, SettingsCookie, PluginCookie, ThemeCookie} from "data";
 import Utilities from "./utilities";
-import BDV2 from "./bdv2";
+import WebpackModules, {DiscordModules} from "./webpackmodules";
 import DataStore from "./datastore";
 import Core from "./core";
 
 const BdApi = {
-    get React() { return BDV2.react; },
-    get ReactDOM() { return BDV2.reactDom; },
+    get React() { return DiscordModules.React; },
+    get ReactDOM() { return DiscordModules.ReactDOM; },
     get WindowConfigFile() {
         if (this._windowConfigFile) return this._windowConfigFile;
-        const base = require("electron").remote.app.getAppPath();
+        const electron = require("electron").remote.app;
         const path = require("path");
+        const base = electron.getAppPath();
+        const roamingBase = electron.getPath("userData");
+        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json");
         const location = path.resolve(base, "..", "app", "config.json");
         const fs = require("fs");
-        if (!fs.existsSync(path.resolve(base, "..", "app"))) return this._windowConfigFile = null;
-        if (!fs.existsSync(location)) fs.writeFileSync(location, JSON.stringify({}));
-        return this._windowConfigFile = location;
+        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
+        if (!realLocation) return this._windowConfigFile = null;
+        return this._windowConfigFile = realLocation;
     }
 };
 
 BdApi.getAllWindowPreferences = function() {
-    if ((Config.os !== "win32" && Config.os !== "darwin") || !this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
+    if (!this.WindowConfigFile) return {};
     return __non_webpack_require__(this.WindowConfigFile);
 };
 
 BdApi.getWindowPreference = function(key) {
-    if ((Config.os !== "win32" && Config.os !== "darwin") || !this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
+    if (!this.WindowConfigFile) return undefined;
     return this.getAllWindowPreferences()[key];
 };
 
 BdApi.setWindowPreference = function(key, value) {
-    if ((Config.os !== "win32" && Config.os !== "darwin") || !this.WindowConfigFile) return; // Tempfix until new injection on other platforms
+    if (!this.WindowConfigFile) return;
     const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
@@ -140,32 +143,32 @@ BdApi.showToast = function(content, options = {}) {
 
 // Finds module
 BdApi.findModule = function(filter) {
-    return BDV2.WebpackModules.find(filter);
+    return WebpackModules.getModule(filter);
 };
 
 // Finds module
 BdApi.findAllModules = function(filter) {
-    return BDV2.WebpackModules.findAll(filter);
+    return WebpackModules.getModule(filter, false);
 };
 
 // Finds module
 BdApi.findModuleByProps = function(...props) {
-    return BDV2.WebpackModules.findByUniqueProperties(props);
+    return WebpackModules.getByProps(...props);
 };
 
 BdApi.findModuleByPrototypes = function(...protos) {
-    return BDV2.WebpackModules.findByPrototypes(protos);
+    return WebpackModules.getByPrototypes(...protos);
 };
 
 BdApi.findModuleByDisplayName = function(name) {
-    return BDV2.WebpackModules.findByDisplayName(name);
+    return WebpackModules.getByDisplayName(name);
 };
 
 // Gets react instance
 BdApi.getInternalInstance = function(node) {
     if (!(node instanceof window.jQuery) && !(node instanceof Element)) return undefined;
     if (node instanceof jQuery) node = node[0];
-    return BDV2.getInternalInstance(node);
+    return Utilities.getInternalInstance(node);
 };
 
 // Gets data

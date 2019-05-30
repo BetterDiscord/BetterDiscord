@@ -1,6 +1,6 @@
-import {BDV2} from "modules";
+import {React} from "modules";
 
-export default class V2C_Checkbox extends BDV2.reactComponent {
+export default class V2C_Checkbox extends React.Component {
     constructor(props) {
         super(props);
         this.onClick = this.onClick.bind(this);
@@ -14,19 +14,19 @@ export default class V2C_Checkbox extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement(
+        return React.createElement(
             "li",
             null,
-            BDV2.react.createElement(
+            React.createElement(
                 "div",
                 {className: "checkbox checkbox-3kaeSU da-checkbox checkbox-3EVISJ da-checkbox", onClick: this.onClick},
-                BDV2.react.createElement(
+                React.createElement(
                     "div",
                     {className: "checkbox-inner checkboxInner-3yjcPe da-checkboxInner"},
-                    BDV2.react.createElement("input", {className: "checkboxElement-1qV33p da-checkboxElement", checked: this.state.checked, onChange: () => {}, type: "checkbox"}),
-                    BDV2.react.createElement("span", null)
+                    React.createElement("input", {className: "checkboxElement-1qV33p da-checkboxElement", checked: this.state.checked, onChange: () => {}, type: "checkbox"}),
+                    React.createElement("span", null)
                 ),
-                BDV2.react.createElement(
+                React.createElement(
                     "span",
                     null,
                     this.props.text

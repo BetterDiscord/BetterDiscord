@@ -1,6 +1,6 @@
-import {BDV2} from "modules";
+import {React, ReactDOM} from "modules";
 
-export default class V2C_Layer extends BDV2.reactComponent {
+export default class V2C_Layer extends React.Component {
 
     constructor(props) {
         super(props);
@@ -9,7 +9,7 @@ export default class V2C_Layer extends BDV2.reactComponent {
     componentDidMount() {
         $(window).on(`keyup.${this.props.id}`, e => {
             if (e.which === 27) {
-                BDV2.reactDom.unmountComponentAtNode(this.refs.root.parentNode);
+                ReactDOM.unmountComponentAtNode(this.refs.root.parentNode);
             }
         });
 
@@ -52,7 +52,7 @@ export default class V2C_Layer extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             {className: "layer bd-layer layer-3QrUeG", id: this.props.id, ref: "root", style: {opacity: 0, transform: "scale(1.1) translateZ(0px)"}},
             this.props.children

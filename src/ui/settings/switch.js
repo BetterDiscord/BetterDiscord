@@ -1,6 +1,6 @@
-import {BDV2} from "modules";
+import {React} from "modules";
 
-export default class V2C_Switch extends BDV2.reactComponent {
+export default class V2C_Switch extends React.Component {
 
     constructor(props) {
         super(props);
@@ -17,25 +17,25 @@ export default class V2C_Switch extends BDV2.reactComponent {
     render() {
         const {text, info} = this.props.data;
         const {checked} = this.state;
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             {className: "ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item"},
-            BDV2.react.createElement(
+            React.createElement(
                 "div",
                 {className: "ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap"},
-                BDV2.react.createElement(
+                React.createElement(
                     "h3",
                     {className: "ui-form-title h3 margin-reset margin-reset ui-flex-child"},
                     text
                 ),
-                BDV2.react.createElement(
+                React.createElement(
                     "label",
                     {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
-                    BDV2.react.createElement("input", {className: "ui-switch-checkbox", type: "checkbox", checked: checked, onChange: e => this.onChange(e)}),
-                    BDV2.react.createElement("div", {className: `ui-switch ${checked ? "checked" : ""}`})
+                    React.createElement("input", {className: "ui-switch-checkbox", type: "checkbox", checked: checked, onChange: e => this.onChange(e)}),
+                    React.createElement("div", {className: `ui-switch ${checked ? "checked" : ""}`})
                 )
             ),
-            BDV2.react.createElement(
+            React.createElement(
                 "div",
                 {className: "ui-form-text style-description margin-top-4", style: {flex: "1 1 auto"}},
                 info

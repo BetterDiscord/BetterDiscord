@@ -1,5 +1,5 @@
 import {SettingsCookie} from "data";
-import {BDV2} from "modules";
+import {BDV2, DiscordModules} from "modules";
 import {PublicServers} from "ui";
 
 export default new class {
@@ -11,10 +11,10 @@ export default new class {
     }
 
     get component() {
-        return BDV2.react.createElement(PublicServers.Layer, {
+        return DiscordModules.React.createElement(PublicServers.Layer, {
             rootId: "pubslayerroot",
             id: "pubslayer",
-            children: BDV2.react.createElement(PublicServers.Menu, {rootId: "pubslayerroot"})
+            children: DiscordModules.React.createElement(PublicServers.Menu, {rootId: "pubslayerroot"})
         });
     }
 
@@ -42,7 +42,7 @@ export default new class {
             console.log("FAILED TO LOCATE ROOT: .layers");
             return;
         }
-        BDV2.reactDom.render(this.component, root);
+        DiscordModules.ReactDOM.render(this.component, root);
     }
 
     get button() {

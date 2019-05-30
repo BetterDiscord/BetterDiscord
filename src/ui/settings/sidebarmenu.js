@@ -1,7 +1,7 @@
-import {BDV2} from "modules";
+import {React} from "modules";
 import TabBar from "./tabbar";
 
-export default class V2C_SideBar extends BDV2.reactComponent {
+export default class V2C_SideBar extends React.Component {
 
     constructor(props) {
         super(props);
@@ -38,14 +38,14 @@ export default class V2C_SideBar extends BDV2.reactComponent {
         const self = this;
         const {headerText} = self.props;
         const {items, selected} = self.state;
-        return BDV2.react.createElement(
+        return React.createElement(
             "div",
             null,
-            BDV2.react.createElement(TabBar.Separator, null),
-            BDV2.react.createElement(TabBar.Header, {text: headerText}),
+            React.createElement(TabBar.Separator, null),
+            React.createElement(TabBar.Header, {text: headerText}),
             items.map(item => {
                 const {id, text} = item;
-                return BDV2.react.createElement(TabBar.Item, {key: id, selected: selected === id, text: text, id: id, onClick: self.onClick});
+                return React.createElement(TabBar.Item, {key: id, selected: selected === id, text: text, id: id, onClick: self.onClick});
             })
         );
     }
