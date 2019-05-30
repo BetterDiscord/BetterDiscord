@@ -3,9 +3,9 @@ import ClassNormalizer from "./classnormalizer";
 import ContentManager from "./contentmanager";
 import BdApi from "./pluginapi";
 import Core from "./core";
-import VoiceMode from "./voicemode";
 import EmoteModule from "./emotes";
 import DevMode from "./devmode";
+import Events from "./emitter";
 
 import {SettingsPanel as SettingsRenderer} from "ui";
 
@@ -20,6 +20,7 @@ export default new class SettingsPanel {
     }
 
     updateSettings(id, enabled) {
+        Events.dispatch("setting-updated", "Modules", id, enabled);
         SettingsCookie[id] = enabled;
 
         if (id == "bda-es-0") {
@@ -40,11 +41,6 @@ export default new class SettingsPanel {
         if (id == "bda-gs-1") {
             if (enabled) $("#bd-pub-li").show();
             else $("#bd-pub-li").hide();
-        }
-
-        if (id == "bda-gs-4") {
-            if (enabled) VoiceMode.enable();
-            else VoiceMode.disable();
         }
 
         if (id == "bda-gs-5") {
@@ -106,7 +102,6 @@ export default new class SettingsPanel {
         if (SettingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
         if (SettingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
         if (SettingsCookie["bda-gs-1"]) $("#bd-pub-li").show();
-        if (SettingsCookie["bda-gs-4"]) VoiceMode.enable();
         if (SettingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
         if (SettingsCookie["bda-gs-6"]) Core.inject24Hour();
         if (SettingsCookie["bda-gs-7"]) Core.injectColoredText();

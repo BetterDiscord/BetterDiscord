@@ -87,6 +87,52 @@ var Core =
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/builtins/voicemode.js":
+/*!***********************************!*\
+  !*** ./src/builtins/voicemode.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+
+/* harmony default export */ __webpack_exports__["default"] = (new class VoiceMode extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "VoiceMode";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-gs-4";
+  }
+
+  enabled() {
+    $(".scroller.guild-channels ul").first().css("display", "none");
+    $(".scroller.guild-channels header").first().css("display", "none");
+    $(".app.flex-vertical, .app-2rEoOp").first().css("overflow", "hidden");
+    $(".chat-3bRxxu").first().css("visibility", "hidden").css("min-width", "0px");
+    $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
+    $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
+  }
+
+  disabled() {
+    $(".scroller.guild-channels ul").first().css("display", "");
+    $(".scroller.guild-channels header").first().css("display", "");
+    $(".app.flex-vertical, .app-2rEoOp").first().css("overflow", "");
+    $(".chat-3bRxxu").first().css("visibility", "").css("min-width", "");
+    $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
+    $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
+  }
+
+}());
+
+/***/ }),
+
 /***/ "./src/data/config.js":
 /*!****************************!*\
   !*** ./src/data/config.js ***!
@@ -559,6 +605,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_pluginmanager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/pluginmanager */ "./src/modules/pluginmanager.js");
 /* harmony import */ var _modules_thememanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/thememanager */ "./src/modules/thememanager.js");
 /* harmony import */ var _modules_oldstorage__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/oldstorage */ "./src/modules/oldstorage.js");
+/* harmony import */ var _modules_emitter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/emitter */ "./src/modules/emitter.js");
+
 
 
 
@@ -585,6 +633,7 @@ window.bdplugins = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"];
 window.bdEmotes = data__WEBPACK_IMPORTED_MODULE_0__["Emotes"];
 window.bemotes = data__WEBPACK_IMPORTED_MODULE_0__["EmoteBlacklist"];
 window.bdPluginStorage = _modules_oldstorage__WEBPACK_IMPORTED_MODULE_6__["bdPluginStorage"];
+window.BDEvents = _modules_emitter__WEBPACK_IMPORTED_MODULE_7__["default"];
 class CoreWrapper {
   constructor(config) {
     _modules_core__WEBPACK_IMPORTED_MODULE_2__["default"].setConfig(config);
@@ -703,11 +752,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var _webpackmodules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./webpackmodules */ "./src/modules/webpackmodules.js");
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-/* harmony import */ var _ui_icons_bdlogo__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ui/icons/bdlogo */ "./src/ui/icons/bdlogo.js");
-
+/* harmony import */ var _webpackmodules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./webpackmodules */ "./src/modules/webpackmodules.js");
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
+/* harmony import */ var _ui_icons_bdlogo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../ui/icons/bdlogo */ "./src/ui/icons/bdlogo.js");
 
 
 
@@ -717,53 +764,53 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   initialize() {
-    _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
-    _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
-    _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
-    _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
+    _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
+    _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
+    _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
+    _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
   }
 
   get messageClasses() {
-    return _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getByProps("message", "containerCozy");
+    return _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getByProps("message", "containerCozy");
   }
 
   get guildClasses() {
-    const guildsWrapper = _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getByProps("wrapper", "unreadMentionsBar");
-    const guilds = _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getByProps("guildsError", "selected");
-    const pill = _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getByProps("blobContainer");
+    const guildsWrapper = _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getByProps("wrapper", "unreadMentionsBar");
+    const guilds = _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getByProps("guildsError", "selected");
+    const pill = _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getByProps("blobContainer");
     return Object.assign({}, guildsWrapper, guilds, pill);
   }
 
   get MessageContentComponent() {
-    return _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));
+    return _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));
   }
 
   get TimeFormatter() {
-    return _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getByProps("dateFormat");
+    return _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getByProps("dateFormat");
   }
 
   get TooltipWrapper() {
-    return _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getByDisplayName("TooltipDeprecated");
+    return _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getByDisplayName("TooltipDeprecated");
   }
 
   get NativeModule() {
-    return _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getByProps("setBadge");
+    return _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getByProps("setBadge");
   }
 
   get Tooltips() {
-    return _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getModule(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);
+    return _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getModule(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);
   }
 
   get KeyGenerator() {
-    return _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["default"].getModule(m => m.toString && /"binary"/.test(m.toString()));
+    return _webpackmodules__WEBPACK_IMPORTED_MODULE_0__["default"].getModule(m => m.toString && /"binary"/.test(m.toString()));
   }
 
   patchSocial() {
     if (this.socialPatch) return;
-    const TabBar = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].findModule(m => m.displayName == "TabBar");
-    const Anchor = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].findModule(m => m.displayName == "Anchor");
+    const TabBar = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].findModule(m => m.displayName == "TabBar");
+    const Anchor = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].findModule(m => m.displayName == "Anchor");
     if (!TabBar || !Anchor) return;
-    this.socialPatch = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].monkeyPatch(TabBar.prototype, "render", {
+    this.socialPatch = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].monkeyPatch(TabBar.prototype, "render", {
       after: data => {
         const children = data.returnValue.props.children;
         if (!children || !children.length) return;
@@ -773,13 +820,13 @@ __webpack_require__.r(__webpack_exports__);
 
         const newOne = function () {
           const returnVal = original(...arguments);
-          returnVal.props.children.push(_pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].React.createElement(Anchor, {
+          returnVal.props.children.push(_pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].React.createElement(Anchor, {
             className: "bd-social-link",
             href: "https://github.com/rauenzi/BetterDiscordApp",
             rel: "author",
             title: "BandagedBD",
             target: "_blank"
-          }, _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].React.createElement(_ui_icons_bdlogo__WEBPACK_IMPORTED_MODULE_3__["default"], {
+          }, _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].React.createElement(_ui_icons_bdlogo__WEBPACK_IMPORTED_MODULE_2__["default"], {
             size: "16px",
             className: "bd-social-logo"
           })));
@@ -795,10 +842,10 @@ __webpack_require__.r(__webpack_exports__);
     if (this.guildListItemsPatch) return;
     const listItemClass = this.guildClasses.listItem.split(" ")[0];
     const blobClass = this.guildClasses.blobContainer.split(" ")[0];
-    const reactInstance = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].getInternalInstance(document.querySelector(`.${listItemClass} .${blobClass}`).parentElement);
+    const reactInstance = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].getInternalInstance(document.querySelector(`.${listItemClass} .${blobClass}`).parentElement);
     const GuildComponent = reactInstance.return.type;
     if (!GuildComponent) return;
-    this.guildListItemsPatch = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].monkeyPatch(GuildComponent.prototype, "render", {
+    this.guildListItemsPatch = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].monkeyPatch(GuildComponent.prototype, "render", {
       after: data => {
         const returnValue = data.returnValue;
         const guildData = data.thisObject.props;
@@ -816,9 +863,9 @@ __webpack_require__.r(__webpack_exports__);
 
   patchGuildPills() {
     if (this.guildPillPatch) return;
-    const guildPill = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].findModule(m => m.default && m.default.toString && m.default.toString().includes("translate3d"));
+    const guildPill = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].findModule(m => m.default && m.default.toString && m.default.toString().includes("translate3d"));
     if (!guildPill) return;
-    this.guildPillPatch = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].monkeyPatch(guildPill, "default", {
+    this.guildPillPatch = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].monkeyPatch(guildPill, "default", {
       after: data => {
         const props = data.methodArguments[0];
         if (props.unread) data.returnValue.props.className += " bd-unread";
@@ -831,8 +878,8 @@ __webpack_require__.r(__webpack_exports__);
 
   patchGuildSeparator() {
     if (this.guildSeparatorPatch) return;
-    const Guilds = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].findModuleByDisplayName("Guilds");
-    const guildComponents = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].findModuleByProps("renderListItem");
+    const Guilds = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].findModuleByDisplayName("Guilds");
+    const guildComponents = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].findModuleByProps("renderListItem");
     if (!guildComponents || !Guilds) return;
 
     const GuildSeparator = function () {
@@ -841,7 +888,7 @@ __webpack_require__.r(__webpack_exports__);
       return returnValue;
     };
 
-    this.guildSeparatorPatch = _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].monkeyPatch(Guilds.prototype, "render", {
+    this.guildSeparatorPatch = _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].monkeyPatch(Guilds.prototype, "render", {
       after: data => {
         data.returnValue.props.children[1].props.children[3].type = GuildSeparator;
       }
@@ -1291,12 +1338,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
 /* harmony import */ var _publicservers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./publicservers */ "./src/modules/publicservers.js");
 /* harmony import */ var _settingspanel__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./settingspanel */ "./src/modules/settingspanel.js");
+/* harmony import */ var _builtins_voicemode__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../builtins/voicemode */ "./src/builtins/voicemode.js");
 
 
 
 
  // import VoiceMode from "./voicemode";
 // import DevMode from "./devmode";
+
 
 
 
@@ -1338,6 +1387,7 @@ Core.prototype.init = async function () {
   _bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].initialize();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Updating Settings");
   _settingspanel__WEBPACK_IMPORTED_MODULE_9__["default"].initializeSettings();
+  _builtins_voicemode__WEBPACK_IMPORTED_MODULE_10__["default"].init();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Loading Plugins");
   const pluginErrors = _pluginmanager__WEBPACK_IMPORTED_MODULE_5__["default"].loadPlugins();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Loading Themes");
@@ -1882,10 +1932,6 @@ const EventEmitter = __webpack_require__(/*! events */ "events");
 /* harmony default export */ __webpack_exports__["default"] = (new class BDEvents extends EventEmitter {
   dispatch(eventName, ...args) {
     this.emit(eventName, ...args);
-  }
-
-  off(eventName, eventAction) {
-    this.removeListener(eventName, eventAction);
   }
 
 }());
@@ -2487,7 +2533,7 @@ EmoteModule.prototype.disableAutoCapitalize = function () {
 /*!********************************!*\
   !*** ./src/modules/modules.js ***!
   \********************************/
-/*! exports provided: React, ReactDOM, BDV2, BdApi, Core, ClassNormalizer, ContentManager, DataStore, DevMode, Emitter, EmoteMenu, EmoteModule, PluginManager, ThemeManager, VoiceMode, Utilities, WebpackModules, DiscordModules */
+/*! exports provided: React, ReactDOM, BDV2, BdApi, Core, ClassNormalizer, ContentManager, DataStore, DevMode, Events, EmoteMenu, EmoteModule, PluginManager, ThemeManager, VoiceMode, Utilities, WebpackModules, DiscordModules */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2524,7 +2570,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DevMode", function() { return _devmode__WEBPACK_IMPORTED_MODULE_8__["default"]; });
 
 /* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Emitter", function() { return _emitter__WEBPACK_IMPORTED_MODULE_9__["default"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Events", function() { return _emitter__WEBPACK_IMPORTED_MODULE_9__["default"]; });
 
 /* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./emotemenu */ "./src/modules/emotemenu.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteMenu", function() { return _emotemenu__WEBPACK_IMPORTED_MODULE_10__["default"]; });
@@ -3277,7 +3323,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _voicemode__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./voicemode */ "./src/modules/voicemode.js");
 /* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
 /* harmony import */ var _devmode__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./devmode */ "./src/modules/devmode.js");
-/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+
 
 
 
@@ -3289,7 +3337,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = (new class SettingsPanel {
   constructor() {
-    this.renderer = new ui__WEBPACK_IMPORTED_MODULE_8__["SettingsPanel"]({
+    this.renderer = new ui__WEBPACK_IMPORTED_MODULE_9__["SettingsPanel"]({
       onChange: this.updateSettings.bind(this)
     });
   }
@@ -3299,6 +3347,7 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   updateSettings(id, enabled) {
+    _emitter__WEBPACK_IMPORTED_MODULE_8__["default"].dispatch("setting-updated", "Modules", id, enabled);
     data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][id] = enabled;
 
     if (id == "bda-es-0") {
@@ -3315,11 +3364,11 @@ __webpack_require__.r(__webpack_exports__);
 
     if (id == "bda-gs-1") {
       if (enabled) $("#bd-pub-li").show();else $("#bd-pub-li").hide();
-    }
+    } // if (id == "bda-gs-4") {
+    //     if (enabled) VoiceMode.enable();
+    //     else VoiceMode.disable();
+    // }
 
-    if (id == "bda-gs-4") {
-      if (enabled) _voicemode__WEBPACK_IMPORTED_MODULE_5__["default"].enable();else _voicemode__WEBPACK_IMPORTED_MODULE_5__["default"].disable();
-    }
 
     if (id == "bda-gs-5") {
       if (enabled) $("#app-mount").addClass("bda-dark");else $("#app-mount").removeClass("bda-dark");
@@ -3371,8 +3420,8 @@ __webpack_require__.r(__webpack_exports__);
 
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-2"]) $("body").addClass("bd-minimal");
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-1"]) $("#bd-pub-li").show();
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-4"]) _voicemode__WEBPACK_IMPORTED_MODULE_5__["default"].enable();
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-1"]) $("#bd-pub-li").show(); // if (SettingsCookie["bda-gs-4"]) VoiceMode.enable();
+
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-6"]) _core__WEBPACK_IMPORTED_MODULE_4__["default"].inject24Hour();
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-7"]) _core__WEBPACK_IMPORTED_MODULE_4__["default"].injectColoredText();
@@ -4508,6 +4557,76 @@ class WebpackModules {
 
   static getAllModules() {
     return this.require.c;
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/structs/builtin.js":
+/*!********************************!*\
+  !*** ./src/structs/builtin.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BuiltinModule; });
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _modules_utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../modules/utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _modules_emitter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../modules/emitter */ "./src/modules/emitter.js");
+
+
+
+class BuiltinModule {
+  get name() {
+    return "Unnamed Builtin";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "None";
+  }
+
+  async init() {
+    console.log("Init a builtin");
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][this.id]) await this.enable();
+    _modules_emitter__WEBPACK_IMPORTED_MODULE_2__["default"].on("setting-updated", async (category, id, enabled) => {
+      console.log(category, id);
+      console.log(this.category, this.id);
+      if (category !== this.category || id !== this.id) return;
+      if (enabled) await this.enable();else await this.disable();
+    });
+  }
+
+  async enable() {
+    this.log("Enabled");
+    await this.enabled();
+  }
+
+  async disable() {
+    this.log("Disabled");
+    await this.disabled();
+  }
+
+  async enabled() {}
+
+  async disabled() {}
+
+  log(message) {
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log(this.name, message);
+  }
+
+  warn(message) {
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].warn(this.name, message);
+  }
+
+  error(message) {
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].err(this.name, message);
   }
 
 }
@@ -6403,7 +6522,9 @@ class V2C_SectionedSettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_0__["R
     return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
       className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"
     }, this.props.sections.map(section => {
-      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settingsgroup__WEBPACK_IMPORTED_MODULE_1__["default"], Object.assign({}, section, this.props.onChange));
+      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settingsgroup__WEBPACK_IMPORTED_MODULE_1__["default"], Object.assign({}, section, {
+        onChange: this.props.onChange
+      }));
     }));
   }
 
@@ -6609,15 +6730,15 @@ class V2_SettingsPanel {
       }
 
       componentDidMount() {
-        modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].on(`${prefix}-reloaded`, this.onChange);
-        modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].on(`${prefix}-loaded`, this.onChange);
-        modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].on(`${prefix}-unloaded`, this.onChange);
+        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].on(`${prefix}-reloaded`, this.onChange);
+        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].on(`${prefix}-loaded`, this.onChange);
+        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].on(`${prefix}-unloaded`, this.onChange);
       }
 
       componentWillUnmount() {
-        modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].off(`${prefix}-reloaded`, this.onChange);
-        modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].off(`${prefix}-loaded`, this.onChange);
-        modules__WEBPACK_IMPORTED_MODULE_1__["Emitter"].off(`${prefix}-unloaded`, this.onChange);
+        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].off(`${prefix}-reloaded`, this.onChange);
+        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].off(`${prefix}-loaded`, this.onChange);
+        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].off(`${prefix}-unloaded`, this.onChange);
       }
 
       onChange() {
