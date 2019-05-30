@@ -104,6 +104,7 @@ const DiscordModules = Utilities.memoizeObject({
     get Moment() {return WebpackModules.getByProps("parseZone");},
     get LocationManager() {return WebpackModules.getByProps("createLocation");},
     get Timestamps() {return WebpackModules.getByProps("fromTimestamp");},
+    get TimeFormatter() {return WebpackModules.getByProps("dateFormat");},
 
     /* Strings and Utils */
     get Strings() {return WebpackModules.getByProps("Messages").Messages;},

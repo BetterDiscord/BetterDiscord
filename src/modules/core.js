@@ -1,5 +1,5 @@
 import BDV2 from "./bdv2";
-import Utilties from "./utilities";
+import Utilities from "./utilities";
 import {Config, SettingsCookie} from "data";
 import EmoteModule from "./emotes";
 import QuickEmoteMenu from "./emotemenu";
@@ -8,9 +8,9 @@ import QuickEmoteMenu from "./emotemenu";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import DataStore from "./datastore";
-import PublicServers from "./publicservers";
+// import PublicServers from "./publicservers";
 import SettingsPanel from "./settingspanel";
-import VoiceMode from "../builtins/voicemode";
+import * as Builtins from "builtins";
 
 function Core() {
 }
@@ -33,12 +33,12 @@ Core.prototype.init = async function() {
         `);
     }
 
-    Utilties.log("Startup", "Initializing Settings");
+    Utilities.log("Startup", "Initializing Settings");
     this.initSettings();
-    Utilties.log("Startup", "Initializing EmoteModule");
+    Utilities.log("Startup", "Initializing EmoteModule");
     window.emotePromise = EmoteModule.init().then(() => {
         EmoteModule.initialized = true;
-        Utilties.log("Startup", "Initializing QuickEmoteMenu");
+        Utilities.log("Startup", "Initializing QuickEmoteMenu");
         QuickEmoteMenu.init();
     });
 
@@ -46,14 +46,14 @@ Core.prototype.init = async function() {
 
     await this.checkForGuilds();
     BDV2.initialize();
-    Utilties.log("Startup", "Updating Settings");
+    Utilities.log("Startup", "Updating Settings");
     SettingsPanel.initializeSettings();
-    VoiceMode.init();
+    for (const module in Builtins) Builtins[module].initialize();
 
-    Utilties.log("Startup", "Loading Plugins");
+    Utilities.log("Startup", "Loading Plugins");
     const pluginErrors = PluginManager.loadPlugins();
 
-    Utilties.log("Startup", "Loading Themes");
+    Utilities.log("Startup", "Loading Themes");
     const themeErrors = ThemeManager.loadThemes();
 
     $("#customcss").detach().appendTo(document.head);
@@ -62,17 +62,17 @@ Core.prototype.init = async function() {
         if (SettingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
     });
 
-    PublicServers.initialize();
+    // PublicServers.initialize();
     EmoteModule.autoCapitalize();
 
-    Utilties.log("Startup", "Removing Loading Icon");
+    Utilities.log("Startup", "Removing Loading Icon");
     document.getElementsByClassName("bd-loaderv2")[0].remove();
-    Utilties.log("Startup", "Initializing Main Observer");
+    Utilities.log("Startup", "Initializing Main Observer");
     this.initObserver();
 
     // Show loading errors
     if (SettingsCookie["fork-ps-1"]) {
-        Utilties.log("Startup", "Collecting Startup Errors");
+        Utilities.log("Startup", "Collecting Startup Errors");
         this.showContentErrors({plugins: pluginErrors, themes: themeErrors});
     }
 
@@ -98,7 +98,7 @@ Core.prototype.checkForGuilds = function() {
 };
 
 Core.prototype.injectExternals = async function() {
-    await Utilties.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
+    await Utilities.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
     if (window.require.original) window.require = window.require.original;
 };
 
@@ -153,44 +153,6 @@ Core.prototype.initObserver = function () {
     mainObserver.observe(document, {
         childList: true,
         subtree: true
-    });
-};
-
-Core.prototype.inject24Hour = function() {
-    if (this.cancel24Hour) return;
-
-    const twelveHour = new RegExp(`([0-9]{1,2}):([0-9]{1,2})\\s(AM|PM)`);
-    const convert = (data) => {
-        if (!SettingsCookie["bda-gs-6"]) return;
-        const matched = data.returnValue.match(twelveHour);
-        if (!matched || matched.length !== 4) return;
-        if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
-        return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "12" : parseInt(matched[1]) + 12}:${matched[2]}`);
-    };
-
-
-    const cancelCozy = Utilties.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {after: convert}); // Called in Cozy mode
-    const cancelCompact = Utilties.monkeyPatch(BDV2.TimeFormatter, "dateFormat", {after: convert}); // Called in Compact mode
-    this.cancel24Hour = () => {cancelCozy(); cancelCompact();}; // Cancel both
-};
-
-Core.prototype.injectColoredText = function() {
-    if (this.cancelColoredText) return;
-
-    this.cancelColoredText = Utilties.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
-        if (!SettingsCookie["bda-gs-7"]) return;
-		Utilties.monkeyPatch(data.returnValue.props, "children", {silent: true, after: ({returnValue}) => {
-			const markup = returnValue.props.children[1];
-			const roleColor = data.thisObject.props.message.colorString;
-			if (markup && roleColor) markup.props.style = {color: roleColor};
-			return returnValue;
-		}});
-    }});
-};
-
-Core.prototype.removeColoredText = function() {
-    document.querySelectorAll(".markup-2BOw-j").forEach(elem => {
-        elem.style.setProperty("color", "");
     });
 };
 
@@ -271,7 +233,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
             if (err.error) {
                 error.find("a").on("click", (e) => {
                     e.preventDefault();
-                    Utilties.err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
+                    Utilities.err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
                 });
             }
         }

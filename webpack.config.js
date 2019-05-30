@@ -22,6 +22,7 @@ module.exports = {
   resolve: {
     extensions: [".js", ".jsx"],
     modules: [
+      path.resolve("src", "builtins"),
       path.resolve("src", "data"),
       path.resolve("src", "modules"),
       path.resolve("src", "ui")

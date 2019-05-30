@@ -87,6 +87,659 @@ var Core =
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/builtins/24hour.js":
+/*!********************************!*\
+  !*** ./src/builtins/24hour.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+
+/* harmony default export */ __webpack_exports__["default"] = (new class TwentyFourHour extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "24Hour";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-gs-6";
+  }
+
+  enabled() {
+    this.inject24Hour();
+  }
+
+  disabled() {
+    if (this.cancel24Hour) this.cancel24Hour();
+  }
+
+  inject24Hour() {
+    if (this.cancel24Hour) return;
+    const twelveHour = new RegExp(`([0-9]{1,2}):([0-9]{1,2})\\s(AM|PM)`);
+
+    const convert = data => {
+      const matched = data.returnValue.match(twelveHour);
+      if (!matched || matched.length !== 4) return;
+      if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
+      return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "12" : parseInt(matched[1]) + 12}:${matched[2]}`);
+    };
+
+    const cancelCozy = modules__WEBPACK_IMPORTED_MODULE_1__["Utilities"].monkeyPatch(modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].TimeFormatter, "calendarFormat", {
+      after: convert
+    }); // Called in Cozy mode
+
+    const cancelCompact = modules__WEBPACK_IMPORTED_MODULE_1__["Utilities"].monkeyPatch(modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].TimeFormatter, "dateFormat", {
+      after: convert
+    }); // Called in Compact mode
+
+    this.cancel24Hour = () => {
+      cancelCozy();
+      cancelCompact();
+    }; // Cancel both
+
+  }
+
+}());
+
+/***/ }),
+
+/***/ "./src/builtins/builtins.js":
+/*!**********************************!*\
+  !*** ./src/builtins/builtins.js ***!
+  \**********************************/
+/*! exports provided: VoiceMode, ClassNormalizer, DeveloperMode, PublicServers, DarkMode, MinimalMode, TwentyFourHour, ColoredText */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _voicemode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./voicemode */ "./src/builtins/voicemode.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "VoiceMode", function() { return _voicemode__WEBPACK_IMPORTED_MODULE_0__["default"]; });
+
+/* harmony import */ var _classnormalizer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./classnormalizer */ "./src/builtins/classnormalizer.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ClassNormalizer", function() { return _classnormalizer__WEBPACK_IMPORTED_MODULE_1__["default"]; });
+
+/* harmony import */ var _developermode__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./developermode */ "./src/builtins/developermode.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DeveloperMode", function() { return _developermode__WEBPACK_IMPORTED_MODULE_2__["default"]; });
+
+/* harmony import */ var _publicservers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./publicservers */ "./src/builtins/publicservers.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PublicServers", function() { return _publicservers__WEBPACK_IMPORTED_MODULE_3__["default"]; });
+
+/* harmony import */ var _darkmode__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./darkmode */ "./src/builtins/darkmode.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DarkMode", function() { return _darkmode__WEBPACK_IMPORTED_MODULE_4__["default"]; });
+
+/* harmony import */ var _minimalmode__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./minimalmode */ "./src/builtins/minimalmode.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "MinimalMode", function() { return _minimalmode__WEBPACK_IMPORTED_MODULE_5__["default"]; });
+
+/* harmony import */ var _24hour__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./24hour */ "./src/builtins/24hour.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "TwentyFourHour", function() { return _24hour__WEBPACK_IMPORTED_MODULE_6__["default"]; });
+
+/* harmony import */ var _coloredtext__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./coloredtext */ "./src/builtins/coloredtext.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ColoredText", function() { return _coloredtext__WEBPACK_IMPORTED_MODULE_7__["default"]; });
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+
+/***/ "./src/builtins/classnormalizer.js":
+/*!*****************************************!*\
+  !*** ./src/builtins/classnormalizer.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+
+const normalizedPrefix = "da";
+const randClass = new RegExp(`^(?!${normalizedPrefix}-)((?:[A-Za-z]|[0-9]|-)+)-(?:[A-Za-z]|[0-9]|-|_){6}$`);
+/* harmony default export */ __webpack_exports__["default"] = (new class ClassNormalizer extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get id() {
+    return "fork-ps-4";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get name() {
+    return "ClassNormalizer";
+  }
+
+  disabled() {
+    if (!this.hasPatched) return;
+    this.unpatchClassModules(modules__WEBPACK_IMPORTED_MODULE_1__["WebpackModules"].getModules(this.moduleFilter.bind(this)));
+    this.revertElement(document.querySelector("#app-mount"));
+    this.hasPatched = false;
+  }
+
+  enabled() {
+    if (this.hasPatched) return;
+    this.patchClassModules(modules__WEBPACK_IMPORTED_MODULE_1__["WebpackModules"].getModules(this.moduleFilter.bind(this)));
+    this.normalizeElement(document.querySelector("#app-mount"));
+    this.hasPatched = true;
+  }
+
+  patchClassModules(modules) {
+    for (const module of modules) {
+      this.patchClassModule(normalizedPrefix, module);
+    }
+  }
+
+  unpatchClassModules(modules) {
+    for (const module of modules) {
+      this.unpatchClassModule(normalizedPrefix, module);
+    }
+  }
+
+  shouldIgnore(value) {
+    if (!isNaN(value)) return true;
+    if (value.endsWith("px") || value.endsWith("ch") || value.endsWith("em") || value.endsWith("ms")) return true;
+    if (value.startsWith("layerContainer-")) return true;
+    if (value.startsWith("#") && (value.length == 7 || value.length == 4)) return true;
+    if (value.includes("calc(") || value.includes("rgba")) return true;
+    return false;
+  }
+
+  moduleFilter(module) {
+    if (typeof module !== "object" || Array.isArray(module)) return false;
+    if (module.__esModule) return false;
+    if (!Object.keys(module).length) return false;
+
+    for (const baseClassName in module) {
+      const value = module[baseClassName];
+      if (typeof value !== "string") return false;
+      if (this.shouldIgnore(value)) continue;
+      if (value.split("-").length === 1) return false;
+      if (!randClass.test(value.split(" ")[0])) return false;
+    }
+
+    return true;
+  }
+
+  patchClassModule(componentName, classNames) {
+    for (const baseClassName in classNames) {
+      const value = classNames[baseClassName];
+      if (this.shouldIgnore(value)) continue;
+      const classList = value.split(" ");
+
+      for (const normalClass of classList) {
+        const match = normalClass.match(randClass)[1];
+        if (!match) continue; // Shouldn't ever happen since they passed the moduleFilter, but you never know
+
+        const camelCase = match.split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
+        classNames[baseClassName] += ` ${componentName}-${camelCase}`;
+      }
+    }
+  }
+
+  unpatchClassModule(componentName, classNames) {
+    for (const baseClassName in classNames) {
+      const value = classNames[baseClassName];
+      if (this.shouldIgnore(value)) continue;
+      let newString = "";
+      const classList = value.split(" ");
+
+      for (const normalClass of classList) {
+        if (normalClass.startsWith(`${componentName}-`)) continue;
+        newString += ` ${normalClass}`;
+      }
+
+      classNames[baseClassName] = newString.trim();
+    }
+  }
+
+  normalizeElement(element) {
+    if (!(element instanceof Element)) return;
+    const classes = element.classList;
+
+    for (let c = 0, clen = classes.length; c < clen; c++) {
+      if (!randClass.test(classes[c])) continue;
+      const match = classes[c].match(randClass)[1];
+      const newClass = match.split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
+      element.classList.add(`${normalizedPrefix}-${newClass}`);
+    }
+
+    for (const child of element.children) this.normalizeElement(child);
+  }
+
+  revertElement(element) {
+    if (!(element instanceof Element)) return;
+    if (element.children && element.children.length) this.revertElement(element.children[0]);
+    if (element.nextElementSibling) this.revertElement(element.nextElementSibling);
+    const classes = element.classList;
+    const toRemove = [];
+
+    for (let c = 0; c < classes.length; c++) {
+      if (classes[c].startsWith(`${normalizedPrefix}-`)) toRemove.push(classes[c]);
+    }
+
+    element.classList.remove(...toRemove);
+  }
+
+}());
+
+/***/ }),
+
+/***/ "./src/builtins/coloredtext.js":
+/*!*************************************!*\
+  !*** ./src/builtins/coloredtext.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+
+const MessageContent = modules__WEBPACK_IMPORTED_MODULE_1__["WebpackModules"].getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));
+/* harmony default export */ __webpack_exports__["default"] = (new class ColoredText extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "ColoredText";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-gs-7";
+  }
+
+  enabled() {
+    this.injectColoredText();
+  }
+
+  disabled() {
+    if (this.cancelColoredText) this.cancelColoredText();
+  }
+
+  injectColoredText() {
+    if (this.cancelColoredText) return;
+    this.cancelColoredText = modules__WEBPACK_IMPORTED_MODULE_1__["Utilities"].monkeyPatch(MessageContent.prototype, "render", {
+      after: data => {
+        modules__WEBPACK_IMPORTED_MODULE_1__["Utilities"].monkeyPatch(data.returnValue.props, "children", {
+          silent: true,
+          after: ({
+            returnValue
+          }) => {
+            const markup = returnValue.props.children[1];
+            const roleColor = data.thisObject.props.message.colorString;
+            if (markup && roleColor) markup.props.style = {
+              color: roleColor
+            };
+            return returnValue;
+          }
+        });
+      }
+    });
+  }
+
+  removeColoredText() {
+    document.querySelectorAll(".markup-2BOw-j").forEach(elem => {
+      elem.style.setProperty("color", "");
+    });
+  }
+
+}());
+
+/***/ }),
+
+/***/ "./src/builtins/darkmode.js":
+/*!**********************************!*\
+  !*** ./src/builtins/darkmode.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+
+/* harmony default export */ __webpack_exports__["default"] = (new class DarkMode extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "DarkMode";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-gs-5";
+  }
+
+  enabled() {
+    $("#app-mount").addClass("bda-dark").addClass("bd-dark");
+  }
+
+  disabled() {
+    $("#app-mount").removeClass("bda-dark").removeClass("bd-dark");
+  }
+
+}());
+
+/***/ }),
+
+/***/ "./src/builtins/developermode.js":
+/*!***************************************!*\
+  !*** ./src/builtins/developermode.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = (new class DeveloperMode extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "DeveloperMode";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-gs-8";
+  }
+
+  get selectorModeID() {
+    return "fork-dm-1";
+  }
+
+  get selectorMode() {
+    return data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"][this.selectorModeID];
+  }
+
+  constructor() {
+    super();
+    this.enableSelectors = this.enableSelectors.bind(this);
+    this.disableSelectors = this.disableSelectors.bind(this);
+  }
+
+  enabled() {
+    $(window).on("keydown.bdDevmode", e => {
+      if (e.which === 119 || e.which == 118) {
+        //F8
+        this.log("Debugger Activated");
+        debugger; // eslint-disable-line no-debugger
+      }
+    });
+    if (this.selectorMode) this.enableSelectors();
+    this.selectorCancel = Object(_structs_builtin__WEBPACK_IMPORTED_MODULE_0__["onSettingChange"])(this.category, this.selectorModeID, this.enableSelectors, this.disableSelectors);
+  }
+
+  disabled() {
+    $(window).off("keydown.bdDevmode");
+    if (this.selectorMode) this.disableSelectors();
+    if (this.selectorCancel) this.selectorCancel();
+  }
+
+  enableSelectors() {
+    $(document).on("contextmenu.bdDevmode", e => {
+      this.lastSelector = this.getSelector(e.toElement);
+
+      const attach = () => {
+        let cm = $(".contextMenu-HLZMGh");
+
+        if (cm.length <= 0) {
+          cm = $("<div class=\"contextMenu-HLZMGh bd-context-menu\"></div>");
+          cm.addClass($(".app, .app-2rEoOp").hasClass("theme-dark") ? "theme-dark" : "theme-light");
+          cm.appendTo(".app, .app-2rEoOp");
+          cm.css("top", e.clientY);
+          cm.css("left", e.clientX);
+          $(document).on("click.bdDevModeCtx", () => {
+            cm.remove();
+            $(document).off(".bdDevModeCtx");
+          });
+          $(document).on("contextmenu.bdDevModeCtx", () => {
+            cm.remove();
+            $(document).off(".bdDevModeCtx");
+          });
+          $(document).on("keyup.bdDevModeCtx", e => {
+            if (e.keyCode === 27) {
+              cm.remove();
+              $(document).off(".bdDevModeCtx");
+            }
+          });
+        }
+
+        const cmo = $("<div/>", {
+          "class": "itemGroup-1tL0uz"
+        });
+        const cmi = $("<div/>", {
+          "class": "item-1Yvehc",
+          "click": () => {
+            modules__WEBPACK_IMPORTED_MODULE_2__["DiscordModules"].ElectronModule.copy(this.lastSelector);
+            cm.hide();
+          }
+        }).append($("<span/>", {
+          text: "Copy Selector"
+        }));
+        cmo.append(cmi);
+        cm.append(cmo);
+        if (cm.hasClass("undefined")) cm.css("top", "-=" + cmo.outerHeight());
+      };
+
+      setImmediate(attach);
+      e.stopPropagation();
+    });
+  }
+
+  disableSelectors() {
+    $(document).off("contextmenu.bdDevmode");
+    $(document).off("contextmenu.bdDevModeCtx");
+  }
+
+  getRules(element, css = element.ownerDocument.styleSheets) {
+    // return [].concat(...[...css].map(s => [...s.cssRules || []])).filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8);
+    const sheets = [...css].filter(s => !s.href || !s.href.includes("BetterDiscordApp"));
+    const rules = sheets.map(s => [...(s.cssRules || [])]).flat();
+    const elementRules = rules.filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8 && !r.selectorText.split(", ").includes("*"));
+    return elementRules;
+  }
+
+  getSelector(element) {
+    if (element.id) return `#${element.id}`;
+    const rules = this.getRules(element);
+    const latestRule = rules[rules.length - 1];
+    if (latestRule) return latestRule.selectorText;else if (element.classList.length) return `.${Array.from(element.classList).join(".")}`;
+    return `.${Array.from(element.parentElement.classList).join(".")}`;
+  }
+
+}());
+
+/***/ }),
+
+/***/ "./src/builtins/minimalmode.js":
+/*!*************************************!*\
+  !*** ./src/builtins/minimalmode.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! data */ "./src/data/data.js");
+
+
+/* harmony default export */ __webpack_exports__["default"] = (new class MinimalMode extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "MinimalMode";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-gs-2";
+  }
+
+  get hideChannelsID() {
+    return "bda-gs-3";
+  }
+
+  get hideChannels() {
+    return data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"][this.hideChannelsID];
+  }
+
+  constructor() {
+    super();
+    this.enableHideChannels = this.enableHideChannels.bind(this);
+    this.disableHideChannels = this.disableHideChannels.bind(this);
+  }
+
+  enabled() {
+    $("body").addClass("bd-minimal");
+    if (this.hideChannels) this.enableHideChannels();
+    this.hideChannelCancel = Object(_structs_builtin__WEBPACK_IMPORTED_MODULE_0__["onSettingChange"])(this.category, this.hideChannelsID, this.enableHideChannels, this.disableHideChannels);
+  }
+
+  disabled() {
+    $("body").removeClass("bd-minimal");
+    if (this.hideChannels) this.disableHideChannels();
+    if (this.hideChannelCancel) this.hideChannelCancel();
+  }
+
+  enableHideChannels() {
+    $("body").addClass("bd-minimal-chan");
+  }
+
+  disableHideChannels() {
+    $("body").removeClass("bd-minimal-chan");
+  }
+
+}());
+
+/***/ }),
+
+/***/ "./src/builtins/publicservers.js":
+/*!***************************************!*\
+  !*** ./src/builtins/publicservers.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = (new class PublicServers extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "PublicServers";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-gs-1";
+  }
+
+  enabled() {
+    const wrapper = modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].guildClasses.wrapper.split(" ")[0];
+    const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
+    guilds.after(this.button);
+  }
+
+  disabled() {
+    $("#bd-pub-li").remove();
+  }
+
+  get component() {
+    return modules__WEBPACK_IMPORTED_MODULE_2__["DiscordModules"].React.createElement(ui__WEBPACK_IMPORTED_MODULE_3__["PublicServers"].Layer, {
+      rootId: "pubslayerroot",
+      id: "pubslayer"
+    }, modules__WEBPACK_IMPORTED_MODULE_2__["DiscordModules"].React.createElement(ui__WEBPACK_IMPORTED_MODULE_3__["PublicServers"].Menu, {
+      rootId: "pubslayerroot"
+    }));
+  }
+
+  get root() {
+    const _root = document.getElementById("pubslayerroot");
+
+    if (!_root) {
+      if (!this.injectRoot()) return null;
+      return this.root;
+    }
+
+    return _root;
+  }
+
+  injectRoot() {
+    if (!$(".layers, .layers-3iHuyZ").length) return false;
+    $(".layers, .layers-3iHuyZ").append($("<div/>", {
+      id: "pubslayerroot"
+    }));
+    return true;
+  }
+
+  render() {
+    // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
+    const root = this.root;
+
+    if (!root) {
+      console.log("FAILED TO LOCATE ROOT: .layers");
+      return;
+    }
+
+    modules__WEBPACK_IMPORTED_MODULE_2__["DiscordModules"].ReactDOM.render(this.component, root);
+  }
+
+  get button() {
+    const btn = $("<div/>", {
+      "class": modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].guildClasses.listItem,
+      "id": "bd-pub-li",
+      "style": data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"]["bda-gs-1"] ? "" : "display: none;"
+    }).append($("<div/>", {
+      "class": "wrapper-25eVIn " + modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].guildClasses.circleButtonMask,
+      "text": "public",
+      "id": "bd-pub-button",
+      "click": () => {
+        this.render();
+      }
+    }));
+    return btn;
+  }
+
+}());
+
+/***/ }),
+
 /***/ "./src/builtins/voicemode.js":
 /*!***********************************!*\
   !*** ./src/builtins/voicemode.js ***!
@@ -899,143 +1552,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/modules/classnormalizer.js":
-/*!****************************************!*\
-  !*** ./src/modules/classnormalizer.js ***!
-  \****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-
-const normalizedPrefix = "da";
-const randClass = new RegExp(`^(?!${normalizedPrefix}-)((?:[A-Za-z]|[0-9]|-)+)-(?:[A-Za-z]|[0-9]|-|_){6}$`);
-/* harmony default export */ __webpack_exports__["default"] = (new class ClassNormalizer {
-  get id() {
-    return "fork-ps-4";
-  }
-
-  get name() {
-    return "ClassNormalizer";
-  }
-
-  stop() {
-    if (!this.hasPatched) return;
-    this.unpatchClassModules(_pluginapi__WEBPACK_IMPORTED_MODULE_0__["default"].findAllModules(this.moduleFilter.bind(this)));
-    this.revertElement(document.querySelector("#app-mount"));
-    this.hasPatched = false;
-  }
-
-  start() {
-    if (this.hasPatched) return;
-    this.patchClassModules(_pluginapi__WEBPACK_IMPORTED_MODULE_0__["default"].findAllModules(this.moduleFilter.bind(this)));
-    this.normalizeElement(document.querySelector("#app-mount"));
-    this.hasPatched = true;
-  }
-
-  patchClassModules(modules) {
-    for (const module of modules) {
-      this.patchClassModule(normalizedPrefix, module);
-    }
-  }
-
-  unpatchClassModules(modules) {
-    for (const module of modules) {
-      this.unpatchClassModule(normalizedPrefix, module);
-    }
-  }
-
-  shouldIgnore(value) {
-    if (!isNaN(value)) return true;
-    if (value.endsWith("px") || value.endsWith("ch") || value.endsWith("em") || value.endsWith("ms")) return true;
-    if (value.startsWith("layerContainer-")) return true;
-    if (value.startsWith("#") && (value.length == 7 || value.length == 4)) return true;
-    if (value.includes("calc(") || value.includes("rgba")) return true;
-    return false;
-  }
-
-  moduleFilter(module) {
-    if (typeof module !== "object" || Array.isArray(module)) return false;
-    if (module.__esModule) return false;
-    if (!Object.keys(module).length) return false;
-
-    for (const baseClassName in module) {
-      const value = module[baseClassName];
-      if (typeof value !== "string") return false;
-      if (this.shouldIgnore(value)) continue;
-      if (value.split("-").length === 1) return false;
-      if (!randClass.test(value.split(" ")[0])) return false;
-    }
-
-    return true;
-  }
-
-  patchClassModule(componentName, classNames) {
-    for (const baseClassName in classNames) {
-      const value = classNames[baseClassName];
-      if (this.shouldIgnore(value)) continue;
-      const classList = value.split(" ");
-
-      for (const normalClass of classList) {
-        const match = normalClass.match(randClass)[1];
-        if (!match) continue; // Shouldn't ever happen since they passed the moduleFilter, but you never know
-
-        const camelCase = match.split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
-        classNames[baseClassName] += ` ${componentName}-${camelCase}`;
-      }
-    }
-  }
-
-  unpatchClassModule(componentName, classNames) {
-    for (const baseClassName in classNames) {
-      const value = classNames[baseClassName];
-      if (this.shouldIgnore(value)) continue;
-      let newString = "";
-      const classList = value.split(" ");
-
-      for (const normalClass of classList) {
-        if (normalClass.startsWith(`${componentName}-`)) continue;
-        newString += ` ${normalClass}`;
-      }
-
-      classNames[baseClassName] = newString.trim();
-    }
-  }
-
-  normalizeElement(element) {
-    if (!(element instanceof Element)) return;
-    const classes = element.classList;
-
-    for (let c = 0, clen = classes.length; c < clen; c++) {
-      if (!randClass.test(classes[c])) continue;
-      const match = classes[c].match(randClass)[1];
-      const newClass = match.split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
-      element.classList.add(`${normalizedPrefix}-${newClass}`);
-    }
-
-    for (const child of element.children) this.normalizeElement(child);
-  }
-
-  revertElement(element) {
-    if (!(element instanceof Element)) return;
-    if (element.children && element.children.length) this.revertElement(element.children[0]);
-    if (element.nextElementSibling) this.revertElement(element.nextElementSibling);
-    const classes = element.classList;
-    const toRemove = [];
-
-    for (let c = 0; c < classes.length; c++) {
-      if (classes[c].startsWith(`${normalizedPrefix}-`)) toRemove.push(classes[c]);
-    }
-
-    element.classList.remove(...toRemove);
-  }
-
-}());
-
-/***/ }),
-
 /***/ "./src/modules/contentmanager.js":
 /*!***************************************!*\
   !*** ./src/modules/contentmanager.js ***!
@@ -1336,9 +1852,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
 /* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
 /* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-/* harmony import */ var _publicservers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./publicservers */ "./src/modules/publicservers.js");
-/* harmony import */ var _settingspanel__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./settingspanel */ "./src/modules/settingspanel.js");
-/* harmony import */ var _builtins_voicemode__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../builtins/voicemode */ "./src/builtins/voicemode.js");
+/* harmony import */ var _settingspanel__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./settingspanel */ "./src/modules/settingspanel.js");
+/* harmony import */ var builtins__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! builtins */ "./src/builtins/builtins.js");
 
 
 
@@ -1348,7 +1863,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
+ // import PublicServers from "./publicservers";
 
 
 
@@ -1386,8 +1901,10 @@ Core.prototype.init = async function () {
   await this.checkForGuilds();
   _bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].initialize();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Updating Settings");
-  _settingspanel__WEBPACK_IMPORTED_MODULE_9__["default"].initializeSettings();
-  _builtins_voicemode__WEBPACK_IMPORTED_MODULE_10__["default"].init();
+  _settingspanel__WEBPACK_IMPORTED_MODULE_8__["default"].initializeSettings();
+
+  for (const module in builtins__WEBPACK_IMPORTED_MODULE_9__) builtins__WEBPACK_IMPORTED_MODULE_9__[module].initialize();
+
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Loading Plugins");
   const pluginErrors = _pluginmanager__WEBPACK_IMPORTED_MODULE_5__["default"].loadPlugins();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Loading Themes");
@@ -1395,8 +1912,8 @@ Core.prototype.init = async function () {
   $("#customcss").detach().appendTo(document.head);
   window.addEventListener("beforeunload", function () {
     if (data__WEBPACK_IMPORTED_MODULE_2__["SettingsCookie"]["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
-  });
-  _publicservers__WEBPACK_IMPORTED_MODULE_8__["default"].initialize();
+  }); // PublicServers.initialize();
+
   _emotes__WEBPACK_IMPORTED_MODULE_3__["default"].autoCapitalize();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Removing Loading Icon");
   document.getElementsByClassName("bd-loaderv2")[0].remove();
@@ -1473,7 +1990,7 @@ Core.prototype.initObserver = function () {
         if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
           node.setAttribute("layer-id", "user-settings");
           node.setAttribute("id", "user-settings");
-          if (!document.getElementById("bd-settings-sidebar")) _settingspanel__WEBPACK_IMPORTED_MODULE_9__["default"].renderSidebar();
+          if (!document.getElementById("bd-settings-sidebar")) _settingspanel__WEBPACK_IMPORTED_MODULE_8__["default"].renderSidebar();
         }
       } // Emoji Picker
 
@@ -1484,61 +2001,6 @@ Core.prototype.initObserver = function () {
   mainObserver.observe(document, {
     childList: true,
     subtree: true
-  });
-};
-
-Core.prototype.inject24Hour = function () {
-  if (this.cancel24Hour) return;
-  const twelveHour = new RegExp(`([0-9]{1,2}):([0-9]{1,2})\\s(AM|PM)`);
-
-  const convert = data => {
-    if (!data__WEBPACK_IMPORTED_MODULE_2__["SettingsCookie"]["bda-gs-6"]) return;
-    const matched = data.returnValue.match(twelveHour);
-    if (!matched || matched.length !== 4) return;
-    if (matched[3] === "AM") return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "00" : matched[1].padStart(2, "0")}:${matched[2]}`);
-    return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "12" : parseInt(matched[1]) + 12}:${matched[2]}`);
-  };
-
-  const cancelCozy = _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].TimeFormatter, "calendarFormat", {
-    after: convert
-  }); // Called in Cozy mode
-
-  const cancelCompact = _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].TimeFormatter, "dateFormat", {
-    after: convert
-  }); // Called in Compact mode
-
-  this.cancel24Hour = () => {
-    cancelCozy();
-    cancelCompact();
-  }; // Cancel both
-
-};
-
-Core.prototype.injectColoredText = function () {
-  if (this.cancelColoredText) return;
-  this.cancelColoredText = _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].monkeyPatch(_bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].MessageContentComponent.prototype, "render", {
-    after: data => {
-      if (!data__WEBPACK_IMPORTED_MODULE_2__["SettingsCookie"]["bda-gs-7"]) return;
-      _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].monkeyPatch(data.returnValue.props, "children", {
-        silent: true,
-        after: ({
-          returnValue
-        }) => {
-          const markup = returnValue.props.children[1];
-          const roleColor = data.thisObject.props.message.colorString;
-          if (markup && roleColor) markup.props.style = {
-            color: roleColor
-          };
-          return returnValue;
-        }
-      });
-    }
-  });
-};
-
-Core.prototype.removeColoredText = function () {
-  document.querySelectorAll(".markup-2BOw-j").forEach(elem => {
-    elem.style.setProperty("color", "");
   });
 };
 
@@ -1817,104 +2279,6 @@ const releaseChannel = DiscordNative.globals.releaseChannel;
   }
 
 }());
-
-/***/ }),
-
-/***/ "./src/modules/devmode.js":
-/*!********************************!*\
-  !*** ./src/modules/devmode.js ***!
-  \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _bdv2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bdv2 */ "./src/modules/bdv2.js");
-
-
-function devMode() {}
-
-devMode.prototype.enable = function (selectorMode) {
-  const self = this;
-  this.disable();
-  $(window).on("keydown.bdDevmode", function (e) {
-    if (e.which === 119 || e.which == 118) {
-      //F8
-      console.log("%c[%cDevMode%c] %cBreak/Resume", "color: red;", "color: #303030; font-weight:700;", "color:red;", "");
-      debugger; // eslint-disable-line no-debugger
-    }
-  });
-  if (!selectorMode) return;
-  $(document).on("contextmenu.bdDevmode", function (e) {
-    self.lastSelector = self.getSelector(e.toElement);
-
-    function attach() {
-      let cm = $(".contextMenu-HLZMGh");
-
-      if (cm.length <= 0) {
-        cm = $("<div class=\"contextMenu-HLZMGh bd-context-menu\"></div>");
-        cm.addClass($(".app, .app-2rEoOp").hasClass("theme-dark") ? "theme-dark" : "theme-light");
-        cm.appendTo(".app, .app-2rEoOp");
-        cm.css("top", e.clientY);
-        cm.css("left", e.clientX);
-        $(document).on("click.bdDevModeCtx", () => {
-          cm.remove();
-          $(document).off(".bdDevModeCtx");
-        });
-        $(document).on("contextmenu.bdDevModeCtx", () => {
-          cm.remove();
-          $(document).off(".bdDevModeCtx");
-        });
-        $(document).on("keyup.bdDevModeCtx", e => {
-          if (e.keyCode === 27) {
-            cm.remove();
-            $(document).off(".bdDevModeCtx");
-          }
-        });
-      }
-
-      const cmo = $("<div/>", {
-        "class": "itemGroup-1tL0uz"
-      });
-      const cmi = $("<div/>", {
-        "class": "item-1Yvehc",
-        "click": function () {
-          _bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].NativeModule.copy(self.lastSelector);
-          cm.hide();
-        }
-      }).append($("<span/>", {
-        text: "Copy Selector"
-      }));
-      cmo.append(cmi);
-      cm.append(cmo);
-      if (cm.hasClass("undefined")) cm.css("top", "-=" + cmo.outerHeight());
-    }
-
-    setImmediate(attach);
-    e.stopPropagation();
-  });
-};
-
-devMode.prototype.getRules = function (element, css = element.ownerDocument.styleSheets) {
-  //if (window.getMatchedCSSRules) return window.getMatchedCSSRules(element);
-  return [].concat(...[...css].map(s => [...(s.cssRules || [])])).filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8);
-};
-
-devMode.prototype.getSelector = function (element) {
-  if (element.id) return `#${element.id}`;
-  const rules = this.getRules(element);
-  const latestRule = rules[rules.length - 1];
-  if (latestRule) return latestRule.selectorText;else if (element.classList.length) return `.${Array.from(element.classList).join(".")}`;
-  return `.${Array.from(element.parentElement.classList).join(".")}`;
-};
-
-devMode.prototype.disable = function () {
-  $(window).off("keydown.bdDevmode");
-  $(document).off("contextmenu.bdDevmode");
-  $(document).off("contextmenu.bdDevModeCtx");
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (new devMode());
 
 /***/ }),
 
@@ -2533,7 +2897,7 @@ EmoteModule.prototype.disableAutoCapitalize = function () {
 /*!********************************!*\
   !*** ./src/modules/modules.js ***!
   \********************************/
-/*! exports provided: React, ReactDOM, BDV2, BdApi, Core, ClassNormalizer, ContentManager, DataStore, DevMode, Events, EmoteMenu, EmoteModule, PluginManager, ThemeManager, VoiceMode, Utilities, WebpackModules, DiscordModules */
+/*! exports provided: React, ReactDOM, BDV2, BdApi, Core, ContentManager, DataStore, Events, EmoteMenu, EmoteModule, PluginManager, ThemeManager, Utilities, WebpackModules, DiscordModules */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2557,35 +2921,26 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Core", function() { return _core__WEBPACK_IMPORTED_MODULE_4__["default"]; });
 
-/* harmony import */ var _classnormalizer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./classnormalizer */ "./src/modules/classnormalizer.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ClassNormalizer", function() { return _classnormalizer__WEBPACK_IMPORTED_MODULE_5__["default"]; });
+/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ContentManager", function() { return _contentmanager__WEBPACK_IMPORTED_MODULE_5__["default"]; });
 
-/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ContentManager", function() { return _contentmanager__WEBPACK_IMPORTED_MODULE_6__["default"]; });
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataStore", function() { return _datastore__WEBPACK_IMPORTED_MODULE_6__["default"]; });
 
-/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DataStore", function() { return _datastore__WEBPACK_IMPORTED_MODULE_7__["default"]; });
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Events", function() { return _emitter__WEBPACK_IMPORTED_MODULE_7__["default"]; });
 
-/* harmony import */ var _devmode__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./devmode */ "./src/modules/devmode.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "DevMode", function() { return _devmode__WEBPACK_IMPORTED_MODULE_8__["default"]; });
+/* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./emotemenu */ "./src/modules/emotemenu.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteMenu", function() { return _emotemenu__WEBPACK_IMPORTED_MODULE_8__["default"]; });
 
-/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Events", function() { return _emitter__WEBPACK_IMPORTED_MODULE_9__["default"]; });
+/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteModule", function() { return _emotes__WEBPACK_IMPORTED_MODULE_9__["default"]; });
 
-/* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./emotemenu */ "./src/modules/emotemenu.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteMenu", function() { return _emotemenu__WEBPACK_IMPORTED_MODULE_10__["default"]; });
+/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PluginManager", function() { return _pluginmanager__WEBPACK_IMPORTED_MODULE_10__["default"]; });
 
-/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteModule", function() { return _emotes__WEBPACK_IMPORTED_MODULE_11__["default"]; });
-
-/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PluginManager", function() { return _pluginmanager__WEBPACK_IMPORTED_MODULE_12__["default"]; });
-
-/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ThemeManager", function() { return _thememanager__WEBPACK_IMPORTED_MODULE_13__["default"]; });
-
-/* harmony import */ var _voicemode__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./voicemode */ "./src/modules/voicemode.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "VoiceMode", function() { return _voicemode__WEBPACK_IMPORTED_MODULE_14__["default"]; });
+/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ThemeManager", function() { return _thememanager__WEBPACK_IMPORTED_MODULE_11__["default"]; });
 
 
 
@@ -2593,14 +2948,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
+ // import DevMode from "./devmode";
 
 
 
 
  // import PublicServers from "./publicservers";
-
 
 
 const React = _webpackmodules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React;
@@ -3223,89 +3576,6 @@ PluginModule.prototype.rawObserver = function (e) {
 
 /***/ }),
 
-/***/ "./src/modules/publicservers.js":
-/*!**************************************!*\
-  !*** ./src/modules/publicservers.js ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = (new class {
-  initialize() {
-    const wrapper = modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.wrapper.split(" ")[0];
-    const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
-    guilds.after(this.button);
-  }
-
-  get component() {
-    return modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement(ui__WEBPACK_IMPORTED_MODULE_2__["PublicServers"].Layer, {
-      rootId: "pubslayerroot",
-      id: "pubslayer",
-      children: modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement(ui__WEBPACK_IMPORTED_MODULE_2__["PublicServers"].Menu, {
-        rootId: "pubslayerroot"
-      })
-    });
-  }
-
-  get root() {
-    const _root = document.getElementById("pubslayerroot");
-
-    if (!_root) {
-      if (!this.injectRoot()) return null;
-      return this.root;
-    }
-
-    return _root;
-  }
-
-  injectRoot() {
-    if (!$(".layers, .layers-3iHuyZ").length) return false;
-    $(".layers, .layers-3iHuyZ").append($("<div/>", {
-      id: "pubslayerroot"
-    }));
-    return true;
-  }
-
-  render() {
-    // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
-    const root = this.root;
-
-    if (!root) {
-      console.log("FAILED TO LOCATE ROOT: .layers");
-      return;
-    }
-
-    modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].ReactDOM.render(this.component, root);
-  }
-
-  get button() {
-    const btn = $("<div/>", {
-      "class": modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.listItem,
-      "id": "bd-pub-li",
-      "style": data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-1"] ? "" : "display: none;"
-    }).append($("<div/>", {
-      "class": "wrapper-25eVIn " + modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].guildClasses.circleButtonMask,
-      "text": "public",
-      "id": "bd-pub-button",
-      "click": () => {
-        this.render();
-      }
-    }));
-    return btn;
-  }
-
-}());
-
-/***/ }),
-
 /***/ "./src/modules/settingspanel.js":
 /*!**************************************!*\
   !*** ./src/modules/settingspanel.js ***!
@@ -3316,28 +3586,24 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var _classnormalizer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./classnormalizer */ "./src/modules/classnormalizer.js");
-/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
-/* harmony import */ var _voicemode__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./voicemode */ "./src/modules/voicemode.js");
-/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
-/* harmony import */ var _devmode__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./devmode */ "./src/modules/devmode.js");
-/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
-/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
+/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
+/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+ // import ClassNormalizer from "./classnormalizer";
 
 
 
 
-
-
-
+ // import DevMode from "./devmode";
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = (new class SettingsPanel {
   constructor() {
-    this.renderer = new ui__WEBPACK_IMPORTED_MODULE_9__["SettingsPanel"]({
+    this.renderer = new ui__WEBPACK_IMPORTED_MODULE_6__["SettingsPanel"]({
       onChange: this.updateSettings.bind(this)
     });
   }
@@ -3347,94 +3613,40 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   updateSettings(id, enabled) {
-    _emitter__WEBPACK_IMPORTED_MODULE_8__["default"].dispatch("setting-updated", "Modules", id, enabled);
+    _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("setting-updated", "Modules", id, enabled);
     data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][id] = enabled;
 
-    if (id == "bda-es-0") {
-      if (enabled) $("#twitchcord-button-container").show();else $("#twitchcord-button-container").hide();
-    }
-
-    if (id == "bda-gs-2") {
-      if (enabled) $("body").addClass("bd-minimal");else $("body").removeClass("bd-minimal");
-    }
-
-    if (id == "bda-gs-3") {
-      if (enabled) $("body").addClass("bd-minimal-chan");else $("body").removeClass("bd-minimal-chan");
-    }
-
-    if (id == "bda-gs-1") {
-      if (enabled) $("#bd-pub-li").show();else $("#bd-pub-li").hide();
-    } // if (id == "bda-gs-4") {
-    //     if (enabled) VoiceMode.enable();
-    //     else VoiceMode.disable();
-    // }
-
-
-    if (id == "bda-gs-5") {
-      if (enabled) $("#app-mount").addClass("bda-dark");else $("#app-mount").removeClass("bda-dark");
-    }
-
-    if (enabled && id == "bda-gs-6") _core__WEBPACK_IMPORTED_MODULE_4__["default"].inject24Hour();
-
-    if (id == "bda-gs-7") {
-      if (enabled) _core__WEBPACK_IMPORTED_MODULE_4__["default"].injectColoredText();else _core__WEBPACK_IMPORTED_MODULE_4__["default"].removeColoredText();
-    }
-
     if (id == "bda-es-4") {
-      if (enabled) _emotes__WEBPACK_IMPORTED_MODULE_6__["default"].autoCapitalize();else _emotes__WEBPACK_IMPORTED_MODULE_6__["default"].disableAutoCapitalize();
-    }
-
-    if (id == "fork-ps-4") {
-      if (enabled) _classnormalizer__WEBPACK_IMPORTED_MODULE_1__["default"].start();else _classnormalizer__WEBPACK_IMPORTED_MODULE_1__["default"].stop();
+      if (enabled) _emotes__WEBPACK_IMPORTED_MODULE_4__["default"].autoCapitalize();else _emotes__WEBPACK_IMPORTED_MODULE_4__["default"].disableAutoCapitalize();
     }
 
     if (id == "fork-ps-5") {
       if (enabled) {
-        _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("plugin");
-        _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("theme");
+        _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].watchContent("plugin");
+        _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].watchContent("theme");
       } else {
-        _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].unwatchContent("plugin");
-        _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].unwatchContent("theme");
+        _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].unwatchContent("plugin");
+        _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].unwatchContent("theme");
       }
     }
 
     if (id == "fork-wp-1") {
-      _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("transparent", enabled);
-      if (enabled) _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("backgroundColor", null);else _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("backgroundColor", "#2f3136");
-    }
-    /*if (_c["fork-wp-2"]) {
-        const current = BdApi.getWindowPreference("frame");
-        if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
-    }*/
-
-
-    if (id == "bda-gs-8") {
-      if (enabled) _devmode__WEBPACK_IMPORTED_MODULE_7__["default"].enable(data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-dm-1"]);else _devmode__WEBPACK_IMPORTED_MODULE_7__["default"].disable();
+      _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].setWindowPreference("transparent", enabled);
+      if (enabled) _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].setWindowPreference("backgroundColor", null);else _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].setWindowPreference("backgroundColor", "#2f3136");
     }
 
-    _core__WEBPACK_IMPORTED_MODULE_4__["default"].saveSettings();
+    _core__WEBPACK_IMPORTED_MODULE_3__["default"].saveSettings();
   }
 
   initializeSettings() {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-0"]) $("#twitchcord-button-container").show(); // if (SettingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
-
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-2"]) $("body").addClass("bd-minimal");
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-1"]) $("#bd-pub-li").show(); // if (SettingsCookie["bda-gs-4"]) VoiceMode.enable();
-
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-6"]) _core__WEBPACK_IMPORTED_MODULE_4__["default"].inject24Hour();
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-7"]) _core__WEBPACK_IMPORTED_MODULE_4__["default"].injectColoredText();
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-4"]) _emotes__WEBPACK_IMPORTED_MODULE_6__["default"].autoCapitalize();
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-4"]) _classnormalizer__WEBPACK_IMPORTED_MODULE_1__["default"].start();
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-4"]) _emotes__WEBPACK_IMPORTED_MODULE_4__["default"].autoCapitalize();
 
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"]) {
-      _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("plugin");
-      _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("theme");
+      _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].watchContent("plugin");
+      _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].watchContent("theme");
     }
 
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-8"]) _devmode__WEBPACK_IMPORTED_MODULE_7__["default"].enable(data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-dm-1"]);
-    _core__WEBPACK_IMPORTED_MODULE_4__["default"].saveSettings();
+    _core__WEBPACK_IMPORTED_MODULE_3__["default"].saveSettings();
   }
 
 }());
@@ -3820,38 +4032,6 @@ class Utilities {
 
 /***/ }),
 
-/***/ "./src/modules/voicemode.js":
-/*!**********************************!*\
-  !*** ./src/modules/voicemode.js ***!
-  \**********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (new class {
-  enable() {
-    $(".scroller.guild-channels ul").first().css("display", "none");
-    $(".scroller.guild-channels header").first().css("display", "none");
-    $(".app.flex-vertical, .app-2rEoOp").first().css("overflow", "hidden");
-    $(".chat-3bRxxu").first().css("visibility", "hidden").css("min-width", "0px");
-    $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
-    $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
-  }
-
-  disable() {
-    $(".scroller.guild-channels ul").first().css("display", "");
-    $(".scroller.guild-channels header").first().css("display", "");
-    $(".app.flex-vertical, .app-2rEoOp").first().css("overflow", "");
-    $(".chat-3bRxxu").first().css("visibility", "").css("min-width", "");
-    $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
-    $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
-  }
-
-}());
-
-/***/ }),
-
 /***/ "./src/modules/webpackmodules.js":
 /*!***************************************!*\
   !*** ./src/modules/webpackmodules.js ***!
@@ -4167,6 +4347,10 @@ const DiscordModules = _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].memoiz
 
   get Timestamps() {
     return WebpackModules.getByProps("fromTimestamp");
+  },
+
+  get TimeFormatter() {
+    return WebpackModules.getByProps("dateFormat");
   },
 
   /* Strings and Utils */
@@ -4567,11 +4751,12 @@ class WebpackModules {
 /*!********************************!*\
   !*** ./src/structs/builtin.js ***!
   \********************************/
-/*! exports provided: default */
+/*! exports provided: onSettingChange, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onSettingChange", function() { return onSettingChange; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BuiltinModule; });
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _modules_utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../modules/utilities */ "./src/modules/utilities.js");
@@ -4579,6 +4764,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+function onSettingChange(category, identifier, onEnable, onDisable) {
+  const handler = (cat, id, enabled) => {
+    if (category !== cat || id !== identifier) return;
+    if (enabled) onEnable();else onDisable();
+  };
+
+  _modules_emitter__WEBPACK_IMPORTED_MODULE_2__["default"].on("setting-updated", handler);
+  return () => {
+    _modules_emitter__WEBPACK_IMPORTED_MODULE_2__["default"].off("setting-updated", handler);
+  };
+}
 class BuiltinModule {
   get name() {
     return "Unnamed Builtin";
@@ -4592,14 +4788,11 @@ class BuiltinModule {
     return "None";
   }
 
-  async init() {
-    console.log("Init a builtin");
+  async initialize() {
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][this.id]) await this.enable();
-    _modules_emitter__WEBPACK_IMPORTED_MODULE_2__["default"].on("setting-updated", async (category, id, enabled) => {
-      console.log(category, id);
-      console.log(this.category, this.id);
+    _modules_emitter__WEBPACK_IMPORTED_MODULE_2__["default"].on("setting-updated", (category, id, enabled) => {
       if (category !== this.category || id !== this.id) return;
-      if (enabled) await this.enable();else await this.disable();
+      if (enabled) this.enable();else this.disable();
     });
   }
 
@@ -4617,16 +4810,16 @@ class BuiltinModule {
 
   async disabled() {}
 
-  log(message) {
-    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log(this.name, message);
+  log(...message) {
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log(this.name, ...message);
   }
 
-  warn(message) {
-    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].warn(this.name, message);
+  warn(...message) {
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].warn(this.name, ...message);
   }
 
-  error(message) {
-    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].err(this.name, message);
+  error(...message) {
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].err(this.name, ...message);
   }
 
 }
