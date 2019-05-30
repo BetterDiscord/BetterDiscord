@@ -1,21 +1,28 @@
+import Builtin from "../structs/builtin";
 import {SettingsCookie} from "data";
 import {BDV2, DiscordModules} from "modules";
-import {PublicServers} from "ui";
+import {PublicServers as PSComponents} from "ui";
 
-export default new class {
+export default new class PublicServers extends Builtin {
+    get name() {return "PublicServers";}
+    get category() {return "Modules";}
+    get id() {return "bda-gs-1";}
 
-    initialize() {
+    enabled() {
         const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
         const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
         guilds.after(this.button);
     }
 
+    disabled() {
+        $("#bd-pub-li").remove();
+    }
+
     get component() {
-        return DiscordModules.React.createElement(PublicServers.Layer, {
+        return DiscordModules.React.createElement(PSComponents.Layer, {
             rootId: "pubslayerroot",
-            id: "pubslayer",
-            children: DiscordModules.React.createElement(PublicServers.Menu, {rootId: "pubslayerroot"})
-        });
+            id: "pubslayer"
+        }, DiscordModules.React.createElement(PSComponents.Menu, {rootId: "pubslayerroot"}));
     }
 
     get root() {

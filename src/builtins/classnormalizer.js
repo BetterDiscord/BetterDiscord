@@ -1,22 +1,24 @@
-import BdApi from "./pluginapi";
+import Builtin from "../structs/builtin";
+import {WebpackModules} from "modules";
 
 const normalizedPrefix = "da";
 const randClass = new RegExp(`^(?!${normalizedPrefix}-)((?:[A-Za-z]|[0-9]|-)+)-(?:[A-Za-z]|[0-9]|-|_){6}$`);
 
-export default new class ClassNormalizer {
+export default new class ClassNormalizer extends Builtin {
     get id() {return "fork-ps-4";}
+    get category() {return "Modules";}
     get name() {return "ClassNormalizer";}
 
-    stop() {
+    disabled() {
         if (!this.hasPatched) return;
-        this.unpatchClassModules(BdApi.findAllModules(this.moduleFilter.bind(this)));
+        this.unpatchClassModules(WebpackModules.getModules(this.moduleFilter.bind(this)));
         this.revertElement(document.querySelector("#app-mount"));
         this.hasPatched = false;
     }
 
-    start() {
+    enabled() {
         if (this.hasPatched) return;
-        this.patchClassModules(BdApi.findAllModules(this.moduleFilter.bind(this)));
+        this.patchClassModules(WebpackModules.getModules(this.moduleFilter.bind(this)));
         this.normalizeElement(document.querySelector("#app-mount"));
         this.hasPatched = true;
     }

@@ -2,19 +2,28 @@ import {SettingsCookie} from "data";
 import Utilities from "../modules/utilities";
 import Events from "../modules/emitter";
 
+export function onSettingChange(category, identifier, onEnable, onDisable) {
+    const handler = (cat, id, enabled) => {
+        if (category !== cat || id !== identifier) return;
+        if (enabled) onEnable();
+        else onDisable();
+    };
+    Events.on("setting-updated", handler);
+    return () => {Events.off("setting-updated", handler);};
+}
+
 export default class BuiltinModule {
 
     get name() {return "Unnamed Builtin";}
     get category() {return "Modules";}
     get id() {return "None";}
 
-    async init() {
-        console.log("Init a builtin");
+    async initialize() {
         if (SettingsCookie[this.id]) await this.enable();
-        Events.on("setting-updated", async (category, id, enabled) => {
+        Events.on("setting-updated", (category, id, enabled) => {
             if (category !== this.category || id !== this.id) return;
-            if (enabled) await this.enable();
-            else await this.disable();
+            if (enabled) this.enable();
+            else this.disable();
         });
     }
 
@@ -31,15 +40,15 @@ export default class BuiltinModule {
     async enabled() {}
     async disabled() {}
 
-    log(message) {
-        Utilities.log(this.name, message);
+    log(...message) {
+        Utilities.log(this.name, ...message);
     }
 
-    warn(message) {
-        Utilities.warn(this.name, message);
+    warn(...message) {
+        Utilities.warn(this.name, ...message);
     }
 
-    error(message) {
-        Utilities.err(this.name, message);
+    error(...message) {
+        Utilities.err(this.name, ...message);
     }
 }
