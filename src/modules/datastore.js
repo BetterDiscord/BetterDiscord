@@ -1,5 +1,5 @@
 import {Config} from "data";
-import BdApi from "./pluginapi";
+
 const fs = require("fs");
 const path = require("path");
 const releaseChannel = DiscordNative.globals.releaseChannel;
@@ -11,20 +11,15 @@ export default new class DataStore {
     }
 
     initialize() {
-        try {
-            if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
-            const data = __non_webpack_require__(this.BDFile);
-            if (data.hasOwnProperty("settings")) this.data = data;
-            if (!fs.existsSync(this.settingsFile)) return;
-            let settings = __non_webpack_require__(this.settingsFile);
-            fs.unlinkSync(this.settingsFile);
-            if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}}, {[releaseChannel]: settings});
-            else settings = Object.assign({stable: {}, canary: {}, ptb: {}}, settings);
-            this.setBDData("settings", settings);
-        }
-        catch (err) {
-            BdApi.alert("Corrupt Storage", "The bd storage has somehow become corrupt. You may either try to salvage the file or delete it then reload.");
-        }
+        if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+        const data = __non_webpack_require__(this.BDFile);
+        if (data.hasOwnProperty("settings")) this.data = data;
+        if (!fs.existsSync(this.settingsFile)) return;
+        let settings = __non_webpack_require__(this.settingsFile);
+        fs.unlinkSync(this.settingsFile);
+        if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}}, {[releaseChannel]: settings});
+        else settings = Object.assign({stable: {}, canary: {}, ptb: {}}, settings);
+        this.setBDData("settings", settings);
     }
 
     get BDFile() {return this._BDFile || (this._BDFile = path.resolve(Config.dataPath, "bdstorage.json"));}

@@ -308,7 +308,7 @@
 
 #bda-qem-twitch-container, #bda-qem-favourite-container {
   width: 346px;
-  height: 327px;
+  height: 329px;
   background-color: #FFF;
   border-radius: 0 0 5px 5px;
 }
@@ -739,12 +739,12 @@ body .ace_closeButton {
   background: none;
   border: none;
 }
-  
+
 body .ace_closeButton::before {
   content: "✖";
   color: #36393f;
 }
-  
+
 body .ace_closeButton:active {
   transform: translateY(2px);
 }
@@ -1780,11 +1780,11 @@ body .ace_closeButton:active {
   border-color: #202020;
 }
 
-.bda-dark #bda-qem-favourite-container .scroller::-webkit-scrollbar, 
-.bda-dark #bda-qem-favourite-container .scroller::-webkit-scrollbar-track, 
+.bda-dark #bda-qem-favourite-container .scroller::-webkit-scrollbar,
+.bda-dark #bda-qem-favourite-container .scroller::-webkit-scrollbar-track,
 .bda-dark #bda-qem-favourite-container .scroller::-webkit-scrollbar-track-piece,
-.bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar, 
-.bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar-track, 
+.bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar,
+.bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar-track,
 .bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar-track-piece,
 .bda-dark .emojiPicker-3m1S-j .scroller-3vODG7::-webkit-scrollbar,
 .bda-dark .emojiPicker-3m1S-j .scroller-3vODG7::-webkit-scrollbar-track,
@@ -1793,7 +1793,7 @@ body .ace_closeButton:active {
   border-color: #303030 !important;
 }
 
-.bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar-thumb, 
+.bda-dark #bda-qem-twitch-container .scroller::-webkit-scrollbar-thumb,
 .bda-dark #bda-qem-favourite-container .scroller::-webkit-scrollbar-thumb,
 .bda-dark .emojiPicker-3g68GS .scroller-3vODG7::-webkit-scrollbar-thumb {
   border-color: #202020 !important;

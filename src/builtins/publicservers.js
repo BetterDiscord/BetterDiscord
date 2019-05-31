@@ -43,7 +43,6 @@ export default new class PublicServers extends Builtin {
     }
 
     render() {
-        // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
         const root = this.root;
         if (!root) {
             console.log("FAILED TO LOCATE ROOT: .layers");

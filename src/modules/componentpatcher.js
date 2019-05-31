@@ -86,3 +86,11 @@ export default new class {
     }
 
 };
+
+// lc = WebpackModules.getByDisplayName("FluxContainer(Layers)")
+// Patcher.after(lc.prototype, "render", (t,a,r) => {console.log(t,a,r);})
+// return.type
+// Patcher.after(temp3.prototype, "renderLayers", (t,a,r) => {
+//     console.log(t,a,r);
+//     if (t.props.layers.includes("USER_SETTINGS")) r[1].props.className = "user-settings-prop";
+//     })

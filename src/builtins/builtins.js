@@ -6,3 +6,5 @@ export {default as DarkMode} from "./darkmode";
 export {default as MinimalMode} from "./minimalmode";
 export {default as TwentyFourHour} from "./24hour";
 export {default as ColoredText} from "./coloredtext";
+export {default as VoiceDisconnect} from "./voicedisconnect";
+export {default as EmoteMenu} from "./emotemenu";

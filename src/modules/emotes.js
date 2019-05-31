@@ -5,6 +5,7 @@ import BDEmote from "../ui/emote";
 import BdApi from "./pluginapi";
 import DataStore from "./datastore";
 import {DiscordModules} from "./webpackmodules";
+import {Toasts} from "ui";
 
 const bdEmoteSettingIDs = {
     TwitchGlobal: "bda-es-7",
@@ -192,7 +193,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     const exists = _fs.existsSync(file);
 
     if (exists && this.isCacheValid()) {
-        if (SettingsCookie["fork-ps-2"]) BdApi.showToast("Loading emotes from cache.", {type: "info"});
+        if (SettingsCookie["fork-ps-2"]) Toasts.show("Loading emotes from cache.", {type: "info"});
         Utilities.log("Emotes", "Loading emotes from local cache.");
 
         const data = await new Promise(resolve => {
@@ -211,7 +212,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         }
 
         if (isValid) {
-            if (SettingsCookie["fork-ps-2"]) BdApi.showToast("Emotes successfully loaded.", {type: "success"});
+            if (SettingsCookie["fork-ps-2"]) Toasts.show("Emotes successfully loaded.", {type: "success"});
             return;
         }
 
@@ -220,7 +221,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
     }
 
     if (!SettingsCookie["fork-es-3"]) return;
-    if (SettingsCookie["fork-ps-2"]) BdApi.showToast("Downloading emotes in the background do not reload.", {type: "info"});
+    if (SettingsCookie["fork-ps-2"]) Toasts.show("Downloading emotes in the background do not reload.", {type: "info"});
 
     for (const e in emoteInfo) {
         await new Promise(r => setTimeout(r, 1000));
@@ -228,7 +229,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         Emotes[emoteInfo[e].variable] = data;
     }
 
-    if (SettingsCookie["fork-ps-2"]) BdApi.showToast("All emotes successfully downloaded.", {type: "success"});
+    if (SettingsCookie["fork-ps-2"]) Toasts.show("All emotes successfully downloaded.", {type: "success"});
 
     try { _fs.writeFileSync(file, JSON.stringify(Emotes), "utf8"); }
     catch (err) { Utilities.err("Emotes", "Could not save emote data.", err); }

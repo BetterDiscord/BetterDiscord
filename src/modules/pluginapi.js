@@ -2,7 +2,7 @@ import {Plugins, SettingsCookie, PluginCookie, ThemeCookie} from "data";
 import Utilities from "./utilities";
 import WebpackModules, {DiscordModules} from "./webpackmodules";
 import DataStore from "./datastore";
-import Core from "./core";
+import {Toasts, Modals} from "ui";
 
 const BdApi = {
     get React() { return DiscordModules.React; },
@@ -76,28 +76,13 @@ BdApi.getPlugin = function (name) {
     return null;
 };
 
-
-//Get BetterDiscord Core
-BdApi.getCore = function () {
-    return Core;
-};
-
 /**
  * Shows a generic but very customizable modal.
  * @param {string} title - title of the modal
  * @param {string} content - a string of text to display in the modal
  */
 BdApi.alert = function (title, content) {
-    const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
-    const AlertModal = BdApi.findModuleByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");
-    if (!ModalStack || !AlertModal) return Core.alert(title, content);
-
-    ModalStack.push(function(props) {
-        return BdApi.React.createElement(AlertModal, Object.assign({
-            title: title,
-            body: content,
-        }, props));
-    });
+    Modals.alert(title, content);
 };
 
 /**
@@ -112,33 +97,12 @@ BdApi.alert = function (title, content) {
  * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
  */
 BdApi.showConfirmationModal = function (title, content, options = {}) {
-    const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
-    const TextElement = BdApi.findModuleByProps("Sizes", "Weights");
-    const ConfirmationModal = BdApi.findModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");
-    if (!ModalStack || !ConfirmationModal || !TextElement) return Core.alert(title, content);
-
-    const {onConfirm, onCancel, confirmText, cancelText, danger = false} = options;
-    if (typeof(content) == "string") content = TextElement({color: TextElement.Colors.PRIMARY, children: [content]});
-    else if (Array.isArray(content)) content = TextElement({color: TextElement.Colors.PRIMARY, children: content});
-    content = [content];
-
-    const emptyFunction = () => {};
-    ModalStack.push(function(props) {
-        return BdApi.React.createElement(ConfirmationModal, Object.assign({
-            header: title,
-            children: content,
-            red: danger,
-            confirmText: confirmText ? confirmText : "Okay",
-            cancelText: cancelText ? cancelText : "Cancel",
-            onConfirm: onConfirm ? onConfirm : emptyFunction,
-            onCancel: onCancel ? onCancel : emptyFunction
-        }, props));
-    });
+    return Modals.showConfirmationModal(title, content, options);
 };
 
 //Show toast alert
 BdApi.showToast = function(content, options = {}) {
-    Core.showToast(content, options);
+    Toasts.show(content, options);
 };
 
 // Finds module

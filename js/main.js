@@ -155,7 +155,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!**********************************!*\
   !*** ./src/builtins/builtins.js ***!
   \**********************************/
-/*! exports provided: VoiceMode, ClassNormalizer, DeveloperMode, PublicServers, DarkMode, MinimalMode, TwentyFourHour, ColoredText */
+/*! exports provided: VoiceMode, ClassNormalizer, DeveloperMode, PublicServers, DarkMode, MinimalMode, TwentyFourHour, ColoredText, VoiceDisconnect, EmoteMenu */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -183,6 +183,14 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var _coloredtext__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./coloredtext */ "./src/builtins/coloredtext.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ColoredText", function() { return _coloredtext__WEBPACK_IMPORTED_MODULE_7__["default"]; });
+
+/* harmony import */ var _voicedisconnect__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./voicedisconnect */ "./src/builtins/voicedisconnect.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "VoiceDisconnect", function() { return _voicedisconnect__WEBPACK_IMPORTED_MODULE_8__["default"]; });
+
+/* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./emotemenu */ "./src/builtins/emotemenu.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteMenu", function() { return _emotemenu__WEBPACK_IMPORTED_MODULE_9__["default"]; });
+
+
 
 
 
@@ -576,6 +584,245 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/builtins/emotemenu.js":
+/*!***********************************!*\
+  !*** ./src/builtins/emotemenu.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+
+
+const headerHTML = `<div id="bda-qem">
+    <button class="active" id="bda-qem-twitch">Twitch</button>
+    <button id="bda-qem-favourite">Favourite</button>
+    <button id="bda-qem-emojis">Emojis</buttond>
+</div>`;
+const twitchEmoteHTML = `<div id="bda-qem-twitch-container">
+    <div class="scroller-wrap scrollerWrap-2lJEkd fade">
+        <div class="scroller scroller-2FKFPG">
+            <div class="emote-menu-inner">
+
+            </div>
+        </div>
+    </div>
+</div>`;
+const favoritesHTML = `<div id="bda-qem-favourite-container">
+    <div class="scroller-wrap scrollerWrap-2lJEkd fade">
+        <div class="scroller scroller-2FKFPG">
+            <div class="emote-menu-inner">
+
+            </div>
+        </div>
+    </div>
+</div>`;
+
+const makeEmote = (emote, url, options = {}) => {
+  const {
+    onContextMenu,
+    onClick
+  } = options;
+  const emoteContainer = $(`<div class="emote-container">
+        <img class="emote-icon" alt="${emote}" src="${url}" title="${emote}">
+    </div>`)[0];
+  if (onContextMenu) emoteContainer.addEventListener("contextmenu", onContextMenu);
+  emoteContainer.addEventListener("click", onClick);
+  return emoteContainer;
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (new class EmoteMenu extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "EmoteMenu";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-es-0";
+  }
+
+  get hideEmojisID() {
+    return "bda-es-9";
+  }
+
+  get hideEmojis() {
+    return data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"][this.hideEmojisID];
+  }
+
+  constructor() {
+    super();
+    this.lastTab = "bda-qem-emojis";
+    this.favoriteEmotes = {};
+    this.qmeHeader = $(headerHTML)[0];
+
+    for (const button of this.qmeHeader.getElementsByTagName("button")) button.addEventListener("click", this.switchMenu.bind(this));
+
+    this.teContainer = $(twitchEmoteHTML)[0];
+    this.teContainerInner = this.teContainer.querySelector(".emote-menu-inner");
+    this.faContainer = $(favoritesHTML)[0];
+    this.faContainerInner = this.faContainer.querySelector(".emote-menu-inner");
+    this.observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) this.observe(mutation);
+    });
+    this.enableHideEmojis = this.enableHideEmojis.bind(this);
+    this.disableHideEmojis = this.disableHideEmojis.bind(this);
+  }
+
+  initialize() {
+    super.initialize();
+    const fe = modules__WEBPACK_IMPORTED_MODULE_2__["DataStore"].getBDData("bdfavemotes");
+    if (fe !== "" && fe !== null) this.favoriteEmotes = JSON.parse(atob(fe));
+    this.updateFavorites();
+  }
+
+  async enabled() {
+    await new Promise(resolve => {
+      modules__WEBPACK_IMPORTED_MODULE_2__["Events"].on("emotes-loaded", resolve);
+    });
+    this.updateTwitchEmotes();
+    this.log("Starting to observe");
+    this.observer.observe(document.getElementById("app-mount"), {
+      childList: true,
+      subtree: true
+    });
+    this.hideEmojiCancel = Object(_structs_builtin__WEBPACK_IMPORTED_MODULE_0__["onSettingChange"])(this.category, this.hideEmojisID, this.enableHideEmojis, this.disableHideEmojis);
+    if (this.hideEmojis) this.enableHideEmojis();
+  }
+
+  disabled() {
+    this.observer.disconnect();
+    this.disableHideEmojis();
+    if (this.hideEmojiCancel) this.hideEmojiCancel();
+  }
+
+  enableHideEmojis() {
+    $(".emojiPicker-3m1S-j").addClass("bda-qme-hidden");
+  }
+
+  disableHideEmojis() {
+    $(".emojiPicker-3m1S-j").removeClass("bda-qme-hidden");
+  }
+
+  insertEmote(emote) {
+    const ta = modules__WEBPACK_IMPORTED_MODULE_2__["Utilities"].getTextArea();
+    modules__WEBPACK_IMPORTED_MODULE_2__["Utilities"].insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
+  }
+
+  favContext(e) {
+    e.stopPropagation();
+    const em = e.target.closest(".emote-container").children[0];
+    const menu = $(`<div id="removemenu" class="bd-context-menu context-menu theme-dark">Remove</div>`);
+    menu.css({
+      top: e.pageY - $("#bda-qem-favourite-container").offset().top,
+      left: e.pageX - $("#bda-qem-favourite-container").offset().left
+    });
+    $(em).parent().append(menu);
+    menu.on("click", e => {
+      e.preventDefault();
+      e.stopPropagation();
+      $(em).remove();
+      delete this.favoriteEmotes[$(em).attr("title")];
+      this.updateFavorites();
+      $(document).off("mousedown.emotemenu");
+    });
+    $(document).on("mousedown.emotemenu", function (e) {
+      if (e.target.id == "removemenu") return;
+      $("#removemenu").remove();
+      $(document).off("mousedown.emotemenu");
+    });
+  }
+
+  switchMenu(e) {
+    let id = typeof e == "string" ? e : $(e.target).attr("id");
+    if (id == "bda-qem-emojis" && this.hideEmojis) id = "bda-qem-favourite";
+    const twitch = $("#bda-qem-twitch");
+    const fav = $("#bda-qem-favourite");
+    const emojis = $("#bda-qem-emojis");
+    twitch.removeClass("active");
+    fav.removeClass("active");
+    emojis.removeClass("active");
+    $(".emojiPicker-3m1S-j").hide();
+    $("#bda-qem-favourite-container").hide();
+    $("#bda-qem-twitch-container").hide();
+
+    switch (id) {
+      case "bda-qem-twitch":
+        twitch.addClass("active");
+        $("#bda-qem-twitch-container").show();
+        break;
+
+      case "bda-qem-favourite":
+        fav.addClass("active");
+        $("#bda-qem-favourite-container").show();
+        break;
+
+      case "bda-qem-emojis":
+        emojis.addClass("active");
+        $(".emojiPicker-3m1S-j").show();
+        $(".emojiPicker-3m1S-j input").focus();
+        break;
+    }
+
+    if (id) this.lastTab = id;
+  }
+
+  observe(mutation) {
+    if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) return;
+    const node = mutation.addedNodes[0];
+    if (!node.classList.contains("popout-3sVMXz") || node.classList.contains("popoutLeft-30WmrD") || !node.getElementsByClassName("emojiPicker-3m1S-j").length) return;
+    const e = $(node);
+    if (this.hideEmojis) e.addClass("bda-qme-hidden");else e.removeClass("bda-qme-hidden");
+    e.prepend(this.qmeHeader);
+    e.append(this.teContainer);
+    e.append(this.faContainer);
+    this.switchMenu(this.lastTab);
+  }
+
+  favorite(name, url) {
+    if (!this.favoriteEmotes.hasOwnProperty(name)) this.favoriteEmotes[name] = url;
+    this.updateFavorites();
+  }
+
+  updateTwitchEmotes() {
+    while (this.teContainerInner.firstChild) this.teContainerInner.firstChild.remove();
+
+    for (const emote in data__WEBPACK_IMPORTED_MODULE_1__["Emotes"].TwitchGlobal) {
+      if (!data__WEBPACK_IMPORTED_MODULE_1__["Emotes"].TwitchGlobal.hasOwnProperty(emote)) continue;
+      const url = data__WEBPACK_IMPORTED_MODULE_1__["Emotes"].TwitchGlobal[emote];
+      const emoteElement = makeEmote(emote, url, {
+        onClick: this.insertEmote.bind(this, emote)
+      });
+      this.teContainerInner.append(emoteElement);
+    }
+  }
+
+  updateFavorites() {
+    while (this.faContainerInner.firstChild) this.faContainerInner.firstChild.remove();
+
+    for (const emote in this.favoriteEmotes) {
+      const url = this.favoriteEmotes[emote];
+      const emoteElement = makeEmote(emote, url, {
+        onClick: this.insertEmote.bind(this, emote),
+        onContextMenu: this.favContext.bind(this)
+      });
+      this.faContainerInner.append(emoteElement);
+    }
+
+    modules__WEBPACK_IMPORTED_MODULE_2__["DataStore"].setBDData("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
+  }
+
+}());
+
+/***/ }),
+
 /***/ "./src/builtins/minimalmode.js":
 /*!*************************************!*\
   !*** ./src/builtins/minimalmode.js ***!
@@ -709,7 +956,6 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   render() {
-    // BdApi.alert("Broken", "Sorry but the Public Servers modules is currently broken, I recommend disabling this feature for now.");
     const root = this.root;
 
     if (!root) {
@@ -734,6 +980,53 @@ __webpack_require__.r(__webpack_exports__);
       }
     }));
     return btn;
+  }
+
+}());
+
+/***/ }),
+
+/***/ "./src/builtins/voicedisconnect.js":
+/*!*****************************************!*\
+  !*** ./src/builtins/voicedisconnect.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _structs_builtin__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../structs/builtin */ "./src/structs/builtin.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+
+/* harmony default export */ __webpack_exports__["default"] = (new class DarkMode extends _structs_builtin__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  get name() {
+    return "VoiceDisconnect";
+  }
+
+  get category() {
+    return "Modules";
+  }
+
+  get id() {
+    return "bda-dc-0";
+  }
+
+  constructor() {
+    super();
+    this.beforeUnload = this.beforeUnload.bind(this);
+  }
+
+  enabled() {
+    window.addEventListener("beforeunload", this.beforeUnload);
+  }
+
+  disabled() {
+    window.removeEventListener("beforeunload", this.beforeUnload);
+  }
+
+  beforeUnload() {
+    modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].ChannelActions.selectVoiceChannel(null, null);
   }
 
 }());
@@ -1287,6 +1580,7 @@ window.bdEmotes = data__WEBPACK_IMPORTED_MODULE_0__["Emotes"];
 window.bemotes = data__WEBPACK_IMPORTED_MODULE_0__["EmoteBlacklist"];
 window.bdPluginStorage = _modules_oldstorage__WEBPACK_IMPORTED_MODULE_6__["bdPluginStorage"];
 window.BDEvents = _modules_emitter__WEBPACK_IMPORTED_MODULE_7__["default"];
+window.bdConfig = data__WEBPACK_IMPORTED_MODULE_0__["Config"];
 class CoreWrapper {
   constructor(config) {
     _modules_core__WEBPACK_IMPORTED_MODULE_2__["default"].setConfig(config);
@@ -1848,22 +2142,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
-/* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./emotemenu */ "./src/modules/emotemenu.js");
-/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
-/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
-/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-/* harmony import */ var _settingspanel__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./settingspanel */ "./src/modules/settingspanel.js");
-/* harmony import */ var builtins__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! builtins */ "./src/builtins/builtins.js");
+/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
+/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
+/* harmony import */ var _settingspanel__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./settingspanel */ "./src/modules/settingspanel.js");
+/* harmony import */ var builtins__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! builtins */ "./src/builtins/builtins.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+
+
+
+ // import QuickEmoteMenu from "../builtins/emotemenu";
 
 
 
 
- // import VoiceMode from "./voicemode";
-// import DevMode from "./devmode";
-
-
-
- // import PublicServers from "./publicservers";
 
 
 
@@ -1876,43 +2168,40 @@ Core.prototype.setConfig = function (config) {
 
 Core.prototype.init = async function () {
   if (data__WEBPACK_IMPORTED_MODULE_2__["Config"].version < data__WEBPACK_IMPORTED_MODULE_2__["Config"].minSupportedVersion) {
-    this.alert("Not Supported", "BetterDiscord v" + data__WEBPACK_IMPORTED_MODULE_2__["Config"].version + " (your version)" + " is not supported by the latest js (" + data__WEBPACK_IMPORTED_MODULE_2__["Config"].bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
+    ui__WEBPACK_IMPORTED_MODULE_8__["Modals"].alert("Not Supported", "BetterDiscord v" + data__WEBPACK_IMPORTED_MODULE_2__["Config"].version + " (your version)" + " is not supported by the latest js (" + data__WEBPACK_IMPORTED_MODULE_2__["Config"].bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
     return;
   }
 
   const latestLocalVersion = data__WEBPACK_IMPORTED_MODULE_2__["Config"].updater ? data__WEBPACK_IMPORTED_MODULE_2__["Config"].updater.LatestVersion : data__WEBPACK_IMPORTED_MODULE_2__["Config"].latestVersion;
 
   if (latestLocalVersion > data__WEBPACK_IMPORTED_MODULE_2__["Config"].version) {
-    this.alert("Update Available", `
+    ui__WEBPACK_IMPORTED_MODULE_8__["Modals"].alert("Update Available", `
             An update for BandagedBD is available (${latestLocalVersion})! Please Reinstall!<br /><br />
             <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>
         `);
   }
 
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Initializing Settings");
-  this.initSettings();
+  _settingspanel__WEBPACK_IMPORTED_MODULE_6__["default"].initialize();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Initializing EmoteModule");
   window.emotePromise = _emotes__WEBPACK_IMPORTED_MODULE_3__["default"].init().then(() => {
     _emotes__WEBPACK_IMPORTED_MODULE_3__["default"].initialized = true;
     _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Initializing QuickEmoteMenu");
-    _emotemenu__WEBPACK_IMPORTED_MODULE_4__["default"].init();
+    _emitter__WEBPACK_IMPORTED_MODULE_9__["default"].dispatch("emotes-loaded"); // QuickEmoteMenu.init();
   });
   this.injectExternals();
   await this.checkForGuilds();
   _bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].initialize();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Updating Settings");
-  _settingspanel__WEBPACK_IMPORTED_MODULE_8__["default"].initializeSettings();
+  _settingspanel__WEBPACK_IMPORTED_MODULE_6__["default"].initializeSettings();
 
-  for (const module in builtins__WEBPACK_IMPORTED_MODULE_9__) builtins__WEBPACK_IMPORTED_MODULE_9__[module].initialize();
+  for (const module in builtins__WEBPACK_IMPORTED_MODULE_7__) builtins__WEBPACK_IMPORTED_MODULE_7__[module].initialize();
 
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Loading Plugins");
-  const pluginErrors = _pluginmanager__WEBPACK_IMPORTED_MODULE_5__["default"].loadPlugins();
+  const pluginErrors = _pluginmanager__WEBPACK_IMPORTED_MODULE_4__["default"].loadPlugins();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Loading Themes");
-  const themeErrors = _thememanager__WEBPACK_IMPORTED_MODULE_6__["default"].loadThemes();
-  $("#customcss").detach().appendTo(document.head);
-  window.addEventListener("beforeunload", function () {
-    if (data__WEBPACK_IMPORTED_MODULE_2__["SettingsCookie"]["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
-  }); // PublicServers.initialize();
+  const themeErrors = _thememanager__WEBPACK_IMPORTED_MODULE_5__["default"].loadThemes();
+  $("#customcss").detach().appendTo(document.head); // PublicServers.initialize();
 
   _emotes__WEBPACK_IMPORTED_MODULE_3__["default"].autoCapitalize();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Removing Loading Icon");
@@ -1922,15 +2211,11 @@ Core.prototype.init = async function () {
 
   if (data__WEBPACK_IMPORTED_MODULE_2__["SettingsCookie"]["fork-ps-1"]) {
     _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Collecting Startup Errors");
-    this.showContentErrors({
+    ui__WEBPACK_IMPORTED_MODULE_8__["Modals"].showContentErrors({
       plugins: pluginErrors,
       themes: themeErrors
     });
-  } // if (!DataStore.getBDData(bbdVersion)) {
-  //     BdApi.alert("BBD Updated!", ["Lots of things were fixed in this update like Public Servers, Minimal Mode, Dark Mode and 24 Hour Timestamps.", BdApi.React.createElement("br"), BdApi.React.createElement("br"), "Feel free to test them all out!"]);
-  //     DataStore.setBDData(bbdVersion, true);
-  // }
-
+  }
 };
 
 Core.prototype.checkForGuilds = function () {
@@ -1954,32 +2239,11 @@ Core.prototype.injectExternals = async function () {
   if (window.require.original) window.require = window.require.original;
 };
 
-Core.prototype.initSettings = function () {
-  _datastore__WEBPACK_IMPORTED_MODULE_7__["default"].initialize();
-  if (!_datastore__WEBPACK_IMPORTED_MODULE_7__["default"].getSettingGroup("settings")) return this.saveSettings();
-  const savedSettings = this.loadSettings();
-  $("<style id=\"customcss\">").text(atob(_datastore__WEBPACK_IMPORTED_MODULE_7__["default"].getBDData("bdcustomcss"))).appendTo(document.head);
-
-  for (const setting in savedSettings) {
-    if (savedSettings[setting] !== undefined) data__WEBPACK_IMPORTED_MODULE_2__["SettingsCookie"][setting] = savedSettings[setting];
-  }
-
-  this.saveSettings();
-};
-
-Core.prototype.saveSettings = function () {
-  _datastore__WEBPACK_IMPORTED_MODULE_7__["default"].setSettingGroup("settings", data__WEBPACK_IMPORTED_MODULE_2__["SettingsCookie"]);
-};
-
-Core.prototype.loadSettings = function () {
-  return _datastore__WEBPACK_IMPORTED_MODULE_7__["default"].getSettingGroup("settings");
-};
-
 Core.prototype.initObserver = function () {
   const mainObserver = new MutationObserver(mutations => {
     for (let i = 0, mlen = mutations.length; i < mlen; i++) {
       const mutation = mutations[i];
-      if (typeof _pluginmanager__WEBPACK_IMPORTED_MODULE_5__["default"] !== "undefined") _pluginmanager__WEBPACK_IMPORTED_MODULE_5__["default"].rawObserver(mutation); // if there was nothing added, skip
+      if (typeof _pluginmanager__WEBPACK_IMPORTED_MODULE_4__["default"] !== "undefined") _pluginmanager__WEBPACK_IMPORTED_MODULE_4__["default"].rawObserver(mutation); // if there was nothing added, skip
 
       if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
       const node = mutation.addedNodes[0];
@@ -1990,178 +2254,15 @@ Core.prototype.initObserver = function () {
         if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
           node.setAttribute("layer-id", "user-settings");
           node.setAttribute("id", "user-settings");
-          if (!document.getElementById("bd-settings-sidebar")) _settingspanel__WEBPACK_IMPORTED_MODULE_8__["default"].renderSidebar();
+          if (!document.getElementById("bd-settings-sidebar")) _settingspanel__WEBPACK_IMPORTED_MODULE_6__["default"].renderSidebar();
         }
-      } // Emoji Picker
-
-
-      if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) _emotemenu__WEBPACK_IMPORTED_MODULE_4__["default"].obsCallback(node);
+      }
     }
   });
   mainObserver.observe(document, {
     childList: true,
     subtree: true
   });
-};
-
-Core.prototype.alert = function (title, content) {
-  const modal = $(`<div class="bd-modal-wrapper theme-dark">
-                    <div class="bd-backdrop backdrop-1wrmKB"></div>
-                    <div class="bd-modal modal-1UGdnR">
-                        <div class="bd-modal-inner inner-1JeGVc">
-                            <div class="header header-1R_AjF">
-                                <div class="title">${title}</div>
-                            </div>
-                            <div class="bd-modal-body">
-                                <div class="scroller-wrap fade">
-                                    <div class="scroller">
-                                        ${content}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="footer footer-2yfCgX">
-                                <button type="button">Okay</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`);
-  modal.find(".footer button").on("click", () => {
-    modal.addClass("closing");
-    setTimeout(() => {
-      modal.remove();
-    }, 300);
-  });
-  modal.find(".bd-backdrop").on("click", () => {
-    modal.addClass("closing");
-    setTimeout(() => {
-      modal.remove();
-    }, 300);
-  });
-  modal.appendTo("#app-mount");
-};
-
-Core.prototype.showContentErrors = function ({
-  plugins: pluginErrors = [],
-  themes: themeErrors = []
-}) {
-  if (!pluginErrors || !themeErrors) return;
-  if (!pluginErrors.length && !themeErrors.length) return;
-  const modal = $(`<div class="bd-modal-wrapper theme-dark">
-                    <div class="bd-backdrop backdrop-1wrmKB"></div>
-                    <div class="bd-modal bd-content-modal modal-1UGdnR">
-                        <div class="bd-modal-inner inner-1JeGVc">
-                            <div class="header header-1R_AjF"><div class="title">Content Errors</div></div>
-                            <div class="bd-modal-body">
-                                <div class="tab-bar-container">
-                                    <div class="tab-bar TOP">
-                                        <div class="tab-bar-item">Plugins</div>
-                                        <div class="tab-bar-item">Themes</div>
-                                    </div>
-                                </div>
-                                <div class="table-header">
-                                    <div class="table-column column-name">Name</div>
-                                    <div class="table-column column-message">Message</div>
-                                    <div class="table-column column-error">Error</div>
-                                </div>
-                                <div class="scroller-wrap fade">
-                                    <div class="scroller">
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="footer footer-2yfCgX">
-                                <button type="button">Okay</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`);
-
-  function generateTab(errors) {
-    const container = $(`<div class="errors">`);
-
-    for (const err of errors) {
-      const error = $(`<div class="error">
-                                <div class="table-column column-name">${err.name ? err.name : err.file}</div>
-                                <div class="table-column column-message">${err.message}</div>
-                                <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
-                            </div>`);
-      container.append(error);
-
-      if (err.error) {
-        error.find("a").on("click", e => {
-          e.preventDefault();
-          _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
-        });
-      }
-    }
-
-    return container;
-  }
-
-  const tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
-  modal.find(".tab-bar-item").on("click", e => {
-    e.preventDefault();
-    modal.find(".tab-bar-item").removeClass("selected");
-    $(e.target).addClass("selected");
-    modal.find(".scroller").empty().append(tabs[$(e.target).index()]);
-  });
-  modal.find(".footer button").on("click", () => {
-    modal.addClass("closing");
-    setTimeout(() => {
-      modal.remove();
-    }, 300);
-  });
-  modal.find(".bd-backdrop").on("click", () => {
-    modal.addClass("closing");
-    setTimeout(() => {
-      modal.remove();
-    }, 300);
-  });
-  modal.appendTo("#app-mount");
-  if (pluginErrors.length) modal.find(".tab-bar-item")[0].click();else modal.find(".tab-bar-item")[1].click();
-};
-/**
- * This shows a toast similar to android towards the bottom of the screen.
- *
- * @param {string} content The string to show in the toast.
- * @param {object} options Options object. Optional parameter.
- * @param {string} options.type Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
- * @param {boolean} options.icon Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
- * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
- */
-
-
-Core.prototype.showToast = function (content, options = {}) {
-  if (!data__WEBPACK_IMPORTED_MODULE_2__["Config"].deferLoaded) return;
-
-  if (!document.querySelector(".bd-toasts")) {
-    const toastWrapper = document.createElement("div");
-    toastWrapper.classList.add("bd-toasts");
-    const boundingElement = document.querySelector(".chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9");
-    toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
-    toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
-    toastWrapper.style.setProperty("bottom", (document.querySelector(".chat-3bRxxu form") ? document.querySelector(".chat-3bRxxu form").offsetHeight : 80) + "px");
-    document.querySelector(".app, .app-2rEoOp").appendChild(toastWrapper);
-  }
-
-  const {
-    type = "",
-    icon = true,
-    timeout = 3000
-  } = options;
-  const toastElem = document.createElement("div");
-  toastElem.classList.add("bd-toast");
-  if (type) toastElem.classList.add("toast-" + type);
-  if (type && icon) toastElem.classList.add("icon");
-  toastElem.innerText = content;
-  document.querySelector(".bd-toasts").appendChild(toastElem);
-  setTimeout(() => {
-    toastElem.classList.add("closing");
-    setTimeout(() => {
-      toastElem.remove();
-      if (!document.querySelectorAll(".bd-toasts .bd-toast").length) document.querySelector(".bd-toasts").remove();
-    }, 300);
-  }, timeout);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (new Core());
@@ -2178,8 +2279,6 @@ Core.prototype.showToast = function (content, options = {}) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-
 
 
 const fs = __webpack_require__(/*! fs */ "fs");
@@ -2200,32 +2299,28 @@ const releaseChannel = DiscordNative.globals.releaseChannel;
   }
 
   initialize() {
-    try {
-      if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+    if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
 
-      const data = require(this.BDFile);
+    const data = require(this.BDFile);
 
-      if (data.hasOwnProperty("settings")) this.data = data;
-      if (!fs.existsSync(this.settingsFile)) return;
+    if (data.hasOwnProperty("settings")) this.data = data;
+    if (!fs.existsSync(this.settingsFile)) return;
 
-      let settings = require(this.settingsFile);
+    let settings = require(this.settingsFile);
 
-      fs.unlinkSync(this.settingsFile);
-      if (settings.hasOwnProperty("settings")) settings = Object.assign({
-        stable: {},
-        canary: {},
-        ptb: {}
-      }, {
-        [releaseChannel]: settings
-      });else settings = Object.assign({
-        stable: {},
-        canary: {},
-        ptb: {}
-      }, settings);
-      this.setBDData("settings", settings);
-    } catch (err) {
-      _pluginapi__WEBPACK_IMPORTED_MODULE_1__["default"].alert("Corrupt Storage", "The bd storage has somehow become corrupt. You may either try to salvage the file or delete it then reload.");
-    }
+    fs.unlinkSync(this.settingsFile);
+    if (settings.hasOwnProperty("settings")) settings = Object.assign({
+      stable: {},
+      canary: {},
+      ptb: {}
+    }, {
+      [releaseChannel]: settings
+    });else settings = Object.assign({
+      stable: {},
+      canary: {},
+      ptb: {}
+    }, settings);
+    this.setBDData("settings", settings);
   }
 
   get BDFile() {
@@ -2294,216 +2389,16 @@ __webpack_require__.r(__webpack_exports__);
 const EventEmitter = __webpack_require__(/*! events */ "events");
 
 /* harmony default export */ __webpack_exports__["default"] = (new class BDEvents extends EventEmitter {
+  constructor() {
+    super();
+    this.setMaxListeners(20);
+  }
+
   dispatch(eventName, ...args) {
     this.emit(eventName, ...args);
   }
 
 }());
-
-/***/ }),
-
-/***/ "./src/modules/emotemenu.js":
-/*!**********************************!*\
-  !*** ./src/modules/emotemenu.js ***!
-  \**********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
-
-
-
-
-function QuickEmoteMenu() {}
-
-QuickEmoteMenu.prototype.init = function () {
-  this.initialized = true;
-  $(document).on("mousedown", function (e) {
-    if (e.target.id != "rmenu") $("#rmenu").remove();
-  });
-  this.favoriteEmotes = {};
-  const fe = _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getBDData("bdfavemotes");
-
-  if (fe !== "" && fe !== null) {
-    this.favoriteEmotes = JSON.parse(atob(fe));
-  }
-
-  let qmeHeader = "";
-  qmeHeader += "<div id=\"bda-qem\">";
-  qmeHeader += "    <button class=\"active\" id=\"bda-qem-twitch\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Twitch</button>";
-  qmeHeader += "    <button id=\"bda-qem-favourite\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Favourite</button>";
-  qmeHeader += "    <button id=\"bda-qem-emojis\" onclick='quickEmoteMenu.switchHandler(this); return false;'>Emojis</buttond>";
-  qmeHeader += "</div>";
-  this.qmeHeader = qmeHeader;
-  let teContainer = "";
-  teContainer += "<div id=\"bda-qem-twitch-container\">";
-  teContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
-  teContainer += "        <div class=\"scroller scroller-2FKFPG\">";
-  teContainer += "            <div class=\"emote-menu-inner\">";
-  let url = "";
-
-  for (const emote in data__WEBPACK_IMPORTED_MODULE_0__["Emotes"].TwitchGlobal) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["Emotes"].TwitchGlobal.hasOwnProperty(emote)) {
-      url = data__WEBPACK_IMPORTED_MODULE_0__["Emotes"].TwitchGlobal[emote];
-      teContainer += "<div class=\"emote-container\">";
-      teContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\">";
-      teContainer += "    </img>";
-      teContainer += "</div>";
-    }
-  }
-
-  teContainer += "            </div>";
-  teContainer += "        </div>";
-  teContainer += "    </div>";
-  teContainer += "</div>";
-  this.teContainer = teContainer;
-  let faContainer = "";
-  faContainer += "<div id=\"bda-qem-favourite-container\">";
-  faContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
-  faContainer += "        <div class=\"scroller scroller-2FKFPG\">";
-  faContainer += "            <div class=\"emote-menu-inner\">";
-
-  for (const emote in this.favoriteEmotes) {
-    url = this.favoriteEmotes[emote];
-    faContainer += "<div class=\"emote-container\">";
-    faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu='quickEmoteMenu.favContext(event, this);'>";
-    faContainer += "    </img>";
-    faContainer += "</div>";
-  }
-
-  faContainer += "            </div>";
-  faContainer += "        </div>";
-  faContainer += "    </div>";
-  faContainer += "</div>";
-  this.faContainer = faContainer;
-};
-
-QuickEmoteMenu.prototype.favContext = function (e, em) {
-  e.stopPropagation();
-  const menu = $("<div>", {
-    "id": "removemenu",
-    "data-emoteid": $(em).prop("title"),
-    "text": "Remove",
-    "class": "bd-context-menu context-menu theme-dark"
-  });
-  menu.css({
-    top: e.pageY - $("#bda-qem-favourite-container").offset().top,
-    left: e.pageX - $("#bda-qem-favourite-container").offset().left
-  });
-  $(em).parent().append(menu);
-  menu.on("click", function (e) {
-    e.preventDefault();
-    e.stopPropagation();
-    $(this).remove();
-    delete this.favoriteEmotes[$(this).data("emoteid")];
-    this.updateFavorites();
-    return false;
-  });
-  return false;
-};
-
-QuickEmoteMenu.prototype.switchHandler = function (e) {
-  this.switchQem($(e).attr("id"));
-};
-
-QuickEmoteMenu.prototype.switchQem = function (id) {
-  const twitch = $("#bda-qem-twitch");
-  const fav = $("#bda-qem-favourite");
-  const emojis = $("#bda-qem-emojis");
-  twitch.removeClass("active");
-  fav.removeClass("active");
-  emojis.removeClass("active");
-  $(".emojiPicker-3m1S-j").hide();
-  $("#bda-qem-favourite-container").hide();
-  $("#bda-qem-twitch-container").hide();
-
-  switch (id) {
-    case "bda-qem-twitch":
-      twitch.addClass("active");
-      $("#bda-qem-twitch-container").show();
-      break;
-
-    case "bda-qem-favourite":
-      fav.addClass("active");
-      $("#bda-qem-favourite-container").show();
-      break;
-
-    case "bda-qem-emojis":
-      emojis.addClass("active");
-      $(".emojiPicker-3m1S-j").show();
-      $(".emojiPicker-3m1S-j .search-bar-inner input, .emojiPicker-3m1S-j .search-bar-inner input").focus();
-      break;
-  }
-
-  this.lastTab = id;
-  const emoteIcon = $(".emote-icon");
-  emoteIcon.off();
-  emoteIcon.on("click", function () {
-    const emote = $(this).attr("title");
-    const ta = _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].getTextArea();
-    _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
-  });
-};
-
-QuickEmoteMenu.prototype.obsCallback = function (elem) {
-  if (!this.initialized) return;
-  const e = $(elem);
-
-  if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-9"]) {
-    e.addClass("bda-qme-hidden");
-  } else {
-    e.removeClass("bda-qme-hidden");
-  }
-
-  if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-0"]) return;
-  e.prepend(this.qmeHeader);
-  e.append(this.teContainer);
-  e.append(this.faContainer);
-
-  if (this.lastTab == undefined) {
-    this.lastTab = "bda-qem-emojis";
-  }
-
-  this.switchQem(this.lastTab);
-};
-
-QuickEmoteMenu.prototype.favorite = function (name, url) {
-  if (!this.favoriteEmotes.hasOwnProperty(name)) {
-    this.favoriteEmotes[name] = url;
-  }
-
-  this.updateFavorites();
-};
-
-QuickEmoteMenu.prototype.updateFavorites = function () {
-  let faContainer = "";
-  faContainer += "<div id=\"bda-qem-favourite-container\">";
-  faContainer += "    <div class=\"scroller-wrap scrollerWrap-2lJEkd fade\">";
-  faContainer += "        <div class=\"scroller scroller-2FKFPG\">";
-  faContainer += "            <div class=\"emote-menu-inner\">";
-
-  for (const emote in this.favoriteEmotes) {
-    const url = this.favoriteEmotes[emote];
-    faContainer += "<div class=\"emote-container\">";
-    faContainer += "    <img class=\"emote-icon\" alt=\"\" src=\"" + url + "\" title=\"" + emote + "\" oncontextmenu=\"quickEmoteMenu.favContext(event, this);\">";
-    faContainer += "    </img>";
-    faContainer += "</div>";
-  }
-
-  faContainer += "            </div>";
-  faContainer += "        </div>";
-  faContainer += "    </div>";
-  faContainer += "</div>";
-  this.faContainer = faContainer;
-  $("#bda-qem-favourite-container").replaceWith(faContainer);
-  _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].setBDData("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (new QuickEmoteMenu());
 
 /***/ }),
 
@@ -2523,6 +2418,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
 /* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
 /* harmony import */ var _webpackmodules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./webpackmodules */ "./src/modules/webpackmodules.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+
 
 
 
@@ -2738,7 +2635,7 @@ EmoteModule.prototype.loadEmoteData = async function (emoteInfo) {
   const exists = _fs.existsSync(file);
 
   if (exists && this.isCacheValid()) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("Loading emotes from cache.", {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_7__["Toasts"].show("Loading emotes from cache.", {
       type: "info"
     });
     _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Emotes", "Loading emotes from local cache.");
@@ -2757,7 +2654,7 @@ EmoteModule.prototype.loadEmoteData = async function (emoteInfo) {
     }
 
     if (isValid) {
-      if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("Emotes successfully loaded.", {
+      if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_7__["Toasts"].show("Emotes successfully loaded.", {
         type: "success"
       });
       return;
@@ -2769,7 +2666,7 @@ EmoteModule.prototype.loadEmoteData = async function (emoteInfo) {
   }
 
   if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-es-3"]) return;
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("Downloading emotes in the background do not reload.", {
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_7__["Toasts"].show("Downloading emotes in the background do not reload.", {
     type: "info"
   });
 
@@ -2779,7 +2676,7 @@ EmoteModule.prototype.loadEmoteData = async function (emoteInfo) {
     data__WEBPACK_IMPORTED_MODULE_0__["Emotes"][emoteInfo[e].variable] = data;
   }
 
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast("All emotes successfully downloaded.", {
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_7__["Toasts"].show("All emotes successfully downloaded.", {
     type: "success"
   });
 
@@ -2897,7 +2794,7 @@ EmoteModule.prototype.disableAutoCapitalize = function () {
 /*!********************************!*\
   !*** ./src/modules/modules.js ***!
   \********************************/
-/*! exports provided: React, ReactDOM, BDV2, BdApi, Core, ContentManager, DataStore, Events, EmoteMenu, EmoteModule, PluginManager, ThemeManager, Utilities, WebpackModules, DiscordModules */
+/*! exports provided: React, ReactDOM, BDV2, BdApi, Core, ContentManager, DataStore, Events, EmoteModule, PluginManager, ThemeManager, Utilities, WebpackModules, DiscordModules */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2930,17 +2827,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Events", function() { return _emitter__WEBPACK_IMPORTED_MODULE_7__["default"]; });
 
-/* harmony import */ var _emotemenu__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./emotemenu */ "./src/modules/emotemenu.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteMenu", function() { return _emotemenu__WEBPACK_IMPORTED_MODULE_8__["default"]; });
+/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteModule", function() { return _emotes__WEBPACK_IMPORTED_MODULE_8__["default"]; });
 
-/* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "EmoteModule", function() { return _emotes__WEBPACK_IMPORTED_MODULE_9__["default"]; });
+/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PluginManager", function() { return _pluginmanager__WEBPACK_IMPORTED_MODULE_9__["default"]; });
 
-/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "PluginManager", function() { return _pluginmanager__WEBPACK_IMPORTED_MODULE_10__["default"]; });
-
-/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ThemeManager", function() { return _thememanager__WEBPACK_IMPORTED_MODULE_11__["default"]; });
+/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "ThemeManager", function() { return _thememanager__WEBPACK_IMPORTED_MODULE_10__["default"]; });
 
 
 
@@ -2949,7 +2843,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
  // import DevMode from "./devmode";
-
 
 
 
@@ -3025,7 +2918,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
 /* harmony import */ var _webpackmodules__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./webpackmodules */ "./src/modules/webpackmodules.js");
 /* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
 
 
 
@@ -3123,11 +3016,6 @@ BdApi.getPlugin = function (name) {
   }
 
   return null;
-}; //Get BetterDiscord Core
-
-
-BdApi.getCore = function () {
-  return _core__WEBPACK_IMPORTED_MODULE_4__["default"];
 };
 /**
  * Shows a generic but very customizable modal.
@@ -3137,15 +3025,7 @@ BdApi.getCore = function () {
 
 
 BdApi.alert = function (title, content) {
-  const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
-  const AlertModal = BdApi.findModuleByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");
-  if (!ModalStack || !AlertModal) return _core__WEBPACK_IMPORTED_MODULE_4__["default"].alert(title, content);
-  ModalStack.push(function (props) {
-    return BdApi.React.createElement(AlertModal, Object.assign({
-      title: title,
-      body: content
-    }, props));
-  });
+  ui__WEBPACK_IMPORTED_MODULE_4__["Modals"].alert(title, content);
 };
 /**
  * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
@@ -3161,44 +3041,12 @@ BdApi.alert = function (title, content) {
 
 
 BdApi.showConfirmationModal = function (title, content, options = {}) {
-  const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
-  const TextElement = BdApi.findModuleByProps("Sizes", "Weights");
-  const ConfirmationModal = BdApi.findModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");
-  if (!ModalStack || !ConfirmationModal || !TextElement) return _core__WEBPACK_IMPORTED_MODULE_4__["default"].alert(title, content);
-  const {
-    onConfirm,
-    onCancel,
-    confirmText,
-    cancelText,
-    danger = false
-  } = options;
-  if (typeof content == "string") content = TextElement({
-    color: TextElement.Colors.PRIMARY,
-    children: [content]
-  });else if (Array.isArray(content)) content = TextElement({
-    color: TextElement.Colors.PRIMARY,
-    children: content
-  });
-  content = [content];
-
-  const emptyFunction = () => {};
-
-  ModalStack.push(function (props) {
-    return BdApi.React.createElement(ConfirmationModal, Object.assign({
-      header: title,
-      children: content,
-      red: danger,
-      confirmText: confirmText ? confirmText : "Okay",
-      cancelText: cancelText ? cancelText : "Cancel",
-      onConfirm: onConfirm ? onConfirm : emptyFunction,
-      onCancel: onCancel ? onCancel : emptyFunction
-    }, props));
-  });
+  return ui__WEBPACK_IMPORTED_MODULE_4__["Modals"].showConfirmationModal(title, content, options);
 }; //Show toast alert
 
 
 BdApi.showToast = function (content, options = {}) {
-  _core__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(content, options);
+  ui__WEBPACK_IMPORTED_MODULE_4__["Toasts"].show(content, options);
 }; // Finds module
 
 
@@ -3306,11 +3154,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
-/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
-/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
 
 
 
@@ -3352,7 +3198,7 @@ PluginModule.prototype.loadPlugins = function () {
     if (data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][name]) {
       try {
         plugin.start();
-        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${plugin.getName()} v${plugin.getVersion()} has started.`);
+        if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${plugin.getName()} v${plugin.getVersion()} has started.`);
       } catch (err) {
         data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][name] = false;
         _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("Plugins", name + " could not be started.", err);
@@ -3380,9 +3226,9 @@ PluginModule.prototype.loadPlugins = function () {
 PluginModule.prototype.startPlugin = function (plugin, reload = false) {
   try {
     data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.start();
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName()} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} has started.`);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName()} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} has started.`);
   } catch (err) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName()} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} could not be started.`, {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName()} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} could not be started.`, {
       type: "error"
     });
     data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][plugin] = false;
@@ -3394,9 +3240,9 @@ PluginModule.prototype.startPlugin = function (plugin, reload = false) {
 PluginModule.prototype.stopPlugin = function (plugin, reload = false) {
   try {
     data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.stop();
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName()} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} has stopped.`);
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName()} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} has stopped.`);
   } catch (err) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName()} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} could not be stopped.`, {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName()} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} could not be stopped.`, {
       type: "error"
     });
     _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("Plugins", data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getName() + " could not be stopped.", err);
@@ -3425,10 +3271,10 @@ PluginModule.prototype.loadPlugin = function (filename) {
   const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadContent(filename, "plugin");
 
   if (error) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) ui__WEBPACK_IMPORTED_MODULE_5__["Modals"].showContentErrors({
       plugins: [error]
     });
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${filename} could not be loaded.`, {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${filename} could not be loaded.`, {
       type: "error"
     });
     return _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("ContentManager", `${filename} could not be loaded.`, error);
@@ -3439,16 +3285,16 @@ PluginModule.prototype.loadPlugin = function (filename) {
   try {
     if (plugin.load && typeof plugin.load == "function") plugin.load();
   } catch (err) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) ui__WEBPACK_IMPORTED_MODULE_5__["Modals"].showContentErrors({
       plugins: [err]
     });
   }
 
   _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].log("ContentManager", `${plugin.getName()} v${plugin.getVersion()} was loaded.`);
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {
     type: "success"
   });
-  _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("plugin-loaded", plugin.getName());
+  _emitter__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch("plugin-loaded", plugin.getName());
 };
 
 PluginModule.prototype.unloadPlugin = function (filenameOrName) {
@@ -3460,20 +3306,20 @@ PluginModule.prototype.unloadPlugin = function (filenameOrName) {
   delete data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin];
 
   if (error) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) ui__WEBPACK_IMPORTED_MODULE_5__["Modals"].showContentErrors({
       plugins: [error]
     });
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin} could not be unloaded. It may have not been loaded yet.`, {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${plugin} could not be unloaded. It may have not been loaded yet.`, {
       type: "error"
     });
     return _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("ContentManager", `${plugin} could not be unloaded. It may have not been loaded yet.`, error);
   }
 
   _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].log("ContentManager", `${plugin} was unloaded.`);
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin} was unloaded.`, {
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${plugin} was unloaded.`, {
     type: "success"
   });
-  _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("plugin-unloaded", plugin);
+  _emitter__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch("plugin-unloaded", plugin);
 };
 
 PluginModule.prototype.reloadPlugin = function (filenameOrName) {
@@ -3485,10 +3331,10 @@ PluginModule.prototype.reloadPlugin = function (filenameOrName) {
   const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].reloadContent(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].filename, "plugin");
 
   if (error) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) ui__WEBPACK_IMPORTED_MODULE_5__["Modals"].showContentErrors({
       plugins: [error]
     });
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin} could not be reloaded.`, {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${plugin} could not be reloaded.`, {
       type: "error"
     });
     return _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("ContentManager", `${plugin} could not be reloaded.`, error);
@@ -3497,10 +3343,10 @@ PluginModule.prototype.reloadPlugin = function (filenameOrName) {
   if (data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.load && typeof data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.load == "function") data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.load();
   if (enabled) this.startPlugin(plugin, true);
   _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].log("ContentManager", `${plugin} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} was reloaded.`);
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${plugin} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} was reloaded.`, {
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${plugin} v${data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin.getVersion()} was reloaded.`, {
     type: "success"
   });
-  _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("plugin-reloaded", plugin);
+  _emitter__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch("plugin-reloaded", plugin);
 };
 
 PluginModule.prototype.updatePluginList = function () {
@@ -3512,13 +3358,13 @@ PluginModule.prototype.updatePluginList = function () {
 };
 
 PluginModule.prototype.loadPluginData = function () {
-  const saved = _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].getSettingGroup("plugins");
+  const saved = _datastore__WEBPACK_IMPORTED_MODULE_4__["default"].getSettingGroup("plugins");
   if (!saved) return;
   Object.assign(data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"], saved);
 };
 
 PluginModule.prototype.savePluginData = function () {
-  _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].setSettingGroup("plugins", data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"]);
+  _datastore__WEBPACK_IMPORTED_MODULE_4__["default"].setSettingGroup("plugins", data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"]);
 };
 
 PluginModule.prototype.newMessage = function () {
@@ -3586,30 +3432,110 @@ PluginModule.prototype.rawObserver = function (e) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+/* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
+/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
 /* harmony import */ var _emotes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./emotes */ "./src/modules/emotes.js");
 /* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
-/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
- // import ClassNormalizer from "./classnormalizer";
+/* harmony import */ var _webpackmodules__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./webpackmodules */ "./src/modules/webpackmodules.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
 
 
 
 
- // import DevMode from "./devmode";
 
 
+
+
+ //WebpackModules.getModule(m => m.getSection && m.getProps && !m.getGuildId && !m.getChannel)
+//WebpackModules.getByProps("getGuildId", "getSection")
 
 /* harmony default export */ __webpack_exports__["default"] = (new class SettingsPanel {
   constructor() {
-    this.renderer = new ui__WEBPACK_IMPORTED_MODULE_6__["SettingsPanel"]({
+    this.renderer = new ui__WEBPACK_IMPORTED_MODULE_7__["SettingsPanel"]({
       onChange: this.updateSettings.bind(this)
     });
   }
 
   renderSidebar() {
     this.renderer.renderSidebar();
+  }
+
+  initialize() {
+    _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].initialize();
+    if (!_datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getSettingGroup("settings")) return this.saveSettings();
+    const savedSettings = this.loadSettings();
+    $("<style id=\"customcss\">").text(atob(_datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getBDData("bdcustomcss"))).appendTo(document.head);
+
+    for (const setting in savedSettings) {
+      if (savedSettings[setting] !== undefined) data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting] = savedSettings[setting];
+    }
+
+    this.saveSettings(); // console.log("PATCHING");
+    // Utilities.monkeyPatch(WebpackModules.getByProps("getUserSettingsSections").default.prototype, "render", {after: (data) => {
+    //     data.returnValue.type;
+    // }});
+    // Patcher.after(temp2.prototype, "generateSections", (t,a,r) => {
+    //     r.push({section: "DIVIDER"});
+    //     r.push({section: "HEADER", label: "My Section"});
+    //     r.push({color: "#ffffff", label: "My Tab", onClick: function() {console.log("CLICK");}, section: "My Section"});
+    //             r.push({color: "#cccccc", label: "My Tab2", onClick: function() {console.log("CLICK2");}, section: "My Section"});
+    // })
+
+    this.patchSections();
+  }
+
+  async patchSections() {
+    const UserSettings = await this.getUserSettings(); // data.returnValue.type;
+
+    _utilities__WEBPACK_IMPORTED_MODULE_8__["default"].monkeyPatch(UserSettings.prototype, "generateSections", {
+      after: data => {
+        console.log(data);
+        data.returnValue.splice(23, 0, {
+          section: "DIVIDER"
+        });
+        data.returnValue.splice(24, 0, {
+          section: "HEADER",
+          label: "BandagedBD"
+        });
+        data.returnValue.splice(25, 0, {
+          section: "IJ1",
+          label: "Injected Tab 1",
+          element: () => this.renderer.core2
+        });
+        data.returnValue.splice(26, 0, {
+          section: "IJ2",
+          label: "Injected Tab 2",
+          onClick: function () {
+            console.log("CLICK2");
+          }
+        });
+      }
+    });
+    const viewClass = _webpackmodules__WEBPACK_IMPORTED_MODULE_6__["default"].getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
+    const node = document.querySelector(`.${viewClass}`);
+    _utilities__WEBPACK_IMPORTED_MODULE_8__["default"].getInternalInstance(node).return.return.return.return.return.return.stateNode.forceUpdate();
+  }
+
+  getUserSettings() {
+    return new Promise(resolve => {
+      const cancel = _utilities__WEBPACK_IMPORTED_MODULE_8__["default"].monkeyPatch(_webpackmodules__WEBPACK_IMPORTED_MODULE_6__["default"].getByProps("getUserSettingsSections").default.prototype, "render", {
+        after: data => {
+          resolve(data.returnValue.type);
+          data.thisObject.forceUpdate();
+          cancel();
+        }
+      });
+    });
+  }
+
+  saveSettings() {
+    _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].setSettingGroup("settings", data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]);
+  }
+
+  loadSettings() {
+    return _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getSettingGroup("settings");
   }
 
   updateSettings(id, enabled) {
@@ -3622,31 +3548,31 @@ __webpack_require__.r(__webpack_exports__);
 
     if (id == "fork-ps-5") {
       if (enabled) {
-        _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].watchContent("plugin");
-        _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].watchContent("theme");
+        _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("plugin");
+        _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("theme");
       } else {
-        _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].unwatchContent("plugin");
-        _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].unwatchContent("theme");
+        _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].unwatchContent("plugin");
+        _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].unwatchContent("theme");
       }
     }
 
     if (id == "fork-wp-1") {
-      _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].setWindowPreference("transparent", enabled);
-      if (enabled) _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].setWindowPreference("backgroundColor", null);else _pluginapi__WEBPACK_IMPORTED_MODULE_2__["default"].setWindowPreference("backgroundColor", "#2f3136");
+      _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("transparent", enabled);
+      if (enabled) _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("backgroundColor", null);else _pluginapi__WEBPACK_IMPORTED_MODULE_3__["default"].setWindowPreference("backgroundColor", "#2f3136");
     }
 
-    _core__WEBPACK_IMPORTED_MODULE_3__["default"].saveSettings();
+    this.saveSettings();
   }
 
   initializeSettings() {
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-es-4"]) _emotes__WEBPACK_IMPORTED_MODULE_4__["default"].autoCapitalize();
 
     if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"]) {
-      _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].watchContent("plugin");
-      _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].watchContent("theme");
+      _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("plugin");
+      _contentmanager__WEBPACK_IMPORTED_MODULE_2__["default"].watchContent("theme");
     }
 
-    _core__WEBPACK_IMPORTED_MODULE_3__["default"].saveSettings();
+    this.saveSettings();
   }
 
 }());
@@ -3665,11 +3591,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _contentmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./contentmanager */ "./src/modules/contentmanager.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
-/* harmony import */ var _core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./core */ "./src/modules/core.js");
-/* harmony import */ var _pluginapi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./pluginapi */ "./src/modules/pluginapi.js");
-/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
-/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
-
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
 
 
 
@@ -3708,14 +3632,14 @@ ThemeModule.prototype.enableTheme = function (theme, reload = false) {
     id: _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].escapeID(theme),
     text: unescape(data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].css)
   }));
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} has been applied.`);
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} has been applied.`);
 };
 
 ThemeModule.prototype.disableTheme = function (theme, reload = false) {
   data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme] = false;
   this.saveThemeData();
   $(`#${_utilities__WEBPACK_IMPORTED_MODULE_2__["default"].escapeID(data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name)}`).remove();
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showToast(`${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} has been disabled.`);
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"] && !reload) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} has been disabled.`);
 };
 
 ThemeModule.prototype.toggleTheme = function (theme) {
@@ -3726,10 +3650,10 @@ ThemeModule.prototype.loadTheme = function (filename) {
   const error = _contentmanager__WEBPACK_IMPORTED_MODULE_1__["default"].loadContent(filename, "theme");
 
   if (error) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) ui__WEBPACK_IMPORTED_MODULE_5__["Modals"].showContentErrors({
       themes: [error]
     });
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${filename} could not be loaded. It may not have been loaded.`, {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${filename} could not be loaded. It may not have been loaded.`, {
       type: "error"
     });
     return _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("ContentManager", `${filename} could not be loaded.`, error);
@@ -3737,10 +3661,10 @@ ThemeModule.prototype.loadTheme = function (filename) {
 
   const theme = Object.values(data__WEBPACK_IMPORTED_MODULE_0__["Themes"]).find(p => p.filename == filename);
   _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].log("ContentManager", `${theme.name} v${theme.version} was loaded.`);
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme.name} v${theme.version} was loaded.`, {
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${theme.name} v${theme.version} was loaded.`, {
     type: "success"
   });
-  _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("theme-loaded", theme.name);
+  _emitter__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch("theme-loaded", theme.name);
 };
 
 ThemeModule.prototype.unloadTheme = function (filenameOrName) {
@@ -3752,20 +3676,20 @@ ThemeModule.prototype.unloadTheme = function (filenameOrName) {
   delete data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme];
 
   if (error) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) ui__WEBPACK_IMPORTED_MODULE_5__["Modals"].showContentErrors({
       themes: [error]
     });
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme} could not be unloaded. It may have not been loaded yet.`, {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${theme} could not be unloaded. It may have not been loaded yet.`, {
       type: "error"
     });
     return _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("ContentManager", `${theme} could not be unloaded. It may have not been loaded yet.`, error);
   }
 
   _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].log("ContentManager", `${theme} was unloaded.`);
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme} was unloaded.`, {
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${theme} was unloaded.`, {
     type: "success"
   });
-  _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("theme-unloaded", theme);
+  _emitter__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch("theme-unloaded", theme);
 };
 
 ThemeModule.prototype.reloadTheme = function (filenameOrName) {
@@ -3776,20 +3700,20 @@ ThemeModule.prototype.reloadTheme = function (filenameOrName) {
   if (data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][theme]) this.disableTheme(theme, true), this.enableTheme(theme, true);
 
   if (error) {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) _core__WEBPACK_IMPORTED_MODULE_3__["default"].showContentErrors({
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-1"]) ui__WEBPACK_IMPORTED_MODULE_5__["Modals"].showContentErrors({
       themes: [error]
     });
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme} could not be reloaded.`, {
+    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${theme} could not be reloaded.`, {
       type: "error"
     });
     return _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("ContentManager", `${theme} could not be reloaded.`, error);
   }
 
   _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].log("ContentManager", `${theme} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} was reloaded.`);
-  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) _pluginapi__WEBPACK_IMPORTED_MODULE_4__["default"].showToast(`${theme} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} was reloaded.`, {
+  if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-2"]) ui__WEBPACK_IMPORTED_MODULE_5__["Toasts"].show(`${theme} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} was reloaded.`, {
     type: "success"
   });
-  _emitter__WEBPACK_IMPORTED_MODULE_5__["default"].dispatch("theme-reloaded", theme);
+  _emitter__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch("theme-reloaded", theme);
 };
 
 ThemeModule.prototype.updateThemeList = function () {
@@ -3801,13 +3725,13 @@ ThemeModule.prototype.updateThemeList = function () {
 };
 
 ThemeModule.prototype.loadThemeData = function () {
-  const saved = _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].getSettingGroup("themes");
+  const saved = _datastore__WEBPACK_IMPORTED_MODULE_4__["default"].getSettingGroup("themes");
   if (!saved) return;
   Object.assign(data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"], saved);
 };
 
 ThemeModule.prototype.saveThemeData = function () {
-  _datastore__WEBPACK_IMPORTED_MODULE_6__["default"].setSettingGroup("themes", data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"]);
+  _datastore__WEBPACK_IMPORTED_MODULE_4__["default"].setSettingGroup("themes", data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"]);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (new ThemeModule());
@@ -5294,12 +5218,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BDEmote; });
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var _builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../builtins/emotemenu */ "./src/builtins/emotemenu.js");
+
 
 
 class BDEmote extends modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.Component {
   constructor(props) {
     super(props);
-    const isFav = modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"] && modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes && modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes[this.label] ? true : false;
+    const isFav = _builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__["default"] && _builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__["default"].favoriteEmotes && _builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__["default"].favoriteEmotes[this.label] ? true : false;
     this.state = {
       shouldAnimate: !this.animateOnHover,
       isFavorite: isFav
@@ -5325,9 +5251,9 @@ class BDEmote extends modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].Rea
     if (!this.state.shouldAnimate && this.animateOnHover) this.setState({
       shouldAnimate: true
     });
-    if (!this.state.isFavorite && modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes[this.label]) this.setState({
+    if (!this.state.isFavorite && _builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__["default"].favoriteEmotes[this.label]) this.setState({
       isFavorite: true
-    });else if (this.state.isFavorite && !modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes[this.label]) this.setState({
+    });else if (this.state.isFavorite && !_builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__["default"].favoriteEmotes[this.label]) this.setState({
       isFavorite: false
     });
   }
@@ -5368,10 +5294,10 @@ class BDEmote extends modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].Rea
         e.stopPropagation();
 
         if (this.state.isFavorite) {
-          delete modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favoriteEmotes[this.label];
-          modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].updateFavorites();
+          delete _builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__["default"].favoriteEmotes[this.label];
+          _builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__["default"].updateFavorites();
         } else {
-          modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].favorite(this.label, this.props.url);
+          _builtins_emotemenu__WEBPACK_IMPORTED_MODULE_2__["default"].favorite(this.label, this.props.url);
         }
 
         this.setState({
@@ -5651,6 +5577,214 @@ class V2C_List extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
     return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("ul", {
       className: this.props.className
     }, this.props.children);
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/ui/modals.js":
+/*!**************************!*\
+  !*** ./src/ui/modals.js ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Modals; });
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+class Modals {
+  static get ModalStack() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["WebpackModules"].getByProps("push", "update", "pop", "popWithKey");
+  }
+
+  static get AlertModal() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["WebpackModules"].getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");
+  }
+
+  static get TextElement() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["WebpackModules"].getByProps("Sizes", "Weights");
+  }
+
+  static get ConfirmationModal() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["WebpackModules"].getModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");
+  }
+
+  static default(title, content) {
+    const modal = $(`<div class="bd-modal-wrapper theme-dark">
+                <div class="bd-backdrop backdrop-1wrmKB"></div>
+                <div class="bd-modal modal-1UGdnR">
+                    <div class="bd-modal-inner inner-1JeGVc">
+                        <div class="header header-1R_AjF">
+                            <div class="title">${title}</div>
+                        </div>
+                        <div class="bd-modal-body">
+                            <div class="scroller-wrap fade">
+                                <div class="scroller">
+                                    ${content}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer footer-2yfCgX">
+                            <button type="button">Okay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>`);
+    modal.find(".footer button").on("click", () => {
+      modal.addClass("closing");
+      setTimeout(() => {
+        modal.remove();
+      }, 300);
+    });
+    modal.find(".bd-backdrop").on("click", () => {
+      modal.addClass("closing");
+      setTimeout(() => {
+        modal.remove();
+      }, 300);
+    });
+    modal.appendTo("#app-mount");
+  }
+
+  static alert(title, content) {
+    if (this.ModalStack && this.AlertModal) return this.default(title, content);
+    this.ModalStack.push(function (props) {
+      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(this.AlertModal, Object.assign({
+        title: title,
+        body: content
+      }, props));
+    });
+  }
+  /**
+   * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
+   * @param {string} title - title of the modal
+   * @param {(string|ReactElement|Array<string|ReactElement>)} children - a single or mixed array of react elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
+   * @param {object} [options] - options to modify the modal
+   * @param {boolean} [options.danger=false] - whether the main button should be red or not
+   * @param {string} [options.confirmText=Okay] - text for the confirmation/submit button
+   * @param {string} [options.cancelText=Cancel] - text for the cancel button
+   * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
+   * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
+   */
+
+
+  static showConfirmationModal(title, content, options = {}) {
+    const TextElement = this.TextElement;
+    const ConfirmationModal = this.ConfirmationModal;
+    const ModalStack = this.ModalStack;
+    if (!this.ModalStack || !this.ConfirmationModal || !this.TextElement) return this.alert(title, content);
+    const {
+      onConfirm,
+      onCancel,
+      confirmText,
+      cancelText,
+      danger = false
+    } = options;
+    if (typeof content == "string") content = TextElement({
+      color: TextElement.Colors.PRIMARY,
+      children: [content]
+    });else if (Array.isArray(content)) content = TextElement({
+      color: TextElement.Colors.PRIMARY,
+      children: content
+    });
+    content = [content];
+
+    const emptyFunction = () => {};
+
+    ModalStack.push(function (props) {
+      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(ConfirmationModal, Object.assign({
+        header: title,
+        children: content,
+        red: danger,
+        confirmText: confirmText ? confirmText : "Okay",
+        cancelText: cancelText ? cancelText : "Cancel",
+        onConfirm: onConfirm ? onConfirm : emptyFunction,
+        onCancel: onCancel ? onCancel : emptyFunction
+      }, props));
+    });
+  }
+
+  static showContentErrors({
+    plugins: pluginErrors = [],
+    themes: themeErrors = []
+  }) {
+    if (!pluginErrors || !themeErrors) return;
+    if (!pluginErrors.length && !themeErrors.length) return;
+    const modal = $(`<div class="bd-modal-wrapper theme-dark">
+                        <div class="bd-backdrop backdrop-1wrmKB"></div>
+                        <div class="bd-modal bd-content-modal modal-1UGdnR">
+                            <div class="bd-modal-inner inner-1JeGVc">
+                                <div class="header header-1R_AjF"><div class="title">Content Errors</div></div>
+                                <div class="bd-modal-body">
+                                    <div class="tab-bar-container">
+                                        <div class="tab-bar TOP">
+                                            <div class="tab-bar-item">Plugins</div>
+                                            <div class="tab-bar-item">Themes</div>
+                                        </div>
+                                    </div>
+                                    <div class="table-header">
+                                        <div class="table-column column-name">Name</div>
+                                        <div class="table-column column-message">Message</div>
+                                        <div class="table-column column-error">Error</div>
+                                    </div>
+                                    <div class="scroller-wrap fade">
+                                        <div class="scroller">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="footer footer-2yfCgX">
+                                    <button type="button">Okay</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`);
+
+    const generateTab = function (errors) {
+      const container = $(`<div class="errors">`);
+
+      for (const err of errors) {
+        const error = $(`<div class="error">
+                                    <div class="table-column column-name">${err.name ? err.name : err.file}</div>
+                                    <div class="table-column column-message">${err.message}</div>
+                                    <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
+                                </div>`);
+        container.append(error);
+
+        if (err.error) {
+          error.find("a").on("click", e => {
+            e.preventDefault();
+            modules__WEBPACK_IMPORTED_MODULE_0__["Utilities"].err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
+          });
+        }
+      }
+
+      return container;
+    };
+
+    const tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
+    modal.find(".tab-bar-item").on("click", e => {
+      e.preventDefault();
+      modal.find(".tab-bar-item").removeClass("selected");
+      $(e.target).addClass("selected");
+      modal.find(".scroller").empty().append(tabs[$(e.target).index()]);
+    });
+    modal.find(".footer button").on("click", () => {
+      modal.addClass("closing");
+      setTimeout(() => {
+        modal.remove();
+      }, 300);
+    });
+    modal.find(".bd-backdrop").on("click", () => {
+      modal.addClass("closing");
+      setTimeout(() => {
+        modal.remove();
+      }, 300);
+    });
+    modal.appendTo("#app-mount");
+    if (pluginErrors.length) modal.find(".tab-bar-item")[0].click();else modal.find(".tab-bar-item")[1].click();
   }
 
 }
@@ -6748,6 +6882,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _themecard__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./themecard */ "./src/ui/settings/themecard.js");
 /* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
 /* harmony import */ var _customcss_editor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../customcss/editor */ "./src/ui/customcss/editor.js");
+/* harmony import */ var _settings_settingsgroup__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../settings/settingsgroup */ "./src/ui/settings/settingsgroup.js");
+
 
 
 
@@ -6859,6 +6995,14 @@ class V2_SettingsPanel {
     self.sidebar.render();
   }
 
+  get core2() {
+    return this.coreSettings.map(section => {
+      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_settingsgroup__WEBPACK_IMPORTED_MODULE_13__["default"], Object.assign({}, section, {
+        onChange: this.onChange
+      }));
+    });
+  }
+
   get coreComponent() {
     return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {
       contentColumn: true,
@@ -6889,7 +7033,6 @@ class V2_SettingsPanel {
           onClick: () => {
             modules__WEBPACK_IMPORTED_MODULE_1__["EmoteModule"].clearEmoteData();
             modules__WEBPACK_IMPORTED_MODULE_1__["EmoteModule"].init();
-            modules__WEBPACK_IMPORTED_MODULE_1__["EmoteMenu"].init();
           }
         }
       }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {
@@ -7359,6 +7502,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_Switch; });
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 
+const flexContainer = "flex-1xMQg5 flex-1O1GKY da-flex da-flex vertical-V37hAW flex-1O1GKY directionColumn-35P_nr justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6 switchItem-2hKKKK";
+const flexWrap = "flex-1xMQg5 flex-1O1GKY da-flex da-flex horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStart-H-X2h- noWrap-3jynv6";
+const flexChild = "flexChild-faoVW3 da-flexChild";
+const title = "titleDefault-a8-ZSr title-31JmR4 da-titleDefault da-title";
+const switchWrapper = "flexChild-faoVW3 da-flexChild switchEnabled-V2WDBB switch-3wwwcV da-switchEnabled da-switch valueUnchecked-2lU_20 value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
+const switchWrapperEnabled = "flexChild-faoVW3 da-flexChild switchEnabled-V2WDBB switch-3wwwcV da-switchEnabled da-switch valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
+const switchClass = "checkboxEnabled-CtinEn checkbox-2tyjJg da-checkboxEnabled da-checkbox";
+const description = "description-3_Ncsb formText-3fs7AJ da-description da-formText note-1V3kyJ da-note modeDefault-3a2Ph1 da-modeDefault primary-jw0I4K";
 class V2C_Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
   constructor(props) {
     super(props);
@@ -7381,25 +7532,25 @@ class V2C_Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component
       checked
     } = this.state;
     return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item"
+      className: `ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item ${flexContainer}`
     }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap"
+      className: `ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap ${flexWrap}`
     }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("h3", {
-      className: "ui-form-title h3 margin-reset margin-reset ui-flex-child"
-    }, text), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("label", {
-      className: "ui-switch-wrapper ui-flex-child",
+      className: `ui-form-title h3 margin-reset margin-reset ui-flex-child ${title} ${flexChild}`
+    }, text), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: `ui-switch-wrapper ui-flex-child ${checked ? switchWrapperEnabled : switchWrapper}`,
       style: {
         flex: "0 0 auto"
       }
     }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("input", {
-      className: "ui-switch-checkbox",
+      className: `ui-switch-checkbox ${switchClass}`,
       type: "checkbox",
       checked: checked,
       onChange: e => this.onChange(e)
     }), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
       className: `ui-switch ${checked ? "checked" : ""}`
     }))), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "ui-form-text style-description margin-top-4",
+      className: `ui-form-text style-description margin-top-4 ${description}`,
       style: {
         flex: "1 1 auto"
       }
@@ -7514,6 +7665,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
+/* harmony import */ var _toasts__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../toasts */ "./src/ui/toasts.js");
+
 
 
 
@@ -7548,9 +7701,9 @@ class V2C_ThemeCard extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Compon
   reload() {
     const theme = this.props.theme.name;
     const error = modules__WEBPACK_IMPORTED_MODULE_1__["ThemeManager"].reloadTheme(theme);
-    if (error) modules__WEBPACK_IMPORTED_MODULE_1__["Core"].showToast(`Could not reload ${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name}. Check console for details.`, {
+    if (error) _toasts__WEBPACK_IMPORTED_MODULE_3__["default"].show(`Could not reload ${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name}. Check console for details.`, {
       type: "error"
-    });else modules__WEBPACK_IMPORTED_MODULE_1__["Core"].showToast(`${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} has been reloaded.`, {
+    });else _toasts__WEBPACK_IMPORTED_MODULE_3__["default"].show(`${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} has been reloaded.`, {
       type: "success"
     }); // this.setState(this.state);
 
@@ -7649,7 +7802,7 @@ class V2C_SettingsTitle extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Co
 
   render() {
     return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("h2", {
-      className: "ui-form-title h2 margin-reset margin-bottom-20 marginTop60-3PGbtK da-marginTop6"
+      className: "ui-form-title h2 margin-reset margin-bottom-20 marginTop60-3PGbtK h2-2gWE-o title-3sZWYQ size16-14cGz5 height20-mO2eIN weightSemiBold-NJexzi defaultColor-1_ajX0 defaultMarginh2-2LTaUL marginBottom20-32qID7"
     }, this.props.text);
   }
 
@@ -7711,11 +7864,118 @@ class V2C_SidebarView extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Comp
 
 /***/ }),
 
+/***/ "./src/ui/toasts.js":
+/*!**************************!*\
+  !*** ./src/ui/toasts.js ***!
+  \**************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Toasts; });
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+const channelsClass = modules__WEBPACK_IMPORTED_MODULE_0__["WebpackModules"].getByProps("channels").channels.split(" ")[0];
+const membersWrapClass = modules__WEBPACK_IMPORTED_MODULE_0__["WebpackModules"].getByProps("membersWrap").membersWrap.split(" ")[0];
+class Toasts {
+  /** Shorthand for `type = "success"` for {@link module:Toasts.show} */
+  static async success(content, options = {}) {
+    return this.show(content, Object.assign(options, {
+      type: "success"
+    }));
+  }
+  /** Shorthand for `type = "info"` for {@link module:Toasts.show} */
+
+
+  static async info(content, options = {}) {
+    return this.show(content, Object.assign(options, {
+      type: "info"
+    }));
+  }
+  /** Shorthand for `type = "warning"` for {@link module:Toasts.show} */
+
+
+  static async warning(content, options = {}) {
+    return this.show(content, Object.assign(options, {
+      type: "warning"
+    }));
+  }
+  /** Shorthand for `type = "error"` for {@link module:Toasts.show} */
+
+
+  static async error(content, options = {}) {
+    return this.show(content, Object.assign(options, {
+      type: "error"
+    }));
+  }
+  /** Shorthand for `type = "default"` for {@link module:Toasts.show} */
+
+
+  static async default(content, options = {}) {
+    return this.show(content, Object.assign(options, {
+      type: ""
+    }));
+  }
+  /**
+   * This shows a toast similar to android towards the bottom of the screen.
+   *
+   * @param {string} content The string to show in the toast.
+   * @param {object} options Options object. Optional parameter.
+   * @param {string} options.type Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
+   * @param {boolean} options.icon Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
+   * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
+   */
+
+
+  static show(content, options = {}) {
+    this.ensureContainer();
+    const {
+      type = "",
+      icon = true,
+      timeout = 3000
+    } = options;
+    const toastElem = document.createElement("div");
+    toastElem.classList.add("bd-toast");
+    if (type) toastElem.classList.add("toast-" + type);
+    if (type && icon) toastElem.classList.add("icon");
+    toastElem.innerText = content;
+    document.querySelector(".bd-toasts").appendChild(toastElem);
+    setTimeout(() => {
+      toastElem.classList.add("closing");
+      setTimeout(() => {
+        toastElem.remove();
+        if (!document.querySelectorAll(".bd-toasts .bd-toast").length) document.querySelector(".bd-toasts").remove();
+      }, 300);
+    }, timeout);
+  }
+
+  static ensureContainer() {
+    if (document.querySelector(".bd-toasts")) return;
+    const container = document.querySelector(`.${channelsClass} + div`);
+    const memberlist = container.querySelector(`.${membersWrapClass}`);
+    const form = container ? container.querySelector("form") : null;
+    const left = container ? container.getBoundingClientRect().left : 310;
+    const right = memberlist ? memberlist.getBoundingClientRect().left : 0;
+    const width = right ? right - container.getBoundingClientRect().left : container.offsetWidth;
+    const bottom = form ? form.offsetHeight : 80;
+    const toastWrapper = document.createElement("div");
+    toastWrapper.classList.add("bd-toasts");
+    toastWrapper.style.setProperty("left", left + "px");
+    toastWrapper.style.setProperty("width", width + "px");
+    toastWrapper.style.setProperty("bottom", bottom + "px");
+    document.querySelector("#app-mount").appendChild(toastWrapper);
+  }
+
+}
+
+/***/ }),
+
 /***/ "./src/ui/ui.js":
 /*!**********************!*\
   !*** ./src/ui/ui.js ***!
   \**********************/
-/*! exports provided: SettingsPanel, PublicServers */
+/*! exports provided: Toasts, Modals, SettingsPanel, PublicServers */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7725,6 +7985,14 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony import */ var _publicservers_publicservers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./publicservers/publicservers */ "./src/ui/publicservers/publicservers.js");
 /* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "PublicServers", function() { return _publicservers_publicservers__WEBPACK_IMPORTED_MODULE_1__; });
+/* harmony import */ var _toasts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./toasts */ "./src/ui/toasts.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Toasts", function() { return _toasts__WEBPACK_IMPORTED_MODULE_2__["default"]; });
+
+/* harmony import */ var _modals__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modals */ "./src/ui/modals.js");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Modals", function() { return _modals__WEBPACK_IMPORTED_MODULE_3__["default"]; });
+
+
+
 
 
 
