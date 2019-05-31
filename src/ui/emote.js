@@ -1,5 +1,6 @@
 import {SettingsCookie} from "data";
-import {BDV2, EmoteMenu, DiscordModules} from "modules";
+import {BDV2, DiscordModules} from "modules";
+import EmoteMenu from "../builtins/emotemenu";
 
 export default class BDEmote extends DiscordModules.React.Component {
     constructor(props) {

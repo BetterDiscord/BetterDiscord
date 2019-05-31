@@ -1,5 +1,5 @@
 import {SettingsInfo, SettingsCookie, Plugins, Themes} from "data";
-import {React, ReactDOM, Utilities, ContentManager, Events, EmoteModule, EmoteMenu, PluginManager, ThemeManager} from "modules";
+import {React, ReactDOM, Utilities, ContentManager, Events, EmoteModule, PluginManager, ThemeManager} from "modules";
 import Sidebar from "./sidebar";
 import Scroller from "../scroller";
 import List from "../list";
@@ -12,6 +12,7 @@ import ThemeCard from "./themecard";
 import ReloadIcon from "../icons/reload";
 
 import CssEditor from "../customcss/editor";
+import SettingsGroup from "../settings/settingsgroup";
 
 export default class V2_SettingsPanel {
 
@@ -98,6 +99,12 @@ export default class V2_SettingsPanel {
         self.sidebar.render();
     }
 
+    get core2() {
+        return this.coreSettings.map(section => {
+            return React.createElement(SettingsGroup, Object.assign({}, section, {onChange: this.onChange}));
+        });
+    }
+
     get coreComponent() {
         return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [
             React.createElement(SectionedSettingsPanel, {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
@@ -110,7 +117,7 @@ export default class V2_SettingsPanel {
             contentColumn: true, fade: true, dark: true, children: [
                 React.createElement(SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
                     title: "Clear Emote Cache",
-                    onClick: () => { EmoteModule.clearEmoteData(); EmoteModule.init(); EmoteMenu.init(); }
+                    onClick: () => { EmoteModule.clearEmoteData(); EmoteModule.init(); }
                 }}),
                 React.createElement(Tools, {key: "tools"})
         ]});

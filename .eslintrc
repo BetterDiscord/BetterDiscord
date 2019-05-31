@@ -19,7 +19,7 @@
         "semi": 2,
         "space-infix-ops": ["error", {"int32Hint": false}],
         "quotes": ["error", "double", {"allowTemplateLiterals": true}],
-        "no-console": 0,
+        "no-console": 2,
         "brace-style": ["error", "stroustrup", {"allowSingleLine": true}],
         "keyword-spacing": 2,
         "no-else-return": 2,

@@ -1,6 +1,7 @@
 import {SettingsCookie, ThemeCookie, Themes} from "data";
-import {React, Core, ThemeManager} from "modules";
+import {React, ThemeManager} from "modules";
 import ReloadIcon from "../icons/reload";
+import Toasts from "../toasts";
 
 export default class V2C_ThemeCard extends React.Component {
 
@@ -34,8 +35,8 @@ export default class V2C_ThemeCard extends React.Component {
     reload() {
         const theme = this.props.theme.name;
         const error = ThemeManager.reloadTheme(theme);
-        if (error) Core.showToast(`Could not reload ${Themes[theme].name}. Check console for details.`, {type: "error"});
-        else Core.showToast(`${Themes[theme].name} v${Themes[theme].version} has been reloaded.`, {type: "success"});
+        if (error) Toasts.show(`Could not reload ${Themes[theme].name}. Check console for details.`, {type: "error"});
+        else Toasts.show(`${Themes[theme].name} v${Themes[theme].version} has been reloaded.`, {type: "success"});
         // this.setState(this.state);
         this.props.theme = Themes[theme];
         this.onReload(this.props.theme.name);

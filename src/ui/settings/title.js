@@ -8,7 +8,7 @@ export default class V2C_SettingsTitle extends React.Component {
     render() {
         return React.createElement(
             "h2",
-            {className: "ui-form-title h2 margin-reset margin-bottom-20 marginTop60-3PGbtK da-marginTop6"},
+            {className: "ui-form-title h2 margin-reset margin-bottom-20 marginTop60-3PGbtK h2-2gWE-o title-3sZWYQ size16-14cGz5 height20-mO2eIN weightSemiBold-NJexzi defaultColor-1_ajX0 defaultMarginh2-2LTaUL marginBottom20-32qID7"},
             this.props.text
         );
     }
