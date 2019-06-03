@@ -11,7 +11,9 @@ export default new class TwentyFourHour extends Builtin {
     }
 
     disabled() {
-        if (this.cancel24Hour) this.cancel24Hour();
+        if (!this.cancel24Hour) return;
+        this.cancel24Hour();
+        delete this.cancel24Hour;
     }
 
     inject24Hour() {

@@ -13,7 +13,9 @@ export default new class ColoredText extends Builtin {
     }
 
     disabled() {
-        if (this.cancelColoredText) this.cancelColoredText();
+        if (!this.cancelColoredText) return;
+        this.cancelColoredText();
+        delete this.cancelColoredText;
     }
 
     injectColoredText() {

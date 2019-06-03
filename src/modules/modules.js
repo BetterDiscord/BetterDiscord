@@ -11,7 +11,7 @@ import ContentManager from "./contentmanager";
 import DataStore from "./datastore";
 // import DevMode from "./devmode";
 import Events from "./emitter";
-import EmoteModule from "./emotes";
+// import EmoteModule from "./emotes";
 import PluginManager from "./pluginmanager";
 // import PublicServers from "./publicservers";
 import ThemeManager from "./thememanager";
@@ -20,7 +20,7 @@ export const React = DiscordModules.React;
 export const ReactDOM = DiscordModules.ReactDOM;
 
 export {BDV2, BdApi, Core, ContentManager, DataStore,
-        Events, EmoteModule, PluginManager, /*PublicServers,*/ ThemeManager,
+        Events, PluginManager, /*PublicServers,*/ ThemeManager,
         Utilities, WebpackModules, DiscordModules};
 
 

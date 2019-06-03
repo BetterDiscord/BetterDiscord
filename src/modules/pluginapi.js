@@ -100,7 +100,16 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
     return Modals.showConfirmationModal(title, content, options);
 };
 
-//Show toast alert
+/**
+ * This shows a toast similar to android towards the bottom of the screen.
+ *
+ * @param {string} content The string to show in the toast.
+ * @param {object} options Options object. Optional parameter.
+ * @param {string} [options.type=""] Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
+ * @param {boolean} [options.icon=true] Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
+ * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
+ * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the bd setting
+ */
 BdApi.showToast = function(content, options = {}) {
     Toasts.show(content, options);
 };

@@ -1,3 +1,4 @@
+import State from "./state";
 import SettingsInfo from "./settings";
 import SettingsCookie from "./cookies/settingscookie";
 import Config from "./config";
@@ -7,5 +8,8 @@ import Themes from "./themes";
 import Plugins from "./plugins";
 import Emotes from "./emotes/emotes";
 import EmoteBlacklist from "./emotes/blacklist";
+import EmoteInfo from "./emotes/info";
+import EmoteModifiers from "./emotes/modifiers";
+import EmoteOverrides from "./emotes/overrides"
 
-export {SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins, Emotes, EmoteBlacklist};
+export {State, SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins, Emotes, EmoteBlacklist, EmoteInfo, EmoteModifiers, EmoteOverrides};

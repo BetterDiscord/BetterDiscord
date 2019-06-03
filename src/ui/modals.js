@@ -1,6 +1,9 @@
+import {SettingsCookie} from "data";
 import {Utilities, WebpackModules, React} from "modules";
 
 export default class Modals {
+
+    static get shouldShowContentErrors() {return SettingsCookie["fork-ps-1"];}
 
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
@@ -86,7 +89,7 @@ export default class Modals {
     }
 
     static showContentErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
-        if (!pluginErrors || !themeErrors) return;
+        if (!pluginErrors || !themeErrors || !this.shouldShowContentErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
         const modal = $(`<div class="bd-modal-wrapper theme-dark">
                         <div class="bd-backdrop backdrop-1wrmKB"></div>

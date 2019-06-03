@@ -33,7 +33,7 @@ PluginModule.prototype.loadPlugins = function () {
         if (PluginCookie[name]) {
             try {
                 plugin.start();
-                if (SettingsCookie["fork-ps-2"]) Toasts.show(`${plugin.getName()} v${plugin.getVersion()} has started.`);
+                Toasts.show(`${plugin.getName()} v${plugin.getVersion()} has started.`);
             }
             catch (err) {
                 PluginCookie[name] = false;
@@ -52,10 +52,10 @@ PluginModule.prototype.loadPlugins = function () {
 PluginModule.prototype.startPlugin = function(plugin, reload = false) {
     try {
         Plugins[plugin].plugin.start();
-        if (SettingsCookie["fork-ps-2"] && !reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} has started.`);
+        if (!reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} has started.`);
     }
     catch (err) {
-        if (SettingsCookie["fork-ps-2"] && !reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
+        if (!reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
         PluginCookie[plugin] = false;
         this.savePluginData();
         Utilities.err("Plugins", plugin + " could not be started.", err);
@@ -65,10 +65,10 @@ PluginModule.prototype.startPlugin = function(plugin, reload = false) {
 PluginModule.prototype.stopPlugin = function(plugin, reload = false) {
     try {
         Plugins[plugin].plugin.stop();
-        if (SettingsCookie["fork-ps-2"] && !reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} has stopped.`);
+        if (!reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} has stopped.`);
     }
     catch (err) {
-        if (SettingsCookie["fork-ps-2"] && !reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} could not be stopped.`, {type: "error"});
+        if (!reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} could not be stopped.`, {type: "error"});
         Utilities.err("Plugins", Plugins[plugin].plugin.getName() + " could not be stopped.", err);
     }
 };
@@ -95,15 +95,15 @@ PluginModule.prototype.togglePlugin = function (plugin) {
 PluginModule.prototype.loadPlugin = function(filename) {
     const error = ContentManager.loadContent(filename, "plugin");
     if (error) {
-        if (SettingsCookie["fork-ps-1"]) Modals.showContentErrors({plugins: [error]});
-        if (SettingsCookie["fork-ps-2"]) Toasts.show(`${filename} could not be loaded.`, {type: "error"});
+        Modals.showContentErrors({plugins: [error]});
+        Toasts.show(`${filename} could not be loaded.`, {type: "error"});
         return Utilities.err("ContentManager", `${filename} could not be loaded.`, error);
     }
     const plugin = Object.values(Plugins).find(p => p.filename == filename).plugin;
     try { if (plugin.load && typeof(plugin.load) == "function") plugin.load();}
-    catch (err) {if (SettingsCookie["fork-ps-1"]) Modals.showContentErrors({plugins: [err]});}
+    catch (err) {Modals.showContentErrors({plugins: [err]});}
     Utilities.log("ContentManager", `${plugin.getName()} v${plugin.getVersion()} was loaded.`);
-    if (SettingsCookie["fork-ps-2"]) Toasts.show(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
+    Toasts.show(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
     Emitter.dispatch("plugin-loaded", plugin.getName());
 };
 
@@ -115,12 +115,12 @@ PluginModule.prototype.unloadPlugin = function(filenameOrName) {
     const error = ContentManager.unloadContent(Plugins[plugin].filename, "plugin");
     delete Plugins[plugin];
     if (error) {
-        if (SettingsCookie["fork-ps-1"]) Modals.showContentErrors({plugins: [error]});
-        if (SettingsCookie["fork-ps-2"]) Toasts.show(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
+        Modals.showContentErrors({plugins: [error]});
+        Toasts.show(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
         return Utilities.err("ContentManager", `${plugin} could not be unloaded. It may have not been loaded yet.`, error);
     }
     Utilities.log("ContentManager", `${plugin} was unloaded.`);
-    if (SettingsCookie["fork-ps-2"]) Toasts.show(`${plugin} was unloaded.`, {type: "success"});
+    Toasts.show(`${plugin} was unloaded.`, {type: "success"});
     Emitter.dispatch("plugin-unloaded", plugin);
 };
 
@@ -132,14 +132,14 @@ PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     if (enabled) this.stopPlugin(plugin, true);
     const error = ContentManager.reloadContent(Plugins[plugin].filename, "plugin");
     if (error) {
-        if (SettingsCookie["fork-ps-1"]) Modals.showContentErrors({plugins: [error]});
-        if (SettingsCookie["fork-ps-2"]) Toasts.show(`${plugin} could not be reloaded.`, {type: "error"});
+        Modals.showContentErrors({plugins: [error]});
+        Toasts.show(`${plugin} could not be reloaded.`, {type: "error"});
         return Utilities.err("ContentManager", `${plugin} could not be reloaded.`, error);
     }
     if (Plugins[plugin].plugin.load && typeof(Plugins[plugin].plugin.load) == "function") Plugins[plugin].plugin.load();
     if (enabled) this.startPlugin(plugin, true);
     Utilities.log("ContentManager", `${plugin} v${Plugins[plugin].plugin.getVersion()} was reloaded.`);
-    if (SettingsCookie["fork-ps-2"]) Toasts.show(`${plugin} v${Plugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
+    Toasts.show(`${plugin} v${Plugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
     Emitter.dispatch("plugin-reloaded", plugin);
 };
 
