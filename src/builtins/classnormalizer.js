@@ -9,18 +9,18 @@ export default new class ClassNormalizer extends Builtin {
     get category() {return "Modules";}
     get name() {return "ClassNormalizer";}
 
-    disabled() {
-        if (!this.hasPatched) return;
-        this.unpatchClassModules(WebpackModules.getModules(this.moduleFilter.bind(this)));
-        this.revertElement(document.querySelector("#app-mount"));
-        this.hasPatched = false;
-    }
-
     enabled() {
         if (this.hasPatched) return;
         this.patchClassModules(WebpackModules.getModules(this.moduleFilter.bind(this)));
         this.normalizeElement(document.querySelector("#app-mount"));
         this.hasPatched = true;
+    }
+
+    disabled() {
+        if (!this.hasPatched) return;
+        this.unpatchClassModules(WebpackModules.getModules(this.moduleFilter.bind(this)));
+        this.revertElement(document.querySelector("#app-mount"));
+        this.hasPatched = false;
     }
 
     patchClassModules(modules) {

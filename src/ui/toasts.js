@@ -1,9 +1,12 @@
+import {SettingsCookie} from "data";
 import {WebpackModules} from "modules";
 
 const channelsClass = WebpackModules.getByProps("channels").channels.split(" ")[0];
 const membersWrapClass = WebpackModules.getByProps("membersWrap").membersWrap.split(" ")[0];
 
 export default class Toasts {
+
+    static get shouldShowToasts() {return SettingsCookie["fork-ps-2"];}
 
     /** Shorthand for `type = "success"` for {@link module:Toasts.show} */
     static async success(content, options = {}) {return this.show(content, Object.assign(options, {type: "success"}));}
@@ -25,13 +28,15 @@ export default class Toasts {
      *
      * @param {string} content The string to show in the toast.
      * @param {object} options Options object. Optional parameter.
-     * @param {string} options.type Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
-     * @param {boolean} options.icon Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
-     * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
+     * @param {string} [options.type=""] Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
+     * @param {boolean} [options.icon=true] Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
+     * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
+     * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the bd setting
      */
     static show(content, options = {}) {
+        const {type = "", icon = true, timeout = 3000, forceShow = false} = options;
+        if (!this.shouldShowToasts && !forceShow) return;
         this.ensureContainer();
-        const {type = "", icon = true, timeout = 3000} = options;
         const toastElem = document.createElement("div");
         toastElem.classList.add("bd-toast");
         if (type) toastElem.classList.add("toast-" + type);

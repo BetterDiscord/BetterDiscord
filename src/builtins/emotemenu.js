@@ -1,5 +1,5 @@
 import Builtin, {onSettingChange} from "../structs/builtin";
-import {SettingsCookie, Emotes} from "data";
+import {SettingsCookie, Emotes, State} from "data";
 import {DataStore, Utilities, Events} from "modules";
 
 const headerHTML = `<div id="bda-qem">
@@ -62,6 +62,7 @@ export default new class EmoteMenu extends Builtin {
         this.observer = new MutationObserver(mutations => {for (const mutation of mutations) this.observe(mutation);});
         this.enableHideEmojis = this.enableHideEmojis.bind(this);
         this.disableHideEmojis = this.disableHideEmojis.bind(this);
+        this.updateTwitchEmotes = this.updateTwitchEmotes.bind(this);
     }
 
     initialize() {
@@ -72,10 +73,6 @@ export default new class EmoteMenu extends Builtin {
     }
 
     async enabled() {
-        await new Promise(resolve => {
-            Events.on("emotes-loaded", resolve);
-        });
-        this.updateTwitchEmotes();
         this.log("Starting to observe");
         this.observer.observe(document.getElementById("app-mount"), {
             childList: true,
@@ -83,12 +80,24 @@ export default new class EmoteMenu extends Builtin {
         });
         this.hideEmojiCancel = onSettingChange(this.category, this.hideEmojisID, this.enableHideEmojis, this.disableHideEmojis);
         if (this.hideEmojis) this.enableHideEmojis();
+        // await this.waitForEmotes();
+        // this.updateTwitchEmotes();
+        if (State.emotesLoaded) this.updateTwitchEmotes();
+        Events.on("emotes-loaded", this.updateTwitchEmotes);
     }
 
     disabled() {
+        Events.off("emotes-loaded", this.updateTwitchEmotes);
         this.observer.disconnect();
         this.disableHideEmojis();
         if (this.hideEmojiCancel) this.hideEmojiCancel();
+    }
+
+    async waitForEmotes() {
+        if (State.emotesLoaded) return;
+        return new Promise(resolve => {
+            Events.on("emotes-loaded", resolve);
+        });
     }
 
     enableHideEmojis() {

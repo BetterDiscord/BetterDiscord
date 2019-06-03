@@ -1,14 +1,13 @@
 import BDV2 from "./bdv2";
 import Utilities from "./utilities";
 import {Config, SettingsCookie} from "data";
-import EmoteModule from "./emotes";
+// import EmoteModule from "./emotes";
 // import QuickEmoteMenu from "../builtins/emotemenu";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import SettingsPanel from "./settingspanel";
 import * as Builtins from "builtins";
 import {Modals} from "ui";
-import Events from "./emitter";
 
 function Core() {
 }
@@ -34,12 +33,12 @@ Core.prototype.init = async function() {
     Utilities.log("Startup", "Initializing Settings");
     SettingsPanel.initialize();
     Utilities.log("Startup", "Initializing EmoteModule");
-    window.emotePromise = EmoteModule.init().then(() => {
-        EmoteModule.initialized = true;
-        Utilities.log("Startup", "Initializing QuickEmoteMenu");
-        Events.dispatch("emotes-loaded");
-        // QuickEmoteMenu.init();
-    });
+    // window.emotePromise = EmoteModule.init().then(() => {
+    //     EmoteModule.initialized = true;
+    //     Utilities.log("Startup", "Initializing QuickEmoteMenu");
+    //     Events.dispatch("emotes-loaded");
+    //     // QuickEmoteMenu.init();
+    // });
 
     this.injectExternals();
 
@@ -58,7 +57,7 @@ Core.prototype.init = async function() {
     $("#customcss").detach().appendTo(document.head);
 
     // PublicServers.initialize();
-    EmoteModule.autoCapitalize();
+    // EmoteModule.autoCapitalize();
 
     Utilities.log("Startup", "Removing Loading Icon");
     document.getElementsByClassName("bd-loaderv2")[0].remove();
@@ -66,10 +65,8 @@ Core.prototype.init = async function() {
     this.initObserver();
 
     // Show loading errors
-    if (SettingsCookie["fork-ps-1"]) {
-        Utilities.log("Startup", "Collecting Startup Errors");
-        Modals.showContentErrors({plugins: pluginErrors, themes: themeErrors});
-    }
+    Utilities.log("Startup", "Collecting Startup Errors");
+    Modals.showContentErrors({plugins: pluginErrors, themes: themeErrors});
 };
 
 Core.prototype.checkForGuilds = function() {

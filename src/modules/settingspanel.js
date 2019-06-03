@@ -2,7 +2,7 @@ import {SettingsCookie} from "data";
 import DataStore from "./datastore";
 import ContentManager from "./contentmanager";
 import BdApi from "./pluginapi";
-import EmoteModule from "./emotes";
+// import EmoteModule from "./emotes";
 import Events from "./emitter";
 import WebpackModules from "./webpackmodules";
 
@@ -83,10 +83,10 @@ export default new class SettingsPanel {
         SettingsCookie[id] = enabled;
 
 
-        if (id == "bda-es-4") {
-            if (enabled) EmoteModule.autoCapitalize();
-            else EmoteModule.disableAutoCapitalize();
-        }
+        // if (id == "bda-es-4") {
+        //     if (enabled) EmoteModule.autoCapitalize();
+        //     else EmoteModule.disableAutoCapitalize();
+        // }
 
         if (id == "fork-ps-5") {
             if (enabled) {
@@ -109,7 +109,7 @@ export default new class SettingsPanel {
     }
 
     initializeSettings() {
-        if (SettingsCookie["bda-es-4"]) EmoteModule.autoCapitalize();
+        // if (SettingsCookie["bda-es-4"]) EmoteModule.autoCapitalize();
 
         if (SettingsCookie["fork-ps-5"]) {
             ContentManager.watchContent("plugin");
