@@ -19,10 +19,6 @@ export default new class SettingsPanel {
         this.renderer = new SettingsRenderer({onChange: this.updateSettings.bind(this)});
     }
 
-    renderSidebar() {
-        this.renderer.renderSidebar();
-    }
-
     initialize() {
         DataStore.initialize();
         if (!DataStore.getSettingGroup("settings")) return this.saveSettings();
@@ -55,6 +51,7 @@ export default new class SettingsPanel {
             data.returnValue.splice(24, 0, {section: "HEADER", label: "BandagedBD"});
             data.returnValue.splice(25, 0, {section: "BBD Settings", label: "Settings", element: () => this.renderer.core2});
             data.returnValue.splice(26, 0, {section: "BBD Test", label: "Test Tab", onClick: function() {Toasts.success("This can just be a click listener!", {forceShow: true});}});
+            data.returnValue.splice(27, 0, {section: "CUSTOM", element: () => this.renderer.attribution});
         }});
         const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);

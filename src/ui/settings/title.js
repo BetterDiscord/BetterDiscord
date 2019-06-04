@@ -12,7 +12,8 @@ export default class SettingsTitle extends React.Component {
         return React.createElement(
             "h2",
             {className: titleClass, onClick: () => {this.props.onClick && this.props.onClick();}},
-            this.props.text
+            this.props.text,
+            this.props.button && React.createElement("button", {className: "bd-pfbtn", onClick: this.props.button.onClick}, this.props.button.title)
         );
     }
 }

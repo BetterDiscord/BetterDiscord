@@ -1,59 +1,50 @@
 import {SettingsCookie} from "data";
-import {React, ReactDOM} from "modules";
+import {React} from "modules";
 import Title from "./title";
-import Vertical from "./vertical";
 import Divider from "./divider";
 import Switch from "./switch";
+
+const baseClassName = "bd-settings-group";
 
 export default class Group extends React.Component {
     constructor(props) {
         super(props);
+
+        if (this.props.button && this.props.collapsible) {
+            const original = this.props.button.onClick;
+            this.props.button.onClick = (event) => {
+                event.stopPropagation();
+                original(...arguments);
+            };
+        }
+
         this.container = React.createRef();
         this.state = {
             collapsed: this.props.collapsible && this.props.collapsed
         };
     }
 
-    // render() {
-    //     const {title, settings, button} = this.props;
-    //     const buttonComponent = button ? React.createElement("button", {key: "title-button", className: "bd-pfbtn", onClick: button.onClick}, button.title) : null;
-    //     return [React.createElement(SettingsTitle, {text: title}),
-    //             buttonComponent,
-    //             settings.map(setting => {
-    //                 return React.createElement(Switch, {id: setting.id, key: setting.id, data: setting, checked: SettingsCookie[setting.id], onChange: (id, checked) => {
-    //                     this.props.onChange(id, checked);
-    //                 }});
-    //             })];
-    // }
-
-    collapseGroup() {
-        if (this.state.collapsed) return this.expandGroup();
-        const container = ReactDOM.findDOMNode(this.container.current);
-        // console.log(container.scrollHeight);
+    toggleCollapse() {
+        const container = this.container.current;
+        const timeout = this.state.collapsed ? 300 : 1;
         container.style.setProperty("height", container.scrollHeight + "px");
-        this.setState({collapsed: true}, () => setImmediate(() => container.style.setProperty("height", "")));//
-    }
-
-    expandGroup() {
-        const container = ReactDOM.findDOMNode(this.container.current);
-        // console.log(container.scrollHeight);
-        container.style.setProperty("height", container.scrollHeight + "px");
-        this.setState({collapsed: false}, () => setTimeout(() => container.style.setProperty("height", ""), 300));//, () => container.style.setProperty("height", "")
-        //, () => container.style.setProperty("height", "")
+        this.setState({collapsed: !this.state.collapsed}, () => setTimeout(() => container.style.setProperty("height", ""), timeout));
     }
 
     render() {
         const {settings} = this.props;
-        const groupClass = this.state.collapsed ? "bd-settings-group bd-settings-group-collapsed" : "bd-settings-group";
+        const collapseClass = this.props.collapsible ? `collapsible ${this.state.collapsed && "collapsed"}` : "";
+        const groupClass = `${baseClassName} ${collapseClass}`;
+
         return <div className={groupClass}>
-                    <Title text={this.props.title} collapsible={this.props.collapsible} onClick={() => this.collapseGroup()} />
-                            <Vertical className="bd-settings-container" ref={this.container}>
-                                {settings.map((setting) => {
-                                    return <Switch id={setting.id} key={setting.id} name={setting.text} note={setting.info} checked={SettingsCookie[setting.id]} onChange={(id, checked) => {
-                                                this.props.onChange(id, checked);
-                                            }} />;
-                                })}
-                            </Vertical>
+                    <Title text={this.props.title} collapsible={this.props.collapsible} onClick={() => this.toggleCollapse()} button={this.props.button} />
+                    <div className="bd-settings-container" ref={this.container}>
+                        {settings.map((setting) => {
+                            return <Switch id={setting.id} key={setting.id} name={setting.text} note={setting.info} checked={SettingsCookie[setting.id]} onChange={(id, checked) => {
+                                        this.props.onChange(id, checked);
+                                    }} />;
+                        })}
+                    </div>
                     {this.props.showDivider && <Divider />}
                 </div>;
     }

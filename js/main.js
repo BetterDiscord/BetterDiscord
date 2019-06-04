@@ -3580,10 +3580,6 @@ __webpack_require__.r(__webpack_exports__);
     });
   }
 
-  renderSidebar() {
-    this.renderer.renderSidebar();
-  }
-
   initialize() {
     _datastore__WEBPACK_IMPORTED_MODULE_1__["default"].initialize();
     if (!_datastore__WEBPACK_IMPORTED_MODULE_1__["default"].getSettingGroup("settings")) return this.saveSettings();
@@ -3634,6 +3630,10 @@ __webpack_require__.r(__webpack_exports__);
               forceShow: true
             });
           }
+        });
+        data.returnValue.splice(27, 0, {
+          section: "CUSTOM",
+          element: () => this.renderer.attribution
         });
       }
     });
@@ -4072,6 +4072,43 @@ class Utilities {
       }
     });
     return proxy;
+  }
+  /**
+   * Builds a classname string from any number of arguments. This includes arrays and objects.
+   * When given an array all values from the array are added to the list.
+   * When given an object they keys are added as the classnames if the value is truthy.
+   * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
+   * @param {...Any} argument - anything that should be used to add classnames.
+   */
+
+
+  static className() {
+    const classes = [];
+    const hasOwn = {}.hasOwnProperty;
+
+    for (let i = 0; i < arguments.length; i++) {
+      const arg = arguments[i];
+      if (!arg) continue;
+      const argType = typeof arg;
+
+      if (argType === "string" || argType === "number") {
+        classes.push(arg);
+      } else if (Array.isArray(arg) && arg.length) {
+        const inner = this.classNames.apply(null, arg);
+
+        if (inner) {
+          classes.push(inner);
+        }
+      } else if (argType === "object") {
+        for (const key in arg) {
+          if (hasOwn.call(arg, key) && arg[key]) {
+            classes.push(key);
+          }
+        }
+      }
+    }
+
+    return classes.join(" ");
   }
 
 }
@@ -4872,462 +4909,6 @@ class BuiltinModule {
 
 /***/ }),
 
-/***/ "./src/ui/customcss/detached.js":
-/*!**************************************!*\
-  !*** ./src/ui/customcss/detached.js ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_CssEditorDetached; });
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _settings_checkbox__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../settings/checkbox */ "./src/ui/settings/checkbox.js");
-
-
-
-class V2C_CssEditorDetached extends modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.Component {
-  constructor(props) {
-    super(props);
-    this.onClick = this.onClick.bind(this);
-    this.updateCss = this.updateCss.bind(this);
-    this.saveCss = this.saveCss.bind(this);
-    this.onChange = this.onChange.bind(this);
-  }
-
-  componentDidMount() {
-    $("#app-mount").addClass("bd-detached-editor");
-    modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].editorDetached = true; // this.updateLineCount();
-
-    this.editor = ace.edit("bd-customcss-editor-detached");
-    this.editor.setTheme("ace/theme/monokai");
-    this.editor.session.setMode("ace/mode/css");
-    this.editor.setShowPrintMargin(false);
-    this.editor.setFontSize(14);
-    this.editor.on("change", () => {
-      if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"]) return;
-      this.saveCss();
-      this.updateCss();
-    });
-  }
-
-  componentWillUnmount() {
-    $("#app-mount").removeClass("bd-detached-editor");
-    modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].editorDetached = false;
-    this.editor.destroy();
-  }
-
-  updateLineCount() {
-    const lineCount = this.refs.editor.value.split("\n").length;
-    if (lineCount == this.props.lines) return;
-    this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
-    this.props.lines = lineCount;
-  }
-
-  get options() {
-    return {
-      lineNumbers: true,
-      mode: "css",
-      indentUnit: 4,
-      theme: "material",
-      scrollbarStyle: "simple"
-    };
-  }
-
-  get css() {
-    const _ccss = modules__WEBPACK_IMPORTED_MODULE_1__["DataStore"].getBDData("bdcustomcss");
-
-    let ccss = "";
-
-    if (_ccss && _ccss !== "") {
-      ccss = atob(_ccss);
-    }
-
-    return ccss;
-  }
-
-  get root() {
-    const _root = $("#bd-customcss-detach-container");
-
-    if (!_root.length) {
-      if (!this.injectRoot()) return null;
-      return this.detachedRoot;
-    }
-
-    return _root[0];
-  }
-
-  injectRoot() {
-    if (!$(".app, .app-2rEoOp").length) return false;
-    $("<div/>", {
-      id: "bd-customcss-detach-container"
-    }).insertAfter($(".app, .app-2rEoOp"));
-    return true;
-  }
-
-  render() {
-    const self = this;
-    return modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      className: "bd-detached-css-editor",
-      id: "bd-customcss-detach-editor"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      id: "bd-customcss-innerpane"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      className: "editor-wrapper"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      id: "bd-customcss-editor-detached",
-      className: "editor",
-      ref: "editor"
-    }, self.css)), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      id: "bd-customcss-attach-controls"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("ul", {
-      className: "checkbox-group"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement(_settings_checkbox__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      id: "live-update",
-      text: "Live Update",
-      onChange: self.onChange,
-      checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"]
-    })), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      id: "bd-customcss-detach-controls-button"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("button", {
-      style: {
-        borderRadius: "3px 0 0 3px",
-        borderRight: "1px solid #3f4146"
-      },
-      className: "btn btn-primary",
-      onClick: () => {
-        self.onClick("update");
-      }
-    }, "Update"), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("button", {
-      style: {
-        borderRadius: "0",
-        borderLeft: "1px solid #2d2d2d",
-        borderRight: "1px solid #2d2d2d"
-      },
-      className: "btn btn-primary",
-      onClick: () => {
-        self.onClick("save");
-      }
-    }, "Save"), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("button", {
-      style: {
-        borderRadius: "0 3px 3px 0",
-        borderLeft: "1px solid #3f4146"
-      },
-      className: "btn btn-primary",
-      onClick: () => {
-        self.onClick("attach");
-      }
-    }, "Attach"), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("span", {
-      style: {
-        fontSize: "10px",
-        marginLeft: "5px"
-      }
-    }, "Unsaved changes are lost on attach")))));
-  }
-
-  onChange(id, checked) {
-    switch (id) {
-      case "live-update":
-        data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"] = checked;
-        modules__WEBPACK_IMPORTED_MODULE_1__["Core"].saveSettings();
-        break;
-    }
-  }
-
-  onClick(id) {
-    const self = this;
-
-    switch (id) {
-      case "attach":
-        if ($("#editor-detached").length) self.props.attach();
-        modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].ReactDOM.unmountComponentAtNode(self.root);
-        self.root.remove();
-        break;
-
-      case "update":
-        self.updateCss();
-        break;
-
-      case "save":
-        self.saveCss();
-        break;
-    }
-  }
-
-  updateCss() {
-    if ($("#customcss").length == 0) {
-      $("head").append("<style id=\"customcss\"></style>");
-    }
-
-    $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
-  }
-
-  saveCss() {
-    modules__WEBPACK_IMPORTED_MODULE_1__["DataStore"].setBDData("bdcustomcss", btoa(this.editor.session.getValue()));
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/customcss/editor.js":
-/*!************************************!*\
-  !*** ./src/ui/customcss/editor.js ***!
-  \************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_CssEditor; });
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _detached__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./detached */ "./src/ui/customcss/detached.js");
-/* harmony import */ var _settings_checkbox__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../settings/checkbox */ "./src/ui/settings/checkbox.js");
-/* harmony import */ var _settings_title__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../settings/title */ "./src/ui/settings/title.js");
-
-
-
-
-
-class V2C_CssEditor extends modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.Component {
-  constructor(props) {
-    super(props);
-    this.props.lines = 0;
-    this.setInitialState();
-    this.attach = this.attach.bind(this);
-    this.detachedEditor = modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement(_detached__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      attach: this.attach
-    });
-    this.onClick = this.onClick.bind(this);
-    this.updateCss = this.updateCss.bind(this);
-    this.saveCss = this.saveCss.bind(this);
-    this.detach = this.detach.bind(this);
-  }
-
-  setInitialState() {
-    this.state = {
-      detached: this.props.detached || modules__WEBPACK_IMPORTED_MODULE_1__["BDV2"].editorDetached
-    };
-  }
-
-  componentDidMount() {
-    // this.updateLineCount();
-    this.editor = ace.edit("bd-customcss-editor");
-    this.editor.setTheme("ace/theme/monokai");
-    this.editor.session.setMode("ace/mode/css");
-    this.editor.setShowPrintMargin(false);
-    this.editor.setFontSize(14);
-    this.editor.on("change", () => {
-      if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"]) return;
-      this.saveCss();
-      this.updateCss();
-    });
-  }
-
-  componentWillUnmount() {
-    this.editor.destroy();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.detached && !this.state.detached) {
-      modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].ReactDOM.unmountComponentAtNode(this.detachedRoot);
-    }
-  }
-
-  codeMirror() {}
-
-  get options() {
-    return {
-      lineNumbers: true,
-      mode: "css",
-      indentUnit: 4,
-      theme: "material",
-      scrollbarStyle: "simple"
-    };
-  }
-
-  get css() {
-    const _ccss = modules__WEBPACK_IMPORTED_MODULE_1__["DataStore"].getBDData("bdcustomcss");
-
-    let ccss = "";
-
-    if (_ccss && _ccss !== "") {
-      ccss = atob(_ccss);
-    }
-
-    return ccss;
-  }
-
-  updateLineCount() {
-    const lineCount = this.refs.editor.value.split("\n").length;
-    if (lineCount == this.props.lines) return;
-    this.refs.lines.textContent = Array.from(new Array(lineCount), (_, i) => i + 1).join(".\n") + ".";
-    this.props.lines = lineCount;
-  }
-
-  render() {
-    const self = this;
-    const {
-      detached
-    } = self.state;
-    return modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default",
-      style: {
-        padding: "60px 40px 0px"
-      }
-    }, detached && modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      id: "editor-detached"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement(_settings_title__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      text: "Custom CSS Editor"
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("h3", null, "Editor Detached"), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("button", {
-      className: "btn btn-primary",
-      onClick: () => {
-        self.attach();
-      }
-    }, "Attach")), !detached && modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", null, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement(_settings_title__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      text: "Custom CSS Editor"
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      className: "editor-wrapper"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      id: "bd-customcss-editor",
-      className: "editor",
-      ref: "editor"
-    }, self.css)), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      id: "bd-customcss-attach-controls"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("ul", {
-      className: "checkbox-group"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement(_settings_checkbox__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      id: "live-update",
-      text: "Live Update",
-      onChange: this.onChange,
-      checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"]
-    })), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      id: "bd-customcss-detach-controls-button"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("button", {
-      style: {
-        borderRadius: "3px 0 0 3px",
-        borderRight: "1px solid #3f4146"
-      },
-      className: "btn btn-primary",
-      onClick: () => {
-        self.onClick("update");
-      }
-    }, "Update"), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("button", {
-      style: {
-        borderRadius: "0",
-        borderLeft: "1px solid #2d2d2d",
-        borderRight: "1px solid #2d2d2d"
-      },
-      className: "btn btn-primary",
-      onClick: () => {
-        self.onClick("save");
-      }
-    }, "Save"), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("button", {
-      style: {
-        borderRadius: "0 3px 3px 0",
-        borderLeft: "1px solid #3f4146"
-      },
-      className: "btn btn-primary",
-      onClick: () => {
-        self.onClick("detach");
-      }
-    }, "Detach"), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("span", {
-      style: {
-        fontSize: "10px",
-        marginLeft: "5px"
-      }
-    }, "Unsaved changes are lost on detach"), modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("div", {
-      className: "help-text"
-    }, "Press ", modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("code", {
-      className: "inline"
-    }, "ctrl"), "+", modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].React.createElement("span", {
-      className: "inline"
-    }, ","), " with the editor focused to access the editor's settings.")))));
-  }
-
-  onClick(arg) {
-    switch (arg) {
-      case "update":
-        this.updateCss();
-        break;
-
-      case "save":
-        this.saveCss();
-        break;
-
-      case "detach":
-        this.detach();
-        break;
-    }
-  }
-
-  onChange(id, checked) {
-    switch (id) {
-      case "live-update":
-        data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-css-0"] = checked;
-        modules__WEBPACK_IMPORTED_MODULE_1__["Core"].saveSettings();
-        break;
-    }
-  }
-
-  updateCss() {
-    if ($("#customcss").length == 0) {
-      $("head").append("<style id=\"customcss\"></style>");
-    }
-
-    $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
-  }
-
-  saveCss() {
-    modules__WEBPACK_IMPORTED_MODULE_1__["DataStore"].setBDData("bdcustomcss", btoa(this.editor.session.getValue()));
-  }
-
-  detach() {
-    this.setState({
-      detached: true
-    });
-    const droot = this.detachedRoot;
-
-    if (!droot) {
-      console.log("FAILED TO INJECT ROOT: .app");
-      return;
-    }
-
-    modules__WEBPACK_IMPORTED_MODULE_1__["DiscordModules"].ReactDOM.render(this.detachedEditor, droot);
-  }
-
-  get detachedRoot() {
-    const _root = $("#bd-customcss-detach-container");
-
-    if (!_root.length) {
-      if (!this.injectDetachedRoot()) return null;
-      return this.detachedRoot;
-    }
-
-    return _root[0];
-  }
-
-  injectDetachedRoot() {
-    if (!$(".app, .app-2rEoOp").length) return false;
-    $("<div/>", {
-      id: "bd-customcss-detach-container"
-    }).insertAfter($(".app, .app-2rEoOp"));
-    return true;
-  }
-
-  attach() {
-    this.setState({
-      detached: false
-    });
-  }
-
-}
-
-/***/ }),
-
 /***/ "./src/ui/emote.js":
 /*!*************************!*\
   !*** ./src/ui/emote.js ***!
@@ -5549,46 +5130,6 @@ class V2C_XSvg extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
 
 /***/ }),
 
-/***/ "./src/ui/icons/reload.js":
-/*!********************************!*\
-  !*** ./src/ui/icons/reload.js ***!
-  \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_ReloadIcon; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-
-class V2C_ReloadIcon extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("svg", {
-      xmlns: "http://www.w3.org/2000/svg",
-      viewBox: "0 0 24 24",
-      fill: "#dcddde",
-      className: "bd-reload " + this.props.className,
-      onClick: this.props.onClick,
-      style: {
-        width: this.props.size || "24px",
-        height: this.props.size || "24px"
-      }
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("path", {
-      d: "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-    }), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("path", {
-      fill: "none",
-      d: "M0 0h24v24H0z"
-    }));
-  }
-
-}
-
-/***/ }),
-
 /***/ "./src/ui/layer.js":
 /*!*************************!*\
   !*** ./src/ui/layer.js ***!
@@ -5671,33 +5212,6 @@ class V2C_Layer extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component 
         opacity: 0,
         transform: "scale(1.1) translateZ(0px)"
       }
-    }, this.props.children);
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/list.jsx":
-/*!*************************!*\
-  !*** ./src/ui/list.jsx ***!
-  \*************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_List; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-
-class V2C_List extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("ul", {
-      className: this.props.className
     }, this.props.children);
   }
 
@@ -6571,85 +6085,6 @@ class V2C_Scroller extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Compone
 
 /***/ }),
 
-/***/ "./src/ui/settings/checkbox.js":
-/*!*************************************!*\
-  !*** ./src/ui/settings/checkbox.js ***!
-  \*************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_Checkbox; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-
-class V2C_Checkbox extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-    this.onClick = this.onClick.bind(this);
-    this.setInitialState();
-  }
-
-  setInitialState() {
-    this.state = {
-      checked: this.props.checked || false
-    };
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("li", null, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "checkbox checkbox-3kaeSU da-checkbox checkbox-3EVISJ da-checkbox",
-      onClick: this.onClick
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "checkbox-inner checkboxInner-3yjcPe da-checkboxInner"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("input", {
-      className: "checkboxElement-1qV33p da-checkboxElement",
-      checked: this.state.checked,
-      onChange: () => {},
-      type: "checkbox"
-    }), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("span", null)), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("span", null, this.props.text)));
-  }
-
-  onClick() {
-    this.props.onChange(this.props.id, !this.state.checked);
-    this.setState({
-      checked: !this.state.checked
-    });
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/contentcolumn.js":
-/*!******************************************!*\
-  !*** ./src/ui/settings/contentcolumn.js ***!
-  \******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_ContentColumn; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-
-class V2C_ContentColumn extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("h2", {
-      className: "ui-form-title h2 margin-reset margin-bottom-20"
-    }, this.props.title), this.props.children);
-  }
-
-}
-
-/***/ }),
-
 /***/ "./src/ui/settings/divider.jsx":
 /*!*************************************!*\
   !*** ./src/ui/settings/divider.jsx ***!
@@ -6733,71 +6168,60 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.js");
-/* harmony import */ var _vertical__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./vertical */ "./src/ui/settings/vertical.jsx");
-/* harmony import */ var _divider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./divider */ "./src/ui/settings/divider.jsx");
-/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.js");
+/* harmony import */ var _divider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./divider */ "./src/ui/settings/divider.jsx");
+/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.js");
 
 
 
 
 
-
+const baseClassName = "bd-settings-group";
 class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
   constructor(props) {
     super(props);
+
+    if (this.props.button && this.props.collapsible) {
+      const original = this.props.button.onClick;
+
+      this.props.button.onClick = event => {
+        event.stopPropagation();
+        original(...arguments);
+      };
+    }
+
     this.container = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createRef();
     this.state = {
       collapsed: this.props.collapsible && this.props.collapsed
     };
-  } // render() {
-  //     const {title, settings, button} = this.props;
-  //     const buttonComponent = button ? React.createElement("button", {key: "title-button", className: "bd-pfbtn", onClick: button.onClick}, button.title) : null;
-  //     return [React.createElement(SettingsTitle, {text: title}),
-  //             buttonComponent,
-  //             settings.map(setting => {
-  //                 return React.createElement(Switch, {id: setting.id, key: setting.id, data: setting, checked: SettingsCookie[setting.id], onChange: (id, checked) => {
-  //                     this.props.onChange(id, checked);
-  //                 }});
-  //             })];
-  // }
-
-
-  collapseGroup() {
-    if (this.state.collapsed) return this.expandGroup();
-    const container = modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].findDOMNode(this.container.current); // console.log(container.scrollHeight);
-
-    container.style.setProperty("height", container.scrollHeight + "px");
-    this.setState({
-      collapsed: true
-    }, () => setImmediate(() => container.style.setProperty("height", ""))); //
   }
 
-  expandGroup() {
-    const container = modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].findDOMNode(this.container.current); // console.log(container.scrollHeight);
-
+  toggleCollapse() {
+    const container = this.container.current;
+    const timeout = this.state.collapsed ? 300 : 1;
     container.style.setProperty("height", container.scrollHeight + "px");
     this.setState({
-      collapsed: false
-    }, () => setTimeout(() => container.style.setProperty("height", ""), 300)); //, () => container.style.setProperty("height", "")
-    //, () => container.style.setProperty("height", "")
+      collapsed: !this.state.collapsed
+    }, () => setTimeout(() => container.style.setProperty("height", ""), timeout));
   }
 
   render() {
     const {
       settings
     } = this.props;
-    const groupClass = this.state.collapsed ? "bd-settings-group bd-settings-group-collapsed" : "bd-settings-group";
+    const collapseClass = this.props.collapsible ? `collapsible ${this.state.collapsed && "collapsed"}` : "";
+    const groupClass = `${baseClassName} ${collapseClass}`;
     return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
       className: groupClass
     }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_title__WEBPACK_IMPORTED_MODULE_2__["default"], {
       text: this.props.title,
       collapsible: this.props.collapsible,
-      onClick: () => this.collapseGroup()
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_vertical__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      onClick: () => this.toggleCollapse(),
+      button: this.props.button
+    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
       className: "bd-settings-container",
       ref: this.container
     }, settings.map(setting => {
-      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_5__["default"], {
+      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: setting.id,
         key: setting.id,
         name: setting.text,
@@ -6807,297 +6231,7 @@ class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
           this.props.onChange(id, checked);
         }
       });
-    })), this.props.showDivider && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_divider__WEBPACK_IMPORTED_MODULE_4__["default"], null));
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/panel.js":
-/*!**********************************!*\
-  !*** ./src/ui/settings/panel.js ***!
-  \**********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SettingsPanel; });
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.js");
-/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.js");
-
-
-
-
-class V2C_SettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const {
-      settings
-    } = this.props;
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_title__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      text: this.props.title
-    }), this.props.button && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("button", {
-      key: "title-button",
-      className: "bd-pfbtn",
-      onClick: this.props.button.onClick
-    }, this.props.button.title), settings.map(setting => {
-      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        id: setting.id,
-        key: setting.id,
-        data: setting,
-        checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting.id],
-        onChange: (id, checked) => {
-          this.props.onChange(id, checked);
-        }
-      });
-    }));
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/plugincard.js":
-/*!***************************************!*\
-  !*** ./src/ui/settings/plugincard.js ***!
-  \***************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_PluginCard; });
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _icons_close__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../icons/close */ "./src/ui/icons/close.js");
-/* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
-
-
-
-
-class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-    this.showSettings = this.showSettings.bind(this);
-    this.setInitialState();
-    this.hasSettings = typeof this.props.plugin.getSettingsPanel === "function";
-    this.settingsPanel = "";
-    this.reload = this.reload.bind(this);
-    this.onReload = this.onReload.bind(this);
-  }
-
-  setInitialState() {
-    this.state = {
-      checked: data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"][this.props.plugin.getName()],
-      settings: false,
-      reloads: 0
-    };
-  } // componentDidMount() {
-  //     BDEvents.on("plugin-reloaded", this.onReload);
-  // }
-  // componentWillUnmount() {
-  //     BDEvents.off("plugin-reloaded", this.onReload);
-  // }
-
-
-  onReload(pluginName) {
-    if (pluginName !== this.props.plugin.getName()) return;
-    this.setState({
-      reloads: this.state.reloads + 1
-    });
-  }
-
-  componentDidUpdate() {
-    if (this.state.settings) {
-      if (typeof this.settingsPanel === "object") {
-        this.refs.settingspanel.appendChild(this.settingsPanel);
-      }
-
-      if (!data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-3"]) return;
-
-      const isHidden = (container, element) => {
-        const cTop = container.scrollTop;
-        const cBottom = cTop + container.clientHeight;
-        const eTop = element.offsetTop;
-        const eBottom = eTop + element.clientHeight;
-        return eTop < cTop || eBottom > cBottom;
-      };
-
-      const self = $(modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].findDOMNode(this));
-      const container = self.parents(".scroller");
-      if (!isHidden(container[0], self[0])) return;
-      container.animate({
-        scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
-      }, 300);
-    }
-  }
-
-  reload() {
-    const plugin = this.props.plugin.getName();
-    modules__WEBPACK_IMPORTED_MODULE_1__["PluginManager"].reloadPlugin(plugin);
-    this.props.plugin = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][plugin].plugin;
-    this.onReload(this.props.plugin.getName());
-  }
-
-  getString(value) {
-    return typeof value == "string" ? value : value.toString();
-  }
-
-  render() {
-    const self = this;
-    const {
-      plugin
-    } = this.props;
-    const name = this.getString(plugin.getName());
-    const author = this.getString(plugin.getAuthor());
-    const description = this.getString(plugin.getDescription());
-    const version = this.getString(plugin.getVersion());
-    const website = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][name].website;
-    const source = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][name].source;
-
-    if (this.state.settings) {
-      try {
-        self.settingsPanel = plugin.getSettingsPanel();
-      } catch (err) {
-        modules__WEBPACK_IMPORTED_MODULE_1__["Utilities"].err("Plugins", "Unable to get settings panel for " + plugin.getName() + ".", err);
-      }
-
-      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("li", {
-        className: "settings-open ui-switch-item"
-      }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-        style: {
-          "float": "right",
-          "cursor": "pointer"
-        },
-        onClick: () => {
-          this.refs.settingspanel.innerHTML = "";
-          self.setState({
-            settings: false
-          });
-        }
-      }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_icons_close__WEBPACK_IMPORTED_MODULE_2__["default"], null)), typeof self.settingsPanel === "object" && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-        id: `plugin-settings-${name}`,
-        className: "plugin-settings",
-        ref: "settingspanel"
-      }), typeof self.settingsPanel !== "object" && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-        id: `plugin-settings-${name}`,
-        className: "plugin-settings",
-        ref: "settingspanel",
-        dangerouslySetInnerHTML: {
-          __html: self.settingsPanel
-        }
-      }));
-    }
-
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("li", {
-      "data-name": name,
-      "data-version": version,
-      "className": "settings-closed ui-switch-item"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-header"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-header-title"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-name"
-    }, name), " v", modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-version"
-    }, version), " by ", modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-author"
-    }, author)), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-controls"
-    }, !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      className: "bd-reload-card",
-      onClick: this.reload
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("label", {
-      className: "ui-switch-wrapper ui-flex-child",
-      style: {
-        flex: "0 0 auto"
-      }
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("input", {
-      checked: this.state.checked,
-      onChange: this.onChange,
-      className: "ui-switch-checkbox",
-      type: "checkbox"
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: this.state.checked ? "ui-switch checked" : "ui-switch"
-    })))), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-description-wrap scroller-wrap fade"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-description scroller"
-    }, description)), (website || source || this.hasSettings) && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-footer"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-links"
-    }, website && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("a", {
-      className: "bda-link bda-link-website",
-      href: website,
-      target: "_blank"
-    }, "Website"), website && source && " | ", source && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("a", {
-      className: "bda-link bda-link-source",
-      href: source,
-      target: "_blank"
-    }, "Source")), this.hasSettings && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("button", {
-      onClick: this.showSettings,
-      className: "bda-settings-button",
-      disabled: !this.state.checked
-    }, "Settings")));
-  }
-
-  onChange() {
-    this.setState({
-      checked: !this.state.checked
-    });
-    modules__WEBPACK_IMPORTED_MODULE_1__["PluginManager"].togglePlugin(this.props.plugin.getName());
-  }
-
-  showSettings() {
-    if (!this.hasSettings) return;
-    this.setState({
-      settings: true
-    });
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/sectionedsettings.js":
-/*!**********************************************!*\
-  !*** ./src/ui/settings/sectionedsettings.js ***!
-  \**********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SectionedSettingsPanel; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _group__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./group */ "./src/ui/settings/group.jsx");
-
-
-class V2C_SectionedSettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"
-    }, this.props.sections.map(section => {
-      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_group__WEBPACK_IMPORTED_MODULE_1__["default"], Object.assign({}, section, {
-        onChange: this.props.onChange
-      }));
-    }));
+    })), this.props.showDivider && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_divider__WEBPACK_IMPORTED_MODULE_3__["default"], null));
   }
 
 }
@@ -7116,65 +6250,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2_SettingsPanel; });
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _sidebar__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sidebar */ "./src/ui/settings/sidebar.js");
-/* harmony import */ var _scroller__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../scroller */ "./src/ui/scroller.js");
-/* harmony import */ var _list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../list */ "./src/ui/list.jsx");
-/* harmony import */ var _contentcolumn__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./contentcolumn */ "./src/ui/settings/contentcolumn.js");
-/* harmony import */ var _sectionedsettings__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./sectionedsettings */ "./src/ui/settings/sectionedsettings.js");
-/* harmony import */ var _exitbutton__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./exitbutton */ "./src/ui/settings/exitbutton.js");
-/* harmony import */ var _panel__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./panel */ "./src/ui/settings/panel.js");
-/* harmony import */ var _plugincard__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./plugincard */ "./src/ui/settings/plugincard.js");
-/* harmony import */ var _themecard__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./themecard */ "./src/ui/settings/themecard.js");
-/* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
-/* harmony import */ var _customcss_editor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../customcss/editor */ "./src/ui/customcss/editor.js");
-/* harmony import */ var _settings_settingsgroup__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../settings/settingsgroup */ "./src/ui/settings/settingsgroup.js");
-/* harmony import */ var _settings_group__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../settings/group */ "./src/ui/settings/group.jsx");
+/* harmony import */ var _settings_group__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../settings/group */ "./src/ui/settings/group.jsx");
+/* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ui */ "./src/ui/ui.js");
 
-
-
-
-
-
-
-
-
-
-
-
+ // import Sidebar from "./sidebar";
+// import Scroller from "../scroller";
+// import List from "../list";
+// import ContentColumn from "./contentcolumn";
+// import SectionedSettingsPanel from "./sectionedsettings";
+// import Tools from "./exitbutton";
+// import SettingsPanel from "./panel";
+// import PluginCard from "./plugincard";
+// import ThemeCard from "./themecard";
+// import ReloadIcon from "../icons/reload";
+// import CssEditor from "../customcss/editor";
+// import SettingsGroup from "../settings/settingsgroup";
 
 
 
 class V2_SettingsPanel {
-  constructor(props) {
-    this.sideBarOnClick = this.sideBarOnClick.bind(this);
-    this.onChange = props.onChange;
-    this.sidebar = new _sidebar__WEBPACK_IMPORTED_MODULE_2__["default"](this.sideBarOnClick);
-  }
-
-  get root() {
-    const _root = $("#bd-settingspane-container");
-
-    if (!_root.length) {
-      if (!this.injectRoot()) return null;
-      return this.root;
-    }
-
-    return _root[0];
-  }
-
-  injectRoot() {
-    if (!$(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .ui-standard-sidebar-view").length) return false;
-    const root = $("<div/>", {
-      "class": "contentRegion-3nDuYy content-region",
-      "id": "bd-settingspane-container"
-    });
-    $(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .ui-standard-sidebar-view").append(root);
-    modules__WEBPACK_IMPORTED_MODULE_1__["Utilities"].onRemoved(root[0], () => {
-      modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].unmountComponentAtNode(root[0]);
-    });
-    return true;
-  }
-
   get coreSettings() {
     const settings = this.getSettings("core");
     const categories = [...new Set(settings.map(s => s.category))];
@@ -7205,393 +6299,26 @@ class V2_SettingsPanel {
     }, []);
   }
 
-  sideBarOnClick(id) {
-    const self = this;
-    $(".contentRegion-3nDuYy, .content-region").first().hide();
-    $(self.root).show();
-
-    switch (id) {
-      case "core":
-        self.renderCoreSettings();
-        break;
-
-      case "emotes":
-        self.renderEmoteSettings();
-        break;
-
-      case "customcss":
-        self.renderCustomCssEditor();
-        break;
-
-      case "plugins":
-        self.renderPluginPane();
-        break;
-
-      case "themes":
-        self.renderThemePane();
-        break;
-    }
-  }
-
-  renderSidebar() {
-    const self = this;
-    $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
-      modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].unmountComponentAtNode(self.root);
-      $(self.root).hide();
-      $(".contentRegion-3nDuYy, .content-region").first().show();
-    });
-    self.sidebar.render();
-  }
-
   get core2() {
-    return this.coreSettings.map(section => {
-      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_group__WEBPACK_IMPORTED_MODULE_14__["default"], Object.assign({}, section, {
-        onChange: this.onChange
-      }));
-    });
-  }
-
-  get coreComponent() {
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      contentColumn: true,
-      fade: true,
-      dark: true,
-      children: [modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_sectionedsettings__WEBPACK_IMPORTED_MODULE_6__["default"], {
-        key: "cspanel",
-        onChange: this.onChange,
-        sections: this.coreSettings
-      }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        key: "tools"
-      })]
-    });
-  }
-
-  get emoteComponent() {
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      contentColumn: true,
-      fade: true,
-      dark: true,
-      children: [modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_panel__WEBPACK_IMPORTED_MODULE_8__["default"], {
-        key: "espanel",
-        title: "Emote Settings",
-        onChange: this.onChange,
-        settings: this.emoteSettings,
-        button: {
-          title: "Clear Emote Cache",
-          onClick: () => {
-            modules__WEBPACK_IMPORTED_MODULE_1__["Events"].dispatch("emotes-clear");
-            /*EmoteModule.clearEmoteData(); EmoteModule.init();*/
-          }
+    return this.coreSettings.map((section, i) => {
+      if (i == 0) section.button = {
+        title: "Call to Action!",
+        onClick: () => {
+          _ui__WEBPACK_IMPORTED_MODULE_3__["Toasts"].success("You did it!", {
+            forceShow: true
+          });
         }
-      }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        key: "tools"
-      })]
-    });
-  }
-
-  get customCssComponent() {
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      contentColumn: true,
-      fade: true,
-      dark: true,
-      children: [modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_customcss_editor__WEBPACK_IMPORTED_MODULE_12__["default"], {
-        key: "csseditor"
-      }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        key: "tools"
-      })]
-    });
-  }
-
-  contentComponent(type) {
-    const componentElement = type == "plugins" ? this.pluginsComponent : this.themesComponent;
-    const prefix = type.replace("s", "");
-    const settingsList = this;
-
-    class ContentList extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
-      constructor(props) {
-        super(props);
-        this.onChange = this.onChange.bind(this);
-      }
-
-      componentDidMount() {
-        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].on(`${prefix}-reloaded`, this.onChange);
-        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].on(`${prefix}-loaded`, this.onChange);
-        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].on(`${prefix}-unloaded`, this.onChange);
-      }
-
-      componentWillUnmount() {
-        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].off(`${prefix}-reloaded`, this.onChange);
-        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].off(`${prefix}-loaded`, this.onChange);
-        modules__WEBPACK_IMPORTED_MODULE_1__["Events"].off(`${prefix}-unloaded`, this.onChange);
-      }
-
-      onChange() {
-        settingsList.sideBarOnClick(type);
-      }
-
-      render() {
-        return componentElement;
-      }
-
-    }
-
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(ContentList);
-  }
-
-  get pluginsComponent() {
-    const plugins = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Plugins"]).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-      arr.push(modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_plugincard__WEBPACK_IMPORTED_MODULE_9__["default"], {
-        key: key,
-        plugin: data__WEBPACK_IMPORTED_MODULE_0__["Plugins"][key].plugin
+      };
+      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_group__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({}, section, {
+        onChange: this.onChange,
+        collapsible: true,
+        collapsed: i > 1
       }));
-      return arr;
-    }, []);
-    const list = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_list__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      key: "plugin-list",
-      className: "bda-slist",
-      children: plugins
-    });
-    const refreshIcon = !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_11__["default"], {
-      className: "bd-reload-header",
-      size: "18px",
-      onClick: async () => {
-        modules__WEBPACK_IMPORTED_MODULE_1__["PluginManager"].updatePluginList();
-        this.sideBarOnClick("plugins");
-      }
-    });
-    const pfBtn = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("button", {
-      key: "folder-button",
-      className: "bd-pfbtn",
-      onClick: () => {
-        __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_1__["ContentManager"].pluginsFolder);
-      }
-    }, "Open Plugin Folder");
-    const contentColumn = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      key: "pcolumn",
-      title: "Plugins",
-      children: [refreshIcon, pfBtn, list]
-    });
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      contentColumn: true,
-      fade: true,
-      dark: true,
-      children: [contentColumn, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        key: "tools"
-      })]
     });
   }
 
-  get themesComponent() {
-    const themes = Object.keys(data__WEBPACK_IMPORTED_MODULE_0__["Themes"]).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-      arr.push(modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_themecard__WEBPACK_IMPORTED_MODULE_10__["default"], {
-        key: key,
-        theme: data__WEBPACK_IMPORTED_MODULE_0__["Themes"][key]
-      }));
-      return arr;
-    }, []);
-    const list = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_list__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      key: "theme-list",
-      className: "bda-slist",
-      children: themes
-    });
-    const refreshIcon = !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_11__["default"], {
-      className: "bd-reload-header",
-      size: "18px",
-      onClick: async () => {
-        modules__WEBPACK_IMPORTED_MODULE_1__["ThemeManager"].updateThemeList();
-        this.sideBarOnClick("themes");
-      }
-    });
-    const tfBtn = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("button", {
-      key: "folder-button",
-      className: "bd-pfbtn",
-      onClick: () => {
-        __webpack_require__(/*! electron */ "electron").shell.openItem(modules__WEBPACK_IMPORTED_MODULE_1__["ContentManager"].themesFolder);
-      }
-    }, "Open Theme Folder");
-    const contentColumn = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_contentcolumn__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      key: "tcolumn",
-      title: "Themes",
-      children: [refreshIcon, tfBtn, list]
-    });
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_scroller__WEBPACK_IMPORTED_MODULE_3__["default"], {
-      contentColumn: true,
-      fade: true,
-      dark: true,
-      children: [contentColumn, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_7__["default"], {
-        key: "tools"
-      })]
-    });
-  }
-
-  renderCoreSettings() {
-    const root = this.root;
-
-    if (!root) {
-      console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-      return;
-    }
-
-    modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].render(this.coreComponent, root);
-  }
-
-  renderEmoteSettings() {
-    const root = this.root;
-
-    if (!root) {
-      console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-      return;
-    }
-
-    modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].render(this.emoteComponent, root);
-  }
-
-  renderCustomCssEditor() {
-    const root = this.root;
-
-    if (!root) {
-      console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-      return;
-    }
-
-    modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].render(this.customCssComponent, root);
-  }
-
-  renderPluginPane() {
-    const root = this.root;
-
-    if (!root) {
-      console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-      return;
-    }
-
-    modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].render(this.contentComponent("plugins"), root);
-  }
-
-  renderThemePane() {
-    const root = this.root;
-
-    if (!root) {
-      console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-      return;
-    }
-
-    modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].render(this.contentComponent("themes"), root);
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/settingsgroup.js":
-/*!******************************************!*\
-  !*** ./src/ui/settings/settingsgroup.js ***!
-  \******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SettingsGroup; });
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.js");
-/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.js");
-
-
-
-
-class V2C_SettingsGroup extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const {
-      title,
-      settings,
-      button
-    } = this.props;
-    const buttonComponent = button ? modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("button", {
-      key: "title-button",
-      className: "bd-pfbtn",
-      onClick: button.onClick
-    }, button.title) : null;
-    return [modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_title__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      text: title
-    }), buttonComponent, settings.map(setting => {
-      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {
-        id: setting.id,
-        key: setting.id,
-        data: setting,
-        checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting.id],
-        onChange: (id, checked) => {
-          this.props.onChange(id, checked);
-        }
-      });
-    })];
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/sidebar.js":
-/*!************************************!*\
-  !*** ./src/ui/settings/sidebar.js ***!
-  \************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2_SettingsPanel_Sidebar; });
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _sidebarmenu__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./sidebarmenu */ "./src/ui/settings/sidebarmenu.js");
-
-
-
-class V2_SettingsPanel_Sidebar {
-  constructor(onClick) {
-    this.onClick = onClick;
-  }
-
-  get items() {
-    return [{
-      text: "Settings",
-      id: "core"
-    }, {
-      text: "Emotes",
-      id: "emotes"
-    }, {
-      text: "Plugins",
-      id: "plugins"
-    }, {
-      text: "Themes",
-      id: "themes"
-    }, {
-      text: "Custom CSS",
-      id: "customcss"
-    }];
-  }
-
-  get component() {
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", null, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_sidebarmenu__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      onClick: this.onClick,
-      headerText: "Bandaged BD",
-      items: this.items
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      style: {
-        fontSize: "12px",
-        fontWeight: "600",
-        color: "#72767d",
-        padding: "2px 10px"
-      }
-    }, `BD v${data__WEBPACK_IMPORTED_MODULE_0__["Config"].version} by `, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("a", {
-      href: "https://github.com/Jiiks/",
-      target: "_blank"
-    }, "Jiiks")), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
+  get attribution() {
+    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
       style: {
         fontSize: "12px",
         fontWeight: "600",
@@ -7601,138 +6328,79 @@ class V2_SettingsPanel_Sidebar {
     }, `BBD v${data__WEBPACK_IMPORTED_MODULE_0__["Config"].bbdVersion} by `, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("a", {
       href: "https://github.com/rauenzi/",
       target: "_blank"
-    }, "Zerebos")));
-  }
+    }, "Zerebos"));
+  } // get coreComponent() {
+  //     return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [
+  //         React.createElement(SectionedSettingsPanel, {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
+  //         React.createElement(Tools, {key: "tools"})
+  //     ]});
+  // }
+  // get emoteComponent() {
+  //     return React.createElement(Scroller, {
+  //         contentColumn: true, fade: true, dark: true, children: [
+  //             React.createElement(SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
+  //                 title: "Clear Emote Cache",
+  //                 onClick: () => { Events.dispatch("emotes-clear"); /*EmoteModule.clearEmoteData(); EmoteModule.init();*/ }
+  //             }}),
+  //             React.createElement(Tools, {key: "tools"})
+  //     ]});
+  // }
+  // get customCssComponent() {
+  //     return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [React.createElement(CssEditor, {key: "csseditor"}), React.createElement(Tools, {key: "tools"})]});
+  // }
+  // contentComponent(type) {
+  //     const componentElement = type == "plugins" ? this.pluginsComponent : this.themesComponent;
+  //     const prefix = type.replace("s", "");
+  //     const settingsList = this;
+  //     class ContentList extends React.Component {
+  //         constructor(props) {
+  //             super(props);
+  //             this.onChange = this.onChange.bind(this);
+  //         }
+  //         componentDidMount() {
+  //             Events.on(`${prefix}-reloaded`, this.onChange);
+  //             Events.on(`${prefix}-loaded`, this.onChange);
+  //             Events.on(`${prefix}-unloaded`, this.onChange);
+  //         }
+  //         componentWillUnmount() {
+  //             Events.off(`${prefix}-reloaded`, this.onChange);
+  //             Events.off(`${prefix}-loaded`, this.onChange);
+  //             Events.off(`${prefix}-unloaded`, this.onChange);
+  //         }
+  //         onChange() {
+  //             settingsList.sideBarOnClick(type);
+  //         }
+  //         render() {return componentElement;}
+  //     }
+  //     return React.createElement(ContentList);
+  // }
+  // get pluginsComponent() {
+  //     const plugins = Object.keys(Plugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+  //         arr.push(React.createElement(PluginCard, {key: key, plugin: Plugins[key].plugin}));return arr;
+  //     }, []);
+  //     const list = React.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
+  //     const refreshIcon = !SettingsCookie["fork-ps-5"] && React.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+  //         PluginManager.updatePluginList();
+  //         this.sideBarOnClick("plugins");
+  //     }});
+  //     const pfBtn = React.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
+  //     const contentColumn = React.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
+  //     return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, React.createElement(Tools, {key: "tools"})]});
+  // }
+  // get themesComponent() {
+  //     const themes = Object.keys(Themes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+  //         arr.push(React.createElement(ThemeCard, {key: key, theme: Themes[key]}));return arr;
+  //     }, []);
+  //     const list = React.createElement(List, {key: "theme-list", className: "bda-slist", children: themes});
+  //     const refreshIcon = !SettingsCookie["fork-ps-5"] && React.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+  //         ThemeManager.updateThemeList();
+  //         this.sideBarOnClick("themes");
+  //     }});
+  //     const tfBtn = React.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");
+  //     const contentColumn = React.createElement(ContentColumn, {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
+  //     return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, React.createElement(Tools, {key: "tools"})]});
+  // }
 
-  get root() {
-    const _root = $("#bd-settings-sidebar");
-
-    if (!_root.length) {
-      if (!this.injectRoot()) return null;
-      return this.root;
-    }
-
-    return _root[0];
-  }
-
-  injectRoot() {
-    const changeLog = $("[class*='side-'] > [class*='item-']:not([class*=Danger])").last();
-    if (!changeLog.length) return false;
-    $("<span/>", {
-      id: "bd-settings-sidebar"
-    }).insertBefore(changeLog.prev());
-    return true;
-  }
-
-  render() {
-    const root = this.root;
-
-    if (!root) {
-      console.log("FAILED TO LOCATE ROOT: [class*='side-'] > [class*='item-']:not([class*=Danger])");
-      return;
-    }
-
-    modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].render(this.component, root);
-    modules__WEBPACK_IMPORTED_MODULE_1__["Utilities"].onRemoved(root, () => {
-      modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].unmountComponentAtNode(root);
-    });
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/sidebarmenu.js":
-/*!****************************************!*\
-  !*** ./src/ui/settings/sidebarmenu.js ***!
-  \****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SideBar; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _tabbar__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tabbar */ "./src/ui/settings/tabbar.js");
-
-
-class V2C_SideBar extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-    const self = this;
-    const si = $("[class*=side] > [class*=selected]");
-    if (si.length) self.scn = si.attr("class");
-    const ns = $("[class*=side] > [class*=notSelected]");
-    if (ns.length) self.nscn = ns.attr("class");
-    $("[class*='side-'] > [class*='item-']").on("click", () => {
-      self.setState({
-        selected: null
-      });
-    });
-    self.setInitialState();
-    self.onClick = self.onClick.bind(self);
-  }
-
-  setInitialState() {
-    const self = this;
-    self.state = {
-      selected: null,
-      items: self.props.items
-    };
-    const initialSelection = self.props.items.find(item => {
-      return item.selected;
-    });
-
-    if (initialSelection) {
-      self.state.selected = initialSelection.id;
-    }
-  }
-
-  render() {
-    const self = this;
-    const {
-      headerText
-    } = self.props;
-    const {
-      items,
-      selected
-    } = self.state;
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", null, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_1__["default"].Separator, null), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_1__["default"].Header, {
-      text: headerText
-    }), items.map(item => {
-      const {
-        id,
-        text
-      } = item;
-      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_1__["default"].Item, {
-        key: id,
-        selected: selected === id,
-        text: text,
-        id: id,
-        onClick: self.onClick
-      });
-    }));
-  }
-
-  onClick(id) {
-    const self = this;
-    const si = $("[class*=side] > [class*=selected]");
-
-    if (si.length) {
-      si.off("click.bdsb").on("click.bsb", e => {
-        $(e.target).attr("class", self.scn);
-      });
-      si.attr("class", self.nscn);
-    }
-
-    self.setState({
-      selected: null
-    });
-    self.setState({
-      selected: id
-    });
-    if (self.props.onClick) self.props.onClick(id);
-  }
 
 }
 
@@ -7950,136 +6618,6 @@ class V2Cs_TabBar {
 
 /***/ }),
 
-/***/ "./src/ui/settings/themecard.js":
-/*!**************************************!*\
-  !*** ./src/ui/settings/themecard.js ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_ThemeCard; });
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
-/* harmony import */ var _toasts__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../toasts */ "./src/ui/toasts.js");
-
-
-
-
-class V2C_ThemeCard extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
-  constructor(props) {
-    super(props);
-    this.setInitialState();
-    this.onChange = this.onChange.bind(this);
-    this.reload = this.reload.bind(this);
-  }
-
-  setInitialState() {
-    this.state = {
-      checked: data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"][this.props.theme.name],
-      reloads: 0
-    };
-  } // componentDidMount() {
-  //     BDEvents.on("theme-reloaded", this.onReload);
-  // }
-  // componentWillUnmount() {
-  //     BDEvents.off("theme-reloaded", this.onReload);
-  // }
-
-
-  onReload(themeName) {
-    if (themeName !== this.props.theme.name) return;
-    this.setState({
-      reloads: this.state.reloads + 1
-    });
-  }
-
-  reload() {
-    const theme = this.props.theme.name;
-    const error = modules__WEBPACK_IMPORTED_MODULE_1__["ThemeManager"].reloadTheme(theme);
-    if (error) _toasts__WEBPACK_IMPORTED_MODULE_3__["default"].show(`Could not reload ${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name}. Check console for details.`, {
-      type: "error"
-    });else _toasts__WEBPACK_IMPORTED_MODULE_3__["default"].show(`${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].name} v${data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme].version} has been reloaded.`, {
-      type: "success"
-    }); // this.setState(this.state);
-
-    this.props.theme = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][theme];
-    this.onReload(this.props.theme.name);
-  }
-
-  render() {
-    const {
-      theme
-    } = this.props;
-    const name = theme.name;
-    const description = theme.description;
-    const version = theme.version;
-    const author = theme.author;
-    const website = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][name].website;
-    const source = data__WEBPACK_IMPORTED_MODULE_0__["Themes"][name].source;
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("li", {
-      "data-name": name,
-      "data-version": version,
-      "className": "settings-closed ui-switch-item"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-header"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-header-title"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-name"
-    }, name), " v", modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-version"
-    }, version), " by ", modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-author"
-    }, author)), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-controls"
-    }, !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["fork-ps-5"] && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_icons_reload__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      className: "bd-reload-card",
-      onClick: this.reload
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("label", {
-      className: "ui-switch-wrapper ui-flex-child",
-      style: {
-        flex: "0 0 auto"
-      }
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("input", {
-      checked: this.state.checked,
-      onChange: this.onChange,
-      className: "ui-switch-checkbox",
-      type: "checkbox"
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: this.state.checked ? "ui-switch checked" : "ui-switch"
-    })))), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-description-wrap scroller-wrap fade"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-description scroller"
-    }, description)), (website || source) && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
-      className: "bda-footer"
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("span", {
-      className: "bda-links"
-    }, website && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("a", {
-      className: "bda-link",
-      href: website,
-      target: "_blank"
-    }, "Website"), website && source && " | ", source && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("a", {
-      className: "bda-link",
-      href: source,
-      target: "_blank"
-    }, "Source"))));
-  }
-
-  onChange() {
-    this.setState({
-      checked: !this.state.checked
-    });
-    modules__WEBPACK_IMPORTED_MODULE_1__["ThemeManager"].toggleTheme(this.props.theme.name);
-  }
-
-}
-
-/***/ }),
-
 /***/ "./src/ui/settings/title.js":
 /*!**********************************!*\
   !*** ./src/ui/settings/title.js ***!
@@ -8106,32 +6644,10 @@ class SettingsTitle extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Compon
       onClick: () => {
         this.props.onClick && this.props.onClick();
       }
-    }, this.props.text);
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/vertical.jsx":
-/*!**************************************!*\
-  !*** ./src/ui/settings/vertical.jsx ***!
-  \**************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return VerticalContainer; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-
-const className = "bd-vertical-container";
-class VerticalContainer extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  render() {
-    const containerClass = this.props.className ? `${className} ${this.props.className}` : className;
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: containerClass
-    }, this.props.children);
+    }, this.props.text, this.props.button && modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("button", {
+      className: "bd-pfbtn",
+      onClick: this.props.button.onClick
+    }, this.props.button.title));
   }
 
 }
