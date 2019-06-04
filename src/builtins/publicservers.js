@@ -54,8 +54,7 @@ export default new class PublicServers extends Builtin {
     get button() {
         const btn = $("<div/>", {
             "class": BDV2.guildClasses.listItem,
-            "id": "bd-pub-li",
-            "style": SettingsCookie["bda-gs-1"] ? "" : "display: none;"
+            "id": "bd-pub-li"
         }).append($("<div/>", {
             "class": "wrapper-25eVIn " + BDV2.guildClasses.circleButtonMask,
             "text": "public",

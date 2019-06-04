@@ -956,14 +956,11 @@ const bdEmoteSettingIDs = {
   }
 
   async initialize() {
-    super.initialize();
-    return;
-    await this.getBlacklist();
-    await this.loadEmoteData(data__WEBPACK_IMPORTED_MODULE_1__["EmoteInfo"]);
-
-    while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
-
-    this.patchMessageContent();
+    super.initialize(); // Disable emote module for now because it's annoying and slow
+    // await this.getBlacklist();
+    // await this.loadEmoteData(EmoteInfo);
+    // while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
+    // this.patchMessageContent();
   }
 
   disabled() {
@@ -1358,8 +1355,7 @@ __webpack_require__.r(__webpack_exports__);
   get button() {
     const btn = $("<div/>", {
       "class": modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].guildClasses.listItem,
-      "id": "bd-pub-li",
-      "style": data__WEBPACK_IMPORTED_MODULE_1__["SettingsCookie"]["bda-gs-1"] ? "" : "display: none;"
+      "id": "bd-pub-li"
     }).append($("<div/>", {
       "class": "wrapper-25eVIn " + modules__WEBPACK_IMPORTED_MODULE_2__["BDV2"].guildClasses.circleButtonMask,
       "text": "public",
@@ -2652,7 +2648,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
 /* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
-/* harmony import */ var _settingspanel__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./settingspanel */ "./src/modules/settingspanel.js");
+/* harmony import */ var _settingsmanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./settingsmanager */ "./src/modules/settingsmanager.js");
 /* harmony import */ var builtins__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! builtins */ "./src/builtins/builtins.js");
 /* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
 
@@ -2688,7 +2684,7 @@ Core.prototype.init = async function () {
   }
 
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Initializing Settings");
-  _settingspanel__WEBPACK_IMPORTED_MODULE_5__["default"].initialize();
+  _settingsmanager__WEBPACK_IMPORTED_MODULE_5__["default"].initialize();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Initializing EmoteModule"); // window.emotePromise = EmoteModule.init().then(() => {
   //     EmoteModule.initialized = true;
   //     Utilities.log("Startup", "Initializing QuickEmoteMenu");
@@ -2700,7 +2696,7 @@ Core.prototype.init = async function () {
   await this.checkForGuilds();
   _bdv2__WEBPACK_IMPORTED_MODULE_0__["default"].initialize();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Updating Settings");
-  _settingspanel__WEBPACK_IMPORTED_MODULE_5__["default"].initializeSettings();
+  _settingsmanager__WEBPACK_IMPORTED_MODULE_5__["default"].initializeSettings();
 
   for (const module in builtins__WEBPACK_IMPORTED_MODULE_6__) builtins__WEBPACK_IMPORTED_MODULE_6__[module].initialize();
 
@@ -3544,10 +3540,10 @@ PluginModule.prototype.rawObserver = function (e) {
 
 /***/ }),
 
-/***/ "./src/modules/settingspanel.js":
-/*!**************************************!*\
-  !*** ./src/modules/settingspanel.js ***!
-  \**************************************/
+/***/ "./src/modules/settingsmanager.js":
+/*!****************************************!*\
+  !*** ./src/modules/settingsmanager.js ***!
+  \****************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -3573,7 +3569,7 @@ __webpack_require__.r(__webpack_exports__);
  //WebpackModules.getModule(m => m.getSection && m.getProps && !m.getGuildId && !m.getChannel)
 //WebpackModules.getByProps("getGuildId", "getSection")
 
-/* harmony default export */ __webpack_exports__["default"] = (new class SettingsPanel {
+/* harmony default export */ __webpack_exports__["default"] = (new class SettingsManager {
   constructor() {
     this.renderer = new ui__WEBPACK_IMPORTED_MODULE_6__["SettingsPanel"]({
       onChange: this.updateSettings.bind(this)
@@ -3590,17 +3586,7 @@ __webpack_require__.r(__webpack_exports__);
       if (savedSettings[setting] !== undefined) data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting] = savedSettings[setting];
     }
 
-    this.saveSettings(); // console.log("PATCHING");
-    // Utilities.monkeyPatch(WebpackModules.getByProps("getUserSettingsSections").default.prototype, "render", {after: (data) => {
-    //     data.returnValue.type;
-    // }});
-    // Patcher.after(temp2.prototype, "generateSections", (t,a,r) => {
-    //     r.push({section: "DIVIDER"});
-    //     r.push({section: "HEADER", label: "My Section"});
-    //     r.push({color: "#ffffff", label: "My Tab", onClick: function() {console.log("CLICK");}, section: "My Section"});
-    //             r.push({color: "#cccccc", label: "My Tab2", onClick: function() {console.log("CLICK2");}, section: "My Section"});
-    // })
-
+    this.saveSettings();
     this.patchSections();
   }
 
@@ -3610,6 +3596,8 @@ __webpack_require__.r(__webpack_exports__);
     _utilities__WEBPACK_IMPORTED_MODULE_7__["default"].monkeyPatch(UserSettings.prototype, "generateSections", {
       after: data => {
         console.log(data);
+        /* eslint-disable-line no-console */
+
         data.returnValue.splice(23, 0, {
           section: "DIVIDER"
         });
@@ -3870,6 +3858,7 @@ ThemeModule.prototype.saveThemeData = function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Utilities; });
+/* eslint-disable no-console */
 class Utilities {
   /** Document/window width */
   static get screenWidth() {
@@ -5130,95 +5119,6 @@ class V2C_XSvg extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
 
 /***/ }),
 
-/***/ "./src/ui/layer.js":
-/*!*************************!*\
-  !*** ./src/ui/layer.js ***!
-  \*************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_Layer; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-
-class V2C_Layer extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidMount() {
-    $(window).on(`keyup.${this.props.id}`, e => {
-      if (e.which === 27) {
-        modules__WEBPACK_IMPORTED_MODULE_0__["ReactDOM"].unmountComponentAtNode(this.refs.root.parentNode);
-      }
-    });
-    $(`#${this.props.id}`).animate({
-      opacity: 1
-    }, {
-      step: function (now) {
-        $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`);
-      },
-      duration: 200,
-      done: () => {
-        $(`#${this.props.id}`).css("opacity", "").css("transform", "");
-      }
-    });
-  }
-
-  componentWillUnmount() {
-    $(window).off(`keyup.${this.props.id}`);
-    $(`#${this.props.id}`).animate({
-      opacity: 0
-    }, {
-      step: function (now) {
-        $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`);
-      },
-      duration: 200,
-      done: () => {
-        $(`#${this.props.rootId}`).remove();
-      }
-    });
-    $("[class*=\"layer-\"]").removeClass("publicServersOpen").animate({
-      opacity: 1
-    }, {
-      step: function (now) {
-        $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
-      },
-      duration: 200,
-      done: () => {
-        $("[class*=\"layer-\"]").css("opacity", "").css("transform", "");
-      }
-    });
-  }
-
-  componentWillMount() {
-    $("[class*=\"layer-\"]").addClass("publicServersOpen").animate({
-      opacity: 0
-    }, {
-      step: function (now) {
-        $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
-      },
-      duration: 200
-    });
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "layer bd-layer layer-3QrUeG",
-      id: this.props.id,
-      ref: "root",
-      style: {
-        opacity: 0,
-        transform: "scale(1.1) translateZ(0px)"
-      }
-    }, this.props.children);
-  }
-
-}
-
-/***/ }),
-
 /***/ "./src/ui/modals.js":
 /*!**************************!*\
   !*** ./src/ui/modals.js ***!
@@ -5542,6 +5442,142 @@ class V2C_ServerCard extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Compo
 
 /***/ }),
 
+/***/ "./src/ui/publicservers/exitbutton.js":
+/*!********************************************!*\
+  !*** ./src/ui/publicservers/exitbutton.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_Tools; });
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var _icons_close__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../icons/close */ "./src/ui/icons/close.js");
+
+
+class V2C_Tools extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+  constructor(props) {
+    super(props);
+    this.onClick = this.onClick.bind(this);
+  }
+
+  render() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "tools-container toolsContainer-1edPuj"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "tools tools-3-3s-N"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "container-1sFeqf"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "btn-close closeButton-1tv5uR",
+      onClick: this.onClick
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_icons_close__WEBPACK_IMPORTED_MODULE_1__["default"], null)), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "esc-text keybind-KpFkfr"
+    }, "ESC"))));
+  }
+
+  onClick() {
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
+
+    $(".closeButton-1tv5uR").first().click();
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/ui/publicservers/layer.js":
+/*!***************************************!*\
+  !*** ./src/ui/publicservers/layer.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_Layer; });
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+class V2C_Layer extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+  constructor(props) {
+    super(props);
+  }
+
+  componentDidMount() {
+    $(window).on(`keyup.${this.props.id}`, e => {
+      if (e.which === 27) {
+        modules__WEBPACK_IMPORTED_MODULE_0__["ReactDOM"].unmountComponentAtNode(this.refs.root.parentNode);
+      }
+    });
+    $(`#${this.props.id}`).animate({
+      opacity: 1
+    }, {
+      step: function (now) {
+        $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`);
+      },
+      duration: 200,
+      done: () => {
+        $(`#${this.props.id}`).css("opacity", "").css("transform", "");
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    $(window).off(`keyup.${this.props.id}`);
+    $(`#${this.props.id}`).animate({
+      opacity: 0
+    }, {
+      step: function (now) {
+        $(this).css("transform", `scale(${1.1 - 0.1 * now}) translateZ(0px)`);
+      },
+      duration: 200,
+      done: () => {
+        $(`#${this.props.rootId}`).remove();
+      }
+    });
+    $("[class*=\"layer-\"]").removeClass("publicServersOpen").animate({
+      opacity: 1
+    }, {
+      step: function (now) {
+        $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
+      },
+      duration: 200,
+      done: () => {
+        $("[class*=\"layer-\"]").css("opacity", "").css("transform", "");
+      }
+    });
+  }
+
+  componentWillMount() {
+    $("[class*=\"layer-\"]").addClass("publicServersOpen").animate({
+      opacity: 0
+    }, {
+      step: function (now) {
+        $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
+      },
+      duration: 200
+    });
+  }
+
+  render() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "layer bd-layer layer-3QrUeG",
+      id: this.props.id,
+      ref: "root",
+      style: {
+        opacity: 0,
+        transform: "scale(1.1) translateZ(0px)"
+      }
+    }, this.props.children);
+  }
+
+}
+
+/***/ }),
+
 /***/ "./src/ui/publicservers/menu.js":
 /*!**************************************!*\
   !*** ./src/ui/publicservers/menu.js ***!
@@ -5553,10 +5589,10 @@ class V2C_ServerCard extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Compo
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_PublicServers; });
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _sidebarview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../sidebarview */ "./src/ui/sidebarview.js");
-/* harmony import */ var _settings_exitbutton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../settings/exitbutton */ "./src/ui/settings/exitbutton.js");
-/* harmony import */ var _settings_tabbar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../settings/tabbar */ "./src/ui/settings/tabbar.js");
-/* harmony import */ var _settings_title__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../settings/title */ "./src/ui/settings/title.js");
+/* harmony import */ var _sidebarview__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./sidebarview */ "./src/ui/publicservers/sidebarview.js");
+/* harmony import */ var _exitbutton__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./exitbutton */ "./src/ui/publicservers/exitbutton.js");
+/* harmony import */ var _tabbar__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./tabbar */ "./src/ui/publicservers/tabbar.js");
+/* harmony import */ var _settings_title__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../settings/title */ "./src/ui/settings/title.jsx");
 /* harmony import */ var _card__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./card */ "./src/ui/publicservers/card.js");
 
 
@@ -5811,7 +5847,7 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Co
         component: this.content
       },
       tools: {
-        component: modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settings_exitbutton__WEBPACK_IMPORTED_MODULE_2__["default"], {
+        component: modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_exitbutton__WEBPACK_IMPORTED_MODULE_2__["default"], {
           key: "pt",
           ref: "tools",
           onClick: this.close
@@ -5831,17 +5867,17 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Co
       style: {
         fontSize: "16px"
       }
-    }, "Public Servers"), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settings_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Separator, null), this.searchInput, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settings_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Separator, null), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settings_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Header, {
+    }, "Public Servers"), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Separator, null), this.searchInput, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Separator, null), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Header, {
       text: "Categories"
     }), this.categoryButtons.map((value, index) => {
-      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settings_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Item, {
+      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Item, {
         id: index,
         onClick: this.changeCategory,
         key: index,
         text: value,
         selected: this.state.selectedCategory === index
       });
-    }), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settings_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Separator, null), this.footer, this.connection));
+    }), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Separator, null), this.footer, this.connection));
   }
 
   get searchInput() {
@@ -5984,7 +6020,7 @@ class V2C_PublicServers extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Co
       connection
     } = self.state;
     if (connection.state !== 2) return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("span", null);
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("span", null, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settings_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Separator, null), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("span", {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("span", null, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_tabbar__WEBPACK_IMPORTED_MODULE_3__["default"].Separator, null), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("span", {
       style: {
         color: "#b9bbbe",
         fontSize: "10px",
@@ -6026,7 +6062,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _card__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./card */ "./src/ui/publicservers/card.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Card", function() { return _card__WEBPACK_IMPORTED_MODULE_1__["default"]; });
 
-/* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../layer */ "./src/ui/layer.js");
+/* harmony import */ var _layer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./layer */ "./src/ui/publicservers/layer.js");
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "Layer", function() { return _layer__WEBPACK_IMPORTED_MODULE_2__["default"]; });
 
 
@@ -6036,10 +6072,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/ui/scroller.js":
-/*!****************************!*\
-  !*** ./src/ui/scroller.js ***!
-  \****************************/
+/***/ "./src/ui/publicservers/scroller.js":
+/*!******************************************!*\
+  !*** ./src/ui/publicservers/scroller.js ***!
+  \******************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -6085,6 +6121,144 @@ class V2C_Scroller extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Compone
 
 /***/ }),
 
+/***/ "./src/ui/publicservers/sidebarview.js":
+/*!*********************************************!*\
+  !*** ./src/ui/publicservers/sidebarview.js ***!
+  \*********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SidebarView; });
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var _scroller__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./scroller */ "./src/ui/publicservers/scroller.js");
+
+
+class V2C_SidebarView extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {
+      sidebar,
+      content,
+      tools
+    } = this.props.children;
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "standardSidebarView-3F1I7i ui-standard-sidebar-view"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "sidebarRegion-VFTUkN sidebar-region"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_scroller__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      key: "sidebarScroller",
+      ref: "sidebarScroller",
+      sidebar: true,
+      fade: sidebar.fade || true,
+      dark: sidebar.dark || true,
+      children: sidebar.component
+    })), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "contentRegion-3nDuYy content-region"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "contentTransitionWrap-3hqOEW content-transition-wrap"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "scrollerWrap-2lJEkd firefoxFixScrollFlex-cnI2ix contentRegionScrollerWrap-3YZXdm content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "scroller-2FKFPG firefoxFixScrollFlex-cnI2ix contentRegionScroller-26nc1e content-region-scroller scroller",
+      ref: "contentScroller"
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"
+    }, content.component), tools.component)))));
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/ui/publicservers/tabbar.js":
+/*!****************************************!*\
+  !*** ./src/ui/publicservers/tabbar.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2Cs_TabBar; });
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+
+class V2C_TabBarItem extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+  constructor(props) {
+    super(props);
+    this.setInitialState();
+    this.onClick = this.onClick.bind(this);
+  }
+
+  setInitialState() {
+    this.state = {
+      selected: this.props.selected || false
+    };
+  }
+
+  render() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: `ui-tab-bar-item${this.props.selected ? " selected" : ""}`,
+      onClick: this.onClick
+    }, this.props.text);
+  }
+
+  onClick() {
+    if (this.props.onClick) {
+      this.props.onClick(this.props.id);
+    }
+  }
+
+}
+
+class V2C_TabBarSeparator extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "ui-tab-bar-separator margin-top-8 margin-bottom-8"
+    });
+  }
+
+}
+
+class V2C_TabBarHeader extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "ui-tab-bar-header"
+    }, this.props.text);
+  }
+
+}
+
+class V2Cs_TabBar {
+  static get Item() {
+    return V2C_TabBarItem;
+  }
+
+  static get Header() {
+    return V2C_TabBarHeader;
+  }
+
+  static get Separator() {
+    return V2C_TabBarSeparator;
+  }
+
+}
+
+/***/ }),
+
 /***/ "./src/ui/settings/divider.jsx":
 /*!*************************************!*\
   !*** ./src/ui/settings/divider.jsx ***!
@@ -6108,53 +6282,6 @@ class Divider extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
 
 /***/ }),
 
-/***/ "./src/ui/settings/exitbutton.js":
-/*!***************************************!*\
-  !*** ./src/ui/settings/exitbutton.js ***!
-  \***************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_Tools; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _icons_close__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../icons/close */ "./src/ui/icons/close.js");
-
-
-class V2C_Tools extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-    this.onClick = this.onClick.bind(this);
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "tools-container toolsContainer-1edPuj"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "tools tools-3-3s-N"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "container-1sFeqf"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "btn-close closeButton-1tv5uR",
-      onClick: this.onClick
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_icons_close__WEBPACK_IMPORTED_MODULE_1__["default"], null)), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "esc-text keybind-KpFkfr"
-    }, "ESC"))));
-  }
-
-  onClick() {
-    if (this.props.onClick) {
-      this.props.onClick();
-    }
-
-    $(".closeButton-1tv5uR").first().click();
-  }
-
-}
-
-/***/ }),
-
 /***/ "./src/ui/settings/group.jsx":
 /*!***********************************!*\
   !*** ./src/ui/settings/group.jsx ***!
@@ -6167,9 +6294,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Group; });
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.js");
+/* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.jsx");
 /* harmony import */ var _divider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./divider */ "./src/ui/settings/divider.jsx");
-/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.js");
+/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.jsx");
 
 
 
@@ -6193,6 +6320,7 @@ class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
     this.state = {
       collapsed: this.props.collapsible && this.props.collapsed
     };
+    this.onChange = this.onChange.bind(this);
   }
 
   toggleCollapse() {
@@ -6202,6 +6330,13 @@ class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
     this.setState({
       collapsed: !this.state.collapsed
     }, () => setTimeout(() => container.style.setProperty("height", ""), timeout));
+  }
+
+  onChange(id, value) {
+    if (!this.props.onChange) return;
+    if (this.props.id) return this.props.onChange(this.props.id, id, value);
+    this.props.onChange(id, value);
+    this.forceUpdate();
   }
 
   render() {
@@ -6221,16 +6356,16 @@ class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
       className: "bd-settings-container",
       ref: this.container
     }, settings.map(setting => {
-      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_4__["default"], {
+      const item = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_4__["default"], {
         id: setting.id,
         key: setting.id,
         name: setting.text,
         note: setting.info,
         checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting.id],
-        onChange: (id, checked) => {
-          this.props.onChange(id, checked);
-        }
+        onChange: this.onChange
       });
+      const shouldHide = setting.shouldHide ? setting.shouldHide() : false;
+      if (!shouldHide) return item;
     })), this.props.showDivider && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_divider__WEBPACK_IMPORTED_MODULE_3__["default"], null));
   }
 
@@ -6252,6 +6387,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _settings_group__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../settings/group */ "./src/ui/settings/group.jsx");
 /* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ui */ "./src/ui/ui.js");
+/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! crypto */ "crypto");
+/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(crypto__WEBPACK_IMPORTED_MODULE_4__);
 
  // import Sidebar from "./sidebar";
 // import Scroller from "../scroller";
@@ -6268,7 +6405,14 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 class V2_SettingsPanel {
+  constructor({
+    onChange
+  }) {
+    this.onChange = onChange;
+  }
+
   get coreSettings() {
     const settings = this.getSettings("core");
     const categories = [...new Set(settings.map(s => s.category))];
@@ -6278,7 +6422,6 @@ class V2_SettingsPanel {
         settings: settings.filter(s => s.category == c)
       };
     });
-    console.log(sections);
     return sections;
   }
 
@@ -6309,6 +6452,8 @@ class V2_SettingsPanel {
           });
         }
       };
+      console.log(section);
+      if (section.settings.find(s => s.text == "Hide Channels")) section.settings.find(s => s.text == "Hide Channels").shouldHide = () => !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-2"];
       return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_group__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({}, section, {
         onChange: this.onChange,
         collapsible: true,
@@ -6406,10 +6551,10 @@ class V2_SettingsPanel {
 
 /***/ }),
 
-/***/ "./src/ui/settings/switch.js":
-/*!***********************************!*\
-  !*** ./src/ui/settings/switch.js ***!
-  \***********************************/
+/***/ "./src/ui/settings/switch.jsx":
+/*!************************************!*\
+  !*** ./src/ui/settings/switch.jsx ***!
+  \************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -6430,7 +6575,6 @@ const divider = "divider-3573oO dividerDefault-3rvLe-";
 class Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       checked: this.props.checked
     };
@@ -6485,143 +6629,14 @@ class Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
     }));
   }
 
-} // export default class V2C_Switch extends React.Component {
-//     constructor(props) {
-//         super(props);
-//         this.setInitialState();
-//         this.onChange = this.onChange.bind(this);
-//     }
-//     setInitialState() {
-//         this.state = {
-//             checked: this.props.checked
-//         };
-//     }
-//     render() {
-//         const {text, info} = this.props.data;
-//         const {checked} = this.state;
-//         return React.createElement(
-//             "div",
-//             {className: `ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item ${flexContainer}`},
-//             React.createElement(
-//                 "div",
-//                 {className: `ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap ${flexWrap}`},
-//                 React.createElement(
-//                     "h3",
-//                     {className: `ui-form-title h3 margin-reset margin-reset ui-flex-child ${title} ${flexChild}`},
-//                     text
-//                 ),
-//                 React.createElement(
-//                     "div",
-//                     {className: `ui-switch-wrapper ui-flex-child ${checked ? switchWrapperChecked : switchWrapper}`, style: {flex: "0 0 auto"}},
-//                     React.createElement("input", {className: `ui-switch-checkbox ${switchClass}`, type: "checkbox", checked: checked, onChange: e => this.onChange(e)}),
-//                     React.createElement("div", {className: `ui-switch ${checked ? "checked" : ""}`})
-//                 )
-//             ),
-//             React.createElement(
-//                 "div",
-//                 {className: `ui-form-text style-description margin-top-4 ${description}`, style: {flex: "1 1 auto"}},
-//                 info
-//             )
-//         );
-//     }
-//     onChange() {
-//         this.props.onChange(this.props.id, !this.state.checked);
-//         this.setState({
-//             checked: !this.state.checked
-//         });
-//     }
-// }
+}
 
 /***/ }),
 
-/***/ "./src/ui/settings/tabbar.js":
+/***/ "./src/ui/settings/title.jsx":
 /*!***********************************!*\
-  !*** ./src/ui/settings/tabbar.js ***!
+  !*** ./src/ui/settings/title.jsx ***!
   \***********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2Cs_TabBar; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-
-
-class V2C_TabBarItem extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-    this.setInitialState();
-    this.onClick = this.onClick.bind(this);
-  }
-
-  setInitialState() {
-    this.state = {
-      selected: this.props.selected || false
-    };
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: `ui-tab-bar-item${this.props.selected ? " selected" : ""}`,
-      onClick: this.onClick
-    }, this.props.text);
-  }
-
-  onClick() {
-    if (this.props.onClick) {
-      this.props.onClick(this.props.id);
-    }
-  }
-
-}
-
-class V2C_TabBarSeparator extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "ui-tab-bar-separator margin-top-8 margin-bottom-8"
-    });
-  }
-
-}
-
-class V2C_TabBarHeader extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "ui-tab-bar-header"
-    }, this.props.text);
-  }
-
-}
-
-class V2Cs_TabBar {
-  static get Item() {
-    return V2C_TabBarItem;
-  }
-
-  static get Header() {
-    return V2C_TabBarHeader;
-  }
-
-  static get Separator() {
-    return V2C_TabBarSeparator;
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/settings/title.js":
-/*!**********************************!*\
-  !*** ./src/ui/settings/title.js ***!
-  \**********************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -6645,63 +6660,9 @@ class SettingsTitle extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Compon
         this.props.onClick && this.props.onClick();
       }
     }, this.props.text, this.props.button && modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("button", {
-      className: "bd-pfbtn",
+      className: "bd-title-button",
       onClick: this.props.button.onClick
     }, this.props.button.title));
-  }
-
-}
-
-/***/ }),
-
-/***/ "./src/ui/sidebarview.js":
-/*!*******************************!*\
-  !*** ./src/ui/sidebarview.js ***!
-  \*******************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SidebarView; });
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _scroller__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./scroller */ "./src/ui/scroller.js");
-
-
-class V2C_SidebarView extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const {
-      sidebar,
-      content,
-      tools
-    } = this.props.children;
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "standardSidebarView-3F1I7i ui-standard-sidebar-view"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "sidebarRegion-VFTUkN sidebar-region"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_scroller__WEBPACK_IMPORTED_MODULE_1__["default"], {
-      key: "sidebarScroller",
-      ref: "sidebarScroller",
-      sidebar: true,
-      fade: sidebar.fade || true,
-      dark: sidebar.dark || true,
-      children: sidebar.component
-    })), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "contentRegion-3nDuYy content-region"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "contentTransitionWrap-3hqOEW content-transition-wrap"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "scrollerWrap-2lJEkd firefoxFixScrollFlex-cnI2ix contentRegionScrollerWrap-3YZXdm content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "scroller-2FKFPG firefoxFixScrollFlex-cnI2ix contentRegionScroller-26nc1e content-region-scroller scroller",
-      ref: "contentScroller"
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"
-    }, content.component), tools.component)))));
   }
 
 }
@@ -6850,6 +6811,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+/***/ }),
+
+/***/ "crypto":
+/*!*************************!*\
+  !*** external "crypto" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("crypto");
 
 /***/ }),
 

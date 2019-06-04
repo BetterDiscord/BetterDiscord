@@ -13,7 +13,7 @@ import {Toasts} from "ui";
 //WebpackModules.getModule(m => m.getSection && m.getProps && !m.getGuildId && !m.getChannel)
 //WebpackModules.getByProps("getGuildId", "getSection")
 
-export default new class SettingsPanel {
+export default new class SettingsManager {
 
     constructor() {
         this.renderer = new SettingsRenderer({onChange: this.updateSettings.bind(this)});
@@ -28,25 +28,13 @@ export default new class SettingsPanel {
             if (savedSettings[setting] !== undefined) SettingsCookie[setting] = savedSettings[setting];
         }
         this.saveSettings();
-        // console.log("PATCHING");
-        // Utilities.monkeyPatch(WebpackModules.getByProps("getUserSettingsSections").default.prototype, "render", {after: (data) => {
-        //     data.returnValue.type;
-        // }});
-
-        // Patcher.after(temp2.prototype, "generateSections", (t,a,r) => {
-        //     r.push({section: "DIVIDER"});
-        //     r.push({section: "HEADER", label: "My Section"});
-        //     r.push({color: "#ffffff", label: "My Tab", onClick: function() {console.log("CLICK");}, section: "My Section"});
-        //             r.push({color: "#cccccc", label: "My Tab2", onClick: function() {console.log("CLICK2");}, section: "My Section"});
-
-        // })
         this.patchSections();
     }
 
     async patchSections() {
         const UserSettings = await this.getUserSettings(); // data.returnValue.type;
         Utilities.monkeyPatch(UserSettings.prototype, "generateSections", {after: (data) => {
-            console.log(data);
+            console.log(data); /* eslint-disable-line no-console */
             data.returnValue.splice(23, 0, {section: "DIVIDER"});
             data.returnValue.splice(24, 0, {section: "HEADER", label: "BandagedBD"});
             data.returnValue.splice(25, 0, {section: "BBD Settings", label: "Settings", element: () => this.renderer.core2});

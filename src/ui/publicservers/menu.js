@@ -1,7 +1,7 @@
 import {React, ReactDOM, WebpackModules} from "modules";
-import SidebarView from "../sidebarview";
-import Tools from "../settings/exitbutton";
-import TabBar from "../settings/tabbar";
+import SidebarView from "./sidebarview";
+import Tools from "./exitbutton";
+import TabBar from "./tabbar";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
 

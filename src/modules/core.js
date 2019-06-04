@@ -1,11 +1,11 @@
 import BDV2 from "./bdv2";
 import Utilities from "./utilities";
-import {Config, SettingsCookie} from "data";
+import {Config} from "data";
 // import EmoteModule from "./emotes";
 // import QuickEmoteMenu from "../builtins/emotemenu";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
-import SettingsPanel from "./settingspanel";
+import SettingsPanel from "./settingsmanager";
 import * as Builtins from "builtins";
 import {Modals} from "ui";
 

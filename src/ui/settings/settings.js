@@ -1,4 +1,4 @@
-import {SettingsInfo, Config/*, SettingsCookie, Plugins, Themes*/} from "data";
+import {SettingsInfo, Config, SettingsCookie/*, Plugins, Themes*/} from "data";
 import {React/*, ReactDOM, Utilities, ContentManager, Events, PluginManager, ThemeManager*/} from "modules";
 // import Sidebar from "./sidebar";
 // import Scroller from "../scroller";
@@ -15,14 +15,18 @@ import {React/*, ReactDOM, Utilities, ContentManager, Events, PluginManager, The
 // import SettingsGroup from "../settings/settingsgroup";
 import SettingsGroup2 from "../settings/group";
 import {Toasts} from "../ui";
+import { sign } from "crypto";
 
 export default class V2_SettingsPanel {
+
+    constructor({onChange}) {
+        this.onChange = onChange;
+    }
 
     get coreSettings() {
         const settings = this.getSettings("core");
         const categories = [...new Set(settings.map(s => s.category))];
         const sections = categories.map(c => {return {title: c, settings: settings.filter(s => s.category == c)};});
-        console.log(sections);
         return sections;
     }
 
@@ -44,6 +48,8 @@ export default class V2_SettingsPanel {
     get core2() {
         return this.coreSettings.map((section, i) => {
             if (i == 0) section.button = {title: "Call to Action!", onClick: () => {Toasts.success("You did it!", {forceShow: true});}};
+            console.log(section);
+            if (section.settings.find(s => s.text == "Hide Channels")) section.settings.find(s => s.text == "Hide Channels").shouldHide = () => !SettingsCookie["bda-gs-2"];
             return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange: this.onChange, collapsible: true, collapsed: i > 1}));
         });
     }

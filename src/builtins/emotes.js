@@ -1,4 +1,4 @@
-import Builtin, {onSettingChange} from "../structs/builtin";
+import Builtin from "../structs/builtin";
 
 import {Config, SettingsCookie, Emotes, EmoteBlacklist, EmoteInfo, EmoteModifiers, EmoteOverrides, State} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events} from "modules";
@@ -23,12 +23,12 @@ export default new class EmoteModule extends Builtin {
 
     async initialize() {
         super.initialize();
-        return;
-        await this.getBlacklist();
-        await this.loadEmoteData(EmoteInfo);
+        // Disable emote module for now because it's annoying and slow
+        // await this.getBlacklist();
+        // await this.loadEmoteData(EmoteInfo);
 
-        while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
-        this.patchMessageContent();
+        // while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
+        // this.patchMessageContent();
     }
 
     disabled() {

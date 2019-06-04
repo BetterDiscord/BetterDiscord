@@ -1,0 +1,76 @@
+[
+    {
+        "type": "category",
+        "id": "modules",
+        "name": "Modules",
+        "collapsible": true,
+        "settings": [
+            {
+                "type": "switch",
+                "id": "publicServers",
+                "name": "Public Servers",
+                "note": "Display public servers button",
+                "value": false
+            },
+            {
+                "type": "switch",
+                "id": "voiceDisconnect",
+                "name": "Voice Disconnect",
+                "note": "Disconnect from voice server when closing Discord",
+                "value": true
+            },
+            {
+                "type": "switch",
+                "id": "24hour",
+                "name": "24 Hour Timestamps",
+                "note": "Hides channels when in minimal mode",
+                "value": true,
+                "depends": "minimalMode"
+            },
+            {
+                "type": "switch",
+                "id": "classNormalizer",
+                "name": "Normalize Classes",
+                "note": "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)",
+                "value": false
+            }
+        ]
+    },
+    {
+        "type": "category",
+        "id": "appearance",
+        "name": "Appearance",
+        "collapsible": true,
+        "settings": [
+            {
+                "type": "switch",
+                "id": "minimalMode",
+                "name": "Minimal Mode",
+                "note": "Hide elements and reduce the size of elements.",
+                "value": true
+            },
+            {
+                "type": "switch",
+                "id": "hideChannels",
+                "name": "Hide Channels",
+                "note": "Hides channels when in minimal mode",
+                "value": true,
+                "enableWith": "minimalMode"
+            },
+            {
+                "type": "switch",
+                "id": "darkMode",
+                "name": "Dark Mode",
+                "note": "Make certain elements dark by default",
+                "value": false
+            },
+            {
+                "type": "switch",
+                "id": "coloredText",
+                "name": "Colored Text",
+                "note": "Make text colour the same as role color",
+                "value": false
+            }
+        ]
+    }
+]
