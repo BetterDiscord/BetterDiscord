@@ -1,5 +1,5 @@
 import {React} from "modules";
-import SettingsGroup from "./settingsgroup";
+import SettingsGroup from "./group";
 
 export default class V2C_SectionedSettingsPanel extends React.Component {
 

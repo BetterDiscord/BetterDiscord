@@ -32,7 +32,9 @@
         "no-var": "error",
         "prefer-const": "error",
         "react/jsx-uses-react": "error",
-        "react/jsx-uses-vars": "error"
+        "react/jsx-uses-vars": "error",
+        "react/prop-types": 0,
+        "react/jsx-no-target-blank": "error"
     },
     "globals": {
         "webpackJsonp": false,

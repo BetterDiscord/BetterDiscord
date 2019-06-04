@@ -8,6 +8,7 @@ import WebpackModules from "./webpackmodules";
 
 import {SettingsPanel as SettingsRenderer} from "ui";
 import Utilities from "./utilities";
+import {Toasts} from "ui";
 
 //WebpackModules.getModule(m => m.getSection && m.getProps && !m.getGuildId && !m.getChannel)
 //WebpackModules.getByProps("getGuildId", "getSection")
@@ -52,8 +53,8 @@ export default new class SettingsPanel {
             console.log(data);
             data.returnValue.splice(23, 0, {section: "DIVIDER"});
             data.returnValue.splice(24, 0, {section: "HEADER", label: "BandagedBD"});
-            data.returnValue.splice(25, 0, {section: "IJ1", label: "Injected Tab 1", element: () => this.renderer.core2});
-            data.returnValue.splice(26, 0, {section: "IJ2", label: "Injected Tab 2", onClick: function() {console.log("CLICK2");}});
+            data.returnValue.splice(25, 0, {section: "BBD Settings", label: "Settings", element: () => this.renderer.core2});
+            data.returnValue.splice(26, 0, {section: "BBD Test", label: "Test Tab", onClick: function() {Toasts.success("This can just be a click listener!", {forceShow: true});}});
         }});
         const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
