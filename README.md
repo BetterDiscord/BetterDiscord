@@ -134,5 +134,9 @@ These people have either donated or subscribed to the most basic patron tier to 
         <img src="https://cdn.discordapp.com/avatars/219400174869413888/a_58438b5a8e939e997902dc1e4b81e09e.png?size=128" width="25px;" /><br />
         <strong>『Sorey』</strong>
     </td>
+    <td align="center">
+        <img src="https://cdn.discordapp.com/avatars/95263213842608128/5024b83e1bff3096d7fc93e8de09d582.gif" width="25px;" /><br />
+        <strong>LiVeR</strong>
+    </td>
 </tr>
 </table>
