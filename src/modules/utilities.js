@@ -172,4 +172,42 @@ export default class Utilities {
 
         return proxy;
     }
+
+    /**
+     * Builds a classname string from any number of arguments. This includes arrays and objects.
+     * When given an array all values from the array are added to the list.
+     * When given an object they keys are added as the classnames if the value is truthy.
+     * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
+     * @param {...Any} argument - anything that should be used to add classnames.
+     */
+    static className() {
+        const classes = [];
+        const hasOwn = {}.hasOwnProperty;
+
+		for (let i = 0; i < arguments.length; i++) {
+			const arg = arguments[i];
+			if (!arg) continue;
+
+			const argType = typeof arg;
+
+			if (argType === "string" || argType === "number") {
+				classes.push(arg);
+            }
+            else if (Array.isArray(arg) && arg.length) {
+				const inner = this.classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+            }
+            else if (argType === "object") {
+				for (const key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(" ");
+    }
 }
