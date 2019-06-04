@@ -53,7 +53,7 @@ Yup we have two of them [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [thi
 
  - Add `try...catch` blocks to help prevent errors from crashing BD and Discord
  - Fix internal functions that some functions rely on such as `onSwitch` and `onMessage`
- - Add `source` and `website` as options for plugin and theme METAs 
+ - Add `source` and `website` as options for plugin and theme METAs
  - Allow themes to use spaces and apostrophes in their names
  - Prettier errors in console, useful for debugging
  - Auto-reload of themes/plugins
@@ -87,8 +87,12 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
 <table>
 <tr>
 <td align="center">
-<img src="https://cdn.discordapp.com/avatars/196098063092154368/78a810438015b20ea8d530fafc7fe463.png?size=128" width="100px;" alt="Kraken"/><br />
-<strong>Kraken</strong><br />
+    <img src="https://cdn.discordapp.com/avatars/196098063092154368/78a810438015b20ea8d530fafc7fe463.png?size=128" width="100px;" alt="Kraken"/><br />
+    <strong>Kraken</strong><br />
+</td>
+<td align="center">
+    <img src="https://cdn.discordapp.com/attachments/585514483699417089/585552300354043915/34959069_500_500.jpg" width="100px;" alt="SPHHAX"/><br />
+    <a href="http://sphh.ax/" target="_blank" rel="noreferrer noopener"><strong>SPHHAX</strong></a><br />
 </td>
 </tr>
 </table>
