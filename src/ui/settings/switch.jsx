@@ -13,7 +13,7 @@ const divider = "divider-3573oO dividerDefault-3rvLe-";
 export default class Switch extends React.Component {
     constructor(props) {
         super(props);
-        console.log(props);
+
         this.state = {
             checked: this.props.checked
         };
@@ -41,54 +41,3 @@ export default class Switch extends React.Component {
                 </div>;
     }
 }
-
-// export default class V2C_Switch extends React.Component {
-
-//     constructor(props) {
-//         super(props);
-//         this.setInitialState();
-//         this.onChange = this.onChange.bind(this);
-//     }
-
-//     setInitialState() {
-//         this.state = {
-//             checked: this.props.checked
-//         };
-//     }
-
-//     render() {
-//         const {text, info} = this.props.data;
-//         const {checked} = this.state;
-//         return React.createElement(
-//             "div",
-//             {className: `ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item ${flexContainer}`},
-//             React.createElement(
-//                 "div",
-//                 {className: `ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap ${flexWrap}`},
-//                 React.createElement(
-//                     "h3",
-//                     {className: `ui-form-title h3 margin-reset margin-reset ui-flex-child ${title} ${flexChild}`},
-//                     text
-//                 ),
-//                 React.createElement(
-//                     "div",
-//                     {className: `ui-switch-wrapper ui-flex-child ${checked ? switchWrapperChecked : switchWrapper}`, style: {flex: "0 0 auto"}},
-//                     React.createElement("input", {className: `ui-switch-checkbox ${switchClass}`, type: "checkbox", checked: checked, onChange: e => this.onChange(e)}),
-//                     React.createElement("div", {className: `ui-switch ${checked ? "checked" : ""}`})
-//                 )
-//             ),
-//             React.createElement(
-//                 "div",
-//                 {className: `ui-form-text style-description margin-top-4 ${description}`, style: {flex: "1 1 auto"}},
-//                 info
-//             )
-//         );
-//     }
-
-//     onChange() {
-//         this.props.onChange(this.props.id, !this.state.checked);
-//         this.setState({
-//             checked: !this.state.checked
-//         });
-//     }
-// }

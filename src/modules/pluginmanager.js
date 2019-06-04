@@ -1,4 +1,4 @@
-import {SettingsCookie, PluginCookie, Plugins} from "data";
+import {PluginCookie, Plugins} from "data";
 import ContentManager from "./contentmanager";
 import Utilities from "./utilities";
 import Emitter from "./emitter";

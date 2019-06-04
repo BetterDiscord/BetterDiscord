@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 export default class Utilities {
     /** Document/window width */
     static get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); }

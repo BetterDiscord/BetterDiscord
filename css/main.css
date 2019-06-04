@@ -854,7 +854,8 @@ body .ace_closeButton:active {
   font-size: 11px;
 }
 
-.bd-pfbtn {
+.bd-pfbtn,
+.bd-title-button {
   background: #7289da;
   color: #FFF;
   border-radius: 5px;

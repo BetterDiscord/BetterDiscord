@@ -10,6 +10,6 @@ import Emotes from "./emotes/emotes";
 import EmoteBlacklist from "./emotes/blacklist";
 import EmoteInfo from "./emotes/info";
 import EmoteModifiers from "./emotes/modifiers";
-import EmoteOverrides from "./emotes/overrides"
+import EmoteOverrides from "./emotes/overrides";
 
 export {State, SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins, Emotes, EmoteBlacklist, EmoteInfo, EmoteModifiers, EmoteOverrides};

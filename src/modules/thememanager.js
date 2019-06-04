@@ -1,4 +1,4 @@
-import {SettingsCookie, ThemeCookie, Themes} from "data";
+import {ThemeCookie, Themes} from "data";
 import ContentManager from "./contentmanager";
 import Utilities from "./utilities";
 import Emitter from "./emitter";
