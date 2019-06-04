@@ -957,6 +957,7 @@ const bdEmoteSettingIDs = {
 
   async initialize() {
     super.initialize();
+    return;
     await this.getBlacklist();
     await this.loadEmoteData(data__WEBPACK_IMPORTED_MODULE_1__["EmoteInfo"]);
 
@@ -2753,13 +2754,11 @@ Core.prototype.initObserver = function () {
       const node = mutation.addedNodes[0];
 
       if (node.classList.contains("layer-3QrUeG")) {
-        if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute("layer-id", "server-settings");
-
-        if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
-          node.setAttribute("layer-id", "user-settings");
-          node.setAttribute("id", "user-settings");
-          if (!document.getElementById("bd-settings-sidebar")) _settingspanel__WEBPACK_IMPORTED_MODULE_5__["default"].renderSidebar();
-        }
+        if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute("layer-id", "server-settings"); // if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
+        //     node.setAttribute("layer-id", "user-settings");
+        //     node.setAttribute("id", "user-settings");
+        //     if (!document.getElementById("bd-settings-sidebar")) SettingsPanel.renderSidebar();
+        // }
       }
     }
   });
@@ -3570,6 +3569,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
  //WebpackModules.getModule(m => m.getSection && m.getProps && !m.getGuildId && !m.getChannel)
 //WebpackModules.getByProps("getGuildId", "getSection")
 
@@ -3622,15 +3622,17 @@ __webpack_require__.r(__webpack_exports__);
           label: "BandagedBD"
         });
         data.returnValue.splice(25, 0, {
-          section: "IJ1",
-          label: "Injected Tab 1",
+          section: "BBD Settings",
+          label: "Settings",
           element: () => this.renderer.core2
         });
         data.returnValue.splice(26, 0, {
-          section: "IJ2",
-          label: "Injected Tab 2",
+          section: "BBD Test",
+          label: "Test Tab",
           onClick: function () {
-            console.log("CLICK2");
+            ui__WEBPACK_IMPORTED_MODULE_6__["Toasts"].success("This can just be a click listener!", {
+              forceShow: true
+            });
           }
         });
       }
@@ -6648,6 +6650,29 @@ class V2C_ContentColumn extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Co
 
 /***/ }),
 
+/***/ "./src/ui/settings/divider.jsx":
+/*!*************************************!*\
+  !*** ./src/ui/settings/divider.jsx ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Divider; });
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+class Divider extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+  render() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: "bd-divider divider-3573oO marginTop8-1DLZ1n marginBottom40-2vIwTv"
+    });
+  }
+
+}
+
+/***/ }),
+
 /***/ "./src/ui/settings/exitbutton.js":
 /*!***************************************!*\
   !*** ./src/ui/settings/exitbutton.js ***!
@@ -6689,6 +6714,100 @@ class V2C_Tools extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component 
     }
 
     $(".closeButton-1tv5uR").first().click();
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/ui/settings/group.jsx":
+/*!***********************************!*\
+  !*** ./src/ui/settings/group.jsx ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Group; });
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.js");
+/* harmony import */ var _vertical__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./vertical */ "./src/ui/settings/vertical.jsx");
+/* harmony import */ var _divider__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./divider */ "./src/ui/settings/divider.jsx");
+/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.js");
+
+
+
+
+
+
+class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
+  constructor(props) {
+    super(props);
+    this.container = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createRef();
+    this.state = {
+      collapsed: this.props.collapsible && this.props.collapsed
+    };
+  } // render() {
+  //     const {title, settings, button} = this.props;
+  //     const buttonComponent = button ? React.createElement("button", {key: "title-button", className: "bd-pfbtn", onClick: button.onClick}, button.title) : null;
+  //     return [React.createElement(SettingsTitle, {text: title}),
+  //             buttonComponent,
+  //             settings.map(setting => {
+  //                 return React.createElement(Switch, {id: setting.id, key: setting.id, data: setting, checked: SettingsCookie[setting.id], onChange: (id, checked) => {
+  //                     this.props.onChange(id, checked);
+  //                 }});
+  //             })];
+  // }
+
+
+  collapseGroup() {
+    if (this.state.collapsed) return this.expandGroup();
+    const container = modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].findDOMNode(this.container.current); // console.log(container.scrollHeight);
+
+    container.style.setProperty("height", container.scrollHeight + "px");
+    this.setState({
+      collapsed: true
+    }, () => setImmediate(() => container.style.setProperty("height", ""))); //
+  }
+
+  expandGroup() {
+    const container = modules__WEBPACK_IMPORTED_MODULE_1__["ReactDOM"].findDOMNode(this.container.current); // console.log(container.scrollHeight);
+
+    container.style.setProperty("height", container.scrollHeight + "px");
+    this.setState({
+      collapsed: false
+    }, () => setTimeout(() => container.style.setProperty("height", ""), 300)); //, () => container.style.setProperty("height", "")
+    //, () => container.style.setProperty("height", "")
+  }
+
+  render() {
+    const {
+      settings
+    } = this.props;
+    const groupClass = this.state.collapsed ? "bd-settings-group bd-settings-group-collapsed" : "bd-settings-group";
+    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
+      className: groupClass
+    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_title__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      text: this.props.title,
+      collapsible: this.props.collapsible,
+      onClick: () => this.collapseGroup()
+    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_vertical__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      className: "bd-settings-container",
+      ref: this.container
+    }, settings.map(setting => {
+      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        id: setting.id,
+        key: setting.id,
+        name: setting.text,
+        note: setting.info,
+        checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting.id],
+        onChange: (id, checked) => {
+          this.props.onChange(id, checked);
+        }
+      });
+    })), this.props.showDivider && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_divider__WEBPACK_IMPORTED_MODULE_4__["default"], null));
   }
 
 }
@@ -6963,7 +7082,7 @@ class V2C_PluginCard extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Compo
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SectionedSettingsPanel; });
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _settingsgroup__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./settingsgroup */ "./src/ui/settings/settingsgroup.js");
+/* harmony import */ var _group__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./group */ "./src/ui/settings/group.jsx");
 
 
 class V2C_SectionedSettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
@@ -6975,7 +7094,7 @@ class V2C_SectionedSettingsPanel extends modules__WEBPACK_IMPORTED_MODULE_0__["R
     return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
       className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"
     }, this.props.sections.map(section => {
-      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_settingsgroup__WEBPACK_IMPORTED_MODULE_1__["default"], Object.assign({}, section, {
+      return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_group__WEBPACK_IMPORTED_MODULE_1__["default"], Object.assign({}, section, {
         onChange: this.props.onChange
       }));
     }));
@@ -7009,6 +7128,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _icons_reload__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../icons/reload */ "./src/ui/icons/reload.js");
 /* harmony import */ var _customcss_editor__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../customcss/editor */ "./src/ui/customcss/editor.js");
 /* harmony import */ var _settings_settingsgroup__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../settings/settingsgroup */ "./src/ui/settings/settingsgroup.js");
+/* harmony import */ var _settings_group__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../settings/group */ "./src/ui/settings/group.jsx");
+
 
 
 
@@ -7063,6 +7184,7 @@ class V2_SettingsPanel {
         settings: settings.filter(s => s.category == c)
       };
     });
+    console.log(sections);
     return sections;
   }
 
@@ -7123,7 +7245,7 @@ class V2_SettingsPanel {
 
   get core2() {
     return this.coreSettings.map(section => {
-      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_settingsgroup__WEBPACK_IMPORTED_MODULE_13__["default"], Object.assign({}, section, {
+      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_group__WEBPACK_IMPORTED_MODULE_14__["default"], Object.assign({}, section, {
         onChange: this.onChange
       }));
     });
@@ -7625,62 +7747,25 @@ class V2C_SideBar extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Componen
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_Switch; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Switch; });
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 
-const flexContainer = "flex-1xMQg5 flex-1O1GKY da-flex da-flex vertical-V37hAW flex-1O1GKY directionColumn-35P_nr justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6 switchItem-2hKKKK";
-const flexWrap = "flex-1xMQg5 flex-1O1GKY da-flex da-flex horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStart-H-X2h- noWrap-3jynv6";
-const flexChild = "flexChild-faoVW3 da-flexChild";
+const flexContainer = "flex-1xMQg5 flex-1O1GKY vertical-V37hAW flex-1O1GKY directionColumn-35P_nr justifyStart-2NDFzi alignStretch-DpGPf3 noWrap-3jynv6 switchItem-2hKKKK";
+const flexWrap = "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStart-H-X2h- noWrap-3jynv6";
+const flexChild = "flexChild-faoVW3";
 const title = "titleDefault-a8-ZSr title-31JmR4 da-titleDefault da-title";
 const switchWrapper = "flexChild-faoVW3 da-flexChild switchEnabled-V2WDBB switch-3wwwcV da-switchEnabled da-switch valueUnchecked-2lU_20 value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
-const switchWrapperEnabled = "flexChild-faoVW3 da-flexChild switchEnabled-V2WDBB switch-3wwwcV da-switchEnabled da-switch valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
-const switchClass = "checkboxEnabled-CtinEn checkbox-2tyjJg da-checkboxEnabled da-checkbox";
-const description = "description-3_Ncsb formText-3fs7AJ da-description da-formText note-1V3kyJ da-note modeDefault-3a2Ph1 da-modeDefault primary-jw0I4K";
-class V2C_Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+const switchWrapperChecked = "flexChild-faoVW3 da-flexChild switchEnabled-V2WDBB switch-3wwwcV da-switchEnabled da-switch valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
+const switchClass = "checkboxEnabled-CtinEn checkbox-2tyjJg";
+const description = "description-3_Ncsb formText-3fs7AJ note-1V3kyJ modeDefault-3a2Ph1 primary-jw0I4K";
+const divider = "divider-3573oO dividerDefault-3rvLe-";
+class Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
   constructor(props) {
     super(props);
-    this.setInitialState();
-    this.onChange = this.onChange.bind(this);
-  }
-
-  setInitialState() {
+    console.log(props);
     this.state = {
       checked: this.props.checked
     };
-  }
-
-  render() {
-    const {
-      text,
-      info
-    } = this.props.data;
-    const {
-      checked
-    } = this.state;
-    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: `ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item ${flexContainer}`
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: `ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap ${flexWrap}`
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("h3", {
-      className: `ui-form-title h3 margin-reset margin-reset ui-flex-child ${title} ${flexChild}`
-    }, text), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: `ui-switch-wrapper ui-flex-child ${checked ? switchWrapperEnabled : switchWrapper}`,
-      style: {
-        flex: "0 0 auto"
-      }
-    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("input", {
-      className: `ui-switch-checkbox ${switchClass}`,
-      type: "checkbox",
-      checked: checked,
-      onChange: e => this.onChange(e)
-    }), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: `ui-switch ${checked ? "checked" : ""}`
-    }))), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: `ui-form-text style-description margin-top-4 ${description}`,
-      style: {
-        flex: "1 1 auto"
-      }
-    }, info));
   }
 
   onChange() {
@@ -7690,7 +7775,94 @@ class V2C_Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component
     });
   }
 
-}
+  render() {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: flexContainer,
+      style: {
+        flex: "1 1 auto"
+      }
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: flexWrap,
+      style: {
+        flex: "1 1 auto"
+      }
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: flexChild,
+      style: {
+        flex: "1 1 auto"
+      }
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("label", {
+      htmlFor: this.props.id,
+      className: title
+    }, this.props.name || this.props.data.text)), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: this.state.checked ? switchWrapperChecked : switchWrapper,
+      tabIndex: "0",
+      style: {
+        flex: "0 0 auto"
+      }
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("input", {
+      id: this.props.id,
+      className: switchClass,
+      type: "checkbox",
+      tabIndex: "-1",
+      checked: this.state.checked,
+      onChange: e => this.onChange(e)
+    }))), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: description,
+      style: {
+        flex: "1 1 auto"
+      }
+    }, this.props.note || this.props.data.info), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: divider
+    }));
+  }
+
+} // export default class V2C_Switch extends React.Component {
+//     constructor(props) {
+//         super(props);
+//         this.setInitialState();
+//         this.onChange = this.onChange.bind(this);
+//     }
+//     setInitialState() {
+//         this.state = {
+//             checked: this.props.checked
+//         };
+//     }
+//     render() {
+//         const {text, info} = this.props.data;
+//         const {checked} = this.state;
+//         return React.createElement(
+//             "div",
+//             {className: `ui-flex flex-vertical flex-justify-start flex-align-stretch flex-nowrap ui-switch-item ${flexContainer}`},
+//             React.createElement(
+//                 "div",
+//                 {className: `ui-flex flex-horizontal flex-justify-start flex-align-stretch flex-nowrap ${flexWrap}`},
+//                 React.createElement(
+//                     "h3",
+//                     {className: `ui-form-title h3 margin-reset margin-reset ui-flex-child ${title} ${flexChild}`},
+//                     text
+//                 ),
+//                 React.createElement(
+//                     "div",
+//                     {className: `ui-switch-wrapper ui-flex-child ${checked ? switchWrapperChecked : switchWrapper}`, style: {flex: "0 0 auto"}},
+//                     React.createElement("input", {className: `ui-switch-checkbox ${switchClass}`, type: "checkbox", checked: checked, onChange: e => this.onChange(e)}),
+//                     React.createElement("div", {className: `ui-switch ${checked ? "checked" : ""}`})
+//                 )
+//             ),
+//             React.createElement(
+//                 "div",
+//                 {className: `ui-form-text style-description margin-top-4 ${description}`, style: {flex: "1 1 auto"}},
+//                 info
+//             )
+//         );
+//     }
+//     onChange() {
+//         this.props.onChange(this.props.id, !this.state.checked);
+//         this.setState({
+//             checked: !this.state.checked
+//         });
+//     }
+// }
 
 /***/ }),
 
@@ -7917,19 +8089,49 @@ class V2C_ThemeCard extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Compon
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return V2C_SettingsTitle; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SettingsTitle; });
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 
-class V2C_SettingsTitle extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+const className = "bd-settings-title h2-2gWE-o title-3sZWYQ size16-14cGz5 height20-mO2eIN weightSemiBold-NJexzi defaultColor-1_ajX0 defaultMarginh2-2LTaUL marginBottom20-32qID7";
+class SettingsTitle extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
   constructor(props) {
     super(props);
   } //h2-2gWE-o title-3sZWYQ size16-14cGz5 height20-mO2eIN weightSemiBold-NJexzi da-h2 da-title da-size16 da-height20 da-weightSemiBold defaultColor-1_ajX0 da-defaultColor marginTop60-3PGbtK da-marginTop60 marginBottom20-32qID7 da-marginBottom20
 
 
   render() {
+    const titleClass = this.props.className ? `${className} ${this.props.className}` : className;
     return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("h2", {
-      className: "ui-form-title h2 margin-reset margin-bottom-20 marginTop60-3PGbtK h2-2gWE-o title-3sZWYQ size16-14cGz5 height20-mO2eIN weightSemiBold-NJexzi defaultColor-1_ajX0 defaultMarginh2-2LTaUL marginBottom20-32qID7"
+      className: titleClass,
+      onClick: () => {
+        this.props.onClick && this.props.onClick();
+      }
     }, this.props.text);
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/ui/settings/vertical.jsx":
+/*!**************************************!*\
+  !*** ./src/ui/settings/vertical.jsx ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return VerticalContainer; });
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+
+const className = "bd-vertical-container";
+class VerticalContainer extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
+  render() {
+    const containerClass = this.props.className ? `${className} ${this.props.className}` : className;
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
+      className: containerClass
+    }, this.props.children);
   }
 
 }

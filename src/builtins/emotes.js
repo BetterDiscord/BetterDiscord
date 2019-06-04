@@ -23,6 +23,7 @@ export default new class EmoteModule extends Builtin {
 
     async initialize() {
         super.initialize();
+        return;
         await this.getBlacklist();
         await this.loadEmoteData(EmoteInfo);
 

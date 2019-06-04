@@ -104,11 +104,11 @@ Core.prototype.initObserver = function () {
             if (node.classList.contains("layer-3QrUeG")) {
                 if (node.getElementsByClassName("guild-settings-base-section").length) node.setAttribute("layer-id", "server-settings");
 
-                if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
-                    node.setAttribute("layer-id", "user-settings");
-                    node.setAttribute("id", "user-settings");
-                    if (!document.getElementById("bd-settings-sidebar")) SettingsPanel.renderSidebar();
-                }
+                // if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
+                //     node.setAttribute("layer-id", "user-settings");
+                //     node.setAttribute("id", "user-settings");
+                //     if (!document.getElementById("bd-settings-sidebar")) SettingsPanel.renderSidebar();
+                // }
             }
         }
     });

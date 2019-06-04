@@ -13,6 +13,7 @@ import ReloadIcon from "../icons/reload";
 
 import CssEditor from "../customcss/editor";
 import SettingsGroup from "../settings/settingsgroup";
+import SettingsGroup2 from "../settings/group";
 
 export default class V2_SettingsPanel {
 
@@ -49,6 +50,7 @@ export default class V2_SettingsPanel {
         const settings = this.getSettings("core");
         const categories = [...new Set(settings.map(s => s.category))];
         const sections = categories.map(c => {return {title: c, settings: settings.filter(s => s.category == c)};});
+        console.log(sections);
         return sections;
     }
 
@@ -101,7 +103,7 @@ export default class V2_SettingsPanel {
 
     get core2() {
         return this.coreSettings.map(section => {
-            return React.createElement(SettingsGroup, Object.assign({}, section, {onChange: this.onChange}));
+            return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange: this.onChange}));
         });
     }
 

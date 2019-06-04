@@ -24,7 +24,62 @@
 /* =============== */
 /*  END V2 LOADER  */
 
+.bd-settings-group .bd-settings-title {
+  display: flex;
+  justify-content: space-between;
+}
+.bd-settings-group .bd-settings-title::after {
+  content: "";
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxOS4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FscXVlXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSItOTUwIDUzMiAxOCAxOCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAtOTUwIDUzMiAxOCAxODsiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4NCgkuc3Qwe2ZpbGw6bm9uZTt9DQoJLnN0MXtmaWxsOm5vbmU7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjEuNTtzdHJva2UtbWl0ZXJsaW1pdDoxMDt9DQo8L3N0eWxlPg0KPHBhdGggY2xhc3M9InN0MCIgZD0iTS05MzIsNTMydjE4aC0xOHYtMThILTkzMnoiLz4NCjxwb2x5bGluZSBjbGFzcz0ic3QxIiBwb2ludHM9Ii05MzYuNiw1MzguOCAtOTQxLDU0My4yIC05NDUuNCw1MzguOCAiLz4NCjwvc3ZnPg0K);
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  vertical-align: bottom;
+  transition: transform .3s ease;
+  transform: rotate(0);
+}
 
+.bd-settings-group.bd-settings-group-collapsed .bd-settings-title::after {
+  transition: transform .3s ease;
+  transform: rotate(90deg);
+}
+
+.bd-settings-container {
+  height: auto;
+  overflow: hidden;
+  transition: height 300ms cubic-bezier(0.47, 0, 0.745, 0.715);
+}
+
+.bd-settings-group.bd-settings-group-collapsed .bd-settings-container {
+  height: 0px;
+}
+
+.bd-settings-group ~ .bd-settings-group .bd-settings-title {
+  margin-top: 30px;
+  transition: margin-top 300ms ease;
+}
+
+.bd-settings-group.bd-settings-group-collapsed + .bd-settings-group .bd-settings-title {
+  margin-top: 0px;
+}
+
+.bd-settings-group .bd-settings-title {
+  order: 1;
+  align-items: center;
+}
+
+.bd-settings-group .bd-settings-title::before {
+  content: "";
+  background-color: rgba(114,118,125,.3);
+  height: 2px;
+  order: 2;
+  flex: 1;
+  margin: 0 10px 0 15px;
+}
+
+.bd-settings-group .bd-settings-title::after {
+  order: 3;
+}
 
 
 
