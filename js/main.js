@@ -417,6 +417,8 @@ Core.prototype.initObserver = function () {
                 }
             }
 
+            if (node.parentElement == document.body && node.querySelector("#ace_settingsmenu")) node.id = "ace_settingsmenu_container";
+
             // Emoji Picker
             if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
 
@@ -2208,6 +2210,7 @@ var ClassNormalizer = (() => {
             this.patchClassModules(BdApi.findAllModules(this.moduleFilter.bind(this)));
             this.normalizeElement(document.querySelector("#app-mount"));
             this.hasPatched = true;
+            this.patchDOMMethods();
         }
 
         patchClassModules(modules) {
@@ -2296,6 +2299,14 @@ var ClassNormalizer = (() => {
                 if (classes[c].startsWith(`${normalizedPrefix}-`)) toRemove.push(classes[c]);
             }
             element.classList.remove(...toRemove);
+        }
+
+        patchDOMMethods() {
+            const contains = DOMTokenList.prototype.contains;
+            DOMTokenList.prototype.contains = function(token) {
+                const tokens = token.split(" ");
+                return tokens.every(t => contains.call(this, t));
+            };
         }
 
     };
