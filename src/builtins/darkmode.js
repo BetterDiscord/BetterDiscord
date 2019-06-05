@@ -2,7 +2,7 @@ import Builtin from "../structs/builtin";
 
 export default new class DarkMode extends Builtin {
     get name() {return "DarkMode";}
-    get category() {return "Modules";}
+    get group() {return "appearance";}
     get id() {return "bda-gs-5";}
 
     enabled() {

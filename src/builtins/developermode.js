@@ -4,7 +4,7 @@ import {DiscordModules} from "modules";
 
 export default new class DeveloperMode extends Builtin {
     get name() {return "DeveloperMode";}
-    get category() {return "Modules";}
+    get group() {return "developer";}
     get id() {return "bda-gs-8";}
     get selectorModeID() {return "fork-dm-1";}
     get selectorMode() {return SettingsCookie[this.selectorModeID];}

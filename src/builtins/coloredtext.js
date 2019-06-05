@@ -5,8 +5,8 @@ const MessageContent = WebpackModules.getModule(m => m.defaultProps && m.default
 
 export default new class ColoredText extends Builtin {
     get name() {return "ColoredText";}
-    get category() {return "Modules";}
-    get id() {return "bda-gs-7";}
+    get group() {return "appearance";}
+    get id() {return "coloredText";}
 
     enabled() {
         this.injectColoredText();

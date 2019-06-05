@@ -1,4 +1,3 @@
-import {SettingsCookie} from "data";
 import {React} from "modules";
 import Title from "./title";
 import Divider from "./divider";
@@ -18,9 +17,11 @@ export default class Group extends React.Component {
             };
         }
 
+        if (!this.props.hasOwnProperty("shown")) this.props.shown = true;
+
         this.container = React.createRef();
         this.state = {
-            collapsed: this.props.collapsible && this.props.collapsed
+            collapsed: this.props.collapsible && !this.props.shown
         };
 
         this.onChange = this.onChange.bind(this);
@@ -35,8 +36,8 @@ export default class Group extends React.Component {
 
     onChange(id, value) {
         if (!this.props.onChange) return;
-        if (this.props.id) return this.props.onChange(this.props.id, id, value);
-        this.props.onChange(id, value);
+        if (this.props.id) this.props.onChange(this.props.id, id, value);
+        else this.props.onChange(id, value);
         this.forceUpdate();
     }
 
@@ -46,10 +47,11 @@ export default class Group extends React.Component {
         const groupClass = `${baseClassName} ${collapseClass}`;
 
         return <div className={groupClass}>
-                    <Title text={this.props.title} collapsible={this.props.collapsible} onClick={() => this.toggleCollapse()} button={this.props.button} />
+                    <Title text={this.props.name} collapsible={this.props.collapsible} onClick={() => this.toggleCollapse()} button={this.props.button} />
                     <div className="bd-settings-container" ref={this.container}>
-                        {settings.map((setting) => {
-                            const item = <Switch id={setting.id} key={setting.id} name={setting.text} note={setting.info} checked={SettingsCookie[setting.id]} onChange={this.onChange} />;
+                        {settings.filter(s => !s.hidden).map((setting) => {
+                            // console.log(setting);
+                            const item = <Switch disabled={setting.disabled} id={setting.id} key={setting.id} name={setting.name} note={setting.note} checked={setting.value} onChange={this.onChange} />;
                             const shouldHide = setting.shouldHide ? setting.shouldHide() : false;
                             if (!shouldHide) return item;
                         })}

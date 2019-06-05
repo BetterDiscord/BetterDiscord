@@ -1,4 +1,6 @@
 import {SettingsCookie} from "data";
+import SettingState from "../data/settings/state";
+import EmoteState from "../data/emotes/state";
 import Utilities from "../modules/utilities";
 import Events from "../modules/emitter";
 
@@ -15,13 +17,15 @@ export function onSettingChange(category, identifier, onEnable, onDisable) {
 export default class BuiltinModule {
 
     get name() {return "Unnamed Builtin";}
-    get category() {return "Modules";}
+    get category() {return "settings";}
+    get group() {return "general";}
     get id() {return "None";}
 
     async initialize() {
-        if (SettingsCookie[this.id]) await this.enable();
-        Events.on("setting-updated", (category, id, enabled) => {
-            if (category !== this.category || id !== this.id) return;
+        const state = this.category == "settings" ? SettingState : EmoteState;
+        if (state[this.group][this.id]) await this.enable();
+        Events.on("setting-updated", (group, id, enabled) => {
+            if (group !== this.group || id !== this.id) return;
             if (enabled) this.enable();
             else this.disable();
         });

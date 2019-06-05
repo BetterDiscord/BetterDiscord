@@ -2,7 +2,7 @@ import Builtin from "../structs/builtin";
 
 export default new class VoiceMode extends Builtin {
     get name() {return "VoiceMode";}
-    get category() {return "Modules";}
+    get group() {return "appearance";}
     get id() {return "bda-gs-4";}
 
     enabled() {

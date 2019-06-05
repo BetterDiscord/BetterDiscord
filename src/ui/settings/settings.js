@@ -15,7 +15,8 @@ import {React/*, ReactDOM, Utilities, ContentManager, Events, PluginManager, The
 // import SettingsGroup from "../settings/settingsgroup";
 import SettingsGroup2 from "../settings/group";
 import {Toasts} from "../ui";
-import { sign } from "crypto";
+import Settings from "../../data/settings/config";
+import State from "../../data/settings/state";
 
 export default class V2_SettingsPanel {
 
@@ -45,10 +46,31 @@ export default class V2_SettingsPanel {
         }, []);
     }
 
+    
+
+    getSettingsPanel(groups, onChange) {
+        return groups.map(section => {
+            return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange}));
+        });
+    }
+
+    get core3() {
+        const groups = Settings;
+
+        return groups.map((section, i) => {
+            if (i == 0) section.button = {title: "Call to Action!", onClick: () => {Toasts.success("You did it!", {forceShow: true});}};
+            // console.log(section);
+            section.settings.forEach(item => item.value = State[section.id][item.id]);
+
+            // if (section.settings.find(s => s.text == "Hide Channels")) section.settings.find(s => s.text == "Hide Channels").shouldHide = () => !SettingsCookie["bda-gs-2"];
+            return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange: this.onChange}));
+        });
+    }
+
     get core2() {
         return this.coreSettings.map((section, i) => {
             if (i == 0) section.button = {title: "Call to Action!", onClick: () => {Toasts.success("You did it!", {forceShow: true});}};
-            console.log(section);
+            // console.log(section);
             if (section.settings.find(s => s.text == "Hide Channels")) section.settings.find(s => s.text == "Hide Channels").shouldHide = () => !SettingsCookie["bda-gs-2"];
             return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange: this.onChange, collapsible: true, collapsed: i > 1}));
         });
