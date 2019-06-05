@@ -5,7 +5,7 @@ import {PublicServers as PSComponents} from "ui";
 
 export default new class PublicServers extends Builtin {
     get name() {return "PublicServers";}
-    get category() {return "Modules";}
+    get group() {return "general";}
     get id() {return "bda-gs-1";}
 
     enabled() {

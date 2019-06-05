@@ -5,7 +5,8 @@ import {Utilities} from "modules";
 
 export default new class EmoteAutocaps extends Builtin {
     get name() {return "EmoteAutocapitalize";}
-    get category() {return "Modules";}
+    get category() {return "emotes";}
+    get group() {return "preferences";}
     get id() {return "bda-es-4";}
 
     enabled() {

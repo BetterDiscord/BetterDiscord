@@ -105,8 +105,8 @@ __webpack_require__.r(__webpack_exports__);
     return "24Hour";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "general";
   }
 
   get id() {
@@ -233,8 +233,8 @@ const randClass = new RegExp(`^(?!${normalizedPrefix}-)((?:[A-Za-z]|[0-9]|-)+)-(
     return "fork-ps-4";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "general";
   }
 
   get name() {
@@ -375,12 +375,12 @@ const MessageContent = modules__WEBPACK_IMPORTED_MODULE_1__["WebpackModules"].ge
     return "ColoredText";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "appearance";
   }
 
   get id() {
-    return "bda-gs-7";
+    return "coloredText";
   }
 
   enabled() {
@@ -440,8 +440,8 @@ __webpack_require__.r(__webpack_exports__);
     return "DarkMode";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "appearance";
   }
 
   get id() {
@@ -480,8 +480,8 @@ __webpack_require__.r(__webpack_exports__);
     return "DeveloperMode";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "developer";
   }
 
   get id() {
@@ -617,7 +617,11 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   get category() {
-    return "Modules";
+    return "emotes";
+  }
+
+  get group() {
+    return "preferences";
   }
 
   get id() {
@@ -718,7 +722,11 @@ const makeEmote = (emote, url, options = {}) => {
   }
 
   get category() {
-    return "Modules";
+    return "emotes";
+  }
+
+  get group() {
+    return "preferences";
   }
 
   get id() {
@@ -940,7 +948,11 @@ const bdEmoteSettingIDs = {
   }
 
   get category() {
-    return "Modules";
+    return "emotes";
+  }
+
+  get group() {
+    return "preferences";
   }
 
   get id() {
@@ -1227,8 +1239,8 @@ __webpack_require__.r(__webpack_exports__);
     return "MinimalMode";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "appearance";
   }
 
   get id() {
@@ -1295,8 +1307,8 @@ __webpack_require__.r(__webpack_exports__);
     return "PublicServers";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "general";
   }
 
   get id() {
@@ -1389,8 +1401,8 @@ __webpack_require__.r(__webpack_exports__);
     return "VoiceDisconnect";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "general";
   }
 
   get id() {
@@ -1434,8 +1446,8 @@ __webpack_require__.r(__webpack_exports__);
     return "VoiceMode";
   }
 
-  get category() {
-    return "Modules";
+  get group() {
+    return "appearance";
   }
 
   get id() {
@@ -1634,6 +1646,92 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/data/emotes/config.js":
+/*!***********************************!*\
+  !*** ./src/data/emotes/config.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ([{
+  type: "category",
+  id: "preferences",
+  name: "Preferences",
+  collapsible: true,
+  settings: [{
+    type: "switch",
+    id: "download",
+    name: "Download Emotes",
+    note: "Download emotes once a week to stay up to date",
+    value: true
+  }, {
+    type: "switch",
+    id: "emoteMenu",
+    name: "Emote Menu",
+    note: "Show Twitch/Favourite emotes in emote menu",
+    value: true
+  }, {
+    type: "switch",
+    id: "hideEmojiMenu",
+    name: "Hide Emoji Menu",
+    note: "Hides Discord's emoji menu when using emote menu",
+    value: true,
+    enableWith: "emoteMenu"
+  }, {
+    type: "switch",
+    id: "autoCaps",
+    name: "Emote Autocapitalization",
+    note: "Autocapitalize emote commands",
+    value: false
+  }, {
+    type: "switch",
+    id: "showNames",
+    name: "Show Names",
+    note: "Show emote names on hover",
+    value: false
+  }, {
+    type: "switch",
+    id: "modifiers",
+    name: "Show Emote Modifiers",
+    note: "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)",
+    value: false
+  }, {
+    type: "switch",
+    id: "animateOnHover",
+    name: "Animate On Hover",
+    note: "Only animate the emote modifiers on hover",
+    value: false
+  }]
+}, {
+  type: "category",
+  id: "categories",
+  name: "Categories",
+  collapsible: true,
+  settings: [{
+    type: "switch",
+    id: "twitch",
+    name: "Twitch",
+    note: "Show Twitch global & subscriber emotes",
+    value: false
+  }, {
+    type: "switch",
+    id: "ffz",
+    name: "FrankerFaceZ",
+    note: "Show emotes from FFZ",
+    value: true
+  }, {
+    type: "switch",
+    id: "bttv",
+    name: "BetterTTV",
+    note: "Show emotes from BTTV",
+    value: true
+  }]
+}]);
+
+/***/ }),
+
 /***/ "./src/data/emotes/emotes.js":
 /*!***********************************!*\
   !*** ./src/data/emotes/emotes.js ***!
@@ -1739,6 +1837,19 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = (["twitch", "bttv", "ffz"]);
+
+/***/ }),
+
+/***/ "./src/data/emotes/state.js":
+/*!**********************************!*\
+  !*** ./src/data/emotes/state.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
 
@@ -2007,6 +2118,169 @@ __webpack_require__.r(__webpack_exports__);
     cat: "emote"
   }
 });
+
+/***/ }),
+
+/***/ "./src/data/settings/config.js":
+/*!*************************************!*\
+  !*** ./src/data/settings/config.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ([{
+  type: "category",
+  id: "general",
+  name: "General",
+  collapsible: true,
+  settings: [{
+    type: "switch",
+    id: "publicServers",
+    name: "Public Servers",
+    note: "Display public servers button",
+    value: true
+  }, {
+    type: "switch",
+    id: "voiceDisconnect",
+    name: "Voice Disconnect",
+    note: "Disconnect from voice server when closing Discord",
+    value: false
+  }, {
+    type: "switch",
+    id: "twentyFourHour",
+    name: "24 Hour Timestamps",
+    note: "Hides channels when in minimal mode",
+    value: false
+  }, {
+    type: "switch",
+    id: "classNormalizer",
+    name: "Normalize Classes",
+    note: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)",
+    value: true
+  }, {
+    type: "switch",
+    id: "showToasts",
+    name: "Show Toasts",
+    note: "Shows a small notification for important information",
+    value: true
+  }]
+}, {
+  type: "category",
+  id: "appearance",
+  name: "Appearance",
+  collapsible: true,
+  settings: [{
+    type: "switch",
+    id: "voiceMode",
+    name: "Voice Mode",
+    note: "Hides everything that isn't voice chat",
+    value: false
+  }, {
+    type: "switch",
+    id: "minimalMode",
+    name: "Minimal Mode",
+    note: "Hide elements and reduce the size of elements",
+    value: false
+  }, {
+    type: "switch",
+    id: "hideChannels",
+    name: "Hide Channels",
+    note: "Hides channels when in minimal mode",
+    value: false,
+    enableWith: "minimalMode"
+  }, {
+    type: "switch",
+    id: "darkMode",
+    name: "Dark Mode",
+    note: "Make certain elements dark by default",
+    value: true
+  }, {
+    type: "switch",
+    id: "coloredText",
+    name: "Colored Text",
+    note: "Make text colour the same as role color",
+    value: false
+  }]
+}, {
+  type: "category",
+  id: "content",
+  name: "Content Manager",
+  collapsible: true,
+  settings: [{
+    type: "switch",
+    id: "contentErrors",
+    name: "Show Content Errors",
+    note: "Shows a modal with plugin/theme errors",
+    value: true
+  }, {
+    type: "switch",
+    id: "autoScroll",
+    name: "Scroll To Settings",
+    note: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)",
+    value: true
+  }, {
+    type: "switch",
+    id: "autoReload",
+    name: "Automatic Loading",
+    note: "Automatically loads, reloads, and unloads plugins and themes",
+    value: true
+  }]
+}, {
+  type: "category",
+  id: "developer",
+  name: "Developer Settings",
+  collapsible: true,
+  shown: false,
+  settings: [{
+    type: "switch",
+    id: "developerMode",
+    name: "Developer Mode",
+    note: "Allows activating debugger when pressing F8",
+    value: false
+  }, {
+    type: "switch",
+    id: "copySelector",
+    name: "Copy Selector",
+    note: "Adds a \"Copy Selector\" option to context menus when developer mode is active",
+    value: false,
+    enableWith: "developerMode"
+  }]
+}, {
+  type: "category",
+  id: "window",
+  name: "Window Preferences",
+  collapsible: true,
+  shown: false,
+  settings: [{
+    type: "switch",
+    id: "transparency",
+    name: "Enable Transparency",
+    note: "Enables the main window to be see-through (requires restart)",
+    value: false
+  }, {
+    type: "switch",
+    id: "frame",
+    name: "Window Frame",
+    note: "Adds the native os window frame to the main window",
+    value: false,
+    hidden: true
+  }]
+}]);
+
+/***/ }),
+
+/***/ "./src/data/settings/state.js":
+/*!************************************!*\
+  !*** ./src/data/settings/state.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
 
@@ -3557,10 +3831,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _webpackmodules__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./webpackmodules */ "./src/modules/webpackmodules.js");
 /* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _data_emotes_config__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../data/emotes/config */ "./src/data/emotes/config.js");
+/* harmony import */ var _data_emotes_state__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../data/emotes/state */ "./src/data/emotes/state.js");
+/* harmony import */ var _data_settings_config__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ../data/settings/config */ "./src/data/settings/config.js");
+/* harmony import */ var _data_settings_state__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../data/settings/state */ "./src/data/settings/state.js");
 
 
 
  // import EmoteModule from "./emotes";
+
+
+
+
 
 
 
@@ -3588,6 +3870,46 @@ __webpack_require__.r(__webpack_exports__);
 
     this.saveSettings();
     this.patchSections();
+    this.initializeConfig(_data_settings_config__WEBPACK_IMPORTED_MODULE_10__["default"], _data_settings_state__WEBPACK_IMPORTED_MODULE_11__["default"]);
+    this.initializeConfig(_data_emotes_config__WEBPACK_IMPORTED_MODULE_8__["default"], _data_emotes_state__WEBPACK_IMPORTED_MODULE_9__["default"]);
+  }
+
+  initializeConfig(defaultConfig, state) {
+    const config = {};
+
+    for (let s = 0; s < defaultConfig.length; s++) {
+      const current = defaultConfig[s];
+
+      if (current.type != "category") {
+        config[current.id] = current.value;
+      } else {
+        config[current.id] = {};
+
+        for (let s = 0; s < current.settings.length; s++) {
+          const subCurrent = current.settings[s];
+          config[current.id][subCurrent.id] = subCurrent.value;
+
+          if (subCurrent.enableWith) {
+            Object.defineProperty(subCurrent, "disabled", {
+              get: () => {
+                return !state[current.id][subCurrent.enableWith];
+              }
+            });
+          }
+        }
+      }
+    }
+
+    console.log(defaultConfig);
+    console.log(config);
+    Object.assign(state, config);
+  }
+
+  buildSettingsPanel(config, state, onChange) {
+    config.forEach(section => {
+      section.settings.forEach(item => item.value = state[section.id][item.id]);
+    });
+    return this.renderer.getSettingsPanel(config, onChange);
   }
 
   async patchSections() {
@@ -3595,22 +3917,26 @@ __webpack_require__.r(__webpack_exports__);
 
     _utilities__WEBPACK_IMPORTED_MODULE_7__["default"].monkeyPatch(UserSettings.prototype, "generateSections", {
       after: data => {
-        console.log(data);
-        /* eslint-disable-line no-console */
-
+        // console.log(data); /* eslint-disable-line no-console */
         data.returnValue.splice(23, 0, {
           section: "DIVIDER"
         });
         data.returnValue.splice(24, 0, {
           section: "HEADER",
           label: "BandagedBD"
-        });
+        }); // data.returnValue.splice(25, 0, {section: "BBD Settings", label: "Settings", element: () => this.renderer.core2});
+
         data.returnValue.splice(25, 0, {
           section: "BBD Settings",
           label: "Settings",
-          element: () => this.renderer.core2
+          element: () => this.buildSettingsPanel(_data_settings_config__WEBPACK_IMPORTED_MODULE_10__["default"], _data_settings_state__WEBPACK_IMPORTED_MODULE_11__["default"], this.updateSettings)
         });
         data.returnValue.splice(26, 0, {
+          section: "BBD Emotes",
+          label: "Emotes",
+          element: () => this.buildSettingsPanel(_data_emotes_config__WEBPACK_IMPORTED_MODULE_8__["default"], _data_emotes_state__WEBPACK_IMPORTED_MODULE_9__["default"], this.updateSettings)
+        });
+        data.returnValue.splice(27, 0, {
           section: "BBD Test",
           label: "Test Tab",
           onClick: function () {
@@ -3619,7 +3945,7 @@ __webpack_require__.r(__webpack_exports__);
             });
           }
         });
-        data.returnValue.splice(27, 0, {
+        data.returnValue.splice(28, 0, {
           section: "CUSTOM",
           element: () => this.renderer.attribution
         });
@@ -3651,6 +3977,13 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   updateSettings(id, enabled) {
+    if (arguments.length == 3) {
+      _data_settings_state__WEBPACK_IMPORTED_MODULE_11__["default"][arguments[0]][arguments[1]] = arguments[2];
+      _emitter__WEBPACK_IMPORTED_MODULE_4__["default"].dispatch("setting-updated", arguments[0], arguments[1], arguments[2]);
+      console.log(_data_settings_state__WEBPACK_IMPORTED_MODULE_11__["default"]);
+      return;
+    }
+
     _emitter__WEBPACK_IMPORTED_MODULE_4__["default"].dispatch("setting-updated", "Modules", id, enabled);
     data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][id] = enabled; // if (id == "bda-es-4") {
     //     if (enabled) EmoteModule.autoCapitalize();
@@ -4831,8 +5164,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onSettingChange", function() { return onSettingChange; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BuiltinModule; });
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var _modules_utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../modules/utilities */ "./src/modules/utilities.js");
-/* harmony import */ var _modules_emitter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../modules/emitter */ "./src/modules/emitter.js");
+/* harmony import */ var _data_settings_state__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../data/settings/state */ "./src/data/settings/state.js");
+/* harmony import */ var _data_emotes_state__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../data/emotes/state */ "./src/data/emotes/state.js");
+/* harmony import */ var _modules_utilities__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../modules/utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _modules_emitter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../modules/emitter */ "./src/modules/emitter.js");
+
+
 
 
 
@@ -4842,9 +5179,9 @@ function onSettingChange(category, identifier, onEnable, onDisable) {
     if (enabled) onEnable();else onDisable();
   };
 
-  _modules_emitter__WEBPACK_IMPORTED_MODULE_2__["default"].on("setting-updated", handler);
+  _modules_emitter__WEBPACK_IMPORTED_MODULE_4__["default"].on("setting-updated", handler);
   return () => {
-    _modules_emitter__WEBPACK_IMPORTED_MODULE_2__["default"].off("setting-updated", handler);
+    _modules_emitter__WEBPACK_IMPORTED_MODULE_4__["default"].off("setting-updated", handler);
   };
 }
 class BuiltinModule {
@@ -4853,7 +5190,11 @@ class BuiltinModule {
   }
 
   get category() {
-    return "Modules";
+    return "settings";
+  }
+
+  get group() {
+    return "general";
   }
 
   get id() {
@@ -4861,9 +5202,10 @@ class BuiltinModule {
   }
 
   async initialize() {
-    if (data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][this.id]) await this.enable();
-    _modules_emitter__WEBPACK_IMPORTED_MODULE_2__["default"].on("setting-updated", (category, id, enabled) => {
-      if (category !== this.category || id !== this.id) return;
+    const state = this.category == "settings" ? _data_settings_state__WEBPACK_IMPORTED_MODULE_1__["default"] : _data_emotes_state__WEBPACK_IMPORTED_MODULE_2__["default"];
+    if (state[this.group][this.id]) await this.enable();
+    _modules_emitter__WEBPACK_IMPORTED_MODULE_4__["default"].on("setting-updated", (group, id, enabled) => {
+      if (group !== this.group || id !== this.id) return;
       if (enabled) this.enable();else this.disable();
     });
   }
@@ -4883,15 +5225,15 @@ class BuiltinModule {
   async disabled() {}
 
   log(...message) {
-    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log(this.name, ...message);
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_3__["default"].log(this.name, ...message);
   }
 
   warn(...message) {
-    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].warn(this.name, ...message);
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_3__["default"].warn(this.name, ...message);
   }
 
   error(...message) {
-    _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].err(this.name, ...message);
+    _modules_utilities__WEBPACK_IMPORTED_MODULE_3__["default"].err(this.name, ...message);
   }
 
 }
@@ -6292,18 +6634,16 @@ class Divider extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Group; });
-/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
-/* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.jsx");
-/* harmony import */ var _divider__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./divider */ "./src/ui/settings/divider.jsx");
-/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.jsx");
-
+/* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
+/* harmony import */ var _title__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./title */ "./src/ui/settings/title.jsx");
+/* harmony import */ var _divider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./divider */ "./src/ui/settings/divider.jsx");
+/* harmony import */ var _switch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./switch */ "./src/ui/settings/switch.jsx");
 
 
 
 
 const baseClassName = "bd-settings-group";
-class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
+class Group extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
   constructor(props) {
     super(props);
 
@@ -6316,9 +6656,10 @@ class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
       };
     }
 
-    this.container = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createRef();
+    if (!this.props.hasOwnProperty("shown")) this.props.shown = true;
+    this.container = modules__WEBPACK_IMPORTED_MODULE_0__["React"].createRef();
     this.state = {
-      collapsed: this.props.collapsible && this.props.collapsed
+      collapsed: this.props.collapsible && !this.props.shown
     };
     this.onChange = this.onChange.bind(this);
   }
@@ -6334,8 +6675,7 @@ class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
 
   onChange(id, value) {
     if (!this.props.onChange) return;
-    if (this.props.id) return this.props.onChange(this.props.id, id, value);
-    this.props.onChange(id, value);
+    if (this.props.id) this.props.onChange(this.props.id, id, value);else this.props.onChange(id, value);
     this.forceUpdate();
   }
 
@@ -6345,28 +6685,30 @@ class Group extends modules__WEBPACK_IMPORTED_MODULE_1__["React"].Component {
     } = this.props;
     const collapseClass = this.props.collapsible ? `collapsible ${this.state.collapsed && "collapsed"}` : "";
     const groupClass = `${baseClassName} ${collapseClass}`;
-    return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
+    return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
       className: groupClass
-    }, modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_title__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      text: this.props.title,
+    }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_title__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      text: this.props.name,
       collapsible: this.props.collapsible,
       onClick: () => this.toggleCollapse(),
       button: this.props.button
-    }), modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement("div", {
+    }), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
       className: "bd-settings-container",
       ref: this.container
-    }, settings.map(setting => {
-      const item = modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_4__["default"], {
+    }, settings.filter(s => !s.hidden).map(setting => {
+      // console.log(setting);
+      const item = modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_switch__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        disabled: setting.disabled,
         id: setting.id,
         key: setting.id,
-        name: setting.text,
-        note: setting.info,
-        checked: data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"][setting.id],
+        name: setting.name,
+        note: setting.note,
+        checked: setting.value,
         onChange: this.onChange
       });
       const shouldHide = setting.shouldHide ? setting.shouldHide() : false;
       if (!shouldHide) return item;
-    })), this.props.showDivider && modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_divider__WEBPACK_IMPORTED_MODULE_3__["default"], null));
+    })), this.props.showDivider && modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement(_divider__WEBPACK_IMPORTED_MODULE_2__["default"], null));
   }
 
 }
@@ -6387,8 +6729,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var modules__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! modules */ "./src/modules/modules.js");
 /* harmony import */ var _settings_group__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../settings/group */ "./src/ui/settings/group.jsx");
 /* harmony import */ var _ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../ui */ "./src/ui/ui.js");
-/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! crypto */ "crypto");
-/* harmony import */ var crypto__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(crypto__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _data_settings_config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../data/settings/config */ "./src/data/settings/config.js");
+/* harmony import */ var _data_settings_state__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../data/settings/state */ "./src/data/settings/state.js");
 
  // import Sidebar from "./sidebar";
 // import Scroller from "../scroller";
@@ -6402,6 +6744,7 @@ __webpack_require__.r(__webpack_exports__);
 // import ReloadIcon from "../icons/reload";
 // import CssEditor from "../customcss/editor";
 // import SettingsGroup from "../settings/settingsgroup";
+
 
 
 
@@ -6442,6 +6785,34 @@ class V2_SettingsPanel {
     }, []);
   }
 
+  getSettingsPanel(groups, onChange) {
+    return groups.map(section => {
+      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_group__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({}, section, {
+        onChange
+      }));
+    });
+  }
+
+  get core3() {
+    const groups = _data_settings_config__WEBPACK_IMPORTED_MODULE_4__["default"];
+    return groups.map((section, i) => {
+      if (i == 0) section.button = {
+        title: "Call to Action!",
+        onClick: () => {
+          _ui__WEBPACK_IMPORTED_MODULE_3__["Toasts"].success("You did it!", {
+            forceShow: true
+          });
+        }
+      }; // console.log(section);
+
+      section.settings.forEach(item => item.value = _data_settings_state__WEBPACK_IMPORTED_MODULE_5__["default"][section.id][item.id]); // if (section.settings.find(s => s.text == "Hide Channels")) section.settings.find(s => s.text == "Hide Channels").shouldHide = () => !SettingsCookie["bda-gs-2"];
+
+      return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_group__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({}, section, {
+        onChange: this.onChange
+      }));
+    });
+  }
+
   get core2() {
     return this.coreSettings.map((section, i) => {
       if (i == 0) section.button = {
@@ -6451,8 +6822,8 @@ class V2_SettingsPanel {
             forceShow: true
           });
         }
-      };
-      console.log(section);
+      }; // console.log(section);
+
       if (section.settings.find(s => s.text == "Hide Channels")) section.settings.find(s => s.text == "Hide Channels").shouldHide = () => !data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"]["bda-gs-2"];
       return modules__WEBPACK_IMPORTED_MODULE_1__["React"].createElement(_settings_group__WEBPACK_IMPORTED_MODULE_2__["default"], Object.assign({}, section, {
         onChange: this.onChange,
@@ -6567,9 +6938,12 @@ const flexContainer = "flex-1xMQg5 flex-1O1GKY vertical-V37hAW flex-1O1GKY direc
 const flexWrap = "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2NDFzi alignStart-H-X2h- noWrap-3jynv6";
 const flexChild = "flexChild-faoVW3";
 const title = "titleDefault-a8-ZSr title-31JmR4 da-titleDefault da-title";
+const switchWrapperDisabled = "flexChild-faoVW3 da-flexChild switchDisabled-3HsXAJ switch-3wwwcV da-switchDisabled da-switch valueUnchecked-2lU_20  value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
+const switchWrapperDisabledChecked = "flexChild-faoVW3 da-flexChild switchDisabled-3HsXAJ switch-3wwwcV da-switchDisabled da-switch valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
 const switchWrapper = "flexChild-faoVW3 da-flexChild switchEnabled-V2WDBB switch-3wwwcV da-switchEnabled da-switch valueUnchecked-2lU_20 value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
 const switchWrapperChecked = "flexChild-faoVW3 da-flexChild switchEnabled-V2WDBB switch-3wwwcV da-switchEnabled da-switch valueChecked-m-4IJZ value-2hFrkk sizeDefault-2YlOZr size-3rFEHg themeDefault-24hCdX";
 const switchClass = "checkboxEnabled-CtinEn checkbox-2tyjJg";
+const switchClassDisabled = "checkboxDisabled-1MA81A checkbox-2tyjJg";
 const description = "description-3_Ncsb formText-3fs7AJ note-1V3kyJ modeDefault-3a2Ph1 primary-jw0I4K";
 const divider = "divider-3573oO dividerDefault-3rvLe-";
 class Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
@@ -6581,6 +6955,7 @@ class Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
   }
 
   onChange() {
+    if (this.props.disabled) return;
     this.props.onChange(this.props.id, !this.state.checked);
     this.setState({
       checked: !this.state.checked
@@ -6588,6 +6963,7 @@ class Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
   }
 
   render() {
+    const wrapperClass = this.props.disabled ? this.state.checked ? switchWrapperDisabledChecked : switchWrapperDisabled : this.state.checked ? switchWrapperChecked : switchWrapper;
     return modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
       className: flexContainer,
       style: {
@@ -6607,14 +6983,14 @@ class Switch extends modules__WEBPACK_IMPORTED_MODULE_0__["React"].Component {
       htmlFor: this.props.id,
       className: title
     }, this.props.name || this.props.data.text)), modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("div", {
-      className: this.state.checked ? switchWrapperChecked : switchWrapper,
+      className: wrapperClass,
       tabIndex: "0",
       style: {
         flex: "0 0 auto"
       }
     }, modules__WEBPACK_IMPORTED_MODULE_0__["React"].createElement("input", {
       id: this.props.id,
-      className: switchClass,
+      className: this.props.disabled ? switchClassDisabled : switchClass,
       type: "checkbox",
       tabIndex: "-1",
       checked: this.state.checked,
@@ -6811,17 +7187,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-/***/ }),
-
-/***/ "crypto":
-/*!*************************!*\
-  !*** external "crypto" ***!
-  \*************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = require("crypto");
 
 /***/ }),
 

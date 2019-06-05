@@ -6,7 +6,7 @@ const randClass = new RegExp(`^(?!${normalizedPrefix}-)((?:[A-Za-z]|[0-9]|-)+)-(
 
 export default new class ClassNormalizer extends Builtin {
     get id() {return "fork-ps-4";}
-    get category() {return "Modules";}
+    get group() {return "general";}
     get name() {return "ClassNormalizer";}
 
     enabled() {
