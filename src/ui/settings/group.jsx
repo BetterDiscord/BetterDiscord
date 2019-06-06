@@ -49,12 +49,9 @@ export default class Group extends React.Component {
         return <div className={groupClass}>
                     <Title text={this.props.name} collapsible={this.props.collapsible} onClick={() => this.toggleCollapse()} button={this.props.button} isGroup={true} />
                     <div className="bd-settings-container" ref={this.container}>
-                        {settings.filter(s => !s.hidden).map((setting) => {
-                            // console.log(setting);
-                            const item = <Switch disabled={setting.disabled} id={setting.id} key={setting.id} name={setting.name} note={setting.note} checked={setting.value} onChange={this.onChange} />;
-                            const shouldHide = setting.shouldHide ? setting.shouldHide() : false;
-                            if (!shouldHide) return item;
-                        })}
+                        {settings.filter(s => !s.hidden).map((setting) =>
+                            <Switch disabled={setting.disabled} id={setting.id} key={setting.id} name={setting.name} note={setting.note} checked={setting.value} onChange={this.onChange} />
+                        )}
                     </div>
                     {this.props.showDivider && <Divider />}
                 </div>;

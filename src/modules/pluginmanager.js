@@ -150,13 +150,13 @@ PluginModule.prototype.updatePluginList = function() {
 };
 
 PluginModule.prototype.loadPluginData = function () {
-    const saved = DataStore.getSettingGroup("plugins");
+    const saved = DataStore.getData("plugins");
     if (!saved) return;
     Object.assign(PluginCookie, saved);
 };
 
 PluginModule.prototype.savePluginData = function () {
-    DataStore.setSettingGroup("plugins", PluginCookie);
+    DataStore.setData("plugins", PluginCookie);
 };
 
 PluginModule.prototype.newMessage = function () {

@@ -1,18 +1,7 @@
-import {SettingsCookie} from "data";
-import SettingState from "../data/settings/state";
-import EmoteState from "../data/emotes/state";
+import {SettingsState} from "data";
 import Utilities from "../modules/utilities";
 import Events from "../modules/emitter";
-
-export function onSettingChange(category, identifier, onEnable, onDisable) {
-    const handler = (cat, id, enabled) => {
-        if (category !== cat || id !== identifier) return;
-        if (enabled) onEnable();
-        else onDisable();
-    };
-    Events.on("setting-updated", handler);
-    return () => {Events.off("setting-updated", handler);};
-}
+import Settings from "../modules/settingsmanager";
 
 export default class BuiltinModule {
 
@@ -22,13 +11,47 @@ export default class BuiltinModule {
     get id() {return "None";}
 
     async initialize() {
-        const state = this.collection == "settings" ? SettingState : EmoteState;
-        if (state[this.category][this.id]) await this.enable();
-        Events.on("setting-updated", (category, id, enabled) => {
-            if (category !== this.category || id !== this.id) return;
+        if (SettingsState[this.collection][this.category][this.id]) await this.enable();
+        Events.on("setting-updated", (collection, category, id, enabled) => {
+            if (collection != this.collection || category !== this.category || id !== this.id) return;
             if (enabled) this.enable();
             else this.disable();
         });
+    }
+
+    registerSetting(collection, category, id, onEnable, onDisable) {
+        if (arguments.length == 4) {
+            collection = this.collection;
+            category = arguments[0];
+            id = arguments[1];
+            onEnable = arguments[2];
+            onDisable = arguments[3];
+        }
+        else if (arguments.length == 3) {
+            collection = this.collection;
+            category = this.category;
+            id = arguments[0];
+            onEnable = arguments[1];
+            onDisable = arguments[2];
+        }
+        return Settings.on(collection, category, id, (value) => {
+            if (value) onEnable();
+            else onDisable();
+        });
+    }
+
+    get(collection, category, id) {
+        if (arguments.length == 2) {
+            collection = this.collection;
+            category = arguments[0];
+            id = arguments[1];
+        }
+        else if (arguments.length == 1) {
+            collection = this.collection;
+            category = this.category;
+            id = arguments[0];
+        }
+        return Settings.get(collection, category, id);
     }
 
     async enable() {

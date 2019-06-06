@@ -12,9 +12,7 @@ import EmoteInfo from "./emotes/info";
 import EmoteModifiers from "./emotes/modifiers";
 import EmoteOverrides from "./emotes/overrides";
 
-import SettingsCollection from "./settings/config";
-import EmoteCollection from "./emotes/config";
+import SettingsConfig from "./settings/config";
+import SettingsState from "./settings/state";
 
-export const Collections = [SettingsCollection, EmoteCollection];
-
-export {State, SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins, Emotes, EmoteBlacklist, EmoteInfo, EmoteModifiers, EmoteOverrides};
+export {State, SettingsInfo, SettingsCookie, Config, PluginCookie, ThemeCookie, Themes, Plugins, Emotes, EmoteBlacklist, EmoteInfo, EmoteModifiers, EmoteOverrides, SettingsConfig, SettingsState};

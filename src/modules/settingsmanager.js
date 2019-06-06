@@ -1,8 +1,7 @@
-import {SettingsCookie, Collections} from "data";
+import {SettingsConfig, SettingsState} from "data";
 import DataStore from "./datastore";
 import ContentManager from "./contentmanager";
 import BdApi from "./pluginapi";
-// import EmoteModule from "./emotes";
 import Events from "./emitter";
 import WebpackModules from "./webpackmodules";
 
@@ -10,59 +9,75 @@ import {SettingsPanel as SettingsRenderer} from "ui";
 import Utilities from "./utilities";
 import {Toasts} from "ui";
 
-import EmoteSettings from "../data/emotes/config";
-import EmoteState from "../data/emotes/state";
-import TheSettings from "../data/settings/config";
-import SettingsState from "../data/settings/state";
-//WebpackModules.getModule(m => m.getSection && m.getProps && !m.getGuildId && !m.getChannel)
-//WebpackModules.getByProps("getGuildId", "getSection")
-
 export default new class SettingsManager {
 
     constructor() {
-        this.renderer = new SettingsRenderer({onChange: this.updateSettings.bind(this)});
-        this.updateSettings = this.updateSettings.bind(this);
-        console.log(Collections);
+        this.renderer = new SettingsRenderer();
+        this.config = SettingsConfig;
+        this.state = SettingsState;
+        this.setup(SettingsConfig, SettingsState);
     }
 
     initialize() {
         DataStore.initialize();
-        if (!DataStore.getSettingGroup("settings")) return this.saveSettings();
-        const savedSettings = this.loadSettings();
-        $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
-        for (const setting in savedSettings) {
-            if (savedSettings[setting] !== undefined) SettingsCookie[setting] = savedSettings[setting];
-        }
-        this.saveSettings();
+        // if (!DataStore.getSettingGroup("settings")) return this.saveSettings();
+        // const savedSettings = this.loadSettings();
+        // $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
+        // for (const setting in savedSettings) {
+        //     if (savedSettings[setting] !== undefined) SettingsCookie[setting] = savedSettings[setting];
+        // }
+        // this.saveSettings();
+        this.loadSettings();
         this.patchSections();
 
-        this.initializeConfig(TheSettings, SettingsState);
-        this.initializeConfig(EmoteSettings, EmoteState);
+        // Object.assign(this.state, this.defaultState);
+        // this.initializeConfig(EmoteSettings, EmoteState);
     }
 
-    initializeConfig(defaultConfig, state) {
+    getPath(path, collectionId = "", categoryId = "") {
+        const collection = path.length == 3 ? path[0] : collectionId;
+        const category = path.length == 3 ? path[1] : path.length == 2 ? path[0] : categoryId;
+        const setting = path[path.length - 1];
+        return {collection, category, setting};
+    }
+
+    setup(collections, state) {
         const config = {};
-        for (let s = 0; s < defaultConfig.length; s++) {
-            const current = defaultConfig[s];
-            if (current.type != "category") {config[current.id] = current.value;}
-            else {
-                config[current.id] = {};
-                for (let s = 0; s < current.settings.length; s++) {
-                    const subCurrent = current.settings[s];
-                    config[current.id][subCurrent.id] = subCurrent.value;
-                    if (subCurrent.enableWith) {
-                        Object.defineProperty(subCurrent, "disabled", {
-                            get: () => {
-                                return !state[current.id][subCurrent.enableWith];
-                            }
-                        });
+        for (let c = 0; c < collections.length; c++) {
+            const collection = collections[c];
+            const categories = collections[c].settings;
+            config[collection.id] = {};
+            for (let s = 0; s < categories.length; s++) {
+                const category = categories[s];
+                if (category.type != "category") {config[collection.id][category.id] = category.value;}
+                else {
+                    config[collection.id][category.id] = {};
+                    for (let s = 0; s < category.settings.length; s++) {
+                        const setting = category.settings[s];
+                        config[collection.id][category.id][setting.id] = setting.value;
+                        if (setting.enableWith) {
+                            const path = this.getPath(setting.enableWith.split("."), collection.id, category.id);
+                            Object.defineProperty(setting, "disabled", {
+                                get: () => {
+                                    return !state[path.collection][path.category][path.setting];
+                                }
+                            });
+                        }
                     }
                 }
             }
+            if (collection.enableWith) {
+                const path = this.getPath(collection.enableWith.split("."));
+                Object.defineProperty(collection, "disabled", {
+                    get: () => {
+                        return !state[path.collection][path.category][path.setting];
+                    }
+                });
+            }
         }
-        console.log(defaultConfig);
-        console.log(config);
-        Object.assign(state, config);
+
+        this.defaultState = config;
+        Object.assign(this.state, this.defaultState);
     }
 
     buildSettingsPanel(title, config, state, onChange) {
@@ -73,7 +88,7 @@ export default new class SettingsManager {
     }
 
     async patchSections() {
-        const UserSettings = await this.getUserSettings(); // data.returnValue.type;
+        const UserSettings = await this.getUserSettings();
         Utilities.monkeyPatch(UserSettings.prototype, "generateSections", {after: (data) => {
             let location = data.returnValue.findIndex(s => s.section.toLowerCase() == "linux") + 1;
             const insert = (section) => {
@@ -83,9 +98,14 @@ export default new class SettingsManager {
             console.log(data); /* eslint-disable-line no-console */
             insert({section: "DIVIDER"});
             insert({section: "HEADER", label: "BandagedBD"});
-            // insert({section: "BBD Settings", label: "Settings", element: () => this.renderer.core2});
-            insert({section: "BBD Settings", label: "Settings", element: () => this.buildSettingsPanel("Settings", TheSettings, SettingsState, this.updateSettings.bind(this, SettingsState))});
-            if (SettingsState.general.emotes) insert({section: "BBD Emotes", label: "Emotes", element: () => this.buildSettingsPanel("Emote Settings", EmoteSettings, EmoteState, this.updateSettings.bind(this, EmoteState))});
+            for (const collection of this.config) {
+                if (collection.disabled) continue;
+                insert({
+                    section: collection.name,
+                    label: collection.name,
+                    element: () => this.buildSettingsPanel(collection.name, collection.settings, SettingsState[collection.id], this.onSettingChange.bind(this, collection.id))
+                });
+            }
             insert({section: "BBD Test", label: "Test Tab", onClick: function() {Toasts.success("This can just be a click listener!", {forceShow: true});}});
             insert({section: "CUSTOM", element: () => this.renderer.attribution});
         }});
@@ -109,46 +129,55 @@ export default new class SettingsManager {
     }
 
     saveSettings() {
-        DataStore.setSettingGroup("settings", SettingsCookie);
+        DataStore.setData("settings", this.state);
     }
 
     loadSettings() {
-        return DataStore.getSettingGroup("settings");
+        const previousState = DataStore.getData("settings");
+        if (!previousState)  return this.saveSettings();
+        for (const collection in this.defaultState) {
+            if (!previousState[collection]) Object.assign(previousState, {[collection]: this.defaultState[collection]});
+            for (const category in this.defaultState[collection]) {
+                if (!previousState[collection][category]) Object.assign(previousState[collection][category], {[category]: this.defaultState[collection][category]});
+                for (const setting in this.defaultState[collection][category]) {
+                    if (previousState[collection][category][setting] == undefined) continue;
+                    this.state[collection][category][setting] = previousState[collection][category][setting];
+                }
+            }
+        }
+
+        this.saveSettings(); // in case new things were added
     }
 
-    onSettingChange(collection, category, id, enabled) {
-        collection[category][id] = enabled;
-        Events.dispatch("setting-updated", category, id, enabled);
-        // console.log(collection);
-        if (id == "emotes") this.forceUpdate();
+    onSettingChange(collection, category, id, value) {
+        const before = this.config.filter(c => c.disabled).length;
+        this.state[collection][category][id] = value;
+        Events.dispatch("setting-updated", collection, category, id, value);
+        const after = this.config.filter(c => c.disabled).length;
+        this.saveSettings();
+        if (before != after) this.forceUpdate();
     }
 
-    getSetting(category, id) {
-        if (arguments.length == 2) return SettingsState[category][id];
-        const collection = arguments[0] == "emotes" ? EmoteState : SettingsState;
-        return collection && collection[arguments[1]][arguments[2]];
+    getSetting(collection, category, id) {
+        if (arguments.length == 2) return this.config[0].find(c => c.id == arguments[0]).settings.find(s => s.id == arguments[1]);
+        return this.config.find(c => c.id == collection).find(c => c.id == category).settings.find(s => s.id == id);
     }
 
-    get(category, id) {
-        if (arguments.length == 2) return SettingsState[category][id];
-        const collection = arguments[0] == "emotes" ? EmoteState : SettingsState;
-        return collection && collection[arguments[1]][arguments[2]];
+    get(collection, category, id) {
+        if (arguments.length == 2) return this.state[this.config[0].id][arguments[0]][arguments[1]];
+        return this.state[collection][category][id];
+    }
+
+    on(collection, category, identifier, callback) {
+        const handler = (col, cat, id, value) => {
+            if (col !== collection || cat !== category || id !== identifier) return;
+            callback(value);
+        };
+        Events.on("setting-updated", handler);
+        return () => {Events.off("setting-updated", handler);};
     }
 
     updateSettings(collection, category, id, enabled) {
-        // console.log("Updating ", collection);
-        // console.log(category, id, enabled);
-        collection[category][id] = enabled;
-        Events.dispatch("setting-updated", category, id, enabled);
-        // console.log(collection);
-        if (id == "emotes") this.forceUpdate();
-        // SettingsCookie[id] = enabled;
-
-
-        // if (id == "bda-es-4") {
-        //     if (enabled) EmoteModule.autoCapitalize();
-        //     else EmoteModule.disableAutoCapitalize();
-        // }
 
         if (id == "fork-ps-5") {
             if (enabled) {
@@ -173,10 +202,10 @@ export default new class SettingsManager {
     initializeSettings() {
         // if (SettingsCookie["bda-es-4"]) EmoteModule.autoCapitalize();
 
-        if (SettingsCookie["fork-ps-5"]) {
-            ContentManager.watchContent("plugin");
-            ContentManager.watchContent("theme");
-        }
+        // if (SettingsCookie["fork-ps-5"]) {
+        //     ContentManager.watchContent("plugin");
+        //     ContentManager.watchContent("theme");
+        // }
 
         this.saveSettings();
     }

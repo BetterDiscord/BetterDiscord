@@ -99,13 +99,13 @@ ThemeModule.prototype.updateThemeList = function() {
 };
 
 ThemeModule.prototype.loadThemeData = function() {
-    const saved = DataStore.getSettingGroup("themes");
+    const saved = DataStore.getData("themes");
     if (!saved) return;
     Object.assign(ThemeCookie, saved);
 };
 
 ThemeModule.prototype.saveThemeData = function () {
-    DataStore.setSettingGroup("themes", ThemeCookie);
+    DataStore.setData("themes", ThemeCookie);
 };
 
 export default new ThemeModule();

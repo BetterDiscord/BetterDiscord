@@ -1,5 +1,4 @@
 import Builtin from "../structs/builtin";
-import {SettingsCookie} from "data";
 import {BDV2, DiscordModules} from "modules";
 import {PublicServers as PSComponents} from "ui";
 
@@ -45,7 +44,7 @@ export default new class PublicServers extends Builtin {
     render() {
         const root = this.root;
         if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layers");
+            this.error("FAILED TO LOCATE ROOT: .layers");
             return;
         }
         DiscordModules.ReactDOM.render(this.component, root);
