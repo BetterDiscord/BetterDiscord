@@ -6,24 +6,31 @@ import BDEmote from "../ui/emote";
 import {Toasts} from "ui";
 
 const bdEmoteSettingIDs = {
-    TwitchGlobal: "bda-es-7",
-    TwitchSubscriber: "bda-es-7",
-    BTTV: "bda-es-2",
-    FrankerFaceZ: "bda-es-1",
-    BTTV2: "bda-es-2"
+    TwitchGlobal: "twitch",
+    TwitchSubscriber: "twitch",
+    BTTV: "bttv",
+    FrankerFaceZ: "ffz",
+    BTTV2: "bttv"
 };
 
 export default new class EmoteModule extends Builtin {
     get name() {return "Emotes";}
-    get collection() {return "emotes";}
+    get collection() {return "settings";}
     get category() {return "general";}
-    get id() {return "";}
-    get categories() { return Object.keys(bdEmoteSettingIDs).filter(k => SettingsCookie[bdEmoteSettingIDs[k]]); }
+    get id() {return "emotes";}
+    get categories() { return Object.keys(bdEmoteSettingIDs).filter(k => this.isCategoryEnabled(bdEmoteSettingIDs[k])); }
 
     get MessageContentComponent() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
 
-    async initialize() {
-        super.initialize();
+    isCategoryEnabled(id) {
+        return super.get("emotes", "categories", id);
+    }
+
+    get(id) {
+        return super.get("emotes", "general", id);
+    }
+
+    async enabled() {
         // Disable emote module for now because it's annoying and slow
         // await this.getBlacklist();
         // await this.loadEmoteData(EmoteInfo);
@@ -33,9 +40,14 @@ export default new class EmoteModule extends Builtin {
     }
 
     disabled() {
+        this.emptyEmotes();
         if (this.cancelEmoteRender) return;
         this.cancelEmoteRender();
         delete this.cancelEmoteRender;
+    }
+
+    emptyEmotes() {
+        for (const cat in Emotes) Object.assign(Emotes, {[cat]: {}});
     }
 
     patchMessageContent() {

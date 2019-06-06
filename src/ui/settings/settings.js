@@ -21,10 +21,6 @@ import SettingsTitle from "./title";
 
 export default class V2_SettingsPanel {
 
-    constructor({onChange}) {
-        this.onChange = onChange;
-    }
-
     get coreSettings() {
         const settings = this.getSettings("core");
         const categories = [...new Set(settings.map(s => s.category))];
@@ -47,7 +43,7 @@ export default class V2_SettingsPanel {
         }, []);
     }
 
-    
+
 
     getSettingsPanel(title, groups, onChange) {
         return [React.createElement(SettingsTitle, {text: title}), groups.map(section => {

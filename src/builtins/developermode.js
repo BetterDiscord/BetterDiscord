@@ -1,5 +1,4 @@
-import Builtin, {onSettingChange} from "../structs/builtin";
-import {SettingsCookie} from "data";
+import Builtin from "../structs/builtin";
 import {DiscordModules} from "modules";
 
 export default new class DeveloperMode extends Builtin {
@@ -7,7 +6,7 @@ export default new class DeveloperMode extends Builtin {
     get category() {return "developer";}
     get id() {return "developerMode";}
     get selectorModeID() {return "copySelector";}
-    get selectorMode() {return SettingsCookie[this.selectorModeID];}
+    get selectorMode() {return this.get(this.selectorModeID);}
 
     constructor() {
         super();
@@ -23,7 +22,7 @@ export default new class DeveloperMode extends Builtin {
             }
         });
         if (this.selectorMode) this.enableSelectors();
-        this.selectorCancel = onSettingChange(this.category, this.selectorModeID, this.enableSelectors, this.disableSelectors);
+        this.selectorCancel = this.registerSetting(this.selectorModeID, this.enableSelectors, this.disableSelectors);
     }
 
     disabled() {

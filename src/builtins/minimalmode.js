@@ -1,12 +1,11 @@
-import Builtin, {onSettingChange} from "../structs/builtin";
-import {SettingsCookie} from "data";
+import Builtin from "../structs/builtin";
 
 export default new class MinimalMode extends Builtin {
     get name() {return "MinimalMode";}
     get category() {return "appearance";}
     get id() {return "minimalMode";}
     get hideChannelsID() {return "hideChannels";}
-    get hideChannels() {return SettingsCookie[this.hideChannelsID];}
+    get hideChannels() {return this.get(this.hideChannelsID);}
 
     constructor() {
         super();
@@ -17,7 +16,7 @@ export default new class MinimalMode extends Builtin {
     enabled() {
         $("body").addClass("bd-minimal");
         if (this.hideChannels) this.enableHideChannels();
-        this.hideChannelCancel = onSettingChange(this.category, this.hideChannelsID, this.enableHideChannels, this.disableHideChannels);
+        this.hideChannelCancel = this.registerSetting(this.hideChannelsID, this.enableHideChannels, this.disableHideChannels);
     }
 
     disabled() {

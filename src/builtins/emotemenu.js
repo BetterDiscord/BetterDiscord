@@ -1,5 +1,5 @@
-import Builtin, {onSettingChange} from "../structs/builtin";
-import {SettingsCookie, Emotes, State} from "data";
+import Builtin from "../structs/builtin";
+import {Emotes, State} from "data";
 import {DataStore, Utilities, Events} from "modules";
 
 const headerHTML = `<div id="bda-qem">
@@ -44,7 +44,7 @@ export default new class EmoteMenu extends Builtin {
     get category() {return "general";}
     get id() {return "emoteMenu";}
     get hideEmojisID() {return "hideEmojiMenu";}
-    get hideEmojis() {return SettingsCookie[this.hideEmojisID];}
+    get hideEmojis() {return this.get(this.hideEmojisID);}
 
     constructor() {
         super();
@@ -79,7 +79,7 @@ export default new class EmoteMenu extends Builtin {
             childList: true,
             subtree: true
         });
-        this.hideEmojiCancel = onSettingChange(this.category, this.hideEmojisID, this.enableHideEmojis, this.disableHideEmojis);
+        this.hideEmojiCancel = this.registerSetting(this.hideEmojisID, this.enableHideEmojis, this.disableHideEmojis);
         if (this.hideEmojis) this.enableHideEmojis();
         // await this.waitForEmotes();
         // this.updateTwitchEmotes();

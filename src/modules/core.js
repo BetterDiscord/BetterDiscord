@@ -5,7 +5,7 @@ import {Config} from "data";
 // import QuickEmoteMenu from "../builtins/emotemenu";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
-import SettingsPanel from "./settingsmanager";
+import Settings from "./settingsmanager";
 import * as Builtins from "builtins";
 import {Modals} from "ui";
 
@@ -31,7 +31,7 @@ Core.prototype.init = async function() {
     }
 
     Utilities.log("Startup", "Initializing Settings");
-    SettingsPanel.initialize();
+    Settings.initialize();
     Utilities.log("Startup", "Initializing EmoteModule");
     // window.emotePromise = EmoteModule.init().then(() => {
     //     EmoteModule.initialized = true;
@@ -45,7 +45,6 @@ Core.prototype.init = async function() {
     await this.checkForGuilds();
     BDV2.initialize();
     Utilities.log("Startup", "Updating Settings");
-    SettingsPanel.initializeSettings();
     for (const module in Builtins) Builtins[module].initialize();
 
     Utilities.log("Startup", "Loading Plugins");
@@ -107,7 +106,7 @@ Core.prototype.initObserver = function () {
                 // if (node.getElementsByClassName("socialLinks-3jqNFy").length) {
                 //     node.setAttribute("layer-id", "user-settings");
                 //     node.setAttribute("id", "user-settings");
-                //     if (!document.getElementById("bd-settings-sidebar")) SettingsPanel.renderSidebar();
+                //     if (!document.getElementById("bd-settings-sidebar")) Settings.renderSidebar();
                 // }
             }
         }
