@@ -15,8 +15,8 @@ const bdEmoteSettingIDs = {
 
 export default new class EmoteModule extends Builtin {
     get name() {return "Emotes";}
-    get category() {return "emotes";}
-    get group() {return "preferences";}
+    get collection() {return "emotes";}
+    get category() {return "general";}
     get id() {return "";}
     get categories() { return Object.keys(bdEmoteSettingIDs).filter(k => SettingsCookie[bdEmoteSettingIDs[k]]); }
 

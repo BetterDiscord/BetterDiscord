@@ -17,6 +17,7 @@ import SettingsGroup2 from "../settings/group";
 import {Toasts} from "../ui";
 import Settings from "../../data/settings/config";
 import State from "../../data/settings/state";
+import SettingsTitle from "./title";
 
 export default class V2_SettingsPanel {
 
@@ -48,10 +49,10 @@ export default class V2_SettingsPanel {
 
     
 
-    getSettingsPanel(groups, onChange) {
-        return groups.map(section => {
+    getSettingsPanel(title, groups, onChange) {
+        return [React.createElement(SettingsTitle, {text: title}), groups.map(section => {
             return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange}));
-        });
+        })];
     }
 
     get core3() {

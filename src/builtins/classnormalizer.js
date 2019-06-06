@@ -5,8 +5,8 @@ const normalizedPrefix = "da";
 const randClass = new RegExp(`^(?!${normalizedPrefix}-)((?:[A-Za-z]|[0-9]|-)+)-(?:[A-Za-z]|[0-9]|-|_){6}$`);
 
 export default new class ClassNormalizer extends Builtin {
-    get id() {return "fork-ps-4";}
-    get group() {return "general";}
+    get id() {return "classNormalizer";}
+    get category() {return "general";}
     get name() {return "ClassNormalizer";}
 
     enabled() {

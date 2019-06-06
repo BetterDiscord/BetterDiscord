@@ -1,4 +1,4 @@
-import {SettingsCookie} from "data";
+import {SettingsCookie, Collections} from "data";
 import DataStore from "./datastore";
 import ContentManager from "./contentmanager";
 import BdApi from "./pluginapi";
@@ -21,6 +21,8 @@ export default new class SettingsManager {
 
     constructor() {
         this.renderer = new SettingsRenderer({onChange: this.updateSettings.bind(this)});
+        this.updateSettings = this.updateSettings.bind(this);
+        console.log(Collections);
     }
 
     initialize() {
@@ -63,25 +65,34 @@ export default new class SettingsManager {
         Object.assign(state, config);
     }
 
-    buildSettingsPanel(config, state, onChange) {
+    buildSettingsPanel(title, config, state, onChange) {
         config.forEach(section => {
             section.settings.forEach(item => item.value = state[section.id][item.id]);
         });
-        return this.renderer.getSettingsPanel(config, onChange);
+        return this.renderer.getSettingsPanel(title, config, onChange);
     }
 
     async patchSections() {
         const UserSettings = await this.getUserSettings(); // data.returnValue.type;
         Utilities.monkeyPatch(UserSettings.prototype, "generateSections", {after: (data) => {
-            // console.log(data); /* eslint-disable-line no-console */
-            data.returnValue.splice(23, 0, {section: "DIVIDER"});
-            data.returnValue.splice(24, 0, {section: "HEADER", label: "BandagedBD"});
-            // data.returnValue.splice(25, 0, {section: "BBD Settings", label: "Settings", element: () => this.renderer.core2});
-            data.returnValue.splice(25, 0, {section: "BBD Settings", label: "Settings", element: () => this.buildSettingsPanel(TheSettings, SettingsState, this.updateSettings)});
-            data.returnValue.splice(26, 0, {section: "BBD Emotes", label: "Emotes", element: () => this.buildSettingsPanel(EmoteSettings, EmoteState, this.updateSettings)});
-            data.returnValue.splice(27, 0, {section: "BBD Test", label: "Test Tab", onClick: function() {Toasts.success("This can just be a click listener!", {forceShow: true});}});
-            data.returnValue.splice(28, 0, {section: "CUSTOM", element: () => this.renderer.attribution});
+            let location = data.returnValue.findIndex(s => s.section.toLowerCase() == "linux") + 1;
+            const insert = (section) => {
+                data.returnValue.splice(location, 0, section);
+                location++;
+            };
+            console.log(data); /* eslint-disable-line no-console */
+            insert({section: "DIVIDER"});
+            insert({section: "HEADER", label: "BandagedBD"});
+            // insert({section: "BBD Settings", label: "Settings", element: () => this.renderer.core2});
+            insert({section: "BBD Settings", label: "Settings", element: () => this.buildSettingsPanel("Settings", TheSettings, SettingsState, this.updateSettings.bind(this, SettingsState))});
+            if (SettingsState.general.emotes) insert({section: "BBD Emotes", label: "Emotes", element: () => this.buildSettingsPanel("Emote Settings", EmoteSettings, EmoteState, this.updateSettings.bind(this, EmoteState))});
+            insert({section: "BBD Test", label: "Test Tab", onClick: function() {Toasts.success("This can just be a click listener!", {forceShow: true});}});
+            insert({section: "CUSTOM", element: () => this.renderer.attribution});
         }});
+        this.forceUpdate();
+    }
+
+    forceUpdate() {
         const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         Utilities.getInternalInstance(node).return.return.return.return.return.return.stateNode.forceUpdate();
@@ -105,15 +116,33 @@ export default new class SettingsManager {
         return DataStore.getSettingGroup("settings");
     }
 
-    updateSettings(id, enabled) {
-        if (arguments.length == 3) {
-            SettingsState[arguments[0]][arguments[1]] = arguments[2];
-            Events.dispatch("setting-updated", arguments[0], arguments[1], arguments[2]);
-            console.log(SettingsState);
-            return;
-        }
-        Events.dispatch("setting-updated", "Modules", id, enabled);
-        SettingsCookie[id] = enabled;
+    onSettingChange(collection, category, id, enabled) {
+        collection[category][id] = enabled;
+        Events.dispatch("setting-updated", category, id, enabled);
+        // console.log(collection);
+        if (id == "emotes") this.forceUpdate();
+    }
+
+    getSetting(category, id) {
+        if (arguments.length == 2) return SettingsState[category][id];
+        const collection = arguments[0] == "emotes" ? EmoteState : SettingsState;
+        return collection && collection[arguments[1]][arguments[2]];
+    }
+
+    get(category, id) {
+        if (arguments.length == 2) return SettingsState[category][id];
+        const collection = arguments[0] == "emotes" ? EmoteState : SettingsState;
+        return collection && collection[arguments[1]][arguments[2]];
+    }
+
+    updateSettings(collection, category, id, enabled) {
+        // console.log("Updating ", collection);
+        // console.log(category, id, enabled);
+        collection[category][id] = enabled;
+        Events.dispatch("setting-updated", category, id, enabled);
+        // console.log(collection);
+        if (id == "emotes") this.forceUpdate();
+        // SettingsCookie[id] = enabled;
 
 
         // if (id == "bda-es-4") {
@@ -138,7 +167,7 @@ export default new class SettingsManager {
             else BdApi.setWindowPreference("backgroundColor", "#2f3136");
         }
 
-        this.saveSettings();
+        // this.saveSettings();
     }
 
     initializeSettings() {

@@ -7,6 +7,13 @@ export default [
         settings: [
             {
                 type: "switch",
+                id: "emotes",
+                name: "Emote System",
+                note: "Enables BD's emote system",
+                value: true
+            },
+            {
+                type: "switch",
                 id: "publicServers",
                 name: "Public Servers",
                 note: "Display public servers button",
