@@ -5,8 +5,8 @@ import {PublicServers as PSComponents} from "ui";
 
 export default new class PublicServers extends Builtin {
     get name() {return "PublicServers";}
-    get group() {return "general";}
-    get id() {return "bda-gs-1";}
+    get category() {return "general";}
+    get id() {return "publicServers";}
 
     enabled() {
         const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];

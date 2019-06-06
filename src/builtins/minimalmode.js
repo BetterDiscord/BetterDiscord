@@ -3,9 +3,9 @@ import {SettingsCookie} from "data";
 
 export default new class MinimalMode extends Builtin {
     get name() {return "MinimalMode";}
-    get group() {return "appearance";}
-    get id() {return "bda-gs-2";}
-    get hideChannelsID() {return "bda-gs-3";}
+    get category() {return "appearance";}
+    get id() {return "minimalMode";}
+    get hideChannelsID() {return "hideChannels";}
     get hideChannels() {return SettingsCookie[this.hideChannelsID];}
 
     constructor() {

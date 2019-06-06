@@ -40,10 +40,10 @@ const makeEmote = (emote, url, options = {}) => {
 
 export default new class EmoteMenu extends Builtin {
     get name() {return "EmoteMenu";}
-    get category() {return "emotes";}
-    get group() {return "preferences";}
-    get id() {return "bda-es-0";}
-    get hideEmojisID() {return "bda-es-9";}
+    get collection() {return "emotes";}
+    get category() {return "general";}
+    get id() {return "emoteMenu";}
+    get hideEmojisID() {return "hideEmojiMenu";}
     get hideEmojis() {return SettingsCookie[this.hideEmojisID];}
 
     constructor() {

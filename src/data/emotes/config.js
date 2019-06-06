@@ -1,8 +1,8 @@
 export default [
     {
         type: "category",
-        id: "preferences",
-        name: "Preferences",
+        id: "general",
+        name: "General",
         collapsible: true,
         settings: [
             {

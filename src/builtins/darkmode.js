@@ -2,8 +2,8 @@ import Builtin from "../structs/builtin";
 
 export default new class DarkMode extends Builtin {
     get name() {return "DarkMode";}
-    get group() {return "appearance";}
-    get id() {return "bda-gs-5";}
+    get category() {return "appearance";}
+    get id() {return "darkMode";}
 
     enabled() {
         $("#app-mount").addClass("bda-dark").addClass("bd-dark");

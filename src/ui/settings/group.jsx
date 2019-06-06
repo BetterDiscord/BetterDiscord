@@ -47,7 +47,7 @@ export default class Group extends React.Component {
         const groupClass = `${baseClassName} ${collapseClass}`;
 
         return <div className={groupClass}>
-                    <Title text={this.props.name} collapsible={this.props.collapsible} onClick={() => this.toggleCollapse()} button={this.props.button} />
+                    <Title text={this.props.name} collapsible={this.props.collapsible} onClick={() => this.toggleCollapse()} button={this.props.button} isGroup={true} />
                     <div className="bd-settings-container" ref={this.container}>
                         {settings.filter(s => !s.hidden).map((setting) => {
                             // console.log(setting);

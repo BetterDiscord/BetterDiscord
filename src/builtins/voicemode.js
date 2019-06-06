@@ -2,8 +2,8 @@ import Builtin from "../structs/builtin";
 
 export default new class VoiceMode extends Builtin {
     get name() {return "VoiceMode";}
-    get group() {return "appearance";}
-    get id() {return "bda-gs-4";}
+    get category() {return "appearance";}
+    get id() {return "voiceMode";}
 
     enabled() {
         $(".scroller.guild-channels ul").first().css("display", "none");
