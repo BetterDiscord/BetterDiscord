@@ -2334,8 +2334,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _localstorage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./localstorage */ "./src/localstorage.js");
 /* harmony import */ var _modules_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/core */ "./src/modules/core.js");
 /* harmony import */ var _modules_pluginapi__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/pluginapi */ "./src/modules/pluginapi.js");
-/* harmony import */ var _modules_pluginmanager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/pluginmanager */ "./src/modules/pluginmanager.js");
-/* harmony import */ var _modules_thememanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/thememanager */ "./src/modules/thememanager.js");
+/* harmony import */ var _modules_pluginmanager2__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/pluginmanager2 */ "./src/modules/pluginmanager2.js");
+/* harmony import */ var _modules_thememanager2__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/thememanager2 */ "./src/modules/thememanager2.js");
 /* harmony import */ var _modules_oldstorage__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/oldstorage */ "./src/modules/oldstorage.js");
 /* harmony import */ var _modules_emitter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./modules/emitter */ "./src/modules/emitter.js");
 
@@ -2358,8 +2358,8 @@ window.settings = data__WEBPACK_IMPORTED_MODULE_0__["SettingsInfo"];
 window.settingsCookie = data__WEBPACK_IMPORTED_MODULE_0__["SettingsCookie"];
 window.pluginCookie = data__WEBPACK_IMPORTED_MODULE_0__["PluginCookie"];
 window.themeCookie = data__WEBPACK_IMPORTED_MODULE_0__["ThemeCookie"];
-window.pluginModule = _modules_pluginmanager__WEBPACK_IMPORTED_MODULE_4__["default"];
-window.themeModule = _modules_thememanager__WEBPACK_IMPORTED_MODULE_5__["default"];
+window.pluginModule = _modules_pluginmanager2__WEBPACK_IMPORTED_MODULE_4__["default"];
+window.themeModule = _modules_thememanager2__WEBPACK_IMPORTED_MODULE_5__["default"];
 window.bdthemes = data__WEBPACK_IMPORTED_MODULE_0__["Themes"];
 window.bdplugins = data__WEBPACK_IMPORTED_MODULE_0__["Plugins"];
 window.bdEmotes = data__WEBPACK_IMPORTED_MODULE_0__["Emotes"];
@@ -2915,6 +2915,283 @@ const originalCSSRequire = Module._extensions[".css"] ? Module._extensions[".css
 
 /***/ }),
 
+/***/ "./src/modules/contentmanager2.js":
+/*!****************************************!*\
+  !*** ./src/modules/contentmanager2.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ContentManager; });
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var _settingsmanager__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./settingsmanager */ "./src/modules/settingsmanager.js");
+/* harmony import */ var _emitter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./emitter */ "./src/modules/emitter.js");
+/* harmony import */ var _datastore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./datastore */ "./src/modules/datastore.js");
+/* harmony import */ var _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../structs/contenterror */ "./src/structs/contenterror.js");
+/* harmony import */ var _structs_metaerror__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../structs/metaerror */ "./src/structs/metaerror.js");
+
+
+
+
+
+
+
+const path = __webpack_require__(/*! path */ "path");
+
+const fs = __webpack_require__(/*! fs */ "fs");
+
+const Module = __webpack_require__(/*! module */ "module").Module;
+
+Module.globalPaths.push(path.resolve(__webpack_require__(/*! electron */ "electron").remote.app.getAppPath(), "node_modules"));
+const splitRegex = /[^\S\r\n]*?\n[^\S\r\n]*?\*[^\S\r\n]?/;
+const escapedAtRegex = /^\\@/;
+class ContentManager {
+  get name() {
+    return "";
+  }
+
+  get moduleExtension() {
+    return "";
+  }
+
+  get extension() {
+    return "";
+  }
+
+  get contentFolder() {
+    return "";
+  }
+
+  get prefix() {
+    return "content";
+  }
+
+  get collection() {
+    return "settings";
+  }
+
+  get category() {
+    return "content";
+  }
+
+  get id() {
+    return "autoReload";
+  }
+
+  emit(event, ...args) {
+    return _emitter__WEBPACK_IMPORTED_MODULE_2__["default"].emit(`${this.prefix}-${event}`, ...args);
+  }
+
+  constructor() {
+    this.timeCache = {};
+    this.contentList = [];
+    this.state = {};
+    this.originalRequire = Module._extensions[this.moduleExtension];
+    Module._extensions[this.moduleExtension] = this.getContentRequire();
+    _settingsmanager__WEBPACK_IMPORTED_MODULE_1__["default"].on(this.collection, this.category, this.id, enabled => {
+      if (enabled) this.watchContent();else this.unwatchContent();
+    });
+  }
+
+  loadState() {
+    const saved = _datastore__WEBPACK_IMPORTED_MODULE_3__["default"].getData(`${this.prefix}s`);
+    if (!saved) return;
+    Object.assign(this.state, saved);
+  }
+
+  saveState() {
+    _datastore__WEBPACK_IMPORTED_MODULE_3__["default"].setData(`${this.prefix}s`, this.state);
+  }
+
+  watchContent() {
+    if (this.watcher) return _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].err(this.name, "Already watching content.");
+    _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].log(this.name, "Starting to watch content.");
+    this.watcher = fs.watch(this.contentFolder, {
+      persistent: false
+    }, async (eventType, filename) => {
+      if (!eventType || !filename || !filename.endsWith(this.extension)) return;
+      await new Promise(r => setTimeout(r, 50));
+
+      try {
+        fs.statSync(path.resolve(this.contentFolder, filename));
+      } catch (err) {
+        if (err.code !== "ENOENT") return;
+        delete this.timeCache[filename];
+        this.unloadContent(filename, true);
+      }
+
+      if (!fs.statSync(path.resolve(this.contentFolder, filename)).isFile()) return;
+      const stats = fs.statSync(path.resolve(this.contentFolder, filename));
+      if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
+      if (typeof stats.mtime.getTime() !== "number") return;
+      if (this.timeCache[filename] == stats.mtime.getTime()) return;
+      this.timeCache[filename] = stats.mtime.getTime();
+      if (eventType == "rename") this.loadContent(filename, true);
+      if (eventType == "change") this.reloadContent(filename, true);
+    });
+  }
+
+  unwatchContent() {
+    if (!this.watcher) return _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].err(this.name, "Was not watching content.");
+    this.watcher.close();
+    delete this.watcher;
+    _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].log(this.name, "No longer watching content.");
+  }
+
+  extractMeta(content) {
+    const firstLine = content.split("\n")[0];
+    const hasOldMeta = firstLine.includes("//META");
+    if (hasOldMeta) return this.parseOldMeta(content);
+    const hasNewMeta = firstLine.includes("/**");
+    if (hasNewMeta) return this.parseNewMeta(content);
+    throw new _structs_metaerror__WEBPACK_IMPORTED_MODULE_5__["default"]("META was not found.");
+  }
+
+  parseOldMeta(content) {
+    const meta = content.split("\n")[0];
+    const rawMeta = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
+    if (meta.indexOf("META") < 0) throw new _structs_metaerror__WEBPACK_IMPORTED_MODULE_5__["default"]("META was not found.");
+    if (!_utilities__WEBPACK_IMPORTED_MODULE_0__["default"].testJSON(rawMeta)) throw new _structs_metaerror__WEBPACK_IMPORTED_MODULE_5__["default"]("META could not be parsed.");
+    const parsed = JSON.parse(rawMeta);
+    if (!parsed.name) throw new _structs_metaerror__WEBPACK_IMPORTED_MODULE_5__["default"]("META missing name data.");
+    return parsed;
+  }
+
+  parseNewMeta(content) {
+    const block = content.split("/**", 2)[1].split("*/", 1)[0];
+    const stripped = block.replace(/^\s*\*\s?/mg, "");
+    const out = {};
+    let field = "";
+    let accum = "";
+    stripped.split("\n").forEach(line => {
+      const fieldCandidate = line.split(/\s/g, 1)[0];
+
+      if (fieldCandidate.length > 1 && fieldCandidate.charAt(0) === "@") {
+        out[field] = accum.trim();
+        field = fieldCandidate.substr(1);
+        accum = line.substr(fieldCandidate.length);
+      } else {
+        accum += " " + line.trim().replace("\\n", "\n").replace(/^\\@/, "@");
+      }
+    });
+    out[field] = accum.trim();
+    delete out[""];
+    return out;
+  }
+
+  parseNewMeta2(content) {
+    const block = content.split("/**", 2)[1].split("*/", 1)[0];
+    const out = {};
+    let field = "";
+    let accum = "";
+
+    for (const line of block.split(splitRegex)) {
+      if (line.length === 0) continue;
+
+      if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
+        out[field] = accum;
+        const l = line.indexOf(" ");
+        field = line.substr(1, l - 1);
+        accum = line.substr(l + 1);
+      } else {
+        accum += " " + line.replace("\\n", "\n").replace(escapedAtRegex, "@");
+      }
+    }
+
+    out[field] = accum.trim();
+    delete out[""];
+    return out;
+  }
+
+  getContentRequire() {
+    const self = this; // const baseFolder = this.contentFolder;
+
+    const originalRequire = this.originalRequire;
+    return function (module, filename) {
+      const possiblePath = path.resolve(self.contentFolder, path.basename(filename));
+      if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
+      let content = fs.readFileSync(filename, "utf8");
+      content = _utilities__WEBPACK_IMPORTED_MODULE_0__["default"].stripBOM(content);
+      const meta = self.extractMeta(content);
+      meta.id = meta.name;
+      meta.filename = path.basename(filename);
+      content = self.getContentModification(module, content, meta);
+
+      module._compile(content, filename);
+    };
+  } // Subclasses should use the return (if not ContentError) and push to this.contentList
+
+
+  loadContent(filename) {
+    if (typeof filename === "undefined") return;
+
+    try {
+      require(path.resolve(this.contentFolder, filename));
+    } catch (error) {
+      return new _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"](filename, filename, "Could not be compiled.", {
+        message: error.message,
+        stack: error.stack
+      });
+    }
+
+    return require(path.resolve(this.contentFolder, filename));
+  } // Subclasses should overload this and modify the content as needed to require() the file
+
+
+  getContentModification(module, content) {
+    return content;
+  }
+
+  unloadContent(idOrFileOrContent) {
+    const content = typeof idOrFileOrContent == "string" ? this.contentList.find(c => c.id == idOrFileOrContent || c.filename == idOrFileOrContent) : idOrFileOrContent;
+    if (!content) return false;
+    delete require.cache[require.resolve(path.resolve(this.contentFolder, content.filename))];
+    this.contentList.splice(this.contentList.indexOf(content), 1);
+    return true;
+  }
+
+  isLoaded(idOrFile) {
+    const content = this.contentList.find(c => c.id == idOrFile || c.filename == idOrFile);
+    if (!content) return false;
+    return true;
+  }
+
+  reloadContent(filename, fromWatcher) {
+    const didUnload = this.unloadContent(filename, fromWatcher);
+    if (!didUnload) return didUnload;
+    return this.loadContent(filename, fromWatcher);
+  }
+
+  loadNewContent() {
+    const files = fs.readdirSync(this.contentFolder);
+    const removed = this.contentList.filter(t => !files.includes(t.filename)).map(c => c.id);
+    const added = files.filter(f => !this.contentList.find(t => t.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.contentFolder, f)).isFile());
+    return {
+      added,
+      removed
+    };
+  }
+
+  loadAllContent() {
+    const errors = [];
+    const files = fs.readdirSync(this.contentFolder);
+
+    for (const filename of files) {
+      if (!fs.statSync(path.resolve(this.contentFolder, filename)).isFile() || !filename.endsWith(this.extension)) continue;
+      const content = this.loadContent(filename);
+      if (content instanceof _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"]) errors.push(content);
+    }
+
+    if (_settingsmanager__WEBPACK_IMPORTED_MODULE_1__["default"].get(this.collection, this.category, this.id)) this.watchContent();
+    return errors;
+  }
+
+}
+
+/***/ }),
+
 /***/ "./src/modules/core.js":
 /*!*****************************!*\
   !*** ./src/modules/core.js ***!
@@ -2927,8 +3204,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _bdv2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bdv2 */ "./src/modules/bdv2.js");
 /* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
 /* harmony import */ var data__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! data */ "./src/data/data.js");
-/* harmony import */ var _pluginmanager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pluginmanager */ "./src/modules/pluginmanager.js");
-/* harmony import */ var _thememanager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./thememanager */ "./src/modules/thememanager.js");
+/* harmony import */ var _pluginmanager2__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./pluginmanager2 */ "./src/modules/pluginmanager2.js");
+/* harmony import */ var _thememanager2__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./thememanager2 */ "./src/modules/thememanager2.js");
 /* harmony import */ var _settingsmanager__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./settingsmanager */ "./src/modules/settingsmanager.js");
 /* harmony import */ var builtins__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! builtins */ "./src/builtins/builtins.js");
 /* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
@@ -2981,9 +3258,9 @@ Core.prototype.init = async function () {
   for (const module in builtins__WEBPACK_IMPORTED_MODULE_6__) builtins__WEBPACK_IMPORTED_MODULE_6__[module].initialize();
 
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Loading Plugins");
-  const pluginErrors = _pluginmanager__WEBPACK_IMPORTED_MODULE_3__["default"].loadPlugins();
+  const pluginErrors = _pluginmanager2__WEBPACK_IMPORTED_MODULE_3__["default"].loadAllContent();
   _utilities__WEBPACK_IMPORTED_MODULE_1__["default"].log("Startup", "Loading Themes");
-  const themeErrors = _thememanager__WEBPACK_IMPORTED_MODULE_4__["default"].loadThemes();
+  const themeErrors = _thememanager2__WEBPACK_IMPORTED_MODULE_4__["default"].loadAllContent();
   $("#customcss").detach().appendTo(document.head); // PublicServers.initialize();
   // EmoteModule.autoCapitalize();
 
@@ -3023,8 +3300,7 @@ Core.prototype.injectExternals = async function () {
 Core.prototype.initObserver = function () {
   const mainObserver = new MutationObserver(mutations => {
     for (let i = 0, mlen = mutations.length; i < mlen; i++) {
-      const mutation = mutations[i];
-      if (typeof _pluginmanager__WEBPACK_IMPORTED_MODULE_3__["default"] !== "undefined") _pluginmanager__WEBPACK_IMPORTED_MODULE_3__["default"].rawObserver(mutation); // if there was nothing added, skip
+      const mutation = mutations[i]; // if there was nothing added, skip
 
       if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
       const node = mutation.addedNodes[0];
@@ -3854,6 +4130,264 @@ PluginModule.prototype.rawObserver = function (e) {
 
 /***/ }),
 
+/***/ "./src/modules/pluginmanager2.js":
+/*!***************************************!*\
+  !*** ./src/modules/pluginmanager2.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _contentmanager2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./contentmanager2 */ "./src/modules/contentmanager2.js");
+/* harmony import */ var _utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utilities */ "./src/modules/utilities.js");
+/* harmony import */ var ui__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ui */ "./src/ui/ui.js");
+/* harmony import */ var _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../structs/contenterror */ "./src/structs/contenterror.js");
+
+
+
+
+
+
+const path = __webpack_require__(/*! path */ "path");
+
+const electronRemote = __webpack_require__(/*! electron */ "electron").remote;
+
+/* harmony default export */ __webpack_exports__["default"] = (new class PluginManager extends _contentmanager2__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  get name() {
+    return "PluginManager";
+  }
+
+  get moduleExtension() {
+    return ".js";
+  }
+
+  get extension() {
+    return ".plugin.js";
+  }
+
+  get contentFolder() {
+    return path.resolve(data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath, "plugins");
+  }
+
+  get prefix() {
+    return "plugin";
+  }
+
+  constructor() {
+    super();
+    this.onSwitch = this.onSwitch.bind(this);
+    this.observer = new MutationObserver(mutations => {
+      for (let i = 0, mlen = mutations.length; i < mlen; i++) {
+        this.onMutation(mutations[i]);
+      }
+    });
+  }
+
+  loadContent(filename, fromWatcher) {
+    const error = this.loadPlugin(filename, fromWatcher);
+    if (!fromWatcher) return error;
+    if (error) ui__WEBPACK_IMPORTED_MODULE_3__["Modals"].showContentErrors({
+      plugins: [error]
+    });
+  }
+
+  unloadContent(idOrFileOrContent) {
+    return this.unloadPlugin(idOrFileOrContent);
+  }
+
+  getContentModification(module, content, meta) {
+    module._compile(content, module.filename);
+
+    const didExport = !_utilities__WEBPACK_IMPORTED_MODULE_2__["default"].isEmpty(module.exports);
+
+    if (didExport) {
+      meta.type = module.exports;
+      module.exports = meta;
+      return "";
+    }
+
+    content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
+    return content;
+  }
+
+  loadPlugin(filename) {
+    const content = super.loadContent(filename);
+    if (content instanceof _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"]) return content;
+    console.log(content);
+    if (!content.type) return new _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"](filename, filename, "Plugin had no exports", {
+      message: "Plugin had no exports or no name property.",
+      stack: ""
+    });
+
+    try {
+      const thePlugin = new content.type();
+      const pluginName = thePlugin.getName() || thePlugin.name || content.id;
+      if (this.contentList.find(c => c.id == pluginName)) return new _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"](pluginName, filename, `There is already a plugin with name ${pluginName}`);
+      content.plugin = thePlugin;
+      content.name = pluginName;
+      content.author = content.author || thePlugin.getAuthor();
+      content.description = content.description || thePlugin.getDescription();
+      content.version = content.version || thePlugin.getVersion();
+      this.contentList.push(content);
+
+      try {
+        if (typeof content.plugin.load == "function") content.plugin.load();
+      } catch (error) {
+        this.state[content.id] = false;
+        return new _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"](pluginName, filename, "load() could not be fired.", {
+          message: error.message,
+          stack: error.stack
+        });
+      }
+
+      this.emit("loaded", content.id);
+      if (!this.state[content.id]) return this.state[content.id] = false;
+      return this.startPlugin(content);
+    } catch (error) {
+      return new _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"](filename, filename, "Could not be constructed.", {
+        message: error.message,
+        stack: error.stack
+      });
+    }
+  }
+
+  unloadPlugin(idOrFileOrContent) {
+    const content = typeof idOrFileOrContent == "string" ? this.contentList.find(c => c.id == idOrFileOrContent || c.filename == idOrFileOrContent) : idOrFileOrContent;
+    if (!content) return false;
+    if (this.state[content.id]) this.disablePlugin(content);
+    super.unloadContent(content);
+    ui__WEBPACK_IMPORTED_MODULE_3__["Toasts"].success(`${content.name} was unloaded.`);
+    this.emit("unloaded", content.id);
+    return true;
+  }
+
+  reloadPlugin(filename) {
+    this.reloadContent(filename);
+  }
+
+  startPlugin(idOrContent) {
+    const content = typeof idOrContent == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+    if (!content) return;
+    const plugin = content.plugin;
+
+    try {
+      plugin.start();
+      this.emit("started", content.id);
+      ui__WEBPACK_IMPORTED_MODULE_3__["Toasts"].show(`${content.name} v${content.version} has started.`);
+    } catch (err) {
+      this.state[content.id] = false;
+      ui__WEBPACK_IMPORTED_MODULE_3__["Toasts"].error(`${content.name} v${content.version} could not be started.`);
+      _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("Plugins", content.name + " could not be started.", err);
+      return new _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"](content.name, content.filename, "start() could not be fired.", {
+        message: err.message,
+        stack: err.stack
+      });
+    }
+  }
+
+  stopPlugin(idOrContent) {
+    const content = typeof idOrContent == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+    if (!content) return;
+    const plugin = content.plugin;
+
+    try {
+      plugin.stop();
+      this.emit("stopped", content.id);
+      ui__WEBPACK_IMPORTED_MODULE_3__["Toasts"].show(`${content.name} v${content.version} has stopped.`);
+    } catch (err) {
+      this.state[content.id] = false;
+      ui__WEBPACK_IMPORTED_MODULE_3__["Toasts"].error(`${content.name} v${content.version} could not be stopped.`);
+      _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("Plugins", content.name + " could not be stopped.", err);
+      return new _structs_contenterror__WEBPACK_IMPORTED_MODULE_4__["default"](content.name, content.filename, "stop() could not be fired.", {
+        message: err.message,
+        stack: err.stack
+      });
+    }
+  }
+
+  updatePluginList() {
+    const results = this.loadNewContent();
+
+    for (const filename of results.added) this.loadPlugin(filename);
+
+    for (const name of results.removed) this.unloadPlugin(name);
+  }
+
+  enablePlugin(idOrContent) {
+    const content = typeof idOrContent == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+    if (!content) return;
+    if (this.state[content.id]) return;
+    this.state[content.id] = true;
+    this.startPlugin(content);
+    this.saveState();
+  }
+
+  disablePlugin(idOrContent) {
+    const content = typeof idOrContent == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+    if (!content) return;
+    if (!this.state[content.id]) return;
+    this.state[content.id] = false;
+    this.stopPlugin(content);
+    this.saveState();
+  }
+
+  togglePlugin(id) {
+    if (this.state[id]) this.disablePlugin(id);else this.enablePlugin(id);
+  }
+
+  loadAllPlugins() {
+    this.loadState();
+    const errors = this.loadAllContent();
+    this.saveState();
+    return errors;
+  }
+
+  setupFunctions() {
+    electronRemote.getCurrentWebContents().on("did-navigate-in-page", this.onSwitch.bind(this));
+    this.observer.observe(document, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  onSwitch() {
+    this.emit("page-switch");
+
+    for (let i = 0; i < this.contentList.length; i++) {
+      const plugin = this.contentList[i].plugin;
+      if (!this.state[this.contentList[i].id]) continue;
+
+      if (typeof plugin.onSwitch === "function") {
+        try {
+          plugin.onSwitch();
+        } catch (err) {
+          _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("Plugins", "Unable to fire onSwitch for " + this.contentList[i].name + ".", err);
+        }
+      }
+    }
+  }
+
+  onMutation(mutation) {
+    for (let i = 0; i < this.contentList.length; i++) {
+      const plugin = this.contentList[i].plugin;
+      if (!this.state[this.contentList[i].id]) continue;
+
+      if (typeof plugin.observer === "function") {
+        try {
+          plugin.observer(mutation);
+        } catch (err) {
+          _utilities__WEBPACK_IMPORTED_MODULE_2__["default"].err("Plugins", "Unable to fire observer for " + this.contentList[i].name + ".", err);
+        }
+      }
+    }
+  }
+
+}());
+
+/***/ }),
+
 /***/ "./src/modules/settingsmanager.js":
 /*!****************************************!*\
   !*** ./src/modules/settingsmanager.js ***!
@@ -4282,6 +4816,61 @@ ThemeModule.prototype.saveThemeData = function () {
 
 /***/ }),
 
+/***/ "./src/modules/thememanager2.js":
+/*!**************************************!*\
+  !*** ./src/modules/thememanager2.js ***!
+  \**************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var data__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! data */ "./src/data/data.js");
+/* harmony import */ var _contentmanager2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./contentmanager2 */ "./src/modules/contentmanager2.js");
+/* harmony import */ var _structs_contenterror__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../structs/contenterror */ "./src/structs/contenterror.js");
+
+
+
+
+const path = __webpack_require__(/*! path */ "path");
+
+/* harmony default export */ __webpack_exports__["default"] = (new class ThemeManager extends _contentmanager2__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  get name() {
+    return "ThemeManager";
+  }
+
+  get moduleExtension() {
+    return ".css";
+  }
+
+  get extension() {
+    return ".theme.css";
+  }
+
+  get contentFolder() {
+    return path.resolve(data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath, "themes");
+  }
+
+  get prefix() {
+    return "theme";
+  }
+
+  loadContent(filename) {
+    const content = super.loadContent(filename);
+    if (content instanceof _structs_contenterror__WEBPACK_IMPORTED_MODULE_2__["default"]) return content;
+    console.log(content);
+    this.contentList.push(content);
+  }
+
+  getContentModification(module, content, meta) {
+    meta.css = content.split("\n").slice(1).join("\n");
+    return `module.exports = ${JSON.stringify(meta)};`;
+  }
+
+}());
+
+/***/ }),
+
 /***/ "./src/modules/utilities.js":
 /*!**********************************!*\
   !*** ./src/modules/utilities.js ***!
@@ -4461,6 +5050,18 @@ class Utilities {
       subtree: true,
       childList: true
     });
+  }
+
+  static isEmpty(obj) {
+    if (obj == null || obj == undefined || obj == "") return true;
+    if (typeof obj !== "object") return false;
+    if (Array.isArray(obj)) return obj.length == 0;
+
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) return false;
+    }
+
+    return true;
   }
   /**
    * Generates an automatically memoizing version of an object.
@@ -5354,6 +5955,48 @@ class BuiltinModule {
 
   error(...message) {
     _modules_utilities__WEBPACK_IMPORTED_MODULE_1__["default"].err(this.name, ...message);
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/structs/contenterror.js":
+/*!*************************************!*\
+  !*** ./src/structs/contenterror.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ContentError; });
+class ContentError extends Error {
+  constructor(name, filename, message, error) {
+    super(message);
+    this.name = name;
+    this.file = filename;
+    this.error = error;
+  }
+
+}
+
+/***/ }),
+
+/***/ "./src/structs/metaerror.js":
+/*!**********************************!*\
+  !*** ./src/structs/metaerror.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return MetaError; });
+class MetaError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "MetaError";
   }
 
 }

@@ -3,8 +3,8 @@ import Utilities from "./utilities";
 import {Config} from "data";
 // import EmoteModule from "./emotes";
 // import QuickEmoteMenu from "../builtins/emotemenu";
-import PluginManager from "./pluginmanager";
-import ThemeManager from "./thememanager";
+import PluginManager from "./pluginmanager2";
+import ThemeManager from "./thememanager2";
 import Settings from "./settingsmanager";
 import * as Builtins from "builtins";
 import {Modals} from "ui";
@@ -48,10 +48,10 @@ Core.prototype.init = async function() {
     for (const module in Builtins) Builtins[module].initialize();
 
     Utilities.log("Startup", "Loading Plugins");
-    const pluginErrors = PluginManager.loadPlugins();
+    const pluginErrors = PluginManager.loadAllContent();
 
     Utilities.log("Startup", "Loading Themes");
-    const themeErrors = ThemeManager.loadThemes();
+    const themeErrors = ThemeManager.loadAllContent();
 
     $("#customcss").detach().appendTo(document.head);
 
@@ -93,7 +93,6 @@ Core.prototype.initObserver = function () {
 
         for (let i = 0, mlen = mutations.length; i < mlen; i++) {
             const mutation = mutations[i];
-            if (typeof PluginManager !== "undefined") PluginManager.rawObserver(mutation);
 
             // if there was nothing added, skip
             if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;

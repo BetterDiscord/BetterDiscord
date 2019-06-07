@@ -2,8 +2,8 @@ import {SettingsCookie, SettingsInfo, Config, PluginCookie, ThemeCookie, Plugins
 import proxyLocalStorage from "./localstorage";
 import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
-import PluginManager from "./modules/pluginmanager";
-import ThemeManager from "./modules/thememanager";
+import PluginManager from "./modules/pluginmanager2";
+import ThemeManager from "./modules/thememanager2";
 import {bdPluginStorage} from "./modules/oldstorage";
 import Events from "./modules/emitter";
 
