@@ -196,3 +196,19 @@ PluginModule.prototype.rawObserver = function(e) {
 };
 
 export default new PluginModule();
+
+
+// makePlaceholderPlugin(data) {
+//     return {plugin: {
+//             start: () => {},
+//             getName: () => {return data.name || data.filename;},
+//             getAuthor: () => {return "???";},
+//             getDescription: () => {return data.message ? data.message : "This plugin was unable to be loaded. Check the author's page for updates.";},
+//             getVersion: () => {return "???";}
+//         },
+//         name: data.name || data.filename,
+//         filename: data.filename,
+//         source: data.source ? data.source : "",
+//         website: data.website ? data.website : ""
+//     };
+// }

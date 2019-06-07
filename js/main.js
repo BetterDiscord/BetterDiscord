@@ -3080,20 +3080,37 @@ const releaseChannel = DiscordNative.globals.releaseChannel; // Schema 1
 
 /* harmony default export */ __webpack_exports__["default"] = (new class DataStore {
   constructor() {
-    this.data = {};
+    this.data = {
+      misc: {}
+    };
     this.pluginData = {};
   }
 
   initialize() {
-    if (!fs.existsSync(path.resolve(this.BDFile, ".."))) fs.mkdirSync(path.resolve(this.BDFile, ".."));
-    if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
-    this.data = require(this.BDFile); // if (data.hasOwnProperty("settings")) this.data = data;
+    if (!fs.existsSync(this.baseFolder)) fs.mkdirSync(this.baseFolder);
+    if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
+    if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data.misc, null, 4));
+    const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
+
+    for (const file of dataFiles) {
+      this.data[file.split(".")[0]] = require(path.resolve(this.dataFolder, file));
+    } // this.data = __non_webpack_require__(this.BDFile);
+    // if (data.hasOwnProperty("settings")) this.data = data;
     // if (!fs.existsSync(this.settingsFile)) return;
     // let settings = __non_webpack_require__(this.settingsFile);
     // fs.unlinkSync(this.settingsFile);
     // if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}}, {[releaseChannel]: settings});
     // else settings = Object.assign({stable: {}, canary: {}, ptb: {}}, settings);
     // this.setBDData("settings", settings);
+
+  }
+
+  get baseFolder() {
+    return this._baseFolder || (this._baseFolder = path.resolve(data__WEBPACK_IMPORTED_MODULE_0__["Config"].dataPath, "data"));
+  }
+
+  get dataFolder() {
+    return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));
   }
 
   get BDFile() {
@@ -3112,22 +3129,28 @@ const releaseChannel = DiscordNative.globals.releaseChannel; // Schema 1
   // }
 
 
+  _getFile(key) {
+    if (key == "settings" || key == "plugins" || key == "themes") return path.resolve(this.dataFolder, `${key}.json`);
+    return path.resolve(this.dataFolder, `misc.json`);
+  }
+
   getBDData(key) {
-    return this.data[key] || "";
+    return this.data.misc[key] || "";
   }
 
   setBDData(key, value) {
-    this.data[key] = value;
-    fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+    this.data.misc[key] = value;
+    fs.writeFileSync(path.resolve(this.dataFolder, `misc.json`), JSON.stringify(this.data.misc, null, 4));
   }
 
   getData(key) {
-    return this.data[key] || "";
+    return this.data[key] || ""; // return JSON.parse(fs.readFileSync(path.resolve(this.dataFolder, `${file}.json`)));
   }
 
   setData(key, value) {
-    this.data[key] = value;
-    fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+    this.data[key] = value; // fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+
+    fs.writeFileSync(path.resolve(this.dataFolder, `${key}.json`), JSON.stringify(value, null, 4));
   }
 
   getPluginData(pluginName, key) {
@@ -3814,7 +3837,20 @@ PluginModule.prototype.rawObserver = function (e) {
   }
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (new PluginModule());
+/* harmony default export */ __webpack_exports__["default"] = (new PluginModule()); // makePlaceholderPlugin(data) {
+//     return {plugin: {
+//             start: () => {},
+//             getName: () => {return data.name || data.filename;},
+//             getAuthor: () => {return "???";},
+//             getDescription: () => {return data.message ? data.message : "This plugin was unable to be loaded. Check the author's page for updates.";},
+//             getVersion: () => {return "???";}
+//         },
+//         name: data.name || data.filename,
+//         filename: data.filename,
+//         source: data.source ? data.source : "",
+//         website: data.website ? data.website : ""
+//     };
+// }
 
 /***/ }),
 
@@ -4028,7 +4064,6 @@ __webpack_require__.r(__webpack_exports__);
   onSettingChange(collection, category, id, value) {
     const before = this.config.filter(c => c.disabled).length;
     this.state[collection][category][id] = value;
-    console.log(this.state);
     _emitter__WEBPACK_IMPORTED_MODULE_4__["default"].dispatch("setting-updated", collection, category, id, value);
     const after = this.config.filter(c => c.disabled).length;
     this.saveSettings();
