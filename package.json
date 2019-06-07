@@ -5,13 +5,10 @@
     "main": "js/main.js",
     "scripts": {
         "build": "webpack --progress --colors",
-        "build_prod": "webpack --progress --colors --mode production -o js/main.min.js",
+        "watch": "webpack --progress --colors --watch",
+        "build-prod": "webpack --progress --colors --mode production -o js/main.min.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "minify": "gulp minify-js && gulp minify-css",
-        "minify-js": "gulp minify-js",
-        "minify-css": "gulp minify-css",
-        "watch": "gulp watch",
-        "watch-js": "gulp watch-js",
+        "minify": "gulp minify-css",
         "watch-css": "gulp watch-css"
     },
     "repository": {
@@ -31,7 +28,6 @@
         "@babel/register": "^7.0.0",
         "babel-loader": "^8.0.6",
         "gulp": "^4.0.0",
-        "gulp-babel-minify": "^0.5.0",
         "gulp-csso": "^3.0.1",
         "gulp-rename": "^1.4.0",
         "webpack": "^4.29.6",

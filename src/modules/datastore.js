@@ -20,14 +20,19 @@ const releaseChannel = DiscordNative.globals.releaseChannel;
 
 export default new class DataStore {
     constructor() {
-        this.data = {};
+        this.data = {misc: {}};
         this.pluginData = {};
     }
 
     initialize() {
-        if (!fs.existsSync(path.resolve(this.BDFile, ".."))) fs.mkdirSync(path.resolve(this.BDFile, ".."));
-        if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
-        this.data = __non_webpack_require__(this.BDFile);
+        if (!fs.existsSync(this.baseFolder)) fs.mkdirSync(this.baseFolder);
+        if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
+        if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data.misc, null, 4));
+        const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
+        for (const file of dataFiles) {
+            this.data[file.split(".")[0]] = __non_webpack_require__(path.resolve(this.dataFolder, file));
+        }
+        // this.data = __non_webpack_require__(this.BDFile);
         // if (data.hasOwnProperty("settings")) this.data = data;
         // if (!fs.existsSync(this.settingsFile)) return;
         // let settings = __non_webpack_require__(this.settingsFile);
@@ -37,6 +42,8 @@ export default new class DataStore {
         // this.setBDData("settings", settings);
     }
 
+    get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
+    get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
     get BDFile() {return this._BDFile || (this._BDFile = path.resolve(Config.dataPath, "data", `${releaseChannel}.json`));}
     // get settingsFile() {return this._settingsFile || (this._settingsFile = path.resolve(Config.dataPath, "bdsettings.json"));}
     getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
@@ -50,22 +57,29 @@ export default new class DataStore {
     //     fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
     // }
 
+    _getFile(key) {
+        if (key == "settings" || key == "plugins" || key == "themes") return path.resolve(this.dataFolder, `${key}.json`);
+        return path.resolve(this.dataFolder, `misc.json`);
+    }
+
     getBDData(key) {
-        return this.data[key] || "";
+        return this.data.misc[key] || "";
     }
 
     setBDData(key, value) {
-        this.data[key] = value;
-        fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+        this.data.misc[key] = value;
+        fs.writeFileSync(path.resolve(this.dataFolder, `misc.json`), JSON.stringify(this.data.misc, null, 4));
     }
 
     getData(key) {
         return this.data[key] || "";
+        // return JSON.parse(fs.readFileSync(path.resolve(this.dataFolder, `${file}.json`)));
     }
 
     setData(key, value) {
         this.data[key] = value;
-        fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+        // fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
+        fs.writeFileSync(path.resolve(this.dataFolder, `${key}.json`), JSON.stringify(value, null, 4));
     }
 
     getPluginData(pluginName, key) {
