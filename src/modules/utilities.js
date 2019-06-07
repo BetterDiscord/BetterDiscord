@@ -144,6 +144,16 @@ export default class Utilities {
         observer.observe(document.body, {subtree: true, childList: true});
     }
 
+    static isEmpty(obj) {
+        if (obj == null || obj == undefined || obj == "") return true;
+        if (typeof(obj) !== "object") return false;
+        if (Array.isArray(obj)) return obj.length == 0;
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) return false;
+        }
+        return true;
+    }
+
     /**
      * Generates an automatically memoizing version of an object.
      * @author Zerebos
