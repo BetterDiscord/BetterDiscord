@@ -1,9 +1,9 @@
 import {SettingsConfig, SettingsState} from "data";
 import DataStore from "./datastore";
-import ContentManager from "./contentmanager";
+// import PluginManager from "./pluginmanager";
 import BdApi from "./pluginapi";
 import Events from "./emitter";
-import WebpackModules from "./webpackmodules";
+import WebpackModules, {DiscordModules} from "./webpackmodules";
 
 import {SettingsPanel as SettingsRenderer} from "ui";
 import Utilities from "./utilities";
@@ -12,26 +12,25 @@ import {Toasts} from "ui";
 export default new class SettingsManager {
 
     constructor() {
-        this.renderer = new SettingsRenderer();
         this.config = SettingsConfig;
         this.state = SettingsState;
+        this.panels = [];
         this.setup(SettingsConfig, SettingsState);
     }
 
     initialize() {
         DataStore.initialize();
-        // if (!DataStore.getSettingGroup("settings")) return this.saveSettings();
-        // const savedSettings = this.loadSettings();
-        // $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
-        // for (const setting in savedSettings) {
-        //     if (savedSettings[setting] !== undefined) SettingsCookie[setting] = savedSettings[setting];
-        // }
-        // this.saveSettings();
         this.loadSettings();
         this.patchSections();
+        // this.registerPanel("Plugins", {element: () => SettingsRenderer.getPluginsPanel(PluginManager.contentList)});
+    }
 
-        // Object.assign(this.state, this.defaultState);
-        // this.initializeConfig(EmoteSettings, EmoteState);
+    registerPanel(name, options) {
+        const {element, onClick} = options;
+        const section = {label: name, section: name};
+        if (onClick) section.onClick = onClick;
+        else section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof(element) == "function" ? element : () => element;
+        this.panels.push(section);
     }
 
     getPath(path, collectionId = "", categoryId = "") {
@@ -80,13 +79,6 @@ export default new class SettingsManager {
         Object.assign(this.state, this.defaultState);
     }
 
-    buildSettingsPanel(title, config, state, onChange) {
-        config.forEach(section => {
-            section.settings.forEach(item => item.value = state[section.id][item.id]);
-        });
-        return this.renderer.getSettingsPanel(title, config, onChange);
-    }
-
     async patchSections() {
         const UserSettings = await this.getUserSettings();
         Utilities.monkeyPatch(UserSettings.prototype, "generateSections", {after: (data) => {
@@ -103,11 +95,12 @@ export default new class SettingsManager {
                 insert({
                     section: collection.name,
                     label: collection.name,
-                    element: () => this.buildSettingsPanel(collection.name, collection.settings, SettingsState[collection.id], this.onSettingChange.bind(this, collection.id))
+                    element: () => SettingsRenderer.buildSettingsPanel(collection.name, collection.settings, SettingsState[collection.id], this.onSettingChange.bind(this, collection.id))
                 });
             }
+            for (const panel of this.panels) insert(panel);
             insert({section: "BBD Test", label: "Test Tab", onClick: function() {Toasts.success("This can just be a click listener!", {forceShow: true});}});
-            insert({section: "CUSTOM", element: () => this.renderer.attribution});
+            insert({section: "CUSTOM", element: () => SettingsRenderer.attribution});
         }});
         this.forceUpdate();
     }
@@ -179,17 +172,6 @@ export default new class SettingsManager {
 
     updateSettings(collection, category, id, enabled) {
 
-        if (id == "fork-ps-5") {
-            if (enabled) {
-                ContentManager.watchContent("plugin");
-                ContentManager.watchContent("theme");
-            }
-            else {
-                ContentManager.unwatchContent("plugin");
-                ContentManager.unwatchContent("theme");
-            }
-        }
-
         if (id == "fork-wp-1") {
             BdApi.setWindowPreference("transparent", enabled);
             if (enabled) BdApi.setWindowPreference("backgroundColor", null);
@@ -197,16 +179,5 @@ export default new class SettingsManager {
         }
 
         // this.saveSettings();
-    }
-
-    initializeSettings() {
-        // if (SettingsCookie["bda-es-4"]) EmoteModule.autoCapitalize();
-
-        // if (SettingsCookie["fork-ps-5"]) {
-        //     ContentManager.watchContent("plugin");
-        //     ContentManager.watchContent("theme");
-        // }
-
-        this.saveSettings();
     }
 };

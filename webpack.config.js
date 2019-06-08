@@ -3,7 +3,7 @@ const path = require("path");
 module.exports = {
   mode: "development",
   target: "node",
-  devtool: "none",
+  devtool: "eval-source-map",
   entry: "./src/index.js",
   output: {
     filename: "main.js",

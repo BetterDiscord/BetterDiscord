@@ -1,7 +1,7 @@
 import Builtin from "../structs/builtin";
 
-import {Config, SettingsCookie, Emotes, EmoteBlacklist, EmoteInfo, EmoteModifiers, EmoteOverrides, State} from "data";
-import {Utilities, WebpackModules, DataStore, DiscordModules, Events} from "modules";
+import {Config, Emotes, EmoteBlacklist, EmoteInfo, EmoteModifiers, EmoteOverrides, State} from "data";
+import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings} from "modules";
 import BDEmote from "../ui/emote";
 import {Toasts} from "ui";
 
@@ -72,7 +72,7 @@ export default new class EmoteModule extends Builtin {
                             let emoteOverride = emoteModifier.slice(0);
 
                             if (emoteName.length < 4 || EmoteBlacklist.includes(emoteName)) continue;
-                            if (!EmoteModifiers.includes(emoteModifier) || !SettingsCookie["bda-es-8"]) emoteModifier = "";
+                            if (!EmoteModifiers.includes(emoteModifier) || !Settings.get(this.category, "general", "modifiers")) emoteModifier = "";
                             if (!EmoteOverrides.includes(emoteOverride)) emoteOverride = "";
                             else emoteModifier = emoteOverride;
 
@@ -89,7 +89,7 @@ export default new class EmoteModule extends Builtin {
                                 if (Emotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
                             }
 
-                            if (!Emotes[current][emoteName] || !SettingsCookie[bdEmoteSettingIDs[current]]) continue;
+                            if (!Emotes[current][emoteName] || !Settings.get(this.category, "categories", bdEmoteSettingIDs[current])) continue;
                             const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                             if (!results) continue;
                             const pre = nodes[n].substring(0, results.index + results[1].length);
@@ -154,7 +154,7 @@ export default new class EmoteModule extends Builtin {
             _fs.unlinkSync(file);
         }
 
-        if (!SettingsCookie["fork-es-3"]) return;
+        if (!Settings.get(this.category, "general", "download")) return;
         Toasts.show("Downloading emotes in the background do not reload.", {type: "info"});
 
         for (const e in emoteInfo) {

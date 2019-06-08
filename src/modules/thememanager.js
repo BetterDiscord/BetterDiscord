@@ -1,111 +1,60 @@
-import {ThemeCookie, Themes} from "data";
+import {Config} from "data";
 import ContentManager from "./contentmanager";
 import Utilities from "./utilities";
-import Emitter from "./emitter";
-import DataStore from "./datastore";
-import {Toasts, Modals} from "ui";
+import {Modals} from "ui";
 
-function ThemeModule() {
+const path = require("path");
 
-}
+export default new class ThemeManager extends ContentManager {
+    get name() {return "ThemeManager";}
+    get moduleExtension() {return ".css";}
+    get extension() {return ".theme.css";}
+    get contentFolder() {return path.resolve(Config.dataPath, "themes");}
+    get prefix() {return "theme";}
 
-ThemeModule.prototype.loadThemes = function () {
-    this.loadThemeData();
-    const errors = ContentManager.loadThemes();
-    const themes = Object.keys(Themes);
+    /* Aliases */
+    updateThemeList() {return this.updateList();}
+    loadAllThemes() {return this.loadAllContent();}
 
-    for (let i = 0; i < themes.length; i++) {
-        const name = Themes[themes[i]].name;
-        if (!ThemeCookie[name]) ThemeCookie[name] = false;
-        if (ThemeCookie[name]) $("head").append($("<style>", {id: Utilities.escapeID(name), text: unescape(Themes[name].css)}));
+    enableTheme(idOrContent) {return this.enableContent(idOrContent);}
+    disableTheme(idOrContent) {return this.disableContent(idOrContent);}
+    toggleTheme(id) {return this.toggleContent(id);}
+
+    unloadTheme(idOrFileOrContent) {return this.unloadContent(idOrFileOrContent);}
+
+    loadTheme(filename) {
+        const error = this.loadContent(filename);
+        if (error) Modals.showContentErrors({themes: [error]});
     }
-    for (const theme in ThemeCookie) {
-        if (!Themes[theme]) delete ThemeCookie[theme];
+
+    reloadTheme(filename) {
+        const error = this.reloadContent(filename);
+        if (error) Modals.showContentErrors({themes: [error]});
     }
-    this.saveThemeData();
-    return errors;
-    // if (SettingsCookie["fork-ps-5"]) ContentManager.watchContent("theme");
-};
 
-ThemeModule.prototype.enableTheme = function(theme, reload = false) {
-    ThemeCookie[theme] = true;
-    this.saveThemeData();
-    $("head").append($("<style>", {id: Utilities.escapeID(theme), text: unescape(Themes[theme].css)}));
-    if (!reload) Toasts.show(`${Themes[theme].name} v${Themes[theme].version} has been applied.`);
-};
+    /* Overrides */
+    getContentModification(module, content, meta) {
+        meta.css = content.split("\n").slice(1).join("\n");
+        return `module.exports = ${JSON.stringify(meta)};`;
+    }    
 
-ThemeModule.prototype.disableTheme = function(theme, reload = false) {
-    ThemeCookie[theme] = false;
-    this.saveThemeData();
-    $(`#${Utilities.escapeID(Themes[theme].name)}`).remove();
-    if (!reload) Toasts.show(`${Themes[theme].name} v${Themes[theme].version} has been disabled.`);
-};
+    startContent(id) {return this.addTheme(id);}
+    stopContent(id) {return this.removeTheme(id);}
 
-ThemeModule.prototype.toggleTheme = function(theme) {
-    if (ThemeCookie[theme]) this.disableTheme(theme);
-    else this.enableTheme(theme);
-};
-
-ThemeModule.prototype.loadTheme = function(filename) {
-    const error = ContentManager.loadContent(filename, "theme");
-    if (error) {
-        Modals.showContentErrors({themes: [error]});
-        Toasts.show(`${filename} could not be loaded. It may not have been loaded.`, {type: "error"});
-        return Utilities.err("ContentManager", `${filename} could not be loaded.`, error);
+    addTheme(idOrContent) {
+        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+        if (!content) return;
+        const style = document.createElement("style");
+        style.id = Utilities.escapeID(content.id);
+        style.textContent = unescape(content.css);
+        document.head.append(style);
+        content.element = style;
     }
-    const theme = Object.values(Themes).find(p => p.filename == filename);
-    Utilities.log("ContentManager", `${theme.name} v${theme.version} was loaded.`);
-    Toasts.show(`${theme.name} v${theme.version} was loaded.`, {type: "success"});
-    Emitter.dispatch("theme-loaded", theme.name);
-};
 
-ThemeModule.prototype.unloadTheme = function(filenameOrName) {
-    const bdtheme = Object.values(Themes).find(p => p.filename == filenameOrName) || Themes[filenameOrName];
-    if (!bdtheme) return;
-    const theme = bdtheme.name;
-    if (ThemeCookie[theme]) this.disableTheme(theme, true);
-    const error = ContentManager.unloadContent(Themes[theme].filename, "theme");
-    delete Themes[theme];
-    if (error) {
-        Modals.showContentErrors({themes: [error]});
-        Toasts.show(`${theme} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
-        return Utilities.err("ContentManager", `${theme} could not be unloaded. It may have not been loaded yet.`, error);
+    removeTheme(idOrContent) {
+        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+        if (!content) return;
+        const element = content.element || document.getElementById(Utilities.escapeID(content.id));
+        if (element) element.remove();
     }
-    Utilities.log("ContentManager", `${theme} was unloaded.`);
-    Toasts.show(`${theme} was unloaded.`, {type: "success"});
-    Emitter.dispatch("theme-unloaded", theme);
 };
-
-ThemeModule.prototype.reloadTheme = function(filenameOrName) {
-    const bdtheme = Object.values(Themes).find(p => p.filename == filenameOrName) || Themes[filenameOrName];
-    if (!bdtheme) return this.loadTheme(filenameOrName);
-    const theme = bdtheme.name;
-    const error = ContentManager.reloadContent(Themes[theme].filename, "theme");
-    if (ThemeCookie[theme]) this.disableTheme(theme, true), this.enableTheme(theme, true);
-    if (error) {
-        Modals.showContentErrors({themes: [error]});
-        Toasts.show(`${theme} could not be reloaded.`, {type: "error"});
-        return Utilities.err("ContentManager", `${theme} could not be reloaded.`, error);
-    }
-    Utilities.log("ContentManager", `${theme} v${Themes[theme].version} was reloaded.`);
-    Toasts.show(`${theme} v${Themes[theme].version} was reloaded.`, {type: "success"});
-    Emitter.dispatch("theme-reloaded", theme);
-};
-
-ThemeModule.prototype.updateThemeList = function() {
-    const results = ContentManager.loadNewContent("theme");
-    for (const filename of results.added) this.loadTheme(filename);
-    for (const name of results.removed) this.unloadTheme(name);
-};
-
-ThemeModule.prototype.loadThemeData = function() {
-    const saved = DataStore.getData("themes");
-    if (!saved) return;
-    Object.assign(ThemeCookie, saved);
-};
-
-ThemeModule.prototype.saveThemeData = function () {
-    DataStore.setData("themes", ThemeCookie);
-};
-
-export default new ThemeModule();

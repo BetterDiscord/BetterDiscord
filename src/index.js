@@ -1,9 +1,9 @@
-import {SettingsCookie, SettingsInfo, Config, PluginCookie, ThemeCookie, Plugins, Themes, Emotes, EmoteBlacklist} from "data";
+import {Config, /*SettingsCookie, SettingsInfo, PluginCookie, ThemeCookie, Plugins, Themes,*/ Emotes, EmoteBlacklist} from "data";
 import proxyLocalStorage from "./localstorage";
 import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
-import PluginManager from "./modules/pluginmanager2";
-import ThemeManager from "./modules/thememanager2";
+import PluginManager from "./modules/pluginmanager";
+import ThemeManager from "./modules/thememanager";
 import {bdPluginStorage} from "./modules/oldstorage";
 import Events from "./modules/emitter";
 
@@ -16,14 +16,14 @@ document.body.appendChild(loadingIcon);
 
 // window.Core = Core;
 window.BdApi = BdApi;
-window.settings = SettingsInfo;
-window.settingsCookie = SettingsCookie;
-window.pluginCookie = PluginCookie;
-window.themeCookie = ThemeCookie;
+// window.settings = SettingsInfo;
+// window.settingsCookie = SettingsCookie;
+// window.pluginCookie = PluginCookie;
+// window.themeCookie = ThemeCookie;
 window.pluginModule = PluginManager;
 window.themeModule = ThemeManager;
-window.bdthemes = Themes;
-window.bdplugins = Plugins;
+// window.bdthemes = Themes;
+// window.bdplugins = Plugins;
 window.bdEmotes = Emotes;
 window.bemotes = EmoteBlacklist;
 window.bdPluginStorage = bdPluginStorage;
