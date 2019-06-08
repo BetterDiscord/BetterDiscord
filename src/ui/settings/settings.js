@@ -1,4 +1,4 @@
-import {SettingsInfo, Config, SettingsCookie/*, Plugins, Themes*/} from "data";
+import {Config} from "data";
 import {React/*, ReactDOM, Utilities, ContentManager, Events, PluginManager, ThemeManager*/} from "modules";
 // import Sidebar from "./sidebar";
 // import Scroller from "../scroller";
@@ -7,73 +7,51 @@ import {React/*, ReactDOM, Utilities, ContentManager, Events, PluginManager, The
 // import SectionedSettingsPanel from "./sectionedsettings";
 // import Tools from "./exitbutton";
 // import SettingsPanel from "./panel";
-// import PluginCard from "./plugincard";
+import PluginCard from "./plugincard";
 // import ThemeCard from "./themecard";
 // import ReloadIcon from "../icons/reload";
 
 // import CssEditor from "../customcss/editor";
 // import SettingsGroup from "../settings/settingsgroup";
-import SettingsGroup2 from "../settings/group";
-import {Toasts} from "../ui";
-import Settings from "../../data/settings/config";
-import State from "../../data/settings/state";
+import SettingsGroup from "../settings/group";
 import SettingsTitle from "./title";
 
 export default class V2_SettingsPanel {
 
-    get coreSettings() {
-        const settings = this.getSettings("core");
-        const categories = [...new Set(settings.map(s => s.category))];
-        const sections = categories.map(c => {return {title: c, settings: settings.filter(s => s.category == c)};});
-        return sections;
+    static buildSettingsPanel(title, config, state, onChange) {
+        config.forEach(section => {
+            section.settings.forEach(item => item.value = state[section.id][item.id]);
+        });
+        return this.getSettingsPanel(title, config, onChange);
     }
 
-    get emoteSettings() {
-        return this.getSettings("emote");
-    }
-
-    getSettings(category) {
-        return Object.keys(SettingsInfo).reduce((arr, key) => {
-            const setting = SettingsInfo[key];
-            if (setting.cat === category && setting.implemented && !setting.hidden) {
-                setting.text = key;
-                arr.push(setting);
-            }
-            return arr;
-        }, []);
-    }
-
-
-
-    getSettingsPanel(title, groups, onChange) {
+    static getSettingsPanel(title, groups, onChange) {
         return [React.createElement(SettingsTitle, {text: title}), groups.map(section => {
-            return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange}));
+            return React.createElement(SettingsGroup, Object.assign({}, section, {onChange}));
         })];
     }
 
-    get core3() {
-        const groups = Settings;
-
-        return groups.map((section, i) => {
-            if (i == 0) section.button = {title: "Call to Action!", onClick: () => {Toasts.success("You did it!", {forceShow: true});}};
-            // console.log(section);
-            section.settings.forEach(item => item.value = State[section.id][item.id]);
-
-            // if (section.settings.find(s => s.text == "Hide Channels")) section.settings.find(s => s.text == "Hide Channels").shouldHide = () => !SettingsCookie["bda-gs-2"];
-            return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange: this.onChange}));
-        });
+    static getPluginsPanel(plugins) {
+        const titleComponent = React.createElement(SettingsTitle, {text: "Plugins", button: {title: "Open Plugin Folder", onClick: () => { require("electron").shell.openItem(""); }}});
+        const cards = plugins.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(plugin => 
+            React.createElement(PluginCard, {key: plugin.id, content: plugin})
+        );
+        console.log(cards);
+        return [titleComponent, ...cards];
+        // const plugins = Object.keys(Plugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+        //     arr.push(React.createElement(PluginCard, {key: key, plugin: Plugins[key].plugin}));return arr;
+        // }, []);
+        // const list = React.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
+        // const refreshIcon = !SettingsCookie["fork-ps-5"] && React.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+        //     PluginManager.updatePluginList();
+        //     this.sideBarOnClick("plugins");
+        // }});
+        // const pfBtn = React.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
+        // const contentColumn = React.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
+        // return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, React.createElement(Tools, {key: "tools"})]});
     }
 
-    get core2() {
-        return this.coreSettings.map((section, i) => {
-            if (i == 0) section.button = {title: "Call to Action!", onClick: () => {Toasts.success("You did it!", {forceShow: true});}};
-            // console.log(section);
-            if (section.settings.find(s => s.text == "Hide Channels")) section.settings.find(s => s.text == "Hide Channels").shouldHide = () => !SettingsCookie["bda-gs-2"];
-            return React.createElement(SettingsGroup2, Object.assign({}, section, {onChange: this.onChange, collapsible: true, collapsed: i > 1}));
-        });
-    }
-
-    get attribution() {
+    static get attribution() {
         return React.createElement(
             "div",
             {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},

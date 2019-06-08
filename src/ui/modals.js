@@ -1,9 +1,8 @@
-import {SettingsCookie} from "data";
-import {Utilities, WebpackModules, React} from "modules";
+import {Utilities, WebpackModules, React, Settings} from "modules";
 
 export default class Modals {
 
-    static get shouldShowContentErrors() {return SettingsCookie["fork-ps-1"];}
+    static get shouldShowContentErrors() {return Settings.get("settings", "content", "contentErrors");}
 
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}

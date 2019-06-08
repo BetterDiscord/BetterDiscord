@@ -1,4 +1,3 @@
-import {Plugins, SettingsCookie, PluginCookie, ThemeCookie} from "data";
 import Utilities from "./utilities";
 import WebpackModules, {DiscordModules} from "./webpackmodules";
 import DataStore from "./datastore";
@@ -65,15 +64,6 @@ BdApi.linkJS = function (id, url) {
 //id = id of element
 BdApi.unlinkJS = function (id) {
     $("#" + Utilities.escapeID(id)).remove();
-};
-
-//Get another plugin
-//name = name of plugin
-BdApi.getPlugin = function (name) {
-    if (Plugins.hasOwnProperty(name)) {
-        return Plugins[name].plugin;
-    }
-    return null;
 };
 
 /**
@@ -183,17 +173,26 @@ BdApi.testJSON = function(data) {
     return Utilities.testJSON(data);
 };
 
-BdApi.isPluginEnabled = function(name) {
-    return !!PluginCookie[name];
-};
+//Get another plugin
+//name = name of plugin
+// BdApi.getPlugin = function (name) {
+//     if (Plugins.hasOwnProperty(name)) {
+//         return Plugins[name].plugin;
+//     }
+//     return null;
+// };
 
-BdApi.isThemeEnabled = function(name) {
-    return !!ThemeCookie[name];
-};
+// BdApi.isPluginEnabled = function(name) {
+//     return !!PluginCookie[name];
+// };
 
-BdApi.isSettingEnabled = function(id) {
-    return !!SettingsCookie[id];
-};
+// BdApi.isThemeEnabled = function(name) {
+//     return !!ThemeCookie[name];
+// };
+
+// BdApi.isSettingEnabled = function(id) {
+//     return !!SettingsCookie[id];
+// };
 
 // Gets data
 BdApi.getBDData = function(key) {

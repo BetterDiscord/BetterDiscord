@@ -1,5 +1,4 @@
-import {SettingsCookie} from "data";
-import {BDV2, DiscordModules} from "modules";
+import {BDV2, DiscordModules, Settings} from "modules";
 import EmoteMenu from "../builtins/emotemenu";
 
 export default class BDEmote extends DiscordModules.React.Component {
@@ -18,7 +17,7 @@ export default class BDEmote extends DiscordModules.React.Component {
     }
 
     get animateOnHover() {
-        return SettingsCookie["fork-es-2"];
+        return Settings.get("emotes", "general", "animateOnHover");
     }
 
     get label() {

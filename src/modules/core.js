@@ -3,8 +3,8 @@ import Utilities from "./utilities";
 import {Config} from "data";
 // import EmoteModule from "./emotes";
 // import QuickEmoteMenu from "../builtins/emotemenu";
-import PluginManager from "./pluginmanager2";
-import ThemeManager from "./thememanager2";
+import PluginManager from "./pluginmanager";
+import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import * as Builtins from "builtins";
 import {Modals} from "ui";
@@ -48,10 +48,10 @@ Core.prototype.init = async function() {
     for (const module in Builtins) Builtins[module].initialize();
 
     Utilities.log("Startup", "Loading Plugins");
-    const pluginErrors = PluginManager.loadAllContent();
+    const pluginErrors = PluginManager.loadAllPlugins();
 
     Utilities.log("Startup", "Loading Themes");
-    const themeErrors = ThemeManager.loadAllContent();
+    const themeErrors = ThemeManager.loadAllThemes();
 
     $("#customcss").detach().appendTo(document.head);
 

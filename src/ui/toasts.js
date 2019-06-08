@@ -1,12 +1,11 @@
-import {SettingsCookie} from "data";
-import {WebpackModules} from "modules";
+import {WebpackModules, Settings} from "modules";
 
 const channelsClass = WebpackModules.getByProps("channels").channels.split(" ")[0];
 const membersWrapClass = WebpackModules.getByProps("membersWrap").membersWrap.split(" ")[0];
 
 export default class Toasts {
 
-    static get shouldShowToasts() {return SettingsCookie["fork-ps-2"];}
+    static get shouldShowToasts() {return Settings.get("settings", "general", "showToasts");}
 
     /** Shorthand for `type = "success"` for {@link module:Toasts.show} */
     static async success(content, options = {}) {return this.show(content, Object.assign(options, {type: "success"}));}

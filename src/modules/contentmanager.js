@@ -1,194 +1,247 @@
-import {Config, Plugins, Themes} from "data";
 import Utilities from "./utilities";
-import PluginManager from "./pluginmanager";
-import ThemeManager from "./thememanager";
+import Settings from "./settingsmanager";
+import Events from "./emitter";
+import DataStore from "./datastore";
+import ContentError from "../structs/contenterror";
+import MetaError from "../structs/metaerror";
+import {Toasts} from "ui";
 
 const path = require("path");
 const fs = require("fs");
 const Module = require("module").Module;
 Module.globalPaths.push(path.resolve(require("electron").remote.app.getAppPath(), "node_modules"));
-class MetaError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = "MetaError";
-    }
-}
-const originalJSRequire = Module._extensions[".js"];
-const originalCSSRequire = Module._extensions[".css"] ? Module._extensions[".css"] : () => {return null;};
 
-export default new class ContentManager {
+const splitRegex = /[^\S\r\n]*?\n[^\S\r\n]*?\*[^\S\r\n]?/;
+const escapedAtRegex = /^\\@/;
+
+export default class ContentManager {
+
+    get name() {return "";}
+    get moduleExtension() {return "";}
+    get extension() {return "";}
+    get contentFolder() {return "";}
+    get prefix() {return "content";}
+    get collection() {return "settings";}
+    get category() {return "content";}
+    get id() {return "autoReload";}
+    emit(event, ...args) {return Events.emit(`${this.prefix}-${event}`, ...args);}
 
     constructor() {
         this.timeCache = {};
-        this.watchers = {};
-        Module._extensions[".js"] = this.getContentRequire("plugin");
-        Module._extensions[".css"] = this.getContentRequire("theme");
+        this.contentList = [];
+        this.state = {};
+        this.originalRequire = Module._extensions[this.moduleExtension];
+        Module._extensions[this.moduleExtension] = this.getContentRequire();
+        Settings.on(this.collection, this.category, this.id, (enabled) => {
+            if (enabled) this.watchContent();
+            else this.unwatchContent();
+        });
     }
 
-    get pluginsFolder() {return this._pluginsFolder || (this._pluginsFolder = fs.realpathSync(path.resolve(Config.dataPath + "plugins/")));}
-    get themesFolder() {return this._themesFolder || (this._themesFolder = fs.realpathSync(path.resolve(Config.dataPath + "themes/")));}
+    // Subclasses should overload this and modify the content object as needed to fully load it
+    initializeContent() {return;}
 
-    watchContent(contentType) {
-        if (this.watchers[contentType]) return;
-        const isPlugin = contentType === "plugin";
-        const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-        const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
-        this.watchers[contentType] = fs.watch(baseFolder, {persistent: false}, async (eventType, filename) => {
-            if (!eventType || !filename || !filename.endsWith(fileEnding)) return;
+    // Subclasses should overload this and modify the content as needed to require() the file
+    getContentModification(module, content) {return content;}
+
+    startContent() {return;}
+    stopContent() {return;}
+
+    loadState() {
+        const saved = DataStore.getData(`${this.prefix}s`);
+        console.log(saved);
+        if (!saved) return;
+        Object.assign(this.state, saved);
+    }
+
+    saveState() {
+        DataStore.setData(`${this.prefix}s`, this.state);
+    }
+
+    watchContent() {
+        if (this.watcher) return Utilities.err(this.name, "Already watching content.");
+        Utilities.log(this.name, "Starting to watch content.");
+        this.watcher = fs.watch(this.contentFolder, {persistent: false}, async (eventType, filename) => {
+            if (!eventType || !filename || !filename.endsWith(this.extension)) return;
             await new Promise(r => setTimeout(r, 50));
-            try {fs.statSync(path.resolve(baseFolder, filename));}
+            try {fs.statSync(path.resolve(this.contentFolder, filename));}
             catch (err) {
                 if (err.code !== "ENOENT") return;
                 delete this.timeCache[filename];
-                if (isPlugin) return PluginManager.unloadPlugin(filename);
-                return ThemeManager.unloadTheme(filename);
+                this.unloadContent(filename, true);
             }
-            if (!fs.statSync(path.resolve(baseFolder, filename)).isFile()) return;
-            const stats = fs.statSync(path.resolve(baseFolder, filename));
+            if (!fs.statSync(path.resolve(this.contentFolder, filename)).isFile()) return;
+            const stats = fs.statSync(path.resolve(this.contentFolder, filename));
             if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
             if (typeof(stats.mtime.getTime()) !== "number") return;
             if (this.timeCache[filename] == stats.mtime.getTime()) return;
             this.timeCache[filename] = stats.mtime.getTime();
-            if (eventType == "rename") {
-                if (isPlugin) PluginManager.loadPlugin(filename);
-                else ThemeManager.loadTheme(filename);
-            }
-            if (eventType == "change") {
-                if (isPlugin) PluginManager.reloadPlugin(filename);
-                else ThemeManager.reloadTheme(filename);
-            }
+            if (eventType == "rename") this.loadContent(filename, true);
+            if (eventType == "change") this.reloadContent(filename, true);
         });
     }
 
-    unwatchContent(contentType) {
-        if (!this.watchers[contentType]) return;
-        this.watchers[contentType].close();
-        delete this.watchers[contentType];
+    unwatchContent() {
+        if (!this.watcher) return Utilities.err(this.name, "Was not watching content.");
+        this.watcher.close();
+        delete this.watcher;
+        Utilities.log(this.name, "No longer watching content.");
     }
 
     extractMeta(content) {
-        const meta = content.split("\n")[0];
-        const rawMeta = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
-        if (meta.indexOf("META") < 0) throw new MetaError("META was not found.");
-        if (!Utilities.testJSON(rawMeta)) throw new MetaError("META could not be parsed.");
+        const firstLine = content.split("\n")[0];
+        const hasOldMeta = firstLine.includes("//META");
+        if (hasOldMeta) return this.parseOldMeta(content);
+        const hasNewMeta = firstLine.includes("/**");
+        if (hasNewMeta) return this.parseNewMeta(content);
+        throw new MetaError("META was not found.");
+    }
 
-        const parsed = JSON.parse(rawMeta);
+    parseOldMeta(content) {
+        const meta = content.split("\n")[0];
+        const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
+        if (!Utilities.testJSON(metaData)) throw new MetaError("META could not be parsed.");
+
+        const parsed = JSON.parse(metaData);
         if (!parsed.name) throw new MetaError("META missing name data.");
         return parsed;
     }
 
-    getContentRequire(type) {
-        const isPlugin = type === "plugin";
+    parseNewMeta(content) {
+        const block = content.split("/**", 2)[1].split("*/", 1)[0];
+        const out = {};
+        let field = "";
+        let accum = "";
+        for (const line of block.split(splitRegex)) {
+            if (line.length === 0) continue;
+            if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
+                out[field] = accum;
+                const l = line.indexOf(" ");
+                field = line.substr(1, l - 1);
+                accum = line.substr(l + 1);
+            }
+            else {
+                accum += " " + line.replace("\\n", "\n").replace(escapedAtRegex, "@");
+            }
+        }
+        out[field] = accum.trim();
+        delete out[""];
+        return out;
+    }
+
+    getContentRequire() {
         const self = this;
-        const originalRequire = isPlugin ? originalJSRequire : originalCSSRequire;
+        // const baseFolder = this.contentFolder;
+        const originalRequire = this.originalRequire;
         return function(module, filename) {
-            const baseFolder = isPlugin ? self.pluginsFolder : self.themesFolder;
-            const possiblePath = path.resolve(baseFolder, path.basename(filename));
+            const possiblePath = path.resolve(self.contentFolder, path.basename(filename));
             if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
             let content = fs.readFileSync(filename, "utf8");
             content = Utilities.stripBOM(content);
-
             const meta = self.extractMeta(content);
+            meta.id = meta.name;
             meta.filename = path.basename(filename);
-            if (!isPlugin) {
-                meta.css = content.split("\n").slice(1).join("\n");
-                content = `module.exports = ${JSON.stringify(meta)};`;
-            }
-            if (isPlugin) {
-                content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.name};`;
-            }
+            content = self.getContentModification(module, content, meta);
             module._compile(content, filename);
         };
     }
 
-    makePlaceholderPlugin(data) {
-        return {plugin: {
-                start: () => {},
-                getName: () => {return data.name || data.filename;},
-                getAuthor: () => {return "???";},
-                getDescription: () => {return data.message ? data.message : "This plugin was unable to be loaded. Check the author's page for updates.";},
-                getVersion: () => {return "???";}
-            },
-            name: data.name || data.filename,
-            filename: data.filename,
-            source: data.source ? data.source : "",
-            website: data.website ? data.website : ""
-        };
+    // Subclasses should use the return (if not ContentError) and push to this.contentList
+    loadContent(filename, shouldToast = true) {
+        if (typeof(filename) === "undefined") return;
+        try {__non_webpack_require__(path.resolve(this.contentFolder, filename));}
+        catch (error) {return new ContentError(filename, filename, "Could not be compiled.", {message: error.message, stack: error.stack});}
+        const content = __non_webpack_require__(path.resolve(this.contentFolder, filename));
+        console.log(content);
+        if (this.contentList.find(c => c.id == content.id)) return new ContentError(content.name, filename, `There is already a plugin with name ${content.name}`);
+        const error = this.initializeContent(content);
+        if (error) return error;
+        this.contentList.push(content);
+        if (shouldToast) Toasts.success(`${content.name} v${content.version} was loaded.`);
+        this.emit("loaded", content.id);
+
+        if (!this.state[content.id]) return this.state[content.id] = false;
+        return this.startContent(content);
     }
 
-    loadContent(filename, type) {
-        if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
-        const isPlugin = type === "plugin";
-        const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-        try {__non_webpack_require__(path.resolve(baseFolder, filename));}
-        catch (error) {return {name: filename, file: filename, message: "Could not be compiled.", error: {message: error.message, stack: error.stack}};}
-        const content = __non_webpack_require__(path.resolve(baseFolder, filename));
-        if (isPlugin) {
-            if (!content.type) return;
-            try {
-                content.plugin = new content.type();
-                delete Plugins[content.plugin.getName()];
-                Plugins[content.plugin.getName()] = content;
-            }
-            catch (error) {return {name: filename, file: filename, message: "Could not be constructed.", error: {message: error.message, stack: error.stack}};}
-        }
-        else {
-            delete Themes[content.name];
-            Themes[content.name] = content;
-        }
-    }
-
-    unloadContent(filename, type) {
-        if (typeof(filename) === "undefined" || typeof(type) === "undefined") return;
-        const isPlugin = type === "plugin";
-        const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-        try {
-            delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(baseFolder, filename))];
-        }
-        catch (err) {return {name: filename, file: filename, message: "Could not be unloaded.", error: {message: err.message, stack: err.stack}};}
-    }
-
-    isLoaded(filename, type) {
-        const isPlugin = type === "plugin";
-        const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-        try {__non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(baseFolder, filename))];}
-        catch (err) {return false;}
+    unloadContent(idOrFileOrContent, shouldToast = true) {
+        const content = typeof(idOrFileOrContent) == "string" ? this.contentList.find(c => c.id == idOrFileOrContent || c.filename == idOrFileOrContent) : idOrFileOrContent;
+        if (!content) return false;
+        if (this.state[content.id]) this.disableContent(content);
+        delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.contentFolder, content.filename))];
+        this.contentList.splice(this.contentList.indexOf(content), 1);
+        this.emit("unloaded", content.id);
+        if (shouldToast) Toasts.success(`${content.name} was unloaded.`);
         return true;
     }
 
-    reloadContent(filename, type) {
-        const cantUnload = this.unloadContent(filename, type);
-        if (cantUnload) return cantUnload;
-        return this.loadContent(filename, type);
+    reloadContent(filename) {
+        const didUnload = this.unloadContent(filename);
+        if (!didUnload) return didUnload;
+        return this.loadContent(filename);
     }
 
-    loadNewContent(type) {
-        const isPlugin = type === "plugin";
-        const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
-        const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
-        const files = fs.readdirSync(basedir);
-        const contentList = Object.values(isPlugin ? Plugins : Themes);
-        const removed = contentList.filter(t => !files.includes(t.filename)).map(c => isPlugin ? c.plugin.getName() : c.name);
-        const added = files.filter(f => !contentList.find(t => t.filename == f) && f.endsWith(fileEnding) && fs.statSync(path.resolve(basedir, f)).isFile());
+    isLoaded(idOrFile) {
+        const content = this.contentList.find(c => c.id == idOrFile || c.filename == idOrFile);
+        if (!content) return false;
+        return true;
+    }
+
+    isEnabled(idOrFile) {
+        const content = this.contentList.find(c => c.id == idOrFile || c.filename == idOrFile);
+        if (!content) return false;
+        return this.state[content.id];
+    }
+
+    enableContent(idOrContent) {
+        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+        if (!content) return;
+        if (this.state[content.id]) return;
+        this.state[content.id] = true;
+        this.startContent(content);
+        this.saveState();
+    }
+
+    disableContent(idOrContent) {
+        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+        if (!content) return;
+        if (!this.state[content.id]) return;
+        this.state[content.id] = false;
+        this.stopContent(content);
+        this.saveState();
+    }
+
+    toggleContent(id) {
+        if (this.state[id]) this.disableContent(id);
+        else this.enableContent(id);
+    }
+
+    loadNewContent() {
+        const files = fs.readdirSync(this.contentFolder);
+        const removed = this.contentList.filter(t => !files.includes(t.filename)).map(c => c.id);
+        const added = files.filter(f => !this.contentList.find(t => t.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.contentFolder, f)).isFile());
         return {added, removed};
     }
 
-    loadAllContent(type) {
-        const isPlugin = type === "plugin";
-        const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
-        const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
-        const errors = [];
-        const files = fs.readdirSync(basedir);
-
-        for (const filename of files) {
-            if (!fs.statSync(path.resolve(basedir, filename)).isFile() || !filename.endsWith(fileEnding)) continue;
-            const error = this.loadContent(filename, type);
-            if (error) errors.push(error);
-        }
-
-        return errors;
+    updateList() {
+        const results = this.loadNewContent();
+        for (const filename of results.added) this.loadContent(filename);
+        for (const name of results.removed) this.unloadContent(name);
     }
 
-    loadPlugins() {return this.loadAllContent("plugin");}
-    loadThemes() {return this.loadAllContent("theme");}
-};
+    loadAllContent() {
+        this.loadState();
+        const errors = [];
+        const files = fs.readdirSync(this.contentFolder);
+
+        for (const filename of files) {
+            if (!fs.statSync(path.resolve(this.contentFolder, filename)).isFile() || !filename.endsWith(this.extension)) continue;
+            const content = this.loadContent(filename, false);
+            if (content instanceof ContentError) errors.push(content);
+        }
+
+        this.saveState();
+        if (Settings.get(this.collection, this.category, this.id)) this.watchContent();
+        return errors;
+    }
+}

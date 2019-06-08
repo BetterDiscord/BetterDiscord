@@ -1,214 +1,155 @@
-import {PluginCookie, Plugins} from "data";
+import {Config} from "data";
 import ContentManager from "./contentmanager";
 import Utilities from "./utilities";
-import Emitter from "./emitter";
-import DataStore from "./datastore";
 import {Toasts, Modals} from "ui";
+import ContentError from "../structs/contenterror";
+import Settings from "./settingsmanager";
+import {SettingsPanel as SettingsRenderer} from "ui";
 
-function PluginModule() {
+const path = require("path");
+const electronRemote = require("electron").remote;
 
-}
+export default new class PluginManager extends ContentManager {
+    get name() {return "PluginManager";}
+    get moduleExtension() {return ".js";}
+    get extension() {return ".plugin.js";}
+    get contentFolder() {return path.resolve(Config.dataPath, "plugins");}
+    get prefix() {return "plugin";}
 
-PluginModule.prototype.loadPlugins = function () {
-    this.loadPluginData();
-    const errors = ContentManager.loadPlugins();
-    const plugins = Object.keys(Plugins);
-    for (let i = 0; i < plugins.length; i++) {
-        let plugin, name;
+    constructor() {
+        super();
+        this.onSwitch = this.onSwitch.bind(this);
+        this.observer = new MutationObserver((mutations) => {
+            for (let i = 0, mlen = mutations.length; i < mlen; i++) {
+                this.onMutation(mutations[i]);
+            }
+        });
+    }
 
+    /* Aliases */
+    updatePluginList() {return this.updateList();}
+
+    enablePlugin(idOrContent) {return this.enableContent(idOrContent);}
+    disablePlugin(idOrContent) {return this.disableContent(idOrContent);}
+    togglePlugin(id) {return this.toggleContent(id);}
+
+    unloadPlugin(idOrFileOrContent) {return this.unloadContent(idOrFileOrContent);}
+
+    loadPlugin(filename) {
+        const error = this.loadContent(filename);
+        if (error) Modals.showContentErrors({themes: [error]});
+    }
+
+    reloadPlugin(filename) {
+        const error = this.reloadContent(filename);
+        if (error) Modals.showContentErrors({themes: [error]});
+    }
+
+    loadAllPlugins() {
+        const errors = this.loadAllContent();
+        this.setupFunctions();
+        Settings.registerPanel("Plugins", {element: () => SettingsRenderer.getPluginsPanel(this.contentList)});
+        return errors;
+    }
+
+    /* Overrides */
+    initializeContent(content) {
+        if (!content.type) return new ContentError(content.name, content.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""});
         try {
-            plugin = Plugins[plugins[i]].plugin;
-            name = plugin.getName();
-            if (plugin.load && typeof(plugin.load) == "function") plugin.load();
+            const thePlugin = new content.type();
+            content.plugin = thePlugin;
+            content.name = content.name || thePlugin.getName();
+            content.author = content.author || thePlugin.getAuthor() || "No author";
+            content.description = content.description || thePlugin.getDescription() || "No description";
+            content.version = content.version || thePlugin.getVersion() || "No version";
+            try {
+                if (typeof(content.plugin.load) == "function") content.plugin.load();
+            }
+            catch (error) {
+                this.state[content.id] = false;
+                return new ContentError(content.name, content.filename, "load() could not be fired.", {message: error.message, stack: error.stack});
+            }
+        }
+        catch (error) {return new ContentError(content.name, content.filename, "Could not be constructed.", {message: error.message, stack: error.stack});}
+    }
+
+    getContentModification(module, content, meta) {
+        module._compile(content, module.filename);
+        const didExport = !Utilities.isEmpty(module.exports);
+        if (didExport) {
+            meta.type = module.exports;
+            module.exports = meta;
+            return "";
+        }
+        content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
+        return content;
+    }
+
+    startContent(id) {return this.startPlugin(id);}
+    stopContent(id) {return this.stopPlugin(id);}
+
+    startPlugin(idOrContent) {
+        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+        if (!content) return;
+        const plugin = content.plugin;
+        try {
+            plugin.start();
+            this.emit("started", content.id);
+            Toasts.show(`${content.name} v${content.version} has started.`);
         }
         catch (err) {
-            PluginCookie[name] = false;
-            Utilities.err("Plugins", name + " could not be loaded.", err);
-            errors.push({name: name, file: Plugins[plugins[i]].filename, message: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
-            continue;
+            this.state[content.id] = false;
+            Toasts.error(`${content.name} v${content.version} could not be started.`);
+            Utilities.err("Plugins", content.name + " could not be started.", err);
+            return new ContentError(content.name, content.filename, "start() could not be fired.", {message: err.message, stack: err.stack});
         }
+    }
 
-        if (!PluginCookie[name]) PluginCookie[name] = false;
+    stopPlugin(idOrContent) {
+        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
+        if (!content) return;
+        const plugin = content.plugin;
+        try {
+            plugin.stop();
+            this.emit("stopped", content.id);
+            Toasts.show(`${content.name} v${content.version} has stopped.`);
+        }
+        catch (err) {
+            this.state[content.id] = false;
+            Toasts.error(`${content.name} v${content.version} could not be stopped.`);
+            Utilities.err("Plugins", content.name + " could not be stopped.", err);
+            return new ContentError(content.name, content.filename, "stop() could not be fired.", {message: err.message, stack: err.stack});
+        }
+    }
 
-        if (PluginCookie[name]) {
-            try {
-                plugin.start();
-                Toasts.show(`${plugin.getName()} v${plugin.getVersion()} has started.`);
+    setupFunctions() {
+        electronRemote.getCurrentWebContents().on("did-navigate-in-page", this.onSwitch.bind(this));
+        this.observer.observe(document, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    onSwitch() {
+        this.emit("page-switch");
+        for (let i = 0; i < this.contentList.length; i++) {
+            const plugin = this.contentList[i].plugin;
+            if (!this.state[this.contentList[i].id]) continue;
+            if (typeof(plugin.onSwitch) === "function") {
+                try { plugin.onSwitch(); }
+                catch (err) { Utilities.err("Plugins", "Unable to fire onSwitch for " + this.contentList[i].name + ".", err); }
             }
-            catch (err) {
-                PluginCookie[name] = false;
-                Utilities.err("Plugins", name + " could not be started.", err);
-                errors.push({name: name, file: Plugins[plugins[i]].filename, message: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
+        }
+    }
+
+    onMutation(mutation) {
+        for (let i = 0; i < this.contentList.length; i++) {
+            const plugin = this.contentList[i].plugin;
+            if (!this.state[this.contentList[i].id]) continue;
+            if (typeof plugin.observer === "function") {
+                try { plugin.observer(mutation); }
+                catch (err) { Utilities.err("Plugins", "Unable to fire observer for " + this.contentList[i].name + ".", err); }
             }
         }
     }
-    this.savePluginData();
-
-    require("electron").remote.getCurrentWebContents().on("did-navigate-in-page", this.channelSwitch.bind(this));
-    // if (SettingsCookie["fork-ps-5"]) ContentManager.watchContent("plugin");
-    return errors;
 };
-
-PluginModule.prototype.startPlugin = function(plugin, reload = false) {
-    try {
-        Plugins[plugin].plugin.start();
-        if (!reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} has started.`);
-    }
-    catch (err) {
-        if (!reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
-        PluginCookie[plugin] = false;
-        this.savePluginData();
-        Utilities.err("Plugins", plugin + " could not be started.", err);
-    }
-};
-
-PluginModule.prototype.stopPlugin = function(plugin, reload = false) {
-    try {
-        Plugins[plugin].plugin.stop();
-        if (!reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} has stopped.`);
-    }
-    catch (err) {
-        if (!reload) Toasts.show(`${Plugins[plugin].plugin.getName()} v${Plugins[plugin].plugin.getVersion()} could not be stopped.`, {type: "error"});
-        Utilities.err("Plugins", Plugins[plugin].plugin.getName() + " could not be stopped.", err);
-    }
-};
-
-PluginModule.prototype.enablePlugin = function (plugin, reload = false) {
-    if (PluginCookie[plugin]) return;
-    PluginCookie[plugin] = true;
-    this.savePluginData();
-    this.startPlugin(plugin, reload);
-};
-
-PluginModule.prototype.disablePlugin = function (plugin, reload = false) {
-    if (!PluginCookie[plugin]) return;
-    PluginCookie[plugin] = false;
-    this.savePluginData();
-    this.stopPlugin(plugin, reload);
-};
-
-PluginModule.prototype.togglePlugin = function (plugin) {
-    if (PluginCookie[plugin]) this.disablePlugin(plugin);
-    else this.enablePlugin(plugin);
-};
-
-PluginModule.prototype.loadPlugin = function(filename) {
-    const error = ContentManager.loadContent(filename, "plugin");
-    if (error) {
-        Modals.showContentErrors({plugins: [error]});
-        Toasts.show(`${filename} could not be loaded.`, {type: "error"});
-        return Utilities.err("ContentManager", `${filename} could not be loaded.`, error);
-    }
-    const plugin = Object.values(Plugins).find(p => p.filename == filename).plugin;
-    try { if (plugin.load && typeof(plugin.load) == "function") plugin.load();}
-    catch (err) {Modals.showContentErrors({plugins: [err]});}
-    Utilities.log("ContentManager", `${plugin.getName()} v${plugin.getVersion()} was loaded.`);
-    Toasts.show(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
-    Emitter.dispatch("plugin-loaded", plugin.getName());
-};
-
-PluginModule.prototype.unloadPlugin = function(filenameOrName) {
-    const bdplugin = Object.values(Plugins).find(p => p.filename == filenameOrName) || Plugins[filenameOrName];
-    if (!bdplugin) return;
-    const plugin = bdplugin.plugin.getName();
-    if (PluginCookie[plugin]) this.disablePlugin(plugin, true);
-    const error = ContentManager.unloadContent(Plugins[plugin].filename, "plugin");
-    delete Plugins[plugin];
-    if (error) {
-        Modals.showContentErrors({plugins: [error]});
-        Toasts.show(`${plugin} could not be unloaded. It may have not been loaded yet.`, {type: "error"});
-        return Utilities.err("ContentManager", `${plugin} could not be unloaded. It may have not been loaded yet.`, error);
-    }
-    Utilities.log("ContentManager", `${plugin} was unloaded.`);
-    Toasts.show(`${plugin} was unloaded.`, {type: "success"});
-    Emitter.dispatch("plugin-unloaded", plugin);
-};
-
-PluginModule.prototype.reloadPlugin = function(filenameOrName) {
-    const bdplugin = Object.values(Plugins).find(p => p.filename == filenameOrName) || Plugins[filenameOrName];
-    if (!bdplugin) return this.loadPlugin(filenameOrName);
-    const plugin = bdplugin.plugin.getName();
-    const enabled = PluginCookie[plugin];
-    if (enabled) this.stopPlugin(plugin, true);
-    const error = ContentManager.reloadContent(Plugins[plugin].filename, "plugin");
-    if (error) {
-        Modals.showContentErrors({plugins: [error]});
-        Toasts.show(`${plugin} could not be reloaded.`, {type: "error"});
-        return Utilities.err("ContentManager", `${plugin} could not be reloaded.`, error);
-    }
-    if (Plugins[plugin].plugin.load && typeof(Plugins[plugin].plugin.load) == "function") Plugins[plugin].plugin.load();
-    if (enabled) this.startPlugin(plugin, true);
-    Utilities.log("ContentManager", `${plugin} v${Plugins[plugin].plugin.getVersion()} was reloaded.`);
-    Toasts.show(`${plugin} v${Plugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
-    Emitter.dispatch("plugin-reloaded", plugin);
-};
-
-PluginModule.prototype.updatePluginList = function() {
-    const results = ContentManager.loadNewContent("plugin");
-    for (const filename of results.added) this.loadPlugin(filename);
-    for (const name of results.removed) this.unloadPlugin(name);
-};
-
-PluginModule.prototype.loadPluginData = function () {
-    const saved = DataStore.getData("plugins");
-    if (!saved) return;
-    Object.assign(PluginCookie, saved);
-};
-
-PluginModule.prototype.savePluginData = function () {
-    DataStore.setData("plugins", PluginCookie);
-};
-
-PluginModule.prototype.newMessage = function () {
-    const plugins = Object.keys(Plugins);
-    for (let i = 0; i < plugins.length; i++) {
-        const plugin = Plugins[plugins[i]].plugin;
-        if (!PluginCookie[plugin.getName()]) continue;
-        if (typeof plugin.onMessage === "function") {
-            try { plugin.onMessage(); }
-            catch (err) { Utilities.err("Plugins", "Unable to fire onMessage for " + plugin.getName() + ".", err); }
-        }
-    }
-};
-
-PluginModule.prototype.channelSwitch = function () {
-    const plugins = Object.keys(Plugins);
-    for (let i = 0; i < plugins.length; i++) {
-        const plugin = Plugins[plugins[i]].plugin;
-        if (!PluginCookie[plugin.getName()]) continue;
-        if (typeof plugin.onSwitch === "function") {
-            try { plugin.onSwitch(); }
-            catch (err) { Utilities.err("Plugins", "Unable to fire onSwitch for " + plugin.getName() + ".", err); }
-        }
-    }
-};
-
-PluginModule.prototype.rawObserver = function(e) {
-    const plugins = Object.keys(Plugins);
-    for (let i = 0; i < plugins.length; i++) {
-        const plugin = Plugins[plugins[i]].plugin;
-        if (!PluginCookie[plugin.getName()]) continue;
-        if (typeof plugin.observer === "function") {
-            try { plugin.observer(e); }
-            catch (err) { Utilities.err("Plugins", "Unable to fire observer for " + plugin.getName() + ".", err); }
-        }
-    }
-};
-
-export default new PluginModule();
-
-
-// makePlaceholderPlugin(data) {
-//     return {plugin: {
-//             start: () => {},
-//             getName: () => {return data.name || data.filename;},
-//             getAuthor: () => {return "???";},
-//             getDescription: () => {return data.message ? data.message : "This plugin was unable to be loaded. Check the author's page for updates.";},
-//             getVersion: () => {return "???";}
-//         },
-//         name: data.name || data.filename,
-//         filename: data.filename,
-//         source: data.source ? data.source : "",
-//         website: data.website ? data.website : ""
-//     };
-// }
