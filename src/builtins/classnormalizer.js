@@ -14,6 +14,7 @@ export default new class ClassNormalizer extends Builtin {
         this.patchClassModules(WebpackModules.getModules(this.moduleFilter.bind(this)));
         this.normalizeElement(document.querySelector("#app-mount"));
         this.hasPatched = true;
+        this.patchDOMMethods();
     }
 
     disabled() {
@@ -109,6 +110,14 @@ export default new class ClassNormalizer extends Builtin {
             if (classes[c].startsWith(`${normalizedPrefix}-`)) toRemove.push(classes[c]);
         }
         element.classList.remove(...toRemove);
+    }
+    
+    patchDOMMethods() {
+        const contains = DOMTokenList.prototype.contains;
+        DOMTokenList.prototype.contains = function(token) {
+            const tokens = token.split(" ");
+            return tokens.every(t => contains.call(this, t));
+        };
     }
 
 };

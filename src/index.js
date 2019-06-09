@@ -1,4 +1,4 @@
-import {Config, /*SettingsCookie, SettingsInfo, PluginCookie, ThemeCookie, Plugins, Themes,*/ Emotes, EmoteBlacklist} from "data";
+import {Config} from "data";
 import proxyLocalStorage from "./localstorage";
 import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
@@ -6,6 +6,8 @@ import PluginManager from "./modules/pluginmanager";
 import ThemeManager from "./modules/thememanager";
 import {bdPluginStorage} from "./modules/oldstorage";
 import Events from "./modules/emitter";
+import Settings from "./modules/settingsmanager";
+import EmoteModule from "./builtins/emotes";
 
 // Perform some setup
 proxyLocalStorage();
@@ -24,9 +26,10 @@ window.pluginModule = PluginManager;
 window.themeModule = ThemeManager;
 // window.bdthemes = Themes;
 // window.bdplugins = Plugins;
-window.bdEmotes = Emotes;
-window.bemotes = EmoteBlacklist;
+window.bdEmotes = EmoteModule.Emotes;
+window.bemotes = EmoteModule.blacklist;
 window.bdPluginStorage = bdPluginStorage;
+window.settingsModule = Settings;
 
 
 window.BDEvents = Events;
