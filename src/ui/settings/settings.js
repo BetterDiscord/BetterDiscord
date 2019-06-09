@@ -8,7 +8,7 @@ import {React/*, ReactDOM, Utilities, ContentManager, Events, PluginManager, The
 // import Tools from "./exitbutton";
 // import SettingsPanel from "./panel";
 import PluginCard from "./plugincard";
-// import ThemeCard from "./themecard";
+import ThemeCard from "./themecard";
 // import ReloadIcon from "../icons/reload";
 
 // import CssEditor from "../customcss/editor";
@@ -37,7 +37,27 @@ export default class V2_SettingsPanel {
             React.createElement(PluginCard, {key: plugin.id, content: plugin})
         );
         console.log(cards);
-        return [titleComponent, ...cards];
+        return [titleComponent, React.createElement("ul", {className: "bda-slist"}, ...cards)];
+        // const plugins = Object.keys(Plugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
+        //     arr.push(React.createElement(PluginCard, {key: key, plugin: Plugins[key].plugin}));return arr;
+        // }, []);
+        // const list = React.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
+        // const refreshIcon = !SettingsCookie["fork-ps-5"] && React.createElement(ReloadIcon, {className: "bd-reload-header", size: "18px", onClick: async () => {
+        //     PluginManager.updatePluginList();
+        //     this.sideBarOnClick("plugins");
+        // }});
+        // const pfBtn = React.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
+        // const contentColumn = React.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
+        // return React.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, React.createElement(Tools, {key: "tools"})]});
+    }
+
+    static getThemesPanel(themes) {
+        const titleComponent = React.createElement(SettingsTitle, {text: "Themes", button: {title: "Open Theme Folder", onClick: () => { require("electron").shell.openItem(""); }}});
+        const cards = themes.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(theme => 
+            React.createElement(ThemeCard, {key: theme.id, content: theme})
+        );
+        console.log(cards);
+        return [titleComponent, React.createElement("ul", {className: "bda-slist"}, ...cards)];
         // const plugins = Object.keys(Plugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
         //     arr.push(React.createElement(PluginCard, {key: key, plugin: Plugins[key].plugin}));return arr;
         // }, []);

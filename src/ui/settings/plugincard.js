@@ -34,12 +34,12 @@ export default class V2C_PluginCard extends React.Component {
 
                 const eTop = element.offsetTop;
                 const eBottom = eTop + element.clientHeight;
-
+                
                 return  (eTop < cTop || eBottom > cBottom);
             };
 
             const self = $(ReactDOM.findDOMNode(this));
-            const container = self.parents(".scroller");
+            const container = self.parents(".scroller-2FKFPG");
             if (!isHidden(container[0], self[0])) return;
             container.animate({
                 scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30

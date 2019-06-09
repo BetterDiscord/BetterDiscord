@@ -2,6 +2,8 @@ import {Config} from "data";
 import ContentManager from "./contentmanager";
 import Utilities from "./utilities";
 import {Modals} from "ui";
+import Settings from "./settingsmanager";
+import {SettingsPanel as SettingsRenderer} from "ui";
 
 const path = require("path");
 
@@ -14,7 +16,10 @@ export default new class ThemeManager extends ContentManager {
 
     /* Aliases */
     updateThemeList() {return this.updateList();}
-    loadAllThemes() {return this.loadAllContent();}
+    loadAllThemes() {
+        Settings.registerPanel("Themes", {element: () => SettingsRenderer.getThemesPanel(this.contentList)});
+        return this.loadAllContent();
+    }
 
     enableTheme(idOrContent) {return this.enableContent(idOrContent);}
     disableTheme(idOrContent) {return this.disableContent(idOrContent);}
