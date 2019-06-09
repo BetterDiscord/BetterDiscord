@@ -58,8 +58,6 @@ export default new class SettingsManager {
     }
 
     setup() {
-        console.log("before state");
-        console.log(this.state);
         for (let c = 0; c < this.collections.length; c++) {
             const collection = this.collections[c];
             const categories = this.collections[c].settings;
@@ -93,8 +91,6 @@ export default new class SettingsManager {
                 });
             }
         }
-        console.log("after state");
-        console.log(this.state);
     }
 
     async patchSections() {
@@ -145,12 +141,12 @@ export default new class SettingsManager {
 
     loadSettings() {
         const previousState = DataStore.getData("settings");
-        if (!previousState)  return this.saveSettings();
-        for (const collection in this.defaultState) {
-            if (!previousState[collection]) Object.assign(previousState, {[collection]: this.defaultState[collection]});
-            for (const category in this.defaultState[collection]) {
-                if (!previousState[collection][category]) Object.assign(previousState[collection][category], {[category]: this.defaultState[collection][category]});
-                for (const setting in this.defaultState[collection][category]) {
+        if (!previousState) return this.saveSettings();
+        for (const collection in this.state) {
+            if (!previousState[collection]) Object.assign(previousState, {[collection]: this.state[collection]});
+            for (const category in this.state[collection]) {
+                if (!previousState[collection][category]) Object.assign(previousState[collection][category], {[category]: this.state[collection][category]});
+                for (const setting in this.state[collection][category]) {
                     if (previousState[collection][category][setting] == undefined) continue;
                     this.state[collection][category][setting] = previousState[collection][category][setting];
                 }

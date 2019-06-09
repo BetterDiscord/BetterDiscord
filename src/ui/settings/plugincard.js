@@ -1,7 +1,7 @@
 // import {SettingsCookie, PluginCookie, Plugins} from "data";
-import {React, Utilities, PluginManager} from "modules";
+import {React, Utilities, Settings} from "modules";
 import CloseButton from "../icons/close";
-// import ReloadIcon from "../icons/reload";
+import ReloadIcon from "../icons/reload";
 
 export default class V2C_PluginCard extends React.Component {
 
@@ -10,20 +10,26 @@ export default class V2C_PluginCard extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.showSettings = this.showSettings.bind(this);
         this.state = {
-            checked: PluginManager.isEnabled(this.props.content.id),
-            settings: false
+            checked: this.props.enabled,//PluginManager.isEnabled(this.props.content.id),
+            settingsOpen: false
         };
         this.hasSettings = typeof this.props.content.plugin.getSettingsPanel === "function";
         this.settingsPanel = "";
         this.panelRef = React.createRef();
 
-        // this.reload = this.reload.bind(this);
+        this.reload = this.reload.bind(this);
         // this.onReload = this.onReload.bind(this);
     }
 
+    reload() {
+        if (!this.props.reload) return;
+        this.props.content = this.props.reload(this.props.content.id);
+        this.forceUpdate();
+    }
+
     componentDidUpdate() {
-        if (this.state.settings) {
-            if (typeof this.settingsPanel === "object") {
+        if (this.state.settingsOpen) {
+            if (this.settingsPanel instanceof Node) {
                 this.panelRef.current.appendChild(this.settingsPanel);
             }
 
@@ -62,20 +68,22 @@ export default class V2C_PluginCard extends React.Component {
         const website = content.website;
         const source = content.source;
 
-        if (this.state.settings) {
+        if (this.state.settingsOpen) {
             try { self.settingsPanel = content.plugin.getSettingsPanel(); }
             catch (err) { Utilities.err("Plugins", "Unable to get settings panel for " + content.name + ".", err); }
+
+            const props = {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef};
+            if (typeof(this.settingsPanel) == "string") props.dangerouslySetInnerHTML = this.settingsPanel;
 
             return React.createElement("li", {className: "settings-open ui-switch-item"},
                     React.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
                             this.panelRef.current.innerHTML = "";
-                            self.setState({settings: false});
+                            self.setState({settingsOpen: false});
                         }},
                     React.createElement(CloseButton, null)
                 ),
-                typeof self.settingsPanel === "object" && React.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef}),
-                typeof self.settingsPanel !== "object" && React.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef, dangerouslySetInnerHTML: {__html: self.settingsPanel}})
-            );
+                React.createElement("div", props, this.settingsPanel instanceof React.Component ? this.settingsPanel : null),
+                );
         }
 
         return React.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
@@ -88,7 +96,7 @@ export default class V2C_PluginCard extends React.Component {
                         React.createElement("span", {className: "bda-author"}, author)
                     ),
                     React.createElement("div", {className: "bda-controls"},
-                        //!SettingsCookie["fork-ps-5"] && React.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
+                        !Settings.get("settings", "content", "autoReload") && React.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
                         React.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             React.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             React.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
@@ -111,11 +119,12 @@ export default class V2C_PluginCard extends React.Component {
 
     onChange() {
         this.setState({checked: !this.state.checked});
-        PluginManager.togglePlugin(this.props.content.id);
+        // PluginManager.togglePlugin(this.props.content.id);
+        this.props.onChange && this.props.onChange(this.props.content.id);
     }
 
     showSettings() {
         if (!this.hasSettings) return;
-        this.setState({settings: true});
+        this.setState({settingsOpen: true});
     }
 }

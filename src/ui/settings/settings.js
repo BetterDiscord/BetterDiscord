@@ -1,9 +1,7 @@
 import {Config} from "data";
 import {React} from "modules";
 
-import PluginCard from "./plugincard";
-import ThemeCard from "./themecard";
-
+import ContentList from "./contentlist";
 import SettingsGroup from "../settings/group";
 import SettingsTitle from "./title";
 
@@ -22,20 +20,12 @@ export default class V2_SettingsPanel {
         })];
     }
 
-    static getPluginsPanel(plugins, folder) {
-        const titleComponent = React.createElement(SettingsTitle, {text: "Plugins", button: {title: "Open Plugin Folder", onClick: () => { require("electron").shell.openItem(folder); }}});
-        const cards = plugins.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(plugin => 
-            React.createElement(PluginCard, {key: plugin.id, content: plugin})
-        );
-        return [titleComponent, React.createElement("ul", {className: "bda-slist"}, ...cards)];
-    }
-
-    static getThemesPanel(themes, folder) {
-        const titleComponent = React.createElement(SettingsTitle, {text: "Themes", button: {title: "Open Theme Folder", onClick: () => { require("electron").shell.openItem(folder); }}});
-        const cards = themes.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(theme => 
-            React.createElement(ThemeCard, {key: theme.id, content: theme})
-        );
-        return [titleComponent, React.createElement("ul", {className: "bda-slist"}, ...cards)];
+    static getContentPanel(title, contentList, contentState, options = {}) {
+        return React.createElement(ContentList, Object.assign({}, {
+            title: title,
+            contentList: contentList,
+            contentState: contentState
+        }, options));
     }
 
     static get attribution() {

@@ -146,7 +146,7 @@ export default class ContentManager {
     }
 
     // Subclasses should use the return (if not ContentError) and push to this.contentList
-    loadContent(filename, shouldToast = true) {
+    loadContent(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
         try {__non_webpack_require__(path.resolve(this.contentFolder, filename));}
         catch (error) {return new ContentError(filename, filename, "Could not be compiled.", {message: error.message, stack: error.stack});}
@@ -162,10 +162,10 @@ export default class ContentManager {
         return this.startContent(content);
     }
 
-    unloadContent(idOrFileOrContent, shouldToast = true) {
+    unloadContent(idOrFileOrContent, shouldToast = true, isReload = false) {
         const content = typeof(idOrFileOrContent) == "string" ? this.contentList.find(c => c.id == idOrFileOrContent || c.filename == idOrFileOrContent) : idOrFileOrContent;
         if (!content) return false;
-        if (this.state[content.id]) this.disableContent(content);
+        if (this.state[content.id]) isReload ? this.stopContent(content) : this.disableContent(content);
         delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.contentFolder, content.filename))];
         this.contentList.splice(this.contentList.indexOf(content), 1);
         this.emit("unloaded", content.id);
@@ -173,10 +173,11 @@ export default class ContentManager {
         return true;
     }
 
-    reloadContent(filename) {
-        const didUnload = this.unloadContent(filename);
+    reloadContent(idOrFileOrContent, shouldToast = true) {
+        const content = typeof(idOrFileOrContent) == "string" ? this.contentList.find(c => c.id == idOrFileOrContent || c.filename == idOrFileOrContent) : idOrFileOrContent;
+        const didUnload = this.unloadContent(content, shouldToast, true);
         if (!didUnload) return didUnload;
-        return this.loadContent(filename);
+        return this.loadContent(content.filename, shouldToast);
     }
 
     isLoaded(idOrFile) {

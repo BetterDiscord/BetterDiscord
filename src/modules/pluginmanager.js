@@ -40,15 +40,21 @@ export default new class PluginManager extends ContentManager {
         if (error) Modals.showContentErrors({themes: [error]});
     }
 
-    reloadPlugin(filename) {
-        const error = this.reloadContent(filename);
-        if (error) Modals.showContentErrors({themes: [error]});
+    reloadPlugin(idOrFileOrContent) {
+        const error = this.reloadContent(idOrFileOrContent);
+        if (error) Modals.showContentErrors({plugins: [error]});
+        return typeof(idOrFileOrContent) == "string" ? this.contentList.find(c => c.id == idOrFileOrContent || c.filename == idOrFileOrContent) : idOrFileOrContent;
     }
 
     loadAllPlugins() {
         const errors = this.loadAllContent();
         this.setupFunctions();
-        Settings.registerPanel("Plugins", {element: () => SettingsRenderer.getPluginsPanel(this.contentList, this.contentFolder)});
+        Settings.registerPanel("Plugins", {element: () => SettingsRenderer.getContentPanel("Plugins", this.contentList, this.state, {
+            folder: this.contentFolder,
+            onChange: this.togglePlugin.bind(this),
+            reload: this.reloadPlugin.bind(this),
+            refreshList: this.updatePluginList.bind(this)
+        })});
         return errors;
     }
 
@@ -59,9 +65,9 @@ export default new class PluginManager extends ContentManager {
             const thePlugin = new content.type();
             content.plugin = thePlugin;
             content.name = thePlugin.getName() || content.name;
-            content.author = content.author || thePlugin.getAuthor() || "No author";
-            content.description = content.description || thePlugin.getDescription() || "No description";
-            content.version = content.version || thePlugin.getVersion() || "No version";
+            content.author = thePlugin.getAuthor() || content.author || "No author";
+            content.description = thePlugin.getDescription() || content.description || "No description";
+            content.version = thePlugin.getVersion() || content.version || "No version";
             try {
                 if (typeof(content.plugin.load) == "function") content.plugin.load();
             }

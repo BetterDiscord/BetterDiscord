@@ -1,4 +1,3 @@
-import {SettingsState} from "data";
 import Utilities from "../modules/utilities";
 import Events from "../modules/emitter";
 import Settings from "../modules/settingsmanager";

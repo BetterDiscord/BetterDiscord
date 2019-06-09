@@ -6,7 +6,7 @@
     "scripts": {
         "build": "webpack --progress --colors",
         "watch": "webpack --progress --colors --watch",
-        "build-prod": "webpack --progress --colors --mode production -o js/main.min.js",
+        "build-prod": "webpack --progress --colors --mode production -o js/main.min.js --devtool none",
         "test": "echo \"Error: no test specified\" && exit 1",
         "minify": "gulp minify-css",
         "watch-css": "gulp watch-css"

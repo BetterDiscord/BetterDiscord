@@ -17,7 +17,12 @@ export default new class ThemeManager extends ContentManager {
     /* Aliases */
     updateThemeList() {return this.updateList();}
     loadAllThemes() {
-        Settings.registerPanel("Themes", {element: () => SettingsRenderer.getThemesPanel(this.contentList, this.contentFolder)});
+        Settings.registerPanel("Themes", {element: () => SettingsRenderer.getContentPanel("Themes", this.contentList, this.state, {
+            folder: this.contentFolder,
+            onChange: this.toggleTheme.bind(this),
+            reload: this.reloadTheme.bind(this),
+            refreshList: this.updateThemeList.bind(this)
+        })});
         return this.loadAllContent();
     }
 
@@ -32,8 +37,8 @@ export default new class ThemeManager extends ContentManager {
         if (error) Modals.showContentErrors({themes: [error]});
     }
 
-    reloadTheme(filename) {
-        const error = this.reloadContent(filename);
+    reloadTheme(idOrFileOrContent) {
+        const error = this.reloadContent(idOrFileOrContent);
         if (error) Modals.showContentErrors({themes: [error]});
     }
 
