@@ -1,6 +1,6 @@
 import Builtin from "../structs/builtin";
 
-import {Config, EmoteInfo, State, EmoteConfig} from "data";
+import {Config, EmoteInfo, EmoteConfig} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings} from "modules";
 import BDEmote from "../ui/emote";
 import {Toasts} from "ui";
@@ -151,6 +151,7 @@ export default new class EmoteModule extends Builtin {
     }
 
     async loadEmoteData(emoteInfo) {
+        this.emotesLoaded = false;
         const _fs = require("fs");
         const emoteFile = "emote_data.json";
         const file = Config.dataPath + emoteFile;
@@ -177,7 +178,7 @@ export default new class EmoteModule extends Builtin {
 
             if (isValid) {
                 Toasts.show("Emotes successfully loaded.", {type: "success"});
-                State.emotesLoaded = true;
+                this.emotesLoaded = true;
                 Events.dispatch("emotes-loaded");
                 return;
             }
@@ -200,7 +201,7 @@ export default new class EmoteModule extends Builtin {
         try { _fs.writeFileSync(file, JSON.stringify(Emotes), "utf8"); }
         catch (err) { Utilities.err("Emotes", "Could not save emote data.", err); }
 
-        State.emotesLoaded = true;
+        this.emotesLoaded = true;
         Events.dispatch("emotes-loaded");
     }
 

@@ -1,5 +1,4 @@
 import Builtin from "../structs/builtin";
-import {State} from "data";
 import {DataStore, Utilities, Events} from "modules";
 
 import EmoteModule from "./emotes";
@@ -83,9 +82,7 @@ export default new class EmoteMenu extends Builtin {
         });
         this.hideEmojiCancel = this.registerSetting(this.hideEmojisID, this.enableHideEmojis, this.disableHideEmojis);
         if (this.hideEmojis) this.enableHideEmojis();
-        // await this.waitForEmotes();
-        // this.updateTwitchEmotes();
-        if (State.emotesLoaded) this.updateTwitchEmotes();
+        if (EmoteModule.emotesLoaded) this.updateTwitchEmotes();
         Events.on("emotes-loaded", this.updateTwitchEmotes);
     }
 
@@ -94,13 +91,6 @@ export default new class EmoteMenu extends Builtin {
         this.observer.disconnect();
         this.disableHideEmojis();
         if (this.hideEmojiCancel) this.hideEmojiCancel();
-    }
-
-    async waitForEmotes() {
-        if (State.emotesLoaded) return;
-        return new Promise(resolve => {
-            Events.on("emotes-loaded", resolve);
-        });
     }
 
     enableHideEmojis() {
