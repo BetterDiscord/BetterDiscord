@@ -46,6 +46,6 @@ export default function() {
         }
     });
 
-    window.localStorage = lsProxy;
+    window.localStorage = null;
 
 }

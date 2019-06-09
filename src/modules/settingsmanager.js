@@ -1,6 +1,5 @@
-import {SettingsConfig, SettingsState} from "data";
+import {SettingsConfig} from "data";
 import DataStore from "./datastore";
-import BdApi from "./pluginapi";
 import Events from "./emitter";
 import WebpackModules, {DiscordModules} from "./webpackmodules";
 
@@ -11,8 +10,7 @@ import {Toasts} from "ui";
 export default new class SettingsManager {
 
     constructor() {
-        this.config = SettingsConfig;
-        this.state = SettingsState;
+        this.state = {};
         this.collections = [];
         this.panels = [];
         this.registerCollection("settings", "Settings", SettingsConfig);
@@ -101,7 +99,6 @@ export default new class SettingsManager {
                 data.returnValue.splice(location, 0, section);
                 location++;
             };
-            console.log(data); /* eslint-disable-line no-console */
             insert({section: "DIVIDER"});
             insert({section: "HEADER", label: "BandagedBD"});
             for (const collection of this.collections) {
@@ -109,7 +106,7 @@ export default new class SettingsManager {
                 insert({
                     section: collection.name,
                     label: collection.name,
-                    element: () => SettingsRenderer.buildSettingsPanel(collection.name, collection.settings, SettingsState[collection.id], this.onSettingChange.bind(this, collection.id), collection.button ? collection.button : null)
+                    element: () => SettingsRenderer.buildSettingsPanel(collection.name, collection.settings, this.state[collection.id], this.onSettingChange.bind(this, collection.id), collection.button ? collection.button : null)
                 });
             }
             for (const panel of this.panels) insert(panel);
@@ -187,16 +184,5 @@ export default new class SettingsManager {
         };
         Events.on("setting-updated", handler);
         return () => {Events.off("setting-updated", handler);};
-    }
-
-    updateSettings(collection, category, id, enabled) {
-
-        if (id == "fork-wp-1") {
-            BdApi.setWindowPreference("transparent", enabled);
-            if (enabled) BdApi.setWindowPreference("backgroundColor", null);
-            else BdApi.setWindowPreference("backgroundColor", "#2f3136");
-        }
-
-        // this.saveSettings();
     }
 };
