@@ -7,6 +7,7 @@ import ThemeManager from "./modules/thememanager";
 import {bdPluginStorage} from "./modules/oldstorage";
 import Events from "./modules/emitter";
 import Settings from "./modules/settingsmanager";
+import DataStore from "./modules/datastore";
 import EmoteModule from "./builtins/emotes";
 
 // Perform some setup
@@ -30,6 +31,7 @@ window.bdEmotes = EmoteModule.Emotes;
 window.bemotes = EmoteModule.blacklist;
 window.bdPluginStorage = bdPluginStorage;
 window.settingsModule = Settings;
+window.DataStore = DataStore;
 
 
 window.BDEvents = Events;

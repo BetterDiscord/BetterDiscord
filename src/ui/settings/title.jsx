@@ -14,6 +14,7 @@ export default class SettingsTitle extends React.Component {
         return <h2 className={titleClass} onClick={() => {this.props.onClick && this.props.onClick();}}>
                 {this.props.text}
                 {this.props.button && <button className="bd-title-button" onClick={this.props.button.onClick}>{this.props.button.title}</button>}
+                {this.props.otherChildren}
                 </h2>;
     }
 }
