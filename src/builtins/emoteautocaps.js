@@ -1,7 +1,8 @@
 import Builtin from "../structs/builtin";
 
-import {Emotes} from "data";
 import {Utilities} from "modules";
+
+import EmoteModule from "./emotes";
 
 export default new class EmoteAutocaps extends Builtin {
     get name() {return "EmoteAutocapitalize";}
@@ -31,7 +32,7 @@ export default new class EmoteAutocaps extends Builtin {
     }
 
     capitalize(value) {
-        const res = Emotes.TwitchGlobal;
+        const res = EmoteModule.getCategory("TwitchGlobal");
         for (const p in res) {
             if (res.hasOwnProperty(p) && value == (p + "").toLowerCase()) {
                 return p;

@@ -49,7 +49,6 @@ export default class ContentManager {
 
     loadState() {
         const saved = DataStore.getData(`${this.prefix}s`);
-        console.log(saved);
         if (!saved) return;
         Object.assign(this.state, saved);
     }
@@ -152,7 +151,6 @@ export default class ContentManager {
         try {__non_webpack_require__(path.resolve(this.contentFolder, filename));}
         catch (error) {return new ContentError(filename, filename, "Could not be compiled.", {message: error.message, stack: error.stack});}
         const content = __non_webpack_require__(path.resolve(this.contentFolder, filename));
-        console.log(content);
         if (this.contentList.find(c => c.id == content.id)) return new ContentError(content.name, filename, `There is already a plugin with name ${content.name}`);
         const error = this.initializeContent(content);
         if (error) return error;

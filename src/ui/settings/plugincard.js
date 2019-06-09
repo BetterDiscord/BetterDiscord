@@ -1,5 +1,5 @@
 // import {SettingsCookie, PluginCookie, Plugins} from "data";
-import {React, ReactDOM, Utilities, PluginManager} from "modules";
+import {React, Utilities, PluginManager} from "modules";
 import CloseButton from "../icons/close";
 // import ReloadIcon from "../icons/reload";
 
@@ -15,6 +15,7 @@ export default class V2C_PluginCard extends React.Component {
         };
         this.hasSettings = typeof this.props.content.plugin.getSettingsPanel === "function";
         this.settingsPanel = "";
+        this.panelRef = React.createRef();
 
         // this.reload = this.reload.bind(this);
         // this.onReload = this.onReload.bind(this);
@@ -23,7 +24,7 @@ export default class V2C_PluginCard extends React.Component {
     componentDidUpdate() {
         if (this.state.settings) {
             if (typeof this.settingsPanel === "object") {
-                this.refs.settingspanel.appendChild(this.settingsPanel);
+                this.panelRef.current.appendChild(this.settingsPanel);
             }
 
             // if (!SettingsCookie["fork-ps-3"]) return;
@@ -38,7 +39,7 @@ export default class V2C_PluginCard extends React.Component {
                 return  (eTop < cTop || eBottom > cBottom);
             };
 
-            const self = $(ReactDOM.findDOMNode(this));
+            const self = $(this.panelRef.current);
             const container = self.parents(".scroller-2FKFPG");
             if (!isHidden(container[0], self[0])) return;
             container.animate({
@@ -67,13 +68,13 @@ export default class V2C_PluginCard extends React.Component {
 
             return React.createElement("li", {className: "settings-open ui-switch-item"},
                     React.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
-                            this.refs.settingspanel.innerHTML = "";
+                            this.panelRef.current.innerHTML = "";
                             self.setState({settings: false});
                         }},
                     React.createElement(CloseButton, null)
                 ),
-                typeof self.settingsPanel === "object" && React.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel"}),
-                typeof self.settingsPanel !== "object" && React.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: {__html: self.settingsPanel}})
+                typeof self.settingsPanel === "object" && React.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef}),
+                typeof self.settingsPanel !== "object" && React.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef, dangerouslySetInnerHTML: {__html: self.settingsPanel}})
             );
         }
 

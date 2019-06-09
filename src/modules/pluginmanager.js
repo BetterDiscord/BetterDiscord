@@ -48,7 +48,7 @@ export default new class PluginManager extends ContentManager {
     loadAllPlugins() {
         const errors = this.loadAllContent();
         this.setupFunctions();
-        Settings.registerPanel("Plugins", {element: () => SettingsRenderer.getPluginsPanel(this.contentList)});
+        Settings.registerPanel("Plugins", {element: () => SettingsRenderer.getPluginsPanel(this.contentList, this.contentFolder)});
         return errors;
     }
 
@@ -58,7 +58,7 @@ export default new class PluginManager extends ContentManager {
         try {
             const thePlugin = new content.type();
             content.plugin = thePlugin;
-            content.name = content.name || thePlugin.getName();
+            content.name = thePlugin.getName() || content.name;
             content.author = content.author || thePlugin.getAuthor() || "No author";
             content.description = content.description || thePlugin.getDescription() || "No description";
             content.version = content.version || thePlugin.getVersion() || "No version";

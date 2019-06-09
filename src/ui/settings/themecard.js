@@ -1,5 +1,5 @@
 import {React, ThemeManager} from "modules";
-import ReloadIcon from "../icons/reload";
+// import ReloadIcon from "../icons/reload";
 // import Toasts from "../toasts";
 
 export default class V2C_ThemeCard extends React.Component {

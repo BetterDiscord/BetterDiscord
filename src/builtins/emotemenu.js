@@ -1,6 +1,8 @@
 import Builtin from "../structs/builtin";
-import {Emotes, State} from "data";
+import {State} from "data";
 import {DataStore, Utilities, Events} from "modules";
+
+import EmoteModule from "./emotes";
 
 const headerHTML = `<div id="bda-qem">
     <button class="active" id="bda-qem-twitch">Twitch</button>
@@ -193,9 +195,9 @@ export default new class EmoteMenu extends Builtin {
 
     updateTwitchEmotes() {
         while (this.teContainerInner.firstChild) this.teContainerInner.firstChild.remove();
-        for (const emote in Emotes.TwitchGlobal) {
-            if (!Emotes.TwitchGlobal.hasOwnProperty(emote)) continue;
-            const url = Emotes.TwitchGlobal[emote];
+        for (const emote in EmoteModule.getCategory("TwitchGlobal")) {
+            if (!EmoteModule.getCategory("TwitchGlobal").hasOwnProperty(emote)) continue;
+            const url = EmoteModule.getCategory("TwitchGlobal")[emote];
             const emoteElement = makeEmote(emote, url, {onClick: this.insertEmote.bind(this, emote)});
             this.teContainerInner.append(emoteElement);
         }

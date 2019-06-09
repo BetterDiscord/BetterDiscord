@@ -1,9 +1,17 @@
 import Builtin from "../structs/builtin";
 
-import {Config, Emotes, EmoteBlacklist, EmoteInfo, EmoteModifiers, EmoteOverrides, State} from "data";
+import {Config, EmoteInfo, State, EmoteConfig} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings} from "modules";
 import BDEmote from "../ui/emote";
 import {Toasts} from "ui";
+
+const Emotes = {
+    TwitchGlobal: {},
+    TwitchSubscriber: {},
+    BTTV: {},
+    FrankerFaceZ: {},
+    BTTV2: {}
+};
 
 const bdEmoteSettingIDs = {
     TwitchGlobal: "twitch",
@@ -13,14 +21,16 @@ const bdEmoteSettingIDs = {
     BTTV2: "bttv"
 };
 
+const blacklist = [];
+const overrides = ["twitch", "bttv", "ffz"];
+const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
+
 export default new class EmoteModule extends Builtin {
     get name() {return "Emotes";}
     get collection() {return "settings";}
     get category() {return "general";}
     get id() {return "emotes";}
     get categories() { return Object.keys(bdEmoteSettingIDs).filter(k => this.isCategoryEnabled(bdEmoteSettingIDs[k])); }
-
-    get MessageContentComponent() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
 
     isCategoryEnabled(id) {
         return super.get("emotes", "categories", id);
@@ -30,7 +40,28 @@ export default new class EmoteModule extends Builtin {
         return super.get("emotes", "general", id);
     }
 
+    get MessageContentComponent() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
+
+    get Emotes() {return Emotes;}
+    get TwitchGlobal() {return Emotes.TwitchGlobal;}
+    get TwitchSubscriber() {return Emotes.TwitchSubscriber;}
+    get BTTV() {return Emotes.BTTV;}
+    get FrankerFaceZ() {return Emotes.FrankerFaceZ;}
+    get BTTV2() {return Emotes.BTTV2;}
+    get blacklist() {return blacklist;}
+
+    getCategory(category) {
+        return Emotes[category];
+    }
+
+    initialize() {
+        super.initialize();
+        // EmoteConfig;
+        // emoteCollection.button = {title: "Clear Emote Cache", onClick: () => { this.clearEmoteData(); this.loadEmoteData(EmoteInfo); }};
+    }
+
     async enabled() {
+        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: "Clear Emote Cache", onClick: () => { this.clearEmoteData(); this.loadEmoteData(EmoteInfo); }});
         // Disable emote module for now because it's annoying and slow
         // await this.getBlacklist();
         // await this.loadEmoteData(EmoteInfo);
@@ -40,8 +71,9 @@ export default new class EmoteModule extends Builtin {
     }
 
     disabled() {
+        Settings.removeCollection("emotes");
         this.emptyEmotes();
-        if (this.cancelEmoteRender) return;
+        if (!this.cancelEmoteRender) return;
         this.cancelEmoteRender();
         delete this.cancelEmoteRender;
     }
@@ -71,9 +103,9 @@ export default new class EmoteModule extends Builtin {
                             let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
                             let emoteOverride = emoteModifier.slice(0);
 
-                            if (emoteName.length < 4 || EmoteBlacklist.includes(emoteName)) continue;
-                            if (!EmoteModifiers.includes(emoteModifier) || !Settings.get(this.category, "general", "modifiers")) emoteModifier = "";
-                            if (!EmoteOverrides.includes(emoteOverride)) emoteOverride = "";
+                            if (emoteName.length < 4 || blacklist.includes(emoteName)) continue;
+                            if (!modifiers.includes(emoteModifier) || !Settings.get(this.category, "general", "modifiers")) emoteModifier = "";
+                            if (!overrides.includes(emoteOverride)) emoteOverride = "";
                             else emoteModifier = emoteOverride;
 
                             let current = this.categories[c];
@@ -211,7 +243,7 @@ export default new class EmoteModule extends Builtin {
                 if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
 
                 for (const emote in parsedData) {
-                    if (emote.length < 4 || EmoteBlacklist.includes(emote)) {
+                    if (emote.length < 4 || blacklist.includes(emote)) {
                         delete parsedData[emote];
                         continue;
                     }
@@ -226,7 +258,7 @@ export default new class EmoteModule extends Builtin {
     getBlacklist() {
         return new Promise(resolve => {
             $.getJSON(`https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json`, function (data) {
-                resolve(EmoteBlacklist.push(...data.blacklist));
+                resolve(blacklist.push(...data.blacklist));
             });
         });
     }
