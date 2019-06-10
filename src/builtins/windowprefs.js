@@ -21,12 +21,12 @@ export default new class WindowPrefs extends Builtin {
     }
 
     enabled() {
-        this.setWindowPreference("transparency", true);
+        this.setWindowPreference("transparent", true);
         this.setWindowPreference("backgroundColor", null);
     }
 
     disabled() {
-        this.setWindowPreference("transparency", false);
+        this.setWindowPreference("transparent", false);
         this.setWindowPreference("backgroundColor", "#2f3136");
     }
 

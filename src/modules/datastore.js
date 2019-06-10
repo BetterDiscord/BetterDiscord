@@ -28,6 +28,7 @@ export default new class DataStore {
         if (!fs.existsSync(this.baseFolder)) fs.mkdirSync(this.baseFolder);
         if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
         if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data.misc, null, 4));
+        if (!fs.existsSync(this.customCSS)) fs.writeFileSync(this.customCSS, "");
         const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
         for (const file of dataFiles) {
             this.data[file.split(".")[0]] = __non_webpack_require__(path.resolve(this.dataFolder, file));
@@ -42,6 +43,7 @@ export default new class DataStore {
         // this.setBDData("settings", settings);
     }
 
+    get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
     get BDFile() {return this._BDFile || (this._BDFile = path.resolve(Config.dataPath, "data", `${releaseChannel}.json`));}
@@ -80,6 +82,14 @@ export default new class DataStore {
         this.data[key] = value;
         // fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
         fs.writeFileSync(path.resolve(this.dataFolder, `${key}.json`), JSON.stringify(value, null, 4));
+    }
+
+    loadCustomCSS() {
+        return fs.readFileSync(this.customCSS).toString();
+    }
+
+    saveCustomCSS(css) {
+        return fs.writeFileSync(this.customCSS, css);
     }
 
     getPluginData(pluginName, key) {
