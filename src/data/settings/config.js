@@ -196,14 +196,16 @@ export default [
                 id: "startDetached",
                 name: "Start Detached",
                 note: "Clicking the Custom CSS tab opens the editor in a separate window",
-                value: false
+                value: false,
+                disableWith: "nativeOpen"
             },
             {
                 type: "switch",
                 id: "nativeOpen",
                 name: "Open in Native Editor",
                 note: "Clicking the Custom CSS tab opens your custom css in your native editor",
-                value: false
+                value: false,
+                disableWith: "startDetached"
             }
         ]
     }

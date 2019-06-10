@@ -85,6 +85,14 @@
   margin-bottom: 10px;
 }
 
+.checkbox-item {
+  display: flex;
+}
+
+.checkbox-item .checkbox-label {
+  margin-right: 8px;
+}
+
 
 
 
@@ -606,7 +614,7 @@ color: #f6f6f7;
 .bd-detached-css-editor #bd-customcss-attach-controls button {
   margin: 0;
   width: 100px;
-  background: #31332b;
+  background: #2F3129;
   color: #FFF;
   height: 26px;
   font-weight: 600;
@@ -616,7 +624,7 @@ color: #f6f6f7;
 
 .standardSidebarView-3F1I7i #bd-customcss-attach-controls button:hover,
 .bd-detached-css-editor #bd-customcss-attach-controls button:hover {
-  background: #3b3e44;
+  background: rgb(59,61,51);
 }
 
 .contentRegion-3nDuYy #bd-customcss-attach-controls,
@@ -768,6 +776,17 @@ color: #f6f6f7;
 #bd-customcss-attach-controls button {
   margin: 0;
   width: 100px;
+  border-radius: 0px;
+  border-left: 2px solid rgb(63, 65, 70);
+}
+
+#bd-customcss-attach-controls button:first-of-type {
+  border-radius: 3px 0px 0px 3px;
+  border-left: none;
+}
+
+#bd-customcss-attach-controls button:last-of-type {
+  border-radius: 0px 3px 3px 0px;
 }
 
 #bd-customcss-detach-container #bd-customcss-detach-controls-buttons button {
@@ -779,8 +798,13 @@ color: #f6f6f7;
   font-size: 19px;
 }
 
+#bd-customcss-attach-controls .small-notice {
+  font-size: 10px;
+  margin-left: 5px;
+}
+
 /* Ace Editor Settings */
-body > div:not([class]):last-of-type {
+#ace_settingsmenu_container {
   background: rgba(0,0,0, 0.7)!important;
 }
 
@@ -816,7 +840,7 @@ body .ace_closeButton:active {
 }
 
 #bd-customcss-attach-controls .help-text .inline {
-  background: #31332B;
+  background: #2F3129;
   padding: .2em;
   margin: -.2em 0;
   border-radius: 3px;

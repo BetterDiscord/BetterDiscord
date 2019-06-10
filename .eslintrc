@@ -34,7 +34,8 @@
         "react/jsx-uses-react": "error",
         "react/jsx-uses-vars": "error",
         "react/prop-types": 0,
-        "react/jsx-no-target-blank": "error"
+        "react/jsx-no-target-blank": "error",
+        "react/jsx-key": 0
     },
     "globals": {
         "webpackJsonp": false,

@@ -5,7 +5,6 @@ import WebpackModules, {DiscordModules} from "./webpackmodules";
 
 import {SettingsPanel as SettingsRenderer} from "ui";
 import Utilities from "./utilities";
-import {Toasts} from "ui";
 
 export default new class SettingsManager {
 
@@ -44,8 +43,8 @@ export default new class SettingsManager {
         if (this.panels.find(p => p.id == id)) return Utilities.err("Settings", "Already have a panel with id " + id);
         const {element, onClick, order = 1} = options;
         const section = {id, order, label: name, section: name};
-        if (onClick) section.onClick = onClick;
-        else section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof(element) == "function" ? element : () => element;
+        if (onClick) section.clickListener = onClick;
+        if (element) section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof(element) == "function" ? element : () => element;
         this.panels.push(section);
     }
 
@@ -84,22 +83,30 @@ export default new class SettingsManager {
                                 }
                             });
                         }
+
+                        if (setting.disableWith) {
+                            const path = this.getPath(setting.disableWith.split("."), collection.id, category.id);
+                            if (setting.hasOwnProperty("disabled")) continue;
+                            Object.defineProperty(setting, "disabled", {
+                                get: () => {
+                                    return this.state[path.collection][path.category][path.setting];
+                                }
+                            });
+                        }
                     }
                 }
-            }
-            if (collection.enableWith) {
-                const path = this.getPath(collection.enableWith.split("."));
-                Object.defineProperty(collection, "disabled", {
-                    get: () => {
-                        return !this.state[path.collection][path.category][path.setting];
-                    }
-                });
             }
         }
     }
 
     async patchSections() {
+        Utilities.monkeyPatch(WebpackModules.getByDisplayName("FluxContainer(GuildSettings)").prototype, "render", {after: (data) => {
+            data.thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
+        }});
         const UserSettings = await this.getUserSettings();
+        Utilities.monkeyPatch(UserSettings.prototype, "render", {after: (data) => {
+            data.thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
+        }});
         Utilities.monkeyPatch(UserSettings.prototype, "generateSections", {after: (data) => {
             let location = data.returnValue.findIndex(s => s.section.toLowerCase() == "linux") + 1;
             const insert = (section) => {
@@ -116,8 +123,10 @@ export default new class SettingsManager {
                     element: () => SettingsRenderer.buildSettingsPanel(collection.name, collection.settings, this.state[collection.id], this.onSettingChange.bind(this, collection.id), collection.button ? collection.button : null)
                 });
             }
-            for (const panel of this.panels.sort((a,b) => a.order > b.order)) insert(panel);
-            insert({section: "BBD Test", label: "Test Tab", onClick: function() {Toasts.success("This can just be a click listener!", {forceShow: true});}});
+            for (const panel of this.panels.sort((a,b) => a.order > b.order)) {
+                if (panel.clickListener) panel.onClick = (event) => panel.clickListener(data.thisObject, event, data.returnValue);
+                insert(panel);
+            }
             insert({section: "CUSTOM", element: () => SettingsRenderer.attribution});
         }});
         this.forceUpdate();
@@ -166,7 +175,7 @@ export default new class SettingsManager {
         Events.dispatch("setting-updated", collection, category, id, value);
         const after = this.collections.length + this.panels.length;
         this.saveSettings();
-        if (before != after) this.forceUpdate();
+        if (before != after) setTimeout(this.forceUpdate.bind(this), 50);
     }
 
     getSetting(collection, category, id) {
