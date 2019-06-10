@@ -1,6 +1,6 @@
 import {React} from "modules";
 
-export default class V2C_ReloadIcon extends React.Component {
+export default class ReloadIcon extends React.Component {
     constructor(props) {
         super(props);
     }

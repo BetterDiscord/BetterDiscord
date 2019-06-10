@@ -49,7 +49,7 @@ export default new class PluginManager extends ContentManager {
     loadAllPlugins() {
         const errors = this.loadAllContent();
         this.setupFunctions();
-        Settings.registerPanel("Plugins", {element: () => SettingsRenderer.getContentPanel("Plugins", this.contentList, this.state, {
+        Settings.registerPanel("plugins", "Plugins", {element: () => SettingsRenderer.getContentPanel("Plugins", this.contentList, this.state, {
             folder: this.contentFolder,
             onChange: this.togglePlugin.bind(this),
             reload: this.reloadPlugin.bind(this),

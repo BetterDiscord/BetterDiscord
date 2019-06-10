@@ -169,5 +169,42 @@ export default [
                 hidden: true
             }
         ]
+    },
+    {
+        type: "category",
+        id: "customcss",
+        name: "Custom CSS",
+        collapsible: true,
+        shown: false,
+        settings: [
+            {
+                type: "switch",
+                id: "customcss",
+                name: "Custom CSS",
+                note: "Enables the Custom CSS tab",
+                value: true
+            },
+            {
+                type: "switch",
+                id: "liveUpdate",
+                name: "Live Update",
+                note: "Updates the css as you type",
+                value: false
+            },
+            {
+                type: "switch",
+                id: "startDetached",
+                name: "Start Detached",
+                note: "Clicking the Custom CSS tab opens the editor in a separate window",
+                value: false
+            },
+            {
+                type: "switch",
+                id: "nativeOpen",
+                name: "Open in Native Editor",
+                note: "Clicking the Custom CSS tab opens your custom css in your native editor",
+                value: false
+            }
+        ]
     }
 ];

@@ -23,7 +23,7 @@ export default new class SettingsManager {
     }
 
     registerCollection(id, name, settings, button = null) {
-        if (this.collections.find(c => c.id == id)) Utilities.err("Settings", "Already have a collection with id " + id);
+        if (this.collections.find(c => c.id == id)) return Utilities.err("Settings", "Already have a collection with id " + id);
         this.collections.push({
             type: "collection",
             id: id,
@@ -36,16 +36,23 @@ export default new class SettingsManager {
 
     removeCollection(id) {
         const location = this.collections.findIndex(c => c.id == id);
-        if (!location < 0) Utilities.err("Settings", "No collection with id " + id);
+        if (!location < 0) return Utilities.err("Settings", "No collection with id " + id);
         this.collections.splice(location, 1);
     }
 
-    registerPanel(name, options) {
-        const {element, onClick} = options;
-        const section = {label: name, section: name};
+    registerPanel(id, name, options) {
+        if (this.panels.find(p => p.id == id)) return Utilities.err("Settings", "Already have a panel with id " + id);
+        const {element, onClick, order = 1} = options;
+        const section = {id, order, label: name, section: name};
         if (onClick) section.onClick = onClick;
         else section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof(element) == "function" ? element : () => element;
         this.panels.push(section);
+    }
+
+    removePanel(id) {
+        const location = this.panels.findIndex(c => c.id == id);
+        if (!location < 0) return Utilities.err("Settings", "No collection with id " + id);
+        this.panels.splice(location, 1);
     }
 
     getPath(path, collectionId = "", categoryId = "") {
@@ -109,7 +116,7 @@ export default new class SettingsManager {
                     element: () => SettingsRenderer.buildSettingsPanel(collection.name, collection.settings, this.state[collection.id], this.onSettingChange.bind(this, collection.id), collection.button ? collection.button : null)
                 });
             }
-            for (const panel of this.panels) insert(panel);
+            for (const panel of this.panels.sort((a,b) => a.order > b.order)) insert(panel);
             insert({section: "BBD Test", label: "Test Tab", onClick: function() {Toasts.success("This can just be a click listener!", {forceShow: true});}});
             insert({section: "CUSTOM", element: () => SettingsRenderer.attribution});
         }});
@@ -142,7 +149,7 @@ export default new class SettingsManager {
         for (const collection in this.state) {
             if (!previousState[collection]) Object.assign(previousState, {[collection]: this.state[collection]});
             for (const category in this.state[collection]) {
-                if (!previousState[collection][category]) Object.assign(previousState[collection][category], {[category]: this.state[collection][category]});
+                if (!previousState[collection][category]) Object.assign(previousState[collection], {[category]: this.state[collection][category]});
                 for (const setting in this.state[collection][category]) {
                     if (previousState[collection][category][setting] == undefined) continue;
                     this.state[collection][category][setting] = previousState[collection][category][setting];
@@ -154,10 +161,10 @@ export default new class SettingsManager {
     }
 
     onSettingChange(collection, category, id, value) {
-        const before = this.collections.length;
+        const before = this.collections.length + this.panels.length;
         this.state[collection][category][id] = value;
         Events.dispatch("setting-updated", collection, category, id, value);
-        const after = this.collections.length;
+        const after = this.collections.length + this.panels.length;
         this.saveSettings();
         if (before != after) this.forceUpdate();
     }
@@ -175,6 +182,16 @@ export default new class SettingsManager {
         }
         if (!this.state[collection] || !this.state[collection][category]) return false;
         return this.state[collection][category][id];
+    }
+
+    set(collection, category, id, value) {
+        if (arguments.length == 3) {
+            value = id;
+            id = category;
+            category = collection;
+            collection = "settings";
+        }
+        return this.onSettingChange(collection, category, id, value);
     }
 
     on(collection, category, identifier, callback) {

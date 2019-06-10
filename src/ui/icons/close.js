@@ -1,6 +1,6 @@
 import {React} from "modules";
 
-export default class V2C_XSvg extends React.Component {
+export default class XSvg extends React.Component {
     constructor(props) {
         super(props);
     }

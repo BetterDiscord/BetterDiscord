@@ -1,5 +1,4 @@
 import {Config} from "data";
-import proxyLocalStorage from "./localstorage";
 import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
 import PluginManager from "./modules/pluginmanager";
@@ -11,7 +10,7 @@ import DataStore from "./modules/datastore";
 import EmoteModule from "./builtins/emotes";
 
 // Perform some setup
-proxyLocalStorage();
+// proxyLocalStorage();
 const loadingIcon = document.createElement("div");
 loadingIcon.className = "bd-loaderv2";
 loadingIcon.title = "BandagedBD is loading...";

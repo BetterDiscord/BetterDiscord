@@ -17,7 +17,7 @@ export default new class ThemeManager extends ContentManager {
     /* Aliases */
     updateThemeList() {return this.updateList();}
     loadAllThemes() {
-        Settings.registerPanel("Themes", {element: () => SettingsRenderer.getContentPanel("Themes", this.contentList, this.state, {
+        Settings.registerPanel("themes", "Themes", {element: () => SettingsRenderer.getContentPanel("Themes", this.contentList, this.state, {
             folder: this.contentFolder,
             onChange: this.toggleTheme.bind(this),
             reload: this.reloadTheme.bind(this),

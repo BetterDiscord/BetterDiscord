@@ -5,11 +5,21 @@ import TabBar from "./tabbar";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
 
-export default class V2C_PublicServers extends React.Component {
+export default class PublicServers extends React.Component {
 
     constructor(props) {
         super(props);
-        this.setInitialState();
+        this.state = {
+            selectedCategory: -1,
+            title: "Loading...",
+            loading: true,
+            servers: [],
+            next: null,
+            connection: {
+                state: 0,
+                user: null
+            }
+        };
         this.close = this.close.bind(this);
         this.changeCategory = this.changeCategory.bind(this);
         this.search = this.search.bind(this);
@@ -27,20 +37,6 @@ export default class V2C_PublicServers extends React.Component {
     componentDidMount() {
         this.checkConnection();
      }
-
-    setInitialState() {
-        this.state = {
-            selectedCategory: -1,
-            title: "Loading...",
-            loading: true,
-            servers: [],
-            next: null,
-            connection: {
-                state: 0,
-                user: null
-            }
-        };
-    }
 
     close() {
         ReactDOM.unmountComponentAtNode(document.getElementById(this.props.rootId));
@@ -236,7 +232,7 @@ export default class V2C_PublicServers extends React.Component {
     }
 
     render() {
-        return React.createElement(SidebarView, {ref: "sbv", children: this.component});
+        return React.createElement(SidebarView, {ref: "sbv"}, this.component);
     }
 
     get component() {

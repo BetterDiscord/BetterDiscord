@@ -1,7 +1,7 @@
 import {React} from "modules";
 import CloseButton from "../icons/close";
 
-export default class V2C_Tools extends React.Component {
+export default class Tools extends React.Component {
 
     constructor(props) {
         super(props);
@@ -30,6 +30,5 @@ export default class V2C_Tools extends React.Component {
         if (this.props.onClick) {
             this.props.onClick();
         }
-        $(".closeButton-1tv5uR").first().click();
     }
 }
