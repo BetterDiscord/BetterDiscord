@@ -1,15 +1,16 @@
 import {React, ReactDOM} from "modules";
 
-export default class V2C_Layer extends React.Component {
+export default class Layer extends React.Component {
 
     constructor(props) {
         super(props);
+        this.rootRef = React.createRef();
     }
 
     componentDidMount() {
         $(window).on(`keyup.${this.props.id}`, e => {
             if (e.which === 27) {
-                ReactDOM.unmountComponentAtNode(this.refs.root.parentNode);
+                ReactDOM.unmountComponentAtNode(this.rootRef.current.parentNode);
             }
         });
 
@@ -42,7 +43,7 @@ export default class V2C_Layer extends React.Component {
 
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         $("[class*=\"layer-\"]").addClass("publicServersOpen").animate({opacity: 0}, {
             step: function(now) {
               $(this).css("transform", `scale(${0.07 * now + 0.93}) translateZ(0px)`);
@@ -54,7 +55,7 @@ export default class V2C_Layer extends React.Component {
     render() {
         return React.createElement(
             "div",
-            {className: "layer bd-layer layer-3QrUeG", id: this.props.id, ref: "root", style: {opacity: 0, transform: "scale(1.1) translateZ(0px)"}},
+            {className: "layer bd-layer layer-3QrUeG", id: this.props.id, ref: this.rootRef, style: {opacity: 0, transform: "scale(1.1) translateZ(0px)"}},
             this.props.children
         );
     }

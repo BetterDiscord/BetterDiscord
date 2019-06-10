@@ -1,9 +1,10 @@
 import {React} from "modules";
 
-export default class V2C_Scroller extends React.Component {
+export default class Scroller extends React.Component {
 
     constructor(props) {
         super(props);
+        this.ref = React.createRef();
     }
 
     render() {
@@ -21,7 +22,7 @@ export default class V2C_Scroller extends React.Component {
             {key: "scrollerwrap", className: wrapperClass},
             React.createElement(
                 "div",
-                {key: "scroller", ref: "scroller", className: scrollerClass},
+                {key: "scroller", ref: this.ref, className: scrollerClass},
                 children
             )
         );

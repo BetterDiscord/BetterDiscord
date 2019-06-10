@@ -3,7 +3,7 @@ import {React, Utilities, Settings} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
 
-export default class V2C_PluginCard extends React.Component {
+export default class PluginCard extends React.Component {
 
     constructor(props) {
         super(props);

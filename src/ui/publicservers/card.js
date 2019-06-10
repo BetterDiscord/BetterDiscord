@@ -1,6 +1,6 @@
 import {React} from "modules";
 
-export default class V2C_ServerCard extends React.Component {
+export default class ServerCard extends React.Component {
     constructor(props) {
         super(props);
         if (!this.props.server.iconUrl) this.props.server.iconUrl = this.props.fallback;
@@ -15,9 +15,6 @@ export default class V2C_ServerCard extends React.Component {
         return React.createElement(
             "div", // cardPrimary-1Hv-to
             {className: `card-3Qj_Yx cardPrimary-1Hv-to marginBottom8-AtZOdT bd-server-card${server.pinned ? " bd-server-card-pinned" : ""}`},
-            // React.createElement(
-                // "div",
-                // { className: "flex-1xMQg5 flex-1O1GKY horizontal-1ae9ci horizontal-2EEEnY flex-1O1GKY directionRow-3v3tfG justifyStart-2yIZo0 alignStretch-1hwxMa noWrap-3jynv6" },
                 React.createElement("img", {ref: "img", className: "bd-server-image", src: server.iconUrl, onError: this.handleError.bind(this)}),
                 React.createElement(
                     "div",

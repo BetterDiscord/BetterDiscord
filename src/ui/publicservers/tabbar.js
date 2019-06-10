@@ -1,17 +1,13 @@
 import {React} from "modules";
 
-class V2C_TabBarItem extends React.Component {
+class TabBarItem extends React.Component {
 
     constructor(props) {
         super(props);
-        this.setInitialState();
-        this.onClick = this.onClick.bind(this);
-    }
-
-    setInitialState() {
         this.state = {
             selected: this.props.selected || false
         };
+        this.onClick = this.onClick.bind(this);
     }
 
     render() {
@@ -29,7 +25,7 @@ class V2C_TabBarItem extends React.Component {
     }
 }
 
-class V2C_TabBarSeparator extends React.Component {
+class TabBarSeparator extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -39,7 +35,7 @@ class V2C_TabBarSeparator extends React.Component {
     }
 }
 
-class V2C_TabBarHeader extends React.Component {
+class TabBarHeader extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -53,14 +49,14 @@ class V2C_TabBarHeader extends React.Component {
     }
 }
 
-export default class V2Cs_TabBar {
+export default class TabBar {
     static get Item() {
-        return V2C_TabBarItem;
+        return TabBarItem;
     }
     static get Header() {
-        return V2C_TabBarHeader;
+        return TabBarHeader;
     }
     static get Separator() {
-        return V2C_TabBarSeparator;
+        return TabBarSeparator;
     }
 }

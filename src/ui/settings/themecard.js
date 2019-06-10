@@ -2,7 +2,7 @@ import {React, Settings} from "modules";
 import ReloadIcon from "../icons/reload";
 // import Toasts from "../toasts";
 
-export default class V2C_ThemeCard extends React.Component {
+export default class ThemeCard extends React.Component {
 
     constructor(props) {
         super(props);

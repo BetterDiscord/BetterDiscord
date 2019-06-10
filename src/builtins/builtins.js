@@ -10,3 +10,5 @@ export {default as VoiceDisconnect} from "./voicedisconnect";
 export {default as EmoteMenu} from "./emotemenu";
 export {default as EmoteAutocaps} from "./emoteautocaps";
 export {default as EmoteModule} from "./emotes";
+export {default as WindowPrefs} from "./windowprefs";
+export {default as CustomCSS} from "./customcss";

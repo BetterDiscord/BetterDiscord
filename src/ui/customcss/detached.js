@@ -1,9 +1,9 @@
 import {SettingsCookie} from "data";
 import {BDV2, DataStore, Core, DiscordModules} from "modules";
 
-import Checkbox from "../settings/checkbox";
+import Checkbox from "./checkbox";
 
-export default class V2C_CssEditorDetached extends DiscordModules.React.Component {
+export default class CssEditorDetached extends DiscordModules.React.Component {
 
     constructor(props) {
         super(props);
