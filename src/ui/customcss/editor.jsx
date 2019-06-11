@@ -11,12 +11,12 @@ export default class CssEditor extends React.Component {
         this.toggleLiveUpdate = this.toggleLiveUpdate.bind(this);
         this.updateCss = this.updateCss.bind(this);
         this.saveCss = this.saveCss.bind(this);
-        this.detach = this.detach.bind(this);
+        this.openDetached = this.props.openDetached ? this.openDetached.bind(this) : null;
         this.openNative = this.openNative.bind(this);
     }
 
     componentDidMount() {
-        this.editor = ace.edit("bd-customcss-editor");
+        this.editor = ace.edit(this.props.editorId || "bd-customcss-editor");
 
         // Add id to the ace menu container
         const originalShow = this.editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec;
@@ -52,9 +52,8 @@ export default class CssEditor extends React.Component {
     render() {
 
         return [
-            <SettingsTitle text="Custom CSS Editor" />,
             <div className="editor-wrapper">
-                <div id="bd-customcss-editor" className="editor">{this.props.css}</div>
+                <div id={this.props.editorId || "bd-customcss-editor"} className="editor">{this.props.css}</div>
             </div>,
             <div id="bd-customcss-attach-controls">
                 <div className="checkbox-group">
@@ -64,8 +63,7 @@ export default class CssEditor extends React.Component {
                     <button className="btn btn-primary" onClick={this.updateCss}>Update</button>
                     <button className="btn btn-primary" onClick={this.saveCss}>Save</button>
                     <button className="btn btn-primary" onClick={this.openNative}>Open Natively</button>
-                    <button className="btn btn-primary" onClick={this.detach}>Detach</button>
-                    <span className="small-notice">Unsaved changes are lost on detach</span>
+                    {this.openDetached && [<button className="btn btn-primary" onClick={this.openDetached}>Detach</button>, <span className="small-notice">Unsaved changes are lost on detach</span>]}
                     <div className="help-text">
                         Press <code className="inline">ctrl</code>+<code className="inline">,</code> with the editor focused to access the editor&apos;s settings.
                     </div>
@@ -88,7 +86,7 @@ export default class CssEditor extends React.Component {
         if (this.props.save) this.props.save(newCss);
     }
 
-    detach() {
+    openDetached() {
         if (this.props.openDetached) this.props.openDetached();
     }
 
