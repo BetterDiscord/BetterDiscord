@@ -1,8 +1,15 @@
 import Builtin from "../structs/builtin";
-import {Settings, DataStore, React, Utilities} from "modules";
+import {Settings, DataStore, React, Utilities, WebpackModules} from "modules";
 import CSSEditor from "../ui/customcss/editor";
+import FloatingWindow from "../ui/customcss/detached";
+
+import SettingsTitle from "../ui/settings/title";
 
 const electron = require("electron");
+const PopoutStack = WebpackModules.getByProps("open", "closeAll");
+const PopoutOpener = WebpackModules.getByProps("openPopout");
+
+
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
@@ -24,12 +31,13 @@ export default new class CustomCSS extends Builtin {
         }
         Settings.registerPanel(this.id, this.name, {
             order: 2,
-            element: () => React.createElement(CSSEditor, {
+            element: () => [<SettingsTitle text="Custom CSS Editor" />, React.createElement(CSSEditor, {
                 css: this.css,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
-                openNative: this.openNative.bind(this)
-            }),
+                openNative: this.openNative.bind(this),
+                openDetached: this.openDetached.bind(this)
+            })],
             onClick: (thisObject) => {
                 if (this.nativeOpen) this.openNative();
                 else if (this.startDetached) this.openDetached();
@@ -67,63 +75,69 @@ export default new class CustomCSS extends Builtin {
 
     openDetached() {
         this.log("Should open detached");
-        const options = {
-            width: 500,
-            height: 550,
-            backgroundColor: "#282b30",
-            show: true,
-            resizable: false,
-            maximizable: false,
-            minimizable: false,
-            alwaysOnTop: true,
-            frame: true,
-            center: false,
-            webPreferences: {
-                nodeIntegration: true
-            }
-        };
-
-        const detached = new electron.remote.Browserdetached(options);
-        detached.setMenu(null);
-        detached.loadURL("about:blank");
-        detached.webContents.executeJavaScript(`var electron = require("electron");`);
-        detached.webContents.executeJavaScript(`var sender, receiver = electron.ipcRenderer;`);
-        detached.webContents.executeJavaScript(`receiver.on("bd-handshake", function(emitter, senderID) {
-            console.log(arguments);
-            sender = electron.remote.BrowserWindow.fromId(senderID);
-            receiver.removeAllListeners("bd-handshake");
-        });`);
-        detached.send("bd-handshake", electron.remote.getCurrentWindow().id);
-        React.createElement(CSSEditor, {
-            css: this.css,
-            save: this.saveCSS.bind(this),
-            update: this.insertCSS.bind(this),
-            openNative: this.openNative.bind(this)
+        PopoutStack.open({
+            animationType: "none",
+            arrowAlignment: "top",
+            backdrop: false,
+            closeOnScroll: false,
+            key: this.id,
+            forceTheme: "no-transform",
+            position: "top",
+            preventCloseFromModal: true,
+            preventClickPropagation: true,
+            preventCloseOnUnmount: true,
+            preventInvert: false,
+            render: (props) => {
+                return React.createElement(FloatingWindow, Object.assign({}, props, {
+                    close: () => {PopoutStack.close(this.id);},
+                    isPopout: true,
+                    title: "Custom CSS Editor",
+                    className: "testme",
+                    id: "test",
+                    height: 400,
+                    width: 500,
+                    center: true
+                }), React.createElement(CSSEditor, {
+                    editorId: "bd-floating-editor",
+                    css: this.css,
+                    save: this.saveCSS.bind(this),
+                    update: this.insertCSS.bind(this),
+                    openNative: this.openNative.bind(this)
+                }));
+            },
+            shadow: false,
+            showArrow: false,
+            zIndexBoost: 0
         });
     }
 };
 
-// function addListeners(){
-//     document.getElementById('test').addEventListener('mousedown', mouseDown, false);
-//     window.addEventListener('mouseup', mouseUp, false);
-
-// }
-
-// function mouseUp()
-// {
-//     window.removeEventListener('mousemove', divMove, true);
-// }
-
-// function mouseDown(e){
-//   var div = document.getElementById('test');
-//   offY= e.clientY-parseInt(div.offsetTop);
-//   offX= e.clientX-parseInt(div.offsetLeft);
-//  window.addEventListener('mousemove', divMove, true);
-// }
-
-// function divMove(e){
-//     var div = document.getElementById('test');
-//   div.style.position = 'absolute';
-//   div.style.top = (e.clientY-offY) + 'px';
-//   div.style.left = (e.clientX-offX) + 'px';
+// const test = {
+// animationType: "default",
+// arrowAlignment: "top",
+// backdrop: false,
+// clickPos: 74,
+// closeOnScroll: false,
+// containerClass: undefined,
+// dependsOn: undefined,
+// forceTheme: undefined,
+// key: "floating-window",
+// offsetX: 15,
+// offsetY: 0,
+// position: "left",
+// preventCloseFromModal: false,
+// preventClickPropagation: true,
+// preventInvert: false,
+// render: function() {
+//     console.log(arguments);
+//     return DiscordModules.React.createElement("div", Object.assign({}, arguments[0], {className: "testme", id: "test"}));
+// },
+// shadow: false,
+// showArrow: false,
+// target: $("div.memberOnline-1CIh-0.member-3W1lQa.da-memberOnline.da-member")[0],
+// targetHeight: 40,
+// targetWidth: 224,
+// x: 1211,
+// y: 357,
+// zIndexBoost: 0
 // }

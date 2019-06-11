@@ -1,98 +1,160 @@
-import {React, Settings} from "modules";
+import {React} from "modules";
 
-import Checkbox from "./checkbox";
-import SettingsTitle from "../settings/title";
+import CloseButton from "../icons/close";
 
-export default class CssEditor extends React.Component {
+class Screen {
+    /** Document/window width */
+    static get width() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); }
+    /** Document/window height */
+    static get height() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
+}
+
+export default class FloatingWindow extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.toggleLiveUpdate = this.toggleLiveUpdate.bind(this);
-        this.updateCss = this.updateCss.bind(this);
-        this.saveCss = this.saveCss.bind(this);
-        this.detach = this.detach.bind(this);
-        this.openNative = this.openNative.bind(this);
+        this.props.forceTheme = "dont-transform";
+
+        // this.state = {x: 0, y: 0};
+        this.offX = 0;
+        this.offY = 0;
+
+        this.titlebar = React.createRef();
+        this.window = React.createRef();
+
+        this.close = this.close.bind(this);
+        this.onDrag = this.onDrag.bind(this);
+        this.onDragStart = this.onDragStart.bind(this);
+        this.onDragStop = this.onDragStop.bind(this);
     }
 
     componentDidMount() {
-        this.editor = ace.edit("bd-customcss-editor");
-
-        // Add id to the ace menu container
-        const originalShow = this.editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec;
-        this.editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec = function() {
-            originalShow.apply(this, arguments);
-            const observer = new MutationObserver(mutations => {
-                for (const mutation of mutations) {
-                    if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
-                    const node = mutation.addedNodes[0];
-                    if (node.parentElement !== document.body || !node.querySelector("#ace_settingsmenu")) continue;
-                    node.id = "ace_settingsmenu_container";
-                    observer.disconnect();
-                }
+        if (this.props.isPopout) {
+            console.log(this);
+            const popout = this._reactInternalFiber.return.return.return.stateNode;
+            setImmediate(() => {
+                document.removeEventListener("click", popout.close, true);
+                if (!this.props.close) this.props.close = popout.close;
             });
-            observer.observe(document.body, {childList: true});
-        };
+        }
 
-        this.editor.setTheme("ace/theme/monokai");
-        this.editor.session.setMode("ace/mode/css");
-        this.editor.setShowPrintMargin(false);
-        this.editor.setFontSize(14);
-        this.editor.on("change", () => {
-            if (!Settings.get("settings", "customcss", "liveUpdate")) return;
-            this.saveCss();
-            this.updateCss();
-        });
+        this.titlebar.current.addEventListener("mousedown", this.onDragStart, false);
+        document.addEventListener("mouseup", this.onDragStop, false);
+    }
+
+    onDragStop(e) {
+        // e.preventDefault();
+        // e.stopPropagation();
+        document.removeEventListener("mousemove", this.onDrag, true);
+    }
+
+    onDragStart(e) {
+        // e.preventDefault();
+        // e.stopPropagation();
+        const div = this.window.current;
+        console.log(div.offsetTop, div.offsetLeft);
+        this.offY = e.clientY - parseInt(div.offsetTop);
+        this.offX = e.clientX - parseInt(div.offsetLeft);
+        document.addEventListener("mousemove", this.onDrag, true);
+    }
+
+    onDrag(e) {
+        // e.preventDefault();
+        // e.stopPropagation();
+        const div = this.window.current;
+        div.style.position = "fixed";
+        div.style.top = (e.clientY - this.offY) + "px";
+        div.style.left = (e.clientX - this.offX) + "px";
     }
 
     componentWillUnmount() {
-        this.editor.destroy();
+        this.titlebar.current.removeEventListener("mousedown", this.onDragStart, false);
+        document.removeEventListener("mouseup", this.onDragStop, false);
     }
 
     render() {
-
-        return [
-            <SettingsTitle text="Custom CSS Editor" />,
-            <div className="editor-wrapper">
-                <div id="bd-customcss-editor" className="editor">{this.props.css}</div>
-            </div>,
-            <div id="bd-customcss-attach-controls">
-                <div className="checkbox-group">
-                    <Checkbox text="Live Update" onChange={this.toggleLiveUpdate} checked={Settings.get("settings", "customcss", "liveUpdate")} />
-                </div>
-                <div id="bd-customcss-detach-controls-button">
-                    <button className="btn btn-primary" onClick={this.updateCss}>Update</button>
-                    <button className="btn btn-primary" onClick={this.saveCss}>Save</button>
-                    <button className="btn btn-primary" onClick={this.openNative}>Open Natively</button>
-                    <button className="btn btn-primary" onClick={this.detach}>Detach</button>
-                    <span className="small-notice">Unsaved changes are lost on detach</span>
-                    <div className="help-text">
-                        Press <code className="inline">ctrl</code>+<code className="inline">,</code> with the editor focused to access the editor&apos;s settings.
+        const top = this.props.center ? (Screen.height / 2) - (this.props.height / 2) : this.props.top;
+        const left = this.props.center ? (Screen.width / 2) - (this.props.width / 2) : this.props.left ;
+        console.log(top, left);
+        const styles = {height: this.props.height, width: this.props.width, left: left || 0, top: top || 0};
+        return <div id={this.props.id} className={"floating-window " + this.props.className} ref={this.window} style={styles}>
+                    <div className="floating-window-titlebar" ref={this.titlebar}>
+                        <span className="title">{this.props.title}</span>
+                        <div className="floating-window-buttons">
+                            <div className="button close-button" onClick={this.close}>
+                                <CloseButton />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        ];
+                    <div className="floating-window-content">
+                        {this.props.children}
+                    </div>
+                </div>;
     }
 
-    toggleLiveUpdate(checked) {
-        Settings.set("settings", "customcss", "liveUpdate", checked);
-    }
-
-    updateCss() {
-        const newCss = this.editor.session.getValue();
-        if (this.props.update) this.props.update(newCss);
-    }
-
-    saveCss() {
-        const newCss = this.editor.session.getValue();
-        if (this.props.save) this.props.save(newCss);
-    }
-
-    detach() {
-        if (this.props.openDetached) this.props.openDetached();
-    }
-
-    openNative() {
-        if (this.props.openNative) this.props.openNative();
+    close() {
+        console.log("click close");
+        if (this.props.close) this.props.close();
     }
 }
+//target, props (with render), key, event
+// function addListeners(){
+//     document.getElementById('test').addEventListener('mousedown', mouseDown, false);
+//     window.addEventListener('mouseup', mouseUp, false);
+
+// }
+
+// function mouseUp()
+// {
+//     window.removeEventListener('mousemove', divMove, true);
+// }
+
+// function mouseDown(e){
+//   var div = document.getElementById('test');
+//   offY= e.clientY-parseInt(div.offsetTop);
+//   offX= e.clientX-parseInt(div.offsetLeft);
+//  window.addEventListener('mousemove', divMove, true);
+// }
+
+// function divMove(e){
+//     var div = document.getElementById('test');
+//   div.style.position = 'absolute';
+//   div.style.top = (e.clientY-offY) + 'px';
+//   div.style.left = (e.clientX-offX) + 'px';
+// }
+
+// const test = {
+// animationType: "default",
+// arrowAlignment: "top",
+// backdrop: false,
+// clickPos: 74,
+// closeOnScroll: false,
+// containerClass: undefined,
+// dependsOn: undefined,
+// forceTheme: undefined,
+// key: "floating-window",
+// offsetX: 15,
+// offsetY: 0,
+// position: "left",
+// preventCloseFromModal: false,
+// preventClickPropagation: true,
+// preventInvert: false,
+// render: function() {
+//     console.log(arguments);
+//     return DiscordModules.React.createElement("div", Object.assign({}, arguments[0], {className: "testme", id: "test"}));
+// },
+// shadow: false,
+// showArrow: false,
+// target: $("div.memberOnline-1CIh-0.member-3W1lQa.da-memberOnline.da-member")[0],
+// targetHeight: 40,
+// targetWidth: 224,
+// x: 1211,
+// y: 357,
+// zIndexBoost: 0
+// }
+
+// modaltest = function() {
+//     console.log(arguments);
+//     return DiscordModules.React.createElement("div", Object.assign({}, arguments[0], {className: "testme", id: "test"}));
+// }
