@@ -46,7 +46,7 @@ export default class CoreWrapper {
     }
 }
 
-export function patchModuleLoad() {
+function patchModuleLoad() {
     const namespace = "betterdiscord";
     const prefix = `${namespace}/`;
     const Module = require("module");
@@ -75,6 +75,8 @@ export function patchModuleLoad() {
         Module._load = load;
     };
 }
+
+patchModuleLoad();
 
 // export function getPluginByModule(module) {
 //     return this.localContent.find(plugin => module.filename === plugin.contentPath || module.filename.startsWith(plugin.contentPath + path.sep));

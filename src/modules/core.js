@@ -40,7 +40,7 @@ Core.prototype.init = async function() {
     //     // QuickEmoteMenu.init();
     // });
 
-    this.injectExternals();
+    // this.injectExternals();
 
     await this.checkForGuilds();
     BDV2.initialize();
@@ -81,11 +81,6 @@ Core.prototype.checkForGuilds = function() {
             setTimeout(checkForGuilds, 100);
         });
     });
-};
-
-Core.prototype.injectExternals = async function() {
-    await Utilities.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
-    if (window.require.original) window.require = window.require.original;
 };
 
 Core.prototype.initObserver = function () {
