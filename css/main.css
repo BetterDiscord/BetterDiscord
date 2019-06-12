@@ -156,6 +156,12 @@
 
 
 
+.floating-window-content #bd-editor-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .floating-window-content {
   display: flex;
   flex-direction: column;

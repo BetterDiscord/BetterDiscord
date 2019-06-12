@@ -1,15 +1,12 @@
 import Builtin from "../structs/builtin";
 import {Settings, DataStore, React, Utilities, WebpackModules} from "modules";
-import CSSEditor from "../ui/customcss/editor";
+import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindow from "../ui/customcss/detached";
 
 import SettingsTitle from "../ui/settings/title";
 
 const electron = require("electron");
 const PopoutStack = WebpackModules.getByProps("open", "closeAll");
-const PopoutOpener = WebpackModules.getByProps("openPopout");
-
-
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
@@ -20,7 +17,8 @@ export default new class CustomCSS extends Builtin {
 
     constructor() {
         super();
-        this.css = "";
+        this.savedCss = "";
+        this.insertedCss = "";
     }
 
     async enabled() {
@@ -32,7 +30,7 @@ export default new class CustomCSS extends Builtin {
         Settings.registerPanel(this.id, this.name, {
             order: 2,
             element: () => [<SettingsTitle text="Custom CSS Editor" />, React.createElement(CSSEditor, {
-                css: this.css,
+                css: this.savedCss,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
                 openNative: this.openNative.bind(this),
@@ -45,7 +43,7 @@ export default new class CustomCSS extends Builtin {
             }
         });
         this.loadCSS();
-        this.insertCSS();
+        this.insertCSS(this.savedCss);
     }
 
     disabled() {
@@ -53,11 +51,12 @@ export default new class CustomCSS extends Builtin {
     }
 
     loadCSS() {
-        this.css = DataStore.loadCustomCSS();
+        this.savedCss = DataStore.loadCustomCSS();
     }
 
     insertCSS(newCss) {
-        if (typeof(newCss) === "undefined") newCss = this.css;
+        if (typeof(newCss) === "undefined") newCss = this.insertedCss;
+        else this.insertedCss = newCss;
         if ($("#customcss").length == 0) {
             $("head").append("<style id=\"customcss\"></style>");
         }
@@ -65,8 +64,8 @@ export default new class CustomCSS extends Builtin {
     }
 
     saveCSS(newCss) {
-        if (typeof(newCss) !== "undefined") this.css = newCss;
-        DataStore.saveCustomCSS(this.css);
+        if (typeof(newCss) !== "undefined") this.savedCss = newCss;
+        DataStore.saveCustomCSS(this.savedCss);
     }
 
     openNative() {
@@ -98,8 +97,8 @@ export default new class CustomCSS extends Builtin {
                     width: 500,
                     center: true
                 }), React.createElement(CSSEditor, {
-                    editorId: "bd-floating-editor",
-                    css: this.css,
+                    id: "bd-floating-editor",
+                    css: this.savedCss,
                     save: this.saveCSS.bind(this),
                     update: this.insertCSS.bind(this),
                     openNative: this.openNative.bind(this)
