@@ -9,7 +9,8 @@ export default class SidebarView extends React.Component {
 
     render() {
         const {sidebar, content, tools} = this.props.children;
-        return React.createElement(
+        return React.createElement("div", {className: this.props.className || "", id: this.props.id || ""},
+        React.createElement(
             "div",
             {className: "standardSidebarView-3F1I7i ui-standard-sidebar-view"},
             React.createElement(
@@ -22,6 +23,6 @@ export default class SidebarView extends React.Component {
                     React.createElement(Scroller, {key: "contentScroller", contentColumn: true, fade: content.fade || true, dark: content.dark || true}, content.component, tools.component)
                 )
             )
-        );
+        ));
     }
 }

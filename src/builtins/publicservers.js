@@ -1,6 +1,8 @@
 import Builtin from "../structs/builtin";
-import {BDV2, DiscordModules} from "modules";
-import {PublicServers as PSComponents} from "ui";
+import {BDV2, DiscordModules, WebpackModules} from "modules";
+import {PublicServersMenu} from "ui";
+
+const LayerStack = WebpackModules.getByProps("pushLayer");
 
 export default new class PublicServers extends Builtin {
     get name() {return "PublicServers";}
@@ -17,37 +19,8 @@ export default new class PublicServers extends Builtin {
         $("#bd-pub-li").remove();
     }
 
-    get component() {
-        return DiscordModules.React.createElement(PSComponents.Layer, {
-            rootId: "pubslayerroot",
-            id: "pubslayer"
-        }, DiscordModules.React.createElement(PSComponents.Menu, {rootId: "pubslayerroot"}));
-    }
-
-    get root() {
-        const _root = document.getElementById("pubslayerroot");
-        if (!_root) {
-            if (!this.injectRoot()) return null;
-            return this.root;
-        }
-        return _root;
-    }
-
-    injectRoot() {
-        if (!$(".layers, .layers-3iHuyZ").length) return false;
-        $(".layers, .layers-3iHuyZ").append($("<div/>", {
-            id: "pubslayerroot"
-        }));
-        return true;
-    }
-
-    render() {
-        const root = this.root;
-        if (!root) {
-            this.error("FAILED TO LOCATE ROOT: .layers");
-            return;
-        }
-        DiscordModules.ReactDOM.render(this.component, root);
+    openPublicServers() {
+        LayerStack.pushLayer(() => DiscordModules.React.createElement(PublicServersMenu, {close: LayerStack.popLayer}));
     }
 
     get button() {
@@ -58,7 +31,7 @@ export default new class PublicServers extends Builtin {
             "class": "wrapper-25eVIn " + BDV2.guildClasses.circleButtonMask,
             "text": "public",
             "id": "bd-pub-button",
-            "click": () => { this.render(); }
+            "click": () => { this.openPublicServers(); }
         }));
 
         return btn;

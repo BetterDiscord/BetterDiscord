@@ -1,4 +1,4 @@
-import {React, ReactDOM, WebpackModules} from "modules";
+import {React, WebpackModules} from "modules";
 import SidebarView from "./sidebarview";
 import Tools from "./exitbutton";
 import TabBar from "./tabbar";
@@ -39,7 +39,7 @@ export default class PublicServers extends React.Component {
      }
 
     close() {
-        ReactDOM.unmountComponentAtNode(document.getElementById(this.props.rootId));
+        this.props.close();
     }
 
     search(query, clear) {
@@ -232,7 +232,7 @@ export default class PublicServers extends React.Component {
     }
 
     render() {
-        return React.createElement(SidebarView, {ref: "sbv"}, this.component);
+        return React.createElement(SidebarView, {id: "pubslayer", ref: "sbv"}, this.component);
     }
 
     get component() {
@@ -252,7 +252,7 @@ export default class PublicServers extends React.Component {
     get sidebar() {
         return React.createElement(
             "div",
-            {className: "sidebar", key: "ps"},
+            {className: "sidebar-CFHs9e da-sidebar sidebar", key: "ps"},
             React.createElement(
                 "div",
                 {className: "ui-tab-bar SIDE"},

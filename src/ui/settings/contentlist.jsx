@@ -26,7 +26,7 @@ export default class ContentList extends React.Component {
         const showReloadIcon = !Settings.get("settings", "content", "autoReload");
         const button = folder ? {title: `Open ${title} Folder`, onClick: () => {require("electron").shell.openItem(folder);}} : null;
         return [
-            <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon onClick={this.reload.bind(this)} />} />,
+            <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon className="bd-reload" onClick={this.reload.bind(this)} />} />,
             <ul key="ContentList" className={"bda-slist"}>
             {contentList.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(content => {
                 const CardType = content.type ? PluginCard : ThemeCard;
