@@ -1,5 +1,4 @@
-import SettingsPanel from "./settings/settings";
-import * as PublicServers from "./publicservers/publicservers";
+export {default as SettingsPanel} from "./settings/settings";
+export {default as PublicServersMenu} from "./publicservers/menu";
 export {default as Toasts} from "./toasts";
 export {default as Modals} from "./modals";
-export {SettingsPanel, PublicServers};

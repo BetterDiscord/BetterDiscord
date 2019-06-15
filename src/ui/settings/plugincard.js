@@ -96,7 +96,7 @@ export default class PluginCard extends React.Component {
                         React.createElement("span", {className: "bda-author"}, author)
                     ),
                     React.createElement("div", {className: "bda-controls"},
-                        !Settings.get("settings", "content", "autoReload") && React.createElement(ReloadIcon, {className: "bd-reload-card", onClick: this.reload}),
+                        !Settings.get("settings", "content", "autoReload") && React.createElement(ReloadIcon, {className: "bd-reload bd-reload-card", onClick: this.reload}),
                         React.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             React.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             React.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
