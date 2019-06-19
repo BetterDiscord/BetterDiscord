@@ -1426,7 +1426,7 @@ var ContentManager = (() => {
             if (!parsed.name) throw new MetaError("META missing name data.");
             return parsed;
         }
-    
+
         parseNewMeta(content) {
             const block = content.split("/**", 2)[1].split("*/", 1)[0];
             const out = {};
@@ -1465,7 +1465,7 @@ var ContentManager = (() => {
                 const meta = self.extractMeta(content);
                 meta.filename = path.basename(filename);
                 if (!isPlugin) {
-                    meta.css = content.split("\n").slice(1).join("\n");
+                    meta.css = content;
                     content = `module.exports = ${JSON.stringify(meta)};`;
                 }
                 if (isPlugin) {
