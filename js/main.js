@@ -1354,7 +1354,7 @@ var ContentManager = (() => {
     }
     const originalJSRequire = Module._extensions[".js"];
     const originalCSSRequire = Module._extensions[".css"] ? Module._extensions[".css"] : () => {return null;};
-    const splitRegex = /[^\S\r\n]*?\n[^\S\r\n]*?\*[^\S\r\n]?/;
+    const splitRegex = /[^\S\r\n]*?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
     const escapedAtRegex = /^\\@/;
 
 
@@ -1424,6 +1424,7 @@ var ContentManager = (() => {
             const parsed = Utils.testJSON(rawMeta);
             if (!parsed) throw new MetaError("META could not be parsed.");
             if (!parsed.name) throw new MetaError("META missing name data.");
+            parsed.format = "json";
             return parsed;
         }
 
@@ -1446,6 +1447,7 @@ var ContentManager = (() => {
             }
             out[field] = accum.trim();
             delete out[""];
+            out.format = "jsdoc";
             return out;
         }
 
@@ -1466,6 +1468,7 @@ var ContentManager = (() => {
                 meta.filename = path.basename(filename);
                 if (!isPlugin) {
                     meta.css = content;
+                    if (meta.format == "json") meta.css = meta.css.split("\n").slice(1).join("\n");
                     content = `module.exports = ${JSON.stringify(meta)};`;
                 }
                 if (isPlugin) {
