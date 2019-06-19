@@ -11,7 +11,8 @@ class FloatingWindowContainer extends React.Component {
 
     render() {
         return this.state.windows.map(window => 
-            <FloatingWindow onResize={window.onResize} close={this.close.bind(this, window.id)} title={window.title} id={window.id} height={window.height} width={window.width} center={window.center} resizable={window.resizable}>
+            // <FloatingWindow onResize={window.onResize} close={this.close.bind(this, window.id)} title={window.title} id={window.id} height={window.height} width={window.width} center={window.center} resizable={window.resizable}>
+            <FloatingWindow {...window} close={this.close.bind(this, window.id)}>
                     {window.children}
             </FloatingWindow>    
         );

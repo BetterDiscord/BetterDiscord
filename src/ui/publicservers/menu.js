@@ -1,16 +1,26 @@
 import {React, WebpackModules} from "modules";
-import SidebarView from "./sidebarview";
 import Tools from "./exitbutton";
 import TabBar from "./tabbar";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
+
+const AvatarDefaults = WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");
+const InviteActions = WebpackModules.getByProps("acceptInvite");
+const SortedGuildStore = WebpackModules.getByProps("getSortedGuilds");
+const SettingsView = WebpackModules.getByDisplayName("SettingsView");
+//SettingsView
+//onClose pop layer
+//onSetSection dispatch user settings modal set section section subsection
+//section selected one
+//sections []
+//theme dark
 
 export default class PublicServers extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            selectedCategory: -1,
+            selectedCategory: "All",
             title: "Loading...",
             loading: true,
             servers: [],
@@ -27,11 +37,6 @@ export default class PublicServers extends React.Component {
         this.checkConnection = this.checkConnection.bind(this);
         this.join = this.join.bind(this);
         this.connect = this.connect.bind(this);
-
-        this.GuildStore = WebpackModules.getByProps("getGuilds");
-        this.AvatarDefaults = WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");
-        this.InviteActions = WebpackModules.getByProps("acceptInvite");
-        this.SortedGuildStore = WebpackModules.getByProps("getSortedGuilds");
     }
 
     componentDidMount() {
@@ -43,39 +48,39 @@ export default class PublicServers extends React.Component {
     }
 
     search(query, clear) {
-        const self = this;
-
         $.ajax({
             method: "GET",
-            url: `${self.endPoint}${query}${query ? "&schema=new" : "?schema=new"}`,
+            url: `${this.endPoint}${query}${query ? "&schema=new" : "?schema=new"}`,
             success: data => {
                 let servers = data.results.reduce((arr, server) => {
                     server.joined = false;
                     arr.push(server);
-                    // arr.push(<ServerCard server={server} join={self.join}/>);
+                    // arr.push(<ServerCard server={server} join={this.join}/>);
                     return arr;
                 }, []);
 
                 if (!clear) {
-                    servers = self.state.servers.concat(servers);
+                    servers = this.state.servers.concat(servers);
                 }
                 else {
-                    //servers.unshift(self.bdServer);
+                    //servers.unshift(this.bdServer);
                 }
+
+                console.log(data);
 
                 let end = data.size + data.from;
                 data.next = `?from=${end}`;
-                if (self.state.term) data.next += `&term=${self.state.term}`;
-                if (self.state.selectedCategory) data.next += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
+                if (this.state.term) data.next += `&term=${this.state.term}`;
+                if (this.state.selectedCategory) data.next += `&category=${this.state.selectedCategory}`;
                 if (end >= data.total) {
                     end = data.total;
                     data.next = null;
                 }
 
-                let title = `Showing 1-${end} of ${data.total} results in ${self.categoryButtons[self.state.selectedCategory]}`;
-                if (self.state.term) title += ` for ${self.state.term}`;
+                let title = `Showing 1-${end} of ${data.total} results in ${this.state.selectedCategory}`;
+                if (this.state.term) title += ` for ${this.state.term}`;
 
-                self.setState({
+                this.setState({
                     loading: false,
                     title: title,
                     servers: servers,
@@ -83,12 +88,12 @@ export default class PublicServers extends React.Component {
                 });
 
                 if (clear) {
-                    //console.log(self);
-                    self.refs.sbv.refs.contentScroller.scrollTop = 0;
+                    //console.log(this);
+                    // this.refs.sbv.refs.contentScroller.scrollTop = 0;
                 }
             },
             error: () => {
-                self.setState({
+                this.setState({
                     loading: false,
                     title: "Failed to load servers. Check console for details"
                 });
@@ -97,7 +102,7 @@ export default class PublicServers extends React.Component {
     }
 
     join(serverCard) {
-        if (serverCard.props.pinned) return this.InviteActions.acceptInvite(serverCard.props.invite_code);
+        if (serverCard.props.pinned) return InviteActions.acceptInvite(serverCard.props.invite_code);
         $.ajax({
             method: "GET",
             url: `${this.joinEndPoint}/${serverCard.props.server.identifier}`,
@@ -123,8 +128,8 @@ export default class PublicServers extends React.Component {
 
         this.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
         const url = "https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=https://auth.discordservers.com/info";
-        this.joinWindow.webContents.on("did-navigate", (event, url) => {
-            if (url != "https://auth.discordservers.com/info") return;
+        this.joinWindow.webContents.on("did-navigate", (event, navUrl) => {
+            if (navUrl != "https://auth.discordservers.com/info") return;
             this.joinWindow.close();
             this.checkConnection();
         });
@@ -162,8 +167,8 @@ export default class PublicServers extends React.Component {
             invite_code: "0Tmfo5ZbORCRqbAd",
             pinned: true
         };
-        const guildList = this.SortedGuildStore.guildPositions;
-        const defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
+        const guildList = SortedGuildStore.guildPositions;
+        const defaultList = AvatarDefaults.DEFAULT_AVATARS;
         return React.createElement(ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
     }
 
@@ -180,7 +185,6 @@ export default class PublicServers extends React.Component {
     }
 
     checkConnection() {
-        const self = this;
         try {
             $.ajax({
                 method: "GET",
@@ -195,21 +199,21 @@ export default class PublicServers extends React.Component {
                 },
                 success: data => {
                     // Utils.log("PublicServer", "Got data: " + JSON.stringify(data));
-                    self.setState({
-                        selectedCategory: 0,
+                    this.setState({
+                        selectedCategory: "All",
                         connection: {
                             state: 2,
                             user: data
                         }
                     });
-                    self.search("", true);
+                    this.search("", true);
 
                 },
                 error: () => {
-                    self.setState({
+                    this.setState({
                         title: "Not connected to discordservers.com!",
                         loading: true,
-                        selectedCategory: -1,
+                        selectedCategory: "All",
                         connection: {
                             state: 1,
                             user: null
@@ -219,10 +223,10 @@ export default class PublicServers extends React.Component {
             });
         }
         catch (error) {
-            self.setState({
+            this.setState({
                 title: "Not connected to discordservers.com!",
                 loading: true,
-                selectedCategory: -1,
+                selectedCategory: "All",
                 connection: {
                     state: 1,
                     user: null
@@ -231,8 +235,37 @@ export default class PublicServers extends React.Component {
         }
     }
 
+    //SettingsView
+//onClose pop layer
+//onSetSection dispatch user settings modal set section section subsection
+//section selected one
+//sections []
+//theme dark
+
     render() {
-        return React.createElement(SidebarView, {id: "pubslayer", ref: "sbv"}, this.component);
+        const categories = this.categoryButtons.map(name => {
+            const section = {
+                section: name,//.toLowerCase().replace(" ", "_"),
+                label: name
+            };
+            
+            if (name == "All") section.element = () => this.content;
+            else section.onClick = () => this.changeCategory(name);
+            return section;
+        });
+        return React.createElement(SettingsView, {
+            onClose: this.close,
+            onSetSection: (e, ee, eee) => {console.log(e, ee, eee);this.changeCategory(e);},
+            section: this.state.selectedCategory,
+            sections: [
+                {section: "HEADER", label: "Public Servers"},
+                {section: "CUSTOM", element: () => this.searchInput},
+                {section: "HEADER", label: "Categories"},
+                ...categories
+            ],
+            theme: "dark"
+        });
+        // return React.createElement(StandardSidebarView, {id: "pubslayer", ref: "sbv", notice: null, theme: "dark", closeAction: this.close, content: this.content, sidebar: this.sidebar});
     }
 
     get component() {
@@ -251,9 +284,6 @@ export default class PublicServers extends React.Component {
 
     get sidebar() {
         return React.createElement(
-            "div",
-            {className: "sidebar-CFHs9e da-sidebar sidebar", key: "ps"},
-            React.createElement(
                 "div",
                 {className: "ui-tab-bar SIDE"},
                 React.createElement(
@@ -271,8 +301,7 @@ export default class PublicServers extends React.Component {
                 React.createElement(TabBar.Separator, null),
                 this.footer,
                 this.connection
-            )
-        );
+            );
     }
 
     get searchInput() {
@@ -282,24 +311,23 @@ export default class PublicServers extends React.Component {
             React.createElement(
                 "div",
                 {className: "ui-text-input flex-vertical", style: {width: "172px", marginLeft: "10px"}},
-                React.createElement("input", {ref: "searchinput", onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50"})
+                React.createElement("input", {onKeyDown: this.searchKeyDown, onChange: () => {}, type: "text", className: "input default", placeholder: "Search...", maxLength: "50"})
             )
         );
     }
 
     searchKeyDown(e) {
-        const self = this;
-        if (self.state.loading || e.which !== 13) return;
-        self.setState({
+        if (this.state.loading || e.which !== 13) return;
+        this.setState({
             loading: true,
             title: "Loading...",
             term: e.target.value
         });
         let query = `?term=${e.target.value}`;
-        if (self.state.selectedCategory !== 0) {
-            query += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
+        if (this.state.selectedCategory !== 0) {
+            query += `&category=${this.state.selectedCategory}`;
         }
-        self.search(query, true);
+        this.search(query, true);
     }
 
     get categoryButtons() {
@@ -307,64 +335,54 @@ export default class PublicServers extends React.Component {
     }
 
     changeCategory(id) {
-        const self = this;
-        if (self.state.loading) return;
-        self.refs.searchinput.value = "";
-        self.setState({
+        if (this.state.loading) return;
+        // this.refs.searchinput.value = "";
+        this.setState({
             loading: true,
             selectedCategory: id,
             title: "Loading...",
             term: null
         });
         if (id === 0) {
-            self.search("", true);
+            this.search("", true);
             return;
         }
-        self.search(`?category=${self.categoryButtons[id]}`, true);
+        this.search(`?category=${this.state.selectedCategory.replace(" ", "%20")}`, true);
     }
 
     get content() {
-        const self = this;
-        const guildList = this.SortedGuildStore.guildPositions;
-        const defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
-        if (self.state.connection.state === 1) return self.notConnected;
-        return [React.createElement(
-            "div",
-            {ref: "content", key: "pc", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
-            React.createElement(SettingsTitle, {text: self.state.title}),
-            self.bdServer,
-            self.state.servers.map((server) => {
-                return React.createElement(ServerCard, {key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
+        const guildList = SortedGuildStore.guildPositions;
+        const defaultList = AvatarDefaults.DEFAULT_AVATARS;
+        if (this.state.connection.state === 1) return this.notConnected;
+        return [React.createElement(SettingsTitle, {text: this.state.title}),
+            this.state.selectedCategory == "All" && this.bdServer,
+            this.state.servers.map((server) => {
+                return React.createElement(ServerCard, {key: server.identifier, server: server, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
             }),
-            self.state.next && React.createElement(
+            this.state.next && React.createElement(
                 "button",
                 {type: "button", onClick: () => {
-                        if (self.state.loading) return;self.setState({loading: true}); self.search(self.state.next, false);
+                        if (this.state.loading) return;this.setState({loading: true}); this.search(this.state.next, false);
                     }, className: "ui-button filled brand small grow", style: {width: "100%", marginTop: "10px", marginBottom: "10px"}},
                 React.createElement(
                     "div",
                     {className: "ui-button-contents"},
-                    self.state.loading ? "Loading" : "Load More"
+                    this.state.loading ? "Loading" : "Load More"
                 )
             ),
-            self.state.servers.length > 0 && React.createElement(SettingsTitle, {text: self.state.title})
-        )];
+            this.state.servers.length > 0 && React.createElement(SettingsTitle, {text: this.state.title})];
     }
 
     get notConnected() {
-        const self = this;
-        //return React.createElement(SettingsTitle, { text: self.state.title });
+        //return React.createElement(SettingsTitle, { text: this.state.title });
         return [React.createElement(
-            "div",
-            {key: "ncc", ref: "content", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
-            React.createElement(
                 "h2",
                 {className: "ui-form-title h2 margin-reset margin-bottom-20"},
                 "Not connected to discordservers.com!",
                 React.createElement(
                     "button",
                     {
-                        onClick: self.connect,
+                        onClick: this.connect,
                         type: "button",
                         className: "ui-button filled brand small grow",
                         style: {
@@ -380,8 +398,7 @@ export default class PublicServers extends React.Component {
                         "Connect"
                     )
                 )
-            ), self.bdServer
-        )];
+            ), this.bdServer];
     }
 
     get footer() {
@@ -397,8 +414,7 @@ export default class PublicServers extends React.Component {
     }
 
     get connection() {
-        const self = this;
-        const {connection} = self.state;
+        const {connection} = this.state;
         if (connection.state !== 2) return React.createElement("span", null);
 
         return React.createElement(
@@ -419,7 +435,7 @@ export default class PublicServers extends React.Component {
                     {style: {width: "100%", minHeight: "20px"}, type: "button", className: "ui-button filled brand small grow"},
                     React.createElement(
                         "div",
-                        {className: "ui-button-contents", onClick: self.connect},
+                        {className: "ui-button-contents", onClick: this.connect},
                         "Reconnect"
                     )
                 )

@@ -3,6 +3,7 @@ import Utilities from "./utilities";
 import {Config} from "data";
 // import EmoteModule from "./emotes";
 // import QuickEmoteMenu from "../builtins/emotemenu";
+import DOMManager from "./dommanager";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
@@ -42,6 +43,7 @@ Core.prototype.init = async function() {
 
     // this.injectExternals();
 
+    DOMManager.initialize();
     await this.checkForGuilds();
     BDV2.initialize();
     Utilities.log("Startup", "Updating Settings");
@@ -53,7 +55,7 @@ Core.prototype.init = async function() {
     Utilities.log("Startup", "Loading Themes");
     const themeErrors = ThemeManager.loadAllThemes();
 
-    $("#customcss").detach().appendTo(document.head);
+    // $("#customcss").detach().appendTo(document.head);
 
     // PublicServers.initialize();
     // EmoteModule.autoCapitalize();

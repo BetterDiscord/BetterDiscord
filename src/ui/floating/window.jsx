@@ -1,22 +1,16 @@
 import {React} from "modules";
 
+import Screen from "../../structs/screen";
 import CloseButton from "../icons/close";
-
-class Screen {
-    /** Document/window width */
-    static get width() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); }
-    /** Document/window height */
-    static get height() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
-}
+import Modals from "../modals";
 
 export default class FloatingWindow extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.props.forceTheme = "dont-transform";
+        this.state = {modalOpen: false};
 
-        // this.state = {x: 0, y: 0};
         this.offX = 0;
         this.offY = 0;
 
@@ -31,15 +25,6 @@ export default class FloatingWindow extends React.Component {
     }
 
     componentDidMount() {
-        if (this.props.isPopout) {
-            // console.log(this);
-            const popout = this._reactInternalFiber.return.return.return.return.stateNode;//_reactInternalFiber.return.return.return.return.stateNode
-            setImmediate(() => {
-                document.removeEventListener("click", popout.close, true);
-                if (!this.props.close) this.props.close = popout.close;
-            });
-        }
-
         this.window.current.addEventListener("mousedown", this.onResizeStart, false);
         this.titlebar.current.addEventListener("mousedown", this.onDragStart, false);
         document.addEventListener("mouseup", this.onDragStop, false);
@@ -51,8 +36,6 @@ export default class FloatingWindow extends React.Component {
     }
 
     onDragStop() {
-        // e.preventDefault();
-        // e.stopPropagation();
         document.removeEventListener("mousemove", this.onDrag, true);
         if (this.props.onResize) {
             const width = this.window.current.style.width;
@@ -64,19 +47,13 @@ export default class FloatingWindow extends React.Component {
     }
 
     onDragStart(e) {
-        // e.preventDefault();
-        // e.stopPropagation();
-
         const div = this.window.current;
-        // console.log(div.offsetTop, div.offsetLeft);
         this.offY = e.clientY - parseInt(div.offsetTop);
         this.offX = e.clientX - parseInt(div.offsetLeft);
         document.addEventListener("mousemove", this.onDrag, true);
     }
 
     onDrag(e) {
-        // e.preventDefault();
-        // e.stopPropagation();
         const div = this.window.current;
         div.style.position = "fixed";
         div.style.top = (e.clientY - this.offY) + "px";
@@ -92,7 +69,7 @@ export default class FloatingWindow extends React.Component {
         const top = this.props.center ? (Screen.height / 2) - (this.props.height / 2) : this.props.top;
         const left = this.props.center ? (Screen.width / 2) - (this.props.width / 2) : this.props.left ;
         // console.log(top, left);
-        const className = `floating-window ${this.props.className || ""} ${this.props.resizable ? "resizable" : ""}`;
+        const className = `floating-window${` ${this.props.className}` || ""}${this.props.resizable ? " resizable" : ""}${this.state.modalOpen ? " modal-open" : ""}`;
         const styles = {height: this.props.height, width: this.props.width, left: left || 0, top: top || 0};
         return <div id={this.props.id} className={className} ref={this.window} style={styles}>
                     <div className="floating-window-titlebar" ref={this.titlebar}>
@@ -109,68 +86,25 @@ export default class FloatingWindow extends React.Component {
                 </div>;
     }
 
-    close() {
-        // console.log("click close");
-        if (this.props.close) this.props.close();
+    async close() {
+        let shouldClose = true;
+        const confirmClose = typeof(this.props.confirmClose) == "function" ? this.props.confirmClose() : this.props.confirmClose;
+        if (confirmClose) {
+            this.setState({modalOpen: true});
+            shouldClose = await this.confirmClose();
+            this.setState({modalOpen: false});
+        }
+        if (this.props.close && shouldClose) this.props.close();
+    }
+
+    confirmClose() {
+        return new Promise(resolve => {
+            Modals.showConfirmationModal("Are You Sure?", this.props.confirmationText, {
+                danger: true,
+                confirmText: "Close",
+                onConfirm: () => {resolve(true);},
+                onCancel: () => {resolve(false);}
+            });
+        });
     }
 }
-//target, props (with render), key, event
-// function addListeners(){
-//     document.getElementById('test').addEventListener('mousedown', mouseDown, false);
-//     window.addEventListener('mouseup', mouseUp, false);
-
-// }
-
-// function mouseUp()
-// {
-//     window.removeEventListener('mousemove', divMove, true);
-// }
-
-// function mouseDown(e){
-//   var div = document.getElementById('test');
-//   offY= e.clientY-parseInt(div.offsetTop);
-//   offX= e.clientX-parseInt(div.offsetLeft);
-//  window.addEventListener('mousemove', divMove, true);
-// }
-
-// function divMove(e){
-//     var div = document.getElementById('test');
-//   div.style.position = 'absolute';
-//   div.style.top = (e.clientY-offY) + 'px';
-//   div.style.left = (e.clientX-offX) + 'px';
-// }
-
-// const test = {
-// animationType: "default",
-// arrowAlignment: "top",
-// backdrop: false,
-// clickPos: 74,
-// closeOnScroll: false,
-// containerClass: undefined,
-// dependsOn: undefined,
-// forceTheme: undefined,
-// key: "floating-window",
-// offsetX: 15,
-// offsetY: 0,
-// position: "left",
-// preventCloseFromModal: false,
-// preventClickPropagation: true,
-// preventInvert: false,
-// render: function() {
-//     console.log(arguments);
-//     return DiscordModules.React.createElement("div", Object.assign({}, arguments[0], {className: "testme", id: "test"}));
-// },
-// shadow: false,
-// showArrow: false,
-// target: $("div.memberOnline-1CIh-0.member-3W1lQa.da-memberOnline.da-member")[0],
-// targetHeight: 40,
-// targetWidth: 224,
-// x: 1211,
-// y: 357,
-// zIndexBoost: 0
-// }
-
-// modaltest = function() {
-//     console.log(arguments);
-//     return DiscordModules.React.createElement("div", Object.assign({}, arguments[0], {className: "testme", id: "test"}));
-// }

@@ -45,11 +45,11 @@ export default class PluginCard extends React.Component {
                 return  (eTop < cTop || eBottom > cBottom);
             };
 
-            const self = $(this.panelRef.current);
-            const container = self.parents(".scroller-2FKFPG");
-            if (!isHidden(container[0], self[0])) return;
+            const panel = $(this.panelRef.current);
+            const container = panel.parents(".scroller-2FKFPG");
+            if (!isHidden(container[0], panel[0])) return;
             container.animate({
-                scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
+                scrollTop: panel.offset().top - container.offset().top + container.scrollTop() - 30
             }, 300);
         }
     }
@@ -59,7 +59,6 @@ export default class PluginCard extends React.Component {
     }
 
     render() {
-        const self = this;
         const {content} = this.props;
         const name = this.getString(content.name);
         const author = this.getString(content.author);
@@ -69,7 +68,7 @@ export default class PluginCard extends React.Component {
         const source = content.source;
 
         if (this.state.settingsOpen) {
-            try { self.settingsPanel = content.plugin.getSettingsPanel(); }
+            try { this.settingsPanel = content.plugin.getSettingsPanel(); }
             catch (err) { Utilities.err("Plugins", "Unable to get settings panel for " + content.name + ".", err); }
 
             const props = {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef};
@@ -78,7 +77,7 @@ export default class PluginCard extends React.Component {
             return React.createElement("li", {className: "settings-open ui-switch-item"},
                     React.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
                             this.panelRef.current.innerHTML = "";
-                            self.setState({settingsOpen: false});
+                            this.setState({settingsOpen: false});
                         }},
                     React.createElement(CloseButton, null)
                 ),

@@ -66,8 +66,8 @@ export default new class SettingsManager {
             const collection = this.collections[c];
             const categories = this.collections[c].settings;
             if (!this.state[collection.id]) this.state[collection.id] = {};
-            for (let s = 0; s < categories.length; s++) {
-                const category = categories[s];
+            for (let cc = 0; cc < categories.length; cc++) {
+                const category = categories[cc];
                 if (category.type != "category") {if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = category.value;}
                 else {
                     if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = {};

@@ -1,6 +1,7 @@
 import Utilities from "./utilities";
 import WebpackModules, {DiscordModules} from "./webpackmodules";
 import DataStore from "./datastore";
+import DOMManager from "./dommanager";
 import {Toasts, Modals} from "ui";
 
 const BdApi = {
@@ -44,13 +45,15 @@ BdApi.setWindowPreference = function(key, value) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append($("<style>", {id: Utilities.escapeID(id), text: css}));
+    DOMManager.injectStyle(Utilities.escapeID(id), css);
+    // $("head").append($("<style>", {id: Utilities.escapeID(id), text: css}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    $("#" + Utilities.escapeID(id)).remove();
+    DOMManager.removeStyle(Utilities.escapeID(id));
+    // $("#" + Utilities.escapeID(id)).remove();
 };
 
 //Inject CSS to document head

@@ -84,8 +84,8 @@ export default new class EmoteModule extends Builtin {
 
     patchMessageContent() {
         if (this.cancelEmoteRender) return;
-        this.cancelEmoteRender = Utilities.monkeyPatch(this.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
-            Utilities.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
+        this.cancelEmoteRender = Utilities.monkeyPatch(this.MessageContentComponent.prototype, "render", {after: ({retVal}) => {
+            Utilities.monkeyPatch(retVal.props, "children", {silent: true, after: ({returnValue}) => {
                 if (this.categories.length == 0) return;
                 const markup = returnValue.props.children[1];
                 if (!markup.props.children) return;
@@ -162,10 +162,10 @@ export default new class EmoteModule extends Builtin {
             Utilities.log("Emotes", "Loading emotes from local cache.");
 
             const data = await new Promise(resolve => {
-                _fs.readFile(file, "utf8", (err, data) => {
+                _fs.readFile(file, "utf8", (err, content) => {
                     Utilities.log("Emotes", "Emotes loaded from cache.");
-                    if (err) data = {};
-                    resolve(data);
+                    if (err) content = {};
+                    resolve(content);
                 });
             });
 

@@ -47,7 +47,7 @@ export default class Utilities {
     }
 
     static escapeID(id) {
-        return id.replace(/^[^a-z]+|[^\w-]+/gi, "");
+        return id.replace(/^[^a-z]+|[^\w-]+/gi, "-");
     }
 
     static log(moduleName, message) {
