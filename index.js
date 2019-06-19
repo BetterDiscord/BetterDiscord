@@ -16,8 +16,11 @@ class BrowserWindow extends electron.BrowserWindow {
 }
 
 Object.assign(BrowserWindow, electron.BrowserWindow); // Retains the original functions
-const originalDeprecate = electron.deprecate.promisify; // Grab original deprecate promisify
-electron.deprecate.promisify = (originalFunction) => originalFunction ? originalDeprecate(originalFunction) : () => void 0; // Override with falsey check
+
+if (electron.deprecate && electron.deprecate.promisify) {
+    const originalDeprecate = electron.deprecate.promisify; // Grab original deprecate promisify
+    electron.deprecate.promisify = (originalFunction) => originalFunction ? originalDeprecate(originalFunction) : () => void 0; // Override with falsey check
+}
 
 const electron_path = require.resolve("electron");
 const browser_window_path = require.resolve(path.resolve(electron_path, "..", "..", "browser-window.js"));
