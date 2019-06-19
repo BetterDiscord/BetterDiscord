@@ -328,8 +328,6 @@ Core.prototype.init = async function() {
         if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
     });
 
-    publicServersModule.initialize();
-
     emoteModule.autoCapitalize();
 
     Utils.log("Startup", "Removing Loading Icon");
@@ -829,25 +827,26 @@ EmoteModule.prototype.isCacheValid = function() {
 };
 
 EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
-    const _fs = require("fs");
+    const fs = require("fs");
     const emoteFile = "emote_data.json";
     const file = bdConfig.dataPath + emoteFile;
-    const exists = _fs.existsSync(file);
+    const exists = await new Promise(r => fs.exists(file, r));
 
     if (exists && this.isCacheValid()) {
         if (settingsCookie["fork-ps-2"]) mainCore.showToast("Loading emotes from cache.", {type: "info"});
         Utils.log("Emotes", "Loading emotes from local cache.");
 
         const data = await new Promise(resolve => {
-            _fs.readFile(file, "utf8", (err, data) => {
-                Utils.log("Emotes", "Emotes loaded from cache.");
+            fs.readFile(file, "utf8", (err, data) => {
+                Utils.log("Emotes", "Emote file read.");
                 if (err) data = {};
                 resolve(data);
             });
         });
 
-        let isValid = Utils.testJSON(data);
-        if (isValid) window.bdEmotes = JSON.parse(data);
+        const parsed = Utils.testJSON(data);
+        let isValid = !!parsed;
+        if (isValid) window.bdEmotes = parsed;
 
         for (const e in emoteInfo) {
             isValid = Object.keys(window.bdEmotes[emoteInfo[e].variable]).length > 0;
@@ -859,7 +858,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
         }
 
         Utils.log("Emotes", "Cache was corrupt, downloading...");
-        _fs.unlinkSync(file);
+        await new Promise(r => fs.unlink(file, r));
     }
 
     if (!settingsCookie["fork-es-3"]) return;
@@ -873,7 +872,7 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 
     if (settingsCookie["fork-ps-2"]) mainCore.showToast("All emotes successfully downloaded.", {type: "success"});
 
-    try { _fs.writeFileSync(file, JSON.stringify(window.bdEmotes), "utf8"); }
+    try { await new Promise(r => fs.writeFile(file, JSON.stringify(window.bdEmotes), "utf8", r)); }
     catch (err) { Utils.err("Emotes", "Could not save emote data.", err); }
 };
 
@@ -881,13 +880,14 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
     let request = require("request");
     let options = {
         url: emoteMeta.url,
-        timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
+        timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000,
+        json: true
     };
 
     Utils.log("Emotes", `Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
 
     return new Promise((resolve, reject) => {
-        request(options, (error, response, body) => {
+        request(options, (error, response, parsedData) => {
             if (error) {
                 Utils.err("Emotes", "Could not download " + emoteMeta.variable, error);
                 if (emoteMeta.backup) {
@@ -899,20 +899,6 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
                 return reject({});
             }
 
-            let parsedData = {};
-            try {
-                parsedData = JSON.parse(body);
-            }
-            catch (err) {
-                Utils.err("Emotes", "Could not download " + emoteMeta.variable, err);
-                if (emoteMeta.backup) {
-                    emoteMeta.url = emoteMeta.backup;
-                    emoteMeta.backup = null;
-                    if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
-                    return resolve(this.downloadEmotes(emoteMeta));
-                }
-                return reject({});
-            }
             if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
 
             for (let emote in parsedData) {
@@ -1209,7 +1195,7 @@ var Utils = class {
     }
 
     static escapeID(id) {
-        return id.replace(/^[^a-z]+|[^\w-]+/gi, "");
+        return id.replace(/^[^a-z]+|[^\w-]+/gi, "-");
     }
 
     static log(moduleName, message) {
@@ -1235,12 +1221,21 @@ var Utils = class {
 
     static testJSON(data) {
         try {
-            JSON.parse(data);
-            return true;
+            return JSON.parse(data);
         }
         catch (err) {
             return false;
         }
+    }
+
+    static isEmpty(obj) {
+        if (obj == null || obj == undefined || obj == "") return true;
+        if (typeof(obj) !== "object") return false;
+        if (Array.isArray(obj)) return obj.length == 0;
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) return false;
+        }
+        return true;
     }
 
     static suppressErrors(method, message) {
@@ -1359,7 +1354,8 @@ var ContentManager = (() => {
     }
     const originalJSRequire = Module._extensions[".js"];
     const originalCSSRequire = Module._extensions[".css"] ? Module._extensions[".css"] : () => {return null;};
-
+    const splitRegex = /[^\S\r\n]*?\n[^\S\r\n]*?\*[^\S\r\n]?/;
+    const escapedAtRegex = /^\\@/;
 
 
     return new class ContentManager {
@@ -1413,15 +1409,47 @@ var ContentManager = (() => {
         }
 
         extractMeta(content) {
+            const firstLine = content.split("\n")[0];
+            const hasOldMeta = firstLine.includes("//META");
+            if (hasOldMeta) return this.parseOldMeta(content);
+            const hasNewMeta = firstLine.includes("/**");
+            if (hasNewMeta) return this.parseNewMeta(content);
+            throw new MetaError("META was not found.");
+        }
+
+        parseOldMeta(content) {
             const meta = content.split("\n")[0];
             const rawMeta = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
             if (meta.indexOf("META") < 0) throw new MetaError("META was not found.");
-            if (!Utils.testJSON(rawMeta)) throw new MetaError("META could not be parsed.");
-
-            const parsed = JSON.parse(rawMeta);
+            const parsed = Utils.testJSON(rawMeta);
+            if (!parsed) throw new MetaError("META could not be parsed.");
             if (!parsed.name) throw new MetaError("META missing name data.");
             return parsed;
         }
+    
+        parseNewMeta(content) {
+            const block = content.split("/**", 2)[1].split("*/", 1)[0];
+            const out = {};
+            let field = "";
+            let accum = "";
+            for (const line of block.split(splitRegex)) {
+                if (line.length === 0) continue;
+                if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
+                    out[field] = accum;
+                    const l = line.indexOf(" ");
+                    field = line.substr(1, l - 1);
+                    accum = line.substr(l + 1);
+                }
+                else {
+                    accum += " " + line.replace("\\n", "\n").replace(escapedAtRegex, "@");
+                }
+            }
+            out[field] = accum.trim();
+            delete out[""];
+            return out;
+        }
+
+
 
         getContentRequire(type) {
             const isPlugin = type === "plugin";
@@ -1441,7 +1469,16 @@ var ContentManager = (() => {
                     content = `module.exports = ${JSON.stringify(meta)};`;
                 }
                 if (isPlugin) {
-                    content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.name};`;
+                    module._compile(content, module.filename);
+                    const didExport = !Utils.isEmpty(module.exports);
+                    if (didExport) {
+                        meta.type = module.exports;
+                        module.exports = meta;
+                        content = "";
+                    }
+                    else {
+                        content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
+                    }
                 }
                 module._compile(content, filename);
             };
@@ -1469,6 +1506,7 @@ var ContentManager = (() => {
             try {require(path.resolve(baseFolder, filename));}
             catch (error) {return {name: filename, file: filename, message: "Could not be compiled.", error: {message: error.message, stack: error.stack}};}
             const content = require(path.resolve(baseFolder, filename));
+            content.id = Utils.escapeID(content.name);
             if (isPlugin) {
                 if (!content.type) return;
                 try {
@@ -1600,7 +1638,7 @@ PluginModule.prototype.startPlugin = function(plugin, reload = false) {
         if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
         pluginCookie[plugin] = false;
         this.savePluginData();
-        Utils.err("Plugins", name + " could not be started.", err);
+        Utils.err("Plugins", plugin + " could not be started.", err);
     }
 };
 
@@ -1758,9 +1796,9 @@ ThemeModule.prototype.loadThemes = function () {
     var themes = Object.keys(bdthemes);
 
     for (var i = 0; i < themes.length; i++) {
-        var name = bdthemes[themes[i]].name;
-        if (!themeCookie[name]) themeCookie[name] = false;
-        if (themeCookie[name]) $("head").append($("<style>", {id: Utils.escapeID(name), text: unescape(bdthemes[name].css)}));
+        var theme = bdthemes[themes[i]];
+        if (!themeCookie[theme.name]) themeCookie[theme.name] = false;
+        if (themeCookie[theme.name]) $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
     }
     for (let theme in themeCookie) {
         if (!bdthemes[theme]) delete themeCookie[theme];
@@ -1769,18 +1807,20 @@ ThemeModule.prototype.loadThemes = function () {
     // if (settingsCookie["fork-ps-5"]) ContentManager.watchContent("theme");
 };
 
-ThemeModule.prototype.enableTheme = function(theme, reload = false) {
-    themeCookie[theme] = true;
+ThemeModule.prototype.enableTheme = function(name, reload = false) {
+    themeCookie[name] = true;
     this.saveThemeData();
-    $("head").append($("<style>", {id: Utils.escapeID(theme), text: unescape(bdthemes[theme].css)}));
-    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been applied.`);
+    const theme = bdthemes[name];
+    $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
+    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${theme.name} v${theme.version} has been applied.`);
 };
 
-ThemeModule.prototype.disableTheme = function(theme, reload = false) {
-    themeCookie[theme] = false;
+ThemeModule.prototype.disableTheme = function(name, reload = false) {
+    themeCookie[name] = false;
     this.saveThemeData();
-    $(`#${Utils.escapeID(bdthemes[theme].name)}`).remove();
-    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${bdthemes[theme].name} v${bdthemes[theme].version} has been disabled.`);
+    const theme = bdthemes[name];
+    $(`#${theme.id}`).remove();
+    if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${theme.name} v${theme.version} has been disabled.`);
 };
 
 ThemeModule.prototype.toggleTheme = function(theme) {
@@ -1871,7 +1911,7 @@ var BdApi = {
         const path = require("path");
         const base = electron.getAppPath();
         const roamingBase = electron.getPath("userData");
-        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json")
+        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json");
         const location = path.resolve(base, "..", "app", "config.json");
         const fs = require("fs");
         const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
@@ -2173,7 +2213,10 @@ BdApi.setBDData = function(key, data) {
 
 devMode.prototype.getRules = function(element, css = element.ownerDocument.styleSheets) {
     //if (window.getMatchedCSSRules) return window.getMatchedCSSRules(element);
-    return [].concat(...[...css].map(s => [...s.cssRules || []])).filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8);
+    const sheets = [...css].filter(s => !s.href || !s.href.includes("BetterDiscordApp"));
+    const rules = sheets.map(s => [...(s.cssRules || [])]).flat();
+    const elementRules = rules.filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8 && !r.selectorText.split(", ").includes("*"));
+    return elementRules;
 };
 
 devMode.prototype.getSelector = function(element) {
@@ -4085,8 +4128,8 @@ class V2_SettingsPanel {
         }
 
         if (id == "bda-gs-1") {
-            if (enabled) $("#bd-pub-li").show();
-            else $("#bd-pub-li").hide();
+            if (enabled) publicServersModule.addButton();
+            else publicServersModule.removeButton();
         }
 
         if (id == "bda-gs-4") {
@@ -4144,6 +4187,10 @@ class V2_SettingsPanel {
             else dMode.disable();
         }
 
+        if (id == "fork-dm-1") {
+            if (settingsCookie["bda-gs-8"]) dMode.enable(enabled);
+        }
+
         mainCore.saveSettings();
     }
 
@@ -4152,7 +4199,7 @@ class V2_SettingsPanel {
         // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
-        if (settingsCookie["bda-gs-1"]) $("#bd-pub-li").show();
+        if (settingsCookie["bda-gs-1"]) publicServersModule.addButton();
         if (settingsCookie["bda-gs-4"]) voiceMode.enable();
         if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
         if (settingsCookie["bda-gs-6"]) mainCore.inject24Hour();
@@ -4439,7 +4486,9 @@ class V2C_SidebarView extends BDV2.reactComponent {
 
 class V2_PublicServers {
 
-    constructor() {}
+    constructor() {
+        this._appendButton = this._appendButton.bind(this);
+    }
 
     get component() {
         return BDV2.react.createElement(V2Components.Layer, {rootId: "pubslayerroot", id: "pubslayer", children: BDV2.react.createElement(V2C_PublicServers, {rootId: "pubslayerroot"})});
@@ -4487,10 +4536,24 @@ class V2_PublicServers {
         return btn;
     }
 
-    initialize() {
+    _appendButton() {
+        if ($("#bd-pub-li").length) return;
         const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
         const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
         guilds.after(this.button);
+    }
+
+    addButton() {
+        if (this.guildPatch) return;
+        const GuildList = BdApi.findModuleByDisplayName("Guilds");
+        this.guildPatch = BdApi.monkeyPatch(GuildList.prototype, "render", {after: this._appendButton});
+        this._appendButton();
+    }
+
+    removeButton() {
+        this.guildPatch();
+        delete this.guildPatch;
+        $("#bd-pub-li").remove();
     }
 }
 

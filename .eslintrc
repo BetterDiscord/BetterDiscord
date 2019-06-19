@@ -38,6 +38,8 @@
         "_bdhash": true,
         "ace": false,
         "Reflect": false,
-        "DiscordNative": false
+        "DiscordNative": false,
+        "self": "off",
+        "name": "off"
     }
 }
