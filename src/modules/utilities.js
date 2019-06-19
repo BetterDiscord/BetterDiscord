@@ -1,10 +1,6 @@
 /* eslint-disable no-console */
 
 export default class Utilities {
-    /** Document/window width */
-    static get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); }
-    /** Document/window height */
-    static get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
 
     static stripBOM(content) {
         if (content.charCodeAt(0) === 0xFEFF) {
@@ -50,31 +46,13 @@ export default class Utilities {
         return id.replace(/^[^a-z]+|[^\w-]+/gi, "-");
     }
 
-    static log(moduleName, message) {
-        console.log(`%c[BandagedBD]%c [${moduleName}]%c ${message}`, "color: #3a71c1; font-weight: 700;", "color: #3a71c1;", "");
-    }
-
-    static warn(moduleName, message) {
-        console.warn(`%c[BandagedBD]%c [${moduleName}]%c ${message}`, "color: #E8A400; font-weight: 700;", "color: #E8A400;", "");
-    }
-
-    static err(moduleName, message, error) {
-        console.log(`%c[BandagedBD]%c [${moduleName}]%c ${message}`, "color: red; font-weight: 700;", "color: red;", "");
-        if (error) {
-            console.groupCollapsed("%cError: " + error.message, "color: red;");
-            console.error(error.stack);
-            console.groupEnd();
-        }
-    }
-
     static escape(s) {
         return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
     }
 
     static testJSON(data) {
         try {
-            JSON.parse(data);
-            return true;
+            return JSON.parse(data);
         }
         catch (err) {
             return false;
@@ -183,43 +161,5 @@ export default class Utilities {
         }});
 
         return proxy;
-    }
-
-    /**
-     * Builds a classname string from any number of arguments. This includes arrays and objects.
-     * When given an array all values from the array are added to the list.
-     * When given an object they keys are added as the classnames if the value is truthy.
-     * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
-     * @param {...Any} argument - anything that should be used to add classnames.
-     */
-    static className() {
-        const classes = [];
-        const hasOwn = {}.hasOwnProperty;
-
-		for (let i = 0; i < arguments.length; i++) {
-			const arg = arguments[i];
-			if (!arg) continue;
-
-			const argType = typeof arg;
-
-			if (argType === "string" || argType === "number") {
-				classes.push(arg);
-            }
-            else if (Array.isArray(arg) && arg.length) {
-				const inner = this.classNames.apply(null, arg);
-				if (inner) {
-					classes.push(inner);
-				}
-            }
-            else if (argType === "object") {
-				for (const key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
-					}
-				}
-			}
-		}
-
-		return classes.join(" ");
     }
 }

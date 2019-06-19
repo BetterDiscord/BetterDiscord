@@ -1,5 +1,5 @@
 // import {SettingsCookie, PluginCookie, Plugins} from "data";
-import {React, Utilities, Settings} from "modules";
+import {React, Logger, Settings} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
 
@@ -41,7 +41,7 @@ export default class PluginCard extends React.Component {
 
                 const eTop = element.offsetTop;
                 const eBottom = eTop + element.clientHeight;
-                
+
                 return  (eTop < cTop || eBottom > cBottom);
             };
 
@@ -69,7 +69,7 @@ export default class PluginCard extends React.Component {
 
         if (this.state.settingsOpen) {
             try { this.settingsPanel = content.plugin.getSettingsPanel(); }
-            catch (err) { Utilities.err("Plugins", "Unable to get settings panel for " + content.name + ".", err); }
+            catch (err) { Logger.stacktrace("Plugin Settings", "Unable to get settings panel for " + content.name + ".", err); }
 
             const props = {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef};
             if (typeof(this.settingsPanel) == "string") props.dangerouslySetInnerHTML = this.settingsPanel;

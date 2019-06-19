@@ -106,10 +106,6 @@ export default new class CustomCSS extends Builtin {
     insertCSS(newCss) {
         if (typeof(newCss) === "undefined") newCss = this.insertedCss;
         else this.insertedCss = newCss;
-        // if ($("#customcss").length == 0) {
-        //     $("head").append("<style id=\"customcss\"></style>");
-        // }
-        // $("#customcss").text(newCss).detach().appendTo(document.head);
         DOMManager.updateCustomCSS(newCss);
     }
 
@@ -133,7 +129,7 @@ export default new class CustomCSS extends Builtin {
             openNative: this.openNative.bind(this),
             onChange: this.onChange.bind(this)
         });
-    
+
         FloatingWindowContainer.open({
             onClose: () => {
                 this.isDetached = false;

@@ -45,9 +45,9 @@ export default new class ThemeManager extends ContentManager {
 
     /* Overrides */
     getContentModification(module, content, meta) {
-        meta.css = content.split("\n").slice(1).join("\n");
+        meta.css = content;
         return `module.exports = ${JSON.stringify(meta)};`;
-    }    
+    }
 
     startContent(id) {return this.addTheme(id);}
     stopContent(id) {return this.removeTheme(id);}

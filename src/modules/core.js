@@ -1,5 +1,6 @@
 import BDV2 from "./bdv2";
 import Utilities from "./utilities";
+import Logger from "./logger";
 import {Config} from "data";
 // import EmoteModule from "./emotes";
 // import QuickEmoteMenu from "../builtins/emotemenu";
@@ -31,12 +32,12 @@ Core.prototype.init = async function() {
         `);
     }
 
-    Utilities.log("Startup", "Initializing Settings");
+    Logger.log("Startup", "Initializing Settings");
     Settings.initialize();
-    Utilities.log("Startup", "Initializing EmoteModule");
+    Logger.log("Startup", "Initializing EmoteModule");
     // window.emotePromise = EmoteModule.init().then(() => {
     //     EmoteModule.initialized = true;
-    //     Utilities.log("Startup", "Initializing QuickEmoteMenu");
+    //     Logger.log("Startup", "Initializing QuickEmoteMenu");
     //     Events.dispatch("emotes-loaded");
     //     // QuickEmoteMenu.init();
     // });
@@ -46,42 +47,40 @@ Core.prototype.init = async function() {
     DOMManager.initialize();
     await this.checkForGuilds();
     BDV2.initialize();
-    Utilities.log("Startup", "Updating Settings");
+    Logger.log("Startup", "Updating Settings");
     for (const module in Builtins) Builtins[module].initialize();
 
-    Utilities.log("Startup", "Loading Plugins");
+    Logger.log("Startup", "Loading Plugins");
     const pluginErrors = PluginManager.loadAllPlugins();
 
-    Utilities.log("Startup", "Loading Themes");
+    Logger.log("Startup", "Loading Themes");
     const themeErrors = ThemeManager.loadAllThemes();
-
-    // $("#customcss").detach().appendTo(document.head);
 
     // PublicServers.initialize();
     // EmoteModule.autoCapitalize();
 
-    Utilities.log("Startup", "Removing Loading Icon");
+    Logger.log("Startup", "Removing Loading Icon");
     document.getElementsByClassName("bd-loaderv2")[0].remove();
-    Utilities.log("Startup", "Initializing Main Observer");
+    Logger.log("Startup", "Initializing Main Observer");
     this.initObserver();
 
     // Show loading errors
-    Utilities.log("Startup", "Collecting Startup Errors");
+    Logger.log("Startup", "Collecting Startup Errors");
     Modals.showContentErrors({plugins: pluginErrors, themes: themeErrors});
 };
 
 Core.prototype.checkForGuilds = function() {
     return new Promise(resolve => {
         const checkForGuilds = function() {
+            if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
             const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
             const guild = BDV2.guildClasses.listItem.split(" ")[0];
             const blob = BDV2.guildClasses.blobContainer.split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(Config.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
-        $(document).ready(function () {
-            setTimeout(checkForGuilds, 100);
-        });
+
+        checkForGuilds();
     });
 };
 

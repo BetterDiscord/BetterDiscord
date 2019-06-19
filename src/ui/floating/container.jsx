@@ -10,11 +10,11 @@ class FloatingWindowContainer extends React.Component {
     }
 
     render() {
-        return this.state.windows.map(window => 
+        return this.state.windows.map(window =>
             // <FloatingWindow onResize={window.onResize} close={this.close.bind(this, window.id)} title={window.title} id={window.id} height={window.height} width={window.width} center={window.center} resizable={window.resizable}>
             <FloatingWindow {...window} close={this.close.bind(this, window.id)}>
                     {window.children}
-            </FloatingWindow>    
+            </FloatingWindow>
         );
     }
 
@@ -52,9 +52,10 @@ class FloatingWindowContainer extends React.Component {
 const containerRef = React.createRef();
 const container = <FloatingWindowContainer ref={containerRef} />;
 // ReactDOM.render(container, FloatingWindowContainer.root);
-const App = document.querySelector(".app-19_DXt").__reactInternalInstance$.return.return.return.return.return.return.return.return.return;
+const App = document.querySelector(".app-19_DXt").__reactInternalInstance$.return.return.return.return.return.return.return.return.return.return.return;
 Utilities.monkeyPatch(App.type.prototype, "render", {after: (data) => {
-    data.returnValue.props.children.props.children.props.children.props.children[4].props.children[1].props.children.push(container);
+    //returnValue.props.children.props.children.props.children.props.children[4].props.children.props.children[1].props.children
+    data.returnValue.props.children.props.children.props.children.props.children[4].props.children.props.children[1].props.children.push(container);
 }});
 App.stateNode.forceUpdate();
 export default containerRef.current;

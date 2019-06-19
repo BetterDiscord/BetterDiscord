@@ -1,4 +1,4 @@
-import Utilities from "../modules/utilities";
+import Logger from "../modules/logger";
 import Events from "../modules/emitter";
 import Settings from "../modules/settingsmanager";
 
@@ -67,14 +67,18 @@ export default class BuiltinModule {
     async disabled() {}
 
     log(...message) {
-        Utilities.log(this.name, ...message);
+        Logger.log(this.name, ...message);
     }
 
     warn(...message) {
-        Utilities.warn(this.name, ...message);
+        Logger.warn(this.name, ...message);
     }
 
     error(...message) {
-        Utilities.err(this.name, ...message);
+        Logger.err(this.name, ...message);
+    }
+
+    stacktrace(message, error) {
+        Logger.stacktrace(this.name, message, error);
     }
 }

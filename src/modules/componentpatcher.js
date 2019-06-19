@@ -1,4 +1,5 @@
-import WebpackModules, {DiscordModules} from "./webpackmodules";
+import WebpackModules from "./webpackmodules";
+import DiscordModules from "./discordmodules";
 import Utilities from "./utilities";
 import BDLogo from "../ui/icons/bdlogo";
 
