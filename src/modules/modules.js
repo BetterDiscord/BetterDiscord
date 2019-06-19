@@ -16,10 +16,11 @@ import PluginManager from "./pluginmanager";
 // import PublicServers from "./publicservers";
 import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
+import DOMManager from "./dommanager";
 
 export const React = DiscordModules.React;
 export const ReactDOM = DiscordModules.ReactDOM;
 
 export {BDV2, BdApi, Core, ContentManager, DataStore,
-        Events, PluginManager, /*PublicServers,*/ ThemeManager,
+        Events, PluginManager, DOMManager, ThemeManager,
         Utilities, WebpackModules, DiscordModules, Settings};

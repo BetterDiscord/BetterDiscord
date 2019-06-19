@@ -1,7 +1,7 @@
-import {BDV2, DiscordModules, Settings} from "modules";
+import {BDV2, Settings, React} from "modules";
 import EmoteMenu from "../builtins/emotemenu";
 
-export default class BDEmote extends DiscordModules.React.Component {
+export default class BDEmote extends React.Component {
     constructor(props) {
         super(props);
 
@@ -43,26 +43,26 @@ export default class BDEmote extends DiscordModules.React.Component {
     }
 
     render() {
-        return DiscordModules.React.createElement(BDV2.TooltipWrapper, {
+        return React.createElement(BDV2.TooltipWrapper, {
                 color: "black",
                 position: "top",
                 text: this.label,
                 delay: 750
             },
-                DiscordModules.React.createElement("div", {
+                React.createElement("div", {
                     className: "emotewrapper" + (this.props.jumboable ? " jumboable" : ""),
                     onMouseEnter: this.onMouseEnter,
                     onMouseLeave: this.onMouseLeave,
                     onClick: this.onClick
                 },
-                    DiscordModules.React.createElement("img", {
+                    React.createElement("img", {
                         draggable: false,
                         className: "emote" + this.modifierClass + (this.props.jumboable ? " jumboable" : "") + (!this.state.shouldAnimate ? " stop-animation" : ""),
                         dataModifier: this.props.modifier,
                         alt: this.label,
                         src: this.props.url
                     }),
-                    DiscordModules.React.createElement("input", {
+                    React.createElement("input", {
                         className: "fav" + (this.state.isFavorite ? " active" : ""),
                         title: "Favorite!",
                         type: "button",

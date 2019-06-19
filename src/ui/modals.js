@@ -69,8 +69,8 @@ export default class Modals {
         if (!this.ModalStack || !this.ConfirmationModal || !this.TextElement) return this.alert(title, content);
 
         const {onConfirm, onCancel, confirmText, cancelText, danger = false} = options;
-        if (typeof(content) == "string") content = TextElement({color: TextElement.Colors.PRIMARY, children: [content]});
-        else if (Array.isArray(content)) content = TextElement({color: TextElement.Colors.PRIMARY, children: content});
+        if (typeof(content) == "string") content = TextElement.default({color: TextElement.Colors.PRIMARY, children: [content]});
+        else if (Array.isArray(content)) content = TextElement.default({color: TextElement.Colors.PRIMARY, children: content});
         content = [content];
 
         const emptyFunction = () => {};

@@ -123,6 +123,10 @@
   z-index: 1001;
 }
 
+.floating-window.modal-open {
+  z-index: 999;
+}
+
 .floating-window.resizable {
   overflow: auto;
   resize: both;

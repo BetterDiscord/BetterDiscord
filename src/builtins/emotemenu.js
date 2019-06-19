@@ -70,7 +70,7 @@ export default new class EmoteMenu extends Builtin {
     initialize() {
         super.initialize();
         const fe = DataStore.getBDData("bdfavemotes");
-        if (fe !== "" && fe !== null) this.favoriteEmotes = JSON.parse(atob(fe));
+        if (fe !== "" && fe !== null) this.favoriteEmotes = JSON.parse(window.atob(fe));
         this.updateFavorites();
     }
 
@@ -115,16 +115,16 @@ export default new class EmoteMenu extends Builtin {
             left: e.pageX - $("#bda-qem-favourite-container").offset().left
         });
         $(em).parent().append(menu);
-        menu.on("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
+        menu.on("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
             $(em).remove();
             delete this.favoriteEmotes[$(em).attr("title")];
             this.updateFavorites();
             $(document).off("mousedown.emotemenu");
         });
-        $(document).on("mousedown.emotemenu", function(e) {
-            if (e.target.id == "removemenu") return;
+        $(document).on("mousedown.emotemenu", function(event) {
+            if (event.target.id == "removemenu") return;
             $("#removemenu").remove();
             $(document).off("mousedown.emotemenu");
         });
@@ -200,7 +200,7 @@ export default new class EmoteMenu extends Builtin {
             const emoteElement = makeEmote(emote, url, {onClick: this.insertEmote.bind(this, emote), onContextMenu: this.favContext.bind(this)});
             this.faContainerInner.append(emoteElement);
         }
-        DataStore.setBDData("bdfavemotes", btoa(JSON.stringify(this.favoriteEmotes)));
+        DataStore.setBDData("bdfavemotes", window.btoa(JSON.stringify(this.favoriteEmotes)));
     }
 
 };

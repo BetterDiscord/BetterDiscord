@@ -51,8 +51,8 @@ export default new class DeveloperMode extends Builtin {
                        cm.remove();
                        $(document).off(".bdDevModeCtx");
                    });
-                   $(document).on("keyup.bdDevModeCtx", (e) => {
-                       if (e.keyCode === 27) {
+                   $(document).on("keyup.bdDevModeCtx", (event) => {
+                       if (event.keyCode === 27) {
                            cm.remove();
                            $(document).off(".bdDevModeCtx");
                        }

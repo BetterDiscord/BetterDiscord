@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {Settings, DataStore, React, Utilities, WebpackModules, Events} from "modules";
+import {Settings, DataStore, React, Utilities, WebpackModules, Events, DOMManager} from "modules";
 import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindowContainer from "../ui/floating/container";
 import SettingsTitle from "../ui/settings/title";
@@ -57,8 +57,7 @@ export default new class CustomCSS extends Builtin {
         Settings.removePanel(this.id);
         this.unwatchContent();
     }
-    //* {outline: 1px solid red;}
-    //DataStore.customCSS
+
     watchContent() {
         if (this.watcher) return this.error("Already watching content.");
         const timeCache = {};
@@ -107,10 +106,11 @@ export default new class CustomCSS extends Builtin {
     insertCSS(newCss) {
         if (typeof(newCss) === "undefined") newCss = this.insertedCss;
         else this.insertedCss = newCss;
-        if ($("#customcss").length == 0) {
-            $("head").append("<style id=\"customcss\"></style>");
-        }
-        $("#customcss").text(newCss).detach().appendTo(document.head);
+        // if ($("#customcss").length == 0) {
+        //     $("head").append("<style id=\"customcss\"></style>");
+        // }
+        // $("#customcss").text(newCss).detach().appendTo(document.head);
+        DOMManager.updateCustomCSS(newCss);
     }
 
     saveCSS(newCss) {
@@ -126,7 +126,7 @@ export default new class CustomCSS extends Builtin {
         const editorRef = React.createRef();
         const editor = React.createElement(CSSEditor, {
             id: "bd-floating-editor",
-            editorRef: editorRef,
+            ref: editorRef,
             css: currentCSS,
             save: this.saveCSS.bind(this),
             update: this.insertCSS.bind(this),
@@ -135,7 +135,9 @@ export default new class CustomCSS extends Builtin {
         });
     
         FloatingWindowContainer.open({
-            onClose: () => {this.isDetached = false;},
+            onClose: () => {
+                this.isDetached = false;
+            },
             onResize: () => {
                 if (!editorRef || !editorRef.current || !editorRef.current.resize) return;
                 editorRef.current.resize();
@@ -146,7 +148,12 @@ export default new class CustomCSS extends Builtin {
             width: 410,
             center: true,
             resizable: true,
-            children: editor
+            children: editor,
+            confirmClose: () => {
+                if (!editorRef || !editorRef.current) return false;
+                return editorRef.current.hasUnsavedChanges;
+            },
+            confirmationText: "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes."
         });
         this.isDetached = true;
         UserSettings.close();
