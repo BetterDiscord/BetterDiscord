@@ -1,4 +1,5 @@
 import {Config} from "data";
+import Logger from "./logger";
 import ContentManager from "./contentmanager";
 import Utilities from "./utilities";
 import {Toasts, Modals} from "ui";
@@ -106,7 +107,7 @@ export default new class PluginManager extends ContentManager {
         catch (err) {
             this.state[content.id] = false;
             Toasts.error(`${content.name} v${content.version} could not be started.`);
-            Utilities.err("Plugins", content.name + " could not be started.", err);
+            Logger.stacktrace(this.name, content.name + " could not be started.", err);
             return new ContentError(content.name, content.filename, "start() could not be fired.", {message: err.message, stack: err.stack});
         }
     }
@@ -123,7 +124,7 @@ export default new class PluginManager extends ContentManager {
         catch (err) {
             this.state[content.id] = false;
             Toasts.error(`${content.name} v${content.version} could not be stopped.`);
-            Utilities.err("Plugins", content.name + " could not be stopped.", err);
+            Logger.stacktrace(this.name, content.name + " could not be stopped.", err);
             return new ContentError(content.name, content.filename, "stop() could not be fired.", {message: err.message, stack: err.stack});
         }
     }
@@ -143,7 +144,7 @@ export default new class PluginManager extends ContentManager {
             if (!this.state[this.contentList[i].id]) continue;
             if (typeof(plugin.onSwitch) === "function") {
                 try { plugin.onSwitch(); }
-                catch (err) { Utilities.err("Plugins", "Unable to fire onSwitch for " + this.contentList[i].name + ".", err); }
+                catch (err) { Logger.stacktrace(this.name, "Unable to fire onSwitch for " + this.contentList[i].name + ".", err); }
             }
         }
     }
@@ -154,7 +155,7 @@ export default new class PluginManager extends ContentManager {
             if (!this.state[this.contentList[i].id]) continue;
             if (typeof plugin.observer === "function") {
                 try { plugin.observer(mutation); }
-                catch (err) { Utilities.err("Plugins", "Unable to fire observer for " + this.contentList[i].name + ".", err); }
+                catch (err) { Logger.stacktrace(this.name, "Unable to fire observer for " + this.contentList[i].name + ".", err); }
             }
         }
     }

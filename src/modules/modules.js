@@ -1,5 +1,6 @@
 import Utilities from "./utilities";
-import WebpackModules, {DiscordModules} from "./webpackmodules";
+import WebpackModules from "./webpackmodules";
+import DiscordModules from "./discordmodules";
 
 import BDV2 from "./bdv2";
 import BdApi from "./pluginapi";
@@ -17,10 +18,11 @@ import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
+import Logger from "./logger";
 
 export const React = DiscordModules.React;
 export const ReactDOM = DiscordModules.ReactDOM;
 
-export {BDV2, BdApi, Core, ContentManager, DataStore,
+export {BDV2, BdApi, Core, ContentManager, DataStore, Logger,
         Events, PluginManager, DOMManager, ThemeManager,
         Utilities, WebpackModules, DiscordModules, Settings};

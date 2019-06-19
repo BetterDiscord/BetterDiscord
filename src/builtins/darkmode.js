@@ -6,10 +6,10 @@ export default new class DarkMode extends Builtin {
     get id() {return "darkMode";}
 
     enabled() {
-        $("#app-mount").addClass("bda-dark").addClass("bd-dark");
+        document.getElementById("app-mount").classList.add("bda-dark", "bda-dark");
     }
 
     disabled() {
-        $("#app-mount").removeClass("bda-dark").removeClass("bd-dark");
+        document.getElementById("app-mount").classList.remove("bda-dark", "bda-dark");
     }
 };

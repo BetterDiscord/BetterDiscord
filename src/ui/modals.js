@@ -1,4 +1,4 @@
-import {Utilities, WebpackModules, React, Settings} from "modules";
+import {Logger, WebpackModules, React, Settings} from "modules";
 
 export default class Modals {
 
@@ -132,7 +132,7 @@ export default class Modals {
                 if (err.error) {
                     error.find("a").on("click", (e) => {
                         e.preventDefault();
-                        Utilities.err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
+                        Logger.stacktrace("ContentError", `Error details for ${err.name ? err.name : err.file}.`, err.error);
                     });
                 }
             }

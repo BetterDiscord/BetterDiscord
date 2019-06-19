@@ -1,7 +1,9 @@
 import {SettingsConfig} from "data";
+import Logger from "./logger";
 import DataStore from "./datastore";
 import Events from "./emitter";
-import WebpackModules, {DiscordModules} from "./webpackmodules";
+import WebpackModules from "./webpackmodules";
+import DiscordModules from "./discordmodules";
 
 import {SettingsPanel as SettingsRenderer} from "ui";
 import Utilities from "./utilities";
@@ -22,7 +24,7 @@ export default new class SettingsManager {
     }
 
     registerCollection(id, name, settings, button = null) {
-        if (this.collections.find(c => c.id == id)) return Utilities.err("Settings", "Already have a collection with id " + id);
+        if (this.collections.find(c => c.id == id)) return Logger.error("Settings", "Already have a collection with id " + id);
         this.collections.push({
             type: "collection",
             id: id,
@@ -35,12 +37,12 @@ export default new class SettingsManager {
 
     removeCollection(id) {
         const location = this.collections.findIndex(c => c.id == id);
-        if (!location < 0) return Utilities.err("Settings", "No collection with id " + id);
+        if (!location < 0) return Logger.error("Settings", "No collection with id " + id);
         this.collections.splice(location, 1);
     }
 
     registerPanel(id, name, options) {
-        if (this.panels.find(p => p.id == id)) return Utilities.err("Settings", "Already have a panel with id " + id);
+        if (this.panels.find(p => p.id == id)) return Logger.error("Settings", "Already have a panel with id " + id);
         const {element, onClick, order = 1} = options;
         const section = {id, order, label: name, section: name};
         if (onClick) section.clickListener = onClick;
@@ -50,7 +52,7 @@ export default new class SettingsManager {
 
     removePanel(id) {
         const location = this.panels.findIndex(c => c.id == id);
-        if (!location < 0) return Utilities.err("Settings", "No collection with id " + id);
+        if (!location < 0) return Logger.error("Settings", "No collection with id " + id);
         this.panels.splice(location, 1);
     }
 

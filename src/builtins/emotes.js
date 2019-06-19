@@ -159,18 +159,19 @@ export default new class EmoteModule extends Builtin {
 
         if (exists && this.isCacheValid()) {
             Toasts.show("Loading emotes from cache.", {type: "info"});
-            Utilities.log("Emotes", "Loading emotes from local cache.");
+            this.log("Loading emotes from local cache.");
 
             const data = await new Promise(resolve => {
                 _fs.readFile(file, "utf8", (err, content) => {
-                    Utilities.log("Emotes", "Emotes loaded from cache.");
+                    this.log("Emotes loaded from cache.");
                     if (err) content = {};
                     resolve(content);
                 });
             });
 
-            let isValid = Utilities.testJSON(data);
-            if (isValid) Object.assign(Emotes, JSON.parse(data));
+            const parsed = Utilities.testJSON(data);
+            let isValid = !!parsed;
+            if (isValid) Object.assign(Emotes, parsed);
 
             for (const e in emoteInfo) {
                 isValid = Object.keys(Emotes[emoteInfo[e].variable]).length > 0;
@@ -183,7 +184,7 @@ export default new class EmoteModule extends Builtin {
                 return;
             }
 
-            Utilities.log("Emotes", "Cache was corrupt, downloading...");
+            this.log("Cache was corrupt, downloading...");
             _fs.unlinkSync(file);
         }
 
@@ -199,7 +200,7 @@ export default new class EmoteModule extends Builtin {
         Toasts.show("All emotes successfully downloaded.", {type: "success"});
 
         try { _fs.writeFileSync(file, JSON.stringify(Emotes), "utf8"); }
-        catch (err) { Utilities.err("Emotes", "Could not save emote data.", err); }
+        catch (err) { this.stacktrace("Could not save emote data.", err); }
 
         this.emotesLoaded = true;
         Events.dispatch("emotes-loaded");
@@ -209,15 +210,16 @@ export default new class EmoteModule extends Builtin {
         const request = require("request");
         const options = {
             url: emoteMeta.url,
-            timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000
+            timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000,
+            json: true
         };
 
-        Utilities.log("Emotes", `Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
+        this.log(`Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
 
         return new Promise((resolve, reject) => {
-            request(options, (error, response, body) => {
+            request(options, (error, response, parsedData) => {
                 if (error) {
-                    Utilities.err("Emotes", "Could not download " + emoteMeta.variable, error);
+                    this.stacktrace("Could not download " + emoteMeta.variable, error);
                     if (emoteMeta.backup) {
                         emoteMeta.url = emoteMeta.backup;
                         emoteMeta.backup = null;
@@ -227,20 +229,6 @@ export default new class EmoteModule extends Builtin {
                     return reject({});
                 }
 
-                let parsedData = {};
-                try {
-                    parsedData = JSON.parse(body);
-                }
-                catch (err) {
-                    Utilities.err("Emotes", "Could not download " + emoteMeta.variable, err);
-                    if (emoteMeta.backup) {
-                        emoteMeta.url = emoteMeta.backup;
-                        emoteMeta.backup = null;
-                        if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
-                        return resolve(this.downloadEmotes(emoteMeta));
-                    }
-                    return reject({});
-                }
                 if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
 
                 for (const emote in parsedData) {
@@ -251,7 +239,7 @@ export default new class EmoteModule extends Builtin {
                     parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
                 }
                 resolve(parsedData);
-                Utilities.log("Emotes", "Downloaded: " + emoteMeta.variable);
+                this.log("Downloaded: " + emoteMeta.variable);
             });
         });
     }

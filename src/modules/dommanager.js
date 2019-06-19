@@ -32,23 +32,23 @@ export default class DOMManager {
     }
 
     static removeStyle(id) {
-        const exists = this.getElement(id, this.bdStyles);
+        const exists = this.getElement(`#${id}`, this.bdStyles);
         if (exists) exists.remove();
     }
 
     static injectStyle(id, css) {
-        const style = this.getElement(id, this.bdStyles) || this.createElement("style", {id});
+        const style = this.getElement(`#${id}`, this.bdStyles) || this.createElement("style", {id});
         style.textContent = css;
         this.bdStyles.append(style);
     }
 
     static removeTheme(id) {
-        const exists = this.getElement(id, this.bdThemes);
+        const exists = this.getElement(`#${id}`, this.bdThemes);
         if (exists) exists.remove();
     }
 
     static injectTheme(id, css) {
-        const style = this.getElement(id, this.bdThemes) || this.createElement("style", {id});
+        const style = this.getElement(`#${id}`, this.bdThemes) || this.createElement("style", {id});
         style.textContent = css;
         this.bdThemes.append(style);
     }

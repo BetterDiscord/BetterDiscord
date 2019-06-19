@@ -1,4 +1,5 @@
 import Utilities from "./utilities";
+import Logger from "./logger";
 import Settings from "./settingsmanager";
 import Events from "./emitter";
 import DataStore from "./datastore";
@@ -58,8 +59,8 @@ export default class ContentManager {
     }
 
     watchContent() {
-        if (this.watcher) return Utilities.err(this.name, "Already watching content.");
-        Utilities.log(this.name, "Starting to watch content.");
+        if (this.watcher) return Logger.error(this.name, "Already watching content.");
+        Logger.log(this.name, "Starting to watch content.");
         this.watcher = fs.watch(this.contentFolder, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename || !filename.endsWith(this.extension)) return;
             await new Promise(r => setTimeout(r, 50));
@@ -81,10 +82,10 @@ export default class ContentManager {
     }
 
     unwatchContent() {
-        if (!this.watcher) return Utilities.err(this.name, "Was not watching content.");
+        if (!this.watcher) return Logger.error(this.name, "Was not watching content.");
         this.watcher.close();
         delete this.watcher;
-        Utilities.log(this.name, "No longer watching content.");
+        Logger.log(this.name, "No longer watching content.");
     }
 
     extractMeta(content) {
@@ -99,9 +100,8 @@ export default class ContentManager {
     parseOldMeta(content) {
         const meta = content.split("\n")[0];
         const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
-        if (!Utilities.testJSON(metaData)) throw new MetaError("META could not be parsed.");
-
-        const parsed = JSON.parse(metaData);
+        const parsed = Utilities.testJSON(metaData);
+        if (!parsed) throw new MetaError("META could not be parsed.");
         if (!parsed.name) throw new MetaError("META missing name data.");
         return parsed;
     }

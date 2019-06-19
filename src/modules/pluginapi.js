@@ -1,5 +1,6 @@
 import Utilities from "./utilities";
-import WebpackModules, {DiscordModules} from "./webpackmodules";
+import WebpackModules from "./webpackmodules";
+import DiscordModules from "./discordmodules";
 import DataStore from "./datastore";
 import DOMManager from "./dommanager";
 import {Toasts, Modals} from "ui";
