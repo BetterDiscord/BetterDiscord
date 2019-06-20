@@ -9,6 +9,7 @@ import Settings from "./modules/settingsmanager";
 import DataStore from "./modules/datastore";
 import EmoteModule from "./builtins/emotes";
 import DomManager from "./modules/dommanager";
+import Utilities from "./modules/utilities";
 
 // Perform some setup
 // proxyLocalStorage();
@@ -35,7 +36,7 @@ window.DataStore = DataStore;
 
 
 window.DomManager = DomManager;
-
+window.utils = Utilities;
 
 window.BDEvents = Events;
 window.bdConfig = Config;

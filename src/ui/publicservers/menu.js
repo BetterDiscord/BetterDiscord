@@ -246,11 +246,12 @@ export default class PublicServers extends React.Component {
         const categories = this.categoryButtons.map(name => {
             const section = {
                 section: name,//.toLowerCase().replace(" ", "_"),
-                label: name
+                label: name,
+                //element: () => name == "All" ? this.content : null
             };
             
             if (name == "All") section.element = () => this.content;
-            else section.onClick = () => this.changeCategory(name);
+            // else section.onClick = () => this.changeCategory(name);
             return section;
         });
         return React.createElement(SettingsView, {

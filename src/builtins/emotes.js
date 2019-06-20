@@ -84,8 +84,8 @@ export default new class EmoteModule extends Builtin {
 
     patchMessageContent() {
         if (this.cancelEmoteRender) return;
-        this.cancelEmoteRender = Utilities.monkeyPatch(this.MessageContentComponent.prototype, "render", {after: ({retVal}) => {
-            Utilities.monkeyPatch(retVal.props, "children", {silent: true, after: ({returnValue}) => {
+        this.cancelEmoteRender = this.after(this.MessageContentComponent.prototype, "render", (thisObj, args, retVal) => {
+            this.after(retVal.props, "children", (t, a, returnValue) => {
                 if (this.categories.length == 0) return;
                 const markup = returnValue.props.children[1];
                 if (!markup.props.children) return;
@@ -146,8 +146,8 @@ export default new class EmoteModule extends Builtin {
                     if (node.type.name == "BDEmote") node.props.jumboable = true;
                     else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
                 }
-            }});
-        }});
+            });
+        });
     }
 
     async loadEmoteData(emoteInfo) {

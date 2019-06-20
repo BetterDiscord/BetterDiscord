@@ -1,4 +1,4 @@
-import {React, Utilities} from "modules";
+import {React, Utilities, Patcher} from "modules";
 
 import FloatingWindow from "./window";
 
@@ -11,7 +11,6 @@ class FloatingWindowContainer extends React.Component {
 
     render() {
         return this.state.windows.map(window =>
-            // <FloatingWindow onResize={window.onResize} close={this.close.bind(this, window.id)} title={window.title} id={window.id} height={window.height} width={window.width} center={window.center} resizable={window.resizable}>
             <FloatingWindow {...window} close={this.close.bind(this, window.id)}>
                     {window.children}
             </FloatingWindow>
@@ -22,8 +21,6 @@ class FloatingWindowContainer extends React.Component {
         this.setState({
             windows: [...this.state.windows, window]
         });
-        // this.windows.push(window);
-        // this.forceUpdate();
     }
 
     close(id) {
@@ -33,10 +30,6 @@ class FloatingWindowContainer extends React.Component {
                 return w.id != id;
             })
         });
-        // const index = this.windows.findIndex(w => w.id == id);
-        // if (index < 0) return;
-        // this.windows.splice(index, 1);
-        // this.forceUpdate();
     }
 
     static get id() {return "floating-windows";}
@@ -51,17 +44,10 @@ class FloatingWindowContainer extends React.Component {
 
 const containerRef = React.createRef();
 const container = <FloatingWindowContainer ref={containerRef} />;
-// ReactDOM.render(container, FloatingWindowContainer.root);
-const App = document.querySelector(".app-19_DXt").__reactInternalInstance$.return.return.return.return.return.return.return.return.return.return.return;
-Utilities.monkeyPatch(App.type.prototype, "render", {after: (data) => {
-    //returnValue.props.children.props.children.props.children.props.children[4].props.children.props.children[1].props.children
-    data.returnValue.props.children.props.children.props.children.props.children[4].props.children.props.children[1].props.children.push(container);
-}});
+const App = Utilities.findInReactTree(Utilities.getReactInstance(document.querySelector(".app-19_DXt")), m => m && m.type && m.type.displayName && m.type.displayName == "App");
+Patcher.after("FloatingContainer", App.type.prototype, "render", (thisObject, args, returnValue) => {
+    const group = Utilities.findInRenderTree(returnValue, m => m && m[5] && m[5].type && m[5].type.displayName == "LayerContainer", {walkable: ["children", "props"]});
+    group.push(container);
+});
 App.stateNode.forceUpdate();
 export default containerRef.current;
-
-// patch App component
-//
-//document.querySelector(".app-19_DXt").__reactInternalInstance$.return.return.return.return.return.return.return.return.return.type
-//props.children.props.children.props.children.props.children[4].props.children[1].props.children[""0""].push( SELF )
-// forceupdate app component

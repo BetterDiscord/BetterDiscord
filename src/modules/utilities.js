@@ -2,19 +2,8 @@
 
 export default class Utilities {
 
-    static stripBOM(content) {
-        if (content.charCodeAt(0) === 0xFEFF) {
-            content = content.slice(1);
-        }
-        return content;
-    }
-
     static getTextArea() {
         return $(".channelTextArea-1LDbYG textarea");
-    }
-
-    static getInternalInstance(node) {
-        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance"))] || null;
     }
 
     static insertText(textarea, text) {
@@ -22,28 +11,6 @@ export default class Utilities {
         textarea.selectionStart = 0;
         textarea.selectionEnd = textarea.value.length;
         document.execCommand("insertText", false, text);
-    }
-
-    static injectCss(uri) {
-        $("<link/>", {
-            type: "text/css",
-            rel: "stylesheet",
-            href: uri
-        }).appendTo($("head"));
-    }
-
-    static injectJs(uri) {
-        return new Promise(resolve => {
-            $("<script/>", {
-                type: "text/javascript",
-                src: uri,
-                onload: resolve
-            }).appendTo($("body"));
-        });
-    }
-
-    static escapeID(id) {
-        return id.replace(/^[^a-z]+|[^\w-]+/gi, "-");
     }
 
     static escape(s) {
@@ -162,4 +129,127 @@ export default class Utilities {
 
         return proxy;
     }
+
+    /**
+     * Format strings with placeholders (`{{placeholder}}`) into full strings.
+     * Quick example: `PluginUtilities.formatString("Hello, {{user}}", {user: "Zerebos"})`
+     * would return "Hello, Zerebos".
+     * @param {string} string - string to format
+     * @param {object} values - object literal of placeholders to replacements
+     * @returns {string} the properly formatted string
+     */
+    static formatString(string, values) {
+        for (const val in values) {
+            let replacement = values[val];
+            if (Array.isArray(replacement)) replacement = JSON.stringify(replacement);
+            if (typeof(replacement) === "object" && replacement !== null) replacement = replacement.toString();
+            string = string.replace(new RegExp(`{{${val}}}`, "g"), replacement);
+        }
+        return string;
+    }
+
+    /**
+     * Finds a value, subobject, or array from a tree that matches a specific filter.
+     * @param {object} tree Tree that should be walked
+     * @param {callable} searchFilter Filter to check against each object and subobject
+     * @param {object} options Additional options to customize the search
+     * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. Null value indicates all keys are walkable
+     * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search, most helpful when `walkable = null`.
+     */
+    static findInTree(tree, searchFilter, {walkable = null, ignore = []} = {}) {
+        if (typeof searchFilter === "string") {
+            if (tree.hasOwnProperty(searchFilter)) return tree[searchFilter];
+        }
+        else if (searchFilter(tree)) {
+            return tree;
+        }
+
+        if (typeof tree !== "object" || tree == null) return undefined;
+
+        let tempReturn = undefined;
+        if (tree instanceof Array) {
+            for (const value of tree) {
+                tempReturn = this.findInTree(value, searchFilter, {walkable, ignore});
+                if (typeof tempReturn != "undefined") return tempReturn;
+            }
+        }
+        else {
+            const toWalk = walkable == null ? Object.keys(tree) : walkable;
+            for (const key of toWalk) {
+                if (!tree.hasOwnProperty(key) || ignore.includes(key)) continue;
+                tempReturn = this.findInTree(tree[key], searchFilter, {walkable, ignore});
+                if (typeof tempReturn != "undefined") return tempReturn;
+            }
+        }
+        return tempReturn;
+    }
+
+    /**
+     * Gets a nested property (if it exists) safely. Path should be something like `prop.prop2.prop3`.
+     * Numbers can be used for arrays as well like `prop.prop2.array.0.id`.
+     * @param {Object} obj - object to get nested property of
+     * @param {string} path - representation of the property to obtain
+     */
+    static getNestedProp(obj, path) {
+        return path.split(/\s?\.\s?/).reduce(function(currentObj, prop) {
+            return currentObj && currentObj[prop];
+        }, obj);
+    }
+
+    /**
+     * Finds a value, subobject, or array from a tree that matches a specific filter. Great for patching render functions.
+     * @param {object} tree React tree to look through. Can be a rendered object or an internal instance.
+     * @param {callable} searchFilter Filter function to check subobjects against.
+     */
+    static findInRenderTree(tree, searchFilter, {walkable = ["props", "children", "child", "sibling"], ignore = []} = {}) {
+        return this.findInTree(tree, searchFilter, {walkable, ignore});
+    }
+
+    /**
+     * Finds a value, subobject, or array from a tree that matches a specific filter. Great for patching render functions.
+     * @param {object} tree React tree to look through. Can be a rendered object or an internal instance.
+     * @param {callable} searchFilter Filter function to check subobjects against.
+     */
+    static findInReactTree(tree, searchFilter) {
+        return this.findInTree(tree, searchFilter, {walkable: ["props", "children", "return", "stateNode"]});
+    }
+
+    static getReactInstance(node) {
+        if (node.__reactInternalInstance$) return node.__reactInternalInstance$;
+        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance"))] || null;
+    }
+
+    /**
+	 * Grabs a value from the react internal instance. Allows you to grab
+	 * long depth values safely without accessing no longer valid properties.
+	 * @param {HTMLElement} node - node to obtain react instance of
+	 * @param {object} options - options for the search
+	 * @param {array} [options.include] - list of items to include from the search
+	 * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] - list of items to exclude from the search
+	 * @param {callable} [options.filter=_=>_] - filter to check the current instance with (should return a boolean)
+	 * @return {(*|null)} the owner instance or undefined if not found.
+	 */
+	static getOwnerInstance(node, {include, exclude = ["Popout", "Tooltip", "Scroller", "BackgroundFlash"], filter = _ => _} = {}) {
+		if (node === undefined) return undefined;
+		const excluding = include === undefined;
+		const nameFilter = excluding ? exclude : include;
+		function getDisplayName(owner) {
+			const type = owner.type;
+			if (!type) return null;
+			return type.displayName || type.name || null;
+		}
+		function classFilter(owner) {
+			const name = getDisplayName(owner);
+			return (name !== null && !!(nameFilter.includes(name) ^ excluding));
+		}
+		
+		let curr = this.getReactInstance(node);
+		for (curr = curr && curr.return; curr !== null; curr = curr.return) {
+			if (curr === null) continue;
+			const owner = curr.stateNode;
+			if (curr !== null && !(owner instanceof HTMLElement) && classFilter(curr) && filter(owner)) return owner;
+		}
+		
+		return null;
+	}
 }

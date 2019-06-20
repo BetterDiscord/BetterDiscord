@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {Settings, DataStore, React, Utilities, WebpackModules, Events, DOMManager} from "modules";
+import {Settings, DataStore, React, WebpackModules, Events, DOMManager} from "modules";
 import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindowContainer from "../ui/floating/container";
 import SettingsTitle from "../ui/settings/title";
@@ -26,7 +26,7 @@ export default new class CustomCSS extends Builtin {
 
     async enabled() {
         if (!window.ace) {
-            Utilities.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js").then(() => {
+            DOMManager.injectScript("ace-script", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js").then(() => {
                 if (window.require.original) window.require = window.require.original;
             });
         }

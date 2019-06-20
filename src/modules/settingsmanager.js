@@ -137,7 +137,7 @@ export default new class SettingsManager {
     forceUpdate() {
         const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
-        Utilities.getInternalInstance(node).return.return.return.return.return.return.stateNode.forceUpdate();
+        Utilities.getReactInstance(node).return.return.return.return.return.return.stateNode.forceUpdate();
     }
 
     getUserSettings() {

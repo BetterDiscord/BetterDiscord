@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {Utilities, WebpackModules} from "modules";
+import {WebpackModules} from "modules";
 
 const MessageContent = WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));
 
@@ -13,22 +13,17 @@ export default new class ColoredText extends Builtin {
     }
 
     disabled() {
-        if (!this.cancelColoredText) return;
-        this.cancelColoredText();
-        delete this.cancelColoredText;
+        this.unpatchAll();
     }
 
     injectColoredText() {
-        if (this.cancelColoredText) return;
-
-        this.cancelColoredText = Utilities.monkeyPatch(MessageContent.prototype, "render", {after: (data) => {
-            Utilities.monkeyPatch(data.returnValue.props, "children", {silent: true, after: ({returnValue}) => {
+        this.after(MessageContent.prototype, "render", (thisObject, args, retVal) => {
+            this.after(retVal.props, "children", {silent: true, after: ({returnValue}) => {
                 const markup = returnValue.props.children[1];
-                const roleColor = data.thisObject.props.message.colorString;
+                const roleColor = thisObject.props.message.colorString;
                 if (markup && roleColor) markup.props.style = {color: roleColor};
-                return returnValue;
             }});
-        }});
+        });
     }
 
     removeColoredText() {

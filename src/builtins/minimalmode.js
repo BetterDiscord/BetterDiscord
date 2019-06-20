@@ -14,22 +14,22 @@ export default new class MinimalMode extends Builtin {
     }
 
     enabled() {
-        $("body").addClass("bd-minimal");
+        document.body.classList.add("bd-minimal");
         if (this.hideChannels) this.enableHideChannels();
         this.hideChannelCancel = this.registerSetting(this.hideChannelsID, this.enableHideChannels, this.disableHideChannels);
     }
 
     disabled() {
-        $("body").removeClass("bd-minimal");
+        document.body.classList.remove("bd-minimal");
         if (this.hideChannels) this.disableHideChannels();
         if (this.hideChannelCancel) this.hideChannelCancel();
     }
 
     enableHideChannels() {
-        $("body").addClass("bd-minimal-chan");
+        document.body.classList.add("bd-minimal-chan");
     }
 
     disableHideChannels() {
-        $("body").removeClass("bd-minimal-chan");
+        document.body.classList.remove("bd-minimal-chan");
     }
 };
