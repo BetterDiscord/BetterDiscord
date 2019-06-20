@@ -46,28 +46,26 @@ BdApi.setWindowPreference = function(key, value) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    DOMManager.injectStyle(Utilities.escapeID(id), css);
-    // $("head").append($("<style>", {id: Utilities.escapeID(id), text: css}));
+    DOMManager.injectStyle(id, css);
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    DOMManager.removeStyle(Utilities.escapeID(id));
-    // $("#" + Utilities.escapeID(id)).remove();
+    DOMManager.removeStyle(id);
 };
 
 //Inject CSS to document head
 //id = id of element
 //css = custom css
 BdApi.linkJS = function (id, url) {
-    $("head").append($("<script>", {id: Utilities.escapeID(id), src: url, type: "text/javascript"}));
+    return DOMManager.injectScript(id, url);
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.unlinkJS = function (id) {
-    $("#" + Utilities.escapeID(id)).remove();
+    DOMManager.removeScript(id);
 };
 
 /**
@@ -135,7 +133,7 @@ BdApi.findModuleByDisplayName = function(name) {
 BdApi.getInternalInstance = function(node) {
     if (!(node instanceof window.jQuery) && !(node instanceof Element)) return undefined;
     if (node instanceof jQuery) node = node[0];
-    return Utilities.getInternalInstance(node);
+    return Utilities.getReactInstance(node);
 };
 
 // Gets data

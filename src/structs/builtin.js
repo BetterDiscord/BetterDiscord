@@ -1,6 +1,7 @@
 import Logger from "../modules/logger";
 import Events from "../modules/emitter";
 import Settings from "../modules/settingsmanager";
+import Patcher from "../modules/patcher";
 
 export default class BuiltinModule {
 
@@ -80,5 +81,13 @@ export default class BuiltinModule {
 
     stacktrace(message, error) {
         Logger.stacktrace(this.name, message, error);
+    }
+
+    after(object, func, callback) {
+        return Patcher.after(this.name, object, func, callback);
+    }
+
+    unpatchAll() {
+        return Patcher.unpatchAll(this.name);
     }
 }

@@ -1,6 +1,5 @@
 import {Config} from "data";
 import ContentManager from "./contentmanager";
-import Utilities from "./utilities";
 import {Modals} from "ui";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
@@ -55,19 +54,12 @@ export default new class ThemeManager extends ContentManager {
     addTheme(idOrContent) {
         const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
         if (!content) return;
-        // const style = document.createElement("style");
-        // style.id = Utilities.escapeID(content.id);
-        // style.textContent = unescape(content.css);
-        // document.head.append(style);
-        // content.element = style;
-        DOMManager.injectTheme(Utilities.escapeID(content.id), unescape(content.css));
+        DOMManager.injectTheme(content.id, content.css);
     }
 
     removeTheme(idOrContent) {
         const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
         if (!content) return;
-        // const element = content.element || document.getElementById(Utilities.escapeID(content.id));
-        // if (element) element.remove();
-        DOMManager.removeTheme(Utilities.escapeID(content.id));
+        DOMManager.removeTheme(content.id);
     }
 };

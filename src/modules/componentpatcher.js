@@ -40,7 +40,7 @@ export default new class {
         if (this.guildListItemsPatch) return;
         const listItemClass = this.guildClasses.listItem.split(" ")[0];
         const blobClass = this.guildClasses.blobContainer.split(" ")[0];
-        const reactInstance = Utilities.getInternalInstance(document.querySelector(`.${listItemClass} .${blobClass}`).parentElement);
+        const reactInstance = Utilities.getReactInstance(document.querySelector(`.${listItemClass} .${blobClass}`).parentElement);
         const GuildComponent = reactInstance.return.type;
         if (!GuildComponent) return;
         this.guildListItemsPatch = Utilities.monkeyPatch(GuildComponent.prototype, "render", {after: (data) => {

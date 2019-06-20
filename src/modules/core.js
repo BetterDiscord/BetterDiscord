@@ -1,5 +1,4 @@
 import BDV2 from "./bdv2";
-import Utilities from "./utilities";
 import Logger from "./logger";
 import {Config} from "data";
 // import EmoteModule from "./emotes";

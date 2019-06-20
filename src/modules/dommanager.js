@@ -1,20 +1,26 @@
 export default class DOMManager {
 
-    static get bdHead() { return this.getElement("bd-head"); }
-    static get bdBody() { return this.getElement("bd-body"); }
-    static get bdStyles() { return this.getElement("bd-styles"); }
-    static get bdThemes() { return this.getElement("bd-themes"); }
-    static get bdCustomCSS() { return this.getElement("#customcss"); }
-    static get bdTooltips() { return this.getElement("bd-tooltips") || this.createElement("bd-tooltips").appendTo(this.bdBody); }
-    static get bdModals() { return this.getElement("bd-modals") || this.createElement("bd-modals").appendTo(this.bdBody); }
-    static get bdToasts() { return this.getElement("bd-toasts") || this.createElement("bd-toasts").appendTo(this.bdBody); }
+    static get bdHead() {return this.getElement("bd-head");}
+    static get bdBody() {return this.getElement("bd-body");}
+    static get bdScripts() {return this.getElement("bd-scripts");}
+    static get bdStyles() {return this.getElement("bd-styles");}
+    static get bdThemes() {return this.getElement("bd-themes");}
+    static get bdCustomCSS() {return this.getElement("#customcss");}
+    // static get bdTooltips() { return this.getElement("bd-tooltips") || this.createElement("bd-tooltips").appendTo(this.bdBody); }
+    // static get bdModals() { return this.getElement("bd-modals") || this.createElement("bd-modals").appendTo(this.bdBody); }
+    // static get bdToasts() { return this.getElement("bd-toasts") || this.createElement("bd-toasts").appendTo(this.bdBody); }
 
     static initialize() {
         this.createElement("bd-head", {target: document.head});
         this.createElement("bd-body", {target: document.body});
+        this.createElement("bd-scripts", {target: this.bdHead});
         this.createElement("bd-styles", {target: this.bdHead});
         this.createElement("bd-themes", {target: this.bdHead});
         this.createElement("style", {id: "customcss", target: this.bdHead});
+    }
+
+    static escapeID(id) {
+        return id.replace(/^[^a-z]+|[^\w-]+/gi, "-");
     }
 
     static getElement(e, baseElement = document) {
@@ -32,22 +38,26 @@ export default class DOMManager {
     }
 
     static removeStyle(id) {
+        id = this.escapeID(id);
         const exists = this.getElement(`#${id}`, this.bdStyles);
         if (exists) exists.remove();
     }
 
     static injectStyle(id, css) {
+        id = this.escapeID(id);
         const style = this.getElement(`#${id}`, this.bdStyles) || this.createElement("style", {id});
         style.textContent = css;
         this.bdStyles.append(style);
     }
 
     static removeTheme(id) {
+        id = this.escapeID(id);
         const exists = this.getElement(`#${id}`, this.bdThemes);
         if (exists) exists.remove();
     }
 
     static injectTheme(id, css) {
+        id = this.escapeID(id);
         const style = this.getElement(`#${id}`, this.bdThemes) || this.createElement("style", {id});
         style.textContent = css;
         this.bdThemes.append(style);
@@ -55,5 +65,21 @@ export default class DOMManager {
 
     static updateCustomCSS(css) {
         this.bdCustomCSS.textContent = css;
+    }
+
+    static removeScript(id) {
+        id = this.escapeID(id);
+        const exists = this.getElement(`#${id}`, this.bdScripts);
+        if (exists) exists.remove();
+    }
+
+    static injectScript(id, url) {
+        id = this.escapeID(id);
+        return new Promise(resolve => {
+            const script = this.getElement(`#${id}`, this.bdScripts) || this.createElement("script", {id});
+            script.src = url;
+            script.onload = resolve;
+            this.bdScripts.append(script);
+        });
     }
 }

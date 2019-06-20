@@ -15,6 +15,13 @@ Module.globalPaths.push(path.resolve(require("electron").remote.app.getAppPath()
 const splitRegex = /[^\S\r\n]*?\n[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
 
+const stripBOM = function(content) {
+    if (content.charCodeAt(0) === 0xFEFF) {
+        content = content.slice(1);
+    }
+    return content;
+};
+
 export default class ContentManager {
 
     get name() {return "";}
@@ -136,7 +143,7 @@ export default class ContentManager {
             const possiblePath = path.resolve(self.contentFolder, path.basename(filename));
             if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
             let content = fs.readFileSync(filename, "utf8");
-            content = Utilities.stripBOM(content);
+            content = stripBOM(content);
             const meta = self.extractMeta(content);
             meta.id = meta.name;
             meta.filename = path.basename(filename);

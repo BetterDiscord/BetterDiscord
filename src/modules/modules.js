@@ -19,10 +19,11 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
 import Logger from "./logger";
+import Patcher from "./patcher";
 
 export const React = DiscordModules.React;
 export const ReactDOM = DiscordModules.ReactDOM;
 
 export {BDV2, BdApi, Core, ContentManager, DataStore, Logger,
-        Events, PluginManager, DOMManager, ThemeManager,
+        Events, PluginManager, DOMManager, ThemeManager, Patcher,
         Utilities, WebpackModules, DiscordModules, Settings};
