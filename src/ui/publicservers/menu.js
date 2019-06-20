@@ -1,19 +1,9 @@
 import {React, WebpackModules} from "modules";
-import Tools from "./exitbutton";
-import TabBar from "./tabbar";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
+import Manager from "./manager";
 
-const AvatarDefaults = WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");
-const InviteActions = WebpackModules.getByProps("acceptInvite");
-const SortedGuildStore = WebpackModules.getByProps("getSortedGuilds");
 const SettingsView = WebpackModules.getByDisplayName("SettingsView");
-//SettingsView
-//onClose pop layer
-//onSetSection dispatch user settings modal set section section subsection
-//section selected one
-//sections []
-//theme dark
 
 export default class PublicServers extends React.Component {
 
@@ -35,13 +25,12 @@ export default class PublicServers extends React.Component {
         this.search = this.search.bind(this);
         this.searchKeyDown = this.searchKeyDown.bind(this);
         this.checkConnection = this.checkConnection.bind(this);
-        this.join = this.join.bind(this);
         this.connect = this.connect.bind(this);
     }
 
     componentDidMount() {
         this.checkConnection();
-     }
+    }
 
     close() {
         this.props.close();
@@ -101,39 +90,9 @@ export default class PublicServers extends React.Component {
         });
     }
 
-    join(serverCard) {
-        if (serverCard.props.pinned) return InviteActions.acceptInvite(serverCard.props.invite_code);
-        $.ajax({
-            method: "GET",
-            url: `${this.joinEndPoint}/${serverCard.props.server.identifier}`,
-            headers: {
-                "Accept": "application/json;",
-                "Content-Type": "application/json;" ,
-                "x-discord-token": this.state.connection.user.accessToken
-            },
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            },
-            success: () => {
-                serverCard.setState({joined: true});
-            }
-        });
-    }
-
-    connect() {
-        const options = this.windowOptions;
-        options.x = Math.round(window.screenX + window.innerWidth / 2 - options.width / 2);
-        options.y = Math.round(window.screenY + window.innerHeight / 2 - options.height / 2);
-
-        this.joinWindow = new (window.require("electron").remote.BrowserWindow)(options);
-        const url = "https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=https://auth.discordservers.com/info";
-        this.joinWindow.webContents.on("did-navigate", (event, navUrl) => {
-            if (navUrl != "https://auth.discordservers.com/info") return;
-            this.joinWindow.close();
-            this.checkConnection();
-        });
-        this.joinWindow.loadURL(url);
+    async connect() {
+        await Manager.connect();
+        this.checkConnection();
     }
 
     get windowOptions() {
@@ -167,9 +126,7 @@ export default class PublicServers extends React.Component {
             invite_code: "0Tmfo5ZbORCRqbAd",
             pinned: true
         };
-        const guildList = SortedGuildStore.guildPositions;
-        const defaultList = AvatarDefaults.DEFAULT_AVATARS;
-        return React.createElement(ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
+        return React.createElement(ServerCard, {server: server, pinned: true});
     }
 
     get endPoint() {
@@ -184,125 +141,39 @@ export default class PublicServers extends React.Component {
         return "https://join.discordservers.com/connect";
     }
 
-    checkConnection() {
-        try {
-            $.ajax({
-                method: "GET",
-                url: `https://auth.discordservers.com/info`,
-                headers: {
-                    "Accept": "application/json;",
-                    "Content-Type": "application/json;"
-                },
-                crossDomain: true,
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: data => {
-                    // Utils.log("PublicServer", "Got data: " + JSON.stringify(data));
-                    this.setState({
-                        selectedCategory: "All",
-                        connection: {
-                            state: 2,
-                            user: data
-                        }
-                    });
-                    this.search("", true);
-
-                },
-                error: () => {
-                    this.setState({
-                        title: "Not connected to discordservers.com!",
-                        loading: true,
-                        selectedCategory: "All",
-                        connection: {
-                            state: 1,
-                            user: null
-                        }
-                    });
-                }
-            });
+    async checkConnection() {
+        const userData = await Manager.checkConnection();
+        if (!userData) {
+            return this.setState({loading: true, connection: {state: 1, user: null}});
         }
-        catch (error) {
-            this.setState({
-                title: "Not connected to discordservers.com!",
-                loading: true,
-                selectedCategory: "All",
-                connection: {
-                    state: 1,
-                    user: null
-                }
-            });
-        }
+        this.setState({connection: {state: 2, user: userData}});
+        this.search("", true);
     }
 
-    //SettingsView
-//onClose pop layer
-//onSetSection dispatch user settings modal set section section subsection
-//section selected one
-//sections []
-//theme dark
-
     render() {
-        const categories = this.categoryButtons.map(name => {
-            const section = {
-                section: name,//.toLowerCase().replace(" ", "_"),
+        const categories = this.categoryButtons.map(name => ({
+                section: name,
                 label: name,
-                //element: () => name == "All" ? this.content : null
-            };
-            
-            if (name == "All") section.element = () => this.content;
-            // else section.onClick = () => this.changeCategory(name);
-            return section;
-        });
+                element: () => this.content
+            })
+        );
         return React.createElement(SettingsView, {
             onClose: this.close,
-            onSetSection: (e, ee, eee) => {console.log(e, ee, eee);this.changeCategory(e);},
+            onSetSection: this.changeCategory,
             section: this.state.selectedCategory,
             sections: [
-                {section: "HEADER", label: "Public Servers"},
+                {section: "HEADER", label: "Search"},
                 {section: "CUSTOM", element: () => this.searchInput},
                 {section: "HEADER", label: "Categories"},
-                ...categories
+                ...categories,
+                {section: "DIVIDER"},
+                {section: "HEADER", label: React.createElement("a", {href: "https://discordservers.com", target: "_blank"}, "Discordservers.com")},
+                {section: "DIVIDER"},
+                {section: "CUSTOM", element: () => this.connection}
             ],
             theme: "dark"
         });
         // return React.createElement(StandardSidebarView, {id: "pubslayer", ref: "sbv", notice: null, theme: "dark", closeAction: this.close, content: this.content, sidebar: this.sidebar});
-    }
-
-    get component() {
-        return {
-            sidebar: {
-                component: this.sidebar
-            },
-            content: {
-                component: this.content
-            },
-            tools: {
-                component: React.createElement(Tools, {key: "pt", ref: "tools", onClick: this.close})
-            }
-        };
-    }
-
-    get sidebar() {
-        return React.createElement(
-                "div",
-                {className: "ui-tab-bar SIDE"},
-                React.createElement(
-                    "div",
-                    {className: "ui-tab-bar-header", style: {fontSize: "16px"}},
-                    "Public Servers"
-                ),
-                React.createElement(TabBar.Separator, null),
-                this.searchInput,
-                React.createElement(TabBar.Separator, null),
-                React.createElement(TabBar.Header, {text: "Categories"}),
-                this.categoryButtons.map((value, index) => {
-                    return React.createElement(TabBar.Item, {id: index, onClick: this.changeCategory, key: index, text: value, selected: this.state.selectedCategory === index});
-                }),
-                React.createElement(TabBar.Separator, null),
-                this.footer,
-                this.connection
-            );
     }
 
     get searchInput() {
@@ -325,7 +196,7 @@ export default class PublicServers extends React.Component {
             term: e.target.value
         });
         let query = `?term=${e.target.value}`;
-        if (this.state.selectedCategory !== 0) {
+        if (this.state.selectedCategory !== "All") {
             query += `&category=${this.state.selectedCategory}`;
         }
         this.search(query, true);
@@ -344,7 +215,7 @@ export default class PublicServers extends React.Component {
             title: "Loading...",
             term: null
         });
-        if (id === 0) {
+        if (id === "All") {
             this.search("", true);
             return;
         }
@@ -352,65 +223,29 @@ export default class PublicServers extends React.Component {
     }
 
     get content() {
-        const guildList = SortedGuildStore.guildPositions;
-        const defaultList = AvatarDefaults.DEFAULT_AVATARS;
-        if (this.state.connection.state === 1) return this.notConnected;
+        const pinned = this.state.selectedCategory == "All" || this.state.connection.state === 1 ? this.bdServer : null;
+        const servers = this.state.servers.map((server) => {
+            return React.createElement(ServerCard, {key: server.identifier, server: server});
+        });
         return [React.createElement(SettingsTitle, {text: this.state.title}),
-            this.state.selectedCategory == "All" && this.bdServer,
-            this.state.servers.map((server) => {
-                return React.createElement(ServerCard, {key: server.identifier, server: server, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
-            }),
-            this.state.next && React.createElement(
-                "button",
-                {type: "button", onClick: () => {
-                        if (this.state.loading) return;this.setState({loading: true}); this.search(this.state.next, false);
-                    }, className: "ui-button filled brand small grow", style: {width: "100%", marginTop: "10px", marginBottom: "10px"}},
-                React.createElement(
-                    "div",
-                    {className: "ui-button-contents"},
-                    this.state.loading ? "Loading" : "Load More"
-                )
-            ),
+            pinned,
+            servers,
+            this.state.next ? this.nextButton : null,
             this.state.servers.length > 0 && React.createElement(SettingsTitle, {text: this.state.title})];
     }
 
-    get notConnected() {
-        //return React.createElement(SettingsTitle, { text: this.state.title });
-        return [React.createElement(
-                "h2",
-                {className: "ui-form-title h2 margin-reset margin-bottom-20"},
-                "Not connected to discordservers.com!",
-                React.createElement(
-                    "button",
-                    {
-                        onClick: this.connect,
-                        type: "button",
-                        className: "ui-button filled brand small grow",
-                        style: {
-                            display: "inline-block",
-                            minHeight: "18px",
-                            marginLeft: "10px",
-                            lineHeight: "14px"
-                        }
-                    },
-                    React.createElement(
-                        "div",
-                        {className: "ui-button-contents"},
-                        "Connect"
-                    )
-                )
-            ), this.bdServer];
-    }
-
-    get footer() {
-        return React.createElement(
-            "div",
-            {className: "ui-tab-bar-header"},
-            React.createElement(
-                "a",
-                {href: "https://discordservers.com", target: "_blank"},
-                "Discordservers.com"
-            )
+    get nextButton() {
+        return React.createElement("button", {
+                type: "button",
+                onClick: () => {
+                    if (this.state.loading) return;
+                    this.setState({loading: true});
+                    this.search(this.state.next, false);
+                },
+                className: "ui-button filled brand small grow",
+                style: {width: "100%", marginTop: "10px", marginBottom: "10px"}
+            },
+            React.createElement("div", {className: "ui-button-contents"}, this.state.loading ? "Loading" : "Load More")
         );
     }
 
@@ -418,29 +253,17 @@ export default class PublicServers extends React.Component {
         const {connection} = this.state;
         if (connection.state !== 2) return React.createElement("span", null);
 
-        return React.createElement(
-            "span",
-            null,
-            React.createElement(TabBar.Separator, null),
-            React.createElement(
-                "span",
-                {style: {color: "#b9bbbe", fontSize: "10px", marginLeft: "10px"}},
+        return React.createElement("span", null,
+            React.createElement("span", {style: {color: "#b9bbbe", fontSize: "10px", marginLeft: "10px"}},
                 "Connected as: ",
                 `${connection.user.username}#${connection.user.discriminator}`
             ),
-            React.createElement(
-                "div",
-                {style: {padding: "5px 10px 0 10px"}},
-                React.createElement(
-                    "button",
+            React.createElement("div", {style: {padding: "5px 10px 0 10px"}},
+                React.createElement("button",
                     {style: {width: "100%", minHeight: "20px"}, type: "button", className: "ui-button filled brand small grow"},
-                    React.createElement(
-                        "div",
-                        {className: "ui-button-contents", onClick: this.connect},
-                        "Reconnect"
-                    )
+                    React.createElement("div", {className: "ui-button-contents", onClick: this.connect}, "Reconnect")
                 )
             )
         );
-}
+    }
 }

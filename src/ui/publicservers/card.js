@@ -1,12 +1,13 @@
 import {React} from "modules";
+import Manager from "./manager";
 
 export default class ServerCard extends React.Component {
     constructor(props) {
         super(props);
-        if (!this.props.server.iconUrl) this.props.server.iconUrl = this.props.fallback;
+        if (!this.props.server.iconUrl) this.props.server.iconUrl = Manager.getDefaultAvatar();
         this.state = {
             imageError: false,
-            joined: this.props.guildList.includes(this.props.server.identifier)
+            joined: Manager.hasJoined(this.props.server.identifier)
         };
     }
 
@@ -61,7 +62,7 @@ export default class ServerCard extends React.Component {
                             React.createElement(
                                 "div",
                                 {className: "ui-button-contents"},
-                                "Joined"
+                                typeof(this.state.joined) == "string" ? "Joining..." : "Joined"
                             )
                         ),
                         server.error && React.createElement(
@@ -89,12 +90,13 @@ export default class ServerCard extends React.Component {
     }
 
     handleError() {
-        this.props.server.iconUrl = this.props.fallback;
+        this.props.server.iconUrl = Manager.getDefaultAvatar();
         this.setState({imageError: true});
     }
 
-    join() {
-        this.props.join(this);
-        //this.setState({joined: true});
+    async join() {
+        this.setState({joined: "joining"});
+        const didJoin = await Manager.join(this.props.server.identifier, this.props.server.nativejoin);
+        this.setState({joined: didJoin});
     }
 }
