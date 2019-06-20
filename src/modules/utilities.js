@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+import Logger from "./logger";
 
 export default class Utilities {
 
@@ -29,7 +29,7 @@ export default class Utilities {
     static suppressErrors(method, message) {
         return (...params) => {
             try { return method(...params);	}
-            catch (e) { this.err("SuppressedError", "Error occurred in " + message, e); }
+            catch (e) { Logger.stacktrace("SuppressedError", "Error occurred in " + message, e); }
         };
     }
 
@@ -117,7 +117,7 @@ export default class Utilities {
                 return obj[mod];
             },
             set: function(obj, mod, value) {
-                if (obj.hasOwnProperty(mod)) return this.err("MemoizedObject", "Trying to overwrite existing property");
+                if (obj.hasOwnProperty(mod)) return Logger.error("MemoizedObject", "Trying to overwrite existing property");
                 obj[mod] = value;
                 return obj[mod];
             }
@@ -242,14 +242,14 @@ export default class Utilities {
 			const name = getDisplayName(owner);
 			return (name !== null && !!(nameFilter.includes(name) ^ excluding));
 		}
-		
+
 		let curr = this.getReactInstance(node);
 		for (curr = curr && curr.return; curr !== null; curr = curr.return) {
 			if (curr === null) continue;
 			const owner = curr.stateNode;
 			if (curr !== null && !(owner instanceof HTMLElement) && classFilter(curr) && filter(owner)) return owner;
 		}
-		
+
 		return null;
 	}
 }
