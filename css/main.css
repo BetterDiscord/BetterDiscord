@@ -134,6 +134,42 @@
 }
 
 
+.bd-server-card {
+  position: relative;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  background: rgba(32,34,37,.6);
+  border-color: #202225;
+  margin-bottom: 8px;
+}
+
+.bd-server-header,
+.bd-server-footer {
+  display: flex;
+  color: #b9bbbe;
+}
+
+.bd-server-header {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bd-server-card .bd-button {
+  margin-top: 4px;
+}
+
+.bd-button.bd-button-success {
+  background-color: #3ac15c;
+}
+
+.bd-button.bd-button-success:hover {
+  background-color: rgb(52,174,83);
+}
+
+.bd-button.bd-button-success:active {
+  background-color: rgb(46,154,74);
+}
 
 
 

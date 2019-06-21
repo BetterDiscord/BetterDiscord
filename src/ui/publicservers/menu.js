@@ -1,7 +1,6 @@
 import {React, WebpackModules} from "modules";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
-import Manager from "./manager";
 
 const SettingsView = WebpackModules.getByDisplayName("SettingsView");
 
@@ -38,7 +37,7 @@ export default class PublicServers extends React.Component {
     }
 
     async checkConnection() {
-        const userData = await Manager.checkConnection();
+        const userData = await this.props.connection.checkConnection();
         if (!userData) {
             return this.setState({loading: true, user: null});
         }
@@ -47,7 +46,7 @@ export default class PublicServers extends React.Component {
     }
 
     async connect() {
-        await Manager.connect();
+        await this.props.connection.connect();
         this.checkConnection();
     }
 
@@ -58,7 +57,7 @@ export default class PublicServers extends React.Component {
 
     async search(term = "", from = 0) {
         this.setState({query: term, loading: true});
-        const results = await Manager.search({term, category: this.state.category == "All" ? "" : this.state.category, from});
+        const results = await this.props.connection.search({term, category: this.state.category == "All" ? "" : this.state.category, from});
         if (!results) {
             return this.setState({results: {
                 servers: [],
@@ -82,8 +81,12 @@ export default class PublicServers extends React.Component {
         this.search(this.state.query, this.state.results.next);
     }
 
+    async join(id, native = false) {
+        return await this.props.connection.join(id, native);
+    }
+
     get searchBox() {
-        return React.createElement("input", {onKeyDown: this.searchKeyDown, type: "text", className: "bd-search", placeholder: "Search...", value: this.state.query, maxLength: "50"});
+        return React.createElement("input", {onKeyDown: this.searchKeyDown, type: "text", className: "bd-search", placeholder: "Search...", maxLength: "50"});
     }
 
     get title() {
@@ -101,7 +104,7 @@ export default class PublicServers extends React.Component {
         const connectButton = this.state.user ? null : {title: "Connect", onClick: this.connect};
         const pinned = this.state.category == "All" || !this.state.user ? this.bdServer : null;
         const servers = this.state.results.servers.map((server) => {
-            return React.createElement(ServerCard, {key: server.identifier, server: server});
+            return React.createElement(ServerCard, {key: server.identifier, server: server, joined: this.props.connection.hasJoined(server.identifier), defaultAvatar: this.props.connection.getDefaultAvatar});
         });
         return [React.createElement(SettingsTitle, {text: this.title, button: connectButton}),
             pinned,
@@ -136,7 +139,7 @@ export default class PublicServers extends React.Component {
             invite_code: "0Tmfo5ZbORCRqbAd",
             pinned: true
         };
-        return React.createElement(ServerCard, {server: server, pinned: true});
+        return React.createElement(ServerCard, {server: server, pinned: true, joined: this.props.connection.hasJoined(server.identifier), defaultAvatar: this.props.connection.getDefaultAvatar});
     }
 
     render() {
