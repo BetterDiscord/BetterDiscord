@@ -93,6 +93,45 @@
   margin-right: 8px;
 }
 
+#bd-connection {
+  margin-left: 10px;
+}
+
+.bd-button {
+  background-color: #3E82E5;
+  color: white;
+  border-radius: 3px;
+}
+
+.bd-button:hover {
+  background-color: rgb(56,117,206);
+}
+
+.bd-button:active {
+  background-color: rgb(50,104,183);
+}
+
+.bd-footnote {
+  color: #b9bbbe;
+  font-size: 11px;
+}
+
+.bd-button-next,
+.bd-button-reconnect {
+  margin: 5px 10px 10px 0;
+  width: 100%;
+  min-height: 20px;
+}
+
+.bd-search {
+  margin: 0 0 10px 0px;
+  padding: 5px;
+  border-radius: 3px;
+  outline: none;
+  border: 0;
+  background-color: #202225;
+  color: #fff;
+}
 
 
 
@@ -911,7 +950,7 @@ body .ace_closeButton:active {
 }
 
 .bd-pfbtn,
-.bd-title-button {
+.bd-button-title {
   background: #7289da;
   color: #FFF;
   border-radius: 5px;

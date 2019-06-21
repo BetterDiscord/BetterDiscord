@@ -111,7 +111,7 @@ export default class PluginCard extends React.Component {
                     website && source && " | ",
                     source && React.createElement("a", {className: "bda-link bda-link-source", href: source, target: "_blank"}, "Source")
                 ),
-                this.hasSettings && React.createElement("button", {onClick: this.showSettings, className: "bda-settings-button", disabled: !this.state.checked}, "Settings")
+                this.hasSettings && React.createElement("button", {onClick: this.showSettings, className: "bd-button bd-button-plugin-settings", disabled: !this.state.checked}, "Settings")
             )
         );
     }
