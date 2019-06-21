@@ -21,9 +21,13 @@ export default class PublicServersConnection {
         return SortedGuildStore.guildPositions.includes(id);
     }
 
-    static search({term = "", category = "All", from = 0} = {}) {
+    static search({term = "", category = "", from = 0} = {}) {
         return new Promise(resolve => {
-            const query = `?category=${category}&from=${from}${term ? `&term=${term}` : ""}`;
+            const queries = [];
+            if (category) queries.push(`category=${category.replace(/ /g, "%20")}`);
+            if (term) queries.push(`term=${term.replace(/ /g, "%20")}`);
+            if (from) queries.push(`from=${from}`);
+            const query = `?${queries.join("&")}`;
             $.ajax({
                 method: "GET",
                 url: `${this.endPoint}${query}`,
@@ -37,7 +41,7 @@ export default class PublicServersConnection {
                         next: next >= data.total ? null : next
                     });
                 },
-                error: resolve(null)
+                error: () => resolve(null)
             });
         });
     }
@@ -78,8 +82,7 @@ export default class PublicServersConnection {
                         withCredentials: true
                     },
                     success: data => {
-                        this._accessToken = data.accessToken;
-                        console.log(this._accessToken);
+                        this._accessToken = data.access_token;
                         resolve(data);
                     },
                     error: () => resolve(false)
@@ -110,7 +113,7 @@ export default class PublicServersConnection {
             height: 550,
             backgroundColor: "#282b30",
             show: true,
-            resizable: false,
+            resizable: true,
             maximizable: false,
             minimizable: false,
             alwaysOnTop: true,

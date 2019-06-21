@@ -58,7 +58,7 @@ export default class ServerCard extends React.Component {
                         ),
                         this.state.joined && React.createElement(
                             "button",
-                            {type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN colorGreen-29iAKY", style: {minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c"}},
+                            {type: "button", className: "bd-button button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN colorGreen-29iAKY", style: {minHeight: "12px", marginTop: "4px", backgroundColor: "#3ac15c"}},
                             React.createElement(
                                 "div",
                                 {className: "ui-button-contents"},
@@ -67,7 +67,7 @@ export default class ServerCard extends React.Component {
                         ),
                         server.error && React.createElement(
                             "button",
-                            {type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN disabled-9aF2ug", style: {minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a"}},
+                            {type: "button", className: "bd-button button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN disabled-9aF2ug", style: {minHeight: "12px", marginTop: "4px", backgroundColor: "#c13a3a"}},
                             React.createElement(
                                 "div",
                                 {className: "ui-button-contents"},
@@ -76,7 +76,7 @@ export default class ServerCard extends React.Component {
                         ),
                         !server.error && !this.state.joined && React.createElement(
                             "button",
-                            {type: "button", className: "button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN", style: {minHeight: "12px", marginTop: "4px"}, onClick: () => {this.join();}},
+                            {type: "button", className: "bd-button button-38aScr lookFilled-1Gx00P colorBrand-3pXr91 sizeMin-1mJd1x grow-q77ONN", style: {minHeight: "12px", marginTop: "4px"}, onClick: () => {this.join();}},
                             React.createElement(
                                 "div",
                                 {className: "ui-button-contents"},
