@@ -1,4 +1,5 @@
 import Builtin from "../structs/builtin";
+import PSConnection from "./publicservers/connection";
 import {BDV2, DiscordModules, WebpackModules} from "modules";
 import {PublicServersMenu} from "ui";
 
@@ -20,7 +21,7 @@ export default new class PublicServers extends Builtin {
     }
 
     openPublicServers() {
-        LayerStack.pushLayer(() => DiscordModules.React.createElement(PublicServersMenu, {close: LayerStack.popLayer}));
+        LayerStack.pushLayer(() => DiscordModules.React.createElement(PublicServersMenu, {close: LayerStack.popLayer, connection: PSConnection}));
     }
 
     get button() {

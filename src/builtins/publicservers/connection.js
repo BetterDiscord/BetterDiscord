@@ -109,8 +109,8 @@ export default class PublicServersConnection {
 
     static get windowOptions() {
         return {
-            width: 500,
-            height: 550,
+            width: 380,
+            height: 450,
             backgroundColor: "#282b30",
             show: true,
             resizable: true,

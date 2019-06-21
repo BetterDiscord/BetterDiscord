@@ -118,7 +118,6 @@ export default class PluginCard extends React.Component {
 
     onChange() {
         this.setState({checked: !this.state.checked});
-        // PluginManager.togglePlugin(this.props.content.id);
         this.props.onChange && this.props.onChange(this.props.content.id);
     }
 

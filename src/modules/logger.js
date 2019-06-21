@@ -85,7 +85,8 @@ export default class Logger {
     static _log(module, message, type = "log") {
         type = Logger.parseType(type);
         if (!Array.isArray(message)) message = [message];
-        console[type](`%c[BandagedBD]%c %c[${module}]%c`, "color: #3E82E5; font-weight: 700;", "color: #3a71c1;", "", ...message);
+        console[type](`%c[BandagedBD]%c [${module}]%c`, "color: #3E82E5; font-weight: 700;", "color: #3a71c1;", "", ...message);
+        //console.log(`%c[BandagedBD]%c [${moduleName}]%c ${message}`, "color: #3a71c1; font-weight: 700;", "color: #3a71c1;", "");
     }
 
     static parseType(type) {

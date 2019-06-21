@@ -29,15 +29,9 @@ export default class V2_SettingsPanel {
     }
 
     static get attribution() {
-        return React.createElement(
-            "div",
-            {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
+        return React.createElement("div", {className: "bd-version", style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
             `BBD v${Config.bbdVersion} by `,
-            React.createElement(
-                "a",
-                {href: "https://github.com/rauenzi/", target: "_blank"},
-                "Zerebos"
-            )
+            React.createElement("a", {href: "https://github.com/rauenzi/", target: "_blank"}, "Zerebos")
         );
     }
 }
