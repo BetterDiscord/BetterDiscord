@@ -1,6 +1,7 @@
 import {React, WebpackModules} from "modules";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
+import Connection from "../../structs/psconnection";
 
 const SettingsView = WebpackModules.getByDisplayName("SettingsView");
 
@@ -37,7 +38,7 @@ export default class PublicServers extends React.Component {
     }
 
     async checkConnection() {
-        const userData = await this.props.connection.checkConnection();
+        const userData = await Connection.checkConnection();
         if (!userData) {
             return this.setState({loading: true, user: null});
         }
@@ -46,7 +47,7 @@ export default class PublicServers extends React.Component {
     }
 
     async connect() {
-        await this.props.connection.connect();
+        await Connection.connect();
         this.checkConnection();
     }
 
@@ -57,7 +58,7 @@ export default class PublicServers extends React.Component {
 
     async search(term = "", from = 0) {
         this.setState({query: term, loading: true});
-        const results = await this.props.connection.search({term, category: this.state.category == "All" ? "" : this.state.category, from});
+        const results = await Connection.search({term, category: this.state.category == "All" ? "" : this.state.category, from});
         if (!results) {
             return this.setState({results: {
                 servers: [],
@@ -82,7 +83,7 @@ export default class PublicServers extends React.Component {
     }
 
     async join(id, native = false) {
-        return await this.props.connection.join(id, native);
+        return await Connection.join(id, native);
     }
 
     get searchBox() {
@@ -104,7 +105,7 @@ export default class PublicServers extends React.Component {
         const connectButton = this.state.user ? null : {title: "Connect", onClick: this.connect};
         const pinned = this.state.category == "All" || !this.state.user ? this.bdServer : null;
         const servers = this.state.results.servers.map((server) => {
-            return React.createElement(ServerCard, {key: server.identifier, server: server, joined: this.props.connection.hasJoined(server.identifier), defaultAvatar: this.props.connection.getDefaultAvatar});
+            return React.createElement(ServerCard, {key: server.identifier, server: server, joined: Connection.hasJoined(server.identifier), defaultAvatar: Connection.getDefaultAvatar});
         });
         return [React.createElement(SettingsTitle, {text: this.title, button: connectButton}),
             pinned,
@@ -139,7 +140,7 @@ export default class PublicServers extends React.Component {
             invite_code: "0Tmfo5ZbORCRqbAd",
             pinned: true
         };
-        return React.createElement(ServerCard, {server: server, pinned: true, joined: this.props.connection.hasJoined(server.identifier), defaultAvatar: this.props.connection.getDefaultAvatar});
+        return React.createElement(ServerCard, {server: server, pinned: true, joined: Connection.hasJoined(server.identifier), defaultAvatar: Connection.getDefaultAvatar});
     }
 
     render() {

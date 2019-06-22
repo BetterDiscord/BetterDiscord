@@ -3,13 +3,13 @@ import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
 import PluginManager from "./modules/pluginmanager";
 import ThemeManager from "./modules/thememanager";
-import {bdPluginStorage} from "./modules/oldstorage";
 import Events from "./modules/emitter";
 import Settings from "./modules/settingsmanager";
 import DataStore from "./modules/datastore";
 import EmoteModule from "./builtins/emotes";
 import DomManager from "./modules/dommanager";
 import Utilities from "./modules/utilities";
+import ReactComponents from "./modules/reactcomponents";
 
 // Perform some setup
 // proxyLocalStorage();
@@ -30,13 +30,14 @@ window.themeModule = ThemeManager;
 // window.bdplugins = Plugins;
 window.bdEmotes = EmoteModule.Emotes;
 window.bemotes = EmoteModule.blacklist;
-window.bdPluginStorage = bdPluginStorage;
+// window.bdPluginStorage = bdPluginStorage;
 window.settingsModule = Settings;
 window.DataStore = DataStore;
 
 
 window.DomManager = DomManager;
 window.utils = Utilities;
+window.Components = ReactComponents;
 
 window.BDEvents = Events;
 window.bdConfig = Config;
