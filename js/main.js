@@ -2643,7 +2643,7 @@ class V2 {
 
     patchGuildPills() {
         if (this.guildPillPatch) return;
-        const guildPill = BdApi.findModule(m => m.default && m.default.toString && m.default.toString().includes("translate3d"));
+        const guildPill = BdApi.findModule(m => m.default && !m.default.displayName && m.default.toString && m.default.toString().includes("translate3d"));
         if (!guildPill) return;
         this.guildPillPatch = BdApi.monkeyPatch(guildPill, "default", {after: (data) => {
             const props = data.methodArguments[0];
