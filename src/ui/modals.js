@@ -1,4 +1,4 @@
-import {Logger, WebpackModules, React, Settings} from "modules";
+import {Logger, WebpackModules, Utilities, React, Settings} from "modules";
 
 export default class Modals {
 
@@ -10,7 +10,7 @@ export default class Modals {
     static get ConfirmationModal() {return WebpackModules.getModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");}
 
     static default(title, content) {
-        const modal = $(`<div class="bd-modal-wrapper theme-dark">
+        const modal = Utilities.parseHTML(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">
                     <div class="bd-modal-inner inner-1JeGVc">
@@ -30,15 +30,15 @@ export default class Modals {
                     </div>
                 </div>
             </div>`);
-        modal.find(".footer button").on("click", () => {
-        modal.addClass("closing");
-        setTimeout(() => { modal.remove(); }, 300);
+        modal.querySelector(".footer button").addEventListener("click", () => {
+            modal.addClass("closing");
+            setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.find(".bd-backdrop").on("click", () => {
-        modal.addClass("closing");
-        setTimeout(() => { modal.remove(); }, 300);
+        modal.querySelector(".bd-backdrop").addEventListener("click", () => {
+            modal.addClass("closing");
+            setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.appendTo("#app-mount");
+        document.querySelector("#app-mount").append(modal);
     }
 
     static alert(title, content) {

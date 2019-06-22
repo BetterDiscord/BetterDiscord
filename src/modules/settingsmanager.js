@@ -4,6 +4,8 @@ import DataStore from "./datastore";
 import Events from "./emitter";
 import WebpackModules from "./webpackmodules";
 import DiscordModules from "./discordmodules";
+import Patcher from "./patcher";
+import ReactComponents from "./reactcomponents";
 
 import {SettingsPanel as SettingsRenderer} from "ui";
 import Utilities from "./utilities";
@@ -102,17 +104,17 @@ export default new class SettingsManager {
     }
 
     async patchSections() {
-        Utilities.monkeyPatch(WebpackModules.getByDisplayName("FluxContainer(GuildSettings)").prototype, "render", {after: (data) => {
-            data.thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
-        }});
-        const UserSettings = await this.getUserSettings();
-        Utilities.monkeyPatch(UserSettings.prototype, "render", {after: (data) => {
-            data.thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
-        }});
-        Utilities.monkeyPatch(UserSettings.prototype, "generateSections", {after: (data) => {
-            let location = data.returnValue.findIndex(s => s.section.toLowerCase() == "linux") + 1;
+        Patcher.after("SettingsManager", WebpackModules.getByDisplayName("FluxContainer(GuildSettings)").prototype, "render", (thisObject) => {
+            thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
+        });
+        const UserSettings = await ReactComponents.get("UserSettings", m => m.prototype && m.prototype.generateSections);
+        Patcher.after("SettingsManager", UserSettings.prototype, "render", (thisObject) => {
+            thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
+        });
+        Patcher.after("SettingsManager", UserSettings.prototype, "generateSections", (thisObject, args, returnValue) => {
+            let location = returnValue.findIndex(s => s.section.toLowerCase() == "linux") + 1;
             const insert = (section) => {
-                data.returnValue.splice(location, 0, section);
+                returnValue.splice(location, 0, section);
                 location++;
             };
             insert({section: "DIVIDER"});
@@ -126,11 +128,11 @@ export default new class SettingsManager {
                 });
             }
             for (const panel of this.panels.sort((a,b) => a.order > b.order)) {
-                if (panel.clickListener) panel.onClick = (event) => panel.clickListener(data.thisObject, event, data.returnValue);
+                if (panel.clickListener) panel.onClick = (event) => panel.clickListener(thisObject, event, returnValue);
                 insert(panel);
             }
             insert({section: "CUSTOM", element: () => SettingsRenderer.attribution});
-        }});
+        });
         this.forceUpdate();
     }
 
@@ -138,16 +140,6 @@ export default new class SettingsManager {
         const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         Utilities.getReactInstance(node).return.return.return.return.return.return.stateNode.forceUpdate();
-    }
-
-    getUserSettings() {
-        return new Promise(resolve => {
-            const cancel = Utilities.monkeyPatch(WebpackModules.getByProps("getUserSettingsSections").default.prototype, "render", {after: (data) => {
-                resolve(data.returnValue.type);
-                data.thisObject.forceUpdate();
-                cancel();
-            }});
-        });
     }
 
     saveSettings() {

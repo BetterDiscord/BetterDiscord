@@ -31,9 +31,9 @@ const favoritesHTML = `<div id="bda-qem-favourite-container">
 
 const makeEmote = (emote, url, options = {}) => {
     const {onContextMenu, onClick} = options;
-    const emoteContainer = $(`<div class="emote-container">
+    const emoteContainer = Utilities.parseHTML(`<div class="emote-container">
         <img class="emote-icon" alt="${emote}" src="${url}" title="${emote}">
-    </div>`)[0];
+    </div>`);
     if (onContextMenu) emoteContainer.addEventListener("contextmenu", onContextMenu);
     emoteContainer.addEventListener("click", onClick);
     return emoteContainer;
@@ -52,13 +52,13 @@ export default new class EmoteMenu extends Builtin {
         this.lastTab = "bda-qem-emojis";
         this.favoriteEmotes = {};
 
-        this.qmeHeader = $(headerHTML)[0];
+        this.qmeHeader = Utilities.parseHTML(headerHTML);
         for (const button of this.qmeHeader.getElementsByTagName("button")) button.addEventListener("click", this.switchMenu.bind(this));
 
-        this.teContainer = $(twitchEmoteHTML)[0];
+        this.teContainer = Utilities.parseHTML(twitchEmoteHTML);
         this.teContainerInner = this.teContainer.querySelector(".emote-menu-inner");
 
-        this.faContainer = $(favoritesHTML)[0];
+        this.faContainer = Utilities.parseHTML(favoritesHTML);
         this.faContainerInner = this.faContainer.querySelector(".emote-menu-inner");
 
         this.observer = new MutationObserver(mutations => {for (const mutation of mutations) this.observe(mutation);});
@@ -94,11 +94,13 @@ export default new class EmoteMenu extends Builtin {
     }
 
     enableHideEmojis() {
-        $(".emojiPicker-3m1S-j").addClass("bda-qme-hidden");
+        const picker = document.querySelector(".emojiPicker-3m1S-j");
+        if (picker) picker.classList.add("bda-qme-hidden");
     }
 
     disableHideEmojis() {
-        $(".emojiPicker-3m1S-j").removeClass("bda-qme-hidden");
+        const picker = document.querySelector(".emojiPicker-3m1S-j");
+        if (picker) picker.classList.remove("bda-qme-hidden");
     }
 
     insertEmote(emote) {
@@ -131,7 +133,7 @@ export default new class EmoteMenu extends Builtin {
     }
 
     switchMenu(e) {
-        let id = typeof(e) == "string" ? e : $(e.target).attr("id");
+        let id = typeof(e) == "string" ? e : e.target.id;
         if (id == "bda-qem-emojis" && this.hideEmojis) id = "bda-qem-favourite";
         const twitch = $("#bda-qem-twitch");
         const fav = $("#bda-qem-favourite");

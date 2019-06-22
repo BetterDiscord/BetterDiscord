@@ -9,6 +9,7 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import * as Builtins from "builtins";
 import {Modals} from "ui";
+import ReactComponents from "./reactcomponents";
 
 function Core() {
 }
@@ -22,7 +23,7 @@ Core.prototype.init = async function() {
         Modals.alert("Not Supported", "BetterDiscord v" + Config.version + " (your version)" + " is not supported by the latest js (" + Config.bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
         return;
     }
-
+    ReactComponents.initialize();
     const latestLocalVersion = Config.updater ? Config.updater.LatestVersion : Config.latestVersion;
     if (latestLocalVersion > Config.version) {
         Modals.alert("Update Available", `
