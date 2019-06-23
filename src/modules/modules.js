@@ -1,29 +1,15 @@
-import Utilities from "./utilities";
-import WebpackModules from "./webpackmodules";
+export {default as WebpackModules} from "./webpackmodules";
+
 import DiscordModules from "./discordmodules";
-
-import BDV2 from "./bdv2";
-import BdApi from "./pluginapi";
-import Core from "./core";
-
-
-
-import ContentManager from "./contentmanager";
-import DataStore from "./datastore";
-// import DevMode from "./devmode";
-import Events from "./emitter";
-// import EmoteModule from "./emotes";
-import PluginManager from "./pluginmanager";
-// import PublicServers from "./publicservers";
-import ThemeManager from "./thememanager";
-import Settings from "./settingsmanager";
-import DOMManager from "./dommanager";
-import Logger from "./logger";
-import Patcher from "./patcher";
-
 export const React = DiscordModules.React;
 export const ReactDOM = DiscordModules.ReactDOM;
+export {DiscordModules};
 
-export {BDV2, BdApi, Core, ContentManager, DataStore, Logger,
-        Events, PluginManager, DOMManager, ThemeManager, Patcher,
-        Utilities, WebpackModules, DiscordModules, Settings};
+export {default as Utilities} from "./utilities";
+export {default as DataStore} from "./datastore";
+export {default as Events} from "./emitter";
+export {default as Settings} from "./settingsmanager";
+export {default as DOMManager} from "./dommanager";
+export {default as Logger} from "./logger";
+export {default as Patcher} from "./patcher";
+export {default as ReactComponents} from "./reactcomponents";

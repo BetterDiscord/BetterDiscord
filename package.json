@@ -28,6 +28,7 @@
         "@babel/preset-react": "^7.0.0",
         "@babel/register": "^7.0.0",
         "babel-loader": "^8.0.6",
+        "circular-dependency-plugin": "^5.0.2",
         "gulp": "^4.0.0",
         "gulp-csso": "^3.0.1",
         "gulp-rename": "^1.4.0",

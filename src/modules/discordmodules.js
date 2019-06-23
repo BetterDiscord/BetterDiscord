@@ -142,5 +142,13 @@ export default Utilities.memoizeObject({
     get Buffers() {return WebpackModules.getByProps("Buffer", "kMaxLength");},
     get DeviceStore() {return WebpackModules.getByProps("getDevices");},
     get SoftwareInfo() {return WebpackModules.getByProps("os");},
-    get CurrentContext() {return WebpackModules.getByProps("setTagsContext");}
+    get CurrentContext() {return WebpackModules.getByProps("setTagsContext");},
+
+    /* Commonly Used Classes */
+    get GuildClasses() {
+		const guildsWrapper = WebpackModules.getByProps("wrapper", "unreadMentionsBar");
+        const guilds = WebpackModules.getByProps("guildsError", "selected");
+        const pill = WebpackModules.getByProps("blobContainer");
+        return Object.assign({}, guildsWrapper, guilds, pill);
+	}
 });

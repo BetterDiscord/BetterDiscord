@@ -2,10 +2,12 @@ import {Config} from "data";
 import Logger from "./logger";
 import ContentManager from "./contentmanager";
 import Utilities from "./utilities";
-import {Toasts, Modals} from "ui";
 import ContentError from "../structs/contenterror";
 import Settings from "./settingsmanager";
-import {SettingsPanel as SettingsRenderer} from "ui";
+
+import Toasts from "../ui/toasts";
+import Modals from "../ui/modals";
+import SettingsRenderer from "../ui/settings";
 
 const path = require("path");
 const electronRemote = require("electron").remote;

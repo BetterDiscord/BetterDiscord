@@ -1,6 +1,6 @@
 import Builtin from "../structs/builtin";
-import {BDV2, DiscordModules, WebpackModules} from "modules";
-import {PublicServersMenu} from "ui";
+import {DiscordModules, WebpackModules} from "modules";
+import PublicServersMenu from "../ui/publicservers/menu";
 
 const LayerStack = WebpackModules.getByProps("pushLayer");
 
@@ -10,7 +10,7 @@ export default new class PublicServers extends Builtin {
     get id() {return "publicServers";}
 
     enabled() {
-        const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
+        const wrapper = DiscordModules.GuildClasses.wrapper.split(" ")[0];
         const guilds = $(`.${wrapper} .scroller-2FKFPG >:first-child`);
         guilds.after(this.button);
     }
@@ -25,10 +25,10 @@ export default new class PublicServers extends Builtin {
 
     get button() {
         const btn = $("<div/>", {
-            "class": BDV2.guildClasses.listItem,
+            "class": DiscordModules.GuildClasses.listItem,
             "id": "bd-pub-li"
         }).append($("<div/>", {
-            "class": "wrapper-25eVIn " + BDV2.guildClasses.circleButtonMask,
+            "class": "wrapper-25eVIn " + DiscordModules.GuildClasses.circleButtonMask,
             "text": "public",
             "id": "bd-pub-button",
             "click": () => { this.openPublicServers(); }
