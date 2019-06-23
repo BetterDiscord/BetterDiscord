@@ -3,7 +3,7 @@ import Builtin from "../structs/builtin";
 import {Config, EmoteInfo, EmoteConfig} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings} from "modules";
 import BDEmote from "../ui/emote";
-import {Toasts} from "ui";
+import Toasts from "../ui/toasts";
 
 const Emotes = {
     TwitchGlobal: {},

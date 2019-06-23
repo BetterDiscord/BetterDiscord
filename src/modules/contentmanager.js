@@ -5,7 +5,7 @@ import Events from "./emitter";
 import DataStore from "./datastore";
 import ContentError from "../structs/contenterror";
 import MetaError from "../structs/metaerror";
-import {Toasts} from "ui";
+import Toasts from "../ui/toasts";
 
 const path = require("path");
 const fs = require("fs");

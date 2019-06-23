@@ -1,9 +1,11 @@
 import {Config} from "data";
 import ContentManager from "./contentmanager";
-import {Modals} from "ui";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
-import {SettingsPanel as SettingsRenderer} from "ui";
+
+import Toasts from "../ui/toasts";
+import Modals from "../ui/modals";
+import SettingsRenderer from "../ui/settings";
 
 const path = require("path");
 
@@ -55,11 +57,13 @@ export default new class ThemeManager extends ContentManager {
         const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
         if (!content) return;
         DOMManager.injectTheme(content.id, content.css);
+        Toasts.show(`${content.name} v${content.version} has been applied.`);
     }
 
     removeTheme(idOrContent) {
         const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
         if (!content) return;
         DOMManager.removeTheme(content.id);
+        Toasts.show(`${content.name} v${content.version} has been removed.`);
     }
 };

@@ -2,13 +2,13 @@ import {SettingsConfig} from "data";
 import Logger from "./logger";
 import DataStore from "./datastore";
 import Events from "./emitter";
-import WebpackModules from "./webpackmodules";
+// import WebpackModules from "./webpackmodules";
 import DiscordModules from "./discordmodules";
-import Patcher from "./patcher";
-import ReactComponents from "./reactcomponents";
+// import Patcher from "./patcher";
+// import ReactComponents from "./reactcomponents";
 
-import {SettingsPanel as SettingsRenderer} from "ui";
-import Utilities from "./utilities";
+// import SettingsRenderer from "../ui/settings/settings";
+// import Utilities from "./utilities";
 
 export default new class SettingsManager {
 
@@ -20,9 +20,8 @@ export default new class SettingsManager {
     }
 
     initialize() {
-        DataStore.initialize();
         this.loadSettings();
-        this.patchSections();
+        // this.patchSections();
     }
 
     registerCollection(id, name, settings, button = null) {
@@ -43,6 +42,7 @@ export default new class SettingsManager {
         this.collections.splice(location, 1);
     }
 
+    // TODO: Move this to SettingsRenderer and also add a registerContentPanel
     registerPanel(id, name, options) {
         if (this.panels.find(p => p.id == id)) return Logger.error("Settings", "Already have a panel with id " + id);
         const {element, onClick, order = 1} = options;
@@ -101,45 +101,6 @@ export default new class SettingsManager {
                 }
             }
         }
-    }
-
-    async patchSections() {
-        Patcher.after("SettingsManager", WebpackModules.getByDisplayName("FluxContainer(GuildSettings)").prototype, "render", (thisObject) => {
-            thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
-        });
-        const UserSettings = await ReactComponents.get("UserSettings", m => m.prototype && m.prototype.generateSections);
-        Patcher.after("SettingsManager", UserSettings.prototype, "render", (thisObject) => {
-            thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
-        });
-        Patcher.after("SettingsManager", UserSettings.prototype, "generateSections", (thisObject, args, returnValue) => {
-            let location = returnValue.findIndex(s => s.section.toLowerCase() == "linux") + 1;
-            const insert = (section) => {
-                returnValue.splice(location, 0, section);
-                location++;
-            };
-            insert({section: "DIVIDER"});
-            insert({section: "HEADER", label: "BandagedBD"});
-            for (const collection of this.collections) {
-                if (collection.disabled) continue;
-                insert({
-                    section: collection.name,
-                    label: collection.name,
-                    element: () => SettingsRenderer.buildSettingsPanel(collection.name, collection.settings, this.state[collection.id], this.onSettingChange.bind(this, collection.id), collection.button ? collection.button : null)
-                });
-            }
-            for (const panel of this.panels.sort((a,b) => a.order > b.order)) {
-                if (panel.clickListener) panel.onClick = (event) => panel.clickListener(thisObject, event, returnValue);
-                insert(panel);
-            }
-            insert({section: "CUSTOM", element: () => SettingsRenderer.attribution});
-        });
-        this.forceUpdate();
-    }
-
-    forceUpdate() {
-        const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
-        const node = document.querySelector(`.${viewClass}`);
-        Utilities.getReactInstance(node).return.return.return.return.return.return.stateNode.forceUpdate();
     }
 
     saveSettings() {

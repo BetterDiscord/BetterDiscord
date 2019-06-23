@@ -3,7 +3,8 @@ import WebpackModules from "./webpackmodules";
 import DiscordModules from "./discordmodules";
 import DataStore from "./datastore";
 import DOMManager from "./dommanager";
-import {Toasts, Modals} from "ui";
+import Toasts from "../ui/toasts";
+import Modals from "../ui/modals";
 
 const BdApi = {
     get React() { return DiscordModules.React; },

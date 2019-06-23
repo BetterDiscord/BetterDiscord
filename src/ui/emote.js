@@ -1,5 +1,7 @@
-import {BDV2, Settings, React} from "modules";
+import {Settings, React, WebpackModules} from "modules";
 import EmoteMenu from "../builtins/emotemenu";
+
+const TooltipWrapper = WebpackModules.getByDisplayName("TooltipDeprecated");
 
 export default class BDEmote extends React.Component {
     constructor(props) {
@@ -43,7 +45,7 @@ export default class BDEmote extends React.Component {
     }
 
     render() {
-        return React.createElement(BDV2.TooltipWrapper, {
+        return React.createElement(TooltipWrapper, {
                 color: "black",
                 position: "top",
                 text: this.label,
