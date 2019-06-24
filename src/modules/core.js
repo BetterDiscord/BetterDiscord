@@ -1,4 +1,4 @@
-import BDV2 from "./bdv2";
+import ComponentPatcher from "./componentpatcher";
 import Logger from "./logger";
 import {Config} from "data";
 // import EmoteModule from "./emotes";
@@ -43,17 +43,14 @@ Core.prototype.init = async function() {
 
     DOMManager.initialize();
     await this.waitForGuilds();
-    BDV2.initialize();
+    ComponentPatcher.initialize();
     for (const module in Builtins) Builtins[module].initialize();
 
     Logger.log("Startup", "Loading Plugins");
-    const pluginErrors = PluginManager.loadAllPlugins();
+    const pluginErrors = PluginManager.initialize();
 
     Logger.log("Startup", "Loading Themes");
-    const themeErrors = ThemeManager.loadAllThemes();
-
-    // PublicServers.initialize();
-    // EmoteModule.autoCapitalize();
+    const themeErrors = ThemeManager.initialize();
 
     Logger.log("Startup", "Removing Loading Icon");
     document.getElementsByClassName("bd-loaderv2")[0].remove();

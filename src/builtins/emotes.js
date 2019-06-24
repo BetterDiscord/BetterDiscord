@@ -4,6 +4,7 @@ import {Config, EmoteInfo, EmoteConfig} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings} from "modules";
 import BDEmote from "../ui/emote";
 import Toasts from "../ui/toasts";
+// import EmoteMenu from "./emotemenu";
 
 const Emotes = {
     TwitchGlobal: {},
@@ -32,13 +33,9 @@ export default new class EmoteModule extends Builtin {
     get id() {return "emotes";}
     get categories() { return Object.keys(bdEmoteSettingIDs).filter(k => this.isCategoryEnabled(bdEmoteSettingIDs[k])); }
 
-    isCategoryEnabled(id) {
-        return super.get("emotes", "categories", id);
-    }
+    isCategoryEnabled(id) {return super.get("emotes", "categories", id);}
 
-    get(id) {
-        return super.get("emotes", "general", id);
-    }
+    get(id) {return super.get("emotes", "general", id);}
 
     get MessageContentComponent() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
 
@@ -49,6 +46,7 @@ export default new class EmoteModule extends Builtin {
     get FrankerFaceZ() {return Emotes.FrankerFaceZ;}
     get BTTV2() {return Emotes.BTTV2;}
     get blacklist() {return blacklist;}
+    get favorites() {return this.favoriteEmotes;}
 
     getCategory(category) {
         return Emotes[category];
@@ -56,6 +54,12 @@ export default new class EmoteModule extends Builtin {
 
     initialize() {
         super.initialize();
+        this.favoriteEmotes = {};
+        const fe = DataStore.getBDData("bdfavemotes");
+        if (fe !== "" && fe !== null) this.favoriteEmotes = JSON.parse(window.atob(fe));
+        this.saveFavorites();
+        this.addFavorite = this.addFavorite.bind(this);
+        this.removeFavorite = this.removeFavorite.bind(this);
         // EmoteConfig;
         // emoteCollection.button = {title: "Clear Emote Cache", onClick: () => { this.clearEmoteData(); this.loadEmoteData(EmoteInfo); }};
     }
@@ -68,14 +72,37 @@ export default new class EmoteModule extends Builtin {
 
         // while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
         // this.patchMessageContent();
+        Events.on("emotes-favorite-added", this.addFavorite);
+        Events.on("emotes-favorite-removed", this.removeFavorite);
     }
 
     disabled() {
+        Events.off("emotes-favorite-added", this.addFavorite);
+        Events.off("emotes-favorite-removed", this.removeFavorite);
         Settings.removeCollection("emotes");
         this.emptyEmotes();
         if (!this.cancelEmoteRender) return;
         this.cancelEmoteRender();
         delete this.cancelEmoteRender;
+    }
+
+    addFavorite(name, url) {
+        if (!this.favoriteEmotes.hasOwnProperty(name)) this.favoriteEmotes[name] = url;
+        this.saveFavorites();
+    }
+
+    removeFavorite(name) {
+        if (!this.favoriteEmotes.hasOwnProperty(name)) return;
+        delete this.favoriteEmotes[name];
+        this.saveFavorites();
+    }
+
+    isFavorite(name) {
+        return this.favoriteEmotes.hasOwnProperty(name);
+    }
+
+    saveFavorites() {
+        DataStore.setBDData("bdfavemotes", window.btoa(JSON.stringify(this.favoriteEmotes)));
     }
 
     emptyEmotes() {
@@ -127,7 +154,7 @@ export default new class EmoteModule extends Builtin {
                             const pre = nodes[n].substring(0, results.index + results[1].length);
                             const post = nodes[n].substring(results.index + results[0].length - results[2].length);
                             nodes[n] = pre;
-                            const emoteComponent = DiscordModules.React.createElement(BDEmote, {name: emoteName, url: Emotes[current][emoteName], modifier: emoteModifier});
+                            const emoteComponent = DiscordModules.React.createElement(BDEmote, {name: emoteName, url: Emotes[current][emoteName], modifier: emoteModifier, isFavorite: this.isFavorite(emoteName)});
                             nodes.splice(n + 1, 0, post);
                             nodes.splice(n + 1, 0, emoteComponent);
                         }
