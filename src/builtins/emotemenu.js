@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {DataStore, Utilities, Events} from "modules";
+import {Utilities, Events} from "modules";
 
 import EmoteModule from "./emotes";
 
@@ -50,7 +50,6 @@ export default new class EmoteMenu extends Builtin {
     constructor() {
         super();
         this.lastTab = "bda-qem-emojis";
-        this.favoriteEmotes = {};
 
         this.qmeHeader = Utilities.parseHTML(headerHTML);
         for (const button of this.qmeHeader.getElementsByTagName("button")) button.addEventListener("click", this.switchMenu.bind(this));
@@ -65,13 +64,6 @@ export default new class EmoteMenu extends Builtin {
         this.enableHideEmojis = this.enableHideEmojis.bind(this);
         this.disableHideEmojis = this.disableHideEmojis.bind(this);
         this.updateTwitchEmotes = this.updateTwitchEmotes.bind(this);
-    }
-
-    initialize() {
-        super.initialize();
-        const fe = DataStore.getBDData("bdfavemotes");
-        if (fe !== "" && fe !== null) this.favoriteEmotes = JSON.parse(window.atob(fe));
-        this.updateFavorites();
     }
 
     async enabled() {
@@ -121,7 +113,7 @@ export default new class EmoteMenu extends Builtin {
             event.preventDefault();
             event.stopPropagation();
             $(em).remove();
-            delete this.favoriteEmotes[$(em).attr("title")];
+            EmoteModule.removeFavorite($(em).attr("title"));
             this.updateFavorites();
             $(document).off("mousedown.emotemenu");
         });
@@ -180,11 +172,6 @@ export default new class EmoteMenu extends Builtin {
         this.switchMenu(this.lastTab);
     }
 
-    favorite(name, url) {
-        if (!this.favoriteEmotes.hasOwnProperty(name)) this.favoriteEmotes[name] = url;
-        this.updateFavorites();
-    }
-
     updateTwitchEmotes() {
         while (this.teContainerInner.firstChild) this.teContainerInner.firstChild.remove();
         for (const emote in EmoteModule.getCategory("TwitchGlobal")) {
@@ -197,12 +184,12 @@ export default new class EmoteMenu extends Builtin {
 
     updateFavorites() {
         while (this.faContainerInner.firstChild) this.faContainerInner.firstChild.remove();
-        for (const emote in this.favoriteEmotes) {
-            const url = this.favoriteEmotes[emote];
+        for (const emote in EmoteModule.favorites) {
+            const url = EmoteModule.favorites[emote];
             const emoteElement = makeEmote(emote, url, {onClick: this.insertEmote.bind(this, emote), onContextMenu: this.favContext.bind(this)});
             this.faContainerInner.append(emoteElement);
         }
-        DataStore.setBDData("bdfavemotes", window.btoa(JSON.stringify(this.favoriteEmotes)));
+        EmoteModule.saveFavorites();
     }
 
 };

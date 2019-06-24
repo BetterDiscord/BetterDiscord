@@ -16,17 +16,20 @@ export default new class ThemeManager extends ContentManager {
     get contentFolder() {return path.resolve(Config.dataPath, "themes");}
     get prefix() {return "theme";}
 
-    /* Aliases */
-    updateThemeList() {return this.updateList();}
-    loadAllThemes() {
+    initialize() {
+        const errors = super.initialize();
         Settings.registerPanel("themes", "Themes", {element: () => SettingsRenderer.getContentPanel("Themes", this.contentList, this.state, {
             folder: this.contentFolder,
             onChange: this.toggleTheme.bind(this),
             reload: this.reloadTheme.bind(this),
             refreshList: this.updateThemeList.bind(this)
         })});
-        return this.loadAllContent();
+        return errors;
     }
+
+    /* Aliases */
+    updateThemeList() {return this.updateList();}
+    loadAllThemes() {return this.loadAllContent();}
 
     enableTheme(idOrContent) {return this.enableContent(idOrContent);}
     disableTheme(idOrContent) {return this.disableContent(idOrContent);}

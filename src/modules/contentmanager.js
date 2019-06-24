@@ -38,12 +38,16 @@ export default class ContentManager {
         this.timeCache = {};
         this.contentList = [];
         this.state = {};
+    }
+
+    initialize() {
         this.originalRequire = Module._extensions[this.moduleExtension];
         Module._extensions[this.moduleExtension] = this.getContentRequire();
         Settings.on(this.collection, this.category, this.id, (enabled) => {
             if (enabled) this.watchContent();
             else this.unwatchContent();
         });
+        return this.loadAllContent();
     }
 
     // Subclasses should overload this and modify the content object as needed to fully load it

@@ -1,5 +1,5 @@
-import {Settings, React, WebpackModules} from "modules";
-import EmoteMenu from "../builtins/emotemenu";
+import {Settings, React, WebpackModules, Events} from "modules";
+// import EmoteMenu from "../builtins/emotemenu";
 
 const TooltipWrapper = WebpackModules.getByDisplayName("TooltipDeprecated");
 
@@ -7,10 +7,9 @@ export default class BDEmote extends React.Component {
     constructor(props) {
         super(props);
 
-        const isFav = EmoteMenu && EmoteMenu.favoriteEmotes && EmoteMenu.favoriteEmotes[this.label] ? true : false;
         this.state = {
             shouldAnimate: !this.animateOnHover,
-            isFavorite: isFav
+            isFavorite: this.props.isFavorite
         };
 
         this.onMouseEnter = this.onMouseEnter.bind(this);
@@ -32,8 +31,8 @@ export default class BDEmote extends React.Component {
 
     onMouseEnter() {
         if (!this.state.shouldAnimate && this.animateOnHover) this.setState({shouldAnimate: true});
-        if (!this.state.isFavorite && EmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: true});
-        else if (this.state.isFavorite && !EmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: false});
+        // if (!this.state.isFavorite && EmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: true});
+        // else if (this.state.isFavorite && !EmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: false});
     }
 
     onMouseLeave() {
@@ -72,11 +71,13 @@ export default class BDEmote extends React.Component {
                             e.preventDefault();
                             e.stopPropagation();
                             if (this.state.isFavorite) {
-                                delete EmoteMenu.favoriteEmotes[this.label];
-                                EmoteMenu.updateFavorites();
+                                Events.emit("emotes-favorite-removed", this.label);
+                                // delete EmoteMenu.favoriteEmotes[this.label];
+                                // EmoteMenu.updateFavorites();
                             }
                             else {
-                                EmoteMenu.favorite(this.label, this.props.url);
+                                Events.emit("emotes-favorite-added", this.label, this.props.url);
+                                // EmoteMenu.favorite(this.label, this.props.url);
                             }
                             this.setState({isFavorite: !this.state.isFavorite});
                         }

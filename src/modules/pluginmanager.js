@@ -29,8 +29,21 @@ export default new class PluginManager extends ContentManager {
         });
     }
 
+    initialize() {
+        const errors = super.initialize();
+        this.setupFunctions();
+        Settings.registerPanel("plugins", "Plugins", {element: () => SettingsRenderer.getContentPanel("Plugins", this.contentList, this.state, {
+            folder: this.contentFolder,
+            onChange: this.togglePlugin.bind(this),
+            reload: this.reloadPlugin.bind(this),
+            refreshList: this.updatePluginList.bind(this)
+        })});
+        return errors;
+    }
+
     /* Aliases */
     updatePluginList() {return this.updateList();}
+    loadAllPlugins() {return this.loadAllContent();}
 
     enablePlugin(idOrContent) {return this.enableContent(idOrContent);}
     disablePlugin(idOrContent) {return this.disableContent(idOrContent);}
@@ -47,18 +60,6 @@ export default new class PluginManager extends ContentManager {
         const error = this.reloadContent(idOrFileOrContent);
         if (error) Modals.showContentErrors({plugins: [error]});
         return typeof(idOrFileOrContent) == "string" ? this.contentList.find(c => c.id == idOrFileOrContent || c.filename == idOrFileOrContent) : idOrFileOrContent;
-    }
-
-    loadAllPlugins() {
-        const errors = this.loadAllContent();
-        this.setupFunctions();
-        Settings.registerPanel("plugins", "Plugins", {element: () => SettingsRenderer.getContentPanel("Plugins", this.contentList, this.state, {
-            folder: this.contentFolder,
-            onChange: this.togglePlugin.bind(this),
-            reload: this.reloadPlugin.bind(this),
-            refreshList: this.updatePluginList.bind(this)
-        })});
-        return errors;
     }
 
     /* Overrides */

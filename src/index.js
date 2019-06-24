@@ -10,6 +10,7 @@ import EmoteModule from "./builtins/emotes";
 import DomManager from "./modules/dommanager";
 import Utilities from "./modules/utilities";
 import ReactComponents from "./modules/reactcomponents";
+import Strings from "./modules/strings";
 
 // Perform some setup
 // proxyLocalStorage();
@@ -41,6 +42,7 @@ window.Components = ReactComponents;
 
 window.BDEvents = Events;
 window.bdConfig = Config;
+window.Strings = Strings;
 
 export default class CoreWrapper {
     constructor(config) {
