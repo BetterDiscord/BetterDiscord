@@ -2,13 +2,8 @@ import {SettingsConfig} from "data";
 import Logger from "./logger";
 import DataStore from "./datastore";
 import Events from "./emitter";
-// import WebpackModules from "./webpackmodules";
 import DiscordModules from "./discordmodules";
-// import Patcher from "./patcher";
-// import ReactComponents from "./reactcomponents";
-
-// import SettingsRenderer from "../ui/settings/settings";
-// import Utilities from "./utilities";
+import Strings from "./strings";
 
 export default new class SettingsManager {
 
@@ -17,10 +12,13 @@ export default new class SettingsManager {
         this.collections = [];
         this.panels = [];
         this.registerCollection("settings", "Settings", SettingsConfig);
+        this.updateStrings = this.updateStrings.bind(this);
     }
 
     initialize() {
         this.loadSettings();
+        this.updateStrings();
+        Events.on("strings-updated", this.updateStrings);
         // this.patchSections();
     }
 
@@ -165,5 +163,36 @@ export default new class SettingsManager {
         };
         Events.on("setting-updated", handler);
         return () => {Events.off("setting-updated", handler);};
+    }
+
+    updateStrings() {
+        // Update settings collections
+        for (let c = 0; c < this.collections.length; c++) {
+            const collection = this.collections[c];
+            const CS = Strings.Collections[collection.id];
+            if (!CS) continue;
+            collection.name = CS.name || collection.name;
+            const categories = this.collections[c].settings;
+            for (let cat = 0; cat < categories.length; cat++) {
+                const category = categories[cat];
+                const CatStr = CS[category.id];
+                if (!CatStr) continue;
+                category.name = CatStr.name || category.name;
+                for (let s = 0; s < category.settings.length; s++) {
+                    const setting = category.settings[s];
+                    const SetStr = CatStr[setting.id];
+                    if (!SetStr) continue;
+                    setting.name = SetStr.name || setting.name;
+                    setting.note = SetStr.note || setting.note;
+                }
+            }
+        }
+
+        // Update panel labels
+        for (let p = 0; p < this.panels.length; p++) {
+            const panel = this.panels[p];
+            const Str = Strings.Panels[panel.id];
+            panel.name = Str || panel.name;
+        }
     }
 };

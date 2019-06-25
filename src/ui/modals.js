@@ -1,8 +1,8 @@
-import {Logger, WebpackModules, Utilities, React, Settings} from "modules";
+import {Logger, WebpackModules, Utilities, React, Settings, Strings} from "modules";
 
 export default class Modals {
 
-    static get shouldShowContentErrors() {return Settings.get("settings", "content", "contentErrors");}
+    static get shouldShowContentErrors() {return Settings.get("settings", "addons", "addonErrors");}
 
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
@@ -10,10 +10,13 @@ export default class Modals {
     static get ConfirmationModal() {return WebpackModules.getModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");}
 
     static default(title, content) {
+        const backdrop = WebpackModules.getByProps("backdrop") || {backdrop: "backdrop-1wrmKb"};
+        const baseModalClasses = WebpackModules.getModule(m => m.modal && m.inner && !m.sizeMedium) || {modal: "modal-36zFtW", inner: "inner-2VEzy9"};
+        const modalClasses = WebpackModules.getByProps("sizeMedium") || {modal: "backdrop-1wrmKb", sizeMedium: "sizeMedium-ctncE5", content: "content-2KoCOZ", header: "header-2nhbou", footer: "footer-30ewN8", close: "close-hhyjWJ", inner: "inner-2Z5QZX"};
         const modal = Utilities.parseHTML(`<div class="bd-modal-wrapper theme-dark">
-                <div class="bd-backdrop backdrop-1wrmKB"></div>
-                <div class="bd-modal modal-1UGdnR">
-                    <div class="bd-modal-inner inner-1JeGVc">
+                <div class="bd-backdrop ${backdrop.backdrop}"></div>
+                <div class="bd-modal ${baseModalClasses.modal}">
+                    <div class="bd-modal-inner ${baseModalClasses.inner}">
                         <div class="header header-1R_AjF">
                             <div class="title">${title}</div>
                         </div>
@@ -24,8 +27,8 @@ export default class Modals {
                                 </div>
                             </div>
                         </div>
-                        <div class="footer footer-2yfCgX">
-                            <button type="button">Okay</button>
+                        <div class="footer ${modalClasses.footer}">
+                            <button type="button">${Strings.Modals.okay}</button>
                         </div>
                     </div>
                 </div>
@@ -79,8 +82,8 @@ export default class Modals {
                 header: title,
                 children: content,
                 red: danger,
-                confirmText: confirmText ? confirmText : "Okay",
-                cancelText: cancelText ? cancelText : "Cancel",
+                confirmText: confirmText ? confirmText : Strings.Modals.okay,
+                cancelText: cancelText ? cancelText : Strings.Modals.cancel,
                 onConfirm: onConfirm ? onConfirm : emptyFunction,
                 onCancel: onCancel ? onCancel : emptyFunction
             }, props));
@@ -90,31 +93,34 @@ export default class Modals {
     static showContentErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
         if (!pluginErrors || !themeErrors || !this.shouldShowContentErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
+        const backdrop = WebpackModules.getByProps("backdrop") || {backdrop: "backdrop-1wrmKb"};
+        const baseModalClasses = WebpackModules.getModule(m => m.modal && m.inner && !m.sizeMedium) || {modal: "modal-36zFtW", inner: "inner-2VEzy9"};
+        const modalClasses = WebpackModules.getByProps("sizeMedium") || {modal: "modal-3v8ziU", sizeMedium: "sizeMedium-ctncE5", content: "content-2KoCOZ", header: "header-2nhbou", footer: "footer-30ewN8", close: "close-hhyjWJ", inner: "inner-2Z5QZX"};
         const modal = $(`<div class="bd-modal-wrapper theme-dark">
-                        <div class="bd-backdrop backdrop-1wrmKB"></div>
-                        <div class="bd-modal bd-content-modal modal-1UGdnR">
-                            <div class="bd-modal-inner inner-1JeGVc">
-                                <div class="header header-1R_AjF"><div class="title">Content Errors</div></div>
+                        <div class="bd-backdrop ${backdrop.backdrop}"></div>
+                        <div class="bd-modal bd-content-modal ${baseModalClasses.modal}">
+                            <div class="bd-modal-inner ${baseModalClasses.inner}">
+                                <div class="header ${modalClasses.header}"><div class="title">${Strings.Modals.addonErrors}</div></div>
                                 <div class="bd-modal-body">
                                     <div class="tab-bar-container">
                                         <div class="tab-bar TOP">
-                                            <div class="tab-bar-item">Plugins</div>
-                                            <div class="tab-bar-item">Themes</div>
+                                            <div class="tab-bar-item">${Strings.General.plugins}</div>
+                                            <div class="tab-bar-item">${Strings.General.themes}</div>
                                         </div>
                                     </div>
                                     <div class="table-header">
-                                        <div class="table-column column-name">Name</div>
-                                        <div class="table-column column-message">Message</div>
-                                        <div class="table-column column-error">Error</div>
+                                        <div class="table-column column-name">${Strings.Modals.name}</div>
+                                        <div class="table-column column-message">${Strings.Modals.message}</div>
+                                        <div class="table-column column-error">${Strings.Modals.error}</div>
                                     </div>
-                                    <div class="scroller-wrap fade">
+                                    <div class="scroller-wrap fade ${modalClasses.content}">
                                         <div class="scroller">
 
                                         </div>
                                     </div>
                                 </div>
-                                <div class="footer footer-2yfCgX">
-                                    <button type="button">Okay</button>
+                                <div class="footer ${modalClasses.footer}">
+                                    <button type="button">${Strings.Modals.okay}</button>
                                 </div>
                             </div>
                         </div>

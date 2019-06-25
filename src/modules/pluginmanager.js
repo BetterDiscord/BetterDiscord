@@ -4,6 +4,7 @@ import ContentManager from "./contentmanager";
 import Utilities from "./utilities";
 import ContentError from "../structs/contenterror";
 import Settings from "./settingsmanager";
+import Strings from "./strings";
 
 import Toasts from "../ui/toasts";
 import Modals from "../ui/modals";
@@ -32,7 +33,7 @@ export default new class PluginManager extends ContentManager {
     initialize() {
         const errors = super.initialize();
         this.setupFunctions();
-        Settings.registerPanel("plugins", "Plugins", {element: () => SettingsRenderer.getContentPanel("Plugins", this.contentList, this.state, {
+        Settings.registerPanel("plugins", Strings.Panels.plugins, {element: () => SettingsRenderer.getContentPanel(Strings.Panels.plugins, this.contentList, this.state, {
             folder: this.contentFolder,
             onChange: this.togglePlugin.bind(this),
             reload: this.reloadPlugin.bind(this),

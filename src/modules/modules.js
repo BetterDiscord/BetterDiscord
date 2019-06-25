@@ -13,3 +13,4 @@ export {default as DOMManager} from "./dommanager";
 export {default as Logger} from "./logger";
 export {default as Patcher} from "./patcher";
 export {default as ReactComponents} from "./reactcomponents";
+export {default as Strings} from "./strings";

@@ -1,4 +1,4 @@
-import {React, Settings, Events} from "modules";
+import {React, Settings, Events, Strings} from "modules";
 
 import Editor from "./editor";
 // import Checkbox from "./checkbox";
@@ -24,13 +24,13 @@ export default class CssEditor extends React.Component {
         this.updateEditor = this.updateEditor.bind(this);
 
         this.controls = [
-            {label: React.createElement(Refresh, {size: "18px"}), tooltip: "Update", onClick: this.updateCss},
-            {label: React.createElement(Save, {size: "18px"}), tooltip: "Save", onClick: this.saveCss},
-            {label: React.createElement(Edit, {size: "18px"}), tooltip: "Open in System Editor", onClick: this.openNative},
-            {label: React.createElement(Cog, {size: "18px"}), tooltip: "Editor Settings", onClick: "showSettings"},
-            {label: "Live Update", type:"checkbox", onChange: this.toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"}
+            {label: React.createElement(Refresh, {size: "18px"}), tooltip: Strings.CustomCSS.update, onClick: this.updateCss},
+            {label: React.createElement(Save, {size: "18px"}), tooltip: Strings.CustomCSS.save, onClick: this.saveCss},
+            {label: React.createElement(Edit, {size: "18px"}), tooltip: Strings.CustomCSS.openNative, onClick: this.openNative},
+            {label: React.createElement(Cog, {size: "18px"}), tooltip: Strings.CustomCSS.settings, onClick: "showSettings"},
+            {label: Strings.Collections.settings.developer.liveUpdate.name, type:"checkbox", onChange: this.toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"}
         ];
-        if (this.openDetached) this.controls.push({label: React.createElement(Detach, {size: "18px"}), tooltip: "Detach Editor", onClick: this.openDetached, side: "right"});
+        if (this.openDetached) this.controls.push({label: React.createElement(Detach, {size: "18px"}), tooltip: Strings.CustomCSS.openDetached, onClick: this.openDetached, side: "right"});
     }
 
     componentDidMount() {

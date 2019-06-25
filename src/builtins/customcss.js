@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {Settings, DataStore, React, WebpackModules, Events, DOMManager} from "modules";
+import {Settings, DataStore, React, WebpackModules, Events, DOMManager, Strings} from "modules";
 import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindowContainer from "../ui/floating/container";
 import SettingsTitle from "../ui/settings/title";
@@ -30,9 +30,9 @@ export default new class CustomCSS extends Builtin {
                 if (window.require.original) window.require = window.require.original;
             });
         }
-        Settings.registerPanel(this.id, this.name, {
+        Settings.registerPanel(this.id, Strings.Panels.customcss, {
             order: 2,
-            element: () => [<SettingsTitle text="Custom CSS Editor" />, React.createElement(CSSEditor, {
+            element: () => [<SettingsTitle text={Strings.CustomCSS.editorTitle} />, React.createElement(CSSEditor, {
                 css: this.savedCss,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
@@ -138,7 +138,7 @@ export default new class CustomCSS extends Builtin {
                 if (!editorRef || !editorRef.current || !editorRef.current.resize) return;
                 editorRef.current.resize();
             },
-            title: "Custom CSS Editor",
+            title: Strings.CustomCSS.editorTitle,
             id: "floating-editor-window",
             height: 470,
             width: 410,
@@ -149,7 +149,7 @@ export default new class CustomCSS extends Builtin {
                 if (!editorRef || !editorRef.current) return false;
                 return editorRef.current.hasUnsavedChanges;
             },
-            confirmationText: "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes."
+            confirmationText: Strings.CustomCSS.confirmationText
         });
         this.isDetached = true;
         UserSettings.close();
