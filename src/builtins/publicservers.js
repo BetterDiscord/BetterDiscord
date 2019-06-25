@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {DiscordModules, WebpackModules} from "modules";
+import {DiscordModules, WebpackModules, Strings} from "modules";
 import PublicServersMenu from "../ui/publicservers/menu";
 
 const LayerStack = WebpackModules.getByProps("pushLayer");
@@ -29,7 +29,7 @@ export default new class PublicServers extends Builtin {
             "id": "bd-pub-li"
         }).append($("<div/>", {
             "class": "wrapper-25eVIn " + DiscordModules.GuildClasses.circleButtonMask,
-            "text": "public",
+            "text": Strings.PublicServers.button,
             "id": "bd-pub-button",
             "click": () => { this.openPublicServers(); }
         }));

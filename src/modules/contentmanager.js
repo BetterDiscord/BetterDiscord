@@ -22,15 +22,15 @@ const stripBOM = function(content) {
     return content;
 };
 
-export default class ContentManager {
+export default class AddonManager {
 
     get name() {return "";}
     get moduleExtension() {return "";}
     get extension() {return "";}
     get contentFolder() {return "";}
-    get prefix() {return "content";}
+    get prefix() {return "addon";}
     get collection() {return "settings";}
-    get category() {return "content";}
+    get category() {return "addons";}
     get id() {return "autoReload";}
     emit(event, ...args) {return Events.emit(`${this.prefix}-${event}`, ...args);}
 

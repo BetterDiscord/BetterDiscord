@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {DiscordModules} from "modules";
+import {DiscordModules, Strings} from "modules";
 
 export default new class DeveloperMode extends Builtin {
     get name() {return "DeveloperMode";}
@@ -68,7 +68,7 @@ export default new class DeveloperMode extends Builtin {
                        DiscordModules.ElectronModule.copy(this.lastSelector);
                        cm.hide();
                    }
-               }).append($("<span/>", {text: "Copy Selector"}));
+               }).append($("<span/>", {text: Strings.Collections.settings.developer.copySelector.name}));
                cmo.append(cmi);
                cm.append(cmo);
                if (cm.hasClass("undefined")) cm.css("top",  "-=" + cmo.outerHeight());

@@ -1,4 +1,4 @@
-import {React, WebpackModules} from "modules";
+import {React, WebpackModules, Strings} from "modules";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
 import Connection from "../../structs/psconnection";
@@ -87,22 +87,22 @@ export default class PublicServers extends React.Component {
     }
 
     get searchBox() {
-        return React.createElement("input", {onKeyDown: this.searchKeyDown, type: "text", className: "bd-search", placeholder: "Search...", maxLength: "50"});
+        return React.createElement("input", {onKeyDown: this.searchKeyDown, type: "text", className: "bd-search", placeholder: `${Strings.PublicServers.search}...`, maxLength: "50"});
     }
 
     get title() {
-        if (!this.state.user) return "Not connected to DiscordServers.com!";
-        if (this.state.loading) return "Loading...";
+        if (!this.state.user) return Strings.PublicServers.notConnected;
+        if (this.state.loading) return `${Strings.PublicServers.loading}...`;
         const start = this.state.results.from + 1;
         const total = this.state.results.total;
         const end = this.state.results.next ? this.state.results.next : total;
-        let title = `Showing ${start}-${end} of ${total} results in ${this.state.category}`;
-        if (this.state.query) title += ` for ${this.state.query}`;
+        let title = Strings.PublicServers.results.format({start, end, total, category: this.state.category});
+        if (this.state.query) title += " " + Strings.PublicServers.query.format({query: this.state.query});
         return title;
     }
 
     get content() {
-        const connectButton = this.state.user ? null : {title: "Connect", onClick: this.connect};
+        const connectButton = this.state.user ? null : {title: Strings.PublicServers.connect, onClick: this.connect};
         const pinned = this.state.category == "All" || !this.state.user ? this.bdServer : null;
         const servers = this.state.results.servers.map((server) => {
             return React.createElement(ServerCard, {key: server.identifier, server: server, joined: Connection.hasJoined(server.identifier), defaultAvatar: Connection.getDefaultAvatar});
@@ -115,15 +115,15 @@ export default class PublicServers extends React.Component {
     }
 
     get nextButton() {
-        return React.createElement("button", {type: "button", className: "bd-button bd-button-next", onClick: this.loadNextPage}, this.state.loading ? "Loading" : "Load More");
+        return React.createElement("button", {type: "button", className: "bd-button bd-button-next", onClick: this.loadNextPage}, this.state.loading ? Strings.PublicServers.loading : Strings.PublicServers.loadMore);
     }
 
     get connection() {
         const {user} = this.state;
         if (!user) return React.createElement("div", {id: "bd-connection"});
         return React.createElement("div", {id: "bd-connection"},
-            React.createElement("div", {className: "bd-footnote"}, `Connected as: `, `${user.username}#${user.discriminator}`),
-            React.createElement("button", {type: "button", className: "bd-button bd-button-reconnect", onClick: this.connect}, "Reconnect")
+            React.createElement("div", {className: "bd-footnote"}, Strings.PublicServers.connection.format(user)),
+            React.createElement("button", {type: "button", className: "bd-button bd-button-reconnect", onClick: this.connect}, Strings.PublicServers.reconnect)
         );
     }
 
@@ -155,12 +155,12 @@ export default class PublicServers extends React.Component {
             onSetSection: this.changeCategory,
             section: this.state.category,
             sections: [
-                {section: "HEADER", label: "Search"},
+                {section: "HEADER", label: Strings.PublicServers.search},
                 {section: "CUSTOM", element: () => this.searchBox},
-                {section: "HEADER", label: "Categories"},
+                {section: "HEADER", label: Strings.PublicServers.categories},
                 ...categories,
                 {section: "DIVIDER"},
-                {section: "HEADER", label: React.createElement("a", {href: "https://discordservers.com", target: "_blank"}, "Discordservers.com")},
+                {section: "HEADER", label: React.createElement("a", {href: "https://discordservers.com", target: "_blank"}, "DiscordServers.com")},
                 {section: "DIVIDER"},
                 {section: "CUSTOM", element: () => this.connection}
             ],

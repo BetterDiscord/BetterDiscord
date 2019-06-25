@@ -1,7 +1,7 @@
 import Builtin from "../structs/builtin";
 
 import {Config, EmoteInfo, EmoteConfig} from "data";
-import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings} from "modules";
+import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings, Strings} from "modules";
 import BDEmote from "../ui/emote";
 import Toasts from "../ui/toasts";
 // import EmoteMenu from "./emotemenu";
@@ -65,7 +65,7 @@ export default new class EmoteModule extends Builtin {
     }
 
     async enabled() {
-        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: "Clear Emote Cache", onClick: () => { this.clearEmoteData(); this.loadEmoteData(EmoteInfo); }});
+        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: () => { this.clearEmoteData(); this.loadEmoteData(EmoteInfo); }});
         // Disable emote module for now because it's annoying and slow
         // await this.getBlacklist();
         // await this.loadEmoteData(EmoteInfo);
@@ -216,7 +216,7 @@ export default new class EmoteModule extends Builtin {
         }
 
         if (!Settings.get(this.category, "general", "download")) return;
-        Toasts.show("Downloading emotes in the background do not reload.", {type: "info"});
+        Toasts.show(Strings.Emotes.downloading, {type: "info"});
 
         for (const e in emoteInfo) {
             await new Promise(r => setTimeout(r, 1000));
@@ -224,7 +224,7 @@ export default new class EmoteModule extends Builtin {
             Emotes[emoteInfo[e].variable] = data;
         }
 
-        Toasts.show("All emotes successfully downloaded.", {type: "success"});
+        Toasts.show(Strings.Emotes.downloaded, {type: "success"});
 
         try { _fs.writeFileSync(file, JSON.stringify(Emotes), "utf8"); }
         catch (err) { this.stacktrace("Could not save emote data.", err); }

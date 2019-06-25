@@ -1,5 +1,4 @@
-import {Settings, React, WebpackModules, Events} from "modules";
-// import EmoteMenu from "../builtins/emotemenu";
+import {Settings, React, WebpackModules, Events, Strings} from "modules";
 
 const TooltipWrapper = WebpackModules.getByDisplayName("TooltipDeprecated");
 
@@ -15,6 +14,7 @@ export default class BDEmote extends React.Component {
         this.onMouseEnter = this.onMouseEnter.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.toggleFavorite = this.toggleFavorite.bind(this);
     }
 
     get animateOnHover() {
@@ -43,6 +43,14 @@ export default class BDEmote extends React.Component {
         if (this.props.onClick) this.props.onClick(e);
     }
 
+    toggleFavorite(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (this.state.isFavorite) Events.emit("emotes-favorite-removed", this.label);
+        else Events.emit("emotes-favorite-added", this.label, this.props.url);
+        this.setState({isFavorite: !this.state.isFavorite});
+    }
+
     render() {
         return React.createElement(TooltipWrapper, {
                 color: "black",
@@ -65,22 +73,9 @@ export default class BDEmote extends React.Component {
                     }),
                     React.createElement("input", {
                         className: "fav" + (this.state.isFavorite ? " active" : ""),
-                        title: "Favorite!",
+                        title: Strings.Emotes.favoriteAction,
                         type: "button",
-                        onClick: (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            if (this.state.isFavorite) {
-                                Events.emit("emotes-favorite-removed", this.label);
-                                // delete EmoteMenu.favoriteEmotes[this.label];
-                                // EmoteMenu.updateFavorites();
-                            }
-                            else {
-                                Events.emit("emotes-favorite-added", this.label, this.props.url);
-                                // EmoteMenu.favorite(this.label, this.props.url);
-                            }
-                            this.setState({isFavorite: !this.state.isFavorite});
-                        }
+                        onClick: this.toggleFavorite
                     })
                 )
             );

@@ -1,4 +1,4 @@
-import {React} from "modules";
+import {React, Strings} from "modules";
 
 import Screen from "../../structs/screen";
 import CloseButton from "../icons/close";
@@ -99,7 +99,7 @@ export default class FloatingWindow extends React.Component {
 
     confirmClose() {
         return new Promise(resolve => {
-            Modals.showConfirmationModal("Are You Sure?", this.props.confirmationText, {
+            Modals.showConfirmationModal(Strings.Modals.confirmClose, this.props.confirmationText, {
                 danger: true,
                 confirmText: "Close",
                 onConfirm: () => {resolve(true);},

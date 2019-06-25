@@ -2,6 +2,7 @@ import {Config} from "data";
 import ContentManager from "./contentmanager";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
+import Strings from "./strings";
 
 import Toasts from "../ui/toasts";
 import Modals from "../ui/modals";
@@ -18,7 +19,7 @@ export default new class ThemeManager extends ContentManager {
 
     initialize() {
         const errors = super.initialize();
-        Settings.registerPanel("themes", "Themes", {element: () => SettingsRenderer.getContentPanel("Themes", this.contentList, this.state, {
+        Settings.registerPanel("themes", Strings.Panels.themes, {element: () => SettingsRenderer.getContentPanel(Strings.Panels.themes, this.contentList, this.state, {
             folder: this.contentFolder,
             onChange: this.toggleTheme.bind(this),
             reload: this.reloadTheme.bind(this),

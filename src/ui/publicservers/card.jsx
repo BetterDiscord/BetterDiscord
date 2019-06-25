@@ -1,4 +1,4 @@
-import {React} from "modules";
+import {React, Strings} from "modules";
 
 export default class ServerCard extends React.Component {
     constructor(props) {
@@ -14,7 +14,7 @@ export default class ServerCard extends React.Component {
 
     render() {
         const {server} = this.props;
-        const buttonText = typeof(this.state.joined) == "string" ? "Joining..." : this.state.joined ? "Joined" : "Join";
+        const buttonText = typeof(this.state.joined) == "string" ? `${Strings.PublicServers.joining}...` : this.state.joined ? Strings.PublicServers.joined : Strings.PublicServers.join;
         const buttonClass = `bd-button${this.state.joined == true ? " bd-button-success" : ""}`;
         return <div className={`bd-server-card${server.pinned ? " bd-server-card-pinned" : ""}`}>
                 <img className="bd-server-image" src={server.iconUrl} onError={this.handleError} />,

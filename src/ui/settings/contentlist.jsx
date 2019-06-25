@@ -1,7 +1,7 @@
 // static getPluginsPanel(plugins, state, options = {}) {
 //     const {folder = "", onChange, reload} = options;
 //     const titleComponent = React.createElement(SettingsTitle, {text: "Plugins", button: {title: "Open Plugin Folder", onClick: () => { require("electron").shell.openItem(folder); }}});
-//     const cards = plugins.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(plugin => 
+//     const cards = plugins.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(plugin =>
 //         React.createElement(PluginCard, {key: plugin.id, enabled: state[plugin.id], content: plugin, onChange, reload})
 //     );
 //     return [titleComponent, React.createElement("ul", {className: "bda-slist"}, ...cards)];
@@ -23,7 +23,7 @@ export default class ContentList extends React.Component {
 
     render() {
         const {title, folder, contentList, contentState, onChange, reload} = this.props;
-        const showReloadIcon = !Settings.get("settings", "content", "autoReload");
+        const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
         const button = folder ? {title: `Open ${title} Folder`, onClick: () => {require("electron").shell.openItem(folder);}} : null;
         return [
             <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon className="bd-reload" onClick={this.reload.bind(this)} />} />,
