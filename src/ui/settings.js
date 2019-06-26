@@ -11,11 +11,20 @@ export default new class SettingsRenderer {
         this.patchSections();
     }
 
+    onChange(onChange) {
+        return (collection, category, id) => {
+            const before = Settings.collections.length + Settings.panels.length;
+            onChange(collection, category, id);
+            const after = Settings.collections.length + Settings.panels.length;
+            if (before != after) setTimeout(this.forceUpdate.bind(this), 50);
+        };
+    }
+
     buildSettingsPanel(title, config, state, onChange, button = null) {
         config.forEach(section => {
             section.settings.forEach(item => item.value = state[section.id][item.id]);
         });
-        return this.getSettingsPanel(title, config, onChange, button);
+        return this.getSettingsPanel(title, config, this.onChange(onChange), button);
     }
 
     getSettingsPanel(title, groups, onChange, button = null) {
@@ -43,9 +52,7 @@ export default new class SettingsRenderer {
         Patcher.after("SettingsManager", WebpackModules.getByDisplayName("FluxContainer(GuildSettings)").prototype, "render", (thisObject) => {
             thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
         });
-        console.log("getting user settings")
         const UserSettings = await ReactComponents.get("UserSettings", m => m.prototype && m.prototype.generateSections);
-        console.log("got 'em")
         Patcher.after("SettingsManager", UserSettings.prototype, "render", (thisObject) => {
             thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
         });

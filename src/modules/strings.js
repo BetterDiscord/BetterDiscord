@@ -14,7 +14,6 @@ export function setLocale(newLocale) {
     currentLocale = newLocale;
 	Utilities.extend(Messages, RawStrings[currentLocale]);
 	Events.emit("strings-updated");
-	console.log("Changed to " + newLocale);
 }
 
 Utilities.extend(Messages, RawStrings[currentLocale]);

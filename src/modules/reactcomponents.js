@@ -13,7 +13,6 @@ export default new class ReactComponents {
     get listeners() {return listeners;}
 
     constructor() {
-        this.walkReactTree(document.querySelector("#app-mount")._reactRootContainer._internalRoot.current);
         Patcher.after("ReactComponents", React, "createElement", (_, __, returnValue) => {
             this.walkRenderTree(returnValue);
         });
@@ -32,7 +31,9 @@ export default new class ReactComponents {
         });
     }
 
-    initialize() {}
+    initialize() {
+        this.walkReactTree(document.querySelector("#app-mount")._reactRootContainer._internalRoot.current);
+    }
 
     get(name, filter) {
         return new Promise(resolve => {

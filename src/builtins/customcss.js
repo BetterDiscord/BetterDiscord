@@ -3,6 +3,7 @@ import {Settings, DataStore, React, WebpackModules, Events, DOMManager, Strings}
 import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindowContainer from "../ui/floating/container";
 import SettingsTitle from "../ui/settings/title";
+import Utilities from "../modules/utilities";
 
 const fs = require("fs");
 const electron = require("electron");
@@ -42,10 +43,10 @@ export default new class CustomCSS extends Builtin {
             })],
             onClick: (thisObject) => {
                 if (this.isDetached) return;
-                if (this.nativeOpen) this.openNative();
-                else if (this.startDetached) this.openDetached();
-                else thisObject._reactInternalFiber.child.memoizedProps.children.props.onSetSection(Strings.Panels.customcss);
-                this.setSection = thisObject._reactInternalFiber.child.memoizedProps.children.props.onSetSection;
+                if (this.nativeOpen) return this.openNative();
+                else if (this.startDetached) return this.openDetached();
+                const settingsView = Utilities.findInRenderTree(thisObject._reactInternalFiber, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
+                if (settingsView && settingsView.onSetSection) settingsView.onSetSection(this.id);
             }
         });
         this.loadCSS();
