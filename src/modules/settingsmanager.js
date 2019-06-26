@@ -45,7 +45,7 @@ export default new class SettingsManager {
     registerPanel(id, name, options) {
         if (this.panels.find(p => p.id == id)) return Logger.error("Settings", "Already have a panel with id " + id);
         const {element, onClick, order = 1} = options;
-        const section = {id, order, label: name, section: name};
+        const section = {id, order, label: name, section: id};
         if (onClick) section.clickListener = onClick;
         if (element) section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof(element) == "function" ? element : () => element;
         this.panels.push(section);
@@ -124,12 +124,9 @@ export default new class SettingsManager {
     }
 
     onSettingChange(collection, category, id, value) {
-        // const before = this.collections.length + this.panels.length;
         this.state[collection][category][id] = value;
         Events.dispatch("setting-updated", collection, category, id, value);
-        // const after = this.collections.length + this.panels.length;
         this.saveSettings();
-        // if (before != after) setTimeout(this.forceUpdate.bind(this), 50);
     }
 
     getSetting(collection, category, id) {
@@ -171,7 +168,6 @@ export default new class SettingsManager {
         for (let c = 0; c < this.collections.length; c++) {
             const collection = this.collections[c];
             const CS = Strings.Collections[collection.id];
-            console.log(CS);
             if (!CS) continue;
             collection.name = CS.name || collection.name;
             const categories = this.collections[c].settings;
@@ -194,7 +190,7 @@ export default new class SettingsManager {
         for (let p = 0; p < this.panels.length; p++) {
             const panel = this.panels[p];
             const Str = Strings.Panels[panel.id];
-            panel.name = Str || panel.name;
+            panel.label = Str || panel.label;
         }
     }
 };

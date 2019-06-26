@@ -28,7 +28,7 @@ export default class CssEditor extends React.Component {
             {label: React.createElement(Save, {size: "18px"}), tooltip: Strings.CustomCSS.save, onClick: this.saveCss},
             {label: React.createElement(Edit, {size: "18px"}), tooltip: Strings.CustomCSS.openNative, onClick: this.openNative},
             {label: React.createElement(Cog, {size: "18px"}), tooltip: Strings.CustomCSS.settings, onClick: "showSettings"},
-            {label: Strings.Collections.settings.developer.liveUpdate.name, type:"checkbox", onChange: this.toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"}
+            {label: Strings.Collections.settings.customcss.liveUpdate.name, type:"checkbox", onChange: this.toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"}
         ];
         if (this.openDetached) this.controls.push({label: React.createElement(Detach, {size: "18px"}), tooltip: Strings.CustomCSS.openDetached, onClick: this.openDetached, side: "right"});
     }
