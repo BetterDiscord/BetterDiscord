@@ -218,7 +218,7 @@ export default {
             }
         }
     },
-    se: {
+    sv: {
         Panels: {
             plugins: "Tillägg",
             themes: "Teman",

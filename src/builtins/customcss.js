@@ -44,7 +44,7 @@ export default new class CustomCSS extends Builtin {
                 if (this.isDetached) return;
                 if (this.nativeOpen) this.openNative();
                 else if (this.startDetached) this.openDetached();
-                else thisObject._reactInternalFiber.child.memoizedProps.children.props.onSetSection(this.name);
+                else thisObject._reactInternalFiber.child.memoizedProps.children.props.onSetSection(Strings.Panels.customcss);
                 this.setSection = thisObject._reactInternalFiber.child.memoizedProps.children.props.onSetSection;
             }
         });
