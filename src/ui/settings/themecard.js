@@ -1,4 +1,4 @@
-import {React, Settings} from "modules";
+import {React, Settings, Strings} from "modules";
 import ReloadIcon from "../icons/reload";
 // import Toasts from "../toasts";
 
@@ -20,6 +20,17 @@ export default class ThemeCard extends React.Component {
         this.forceUpdate();
     }
 
+    buildTitle(name, version, author) {
+        const title = Strings.Addons.title.split(/({{[A-Za-z]+}})/);
+        const nameIndex = title.findIndex(s => s == "{{name}}");
+        if (nameIndex) title[nameIndex] = React.createElement("span", {className: "bda-name"}, name);
+        const versionIndex = title.findIndex(s => s == "{{version}}");
+        if (nameIndex) title[versionIndex] = React.createElement("span", {className: "bda-version"}, version);
+        const authorIndex = title.findIndex(s => s == "{{author}}");
+        if (nameIndex) title[authorIndex] = React.createElement("span", {className: "bda-author"}, author);
+        return title.flat();
+    }
+
     render() {
         const {content} = this.props;
         const name = content.name;
@@ -32,11 +43,7 @@ export default class ThemeCard extends React.Component {
         return React.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             React.createElement("div", {className: "bda-header"},
                     React.createElement("span", {className: "bda-header-title"},
-                        React.createElement("span", {className: "bda-name"}, name),
-                        " v",
-                        React.createElement("span", {className: "bda-version"}, version),
-                        " by ",
-                        React.createElement("span", {className: "bda-author"}, author)
+                        this.buildTitle(name, version, author)
                     ),
                     React.createElement("div", {className: "bda-controls"},
                         !Settings.get("settings", "addons", "autoReload") && React.createElement(ReloadIcon, {className: "bd-reload bd-reload-card", onClick: this.reload}),

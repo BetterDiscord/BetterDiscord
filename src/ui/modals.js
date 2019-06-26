@@ -104,8 +104,8 @@ export default class Modals {
                                 <div class="bd-modal-body">
                                     <div class="tab-bar-container">
                                         <div class="tab-bar TOP">
-                                            <div class="tab-bar-item">${Strings.General.plugins}</div>
-                                            <div class="tab-bar-item">${Strings.General.themes}</div>
+                                            <div class="tab-bar-item">${Strings.Panels.plugins}</div>
+                                            <div class="tab-bar-item">${Strings.Panels.themes}</div>
                                         </div>
                                     </div>
                                     <div class="table-header">

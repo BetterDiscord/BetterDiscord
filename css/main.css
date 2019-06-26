@@ -171,6 +171,12 @@
   background-color: rgb(46,154,74);
 }
 
+.bd-version {
+  font-size: 12px;
+  font-weight: 600;
+  color: #72767d;
+  padding: 2px 10px;
+}
 
 
 
