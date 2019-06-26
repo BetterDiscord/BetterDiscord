@@ -12,7 +12,7 @@ export default new class ReactComponents {
     get unknown() {return unknownComponents;}
     get listeners() {return listeners;}
 
-    initialize() {
+    constructor() {
         this.walkReactTree(document.querySelector("#app-mount")._reactRootContainer._internalRoot.current);
         Patcher.after("ReactComponents", React, "createElement", (_, __, returnValue) => {
             this.walkRenderTree(returnValue);
@@ -23,7 +23,16 @@ export default new class ReactComponents {
         Patcher.instead("ReactComponents", React.Component.prototype, "UNSAFE_componentWillMount", (thisObject) => {
             this.addComponent(thisObject.constructor);
         });
+
+        Patcher.instead("ReactComponents", React.PureComponent.prototype, "componentWillMount", (thisObject) => {
+            this.addComponent(thisObject.constructor);
+        });
+        Patcher.instead("ReactComponents", React.PureComponent.prototype, "UNSAFE_componentWillMount", (thisObject) => {
+            this.addComponent(thisObject.constructor);
+        });
     }
+
+    initialize() {}
 
     get(name, filter) {
         return new Promise(resolve => {

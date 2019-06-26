@@ -32,6 +32,7 @@ export default new class SettingsManager {
             button: button
         });
         this.setup();
+        this.updateStrings();
     }
 
     removeCollection(id) {
@@ -123,12 +124,12 @@ export default new class SettingsManager {
     }
 
     onSettingChange(collection, category, id, value) {
-        const before = this.collections.length + this.panels.length;
+        // const before = this.collections.length + this.panels.length;
         this.state[collection][category][id] = value;
         Events.dispatch("setting-updated", collection, category, id, value);
-        const after = this.collections.length + this.panels.length;
+        // const after = this.collections.length + this.panels.length;
         this.saveSettings();
-        if (before != after) setTimeout(this.forceUpdate.bind(this), 50);
+        // if (before != after) setTimeout(this.forceUpdate.bind(this), 50);
     }
 
     getSetting(collection, category, id) {
@@ -170,6 +171,7 @@ export default new class SettingsManager {
         for (let c = 0; c < this.collections.length; c++) {
             const collection = this.collections[c];
             const CS = Strings.Collections[collection.id];
+            console.log(CS);
             if (!CS) continue;
             collection.name = CS.name || collection.name;
             const categories = this.collections[c].settings;

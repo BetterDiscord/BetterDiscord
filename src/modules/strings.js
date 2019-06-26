@@ -4,17 +4,22 @@ import Utilities from "./utilities";
 import FormattableString from "../structs/string";
 import Events from "./emitter";
 
-const {Dispatcher, DiscordConstants} = DiscordModules;
+const {Dispatcher, DiscordConstants, UserSettingsStore} = DiscordModules;
 const Messages = {};
+
+const discordLocale = UserSettingsStore.locale.split("-")[0];
 
 export let currentLocale = "en";
 export function setLocale(newLocale) {
     currentLocale = newLocale;
 	Utilities.extend(Messages, RawStrings[currentLocale]);
 	Events.emit("strings-updated");
+	console.log("Changed to " + newLocale);
 }
 
 Utilities.extend(Messages, RawStrings[currentLocale]);
+
+if (RawStrings[discordLocale] && discordLocale != "en") setLocale(discordLocale);
 
 Dispatcher.subscribe(DiscordConstants.ActionTypes.USER_SETTINGS_UPDATE, ({settings}) => {
     const newLocale = settings.locale;
