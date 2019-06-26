@@ -460,7 +460,7 @@ export default {
                     },
                     twentyFourHour: {
                         name: "24時間表記",
-                        note: "時間を24時間表記に変更します。Hides channels when in minimal mode"
+                        note: "時間を24時間表記に変更します。"
                     },
                     classNormalizer: {
                         name: "クラス標準化",
