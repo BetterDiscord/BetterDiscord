@@ -165,6 +165,16 @@ export default {
                 }
             }
         },
+        Addons: {
+            title: "{{name}} v{{version}} by {{author}}",
+            openFolder: "Open {{type}} Folder",
+            reload: "Reload",
+            pluginSettings: "Settings",
+            website: "Website",
+            source: "Source",
+            server: "Support Server",
+            donate: "Donate"
+        },
         Emotes: {
             downloading: "Downloading emotes in the background do not reload.",
             downloaded: "All emotes successfully downloaded.",

@@ -1,9 +1,9 @@
-import {Config} from "data";
 import {React, WebpackModules, Patcher, ReactComponents, Utilities, Settings} from "modules";
 
 import ContentList from "./settings/contentlist";
 import SettingsGroup from "./settings/group";
 import SettingsTitle from "./settings/title";
+import Attribution from "./settings/attribution";
 
 export default new class SettingsRenderer {
 
@@ -41,13 +41,6 @@ export default new class SettingsRenderer {
         }, options));
     }
 
-    get attribution() {
-        return React.createElement("div", {className: "bd-version", style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
-            `BBD v${Config.bbdVersion} by `,
-            React.createElement("a", {href: "https://github.com/rauenzi/", target: "_blank"}, "Zerebos")
-        );
-    }
-
     async patchSections() {
         Patcher.after("SettingsManager", WebpackModules.getByDisplayName("FluxContainer(GuildSettings)").prototype, "render", (thisObject) => {
             thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
@@ -76,7 +69,7 @@ export default new class SettingsRenderer {
                 if (panel.clickListener) panel.onClick = (event) => panel.clickListener(thisObject, event, returnValue);
                 insert(panel);
             }
-            insert({section: "CUSTOM", element: () => this.attribution});
+            insert({section: "CUSTOM", element: Attribution});
         });
         this.forceUpdate();
     }

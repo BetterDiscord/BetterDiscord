@@ -1,5 +1,5 @@
 // import {SettingsCookie, PluginCookie, Plugins} from "data";
-import {React, Logger, Settings} from "modules";
+import {React, Logger, Settings, Strings} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
 
@@ -58,6 +58,17 @@ export default class PluginCard extends React.Component {
         return typeof value == "string" ? value : value.toString();
     }
 
+    buildTitle(name, version, author) {
+        const title = Strings.Addons.title.split(/({{[A-Za-z]+}})/);
+        const nameIndex = title.findIndex(s => s == "{{name}}");
+        if (nameIndex) title[nameIndex] = React.createElement("span", {className: "bda-name"}, name);
+        const versionIndex = title.findIndex(s => s == "{{version}}");
+        if (nameIndex) title[versionIndex] = React.createElement("span", {className: "bda-version"}, version);
+        const authorIndex = title.findIndex(s => s == "{{author}}");
+        if (nameIndex) title[authorIndex] = React.createElement("span", {className: "bda-author"}, author);
+        return title.flat();
+    }
+
     render() {
         const {content} = this.props;
         const name = this.getString(content.name);
@@ -88,11 +99,7 @@ export default class PluginCard extends React.Component {
         return React.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             React.createElement("div", {className: "bda-header"},
                     React.createElement("span", {className: "bda-header-title"},
-                        React.createElement("span", {className: "bda-name"}, name),
-                        " v",
-                        React.createElement("span", {className: "bda-version"}, version),
-                        " by ",
-                        React.createElement("span", {className: "bda-author"}, author)
+                        this.buildTitle(name, version, author)
                     ),
                     React.createElement("div", {className: "bda-controls"},
                         !Settings.get("settings", "addons", "autoReload") && React.createElement(ReloadIcon, {className: "bd-reload bd-reload-card", onClick: this.reload}),
@@ -107,11 +114,11 @@ export default class PluginCard extends React.Component {
             ),
             (website || source || this.hasSettings) && React.createElement("div", {className: "bda-footer"},
                 React.createElement("span", {className: "bda-links"},
-                    website && React.createElement("a", {className: "bda-link bda-link-website", href: website, target: "_blank"}, "Website"),
+                    website && React.createElement("a", {className: "bda-link bda-link-website", href: website, target: "_blank"}, Strings.Addons.website),
                     website && source && " | ",
-                    source && React.createElement("a", {className: "bda-link bda-link-source", href: source, target: "_blank"}, "Source")
+                    source && React.createElement("a", {className: "bda-link bda-link-source", href: source, target: "_blank"}, Strings.Addons.source)
                 ),
-                this.hasSettings && React.createElement("button", {onClick: this.showSettings, className: "bd-button bd-button-plugin-settings", disabled: !this.state.checked}, "Settings")
+                this.hasSettings && React.createElement("button", {onClick: this.showSettings, className: "bd-button bd-button-plugin-settings", disabled: !this.state.checked}, Strings.Addons.pluginSettings)
             )
         );
     }
