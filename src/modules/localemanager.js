@@ -47,7 +47,8 @@ export default new class LocaleManager {
 				json: true
 			};
 			request.get(options, (err, resp, newStrings) => {
-				if (err || resp.statusCode !== 200) return resolve(null);
+                if (err || resp.statusCode !== 200) return resolve(null);
+                DataStore.saveLocale(locale, newStrings);
 				resolve(newStrings);
 			});
 		});
