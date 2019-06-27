@@ -35,7 +35,7 @@ Core.prototype.init = async function() {
     //     `);
     // }
 
-    DataStore.initialize();
+    // DataStore.initialize();
     ReactComponents.initialize();
 
     Logger.log("Startup", "Initializing Settings");

@@ -1,15 +1,10 @@
 import {Config} from "data";
+import Utilities from "./utilities";
 const fs = require("fs");
 const path = require("path");
 const releaseChannel = DiscordNative.globals.releaseChannel;
 
-// Schema 1
-// =======================
-// %appdata%\BetterDiscord
-//     -> data\
-//         -> [releaseChannel].json (stable/canary/ptb)
-
-// Schema 2
+// Schema
 // =======================
 // %appdata%\BetterDiscord
 //     -> data
@@ -22,11 +17,13 @@ export default new class DataStore {
     constructor() {
         this.data = {misc: {}};
         this.pluginData = {};
+        this.initialize();
     }
 
     initialize() {
         if (!fs.existsSync(this.baseFolder)) fs.mkdirSync(this.baseFolder);
         if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
+        if (!fs.existsSync(this.localeFolder)) fs.mkdirSync(this.localeFolder);
         if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data.misc, null, 4));
         if (!fs.existsSync(this.customCSS)) fs.writeFileSync(this.customCSS, "");
         const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
@@ -46,6 +43,7 @@ export default new class DataStore {
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
+    get localeFolder() {return this._localeFolder || (this._localeFolder = path.resolve(this.baseFolder, `locales`));}
     get BDFile() {return this._BDFile || (this._BDFile = path.resolve(Config.dataPath, "data", `${releaseChannel}.json`));}
     // get settingsFile() {return this._settingsFile || (this._settingsFile = path.resolve(Config.dataPath, "bdsettings.json"));}
     getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
@@ -73,14 +71,22 @@ export default new class DataStore {
         fs.writeFileSync(path.resolve(this.dataFolder, `misc.json`), JSON.stringify(this.data.misc, null, 4));
     }
 
+    getLocale(locale) {
+        const file = path.resolve(this.localeFolder, `${locale}.json`);
+        if (!fs.existsSync(file)) return null;
+        return Utilities.testJSON(fs.readFileSync(file).toString());
+    }
+
+    saveLocale(locale, strings) {
+        fs.writeFileSync(path.resolve(this.localeFolder, `${locale}.json`), JSON.stringify(strings, null, 4));
+    }
+
     getData(key) {
         return this.data[key] || "";
-        // return JSON.parse(fs.readFileSync(path.resolve(this.dataFolder, `${file}.json`)));
     }
 
     setData(key, value) {
         this.data[key] = value;
-        // fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
         fs.writeFileSync(path.resolve(this.dataFolder, `${key}.json`), JSON.stringify(value, null, 4));
     }
 
