@@ -5,6 +5,7 @@ import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings, 
 import BDEmote from "../ui/emote";
 import Toasts from "../ui/toasts";
 // import EmoteMenu from "./emotemenu";
+const request = require("request");
 
 const Emotes = {
     TwitchGlobal: {},
@@ -67,11 +68,11 @@ export default new class EmoteModule extends Builtin {
     async enabled() {
         Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: () => { this.clearEmoteData(); this.loadEmoteData(EmoteInfo); }});
         // Disable emote module for now because it's annoying and slow
-        // await this.getBlacklist();
-        // await this.loadEmoteData(EmoteInfo);
+        await this.getBlacklist();
+        await this.loadEmoteData(EmoteInfo);
 
-        // while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
-        // this.patchMessageContent();
+        while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
+        this.patchMessageContent();
         Events.on("emotes-favorite-added", this.addFavorite);
         Events.on("emotes-favorite-removed", this.removeFavorite);
     }
@@ -234,7 +235,10 @@ export default new class EmoteModule extends Builtin {
     }
 
     downloadEmotes(emoteMeta) {
-        const request = require("request");
+        const repoFile = Utilities.repoUrl(`data/emotes/${emoteMeta.variable.toLowerCase()}.json`);
+        if (emoteMeta.url && !emoteMeta.backup) emoteMeta.backup = repoFile;
+        if (!emoteMeta.url) emoteMeta.url = repoFile;
+
         const options = {
             url: emoteMeta.url,
             timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000,
@@ -244,10 +248,10 @@ export default new class EmoteModule extends Builtin {
         this.log(`Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
 
         return new Promise((resolve, reject) => {
-            request(options, (error, response, parsedData) => {
+            request.get(options, (error, response, parsedData) => {
                 if (error) {
                     this.stacktrace("Could not download " + emoteMeta.variable, error);
-                    if (emoteMeta.backup) {
+                    if (emoteMeta.backup || emoteMeta.url) {
                         emoteMeta.url = emoteMeta.backup;
                         emoteMeta.backup = null;
                         if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
@@ -273,8 +277,9 @@ export default new class EmoteModule extends Builtin {
 
     getBlacklist() {
         return new Promise(resolve => {
-            $.getJSON(`https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json`, function (data) {
-                resolve(blacklist.push(...data.blacklist));
+            request.get({url: Utilities.repoUrl(`data/emotes/blacklist.json`), json: true}, (err, resp, data) => {
+                if (err || resp.statusCode != 200) return resolve();
+                resolve(blacklist.push(...data));
             });
         });
     }

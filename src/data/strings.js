@@ -168,7 +168,7 @@ export default {
         title: "{{name}} v{{version}} by {{author}}",
         openFolder: "Open {{type}} Folder",
         reload: "Reload",
-        pluginSettings: "Settings",
+        addonSettings: "Settings",
         website: "Website",
         source: "Source",
         server: "Support Server",

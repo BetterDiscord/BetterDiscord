@@ -1,6 +1,11 @@
+import {Config} from "data";
 import Logger from "./logger";
 
 export default class Utilities {
+
+    static repoUrl(path) {
+        return `https://cdn.staticaly.com/gh/${Config.repo}/BetterDiscordApp/${Config.hash}/${path}`;
+    }
 
     /**
      * Parses a string of HTML and returns the results. If the second parameter is true,

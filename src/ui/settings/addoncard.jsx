@@ -2,22 +2,21 @@ import {React, Logger, Strings} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
 
-export default class PluginCard extends React.Component {
+export default class AddonCard extends React.Component {
 
     constructor(props) {
         super(props);
-        this.onChange = this.onChange.bind(this);
-        this.showSettings = this.showSettings.bind(this);
         this.state = {
             checked: this.props.enabled,
             settingsOpen: false
         };
-        this.hasSettings = typeof this.props.addon.plugin.getSettingsPanel === "function";
+
         this.settingsPanel = "";
         this.panelRef = React.createRef();
 
+        this.onChange = this.onChange.bind(this);
         this.reload = this.reload.bind(this);
-        // this.onReload = this.onReload.bind(this);
+        this.showSettings = this.showSettings.bind(this);
         this.closeSettings = this.closeSettings.bind(this);
     }
 
@@ -50,6 +49,16 @@ export default class PluginCard extends React.Component {
 
     getString(value) {return typeof value == "string" ? value : value.toString();}
 
+    onChange() {
+        this.setState({checked: !this.state.checked});
+        this.props.onChange && this.props.onChange(this.props.addon.id);
+    }
+
+    showSettings() {
+        if (!this.props.hasSettings) return;
+        this.setState({settingsOpen: true});
+    }
+
     closeSettings() {
         this.panelRef.current.innerHTML = "";
         this.setState({settingsOpen: false});
@@ -69,10 +78,10 @@ export default class PluginCard extends React.Component {
     get settingsComponent() {
         const addon = this.props.addon;
         const name = this.getString(addon.name);
-        try { this.settingsPanel = addon.plugin.getSettingsPanel(); }
-        catch (err) { Logger.stacktrace("Plugin Settings", "Unable to get settings panel for " + name + ".", err); }
+        try { this.settingsPanel = this.props.getSettingsPanel(); }
+        catch (err) { Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err); }
 
-        const props = {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef};
+        const props = {id: `${name}-settings`, className: "addon-settings", ref: this.panelRef};
         if (typeof(settingsPanel) == "string") props.dangerouslySetInnerHTML = this.settingsPanel;
 
         return <li className="settings-open bd-switch-item">
@@ -89,18 +98,18 @@ export default class PluginCard extends React.Component {
 
     get footer() {
         const links = ["website", "source"];
-        if (!links.some(l => this.props.addon[l]) && !this.hasSettings) return null;
+        if (!links.some(l => this.props.addon[l]) && !this.props.hasSettings) return null;
         const linkComponents = links.map(this.buildLink.bind(this)).filter(c => c);
         return <div className="bd-footer">
                     <span className="bd-links">{linkComponents.map((comp, i) => i < linkComponents.length - 1 ? [comp, " | "] : [comp]).flat()}</span>
-                    {this.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-plugin-settings" disabled={!this.state.checked}>{Strings.Addons.pluginSettings}</button>}
+                    {this.props.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-addon-settings" disabled={!this.state.checked}>{Strings.Addons.addonSettings}</button>}
                 </div>;
     }
 
     render() {
         if (this.state.settingsOpen) return this.settingsComponent;
 
-        const {addon} = this.props;
+        const addon = this.props.addon;
         const name = this.getString(addon.name);
         const author = this.getString(addon.author);
         const description = this.getString(addon.description);
@@ -111,7 +120,7 @@ export default class PluginCard extends React.Component {
                             <span className="bd-header-title">{this.buildTitle(name, version, author)}</span>
                             <div className="bd-controls">
                                 {this.props.showReloadIcon && <ReloadIcon className="bd-reload bd-reload-card" onClick={this.reload} />}
-                                <label className="bd-switch-wrapper bd-flex-child">
+                                <label className="bd-switch-wrapper">
                                     <input className="bd-switch-checkbox" checked={this.state.checked} onChange={this.onChange} type="checkbox" />
                                     <div className={this.state.checked ? "bd-switch checked" : "bd-switch"} />
                                 </label>
@@ -120,15 +129,5 @@ export default class PluginCard extends React.Component {
                     <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{description}</div></div>
                     {this.footer}
                 </li>;
-    }
-
-    onChange() {
-        this.setState({checked: !this.state.checked});
-        this.props.onChange && this.props.onChange(this.props.addon.id);
-    }
-
-    showSettings() {
-        if (!this.hasSettings) return;
-        this.setState({settingsOpen: true});
     }
 }
