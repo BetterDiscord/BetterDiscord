@@ -1,0 +1,207 @@
+{
+    "Panels": {
+        "plugins": "Tillägg",
+        "themes": "Teman",
+        "customcss": "Egen CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Inställningar",
+            "general": {
+                "name": "Generellt",
+                "emotes": {
+                    "name": "Emotessystem",
+                    "note": "Aktiverar BD's emotessystem"
+                },
+                "publicServers": {
+                    "name": "Publika Servrar",
+                    "note": "Visa knappen för publika servrar"
+                },
+                "voiceDisconnect": {
+                    "name": "Lämna Röst",
+                    "note": "Lämna röstsamtal när Discord stängs ner"
+                },
+                "twentyFourHour": {
+                    "name": "24-Timmars Tidsstämpel",
+                    "note": "Visar 24-timmars tidsstämplar istället för AM/PM"
+                },
+                "classNormalizer": {
+                    "name": "Normalisera Klasser",
+                    "note": "Lägger till statiska klasser för att underlätta teman (ex. lägger till .da-channels på .channels-Ie2l6A)"
+                },
+                "showToasts": {
+                    "name": "Visa Toasts",
+                    "note": "Visar en liten notification för viktig information"
+                }
+            },
+            "appearance": {
+                "name": "Utseende",
+                "voiceMode": {
+                    "name": "Röstläge",
+                    "note": "Gömmer allt förutom röstchatt"
+                },
+                "minimalMode": {
+                    "name": "Minimalt Läge",
+                    "note": "Gömmer och förminskar komponenter"
+                },
+                "hideChannels": {
+                    "name": "Göm Kanaler",
+                    "note": "Gömmer kanaler när minimalt läge är aktiverat"
+                },
+                "darkMode": {
+                    "name": "Mörkt Läge",
+                    "note": "Gör vissa komponenter mörka"
+                },
+                "coloredText": {
+                    "name": "Färgad Text",
+                    "note": "Gör att text får samma färg som rollfärgen"
+                }
+            },
+            "addons": {
+                "name": "Tilläggshanterare",
+                "addonErrors": {
+                    "name": "Visa tilläggsfel",
+                    "note": "Visar en modal med tillägg- och temafel"
+                },
+                "autoScroll": {
+                    "name": "Skrolla till inställningar Scroll To Settings",
+                    "note": "Skrollar automatisks till ett tilläggs inställningar när knappen är tryckt (endast om inställningarna är utanför vy)"
+                },
+                "autoReload": {
+                    "name": "Automatisk Laddning",
+                    "note": "Laddar automatisk in, om och ur tillägg och teman"
+                }
+            },
+            "customcss": {
+                "name": "Egen CSS",
+                "customcss": {
+                    "name": "Egen CSS",
+                    "note": "Aktiverar \"Egen CSS\"-fliken"
+                },
+                "liveUpdate": {
+                    "name": "Uppdatera Direkt",
+                    "note": "Uppdaterar css allteftersom du skriver"
+                },
+                "startDetached": {
+                    "name": "Starta Frånkopplad",
+                    "note": "Öppnar CSS redigeraren i ett separat fönster när \"Egen CSS\"-fliken klickas"
+                },
+                "nativeOpen": {
+                    "name": "Öppna I Standardredigerare",
+                    "note": "Öppnar CSS filen i operativsystemets standardredigerare när \"Egen CSS\"-fliken klickas"
+                }
+            },
+            "developer": {
+                "name": "Utvecklarinställningar",
+                "developerMode": {
+                    "name": "Utvecklarläge",
+                    "note": "Gör det möjligt att aktivera avlusare med F8"
+                },
+                "copySelector": {
+                    "name": "Kopiera Selektor",
+                    "note": "Lägger till valet \"Kopiera Selektor\" i kontext menyn när utvecklarläge är aktiverat"
+                }
+            },
+            "window": {
+                "name": "Fönsterinställningar",
+                "transparency": {
+                    "name": "Aktivera Genomskinlighet",
+                    "note": "Gör att huvudfönstret blir genomskinligt (kräver omstart)"
+                },
+                "frame": {
+                    "name": "Fönsterram",
+                    "note": "Lägger till operativsystemets standard fönsterram runt huvudfönstret"
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emotes",
+            "general": {
+                "name": "Generellt",
+                "download": {
+                    "name": "Ladda Ner Emotes",
+                    "note": "Ladda ner emotes en gång i veckan för att hålla sig uppdaterad"
+                },
+                "emoteMenu": {
+                    "name": "Emote Meny",
+                    "note": "Visa Twitch/Favorit emotes i emote meny"
+                },
+                "hideEmojiMenu": {
+                    "name": "Gömmer Emoji Meny",
+                    "note": "Gömmer Discord's emoji meny när emote meny är aktiverad"
+                },
+                "autoCaps": {
+                    "name": "Automatiskt Stor Bokstav I Emotes",
+                    "note": "Gör automatiskt stor bokstav i emote kommandon"
+                },
+                "showNames": {
+                    "name": "Visa namn",
+                    "note": "Visa namn när musen hålls över en emote"
+                },
+                "modifiers": {
+                    "name": "Visa Emote Modifierare",
+                    "note": "Aktivera emote modifierare (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animera När Musen Hålls Över",
+                    "note": "Animera endast emote midiferare när musen hålls över emoten"
+                }
+            },
+            "categories": {
+                "name": "Kategorier",
+                "twitch": {
+                    "name": "Twitch",
+                    "note": "Visa Twitch global & prenumerant emotes"
+                },
+                "ffz": {
+                    "name": "FrankerFaceZ",
+                    "note": "Visa emotes från FFZ"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Visa emotes från BTTV"
+                }
+            }
+        }
+    },
+    "Emotes": {
+        "downloading": "Laddar ner emotes i backgrunden, ladda inte om",
+        "downloaded": "Alla emotes laddades ner utan problem.",
+        "clearEmotes": "Rensa Emote Data",
+        "favoriteAction": "Favorit!"
+    },
+    "CustomCSS": {
+        "confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",
+        "update": "Uppdatera",
+        "save": "Spara",
+        "openNative": "Öppna I Standardredigerare",
+        "openDetached": "Koppla Loss Fönster",
+        "settings": "Inställningar för redigerare",
+        "editorTitle": "Egen CSS Redigerare"
+    },
+    "PublicServers": {
+        "button": "Publik",
+        "join": "Gå med",
+        "joining": "Går med",
+        "joined": "Gick med",
+        "loading": "Laddar",
+        "loadMore": "ladda mer",
+        "notConnected": "Ingen anslutning till DiscordServers.com!",
+        "search": "Sök",
+        "connect": "Anslut",
+        "reconnect": "Återanslut",
+        "categories": "Kategorier",
+        "connection": "Ansluten som: {{username}}#{{discriminator}}",
+        "results": "Visar {{start}}-{{end}} av {{total}} resultat i {{category}}",
+        "query": "för {{query}}"
+    },
+    "Modals": {
+        "confirmClose": "Är du säker?",
+        "okay": "Okej",
+        "cancel": "Avbryt",
+        "name": "Namn",
+        "message": "Meddelande",
+        "error": "Fel",
+        "addonErrors": "Tilläggsfel"
+    }
+}
