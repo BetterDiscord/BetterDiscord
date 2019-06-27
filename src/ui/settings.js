@@ -1,4 +1,4 @@
-import {React, WebpackModules, Patcher, ReactComponents, Utilities, Settings} from "modules";
+import {React, WebpackModules, Patcher, ReactComponents, Utilities, Settings, Events} from "modules";
 
 import ContentList from "./settings/contentlist";
 import SettingsGroup from "./settings/group";
@@ -9,6 +9,7 @@ export default new class SettingsRenderer {
 
     constructor() {
         this.patchSections();
+        Events.on("strings-updated", this.forceUpdate);
     }
 
     onChange(onChange) {
@@ -77,6 +78,9 @@ export default new class SettingsRenderer {
     forceUpdate() {
         const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
+        if (!node) return;
         Utilities.getReactInstance(node).return.return.return.return.return.return.stateNode.forceUpdate();
+        const stateNode = Utilities.findInReactTree(Utilities.getReactInstance(node), m => m && m.generateSections, {walkable: ["return", "stateNode"]});
+        if (stateNode) stateNode.forceUpdate();
     }
 };
