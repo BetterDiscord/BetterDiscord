@@ -15,7 +15,7 @@ export default new class LocaleManager {
         this.locale = "";
         this.strings = {};
 	}
-	
+
 	async initialize() {
         await this.setLocale(this.discordLocale);
         Dispatcher.subscribe(DiscordConstants.ActionTypes.USER_SETTINGS_UPDATE, ({settings}) => {
@@ -27,8 +27,7 @@ export default new class LocaleManager {
 	async setLocale(newLocale) {
         let newStrings;
         if (newLocale != this.defaultLocale) {
-            const savedStrings = DataStore.getLocale(newLocale);
-            newStrings = savedStrings || await this.downloadLocale(newLocale);
+			newStrings = await this.getLocaleStrings(newLocale);
             if (!newStrings) return this.setLocale(this.defaultLocale);
         }
         else {
@@ -39,16 +38,28 @@ export default new class LocaleManager {
 		Events.emit("strings-updated");
 	}
 
-	downloadLocale(locale) {
+	async getLocaleStrings(locale) {
+		const hash = DataStore.getLocaleHash(locale);
+		if (!hash) return await this.downloadLocale(locale);
+		const invalid = await this.downloadLocale(locale, hash);
+		if (!invalid) return DataStore.getLocale(locale);
+		return invalid;
+	}
+
+	downloadLocale(locale, hash = "") {
 		return new Promise(resolve => {
 			const options = {
-				url: `https://raw.githubusercontent.com/rauenzi/BetterDiscordApp/development/data/locales/${locale}.json`,//`https://rauenzi.github.io/BetterDiscordApp/data/locales/${discordLocale}.json`,
+				url: Utilities.repoUrl(`data/locales/${locale}.json`),
 				timeout: 2000,
 				json: true
 			};
+			if (hash) options.headers = {"If-None-Match": hash};
+			console.log(options.headers);
 			request.get(options, (err, resp, newStrings) => {
-                if (err || resp.statusCode !== 200) return resolve(null);
-                DataStore.saveLocale(locale, newStrings);
+				if (err || resp.statusCode !== 200) return resolve(null);
+				console.log(resp);
+				DataStore.saveLocale(locale, newStrings);
+				DataStore.saveLocaleHash(locale, resp.headers.etag);
 				resolve(newStrings);
 			});
 		});

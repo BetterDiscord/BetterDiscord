@@ -1,9 +1,8 @@
 import {React, Settings, Strings} from "modules";
 
 import SettingsTitle from "./title";
-import PluginCard from "./plugincard";
-import ThemeCard from "./themecard";
 import ReloadIcon from "../icons/reload";
+import AddonCard from "./addoncard";
 
 export default class AddonList extends React.Component {
 
@@ -20,8 +19,9 @@ export default class AddonList extends React.Component {
             <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon className="bd-reload" onClick={this.reload.bind(this)} />} />,
             <ul key="addonList" className={"bd-slist"}>
             {addonList.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(addon => {
-                const CardType = addon.type ? PluginCard : ThemeCard;
-                return <CardType showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} />;
+                const hasSettings = addon.type && typeof(addon.plugin.getSettingsPanel) === "function";
+                const getSettings = hasSettings && addon.plugin.getSettingsPanel.bind(addon.plugin);
+                return <AddonCard showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />;
             })}
             </ul>
         ];
