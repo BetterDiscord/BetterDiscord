@@ -15,7 +15,7 @@ export default class BBDAttribution extends React.Component {
     }
 
     render() {
-        return <div className= "bd-version">
+        return <div id="bbd-version">
             {this.buildTitle("BBD", Config.bbdVersion, <a href="https://github.com/rauenzi" target="_blank" rel="noopener noreferrer">Zerebos</a>)}
         </div>;
     }

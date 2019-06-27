@@ -3,13 +3,13 @@ import {Utilities, Events} from "modules";
 
 import EmoteModule from "./emotes";
 
-const headerHTML = `<div id="bda-qem">
-    <button class="active" id="bda-qem-twitch">Twitch</button>
-    <button id="bda-qem-favourite">Favourite</button>
-    <button id="bda-qem-emojis">Emojis</buttond>
+const headerHTML = `<div id="bd-qem">
+    <button class="active" id="bd-qem-twitch">Twitch</button>
+    <button id="bd-qem-favourite">Favourite</button>
+    <button id="bd-qem-emojis">Emojis</buttond>
 </div>`;
 
-const twitchEmoteHTML = `<div id="bda-qem-twitch-container">
+const twitchEmoteHTML = `<div id="bd-qem-twitch-container">
     <div class="scroller-wrap scrollerWrap-2lJEkd fade">
         <div class="scroller scroller-2FKFPG">
             <div class="emote-menu-inner">
@@ -19,7 +19,7 @@ const twitchEmoteHTML = `<div id="bda-qem-twitch-container">
     </div>
 </div>`;
 
-const favoritesHTML = `<div id="bda-qem-favourite-container">
+const favoritesHTML = `<div id="bd-qem-favourite-container">
     <div class="scroller-wrap scrollerWrap-2lJEkd fade">
         <div class="scroller scroller-2FKFPG">
             <div class="emote-menu-inner">
@@ -49,7 +49,7 @@ export default new class EmoteMenu extends Builtin {
 
     constructor() {
         super();
-        this.lastTab = "bda-qem-emojis";
+        this.lastTab = "bd-qem-emojis";
 
         this.qmeHeader = Utilities.parseHTML(headerHTML);
         for (const button of this.qmeHeader.getElementsByTagName("button")) button.addEventListener("click", this.switchMenu.bind(this));
@@ -87,12 +87,12 @@ export default new class EmoteMenu extends Builtin {
 
     enableHideEmojis() {
         const picker = document.querySelector(".emojiPicker-3m1S-j");
-        if (picker) picker.classList.add("bda-qme-hidden");
+        if (picker) picker.classList.add("bd-qme-hidden");
     }
 
     disableHideEmojis() {
         const picker = document.querySelector(".emojiPicker-3m1S-j");
-        if (picker) picker.classList.remove("bda-qme-hidden");
+        if (picker) picker.classList.remove("bd-qme-hidden");
     }
 
     insertEmote(emote) {
@@ -105,8 +105,8 @@ export default new class EmoteMenu extends Builtin {
         const em = e.target.closest(".emote-container").children[0];
         const menu = $(`<div id="removemenu" class="bd-context-menu context-menu theme-dark">Remove</div>`);
         menu.css({
-            top: e.pageY - $("#bda-qem-favourite-container").offset().top,
-            left: e.pageX - $("#bda-qem-favourite-container").offset().left
+            top: e.pageY - $("#bd-qem-favourite-container").offset().top,
+            left: e.pageX - $("#bd-qem-favourite-container").offset().left
         });
         $(em).parent().append(menu);
         menu.on("click", (event) => {
@@ -126,28 +126,28 @@ export default new class EmoteMenu extends Builtin {
 
     switchMenu(e) {
         let id = typeof(e) == "string" ? e : e.target.id;
-        if (id == "bda-qem-emojis" && this.hideEmojis) id = "bda-qem-favourite";
-        const twitch = $("#bda-qem-twitch");
-        const fav = $("#bda-qem-favourite");
-        const emojis = $("#bda-qem-emojis");
+        if (id == "bd-qem-emojis" && this.hideEmojis) id = "bd-qem-favourite";
+        const twitch = $("#bd-qem-twitch");
+        const fav = $("#bd-qem-favourite");
+        const emojis = $("#bd-qem-emojis");
         twitch.removeClass("active");
         fav.removeClass("active");
         emojis.removeClass("active");
 
         $(".emojiPicker-3m1S-j").hide();
-        $("#bda-qem-favourite-container").hide();
-        $("#bda-qem-twitch-container").hide();
+        $("#bd-qem-favourite-container").hide();
+        $("#bd-qem-twitch-container").hide();
 
         switch (id) {
-            case "bda-qem-twitch":
+            case "bd-qem-twitch":
                 twitch.addClass("active");
-                $("#bda-qem-twitch-container").show();
+                $("#bd-qem-twitch-container").show();
                 break;
-            case "bda-qem-favourite":
+            case "bd-qem-favourite":
                 fav.addClass("active");
-                $("#bda-qem-favourite-container").show();
+                $("#bd-qem-favourite-container").show();
                 break;
-            case "bda-qem-emojis":
+            case "bd-qem-emojis":
                 emojis.addClass("active");
                 $(".emojiPicker-3m1S-j").show();
                 $(".emojiPicker-3m1S-j input").focus();
@@ -162,8 +162,8 @@ export default new class EmoteMenu extends Builtin {
         if (!node.classList.contains("popout-3sVMXz") || node.classList.contains("popoutLeft-30WmrD") || !node.getElementsByClassName("emojiPicker-3m1S-j").length) return;
 
         const e = $(node);
-        if (this.hideEmojis) e.addClass("bda-qme-hidden");
-        else e.removeClass("bda-qme-hidden");
+        if (this.hideEmojis) e.addClass("bd-qme-hidden");
+        else e.removeClass("bd-qme-hidden");
 
         e.prepend(this.qmeHeader);
         e.append(this.teContainer);

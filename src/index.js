@@ -61,7 +61,7 @@ function patchModuleLoad() {
     const load = Module._load;
     // const resolveFilename = Module._resolveFilename;
 
-    Module._load = function (request) {
+    Module._load = function(request) {
         if (request === namespace || request.startsWith(prefix)) {
             const requested = request.substr(prefix.length);
             if (requested == "api") return BdApi;
@@ -85,14 +85,6 @@ function patchModuleLoad() {
 }
 
 patchModuleLoad();
-
-// export function getPluginByModule(module) {
-//     return this.localContent.find(plugin => module.filename === plugin.contentPath || module.filename.startsWith(plugin.contentPath + path.sep));
-// }
-
-// export function getPluginPathByModule(module) {
-//     return Object.keys(this.pluginApiInstances).find(contentPath => module.filename === contentPath || module.filename.startsWith(contentPath + path.sep));
-// }
 
 // var settingsPanel, emoteModule, quickEmoteMenu, voiceMode,, dMode, publicServersModule;
 // var bdConfig = null;
