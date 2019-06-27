@@ -1,5 +1,4 @@
-// import {SettingsCookie, PluginCookie, Plugins} from "data";
-import {React, Logger, Settings, Strings} from "modules";
+import {React, Logger, Strings} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
 
@@ -10,7 +9,7 @@ export default class PluginCard extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.showSettings = this.showSettings.bind(this);
         this.state = {
-            checked: this.props.enabled,//PluginManager.isEnabled(this.props.content.id),
+            checked: this.props.enabled,
             settingsOpen: false
         };
         this.hasSettings = typeof this.props.content.plugin.getSettingsPanel === "function";
@@ -19,6 +18,7 @@ export default class PluginCard extends React.Component {
 
         this.reload = this.reload.bind(this);
         // this.onReload = this.onReload.bind(this);
+        this.closeSettings = this.closeSettings.bind(this);
     }
 
     reload() {
@@ -28,34 +28,31 @@ export default class PluginCard extends React.Component {
     }
 
     componentDidUpdate() {
-        if (this.state.settingsOpen) {
-            if (this.settingsPanel instanceof Node) {
-                this.panelRef.current.appendChild(this.settingsPanel);
-            }
+        if (!this.state.settingsOpen) return;
+        if (this.settingsPanel instanceof Node) this.panelRef.current.appendChild(this.settingsPanel);
 
-            // if (!SettingsCookie["fork-ps-3"]) return;
-            const isHidden = (container, element) => {
+        // if (!SettingsCookie["fork-ps-3"]) return;
+        const isHidden = (container, element) => {
+            const cTop = container.scrollTop;
+            const cBottom = cTop + container.clientHeight;
+            const eTop = element.offsetTop;
+            const eBottom = eTop + element.clientHeight;
+            return  (eTop < cTop || eBottom > cBottom);
+        };
 
-                const cTop = container.scrollTop;
-                const cBottom = cTop + container.clientHeight;
-
-                const eTop = element.offsetTop;
-                const eBottom = eTop + element.clientHeight;
-
-                return  (eTop < cTop || eBottom > cBottom);
-            };
-
-            const panel = $(this.panelRef.current);
-            const container = panel.parents(".scroller-2FKFPG");
-            if (!isHidden(container[0], panel[0])) return;
-            container.animate({
-                scrollTop: panel.offset().top - container.offset().top + container.scrollTop() - 30
-            }, 300);
-        }
+        const panel = $(this.panelRef.current);
+        const container = panel.parents(".scroller-2FKFPG");
+        if (!isHidden(container[0], panel[0])) return;
+        container.animate({
+            scrollTop: panel.offset().top - container.offset().top + container.scrollTop() - 30
+        }, 300);
     }
 
-    getString(value) {
-        return typeof value == "string" ? value : value.toString();
+    getString(value) {return typeof value == "string" ? value : value.toString();}
+
+    closeSettings() {
+        this.panelRef.current.innerHTML = "";
+        this.setState({settingsOpen: false});
     }
 
     buildTitle(name, version, author) {
@@ -69,58 +66,60 @@ export default class PluginCard extends React.Component {
         return title.flat();
     }
 
+    get settingsComponent() {
+        const content = this.props.content;
+        const name = this.getString(content.name);
+        try { this.settingsPanel = content.plugin.getSettingsPanel(); }
+        catch (err) { Logger.stacktrace("Plugin Settings", "Unable to get settings panel for " + name + ".", err); }
+
+        const props = {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef};
+        if (typeof(settingsPanel) == "string") props.dangerouslySetInnerHTML = this.settingsPanel;
+
+        return <li className="settings-open ui-switch-item">
+                    <div className="bd-close" onClick={this.closeSettings}><CloseButton /></div>
+                    <div {...props}>{this.settingsPanel instanceof React.Component ? this.settingsPanel : null}</div>
+                </li>;
+    }
+
+    buildLink(which) {
+        const url = this.props.content[which];
+        if (!url) return null;
+        return <a className="bda-link bda-link-website" href={url} target="_blank" rel="noopener noreferrer">{Strings.Addons[which]}</a>;
+    }
+
+    get footer() {
+        const links = ["website", "source"];
+        if (!links.some(l => this.props.content[l]) && !this.hasSettings) return null;
+        const linkComponents = links.map(this.buildLink.bind(this)).filter(c => c);
+        return <div className="bda-footer">
+                    <span className="bda-links">{linkComponents.map((comp, i) => i < linkComponents.length - 1 ? [comp, " | "] : [comp]).flat()}</span>
+                    {this.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-plugin-settings" disabled={!this.state.checked}>{Strings.Addons.pluginSettings}</button>}
+                </div>;
+    }
+
     render() {
+        if (this.state.settingsOpen) return this.settingsComponent;
+
         const {content} = this.props;
         const name = this.getString(content.name);
         const author = this.getString(content.author);
         const description = this.getString(content.description);
         const version = this.getString(content.version);
-        const website = content.website;
-        const source = content.source;
 
-        if (this.state.settingsOpen) {
-            try { this.settingsPanel = content.plugin.getSettingsPanel(); }
-            catch (err) { Logger.stacktrace("Plugin Settings", "Unable to get settings panel for " + content.name + ".", err); }
-
-            const props = {id: `plugin-settings-${name}`, className: "plugin-settings", ref: this.panelRef};
-            if (typeof(this.settingsPanel) == "string") props.dangerouslySetInnerHTML = this.settingsPanel;
-
-            return React.createElement("li", {className: "settings-open ui-switch-item"},
-                    React.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
-                            this.panelRef.current.innerHTML = "";
-                            this.setState({settingsOpen: false});
-                        }},
-                    React.createElement(CloseButton, null)
-                ),
-                React.createElement("div", props, this.settingsPanel instanceof React.Component ? this.settingsPanel : null),
-                );
-        }
-
-        return React.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
-            React.createElement("div", {className: "bda-header"},
-                    React.createElement("span", {className: "bda-header-title"},
-                        this.buildTitle(name, version, author)
-                    ),
-                    React.createElement("div", {className: "bda-controls"},
-                        !Settings.get("settings", "addons", "autoReload") && React.createElement(ReloadIcon, {className: "bd-reload bd-reload-card", onClick: this.reload}),
-                        React.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
-                            React.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
-                            React.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
-                        )
-                    )
-            ),
-            React.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
-                React.createElement("div", {className: "bda-description scroller"}, description)
-            ),
-            (website || source || this.hasSettings) && React.createElement("div", {className: "bda-footer"},
-                React.createElement("span", {className: "bda-links"},
-                    website && React.createElement("a", {className: "bda-link bda-link-website", href: website, target: "_blank"}, Strings.Addons.website),
-                    website && source && " | ",
-                    source && React.createElement("a", {className: "bda-link bda-link-source", href: source, target: "_blank"}, Strings.Addons.source)
-                ),
-                this.hasSettings && React.createElement("button", {onClick: this.showSettings, className: "bd-button bd-button-plugin-settings", disabled: !this.state.checked}, Strings.Addons.pluginSettings)
-            )
-        );
+        return <li dataName={name} dataVersion={version} className="settings-closed ui-switch-item">
+                    <div className="bda-header">
+                            <span className="bda-header-title">{this.buildTitle(name, version, author)}</span>
+                            <div className="bda-controls">
+                                {this.props.showReloadIcon && <ReloadIcon className="bd-reload bd-reload-card" onClick={this.reload} />}
+                                <label className="ui-switch-wrapper ui-flex-child">
+                                    <input className="ui-switch-checkbox" checked={this.state.checked} onChange={this.onChange} type="checkbox" />
+                                    <div className={this.state.checked ? "ui-switch checked" : "ui-switch"} />
+                                </label>
+                            </div>
+                    </div>
+                    <div className="bda-description-wrap scroller-wrap fade"><div className="bda-description scroller">{description}</div></div>
+                    {this.footer}
+                </li>;
     }
 
     onChange() {

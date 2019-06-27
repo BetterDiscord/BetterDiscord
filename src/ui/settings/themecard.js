@@ -1,4 +1,4 @@
-import {React, Settings, Strings} from "modules";
+import {React, Strings} from "modules";
 import ReloadIcon from "../icons/reload";
 // import Toasts from "../toasts";
 
@@ -46,7 +46,7 @@ export default class ThemeCard extends React.Component {
                         this.buildTitle(name, version, author)
                     ),
                     React.createElement("div", {className: "bda-controls"},
-                        !Settings.get("settings", "addons", "autoReload") && React.createElement(ReloadIcon, {className: "bd-reload bd-reload-card", onClick: this.reload}),
+                    this.props.showReloadIcon && React.createElement(ReloadIcon, {className: "bd-reload bd-reload-card", onClick: this.reload}),
                         React.createElement("label", {className: "ui-switch-wrapper ui-flex-child", style: {flex: "0 0 auto"}},
                             React.createElement("input", {checked: this.state.checked, onChange: this.onChange, className: "ui-switch-checkbox", type: "checkbox"}),
                             React.createElement("div", {className: this.state.checked ? "ui-switch checked" : "ui-switch"})
