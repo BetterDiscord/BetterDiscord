@@ -2,7 +2,7 @@ import {Logger, WebpackModules, Utilities, React, Settings, Strings} from "modul
 
 export default class Modals {
 
-    static get shouldShowContentErrors() {return Settings.get("settings", "addons", "addonErrors");}
+    static get shouldShowAddonErrors() {return Settings.get("settings", "addons", "addonErrors");}
 
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
@@ -90,8 +90,8 @@ export default class Modals {
         });
     }
 
-    static showContentErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
-        if (!pluginErrors || !themeErrors || !this.shouldShowContentErrors) return;
+    static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
+        if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
         const backdrop = WebpackModules.getByProps("backdrop") || {backdrop: "backdrop-1wrmKb"};
         const baseModalClasses = WebpackModules.getModule(m => m.modal && m.inner && !m.sizeMedium) || {modal: "modal-36zFtW", inner: "inner-2VEzy9"};
@@ -138,7 +138,7 @@ export default class Modals {
                 if (err.error) {
                     error.find("a").on("click", (e) => {
                         e.preventDefault();
-                        Logger.stacktrace("ContentError", `Error details for ${err.name ? err.name : err.file}.`, err.error);
+                        Logger.stacktrace("AddonError", `Error details for ${err.name ? err.name : err.file}.`, err.error);
                     });
                 }
             }

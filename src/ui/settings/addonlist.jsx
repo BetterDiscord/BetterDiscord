@@ -5,7 +5,7 @@ import PluginCard from "./plugincard";
 import ThemeCard from "./themecard";
 import ReloadIcon from "../icons/reload";
 
-export default class ContentList extends React.Component {
+export default class AddonList extends React.Component {
 
     reload() {
         if (this.props.refreshList) this.props.refreshList();
@@ -13,15 +13,15 @@ export default class ContentList extends React.Component {
     }
 
     render() {
-        const {title, folder, contentList, contentState, onChange, reload} = this.props;
+        const {title, folder, addonList, addonState, onChange, reload} = this.props;
         const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
         const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: () => {require("electron").shell.openItem(folder);}} : null;
         return [
             <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon className="bd-reload" onClick={this.reload.bind(this)} />} />,
-            <ul key="ContentList" className={"bda-slist"}>
-            {contentList.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(content => {
-                const CardType = content.type ? PluginCard : ThemeCard;
-                return <CardType showReloadIcon={showReloadIcon} key={content.id} enabled={contentState[content.id]} content={content} onChange={onChange} reload={reload} />;
+            <ul key="addonList" className={"bd-slist"}>
+            {addonList.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())).map(addon => {
+                const CardType = addon.type ? PluginCard : ThemeCard;
+                return <CardType showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} />;
             })}
             </ul>
         ];

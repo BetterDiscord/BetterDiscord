@@ -40,7 +40,7 @@ Core.prototype.init = async function() {
 
     DataStore.initialize();
     await LocaleManager.initialize();
-    
+
 
     Logger.log("Startup", "Initializing Settings");
     Settings.initialize();
@@ -62,7 +62,7 @@ Core.prototype.init = async function() {
 
     // Show loading errors
     Logger.log("Startup", "Collecting Startup Errors");
-    Modals.showContentErrors({plugins: pluginErrors, themes: themeErrors});
+    Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
 };
 
 Core.prototype.waitForGuilds = function() {

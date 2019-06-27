@@ -1,5 +1,5 @@
 import {Config} from "data";
-import ContentManager from "./contentmanager";
+import AddonManager from "./addonmanager";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
 import Strings from "./strings";
@@ -10,17 +10,17 @@ import SettingsRenderer from "../ui/settings";
 
 const path = require("path");
 
-export default new class ThemeManager extends ContentManager {
+export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}
     get moduleExtension() {return ".css";}
     get extension() {return ".theme.css";}
-    get contentFolder() {return path.resolve(Config.dataPath, "themes");}
+    get addonFolder() {return path.resolve(Config.dataPath, "themes");}
     get prefix() {return "theme";}
 
     initialize() {
         const errors = super.initialize();
-        Settings.registerPanel("themes", Strings.Panels.themes, {element: () => SettingsRenderer.getContentPanel(Strings.Panels.themes, this.contentList, this.state, {
-            folder: this.contentFolder,
+        Settings.registerPanel("themes", Strings.Panels.themes, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
+            folder: this.addonFolder,
             onChange: this.toggleTheme.bind(this),
             reload: this.reloadTheme.bind(this),
             refreshList: this.updateThemeList.bind(this)
@@ -30,44 +30,44 @@ export default new class ThemeManager extends ContentManager {
 
     /* Aliases */
     updateThemeList() {return this.updateList();}
-    loadAllThemes() {return this.loadAllContent();}
+    loadAllThemes() {return this.loadAllAddons();}
 
-    enableTheme(idOrContent) {return this.enableContent(idOrContent);}
-    disableTheme(idOrContent) {return this.disableContent(idOrContent);}
-    toggleTheme(id) {return this.toggleContent(id);}
+    enableTheme(idOrAddon) {return this.enableAddon(idOrAddon);}
+    disableTheme(idOrAddon) {return this.disableAddon(idOrAddon);}
+    toggleTheme(id) {return this.toggleAddon(id);}
 
-    unloadTheme(idOrFileOrContent) {return this.unloadContent(idOrFileOrContent);}
+    unloadTheme(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
 
     loadTheme(filename) {
-        const error = this.loadContent(filename);
-        if (error) Modals.showContentErrors({themes: [error]});
+        const error = this.loadAddon(filename);
+        if (error) Modals.showAddonErrors({themes: [error]});
     }
 
-    reloadTheme(idOrFileOrContent) {
-        const error = this.reloadContent(idOrFileOrContent);
-        if (error) Modals.showContentErrors({themes: [error]});
+    reloadTheme(idOrFileOrAddon) {
+        const error = this.reloadAddon(idOrFileOrAddon);
+        if (error) Modals.showAddonErrors({themes: [error]});
     }
 
     /* Overrides */
-    getContentModification(module, content, meta) {
-        meta.css = content;
+    getFileModification(module, fileContent, meta) {
+        meta.css = fileContent;
         return `module.exports = ${JSON.stringify(meta)};`;
     }
 
-    startContent(id) {return this.addTheme(id);}
-    stopContent(id) {return this.removeTheme(id);}
+    startAddon(id) {return this.addTheme(id);}
+    stopAddon(id) {return this.removeTheme(id);}
 
-    addTheme(idOrContent) {
-        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
-        if (!content) return;
-        DOMManager.injectTheme(content.id, content.css);
-        Toasts.show(`${content.name} v${content.version} has been applied.`);
+    addTheme(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        if (!addon) return;
+        DOMManager.injectTheme(addon.id, addon.css);
+        Toasts.show(`${addon.name} v${addon.version} has been applied.`);
     }
 
-    removeTheme(idOrContent) {
-        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
-        if (!content) return;
-        DOMManager.removeTheme(content.id);
-        Toasts.show(`${content.name} v${content.version} has been removed.`);
+    removeTheme(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        if (!addon) return;
+        DOMManager.removeTheme(addon.id);
+        Toasts.show(`${addon.name} v${addon.version} has been removed.`);
     }
 };

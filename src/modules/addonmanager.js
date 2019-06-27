@@ -1,0 +1,257 @@
+import Utilities from "./utilities";
+import Logger from "./logger";
+import Settings from "./settingsmanager";
+import Events from "./emitter";
+import DataStore from "./datastore";
+import AddonError from "../structs/addonerror";
+import MetaError from "../structs/metaerror";
+import Toasts from "../ui/toasts";
+
+const path = require("path");
+const fs = require("fs");
+const Module = require("module").Module;
+Module.globalPaths.push(path.resolve(require("electron").remote.app.getAppPath(), "node_modules"));
+
+const splitRegex = /[^\S\r\n]*?\n[^\S\r\n]*?\*[^\S\r\n]?/;
+const escapedAtRegex = /^\\@/;
+
+const stripBOM = function(fileContent) {
+    if (fileContent.charCodeAt(0) === 0xFEFF) {
+        fileContent = fileContent.slice(1);
+    }
+    return fileContent;
+};
+
+export default class AddonManager {
+
+    get name() {return "";}
+    get moduleExtension() {return "";}
+    get extension() {return "";}
+    get addonFolder() {return "";}
+    get prefix() {return "addon";}
+    get collection() {return "settings";}
+    get category() {return "addons";}
+    get id() {return "autoReload";}
+    emit(event, ...args) {return Events.emit(`${this.prefix}-${event}`, ...args);}
+
+    constructor() {
+        this.timeCache = {};
+        this.addonList = [];
+        this.state = {};
+    }
+
+    initialize() {
+        this.originalRequire = Module._extensions[this.moduleExtension];
+        Module._extensions[this.moduleExtension] = this.getAddonRequire();
+        Settings.on(this.collection, this.category, this.id, (enabled) => {
+            if (enabled) this.watchAddons();
+            else this.unwatchAddons();
+        });
+        return this.loadAllAddons();
+    }
+
+    // Subclasses should overload this and modify the addon object as needed to fully load it
+    initializeAddon() {return;}
+
+    // Subclasses should overload this and modify the fileContent as needed to require() the file
+    getFileModification(module, fileContent) {return fileContent;}
+
+    startAddon() {return;}
+    stopAddon() {return;}
+
+    loadState() {
+        const saved = DataStore.getData(`${this.prefix}s`);
+        if (!saved) return;
+        Object.assign(this.state, saved);
+    }
+
+    saveState() {
+        DataStore.setData(`${this.prefix}s`, this.state);
+    }
+
+    watchAddons() {
+        if (this.watcher) return Logger.error(this.name, `Already watching ${this.prefix} addons.`);
+        Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
+        this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
+            if (!eventType || !filename || !filename.endsWith(this.extension)) return;
+            await new Promise(r => setTimeout(r, 50));
+            try {fs.statSync(path.resolve(this.addonFolder, filename));}
+            catch (err) {
+                if (err.code !== "ENOENT") return;
+                delete this.timeCache[filename];
+                this.unloadAddon(filename, true);
+            }
+            if (!fs.statSync(path.resolve(this.addonFolder, filename)).isFile()) return;
+            const stats = fs.statSync(path.resolve(this.addonFolder, filename));
+            if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
+            if (typeof(stats.mtime.getTime()) !== "number") return;
+            if (this.timeCache[filename] == stats.mtime.getTime()) return;
+            this.timeCache[filename] = stats.mtime.getTime();
+            if (eventType == "rename") this.loadAddon(filename, true);
+            if (eventType == "change") this.reloadAddon(filename, true);
+        });
+    }
+
+    unwatchAddons() {
+        if (!this.watcher) return Logger.error(this.name, `Was not watching ${this.prefix} addons.`);
+        this.watcher.close();
+        delete this.watcher;
+        Logger.log(this.name, `No longer watching ${this.prefix} addons.`);
+    }
+
+    extractMeta(fileContent) {
+        const firstLine = fileContent.split("\n")[0];
+        const hasOldMeta = firstLine.includes("//META");
+        if (hasOldMeta) return this.parseOldMeta(fileContent);
+        const hasNewMeta = firstLine.includes("/**");
+        if (hasNewMeta) return this.parseNewMeta(fileContent);
+        throw new MetaError("META was not found.");
+    }
+
+    parseOldMeta(fileContent) {
+        const meta = fileContent.split("\n")[0];
+        const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
+        const parsed = Utilities.testJSON(metaData);
+        if (!parsed) throw new MetaError("META could not be parsed.");
+        if (!parsed.name) throw new MetaError("META missing name data.");
+        return parsed;
+    }
+
+    parseNewMeta(fileContent) {
+        const block = fileContent.split("/**", 2)[1].split("*/", 1)[0];
+        const out = {};
+        let field = "";
+        let accum = "";
+        for (const line of block.split(splitRegex)) {
+            if (line.length === 0) continue;
+            if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
+                out[field] = accum;
+                const l = line.indexOf(" ");
+                field = line.substr(1, l - 1);
+                accum = line.substr(l + 1);
+            }
+            else {
+                accum += " " + line.replace("\\n", "\n").replace(escapedAtRegex, "@");
+            }
+        }
+        out[field] = accum.trim();
+        delete out[""];
+        return out;
+    }
+
+    getAddonRequire() {
+        const self = this;
+        // const baseFolder = this.addonFolder;
+        const originalRequire = this.originalRequire;
+        return function(module, filename) {
+            const possiblePath = path.resolve(self.addonFolder, path.basename(filename));
+            if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
+            let fileContent = fs.readFileSync(filename, "utf8");
+            fileContent = stripBOM(fileContent);
+            const meta = self.extractMeta(fileContent);
+            meta.id = meta.name;
+            meta.filename = path.basename(filename);
+            fileContent = self.getFileModification(module, fileContent, meta);
+            module._compile(fileContent, filename);
+        };
+    }
+
+    // Subclasses should use the return (if not AddonError) and push to this.addonList
+    loadAddon(filename, shouldToast = false) {
+        if (typeof(filename) === "undefined") return;
+        try {__non_webpack_require__(path.resolve(this.addonFolder, filename));}
+        catch (error) {return new AddonError(filename, filename, "Could not be compiled.", {message: error.message, stack: error.stack});}
+        const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
+        if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, `There is already a plugin with name ${addon.name}`);
+        const error = this.initializeAddon(addon);
+        if (error) return error;
+        this.addonList.push(addon);
+        if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
+        this.emit("loaded", addon.id);
+
+        if (!this.state[addon.id]) return this.state[addon.id] = false;
+        return this.startAddon(addon);
+    }
+
+    unloadAddon(idOrFileOrAddon, shouldToast = true, isReload = false) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        if (!addon) return false;
+        if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
+        delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.addonFolder, addon.filename))];
+        this.addonList.splice(this.addonList.indexOf(addon), 1);
+        this.emit("unloaded", addon.id);
+        if (shouldToast) Toasts.success(`${addon.name} was unloaded.`);
+        return true;
+    }
+
+    reloadAddon(idOrFileOrAddon, shouldToast = true) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        const didUnload = this.unloadAddon(addon, shouldToast, true);
+        if (!didUnload) return didUnload;
+        return this.loadAddon(addon.filename, shouldToast);
+    }
+
+    isLoaded(idOrFile) {
+        const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
+        if (!addon) return false;
+        return true;
+    }
+
+    isEnabled(idOrFile) {
+        const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
+        if (!addon) return false;
+        return this.state[addon.id];
+    }
+
+    enableAddon(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        if (!addon) return;
+        if (this.state[addon.id]) return;
+        this.state[addon.id] = true;
+        this.startAddon(addon);
+        this.saveState();
+    }
+
+    disableAddon(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        if (!addon) return;
+        if (!this.state[addon.id]) return;
+        this.state[addon.id] = false;
+        this.stopAddon(addon);
+        this.saveState();
+    }
+
+    toggleAddon(id) {
+        if (this.state[id]) this.disableAddon(id);
+        else this.enableAddon(id);
+    }
+
+    loadNewAddons() {
+        const files = fs.readdirSync(this.addonFolder);
+        const removed = this.addonList.filter(t => !files.includes(t.filename)).map(c => c.id);
+        const added = files.filter(f => !this.addonList.find(t => t.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.addonFolder, f)).isFile());
+        return {added, removed};
+    }
+
+    updateList() {
+        const results = this.loadNewAddons();
+        for (const filename of results.added) this.loadAddon(filename);
+        for (const name of results.removed) this.unloadAddon(name);
+    }
+
+    loadAllAddons() {
+        this.loadState();
+        const errors = [];
+        const files = fs.readdirSync(this.addonFolder);
+
+        for (const filename of files) {
+            if (!fs.statSync(path.resolve(this.addonFolder, filename)).isFile() || !filename.endsWith(this.extension)) continue;
+            const addon = this.loadAddon(filename, false);
+            if (addon instanceof AddonError) errors.push(addon);
+        }
+
+        this.saveState();
+        if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
+        return errors;
+    }
+}

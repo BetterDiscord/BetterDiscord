@@ -1,8 +1,8 @@
 import {Config} from "data";
 import Logger from "./logger";
-import ContentManager from "./contentmanager";
+import AddonManager from "./addonmanager";
 import Utilities from "./utilities";
-import ContentError from "../structs/contenterror";
+import AddonError from "../structs/addonerror";
 import Settings from "./settingsmanager";
 import Strings from "./strings";
 
@@ -13,11 +13,11 @@ import SettingsRenderer from "../ui/settings";
 const path = require("path");
 const electronRemote = require("electron").remote;
 
-export default new class PluginManager extends ContentManager {
+export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
     get moduleExtension() {return ".js";}
     get extension() {return ".plugin.js";}
-    get contentFolder() {return path.resolve(Config.dataPath, "plugins");}
+    get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
     get prefix() {return "plugin";}
 
     constructor() {
@@ -33,8 +33,8 @@ export default new class PluginManager extends ContentManager {
     initialize() {
         const errors = super.initialize();
         this.setupFunctions();
-        Settings.registerPanel("plugins", Strings.Panels.plugins, {element: () => SettingsRenderer.getContentPanel(Strings.Panels.plugins, this.contentList, this.state, {
-            folder: this.contentFolder,
+        Settings.registerPanel("plugins", Strings.Panels.plugins, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
+            folder: this.addonFolder,
             onChange: this.togglePlugin.bind(this),
             reload: this.reloadPlugin.bind(this),
             refreshList: this.updatePluginList.bind(this)
@@ -44,92 +44,92 @@ export default new class PluginManager extends ContentManager {
 
     /* Aliases */
     updatePluginList() {return this.updateList();}
-    loadAllPlugins() {return this.loadAllContent();}
+    loadAllPlugins() {return this.loadAllAddons();}
 
-    enablePlugin(idOrContent) {return this.enableContent(idOrContent);}
-    disablePlugin(idOrContent) {return this.disableContent(idOrContent);}
-    togglePlugin(id) {return this.toggleContent(id);}
+    enablePlugin(idOrAddon) {return this.enableAddon(idOrAddon);}
+    disablePlugin(idOrAddon) {return this.disableAddon(idOrAddon);}
+    togglePlugin(id) {return this.toggleAddon(id);}
 
-    unloadPlugin(idOrFileOrContent) {return this.unloadContent(idOrFileOrContent);}
+    unloadPlugin(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
 
     loadPlugin(filename) {
-        const error = this.loadContent(filename);
-        if (error) Modals.showContentErrors({themes: [error]});
+        const error = this.loadAddon(filename);
+        if (error) Modals.showAddonErrors({themes: [error]});
     }
 
-    reloadPlugin(idOrFileOrContent) {
-        const error = this.reloadContent(idOrFileOrContent);
-        if (error) Modals.showContentErrors({plugins: [error]});
-        return typeof(idOrFileOrContent) == "string" ? this.contentList.find(c => c.id == idOrFileOrContent || c.filename == idOrFileOrContent) : idOrFileOrContent;
+    reloadPlugin(idOrFileOrAddon) {
+        const error = this.reloadAddon(idOrFileOrAddon);
+        if (error) Modals.showAddonErrors({plugins: [error]});
+        return typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
     }
 
     /* Overrides */
-    initializeContent(content) {
-        if (!content.type) return new ContentError(content.name, content.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""});
+    initializeAddon(addon) {
+        if (!addon.type) return new AddonError(addon.name, addon.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""});
         try {
-            const thePlugin = new content.type();
-            content.plugin = thePlugin;
-            content.name = thePlugin.getName() || content.name;
-            content.author = thePlugin.getAuthor() || content.author || "No author";
-            content.description = thePlugin.getDescription() || content.description || "No description";
-            content.version = thePlugin.getVersion() || content.version || "No version";
+            const thePlugin = new addon.type();
+            addon.plugin = thePlugin;
+            addon.name = thePlugin.getName() || addon.name;
+            addon.author = thePlugin.getAuthor() || addon.author || "No author";
+            addon.description = thePlugin.getDescription() || addon.description || "No description";
+            addon.version = thePlugin.getVersion() || addon.version || "No version";
             try {
-                if (typeof(content.plugin.load) == "function") content.plugin.load();
+                if (typeof(addon.plugin.load) == "function") addon.plugin.load();
             }
             catch (error) {
-                this.state[content.id] = false;
-                return new ContentError(content.name, content.filename, "load() could not be fired.", {message: error.message, stack: error.stack});
+                this.state[addon.id] = false;
+                return new AddonError(addon.name, addon.filename, "load() could not be fired.", {message: error.message, stack: error.stack});
             }
         }
-        catch (error) {return new ContentError(content.name, content.filename, "Could not be constructed.", {message: error.message, stack: error.stack});}
+        catch (error) {return new AddonError(addon.name, addon.filename, "Could not be constructed.", {message: error.message, stack: error.stack});}
     }
 
-    getContentModification(module, content, meta) {
-        module._compile(content, module.filename);
+    getFileModification(module, fileContent, meta) {
+        module._compile(fileContent, module.filename);
         const didExport = !Utilities.isEmpty(module.exports);
         if (didExport) {
             meta.type = module.exports;
             module.exports = meta;
             return "";
         }
-        content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
-        return content;
+        fileContent += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
+        return fileContent;
     }
 
-    startContent(id) {return this.startPlugin(id);}
-    stopContent(id) {return this.stopPlugin(id);}
+    startAddon(id) {return this.startPlugin(id);}
+    stopAddon(id) {return this.stopPlugin(id);}
 
-    startPlugin(idOrContent) {
-        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
-        if (!content) return;
-        const plugin = content.plugin;
+    startPlugin(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        if (!addon) return;
+        const plugin = addon.plugin;
         try {
             plugin.start();
-            this.emit("started", content.id);
-            Toasts.show(`${content.name} v${content.version} has started.`);
+            this.emit("started", addon.id);
+            Toasts.show(`${addon.name} v${addon.version} has started.`);
         }
         catch (err) {
-            this.state[content.id] = false;
-            Toasts.error(`${content.name} v${content.version} could not be started.`);
-            Logger.stacktrace(this.name, content.name + " could not be started.", err);
-            return new ContentError(content.name, content.filename, "start() could not be fired.", {message: err.message, stack: err.stack});
+            this.state[addon.id] = false;
+            Toasts.error(`${addon.name} v${addon.version} could not be started.`);
+            Logger.stacktrace(this.name, addon.name + " could not be started.", err);
+            return new AddonError(addon.name, addon.filename, "start() could not be fired.", {message: err.message, stack: err.stack});
         }
     }
 
-    stopPlugin(idOrContent) {
-        const content = typeof(idOrContent) == "string" ? this.contentList.find(p => p.id == idOrContent) : idOrContent;
-        if (!content) return;
-        const plugin = content.plugin;
+    stopPlugin(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        if (!addon) return;
+        const plugin = addon.plugin;
         try {
             plugin.stop();
-            this.emit("stopped", content.id);
-            Toasts.show(`${content.name} v${content.version} has stopped.`);
+            this.emit("stopped", addon.id);
+            Toasts.show(`${addon.name} v${addon.version} has stopped.`);
         }
         catch (err) {
-            this.state[content.id] = false;
-            Toasts.error(`${content.name} v${content.version} could not be stopped.`);
-            Logger.stacktrace(this.name, content.name + " could not be stopped.", err);
-            return new ContentError(content.name, content.filename, "stop() could not be fired.", {message: err.message, stack: err.stack});
+            this.state[addon.id] = false;
+            Toasts.error(`${addon.name} v${addon.version} could not be stopped.`);
+            Logger.stacktrace(this.name, addon.name + " could not be stopped.", err);
+            return new AddonError(addon.name, addon.filename, "stop() could not be fired.", {message: err.message, stack: err.stack});
         }
     }
 
@@ -143,23 +143,23 @@ export default new class PluginManager extends ContentManager {
 
     onSwitch() {
         this.emit("page-switch");
-        for (let i = 0; i < this.contentList.length; i++) {
-            const plugin = this.contentList[i].plugin;
-            if (!this.state[this.contentList[i].id]) continue;
+        for (let i = 0; i < this.addonList.length; i++) {
+            const plugin = this.addonList[i].plugin;
+            if (!this.state[this.addonList[i].id]) continue;
             if (typeof(plugin.onSwitch) === "function") {
                 try { plugin.onSwitch(); }
-                catch (err) { Logger.stacktrace(this.name, "Unable to fire onSwitch for " + this.contentList[i].name + ".", err); }
+                catch (err) { Logger.stacktrace(this.name, "Unable to fire onSwitch for " + this.addonList[i].name + ".", err); }
             }
         }
     }
 
     onMutation(mutation) {
-        for (let i = 0; i < this.contentList.length; i++) {
-            const plugin = this.contentList[i].plugin;
-            if (!this.state[this.contentList[i].id]) continue;
+        for (let i = 0; i < this.addonList.length; i++) {
+            const plugin = this.addonList[i].plugin;
+            if (!this.state[this.addonList[i].id]) continue;
             if (typeof plugin.observer === "function") {
                 try { plugin.observer(mutation); }
-                catch (err) { Logger.stacktrace(this.name, "Unable to fire observer for " + this.contentList[i].name + ".", err); }
+                catch (err) { Logger.stacktrace(this.name, "Unable to fire observer for " + this.addonList[i].name + ".", err); }
             }
         }
     }

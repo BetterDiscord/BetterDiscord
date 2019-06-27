@@ -1,6 +1,6 @@
 import {React, WebpackModules, Patcher, ReactComponents, Utilities, Settings, Events} from "modules";
 
-import ContentList from "./settings/contentlist";
+import AddonList from "./settings/addonlist";
 import SettingsGroup from "./settings/group";
 import SettingsTitle from "./settings/title";
 import Attribution from "./settings/attribution";
@@ -34,11 +34,11 @@ export default new class SettingsRenderer {
         })];
     }
 
-    getContentPanel(title, contentList, contentState, options = {}) {
-        return React.createElement(ContentList, Object.assign({}, {
+    getAddonPanel(title, addonList, addonState, options = {}) {
+        return React.createElement(AddonList, Object.assign({}, {
             title: title,
-            contentList: contentList,
-            contentState: contentState
+            addonList: addonList,
+            addonState: addonState
         }, options));
     }
 
