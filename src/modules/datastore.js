@@ -17,7 +17,6 @@ export default new class DataStore {
     constructor() {
         this.data = {misc: {}};
         this.pluginData = {};
-        this.initialize();
     }
 
     initialize() {

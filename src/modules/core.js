@@ -1,4 +1,5 @@
-import ComponentPatcher from "./componentpatcher";
+import LocaleManager from "./localemanager";
+
 import Logger from "./logger";
 import {Config} from "data";
 // import EmoteModule from "./emotes";
@@ -12,6 +13,8 @@ import Modals from "../ui/modals";
 import ReactComponents from "./reactcomponents";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
+import ComponentPatcher from "./componentpatcher";
+
 
 const GuildClasses = DiscordModules.GuildClasses;
 
@@ -35,14 +38,16 @@ Core.prototype.init = async function() {
     //     `);
     // }
 
-    // DataStore.initialize();
-    ReactComponents.initialize();
+    DataStore.initialize();
+    await LocaleManager.initialize();
+    
 
     Logger.log("Startup", "Initializing Settings");
     Settings.initialize();
 
     DOMManager.initialize();
     await this.waitForGuilds();
+    ReactComponents.initialize();
     ComponentPatcher.initialize();
     for (const module in Builtins) Builtins[module].initialize();
 

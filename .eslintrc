@@ -16,6 +16,7 @@
         }
     },
     "rules": {
+        "no-undef": "error",
         "semi": "error",
         "space-infix-ops": "error",
         "quotes": ["error", "double", {"allowTemplateLiterals": true}],

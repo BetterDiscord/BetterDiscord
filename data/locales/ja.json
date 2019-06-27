@@ -1,0 +1,207 @@
+{
+    "Panels": {
+        "plugins": "プラグイン",
+        "themes": "テーマ",
+        "customcss": "カスタム CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "BD設定",
+            "general": {
+                "name": "全般",
+                "emotes": {
+                    "name": "BD絵文字システム",
+                    "note": "BetterDiscordの絵文字システムを有効にします。"
+                },
+                "publicServers": {
+                    "name": "公開サーバボタン",
+                    "note": "公開サーバボタンを表示します"
+                },
+                "voiceDisconnect": {
+                    "name": "ボイスチャンネル自動切断",
+                    "note": "Discordを終了する際、自動的にボイスチャンネルから切断します。"
+                },
+                "twentyFourHour": {
+                    "name": "24時間表記",
+                    "note": "時間を24時間表記に変更します。"
+                },
+                "classNormalizer": {
+                    "name": "クラス標準化",
+                    "note": "値が変動しないCSSクラスを追加します。"
+                },
+                "showToasts": {
+                    "name": "トースト表示",
+                    "note": "重要な情報を小さな通知として表示します。"
+                }
+            },
+            "appearance": {
+                "name": "外観",
+                "voiceMode": {
+                    "name": "ボイスモード",
+                    "note": "ボイスチャンネル以外を表示しないようにします"
+                },
+                "minimalMode": {
+                    "name": "コンパクトモード",
+                    "note": "表示をコンパクトにします。"
+                },
+                "hideChannels": {
+                    "name": "チャンネルリストを非表示",
+                    "note": "コンパクトモードのときは、チャンネルリストを表示しません"
+                },
+                "darkMode": {
+                    "name": "ダークモード",
+                    "note": "ダークモードを有効にします"
+                },
+                "coloredText": {
+                    "name": "カラーテキスト",
+                    "note": "テキストカラーをサーバルールの色と同じにします。"
+                }
+            },
+            "addons": {
+                "name": "アドオンマネージャ",
+                "addonErrors": {
+                    "name": "アドオンエラーの表示",
+                    "note": "プラグイン/テーマで発生したエラーを表示"
+                },
+                "autoScroll": {
+                    "name": "設定までスクロール",
+                    "note": "プラグインの設定が収まらない場合、自動でスクロールします"
+                },
+                "autoReload": {
+                    "name": "自動リロード",
+                    "note": "プラグイン・テーマを自動でロード・アンロード・リロードします"
+                }
+            },
+            "customcss": {
+                "name": "カスタム CSS",
+                "customcss": {
+                    "name": "カスタム CSS",
+                    "note": "カスタム CSS タブを有効にします"
+                },
+                "liveUpdate": {
+                    "name": "自動更新",
+                    "note": "コードを自動再読み込みする"
+                },
+                "startDetached": {
+                    "name": "デタッチ",
+                    "note": "カスタムCSSエディターをウィンドウに独立させます"
+                },
+                "nativeOpen": {
+                    "name": "外部エディタを起動",
+                    "note": "カスタムCSSを外部のエディタで起動します"
+                }
+            },
+            "developer": {
+                "name": "開発者設定",
+                "developerMode": {
+                    "name": "開発者モード",
+                    "note": "デバッグモードを有効にします(デバッガ起動はF8)"
+                },
+                "copySelector": {
+                    "name": "セレクターコピー",
+                    "note": "開発者モードが有効時に、コンテキストメニューに\"Copy Selector\"を追加します"
+                }
+            },
+            "window": {
+                "name": "ウィンドウ設定",
+                "transparency": {
+                    "name": "透過を有効",
+                    "note": "Discordのメインウィンドウを透過します(要再起動)"
+                },
+                "frame": {
+                    "name": "ウィンドウフレーム表示",
+                    "note": "OSにあわせたフレームを追加します"
+                }
+            }
+        },
+        "emotes": {
+            "name": "絵文字",
+            "general": {
+                "name": "全般",
+                "download": {
+                    "name": "絵文字をダウンロード",
+                    "note": "絵文字をダウンロードします(1週間ごと)"
+                },
+                "emoteMenu": {
+                    "name": "絵文字メニュー",
+                    "note": "Twitch/お気に入りの絵文字を表示します"
+                },
+                "hideEmojiMenu": {
+                    "name": "絵文字メニューを非表示",
+                    "note": "Discord標準の絵文字メニューを非表示にします"
+                },
+                "autoCaps": {
+                    "name": "絵文字自動補完",
+                    "note": "絵文字を自動で補完します"
+                },
+                "showNames": {
+                    "name": "名前を表示",
+                    "note": "ホバー時に絵文字の名前を表示します"
+                },
+                "modifiers": {
+                    "name": "BetterDiscord絵文字を表示",
+                    "note": "BetterDiscordの絵文字を有効化します(flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "ホバー時にアニメーション",
+                    "note": "ホバー時にアニメーションします(アニメーション絵文字限定)"
+                }
+            },
+            "categories": {
+                "name": "カテゴリ",
+                "twitch": {
+                    "name": "Twitch",
+                    "note": "Twitchに登録されている絵文字を表示します"
+                },
+                "ffz": {
+                    "name": "FrankerFaceZ",
+                    "note": "FFZに登録されている絵文字を表示します"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "BTTVに登録されている絵文字を表示します"
+                }
+            }
+        }
+    },
+    "Emotes": {
+        "downloading": "絵文字をダウンロード中…",
+        "downloaded": "すべての絵文字のダウンロードが完了しました",
+        "clearEmotes": "絵文字データをクリアします",
+        "favoriteAction": "お気に入り!!"
+    },
+    "CustomCSS": {
+        "confirmationText": "Discordを終了すると、保存されていないカスタムCSSは破棄されます",
+        "update": "更新",
+        "save": "保存",
+        "openNative": "外部エディタで開く",
+        "openDetached": "別ウィンドウで開く",
+        "settings": "エディター設定",
+        "editorTitle": "カスタム CSS エディター"
+    },
+    "PublicServers": {
+        "button": "公開サーバ",
+        "join": "参加",
+        "joining": "参加中",
+        "joined": "参加済み",
+        "loading": "読み込み中",
+        "loadMore": "もっと読み込む",
+        "notConnected": "DiscordServers.comに接続できませんでした",
+        "search": "検索",
+        "connect": "接続",
+        "reconnect": "再接続",
+        "categories": "カテゴリ",
+        "connection": "接続済み: {{username}}#{{discriminator}}",
+        "results": "カテゴリ{{category}}  合計{{total}}中 {{start}}-{{end}}を表示中",
+        "query": "クエリー:{{query}}"
+    },
+    "Modals": {
+        "confirmClose": "Discordを終了しますか?",
+        "okay": "はい",
+        "cancel": "いいえ",
+        "name": "名前",
+        "message": "メッセージ",
+        "error": "エラー",
+        "addonErrors": "アドオンエラー"
+    }
+}
