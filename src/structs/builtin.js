@@ -11,8 +11,6 @@ export default class BuiltinModule {
     get id() {return "None";}
 
     async initialize() {
-        console.log("Initialize for " + this.name);
-        console.log(Settings.get(this.collection, this.category, this.id), this.collection, this.category, this.id);
         if (Settings.get(this.collection, this.category, this.id)) await this.enable();
         Events.on("setting-updated", (collection, category, id, enabled) => {
             if (collection != this.collection || category !== this.category || id !== this.id) return;

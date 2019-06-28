@@ -175,8 +175,8 @@ export default {
         donate: "Donate"
     },
     Emotes: {
-        downloading: "Downloading emotes in the background do not reload.",
-        downloaded: "All emotes successfully downloaded.",
+        loading: "Loading emotes in the background do not reload.",
+        loaded: "All emotes successfully loaded.",
         clearEmotes: "Clear Emote Data",
         favoriteAction: "Favorite!"
     },

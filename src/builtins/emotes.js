@@ -197,13 +197,13 @@ export default new class EmoteModule extends Builtin {
         });
     }
 
-    getBlacklist() {
-        return new Promise(resolve => {
-            request.get({url: Utilities.repoUrl(`data/emotes/blacklist.json`), json: true}, (err, resp, data) => {
-                if (err || resp.statusCode != 200) return resolve();
-                resolve(blacklist.push(...data));
-            });
-        });
+    async getBlacklist() {
+        const category = "blacklist";
+        const exists = DataStore.emotesExist(category);
+        const valid = await this.isCacheValid(category);
+        const useCache = (valid) || (!valid && exists && !this.shouldDownload);
+        const list = useCache ? DataStore.getEmoteData(category) : await this.downloadEmotes(category);
+        blacklist.push(...list);
     }
 
     isCacheValid(category) {
@@ -217,9 +217,10 @@ export default new class EmoteModule extends Builtin {
     }
 
     async loadEmoteData() {
+        Toasts.show(Strings.Emotes.loading, {type: "info"});
         this.emotesLoaded = false;
 
-        for (const category in Emotes) {
+        for (const category of this.categories) {
             const exists = DataStore.emotesExist(category);
             const valid = await this.isCacheValid(category);
             const useCache = (valid) || (!valid && exists && !this.shouldDownload);
@@ -231,16 +232,16 @@ export default new class EmoteModule extends Builtin {
                 if (hasData) data = cachedData;
             }
             if (!data) data = await this.downloadEmotes(category);
-            // for (const emote in data) data[emote] = EmoteURLs[category].format({id: data[emote]});
             Object.assign(Emotes[category], data);
+            await new Promise(r => setTimeout(r, 1000));
         }
 
         this.emotesLoaded = true;
         Events.dispatch("emotes-loaded");
+        Toasts.show(Strings.Emotes.loaded, {type: "success"});
     }
 
     downloadEmotes(category) {
-        // Toasts.show(Strings.Emotes.downloading, {type: "info"});
         const url = this.getRemoteFile(category);
         this.log(`Downloading ${category} from ${url}`);
         const options = {url: url, timeout: 8000, json: true};
@@ -262,7 +263,6 @@ export default new class EmoteModule extends Builtin {
                 DataStore.setCacheHash("emotes", category, response.headers.etag);
                 resolve(parsedData);
                 this.log(`Downloaded ${category}`);
-                // Toasts.show(Strings.Emotes.downloaded, {type: "success"});
             });
         });
     }
