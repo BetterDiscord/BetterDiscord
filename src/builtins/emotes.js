@@ -68,7 +68,7 @@ export default new class EmoteModule extends Builtin {
     get favorites() {return this.favoriteEmotes;}
 
     getCategory(category) {return Emotes[category];}
-    getRemoteFile(category) {return new FormattableString(Utilities.repoUrl(`data/emotes/${category.toLowerCase()}.json`));}
+    getRemoteFile(category) {return Utilities.repoUrl(`data/emotes/${category.toLowerCase()}.json`);}
 
     initialize() {
         super.initialize();
@@ -225,24 +225,23 @@ export default new class EmoteModule extends Builtin {
             if (useCache) {
                 this.log(`Loading ${category} emotes from local cache.`);
                 const cachedData = DataStore.getEmoteData(category);
-                const hasData = Object.keys(data).length > 0;
+                const hasData = Object.keys(cachedData).length > 0;
                 if (hasData) data = cachedData;
             }
             if (!data) data = await this.downloadEmotes(category);
+            for (const emote in data) data[emote] = EmoteURLs[category].format({id: data[emote]});
             Object.assign(Emotes[category], data);
         }
-
-        // Toasts.show(Strings.Emotes.downloading, {type: "info"});
-        // Toasts.show(Strings.Emotes.downloaded, {type: "success"});
 
         this.emotesLoaded = true;
         Events.dispatch("emotes-loaded");
     }
 
     downloadEmotes(category) {
+        // Toasts.show(Strings.Emotes.downloading, {type: "info"});
         const url = this.getRemoteFile(category);
         this.log(`Downloading ${category} from ${url}`);
-        const options = {url: url, timeout: 5000, json: true};
+        const options = {url: url, timeout: 8000, json: true};
         return new Promise(resolve => {
             request.get(options, (error, response, parsedData) => {
                 if (error || response.statusCode != 200) {
@@ -255,11 +254,13 @@ export default new class EmoteModule extends Builtin {
                         delete parsedData[emote];
                         continue;
                     }
-                    parsedData[emote] = EmoteURLs[category].format({id: parsedData[emote]});
+                    // parsedData[emote] = EmoteURLs[category].format({id: parsedData[emote]});
                 }
                 DataStore.saveEmoteData(category, parsedData);
+                DataStore.setCacheHash("emotes", category, response.headers.etag);
                 resolve(parsedData);
                 this.log(`Downloaded ${category}`);
+                // Toasts.show(Strings.Emotes.downloaded, {type: "success"});
             });
         });
     }
