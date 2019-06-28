@@ -1,11 +1,28 @@
 import Builtin from "../structs/builtin";
 
-import {Config, EmoteInfo, EmoteConfig} from "data";
+import {Config, EmoteConfig} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings, Strings} from "modules";
 import BDEmote from "../ui/emote";
 import Toasts from "../ui/toasts";
-// import EmoteMenu from "./emotemenu";
+import FormattableString from "../structs/string";
 const request = require("request");
+// const fs = require("fs");
+
+const EmoteURLs = {
+    TwitchGlobal: new FormattableString(`https://static-cdn.jtvnw.net/emoticons/v1/{{id}}/1.0`),
+    TwitchSubscriber: new FormattableString(`https://static-cdn.jtvnw.net/emoticons/v1/{{id}}/1.0`),
+    FrankerFaceZ: new FormattableString(`https://cdn.frankerfacez.com/emoticon/{{id}}/1`),
+    BTTV: new FormattableString(`https://cdn.betterttv.net/emote/{{id}}/1x`),
+    BTTV2: new FormattableString(`https://cdn.betterttv.net/emote/{{id}}/1x`)
+};
+
+const EmoteMetaInfo = {
+    TwitchGlobal: {},
+    TwitchSubscriber: {},
+    BTTV: {},
+    FrankerFaceZ: {},
+    BTTV2: {}
+};
 
 const Emotes = {
     TwitchGlobal: {},
@@ -32,7 +49,8 @@ export default new class EmoteModule extends Builtin {
     get collection() {return "settings";}
     get category() {return "general";}
     get id() {return "emotes";}
-    get categories() { return Object.keys(bdEmoteSettingIDs).filter(k => this.isCategoryEnabled(bdEmoteSettingIDs[k])); }
+    get categories() {return Object.keys(bdEmoteSettingIDs).filter(k => this.isCategoryEnabled(bdEmoteSettingIDs[k]));}
+    get shouldDownload() {return Settings.get("emotes", this.category, "download");}
 
     isCategoryEnabled(id) {return super.get("emotes", "categories", id);}
 
@@ -49,9 +67,8 @@ export default new class EmoteModule extends Builtin {
     get blacklist() {return blacklist;}
     get favorites() {return this.favoriteEmotes;}
 
-    getCategory(category) {
-        return Emotes[category];
-    }
+    getCategory(category) {return Emotes[category];}
+    getRemoteFile(category) {return new FormattableString(Utilities.repoUrl(`data/emotes/${category.toLowerCase()}.json`));}
 
     initialize() {
         super.initialize();
@@ -66,10 +83,10 @@ export default new class EmoteModule extends Builtin {
     }
 
     async enabled() {
-        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: () => { this.clearEmoteData(); this.loadEmoteData(EmoteInfo); }});
+        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: () => {this.clearEmoteData(); this.loadEmoteData();}});
         // Disable emote module for now because it's annoying and slow
         await this.getBlacklist();
-        await this.loadEmoteData(EmoteInfo);
+        await this.loadEmoteData();
 
         while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
         this.patchMessageContent();
@@ -178,103 +195,6 @@ export default new class EmoteModule extends Builtin {
         });
     }
 
-    async loadEmoteData(emoteInfo) {
-        this.emotesLoaded = false;
-        const _fs = require("fs");
-        const emoteFile = "emote_data.json";
-        const file = Config.dataPath + emoteFile;
-        const exists = _fs.existsSync(file);
-
-        if (exists && this.isCacheValid()) {
-            Toasts.show("Loading emotes from cache.", {type: "info"});
-            this.log("Loading emotes from local cache.");
-
-            const data = await new Promise(resolve => {
-                _fs.readFile(file, "utf8", (err, content) => {
-                    this.log("Emotes loaded from cache.");
-                    if (err) content = {};
-                    resolve(content);
-                });
-            });
-
-            const parsed = Utilities.testJSON(data);
-            let isValid = !!parsed;
-            if (isValid) Object.assign(Emotes, parsed);
-
-            for (const e in emoteInfo) {
-                isValid = Object.keys(Emotes[emoteInfo[e].variable]).length > 0;
-            }
-
-            if (isValid) {
-                Toasts.show("Emotes successfully loaded.", {type: "success"});
-                this.emotesLoaded = true;
-                Events.dispatch("emotes-loaded");
-                return;
-            }
-
-            this.log("Cache was corrupt, downloading...");
-            _fs.unlinkSync(file);
-        }
-
-        if (!Settings.get(this.category, "general", "download")) return;
-        Toasts.show(Strings.Emotes.downloading, {type: "info"});
-
-        for (const e in emoteInfo) {
-            await new Promise(r => setTimeout(r, 1000));
-            const data = await this.downloadEmotes(emoteInfo[e]);
-            Emotes[emoteInfo[e].variable] = data;
-        }
-
-        Toasts.show(Strings.Emotes.downloaded, {type: "success"});
-
-        try { _fs.writeFileSync(file, JSON.stringify(Emotes), "utf8"); }
-        catch (err) { this.stacktrace("Could not save emote data.", err); }
-
-        this.emotesLoaded = true;
-        Events.dispatch("emotes-loaded");
-    }
-
-    downloadEmotes(emoteMeta) {
-        const repoFile = Utilities.repoUrl(`data/emotes/${emoteMeta.variable.toLowerCase()}.json`);
-        if (emoteMeta.url && !emoteMeta.backup) emoteMeta.backup = repoFile;
-        if (!emoteMeta.url) emoteMeta.url = repoFile;
-
-        const options = {
-            url: emoteMeta.url,
-            timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000,
-            json: true
-        };
-
-        this.log(`Downloading: ${emoteMeta.variable} (${emoteMeta.url})`);
-
-        return new Promise((resolve, reject) => {
-            request.get(options, (error, response, parsedData) => {
-                if (error) {
-                    this.stacktrace("Could not download " + emoteMeta.variable, error);
-                    if (emoteMeta.backup || emoteMeta.url) {
-                        emoteMeta.url = emoteMeta.backup;
-                        emoteMeta.backup = null;
-                        if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
-                        return resolve(this.downloadEmotes(emoteMeta));
-                    }
-                    return reject({});
-                }
-
-                if (typeof(emoteMeta.parser) === "function") parsedData = emoteMeta.parser(parsedData);
-
-                for (const emote in parsedData) {
-                    if (emote.length < 4 || blacklist.includes(emote)) {
-                        delete parsedData[emote];
-                        continue;
-                    }
-                    parsedData[emote] = emoteMeta.getEmoteURL(parsedData[emote]);
-                }
-                resolve(parsedData);
-                this.log("Downloaded: " + emoteMeta.variable);
-            });
-        });
-    }
-
     getBlacklist() {
         return new Promise(resolve => {
             request.get({url: Utilities.repoUrl(`data/emotes/blacklist.json`), json: true}, (err, resp, data) => {
@@ -284,16 +204,64 @@ export default new class EmoteModule extends Builtin {
         });
     }
 
-    isCacheValid() {
-        const cacheLength = DataStore.getBDData("emoteCacheDays") || DataStore.setBDData("emoteCacheDays", 7) || 7;
-        const cacheDate = new Date(DataStore.getBDData("emoteCacheDate") || null);
-        const currentDate = new Date();
-        const daysBetween = Math.round(Math.abs((currentDate.getTime() - cacheDate.getTime()) / (24 * 60 * 60 * 1000)));
-        if (daysBetween > cacheLength) {
-            DataStore.setBDData("emoteCacheDate", currentDate.toJSON());
-            return false;
+    isCacheValid(category) {
+        return new Promise(resolve => {
+            const etag = DataStore.getCacheHash("emotes", category);
+            if (!etag) return resolve(false);
+            request.head({url: this.getRemoteFile(category), headers: {"If-None-Match": etag}}, (err, resp) => {
+                resolve(resp.statusCode == 304);
+            });
+        });
+    }
+
+    async loadEmoteData() {
+        this.emotesLoaded = false;
+
+        for (const category in Emotes) {
+            const exists = DataStore.emotesExist(category);
+            const valid = await this.isCacheValid(category);
+            const useCache = (valid) || (!valid && exists && !this.shouldDownload);
+            let data = null;
+            if (useCache) {
+                this.log(`Loading ${category} emotes from local cache.`);
+                const cachedData = DataStore.getEmoteData(category);
+                const hasData = Object.keys(data).length > 0;
+                if (hasData) data = cachedData;
+            }
+            if (!data) data = await this.downloadEmotes(category);
+            Object.assign(Emotes[category], data);
         }
-        return true;
+
+        // Toasts.show(Strings.Emotes.downloading, {type: "info"});
+        // Toasts.show(Strings.Emotes.downloaded, {type: "success"});
+
+        this.emotesLoaded = true;
+        Events.dispatch("emotes-loaded");
+    }
+
+    downloadEmotes(category) {
+        const url = this.getRemoteFile(category);
+        this.log(`Downloading ${category} from ${url}`);
+        const options = {url: url, timeout: 5000, json: true};
+        return new Promise(resolve => {
+            request.get(options, (error, response, parsedData) => {
+                if (error || response.statusCode != 200) {
+                    this.stacktrace(`Could not download ${category} emotes.`, error);
+                    return resolve({});
+                }
+
+                for (const emote in parsedData) {
+                    if (emote.length < 4 || blacklist.includes(emote) || !parsedData[emote]) {
+                        delete parsedData[emote];
+                        continue;
+                    }
+                    parsedData[emote] = EmoteURLs[category].format({id: parsedData[emote]});
+                }
+                DataStore.saveEmoteData(category, parsedData);
+                resolve(parsedData);
+                this.log(`Downloaded ${category}`);
+            });
+        });
     }
 
     clearEmoteData() {
@@ -306,3 +274,23 @@ export default new class EmoteModule extends Builtin {
         for (const category in Emotes) Object.assign(Emotes, {[category]: {}});
     }
 };
+
+
+// (async () => {
+//     const emoteData = await new Promise(resolve => {
+//         const req = require("request");
+//         req.get({url: "https://twitchemotes.com/api_cache/v3/global.json", json: true}, (err, resp, parsedData) => {
+//             for (const emote in parsedData) {
+//                 if (emote.length < 4 || window.bemotes.includes(emote)) {
+//                     delete parsedData[emote];
+//                     continue;
+//                 }
+//                 parsedData[emote] = parsedData[emote].id;
+//             }
+//             resolve(parsedData);
+//         });
+//     });
+//     const fs = require("fs");
+//     fs.writeFileSync("Z:\\Programming\\BetterDiscordStuff\\BetterDiscordApp\\data\\emotes\\global.json", JSON.stringify(emoteData));
+//     return emoteData;
+// })();

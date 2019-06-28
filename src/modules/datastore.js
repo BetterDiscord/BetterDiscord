@@ -17,28 +17,30 @@ export default new class DataStore {
     constructor() {
         this.data = {misc: {}};
         this.pluginData = {};
-        this.localeHashes = {};
+        this.cacheData = {};
     }
 
     initialize() {
         if (!fs.existsSync(this.baseFolder)) fs.mkdirSync(this.baseFolder);
         if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
         if (!fs.existsSync(this.localeFolder)) fs.mkdirSync(this.localeFolder);
-        if (!fs.existsSync(this.localeCache)) fs.writeFileSync(this.localeCache, JSON.stringify({}));
+        if (!fs.existsSync(this.emoteFolder)) fs.mkdirSync(this.emoteFolder);
+        if (!fs.existsSync(this.cacheFile)) fs.writeFileSync(this.cacheFile, JSON.stringify({}));
         if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data.misc, null, 4));
         if (!fs.existsSync(this.customCSS)) fs.writeFileSync(this.customCSS, "");
         const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
         for (const file of dataFiles) {
             this.data[file.split(".")[0]] = __non_webpack_require__(path.resolve(this.dataFolder, file));
         }
-        this.localeHashes = JSON.parse(fs.readFileSync(this.localeCache).toString());
+        this.cacheData = Utilities.testJSON(fs.readFileSync(this.cacheFile).toString()) || {};
     }
 
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
     get localeFolder() {return this._localeFolder || (this._localeFolder = path.resolve(this.baseFolder, `locales`));}
-    get localeCache() {return this._localeCache || (this._localeCache = path.resolve(this.localeFolder, `.cache`));}
+    get emoteFolder() {return this._emoteFolder || (this._emoteFolder = path.resolve(this.baseFolder, `emotes`));}
+    get cacheFile() {return this._cacheFile || (this._cacheFile = path.resolve(this.baseFolder, `.cache`));}
     get BDFile() {return this._BDFile || (this._BDFile = path.resolve(Config.dataPath, "data", `${releaseChannel}.json`));}
     getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
 
@@ -67,13 +69,30 @@ export default new class DataStore {
         fs.writeFileSync(path.resolve(this.localeFolder, `${locale}.json`), JSON.stringify(strings, null, 4));
     }
 
-    getLocaleHash(locale) {
-        return this.localeHashes[locale] || "";
+    getCacheHash(category, key) {
+        if (!this.cacheData[category]) return "";
+        if (!fs.existsSync(path.resolve(this.baseFolder, category, `${key}.json`))) return "";
+        return this.cacheData[category][key] || "";
     }
 
-    saveLocaleHash(locale, hash) {
-        this.localeHashes[locale] = hash;
-        fs.writeFileSync(this.localeCache, JSON.stringify(this.localeHashes, null, 4));
+    setCacheHash(category, key, hash) {
+        if (!this.cacheData[category]) this.cacheData[category] = {};
+        this.cacheData[category][key] = hash;
+        fs.writeFileSync(this.cacheFile, JSON.stringify(this.cacheData, null, 4));
+    }
+
+    emotesExist(category) {
+        return fs.existsSync(path.resolve(this.emoteFolder, `${category}.json`));
+    }
+
+    getEmoteData(category) {
+        const file = path.resolve(this.emoteFolder, `${category}.json`);
+        if (!fs.existsSync(file)) return null;
+        return Utilities.testJSON(fs.readFileSync(file).toString());
+    }
+
+    saveEmoteData(category, data) {
+        fs.writeFileSync(path.resolve(this.emoteFolder, `${category}.json`), JSON.stringify(data));
     }
 
     getData(key) {

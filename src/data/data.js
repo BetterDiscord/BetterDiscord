@@ -1,6 +1,4 @@
-import Config from "./config";
-import EmoteInfo from "./emotes/info";
-import EmoteConfig from "./emotes/config";
-import SettingsConfig from "./settings/config";
-
-export {Config, EmoteInfo, EmoteConfig, SettingsConfig};
+export {default as Config} from "./config";
+export {default as EmoteConfig} from "./settings/emoteconfig";
+export {default as SettingsConfig} from "./settings/config";
+export {default as Strings} from "./strings";

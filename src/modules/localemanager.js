@@ -39,7 +39,7 @@ export default new class LocaleManager {
 	}
 
 	async getLocaleStrings(locale) {
-		const hash = DataStore.getLocaleHash(locale);
+		const hash = DataStore.getCacheHash("locales", locale);
 		if (!hash) return await this.downloadLocale(locale);
 		const invalid = await this.downloadLocale(locale, hash);
 		if (!invalid) return DataStore.getLocale(locale);
@@ -54,12 +54,10 @@ export default new class LocaleManager {
 				json: true
 			};
 			if (hash) options.headers = {"If-None-Match": hash};
-			console.log(options.headers);
 			request.get(options, (err, resp, newStrings) => {
 				if (err || resp.statusCode !== 200) return resolve(null);
-				console.log(resp);
 				DataStore.saveLocale(locale, newStrings);
-				DataStore.saveLocaleHash(locale, resp.headers.etag);
+				DataStore.setCacheHash("locales", locale, resp.headers.etag);
 				resolve(newStrings);
 			});
 		});
