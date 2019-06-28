@@ -26,7 +26,6 @@ export default new class DataStore {
         if (!fs.existsSync(this.localeFolder)) fs.mkdirSync(this.localeFolder);
         if (!fs.existsSync(this.emoteFolder)) fs.mkdirSync(this.emoteFolder);
         if (!fs.existsSync(this.cacheFile)) fs.writeFileSync(this.cacheFile, JSON.stringify({}));
-        if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data.misc, null, 4));
         if (!fs.existsSync(this.customCSS)) fs.writeFileSync(this.customCSS, "");
         const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
         for (const file of dataFiles) {
@@ -41,7 +40,6 @@ export default new class DataStore {
     get localeFolder() {return this._localeFolder || (this._localeFolder = path.resolve(this.baseFolder, `locales`));}
     get emoteFolder() {return this._emoteFolder || (this._emoteFolder = path.resolve(this.baseFolder, `emotes`));}
     get cacheFile() {return this._cacheFile || (this._cacheFile = path.resolve(this.baseFolder, `.cache`));}
-    get BDFile() {return this._BDFile || (this._BDFile = path.resolve(Config.dataPath, "data", `${releaseChannel}.json`));}
     getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
 
 
@@ -78,6 +76,12 @@ export default new class DataStore {
     setCacheHash(category, key, hash) {
         if (!this.cacheData[category]) this.cacheData[category] = {};
         this.cacheData[category][key] = hash;
+        fs.writeFileSync(this.cacheFile, JSON.stringify(this.cacheData));
+    }
+
+    invalidateCache(category, key) {
+        if (!this.cacheData[category]) return;
+        delete this.cacheData[category][key];
         fs.writeFileSync(this.cacheFile, JSON.stringify(this.cacheData));
     }
 

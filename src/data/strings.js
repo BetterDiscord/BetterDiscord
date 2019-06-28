@@ -120,7 +120,7 @@ export default {
                 name: "General",
                 download: {
                     name: "Download Emotes",
-                    note: "Download emotes once a week to stay up to date"
+                    note: "Download emotes whenever they are out of date"
                 },
                 emoteMenu: {
                     name: "Emote Menu",
@@ -151,7 +151,11 @@ export default {
                 name: "Categories",
                 twitch: {
                     name: "Twitch",
-                    note: "Show Twitch global & subscriber emotes"
+                    note: "Show Twitch global emotes"
+                },
+                twitchsubscriber: {
+                    name: "Twitch",
+                    note: "Show Twitch subscriber emotes"
                 },
                 ffz: {
                     name: "FrankerFaceZ",
