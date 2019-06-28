@@ -11,13 +11,11 @@ export default new class SettingsManager {
         this.state = {};
         this.collections = [];
         this.panels = [];
-        this.registerCollection("settings", "Settings", SettingsConfig);
         this.updateStrings = this.updateStrings.bind(this);
     }
 
     initialize() {
-        this.loadSettings();
-        this.updateStrings();
+        this.registerCollection("settings", "Settings", SettingsConfig);
         Events.on("strings-updated", this.updateStrings);
         // this.patchSections();
     }
@@ -31,7 +29,8 @@ export default new class SettingsManager {
             settings: settings,
             button: button
         });
-        this.setup();
+        this.setupCollection(id);
+        this.loadCollection(id);
         this.updateStrings();
     }
 
@@ -64,69 +63,64 @@ export default new class SettingsManager {
         return {collection, category, setting};
     }
 
-    setup() {
-        for (let c = 0; c < this.collections.length; c++) {
-            const collection = this.collections[c];
-            const categories = this.collections[c].settings;
-            if (!this.state[collection.id]) this.state[collection.id] = {};
-            for (let cc = 0; cc < categories.length; cc++) {
-                const category = categories[cc];
-                if (category.type != "category") {if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = category.value;}
-                else {
-                    if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = {};
-                    for (let s = 0; s < category.settings.length; s++) {
-                        const setting = category.settings[s];
-                        if (!this.state[collection.id][category.id].hasOwnProperty(setting.id)) this.state[collection.id][category.id][setting.id] = setting.value;
-                        if (setting.enableWith) {
-                            const path = this.getPath(setting.enableWith.split("."), collection.id, category.id);
-                            if (setting.hasOwnProperty("disabled")) continue;
-                            Object.defineProperty(setting, "disabled", {
-                                get: () => {
-                                    return !this.state[path.collection][path.category][path.setting];
-                                }
-                            });
+    setupCollection(id) {
+        const collection = this.collections.find(c => c.id == id);
+        if (!collection) return;
+        const categories = collection.settings;
+        if (!this.state[collection.id]) this.state[collection.id] = {};
+        for (let cc = 0; cc < categories.length; cc++) {
+            const category = categories[cc];
+            if (category.type != "category") {if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = category.value;}
+            else {
+                if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = {};
+                for (let s = 0; s < category.settings.length; s++) {
+                    const setting = category.settings[s];
+                    if (!this.state[collection.id][category.id].hasOwnProperty(setting.id)) this.state[collection.id][category.id][setting.id] = setting.value;
+                    if (setting.hasOwnProperty("disabled")) continue;
+                    if (!setting.enableWith && !setting.disableWith) continue;
+                    const pathString = setting.enableWith || setting.disableWith;
+                    const path = this.getPath(pathString.split("."), collection.id, category.id);
+                    Object.defineProperty(setting, "disabled", {
+                        get: () => {
+                            const other = this.state[path.collection][path.category][path.setting];
+                            return setting.enableWith ? !other : other;
                         }
-
-                        if (setting.disableWith) {
-                            const path = this.getPath(setting.disableWith.split("."), collection.id, category.id);
-                            if (setting.hasOwnProperty("disabled")) continue;
-                            Object.defineProperty(setting, "disabled", {
-                                get: () => {
-                                    return this.state[path.collection][path.category][path.setting];
-                                }
-                            });
-                        }
-                    }
+                    });
                 }
             }
         }
     }
 
     saveSettings() {
-        DataStore.setData("settings", this.state);
+        for (const collection in this.state) this.saveCollection(collection);
     }
 
     loadSettings() {
-        const previousState = DataStore.getData("settings");
-        if (!previousState) return this.saveSettings();
-        for (const collection in this.state) {
-            if (!previousState[collection]) Object.assign(previousState, {[collection]: this.state[collection]});
-            for (const category in this.state[collection]) {
-                if (!previousState[collection][category]) Object.assign(previousState[collection], {[category]: this.state[collection][category]});
-                for (const setting in this.state[collection][category]) {
-                    if (previousState[collection][category][setting] == undefined) continue;
-                    this.state[collection][category][setting] = previousState[collection][category][setting];
-                }
+        for (const collection in this.state) this.loadCollection(collection);
+    }
+
+    saveCollection(collection) {
+        DataStore.setData(collection, this.state[collection]);
+    }
+
+    loadCollection(collection) {
+        const previousState = DataStore.getData(collection);
+        if (!previousState) return this.saveCollection(collection);
+        for (const category in this.state[collection]) {
+            if (!previousState[category]) Object.assign(previousState, {[category]: this.state[collection][category]});
+            for (const setting in this.state[collection][category]) {
+                if (previousState[category][setting] == undefined) continue;
+                this.state[collection][category][setting] = previousState[category][setting];
             }
         }
 
-        this.saveSettings(); // in case new things were added
+        this.saveCollection(collection); // in case new things were added
     }
 
     onSettingChange(collection, category, id, value) {
         this.state[collection][category][id] = value;
         Events.dispatch("setting-updated", collection, category, id, value);
-        this.saveSettings();
+        this.saveCollection(collection);
     }
 
     getSetting(collection, category, id) {

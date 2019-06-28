@@ -1,47 +1,28 @@
 import Builtin from "../structs/builtin";
 
-import {Config, EmoteConfig} from "data";
+import {EmoteConfig} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings, Strings} from "modules";
 import BDEmote from "../ui/emote";
 import Toasts from "../ui/toasts";
 import FormattableString from "../structs/string";
 const request = require("request");
-// const fs = require("fs");
 
 const EmoteURLs = {
     TwitchGlobal: new FormattableString(`https://static-cdn.jtvnw.net/emoticons/v1/{{id}}/1.0`),
     TwitchSubscriber: new FormattableString(`https://static-cdn.jtvnw.net/emoticons/v1/{{id}}/1.0`),
     FrankerFaceZ: new FormattableString(`https://cdn.frankerfacez.com/emoticon/{{id}}/1`),
     BTTV: new FormattableString(`https://cdn.betterttv.net/emote/{{id}}/1x`),
-    BTTV2: new FormattableString(`https://cdn.betterttv.net/emote/{{id}}/1x`)
-};
-
-const EmoteMetaInfo = {
-    TwitchGlobal: {},
-    TwitchSubscriber: {},
-    BTTV: {},
-    FrankerFaceZ: {},
-    BTTV2: {}
 };
 
 const Emotes = {
     TwitchGlobal: {},
     TwitchSubscriber: {},
     BTTV: {},
-    FrankerFaceZ: {},
-    BTTV2: {}
-};
-
-const bdEmoteSettingIDs = {
-    TwitchGlobal: "twitch",
-    TwitchSubscriber: "twitch",
-    BTTV: "bttv",
-    FrankerFaceZ: "ffz",
-    BTTV2: "bttv"
+    FrankerFaceZ: {}
 };
 
 const blacklist = [];
-const overrides = ["twitch", "bttv", "ffz"];
+const overrides = ["twitch", "subscriber", "bttv", "ffz"];
 const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
 
 export default new class EmoteModule extends Builtin {
@@ -49,10 +30,10 @@ export default new class EmoteModule extends Builtin {
     get collection() {return "settings";}
     get category() {return "general";}
     get id() {return "emotes";}
-    get categories() {return Object.keys(bdEmoteSettingIDs).filter(k => this.isCategoryEnabled(bdEmoteSettingIDs[k]));}
+    get categories() {return Object.keys(Emotes).filter(k => this.isCategoryEnabled(k));}
     get shouldDownload() {return Settings.get("emotes", this.category, "download");}
 
-    isCategoryEnabled(id) {return super.get("emotes", "categories", id);}
+    isCategoryEnabled(id) {return super.get("emotes", "categories", id.toLowerCase());}
 
     get(id) {return super.get("emotes", "general", id);}
 
@@ -63,7 +44,6 @@ export default new class EmoteModule extends Builtin {
     get TwitchSubscriber() {return Emotes.TwitchSubscriber;}
     get BTTV() {return Emotes.BTTV;}
     get FrankerFaceZ() {return Emotes.FrankerFaceZ;}
-    get BTTV2() {return Emotes.BTTV2;}
     get blacklist() {return blacklist;}
     get favorites() {return this.favoriteEmotes;}
     getUrl(category, name) {return EmoteURLs[category].format({id: Emotes[category][name]});}
@@ -74,19 +54,16 @@ export default new class EmoteModule extends Builtin {
     initialize() {
         super.initialize();
         window.emoteModule = this;
-        this.favoriteEmotes = {};
-        const fe = DataStore.getBDData("bdfavemotes");
-        if (fe !== "" && fe !== null) this.favoriteEmotes = JSON.parse(window.atob(fe));
-        this.saveFavorites();
+        const storedFavorites = DataStore.getBDData("favoriteEmotes");
+        this.favoriteEmotes = storedFavorites || {};
         this.addFavorite = this.addFavorite.bind(this);
         this.removeFavorite = this.removeFavorite.bind(this);
-        // EmoteConfig;
-        // emoteCollection.button = {title: "Clear Emote Cache", onClick: () => { this.clearEmoteData(); this.loadEmoteData(EmoteInfo); }};
+        this.onCategoryToggle = this.onCategoryToggle.bind(this);
+        this.resetEmotes = this.resetEmotes.bind(this);
     }
 
     async enabled() {
-        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: () => {this.clearEmoteData(); this.loadEmoteData();}});
-        // Disable emote module for now because it's annoying and slow
+        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: this.resetEmotes});
         await this.getBlacklist();
         await this.loadEmoteData();
 
@@ -94,9 +71,11 @@ export default new class EmoteModule extends Builtin {
         this.patchMessageContent();
         Events.on("emotes-favorite-added", this.addFavorite);
         Events.on("emotes-favorite-removed", this.removeFavorite);
+        Events.on("setting-updated", this.onCategoryToggle);
     }
 
     disabled() {
+        Events.off("setting-updated", this.onCategoryToggle);
         Events.off("emotes-favorite-added", this.addFavorite);
         Events.off("emotes-favorite-removed", this.removeFavorite);
         Settings.removeCollection("emotes");
@@ -104,6 +83,12 @@ export default new class EmoteModule extends Builtin {
         if (!this.cancelEmoteRender) return;
         this.cancelEmoteRender();
         delete this.cancelEmoteRender;
+    }
+
+    onCategoryToggle(collection, cat, category, enabled) {
+        if (collection != "emotes" || cat != "categories") return;
+        if (enabled) return this.loadEmoteData(category);
+        return this.unloadEmoteData(category);
     }
 
     addFavorite(name, url) {
@@ -122,7 +107,7 @@ export default new class EmoteModule extends Builtin {
     }
 
     saveFavorites() {
-        DataStore.setBDData("bdfavemotes", window.btoa(JSON.stringify(this.favoriteEmotes)));
+        DataStore.setBDData("favoriteEmotes", this.favoriteEmotes);
     }
 
     emptyEmotes() {
@@ -160,15 +145,17 @@ export default new class EmoteModule extends Builtin {
                                 if (Emotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
                                 else if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
                             }
+                            else if (emoteOverride === "subscriber") {
+                                if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
+                            }
                             else if (emoteOverride === "bttv") {
                                 if (Emotes.BTTV[emoteName]) current = "BTTV";
-                                else if (Emotes.BTTV2[emoteName]) current = "BTTV2";
                             }
                             else if (emoteOverride === "ffz") {
                                 if (Emotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
                             }
 
-                            if (!Emotes[current][emoteName] || !Settings.get("emotes", "categories", bdEmoteSettingIDs[current])) continue;
+                            if (!Emotes[current][emoteName]) continue;
                             const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                             if (!results) continue;
                             const pre = nodes[n].substring(0, results.index + results[1].length);
@@ -198,7 +185,7 @@ export default new class EmoteModule extends Builtin {
     }
 
     async getBlacklist() {
-        const category = "blacklist";
+        const category = "Blacklist";
         const exists = DataStore.emotesExist(category);
         const valid = await this.isCacheValid(category);
         const useCache = (valid) || (!valid && exists && !this.shouldDownload);
@@ -216,11 +203,13 @@ export default new class EmoteModule extends Builtin {
         });
     }
 
-    async loadEmoteData() {
+    async loadEmoteData(categories) {
+        if (!categories) categories = this.categories;
+        if (!Array.isArray(categories)) categories = [categories];
         Toasts.show(Strings.Emotes.loading, {type: "info"});
         this.emotesLoaded = false;
 
-        for (const category of this.categories) {
+        for (const category of categories) {
             const exists = DataStore.emotesExist(category);
             const valid = await this.isCacheValid(category);
             const useCache = (valid) || (!valid && exists && !this.shouldDownload);
@@ -239,6 +228,15 @@ export default new class EmoteModule extends Builtin {
         this.emotesLoaded = true;
         Events.dispatch("emotes-loaded");
         Toasts.show(Strings.Emotes.loaded, {type: "success"});
+    }
+
+    unloadEmoteData(categories) {
+        if (!categories) categories = this.categories;
+        if (!Array.isArray(categories)) categories = [categories];
+        for (const category of categories) {
+            delete Emotes[category];
+            Emotes[category] = {};
+        }
     }
 
     downloadEmotes(category) {
@@ -267,14 +265,11 @@ export default new class EmoteModule extends Builtin {
         });
     }
 
-    clearEmoteData() {
-        const _fs = require("fs");
-        const emoteFile = "emote_data.json";
-        const file = Config.dataPath + emoteFile;
-        const exists = _fs.existsSync(file);
-        if (exists) _fs.unlinkSync(file);
-        DataStore.setBDData("emoteCacheDate", (new Date()).toJSON());
-        for (const category in Emotes) Object.assign(Emotes, {[category]: {}});
+    resetEmotes() {
+        const categories = Object.keys(Emotes);
+        this.unloadEmoteData(categories);
+        for (const cat of categories) DataStore.invalidateCache("emotes", cat);
+        this.loadEmoteData();
     }
 };
 

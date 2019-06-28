@@ -21,7 +21,8 @@ export default [
         collapsible: true,
         settings: [
             {type: "switch", id: "twitch", value: true},
-            {type: "switch", id: "ffz", value: true},
+            {type: "switch", id: "twitchsubscriber", value: false},
+            {type: "switch", id: "frankerfacez", value: true},
             {type: "switch", id: "bttv", value: true}
         ]
     }
