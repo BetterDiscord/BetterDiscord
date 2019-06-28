@@ -66,12 +66,14 @@ export default new class EmoteModule extends Builtin {
     get BTTV2() {return Emotes.BTTV2;}
     get blacklist() {return blacklist;}
     get favorites() {return this.favoriteEmotes;}
+    getUrl(category, name) {return EmoteURLs[category].format({id: Emotes[category][name]});}
 
     getCategory(category) {return Emotes[category];}
     getRemoteFile(category) {return Utilities.repoUrl(`data/emotes/${category.toLowerCase()}.json`);}
 
     initialize() {
         super.initialize();
+        window.emoteModule = this;
         this.favoriteEmotes = {};
         const fe = DataStore.getBDData("bdfavemotes");
         if (fe !== "" && fe !== null) this.favoriteEmotes = JSON.parse(window.atob(fe));
@@ -149,7 +151,7 @@ export default new class EmoteModule extends Builtin {
                             let emoteOverride = emoteModifier.slice(0);
 
                             if (emoteName.length < 4 || blacklist.includes(emoteName)) continue;
-                            if (!modifiers.includes(emoteModifier) || !Settings.get(this.category, "general", "modifiers")) emoteModifier = "";
+                            if (!modifiers.includes(emoteModifier) || !Settings.get("emotes", "general", "modifiers")) emoteModifier = "";
                             if (!overrides.includes(emoteOverride)) emoteOverride = "";
                             else emoteModifier = emoteOverride;
 
@@ -166,13 +168,13 @@ export default new class EmoteModule extends Builtin {
                                 if (Emotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
                             }
 
-                            if (!Emotes[current][emoteName] || !Settings.get(this.category, "categories", bdEmoteSettingIDs[current])) continue;
+                            if (!Emotes[current][emoteName] || !Settings.get("emotes", "categories", bdEmoteSettingIDs[current])) continue;
                             const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                             if (!results) continue;
                             const pre = nodes[n].substring(0, results.index + results[1].length);
                             const post = nodes[n].substring(results.index + results[0].length - results[2].length);
                             nodes[n] = pre;
-                            const emoteComponent = DiscordModules.React.createElement(BDEmote, {name: emoteName, url: Emotes[current][emoteName], modifier: emoteModifier, isFavorite: this.isFavorite(emoteName)});
+                            const emoteComponent = DiscordModules.React.createElement(BDEmote, {name: emoteName, url: EmoteURLs[current].format({id: Emotes[current][emoteName]}), modifier: emoteModifier, isFavorite: this.isFavorite(emoteName)});
                             nodes.splice(n + 1, 0, post);
                             nodes.splice(n + 1, 0, emoteComponent);
                         }
@@ -229,7 +231,7 @@ export default new class EmoteModule extends Builtin {
                 if (hasData) data = cachedData;
             }
             if (!data) data = await this.downloadEmotes(category);
-            for (const emote in data) data[emote] = EmoteURLs[category].format({id: data[emote]});
+            // for (const emote in data) data[emote] = EmoteURLs[category].format({id: data[emote]});
             Object.assign(Emotes[category], data);
         }
 

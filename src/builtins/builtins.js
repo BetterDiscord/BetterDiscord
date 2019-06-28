@@ -1,3 +1,7 @@
+// Export these two first because they add settings/panels
+export {default as EmoteModule} from "./emotes";
+export {default as CustomCSS} from "./customcss";
+
 export {default as VoiceMode} from "./voicemode";
 export {default as ClassNormalizer} from "./classnormalizer";
 export {default as DeveloperMode} from "./developermode";
@@ -9,6 +13,4 @@ export {default as ColoredText} from "./coloredtext";
 export {default as VoiceDisconnect} from "./voicedisconnect";
 export {default as EmoteMenu} from "./emotemenu";
 export {default as EmoteAutocaps} from "./emoteautocaps";
-export {default as EmoteModule} from "./emotes";
 export {default as WindowPrefs} from "./windowprefs";
-export {default as CustomCSS} from "./customcss";
