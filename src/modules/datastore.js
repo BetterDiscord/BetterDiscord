@@ -78,7 +78,7 @@ export default new class DataStore {
     setCacheHash(category, key, hash) {
         if (!this.cacheData[category]) this.cacheData[category] = {};
         this.cacheData[category][key] = hash;
-        fs.writeFileSync(this.cacheFile, JSON.stringify(this.cacheData, null, 4));
+        fs.writeFileSync(this.cacheFile, JSON.stringify(this.cacheData));
     }
 
     emotesExist(category) {
