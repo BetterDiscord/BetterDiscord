@@ -75,6 +75,7 @@ export default new class EmoteMenu extends Builtin {
         this.hideEmojiCancel = this.registerSetting(this.hideEmojisID, this.enableHideEmojis, this.disableHideEmojis);
         if (this.hideEmojis) this.enableHideEmojis();
         if (EmoteModule.emotesLoaded) this.updateTwitchEmotes();
+        this.updateFavorites();
         Events.on("emotes-loaded", this.updateTwitchEmotes);
     }
 
@@ -176,7 +177,7 @@ export default new class EmoteMenu extends Builtin {
         while (this.teContainerInner.firstChild) this.teContainerInner.firstChild.remove();
         for (const emote in EmoteModule.getCategory("TwitchGlobal")) {
             if (!EmoteModule.getCategory("TwitchGlobal").hasOwnProperty(emote)) continue;
-            const url = EmoteModule.getCategory("TwitchGlobal")[emote];
+            const url = EmoteModule.getUrl("TwitchGlobal", emote);
             const emoteElement = makeEmote(emote, url, {onClick: this.insertEmote.bind(this, emote)});
             this.teContainerInner.append(emoteElement);
         }
