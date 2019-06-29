@@ -84,10 +84,10 @@ export default class AddonCard extends React.Component {
         const props = {id: `${name}-settings`, className: "addon-settings", ref: this.panelRef};
         if (typeof(settingsPanel) == "string") props.dangerouslySetInnerHTML = this.settingsPanel;
 
-        return <li className="settings-open bd-switch-item">
+        return <div className="bd-addon-card settings-open bd-switch-item">
                     <div className="bd-close" onClick={this.closeSettings}><CloseButton /></div>
                     <div {...props}>{this.settingsPanel instanceof React.Component ? this.settingsPanel : null}</div>
-                </li>;
+                </div>;
     }
 
     buildLink(which) {
@@ -115,7 +115,7 @@ export default class AddonCard extends React.Component {
         const description = this.getString(addon.description);
         const version = this.getString(addon.version);
 
-        return <li dataName={name} dataVersion={version} className="settings-closed bd-switch-item">
+        return <div dataName={name} dataVersion={version} className="bd-addon-card settings-closed bd-switch-item">
                     <div className="bd-header">
                             <span className="bd-header-title">{this.buildTitle(name, version, author)}</span>
                             <div className="bd-controls">
@@ -128,6 +128,6 @@ export default class AddonCard extends React.Component {
                     </div>
                     <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{description}</div></div>
                     {this.footer}
-                </li>;
+                </div>;
     }
 }

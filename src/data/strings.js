@@ -149,15 +149,15 @@ export default {
             },
             categories: {
                 name: "Categories",
-                twitch: {
-                    name: "Twitch",
+                twitchglobal: {
+                    name: "Twitch Globals",
                     note: "Show Twitch global emotes"
                 },
                 twitchsubscriber: {
-                    name: "Twitch",
+                    name: "Twitch Subscribers",
                     note: "Show Twitch subscriber emotes"
                 },
-                ffz: {
+                frankerfacez: {
                     name: "FrankerFaceZ",
                     note: "Show emotes from FFZ"
                 },

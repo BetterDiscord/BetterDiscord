@@ -2,6 +2,7 @@ import {React, WebpackModules, Strings} from "modules";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
 import Connection from "../../structs/psconnection";
+import Search from "../settings/components/search";
 
 const SettingsView = WebpackModules.getByDisplayName("SettingsView");
 
@@ -87,7 +88,8 @@ export default class PublicServers extends React.Component {
     }
 
     get searchBox() {
-        return React.createElement("input", {onKeyDown: this.searchKeyDown, type: "text", className: "bd-search", placeholder: `${Strings.PublicServers.search}...`, maxLength: "50"});
+        return <Search onKeyDown={this.searchKeyDown} placeholder={`${Strings.PublicServers.search}...`} />;
+        // return React.createElement("input", {onKeyDown: this.searchKeyDown, type: "text", className: "bd-search", placeholder: `${Strings.PublicServers.search}...`, maxLength: "50"});
     }
 
     get title() {

@@ -206,6 +206,8 @@ export default new class EmoteModule extends Builtin {
     async loadEmoteData(categories) {
         if (!categories) categories = this.categories;
         if (!Array.isArray(categories)) categories = [categories];
+        const all = Object.keys(Emotes);
+        categories = categories.map(k => all.find(c => c.toLowerCase() == k.toLowerCase()));
         Toasts.show(Strings.Emotes.loading, {type: "info"});
         this.emotesLoaded = false;
 
@@ -233,6 +235,8 @@ export default new class EmoteModule extends Builtin {
     unloadEmoteData(categories) {
         if (!categories) categories = this.categories;
         if (!Array.isArray(categories)) categories = [categories];
+        const all = Object.keys(Emotes);
+        categories = categories.map(k => all.find(c => c.toLowerCase() == k.toLowerCase()));
         for (const category of categories) {
             delete Emotes[category];
             Emotes[category] = {};
@@ -242,7 +246,7 @@ export default new class EmoteModule extends Builtin {
     downloadEmotes(category) {
         const url = this.getRemoteFile(category);
         this.log(`Downloading ${category} from ${url}`);
-        const options = {url: url, timeout: 8000, json: true};
+        const options = {url: url, timeout: 10000, json: true};
         return new Promise(resolve => {
             request.get(options, (error, response, parsedData) => {
                 if (error || response.statusCode != 200) {
