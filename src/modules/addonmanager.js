@@ -148,9 +148,13 @@ export default class AddonManager {
             if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
             let fileContent = fs.readFileSync(filename, "utf8");
             fileContent = stripBOM(fileContent);
+            const stats = fs.statSync(filename);
             const meta = self.extractMeta(fileContent);
             meta.id = meta.name;
             meta.filename = path.basename(filename);
+            meta.added = stats.atimeMs;
+            meta.modified = stats.mtimeMs;
+            meta.size = stats.size;
             fileContent = self.getFileModification(module, fileContent, meta);
             module._compile(fileContent, filename);
         };

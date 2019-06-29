@@ -20,7 +20,7 @@ export default [
         name: "Categories",
         collapsible: true,
         settings: [
-            {type: "switch", id: "twitch", value: true},
+            {type: "switch", id: "twitchglobal", value: true},
             {type: "switch", id: "twitchsubscriber", value: false},
             {type: "switch", id: "frankerfacez", value: true},
             {type: "switch", id: "bttv", value: true}
