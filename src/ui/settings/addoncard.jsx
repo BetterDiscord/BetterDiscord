@@ -1,13 +1,13 @@
 import {React, Logger, Strings} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
+import Switch from "./components/switch";
 
 export default class AddonCard extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            checked: this.props.enabled,
             settingsOpen: false
         };
 
@@ -50,8 +50,8 @@ export default class AddonCard extends React.Component {
     getString(value) {return typeof value == "string" ? value : value.toString();}
 
     onChange() {
-        this.setState({checked: !this.state.checked});
         this.props.onChange && this.props.onChange(this.props.addon.id);
+        this.props.enabled = !this.props.enabled;
     }
 
     showSettings() {
@@ -102,7 +102,7 @@ export default class AddonCard extends React.Component {
         const linkComponents = links.map(this.buildLink.bind(this)).filter(c => c);
         return <div className="bd-footer">
                     <span className="bd-links">{linkComponents.map((comp, i) => i < linkComponents.length - 1 ? [comp, " | "] : [comp]).flat()}</span>
-                    {this.props.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-addon-settings" disabled={!this.state.checked}>{Strings.Addons.addonSettings}</button>}
+                    {this.props.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-addon-settings" disabled={!this.props.enabled}>{Strings.Addons.addonSettings}</button>}
                 </div>;
     }
 
@@ -115,15 +115,12 @@ export default class AddonCard extends React.Component {
         const description = this.getString(addon.description);
         const version = this.getString(addon.version);
 
-        return <div dataName={name} dataVersion={version} className="bd-addon-card settings-closed bd-switch-item">
-                    <div className="bd-header">
-                            <span className="bd-header-title">{this.buildTitle(name, version, author)}</span>
+        return <div id={`${addon.id}-card`} className="bd-addon-card settings-closed">
+                    <div className="bd-addon-header">
+                            <span className="bd-title">{this.buildTitle(name, version, author)}</span>
                             <div className="bd-controls">
                                 {this.props.showReloadIcon && <ReloadIcon className="bd-reload bd-reload-card" onClick={this.reload} />}
-                                <label className="bd-switch-wrapper">
-                                    <input className="bd-switch-checkbox" checked={this.state.checked} onChange={this.onChange} type="checkbox" />
-                                    <div className={this.state.checked ? "bd-switch checked" : "bd-switch"} />
-                                </label>
+                                <Switch checked={this.props.enabled} onChange={this.onChange} />
                             </div>
                     </div>
                     <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{description}</div></div>

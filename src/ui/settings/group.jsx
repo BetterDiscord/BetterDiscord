@@ -1,7 +1,9 @@
 import {React} from "modules";
 import Title from "./title";
 import Divider from "./divider";
-import Switch from "./switch";
+import Switch from "./components/switch";
+import Dropdown from "./components/dropdown";
+import Item from "./components/item";
 
 const baseClassName = "bd-settings-group";
 
@@ -25,13 +27,18 @@ export default class Group extends React.Component {
         };
 
         this.onChange = this.onChange.bind(this);
+        this.toggleCollapse = this.toggleCollapse.bind(this);
     }
 
     toggleCollapse() {
         const container = this.container.current;
         const timeout = this.state.collapsed ? 300 : 1;
         container.style.setProperty("height", container.scrollHeight + "px");
-        this.setState({collapsed: !this.state.collapsed}, () => setTimeout(() => container.style.setProperty("height", ""), timeout));
+        container.classList.add("animating");
+        this.setState({collapsed: !this.state.collapsed}, () => setTimeout(() => {
+            container.style.setProperty("height", "");
+            container.classList.remove("animating");
+        }, timeout));
     }
 
     onChange(id, value) {
@@ -43,15 +50,19 @@ export default class Group extends React.Component {
 
     render() {
         const {settings} = this.props;
-        const collapseClass = this.props.collapsible ? `collapsible ${this.state.collapsed && "collapsed"}` : "";
+        const collapseClass = this.props.collapsible ? `collapsible ${this.state.collapsed ? "collapsed" : "expanded"}` : "";
         const groupClass = `${baseClassName} ${collapseClass}`;
 
         return <div className={groupClass}>
-                    <Title text={this.props.name} collapsible={this.props.collapsible} onClick={() => this.toggleCollapse()} button={this.props.button} isGroup={true} />
+                    <Title text={this.props.name} collapsible={this.props.collapsible} onClick={this.toggleCollapse} button={this.props.button} isGroup={true} />
                     <div className="bd-settings-container" ref={this.container}>
-                        {settings.filter(s => !s.hidden).map((setting) =>
-                            <Switch disabled={setting.disabled} id={setting.id} key={setting.id} name={setting.name} note={setting.note} checked={setting.value} onChange={this.onChange} />
-                        )}
+                        {settings.filter(s => !s.hidden).map((setting) => {
+                            let component = null;
+                            if (setting.type == "dropdown") component = <Dropdown disabled={setting.disabled} id={setting.id} options={setting.options} value={setting.value} onChange={this.onChange.bind(this, setting.id)} />;
+                            if (setting.type == "switch") component = <Switch disabled={setting.disabled} id={setting.id} checked={setting.value} onChange={this.onChange.bind(this, setting.id)} />;
+                            if (!component) return null;
+                            return <Item id={setting.id} key={setting.id} name={setting.name} note={setting.note}>{component}</Item>;
+                        })}
                     </div>
                     {this.props.showDivider && <Divider />}
                 </div>;

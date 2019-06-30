@@ -28,7 +28,7 @@ export default class Modals {
                             </div>
                         </div>
                         <div class="footer ${modalClasses.footer}">
-                            <button type="button">${Strings.Modals.okay}</button>
+                            <button type="button" class="bd-button">${Strings.Modals.okay}</button>
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@ export default class Modals {
                                     </div>
                                 </div>
                                 <div class="footer ${modalClasses.footer}">
-                                    <button type="button">${Strings.Modals.okay}</button>
+                                    <button type="button" class="bd-button">${Strings.Modals.okay}</button>
                                 </div>
                             </div>
                         </div>

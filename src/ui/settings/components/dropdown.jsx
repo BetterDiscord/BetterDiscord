@@ -5,6 +5,7 @@ export default class Select extends React.Component {
     constructor(props) {
         super(props);
         this.state = {open: false, value: this.props.value || this.props.options[0].value};
+        this.dropdown = React.createRef();
         this.onChange = this.onChange.bind(this);
         this.showMenu = this.showMenu.bind(this);
         this.hideMenu = this.hideMenu.bind(this);
@@ -42,15 +43,21 @@ export default class Select extends React.Component {
     render() {
         const style = this.props.style == "transparent" ? " bd-select-transparent" : "";
         const isOpen = this.state.open ? " menu-open" : "";
-        return <div className="bd-select-wrap">
-                    <label className="bd-label">{this.props.label}</label>
-                    <div className={`bd-select${style}${isOpen}`} onClick={this.showMenu}>
-                        <div className="bd-select-controls">
-                            <div className="bd-select-value">{this.selected.label}</div>
-                            <Arrow className="bd-select-arrow" />
-                        </div>
-                        {this.state.open && this.options}
-                    </div>
+        return  <div className={`bd-select${style}${isOpen}`} onClick={this.showMenu} ref={this.dropdown}>
+                    <div className="bd-select-value">{this.selected.label}</div>
+                    <Arrow className="bd-select-arrow" />
+                    {this.state.open && this.options}
                 </div>;
     }
 }
+
+// return <div className="bd-select-wrap">
+// <label className="bd-label">{this.props.label}</label>
+// <div className={`bd-select${style}${isOpen}`} onClick={this.showMenu} ref={this.dropdown}>
+//     <div className="bd-select-controls">
+//         <div className="bd-select-value">{this.selected.label}</div>
+//         <Arrow className="bd-select-arrow" />
+//     </div>
+// </div>
+// {this.state.open && this.options}
+// </div>;
