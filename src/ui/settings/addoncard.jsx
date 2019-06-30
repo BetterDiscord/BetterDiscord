@@ -1,6 +1,8 @@
 import {React, Logger, Strings} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
+import EditIcon from "../icons/edit";
+import DeleteIcon from "../icons/delete";
 import Switch from "./components/switch";
 
 export default class AddonCard extends React.Component {
@@ -119,7 +121,9 @@ export default class AddonCard extends React.Component {
                     <div className="bd-addon-header">
                             <span className="bd-title">{this.buildTitle(name, version, author)}</span>
                             <div className="bd-controls">
-                                {this.props.showReloadIcon && <ReloadIcon className="bd-reload bd-reload-card" onClick={this.reload} />}
+                                {this.props.editAddon && <div className="bd-addon-button" onClick={this.props.editAddon}><EditIcon /></div>}
+                                {this.props.deleteAddon && <div className="bd-addon-button" onClick={this.props.deleteAddon}><DeleteIcon /></div>}
+                                {this.props.showReloadIcon && <div className="bd-addon-button" onClick={this.reload}><ReloadIcon className="bd-reload bd-reload-card" /></div>}
                                 <Switch checked={this.props.enabled} onChange={this.onChange} />
                             </div>
                     </div>

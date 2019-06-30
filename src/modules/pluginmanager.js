@@ -19,6 +19,7 @@ export default new class PluginManager extends AddonManager {
     get extension() {return ".plugin.js";}
     get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
     get prefix() {return "plugin";}
+    get language() {return "javascript";}
 
     constructor() {
         super();
@@ -37,7 +38,11 @@ export default new class PluginManager extends AddonManager {
             folder: this.addonFolder,
             onChange: this.togglePlugin.bind(this),
             reload: this.reloadPlugin.bind(this),
-            refreshList: this.updatePluginList.bind(this)
+            refreshList: this.updatePluginList.bind(this),
+            saveAddon: this.saveAddon.bind(this),
+            editAddon: this.editAddon.bind(this),
+            deleteAddon: this.deleteAddon.bind(this),
+            prefix: this.prefix
         })});
         return errors;
     }

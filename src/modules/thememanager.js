@@ -16,6 +16,7 @@ export default new class ThemeManager extends AddonManager {
     get extension() {return ".theme.css";}
     get addonFolder() {return path.resolve(Config.dataPath, "themes");}
     get prefix() {return "theme";}
+    get language() {return "css";}
 
     initialize() {
         const errors = super.initialize();
@@ -23,7 +24,11 @@ export default new class ThemeManager extends AddonManager {
             folder: this.addonFolder,
             onChange: this.toggleTheme.bind(this),
             reload: this.reloadTheme.bind(this),
-            refreshList: this.updateThemeList.bind(this)
+            refreshList: this.updateThemeList.bind(this),
+            saveAddon: this.saveAddon.bind(this),
+            editAddon: this.editAddon.bind(this),
+            deleteAddon: this.deleteAddon.bind(this),
+            prefix: this.prefix
         })});
         return errors;
     }

@@ -6,13 +6,20 @@ import DataStore from "./datastore";
 import AddonError from "../structs/addonerror";
 import MetaError from "../structs/metaerror";
 import Toasts from "../ui/toasts";
+import DiscordModules from "./discordmodules";
+import Strings from "./strings";
+
+import AddonEditor from "../ui/misc/addoneditor";
+import FloatingWindowContainer from "../ui/floating/container";
+
+const React = DiscordModules.React;
 
 const path = require("path");
 const fs = require("fs");
 const Module = require("module").Module;
 Module.globalPaths.push(path.resolve(require("electron").remote.app.getAppPath(), "node_modules"));
 
-const splitRegex = /[^\S\r\n]*?\n[^\S\r\n]*?\*[^\S\r\n]?/;
+const splitRegex = /[^\S\r\n]*?\r?\n[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
 
 const stripBOM = function(fileContent) {
@@ -28,6 +35,7 @@ export default class AddonManager {
     get moduleExtension() {return "";}
     get extension() {return "";}
     get addonFolder() {return "";}
+    get language() {return "";}
     get prefix() {return "addon";}
     get collection() {return "settings";}
     get category() {return "addons";}
@@ -257,5 +265,61 @@ export default class AddonManager {
         this.saveState();
         if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
         return errors;
+    }
+
+    deleteAddon(idOrFileOrAddon) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
+    }
+
+    saveAddon(idOrFileOrAddon, content) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        return fs.writeFileSync(path.resolve(this.addonFolder, addon.filename), content);
+    }
+
+    editAddon(idOrFileOrAddon, system) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        const fullPath = path.resolve(this.addonFolder, addon.filename);
+        if (typeof(system) == "undefined") system = Settings.get("settings", "addons", "editAction") == "system";
+        if (system) return require("electron").shell.openItem(`${fullPath}`);
+        return this.openDetached(addon);
+    }
+
+    openDetached(addon) {
+        const fullPath = path.resolve(this.addonFolder, addon.filename);
+        const content = fs.readFileSync(fullPath).toString();
+
+        const editorRef = React.createRef();
+        const editor = React.createElement(AddonEditor, {
+            id: "bd-floating-editor-" + addon.name,
+            ref: editorRef,
+            content: content,
+            save: this.saveAddon.bind(this, addon),
+            openNative: this.editAddon.bind(this, addon, true),
+            language: this.language
+        });
+
+        FloatingWindowContainer.open({
+            onClose: () => {
+                this.isDetached = false;
+            },
+            onResize: () => {
+                if (!editorRef || !editorRef.current || !editorRef.current.resize) return;
+                editorRef.current.resize();
+            },
+            title: addon.name,
+            id: content.id,
+            className: "floating-addon-window",
+            height: 470,
+            width: 410,
+            center: true,
+            resizable: true,
+            children: editor,
+            confirmClose: () => {
+                if (!editorRef || !editorRef.current) return false;
+                return editorRef.current.hasUnsavedChanges;
+            },
+            confirmationText: Strings.Addons.confirmationText.format({name: addon.name})
+        });
     }
 }

@@ -71,6 +71,14 @@ export default {
                     name: "Automatic Loading",
                     note: "Automatically loads, reloads, and unloads plugins and themes"
                 },
+                editAction: {
+                    name: "Edit Action",
+                    note: "Where plugins & themes appear when editing",
+                    options: {
+                        detached: "Detached Window",
+                        system: "System Editor"
+                    }
+                }
             },
             customcss: {
                 name: "Custom CSS",
@@ -191,7 +199,11 @@ export default {
         version: "Version",
         added: "Date Added",
         modified: "Date Modified",
-        search: "Search {{type}}"
+        search: "Search {{type}}",
+        editAddon: "Edit",
+        deleteAddon: "Delete",
+        confirmDelete: "Are you sure you want to delete {{name}}?",
+        confirmationText: "You have unsaved changes to {{name}}. Closing this window will lose all those changes.",
     },
     Emotes: {
         loading: "Loading emotes in the background do not reload.",
@@ -225,9 +237,10 @@ export default {
         query: "for {{query}}"
     },
     Modals: {
-        confirmClose: "Are You Sure?",
+        confirmAction: "Are You Sure?",
         okay: "Okay",
         cancel: "Cancel",
+        close: "Close",
         name: "Name",
         message: "Message",
         error: "Error",

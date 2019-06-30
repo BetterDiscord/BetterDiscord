@@ -232,13 +232,26 @@
   padding: 2px 0;
 }
 
+.floating-window-buttons {
+  display: flex;
+}
+
 .floating-window-buttons .button {
   cursor: pointer;
   padding: 0 2px;
 }
 
-.floating-window-buttons .close-button svg {
+.floating-window-buttons .button svg {
+  fill: #dcddde;
   margin-top: 1.5px;
+}
+
+.floating-window-buttons .button:hover svg {
+  fill: white;
+}
+
+.floating-window-buttons .button:hover {
+  background-color: #36393F;
 }
 
 .floating-window-buttons .close-button:hover {
@@ -535,6 +548,19 @@ background-color: #000;
 .bd-controls + .bd-addon-list {
   margin-top: 10px;
 }
+
+
+.bd-addon-button {
+  cursor: pointer;
+}
+
+.bd-addon-button + .bd-addon-button {
+  margin-left: 5px;
+}
+
+
+
+
 
 
 /* BEGIN EMOTE STYLING */
@@ -1151,6 +1177,13 @@ color: #f6f6f7;
   min-height: 280px;
   max-height: 900px;
   max-width: 750px;
+}
+
+.floating-addon-window {
+  min-width: 535px;
+  min-height: 605px;
+  max-height: 90%;
+  max-width: 90%;
 }
 
 /* Ace Editor Settings */
