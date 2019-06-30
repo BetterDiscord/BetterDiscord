@@ -2,6 +2,7 @@ import {React, Strings} from "modules";
 
 import Screen from "../../structs/screen";
 import CloseButton from "../icons/close";
+import MaximizeIcon from "../icons/fullscreen";
 import Modals from "../modals";
 
 export default class FloatingWindow extends React.Component {
@@ -18,6 +19,7 @@ export default class FloatingWindow extends React.Component {
         this.window = React.createRef();
 
         this.close = this.close.bind(this);
+        this.maximize = this.maximize.bind(this);
         this.onDrag = this.onDrag.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
@@ -55,7 +57,6 @@ export default class FloatingWindow extends React.Component {
 
     onDrag(e) {
         const div = this.window.current;
-        div.style.position = "fixed";
         div.style.top = (e.clientY - this.offY) + "px";
         div.style.left = (e.clientX - this.offX) + "px";
     }
@@ -75,6 +76,9 @@ export default class FloatingWindow extends React.Component {
                     <div className="floating-window-titlebar" ref={this.titlebar}>
                         <span className="title">{this.props.title}</span>
                         <div className="floating-window-buttons">
+                            <div className="button maximize-button" onClick={this.maximize}>
+                                <MaximizeIcon size="18px" />
+                            </div>
                             <div className="button close-button" onClick={this.close}>
                                 <CloseButton />
                             </div>
@@ -97,11 +101,19 @@ export default class FloatingWindow extends React.Component {
         if (this.props.close && shouldClose) this.props.close();
     }
 
+    maximize() {
+        this.window.current.style.width = "100%";
+        this.window.current.style.height = "100%";
+        this.window.current.style.top = "20px";
+        this.window.current.style.left = "0px";
+        if (this.props.onResize) this.props.onResize();
+    }
+
     confirmClose() {
         return new Promise(resolve => {
-            Modals.showConfirmationModal(Strings.Modals.confirmClose, this.props.confirmationText, {
+            Modals.showConfirmationModal(Strings.Modals.confirmAction, this.props.confirmationText, {
                 danger: true,
-                confirmText: "Close",
+                confirmText: Strings.Modals.close,
                 onConfirm: () => {resolve(true);},
                 onCancel: () => {resolve(false);}
             });

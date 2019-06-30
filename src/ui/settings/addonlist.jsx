@@ -1,5 +1,6 @@
-import {React, Settings, Strings} from "modules";
+import {React, Settings, Strings, Events} from "modules";
 
+import Modals from "../modals";
 import SettingsTitle from "./title";
 import ReloadIcon from "../icons/reload";
 import AddonCard from "./addoncard";
@@ -14,6 +15,21 @@ export default class AddonList extends React.Component {
         this.sort = this.sort.bind(this);
         this.reverse = this.reverse.bind(this);
         this.search = this.search.bind(this);
+        this.update = this.update.bind(this);
+    }
+    
+    componentDidMount() {
+        Events.on(`${this.props.prefix}-loaded`, this.update);
+        Events.on(`${this.props.prefix}-unloaded`, this.update);
+    }
+
+    componentWillUnmount() {
+        Events.off(`${this.props.prefix}-loaded`, this.update);
+        Events.off(`${this.props.prefix}-unloaded`, this.update);
+    }
+
+    update() {
+        this.forceUpdate();
     }
 
     reload() {
@@ -89,9 +105,31 @@ export default class AddonList extends React.Component {
                 }
                 const hasSettings = addon.type && typeof(addon.plugin.getSettingsPanel) === "function";
                 const getSettings = hasSettings && addon.plugin.getSettingsPanel.bind(addon.plugin);
-                return <AddonCard showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />;
+                return <AddonCard editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />;
             })}
             </div>
         ];
+    }
+
+    editAddon(id) {
+        if (this.props.editAddon) this.props.editAddon(id);
+    }
+
+    async deleteAddon(id) {
+        const addon = this.props.addonList.find(a => a.id == id);
+        const shouldDelete = await this.confirmDelete(addon);
+        if (!shouldDelete) return;
+        if (this.props.deleteAddon) this.props.deleteAddon(addon);
+    }
+
+    confirmDelete(addon) {
+        return new Promise(resolve => {
+            Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
+                danger: true,
+                confirmText: Strings.Addons.deleteAddon,
+                onConfirm: () => {resolve(true);},
+                onCancel: () => {resolve(false);}
+            });
+        });
     }
 }
