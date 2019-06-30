@@ -101,6 +101,7 @@
   background-color: #3E82E5;
   color: white;
   border-radius: 3px;
+  padding: 2px 6px;
 }
 
 .bd-button:hover {
@@ -305,18 +306,18 @@
   display: flex;
 }
 
-.bd-select-wrap + .bd-select-wrap {
+.bd-select-wrapper + .bd-select-wrapper {
   margin-left: 10px;
 }
 
-.bd-select-wrap {
+.bd-select-wrapper {
   color: #f6f6f7;
   font-size: 13px;
   display: flex;
   align-items: center;
 }
 
-.bd-select-wrap label {
+.bd-select-wrapper label {
   opacity: .3;
   margin-right: 5px;
 }
@@ -324,26 +325,29 @@
 .bd-select {
   position: relative;
   cursor: pointer;
-}
-
-.bd-select-controls {
-  background-color: rgba(0, 0, 0, 0.1);
+  color: #f6f6f7;
+  font-size: 13px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 3px;
-  padding: 5px;
+  padding: 5px 5px 5px 0;
 }
 
-.bd-select-transparent .bd-select-controls {
+.bd-select.bd-select-transparent {
   background: none;
   border: none;
   padding: 0;
 }
 
-.bd-select-arrow, .bd-select-controls svg {
+.bd-select-value {
+  padding-left: 12px;
+}
+
+.bd-select-arrow {
   margin-left: 10px;
-  fill: #FFFFFF;
 }
 
 .bd-select .bd-select-options {
@@ -351,19 +355,21 @@
   background: #2F3136;
   border-radius: 0 0 3px 3px;
   max-height: 300px;
-  min-width: 100%;
+  min-width: calc(100% + 2px);
   overflow-y: auto;
   box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 5px 0px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-top: 0;
   margin-top: -1px;
-  z-index: 1;
+  margin-left: -1px;
+  z-index: 2;
+  top: 100%;
 }
 
 .bd-select-transparent .bd-select-options {
   border: 1px solid rgba(0, 0, 0, 0.3);
   margin-top: 3px;
-  margin-left: -1px;
+  border-radius: 3px;
 }
 
 .bd-select .bd-select-option {
@@ -404,8 +410,131 @@
 }
 
 
+.bd-setting-item .bd-select {
+  min-width: 200px;
+}
 
 
+
+
+
+.bd-settings-group.expanded .bd-settings-container:not(.animating) {
+  overflow: visible;
+}
+
+
+.bd-switch {
+background-color: #72767d;
+  border-radius: 14px;
+  width: 42px;
+  height: 24px;
+  opacity: 1;
+  overflow: hidden;
+  user-select: none;
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  transition: background .15s ease-in-out,box-shadow .15s ease-in-out,border .15s ease-in-out,opacity .15s ease-in-out;
+margin-left: 10px;
+box-shadow: inset 0 1px 1px rgba(0,0,0,.15);
+}
+
+.bd-switch::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 0;
+  opacity: 0;
+background-color: #000;
+}
+
+.bd-switch::after {
+  content: "";
+  display: block;
+  position: absolute;
+  background-color: #fff;
+  z-index: 1;
+  width: 18px;
+  margin: 3px;
+  border-radius: 9px;
+  height: 18px;
+  left: 0;
+  transition: transform .15s ease-in-out,width .1s ease-in-out,left .1s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0,0,0,.3);
+}
+
+.bd-switch .bd-checkbox {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.bd-switch-checked {
+  background-color: #3E82E5;
+}
+
+.bd-switch-checked::after {
+  transform: translate3d(18px,0,0);
+}
+
+.bd-switch-disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+
+
+
+
+.bd-setting-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.bd-setting-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bd-setting-header label {
+  font-weight: 500;
+  cursor: pointer;
+  overflow: hidden;
+  word-wrap: break-word;
+  font-size: 16px;
+  line-height: 24px;
+  color: #f6f6f7;
+}
+
+.bd-setting-note {
+  color: #72767d;
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.bd-setting-divider {
+  width: 100%;
+  height: 1px;
+  margin-top: 20px;
+  background-color: rgba(114,118,125,.3);
+}
+
+.bd-controls + .bd-addon-list {
+  margin-top: 10px;
+}
 
 
 /* BEGIN EMOTE STYLING */
@@ -1103,11 +1232,7 @@ body .ace_closeButton:active {
   font-size: 11px;
 }
 
-.bd-pfbtn,
 .bd-button-title {
-  background: #7289da;
-  color: #FFF;
-  border-radius: 5px;
   margin-left: 10px;
 }
 
@@ -1356,7 +1481,7 @@ body .ace_closeButton:active {
   overflow-y: auto;
 }
 
-.bd-addon-list .bd-header {
+.bd-addon-list .bd-addon-header {
   font-size: 12px;
   font-weight: 700;
   display: flex;
@@ -1366,11 +1491,11 @@ body .ace_closeButton:active {
   border-bottom: 1px solid transparent;
   overflow: hidden;
 }
-.theme-dark .bd-addon-list .bd-header {
+.theme-dark .bd-addon-list .bd-addon-header {
   color: #f6f6f7;
   border-bottom-color: rgba(114,118,125,.3);
 }
-.theme-light .bd-addon-list .bd-header {
+.theme-light .bd-addon-list .bd-addon-header {
   color: #4f545c;
   border-bottom-color: rgba(185,187,190,.3);
 }
@@ -1413,12 +1538,7 @@ body .ace_closeButton:active {
 }
 
 .bd-addon-list .bd-footer button {
-  background: #7289da;
-  color: #FFF;
-  border-radius: 5px;
-  display: block;
-  margin-left: auto;
-  padding: 2px 16px;
+  padding: 3px 16px;
   transition: opacity 250ms ease;
 }
 
@@ -1427,7 +1547,7 @@ body .ace_closeButton:active {
 }
 
 .bd-addon-list .bd-footer a {
-  color: #7289da;
+  color: #3E82E5;
 }
 
 .bd-addon-list .bd-footer a:hover {
@@ -1561,12 +1681,9 @@ body .ace_closeButton:active {
 }
 
 .bd-modal-wrapper .footer button {
-  background-color: #7289da;
-  color: #fff;
   min-height: 32px;
   min-width: 60px;
   align-items: center;
-  border-radius: 3px;
   display: flex;
   font-size: 14px;
   font-weight: 500;
@@ -1575,15 +1692,6 @@ body .ace_closeButton:active {
   padding: 2px 16px;
   user-select: none;
 }
-
-.bd-modal-wrapper .footer button:hover {
-  background-color: #677bc4;
-}
-
-.bd-modal-wrapper .footer button:active {
-  background-color: #5f6fb9;
-}
-
 .bd-modal-wrapper .tab-bar-container {
   align-items: center;
   border-bottom: 0;
@@ -1664,6 +1772,11 @@ body .ace_closeButton:active {
   border-bottom: 1px solid rgba(255,255,255, 0.25);
   padding: 15px 0;
   align-items: center;
+}
+
+.bd-modal-wrapper .error-link {
+  color: #3E82E5;
+  font-weight: 500;
 }
 
 .bd-modal-wrapper .bd-content-modal .scroller {

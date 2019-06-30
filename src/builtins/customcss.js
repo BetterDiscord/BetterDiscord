@@ -15,8 +15,8 @@ export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
     get category() {return "customcss";}
     get id() {return "customcss";}
-    get startDetached() {return Settings.get(this.collection, this.category, "startDetached");}
-    get nativeOpen() {return Settings.get(this.collection, this.category, "nativeOpen");}
+    get startDetached() {return Settings.get(this.collection, this.category, "openAction") == "detached";}
+    get nativeOpen() {return Settings.get(this.collection, this.category, "openAction") == "system";}
 
     constructor() {
         super();

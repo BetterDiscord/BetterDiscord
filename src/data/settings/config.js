@@ -42,8 +42,7 @@ export default [
         settings: [
             {type: "switch", id: "customcss", value: true},
             {type: "switch", id: "liveUpdate", value: false},
-            {type: "switch", id: "startDetached", value: false, disableWith: "nativeOpen"},
-            {type: "switch", id: "nativeOpen", value: false, disableWith: "startDetached"}
+            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "system"}]}
         ]
     },
     {

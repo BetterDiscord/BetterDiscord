@@ -3,21 +3,8 @@ import {React, Settings, Strings} from "modules";
 import SettingsTitle from "./title";
 import ReloadIcon from "../icons/reload";
 import AddonCard from "./addoncard";
-import Select from "./components/select";
+import Dropdown from "./components/dropdown";
 import Search from "./components/search";
-
-const sortOptions = [
-    {label: "Name", value: "name"},
-    {label: "Author", value: "author"},
-    {label: "Version", value: "version"},
-    {label: "Date Added", value: "added"},
-    {label: "Date Modified", value: "modified"}
-];
-
-const directionOptions = [
-    {label: "Ascending", value: "true"},
-    {label: "Descending", value: "false"}
-];
 
 export default class AddonList extends React.Component {
 
@@ -35,7 +22,7 @@ export default class AddonList extends React.Component {
     }
 
     reverse(value) {
-        this.setState({ascending: value == "true"});
+        this.setState({ascending: value});
     }
 
     sort(value) {
@@ -44,6 +31,23 @@ export default class AddonList extends React.Component {
 
     search(event) {
         this.setState({query: event.target.value.toLocaleLowerCase()});
+    }
+
+    get sortOptions() {
+        return [
+            {label: Strings.Addons.name, value: "name"},
+            {label: Strings.Addons.author, value: "author"},
+            {label: Strings.Addons.version, value: "version"},
+            {label: Strings.Addons.added, value: "added"},
+            {label: Strings.Addons.modified, value: "modified"}
+        ];
+    }
+
+    get directions() {
+        return [
+            {label: Strings.Sorting.ascending, value: true},
+            {label: Strings.Sorting.descending, value: false}
+        ];
     }
 
     render() {
@@ -62,10 +66,17 @@ export default class AddonList extends React.Component {
         return [
             <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon className="bd-reload" onClick={this.reload.bind(this)} />} />,
             <div className="bd-controls bd-addon-controls">
-                <Search onChange={this.search} placeholder={`Search...`} />
+                <Search onChange={this.search} placeholder={`${Strings.Addons.search.format({type: this.props.title})}...`} />
                 <div className="bd-addon-dropdowns">
-                    <Select options={sortOptions} label="Sort By:" onChange={this.sort} style="transparent" />
-                    <Select options={directionOptions} label="Order:" onChange={this.reverse} style="transparent" />
+                    <div className="bd-select-wrapper">
+                        <label className="bd-label">{Strings.Sorting.sortBy}:</label>
+                        <Dropdown options={this.sortOptions} onChange={this.sort} style="transparent" />
+                    </div>
+                    <div className="bd-select-wrapper">
+                        <label className="bd-label">{Strings.Sorting.order}:</label>
+                        <Dropdown options={this.directions} onChange={this.reverse} style="transparent" />
+                    </div>
+                    
                 </div>
             </div>,
             <div key="addonList" className={"bd-addon-list"}>

@@ -89,6 +89,15 @@ export default {
                 nativeOpen: {
                     name: "Open in Native Editor",
                     note: "Clicking the Custom CSS tab opens your custom css in your native editor"
+                },
+                openAction: {
+                    name: "Editor Location",
+                    note: "Where Custom CSS should open by default",
+                    options: {
+                        settings: "Settings Menu",
+                        detached: "Detached Window",
+                        system: "System Editor"
+                    }
                 }
             },
             developer: {
@@ -176,7 +185,13 @@ export default {
         website: "Website",
         source: "Source",
         server: "Support Server",
-        donate: "Donate"
+        donate: "Donate",
+        name: "Name",
+        author: "Author",
+        version: "Version",
+        added: "Date Added",
+        modified: "Date Modified",
+        search: "Search {{type}}"
     },
     Emotes: {
         loading: "Loading emotes in the background do not reload.",
@@ -217,5 +232,11 @@ export default {
         message: "Message",
         error: "Error",
         addonErrors: "Addon Errors"
+    },
+    Sorting: {
+        sortBy: "Sort By",
+        order: "Order",
+        ascending: "Ascending",
+        descending: "Descending"
     }
 };

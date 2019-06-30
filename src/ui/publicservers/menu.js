@@ -89,7 +89,6 @@ export default class PublicServers extends React.Component {
 
     get searchBox() {
         return <Search onKeyDown={this.searchKeyDown} placeholder={`${Strings.PublicServers.search}...`} />;
-        // return React.createElement("input", {onKeyDown: this.searchKeyDown, type: "text", className: "bd-search", placeholder: `${Strings.PublicServers.search}...`, maxLength: "50"});
     }
 
     get title() {

@@ -103,18 +103,23 @@ export default new class SettingsManager {
         DataStore.setData(collection, this.state[collection]);
     }
 
-    loadCollection(collection) {
-        const previousState = DataStore.getData(collection);
-        if (!previousState) return this.saveCollection(collection);
-        for (const category in this.state[collection]) {
-            if (!previousState[category]) Object.assign(previousState, {[category]: this.state[collection][category]});
-            for (const setting in this.state[collection][category]) {
+    loadCollection(id) {
+        const previousState = DataStore.getData(id);
+        if (!previousState) return this.saveCollection(id);
+        for (const category in this.state[id]) {
+            if (!previousState[category]) Object.assign(previousState, {[category]: this.state[id][category]});
+            for (const setting in this.state[id][category]) {
                 if (previousState[category][setting] == undefined) continue;
-                this.state[collection][category][setting] = previousState[category][setting];
+                const settingObj = this.getSetting(id, category, setting);
+                if (settingObj.type == "switch") this.state[id][category][setting] = previousState[category][setting];
+                if (settingObj.type == "dropdown") {
+                    const exists = settingObj.options.some(o => o.value == previousState[category][setting]);
+                    if (exists) this.state[id][category][setting] = previousState[category][setting];
+                }
             }
         }
 
-        this.saveCollection(collection); // in case new things were added
+        this.saveCollection(id); // in case new things were added
     }
 
     onSettingChange(collection, category, id, value) {
@@ -125,7 +130,7 @@ export default new class SettingsManager {
 
     getSetting(collection, category, id) {
         if (arguments.length == 2) return this.collections[0].find(c => c.id == arguments[0]).settings.find(s => s.id == arguments[1]);
-        return this.collections.find(c => c.id == collection).find(c => c.id == category).settings.find(s => s.id == id);
+        return this.collections.find(c => c.id == collection).settings.find(c => c.id == category).settings.find(s => s.id == id);
     }
 
     get(collection, category, id) {
@@ -176,6 +181,10 @@ export default new class SettingsManager {
                     if (!SetStr) continue;
                     setting.name = SetStr.name || setting.name;
                     setting.note = SetStr.note || setting.note;
+                    if (!setting.options) continue;
+                    for (const opt of setting.options) {
+                        opt.label = SetStr.options[opt.id] || SetStr.options[opt.value] || opt.label;
+                    }
                 }
             }
         }
