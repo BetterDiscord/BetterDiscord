@@ -1,9 +1,11 @@
-import {React, Logger, Strings} from "modules";
+import {React, Logger, Strings, WebpackModules} from "modules";
 import CloseButton from "../icons/close";
 import ReloadIcon from "../icons/reload";
 import EditIcon from "../icons/edit";
 import DeleteIcon from "../icons/delete";
 import Switch from "./components/switch";
+
+const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 
 export default class AddonCard extends React.Component {
 
@@ -108,6 +110,14 @@ export default class AddonCard extends React.Component {
                 </div>;
     }
 
+    makeButton(title, children, action) {
+        return  <Tooltip color="black" position="top" text={title}>
+                    {(props) => {
+                        return <div {...props} className="bd-addon-button" onClick={action}>{children}</div>;
+                    }}
+                </Tooltip>;
+    }
+
     render() {
         if (this.state.settingsOpen) return this.settingsComponent;
 
@@ -121,9 +131,9 @@ export default class AddonCard extends React.Component {
                     <div className="bd-addon-header">
                             <span className="bd-title">{this.buildTitle(name, version, author)}</span>
                             <div className="bd-controls">
-                                {this.props.editAddon && <div className="bd-addon-button" onClick={this.props.editAddon}><EditIcon /></div>}
-                                {this.props.deleteAddon && <div className="bd-addon-button" onClick={this.props.deleteAddon}><DeleteIcon /></div>}
-                                {this.props.showReloadIcon && <div className="bd-addon-button" onClick={this.reload}><ReloadIcon className="bd-reload bd-reload-card" /></div>}
+                                {this.props.editAddon && this.makeButton(Strings.Addons.editAddon, <EditIcon />, this.props.editAddon)}
+                                {this.props.deleteAddon && this.makeButton(Strings.Addons.deleteAddon, <DeleteIcon />, this.props.deleteAddon)}
+                                {this.props.showReloadIcon && this.makeButton(Strings.Addons.reload, <ReloadIcon className="bd-reload bd-reload-card" />, this.reload)}
                                 <Switch checked={this.props.enabled} onChange={this.onChange} />
                             </div>
                     </div>

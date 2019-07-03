@@ -79,7 +79,6 @@ export default new class SettingsRenderer {
         const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
-        Utilities.getReactInstance(node).return.return.return.return.return.return.stateNode.forceUpdate();
         const stateNode = Utilities.findInReactTree(Utilities.getReactInstance(node), m => m && m.generateSections, {walkable: ["return", "stateNode"]});
         if (stateNode) stateNode.forceUpdate();
     }

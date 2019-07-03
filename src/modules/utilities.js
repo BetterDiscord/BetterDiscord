@@ -222,7 +222,7 @@ export default class Utilities {
         else {
             const toWalk = walkable == null ? Object.keys(tree) : walkable;
             for (const key of toWalk) {
-                if (!tree.hasOwnProperty(key) || ignore.includes(key)) continue;
+                if (typeof(tree[key]) == "undefined" || ignore.includes(key)) continue;
                 tempReturn = this.findInTree(tree[key], searchFilter, {walkable, ignore});
                 if (typeof tempReturn != "undefined") return tempReturn;
             }
