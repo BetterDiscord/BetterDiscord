@@ -17,7 +17,7 @@ Grab the `exe` file from the latest release on the [releases page](https://githu
 Grab the `zip` file from the latest release on the [releases page](https://github.com/rauenzi/BetterDiscordApp/releases).
 
 ### Linux
-See this link: https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77cf31172
+See [this link](https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77cf31172)
 
 # FAQ
 
