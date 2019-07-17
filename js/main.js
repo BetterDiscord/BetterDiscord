@@ -690,7 +690,7 @@ EmoteModule.prototype.init = async function () {
             getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
         },
         FrankerFaceZ: {
-            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_ffz.json`,
+            url: `https://cdn.jsdelivr.net/gh/Lone-Soul/BetterDiscordApp/data/emotedata_ffz.json`,
             variable: "FrankerFaceZ",
             oldVariable: "emotesFfz",
             getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`,
