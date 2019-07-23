@@ -1,0 +1,217 @@
+{
+    "Panels": {
+        "plugins": "Wtyczki",
+        "themes": "Motywy",
+        "customcss": "Niestandardowy CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Ustawienia",
+            "general": {
+                "name": "Ogólne",
+                "emotes": {
+                    "name": "System emoji",
+                    "note": "Aktywuje system emoji BetterDiscorda"
+                },
+                "publicServers": {
+                    "name": "Publiczne serwery",
+                    "note": "Wyświetla przycisk z publicznymi serwerami"
+                },
+                "voiceDisconnect": {
+                    "name": "Rozłączanie z czatem głosowym",
+                    "note": "Rozłącza z czatem głosowym przy wyjściu z Discorda"
+                },
+                "twentyFourHour": {
+                    "name": "24-godzinne znaczniki czasu",
+                    "note": "Zamienia 12-godzinne znaczniki czasu na 24-godzinne"
+                },
+                "classNormalizer": {
+                    "name": "Normalne klasy",
+                    "note": "Dodaje normalne klasy dla elementów, aby ułatwić tworzenie motywów (np. dodaje .da-channels dla klasy .channels-Ie2l6A)"
+                },
+                "showToasts": {
+                    "name": "Okienka z powiadomieniami",
+                    "note": "Wyświetla małe powiadomienia dla ważnych informacji"
+                }
+            },
+            "appearance": {
+                "name": "Wygląd",
+                "voiceMode": {
+                    "name": "Tryb głosowy",
+                    "note": "Ukrywa wszystko, co nie jest czatem głosowym"
+                },
+                "minimalMode": {
+                    "name": "Tryb kompaktowy",
+                    "note": "Ukrywa lub zmniejsza rozmiar elementów"
+                },
+                "hideChannels": {
+                    "name": "Ukrywanie kanałów",
+                    "note": "Ukrywa kanały, gdy tryb kompaktowy jest włączony"
+                },
+                "darkMode": {
+                    "name": "Tryb ciemny",
+                    "note": "Zmienia styl określonych elementów na ciemny"
+                },
+                "coloredText": {
+                    "name": "Kolorowy tekst",
+                    "note": "Zmienia kolor tekstu użytkownika na kolor jego rangi"
+                }
+            },
+            "addons": {
+                "name": "Menedżer dodatków",
+                "addonErrors": {
+                    "name": "Błędy dodatków",
+                    "note": "Wyświetla błędy wtyczek i motywów"
+                },
+                "autoScroll": {
+                    "name": "Przewijanie do ustawień",
+                    "note": "Automatycznie przewija do ustawień wtyczki, jeżeli nie są one widoczne"
+                },
+                "autoReload": {
+                    "name": "Automatyczne ładowanie",
+                    "note": "Automatycznie ładuje, odświeża i dezaktywuje wtyczki oraz motywy"
+                }
+            },
+            "customcss": {
+                "name": "Niestandardowy CSS",
+                "customcss": {
+                    "name": "Niestandardowy CSS",
+                    "note": "Aktywuje zakładkę z niestandardowych kodem CSS"
+                },
+                "liveUpdate": {
+                    "name": "Automatyczne aktualizacje",
+                    "note": "Aktualizuje kod CSS bezpośrednio pod napisaniu"
+                },
+                "startDetached": {
+                    "name": "Oddzielne okno",
+                    "note": "Kliknięcie w zakładkę z niestandardowym kodem CSS otworzy edytor w oddzielnym oknie"
+                },
+                "nativeOpen": {
+                    "name": "Domyślny edytor",
+                    "note": "Kliknięcie w zakładkę z niestandardowym kodem CSS otworzy kod w twoim domyślnym edytorze"
+                }
+            },
+            "developer": {
+                "name": "Ustawienia dla programistów",
+                "developerMode": {
+                    "name": "Tryb programisty",
+                    "note": "Umożliwia włączenie debuggera poprzez naciśnięcie F8"
+                },
+                "copySelector": {
+                    "name": "Kopiowanie selektora",
+                    "note": "Dodaje opcję \"Kopiuj selektor\" do menu kontekstowego, jeżeli tryb programisty jest włączony"
+                }
+            },
+            "window": {
+                "name": "Ustawienia okna",
+                "transparency": {
+                    "name": "Przezroczystość",
+                    "note": "Dodaje przezroczystość do głównego okna Discorda (wymaga zrestartowania)"
+                },
+                "frame": {
+                    "name": "Obramowanie okna",
+                    "note": "Dodaje domyślne systemowe obramowanie okna dla Discorda"
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emoji",
+            "general": {
+                "name": "Ogólne",
+                "download": {
+                    "name": "Pobieranie emoji",
+                    "note": "Pobiera nowe emoji, gdy obecne są przestarzałe"
+                },
+                "emoteMenu": {
+                    "name": "Menu emoji",
+                    "note": "Wyświetla twoje ulubione emoji oraz emoji w Twitcha w menu emoji"
+                },
+                "hideEmojiMenu": {
+                    "name": "Ukrywanie menu emoji",
+                    "note": "Ukrywa menu emoji Discorda podczas korzystania z menu emoji"
+                },
+                "autoCaps": {
+                    "name": "Zmiana wielkości liter emoji",
+                    "note": "Automatycznie zmienia wielkość liter emoji na poprawne"
+                },
+                "showNames": {
+                    "name": "Nazwy emoji",
+                    "note": "Wyświetla nazwę emoji po najechaniu na nią kursorem"
+                },
+                "modifiers": {
+                    "name": "Modyfikacje emoji",
+                    "note": "Umożliwia modyfikowanie emoji (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animacje po najechaniu",
+                    "note": "Wyświetla animacje tylko po najechaniu kursorem na zmodyifkowane emoji"
+                }
+            },
+            "categories": {
+                "name": "Kategori",
+                "twitch": {
+                    "name": "Twitch",
+                    "note": "Wyświetla globalne emoji Twitcha oraz emoji dla subskrybentów"
+                },
+                "ffz": {
+                    "name": "FrankerFaceZ",
+                    "note": "Wyświetla emoji z FFZ"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Wyświetla emoji z BTTV"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} (wersja {{version}}) autorstwa {{author}}",
+        "openFolder": "Otwórz folder: {{type}}",
+        "reload": "Odśwież",
+        "addonSettings": "Ustawienia",
+        "website": "Strona internetowa",
+        "source": "Źródło",
+        "server": "Wspomóż serwer",
+        "donate": "Przekaż darowiznę"
+    },
+    "Emotes": {
+        "downloading": "Pobieranie emoji w tle - nie odświeżaj Discorda.",
+        "downloaded": "Wszystkie emoji zostały pomyślnie pobrane.",
+        "clearEmotes": "Wyczyść dane emoji",
+        "favoriteAction": "Dodaj do ulubionych!"
+    },
+    "CustomCSS": {
+        "confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okna spowoduje utratę wszystkich zmian.",
+        "update": "Zaktualizuj",
+        "save": "Zapisz",
+        "openNative": "Otwórz w edytorze systemowym",
+        "openDetached": "Oddziel okno",
+        "settings": "Ustawienia edytora",
+        "editorTitle": "Edytor niestandardowego kodu CSS"
+    },
+    "PublicServers": {
+        "button": "serwery",
+        "join": "Dołącz",
+        "joining": "Dołączanie",
+        "joined": "Dołączono",
+        "loading": "Ładowanie",
+        "loadMore": "Załaduj więcej",
+        "notConnected": "Brak połączenia z DiscordServers.com!",
+        "search": "Wyszukaj",
+        "connect": "Połącz",
+        "reconnect": "Połącz ponownie",
+        "categories": "Połącz ponownie",
+        "connection": "Połączono jako: {{username}}#{{discriminator}}",
+        "results": "Wyświetlanie {{start}}-{{end}} z {{total}} wszystkich wyników w kategorii {{category}}",
+        "query": "dla {{query}}"
+    },
+    "Modals": {
+        "confirmClose": "Czy na pewno chcesz to zrobić?",
+        "okay": "Tak",
+        "cancel": "Anuluj",
+        "name": "Nazwa",
+        "message": "Wiadomość",
+        "error": "Błąd",
+        "addonErrors": "Błędy wtyczek"
+    }
+}
