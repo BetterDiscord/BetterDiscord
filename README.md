@@ -27,11 +27,11 @@ This is a client modification for Discord. You can read more about it in the [or
 
 ### Where can I get plugins and themes?
 
-In our suport servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
+In our support servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
 
 ### Support Servers?
 
-Yup we have two of them [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [this one](https://discord.gg/2HScm8j)
+Yup, we have two of them: [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [this one](https://discord.gg/2HScm8j)
 
 <!-- # What's Different
 
