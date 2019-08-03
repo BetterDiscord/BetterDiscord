@@ -135,7 +135,7 @@ These people have either donated or subscribed to the most basic patron tier to 
         <strong>xstefen</strong>
     </td>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/219400174869413888/a_58438b5a8e939e997902dc1e4b81e09e.png?size=128" width="25px;" /><br />
+        <img src="https://discordhub.com/static/img/universal/user.png?size=128" width="25px;" /><br />
         <strong>『Sorey』</strong>
     </td>
     <td align="center">
