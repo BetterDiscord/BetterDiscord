@@ -3,6 +3,7 @@ const electron = require("electron");
 const Module = require("module");
 const BetterDiscord = require("./betterdiscord");
 const config = require("./config");
+const buildInfo = require("../build_info");
 
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
@@ -22,14 +23,11 @@ if (electron.deprecate && electron.deprecate.promisify) {
     electron.deprecate.promisify = (originalFunction) => originalFunction ? originalDeprecate(originalFunction) : () => void 0; // Override with falsey check
 }
 
-const electron_path = require.resolve("electron");
-const browser_window_path = require.resolve(path.resolve(electron_path, "..", "..", "browser-window.js"));
-require.cache[browser_window_path].exports = BrowserWindow;
-Module._cache[browser_window_path].exports = BrowserWindow;
-
 const onReady = () => {
     Object.assign(BrowserWindow, electron.BrowserWindow); // Assigns the new chrome-specific ones
-	require.cache[electron_path].exports = Object.assign({}, electron, {BrowserWindow});
+    const electron_path = require.resolve("electron");
+    if (buildInfo.releaseChannel === "canary" && buildInfo.version >= "0.0.252") delete require.cache[electron_path].exports;
+    require.cache[electron_path].exports = Object.assign({}, electron, {BrowserWindow});
 };
 
 if (process.platform == "win32" || process.platform == "darwin") electron.app.once("ready", onReady);
