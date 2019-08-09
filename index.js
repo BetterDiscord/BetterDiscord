@@ -3,7 +3,6 @@ const electron = require("electron");
 const Module = require("module");
 const BetterDiscord = require("./betterdiscord");
 const config = require("./config");
-const buildInfo = require("../build_info");
 
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
@@ -24,15 +23,20 @@ if (electron.deprecate && electron.deprecate.promisify) {
 }
 
 const onReady = () => {
-    Object.assign(BrowserWindow, electron.BrowserWindow); // Assigns the new chrome-specific ones
-    const electron_path = require.resolve("electron");
-    if (buildInfo.releaseChannel === "canary" && buildInfo.version >= "0.0.252") delete require.cache[electron_path].exports;
-    require.cache[electron_path].exports = Object.assign({}, electron, {BrowserWindow});
+    Object.assign(BrowserWindow, electron.BrowserWindow); // Assigns the new chrome-specific functions
+    const electronPath = require.resolve("electron");
+    const newElectron = Object.assign({}, electron, {BrowserWindow}); // Create new electron object
+    require.cache[electronPath].exports = newElectron; // Try to assign the exports as the new electron
+    if (require.cache[electronPath].exports === newElectron) return; // If it worked, return
+    delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
+    require.cache[electronPath].exports = newElectron; // Try to assign again after deleting
 };
 
+// Do the electron assignment
 if (process.platform == "win32" || process.platform == "darwin") electron.app.once("ready", onReady);
 else onReady();
 
+// Use Discord's info to run the app
 if (process.platform == "win32" || process.platform == "darwin") {
     const basePath = path.join(__dirname, "..", "app.asar");
     const pkg = require(path.join(basePath, "package.json"));
