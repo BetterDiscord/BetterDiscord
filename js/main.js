@@ -283,6 +283,16 @@ Core.prototype.init = async function() {
         return;
     }
 
+    if (window.ED) {
+        this.alert("Not Supported", "BandagedBD does not work with EnhancedDiscord. Please uninstall one of them.");
+        return;
+    }
+
+    if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) {
+        this.alert("Not Supported", "BandagedBD does not work with Powercord. Please uninstall one of them.");
+        return;
+    }
+
     const latestLocalVersion = bdConfig.updater ? bdConfig.updater.LatestVersion : bdConfig.latestVersion;
     if (latestLocalVersion > bdConfig.version) {
         this.alert("Update Available", `
@@ -418,7 +428,7 @@ Core.prototype.initObserver = function () {
             if (node.parentElement == document.body && node.querySelector("#ace_settingsmenu")) node.id = "ace_settingsmenu_container";
 
             // Emoji Picker
-            if (node.classList.contains("popout-3sVMXz") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
+            if (node.classList.contains("popout-2iWAc-") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
 
         }
     });
