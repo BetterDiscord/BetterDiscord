@@ -4835,7 +4835,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
             invite_code: "0Tmfo5ZbORCRqbAd",
             pinned: true
         };
-        let guildList = this.SortedGuildStore.guildPositions;
+        let guildList = this.SortedGuildStore.getFlattenedGuildIds();
         let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         return BDV2.react.createElement(V2Components.ServerCard, {server: server, pinned: true, join: this.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
     }
@@ -4998,7 +4998,7 @@ class V2C_PublicServers extends BDV2.reactComponent {
 
     get content() {
         let self = this;
-        let guildList = this.SortedGuildStore.guildPositions;
+        let guildList = this.SortedGuildStore.getFlattenedGuildIds();
         let defaultList = this.AvatarDefaults.DEFAULT_AVATARS;
         if (self.state.connection.state === 1) return self.notConnected;
         return [BDV2.react.createElement(
