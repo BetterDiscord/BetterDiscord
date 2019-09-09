@@ -46,7 +46,7 @@ const containerRef = React.createRef();
 const container = <FloatingWindowContainer ref={containerRef} />;
 const App = Utilities.findInReactTree(Utilities.getReactInstance(document.querySelector(".app-19_DXt")), m => m && m.type && m.type.displayName && m.type.displayName == "App");
 Patcher.after("FloatingContainer", App.type.prototype, "render", (thisObject, args, returnValue) => {
-    const group = Utilities.findInRenderTree(returnValue, m => m && m[5] && m[5].type && m[5].type.displayName == "LayerContainer", {walkable: ["children", "props"]});
+    const group = Utilities.findInRenderTree(returnValue, m => m && m[6] && m[6].type && m[6].type.displayName == "LayerContainer", {walkable: ["children", "props"]});
     group.push(container);
 });
 App.stateNode.forceUpdate();
