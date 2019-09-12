@@ -1,0 +1,12 @@
+name: Discord Source detection
+on: [issues]
+jobs:
+  autoclose:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Autoclose Discord Source issues
+      uses: IndyV/IssueChecker@v1.0
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-close-message: "@${issue.user.login} This issue was automatically closed because we don't accept issue reports from Discord Source.\nThe reason for this is because usually these issues aren't well thought out and are often duplicates.\n\nPlease take a few more minutes to create a well-made issue report using the provided report template."
+        issue-pattern: "Discord Source - .Issue Report]"
