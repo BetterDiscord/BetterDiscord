@@ -1,6 +1,6 @@
 import {WebpackModules, Settings} from "modules";
 
-const channelsClass = WebpackModules.getByProps("channels").channels.split(" ")[0];
+const channelsClass = WebpackModules.getByProps("sidebar", "hasNotice").sidebar.split(" ")[0];
 const membersWrapClass = WebpackModules.getByProps("membersWrap").membersWrap.split(" ")[0];
 
 export default class Toasts {

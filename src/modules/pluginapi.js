@@ -5,6 +5,8 @@ import DataStore from "./datastore";
 import DOMManager from "./dommanager";
 import Toasts from "../ui/toasts";
 import Modals from "../ui/modals";
+import PluginManager from "./pluginmanager";
+import ThemeManager from "./thememanager";
 
 const BdApi = {
     get React() { return DiscordModules.React; },
@@ -158,9 +160,43 @@ BdApi.deleteData = function(pluginName, key) {
 
 // Patches other functions
 BdApi.monkeyPatch = function(what, methodName, options) {
-    return Utilities.monkeyPatch(what, methodName, options);
+    const {before, after, instead, once = false, silent = false, force = false} = options;
+    const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
+    if (!silent) console.log("patch", methodName, "of", displayName); // eslint-disable-line no-console
+    if (!what[methodName]) {
+        if (force) what[methodName] = function() {};
+        else return console.error(methodName, "does not exist for", displayName); // eslint-disable-line no-console
+    }
+    const origMethod = what[methodName];
+    const cancel = () => {
+        if (!silent) console.log("unpatch", methodName, "of", displayName); // eslint-disable-line no-console
+        what[methodName] = origMethod;
+    };
+    what[methodName] = function() {
+        const data = {
+            thisObject: this,
+            methodArguments: arguments,
+            cancelPatch: cancel,
+            originalMethod: origMethod,
+            callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
+        };
+        if (instead) {
+            const tempRet = Utilities.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
+            if (tempRet !== undefined) data.returnValue = tempRet;
+        }
+        else {
+            if (before) Utilities.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
+            data.callOriginalMethod();
+            if (after) Utilities.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
+        }
+        if (once) cancel();
+        return data.returnValue;
+    };
+    what[methodName].__monkeyPatched = true;
+    if (!what[methodName].__originalMethod) what[methodName].__originalMethod = origMethod;
+    what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
+    return cancel;
 };
-
 // Event when element is removed
 BdApi.onRemoved = function(node, callback) {
     return Utilities.onRemoved(node, callback);
@@ -178,24 +214,21 @@ BdApi.testJSON = function(data) {
 
 //Get another plugin
 //name = name of plugin
-// BdApi.getPlugin = function (name) {
-//     if (Plugins.hasOwnProperty(name)) {
-//         return Plugins[name].plugin;
-//     }
-//     return null;
-// };
+BdApi.getPlugin = function (name) {
+    return PluginManager.addonList.find(a => a.name == name);
+};
 
-// BdApi.isPluginEnabled = function(name) {
-//     return !!PluginCookie[name];
-// };
+BdApi.isPluginEnabled = function(name) {
+    const plugin = this.getPlugin(name);
+    if (!plugin) return false;
+    return PluginManager.isEnabled(plugin.id);
+};
 
-// BdApi.isThemeEnabled = function(name) {
-//     return !!ThemeCookie[name];
-// };
-
-// BdApi.isSettingEnabled = function(id) {
-//     return !!SettingsCookie[id];
-// };
+BdApi.isThemeEnabled = function(name) {
+    const theme = ThemeManager.addonList.find(a => a.name == name);
+    if (!theme) return false;
+    return ThemeManager.isEnabled(theme.id);
+};
 
 // Gets data
 BdApi.getBDData = function(key) {

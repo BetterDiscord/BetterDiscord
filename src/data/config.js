@@ -6,5 +6,5 @@ export default {
     branch: "master",
     repo: "rauenzi",
     minSupportedVersion: "0.3.0",
-    bbdVersion: "0.2.17"
+    bbdVersion: "1.0.0"
 };
