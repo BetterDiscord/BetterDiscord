@@ -18,7 +18,7 @@ export default class PublicServersConnection {
     }
 
     static hasJoined(id) {
-        return SortedGuildStore.guildPositions.includes(id);
+        return SortedGuildStore.getFlattenedGuildIds().includes(id);
     }
 
     static search({term = "", category = "", from = 0} = {}) {
