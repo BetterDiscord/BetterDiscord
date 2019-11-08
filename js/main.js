@@ -2593,7 +2593,7 @@ class V2 {
 
     get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
     get TimeFormatter() {return this.WebpackModules.findByUniqueProperties(["dateFormat"]);}
-    get TooltipWrapper() {return this.WebpackModules.findByDisplayName("TooltipDeprecated");}
+    get TooltipWrapper() {return this.WebpackModules.findByDisplayName("Tooltip");}
     get NativeModule() {return this.WebpackModules.findByUniqueProperties(["setBadge"]);}
     get Tooltips() {return this.WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
@@ -2751,12 +2751,13 @@ class BDEmote extends BDV2.reactComponent {
                 text: this.label,
                 delay: 750
             },
-                BDV2.react.createElement("div", {
+            (childProps) => {
+                return BDV2.react.createElement("div", Object.assign({
                     className: "emotewrapper" + (this.props.jumboable ? " jumboable" : ""),
                     onMouseEnter: this.onMouseEnter,
                     onMouseLeave: this.onMouseLeave,
                     onClick: this.onClick
-                },
+                }, childProps),
                     BDV2.react.createElement("img", {
                         draggable: false,
                         className: "emote" + this.modifierClass + (this.props.jumboable ? " jumboable" : "") + (!this.state.shouldAnimate ? " stop-animation" : ""),
@@ -2782,7 +2783,7 @@ class BDEmote extends BDV2.reactComponent {
                         }
                     })
                 )
-            );
+            });
     }
 }
 
