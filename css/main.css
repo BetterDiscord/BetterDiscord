@@ -232,11 +232,11 @@
 }
 
 .emote {
-  height: 1.45em;
+  height: 1.375em;
 }
 
 .emote.jumboable {
-  height: 2rem;
+  height: 3rem;
 }
 
 .emotewrapper:hover .fav {
