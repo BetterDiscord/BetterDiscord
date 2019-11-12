@@ -100,17 +100,11 @@ const BetterDiscord = class BetterDiscord {
     }
 
     ensureModules() {
-        return Utils.runJS(`
-            (async() => {
-                while (!window.webpackJsonp) await new Promise(r => setTimeout(r, 100));
-                const req = webpackJsonp.push([[], {
-                    '__extra_id__': (module, exports, req) => module.exports = req
-                }, [['__extra_id__']]]);
-                delete req.m['__extra_id__'];
-                delete req.c['__extra_id__'];
-                while (Object.keys(req.c).length < 5000) await new Promise(r => setTimeout(r, 100));
-            })();
-        `);
+        return Utils.runJS(`(async()=>{
+            while("undefined" === typeof webpackJsonp) await new Promise(requestAnimationFrame);
+            for(const started = performance.now(); webpackJsonp.length < 20 - (performance.now() - started) / 5000;)
+                await new Promise(setImmediate);
+        })()`);
     }
 
     async loadApp() {
