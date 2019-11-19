@@ -110,7 +110,7 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
 <table>
 <tr>
 	<td align="center">
-		<img src="https://discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png?size=128" width="50px;" alt="William JCM"/><br />
+		<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png?size=128" width="50px;" alt="William JCM"/><br />
 		<a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
 	</td>
     <td align="center">
@@ -127,7 +127,7 @@ These people have either donated or subscribed to the most basic patron tier to 
 <table>
 <tr>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/284122164582416385/4f12bf80cac47656ad7fc6a82fbd5f3b.png?size=128" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/284122164582416385/a_30a8d79f5c4a0ad890446e612ba8ce63.gif?size=128" width="25px;" /><br />
         <strong>aetheryx</strong>
     </td>
     <td align="center">
