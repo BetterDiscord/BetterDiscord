@@ -358,12 +358,15 @@ Core.prototype.init = async function() {
 };
 
 Core.prototype.checkForGuilds = function() {
+    let timesChecked = 0;
     return new Promise(resolve => {
         const checkForGuilds = function() {
+            timesChecked++;
             const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
             const guild = BDV2.guildClasses.listItem.split(" ")[0];
             const blob = BDV2.guildClasses.blobContainer.split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(bdConfig.deferLoaded = true);
+            else if (timesChecked >= 50) return resolve(bdConfig.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
         $(document).ready(function () {
@@ -2782,7 +2785,7 @@ class BDEmote extends BDV2.reactComponent {
                             this.setState({isFavorite: !this.state.isFavorite});
                         }
                     })
-                )
+                );
             });
     }
 }
@@ -3147,7 +3150,7 @@ class V2C_Checkbox extends BDV2.reactComponent {
             null,
             BDV2.react.createElement(
                 "div",
-                {className: "checkbox checkbox-3kaeSU da-checkbox checkbox-3EVISJ da-checkbox", onClick: this.onClick},
+                {className: "checkbox checkbox-3kaeSU da-checkbox", onClick: this.onClick},
                 BDV2.react.createElement(
                     "div",
                     {className: "checkbox-inner checkboxInner-3yjcPe da-checkboxInner"},
