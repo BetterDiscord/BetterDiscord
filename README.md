@@ -98,6 +98,10 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
     <img src="https://cdn.discordapp.com/attachments/622954403262889995/622957122765848587/5364774.jpg" width="100px;" alt="DefCon42"/><br />
     <a href="https://twitter.com/def_con42" target="_blank" rel="noreferrer noopener"><strong>DefCon42</strong></a><br />
 </td>
+<td align="center">
+    <img src="https://cdn.discordapp.com/avatars/629231564261425163/a_36cc7d2940b4ffb8a660b1076ab2087f.webp?size=128" width="100px;" alt="Justxn"/><br />
+    <strong>Justxn</strong><br />
+</td>
 </tr>
 </table>
 
@@ -153,6 +157,10 @@ These people have either donated or subscribed to the most basic patron tier to 
     <td align="center">
         <img src="https://cdn.discordapp.com/avatars/144458450192171008/4ed07539b21ef04484270e4b145d1944.png?size=128" width="25px;" /><br />
         <strong>SweetLilyCake</strong>
+    </td>
+    <td align="center">
+        <img src="https://zap462067-1.plesk05.zap-webspace.com/wp-content/uploads/2019/11/Discord.jpg" width="25px;" /><br />
+        <strong>GameKuchen</strong>
     </td>
 </tr>
 </table>
