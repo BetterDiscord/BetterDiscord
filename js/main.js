@@ -366,7 +366,7 @@ Core.prototype.checkForGuilds = function() {
             const guild = BDV2.guildClasses.listItem.split(" ")[0];
             const blob = BDV2.guildClasses.blobContainer.split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(bdConfig.deferLoaded = true);
-            else if (timesChecked >= 50) return resolve(bdConfig.deferLoaded = true);
+            else if (timesChecked >= 50 && document.querySelectorAll(`.${wrapper}`).length > 0) return resolve(bdConfig.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
         $(document).ready(function () {
