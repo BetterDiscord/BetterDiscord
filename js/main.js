@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.17";
+var bbdVersion = "0.2.19";
 
 
 var mainCore;
@@ -198,7 +198,7 @@ var settings = {
     "Minimal Mode":               {id: "bda-gs-2",  info: "Hide elements and reduce the size of elements.",    implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Voice Mode":                 {id: "bda-gs-4",  info: "Only show voice chat",                              implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Hide Channels":              {id: "bda-gs-3",  info: "Hide channels in minimal mode",                     implemented: true,  hidden: false, cat: "core", category: "modules"},
-    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: true,  hidden: false, cat: "core", category: "modules"},
+    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: false,  hidden: false, cat: "core", category: "modules"},
     "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core", category: "modules"},
     "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Coloured Text":              {id: "bda-gs-7",  info: "Make text colour the same as role colour",          implemented: true,  hidden: false, cat: "core", category: "modules"},
@@ -238,7 +238,7 @@ var defaultCookie = {
     "bda-gs-2": false,
     "bda-gs-3": false,
     "bda-gs-4": false,
-    "bda-gs-5": true,
+    "bda-gs-5": false,
     "bda-gs-6": false,
     "bda-gs-7": false,
     "bda-gs-8": false,
@@ -361,8 +361,8 @@ Core.prototype.checkForGuilds = function() {
     let timesChecked = 0;
     return new Promise(resolve => {
         const checkForGuilds = function() {
-            timesChecked++;
             const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
+            if (document.querySelectorAll(`.${wrapper}`).length > 0) timesChecked++;
             const guild = BDV2.guildClasses.listItem.split(" ")[0];
             const blob = BDV2.guildClasses.blobContainer.split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(bdConfig.deferLoaded = true);
@@ -431,7 +431,8 @@ Core.prototype.initObserver = function () {
             if (node.parentElement == document.body && node.querySelector("#ace_settingsmenu")) node.id = "ace_settingsmenu_container";
 
             // Emoji Picker
-            if (node.classList.contains("popout-2iWAc-") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
+            //node.getElementsByClassName("emojiPicker-3m1S-j").length && !node.querySelector(".emojiPicker-3m1S-j").parentElement.classList.contains("animatorLeft-1EQxU0")
+            if (node.classList.contains("layer-v9HyYc") && node.getElementsByClassName("emojiPicker-3m1S-j").length  && !node.querySelector(".emojiPicker-3m1S-j").parentElement.classList.contains("animatorLeft-1EQxU0")) quickEmoteMenu.obsCallback(node);
 
         }
     });
@@ -4154,10 +4155,10 @@ class V2_SettingsPanel {
             else voiceMode.disable();
         }
 
-        if (id == "bda-gs-5") {
-            if (enabled) $("#app-mount").addClass("bda-dark");
-            else $("#app-mount").removeClass("bda-dark");
-        }
+        // if (id == "bda-gs-5") {
+        //     if (enabled) $("#app-mount").addClass("bda-dark");
+        //     else $("#app-mount").removeClass("bda-dark");
+        // }
 
         if (enabled && id == "bda-gs-6") mainCore.inject24Hour();
 
@@ -4218,7 +4219,7 @@ class V2_SettingsPanel {
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
         if (settingsCookie["bda-gs-1"]) publicServersModule.addButton();
         if (settingsCookie["bda-gs-4"]) voiceMode.enable();
-        if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
+        // if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
         if (settingsCookie["bda-gs-6"]) mainCore.inject24Hour();
         if (settingsCookie["bda-gs-7"]) mainCore.injectColoredText();
         if (settingsCookie["bda-es-4"]) emoteModule.autoCapitalize();
