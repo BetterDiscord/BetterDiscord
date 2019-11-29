@@ -10,7 +10,7 @@ This branch is for the ongoing rewrite of BandagedBD. You can view what I believ
 
 # Testing
 
-The following steps tell you how you can currently test the state of the rewrite as of September 26th 2019.
+The following steps tell you how you can currently test the state of the rewrite as of November 28th 2019.
 
 1. locate your BD installation. For Windows it is usually in `%localappdata%\Discord\app-0.0.305\resources\app\betterdiscord`.
 2. Open config.json in a text editor (n++, notepad, etc).

@@ -66,13 +66,16 @@ Core.prototype.init = async function() {
 };
 
 Core.prototype.waitForGuilds = function() {
+    let timesChecked = 0;
     return new Promise(resolve => {
         const checkForGuilds = function() {
             if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
             const wrapper = GuildClasses.wrapper.split(" ")[0];
+            if (document.querySelectorAll(`.${wrapper}`).length > 0) timesChecked++;
             const guild = GuildClasses.listItem.split(" ")[0];
             const blob = GuildClasses.blobContainer.split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(Config.deferLoaded = true);
+            else if (timesChecked >= 50) return resolve(Config.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
 
