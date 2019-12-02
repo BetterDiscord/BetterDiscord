@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.20";
+var bbdVersion = "0.2.19";
 
 
 var mainCore;
@@ -332,9 +332,7 @@ Core.prototype.init = async function() {
     themeModule = new ThemeModule();
     themeModule.loadThemes();
 
-    //$("#customcss").detach().appendTo(document.head);
-    this._customCSS = document.createElement(customcss);
-    this._customCSS.id = "customcss";
+    $("#customcss").detach().appendTo(document.head);
 
     window.addEventListener("beforeunload", function() {
         if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
@@ -390,9 +388,7 @@ Core.prototype.initSettings = function () {
     }
     else {
         this.loadSettings();
-        //$("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
-        this._customCSS.innerText = atob(DataStore.getBDData("bdcustomcss"));
-        document.head.appendChild(this._customCSS);
+        $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
         for (var setting in defaultCookie) {
             if (settingsCookie[setting] == undefined) {
                 settingsCookie[setting] = defaultCookie[setting];
@@ -1819,11 +1815,7 @@ ThemeModule.prototype.loadThemes = function () {
     for (var i = 0; i < themes.length; i++) {
         var theme = bdthemes[themes[i]];
         if (!themeCookie[theme.name]) themeCookie[theme.name] = false;
-        //if (themeCookie[theme.name]) $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
-        this._loadTheme = document.createElement("style");
-        this._loadTheme.id = theme.id;
-        this._loadTheme.innerText = unescape(theme.css);
-        if (themeCookie[theme.name]) document.head.appendChild(this._loadTheme);
+        if (themeCookie[theme.name]) $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
     }
     for (let theme in themeCookie) {
         if (!bdthemes[theme]) delete themeCookie[theme];
@@ -1836,8 +1828,7 @@ ThemeModule.prototype.enableTheme = function(name, reload = false) {
     themeCookie[name] = true;
     this.saveThemeData();
     const theme = bdthemes[name];
-    //$("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
-    document.head.appendChild(this._loadTheme);
+    $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${theme.name} v${theme.version} has been applied.`);
 };
 
@@ -1845,8 +1836,7 @@ ThemeModule.prototype.disableTheme = function(name, reload = false) {
     themeCookie[name] = false;
     this.saveThemeData();
     const theme = bdthemes[name];
-    //$(`#${theme.id}`).remove();
-    document.head.removeChild(document.getElementById(theme.id));
+    $(`#${theme.id}`).remove();
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${theme.name} v${theme.version} has been disabled.`);
 };
 
@@ -1970,37 +1960,26 @@ BdApi.setWindowPreference = function(key, value) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    //$("head").append($("<style>", {id: Utils.escapeID(id), text: css}));
-    var newCSS = document.createElement("style");
-    newCSS.id = Utils.escapeID(id);
-    newCSS.innerText = css;
-    document.head.appendChild(newCSS);
+    $("head").append($("<style>", {id: Utils.escapeID(id), text: css}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    //$("#" + Utils.escapeID(id)).remove();
-    document.head.removeChild(document.getElementById(Utils.escapeID(id)));
+    $("#" + Utils.escapeID(id)).remove();
 };
 
 //Inject CSS to document head
 //id = id of element
 //css = custom css
 BdApi.linkJS = function (id, url) {
-    //$("head").append($("<script>", {id: Utils.escapeID(id), src: url, type: "text/javascript"}));
-    var newJS = document.createElement("script");
-    newJS.id = Utils.escapeID(id);
-    newJS.src = url;
-    newJS.type = "text/javascript";
-    document.head.appendChild(newJS);
+    $("head").append($("<script>", {id: Utils.escapeID(id), src: url, type: "text/javascript"}));
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.unlinkJS = function (id) {
-    //$("#" + Utils.escapeID(id)).remove();
-    document.head.removeChild(document.getElementById(Utils.escapeID(id)));
+    $("#" + Utils.escapeID(id)).remove();
 };
 
 //Get another plugin
