@@ -332,7 +332,6 @@ Core.prototype.init = async function() {
     themeModule = new ThemeModule();
     themeModule.loadThemes();
 
-    $("#customcss").detach().appendTo(document.head);
 
     window.addEventListener("beforeunload", function() {
         if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
@@ -388,7 +387,10 @@ Core.prototype.initSettings = function () {
     }
     else {
         this.loadSettings();
-        $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
+        var _customcss = document.createElement("style");
+        _customcss.id = "customcss";
+        _customcss.textContent = atob(DataStore.getBDData("bdcustomcss"));
+        document.head.appendChild(_customcss);
         for (var setting in defaultCookie) {
             if (settingsCookie[setting] == undefined) {
                 settingsCookie[setting] = defaultCookie[setting];
@@ -1191,20 +1193,20 @@ var Utils = class {
     }
 
     static injectCss(uri) {
-        $("<link/>", {
-            type: "text/css",
-            rel: "stylesheet",
-            href: uri
-        }).appendTo($("head"));
+        var _css = document.createElement('link');
+        _css.type = "text/css";
+        _css.rel = "stylesheet";
+        _css.href = uri;
+        document.head.appendChild(_css);
     }
 
     static injectJs(uri) {
         return new Promise(resolve => {
-            $("<script/>", {
-                type: "text/javascript",
-                src: uri,
-                onload: resolve
-            }).appendTo($("body"));
+            var _js = document.createElement("script");
+            _js.type = "text/javascript";
+            _js.src = uri;
+            _js.onload = resolve;
+            document.body.appendChild(_js);
         });
     }
 
@@ -1815,7 +1817,10 @@ ThemeModule.prototype.loadThemes = function () {
     for (var i = 0; i < themes.length; i++) {
         var theme = bdthemes[themes[i]];
         if (!themeCookie[theme.name]) themeCookie[theme.name] = false;
-        if (themeCookie[theme.name]) $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
+        var _theme = document.createElement("style");
+        _theme.id = theme.id;
+        _theme.textContent = unescape(theme.css);
+        if (themeCookie[theme.name]) document.head.appendChild(_theme);
     }
     for (let theme in themeCookie) {
         if (!bdthemes[theme]) delete themeCookie[theme];
@@ -1828,7 +1833,10 @@ ThemeModule.prototype.enableTheme = function(name, reload = false) {
     themeCookie[name] = true;
     this.saveThemeData();
     const theme = bdthemes[name];
-    $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
+    var _theme = document.createElement("style");
+    _theme.id = theme.id;
+    _theme.textContent = unescape(theme.css);
+    document.head.appendChild(_theme);
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${theme.name} v${theme.version} has been applied.`);
 };
 
@@ -1836,7 +1844,7 @@ ThemeModule.prototype.disableTheme = function(name, reload = false) {
     themeCookie[name] = false;
     this.saveThemeData();
     const theme = bdthemes[name];
-    $(`#${theme.id}`).remove();
+    document.head.removeChild(document.getElementById(theme.id));
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${theme.name} v${theme.version} has been disabled.`);
 };
 
@@ -1960,26 +1968,41 @@ BdApi.setWindowPreference = function(key, value) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append($("<style>", {id: Utils.escapeID(id), text: css}));
+    var _css = document.createElement("style");
+    _css.id = Utils.escapeID(id);
+    _css.textContent = css;
+    document.head.appendChild(_css);
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    $("#" + Utils.escapeID(id)).remove();
+    try {
+        document.head.removeChild(document.querySelector("style#" + Utils.escapeID(id)));
+    } catch(err) {
+        Utils.err("BdApi", Utils.escapeID(id) + " doesn't appear to exists as an injected style.");
+    };
 };
 
 //Inject CSS to document head
 //id = id of element
-//css = custom css
+//url = link to script
 BdApi.linkJS = function (id, url) {
-    $("head").append($("<script>", {id: Utils.escapeID(id), src: url, type: "text/javascript"}));
+    var _js = document.createElement("script");
+    _js.id = Utils.escapeID(id);
+    _js.src = url;
+    _js.type = "text/javascript";
+    document.head.appendChild(_js);
 };
 
-//Clear css/remove any element
+//Clear js/remove any element
 //id = id of element
 BdApi.unlinkJS = function (id) {
-    $("#" + Utils.escapeID(id)).remove();
+    try {
+        document.head.removeChild(document.querySelector("script#" + Utils.escapeID(id)));
+    } catch(err) {
+        Utils.err("BdApi", Utils.escapeID(id) + " doesn't appear to exists as a linked script.");
+    };
 };
 
 //Get another plugin
@@ -3333,10 +3356,12 @@ class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     updateCss() {
-        if ($("#customcss").length == 0) {
-            $("head").append("<style id=\"customcss\"></style>");
+        if (!document.getElementById("customcss")) {
+            var _customcss = document.createElement("style");
+            _customcss.id = "customcss";
+            document.head.appendChild(_customcss);
         }
-        $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
+        document.getElementById("customcss").textContent = this.editor.session.getValue();
     }
 
     saveCss() {
@@ -3525,10 +3550,12 @@ class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     updateCss() {
-        if ($("#customcss").length == 0) {
-            $("head").append("<style id=\"customcss\"></style>");
+        if (!document.getElementById("customcss")) {
+            var _customcss = document.createElement("style");
+            _customcss.id = "customcss";
+            document.head.appendChild(_customcss);
         }
-        $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
+        document.getElementById("customcss").textContent = this.editor.session.getValue();
     }
 
     saveCss() {
