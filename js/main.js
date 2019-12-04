@@ -2642,16 +2642,18 @@ class V2 {
         const GuildComponent = reactInstance.return.type;
         if (!GuildComponent) return;
         this.guildListItemsPatch = BdApi.monkeyPatch(GuildComponent.prototype, "render", {after: (data) => {
-            const returnValue = data.returnValue;
-            const guildData = data.thisObject.props;
-            returnValue.props.className += " bd-guild";
-            if (guildData.unread) returnValue.props.className += " bd-unread";
-            if (guildData.selected) returnValue.props.className += " bd-selected";
-            if (guildData.audio) returnValue.props.className += " bd-audio";
-            if (guildData.video) returnValue.props.className += " bd-video";
-            if (guildData.badge) returnValue.props.className += " bd-badge";
-            if (guildData.animatable) returnValue.props.className += " bd-animatable";
-            return returnValue;
+	    if (data.returnValue && data.thisObject) {
+		    const returnValue = data.returnValue;
+		    const guildData = data.thisObject.props;
+		    returnValue.props.className += " bd-guild";
+		    if (guildData.unread) returnValue.props.className += " bd-unread";
+		    if (guildData.selected) returnValue.props.className += " bd-selected";
+		    if (guildData.audio) returnValue.props.className += " bd-audio";
+		    if (guildData.video) returnValue.props.className += " bd-video";
+		    if (guildData.badge) returnValue.props.className += " bd-badge";
+		    if (guildData.animatable) returnValue.props.className += " bd-animatable";
+		    return returnValue;
+            }
         }});
     }
 
@@ -2678,7 +2680,8 @@ class V2 {
             returnValue.props.className += " bd-guild-separator";
             return returnValue;
         };
-        this.guildSeparatorPatch = BdApi.monkeyPatch(Guilds.prototype, "render", {after: (data) => {
+        this.guildSeparatorPatch = 
+		(Guilds.prototype, "render", {after: (data) => {
             data.returnValue.props.children[1].props.children[3].type = GuildSeparator;
         }});
     }
