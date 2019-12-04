@@ -2680,8 +2680,7 @@ class V2 {
             returnValue.props.className += " bd-guild-separator";
             return returnValue;
         };
-        this.guildSeparatorPatch = 
-		(Guilds.prototype, "render", {after: (data) => {
+        this.guildSeparatorPatch = BdApi.monkeyPatch(Guilds.prototype, "render", {after: (data) => {
             data.returnValue.props.children[1].props.children[3].type = GuildSeparator;
         }});
     }
