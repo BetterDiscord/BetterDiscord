@@ -27,11 +27,11 @@ This is a client modification for Discord. You can read more about it in the [or
 
 ### Where can I get plugins and themes?
 
-In our suport servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
+In our support servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
 
 ### Support Servers?
 
-Yup we have two of them [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [this one](https://discord.gg/2HScm8j)
+Yup, we have two of them, [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [this one](https://discord.gg/2HScm8j).
 
 <!-- # What's Different
 
@@ -40,7 +40,7 @@ Yup we have two of them [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [thi
 
 ## UI
  - Redesigned plugin and theme cards with additional classes for themes to use
- - Additional tab in settings with additional settings.
+ - Additional tab in settings with additional settings
  - CustomCSS editor from CodeMirror has been removed due to being bloated and having high cpu usage. Replaced with another lightweight editor
 
 
