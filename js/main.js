@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.20";
+var bbdVersion = "0.2.21";
 
 
 var mainCore;
@@ -679,48 +679,34 @@ EmoteModule.prototype.init = async function () {
 
     let emoteInfo = {
         TwitchGlobal: {
-            url: "https://twitchemotes.com/api_cache/v3/global.json",
-            backup: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_global.json`,
+            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_global.json`,
             variable: "TwitchGlobal",
             oldVariable: "emotesTwitch",
-            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0`,
-            getOldData: (url, name) => { return {id: url.match(/\/([0-9]+)\//)[1], code: name, emoticon_set: 0, description: null}; }
+            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`
         },
         TwitchSubscriber: {
             url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_subscriber.json`,
             variable: "TwitchSubscriber",
             oldVariable: "subEmotesTwitch",
-            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`,
-            getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
+            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`
         },
         FrankerFaceZ: {
             url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_ffz.json`,
             variable: "FrankerFaceZ",
             oldVariable: "emotesFfz",
-            getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`,
-            getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
+            getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`
         },
         BTTV: {
-            url: "https://api.betterttv.net/emotes",
+            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_bttv.json`,
             variable: "BTTV",
             oldVariable: "emotesBTTV",
-            parser: (data) => {
-                let emotes = {};
-                for (let e = 0, len = data.emotes.length; e < len; e++) {
-                    let emote = data.emotes[e];
-                    emotes[emote.regex] = emote.url;
-                }
-                return emotes;
-            },
-            getEmoteURL: (e) => `${e}`,
-            getOldData: (url) => url
+            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`
         },
         BTTV2: {
-            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_bttv.json`,
+            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_bttv2.json`,
             variable: "BTTV2",
             oldVariable: "emotesBTTV2",
-            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`,
-            getOldData: (url) => url.match(/emote\/(.+)\//)[1]
+            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`
         }
     };
 
@@ -818,14 +804,6 @@ EmoteModule.prototype.clearEmoteData = async function() {
         FrankerFaceZ: {},
         BTTV2: {}
     };
-};
-
-EmoteModule.prototype.goBack = async function(emoteInfo) {
-    for (let e in emoteInfo) {
-        for (let emote in window.bdEmotes[emoteInfo[e].variable]) {
-            window[emoteInfo[e].oldVariable][emote] = emoteInfo[e].getOldData(window.bdEmotes[emoteInfo[e].variable][emote], emote);
-        }
-    }
 };
 
 EmoteModule.prototype.isCacheValid = function() {
