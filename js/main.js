@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.19";
+var bbdVersion = "0.2.20";
 
 
 var mainCore;
@@ -735,7 +735,7 @@ EmoteModule.prototype.init = async function () {
             if (this.categories.length == 0) return;
 			const markup = returnValue.props.children[1];
 			if (!markup.props.children) return;
-			const nodes = markup.props.children[1];
+            const nodes = Utils.getNestedProp(returnValue, "props.children.1.props.children.1.props.children.props.children.0");
 			if (!nodes || !nodes.length) return;
 			for (let n = 0; n < nodes.length; n++) {
 				const node = nodes[n];
@@ -1313,6 +1313,12 @@ var Utils = class {
         });
 
         observer.observe(document.body, {subtree: true, childList: true});
+    }
+
+    static getNestedProp(obj, path) {
+        return path.split(/\s?\.\s?/).reduce(function(obj, prop) {
+            return obj && obj[prop];
+        }, obj);
     }
 };
 
