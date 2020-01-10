@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.17";
+var bbdVersion = "0.2.21";
 
 
 var mainCore;
@@ -198,7 +198,7 @@ var settings = {
     "Minimal Mode":               {id: "bda-gs-2",  info: "Hide elements and reduce the size of elements.",    implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Voice Mode":                 {id: "bda-gs-4",  info: "Only show voice chat",                              implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Hide Channels":              {id: "bda-gs-3",  info: "Hide channels in minimal mode",                     implemented: true,  hidden: false, cat: "core", category: "modules"},
-    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: true,  hidden: false, cat: "core", category: "modules"},
+    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: false,  hidden: false, cat: "core", category: "modules"},
     "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core", category: "modules"},
     "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Coloured Text":              {id: "bda-gs-7",  info: "Make text colour the same as role colour",          implemented: true,  hidden: false, cat: "core", category: "modules"},
@@ -238,7 +238,7 @@ var defaultCookie = {
     "bda-gs-2": false,
     "bda-gs-3": false,
     "bda-gs-4": false,
-    "bda-gs-5": true,
+    "bda-gs-5": false,
     "bda-gs-6": false,
     "bda-gs-7": false,
     "bda-gs-8": false,
@@ -358,12 +358,15 @@ Core.prototype.init = async function() {
 };
 
 Core.prototype.checkForGuilds = function() {
+    let timesChecked = 0;
     return new Promise(resolve => {
         const checkForGuilds = function() {
             const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
+            if (document.querySelectorAll(`.${wrapper}`).length > 0) timesChecked++;
             const guild = BDV2.guildClasses.listItem.split(" ")[0];
             const blob = BDV2.guildClasses.blobContainer.split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(bdConfig.deferLoaded = true);
+            else if (timesChecked >= 50) return resolve(bdConfig.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
         $(document).ready(function () {
@@ -428,7 +431,8 @@ Core.prototype.initObserver = function () {
             if (node.parentElement == document.body && node.querySelector("#ace_settingsmenu")) node.id = "ace_settingsmenu_container";
 
             // Emoji Picker
-            if (node.classList.contains("popout-2iWAc-") && !node.classList.contains("popoutLeft-30WmrD") && node.getElementsByClassName("emojiPicker-3m1S-j").length) quickEmoteMenu.obsCallback(node);
+            //node.getElementsByClassName("emojiPicker-3m1S-j").length && !node.querySelector(".emojiPicker-3m1S-j").parentElement.classList.contains("animatorLeft-1EQxU0")
+            if (node.classList.contains("layer-v9HyYc") && node.getElementsByClassName("emojiPicker-3m1S-j").length  && !node.querySelector(".emojiPicker-3m1S-j").parentElement.classList.contains("animatorLeft-1EQxU0")) quickEmoteMenu.obsCallback(node);
 
         }
     });
@@ -675,48 +679,34 @@ EmoteModule.prototype.init = async function () {
 
     let emoteInfo = {
         TwitchGlobal: {
-            url: "https://twitchemotes.com/api_cache/v3/global.json",
-            backup: `https://Lone-Soul.github.io/BetterDiscordApp/data/emotedata_twitch_global.json`,
+            url: `https://Lone-Soul.github.io/BetterDiscordApp/data/emotedata_twitch_global.json`,
             variable: "TwitchGlobal",
             oldVariable: "emotesTwitch",
-            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e.id}/1.0`,
-            getOldData: (url, name) => { return {id: url.match(/\/([0-9]+)\//)[1], code: name, emoticon_set: 0, description: null}; }
+            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`
         },
         TwitchSubscriber: {
             url: `https://Lone-Soul.github.io/BetterDiscordApp/data/emotedata_twitch_subscriber.json`,
             variable: "TwitchSubscriber",
             oldVariable: "subEmotesTwitch",
-            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`,
-            getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
+            getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`
         },
         FrankerFaceZ: {
             url: `https://Lone-Soul.github.io/BetterDiscordApp/data/emotedata_ffz.json`,
             variable: "FrankerFaceZ",
             oldVariable: "emotesFfz",
-            getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`,
-            getOldData: (url) => url.match(/\/([0-9]+)\//)[1]
+            getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`
         },
         BTTV: {
-            url: "https://api.betterttv.net/emotes",
+            url: `https://Lone-Soul.github.io/BetterDiscordApp/data/emotedata_bttv.json`,
             variable: "BTTV",
             oldVariable: "emotesBTTV",
-            parser: (data) => {
-                let emotes = {};
-                for (let e = 0, len = data.emotes.length; e < len; e++) {
-                    let emote = data.emotes[e];
-                    emotes[emote.regex] = emote.url;
-                }
-                return emotes;
-            },
-            getEmoteURL: (e) => `${e}`,
-            getOldData: (url) => url
+            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`
         },
         BTTV2: {
-            url: `https://Lone-Soul.github.io/BetterDiscordApp/data/emotedata_bttv.json`,
+            url: `https://Lone-Soul.github.io/BetterDiscordApp/data/emotedata_bttv2.json`,
             variable: "BTTV2",
             oldVariable: "emotesBTTV2",
-            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`,
-            getOldData: (url) => url.match(/emote\/(.+)\//)[1]
+            getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`
         }
     };
 
@@ -729,13 +719,13 @@ EmoteModule.prototype.init = async function () {
     this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
     Utils.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
             if (this.categories.length == 0) return;
-      const markup = returnValue.props.children[1];
-      if (!markup.props.children) return;
-      const nodes = markup.props.children[1];
-      if (!nodes || !nodes.length) return;
-      for (let n = 0; n < nodes.length; n++) {
-        const node = nodes[n];
-        if (typeof(node) !== "string") continue;
+			const markup = returnValue.props.children[1];
+			if (!markup.props.children) return;
+            const nodes = Utils.getNestedProp(returnValue, "props.children.1.props.children.1.props.children.props.children.0");
+			if (!nodes || !nodes.length) return;
+			for (let n = 0; n < nodes.length; n++) {
+				const node = nodes[n];
+				if (typeof(node) !== "string") continue;
                 const words = node.split(/([^\s]+)([\s]|$)/g);
         for (let c = 0, clen = this.categories.length; c < clen; c++) {
           for (let w = 0, wlen = words.length; w < wlen; w++) {
@@ -814,14 +804,6 @@ EmoteModule.prototype.clearEmoteData = async function() {
         FrankerFaceZ: {},
         BTTV2: {}
     };
-};
-
-EmoteModule.prototype.goBack = async function(emoteInfo) {
-    for (let e in emoteInfo) {
-        for (let emote in window.bdEmotes[emoteInfo[e].variable]) {
-            window[emoteInfo[e].oldVariable][emote] = emoteInfo[e].getOldData(window.bdEmotes[emoteInfo[e].variable][emote], emote);
-        }
-    }
 };
 
 EmoteModule.prototype.isCacheValid = function() {
@@ -1309,6 +1291,12 @@ var Utils = class {
         });
 
         observer.observe(document.body, {subtree: true, childList: true});
+    }
+
+    static getNestedProp(obj, path) {
+        return path.split(/\s?\.\s?/).reduce(function(obj, prop) {
+            return obj && obj[prop];
+        }, obj);
     }
 };
 
@@ -2638,16 +2626,18 @@ class V2 {
         const GuildComponent = reactInstance.return.type;
         if (!GuildComponent) return;
         this.guildListItemsPatch = BdApi.monkeyPatch(GuildComponent.prototype, "render", {after: (data) => {
-            const returnValue = data.returnValue;
-            const guildData = data.thisObject.props;
-            returnValue.props.className += " bd-guild";
-            if (guildData.unread) returnValue.props.className += " bd-unread";
-            if (guildData.selected) returnValue.props.className += " bd-selected";
-            if (guildData.audio) returnValue.props.className += " bd-audio";
-            if (guildData.video) returnValue.props.className += " bd-video";
-            if (guildData.badge) returnValue.props.className += " bd-badge";
-            if (guildData.animatable) returnValue.props.className += " bd-animatable";
-            return returnValue;
+	    if (data.returnValue && data.thisObject) {
+		    const returnValue = data.returnValue;
+		    const guildData = data.thisObject.props;
+		    returnValue.props.className += " bd-guild";
+		    if (guildData.unread) returnValue.props.className += " bd-unread";
+		    if (guildData.selected) returnValue.props.className += " bd-selected";
+		    if (guildData.audio) returnValue.props.className += " bd-audio";
+		    if (guildData.video) returnValue.props.className += " bd-video";
+		    if (guildData.badge) returnValue.props.className += " bd-badge";
+		    if (guildData.animatable) returnValue.props.className += " bd-animatable";
+		    return returnValue;
+            }
         }});
     }
 
@@ -2782,7 +2772,7 @@ class BDEmote extends BDV2.reactComponent {
                             this.setState({isFavorite: !this.state.isFavorite});
                         }
                     })
-                )
+                );
             });
     }
 }
@@ -3147,7 +3137,7 @@ class V2C_Checkbox extends BDV2.reactComponent {
             null,
             BDV2.react.createElement(
                 "div",
-                {className: "checkbox checkbox-3kaeSU da-checkbox checkbox-3EVISJ da-checkbox", onClick: this.onClick},
+                {className: "checkbox checkbox-3kaeSU da-checkbox", onClick: this.onClick},
                 BDV2.react.createElement(
                     "div",
                     {className: "checkbox-inner checkboxInner-3yjcPe da-checkboxInner"},
@@ -4151,10 +4141,10 @@ class V2_SettingsPanel {
             else voiceMode.disable();
         }
 
-        if (id == "bda-gs-5") {
-            if (enabled) $("#app-mount").addClass("bda-dark");
-            else $("#app-mount").removeClass("bda-dark");
-        }
+        // if (id == "bda-gs-5") {
+        //     if (enabled) $("#app-mount").addClass("bda-dark");
+        //     else $("#app-mount").removeClass("bda-dark");
+        // }
 
         if (enabled && id == "bda-gs-6") mainCore.inject24Hour();
 
@@ -4215,7 +4205,7 @@ class V2_SettingsPanel {
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
         if (settingsCookie["bda-gs-1"]) publicServersModule.addButton();
         if (settingsCookie["bda-gs-4"]) voiceMode.enable();
-        if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
+        // if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
         if (settingsCookie["bda-gs-6"]) mainCore.inject24Hour();
         if (settingsCookie["bda-gs-7"]) mainCore.injectColoredText();
         if (settingsCookie["bda-es-4"]) emoteModule.autoCapitalize();
