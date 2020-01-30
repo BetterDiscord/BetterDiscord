@@ -463,6 +463,7 @@ Core.prototype.inject24Hour = function() {
 
 Core.prototype.injectColoredText = function() {
     if (this.cancelColoredText) return;
+    if (!BDV2.MessageContentComponent || !BDV2.MessageContentComponent.prototype) return;
 
     this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
         if (!settingsCookie["bda-gs-7"]) return;
