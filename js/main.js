@@ -2531,7 +2531,7 @@ class V2 {
                         if (m && filter(m))	return m;
                     }
                 }
-                console.warn("Cannot find loaded module in cache");
+                // console.warn("Cannot find loaded module in cache");
                 return null;
             };
 
@@ -2627,17 +2627,17 @@ class V2 {
         const GuildComponent = reactInstance.return.type;
         if (!GuildComponent) return;
         this.guildListItemsPatch = BdApi.monkeyPatch(GuildComponent.prototype, "render", {after: (data) => {
-	    if (data.returnValue && data.thisObject) {
-		    const returnValue = data.returnValue;
-		    const guildData = data.thisObject.props;
-		    returnValue.props.className += " bd-guild";
-		    if (guildData.unread) returnValue.props.className += " bd-unread";
-		    if (guildData.selected) returnValue.props.className += " bd-selected";
-		    if (guildData.audio) returnValue.props.className += " bd-audio";
-		    if (guildData.video) returnValue.props.className += " bd-video";
-		    if (guildData.badge) returnValue.props.className += " bd-badge";
-		    if (guildData.animatable) returnValue.props.className += " bd-animatable";
-		    return returnValue;
+            if (data.returnValue && data.thisObject) {
+                const returnValue = data.returnValue;
+                const guildData = data.thisObject.props;
+                returnValue.props.className += " bd-guild";
+                if (guildData.unread) returnValue.props.className += " bd-unread";
+                if (guildData.selected) returnValue.props.className += " bd-selected";
+                if (guildData.audio) returnValue.props.className += " bd-audio";
+                if (guildData.video) returnValue.props.className += " bd-video";
+                if (guildData.badge) returnValue.props.className += " bd-badge";
+                if (guildData.animatable) returnValue.props.className += " bd-animatable";
+                return returnValue;
             }
         }});
     }
