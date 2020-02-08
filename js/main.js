@@ -182,7 +182,7 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.21";
+var bbdVersion = "0.2.22";
 
 
 var mainCore;
@@ -2157,10 +2157,12 @@ BdApi.setBDData = function(key, data) {
  devMode.prototype.enable = function(selectorMode) {
      var self = this;
      this.disable();
-     $(window).on("keydown.bdDevmode", function(e) {
+     $(document).on("keydown.bdDevmode", function(e) {
          if (e.which === 119 || e.which == 118) {//F8
             console.log("%c[%cDevMode%c] %cBreak/Resume", "color: red;", "color: #303030; font-weight:700;", "color:red;", "");
             debugger; // eslint-disable-line no-debugger
+            e.preventDefault();
+            e.stopImmediatePropagation();
          }
      });
 
@@ -2231,7 +2233,7 @@ devMode.prototype.getSelector = function(element) {
 };
 
  devMode.prototype.disable = function() {
-     $(window).off("keydown.bdDevmode");
+     $(document).off("keydown.bdDevmode");
      $(document).off("contextmenu.bdDevmode");
      $(document).off("contextmenu.bdDevModeCtx");
  };
@@ -2300,9 +2302,9 @@ var ClassNormalizer = (() => {
                 if (this.shouldIgnore(value)) continue;
                 const classList = value.split(" ");
                 for (const normalClass of classList) {
-                    const match = normalClass.match(randClass)[1];
-                    if (!match) continue; // Shouldn't ever happen since they passed the moduleFilter, but you never know
-                    const camelCase = match.split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
+                    const match = normalClass.match(randClass);
+                    if (!match || !match.length || match.length < 2) continue; // Shouldn't ever happen since they passed the moduleFilter, but you never know
+                    const camelCase = match[1].split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
                     classNames[baseClassName] += ` ${componentName}-${camelCase}`;
                 }
             }
@@ -4112,11 +4114,6 @@ class V2_SettingsPanel {
     updateSettings(id, enabled) {
         settingsCookie[id] = enabled;
 
-        if (id == "bda-es-0") {
-            if (enabled) $("#twitchcord-button-container").show();
-            else $("#twitchcord-button-container").hide();
-        }
-
         // if (id == "bda-gs-b") {
         //     if (enabled) $("body").addClass("bd-blue");
         //     else $("body").removeClass("bd-blue");
@@ -4200,7 +4197,7 @@ class V2_SettingsPanel {
     }
 
     initializeSettings() {
-        if (settingsCookie["bda-es-0"]) $("#twitchcord-button-container").show();
+
         // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
