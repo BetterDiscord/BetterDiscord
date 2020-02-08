@@ -2607,19 +2607,34 @@ class V2 {
         this.socialPatch = BdApi.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
             const children = data.returnValue.props.children;
             if (!children || !children.length) return;
-            if (children[children.length - 2].type.displayName !== "Separator") return;
-            if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
-            const original = children[children.length - 1].type;
+            if (children[children.length - 3].type.displayName !== "Separator") return;
+            if (!children[children.length - 2].type.toString().includes("socialLinks")) return;
+            const original = children[children.length - 2].type;
             const newOne = function() {
                 const returnVal = original(...arguments);
-                returnVal.props.children.push(BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", rel: "author", title: "BandagedBD", target: "_blank"},
+                returnVal.props.children.push(BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
                     BdApi.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
                 ));
                 return returnVal;
             };
-            children[children.length - 1].type = newOne;
+            children[children.length - 2].type = newOne;
+
+
+            const BBDLink = BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BandagedBD", target: "_blank"}, "BandagedBD");
+            const AuthorLink = BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/ZackRauen", title: "Zerebos", target: "_blank"}, "Zerebos");
+            const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, [BBDLink, ` ${bbdVersion} by `, AuthorLink]);
+
+            const originalVersions = children[children.length - 1].type;
+            children[children.length - 1].type = function() {
+                const returnVal = originalVersions(...arguments);
+                console.log(returnVal);
+                returnVal.props.children.push(additional);
+                return returnVal;
+            };
         }});
     }
+
+
 
     patchGuildListItems() {
         if (this.guildListItemsPatch) return;
