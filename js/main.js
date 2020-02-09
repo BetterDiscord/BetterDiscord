@@ -2606,8 +2606,8 @@ class V2 {
         if (!TabBar || !Anchor) return;
         this.socialPatch = BdApi.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
             const children = data.returnValue.props.children;
-            if (!children || !children.length) return;
-            if (children[children.length - 3].type.displayName !== "Separator") return;
+            if (!children || children.length < 2) return;
+            if (children[children.length - 3] && children[children.length - 3].type.displayName !== "Separator") return;
             if (!children[children.length - 2].type.toString().includes("socialLinks")) return;
             const original = children[children.length - 2].type;
             const newOne = function() {
