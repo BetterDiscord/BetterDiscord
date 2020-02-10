@@ -182,7 +182,15 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.22";
+var bbdVersion = "0.2.23";
+var bbdChangelog = {
+    description: "Don't be shocked, this modal is supposed to be here.",
+    changes: [
+        {title: "What's New?", items: ["**BandagedBD will now keep you updated with changelogs!** I will try to only show a changelog when there's more than a tiny or internal change.", "**Twitter (@BandagedBD)** I created a Twitter to try and provide support and such for those without access to the server. https://Twitter.com/BandagedBD"]},
+        {title: "Fixes", type: "fixed", items: ["**Colored Text** option should work again.", "**Emotes** should show up in chat.", "Fixed a bug where BBD attempted to patch the TabBar module incorrectly. (Thanks, DevilBro)"]},
+        {title: "Minor Stuff", type: "improved", items: ["**Colour->Color.** Swapped to using English-US spelling by default to be consistent, and to potentially be prepared for localization.", "**Versions simplified.** The BandagedBD version now integrates into Discord's at the bottom-left of settings instead of randomly being a part of the setting list."]}
+    ]
+};
 
 
 var mainCore;
@@ -201,7 +209,7 @@ var settings = {
     "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: false,  hidden: false, cat: "core", category: "modules"},
     "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core", category: "modules"},
     "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core", category: "modules"},
-    "Coloured Text":              {id: "bda-gs-7",  info: "Make text colour the same as role colour",          implemented: true,  hidden: false, cat: "core", category: "modules"},
+    "Colored Text":               {id: "bda-gs-7",  info: "Make text color the same as role color",          implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Normalize Classes":          {id: "fork-ps-4", info: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", implemented: true,  hidden: false, cat: "core", category: "modules"},
 
     /* Content */
@@ -351,10 +359,11 @@ Core.prototype.init = async function() {
         this.showContentErrors({plugins: bdpluginErrors, themes: bdthemeErrors});
     }
 
-    // if (!DataStore.getBDData(bbdVersion)) {
-    //     BdApi.alert("BBD Updated!", ["Lots of things were fixed in this update like Public Servers, Minimal Mode, Dark Mode and 24 Hour Timestamps.", BdApi.React.createElement("br"), BdApi.React.createElement("br"), "Feel free to test them all out!"]);
-    //     DataStore.setBDData(bbdVersion, true);
-    // }
+    const previousVersion = DataStore.getBDData("version");
+    if (bbdVersion > previousVersion) {
+        if (bbdChangelog) this.showChangelogModal(bbdChangelog);
+        DataStore.setBDData("version", bbdVersion);
+    }
 };
 
 Core.prototype.checkForGuilds = function() {
@@ -455,7 +464,6 @@ Core.prototype.inject24Hour = function() {
         return data.returnValue = data.returnValue.replace(matched[0], `${matched[1] === "12" ? "12" : parseInt(matched[1]) + 12}:${matched[2]}`);
     };
 
-
     const cancelCozy = Utils.monkeyPatch(BDV2.TimeFormatter, "calendarFormat", {after: convert}); // Called in Cozy mode
     const cancelCompact = Utils.monkeyPatch(BDV2.TimeFormatter, "dateFormat", {after: convert}); // Called in Compact mode
     this.cancel24Hour = () => {cancelCozy(); cancelCompact();}; // Cancel both
@@ -463,16 +471,19 @@ Core.prototype.inject24Hour = function() {
 
 Core.prototype.injectColoredText = function() {
     if (this.cancelColoredText) return;
-    if (!BDV2.MessageContentComponent || !BDV2.MessageContentComponent.prototype) return;
+    if (!BDV2.MessageComponent) return;
 
-    this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: (data) => {
+    this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageComponent, "default", {before: (data) => {
         if (!settingsCookie["bda-gs-7"]) return;
-		Utils.monkeyPatch(data.returnValue.props, "children", {silent: true, after: ({returnValue}) => {
-			const markup = returnValue.props.children[1];
-			const roleColor = data.thisObject.props.message.colorString;
-			if (markup && roleColor) markup.props.style = {color: roleColor};
-			return returnValue;
-		}});
+        const props = data.methodArguments[0];
+        const messageContent = props.childrenMessageContent;
+        const roleColor = messageContent.props.message.colorString || "";
+        const originalType = messageContent.type.type;
+        props.childrenMessageContent.type.type = function() {
+            const returnValue = originalType(...arguments);
+            returnValue.props.style = {color: roleColor};
+            return returnValue;
+        };
     }});
 };
 
@@ -624,6 +635,62 @@ Core.prototype.showToast = function(content, options = {}) {
     }, timeout);
 };
 
+Core.prototype.showChangelogModal = function(options = {}) {
+    const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
+    const ChangelogClasses = BdApi.findModuleByProps("fixed", "improved");
+    const TextElement = BdApi.findModuleByProps("Sizes", "Weights");
+    const FlexChild = BdApi.findModuleByProps("Child");
+    const Titles = BdApi.findModuleByProps("Tags", "default");
+    const Changelog = BdApi.findModule(m => m.defaultProps && m.defaultProps.selectable == false);
+    const MarkdownParser = BdApi.findModuleByProps("defaultRules", "parse");
+    if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return;
+
+    const {image = "https://repository-images.githubusercontent.com/105473537/957b5480-7c26-11e9-8401-50fa820cbae5", description = "", changes = [], title = "BandagedBD", subtitle = `v${bbdVersion}`, footer} = options;
+    const ce = BdApi.React.createElement;
+    const changelogItems = [ce("img", {src: image})];
+    if (description) changelogItems.push(ce("p", null, MarkdownParser.parse(description)));
+    for (let c = 0; c < changes.length; c++) {
+        const entry = changes[c];
+        const type = ChangelogClasses[entry.type] ? ChangelogClasses[entry.type] : ChangelogClasses.added;
+        const margin = c == 0 ? ChangelogClasses.marginTop : "";
+        changelogItems.push(ce("h1", {className: `${type} ${margin}`,}, entry.title));
+        const list = ce("ul", null, entry.items.map(i => ce("li", null, MarkdownParser.parse(i))));
+        changelogItems.push(list);
+    }
+    const renderHeader = function() {
+        return ce(FlexChild.Child, {grow: 1, shrink: 1},
+            ce(Titles.default, {tag: Titles.Tags.H4}, title),
+            ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY, className: ChangelogClasses.date}, subtitle)
+        );
+    };
+
+    const renderFooter = () => {
+        const Anchor = BdApi.findModule(m => m.displayName == "Anchor");
+        const AnchorClasses = BdApi.findModuleByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
+        const joinSupportServer = (click) => {
+            click.preventDefault();
+            click.stopPropagation();
+            ModalStack.pop();
+            BDV2.joinBD2();
+        };
+        const supportLink = Anchor ? ce(Anchor, {onClick: joinSupportServer}, "Join our Discord Server.") : ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
+        const defaultFooter = ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY}, "Need support? ", supportLink);
+        return ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter);
+    };
+
+    ModalStack.push(function(props) {
+        return ce(Changelog, Object.assign({
+            className: ChangelogClasses.container,
+            selectable: true,
+            onScroll: _ => _,
+            onClose: _ => _,
+            renderHeader: renderHeader,
+            renderFooter: renderFooter,
+            children: changelogItems
+        }, props));
+    });
+};
+
 
 /* BetterDiscordApp EmoteModule JavaScript
  * Version: 1.5
@@ -714,72 +781,67 @@ EmoteModule.prototype.init = async function () {
     await this.getBlacklist();
     await this.loadEmoteData(emoteInfo);
 
-    while (!BDV2.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
+    while (!BDV2.MessageComponent) await new Promise(resolve => setTimeout(resolve, 100));
 
     if (this.cancelEmoteRender) return;
-    this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageContentComponent.prototype, "render", {after: ({returnValue}) => {
-		Utils.monkeyPatch(returnValue.props, "children", {silent: true, after: ({returnValue}) => {
-            if (this.categories.length == 0) return;
-			const markup = returnValue.props.children[1];
-			if (!markup.props.children) return;
-            const nodes = Utils.getNestedProp(returnValue, "props.children.1.props.children.1.props.children.props.children.0");
-			if (!nodes || !nodes.length) return;
-			for (let n = 0; n < nodes.length; n++) {
-				const node = nodes[n];
-				if (typeof(node) !== "string") continue;
-                const words = node.split(/([^\s]+)([\s]|$)/g);
-				for (let c = 0, clen = this.categories.length; c < clen; c++) {
-					for (let w = 0, wlen = words.length; w < wlen; w++) {
-                        let emote = words[w];
-						let emoteSplit = emote.split(":");
-						let emoteName = emoteSplit[0];
-						let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
-						let emoteOverride = emoteModifier.slice(0);
+    this.cancelEmoteRender = Utils.monkeyPatch(BDV2.MessageComponent, "default", {before: ({methodArguments}) => {
+        const nodes = methodArguments[0].childrenMessageContent.props.content;
+        if (!nodes || !nodes.length) return;
+        for (let n = 0; n < nodes.length; n++) {
+            const node = nodes[n];
+            if (typeof(node) !== "string") continue;
+            const words = node.split(/([^\s]+)([\s]|$)/g);
+            for (let c = 0, clen = this.categories.length; c < clen; c++) {
+                for (let w = 0, wlen = words.length; w < wlen; w++) {
+                    let emote = words[w];
+                    let emoteSplit = emote.split(":");
+                    let emoteName = emoteSplit[0];
+                    let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
+                    let emoteOverride = emoteModifier.slice(0);
 
-						if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
-						if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
-						if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
-						else emoteModifier = emoteOverride;
+                    if (emoteName.length < 4 || bemotes.includes(emoteName)) continue;
+                    if (!this.modifiers.includes(emoteModifier) || !settingsCookie["bda-es-8"]) emoteModifier = "";
+                    if (!this.overrides.includes(emoteOverride)) emoteOverride = "";
+                    else emoteModifier = emoteOverride;
 
-						let current = this.categories[c];
-						if (emoteOverride === "twitch") {
-							if (window.bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
-							else if (window.bdEmotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
-						}
-						else if (emoteOverride === "bttv") {
-							if (window.bdEmotes.BTTV[emoteName]) current = "BTTV";
-							else if (window.bdEmotes.BTTV2[emoteName]) current = "BTTV2";
-						}
-						else if (emoteOverride === "ffz") {
-							if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
-						}
+                    let current = this.categories[c];
+                    if (emoteOverride === "twitch") {
+                        if (window.bdEmotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
+                        else if (window.bdEmotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
+                    }
+                    else if (emoteOverride === "bttv") {
+                        if (window.bdEmotes.BTTV[emoteName]) current = "BTTV";
+                        else if (window.bdEmotes.BTTV2[emoteName]) current = "BTTV2";
+                    }
+                    else if (emoteOverride === "ffz") {
+                        if (window.bdEmotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
+                    }
 
-						if (!window.bdEmotes[current][emoteName] || !settingsCookie[window.bdEmoteSettingIDs[current]]) continue;
-						const results = nodes[n].match(new RegExp(`([\\s]|^)${Utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
-                        if (!results) continue;
-						const pre = nodes[n].substring(0, results.index + results[1].length);
-						const post = nodes[n].substring(results.index + results[0].length - results[2].length);
-						nodes[n] = pre;
-						const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
-						nodes.splice(n + 1, 0, post);
-						nodes.splice(n + 1, 0, emoteComponent);
-					}
-				}
-			}
-			const onlyEmotes = nodes.every(r => {
-				if (typeof(r) == "string" && r.replace(/\s*/, "") == "") return true;
-				else if (r.type && r.type.name == "BDEmote") return true;
-				else if (r.props && r.props.children && r.props.children.props && r.props.children.props.emojiName) return true;
-				return false;
-			});
-			if (!onlyEmotes) return;
+                    if (!window.bdEmotes[current][emoteName] || !settingsCookie[window.bdEmoteSettingIDs[current]]) continue;
+                    const results = nodes[n].match(new RegExp(`([\\s]|^)${Utils.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
+                    if (!results) continue;
+                    const pre = nodes[n].substring(0, results.index + results[1].length);
+                    const post = nodes[n].substring(results.index + results[0].length - results[2].length);
+                    nodes[n] = pre;
+                    const emoteComponent = BDV2.react.createElement(BDEmote, {name: emoteName, url: window.bdEmotes[current][emoteName], modifier: emoteModifier});
+                    nodes.splice(n + 1, 0, post);
+                    nodes.splice(n + 1, 0, emoteComponent);
+                }
+            }
+        }
+        const onlyEmotes = nodes.every(r => {
+            if (typeof(r) == "string" && r.replace(/\s*/, "") == "") return true;
+            else if (r.type && r.type.name == "BDEmote") return true;
+            else if (r.props && r.props.children && r.props.children.props && r.props.children.props.emojiName) return true;
+            return false;
+        });
+        if (!onlyEmotes) return;
 
-			for (let node of nodes) {
-				if (typeof(node) != "object") continue;
-				if (node.type.name == "BDEmote") node.props.jumboable = true;
-				else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
-			}
-		}});
+        for (let node of nodes) {
+            if (typeof(node) != "object") continue;
+            if (node.type.name == "BDEmote") node.props.jumboable = true;
+            else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
+        }
     }});
 };
 
@@ -1240,7 +1302,7 @@ var Utils = class {
 
     static monkeyPatch(what, methodName, options) {
         const {before, after, instead, once = false, silent = false, force = false} = options;
-        const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
+        const displayName = options.displayName || what.displayName || what[methodName].displayName || what.name || what.constructor.displayName || what.constructor.name;
         if (!silent) console.log("patch", methodName, "of", displayName); // eslint-disable-line no-console
         if (!what[methodName]) {
             if (force) what[methodName] = function() {};
@@ -1273,7 +1335,8 @@ var Utils = class {
         };
         what[methodName].__monkeyPatched = true;
         if (!what[methodName].__originalMethod) what[methodName].__originalMethod = origMethod;
-        what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
+        what[methodName].displayName = displayName;
+        what[methodName].toString = function() {return what[methodName].__originalMethod.toString();};
         return cancel;
     }
 
@@ -2570,6 +2633,12 @@ class V2 {
         BdApi.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
     }
 
+    joinBD1() {this.InviteActions.acceptInviteAndTransitionToInviteChannel("0Tmfo5ZbORCRqbAd");}
+    leaveBD1() {this.GuildActions.leaveGuild("86004744966914048");}
+
+    joinBD2() {this.InviteActions.acceptInviteAndTransitionToInviteChannel("2HScm8j");}
+    leaveBD2() {this.GuildActions.leaveGuild("280806472928198656");}
+
     get react() {return this.internal.react;}
     get reactDom() {return this.internal.reactDom;}
     get reactComponent() {return this.internal.react.Component;}
@@ -2583,9 +2652,12 @@ class V2 {
 	}
 
     get MessageContentComponent() {return this.WebpackModules.find(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
+    get MessageComponent() {return this.WebpackModules.find(m => m.default && m.default.displayName && m.default.displayName == "Message");}
     get TimeFormatter() {return this.WebpackModules.findByUniqueProperties(["dateFormat"]);}
     get TooltipWrapper() {return this.WebpackModules.findByDisplayName("Tooltip");}
     get NativeModule() {return this.WebpackModules.findByUniqueProperties(["setBadge"]);}
+    get InviteActions() {return this.WebpackModules.findByUniqueProperties(["acceptInvite"]);}
+    get GuildActions() {return this.WebpackModules.findByUniqueProperties(["leaveGuild"]);}
     get Tooltips() {return this.WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
 
@@ -2606,7 +2678,7 @@ class V2 {
         if (!TabBar || !Anchor) return;
         this.socialPatch = BdApi.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
             const children = data.returnValue.props.children;
-            if (!children || !children.length) return;
+            if (!children || !children.length || children.length < 3) return;
             if (children[children.length - 3].type.displayName !== "Separator") return;
             if (!children[children.length - 2].type.toString().includes("socialLinks")) return;
             const original = children[children.length - 2].type;
@@ -2619,7 +2691,6 @@ class V2 {
             };
             children[children.length - 2].type = newOne;
 
-
             const BBDLink = BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BandagedBD", target: "_blank"}, "BandagedBD");
             const AuthorLink = BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/ZackRauen", title: "Zerebos", target: "_blank"}, "Zerebos");
             const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, [BBDLink, ` ${bbdVersion} by `, AuthorLink]);
@@ -2627,7 +2698,6 @@ class V2 {
             const originalVersions = children[children.length - 1].type;
             children[children.length - 1].type = function() {
                 const returnVal = originalVersions(...arguments);
-                console.log(returnVal);
                 returnVal.props.children.push(additional);
                 return returnVal;
             };
@@ -3987,31 +4057,7 @@ class V2_SettingsPanel_Sidebar {
     }
 
     get component() {
-        return BDV2.react.createElement(
-            "span",
-            null,
-            BDV2.react.createElement(V2Components.SideBar, {onClick: this.onClick, headerText: "Bandaged BD", items: this.items}),
-            BDV2.react.createElement(
-                "div",
-                {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
-                `BD v${bdConfig.version} by `,
-                BDV2.react.createElement(
-                    "a",
-                    {href: "https://github.com/Jiiks/", target: "_blank"},
-                    "Jiiks"
-                )
-            ),
-            BDV2.react.createElement(
-                "div",
-                {style: {fontSize: "12px", fontWeight: "600", color: "#72767d", padding: "2px 10px"}},
-                `BBD v${bbdVersion} by `,
-                BDV2.react.createElement(
-                    "a",
-                    {href: "https://github.com/rauenzi/", target: "_blank"},
-                    "Zerebos"
-                )
-            )
-        );
+        return BDV2.react.createElement("span", null, BDV2.react.createElement(V2Components.SideBar, {onClick: this.onClick, headerText: "Bandaged BD", items: this.items}));
     }
 
     get root() {
