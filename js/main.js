@@ -1332,10 +1332,13 @@ var Utils = class {
             if (once) cancel();
             return data.returnValue;
         };
+        Object.assign(what[methodName], origMethod);
         what[methodName].__monkeyPatched = true;
-        if (!what[methodName].__originalMethod) what[methodName].__originalMethod = origMethod;
         what[methodName].displayName = displayName;
-        what[methodName].toString = function() {return what[methodName].__originalMethod.toString();};
+        if (!what[methodName].__originalMethod) {
+            what[methodName].__originalMethod = origMethod;
+            what[methodName].toString = function() {return origMethod.toString();};
+        }
         return cancel;
     }
 
