@@ -476,13 +476,17 @@ Core.prototype.injectColoredText = function() {
     this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageComponent, "default", {before: (data) => {
         const props = data.methodArguments[0];
         const messageContent = props.childrenMessageContent;
-        const roleColor = settingsCookie["bda-gs-7"] ? messageContent.props.message.colorString || "" : "";
+        
         const originalType = messageContent.type.type;
+        if (originalType.__originalMethod) return; // Don't patch again
         messageContent.type.type = function(props) {
             const returnValue = originalType(props);
+            const roleColor = settingsCookie["bda-gs-7"] ? props.message.colorString || "" : "";
             returnValue.props.style = {color: roleColor};
             return returnValue;
         };
+
+        messageContent.type.type.__originalMethod = originalType;
     }});
 };
 
