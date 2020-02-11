@@ -478,8 +478,8 @@ Core.prototype.injectColoredText = function() {
         const messageContent = props.childrenMessageContent;
         const roleColor = settingsCookie["bda-gs-7"] ? messageContent.props.message.colorString || "" : "";
         const originalType = messageContent.type.type;
-        props.childrenMessageContent.type.type = function() {
-            const returnValue = originalType(...arguments);
+        messageContent.type.type = function(props) {
+            const returnValue = originalType(props);
             returnValue.props.style = {color: roleColor};
             return returnValue;
         };
