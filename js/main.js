@@ -475,8 +475,10 @@ Core.prototype.injectColoredText = function() {
 
     this.cancelColoredText = Utils.monkeyPatch(BDV2.MessageComponent, "default", {before: (data) => {
         const props = data.methodArguments[0];
+        if (!props || !props.childrenMessageContent) return;
         const messageContent = props.childrenMessageContent;
-        
+
+        if (!messageContent.type || !messageContent.type.type || messageContent.type.type.displayName != "MessageContent") return;
         const originalType = messageContent.type.type;
         if (originalType.__originalMethod) return; // Don't patch again
         messageContent.type.type = function(props) {
@@ -487,6 +489,7 @@ Core.prototype.injectColoredText = function() {
         };
 
         messageContent.type.type.__originalMethod = originalType;
+        Object.assign(messageContent.type.type, originalType);
     }});
 };
 
