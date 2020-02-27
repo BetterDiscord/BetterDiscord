@@ -1,6 +1,7 @@
 import {settingsCookie} from "./0globals";
 import BDV2 from "./v2";
 import webpackModules from "./webpackModules";
+import Utils from "./utils";
 
 import V2C_PublicServers from "./react/publicServers";
 import Layer from "./react/layer";
@@ -66,8 +67,8 @@ export default new class V2_PublicServers {
 
     addButton() {
         if (this.guildPatch) return;
-        const GuildList = webpackModules.findModuleByDisplayName("Guilds");
-        this.guildPatch = webpackModules.monkeyPatch(GuildList.prototype, "render", {after: this._appendButton});
+        const GuildList = webpackModules.findByDisplayName("Guilds");
+        this.guildPatch = Utils.monkeyPatch(GuildList.prototype, "render", {after: this._appendButton});
         this._appendButton();
     }
 

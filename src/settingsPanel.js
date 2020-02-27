@@ -8,6 +8,7 @@ import BDEvents from "./bdEvents";
 import pluginModule from "./pluginModule";
 import themeModule from "./themeModule";
 import coloredText from "./coloredText";
+import tfHour from "./24hour";
 
 import publicServersModule from "./publicServers";
 import voiceMode from "./voiceMode";
@@ -144,7 +145,7 @@ export default new class V2_SettingsPanel {
             else $("#app-mount").removeClass("bda-dark");
         }
 
-        if (enabled && id == "bda-gs-6") coloredText.inject24Hour();
+        if (enabled && id == "bda-gs-6") tfHour.inject24Hour();
 
         if (id == "bda-gs-7") {
             if (enabled) coloredText.injectColoredText();
@@ -196,7 +197,7 @@ export default new class V2_SettingsPanel {
         this.saveSettings();
     }
 
-    initializeSettings() {
+    async initializeSettings() {
 
         // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
@@ -204,7 +205,7 @@ export default new class V2_SettingsPanel {
         if (settingsCookie["bda-gs-1"]) publicServersModule.addButton();
         if (settingsCookie["bda-gs-4"]) voiceMode.enable();
         if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
-        if (settingsCookie["bda-gs-6"]) coloredText.inject24Hour();
+        if (settingsCookie["bda-gs-6"]) tfHour.inject24Hour();
         if (settingsCookie["bda-gs-7"]) coloredText.injectColoredText();
         if (settingsCookie["bda-es-4"]) emoteModule.autoCapitalize();
         if (settingsCookie["fork-ps-4"]) ClassNormalizer.start();
@@ -222,7 +223,7 @@ export default new class V2_SettingsPanel {
     saveSettings() {
         DataStore.setSettingGroup("settings", settingsCookie);
     }
-    
+
     loadSettings() {
         Object.assign(settingsCookie, DataStore.getSettingGroup("settings"));
     }
