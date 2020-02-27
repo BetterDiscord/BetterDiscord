@@ -9,13 +9,13 @@
 /* Localstorage fix */
 (function() {
 
-    let __fs = window.require("fs");
-    let __process = window.require("process");
-    let __platform = __process.platform;
-    let __dataPath = (__platform === "win32" ? __process.env.APPDATA : __platform === "darwin" ? __process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config") + "/BetterDiscord/";
-    let localStorageFile = "localStorage.json";
+    const __fs = window.require("fs");
+    const __process = window.require("process");
+    const __platform = __process.platform;
+    const __dataPath = (__platform === "win32" ? __process.env.APPDATA : __platform === "darwin" ? __process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config") + "/BetterDiscord/";
+    const localStorageFile = "localStorage.json";
 
-    let __data = {};
+    const __data = {};
     if (__fs.existsSync(`${__dataPath}${localStorageFile}`)) {
         try {
             __data = JSON.parse(__fs.readFileSync(`${__dataPath}${localStorageFile}`));
@@ -33,7 +33,7 @@
         }
     }
 
-    var __ls = __data;
+    const __ls = __data;
     __ls.setItem = function(i, v) {
         __ls[i] = v;
         this.save();
@@ -45,7 +45,7 @@
         __fs.writeFileSync(`${__dataPath}${localStorageFile}`, JSON.stringify(this), null, 4);
     };
 
-    var __proxy = new Proxy(__ls, {
+    const __proxy = new Proxy(__ls, {
         set: function(target, name, val) {
             __ls[name] = val;
             __ls.save();
@@ -60,7 +60,7 @@
 })();
 
 (() => {
-    let v2Loader = document.createElement("div");
+    const v2Loader = document.createElement("div");
     v2Loader.className = "bd-loaderv2";
     v2Loader.title = "BandagedBD is loading...";
     document.body.appendChild(v2Loader);
@@ -182,13 +182,13 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.23";
+var bbdVersion = "0.2.24";
 var bbdChangelog = {
-    description: "Don't be shocked, this modal is supposed to be here.",
+    description: "Mostly behind the scenes changes here.",
     changes: [
-        {title: "What's New?", items: ["**BandagedBD will now keep you updated with changelogs!** I will try to only show a changelog when there's more than a tiny or internal change.", "**Twitter (@BandagedBD)** I created a Twitter to try and provide support and such for those without access to the server. https://Twitter.com/BandagedBD"]},
-        {title: "Fixes", type: "fixed", items: ["**Colored Text** option should work again.", "**Emotes** should show up in chat.", "Fixed a bug where BBD attempted to patch the TabBar module incorrectly. (Thanks, DevilBro)"]},
-        {title: "Minor Stuff", type: "improved", items: ["**Colour->Color.** Swapped to using English-US spelling by default to be consistent, and to potentially be prepared for localization.", "**Versions simplified.** The BandagedBD version now integrates into Discord's at the bottom-left of settings instead of randomly being a part of the setting list."]}
+        {title: "What's New?", items: ["**Dark Mode is back!** Or rather... it's toggleable again and no longer forced on.", "**Changes for developers!** Plugin and theme developers will now have more options to customize their plugin cards in their METAs and also a new META structure."]},
+        {title: "Fixes", type: "fixed", items: ["**Emote Menu** should now show both Twich Global emotes and your favorites, you should even be able to click on them again!"]},
+        {title: "Minor Stuff", type: "improved", items: ["**Clean Code.** Well not really. But BD's code is starting to be cleaned up to make it easier to maintain and better performing."]}
     ]
 };
 
@@ -206,7 +206,7 @@ var settings = {
     "Minimal Mode":               {id: "bda-gs-2",  info: "Hide elements and reduce the size of elements.",    implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Voice Mode":                 {id: "bda-gs-4",  info: "Only show voice chat",                              implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Hide Channels":              {id: "bda-gs-3",  info: "Hide channels in minimal mode",                     implemented: true,  hidden: false, cat: "core", category: "modules"},
-    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: false,  hidden: false, cat: "core", category: "modules"},
+    "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core", category: "modules"},
     "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Colored Text":               {id: "bda-gs-7",  info: "Make text color the same as role color",          implemented: true,  hidden: false, cat: "core", category: "modules"},
@@ -246,7 +246,7 @@ var defaultCookie = {
     "bda-gs-2": false,
     "bda-gs-3": false,
     "bda-gs-4": false,
-    "bda-gs-5": false,
+    "bda-gs-5": true,
     "bda-gs-6": false,
     "bda-gs-7": false,
     "bda-gs-8": false,
@@ -987,8 +987,8 @@ var bemotes = [];
 
 EmoteModule.prototype.autoCapitalize = function () {
     if (!settingsCookie["bda-es-4"] || this.autoCapitalizeActive) return;
-    $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-1LDbYG textarea:first"), () => {
-        var text = $(".channelTextArea-1LDbYG textarea:first").val();
+    $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-rNsIhG textarea:first"), () => {
+        var text = $(".channelTextArea-rNsIhG textarea:first").val();
         if (text == undefined) return;
 
         var lastWord = text.split(" ").pop();
@@ -1136,7 +1136,7 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
         case "bda-qem-emojis":
             emojis.addClass("active");
             $(".emojiPicker-3m1S-j").show();
-            $(".emojiPicker-3m1S-j .search-bar-inner input, .emojiPicker-3m1S-j .search-bar-inner input").focus();
+            $(".emojiPicker-3m1S-j input").focus();
         break;
     }
     this.lastTab = id;
@@ -1145,8 +1145,16 @@ QuickEmoteMenu.prototype.switchQem = function(id) {
     emoteIcon.off();
     emoteIcon.on("click", function () {
         var emote = $(this).attr("title");
-        var ta = Utils.getTextArea();
-        Utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
+        const newTextarea = document.querySelector(`.${BDV2.slateEditorClasses.slateTextArea.split(" ")[0]}`);
+        if (newTextarea) {
+            const instance = BdApi.getInternalInstance(newTextarea);
+            const insert = Utils.getNestedProp(instance, "memoizedProps.children.props.editor.insertText");
+            if (insert) insert(` ${emote} `);
+        }
+        else {
+            var ta = Utils.getTextArea();
+            Utils.insertText(ta[0], ta.val().slice(-1) == " " ? ta.val() + emote : ta.val() + " " + emote);
+        }
     });
 };
 
@@ -1227,7 +1235,7 @@ var Utils = class {
     }
 
     static getTextArea() {
-        return $(".channelTextArea-1LDbYG textarea");
+        return $(".channelTextArea-rNsIhG textarea");
     }
 
     static insertText(textarea, text) {
@@ -2652,6 +2660,8 @@ class V2 {
     get reactDom() {return this.internal.reactDom;}
     get reactComponent() {return this.internal.react.Component;}
 
+    get anchorClasses() {return this.WebpackModules.findByUniqueProperties(["anchorUnderlineOnHover"]) || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};}
+    get slateEditorClasses() {return this.WebpackModules.findByUniqueProperties(["slateTextArea"]);}
     get messageClasses() {return this.WebpackModules.findByUniqueProperties(["message", "containerCozy"]);}
     get guildClasses() {
 		const guildsWrapper = this.WebpackModules.findByUniqueProperties(["wrapper", "unreadMentionsBar"]);
@@ -2669,6 +2679,19 @@ class V2 {
     get GuildActions() {return this.WebpackModules.findByUniqueProperties(["leaveGuild"]);}
     get Tooltips() {return this.WebpackModules.find(m => m.hide && m.show && !m.search && !m.submit && !m.search && !m.activateRagingDemon && !m.dismiss);}
     get KeyGenerator() {return this.WebpackModules.find(m => m.toString && /"binary"/.test(m.toString()));}
+    get LayerStack() {return this.WebpackModules.findByUniqueProperties(["popLayer"]);}
+    get UserStore() {return this.WebpackModules.findByUniqueProperties(["getCurrentUser"]);}
+    get ChannelStore() {return this.WebpackModules.findByUniqueProperties(["getChannel"]);}
+    get ChannelActions() {return this.WebpackModules.findByUniqueProperties(["openPrivateChannel"]);}
+    get PrivateChannelActions() {return this.WebpackModules.findByUniqueProperties(["selectPrivateChannel"]);}
+
+    openDM(userId) {
+        const selfId = this.UserStore.getCurrentUser().id;
+        if (selfId == userId) return;
+        const privateChannelId = this.ChannelStore.getDMFromUserId(userId);
+        if (privateChannelId) return this.PrivateChannelActions.selectPrivateChannel(privateChannelId);
+        this.ChannelActions.openPrivateChannel(selfId, userId);
+    }
 
     parseSettings(cat) {
         return Object.keys(settings).reduce((arr, key) => {
@@ -3732,19 +3755,19 @@ class V2C_PluginCard extends BDV2.reactComponent {
             }
 
             if (!settingsCookie["fork-ps-3"]) return;
-            var isHidden = (container, element) => {
+            const isHidden = (container, element) => {
 
-                let cTop = container.scrollTop;
-                let cBottom = cTop + container.clientHeight;
+                const cTop = container.scrollTop;
+                const cBottom = cTop + container.clientHeight;
 
-                let eTop = element.offsetTop;
-                let eBottom = eTop + element.clientHeight;
+                const eTop = element.offsetTop;
+                const eBottom = eTop + element.clientHeight;
 
                 return  (eTop < cTop || eBottom > cBottom);
             };
 
-            let self = $(BDV2.reactDom.findDOMNode(this));
-            let container = self.parents(".scroller");
+            const self = $(BDV2.reactDom.findDOMNode(this));
+            const container = self.parents(".scroller");
             if (!isHidden(container[0], self[0])) return;
             container.animate({
                 scrollTop: self.offset().top - container.offset().top + container.scrollTop() - 30
@@ -3763,15 +3786,22 @@ class V2C_PluginCard extends BDV2.reactComponent {
         return typeof value == "string" ? value : value.toString();
     }
 
+    makeLink(title, url) {
+        const props = {className: "bda-link bda-link-website", target: "_blank"};
+        if (typeof(url) == "string") props.href = url;
+        if (typeof(url) == "function") props.onClick = (event) => {event.preventDefault(); event.stopPropagation(); url();};
+        return BDV2.react.createElement("a", props, title);
+    }
+
     render() {
-        let self = this;
-        let {plugin} = this.props;
-        let name = this.getString(plugin.getName());
-        let author = this.getString(plugin.getAuthor());
-        let description = this.getString(plugin.getDescription());
-        let version = this.getString(plugin.getVersion());
-        let website = bdplugins[name].website;
-        let source = bdplugins[name].source;
+        
+        const self = this;
+        const {plugin} = this.props;
+        const name = this.getString(plugin.getName());
+        const author = this.getString(plugin.getAuthor());
+        const description = this.getString(plugin.getDescription());
+        const version = this.getString(plugin.getVersion());
+        const meta = bdplugins[name];
 
         if (this.state.settings) {
             try { self.settingsPanel = plugin.getSettingsPanel(); }
@@ -3789,6 +3819,31 @@ class V2C_PluginCard extends BDV2.reactComponent {
             );
         }
 
+        const links = [];
+        if (meta.website) links.push(this.makeLink("Website", meta.website));
+        if (meta.source) links.push(this.makeLink("Source", meta.source));
+        if (meta.invite) {
+            links.push(this.makeLink("Support Server", () => {
+                const tester = /\.gg\/(.*)$/;
+                let code = meta.invite;
+                if (tester.test(code)) code = code.match(tester)[1];
+                BDV2.LayerStack.popLayer();
+                BDV2.InviteActions.acceptInviteAndTransitionToInviteChannel(code);
+            }));
+        }
+        if (meta.donate) links.push(this.makeLink("Donate", meta.donate));
+        if (meta.patreon) links.push(this.makeLink("Patreon", meta.patreon));
+
+        const authorProps = {className: "bda-author"};
+        if (meta.authorLink || meta.authorId) {
+            authorProps.className += ` ${BDV2.anchorClasses.anchor} ${BDV2.anchorClasses.anchorUnderlineOnHover}`;
+            authorProps.target = "_blank";
+
+            if (meta.authorLink) authorProps.href = meta.authorLink;
+            if (meta.authorId) authorProps.onClick = () => {BDV2.LayerStack.popLayer(); BDV2.openDM(meta.authorId);};
+        }
+        
+
         return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bda-header"},
                     BDV2.react.createElement("span", {className: "bda-header-title"},
@@ -3796,7 +3851,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
                         " v",
                         BDV2.react.createElement("span", {className: "bda-version"}, version),
                         " by ",
-                        BDV2.react.createElement("span", {className: "bda-author"}, author)
+                        BDV2.react.createElement(meta.authorLink || meta.authorId ? "a" : "span", authorProps, author)
                     ),
                     BDV2.react.createElement("div", {className: "bda-controls"},
                         !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload"}), {className: "bd-reload-card", onClick: this.reload}),
@@ -3809,11 +3864,9 @@ class V2C_PluginCard extends BDV2.reactComponent {
             BDV2.react.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
                 BDV2.react.createElement("div", {className: "bda-description scroller"}, description)
             ),
-            (website || source || this.hasSettings) && BDV2.react.createElement("div", {className: "bda-footer"},
+            (links.length || this.hasSettings) && BDV2.react.createElement("div", {className: "bda-footer"},
                 BDV2.react.createElement("span", {className: "bda-links"},
-                    website && BDV2.react.createElement("a", {className: "bda-link bda-link-website", href: website, target: "_blank"}, "Website"),
-                    website && source && " | ",
-                    source && BDV2.react.createElement("a", {className: "bda-link bda-link-source", href: source, target: "_blank"}, "Source")
+                    ...(links.map((element, index) => index < links.length - 1 ? [element, " | "] : element).flat())
                 ),
                 this.hasSettings && BDV2.react.createElement("button", {onClick: this.showSettings, className: "bda-settings-button", disabled: !this.state.checked}, "Settings")
             )
@@ -3870,14 +3923,44 @@ class V2C_ThemeCard extends BDV2.reactComponent {
         this.onReload(this.props.theme.name);
     }
 
+    makeLink(title, url) {
+        const props = {className: "bda-link bda-link-website", target: "_blank"};
+        if (typeof(url) == "string") props.href = url;
+        if (typeof(url) == "function") props.onClick = (event) => {event.preventDefault(); event.stopPropagation(); url();};
+        return BDV2.react.createElement("a", props, title);
+    }
+
     render() {
-        let {theme} = this.props;
-        let name = theme.name;
-        let description = theme.description;
-        let version = theme.version;
-        let author = theme.author;
-        let website = bdthemes[name].website;
-        let source = bdthemes[name].source;
+        const {theme} = this.props;
+        const name = theme.name;
+        const description = theme.description;
+        const version = theme.version;
+        const author = theme.author;
+        const meta = bdthemes[name];
+
+        const links = [];
+        if (meta.website) links.push(this.makeLink("Website", meta.website));
+        if (meta.source) links.push(this.makeLink("Source", meta.source));
+        if (meta.invite) {
+            links.push(this.makeLink("Support Server", () => {
+                const tester = /\.gg\/(.*)$/;
+                let code = meta.invite;
+                if (tester.test(code)) code = code.match(tester)[1];
+                BDV2.LayerStack.popLayer();
+                BDV2.InviteActions.acceptInviteAndTransitionToInviteChannel(code);
+            }));
+        }
+        if (meta.donate) links.push(this.makeLink("Donate", meta.donate));
+        if (meta.patreon) links.push(this.makeLink("Patreon", meta.patreon));
+
+        const authorProps = {className: "bda-author"};
+        if (meta.authorLink || meta.authorId) {
+            authorProps.className += ` ${BDV2.anchorClasses.anchor} ${BDV2.anchorClasses.anchorUnderlineOnHover}`;
+            authorProps.target = "_blank";
+
+            if (meta.authorLink) authorProps.href = meta.authorLink;
+            if (meta.authorId) authorProps.onClick = () => {BDV2.LayerStack.popLayer(); BDV2.openDM(meta.authorId);};
+        }
 
         return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bda-header"},
@@ -3886,7 +3969,7 @@ class V2C_ThemeCard extends BDV2.reactComponent {
                         " v",
                         BDV2.react.createElement("span", {className: "bda-version"}, version),
                         " by ",
-                        BDV2.react.createElement("span", {className: "bda-author"}, author)
+                        BDV2.react.createElement(meta.authorLink || meta.authorId ? "a" : "span", authorProps, author)
                     ),
                     BDV2.react.createElement("div", {className: "bda-controls"},
                         !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload"}), {className: "bd-reload-card", onClick: this.reload}),
@@ -3899,11 +3982,9 @@ class V2C_ThemeCard extends BDV2.reactComponent {
             BDV2.react.createElement("div", {className: "bda-description-wrap scroller-wrap fade"},
                 BDV2.react.createElement("div", {className: "bda-description scroller"}, description)
             ),
-            (website || source) && BDV2.react.createElement("div", {className: "bda-footer"},
+            (!!links.length) && BDV2.react.createElement("div", {className: "bda-footer"},
                 BDV2.react.createElement("span", {className: "bda-links"},
-                    website && BDV2.react.createElement("a", {className: "bda-link", href: website, target: "_blank"}, "Website"),
-                    website && source && " | ",
-                    source && BDV2.react.createElement("a", {className: "bda-link", href: source, target: "_blank"}, "Source")
+                    ...(links.map((element, index) => index < links.length - 1 ? [element, " | "] : element).flat())
                 )
             )
         );
@@ -4209,10 +4290,10 @@ class V2_SettingsPanel {
             else voiceMode.disable();
         }
 
-        // if (id == "bda-gs-5") {
-        //     if (enabled) $("#app-mount").addClass("bda-dark");
-        //     else $("#app-mount").removeClass("bda-dark");
-        // }
+        if (id == "bda-gs-5") {
+            if (enabled) $("#app-mount").addClass("bda-dark");
+            else $("#app-mount").removeClass("bda-dark");
+        }
 
         if (enabled && id == "bda-gs-6") mainCore.inject24Hour();
 
@@ -4273,7 +4354,7 @@ class V2_SettingsPanel {
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
         if (settingsCookie["bda-gs-1"]) publicServersModule.addButton();
         if (settingsCookie["bda-gs-4"]) voiceMode.enable();
-        // if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
+        if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
         if (settingsCookie["bda-gs-6"]) mainCore.inject24Hour();
         if (settingsCookie["bda-gs-7"]) mainCore.injectColoredText();
         if (settingsCookie["bda-es-4"]) emoteModule.autoCapitalize();
