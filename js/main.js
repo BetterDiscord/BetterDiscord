@@ -15,7 +15,7 @@
     const __dataPath = (__platform === "win32" ? __process.env.APPDATA : __platform === "darwin" ? __process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config") + "/BetterDiscord/";
     const localStorageFile = "localStorage.json";
 
-    const __data = {};
+    let __data = {};
     if (__fs.existsSync(`${__dataPath}${localStorageFile}`)) {
         try {
             __data = JSON.parse(__fs.readFileSync(`${__dataPath}${localStorageFile}`));
