@@ -124,7 +124,7 @@ Core.prototype.checkForGuilds = function() {
 
 Core.prototype.injectExternals = async function() {
     await Utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
-    if (require.original) window.require = require.original;
+    if (window.require.original) window.require = window.require.original;
 };
 
 Core.prototype.initSettings = function () {

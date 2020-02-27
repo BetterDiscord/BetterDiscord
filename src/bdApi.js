@@ -37,7 +37,7 @@ BdApi.setWindowPreference = function(key, value) {
     const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
-    delete require.cache[this.WindowConfigFile];
+    delete __non_webpack_require__.cache[this.WindowConfigFile];
     fs.writeFileSync(this.WindowConfigFile, JSON.stringify(prefs, null, 4));
 };
 

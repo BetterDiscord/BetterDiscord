@@ -192,7 +192,7 @@ export default new class ContentManager {
         const isPlugin = type === "plugin";
         const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
         try {
-            delete require.cache[require.resolve(path.resolve(baseFolder, filename))];
+            delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(baseFolder, filename))];
         }
         catch (err) {return {name: filename, file: filename, message: "Could not be unloaded.", error: {message: err.message, stack: err.stack}};}
     }
@@ -200,7 +200,7 @@ export default new class ContentManager {
     isLoaded(filename, type) {
         const isPlugin = type === "plugin";
         const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
-        try {require.cache[require.resolve(path.resolve(baseFolder, filename))];}
+        try {__non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(baseFolder, filename))];}
         catch (err) {return false;}
         return true;
     }
