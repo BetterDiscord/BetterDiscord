@@ -209,14 +209,17 @@ var settings = {
     "Dark Mode":                  {id: "bda-gs-5",  info: "Make certain elements dark by default(wip)",        implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Voice Disconnect":           {id: "bda-dc-0",  info: "Disconnect from voice server when closing Discord", implemented: true,  hidden: false, cat: "core", category: "modules"},
     "24 Hour Timestamps":         {id: "bda-gs-6",  info: "Replace 12hr timestamps with proper ones",          implemented: true,  hidden: false, cat: "core", category: "modules"},
-    "Colored Text":               {id: "bda-gs-7",  info: "Make text color the same as role color",          implemented: true,  hidden: false, cat: "core", category: "modules"},
+    "Colored Text":               {id: "bda-gs-7",  info: "Make text color the same as role color",            implemented: true,  hidden: false, cat: "core", category: "modules"},
     "Normalize Classes":          {id: "fork-ps-4", info: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)", implemented: true,  hidden: false, cat: "core", category: "modules"},
 
     /* Content */
-    "Content Error Modal":        {id: "fork-ps-1", info: "Shows a modal with plugin/theme errors", implemented: true,  hidden: false, cat: "core", category: "content manager"},
+    "Content Error Modal":        {id: "fork-ps-1", info: "Shows a modal with plugin/theme errors",            implemented: true,  hidden: false, cat: "core", category: "content manager"},
     "Show Toasts":                {id: "fork-ps-2", info: "Shows a small notification for important information", implemented: true,  hidden: false, cat: "core", category: "content manager"},
     "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "core", category: "content manager"},
     "Automatic Loading":          {id: "fork-ps-5", info: "Automatically loads, reloads, and unloads plugins and themes", implemented: true,  hidden: false, cat: "core", category: "content manager"},
+
+    /* Donors */
+    "BBD Beta":                   {id: "fork-beta", info: "Gives access to BBD beta. (Requires full restart after changing.)", implemented: true,  hidden: true, cat: "core", category: "donors"},
 
     /* Developer */
     "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core", category: "developer settings"},
@@ -271,7 +274,8 @@ var defaultCookie = {
     "fork-es-2": false,
     "fork-es-3": true,
     "fork-wp-1": false,
-    "fork-wp-2": false
+    "fork-wp-2": false,
+    "fork-beta": false
 };
 
 
@@ -4270,6 +4274,19 @@ class V2_SettingsPanel {
         //     else $("body").removeClass("bd-blue");
         // }
 
+        if (id == "fork-beta") {
+            try {
+                const fs = require("fs");
+                const path = require("path");
+                const configPath = path.join(DiscordNative.process.remote.resourcesPath, "app", "betterdiscord", "config.json");
+                const config = require(configPath);
+                if (enabled) config.branch = "modularize";
+                else config.branch = "master";
+                fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+            }
+            catch (err) {console.error(err);}
+        }
+
         if (id == "bda-gs-2") {
             if (enabled) $("body").addClass("bd-minimal");
             else $("body").removeClass("bd-minimal");
@@ -4348,6 +4365,15 @@ class V2_SettingsPanel {
     }
 
     initializeSettings() {
+        const checkForBetaAccess = async () => {
+            const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
+            const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
+            const inServer = SortedGuildStore.getFlattenedGuildIds().includes("292141134614888448");
+            const userId = BDV2.UserStore.getCurrentUser().id;
+            const member = GuildMemberStore.getMember("292141134614888448", userId);
+            const hasRole = inServer && member ? member.roles.includes("452687773678436354") : false;
+            if (hasRole) settings["BBD Beta"].hidden = false;
+        };
 
         // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
@@ -4366,6 +4392,8 @@ class V2_SettingsPanel {
         }
 
         if (settingsCookie["bda-gs-8"]) dMode.enable(settingsCookie["fork-dm-1"]);
+
+        checkForBetaAccess();
 
         mainCore.saveSettings();
     }
