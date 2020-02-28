@@ -3,45 +3,52 @@ import loadingIcon from "./loadingIcon";
 localStorageFix();
 loadingIcon();
 
-import Core from "./core";
+const deprecateGlobal = (key, value) => {
+    Object.defineProperty(window, key, {
+        get() {
+            Utils.warn("Deprecation Notice", `"${key}" may be removed in future versions. Please only use BdApi.`);
+            return value;
+        }
+    });  
+};
+
+
+import * as Globals from "./0globals";
+
+const globalKeys = Object.keys(Globals);
+for (const key of globalKeys) deprecateGlobal(key, Globals[key]);
+
+
 import BdApi from "./bdApi";
+import BDV2 from "./v2";
+import pluginModule from "./pluginModule";
+import themeModule from "./themeModule";
+import Utils from "./utils";
+import BDEvents from "./bdEvents";
+import settingsPanel from "./settingsPanel";
+import DataStore from "./dataStore";
+import emoteModule from "./emoteModule";
+import ContentManager from "./contentManager";
+import ClassNormalizer from "./classNormalizer";
+
+deprecateGlobal("BDV2", BDV2);
+deprecateGlobal("pluginModule", pluginModule);
+deprecateGlobal("themeModule", themeModule);
+deprecateGlobal("Utils", Utils);
+deprecateGlobal("BDEvents", BDEvents);
+deprecateGlobal("settingsPanel", settingsPanel);
+deprecateGlobal("DataStore", DataStore);
+deprecateGlobal("emoteModule", emoteModule);
+deprecateGlobal("ContentManager", ContentManager);
+deprecateGlobal("ClassNormalizer", ClassNormalizer);
 
 window.BdApi = BdApi;
 // DataStore
-// BDEvents
-// settingsPanel
 // emoteModule
-// quickEmoteMenu
-// voiceMode
-// pluginModule
-// themeModule
-// dMode
-// publicServersModule
-// minSupportedVersion
-// bbdVersion
-// bbdChangelog
-// mainCore
-// settings
-// defaultCookie
-// settingsCookie
-// bdpluginErrors
-// bdthemeErrors
-// bdConfig
-// bemotes
-// Utils
 // ContentManager
-// pluginCookie
-// themeCookie
-// devMode
 // ClassNormalizer
-// BDV2
-// localStorage
-// bdEmotes
-// bdEmoteSettingIDs
-// bdthemes
-// bdplugins
-// emotePromise
 
+import Core from "./core";
 export default Core;
 
 // function patchModuleLoad() {

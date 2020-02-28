@@ -33,6 +33,9 @@ export const settings = {
     "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "core", category: "content manager"},
     "Automatic Loading":          {id: "fork-ps-5", info: "Automatically loads, reloads, and unloads plugins and themes", implemented: true,  hidden: false, cat: "core", category: "content manager"},
 
+    /* Donors */
+    "BBD Beta":                   {id: "fork-beta", info: "Gives access to BBD beta. (Requires full restart after changing.)", implemented: true,  hidden: true, cat: "core", category: "donors"},
+
     /* Developer */
     "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core", category: "developer settings"},
     "Copy Selector":			  {id: "fork-dm-1", info: "Adds a \"Copy Selector\" option to context menus when developer mode is active", implemented: true,  hidden: false, cat: "core", category: "developer settings"},
@@ -86,7 +89,8 @@ export const defaultCookie = {
     "fork-es-2": false,
     "fork-es-3": true,
     "fork-wp-1": false,
-    "fork-wp-2": false
+    "fork-wp-2": false,
+    "fork-beta": true
 };
 
 

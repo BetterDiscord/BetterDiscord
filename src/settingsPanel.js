@@ -120,6 +120,19 @@ export default new class V2_SettingsPanel {
         //     else $("body").removeClass("bd-blue");
         // }
 
+        if (id == "fork-beta") {
+            try {
+                const fs = require("fs");
+                const path = require("path");
+                const configPath = path.join(DiscordNative.process.remote.resourcesPath, "app", "betterdiscord", "config.json");
+                const config = __non_webpack_require__(configPath);
+                if (enabled) config.branch = "modularize";
+                else config.branch = "master";
+                fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+            }
+            catch (err) {console.error(err);}
+        }
+
         if (id == "bda-gs-2") {
             if (enabled) $("body").addClass("bd-minimal");
             else $("body").removeClass("bd-minimal");
@@ -198,6 +211,15 @@ export default new class V2_SettingsPanel {
     }
 
     async initializeSettings() {
+        const checkForBetaAccess = async () => {
+            const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
+            const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
+            const inServer = SortedGuildStore.getFlattenedGuildIds().includes("292141134614888448");
+            const userId = BDV2.UserStore.getCurrentUser().id;
+            const member = GuildMemberStore.getMember("292141134614888448", userId);
+            const hasRole = inServer && member ? member.roles.includes("452687773678436354") : false;
+            if (hasRole) settings["BBD Beta"].hidden = false;
+        };
 
         // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
@@ -216,6 +238,7 @@ export default new class V2_SettingsPanel {
         }
 
         if (settingsCookie["bda-gs-8"]) dMode.enable(settingsCookie["fork-dm-1"]);
+        checkForBetaAccess();
 
         this.saveSettings();
     }
