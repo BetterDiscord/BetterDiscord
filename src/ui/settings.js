@@ -43,9 +43,11 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        Patcher.after("SettingsManager", WebpackModules.getByDisplayName("FluxContainer(GuildSettings)").prototype, "render", (thisObject) => {
-            thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
-        });
+        ReactComponents.get("FluxContainer(GuildSettings)", m => m.displayName == "FluxContainer(GuildSettings)").then(c => console.log("COMPONENT", c));
+        // const GuildSettings = await ReactComponents.get("FluxContainer(GuildSettings)", m => m.displayName == "FluxContainer(GuildSettings)");
+        // Patcher.after("SettingsManager", GuildSettings.prototype, "render", (thisObject) => {
+        //     thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
+        // });
         const UserSettings = await ReactComponents.get("UserSettings", m => m.prototype && m.prototype.generateSections);
         Patcher.after("SettingsManager", UserSettings.prototype, "render", (thisObject) => {
             thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";

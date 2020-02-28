@@ -43,6 +43,7 @@ export default new class ComponentPatcher {
         const GuildComponent = reactInstance.return.type;
         if (!GuildComponent) return;
         this.guildListItemsPatch = Patcher.after("ThemeHelper", GuildComponent.prototype, "render", (thisObject, _, returnValue) => {
+            if (!returnValue || !thisObject) return;
             const guildData = thisObject.props;
             returnValue.props.className += " bd-guild";
             if (guildData.unread) returnValue.props.className += " bd-unread";

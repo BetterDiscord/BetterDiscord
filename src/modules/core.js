@@ -30,6 +30,16 @@ Core.prototype.init = async function() {
         Modals.alert("Not Supported", "BetterDiscord v" + Config.version + " (your version)" + " is not supported by the latest js (" + Config.bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
         return;
     }
+
+    if (window.ED) {
+        Modals.alert("Not Supported", "BandagedBD does not work with EnhancedDiscord. Please uninstall one of them.");
+        return;
+    }
+
+    if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) {
+        Modals.alert("Not Supported", "BandagedBD does not work with Powercord. Please uninstall one of them.");
+        return;
+    }
     // const latestLocalVersion = Config.updater ? Config.updater.LatestVersion : Config.latestVersion;
     // if (latestLocalVersion > Config.version) {
     //     Modals.alert("Update Available", `
@@ -63,16 +73,25 @@ Core.prototype.init = async function() {
     // Show loading errors
     Logger.log("Startup", "Collecting Startup Errors");
     Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
+
+    // const previousVersion = DataStore.getBDData("version");
+    // if (bbdVersion > previousVersion) {
+    //     if (bbdChangelog) this.showChangelogModal(bbdChangelog);
+    //     DataStore.setBDData("version", bbdVersion);
+    // }
 };
 
 Core.prototype.waitForGuilds = function() {
+    let timesChecked = 0;
     return new Promise(resolve => {
         const checkForGuilds = function() {
+            timesChecked++;
             if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
             const wrapper = GuildClasses.wrapper.split(" ")[0];
             const guild = GuildClasses.listItem.split(" ")[0];
             const blob = GuildClasses.blobContainer.split(" ")[0];
             if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(Config.deferLoaded = true);
+            else if (timesChecked >= 50) return resolve(Config.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
 

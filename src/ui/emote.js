@@ -1,6 +1,6 @@
 import {Settings, React, WebpackModules, Events, Strings} from "modules";
 
-const TooltipWrapper = WebpackModules.getByDisplayName("TooltipDeprecated");
+const TooltipWrapper = WebpackModules.getByDisplayName("Tooltip");
 
 export default class BDEmote extends React.Component {
     constructor(props) {
@@ -58,12 +58,13 @@ export default class BDEmote extends React.Component {
                 text: this.label,
                 delay: 750
             },
-                React.createElement("div", {
+            (childProps) => {
+                return React.createElement("div", Object.assign({
                     className: "emotewrapper" + (this.props.jumboable ? " jumboable" : ""),
                     onMouseEnter: this.onMouseEnter,
                     onMouseLeave: this.onMouseLeave,
                     onClick: this.onClick
-                },
+                }, childProps),
                     React.createElement("img", {
                         draggable: false,
                         className: "emote" + this.modifierClass + (this.props.jumboable ? " jumboable" : "") + (!this.state.shouldAnimate ? " stop-animation" : ""),
@@ -77,7 +78,7 @@ export default class BDEmote extends React.Component {
                         type: "button",
                         onClick: this.toggleFavorite
                     })
-                )
-            );
+                );
+            });
     }
 }

@@ -66,9 +66,9 @@ export default new class ClassNormalizer extends Builtin {
             if (this.shouldIgnore(value)) continue;
             const classList = value.split(" ");
             for (const normalClass of classList) {
-                const match = normalClass.match(randClass)[1];
-                if (!match) continue; // Shouldn't ever happen since they passed the moduleFilter, but you never know
-                const camelCase = match.split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
+                const match = normalClass.match(randClass);
+                if (!match || !match.length || match.length < 2) continue; // Shouldn't ever happen since they passed the moduleFilter, but you never know
+                const camelCase = match[1].split("-").map((s, i) => i ? s[0].toUpperCase() + s.slice(1) : s).join("");
                 classNames[baseClassName] += ` ${componentName}-${camelCase}`;
             }
         }

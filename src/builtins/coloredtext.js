@@ -1,7 +1,7 @@
 import Builtin from "../structs/builtin";
 import {WebpackModules} from "modules";
 
-const MessageContent = WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));
+const MessageContent = WebpackModules.getModule(m => m.default && m.default.displayName && m.default.displayName == "Message");
 
 export default new class ColoredText extends Builtin {
     get name() {return "ColoredText";}

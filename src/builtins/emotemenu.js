@@ -160,7 +160,8 @@ export default new class EmoteMenu extends Builtin {
     observe(mutation) {
         if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) return;
         const node = mutation.addedNodes[0];
-        if (!node.classList.contains("popout-3sVMXz") || node.classList.contains("popoutLeft-30WmrD") || !node.getElementsByClassName("emojiPicker-3m1S-j").length) return;
+        // if (!node.classList.contains("popout-2iWAc-") || node.classList.contains("popoutLeft-30WmrD") || !node.getElementsByClassName("emojiPicker-3m1S-j").length) return;
+        if (!node.classList.contains("layer-v9HyYc") || !node.getElementsByClassName("emojiPicker-3m1S-j").length || node.querySelector(".emojiPicker-3m1S-j").parentElement.classList.contains("animatorLeft-1EQxU0")) return;
 
         const e = $(node);
         if (this.hideEmojis) e.addClass("bd-qme-hidden");

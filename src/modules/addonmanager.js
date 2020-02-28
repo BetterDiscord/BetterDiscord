@@ -19,7 +19,7 @@ const fs = require("fs");
 const Module = require("module").Module;
 Module.globalPaths.push(path.resolve(require("electron").remote.app.getAppPath(), "node_modules"));
 
-const splitRegex = /[^\S\r\n]*?\r?\n[^\S\r\n]*?\*[^\S\r\n]?/;
+const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
 
 const stripBOM = function(fileContent) {
@@ -122,6 +122,7 @@ export default class AddonManager {
         const parsed = Utilities.testJSON(metaData);
         if (!parsed) throw new MetaError("META could not be parsed.");
         if (!parsed.name) throw new MetaError("META missing name data.");
+        parsed.format = "json";
         return parsed;
     }
 
@@ -144,6 +145,7 @@ export default class AddonManager {
         }
         out[field] = accum.trim();
         delete out[""];
+        out.format = "jsdoc";
         return out;
     }
 

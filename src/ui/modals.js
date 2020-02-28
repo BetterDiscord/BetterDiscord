@@ -1,3 +1,4 @@
+import {Config} from "data";
 import {Logger, WebpackModules, Utilities, React, Settings, Strings} from "modules";
 
 export default class Modals {
@@ -165,5 +166,61 @@ export default class Modals {
         modal.appendTo("#app-mount");
         if (pluginErrors.length) modal.find(".tab-bar-item")[0].click();
         else modal.find(".tab-bar-item")[1].click();
+    }
+
+    showChangelogModal(options = {}) {
+        const ModalStack = WebpackModules.getByProps("push", "update", "pop", "popWithKey");
+        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
+        const TextElement = WebpackModules.getByProps("Sizes", "Weights");
+        const FlexChild = WebpackModules.getByProps("Child");
+        const Titles = WebpackModules.getByProps("Tags", "default");
+        const Changelog = WebpackModules.getModule(m => m.defaultProps && m.defaultProps.selectable == false);
+        const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
+        if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return;
+    
+        const {image = "https://repository-images.githubusercontent.com/105473537/957b5480-7c26-11e9-8401-50fa820cbae5", description = "", changes = [], title = "BandagedBD", subtitle = `v${Config.bbdVersion}`, footer} = options;
+        const ce = React.createElement;
+        const changelogItems = [ce("img", {src: image})];
+        if (description) changelogItems.push(ce("p", null, MarkdownParser.parse(description)));
+        for (let c = 0; c < changes.length; c++) {
+            const entry = changes[c];
+            const type = ChangelogClasses[entry.type] ? ChangelogClasses[entry.type] : ChangelogClasses.added;
+            const margin = c == 0 ? ChangelogClasses.marginTop : "";
+            changelogItems.push(ce("h1", {className: `${type} ${margin}`,}, entry.title));
+            const list = ce("ul", null, entry.items.map(i => ce("li", null, MarkdownParser.parse(i))));
+            changelogItems.push(list);
+        }
+        const renderHeader = function() {
+            return ce(FlexChild.Child, {grow: 1, shrink: 1},
+                ce(Titles.default, {tag: Titles.Tags.H4}, title),
+                ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY, className: ChangelogClasses.date}, subtitle)
+            );
+        };
+    
+        const renderFooter = () => {
+            const Anchor = WebpackModules.getModule(m => m.displayName == "Anchor");
+            const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
+            const joinSupportServer = (click) => {
+                click.preventDefault();
+                click.stopPropagation();
+                ModalStack.pop();
+                BDV2.joinBD2();
+            };
+            const supportLink = Anchor ? ce(Anchor, {onClick: joinSupportServer}, "Join our Discord Server.") : ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
+            const defaultFooter = ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY}, "Need support? ", supportLink);
+            return ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter);
+        };
+    
+        ModalStack.push(function(props) {
+            return ce(Changelog, Object.assign({
+                className: ChangelogClasses.container,
+                selectable: true,
+                onScroll: _ => _,
+                onClose: _ => _,
+                renderHeader: renderHeader,
+                renderFooter: renderFooter,
+                children: changelogItems
+            }, props));
+        });
     }
 }

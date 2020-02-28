@@ -15,7 +15,7 @@ export default new class DeveloperMode extends Builtin {
     }
 
     enabled() {
-        $(window).on("keydown.bdDevmode", (e) => {
+        $(document).on("keydown.bdDevmode", (e) => {
             if (e.which === 119 || e.which == 118) {//F8
                this.log("Debugger Activated");
                debugger; // eslint-disable-line no-debugger
@@ -26,7 +26,7 @@ export default new class DeveloperMode extends Builtin {
     }
 
     disabled() {
-        $(window).off("keydown.bdDevmode");
+        $(document).off("keydown.bdDevmode");
         if (this.selectorMode) this.disableSelectors();
         if (this.selectorCancel) this.selectorCancel();
     }

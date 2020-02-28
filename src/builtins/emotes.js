@@ -67,14 +67,15 @@ export default new class EmoteModule extends Builtin {
         await this.getBlacklist();
         await this.loadEmoteData();
 
-        while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
-        this.patchMessageContent();
+        // while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
+        // this.patchMessageContent();
         Events.on("emotes-favorite-added", this.addFavorite);
         Events.on("emotes-favorite-removed", this.removeFavorite);
         Events.on("setting-updated", this.onCategoryToggle);
     }
 
     disabled() {
+        console.log("DISABLED");
         Events.off("setting-updated", this.onCategoryToggle);
         Events.off("emotes-favorite-added", this.addFavorite);
         Events.off("emotes-favorite-removed", this.removeFavorite);
@@ -185,12 +186,17 @@ export default new class EmoteModule extends Builtin {
     }
 
     async getBlacklist() {
-        const category = "Blacklist";
-        const exists = DataStore.emotesExist(category);
-        const valid = await this.isCacheValid(category);
-        const useCache = (valid) || (!valid && exists && !this.shouldDownload);
-        const list = useCache ? DataStore.getEmoteData(category) : await this.downloadEmotes(category);
-        blacklist.push(...list);
+        try {
+            const category = "Blacklist";
+            const exists = DataStore.emotesExist(category);
+            const valid = await this.isCacheValid(category);
+            const useCache = (valid) || (!valid && exists && !this.shouldDownload);
+            const list = useCache ? DataStore.getEmoteData(category) : await this.downloadEmotes(category);
+            blacklist.push(...list);
+        }
+        catch (err) {
+            // TODO: Log this
+        }
     }
 
     isCacheValid(category) {
