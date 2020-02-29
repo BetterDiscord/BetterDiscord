@@ -97,13 +97,14 @@ export default class AddonCard extends React.Component {
     buildLink(which) {
         const url = this.props.addon[which];
         if (which == "invite") {
-            const onClick = () => {
-                const tester = /\.gg\/(.*)$/;
-                let code = url;
-                if (tester.test(code)) code = code.match(tester)[1];
-                BDV2.LayerStack.popLayer();
-                BDV2.InviteActions.acceptInviteAndTransitionToInviteChannel(code);
-            };
+            // TODO:
+            // const onClick = () => {
+            //     const tester = /\.gg\/(.*)$/;
+            //     let code = url;
+            //     if (tester.test(code)) code = code.match(tester)[1];
+            //     BDV2.LayerStack.popLayer();
+            //     BDV2.InviteActions.acceptInviteAndTransitionToInviteChannel(code);
+            // };
         }
         if (!url) return null;
         return <a className="bd-link bd-link-website" href={url} target="_blank" rel="noopener noreferrer">{Strings.Addons[which]}</a>;

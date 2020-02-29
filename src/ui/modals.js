@@ -204,7 +204,7 @@ export default class Modals {
                 click.preventDefault();
                 click.stopPropagation();
                 ModalStack.pop();
-                BDV2.joinBD2();
+                // TODO: BDV2.joinBD2();
             };
             const supportLink = Anchor ? ce(Anchor, {onClick: joinSupportServer}, "Join our Discord Server.") : ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
             const defaultFooter = ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY}, "Need support? ", supportLink);
