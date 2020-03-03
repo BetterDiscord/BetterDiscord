@@ -1,5 +1,4 @@
 # BandagedBD [![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link]
-
 [patreon-badge]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.herokuapp.com%2FZerebos&style=flat-square
 [patreon-link]: https://patreon.com/Zerebos
 
@@ -11,27 +10,24 @@ BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](ht
 # Installation
 
 ### Windows
-Grab the `exe` file from the latest release on the [releases page](https://github.com/rauenzi/BetterDiscordApp/releases).
+Grab the `exe` file from [here](https://github.com/rauenzi/BetterDiscordApp/releases/latest/download/BandagedBD_Windows.exe).
 
 ### macOS/OS X
-Grab the `zip` file from the latest release on the [releases page](https://github.com/rauenzi/BetterDiscordApp/releases).
+Grab the `zip` file from [here](https://github.com/rauenzi/BetterDiscordApp/releases/latest/download/BandagedBD_Mac.zip).
 
 ### Linux
-See this link: https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77cf31172
+See this [gist](https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77cf31172).
 
 # FAQ
 
 ### What is this?
-
 This is a client modification for Discord. You can read more about it in the [original repo](https://github.com/Jiiks/BetterDiscordApp).
 
 ### Where can I get plugins and themes?
-
-In our suport servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
+In our support servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
 
 ### Support Servers?
-
-Yup we have two of them [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [this one](https://discord.gg/2HScm8j)
+We have two: [This one](https://discord.gg/0Tmfo5ZbORCRqbAd), and [this one](https://discord.gg/2HScm8j).
 
 <!-- # What's Different
 
@@ -80,7 +76,6 @@ Yup we have two of them [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [thi
 
 
 # Supporters
-
 These people have all subscribed to the `True Supporter` tier on Patreon to support BandagedBD.
 
 
@@ -99,7 +94,7 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
     <a href="https://twitter.com/def_con42" target="_blank" rel="noreferrer noopener"><strong>DefCon42</strong></a><br />
 </td>
 <td align="center">
-    <img src="https://cdn.discordapp.com/avatars/629231564261425163/a_36cc7d2940b4ffb8a660b1076ab2087f.webp?size=128" width="100px;" alt="Justxn"/><br />
+    <img src="https://cdn.discordapp.com/avatars/629231564261425163/a_36cc7d2940b4ffb8a660b1076ab2087f.webp" width="100px;" alt="Justxn"/><br />
     <strong>Justxn</strong><br />
 </td>
 </tr>
@@ -107,25 +102,23 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
 
 
 # Bandagers
-
 These people have all subscribed to the `Bandager` tier on Patreon to support BandagedBD.
 
 
 <table>
 <tr>
 	<td align="center">
-		<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png?size=128" width="50px;" alt="William JCM"/><br />
+		<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png" width="50px;" alt="William JCM"/><br />
 		<a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
 	</td>
     <td align="center">
-		<img src="https://avatars0.githubusercontent.com/u/24623601?s=460&v=4" width="50px;" alt="NFLD99"/><br />
+		<img src="https://avatars0.githubusercontent.com/u/24623601" width="50px;" alt="NFLD99"/><br />
 		<a href="https://github.com/NFLD99" target="_blank" rel="noreferrer noopener"><strong>NFLD99</strong></a>
 	</td>
 </tr>
 </table>
 
 # Donors
-
 These people have either donated or subscribed to the most basic patron tier to support BandagedBD.
 
 <table>
@@ -135,11 +128,11 @@ These people have either donated or subscribed to the most basic patron tier to 
         <strong>aetheryx</strong>
     </td>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/216782345779281921/d4b651b606f108cd2f96a19af68f942f.png?size=128" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/216782345779281921/d4b651b606f108cd2f96a19af68f942f.png" width="25px;" /><br />
         <strong>JBeauDee</strong>
     </td>
         <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/261673576216789004/31d590fb92329e270a6225a13d500c1d.png?size=128" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/261673576216789004/31d590fb92329e270a6225a13d500c1d.png" width="25px;" /><br />
         <strong>vantiss</strong>
     </td>
         <td align="center">
