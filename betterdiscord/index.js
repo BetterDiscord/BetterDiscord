@@ -102,7 +102,7 @@ const BetterDiscord = class BetterDiscord {
     ensureModules() {
         return Utils.runJS(`(async()=>{
             while("undefined" === typeof webpackJsonp) await new Promise(requestAnimationFrame);
-            for(const started = performance.now(); webpackJsonp.length < 20 - (performance.now() - started) / 5000;)
+            for(const started = performance.now(); webpackJsonp.length < 13 - (performance.now() - started) / 5000;)
                 await new Promise(setImmediate);
         })()`);
     }
