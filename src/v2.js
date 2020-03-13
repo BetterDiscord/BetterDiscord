@@ -57,8 +57,11 @@ export default new class V2 {
     leaveBD2() {this.GuildActions.leaveGuild("280806472928198656");}
 
     get react() {return this.internal.react;}
+    get React() {return this.internal.react;}
     get reactDom() {return this.internal.reactDom;}
+    get ReactDom() {return this.internal.reactDom;}
     get reactComponent() {return this.internal.react.Component;}
+    get ReactComponent() {return this.internal.react.Component;}
 
     get anchorClasses() {return this.WebpackModules.findByUniqueProperties(["anchorUnderlineOnHover"]) || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};}
     get slateEditorClasses() {return this.WebpackModules.findByUniqueProperties(["slateTextArea"]);}

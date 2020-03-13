@@ -193,7 +193,7 @@ export default class Utils {
         }, timeout);
     }
 
-    alert(title, content) {
+    static alert(title, content) {
         const modal = $(`<div class="bd-modal-wrapper theme-dark">
                         <div class="bd-backdrop backdrop-1wrmKB"></div>
                         <div class="bd-modal modal-1UGdnR">
@@ -208,7 +208,7 @@ export default class Utils {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="footer footer-2yfCgX">
+                                <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
                                     <button type="button">Okay</button>
                                 </div>
                             </div>
@@ -225,7 +225,7 @@ export default class Utils {
         modal.appendTo("#app-mount");
     }
 
-    showContentErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
+    static showContentErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
         if (!pluginErrors || !themeErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
         const modal = $(`<div class="bd-modal-wrapper theme-dark">

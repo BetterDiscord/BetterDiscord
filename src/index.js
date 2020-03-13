@@ -49,7 +49,16 @@ window.BdApi = BdApi;
 // ClassNormalizer
 
 import Core from "./core";
-export default Core;
+export default class CoreWrapper {
+    constructor(bdConfig) {
+        this.mainCore = new Core(bdConfig);
+    }
+
+    init() {
+        // deprecateGlobal("mainCore", this.mainCore);
+        this.mainCore.init();
+    }
+}
 
 // function patchModuleLoad() {
 //     const namespace = "betterdiscord";
