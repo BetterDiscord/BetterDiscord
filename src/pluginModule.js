@@ -78,11 +78,19 @@ PluginModule.prototype.enablePlugin = function (plugin, reload = false) {
     this.startPlugin(plugin, reload);
 };
 
+PluginModule.prototype.enable = function (plugin, reload = false) {
+    return this.enablePlugin(plugin, reload);
+};
+
 PluginModule.prototype.disablePlugin = function (plugin, reload = false) {
     if (!pluginCookie[plugin]) return;
     pluginCookie[plugin] = false;
     this.savePluginData();
     this.stopPlugin(plugin, reload);
+};
+
+PluginModule.prototype.disable = function (plugin, reload = false) {
+    return this.disablePlugin(plugin, reload);
 };
 
 PluginModule.prototype.togglePlugin = function (plugin) {

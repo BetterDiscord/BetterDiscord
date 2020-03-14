@@ -126,8 +126,14 @@ export default new class V2_SettingsPanel {
                 const path = require("path");
                 const configPath = path.join(DiscordNative.process.remote.resourcesPath, "app", "betterdiscord", "config.json");
                 const config = __non_webpack_require__(configPath);
-                if (enabled) config.branch = "modularize";
-                else config.branch = "master";
+                if (enabled) {
+                    config.branch = "modularize";
+                    config.minified = false;
+                }
+                else {
+                    config.branch = "master";
+                    config.minified = true;
+                }
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
             }
             catch (err) {console.error(err);}

@@ -5,6 +5,8 @@ export default class V2C_ContentColumn extends BDV2.reactComponent {
         super(props);
     }
 
+    static get displayName() {return "ContentColumn";}
+
     render() {
         return BDV2.react.createElement(
             "div",

@@ -43,10 +43,6 @@ deprecateGlobal("ContentManager", ContentManager);
 deprecateGlobal("ClassNormalizer", ClassNormalizer);
 
 window.BdApi = BdApi;
-// DataStore
-// emoteModule
-// ContentManager
-// ClassNormalizer
 
 import Core from "./core";
 export default class CoreWrapper {

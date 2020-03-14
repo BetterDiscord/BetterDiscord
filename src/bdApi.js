@@ -1,12 +1,16 @@
-import {pluginCookie, themeCookie, settingsCookie, bdplugins} from "./0globals";
+import {pluginCookie, themeCookie, bdplugins, bdthemes, settingsCookie, settings, bdEmotes} from "./0globals";
 import mainCore from "./core";
 import Utils from "./utils";
 import BDV2 from "./v2";
 import DataStore from "./dataStore";
+import pluginModule from "./pluginModule";
+import themeModule from "./themeModule";
+import settingsPanel from "./settingsPanel";
 
 const BdApi = {
-    get React() { return BDV2.react; },
-    get ReactDOM() { return BDV2.reactDom; },
+    get React() { return BDV2.React; },
+    get ReactDOM() { return BDV2.ReactDom; },
+    get ReactComponent() {return BDV2.ReactComponent;},
     get WindowConfigFile() {
         if (this._windowConfigFile) return this._windowConfigFile;
         const electron = require("electron").remote.app;
@@ -19,7 +23,11 @@ const BdApi = {
         const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
         if (!realLocation) return this._windowConfigFile = null;
         return this._windowConfigFile = realLocation;
-    }
+    },
+    get bdSettings() {return settings;},
+    get emotes() {return bdEmotes;},
+    get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); },
+    get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
 };
 
 BdApi.getAllWindowPreferences = function() {
@@ -221,6 +229,18 @@ BdApi.isSettingEnabled = function(id) {
     return !!settingsCookie[id];
 };
 
+BdApi.enableSetting = function(id) {
+    return settingsPanel.onChange(id, true);
+};
+
+BdApi.disableSetting = function(id) {
+    return settingsPanel.onChange(id, false);
+};
+
+BdApi.toggleSetting = function(id) {
+    return settingsPanel.onChange(id, !settingsCookie[id]);
+};
+
 // Gets data
 BdApi.getBDData = function(key) {
     return DataStore.getBDData(key);
@@ -230,5 +250,47 @@ BdApi.getBDData = function(key) {
 BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
 };
+
+
+
+class AddonAPI {
+    constructor(cookie, list, manager) {
+        this.manager = manager;
+        this.cookie = cookie;
+        this.list = list;
+    }
+    
+    isEnabled(name) {
+        return !!this.cookie[name];
+    }
+
+    enable(name) {
+        return this.manager.enable(name);
+    }
+
+    disable(name) {
+        return this.manager.disable(name);
+    }
+
+    toggle(name) {
+        if (this.cookie[name]) this.disable(name);
+        else this.enable(name);
+    }
+
+    get(name) {
+        if (this.list.hasOwnProperty(name)) {
+            if (this.list[name].plugin) return this.list[name].plugin;
+            return this.list[name];
+        }
+        return null;
+    }
+
+    getAll() {
+        return Object.keys(this.list).map(k => this.get(k)).filter(a => a);
+    }
+}
+
+BdApi.Plugins = new AddonAPI(pluginCookie, bdplugins, pluginModule);
+BdApi.Themes = new AddonAPI(themeCookie, bdthemes, themeModule);
 
 export default BdApi;

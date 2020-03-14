@@ -33,12 +33,20 @@ ThemeModule.prototype.enableTheme = function(name, reload = false) {
     if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${theme.name} v${theme.version} has been applied.`);
 };
 
+ThemeModule.prototype.enable = function (name, reload = false) {
+    return this.enableTheme(name, reload);
+};
+
 ThemeModule.prototype.disableTheme = function(name, reload = false) {
     themeCookie[name] = false;
     this.saveThemeData();
     const theme = bdthemes[name];
     $(`#${theme.id}`).remove();
     if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${theme.name} v${theme.version} has been disabled.`);
+};
+
+ThemeModule.prototype.disable = function (name, reload = false) {
+    return this.disableTheme(name, reload);
 };
 
 ThemeModule.prototype.toggleTheme = function(theme) {
