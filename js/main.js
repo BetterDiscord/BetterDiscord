@@ -182,13 +182,13 @@ window.bdPluginStorage = class bdPluginStorage {
 
 var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule;
 var minSupportedVersion = "0.3.0";
-var bbdVersion = "0.2.24";
+var bbdVersion = "0.2.25";
 var bbdChangelog = {
-    description: "Mostly behind the scenes changes here.",
+    description: "Mostly behind the scenes changes again.",
     changes: [
-        {title: "What's New?", items: ["**Dark Mode is back!** Or rather... it's toggleable again and no longer forced on.", "**Changes for developers!** Plugin and theme developers will now have more options to customize their plugin cards in their METAs and also a new META structure."]},
-        {title: "Fixes", type: "fixed", items: ["**Emote Menu** should now show both Twich Global emotes and your favorites, you should even be able to click on them again!"]},
-        {title: "Minor Stuff", type: "improved", items: ["**Clean Code.** Well not really. But BD's code is starting to be cleaned up to make it easier to maintain and better performing."]}
+        {title: "What's New?", items: ["**Changes for plugin developers!** There are some new items in the `BdApi` that you may want to check out."]},
+        {title: "Fixes", type: "fixed", items: ["**Modal Footers** are no longer blank hopefully!"]},
+        {title: "Minor Stuff", type: "improved", items: ["**Injector Version** is now included in the version list to try and quell the confusion."]}
     ]
 };
 
@@ -218,8 +218,8 @@ var settings = {
     "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "core", category: "content manager"},
     "Automatic Loading":          {id: "fork-ps-5", info: "Automatically loads, reloads, and unloads plugins and themes", implemented: true,  hidden: false, cat: "core", category: "content manager"},
 
-    /* Donors */
-    "BBD Beta":                   {id: "fork-beta", info: "Gives access to BBD beta. (Requires full restart after changing.)", implemented: true,  hidden: true, cat: "core", category: "donors"},
+    /* Beta */
+    "BBD Beta":                   {id: "fork-beta", info: "Gives access to BBD beta. (Requires full restart after changing.)", implemented: true,  hidden: false, cat: "core", category: "beta"},
 
     /* Developer */
     "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core", category: "developer settings"},
@@ -518,7 +518,7 @@ Core.prototype.alert = function(title, content) {
                                     </div>
                                 </div>
                             </div>
-                            <div class="footer footer-2yfCgX">
+                            <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
                                 <button type="button">Okay</button>
                             </div>
                         </div>
@@ -561,7 +561,7 @@ Core.prototype.showContentErrors = function({plugins: pluginErrors = [], themes:
                                     </div>
                                 </div>
                             </div>
-                            <div class="footer footer-2yfCgX">
+                            <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
                                 <button type="button">Okay</button>
                             </div>
                         </div>
@@ -1746,11 +1746,19 @@ PluginModule.prototype.enablePlugin = function (plugin, reload = false) {
     this.startPlugin(plugin, reload);
 };
 
+PluginModule.prototype.enable = function (plugin, reload = false) {
+    return this.enablePlugin(plugin, reload);
+};
+
 PluginModule.prototype.disablePlugin = function (plugin, reload = false) {
     if (!pluginCookie[plugin]) return;
     pluginCookie[plugin] = false;
     this.savePluginData();
     this.stopPlugin(plugin, reload);
+};
+
+PluginModule.prototype.disable = function (plugin, reload = false) {
+    return this.disablePlugin(plugin, reload);
 };
 
 PluginModule.prototype.togglePlugin = function (plugin) {
@@ -1901,12 +1909,20 @@ ThemeModule.prototype.enableTheme = function(name, reload = false) {
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${theme.name} v${theme.version} has been applied.`);
 };
 
+ThemeModule.prototype.enable = function (name, reload = false) {
+    return this.enableTheme(name, reload);
+};
+
 ThemeModule.prototype.disableTheme = function(name, reload = false) {
     themeCookie[name] = false;
     this.saveThemeData();
     const theme = bdthemes[name];
     $(`#${theme.id}`).remove();
     if (settingsCookie["fork-ps-2"] && !reload) mainCore.showToast(`${theme.name} v${theme.version} has been disabled.`);
+};
+
+ThemeModule.prototype.disable = function (name, reload = false) {
+    return this.disableTheme(name, reload);
 };
 
 ThemeModule.prototype.toggleTheme = function(theme) {
@@ -1987,10 +2003,47 @@ ThemeModule.prototype.saveThemeData = function () {
  *
  * Plugin Template: https://gist.github.com/Jiiks/71edd5af0beafcd08956
  */
+class AddonAPI {
+    constructor(cookie, list, manager) {
+        this.manager = manager;
+        this.cookie = cookie;
+        this.list = list;
+    }
+
+    isEnabled(name) {
+        return !!this.cookie[name];
+    }
+
+    enable(name) {
+        return this.manager.enable(name);
+    }
+
+    disable(name) {
+        return this.manager.disable(name);
+    }
+
+    toggle(name) {
+        if (this.cookie[name]) this.disable(name);
+        else this.enable(name);
+    }
+
+    get(name) {
+        if (this.list.hasOwnProperty(name)) {
+            if (this.list[name].plugin) return this.list[name].plugin;
+            return this.list[name];
+        }
+        return null;
+    }
+
+    getAll() {
+        return Object.keys(this.list).map(k => this.get(k)).filter(a => a);
+    }
+}
 
 var BdApi = {
-    get React() { return BDV2.react; },
-    get ReactDOM() { return BDV2.reactDom; },
+    get React() { return BDV2.React; },
+    get ReactDOM() { return BDV2.ReactDom; },
+    get ReactComponent() {return BDV2.ReactComponent;},
     get WindowConfigFile() {
         if (this._windowConfigFile) return this._windowConfigFile;
         const electron = require("electron").remote.app;
@@ -2003,6 +2056,20 @@ var BdApi = {
         const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
         if (!realLocation) return this._windowConfigFile = null;
         return this._windowConfigFile = realLocation;
+    },
+    get bdSettings() {return settings;},
+    get emotes() {return bdEmotes;},
+    get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); },
+    get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); },
+    get Plugins() {
+        if (this._Plugins) return this._Plugins;
+        if (!pluginModule) return null;
+        return this._Plugins = new AddonAPI(pluginCookie, bdplugins, pluginModule);
+    },
+    get Themes() {
+        if (this._Themes) return this._Themes;
+        if (!themeModule) return null;
+        return this._Themes = new AddonAPI(themeCookie, bdthemes, themeModule);
     }
 };
 
@@ -2210,6 +2277,18 @@ BdApi.isThemeEnabled = function(name) {
 
 BdApi.isSettingEnabled = function(id) {
     return !!settingsCookie[id];
+};
+
+BdApi.enableSetting = function(id) {
+    return settingsPanel.onChange(id, true);
+};
+
+BdApi.disableSetting = function(id) {
+    return settingsPanel.onChange(id, false);
+};
+
+BdApi.toggleSetting = function(id) {
+    return settingsPanel.onChange(id, !settingsCookie[id]);
 };
 
 // Gets data
@@ -2663,6 +2742,9 @@ class V2 {
     get react() {return this.internal.react;}
     get reactDom() {return this.internal.reactDom;}
     get reactComponent() {return this.internal.react.Component;}
+    get React() {return this.internal.react;}
+    get ReactDom() {return this.internal.reactDom;}
+    get ReactComponent() {return this.internal.react.Component;}
 
     get anchorClasses() {return this.WebpackModules.findByUniqueProperties(["anchorUnderlineOnHover"]) || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};}
     get slateEditorClasses() {return this.WebpackModules.findByUniqueProperties(["slateTextArea"]);}
@@ -2730,10 +2812,12 @@ class V2 {
             const BBDLink = BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BandagedBD", target: "_blank"}, "BandagedBD");
             const AuthorLink = BdApi.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/ZackRauen", title: "Zerebos", target: "_blank"}, "Zerebos");
             const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, [BBDLink, ` ${bbdVersion} by `, AuthorLink]);
+            const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, ["BBD Injector", ` ${bdConfig.version} by `, AuthorLink]);
 
             const originalVersions = children[children.length - 1].type;
             children[children.length - 1].type = function() {
                 const returnVal = originalVersions(...arguments);
+                returnVal.props.children.push(injector);
                 returnVal.props.children.push(additional);
                 return returnVal;
             };
@@ -3702,6 +3786,8 @@ class V2C_ContentColumn extends BDV2.reactComponent {
         super(props);
     }
 
+    static get displayName() {return "ContentColumn";}
+
     render() {
         return BDV2.react.createElement(
             "div",
@@ -4227,11 +4313,29 @@ class V2_SettingsPanel {
         return this.getSettings("emote");
     }
     getSettings(category) {
+        const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
+        const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
+        const userId = BDV2.UserStore.getCurrentUser().id;
+        const checkForRole = async (serverId, roleId) => {
+            if (!SortedGuildStore || !GuildMemberStore) return false;
+            const hasServer = SortedGuildStore.getFlattenedGuildIds().includes(serverId);
+            const member = GuildMemberStore.getMember(serverId, userId);
+            return (hasServer && member ? member.roles.includes(roleId) : false);
+        };
+        const checkForBetaAccess = async () => {
+            if (userId === "197435711476072449") return false;
+            const isDonor = checkForRole("292141134614888448", "452687773678436354");
+            const isPluginDev = checkForRole("86004744966914048", "125166040689803264") || checkForRole("280806472928198656", "357242595950329857");
+            return (isDonor || isPluginDev);
+        };
+        const shouldHaveBeta = checkForBetaAccess();
         return Object.keys(settings).reduce((arr, key) => {
-            let setting = settings[key];
+            const setting = settings[key];
             if (setting.cat === category && setting.implemented && !setting.hidden) {
-                setting.text = key;
-                arr.push(setting);
+                if (settings.category !== "beta" || (settings.category === "beta" && shouldHaveBeta)) {
+                    setting.text = key;
+                    arr.push(setting);
+                }
             }
             return arr;
         }, []);
@@ -4280,11 +4384,18 @@ class V2_SettingsPanel {
                 const path = require("path");
                 const configPath = path.join(DiscordNative.process.remote.resourcesPath, "app", "betterdiscord", "config.json");
                 const config = require(configPath);
-                if (enabled) config.branch = "modularize";
-                else config.branch = "master";
+                if (enabled) {
+                    config.branch = "modularize";
+                    config.minified = false;
+                }
+                else {
+                    config.branch = "master";
+                    config.minified = true;
+                }
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
             }
             catch (err) {console.error(err);}
+            BdApi.alert("Please FULLY restart Discord for this change to take effect.");
         }
 
         if (id == "bda-gs-2") {
@@ -4365,16 +4476,6 @@ class V2_SettingsPanel {
     }
 
     initializeSettings() {
-        const checkForBetaAccess = async () => {
-            const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
-            const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
-            const inServer = SortedGuildStore.getFlattenedGuildIds().includes("292141134614888448");
-            const userId = BDV2.UserStore.getCurrentUser().id;
-            const member = GuildMemberStore.getMember("292141134614888448", userId);
-            const hasRole = inServer && member ? member.roles.includes("452687773678436354") : false;
-            if (hasRole) settings["BBD Beta"].hidden = false;
-        };
-
         // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
@@ -4392,8 +4493,6 @@ class V2_SettingsPanel {
         }
 
         if (settingsCookie["bda-gs-8"]) dMode.enable(settingsCookie["fork-dm-1"]);
-
-        checkForBetaAccess();
 
         mainCore.saveSettings();
     }
