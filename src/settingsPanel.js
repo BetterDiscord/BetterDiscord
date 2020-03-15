@@ -73,11 +73,29 @@ export default new class V2_SettingsPanel {
         return this.getSettings("emote");
     }
     getSettings(category) {
+        const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
+        const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
+        const userId = BDV2.UserStore.getCurrentUser().id;
+        const checkForRole = async (serverId, roleId) => {
+            if (!SortedGuildStore || !GuildMemberStore) return false;
+            const hasServer = SortedGuildStore.getFlattenedGuildIds().includes(serverId);
+            const member = GuildMemberStore.getMember(serverId, userId);
+            return (hasServer && member ? member.roles.includes(roleId) : false);
+        };
+        const checkForBetaAccess = async () => {
+            if (userId === "197435711476072449") return false;
+            const isDonor = checkForRole("292141134614888448", "452687773678436354");
+            const isPluginDev = checkForRole("86004744966914048", "125166040689803264") || checkForRole("280806472928198656", "357242595950329857");
+            return (isDonor || isPluginDev);
+        };
+        const shouldHaveBeta = checkForBetaAccess();
         return Object.keys(settings).reduce((arr, key) => {
             const setting = settings[key];
             if (setting.cat === category && setting.implemented && !setting.hidden) {
-                setting.text = key;
-                arr.push(setting);
+                if (settings.category !== "beta" || (settings.category === "beta" && shouldHaveBeta)) {
+                    setting.text = key;
+                    arr.push(setting);
+                }
             }
             return arr;
         }, []);
@@ -137,6 +155,18 @@ export default new class V2_SettingsPanel {
                 fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
             }
             catch (err) {console.error(err);}
+            (() => {
+                const ModalStack = BDV2.WebpackModules.findByUniqueProperties(["push", "update", "pop", "popWithKey"]);
+                const AlertModal = BDV2.WebpackModules.findByPrototypes(["handleCancel", "handleSubmit", "handleMinorConfirm"]);
+                if (!ModalStack || !AlertModal) return;
+
+                ModalStack.push(function(props) {
+                    return BDV2.React.createElement(AlertModal, Object.assign({
+                        title: "Restart Required",
+                        body: "Please FULLY restart Discord in order for these changes to take effect.",
+                    }, props));
+                });
+            })();
         }
 
         if (id == "bda-gs-2") {

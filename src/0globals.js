@@ -1,12 +1,12 @@
 // var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule, mainCore, BDV2;
 export const minSupportedVersion = "0.3.0";
-export const bbdVersion = "0.2.24";
+export const bbdVersion = "0.2.25-beta";
 export const bbdChangelog = {
-    description: "Mostly behind the scenes changes here.",
+    description: "Mostly behind the scenes changes again.",
     changes: [
-        {title: "What's New?", items: ["**Dark Mode is back!** Or rather... it's toggleable again and no longer forced on.", "**Changes for developers!** Plugin and theme developers will now have more options to customize their plugin cards in their METAs and also a new META structure."]},
-        {title: "Fixes", type: "fixed", items: ["**Emote Menu** should now show both Twich Global emotes and your favorites, you should even be able to click on them again!"]},
-        {title: "Minor Stuff", type: "improved", items: ["**Clean Code.** Well not really. But BD's code is starting to be cleaned up to make it easier to maintain and better performing."]}
+        {title: "What's New?", items: ["**Changes for plugin developers!** There are some new items in the `BdApi` that you may want to check out."]},
+        {title: "Fixes", type: "fixed", items: ["**Modal Footers** are no longer blank hopefully!"]},
+        {title: "Minor Stuff", type: "improved", items: ["**Injector Version** is now included in the version list to try and quell the confusion."]}
     ]
 };
 
@@ -33,8 +33,8 @@ export const settings = {
     "Scroll To Settings":         {id: "fork-ps-3", info: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)", implemented: true,  hidden: false, cat: "core", category: "content manager"},
     "Automatic Loading":          {id: "fork-ps-5", info: "Automatically loads, reloads, and unloads plugins and themes", implemented: true,  hidden: false, cat: "core", category: "content manager"},
 
-    /* Donors */
-    "BBD Beta":                   {id: "fork-beta", info: "Gives access to BBD beta. (Requires full restart after changing.)", implemented: true,  hidden: true, cat: "core", category: "donors"},
+    /* Beta */
+    "BBD Beta":                   {id: "fork-beta", info: "Gives access to BBD beta. (Requires full restart after changing.)", implemented: true,  hidden: false, cat: "core", category: "beta"},
 
     /* Developer */
     "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core", category: "developer settings"},

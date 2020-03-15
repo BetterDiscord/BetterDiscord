@@ -42,6 +42,26 @@ Core.prototype.init = async function() {
         `);
     }
 
+    const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
+    const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
+    const userId = BDV2.UserStore.getCurrentUser().id;
+    const checkForRole = async (serverId, roleId) => {
+        if (!SortedGuildStore || !GuildMemberStore) return false;
+        const hasServer = SortedGuildStore.getFlattenedGuildIds().includes(serverId);
+        const member = GuildMemberStore.getMember(serverId, userId);
+        return (hasServer && member ? member.roles.includes(roleId) : false);
+    };
+    const checkForBetaAccess = async () => {
+        if (userId === "197435711476072449") return false;
+        const isDonor = checkForRole("292141134614888448", "452687773678436354");
+        const isPluginDev = checkForRole("86004744966914048", "125166040689803264") || checkForRole("280806472928198656", "357242595950329857");
+        return (isDonor || isPluginDev);
+    };
+    const shouldHaveBeta = checkForBetaAccess();
+    if (!shouldHaveBeta) {
+        Utils.alert("Beta Access", `You don't seem like you should have Beta Access... how did you get here?`);
+    }
+
     Utils.log("Startup", "Initializing Settings");
     this.initSettings();
     // emoteModule = new EmoteModule();
@@ -261,10 +281,12 @@ Core.prototype.patchSocial = function() {
         const BBDLink = BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BandagedBD", target: "_blank"}, "BandagedBD");
         const AuthorLink = BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/ZackRauen", title: "Zerebos", target: "_blank"}, "Zerebos");
         const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, [BBDLink, ` ${bbdVersion} by `, AuthorLink]);
+        const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, ["BBD Injector", ` ${bbdVersion} by `, AuthorLink]);
 
         const originalVersions = children[children.length - 1].type;
         children[children.length - 1].type = function() {
             const returnVal = originalVersions(...arguments);
+            returnVal.props.children.push(injector);
             returnVal.props.children.push(additional);
             return returnVal;
         };
