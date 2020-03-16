@@ -57,13 +57,6 @@
 
     window.localStorage = __proxy;
 
-    const oCreateElement = document.createElement;
-    document.createElement = function() {
-        const tag = arguments[0];
-        if (tag.toLowerCase().includes("iframe")) return null;
-        return Reflect.apply(oCreateElement, this, arguments);
-    };
-
     const oOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function() {
         const url = arguments[1];
@@ -1380,6 +1373,23 @@ var Utils = class {
             for (let m = 0; m < mutations.length; m++) {
                 const mutation = mutations[m];
                 const nodes = Array.from(mutation.removedNodes);
+                const directMatch = nodes.indexOf(node) > -1;
+                const parentMatch = nodes.some(parent => parent.contains(node));
+                if (directMatch || parentMatch) {
+                    observer.disconnect();
+                    callback();
+                }
+            }
+        });
+
+        observer.observe(document.body, {subtree: true, childList: true});
+    }
+
+    static onAdded(node, callback) {
+        const observer = new MutationObserver((mutations) => {
+            for (let m = 0; m < mutations.length; m++) {
+                const mutation = mutations[m];
+                const nodes = Array.from(mutation.addedNodes);
                 const directMatch = nodes.indexOf(node) > -1;
                 const parentMatch = nodes.some(parent => parent.contains(node));
                 if (directMatch || parentMatch) {
