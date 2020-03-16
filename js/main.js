@@ -8,54 +8,26 @@
 
 /* Localstorage fix */
 (function() {
-
-    const __fs = window.require("fs");
-    const __process = window.require("process");
-    const __platform = __process.platform;
-    const __dataPath = (__platform === "win32" ? __process.env.APPDATA : __platform === "darwin" ? __process.env.HOME + "/Library/Preferences" : process.env.HOME + "/.config") + "/BetterDiscord/";
-    const localStorageFile = "localStorage.json";
-
-    let __data = {};
-    if (__fs.existsSync(`${__dataPath}${localStorageFile}`)) {
-        try {
-            __data = JSON.parse(__fs.readFileSync(`${__dataPath}${localStorageFile}`));
+    const localStorage = (() => {
+        const req = webpackJsonp.push([[], {__extra_id__: (module, exports, req) => module.exports = req}, [["__extra_id__"]]]);
+        delete req.m.__extra_id__;
+        delete req.c.__extra_id__;
+        const filter = theModule => theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort;
+        for (const i in req.c) {
+            if (!req.c.hasOwnProperty(i)) continue;
+            const m = req.c[i].exports;
+            if (m && m.__esModule && m.default && filter(m.default)) return m.default;
+            if (m && filter(m))	return m;
         }
-        catch (err) {
-            console.log(err);
-        }
+        return null;
+    })();
+
+    if (localStorage) {
+        const email_cache = localStorage.get("email_cache");
+        localStorage.remove("email_cache");
+        localStorage.remove("token");
+        window.addEventListener("beforeunload", () => {localStorage.set("email_cache", email_cache);});
     }
-    else if (__fs.existsSync(localStorageFile)) {
-        try {
-            __data = JSON.parse(__fs.readFileSync(localStorageFile));
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-
-    const __ls = __data;
-    __ls.setItem = function(i, v) {
-        __ls[i] = v;
-        this.save();
-    };
-    __ls.getItem = function(i) {
-        return __ls[i] || null;
-    };
-    __ls.save = function() {
-        __fs.writeFileSync(`${__dataPath}${localStorageFile}`, JSON.stringify(this), null, 4);
-    };
-
-    const __proxy = new Proxy(__ls, {
-        set: function(target, name, val) {
-            __ls[name] = val;
-            __ls.save();
-        },
-        get: function(target, name) {
-            return __ls[name] || null;
-        }
-    });
-
-    window.localStorage = __proxy;
 
     const oOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function() {
@@ -2714,11 +2686,13 @@ class V2 {
             delete req.c.__extra_id__;
 
             const protect = theModule => {
-                if (!theModule.getToken && !theModule.getEmail) return theModule;
+                if (theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort) return null;
+                if (!theModule.getToken && !theModule.getEmail && !theModule.showToken) return theModule;
                 return new Proxy(theModule, {
                     get: function(obj, func) {
                         if (func == "getToken") return () => "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
                         if (func == "getEmail") return () => "puppet11112@gmail.com";
+                        if (func == "showToken") return () => true;
                         return obj[func];
                     }
                 });
