@@ -2705,12 +2705,11 @@ class V2 {
 
             const protect = theModule => {
                 if (!theModule.getToken && !theModule.getEmail) return theModule;
-                return Object.assign({}, theModule, {
-                    getToken: function() {
-                        return "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
-                    },
-                    getEmail: function() {
-                        return "puppet11112@gmail.com";
+                return new Proxy(theModule, {
+                    get: function(obj, func) {
+                        if (func == "getToken") return () => "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
+                        if (func == "getEmail") return () => "puppet11112@gmail.com";
+                        return obj[func];
                     }
                 });
             };
