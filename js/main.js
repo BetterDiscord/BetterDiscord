@@ -57,6 +57,20 @@
 
     window.localStorage = __proxy;
 
+    const oCreateElement = document.createElement;
+    document.createElement = function() {
+        const tag = arguments[0];
+        if (tag.toLowerCase().includes("iframe")) return null;
+        return Reflect.apply(oCreateElement, this, arguments);
+    };
+
+    const oOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function() {
+        const url = arguments[1];
+        if (url.toLowerCase().includes("api/webhooks")) return null;
+        return Reflect.apply(oOpen, this, arguments);
+    };
+
 })();
 
 (() => {
@@ -2688,12 +2702,25 @@ class V2 {
             const req = webpackJsonp.push([[], {__extra_id__: (module, exports, req) => module.exports = req}, [["__extra_id__"]]]);
             delete req.m.__extra_id__;
             delete req.c.__extra_id__;
+
+            const protect = theModule => {
+                if (!theModule.getToken && !theModule.getEmail) return theModule;
+                return Object.assign({}, theModule, {
+                    getToken: function() {
+                        return "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
+                    },
+                    getEmail: function() {
+                        return "puppet11112@gmail.com";
+                    }
+                });
+            };
+
             const find = (filter) => {
-                for (let i in req.c) {
+                for (const i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
-                        let m = req.c[i].exports;
-                        if (m && m.__esModule && m.default && filter(m.default)) return m.default;
-                        if (m && filter(m))	return m;
+                        const m = req.c[i].exports;
+                        if (m && m.__esModule && m.default && filter(m.default)) return protect(m.default);
+                        if (m && filter(m))	return protect(m);
                     }
                 }
                 // console.warn("Cannot find loaded module in cache");
@@ -2702,11 +2729,11 @@ class V2 {
 
             const findAll = (filter) => {
                 const modules = [];
-                for (let i in req.c) {
+                for (const i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
-                        let m = req.c[i].exports;
-                        if (m && m.__esModule && m.default && filter(m.default)) modules.push(m.default);
-                        else if (m && filter(m)) modules.push(m);
+                        const m = req.c[i].exports;
+                        if (m && m.__esModule && m.default && filter(m.default)) modules.push(protect(m.default));
+                        else if (m && filter(m)) modules.push(protect(m));
                     }
                 }
                 return modules;
