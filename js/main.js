@@ -8,26 +8,23 @@
 
 /* Localstorage fix */
 (function() {
-    const localStorage = (() => {
-        const req = webpackJsonp.push([[], {__extra_id__: (module, exports, req) => module.exports = req}, [["__extra_id__"]]]);
-        delete req.m.__extra_id__;
-        delete req.c.__extra_id__;
-        const filter = theModule => theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort;
-        for (const i in req.c) {
-            if (!req.c.hasOwnProperty(i)) continue;
-            const m = req.c[i].exports;
-            if (m && m.__esModule && m.default && filter(m.default)) return m.default;
-            if (m && filter(m))	return m;
+    const contentWindowGetter = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, "contentWindow").get;
+    Object.defineProperty(HTMLIFrameElement.prototype, "contentWindow", {
+        get: function () {
+            const contentWindow = contentWindowGetter.call(this);
+            return new Proxy(contentWindow, {
+                get: function (obj, prop) {
+                    if (prop === "localStorage") return null;
+                    const val = obj[prop];
+                    if (typeof val === "function") return val.bind(obj);
+                    return val;
+                }
+            });
         }
-        return null;
-    })();
-
-    if (localStorage) {
-        const email_cache = localStorage.get("email_cache");
-        localStorage.remove("email_cache");
-        localStorage.remove("token");
-        window.addEventListener("beforeunload", () => {localStorage.set("email_cache", email_cache);});
-    }
+    });
+      
+    // Prevent interception by patching of Function.prototype.call
+    Object.defineProperty(Function.prototype, "call", {value: Function.prototype.call, writable: false, configurable: false});
 
     const oOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function() {
