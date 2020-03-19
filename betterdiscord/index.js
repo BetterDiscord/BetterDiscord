@@ -133,7 +133,7 @@ const BetterDiscord = class BetterDiscord {
 
         Utils.log("Loading");
         this.ensureFolders();
-        await this.ensureModules();
+        //await this.ensureModules();
         await this.loadApp();
         Utils.saveLogs();
     }
