@@ -11,7 +11,7 @@
     const contentWindowGetter = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, "contentWindow").get;
     Object.defineProperty(HTMLIFrameElement.prototype, "contentWindow", {
         get: function () {
-            const contentWindow = contentWindowGetter.call(this);
+            const contentWindow = Reflect.apply(contentWindowGetter, this, arguments);
             return new Proxy(contentWindow, {
                 get: function (obj, prop) {
                     if (prop === "localStorage") return null;
@@ -23,8 +23,9 @@
         }
     });
       
-    // Prevent interception by patching of Function.prototype.call
-    Object.defineProperty(Function.prototype, "call", {value: Function.prototype.call, writable: false, configurable: false});
+    // Prevent interception by patching Reflect.apply and Function.prototype.bind
+    Object.defineProperty(Reflect, "apply", {value: Reflect.apply, writable: false, configurable: false});
+    Object.defineProperty(Function.prototype, "bind", {value: Function.prototype.bind, writable: false, configurable: false});
 
     const oOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function() {
