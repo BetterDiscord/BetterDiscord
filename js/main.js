@@ -4324,13 +4324,13 @@ class V2_SettingsPanel {
         const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
         const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
         const userId = BDV2.UserStore.getCurrentUser().id;
-        const checkForRole = async (serverId, roleId) => {
+        const checkForRole = (serverId, roleId) => {
             if (!SortedGuildStore || !GuildMemberStore) return false;
             const hasServer = SortedGuildStore.getFlattenedGuildIds().includes(serverId);
             const member = GuildMemberStore.getMember(serverId, userId);
             return (hasServer && member ? member.roles.includes(roleId) : false);
         };
-        const checkForBetaAccess = async () => {
+        const checkForBetaAccess = () => {
             if (userId === "197435711476072449") return false;
             const isDonor = checkForRole("292141134614888448", "452687773678436354");
             const isPluginDev = checkForRole("86004744966914048", "125166040689803264") || checkForRole("280806472928198656", "357242595950329857");
@@ -4340,7 +4340,7 @@ class V2_SettingsPanel {
         return Object.keys(settings).reduce((arr, key) => {
             const setting = settings[key];
             if (setting.cat === category && setting.implemented && !setting.hidden) {
-                if (settings.category !== "beta" || (settings.category === "beta" && shouldHaveBeta)) {
+                if (setting.category !== "beta" || (setting.category === "beta" && shouldHaveBeta)) {
                     setting.text = key;
                     arr.push(setting);
                 }
