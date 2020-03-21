@@ -120,37 +120,6 @@ export default new class V2_SettingsPanel {
         //     else $("body").removeClass("bd-blue");
         // }
 
-        if (id == "fork-beta") {
-            try {
-                const fs = require("fs");
-                const path = require("path");
-                const configPath = path.join(DiscordNative.process.remote.resourcesPath, "app", "betterdiscord", "config.json");
-                const config = __non_webpack_require__(configPath);
-                if (enabled) {
-                    config.branch = "modularize";
-                    config.minified = false;
-                }
-                else {
-                    config.branch = "master";
-                    config.minified = true;
-                }
-                fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
-            }
-            catch (err) {console.error(err);}
-            (() => {
-                const ModalStack = BDV2.WebpackModules.findByUniqueProperties(["push", "update", "pop", "popWithKey"]);
-                const AlertModal = BDV2.WebpackModules.findByPrototypes(["handleCancel", "handleSubmit", "handleMinorConfirm"]);
-                if (!ModalStack || !AlertModal) return;
-
-                ModalStack.push(function(props) {
-                    return BDV2.React.createElement(AlertModal, Object.assign({
-                        title: "Restart Required",
-                        body: "Please FULLY restart Discord in order for these changes to take effect.",
-                    }, props));
-                });
-            })();
-        }
-
         if (id == "bda-gs-2") {
             if (enabled) $("body").addClass("bd-minimal");
             else $("body").removeClass("bd-minimal");
