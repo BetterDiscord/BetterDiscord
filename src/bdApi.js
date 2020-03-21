@@ -24,7 +24,7 @@ const BdApi = {
         if (!realLocation) return this._windowConfigFile = null;
         return this._windowConfigFile = realLocation;
     },
-    get bdSettings() {return settings;},
+    get settings() {return settings;},
     get emotes() {return bdEmotes;},
     get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); },
     get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
@@ -259,7 +259,7 @@ class AddonAPI {
         this.cookie = cookie;
         this.list = list;
     }
-    
+
     isEnabled(name) {
         return !!this.cookie[name];
     }

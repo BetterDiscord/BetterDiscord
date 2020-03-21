@@ -8,12 +8,26 @@ export default new class V2 {
             const req = webpackJsonp.push([[], {__extra_id__: (module, exports, req) => module.exports = req}, [["__extra_id__"]]]);
             delete req.m.__extra_id__;
             delete req.c.__extra_id__;
+
+            const protect = theModule => {
+                if (theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort) return null;
+                if (!theModule.getToken && !theModule.getEmail && !theModule.showToken) return theModule;
+                return new Proxy(theModule, {
+                    get: function(obj, func) {
+                        if (func == "getToken") return () => "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
+                        if (func == "getEmail") return () => "puppet11112@gmail.com";
+                        if (func == "showToken") return () => true;
+                        return obj[func];
+                    }
+                });
+            };
+
             const find = (filter) => {
                 for (const i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
                         const m = req.c[i].exports;
-                        if (m && m.__esModule && m.default && filter(m.default)) return m.default;
-                        if (m && filter(m))	return m;
+                        if (m && m.__esModule && m.default && filter(m.default)) return protect(m.default);
+                        if (m && filter(m))	return protect(m);
                     }
                 }
                 // console.warn("Cannot find loaded module in cache");
@@ -25,8 +39,8 @@ export default new class V2 {
                 for (const i in req.c) {
                     if (req.c.hasOwnProperty(i)) {
                         const m = req.c[i].exports;
-                        if (m && m.__esModule && m.default && filter(m.default)) modules.push(m.default);
-                        else if (m && filter(m)) modules.push(m);
+                        if (m && m.__esModule && m.default && filter(m.default)) modules.push(protect(m.default));
+                        else if (m && filter(m)) modules.push(protect(m));
                     }
                 }
                 return modules;
@@ -47,7 +61,7 @@ export default new class V2 {
     }
 
     initialize() {
-        
+
     }
 
     joinBD1() {this.InviteActions.acceptInviteAndTransitionToInviteChannel("0Tmfo5ZbORCRqbAd");}

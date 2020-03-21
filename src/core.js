@@ -42,26 +42,6 @@ Core.prototype.init = async function() {
         `);
     }
 
-    // const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
-    // const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
-    // const userId = BDV2.UserStore.getCurrentUser().id;
-    // const checkForRole = async (serverId, roleId) => {
-    //     if (!SortedGuildStore || !GuildMemberStore) return false;
-    //     const hasServer = SortedGuildStore.getFlattenedGuildIds().includes(serverId);
-    //     const member = GuildMemberStore.getMember(serverId, userId);
-    //     return (hasServer && member ? member.roles.includes(roleId) : false);
-    // };
-    // const checkForBetaAccess = async () => {
-    //     if (userId === "197435711476072449") return false;
-    //     const isDonor = checkForRole("292141134614888448", "452687773678436354");
-    //     const isPluginDev = checkForRole("86004744966914048", "125166040689803264") || checkForRole("280806472928198656", "357242595950329857");
-    //     return (isDonor || isPluginDev);
-    // };
-    // const shouldHaveBeta = checkForBetaAccess();
-    // if (!shouldHaveBeta) {
-    //     Utils.alert("Beta Access", `You don't seem like you should have Beta Access... how did you get here?`);
-    // }
-
     Utils.log("Startup", "Initializing Settings");
     this.initSettings();
     // emoteModule = new EmoteModule();

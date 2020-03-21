@@ -73,29 +73,11 @@ export default new class V2_SettingsPanel {
         return this.getSettings("emote");
     }
     getSettings(category) {
-        const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
-        const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
-        const userId = BDV2.UserStore.getCurrentUser().id;
-        const checkForRole = async (serverId, roleId) => {
-            if (!SortedGuildStore || !GuildMemberStore) return false;
-            const hasServer = SortedGuildStore.getFlattenedGuildIds().includes(serverId);
-            const member = GuildMemberStore.getMember(serverId, userId);
-            return (hasServer && member ? member.roles.includes(roleId) : false);
-        };
-        const checkForBetaAccess = async () => {
-            if (userId === "197435711476072449") return false;
-            const isDonor = checkForRole("292141134614888448", "452687773678436354");
-            const isPluginDev = checkForRole("86004744966914048", "125166040689803264") || checkForRole("280806472928198656", "357242595950329857");
-            return (isDonor || isPluginDev);
-        };
-        const shouldHaveBeta = checkForBetaAccess();
         return Object.keys(settings).reduce((arr, key) => {
             const setting = settings[key];
             if (setting.cat === category && setting.implemented && !setting.hidden) {
-                if (settings.category !== "beta" || (settings.category === "beta" && shouldHaveBeta)) {
-                    setting.text = key;
-                    arr.push(setting);
-                }
+                setting.text = key;
+                arr.push(setting);
             }
             return arr;
         }, []);
@@ -247,16 +229,6 @@ export default new class V2_SettingsPanel {
     }
 
     async initializeSettings() {
-        const checkForBetaAccess = async () => {
-            const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
-            const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
-            const inServer = SortedGuildStore.getFlattenedGuildIds().includes("292141134614888448");
-            const userId = BDV2.UserStore.getCurrentUser().id;
-            const member = GuildMemberStore.getMember("292141134614888448", userId);
-            const hasRole = inServer && member ? member.roles.includes("452687773678436354") : false;
-            if (hasRole) settings["BBD Beta"].hidden = false;
-        };
-
         // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
@@ -274,7 +246,6 @@ export default new class V2_SettingsPanel {
         }
 
         if (settingsCookie["bda-gs-8"]) dMode.enable(settingsCookie["fork-dm-1"]);
-        checkForBetaAccess();
 
         this.saveSettings();
     }
