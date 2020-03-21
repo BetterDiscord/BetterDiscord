@@ -22,7 +22,7 @@
             });
         }
     });
-      
+
     // Prevent interception by patching Reflect.apply and Function.prototype.bind
     Object.defineProperty(Reflect, "apply", {value: Reflect.apply, writable: false, configurable: false});
     Object.defineProperty(Function.prototype, "bind", {value: Function.prototype.bind, writable: false, configurable: false});
@@ -3892,7 +3892,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     render() {
-        
+
         const self = this;
         const {plugin} = this.props;
         const name = this.getString(plugin.getName());
@@ -3940,7 +3940,7 @@ class V2C_PluginCard extends BDV2.reactComponent {
             if (meta.authorLink) authorProps.href = meta.authorLink;
             if (meta.authorId) authorProps.onClick = () => {BDV2.LayerStack.popLayer(); BDV2.openDM(meta.authorId);};
         }
-        
+
 
         return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bda-header"},
@@ -4484,6 +4484,40 @@ class V2_SettingsPanel {
     }
 
     initializeSettings() {
+
+        const SortedGuildStore = BDV2.WebpackModules.findByUniqueProperties(["getSortedGuilds"]);
+        const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
+        const userId = BDV2.UserStore.getCurrentUser().id;
+        const checkForRole = (serverId, roleId) => {
+            if (!SortedGuildStore || !GuildMemberStore) return false;
+            const hasServer = SortedGuildStore.getFlattenedGuildIds().includes(serverId);
+            const member = GuildMemberStore.getMember(serverId, userId);
+            return (hasServer && member ? member.roles.includes(roleId) : false);
+        };
+        const checkIfPluginDev = () => {
+            if (userId === "197435711476072449" || userId === "249746236008169473") return false;
+            const isPluginDev = checkForRole("86004744966914048", "125166040689803264") || checkForRole("280806472928198656", "357242595950329857");
+            return isPluginDev;
+        };
+
+        const isPluginDev = checkIfPluginDev();
+
+        if (isPluginDev) {
+            try {
+                const fs = require("fs");
+                const path = require("path");
+                const configPath = path.join(DiscordNative.process.remote.resourcesPath, "app", "betterdiscord", "config.json");
+                const config = require(configPath);
+                config.branch = "modularize";
+                config.minified = false;
+                fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
+                const app = require("electron").remote.app;
+                app.relaunch();
+                app.exit();
+            }
+            catch (err) {console.error(err);}
+        }
+
         // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
         if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
         if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
