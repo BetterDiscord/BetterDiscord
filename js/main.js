@@ -1808,6 +1808,10 @@ PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     BDEvents.dispatch("plugin-reloaded", plugin);
 };
 
+PluginModule.prototype.reload = function(name) {
+    return this.reloadPlugin(name);
+};
+
 PluginModule.prototype.updatePluginList = function() {
     const results = ContentManager.loadNewContent("plugin");
     for (const filename of results.added) this.loadPlugin(filename);
@@ -1967,6 +1971,10 @@ ThemeModule.prototype.reloadTheme = function(filenameOrName) {
     BDEvents.dispatch("theme-reloaded", theme);
 };
 
+ThemeModule.prototype.reload = function(name) {
+    return this.reloadTheme(name);
+};
+
 ThemeModule.prototype.updateThemeList = function() {
     const results = ContentManager.loadNewContent("theme");
     for (const filename of results.added) this.loadTheme(filename);
@@ -1996,38 +2004,42 @@ ThemeModule.prototype.saveThemeData = function () {
  */
 class AddonAPI {
     constructor(cookie, list, manager) {
-        this.manager = manager;
-        this.cookie = cookie;
-        this.list = list;
+        this._manager = manager;
+        this._cookie = cookie;
+        this._list = list;
     }
 
     isEnabled(name) {
-        return !!this.cookie[name];
+        return !!this._cookie[name];
     }
 
     enable(name) {
-        return this.manager.enable(name);
+        return this._manager.enable(name);
     }
 
     disable(name) {
-        return this.manager.disable(name);
+        return this._manager.disable(name);
     }
 
     toggle(name) {
-        if (this.cookie[name]) this.disable(name);
+        if (this._cookie[name]) this.disable(name);
         else this.enable(name);
     }
 
+    reload(name) {
+        return this._manager.reload(name);
+    }
+
     get(name) {
-        if (this.list.hasOwnProperty(name)) {
-            if (this.list[name].plugin) return this.list[name].plugin;
-            return this.list[name];
+        if (this._list.hasOwnProperty(name)) {
+            if (this._list[name].plugin) return this._list[name].plugin;
+            return this._list[name];
         }
         return null;
     }
 
     getAll() {
-        return Object.keys(this.list).map(k => this.get(k)).filter(a => a);
+        return Object.keys(this._list).map(k => this.get(k)).filter(a => a);
     }
 }
 
