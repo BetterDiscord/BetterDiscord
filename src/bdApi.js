@@ -255,38 +255,42 @@ BdApi.setBDData = function(key, data) {
 
 class AddonAPI {
     constructor(cookie, list, manager) {
-        this.manager = manager;
-        this.cookie = cookie;
-        this.list = list;
+        this._manager = manager;
+        this._cookie = cookie;
+        this._list = list;
     }
 
     isEnabled(name) {
-        return !!this.cookie[name];
+        return !!this._cookie[name];
     }
 
     enable(name) {
-        return this.manager.enable(name);
+        return this._manager.enable(name);
     }
 
     disable(name) {
-        return this.manager.disable(name);
+        return this._manager.disable(name);
     }
 
     toggle(name) {
-        if (this.cookie[name]) this.disable(name);
+        if (this._cookie[name]) this.disable(name);
         else this.enable(name);
     }
 
+    reload(name) {
+        return this._manager.reload(name);
+    }
+
     get(name) {
-        if (this.list.hasOwnProperty(name)) {
-            if (this.list[name].plugin) return this.list[name].plugin;
-            return this.list[name];
+        if (this._list.hasOwnProperty(name)) {
+            if (this._list[name].plugin) return this._list[name].plugin;
+            return this._list[name];
         }
         return null;
     }
 
     getAll() {
-        return Object.keys(this.list).map(k => this.get(k)).filter(a => a);
+        return Object.keys(this._list).map(k => this.get(k)).filter(a => a);
     }
 }
 

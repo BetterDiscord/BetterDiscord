@@ -100,6 +100,10 @@ ThemeModule.prototype.reloadTheme = function(filenameOrName) {
     BDEvents.dispatch("theme-reloaded", theme);
 };
 
+ThemeModule.prototype.reload = function(name) {
+    return this.reloadTheme(name);
+};
+
 ThemeModule.prototype.updateThemeList = function() {
     const results = ContentManager.loadNewContent("theme");
     for (const filename of results.added) this.loadTheme(filename);

@@ -149,6 +149,10 @@ PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     BDEvents.dispatch("plugin-reloaded", plugin);
 };
 
+PluginModule.prototype.reload = function(name) {
+    return this.reloadPlugin(name);
+};
+
 PluginModule.prototype.updatePluginList = function() {
     const results = ContentManager.loadNewContent("plugin");
     for (const filename of results.added) this.loadPlugin(filename);
