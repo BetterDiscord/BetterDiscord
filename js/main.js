@@ -2061,7 +2061,7 @@ var BdApi = {
         return this._windowConfigFile = realLocation;
     },
     get settings() {return settings;},
-    get emotes() {return bdEmotes;},
+    get emotes() {return window.bdEmotes;},
     get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); },
     get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); },
     get Plugins() {
@@ -2897,6 +2897,22 @@ class V2 {
 }
 
 var BDV2 = new V2();
+
+class BDErrorBoundary extends BDV2.reactComponent {
+    constructor(props) {
+      super(props);
+      this.state = {hasError: false};
+    }
+  
+    componentDidCatch() {
+      this.setState({hasError: true});
+    }
+  
+    render() {
+      if (this.state.hasError) return BDV2.react.createElement("div", {className: "react-error"}, "Component Error");  
+      return this.props.children; 
+    }
+}
 
 class BDLogo extends BDV2.reactComponent {
     render() {
@@ -3890,7 +3906,8 @@ class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     getString(value) {
-        return typeof value == "string" ? value : value.toString();
+        if (!value) return "???";
+        return typeof(value) == "string" ? value : value.toString();
     }
 
     makeLink(title, url) {
@@ -3949,7 +3966,6 @@ class V2C_PluginCard extends BDV2.reactComponent {
             if (meta.authorLink) authorProps.href = meta.authorLink;
             if (meta.authorId) authorProps.onClick = () => {BDV2.LayerStack.popLayer(); BDV2.openDM(meta.authorId);};
         }
-
 
         return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bda-header"},
@@ -4593,7 +4609,7 @@ class V2_SettingsPanel {
 
     get pluginsComponent() {
         let plugins = Object.keys(bdplugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(V2Components.PluginCard, {key: key, plugin: bdplugins[key].plugin}));return arr;
+            arr.push(BDV2.react.createElement(BDErrorBoundary, null, BDV2.react.createElement(V2Components.PluginCard, {key: key, plugin: bdplugins[key].plugin})));return arr;
         }, []);
         let list = BDV2.react.createElement(V2Components.List, {key: "plugin-list", className: "bda-slist", children: plugins});
         let refreshIcon = !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload Plugin List"}), {className: "bd-reload-header", size: "18px", onClick: async () => {
@@ -4607,7 +4623,7 @@ class V2_SettingsPanel {
 
     get themesComponent() {
         let themes = Object.keys(bdthemes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(V2Components.ThemeCard, {key: key, theme: bdthemes[key]}));return arr;
+            arr.push(BDV2.react.createElement(BDErrorBoundary, null, BDV2.react.createElement(V2Components.ThemeCard, {key: key, theme: bdthemes[key]})));return arr;
         }, []);
         let list = BDV2.react.createElement(V2Components.List, {key: "theme-list", className: "bda-slist", children: themes});
         let refreshIcon = !settingsCookie["fork-ps-5"] && BDV2.react.createElement(V2Components.TooltipWrap(V2Components.ReloadIcon, {color: "black", side: "top", text: "Reload Theme List"}), {className: "bd-reload-header", size: "18px", onClick: async () => {
