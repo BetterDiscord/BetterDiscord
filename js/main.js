@@ -2002,46 +2002,7 @@ ThemeModule.prototype.saveThemeData = function () {
  *
  * Plugin Template: https://gist.github.com/Jiiks/71edd5af0beafcd08956
  */
-class AddonAPI {
-    constructor(cookie, list, manager) {
-        this._manager = manager;
-        this._cookie = cookie;
-        this._list = list;
-    }
 
-    isEnabled(name) {
-        return !!this._cookie[name];
-    }
-
-    enable(name) {
-        return this._manager.enable(name);
-    }
-
-    disable(name) {
-        return this._manager.disable(name);
-    }
-
-    toggle(name) {
-        if (this._cookie[name]) this.disable(name);
-        else this.enable(name);
-    }
-
-    reload(name) {
-        return this._manager.reload(name);
-    }
-
-    get(name) {
-        if (this._list.hasOwnProperty(name)) {
-            if (this._list[name].plugin) return this._list[name].plugin;
-            return this._list[name];
-        }
-        return null;
-    }
-
-    getAll() {
-        return Object.keys(this._list).map(k => this.get(k)).filter(a => a);
-    }
-}
 
 var BdApi = {
     get React() { return BDV2.React; },
@@ -2063,17 +2024,7 @@ var BdApi = {
     get settings() {return settings;},
     get emotes() {return window.bdEmotes;},
     get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); },
-    get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); },
-    get Plugins() {
-        if (this._Plugins) return this._Plugins;
-        if (!pluginModule) return null;
-        return this._Plugins = new AddonAPI(pluginCookie, bdplugins, pluginModule);
-    },
-    get Themes() {
-        if (this._Themes) return this._Themes;
-        if (!themeModule) return null;
-        return this._Themes = new AddonAPI(themeCookie, bdthemes, themeModule);
-    }
+    get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
 };
 
 BdApi.getAllWindowPreferences = function() {
@@ -2304,7 +2255,49 @@ BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
 };
 
+((API) => {
+    const createAddonAPI = function(cookie, list, manager) {
+        return new class AddonAPI {
+        
+            isEnabled(name) {
+                return !!cookie[name];
+            }
+        
+            enable(name) {
+                return manager.enable(name);
+            }
+        
+            disable(name) {
+                return manager.disable(name);
+            }
+        
+            toggle(name) {
+                if (cookie[name]) this.disable(name);
+                else this.enable(name);
+            }
+        
+            reload(name) {
+                return manager.reload(name);
+            }
+        
+            get(name) {
+                if (list.hasOwnProperty(name)) {
+                    if (list[name].plugin) return list[name].plugin;
+                    return list[name];
+                }
+                return null;
+            }
+        
+            getAll() {
+                return Object.keys(list).map(k => this.get(k)).filter(a => a);
+            }
+        };
+    };
+    API.Themes = createAddonAPI(themeCookie, bdthemes, themeModule);
+    API.Plugins = createAddonAPI(pluginCookie, bdplugins, pluginModule);
+})(BdApi);
 
+Object.freeze(BdApi);
 
 
 
