@@ -78,6 +78,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     getString(value) {
+        if (!value) return "???";
         return typeof value == "string" ? value : value.toString();
     }
 

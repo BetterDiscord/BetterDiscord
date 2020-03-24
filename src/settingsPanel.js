@@ -28,6 +28,7 @@ import SectionedSettingsPanel from "./react/sectionedSettingsPanel";
 import SettingsPanel from "./react/settingsPanel";
 import CssEditor from "./react/cssEditor";
 import ContentColumn from "./react/contentColumn";
+import ErrorBoundary from "./react/errorBoundary";
 
 export default new class V2_SettingsPanel {
 
@@ -292,7 +293,7 @@ export default new class V2_SettingsPanel {
 
     get pluginsComponent() {
         const plugins = Object.keys(bdplugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(PluginCard, {key: key, plugin: bdplugins[key].plugin}));return arr;
+            arr.push(BDV2.react.createElement(ErrorBoundary, null, BDV2.react.createElement(PluginCard, {key: key, plugin: bdplugins[key].plugin})));return arr;
         }, []);
         const list = BDV2.react.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
         const refreshIcon = !settingsCookie["fork-ps-5"] && BDV2.react.createElement(TooltipWrap(ReloadIcon, {color: "black", side: "top", text: "Reload Plugin List"}), {className: "bd-reload-header", size: "18px", onClick: async () => {
@@ -306,7 +307,7 @@ export default new class V2_SettingsPanel {
 
     get themesComponent() {
         const themes = Object.keys(bdthemes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(ThemeCard, {key: key, theme: bdthemes[key]}));return arr;
+            arr.push(BDV2.react.createElement(ErrorBoundary, null, BDV2.react.createElement(ThemeCard, {key: key, theme: bdthemes[key]})));return arr;
         }, []);
         const list = BDV2.react.createElement(List, {key: "theme-list", className: "bda-slist", children: themes});
         const refreshIcon = !settingsCookie["fork-ps-5"] && BDV2.react.createElement(TooltipWrap(ReloadIcon, {color: "black", side: "top", text: "Reload Theme List"}), {className: "bd-reload-header", size: "18px", onClick: async () => {

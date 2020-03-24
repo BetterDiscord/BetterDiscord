@@ -253,48 +253,45 @@ BdApi.setBDData = function(key, data) {
 
 
 
-class AddonAPI {
-    constructor(cookie, list, manager) {
-        this._manager = manager;
-        this._cookie = cookie;
-        this._list = list;
-    }
+const makeAddonAPI = (cookie, list, manager) => new class AddonAPI {
 
     isEnabled(name) {
-        return !!this._cookie[name];
+        return !!cookie[name];
     }
 
     enable(name) {
-        return this._manager.enable(name);
+        return manager.enable(name);
     }
 
     disable(name) {
-        return this._manager.disable(name);
+        return manager.disable(name);
     }
 
     toggle(name) {
-        if (this._cookie[name]) this.disable(name);
+        if (cookie[name]) this.disable(name);
         else this.enable(name);
     }
 
     reload(name) {
-        return this._manager.reload(name);
+        return manager.reload(name);
     }
 
     get(name) {
-        if (this._list.hasOwnProperty(name)) {
-            if (this._list[name].plugin) return this._list[name].plugin;
-            return this._list[name];
+        if (list.hasOwnProperty(name)) {
+            if (list[name].plugin) return list[name].plugin;
+            return list[name];
         }
         return null;
     }
 
     getAll() {
-        return Object.keys(this._list).map(k => this.get(k)).filter(a => a);
+        return Object.keys(list).map(k => this.get(k)).filter(a => a);
     }
-}
+};
 
-BdApi.Plugins = new AddonAPI(pluginCookie, bdplugins, pluginModule);
-BdApi.Themes = new AddonAPI(themeCookie, bdthemes, themeModule);
+BdApi.Plugins = makeAddonAPI(pluginCookie, bdplugins, pluginModule);
+BdApi.Themes = makeAddonAPI(themeCookie, bdthemes, themeModule);
+
+Object.freeze(BdApi);
 
 export default BdApi;
