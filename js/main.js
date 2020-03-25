@@ -304,18 +304,22 @@ Core.prototype.init = async function() {
 
     this.injectExternals();
 
+    settingsPanel = new V2_SettingsPanel();
+    pluginModule = new PluginModule();
+    themeModule = new ThemeModule();
+
+    this.setupAPI();
+
     await this.checkForGuilds();
     BDV2.initialize();
+
     Utils.log("Startup", "Updating Settings");
-    settingsPanel = new V2_SettingsPanel();
     settingsPanel.initializeSettings();
 
     Utils.log("Startup", "Loading Plugins");
-    pluginModule = new PluginModule();
     pluginModule.loadPlugins();
 
     Utils.log("Startup", "Loading Themes");
-    themeModule = new ThemeModule();
     themeModule.loadThemes();
 
     $("#customcss").detach().appendTo(document.head);
@@ -391,6 +395,48 @@ Core.prototype.saveSettings = function () {
 
 Core.prototype.loadSettings = function () {
     settingsCookie = DataStore.getSettingGroup("settings");
+};
+
+Core.prototype.setupAPI = function() {
+    const createAddonAPI = function(cookie, list, manager) {
+        return new class AddonAPI {
+        
+            isEnabled(name) {
+                return !!cookie[name];
+            }
+        
+            enable(name) {
+                return manager.enable(name);
+            }
+        
+            disable(name) {
+                return manager.disable(name);
+            }
+        
+            toggle(name) {
+                if (cookie[name]) this.disable(name);
+                else this.enable(name);
+            }
+        
+            reload(name) {
+                return manager.reload(name);
+            }
+        
+            get(name) {
+                if (list.hasOwnProperty(name)) {
+                    if (list[name].plugin) return list[name].plugin;
+                    return list[name];
+                }
+                return null;
+            }
+        
+            getAll() {
+                return Object.keys(list).map(k => this.get(k)).filter(a => a);
+            }
+        };
+    };
+    BdApi.Themes = createAddonAPI(themeCookie, bdthemes, themeModule);
+    BdApi.Plugins = createAddonAPI(pluginCookie, bdplugins, pluginModule);
 };
 
 Core.prototype.initObserver = function () {
@@ -1821,7 +1867,7 @@ PluginModule.prototype.updatePluginList = function() {
 PluginModule.prototype.loadPluginData = function () {
     let saved = DataStore.getSettingGroup("plugins");
     if (saved) {
-        pluginCookie = saved;
+        Object.assign(pluginCookie, saved);
     }
 };
 
@@ -1984,7 +2030,7 @@ ThemeModule.prototype.updateThemeList = function() {
 ThemeModule.prototype.loadThemeData = function() {
     let saved = DataStore.getSettingGroup("themes");
     if (saved) {
-        themeCookie = saved;
+        Object.assign(themeCookie, saved);
     }
 };
 
@@ -2254,50 +2300,6 @@ BdApi.getBDData = function(key) {
 BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
 };
-
-((API) => {
-    const createAddonAPI = function(cookie, list, manager) {
-        return new class AddonAPI {
-        
-            isEnabled(name) {
-                return !!cookie[name];
-            }
-        
-            enable(name) {
-                return manager.enable(name);
-            }
-        
-            disable(name) {
-                return manager.disable(name);
-            }
-        
-            toggle(name) {
-                if (cookie[name]) this.disable(name);
-                else this.enable(name);
-            }
-        
-            reload(name) {
-                return manager.reload(name);
-            }
-        
-            get(name) {
-                if (list.hasOwnProperty(name)) {
-                    if (list[name].plugin) return list[name].plugin;
-                    return list[name];
-                }
-                return null;
-            }
-        
-            getAll() {
-                return Object.keys(list).map(k => this.get(k)).filter(a => a);
-            }
-        };
-    };
-    API.Themes = createAddonAPI(themeCookie, bdthemes, themeModule);
-    API.Plugins = createAddonAPI(pluginCookie, bdplugins, pluginModule);
-})(BdApi);
-
-Object.freeze(BdApi);
 
 
 
