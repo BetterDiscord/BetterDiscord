@@ -1,7 +1,7 @@
 import {settingsCookie, themeCookie, bdthemes} from "../0globals";
 import Utils from "../modules/utils";
 import BDV2 from "../modules/v2";
-import themeModule from "../modules/pluginModule";
+import themeModule from "../modules/themeModule";
 
 import ReloadIcon from "./reloadIcon";
 import TooltipWrap from "./tooltipWrap";
@@ -84,7 +84,7 @@ export default class V2C_ThemeCard extends BDV2.reactComponent {
             if (meta.authorId) authorProps.onClick = () => {BDV2.LayerStack.popLayer(); BDV2.openDM(meta.authorId);};
         }
 
-        return BDV2.react.createElement("li", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item"},
+        return BDV2.react.createElement("div", {"data-name": name, "data-version": version, "className": "settings-closed ui-switch-item bd-addon-card"},
             BDV2.react.createElement("div", {className: "bda-header"},
                     BDV2.react.createElement("span", {className: "bda-header-title"},
                         BDV2.react.createElement("span", {className: "bda-name"}, name),

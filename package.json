@@ -34,6 +34,7 @@
         "gulp": "^4.0.0",
         "gulp-csso": "^3.0.1",
         "gulp-rename": "^1.4.0",
+        "gulp-babel-minify": "^0.5.1",
         "webpack": "^4.29.6",
         "webpack-cli": "^3.2.3"
     }

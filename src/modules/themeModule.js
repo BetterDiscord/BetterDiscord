@@ -54,6 +54,10 @@ ThemeModule.prototype.toggleTheme = function(theme) {
     else this.enableTheme(theme);
 };
 
+ThemeModule.prototype.toggle = function (name, reload = false) {
+    return this.toggleTheme(name, reload);
+};
+
 ThemeModule.prototype.loadTheme = function(filename) {
     const error = ContentManager.loadContent(filename, "theme");
     if (error) {
@@ -84,6 +88,14 @@ ThemeModule.prototype.unloadTheme = function(filenameOrName) {
     BDEvents.dispatch("theme-unloaded", theme);
 };
 
+ThemeModule.prototype.delete = function(filenameOrName) {
+    const bdplugin = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
+    if (!bdplugin) return;
+    this.unloadTheme(bdplugin.filename);
+    const fullPath = require("path").resolve(ContentManager.pluginsFolder, bdplugin.filename);
+    require("fs").unlinkSync(fullPath);
+};
+
 ThemeModule.prototype.reloadTheme = function(filenameOrName) {
     const bdtheme = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
     if (!bdtheme) return this.loadTheme(filenameOrName);
@@ -102,6 +114,13 @@ ThemeModule.prototype.reloadTheme = function(filenameOrName) {
 
 ThemeModule.prototype.reload = function(name) {
     return this.reloadTheme(name);
+};
+
+ThemeModule.prototype.edit = function(filenameOrName) {
+    const bdplugin = Object.values(bdthemes).find(p => p.filename == filenameOrName) || bdthemes[filenameOrName];
+    if (!bdplugin) return;
+    const fullPath = require("path").resolve(ContentManager.themesFolder, bdplugin.filename);
+    require("electron").shell.openItem(`${fullPath}`);
 };
 
 ThemeModule.prototype.updateThemeList = function() {

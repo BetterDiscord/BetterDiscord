@@ -30,6 +30,8 @@ import CssEditor from "../ui/cssEditor";
 import ContentColumn from "../ui/contentColumn";
 import ErrorBoundary from "../ui/errorBoundary";
 
+import CardList from "../ui/addonlist";
+
 export default new class V2_SettingsPanel {
 
     constructor() {
@@ -38,6 +40,7 @@ export default new class V2_SettingsPanel {
         self.onChange = self.onChange.bind(self);
         self.updateSettings = this.updateSettings.bind(self);
         self.sidebar = new V2_SettingsPanel_Sidebar(self.sideBarOnClick);
+        this.buildPluginProps = this.buildPluginProps.bind(this);
     }
 
     get root() {
@@ -261,7 +264,7 @@ export default new class V2_SettingsPanel {
     }
 
     contentComponent(type) {
-        const componentElement = type == "plugins" ? this.pluginsComponent : this.themesComponent;
+        const componentElement = this.getAddonList(type);
         const prefix = type.replace("s", "");
         const settingsList = this;
         class ContentList extends BDV2.react.Component {
@@ -291,6 +294,28 @@ export default new class V2_SettingsPanel {
         return BDV2.react.createElement(ContentList);
     }
 
+    getString(value) {
+        if (!value) return "???";
+        return typeof value == "string" ? value : value.toString();
+    }
+
+    buildPluginProps(key) {
+        const plugin = bdplugins[key].plugin;
+        return Object.assign({}, {
+            name: this.getString(plugin.getName()),
+            author: this.getString(plugin.getAuthor()),
+            description: this.getString(plugin.getDescription()),
+            version: this.getString(plugin.getVersion()),
+            getSettingsPanel: plugin.getSettingsPanel && plugin.getSettingsPanel.bind(plugin)
+        }, bdplugins[key]);
+    }
+
+    getAddonList(type) {
+        const isPlugins = type === "plugins";
+        const list = isPlugins ? Object.keys(bdplugins).map(this.buildPluginProps) : Object.values(bdthemes);
+        return BDV2.react.createElement(CardList, {type, list});
+    }
+
     get pluginsComponent() {
         const plugins = Object.keys(bdplugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
             arr.push(BDV2.react.createElement(ErrorBoundary, null, BDV2.react.createElement(PluginCard, {key: key, plugin: bdplugins[key].plugin})));return arr;
@@ -302,7 +327,8 @@ export default new class V2_SettingsPanel {
         }});
         const pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
         const contentColumn = BDV2.react.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
-        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
+        // return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
+        return BDV2.react.createElement(CardList, {type: "plugins"});
     }
 
     get themesComponent() {
@@ -316,7 +342,8 @@ export default new class V2_SettingsPanel {
         }});
         const tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");
         const contentColumn = BDV2.react.createElement(ContentColumn, {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
-        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
+        // return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
+        return BDV2.react.createElement(CardList, {type: "themes"});
     }
 
     renderCoreSettings() {

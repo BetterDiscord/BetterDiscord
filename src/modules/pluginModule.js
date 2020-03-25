@@ -98,6 +98,10 @@ PluginModule.prototype.togglePlugin = function (plugin) {
     else this.enablePlugin(plugin);
 };
 
+PluginModule.prototype.toggle = function (plugin, reload = false) {
+    return this.togglePlugin(plugin, reload);
+};
+
 PluginModule.prototype.loadPlugin = function(filename) {
     const error = ContentManager.loadContent(filename, "plugin");
     if (error) {
@@ -130,6 +134,14 @@ PluginModule.prototype.unloadPlugin = function(filenameOrName) {
     BDEvents.dispatch("plugin-unloaded", plugin);
 };
 
+PluginModule.prototype.delete = function(filenameOrName) {
+    const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
+    if (!bdplugin) return;
+    this.unloadPlugin(bdplugin.filename);
+    const fullPath = require("path").resolve(ContentManager.pluginsFolder, bdplugin.filename);
+    require("fs").unlinkSync(fullPath);
+};
+
 PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
     if (!bdplugin) return this.loadPlugin(filenameOrName);
@@ -151,6 +163,15 @@ PluginModule.prototype.reloadPlugin = function(filenameOrName) {
 
 PluginModule.prototype.reload = function(name) {
     return this.reloadPlugin(name);
+};
+
+PluginModule.prototype.edit = function(filenameOrName) {
+    console.log("Edit " + filenameOrName);
+    const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
+    if (!bdplugin) return;
+    const fullPath = require("path").resolve(ContentManager.pluginsFolder, bdplugin.filename);
+    console.log("Edit " + fullPath);
+    require("electron").shell.openItem(`${fullPath}`);
 };
 
 PluginModule.prototype.updatePluginList = function() {

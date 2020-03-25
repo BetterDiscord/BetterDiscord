@@ -126,8 +126,12 @@ export default new class ContentManager {
             let content = fs.readFileSync(filename, "utf8");
             content = Utils.stripBOM(content);
 
+            const stats = fs.statSync(filename);
             const meta = self.extractMeta(content);
             meta.filename = path.basename(filename);
+            meta.added = stats.atimeMs;
+            meta.modified = stats.mtimeMs;
+            meta.size = stats.size;
             if (!isPlugin) {
                 meta.css = content;
                 if (meta.format == "json") meta.css = meta.css.split("\n").slice(1).join("\n");
