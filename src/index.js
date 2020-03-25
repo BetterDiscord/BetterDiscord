@@ -19,17 +19,17 @@ const globalKeys = Object.keys(Globals);
 for (const key of globalKeys) deprecateGlobal(key, Globals[key]);
 
 
-import BdApi from "./bdApi";
-import BDV2 from "./v2";
-import pluginModule from "./pluginModule";
-import themeModule from "./themeModule";
-import Utils from "./utils";
-import BDEvents from "./bdEvents";
-import settingsPanel from "./settingsPanel";
-import DataStore from "./dataStore";
-import emoteModule from "./emoteModule";
-import ContentManager from "./contentManager";
-import ClassNormalizer from "./classNormalizer";
+import BdApi from "./modules/bdApi";
+import BDV2 from "./modules/v2";
+import pluginModule from "./modules/pluginModule";
+import themeModule from "./modules/themeModule";
+import Utils from "./modules/utils";
+import BDEvents from "./modules/bdEvents";
+import settingsPanel from "./modules/settingsPanel";
+import DataStore from "./modules/dataStore";
+import emoteModule from "./modules/emoteModule";
+import ContentManager from "./modules/contentManager";
+import ClassNormalizer from "./modules/classNormalizer";
 
 deprecateGlobal("BDV2", BDV2);
 deprecateGlobal("pluginModule", pluginModule);
@@ -44,7 +44,7 @@ deprecateGlobal("ClassNormalizer", ClassNormalizer);
 
 window.BdApi = BdApi;
 
-import Core from "./core";
+import Core from "./modules/core";
 export default class CoreWrapper {
     constructor(bdConfig) {
         this.mainCore = new Core(bdConfig);
