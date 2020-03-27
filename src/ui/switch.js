@@ -9,8 +9,8 @@ export default class SwitchItem extends BDV2.reactComponent {
     }
 
     onChange() {
-        this.props.onChange(this.props.id, !this.state.checked);
         this.props.checked = !this.props.checked;
+        this.props.onChange(this.props.id, this.props.checked);
     }
 
     render() {
