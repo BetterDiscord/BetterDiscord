@@ -301,49 +301,19 @@ export default new class V2_SettingsPanel {
 
     buildPluginProps(key) {
         const plugin = bdplugins[key].plugin;
-        return Object.assign({}, {
+        return Object.assign({}, bdplugins[key], {
             name: this.getString(plugin.getName()),
             author: this.getString(plugin.getAuthor()),
             description: this.getString(plugin.getDescription()),
             version: this.getString(plugin.getVersion()),
             getSettingsPanel: plugin.getSettingsPanel && plugin.getSettingsPanel.bind(plugin)
-        }, bdplugins[key]);
+        });
     }
 
     getAddonList(type) {
         const isPlugins = type === "plugins";
         const list = isPlugins ? Object.keys(bdplugins).map(this.buildPluginProps) : Object.values(bdthemes);
         return BDV2.react.createElement(CardList, {type, list});
-    }
-
-    get pluginsComponent() {
-        const plugins = Object.keys(bdplugins).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(ErrorBoundary, null, BDV2.react.createElement(PluginCard, {key: key, plugin: bdplugins[key].plugin})));return arr;
-        }, []);
-        const list = BDV2.react.createElement(List, {key: "plugin-list", className: "bda-slist", children: plugins});
-        const refreshIcon = !settingsCookie["fork-ps-5"] && BDV2.react.createElement(TooltipWrap(ReloadIcon, {color: "black", side: "top", text: "Reload Plugin List"}), {className: "bd-reload-header", size: "18px", onClick: async () => {
-            pluginModule.updatePluginList();
-            this.sideBarOnClick("plugins");
-        }});
-        const pfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.pluginsFolder); }}, "Open Plugin Folder");
-        const contentColumn = BDV2.react.createElement(ContentColumn, {key: "pcolumn", title: "Plugins", children: [refreshIcon, pfBtn, list]});
-        // return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
-        return BDV2.react.createElement(CardList, {type: "plugins"});
-    }
-
-    get themesComponent() {
-        const themes = Object.keys(bdthemes).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).reduce((arr, key) => {
-            arr.push(BDV2.react.createElement(ErrorBoundary, null, BDV2.react.createElement(ThemeCard, {key: key, theme: bdthemes[key]})));return arr;
-        }, []);
-        const list = BDV2.react.createElement(List, {key: "theme-list", className: "bda-slist", children: themes});
-        const refreshIcon = !settingsCookie["fork-ps-5"] && BDV2.react.createElement(TooltipWrap(ReloadIcon, {color: "black", side: "top", text: "Reload Theme List"}), {className: "bd-reload-header", size: "18px", onClick: async () => {
-            themeModule.updateThemeList();
-            this.sideBarOnClick("themes");
-        }});
-        const tfBtn = BDV2.react.createElement("button", {key: "folder-button", className: "bd-pfbtn", onClick: () => { require("electron").shell.openItem(ContentManager.themesFolder); }}, "Open Theme Folder");
-        const contentColumn = BDV2.react.createElement(ContentColumn, {key: "tcolumn", title: "Themes", children: [refreshIcon, tfBtn, list]});
-        // return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [contentColumn, BDV2.react.createElement(Tools, {key: "tools"})]});
-        return BDV2.react.createElement(CardList, {type: "themes"});
     }
 
     renderCoreSettings() {
