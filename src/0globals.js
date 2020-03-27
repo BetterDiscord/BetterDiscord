@@ -1,12 +1,25 @@
 // var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule, mainCore, BDV2;
 export const minSupportedVersion = "0.3.0";
-export const bbdVersion = "0.2.25-beta";
+export const bbdVersion = "0.3.0";
 export const bbdChangelog = {
-    description: "Mostly behind the scenes changes again.",
+    description: "There's some pretty big things in this one, and even bigger things coming.",
     changes: [
-        {title: "What's New?", items: ["**Changes for plugin developers!** There are some new items in the `BdApi` that you may want to check out."]},
-        {title: "Fixes", type: "fixed", items: ["**Modal Footers** are no longer blank hopefully!"]},
-        {title: "Minor Stuff", type: "improved", items: ["**Injector Version** is now included in the version list to try and quell the confusion."]}
+        {
+            title: "What's New?",
+            items: [
+                "**RepoControls** is now integrated into BD and everyone can enjoy sorting and searching their plugins and themes.",
+                "BandagedBD has undergone an internal restructure--it's no longer one messy file but *several*. Users shouldn't see any breaking changes (hopefully).",
+                "**Plugin Developers:** You'll begin (or continue for some) to see deprecation notices for several BD globals. Please take these seriously and update your plugins to use `BdApi`, the globals **_will_** be removed. If you find the API to be missing something that you could do before, please message me in BD2's <#603225817262194699> chat."
+            ]
+        },
+        {
+            title: "Minor Stuff",
+            type: "improved",
+            items: [
+                "**BD Blue** is now the default accent color for BBD elements in settings. Themes can customize it easily through some new variables: `--bd-blue`, `--bd-blue-hover`, `--bd-blue-active`",
+                "Some improvements have been made to the plugins and themes pages that should hopefully prevent plugins from causing errors when displaying."
+            ]
+        }
     ]
 };
 

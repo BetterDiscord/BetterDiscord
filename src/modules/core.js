@@ -261,7 +261,7 @@ Core.prototype.patchSocial = function() {
         const BBDLink = BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BandagedBD", target: "_blank"}, "BandagedBD");
         const AuthorLink = BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/ZackRauen", title: "Zerebos", target: "_blank"}, "Zerebos");
         const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, [BBDLink, ` ${bbdVersion} by `, AuthorLink]);
-        const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, ["BBD Injector", ` ${bbdVersion} by `, AuthorLink]);
+        const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, ["BBD Injector", ` ${bdConfig.version} by `, AuthorLink]);
 
         const originalVersions = children[children.length - 1].type;
         children[children.length - 1].type = function() {
