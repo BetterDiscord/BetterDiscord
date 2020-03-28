@@ -293,6 +293,4 @@ const makeAddonAPI = (cookie, list, manager) => new class AddonAPI {
 BdApi.Plugins = makeAddonAPI(pluginCookie, bdplugins, pluginModule);
 BdApi.Themes = makeAddonAPI(themeCookie, bdthemes, themeModule);
 
-Object.freeze(BdApi);
-
 export default BdApi;
