@@ -86,6 +86,7 @@ BdApi.getPlugin = function (name) {
 
 //Get BetterDiscord Core
 BdApi.getCore = function () {
+    Utils.warn("Deprecation Notice", `BdApi.getCore() will be removed in future versions.`);
     return mainCore;
 };
 

@@ -6,10 +6,6 @@ export default class V2C_TabBarHeader extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement(
-            "div",
-            {className: "ui-tab-bar-header"},
-            this.props.text
-        );
+        return BDV2.react.createElement("div",{className: "ui-tab-bar-header"}, this.props.text, this.props.button);
     }
 }

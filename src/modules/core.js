@@ -1,4 +1,4 @@
-import {bdConfig, minSupportedVersion, bbdVersion, settingsCookie, bdpluginErrors, bdthemeErrors, bbdChangelog, defaultCookie} from "../0globals";
+import {bdConfig, minSupportedVersion, bbdVersion, settingsCookie, bdpluginErrors, bdthemeErrors, bbdChangelog, defaultCookie, minimumDiscordVersion, currentDiscordVersion} from "../0globals";
 import Utils from "./utils";
 import emoteModule from "./emoteModule";
 import quickEmoteMenu from "./quickEmoteMenu";
@@ -13,12 +13,20 @@ import DataStore from "./dataStore";
 import WebpackModules from "./webpackModules";
 
 import BDLogo from "../ui/bdLogo";
+import TooltipWrap from "../ui/tooltipWrap";
 
-function Core(config) {
+function Core() {}
+
+Core.prototype.setConfig = function(config) {
     Object.assign(bdConfig, config);
-}
+};
 
 Core.prototype.init = async function() {
+    if (currentDiscordVersion < minimumDiscordVersion) {
+        Utils.alert("Not Supported", "BetterDiscord v" + bbdVersion + " does not support this old version (" + currentDiscordVersion + ") of Discord. Please update your Discord installation before proceeding.");
+        return;
+    }
+
     if (bdConfig.version < minSupportedVersion) {
         Utils.alert("Not Supported", "BetterDiscord v" + bdConfig.version + " (your version)" + " is not supported by the latest js (" + bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
         return;
@@ -95,7 +103,7 @@ Core.prototype.init = async function() {
     const previousVersion = DataStore.getBDData("version");
     if (bbdVersion > previousVersion) {
         if (bbdChangelog) this.showChangelogModal(bbdChangelog);
-        DataStore.setBDData("version", bbdVersion);
+        // DataStore.setBDData("version", bbdVersion);
     }
 
     Utils.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
@@ -183,59 +191,7 @@ Core.prototype.initObserver = function () {
 };
 
 Core.prototype.showChangelogModal = function(options = {}) {
-    const ModalStack = WebpackModules.findByProps("push", "update", "pop", "popWithKey");
-    const ChangelogClasses = WebpackModules.findByProps("fixed", "improved");
-    const TextElement = WebpackModules.findByProps("Sizes", "Weights");
-    const FlexChild = WebpackModules.findByProps("Child");
-    const Titles = WebpackModules.findByProps("Tags", "default");
-    const Changelog = WebpackModules.find(m => m.defaultProps && m.defaultProps.selectable == false);
-    const MarkdownParser = WebpackModules.findByProps("defaultRules", "parse");
-    if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return;
-
-    const {image = "https://repository-images.githubusercontent.com/105473537/957b5480-7c26-11e9-8401-50fa820cbae5", description = "", changes = [], title = "BandagedBD", subtitle = `v${bbdVersion}`, footer} = options;
-    const ce = BDV2.React.createElement;
-    const changelogItems = [ce("img", {src: image})];
-    if (description) changelogItems.push(ce("p", null, MarkdownParser.parse(description)));
-    for (let c = 0; c < changes.length; c++) {
-        const entry = changes[c];
-        const type = ChangelogClasses[entry.type] ? ChangelogClasses[entry.type] : ChangelogClasses.added;
-        const margin = c == 0 ? ChangelogClasses.marginTop : "";
-        changelogItems.push(ce("h1", {className: `${type} ${margin}`,}, entry.title));
-        const list = ce("ul", null, entry.items.map(i => ce("li", null, MarkdownParser.parse(i))));
-        changelogItems.push(list);
-    }
-    const renderHeader = function() {
-        return ce(FlexChild.Child, {grow: 1, shrink: 1},
-            ce(Titles.default, {tag: Titles.Tags.H4}, title),
-            ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY, className: ChangelogClasses.date}, subtitle)
-        );
-    };
-
-    const renderFooter = () => {
-        const Anchor = WebpackModules.find(m => m.displayName == "Anchor");
-        const AnchorClasses = WebpackModules.findByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
-        const joinSupportServer = (click) => {
-            click.preventDefault();
-            click.stopPropagation();
-            ModalStack.pop();
-            BDV2.joinBD2();
-        };
-        const supportLink = Anchor ? ce(Anchor, {onClick: joinSupportServer}, "Join our Discord Server.") : ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
-        const defaultFooter = ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY}, "Need support? ", supportLink);
-        return ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter);
-    };
-
-    ModalStack.push(function(props) {
-        return ce(Changelog, Object.assign({
-            className: ChangelogClasses.container,
-            selectable: true,
-            onScroll: _ => _,
-            onClose: _ => _,
-            renderHeader: renderHeader,
-            renderFooter: renderFooter,
-            children: changelogItems
-        }, props));
-    });
+    return Utils.showChangelogModal(options);
 };
 
 Core.prototype.patchSocial = function() {
@@ -251,9 +207,13 @@ Core.prototype.patchSocial = function() {
         const original = children[children.length - 2].type;
         const newOne = function() {
             const returnVal = original(...arguments);
-            returnVal.props.children.push(BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
-                BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
-            ));
+            returnVal.props.children.push(
+                BDV2.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD"},
+                    BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
+                        BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                    )
+                )
+            );
             return returnVal;
         };
         children[children.length - 2].type = newOne;
@@ -332,4 +292,4 @@ Core.prototype.patchGuildSeparator = function() {
     }});
 };
 
-export default Core;
+export default new Core();

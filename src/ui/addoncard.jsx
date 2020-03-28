@@ -123,11 +123,6 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         return <TooltipWrap color="black" side="top" text={title}>
             <div className="bd-addon-button" onClick={action}>{children}</div>
         </TooltipWrap>;
-        // return  <Tooltip color="black" position="top" text={title}>
-        //             {(props) => {
-        //                 return <div {...props} className="bd-icon" onClick={action}>{children}</div>;
-        //             }}
-        //         </Tooltip>;
     }
 
     get links() {

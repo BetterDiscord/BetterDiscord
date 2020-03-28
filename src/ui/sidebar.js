@@ -45,7 +45,7 @@ export default class V2C_SideBar extends BDV2.reactComponent {
             "div",
             null,
             BDV2.react.createElement(TabBarSeparator, null),
-            BDV2.react.createElement(TabBarHeader, {text: headerText}),
+            BDV2.react.createElement(TabBarHeader, {text: headerText, button: this.props.headerButton}),
             items.map(item => {
                 const {id, text} = item;
                 return BDV2.react.createElement(TabBarItem, {key: id, selected: selected === id, text: text, id: id, onClick: self.onClick});

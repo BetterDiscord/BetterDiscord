@@ -6,7 +6,7 @@ loadingIcon();
 const deprecateGlobal = (key, value) => {
     Object.defineProperty(window, key, {
         get() {
-            Utils.warn("Deprecation Notice", `"${key}" may be removed in future versions. Please only use BdApi.`);
+            Utils.warn("Deprecation Notice", `"${key}" will be removed in future versions. Please only use BdApi.`);
             return value;
         }
     });  
@@ -30,6 +30,7 @@ import DataStore from "./modules/dataStore";
 import emoteModule from "./modules/emoteModule";
 import ContentManager from "./modules/contentManager";
 import ClassNormalizer from "./modules/classNormalizer";
+import quickEmoteMenu from "./modules/quickEmoteMenu";
 
 deprecateGlobal("BDV2", BDV2);
 deprecateGlobal("pluginModule", pluginModule);
@@ -43,16 +44,17 @@ deprecateGlobal("ContentManager", ContentManager);
 deprecateGlobal("ClassNormalizer", ClassNormalizer);
 
 window.BdApi = BdApi;
+window.quickEmoteMenu = quickEmoteMenu;
 
 import Core from "./modules/core";
 export default class CoreWrapper {
     constructor(bdConfig) {
-        this.mainCore = new Core(bdConfig);
+        Core.setConfig(bdConfig);
     }
 
     init() {
         // deprecateGlobal("mainCore", this.mainCore);
-        this.mainCore.init();
+        Core.init();
     }
 }
 

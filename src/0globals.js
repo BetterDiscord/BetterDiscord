@@ -1,15 +1,18 @@
 // var settingsPanel, emoteModule, quickEmoteMenu, voiceMode, pluginModule, themeModule, dMode, publicServersModule, mainCore, BDV2;
+export const minimumDiscordVersion = "0.0.306";
+export const currentDiscordVersion = (window.DiscordNative && window.DiscordNative.remoteApp && window.DiscordNative.remoteApp.getVersion && window.DiscordNative.remoteApp.getVersion()) || "0.0.306";
 export const minSupportedVersion = "0.3.0";
-export const bbdVersion = "0.3.0";
+export const bbdVersion = "0.3.1";
 export const bbdChangelog = {
-    description: "There's some pretty big things in this one, and even bigger things coming.",
+    description: "There's some pretty big things in this one, and even bigger things coming. Most of this information is repeated from the `0.3.0` update just in case people hadn't seen the changelog yet.",
     changes: [
         {
             title: "What's New?",
             items: [
-                "**RepoControls** is now integrated into BD and everyone can enjoy sorting and searching their plugins and themes.",
+                "**RepoControls**-like controls are now integrated into BD and everyone can enjoy sorting and searching their plugins and themes.",
                 "BandagedBD has undergone an internal restructure--it's no longer one messy file but *several*. Users shouldn't see any breaking changes (hopefully).",
-                "**Plugin Developers:** You'll begin (or continue for some) to see deprecation notices for several BD globals. Please take these seriously and update your plugins to use `BdApi`, the globals **_will_** be removed. If you find the API to be missing something that you could do before, please message me in BD2's <#603225817262194699> chat."
+                "**Plugin Developers:** You'll begin (or continue for some) to see deprecation notices for several BD globals. Please take these seriously and update your plugins to use `BdApi`, the globals **_will_** be removed. If you find the API to be missing something that you could do before, please message me in BD2's <#603225817262194699> chat.",
+                "**Also Plugin Developers:** There is now an option to enable React Developer Tools in the Developer Options in settings. Just make sure to have the extension installed in your local Chrome installation."
             ]
         },
         {
@@ -17,7 +20,16 @@ export const bbdChangelog = {
             type: "improved",
             items: [
                 "**BD Blue** is now the default accent color for BBD elements in settings. Themes can customize it easily through some new variables: `--bd-blue`, `--bd-blue-hover`, `--bd-blue-active`",
-                "Some improvements have been made to the plugins and themes pages that should hopefully prevent plugins from causing errors when displaying."
+                "Some improvements have been made to the plugins and themes pages that should hopefully prevent plugins from causing errors when displaying.",
+                "You can now review the changelog after you close it by clicking this button in settings: https://i.imgur.com/I3ZdAxG.png"
+            ]
+        },
+        {
+            title: "Minor Stuff",
+            type: "fixed",
+            items: [
+                "**Quick Emote Menu** works again, sorry about that!",
+                "Fixed an issue with searching plugin/theme lists."
             ]
         }
     ]
@@ -49,6 +61,7 @@ export const settings = {
     /* Developer */
     "Developer Mode":         	  {id: "bda-gs-8",  info: "Developer Mode",                                    implemented: true,  hidden: false, cat: "core", category: "developer settings"},
     "Copy Selector":			  {id: "fork-dm-1", info: "Adds a \"Copy Selector\" option to context menus when developer mode is active", implemented: true,  hidden: false, cat: "core", category: "developer settings"},
+    "React DevTools":			  {id: "reactDevTools", info: "Adds react developer tools to the devtools. Must be installed in Google Chrome on your pc.", implemented: true,  hidden: true, cat: "core", category: "developer settings"},
 
     /* Window Prefs */
     "Enable Transparency":        {id: "fork-wp-1", info: "Enables the main window to be see-through (requires restart)", implemented: true,  hidden: false, cat: "core", category: "window preferences"},
@@ -100,7 +113,8 @@ export const defaultCookie = {
     "fork-es-3": true,
     "fork-wp-1": false,
     "fork-wp-2": false,
-    "fork-beta": true
+    "fork-beta": true,
+    "reactDevTools": false
 };
 
 

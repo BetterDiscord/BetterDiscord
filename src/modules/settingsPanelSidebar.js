@@ -1,7 +1,10 @@
+import {bbdChangelog} from "../0globals";
 import Utils from "./utils";
 import BDV2 from "./v2";
 
 import SideBar from "../ui/sidebar";
+import History from "../ui/icons/history";
+import TooltipWrap from "../ui/tooltipWrap";
 
 export default class V2_SettingsPanel_Sidebar {
 
@@ -14,7 +17,14 @@ export default class V2_SettingsPanel_Sidebar {
     }
 
     get component() {
-        return BDV2.react.createElement("span", null, BDV2.react.createElement(SideBar, {onClick: this.onClick, headerText: "Bandaged BD", items: this.items}));
+        //<TooltipWrap color="black" side="top" text={title}>
+        
+        const changelogButton = BDV2.react.createElement(TooltipWrap, {color: "black", side: "top", text: "Changelog"}, 
+            BDV2.react.createElement("div", {className: "bd-changelog-button", onClick: () => {Utils.showChangelogModal(bbdChangelog);}},
+                BDV2.react.createElement(History, {className: "bd-icon", size: "16px"})
+            )
+        );
+        return BDV2.react.createElement("span", null, BDV2.react.createElement(SideBar, {onClick: this.onClick, headerText: "Bandaged BD", headerButton: changelogButton, items: this.items}));
     }
 
     get root() {

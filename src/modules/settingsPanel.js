@@ -5,10 +5,9 @@ import Utils from "./utils";
 import BDV2 from "./v2";
 import ContentManager from "./contentManager";
 import BDEvents from "./bdEvents";
-import pluginModule from "./pluginModule";
-import themeModule from "./themeModule";
 import coloredText from "./coloredText";
 import tfHour from "./24hour";
+import reactDevTools from "./reactDevTools";
 
 import publicServersModule from "./publicServers";
 import voiceMode from "./voiceMode";
@@ -18,18 +17,10 @@ import dMode from "./devMode";
 import quickEmoteMenu from "./quickEmoteMenu";
 
 import Tools from "../ui/tools";
-import ReloadIcon from "../ui/reloadIcon";
-import TooltipWrap from "../ui/tooltipWrap";
 import Scroller from "../ui/scroller";
-import List from "../ui/list";
-import PluginCard from "../ui/pluginCard";
-import ThemeCard from "../ui/themeCard";
 import SectionedSettingsPanel from "../ui/sectionedSettingsPanel";
 import SettingsPanel from "../ui/settingsPanel";
 import CssEditor from "../ui/cssEditor";
-import ContentColumn from "../ui/contentColumn";
-import ErrorBoundary from "../ui/errorBoundary";
-
 import CardList from "../ui/addonlist";
 
 export default new class V2_SettingsPanel {
@@ -41,6 +32,7 @@ export default new class V2_SettingsPanel {
         self.updateSettings = this.updateSettings.bind(self);
         self.sidebar = new V2_SettingsPanel_Sidebar(self.sideBarOnClick);
         this.buildPluginProps = this.buildPluginProps.bind(this);
+        this.buildThemeProps = this.buildThemeProps.bind(this);
     }
 
     get root() {
@@ -198,6 +190,11 @@ export default new class V2_SettingsPanel {
             if (settingsCookie["bda-gs-8"]) dMode.enable(enabled);
         }
 
+        if (id === "reactDevTools") {
+            if (enabled) reactDevTools.start();
+            else reactDevTools.stop();
+        }
+
         this.saveSettings();
     }
 
@@ -219,6 +216,7 @@ export default new class V2_SettingsPanel {
         }
 
         if (settingsCookie["bda-gs-8"]) dMode.enable(settingsCookie["fork-dm-1"]);
+        if (settingsCookie.reactDevTools) reactDevTools.start();
 
         this.saveSettings();
     }
@@ -242,25 +240,28 @@ export default new class V2_SettingsPanel {
     }
 
     get coreComponent() {
-        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [
+        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true},
             BDV2.react.createElement(SectionedSettingsPanel, {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
             BDV2.react.createElement(Tools, {key: "tools"})
-        ]});
+        );
     }
 
     get emoteComponent() {
         return BDV2.react.createElement(Scroller, {
-            contentColumn: true, fade: true, dark: true, children: [
+            contentColumn: true, fade: true, dark: true},
                 BDV2.react.createElement(SettingsPanel, {key: "espanel", title: "Emote Settings", onChange: this.onChange, settings: this.emoteSettings, button: {
                     title: "Clear Emote Cache",
                     onClick: () => { emoteModule.clearEmoteData(); emoteModule.init(); quickEmoteMenu.init(); }
                 }}),
                 BDV2.react.createElement(Tools, {key: "tools"})
-        ]});
+        );
     }
 
     get customCssComponent() {
-        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true, children: [BDV2.react.createElement(CssEditor, {key: "csseditor"}), BDV2.react.createElement(Tools, {key: "tools"})]});
+        return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true},
+            BDV2.react.createElement(CssEditor, {key: "csseditor"}),
+            BDV2.react.createElement(Tools, {key: "tools"})
+        );
     }
 
     contentComponent(type) {
@@ -299,9 +300,9 @@ export default new class V2_SettingsPanel {
         return typeof value == "string" ? value : value.toString();
     }
 
-    buildPluginProps(key) {
-        const plugin = bdplugins[key].plugin;
-        return Object.assign({}, bdplugins[key], {
+    buildPluginProps(meta) {
+        const plugin = meta.plugin;
+        return Object.assign({}, meta, {
             name: this.getString(plugin.getName()),
             author: this.getString(plugin.getAuthor()),
             description: this.getString(plugin.getDescription()),
@@ -310,9 +311,18 @@ export default new class V2_SettingsPanel {
         });
     }
 
+    buildThemeProps(meta) {
+        return Object.assign({}, meta, {
+            name: this.getString(meta.name),
+            author: this.getString(meta.author),
+            description: this.getString(meta.description),
+            version: this.getString(meta.version)
+        });
+    }
+
     getAddonList(type) {
         const isPlugins = type === "plugins";
-        const list = isPlugins ? Object.keys(bdplugins).map(this.buildPluginProps) : Object.values(bdthemes);
+        const list = isPlugins ? Object.values(bdplugins).map(this.buildPluginProps) : Object.values(bdthemes).map(this.buildThemeProps);
         return BDV2.react.createElement(CardList, {type, list});
     }
 

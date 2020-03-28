@@ -111,10 +111,11 @@ export default class CardList extends BDV2.reactComponent {
         if (!this.state.ascending) sortedAddons.reverse();
         const rendered = sortedAddons.map((addon) => {
             if (this.state.query) {
-                let matches = addon.name.toLocaleLowerCase().includes(this.state.query);
-                matches = matches || addon.author.toLocaleLowerCase().includes(this.state.query);
-                matches = matches || addon.description.toLocaleLowerCase().includes(this.state.query);
-                matches = matches || addon.version.toLocaleLowerCase().includes(this.state.query);
+                let matches = null;
+                if (addon.name) matches = addon.name.toLocaleLowerCase().includes(this.state.query);
+                if (addon.author) matches = matches || addon.author.toLocaleLowerCase().includes(this.state.query);
+                if (addon.description) matches = matches || addon.description.toLocaleLowerCase().includes(this.state.query);
+                if (addon.version) matches = matches || addon.version.toLocaleLowerCase().includes(this.state.query);
                 if (!matches) return null;
             }
             const props = this.getProps(addon);

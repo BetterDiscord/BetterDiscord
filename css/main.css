@@ -949,12 +949,28 @@ body .ace_closeButton:active {
   flex-shrink: 0;
   padding: 6px 10px;
   overflow: hidden;
+
+  display: flex;
+    justify-content: space-between;
 }
 .theme-dark #bd-settings-sidebar .ui-tab-bar-header {
   color: #72767d;
 }
 .theme-light #bd-settings-sidebar .ui-tab-bar-header {
   color: #b9bbbe;
+}
+
+#bd-settings-sidebar .ui-tab-bar-header .bd-changelog-button {
+    height: 16px;
+}
+
+#bd-settings-sidebar .ui-tab-bar-header .bd-icon {
+    cursor: pointer;
+    fill: #72767d;
+}
+
+#bd-settings-sidebar .ui-tab-bar-header .bd-icon:hover {
+    fill: #fff;
 }
 
 #bd-settings-sidebar .ui-tab-bar-separator {
