@@ -8,6 +8,39 @@ export default class Utils {
     /** Document/window height */
     static get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
 
+    static get WindowConfigFile() {
+        if (this._windowConfigFile) return this._windowConfigFile;
+        const electron = require("electron").remote.app;
+        const path = require("path");
+        const base = electron.getAppPath();
+        const roamingBase = electron.getPath("userData");
+        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json");
+        const location = path.resolve(base, "..", "app", "config.json");
+        const fs = require("fs");
+        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
+        if (!realLocation) return this._windowConfigFile = null;
+        return this._windowConfigFile = realLocation;
+    }
+
+    static getAllWindowPreferences() {
+        if (!this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
+        return __non_webpack_require__(this.WindowConfigFile);
+    }
+    
+    static getWindowPreference(key) {
+        if (!this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
+        return this.getAllWindowPreferences()[key];
+    }
+    
+    static setWindowPreference(key, value) {
+        if (!this.WindowConfigFile) return; // Tempfix until new injection on other platforms
+        const fs = require("fs");
+        const prefs = this.getAllWindowPreferences();
+        prefs[key] = value;
+        delete __non_webpack_require__.cache[this.WindowConfigFile];
+        fs.writeFileSync(this.WindowConfigFile, JSON.stringify(prefs, null, 4));
+    }
+
     static stripBOM(content) {
         if (content.charCodeAt(0) === 0xFEFF) {
             content = content.slice(1);

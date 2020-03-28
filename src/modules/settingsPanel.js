@@ -170,9 +170,9 @@ export default new class V2_SettingsPanel {
         }
 
         if (id == "fork-wp-1") {
-            // BdApi.setWindowPreference("transparent", enabled);
-            // if (enabled) BdApi.setWindowPreference("backgroundColor", null);
-            // else BdApi.setWindowPreference("backgroundColor", "#2f3136");
+            Utils.setWindowPreference("transparent", enabled);
+            if (enabled) Utils.setWindowPreference("backgroundColor", null);
+            else Utils.setWindowPreference("backgroundColor", "#2f3136");
         }
 
         /*if (_c["fork-wp-2"]) {

@@ -11,19 +11,7 @@ const BdApi = {
     get React() { return BDV2.React; },
     get ReactDOM() { return BDV2.ReactDom; },
     get ReactComponent() {return BDV2.ReactComponent;},
-    get WindowConfigFile() {
-        if (this._windowConfigFile) return this._windowConfigFile;
-        const electron = require("electron").remote.app;
-        const path = require("path");
-        const base = electron.getAppPath();
-        const roamingBase = electron.getPath("userData");
-        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json");
-        const location = path.resolve(base, "..", "app", "config.json");
-        const fs = require("fs");
-        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
-        if (!realLocation) return this._windowConfigFile = null;
-        return this._windowConfigFile = realLocation;
-    },
+    get WindowConfigFile() {return Utils.WindowConfigFile;},
     get settings() {return settings;},
     get emotes() {return bdEmotes;},
     get screenWidth() { return Math.max(document.documentElement.clientWidth, window.innerWidth || 0); },
@@ -31,22 +19,15 @@ const BdApi = {
 };
 
 BdApi.getAllWindowPreferences = function() {
-    if (!this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
-    return __non_webpack_require__(this.WindowConfigFile);
+    return Utils.getAllWindowPreferences();
 };
 
 BdApi.getWindowPreference = function(key) {
-    if (!this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
-    return this.getAllWindowPreferences()[key];
+    return Utils.getWindowPreference(key);
 };
 
 BdApi.setWindowPreference = function(key, value) {
-    if (!this.WindowConfigFile) return; // Tempfix until new injection on other platforms
-    const fs = require("fs");
-    const prefs = this.getAllWindowPreferences();
-    prefs[key] = value;
-    delete __non_webpack_require__.cache[this.WindowConfigFile];
-    fs.writeFileSync(this.WindowConfigFile, JSON.stringify(prefs, null, 4));
+    return Utils.setWindowPreference(key, value);
 };
 
 //Inject CSS to document head
