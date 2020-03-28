@@ -22,10 +22,10 @@ Core.prototype.setConfig = function(config) {
 };
 
 Core.prototype.init = async function() {
-    if (currentDiscordVersion < minimumDiscordVersion) {
-        Utils.alert("Not Supported", "BetterDiscord v" + bbdVersion + " does not support this old version (" + currentDiscordVersion + ") of Discord. Please update your Discord installation before proceeding.");
-        return;
-    }
+    // if (currentDiscordVersion < minimumDiscordVersion) {
+    //     Utils.alert("Not Supported", "BetterDiscord v" + bbdVersion + " does not support this old version (" + currentDiscordVersion + ") of Discord. Please update your Discord installation before proceeding.");
+    //     return;
+    // }
 
     if (bdConfig.version < minSupportedVersion) {
         Utils.alert("Not Supported", "BetterDiscord v" + bdConfig.version + " (your version)" + " is not supported by the latest js (" + bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
@@ -103,7 +103,7 @@ Core.prototype.init = async function() {
     const previousVersion = DataStore.getBDData("version");
     if (bbdVersion > previousVersion) {
         if (bbdChangelog) this.showChangelogModal(bbdChangelog);
-        // DataStore.setBDData("version", bbdVersion);
+        DataStore.setBDData("version", bbdVersion);
     }
 
     Utils.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
