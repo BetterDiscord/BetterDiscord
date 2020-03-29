@@ -63,8 +63,8 @@ export default class EmulatedTooltip {
         if (!classExists(this.side)) return Utils.err("EmulatedTooltip", `Side ${this.side} does not exist.`);
         if (!classExists(this.style)) return Utils.err("EmulatedTooltip", `Style ${this.style} does not exist.`);
 
-        this.element = DOM.createElement(`<div class="${TooltipLayers.layer}">`);
-        this.tooltipElement = DOM.createElement(`<div class="${TooltipClasses.tooltip} ${getClass(this.style)}"><div class="${TooltipClasses.tooltipPointer}"></div>${this.label}</div>`);
+        this.element = DOM.createElement(`<div class="${TooltipLayers.layer}"><div class="${TooltipClasses.tooltip} ${getClass(this.style)}"><div class="${TooltipClasses.tooltipPointer}"></div>${this.label}</div></div>`);
+        this.tooltipElement = this.element.childNodes[0];
         this.labelElement = this.tooltipElement.childNodes[1];
         this.element.append(this.tooltipElement);
 

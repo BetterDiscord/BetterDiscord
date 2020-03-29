@@ -185,36 +185,38 @@ Core.prototype.patchSocial = function() {
     if (this.socialPatch) return;
     const TabBar = WebpackModules.find(m => m.displayName == "TabBar");
     const Anchor = WebpackModules.find(m => m.displayName == "Anchor");
-    if (!TabBar || !Anchor) return;
+    if (!TabBar) return;
     this.socialPatch = Utils.monkeyPatch(TabBar.prototype, "render", {after: (data) => {
         const children = data.returnValue.props.children;
         if (!children || !children.length || children.length < 3) return;
         if (children[children.length - 3].type.displayName !== "Separator") return;
         if (!children[children.length - 2].type.toString().includes("socialLinks")) return;
-        const original = children[children.length - 2].type;
-        const newOne = function() {
-            const returnVal = original(...arguments);
-            returnVal.props.children.push(
-                BDV2.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD"},
-                    BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
-                        BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+        if (Anchor) {
+            const original = children[children.length - 2].type;
+            const newOne = function() {
+                const returnVal = original(...arguments);
+                returnVal.props.children.push(
+                    BDV2.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD"},
+                        BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
+                            BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                        )
                     )
-                )
-            );
-            return returnVal;
-        };
-        children[children.length - 2].type = newOne;
+                );
+                return returnVal;
+            };
+            children[children.length - 2].type = newOne;
+        }
 
-        const BBDLink = BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BandagedBD", target: "_blank"}, "BandagedBD");
-        const AuthorLink = BDV2.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/ZackRauen", title: "Zerebos", target: "_blank"}, "Zerebos");
-        const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, [BBDLink, ` ${bbdVersion} by `, AuthorLink]);
-        const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, ["BBD Injector", ` ${bdConfig.version} by `, AuthorLink]);
+        const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `Injector ${bdConfig.version}`);
+        const versionHash = `(${bdConfig.hash ? bdConfig.hash.substring(0, 7) : bdConfig.branch})`;
+        const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BBD ${bbdVersion} `, BDV2.react.createElement("span", {className: "versionHash-2gXjIB da-versionHash"}, versionHash));
+        
 
         const originalVersions = children[children.length - 1].type;
         children[children.length - 1].type = function() {
             const returnVal = originalVersions(...arguments);
-            returnVal.props.children.push(injector);
-            returnVal.props.children.push(additional);
+            returnVal.props.children.splice(returnVal.props.children.length - 1, 0, injector);
+            returnVal.props.children.splice(1, 0, additional);
             return returnVal;
         };
     }});

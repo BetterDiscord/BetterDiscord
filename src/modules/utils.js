@@ -187,15 +187,20 @@ export default class Utils {
      * @param {number} options.timeout Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
      */
     static showToast(content, options = {}) {
-        // if (!bdConfig.deferLoaded) return;
         if (!document.querySelector(".bd-toasts")) {
+            const container = document.querySelector(".sidebar-2K8pFh + div") || null;
+            const memberlist = container ? container.querySelector(".membersWrap-2h-GB4") : null;
+            const form = container ? container.querySelector("form") : null;
+            const left = container ? container.getBoundingClientRect().left : 310;
+            const right = memberlist ? memberlist.getBoundingClientRect().left : 0;
+            const width = right ? right - container.getBoundingClientRect().left : Utils.screenWidth - left - 240;
+            const bottom = form ? form.offsetHeight : 80;
             const toastWrapper = document.createElement("div");
             toastWrapper.classList.add("bd-toasts");
-            const boundingElement = document.querySelector(".chat-3bRxxu form, #friends, .noChannel-Z1DQK7, .activityFeed-28jde9");
-            toastWrapper.style.setProperty("left", boundingElement ? boundingElement.getBoundingClientRect().left + "px" : "0px");
-            toastWrapper.style.setProperty("width", boundingElement ? boundingElement.offsetWidth + "px" : "100%");
-            toastWrapper.style.setProperty("bottom", (document.querySelector(".chat-3bRxxu form") ? document.querySelector(".chat-3bRxxu form").offsetHeight : 80) + "px");
-            document.querySelector(".app, .app-2rEoOp").appendChild(toastWrapper);
+            toastWrapper.style.setProperty("left", left + "px");
+            toastWrapper.style.setProperty("width", width + "px");
+            toastWrapper.style.setProperty("bottom", bottom + "px");
+            document.querySelector("#app-mount").appendChild(toastWrapper);
         }
         const {type = "", icon = true, timeout = 3000} = options;
         const toastElem = document.createElement("div");
@@ -378,3 +383,5 @@ export default class Utils {
         });
     }
 }
+
+Utils.showToast = Utils.suppressErrors(Utils.showToast, "Could not show toast.");

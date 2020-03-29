@@ -93,7 +93,7 @@ export default class CardList extends BDV2.reactComponent {
             key: addon.name,
             enabled: this.cookie[addon.name],
             toggle: this.manager.toggle.bind(this.manager),
-            edit: this.edit.bind(this),
+            //edit: this.edit.bind(this),
             remove: this.delete.bind(this),
             addon: addon
         };

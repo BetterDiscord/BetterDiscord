@@ -31,8 +31,8 @@ export default new class V2_SettingsPanel {
         this.onChange = this.onChange.bind(this);
         this.updateSettings = this.updateSettings.bind(this);
         this.sidebar = new V2_SettingsPanel_Sidebar(this.sideBarOnClick);
-        this.buildPluginProps = this.buildPluginProps.bind(this);
-        this.buildThemeProps = this.buildThemeProps.bind(this);
+        // this.buildPluginProps = this.buildPluginProps.bind(this);
+        // this.buildThemeProps = this.buildThemeProps.bind(this);
         this.showOriginal = this.showOriginal.bind(this);
     }
 
@@ -93,10 +93,8 @@ export default new class V2_SettingsPanel {
                 this.renderCustomCssEditor();
                 break;
             case "plugins":
-                this.renderPluginPane();
-                break;
             case "themes":
-                this.renderThemePane();
+                this.renderAddonPane(id);
                 break;
         }
     }
@@ -163,11 +161,6 @@ export default new class V2_SettingsPanel {
             if (enabled) Utils.setWindowPreference("backgroundColor", null);
             else Utils.setWindowPreference("backgroundColor", "#2f3136");
         }
-
-        /*if (_c["fork-wp-2"]) {
-            const current = BdApi.getWindowPreference("frame");
-            if (current != _c["fork-wp-2"]) BdApi.setWindowPreference("frame", _c["fork-wp-2"]);
-        }*/
 
 
         if (id == "bda-gs-8") {
@@ -258,110 +251,62 @@ export default new class V2_SettingsPanel {
         );
     }
 
-    contentComponent(type) {
-        const componentElement = this.getAddonList(type);
-        const prefix = type.replace("s", "");
-        const settingsList = this;
-        class ContentList extends BDV2.react.Component {
-            constructor(props) {
-                super(props);
-                this.onChange = this.onChange.bind(this);
-            }
-
-            componentDidMount() {
-                BDEvents.on(`${prefix}-reloaded`, this.onChange);
-                BDEvents.on(`${prefix}-loaded`, this.onChange);
-                BDEvents.on(`${prefix}-unloaded`, this.onChange);
-            }
-
-            componentWillUnmount() {
-                BDEvents.off(`${prefix}-reloaded`, this.onChange);
-                BDEvents.off(`${prefix}-loaded`, this.onChange);
-                BDEvents.off(`${prefix}-unloaded`, this.onChange);
-            }
-
-            onChange() {
-                settingsList.sideBarOnClick(type);
-            }
-
-            render() {return componentElement;}
-        }
-        return BDV2.react.createElement(ContentList);
-    }
-
-    getString(value) {
-        if (!value) return "???";
-        return typeof value == "string" ? value : value.toString();
-    }
-
-    buildPluginProps(meta) {
-        const plugin = meta.plugin;
-        return Object.assign({}, meta, {
-            name: this.getString(plugin.getName()),
-            author: this.getString(plugin.getAuthor()),
-            description: this.getString(plugin.getDescription()),
-            version: this.getString(plugin.getVersion()),
-            getSettingsPanel: plugin.getSettingsPanel && plugin.getSettingsPanel.bind(plugin)
-        });
-    }
-
-    buildThemeProps(meta) {
-        return Object.assign({}, meta, {
-            name: this.getString(meta.name),
-            author: this.getString(meta.author),
-            description: this.getString(meta.description),
-            version: this.getString(meta.version)
-        });
-    }
-
-    getAddonList(type) {
-        const isPlugins = type === "plugins";
-        const list = isPlugins ? Object.values(bdplugins) : Object.values(bdthemes);
-        return BDV2.react.createElement(CardList, {type, list});
-    }
-
     renderCoreSettings() {
         const root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-            return;
-        }
+        if (!root) return Utils.err("SettingsPanel", "FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
         BDV2.reactDom.render(this.coreComponent, root);
     }
 
     renderEmoteSettings() {
         const root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-            return;
-        }
+        if (!root) return Utils.err("SettingsPanel", "FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
         BDV2.reactDom.render(this.emoteComponent, root);
     }
 
     renderCustomCssEditor() {
         const root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-            return;
-        }
+        if (!root) return Utils.err("SettingsPanel", "FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
         BDV2.reactDom.render(this.customCssComponent, root);
     }
 
-    renderPluginPane() {
-        const root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-            return;
-        }
-        BDV2.reactDom.render(this.contentComponent("plugins"), root);
-    }
+    // renderAddonPane(type) {
+    //     const root = this.root;
+    //     if (!root) return Utils.err("SettingsPanel", "FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
+    //     BDV2.reactDom.render(this.contentComponent(type), root);
+    // }
 
-    renderThemePane() {
-        const root = this.root;
-        if (!root) {
-            console.log("FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
-            return;
+    renderAddonPane(type) {
+        if (!this.root) return Utils.err("SettingsPanel", "FAILED TO LOCATE ROOT: .layer-3QrUeG .standardSidebarView-3F1I7i");
+        // I know this shouldn't be here, but when it isn't,
+        // React refuses to change the button when going
+        // between plugins and themes page... something
+        // to debug later.
+        class ContentList extends BDV2.react.Component {
+            constructor(props) {
+                super(props);
+                this.prefix = this.props.type.replace("s", "");
+                this.onChange = this.onChange.bind(this);
+            }
+        
+            componentDidMount() {
+                BDEvents.on(`${this.prefix}-reloaded`, this.onChange);
+                BDEvents.on(`${this.prefix}-loaded`, this.onChange);
+                BDEvents.on(`${this.prefix}-unloaded`, this.onChange);
+            }
+        
+            componentWillUnmount() {
+                BDEvents.off(`${this.prefix}-reloaded`, this.onChange);
+                BDEvents.off(`${this.prefix}-loaded`, this.onChange);
+                BDEvents.off(`${this.prefix}-unloaded`, this.onChange);
+            }
+        
+            onChange() {
+                this.props.onChange(this.props.type);
+            }
+        
+            render() {return this.props.children;}
         }
-        BDV2.reactDom.render(this.contentComponent("themes"), root);
+        const list = type === "plugins" ? Object.values(bdplugins) : Object.values(bdthemes);
+        return BDV2.reactDom.render(BDV2.react.createElement(ContentList, {type, onChange: this.sideBarOnClick}, BDV2.react.createElement(CardList, {type, list})), this.root);
     }
 };

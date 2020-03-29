@@ -4,9 +4,18 @@ localStorageFix();
 loadingIcon();
 
 const deprecateGlobal = (key, value) => {
+    // value = typeof(value) !== "object" ? value : new Proxy(value, {
+    //     get: function(obj, mod) {
+    //         if (!obj.hasOwnProperty(mod)) return undefined;
+    //         return obj[mod];
+    //     },
+    //     set: function(obj, mod) {
+    //         if (obj.hasOwnProperty(mod)) return Utils.err("Deprecated Global", "Trying to overwrite deprecated BD globals");
+    //     }
+    // });
     Object.defineProperty(window, key, {
         get() {
-            Utils.warn("Deprecation Notice", `"${key}" will be removed in future versions. Please only use BdApi.`);
+            Utils.warn("Deprecated Global", `"${key}" will be removed in future versions. Please only use BdApi.`);
             return value;
         }
     });  

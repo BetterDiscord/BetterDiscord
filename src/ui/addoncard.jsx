@@ -11,6 +11,7 @@ import Switch from "./components/switch";
 import TooltipWrap from "./tooltipWrap";
 
 const React = BDV2.React;
+const anchorClasses = BDV2.anchorClasses;
 
 export default class V2C_PluginCard extends BDV2.reactComponent {
 
@@ -112,7 +113,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         if (nameIndex) {
             const props = {className: "author bda-author"};
             if (author.link || author.id) {
-                props.className += ` ${BDV2.anchorClasses.anchor} ${BDV2.anchorClasses.anchorUnderlineOnHover}`;
+                props.className += ` ${anchorClasses.anchor} ${anchorClasses.anchorUnderlineOnHover}`;
                 props.target = "_blank";
 
                 if (author.link) props.href = author.link;
