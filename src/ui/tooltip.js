@@ -12,7 +12,6 @@
 
 import Utils from "../modules/utils";
 import WebpackModules from "../modules/webpackModules";
-import DOM from "../modules/domtools";
 
 const TooltipClasses = WebpackModules.findByProps("tooltip", "tooltipBlack");
 const TooltipLayers = WebpackModules.findByProps("layer", "layerContainer");
@@ -61,13 +60,21 @@ export default class EmulatedTooltip {
         this.disabled = disabled;
 
         if (!classExists(this.side)) return Utils.err("EmulatedTooltip", `Side ${this.side} does not exist.`);
-        if (!classExists(this.style)) return Utils.err("EmulatedTooltip", `Style ${this.style} does not exist.`);
+		if (!classExists(this.style)) return Utils.err("EmulatedTooltip", `Style ${this.style} does not exist.`);
+		
+		this.element = document.createElement("div");
+		this.element.className = TooltipLayers.layer;
 
-        this.element = DOM.createElement(`<div class="${TooltipLayers.layer}"><div class="${TooltipClasses.tooltip} ${getClass(this.style)}"><div class="${TooltipClasses.tooltipPointer}"></div>${this.label}</div></div>`);
-        this.tooltipElement = this.element.childNodes[0];
-        this.labelElement = this.tooltipElement.childNodes[1];
-        this.element.append(this.tooltipElement);
+		this.tooltipElement = document.createElement("div");
+		this.tooltipElement.className = `${TooltipClasses.tooltip} ${getClass(this.style)}`;
 
+		this.labelElement = document.createTextNode("TEST");
+		const pointerElement = document.createElement("div");
+		pointerElement.className = TooltipClasses.tooltipPointer;
+
+		this.tooltipElement.append(pointerElement);
+		this.tooltipElement.append(this.labelElement);
+		this.element.append(this.tooltipElement);
 
 		this.node.addEventListener("mouseenter", () => {
             if (this.disabled) return;
