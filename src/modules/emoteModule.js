@@ -122,7 +122,6 @@ EmoteModule.prototype.init = async function () {
 };
 
 EmoteModule.prototype.disable = function() {
-    this.disableAutoCapitalize();
     if (this.cancelEmoteRender) return;
     this.cancelEmoteRender();
     this.cancelEmoteRender = null;
@@ -247,42 +246,11 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
 
 EmoteModule.prototype.getBlacklist = function () {
     return new Promise(resolve => {
-        $.getJSON(`https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json`, function (data) {
-            resolve(bemotes.concat(data.blacklist));
+        require("request").get({url: "https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json", json: true}, function (err, resp, data) {
+            if (err) return resolve(bemotes);
+            resolve(bemotes.splice(0, 0, ...data.blacklist));
         });
     });
-};
-
-EmoteModule.prototype.autoCapitalize = function () {
-    if (!settingsCookie["bda-es-4"] || this.autoCapitalizeActive) return;
-    $("body").on("keyup.bdac change.bdac paste.bdac", $(".channelTextArea-rNsIhG textarea:first"), () => {
-        const text = $(".channelTextArea-rNsIhG textarea:first").val();
-        if (text == undefined) return;
-
-        const lastWord = text.split(" ").pop();
-        if (lastWord.length > 3) {
-            if (lastWord == "danSgame") return;
-            const ret = this.capitalize(lastWord.toLowerCase());
-            if (ret !== null && ret !== undefined) {
-                Utils.insertText(Utils.getTextArea()[0], text.replace(lastWord, ret));
-            }
-        }
-    });
-    this.autoCapitalizeActive = true;
-};
-
-EmoteModule.prototype.capitalize = function (value) {
-    const res = bdEmotes.TwitchGlobal;
-    for (const p in res) {
-        if (res.hasOwnProperty(p) && value == (p + "").toLowerCase()) {
-            return p;
-        }
-    }
-};
-
-EmoteModule.prototype.disableAutoCapitalize = function() {
-    this.autoCapitalizeActive = false;
-    $("body").off(".bdac");
 };
 
 export default new EmoteModule();

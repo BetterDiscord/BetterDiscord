@@ -2,6 +2,7 @@ import {settingsCookie} from "../0globals";
 import Settings from "../modules/settingsPanel";
 import BDV2 from "../modules/v2";
 import DataStore from "../modules/dataStore";
+import DOM from "../modules/domtools";
 
 import SettingsTitle from "./settingsTitle";
 import Checkbox from "./checkbox";
@@ -188,10 +189,8 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     updateCss() {
-        if ($("#customcss").length == 0) {
-            $("head").append("<style id=\"customcss\"></style>");
-        }
-        $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
+        DOM.removeStyle("customcss");
+        DOM.addStyle("customcss", this.editor.session.getValue());
     }
 
     saveCss() {
@@ -212,19 +211,18 @@ export default class V2C_CssEditor extends BDV2.reactComponent {
     }
 
     get detachedRoot() {
-        const _root = $("#bd-customcss-detach-container");
-        if (!_root.length) {
+        const _root = DOM.query("#bd-customcss-detach-container");
+        if (!_root) {
             if (!this.injectDetachedRoot()) return null;
             return this.detachedRoot;
         }
-        return _root[0];
+        return _root;
     }
 
     injectDetachedRoot() {
-        if (!$(".app, .app-2rEoOp").length) return false;
-        $("<div/>", {
-            id: "bd-customcss-detach-container"
-        }).insertAfter($(".app, .app-2rEoOp"));
+        const app = DOM.query(".app, .app-2rEoOp");
+        if (!app) return false;
+        DOM.insertAfter(DOM.createElement(`<div id="bd-customcss-detach-container">`), app);
         return true;
     }
 

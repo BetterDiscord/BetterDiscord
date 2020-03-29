@@ -45,6 +45,7 @@
         "Promise": false,
         "ace": false,
         "Reflect": false,
+        "Array": false,
         "DiscordNative": false,
         "self": "off",
         "name": "off",

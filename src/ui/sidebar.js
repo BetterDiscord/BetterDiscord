@@ -8,18 +8,22 @@ export default class V2C_SideBar extends BDV2.reactComponent {
 
     constructor(props) {
         super(props);
-        const self = this;
-        const si = $("[class*=side-] > [class*=selected]");
-        if (si.length) self.scn = si.attr("class");
-        const ns = $("[class*=side-] > [class*='item-']:not([class*=selected])");
-        if (ns.length) self.nscn = ns.attr("class");
-        $("[class*='side-'] > [class*='item-']").on("click", () => {
-            self.setState({
-                selected: null
+        const si = document.querySelector("[class*=side-] > [class*=selected]");
+        if (si) this.scn = si.className;
+        const ns = document.querySelector("[class*=side-] > [class*='item-']:not([class*=selected])");
+        if (ns) this.nscn = ns.className;
+        const tabs = document.querySelectorAll("[class*='side-'] > [class*='item-']");
+        for (const element of tabs) {
+            element.addEventListener("click", () => {
+                this.setState({
+                    selected: null
+                });
             });
-        });
-        self.setInitialState();
-        self.onClick = self.onClick.bind(self);
+        }
+        
+        this.setInitialState();
+        this.onClick = this.onClick.bind(this);
+        this.setSelected = this.setSelected.bind(this);
     }
 
     setInitialState() {
@@ -53,19 +57,21 @@ export default class V2C_SideBar extends BDV2.reactComponent {
         );
     }
 
+    setSelected(e) {
+        e.target.className = this.scn;
+    }
+
     onClick(id) {
-        const self = this;
-        const si = $("[class*=side] > [class*=selected]");
-        if (si.length) {
-            si.off("click.bdsb").on("click.bsb", e => {
-                $(e.target).attr("class", self.scn);
-            });
-            si.attr("class", self.nscn);
+        const si = document.querySelector("[class*=side] > [class*=selected]");
+        if (si) {
+            si.removeEventListener("click", this.setSelected);
+            si.addEventListener("click", this.setSelected);
+            si.className = this.nscn;
         }
 
-        self.setState({selected: null});
-        self.setState({selected: id});
+        this.setState({selected: null});
+        this.setState({selected: id});
 
-        if (self.props.onClick) self.props.onClick(id);
+        if (this.props.onClick) this.props.onClick(id);
     }
 }

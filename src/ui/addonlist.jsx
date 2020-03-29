@@ -33,7 +33,7 @@ export default class CardList extends BDV2.reactComponent {
     }
 
     openFolder() {
-        require("electron").shell.openItem(this.isPlugins ? ContentManager.pluginsFolder : ContentManager.themesFolder);
+        require("electron").shell.showItemInFolder(this.isPlugins ? ContentManager.pluginsFolder : ContentManager.themesFolder);
     }
 
     edit(name) {
@@ -109,18 +109,20 @@ export default class CardList extends BDV2.reactComponent {
             return 0;
         });
         if (!this.state.ascending) sortedAddons.reverse();
-        const rendered = sortedAddons.map((addon) => {
+        const rendered = [];
+        for (let a = 0; a < sortedAddons.length; a++) {
+            const addon = sortedAddons[a];
             if (this.state.query) {
                 let matches = null;
                 if (addon.name) matches = addon.name.toLocaleLowerCase().includes(this.state.query);
                 if (addon.author) matches = matches || addon.author.toLocaleLowerCase().includes(this.state.query);
                 if (addon.description) matches = matches || addon.description.toLocaleLowerCase().includes(this.state.query);
                 if (addon.version) matches = matches || addon.version.toLocaleLowerCase().includes(this.state.query);
-                if (!matches) return null;
+                if (!matches) continue;
             }
             const props = this.getProps(addon);
-            return <ErrorBoundary><AddonCard {...props} reload={!settingsCookie["fork-ps-5"] && this.manager.reload.bind(this.manager)} /></ErrorBoundary>;
-        });
+            rendered.push(<ErrorBoundary><AddonCard {...props} reload={!settingsCookie["fork-ps-5"] && this.manager.reload.bind(this.manager)} /></ErrorBoundary>);
+        }
         return rendered;
     }
 
@@ -133,7 +135,7 @@ export default class CardList extends BDV2.reactComponent {
                 this.forceUpdate();
             }} />
             }</Tooltip>;
-        const addonCards = this.getAddons().filter(c => c);
+        const addonCards = this.getAddons();
 
         return <Scroller contentColumn={true} fade={true} dark={true}>
                 <ContentColumn title={`${this.props.type.toUpperCase()}—${addonCards.length}`}>

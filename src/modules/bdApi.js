@@ -6,6 +6,7 @@ import DataStore from "./dataStore";
 import pluginModule from "./pluginModule";
 import themeModule from "./themeModule";
 import settingsPanel from "./settingsPanel";
+import DOM from "./domtools";
 
 const BdApi = {
     get React() { return BDV2.React; },
@@ -34,26 +35,26 @@ BdApi.setWindowPreference = function(key, value) {
 //id = id of element
 //css = custom css
 BdApi.injectCSS = function (id, css) {
-    $("head").append($("<style>", {id: Utils.escapeID(id), text: css}));
+    DOM.addStyle(DOM.escapeID(id), css);
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.clearCSS = function (id) {
-    $("#" + Utils.escapeID(id)).remove();
+    DOM.removeStyle(DOM.escapeID(id));
 };
 
 //Inject CSS to document head
 //id = id of element
 //css = custom css
 BdApi.linkJS = function (id, url) {
-    $("head").append($("<script>", {id: Utils.escapeID(id), src: url, type: "text/javascript"}));
+    DOM.addScript(DOM.escapeID(id), url);
 };
 
 //Clear css/remove any element
 //id = id of element
 BdApi.unlinkJS = function (id) {
-    $("#" + Utils.escapeID(id)).remove();
+    DOM.removeScript(DOM.escapeID(id));
 };
 
 //Get another plugin

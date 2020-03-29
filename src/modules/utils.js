@@ -1,6 +1,7 @@
 import {bbdVersion} from "../0globals";
 import WebpackModules from "./webpackModules";
 import BDV2 from "./v2";
+import DOM from "./domtools";
 
 export default class Utils {
     /** Document/window width */
@@ -49,7 +50,7 @@ export default class Utils {
     }
 
     static getTextArea() {
-        return $(".channelTextArea-rNsIhG textarea");
+        return DOM.query(".channelTextArea-rNsIhG textarea");
     }
 
     static insertText(textarea, text) {
@@ -57,24 +58,6 @@ export default class Utils {
         textarea.selectionStart = 0;
         textarea.selectionEnd = textarea.value.length;
         document.execCommand("insertText", false, text);
-    }
-
-    static injectCss(uri) {
-        $("<link/>", {
-            type: "text/css",
-            rel: "stylesheet",
-            href: uri
-        }).appendTo($("head"));
-    }
-
-    static injectJs(uri) {
-        return new Promise(resolve => {
-            $("<script/>", {
-                type: "text/javascript",
-                src: uri,
-                onload: resolve
-            }).appendTo($("body"));
-        });
     }
 
     static escapeID(id) {
@@ -231,7 +214,7 @@ export default class Utils {
     }
 
     static alert(title, content) {
-        const modal = $(`<div class="bd-modal-wrapper theme-dark">
+        const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">
                         <div class="bd-backdrop backdrop-1wrmKB"></div>
                         <div class="bd-modal modal-1UGdnR">
                             <div class="bd-modal-inner inner-1JeGVc">
@@ -251,21 +234,21 @@ export default class Utils {
                             </div>
                         </div>
                     </div>`);
-        modal.find(".footer button").on("click", () => {
-            modal.addClass("closing");
+        modal.querySelector(".footer button").addEventListener("click", () => {
+            DOM.addClass(modal, "closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.find(".bd-backdrop").on("click", () => {
-            modal.addClass("closing");
+        modal.querySelector(".bd-backdrop").addEventListener("click", () => {
+            DOM.addClass(modal, "closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.appendTo("#app-mount");
+        DOM.query("#app-mount").append(modal);
     }
 
     static showContentErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
         if (!pluginErrors || !themeErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
-        const modal = $(`<div class="bd-modal-wrapper theme-dark">
+        const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">
                         <div class="bd-backdrop backdrop-1wrmKB"></div>
                         <div class="bd-modal bd-content-modal modal-1UGdnR">
                             <div class="bd-modal-inner inner-1JeGVc">
@@ -288,7 +271,7 @@ export default class Utils {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="footer footer-2yfCgX">
+                                <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
                                     <button type="button">Okay</button>
                                 </div>
                             </div>
@@ -296,19 +279,19 @@ export default class Utils {
                     </div>`);
     
         function generateTab(errors) {
-            const container = $(`<div class="errors">`);
+            const container = DOM.createElement(`<div class="errors">`);
             for (const err of errors) {
-                const error = $(`<div class="error">
+                const error = DOM.createElement(`<div class="error">
                                     <div class="table-column column-name">${err.name ? err.name : err.file}</div>
                                     <div class="table-column column-message">${err.message}</div>
                                     <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
                                 </div>`);
                 container.append(error);
                 if (err.error) {
-                    error.find("a").on("click", (e) => {
+                    error.querySelectorAll("a").forEach(el => el.addEventListener("click", (e) => {
                         e.preventDefault();
                         Utils.err("ContentManager", `Error details for ${err.name ? err.name : err.file}.`, err.error);
-                    });
+                    }));
                 }
             }
             return container;
@@ -316,24 +299,27 @@ export default class Utils {
     
         const tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
     
-        modal.find(".tab-bar-item").on("click", (e) => {
+        modal.querySelectorAll(".tab-bar-item").forEach(el => el.addEventListener("click", (e) => {
             e.preventDefault();
-            modal.find(".tab-bar-item").removeClass("selected");
-            $(e.target).addClass("selected");
-            modal.find(".scroller").empty().append(tabs[$(e.target).index()]);
-        });
+            const selected = modal.querySelector(".tab-bar-item.selected");
+            if (selected) DOM.removeClass(selected, "selected");
+            DOM.addClass(e.target, "selected");
+            const scroller = modal.querySelector(".scroller");
+            scroller.innerHTML = "";
+            scroller.append(tabs[DOM.index(e.target)]);
+        }));
     
-        modal.find(".footer button").on("click", () => {
-            modal.addClass("closing");
+        modal.querySelector(".footer button").addEventListener("click", () => {
+            DOM.addClass(modal, "closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.find(".bd-backdrop").on("click", () => {
-            modal.addClass("closing");
+        modal.querySelector(".bd-backdrop").on("click", () => {
+            DOM.addClass(modal, "closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.appendTo("#app-mount");
-        if (pluginErrors.length) modal.find(".tab-bar-item")[0].click();
-        else modal.find(".tab-bar-item")[1].click();
+        DOM.query("#app-mount").append(modal);
+        if (pluginErrors.length) modal.querySelector(".tab-bar-item").click();
+        else modal.querySelectorAll(".tab-bar-item")[1].click();
     }
 
     static showChangelogModal(options = {}) {

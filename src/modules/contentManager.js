@@ -113,8 +113,6 @@ export default new class ContentManager {
         return out;
     }
 
-
-
     getContentRequire(type) {
         const isPlugin = type === "plugin";
         const self = this;

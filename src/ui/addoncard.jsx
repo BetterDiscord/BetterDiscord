@@ -1,6 +1,7 @@
 import {settingsCookie} from "../0globals";
 import BDV2 from "../modules/v2";
 import Utils from "../modules/utils";
+import DOM from "../modules/domtools";
 
 import XSvg from "./xSvg";
 import ReloadIcon from "./reloadIcon";
@@ -18,7 +19,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         this.onChange = this.onChange.bind(this);
         this.showSettings = this.showSettings.bind(this);
         this.setInitialState();
-        this.hasSettings = typeof this.props.addon.getSettingsPanel === "function";
+        this.hasSettings = this.props.addon.plugin && typeof this.props.addon.plugin.getSettingsPanel === "function";
         this.settingsPanel = "";
 
         this.edit = this.edit.bind(this);
@@ -51,20 +52,30 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         }
 
         if (!settingsCookie["fork-ps-3"]) return;
-        const isHidden = (container, element) => {
-            const cTop = container.scrollTop;
-            const cBottom = cTop + container.clientHeight;
-            const eTop = element.offsetTop;
-            const eBottom = eTop + element.clientHeight;
-            return  (eTop < cTop || eBottom > cBottom);
-        };
+        setImmediate(() => {
+            const isHidden = (container, element) => {
+                const cTop = container.scrollTop;
+                const cBottom = cTop + container.clientHeight;
+                const eTop = element.offsetTop;
+                const eBottom = eTop + element.clientHeight;
+                return  (eTop < cTop || eBottom > cBottom);
+            };
 
-        const thisNode = $(BDV2.reactDom.findDOMNode(this));
-        const container = thisNode.parents(".scroller");
-        if (!isHidden(container[0], thisNode[0])) return;
-        container.animate({
-            scrollTop: thisNode.offset().top - container.offset().top + container.scrollTop() - 30
-        }, 300);
+            const thisNode = this.refs.cardNode;
+            const container = thisNode.closest(".scroller");
+            if (!isHidden(container, thisNode)) return;
+            const thisNodeOffset = DOM.offset(thisNode);
+            const containerOffset = DOM.offset(container);
+            const original = container.scrollTop;
+            const endPoint = thisNodeOffset.top - containerOffset.top + container.scrollTop - 30;
+            DOM.animate({
+                duration: 300,
+                update: function(progress) {
+                    if (endPoint > original) container.scrollTop = original + (progress * (endPoint - original));
+                    else container.scrollTop = original - (progress * (original - endPoint));
+                }
+            });
+        });
     }
 
 
@@ -76,10 +87,10 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     get settingsComponent() {
         const name = this.getString(this.props.addon.name);
 
-        try { this.settingsPanel = this.props.addon.getSettingsPanel(); }
+        try { this.settingsPanel = this.props.addon.plugin.getSettingsPanel(); }
         catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + this.props.addon.name + ".", err); }
 
-        return BDV2.react.createElement("div", {className: "bd-card bd-addon-card settings-open ui-switch-item"},
+        return BDV2.react.createElement("div", {className: "bd-card bd-addon-card settings-open ui-switch-item", ref: "cardNode"},
                 BDV2.react.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
                         this.refs.settingspanel.innerHTML = "";
                         this.setState({settings: false});
@@ -185,40 +196,3 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         );
     }
 }
-
-
-// get settingsComponent() {
-//     const addon = this.props.addon;
-//     const name = this.getString(addon.name);
-//     try { this.settingsPanel = this.props.getSettingsPanel(); }
-//     catch (err) { Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err); }
-
-//     const props = {id: `${name}-settings`, className: "addon-settings", ref: this.panelRef};
-//     if (typeof(settingsPanel) == "string") props.dangerouslySetInnerHTML = this.settingsPanel;
-
-//     return <div className="bd-addon-card settings-open bd-switch-item">
-//                 <div className="bd-close" onClick={this.closeSettings}><CloseButton /></div>
-//                 <div {...props}>{this.settingsPanel instanceof React.Component ? this.settingsPanel : null}</div>
-//             </div>;
-// }
-
-// componentDidUpdate() {
-//     if (!this.state.settingsOpen) return;
-//     if (this.settingsPanel instanceof Node) this.panelRef.current.appendChild(this.settingsPanel);
-
-//     // if (!SettingsCookie["fork-ps-3"]) return;
-//     const isHidden = (container, element) => {
-//         const cTop = container.scrollTop;
-//         const cBottom = cTop + container.clientHeight;
-//         const eTop = element.offsetTop;
-//         const eBottom = eTop + element.clientHeight;
-//         return  (eTop < cTop || eBottom > cBottom);
-//     };
-
-//     const panel = $(this.panelRef.current);
-//     const container = panel.parents(".scroller-2FKFPG");
-//     if (!isHidden(container[0], panel[0])) return;
-//     container.animate({
-//         scrollTop: panel.offset().top - container.offset().top + container.scrollTop() - 30
-//     }, 300);
-// }

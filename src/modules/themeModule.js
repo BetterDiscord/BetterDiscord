@@ -3,20 +3,28 @@ import ContentManager from "./contentManager";
 import DataStore from "./dataStore";
 import BDEvents from "./bdEvents";
 import Utils from "./utils";
+import DOM from "./domtools";
 
 function ThemeModule() {
-
+    this.getString = function(value) {
+        if (!value) return "???";
+        return typeof value == "string" ? value : value.toString();
+    };
 }
 
 ThemeModule.prototype.loadThemes = function () {
     this.loadThemeData();
-    bdthemeErrors.concat(ContentManager.loadThemes());
+    bdthemeErrors.splice(0, 0, ...ContentManager.loadThemes());
     const themes = Object.keys(bdthemes);
 
     for (let i = 0; i < themes.length; i++) {
         const theme = bdthemes[themes[i]];
+        theme.name = this.getString(theme.name);
+        theme.author = this.getString(theme.author);
+        theme.description = this.getString(theme.description);
+        theme.version = this.getString(theme.version);
         if (!themeCookie[theme.name]) themeCookie[theme.name] = false;
-        if (themeCookie[theme.name]) $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
+        if (themeCookie[theme.name]) DOM.addStyle(DOM.escapeID(theme.id), unescape(theme.css));
     }
     for (const theme in themeCookie) {
         if (!bdthemes[theme]) delete themeCookie[theme];
@@ -29,7 +37,7 @@ ThemeModule.prototype.enableTheme = function(name, reload = false) {
     themeCookie[name] = true;
     this.saveThemeData();
     const theme = bdthemes[name];
-    $("head").append($("<style>", {id: theme.id, text: unescape(theme.css)}));
+    DOM.addStyle(DOM.escapeID(theme.id), unescape(theme.css));
     if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${theme.name} v${theme.version} has been applied.`);
 };
 
@@ -41,7 +49,7 @@ ThemeModule.prototype.disableTheme = function(name, reload = false) {
     themeCookie[name] = false;
     this.saveThemeData();
     const theme = bdthemes[name];
-    $(`#${theme.id}`).remove();
+    DOM.removeStyle(DOM.escapeID(theme.id));
     if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${theme.name} v${theme.version} has been disabled.`);
 };
 

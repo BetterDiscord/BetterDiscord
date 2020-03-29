@@ -30,7 +30,6 @@ import DataStore from "./modules/dataStore";
 import emoteModule from "./modules/emoteModule";
 import ContentManager from "./modules/contentManager";
 import ClassNormalizer from "./modules/classNormalizer";
-import quickEmoteMenu from "./modules/quickEmoteMenu";
 
 deprecateGlobal("BDV2", BDV2);
 deprecateGlobal("pluginModule", pluginModule);
@@ -44,7 +43,6 @@ deprecateGlobal("ContentManager", ContentManager);
 deprecateGlobal("ClassNormalizer", ClassNormalizer);
 
 window.BdApi = BdApi;
-window.quickEmoteMenu = quickEmoteMenu;
 
 import Core from "./modules/core";
 export default class CoreWrapper {

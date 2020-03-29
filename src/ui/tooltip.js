@@ -12,6 +12,7 @@
 
 import Utils from "../modules/utils";
 import WebpackModules from "../modules/webpackModules";
+import DOM from "../modules/domtools";
 
 const TooltipClasses = WebpackModules.findByProps("tooltip", "tooltipBlack");
 const TooltipLayers = WebpackModules.findByProps("layer", "layerContainer");
@@ -62,8 +63,8 @@ export default class EmulatedTooltip {
         if (!classExists(this.side)) return Utils.err("EmulatedTooltip", `Side ${this.side} does not exist.`);
         if (!classExists(this.style)) return Utils.err("EmulatedTooltip", `Style ${this.style} does not exist.`);
 
-        this.element = $(`<div class="${TooltipLayers.layer}">`)[0];
-        this.tooltipElement = $(`<div class="${TooltipClasses.tooltip} ${getClass(this.style)}"><div class="${TooltipClasses.tooltipPointer}"></div>${this.label}</div>`)[0];
+        this.element = DOM.createElement(`<div class="${TooltipLayers.layer}">`);
+        this.tooltipElement = DOM.createElement(`<div class="${TooltipClasses.tooltip} ${getClass(this.style)}"><div class="${TooltipClasses.tooltipPointer}"></div>${this.label}</div>`);
         this.labelElement = this.tooltipElement.childNodes[1];
         this.element.append(this.tooltipElement);
 

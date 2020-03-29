@@ -5,12 +5,15 @@ import BDEvents from "./bdEvents";
 import Utils from "./utils";
 
 function PluginModule() {
-
+    this.getString = function(value) {
+        if (!value) return "???";
+        return typeof value == "string" ? value : value.toString();
+    };
 }
 
 PluginModule.prototype.loadPlugins = function () {
     this.loadPluginData();
-    bdpluginErrors.concat(ContentManager.loadPlugins());
+    bdpluginErrors.splice(0, 0, ...ContentManager.loadPlugins());
     const plugins = Object.keys(bdplugins);
     for (let i = 0; i < plugins.length; i++) {
         let plugin, name;
@@ -19,6 +22,11 @@ PluginModule.prototype.loadPlugins = function () {
             plugin = bdplugins[plugins[i]].plugin;
             name = plugin.getName();
             if (plugin.load && typeof(plugin.load) == "function") plugin.load();
+            const meta = bdplugins[plugins[i]];
+            meta.name = this.getString(plugin.getName());
+            meta.author = this.getString(plugin.getAuthor());
+            meta.description = this.getString(plugin.getDescription());
+            meta.version = this.getString(plugin.getVersion());
         }
         catch (err) {
             pluginCookie[name] = false;

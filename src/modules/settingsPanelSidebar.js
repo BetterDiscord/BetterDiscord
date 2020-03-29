@@ -1,6 +1,7 @@
 import {bbdChangelog} from "../0globals";
 import Utils from "./utils";
 import BDV2 from "./v2";
+import DOM from "./domtools";
 
 import SideBar from "../ui/sidebar";
 import History from "../ui/icons/history";
@@ -28,18 +29,19 @@ export default class V2_SettingsPanel_Sidebar {
     }
 
     get root() {
-        const _root = $("#bd-settings-sidebar");
-        if (!_root.length) {
+        const _root = DOM.query("#bd-settings-sidebar");
+        if (!_root) {
             if (!this.injectRoot()) return null;
             return this.root;
         }
-        return _root[0];
+        return _root;
     }
 
     injectRoot() {
-        const changeLog = $("[class*='side-'] > [class*='item-']:not([class*=Danger])").last();
-        if (!changeLog.length) return false;
-        $("<span/>", {id: "bd-settings-sidebar"}).insertBefore(changeLog.prev());
+        const tabs = DOM.queryAll("[class*='side-'] > [class*='item-']:not([class*=Danger])");
+        const changeLog = tabs[tabs.length - 1];
+        if (!changeLog) return false;
+        changeLog.parentElement.insertBefore(DOM.createElement(`<div id="bd-settings-sidebar">`), changeLog.previousElementSibling);
         return true;
     }
 

@@ -31,6 +31,7 @@ export default class V2C_Tools extends BDV2.reactComponent {
         if (this.props.onClick) {
             this.props.onClick();
         }
-        $(".closeButton-1tv5uR").first().click();
+        const closeButton = document.querySelector(".closeButton-1tv5uR");
+        if (closeButton) closeButton.click();
     }
 }

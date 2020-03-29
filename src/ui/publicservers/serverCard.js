@@ -1,4 +1,4 @@
-import BDV2 from "../modules/v2";
+import BDV2 from "../../modules/v2";
 
 export default class V2C_ServerCard extends BDV2.reactComponent {
     constructor(props) {

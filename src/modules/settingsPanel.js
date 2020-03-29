@@ -8,6 +8,7 @@ import BDEvents from "./bdEvents";
 import coloredText from "./coloredText";
 import tfHour from "./24hour";
 import reactDevTools from "./reactDevTools";
+import DOM from "./domtools";
 
 import publicServersModule from "./publicServers";
 import voiceMode from "./voiceMode";
@@ -26,34 +27,32 @@ import CardList from "../ui/addonlist";
 export default new class V2_SettingsPanel {
 
     constructor() {
-        const self = this;
-        self.sideBarOnClick = self.sideBarOnClick.bind(self);
-        self.onChange = self.onChange.bind(self);
-        self.updateSettings = this.updateSettings.bind(self);
-        self.sidebar = new V2_SettingsPanel_Sidebar(self.sideBarOnClick);
+        this.sideBarOnClick = this.sideBarOnClick.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.updateSettings = this.updateSettings.bind(this);
+        this.sidebar = new V2_SettingsPanel_Sidebar(this.sideBarOnClick);
         this.buildPluginProps = this.buildPluginProps.bind(this);
         this.buildThemeProps = this.buildThemeProps.bind(this);
+        this.showOriginal = this.showOriginal.bind(this);
     }
 
     get root() {
-        const _root = $("#bd-settingspane-container");
-        if (!_root.length) {
+        const _root = DOM.query("#bd-settingspane-container");
+        if (!_root) {
             if (!this.injectRoot()) return null;
             return this.root;
         }
-        return _root[0];
+        return _root;
     }
 
     injectRoot() {
-        if (!$(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .ui-standard-sidebar-view").length) return false;
-        const root = $("<div/>", {
-            "class": "contentRegion-3nDuYy content-region",
-            "id": "bd-settingspane-container"
-        });
-        $(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .ui-standard-sidebar-view").append(root);
+        const sidebar = DOM.query(".layer-3QrUeG .standardSidebarView-3F1I7i, .layer-3QrUeG .ui-standard-sidebar-view");
+        if (!sidebar) return false;
+        const root = DOM.createElement(`<div id="bd-settingspane-container" class="contentRegion-3nDuYy content-region">`);
+        sidebar.append(root);
 
-        Utils.onRemoved(root[0], () => {
-            BDV2.reactDom.unmountComponentAtNode(root[0]);
+        Utils.onRemoved(root, () => {
+            BDV2.reactDom.unmountComponentAtNode(root);
         });
         return true;
     }
@@ -80,24 +79,24 @@ export default new class V2_SettingsPanel {
     }
 
     sideBarOnClick(id) {
-        const self = this;
-        $(".contentRegion-3nDuYy, .content-region").first().hide();
-        $(self.root).show();
+        const contentRegion = DOM.query(".contentRegion-3nDuYy, .content-region");
+        contentRegion.style.display = "none";
+        this.root.style.display = "";
         switch (id) {
             case "core":
-                self.renderCoreSettings();
+                this.renderCoreSettings();
                 break;
             case "emotes":
-                self.renderEmoteSettings();
+                this.renderEmoteSettings();
                 break;
             case "customcss":
-                self.renderCustomCssEditor();
+                this.renderCustomCssEditor();
                 break;
             case "plugins":
-                self.renderPluginPane();
+                this.renderPluginPane();
                 break;
             case "themes":
-                self.renderThemePane();
+                this.renderThemePane();
                 break;
         }
     }
@@ -111,19 +110,14 @@ export default new class V2_SettingsPanel {
     updateSettings(id, enabled) {
         settingsCookie[id] = enabled;
 
-        // if (id == "bda-gs-b") {
-        //     if (enabled) $("body").addClass("bd-blue");
-        //     else $("body").removeClass("bd-blue");
-        // }
-
         if (id == "bda-gs-2") {
-            if (enabled) $("body").addClass("bd-minimal");
-            else $("body").removeClass("bd-minimal");
+            if (enabled) DOM.addClass(document.body, "bd-minimal");
+            else DOM.removeClass(document.body, "bd-minimal");
         }
 
         if (id == "bda-gs-3") {
-            if (enabled) $("body").addClass("bd-minimal-chan");
-            else $("body").removeClass("bd-minimal-chan");
+            if (enabled) DOM.addClass(document.body, "bd-minimal-chan");
+            else DOM.removeClass(document.body, "bd-minimal-chan");
         }
 
         if (id == "bda-gs-1") {
@@ -132,13 +126,13 @@ export default new class V2_SettingsPanel {
         }
 
         if (id == "bda-gs-4") {
-            if (enabled) voiceMode.enable();
-            else voiceMode.disable();
+            if (enabled) voiceMode.start();
+            else voiceMode.stop();
         }
 
         if (id == "bda-gs-5") {
-            if (enabled) $("#app-mount").addClass("bda-dark");
-            else $("#app-mount").removeClass("bda-dark");
+            if (enabled) DOM.addClass(DOM.query("#app-mount"), "bda-dark");
+            else DOM.removeClass(DOM.query("#app-mount"), "bda-dark");
         }
 
         if (enabled && id == "bda-gs-6") tfHour.inject24Hour();
@@ -146,11 +140,6 @@ export default new class V2_SettingsPanel {
         if (id == "bda-gs-7") {
             if (enabled) coloredText.injectColoredText();
             else coloredText.removeColoredText();
-        }
-
-        if (id == "bda-es-4") {
-            if (enabled) emoteModule.autoCapitalize();
-            else emoteModule.disableAutoCapitalize();
         }
 
         if (id == "fork-ps-4") {
@@ -182,12 +171,13 @@ export default new class V2_SettingsPanel {
 
 
         if (id == "bda-gs-8") {
-            if (enabled) dMode.enable(settingsCookie["fork-dm-1"]);
-            else dMode.disable();
+            if (enabled) dMode.startDebugListener();
+            else dMode.stopDebugListener();
         }
 
         if (id == "fork-dm-1") {
-            if (settingsCookie["bda-gs-8"]) dMode.enable(enabled);
+            if (enabled) dMode.startCopySelector();
+            else dMode.stopCopySelector();
         }
 
         if (id === "reactDevTools") {
@@ -199,15 +189,13 @@ export default new class V2_SettingsPanel {
     }
 
     async initializeSettings() {
-        // if (settingsCookie["bda-gs-b"]) $("body").addClass("bd-blue");
-        if (settingsCookie["bda-gs-2"]) $("body").addClass("bd-minimal");
-        if (settingsCookie["bda-gs-3"]) $("body").addClass("bd-minimal-chan");
+        if (settingsCookie["bda-gs-2"]) DOM.addClass(document.body, "bd-minimal");
+        if (settingsCookie["bda-gs-3"]) DOM.addClass(document.body, "bd-minimal-chan");
         if (settingsCookie["bda-gs-1"]) publicServersModule.addButton();
-        if (settingsCookie["bda-gs-4"]) voiceMode.enable();
-        if (settingsCookie["bda-gs-5"]) $("#app-mount").addClass("bda-dark");
+        if (settingsCookie["bda-gs-4"]) voiceMode.start();
+        if (settingsCookie["bda-gs-5"]) DOM.addClass(DOM.query("#app-mount"), "bda-dark");
         if (settingsCookie["bda-gs-6"]) tfHour.inject24Hour();
         if (settingsCookie["bda-gs-7"]) coloredText.injectColoredText();
-        if (settingsCookie["bda-es-4"]) emoteModule.autoCapitalize();
         if (settingsCookie["fork-ps-4"]) ClassNormalizer.start();
 
         if (settingsCookie["fork-ps-5"]) {
@@ -215,7 +203,8 @@ export default new class V2_SettingsPanel {
             ContentManager.watchContent("theme");
         }
 
-        if (settingsCookie["bda-gs-8"]) dMode.enable(settingsCookie["fork-dm-1"]);
+        if (settingsCookie["bda-gs-8"]) dMode.startDebugListener();
+        if (settingsCookie["fork-dm-1"]) dMode.startCopySelector();
         if (settingsCookie.reactDevTools) reactDevTools.start();
 
         this.saveSettings();
@@ -229,14 +218,19 @@ export default new class V2_SettingsPanel {
         Object.assign(settingsCookie, DataStore.getSettingGroup("settings"));
     }
 
+    showOriginal() {
+        BDV2.reactDom.unmountComponentAtNode(this.root);
+        this.root.style.display = "none";
+        DOM.query(".contentRegion-3nDuYy, .content-region").style.display = "";
+    }
+
     renderSidebar() {
-        const self = this;
-        $("[class*='side-'] > [class*='item-']").off("click.v2settingspanel").on("click.v2settingspanel", () => {
-            BDV2.reactDom.unmountComponentAtNode(self.root);
-            $(self.root).hide();
-            $(".contentRegion-3nDuYy, .content-region").first().show();
-        });
-        self.sidebar.render();
+        const tabs = document.querySelectorAll("[class*='side-'] > [class*='item-']");
+        for (const element of tabs) {
+            element.removeEventListener("click", this.showOriginal);
+            element.addEventListener("click", this.showOriginal);
+        }
+        this.sidebar.render();
     }
 
     get coreComponent() {
@@ -322,7 +316,7 @@ export default new class V2_SettingsPanel {
 
     getAddonList(type) {
         const isPlugins = type === "plugins";
-        const list = isPlugins ? Object.values(bdplugins).map(this.buildPluginProps) : Object.values(bdthemes).map(this.buildThemeProps);
+        const list = isPlugins ? Object.values(bdplugins) : Object.values(bdthemes);
         return BDV2.react.createElement(CardList, {type, list});
     }
 

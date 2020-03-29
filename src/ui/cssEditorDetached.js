@@ -2,6 +2,7 @@ import {settingsCookie} from "../0globals";
 import Settings from "../modules/settingsPanel";
 import BDV2 from "../modules/v2";
 import DataStore from "../modules/dataStore";
+import DOM from "../modules/domtools";
 
 import Checkbox from "./checkbox";
 
@@ -17,7 +18,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     componentDidMount() {
-        $("#app-mount").addClass("bd-detached-editor");
+        DOM.addClass(DOM.query("#app-mount"), "bd-detached-editor");
         BDV2.editorDetached = true;
         // this.updateLineCount();
         this.editor = ace.edit("bd-customcss-editor-detached");
@@ -34,7 +35,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     componentWillUnmount() {
-        $("#app-mount").removeClass("bd-detached-editor");
+        DOM.removeClass(DOM.query("#app-mount"), "bd-detached-editor");
         BDV2.editorDetached = false;
         this.editor.destroy();
     }
@@ -66,19 +67,18 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     get root() {
-        const _root = $("#bd-customcss-detach-container");
-        if (!_root.length) {
+        const _root = DOM.query("#bd-customcss-detach-container");
+        if (!_root) {
             if (!this.injectRoot()) return null;
             return this.detachedRoot;
         }
-        return _root[0];
+        return _root;
     }
 
     injectRoot() {
-        if (!$(".app, .app-2rEoOp").length) return false;
-        $("<div/>", {
-            id: "bd-customcss-detach-container"
-        }).insertAfter($(".app, .app-2rEoOp"));
+        const app = DOM.query(".app, .app-2rEoOp");
+        if (!app) return false;
+        DOM.insertAfter(DOM.createElement(`<div id="bd-customcss-detach-container">`), app);
         return true;
     }
 
@@ -149,7 +149,7 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
         const self = this;
         switch (id) {
             case "attach":
-                if ($("#editor-detached").length) self.props.attach();
+                if (DOM.query("#editor-detached")) self.props.attach();
                 BDV2.reactDom.unmountComponentAtNode(self.root);
                 self.root.remove();
                 break;
@@ -163,10 +163,8 @@ export default class V2C_CssEditorDetached extends BDV2.reactComponent {
     }
 
     updateCss() {
-        if ($("#customcss").length == 0) {
-            $("head").append("<style id=\"customcss\"></style>");
-        }
-        $("#customcss").text(this.editor.session.getValue()).detach().appendTo(document.head);
+        DOM.removeStyle("customcss");
+        DOM.addStyle("customcss", this.editor.session.getValue());
     }
 
     saveCss() {

@@ -1,12 +1,13 @@
-import BDV2 from "../modules/v2";
+import BDV2 from "../../modules/v2";
 
-import Tools from "./tools";
+import Tools from "../tools";
+import SettingsTitle from "../settingsTitle";
+import TabBarSeparator from "../tabBarSeparator";
+import TabBarHeader from "../tabBarHeader";
+import TabBarItem from "../tabBarItem";
+
 import ServerCard from "./serverCard";
 import SidebarView from "./sidebarView";
-import SettingsTitle from "./settingsTitle";
-import TabBarSeparator from "./tabBarSeparator";
-import TabBarHeader from "./tabBarHeader";
-import TabBarItem from "./tabBarItem";
 
 export default class V2C_PublicServers extends BDV2.reactComponent {
 
@@ -51,76 +52,68 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
 
     search(query, clear) {
         const self = this;
-
-        $.ajax({
-            method: "GET",
-            url: `${self.endPoint}${query}${query ? "&schema=new" : "?schema=new"}`,
-            success: data => {
-                let servers = data.results.reduce((arr, server) => {
-                    server.joined = false;
-                    arr.push(server);
-                    // arr.push(<ServerCard server={server} join={self.join}/>);
-                    return arr;
-                }, []);
-
-                if (!clear) {
-                    servers = self.state.servers.concat(servers);
-                }
-                else {
-                    //servers.unshift(self.bdServer);
-                }
-
-                let end = data.size + data.from;
-                data.next = `?from=${end}`;
-                if (self.state.term) data.next += `&term=${self.state.term}`;
-                if (self.state.selectedCategory) data.next += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
-                if (end >= data.total) {
-                    end = data.total;
-                    data.next = null;
-                }
-
-                let title = `Showing 1-${end} of ${data.total} results in ${self.categoryButtons[self.state.selectedCategory]}`;
-                if (self.state.term) title += ` for ${self.state.term}`;
-
-                self.setState({
-                    loading: false,
-                    title: title,
-                    servers: servers,
-                    next: data.next
-                });
-
-                if (clear) {
-                    //console.log(self);
-                    self.refs.sbv.refs.contentScroller.scrollTop = 0;
-                }
-            },
-            error: () => {
-                self.setState({
+        const request = require("request");
+        request.get({url: `${self.endPoint}${query}${query ? "&schema=new" : "?schema=new"}`, json: true}, function (err, resp, data) {
+            if (err) {
+                return self.setState({
                     loading: false,
                     title: "Failed to load servers. Check console for details"
                 });
             }
+            let servers = data.results.reduce((arr, server) => {
+                server.joined = false;
+                arr.push(server);
+                // arr.push(<ServerCard server={server} join={self.join}/>);
+                return arr;
+            }, []);
+
+            if (!clear) {
+                servers = self.state.servers.concat(servers);
+            }
+            else {
+                //servers.unshift(self.bdServer);
+            }
+
+            let end = data.size + data.from;
+            data.next = `?from=${end}`;
+            if (self.state.term) data.next += `&term=${self.state.term}`;
+            if (self.state.selectedCategory) data.next += `&category=${self.categoryButtons[self.state.selectedCategory]}`;
+            if (end >= data.total) {
+                end = data.total;
+                data.next = null;
+            }
+
+            let title = `Showing 1-${end} of ${data.total} results in ${self.categoryButtons[self.state.selectedCategory]}`;
+            if (self.state.term) title += ` for ${self.state.term}`;
+
+            self.setState({
+                loading: false,
+                title: title,
+                servers: servers,
+                next: data.next
+            });
+
+            if (clear) {
+                //console.log(self);
+                self.refs.sbv.refs.contentScroller.scrollTop = 0;
+            }
         });
     }
 
-    join(serverCard) {
+    async join(serverCard) {
         if (serverCard.props.pinned) return this.InviteActions.acceptInvite(serverCard.props.invite_code);
-        $.ajax({
+
+        await fetch(`${this.joinEndPoint}/${serverCard.props.server.identifier}`,{
             method: "GET",
-            url: `${this.joinEndPoint}/${serverCard.props.server.identifier}`,
+            credentials: "include",
+            mode: "cors",
             headers: {
-                "Accept": "application/json;",
-                "Content-Type": "application/json;" ,
-                "x-discord-token": this.state.connection.user.accessToken
-            },
-            crossDomain: true,
-            xhrFields: {
-                withCredentials: true
-            },
-            success: () => {
-                serverCard.setState({joined: true});
+                "Accept": "application/json",
+                "Content-Type": "application/json"
             }
         });
+
+        serverCard.setState({joined: true});
     }
 
     connect() {
@@ -187,44 +180,27 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
         return "https://join.discordservers.com/connect";
     }
 
-    checkConnection() {
+    async checkConnection() {
         const self = this;
         try {
-            $.ajax({
+            const response = await fetch(`https://auth.discordservers.com/info`,{
                 method: "GET",
-                url: `https://auth.discordservers.com/info`,
+                credentials: "include",
+                mode: "cors",
                 headers: {
-                    "Accept": "application/json;",
-                    "Content-Type": "application/json;"
-                },
-                crossDomain: true,
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: data => {
-                    // Utils.log("PublicServer", "Got data: " + JSON.stringify(data));
-                    self.setState({
-                        selectedCategory: 0,
-                        connection: {
-                            state: 2,
-                            user: data
-                        }
-                    });
-                    self.search("", true);
-
-                },
-                error: () => {
-                    self.setState({
-                        title: "Not connected to discordservers.com!",
-                        loading: true,
-                        selectedCategory: -1,
-                        connection: {
-                            state: 1,
-                            user: null
-                        }
-                    });
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
                 }
             });
+            const data = await response.json();
+            self.setState({
+                selectedCategory: 0,
+                connection: {
+                    state: 2,
+                    user: data
+                }
+            });
+            self.search("", true);
         }
         catch (error) {
             self.setState({
@@ -240,7 +216,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
     }
 
     render() {
-        return BDV2.react.createElement(SidebarView, {ref: "sbv", children: this.component});
+        return BDV2.react.createElement(SidebarView, {ref: "sbv"}, this.component);
     }
 
     get component() {

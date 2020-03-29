@@ -1,16 +1,15 @@
-import {bdConfig, minSupportedVersion, bbdVersion, settingsCookie, bdpluginErrors, bdthemeErrors, bbdChangelog, defaultCookie, minimumDiscordVersion, currentDiscordVersion} from "../0globals";
+import {bdConfig, minSupportedVersion, bbdVersion, settingsCookie, bdpluginErrors, bdthemeErrors, bbdChangelog, defaultCookie, currentDiscordVersion} from "../0globals";
 import Utils from "./utils";
 import emoteModule from "./emoteModule";
 import quickEmoteMenu from "./quickEmoteMenu";
-// import publicServersModule from "./publicServers";
-// import voiceMode from "./voiceMode";
-// import dMode from "./devMode";
+
 import BDV2 from "./v2";
 import settingsPanel from "./settingsPanel";
 import pluginModule from "./pluginModule";
 import themeModule from "./themeModule";
 import DataStore from "./dataStore";
 import WebpackModules from "./webpackModules";
+import DOM from "./domtools";
 
 import BDLogo from "../ui/bdLogo";
 import TooltipWrap from "../ui/tooltipWrap";
@@ -22,10 +21,10 @@ Core.prototype.setConfig = function(config) {
 };
 
 Core.prototype.init = async function() {
-    // if (currentDiscordVersion < minimumDiscordVersion) {
-    //     Utils.alert("Not Supported", "BetterDiscord v" + bbdVersion + " does not support this old version (" + currentDiscordVersion + ") of Discord. Please update your Discord installation before proceeding.");
-    //     return;
-    // }
+    if (!Array.prototype.flat) {
+        Utils.alert("Not Supported", "BetterDiscord v" + bbdVersion + " does not support this old version (" + currentDiscordVersion + ") of Discord. Please update your Discord installation before proceeding.");
+        return;
+    }
 
     if (bdConfig.version < minSupportedVersion) {
         Utils.alert("Not Supported", "BetterDiscord v" + bdConfig.version + " (your version)" + " is not supported by the latest js (" + bbdVersion + ").<br><br> Please download the latest version from <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>GitHub</a>");
@@ -52,42 +51,32 @@ Core.prototype.init = async function() {
 
     Utils.log("Startup", "Initializing Settings");
     this.initSettings();
-    // emoteModule = new EmoteModule();
-    // quickEmoteMenu = new QuickEmoteMenu();
     Utils.log("Startup", "Initializing EmoteModule");
     window.emotePromise = emoteModule.init().then(() => {
         emoteModule.initialized = true;
         Utils.log("Startup", "Initializing QuickEmoteMenu");
         quickEmoteMenu.init();
     });
-    // publicServersModule = new V2_PublicServers();
 
-    // voiceMode = new VoiceMode();
-    // dMode = new devMode();
 
     this.injectExternals();
 
     await this.checkForGuilds();
     BDV2.initialize();
     Utils.log("Startup", "Updating Settings");
-    // settingsPanel = new V2_SettingsPanel();
     settingsPanel.initializeSettings();
 
     Utils.log("Startup", "Loading Plugins");
-    // pluginModule = new PluginModule();
     pluginModule.loadPlugins();
 
     Utils.log("Startup", "Loading Themes");
-    // themeModule = new ThemeModule();
     themeModule.loadThemes();
 
-    $("#customcss").detach().appendTo(document.head);
+    DOM.addStyle("customcss", atob(DataStore.getBDData("bdcustomcss")));
 
     window.addEventListener("beforeunload", function() {
         if (settingsCookie["bda-dc-0"]) document.querySelector(".btn.btn-disconnect").click();
     });
-
-    emoteModule.autoCapitalize();
 
     Utils.log("Startup", "Removing Loading Icon");
     if (document.getElementsByClassName("bd-loaderv2").length) document.getElementsByClassName("bd-loaderv2")[0].remove();
@@ -124,14 +113,13 @@ Core.prototype.checkForGuilds = function() {
             else if (timesChecked >= 50) return resolve(bdConfig.deferLoaded = true);
             setTimeout(checkForGuilds, 100);
         };
-        $(document).ready(function () {
-            setTimeout(checkForGuilds, 100);
-        });
+        if (document.readyState != "loading") setTimeout(checkForGuilds, 100);
+        document.addEventListener("DOMContentLoaded", () => {setTimeout(checkForGuilds, 100);});
     });
 };
 
 Core.prototype.injectExternals = async function() {
-    await Utils.injectJs("https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
+    await DOM.addScript("ace-script", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
     if (window.require.original) window.require = window.require.original;
 };
 
@@ -143,7 +131,6 @@ Core.prototype.initSettings = function () {
     }
     else {
         settingsPanel.loadSettings();
-        $("<style id=\"customcss\">").text(atob(DataStore.getBDData("bdcustomcss"))).appendTo(document.head);
         for (const setting in defaultCookie) {
             if (settingsCookie[setting] == undefined) {
                 settingsCookie[setting] = defaultCookie[setting];

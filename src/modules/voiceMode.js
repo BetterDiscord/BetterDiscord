@@ -1,23 +1,25 @@
-function VoiceMode() {
+import DOM from "./domtools";
 
-}
+const style = `
+    .container-2Rl01u {
+        display: none!important;
+    }
 
-VoiceMode.prototype.enable = function () {
-    $(".scroller.guild-channels ul").first().css("display", "none");
-    $(".scroller.guild-channels header").first().css("display", "none");
-    $(".app.flex-vertical, .app-2rEoOp").first().css("overflow", "hidden");
-    $(".chat-3bRxxu").first().css("visibility", "hidden").css("min-width", "0px");
-    $(".flex-vertical.channels-wrap").first().css("flex-grow", "100000");
-    $(".guild-header .btn.btn-hamburger").first().css("visibility", "hidden");
+    .chat-3bRxxu {
+        display: none!important;
+    }
+
+    .sidebar-2K8pFh {
+        flex-grow: 1!important;
+    }
+`;
+
+export default new class VoiceMode {
+    start() {
+        DOM.addStyle("VoiceMode", style);
+    }
+
+    stop() {
+        DOM.removeStyle("VoiceMode");
+    }
 };
-
-VoiceMode.prototype.disable = function () {
-    $(".scroller.guild-channels ul").first().css("display", "");
-    $(".scroller.guild-channels header").first().css("display", "");
-    $(".app.flex-vertical, .app-2rEoOp").first().css("overflow", "");
-    $(".chat-3bRxxu").first().css("visibility", "").css("min-width", "");
-    $(".flex-vertical.channels-wrap").first().css("flex-grow", "");
-    $(".guild-header .btn.btn-hamburger").first().css("visibility", "");
-};
-
-export default new VoiceMode();

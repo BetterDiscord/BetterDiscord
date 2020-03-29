@@ -2,34 +2,24 @@
 export const minimumDiscordVersion = "0.0.306";
 export const currentDiscordVersion = (window.DiscordNative && window.DiscordNative.remoteApp && window.DiscordNative.remoteApp.getVersion && window.DiscordNative.remoteApp.getVersion()) || "0.0.306";
 export const minSupportedVersion = "0.3.0";
-export const bbdVersion = "0.3.1";
+export const bbdVersion = "0.3.2";
 export const bbdChangelog = {
-    description: "There's some pretty big things in this one, and even bigger things coming. Most of this information is repeated from the `0.3.0` update just in case people hadn't seen the changelog yet.",
+    description: "More big things.",
     changes: [
         {
             title: "What's New?",
             items: [
-                "**RepoControls**-like controls are now integrated into BD and everyone can enjoy sorting and searching their plugins and themes.",
-                "BandagedBD has undergone an internal restructure--it's no longer one messy file but *several*. Users shouldn't see any breaking changes (hopefully).",
-                "**Plugin Developers:** You'll begin (or continue for some) to see deprecation notices for several BD globals. Please take these seriously and update your plugins to use `BdApi`, the globals **_will_** be removed. If you find the API to be missing something that you could do before, please message me in BD2's <#603225817262194699> chat.",
-                "**Also Plugin Developers:** There is now an option to enable React Developer Tools in the Developer Options in settings. Just make sure to have the extension installed in your local Chrome installation."
+                "**jQuery** is no longer used internally in BBD. This should speed things up and hopefully close some memory leaks.",
+                "**VoiceMode** was redone to act more like it used to."
             ]
         },
         {
-            title: "Minor Stuff",
+            title: "Improvements",
             type: "improved",
             items: [
-                "**BD Blue** is now the default accent color for BBD elements in settings. Themes can customize it easily through some new variables: `--bd-blue`, `--bd-blue-hover`, `--bd-blue-active`",
-                "Some improvements have been made to the plugins and themes pages that should hopefully prevent plugins from causing errors when displaying.",
-                "You can now review the changelog after you close it by clicking this button in settings: https://i.imgur.com/I3ZdAxG.png"
-            ]
-        },
-        {
-            title: "Minor Stuff",
-            type: "fixed",
-            items: [
-                "**Quick Emote Menu** works again, sorry about that!",
-                "Fixed an issue with searching plugin/theme lists."
+                "**Copy Selector** option was revamped to be more consistent and functional.",
+                "**Emote Menu** has gone through some serious changes to be more efficient and less buggy.",
+                "Some speed improvements when entering the plugins and themes tabs."
             ]
         }
     ]
@@ -76,7 +66,7 @@ export const settings = {
     "BetterTTV Emotes":           {id: "bda-es-2",  info: "Show BetterTTV Emotes",                             implemented: true,  hidden: false, cat: "emote"},
     "Emote Menu":                 {id: "bda-es-0",  info: "Show Twitch/Favourite emotes in emote menu",        implemented: true,  hidden: false, cat: "emote"},
     "Emoji Menu":                 {id: "bda-es-9",  info: "Show Discord emoji menu",                           implemented: true,  hidden: false, cat: "emote"},
-    "Emote Auto Capitalization":  {id: "bda-es-4",  info: "Autocapitalize emote commands",                     implemented: true,  hidden: false, cat: "emote"},
+    "Emote Auto Capitalization":  {id: "bda-es-4",  info: "Autocapitalize emote commands",                     implemented: false, hidden: false, cat: "emote"},
     "Show Names":                 {id: "bda-es-6",  info: "Show emote names on hover",                         implemented: true,  hidden: false, cat: "emote"},
     "Show emote modifiers":       {id: "bda-es-8",  info: "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)", implemented: true,  hidden: false, cat: "emote"},
     "Animate On Hover":           {id: "fork-es-2", info: "Only animate the emote modifiers on hover", implemented: true,  hidden: false, cat: "emote"}
