@@ -60,8 +60,9 @@ export default new class V2_PublicServers {
 
     addButton() {
         if (this.guildPatch) return;
-        const GuildList = webpackModules.findByDisplayName("Guilds");
-        this.guildPatch = Utils.monkeyPatch(GuildList.prototype, "render", {after: this._appendButton});
+        const GuildList = webpackModules.find(m => m.default && m.default.displayName == "NavigableGuilds");
+        if (!GuildList) Utils.warn("PublicServer", "Can't find GuildList component");
+        this.guildPatch = Utils.monkeyPatch(GuildList, "default", {after: this._appendButton});
         this._appendButton();
     }
 

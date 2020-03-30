@@ -99,10 +99,16 @@ export default class CardList extends BDV2.reactComponent {
         };
     }
 
+    getString(value) {
+        if (!value) return "???";
+        return typeof value == "string" ? value : value.toString();
+    }
+
     getAddons() {
         const sortedAddons = this.props.list.sort((a, b) => {
-            const first = a[this.state.sort];
-            const second = b[this.state.sort];
+            const cap = this.state.sort.charAt(0).toUpperCase() + this.state.sort.slice(1);
+            const first = a.plugin ? this.getString(a.plugin[`get${cap}`]()) : a[this.state.sort];
+            const second = b.plugin ? this.getString(b.plugin[`get${cap}`]()) : b[this.state.sort];
             if (typeof(first) == "string") return first.toLocaleLowerCase().localeCompare(second.toLocaleLowerCase());
             if (first > second) return 1;
             if (second > first) return -1;
@@ -114,10 +120,14 @@ export default class CardList extends BDV2.reactComponent {
             const addon = sortedAddons[a];
             if (this.state.query) {
                 let matches = null;
-                if (addon.name) matches = addon.name.toLocaleLowerCase().includes(this.state.query);
-                if (addon.author) matches = matches || addon.author.toLocaleLowerCase().includes(this.state.query);
-                if (addon.description) matches = matches || addon.description.toLocaleLowerCase().includes(this.state.query);
-                if (addon.version) matches = matches || addon.version.toLocaleLowerCase().includes(this.state.query);
+                const name = this.getString(addon.plugin ? addon.plugin.getName() || addon.name : addon.name);
+                const author = this.getString(addon.plugin ? addon.plugin.getAuthor() : addon.author);
+                const description = this.getString(addon.plugin ? addon.plugin.getDescription() : addon.description);
+                const version = this.getString(addon.plugin ? addon.plugin.getVersion() : addon.version);
+                if (name) matches = name.toLocaleLowerCase().includes(this.state.query);
+                if (author) matches = matches || author.toLocaleLowerCase().includes(this.state.query);
+                if (description) matches = matches || description.toLocaleLowerCase().includes(this.state.query);
+                if (version) matches = matches || version.toLocaleLowerCase().includes(this.state.query);
                 if (!matches) continue;
             }
             const props = this.getProps(addon);
