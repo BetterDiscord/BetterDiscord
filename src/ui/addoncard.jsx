@@ -167,7 +167,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     onChange() {
-        this.props.toggle && this.props.toggle(this.props.addon.name);
+        this.props.toggle && this.props.toggle(this.props.addon.plugin ? this.props.addon.plugin.getName() || this.props.addon.name : this.props.addon.name);
         this.setState({checked: !this.state.checked});
     }
 
@@ -177,7 +177,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     render() {
         if (this.state.settings) return this.settingsComponent;
-        const name = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getName() : this.props.addon.name);
+        const name = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getName() || this.props.addon.name : this.props.addon.name);
         const author = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getAuthor() : this.props.addon.author);
         const description = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getDescription() : this.props.addon.description);
         const version = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getVersion() : this.props.addon.version);
