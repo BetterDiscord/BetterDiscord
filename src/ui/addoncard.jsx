@@ -20,7 +20,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
         this.onChange = this.onChange.bind(this);
         this.showSettings = this.showSettings.bind(this);
         this.setInitialState();
-        this.hasSettings = this.props.addon.plugin && typeof this.props.addon.plugin.getSettingsPanel === "function";
+        this.hasSettings = this.props.addon.plugin && typeof(this.props.addon.plugin.getSettingsPanel) === "function";
         this.settingsPanel = "";
 
         this.edit = this.edit.bind(this);
@@ -88,7 +88,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     get settingsComponent() {
         const name = this.getString(this.props.addon.name);
 
-        try { this.settingsPanel = this.props.addon.plugin.getSettingsPanel(); }
+        try { this.settingsPanel = this.props.addon.getSettingsPanel(); }
         catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + this.props.addon.name + ".", err); }
 
         return BDV2.react.createElement("div", {className: "bd-card bd-addon-card settings-open ui-switch-item", ref: "cardNode"},
@@ -168,7 +168,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     onChange() {
         this.props.toggle && this.props.toggle(this.props.addon.name);
-        this.props.enabled = !this.props.enabled;
+        this.setState({checked: !this.state.checked});
     }
 
     edit() {this.props.edit(this.props.addon.name);}
@@ -177,8 +177,11 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
 
     render() {
         if (this.state.settings) return this.settingsComponent;
-
-        const {name, author, description, version, authorId, authorLink} = this.props.addon;
+        const name = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getName() : this.props.addon.name);
+        const author = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getAuthor() : this.props.addon.author);
+        const description = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getDescription() : this.props.addon.description);
+        const version = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getVersion() : this.props.addon.version);
+        const {authorId, authorLink} = this.props.addon;
 
         return BDV2.react.createElement("div", {className: "bd-card bd-addon-card settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bd-addon-header bda-header"},
@@ -187,7 +190,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
                         this.props.edit && this.makeButton("Edit", <EditIcon className="bd-icon" />, this.edit),
                         this.props.remove && this.makeButton("Delete", <DeleteIcon className="bd-icon" />, this.delete),
                         this.props.reload && this.makeButton("Reload", <ReloadIcon className="bd-icon" />, this.reload),
-                        React.createElement(Switch, {onChange: this.onChange, checked: this.props.enabled})
+                        React.createElement(Switch, {onChange: this.onChange, checked: this.state.checked})
                     )
             ),
             BDV2.react.createElement("div", {className: "bd-scroller-wrap bda-description-wrap scroller-wrap fade"},

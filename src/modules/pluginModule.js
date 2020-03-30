@@ -5,10 +5,7 @@ import BDEvents from "./bdEvents";
 import Utils from "./utils";
 
 function PluginModule() {
-    this.getString = function(value) {
-        if (!value) return "???";
-        return typeof value == "string" ? value : value.toString();
-    };
+
 }
 
 PluginModule.prototype.loadPlugins = function () {
@@ -22,18 +19,6 @@ PluginModule.prototype.loadPlugins = function () {
             plugin = bdplugins[plugins[i]].plugin;
             name = plugin.getName();
             if (plugin.load && typeof(plugin.load) == "function") plugin.load();
-            let meta = bdplugins[plugins[i]];
-
-            // Because DiscordCrypt is freezing bd globals they shouldn't be accessing.
-            if (Object.isFrozen(meta)) {
-                meta = Object.assign({}, meta);
-                delete bdplugins[plugins[i]];
-                bdplugins[plugins[i]] = meta;
-            }
-            meta.name = this.getString(plugin.getName());
-            meta.author = this.getString(plugin.getAuthor());
-            meta.description = this.getString(plugin.getDescription());
-            meta.version = this.getString(plugin.getVersion());
         }
         catch (err) {
             pluginCookie[name] = false;

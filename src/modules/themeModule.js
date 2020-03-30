@@ -6,10 +6,7 @@ import Utils from "./utils";
 import DOM from "./domtools";
 
 function ThemeModule() {
-    this.getString = function(value) {
-        if (!value) return "???";
-        return typeof value == "string" ? value : value.toString();
-    };
+
 }
 
 ThemeModule.prototype.loadThemes = function () {
@@ -19,10 +16,6 @@ ThemeModule.prototype.loadThemes = function () {
 
     for (let i = 0; i < themes.length; i++) {
         const theme = bdthemes[themes[i]];
-        theme.name = this.getString(theme.name);
-        theme.author = this.getString(theme.author);
-        theme.description = this.getString(theme.description);
-        theme.version = this.getString(theme.version);
         if (!themeCookie[theme.name]) themeCookie[theme.name] = false;
         if (themeCookie[theme.name]) DOM.addStyle(DOM.escapeID(theme.id), unescape(theme.css));
     }
