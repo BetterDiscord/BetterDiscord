@@ -88,7 +88,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     get settingsComponent() {
         const name = this.getString(this.props.addon.name);
 
-        try { this.settingsPanel = this.props.addon.getSettingsPanel(); }
+        try { this.settingsPanel = this.props.addon.plugin.getSettingsPanel(); }
         catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + this.props.addon.name + ".", err); }
 
         return BDV2.react.createElement("div", {className: "bd-card bd-addon-card settings-open ui-switch-item", ref: "cardNode"},
