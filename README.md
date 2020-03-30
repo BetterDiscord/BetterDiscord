@@ -6,7 +6,7 @@
 [paypal-badge]: https://img.shields.io/badge/Paypal-Donate!-%2300457C.svg?logo=paypal&style=flat-square
 [paypal-link]: https://paypal.me/ZackRauen
 
-BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](https://github.com/Jiiks/BetterDiscordApp) by Jiiks. This has a number of improvements over the original which is currently undergoing a full rewrite. In the interim, the current version has been unmaintained hence this fork existing. I will continue to maintain this fork until BDv2 comes out. I am helping to develop BDv2 as well so as release gets closer this fork will become less and less active.
+BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](https://github.com/Jiiks/BetterDiscordApp) by Jiiks. This has a number of improvements over the original. The original version has been unmaintained hence this fork existing.
 
 # Installation
 
@@ -33,51 +33,6 @@ In our suport servers we have channels with lists of official plugins and themes
 
 Yup we have two of them [this one](https://discord.gg/0Tmfo5ZbORCRqbAd) and [this one](https://discord.gg/2HScm8j)
 
-<!-- # What's Different
-
-## New Settings
-![Settings](https://i.zackrauen.com/nkb9Qi.png)
-
-## UI
- - Redesigned plugin and theme cards with additional classes for themes to use
- - Additional tab in settings with additional settings.
- - CustomCSS editor from CodeMirror has been removed due to being bloated and having high cpu usage. Replaced with another lightweight editor
-
-
-## Plugins/Themes Related
- - Prevent broken plugins from halting BD from loading
- - Speed up the loading process
- - Show startup errors in a modal
-
-![Startup](https://i.zackrauen.com/PwlQcp.gif)
-
- - Add `try...catch` blocks to help prevent errors from crashing BD and Discord
- - Fix internal functions that some functions rely on such as `onSwitch` and `onMessage`
- - Add `source` and `website` as options for plugin and theme METAs
- - Allow themes to use spaces and apostrophes in their names
- - Prettier errors in console, useful for debugging
- - Auto-reload of themes/plugins
- - Stabalize and enhance the `BdApi`
-
-## Emote Module
-- Emotes load asynchronously in the background (does not prevent the mod from loading anymore)
-- Several bug fixes including tooltips, modifiers and emote menu
-- Consolidate emotes to a single file
-- Revamp how emotes are injected—speedup
-- Use react and injection techniques
-
-## Misc
- - Fix Minimal Mode
- - Fix React errors when opening settings
- - Fix selected class disappearing when clicking an open tab
- - Create new alert modal for `BdApi`
- - Add toasts as notification option and in `BdApi`
- - Remove most jQuery dependency for speedup
- - Attach to settings when entering from right click
- - Patch PublicServers
-
-## And so much more... -->
-
 
 # Supporters
 
@@ -87,7 +42,7 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
 <table>
 <tr>
 <td align="center">
-    <img src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" width="100px;" alt="Kraken"/><br />
+    <img src="https://cdn.discordapp.com/avatars/196098063092154368/90f1a7202955dac7a6c685cca3181ab1.webp" width="100px;" alt="Kraken"/><br />
     <strong>Kraken</strong><br />
 </td>
 <td align="center">
@@ -99,7 +54,7 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
     <a href="https://twitter.com/def_con42" target="_blank" rel="noreferrer noopener"><strong>DefCon42</strong></a><br />
 </td>
 <td align="center">
-    <img src="https://cdn.discordapp.com/avatars/629231564261425163/a_36cc7d2940b4ffb8a660b1076ab2087f.webp?size=128" width="100px;" alt="Justxn"/><br />
+    <img src="https://cdn.discordapp.com/avatars/629231564261425163/a_36cc7d2940b4ffb8a660b1076ab2087f.webp" width="100px;" alt="Justxn"/><br />
     <strong>Justxn</strong><br />
 </td>
 </tr>
@@ -114,11 +69,11 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
 <table>
 <tr>
 	<td align="center">
-		<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png?size=128" width="50px;" alt="William JCM"/><br />
+		<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png" width="50px;" alt="William JCM"/><br />
 		<a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
 	</td>
     <td align="center">
-		<img src="https://avatars0.githubusercontent.com/u/24623601?s=460&v=4" width="50px;" alt="NFLD99"/><br />
+		<img src="https://avatars0.githubusercontent.com/u/24623601" width="50px;" alt="NFLD99"/><br />
 		<a href="https://github.com/NFLD99" target="_blank" rel="noreferrer noopener"><strong>NFLD99</strong></a>
 	</td>
 </tr>
@@ -131,23 +86,23 @@ These people have either donated or subscribed to the most basic patron tier to 
 <table>
 <tr>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/284122164582416385/a_30a8d79f5c4a0ad890446e612ba8ce63.gif?size=128" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/284122164582416385/ebaa1b63191ce70e48ae24f32f452773.webp" width="25px;" /><br />
         <strong>aetheryx</strong>
     </td>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/216782345779281921/d4b651b606f108cd2f96a19af68f942f.png?size=128" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/216782345779281921/d4b651b606f108cd2f96a19af68f942f.png" width="25px;" /><br />
         <strong>JBeauDee</strong>
     </td>
         <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/261673576216789004/31d590fb92329e270a6225a13d500c1d.png?size=128" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/261673576216789004/31d590fb92329e270a6225a13d500c1d.png" width="25px;" /><br />
         <strong>vantiss</strong>
     </td>
         <td align="center">
-        <img src="https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/122204411962327043/7f44a9b036b9e2691f4e81d9e34a78b4.webp" width="25px;" /><br />
         <strong>xstefen</strong>
     </td>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/219400174869413888/a_58438b5a8e939e997902dc1e4b81e09e.png?size=128" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/219400174869413888/7c88015869990ba97b614b1ac784f8e8.png" width="25px;" /><br />
         <strong>『Sorey』</strong>
     </td>
     <td align="center">
@@ -155,12 +110,20 @@ These people have either donated or subscribed to the most basic patron tier to 
         <strong>LiVeR</strong>
     </td>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/144458450192171008/4ed07539b21ef04484270e4b145d1944.png?size=128" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/144458450192171008/13a3e66d73d216974504b8aad257b7b4.png" width="25px;" /><br />
         <strong>SweetLilyCake</strong>
     </td>
     <td align="center">
-        <img src="https://zap462067-1.plesk05.zap-webspace.com/wp-content/uploads/2019/11/Discord.jpg" width="25px;" /><br />
+        <img src="https://cdn.discordapp.com/avatars/398951709336010793/eb6f63eb2f3a5102fb900e60d1a26cdc.png" width="25px;" /><br />
         <strong>GameKuchen</strong>
+    </td>
+    <td align="center">
+        <img src="https://i.imgur.com/qrWcKfH.png" width="25px;" /><br />
+        <strong>Lozo</strong>
+    </td>
+    <td align="center">
+        <img src="https://media.discordapp.net/attachments/575576868166828032/692136786893340752/pfp.gif" width="25px;" /><br />
+        <strong>Akira</strong>
     </td>
 </tr>
 </table>
