@@ -90,8 +90,8 @@ export default class CardList extends BDV2.reactComponent {
 
     getProps(addon) {
         return {
-            key: addon.name,
-            enabled: this.cookie[addon.name],
+            key: this.getName(addon),
+            enabled: this.cookie[this.getName(addon)],
             toggle: this.manager.toggle.bind(this.manager),
             //edit: this.edit.bind(this),
             remove: this.delete.bind(this),
@@ -120,10 +120,10 @@ export default class CardList extends BDV2.reactComponent {
             const addon = sortedAddons[a];
             if (this.state.query) {
                 let matches = null;
-                const name = this.getString(addon.plugin ? addon.plugin.getName() || addon.name : addon.name);
-                const author = this.getString(addon.plugin ? addon.plugin.getAuthor() : addon.author);
-                const description = this.getString(addon.plugin ? addon.plugin.getDescription() : addon.description);
-                const version = this.getString(addon.plugin ? addon.plugin.getVersion() : addon.version);
+                const name = this.getName(addon);
+                const author = this.getAuthor(addon);
+                const description = this.getDescription(addon);
+                const version = this.getVersion(addon);
                 if (name) matches = name.toLocaleLowerCase().includes(this.state.query);
                 if (author) matches = matches || author.toLocaleLowerCase().includes(this.state.query);
                 if (description) matches = matches || description.toLocaleLowerCase().includes(this.state.query);
@@ -135,6 +135,11 @@ export default class CardList extends BDV2.reactComponent {
         }
         return rendered;
     }
+
+    getName(addon) {return this.getString(addon.plugin ? addon.plugin.getName() : addon.name);}
+    getAuthor(addon) {return this.getString(addon.plugin ? addon.plugin.getAuthor() : addon.author);}
+    getDescription(addon) {return this.getString(addon.plugin ? addon.plugin.getDescription() : addon.description);}
+    getVersion(addon) {return this.getString(addon.plugin ? addon.plugin.getVersion() : addon.version);}
 
     render() {
         const refreshIcon = <Tooltip color="black" position="top" text="Reload List">

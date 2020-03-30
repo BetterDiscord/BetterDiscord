@@ -86,10 +86,8 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     get settingsComponent() {
-        const name = this.getString(this.props.addon.name);
-
         try { this.settingsPanel = this.props.addon.plugin.getSettingsPanel(); }
-        catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + this.props.addon.name + ".", err); }
+        catch (err) { Utils.err("Plugins", "Unable to get settings panel for " + this.name + ".", err); }
 
         return BDV2.react.createElement("div", {className: "bd-card bd-addon-card settings-open ui-switch-item", ref: "cardNode"},
                 BDV2.react.createElement("div", {style: {"float": "right", "cursor": "pointer"}, onClick: () => {
@@ -98,8 +96,8 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
                     }},
                 BDV2.react.createElement(XSvg, null)
             ),
-            typeof this.settingsPanel === "object" && BDV2.react.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel"}),
-            typeof this.settingsPanel !== "object" && BDV2.react.createElement("div", {id: `plugin-settings-${name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: {__html: this.settingsPanel}})
+            typeof this.settingsPanel === "object" && BDV2.react.createElement("div", {id: `plugin-settings-${this.name}`, className: "plugin-settings", ref: "settingspanel"}),
+            typeof this.settingsPanel !== "object" && BDV2.react.createElement("div", {id: `plugin-settings-${this.name}`, className: "plugin-settings", ref: "settingspanel", dangerouslySetInnerHTML: {__html: this.settingsPanel}})
         );
     }
 
@@ -167,25 +165,26 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     }
 
     onChange() {
-        this.props.toggle && this.props.toggle(this.props.addon.plugin ? this.props.addon.plugin.getName() || this.props.addon.name : this.props.addon.name);
+        this.props.toggle && this.props.toggle(this.name);
         this.setState({checked: !this.state.checked});
     }
 
-    edit() {this.props.edit(this.props.addon.name);}
-    delete() {this.props.remove(this.props.addon.name);}
-    reload() {this.props.reload(this.props.addon.name);}
+    edit() {this.props.edit(this.name);}
+    delete() {this.props.remove(this.name);}
+    reload() {this.props.reload(this.name);}
+
+    get name() {return this.getString(this.props.addon.plugin ? this.props.addon.plugin.getName() : this.props.addon.name);}
+    get author() {return this.getString(this.props.addon.plugin ? this.props.addon.plugin.getAuthor() : this.props.addon.author);}
+    get description() {return this.getString(this.props.addon.plugin ? this.props.addon.plugin.getDescription() : this.props.addon.description);}
+    get version() {return this.getString(this.props.addon.plugin ? this.props.addon.plugin.getVersion() : this.props.addon.version);}
 
     render() {
         if (this.state.settings) return this.settingsComponent;
-        const name = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getName() || this.props.addon.name : this.props.addon.name);
-        const author = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getAuthor() : this.props.addon.author);
-        const description = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getDescription() : this.props.addon.description);
-        const version = this.getString(this.props.addon.plugin ? this.props.addon.plugin.getVersion() : this.props.addon.version);
         const {authorId, authorLink} = this.props.addon;
 
         return BDV2.react.createElement("div", {className: "bd-card bd-addon-card settings-closed ui-switch-item"},
             BDV2.react.createElement("div", {className: "bd-addon-header bda-header"},
-                    BDV2.react.createElement("div", {className: "bd-card-title bda-header-title"}, this.buildTitle(name, version, {name: author, id: authorId, link: authorLink})),
+                    BDV2.react.createElement("div", {className: "bd-card-title bda-header-title"}, this.buildTitle(this.name, this.version, {name: this.author, id: authorId, link: authorLink})),
                     BDV2.react.createElement("div", {className: "bd-addon-controls bda-controls"},
                         this.props.edit && this.makeButton("Edit", <EditIcon className="bd-icon" />, this.edit),
                         this.props.remove && this.makeButton("Delete", <DeleteIcon className="bd-icon" />, this.delete),
@@ -194,7 +193,7 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
                     )
             ),
             BDV2.react.createElement("div", {className: "bd-scroller-wrap bda-description-wrap scroller-wrap fade"},
-                BDV2.react.createElement("div", {className: "bd-scroller bd-addon-description bda-description scroller"}, description)
+                BDV2.react.createElement("div", {className: "bd-scroller bd-addon-description bda-description scroller"}, this.description)
             ),
             this.footer
         );
