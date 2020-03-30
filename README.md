@@ -5,7 +5,7 @@
 [paypal-badge]: https://img.shields.io/badge/Paypal-Donate!-%2300457C.svg?logo=paypal&style=flat-square
 [paypal-link]: https://paypal.me/ZackRauen
 
-BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](https://github.com/Jiiks/BetterDiscordApp) by Jiiks. This has a number of improvements over the original. The original version has been unmaintained hence this fork existing.
+BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](https://github.com/Jiiks/BetterDiscordApp) by Jiiks. This has a number of improvements over the original. The original version has been unmaintained hence this fork existing. There have been attempts to rewrite the original that I have been and will continue to be involved in, but in the meantime I will continue to maintain and improve BBD.
 
 # Installation
 
@@ -21,13 +21,16 @@ See this [gist](https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77
 # FAQ
 
 ### What is this?
-This is a client modification for Discord. You can read more about it in the [original repo](https://github.com/Jiiks/BetterDiscordApp).
+This is a client modification for Discord. It allows you to add plugins and themes to your client. Plugins can add functionality and useful features. Themes can completely change the look and feel of Discord.
+
+BBD has some other built-in features such as Emotes from Twitch, FFZ, and BBTV, as well as an in-client server browser.
 
 ### Where can I get plugins and themes?
 In our support servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
 
 ### Support Servers?
-We have two: [This one](https://discord.gg/0Tmfo5ZbORCRqbAd), and [this one](https://discord.gg/2HScm8j).
+There are two: [The main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the backup](https://discord.gg/2HScm8j).
+
 
 
 # Supporters
