@@ -13,8 +13,9 @@ export default new class reactDevTools {
     constructor() {
         let extensionPath = "";
         if (process.platform === "win32") extensionPath = path.resolve(process.env.LOCALAPPDATA, "Google/Chrome/User Data");
-        if (process.platform === "linux") extensionPath = path.resolve(process.env.HOME, ".config/google-chrome");
-        if (process.platform === "darwin") extensionPath = path.resolve(process.env.HOME, "Library/Application Support/Google/Chrome");
+        else if (process.platform === "linux") extensionPath = path.resolve(process.env.HOME, ".config/google-chrome");
+        else if (process.platform === "darwin") extensionPath = path.resolve(process.env.HOME, "Library/Application Support/Google/Chrome");
+        else extensionPath = path.resolve(process.env.HOME, ".config/chromium");
         extensionPath += "/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/";
         if (fs.existsSync(extensionPath)) {
             const versions = fs.readdirSync(extensionPath);
