@@ -238,6 +238,8 @@ BdApi.setBDData = function(key, data) {
 
 const makeAddonAPI = (cookie, list, manager) => new class AddonAPI {
 
+    get folder() {return manager.folder;}
+
     isEnabled(name) {
         return !!cookie[name];
     }

@@ -5,8 +5,8 @@ import BDEvents from "./bdEvents";
 import Utils from "./utils";
 import DOM from "./domtools";
 
-function ThemeModule() {
-
+class ThemeModule {
+    get folder() {return ContentManager.themesFolder;}
 }
 
 ThemeModule.prototype.loadThemes = function () {

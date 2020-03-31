@@ -4,8 +4,8 @@ import DataStore from "./dataStore";
 import BDEvents from "./bdEvents";
 import Utils from "./utils";
 
-function PluginModule() {
-
+class PluginModule {
+    get folder() {return ContentManager.pluginsFolder;}
 }
 
 PluginModule.prototype.loadPlugins = function () {
