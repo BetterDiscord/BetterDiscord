@@ -23,7 +23,7 @@ export default new class V2 {
                         if (func == "getToken") return () => "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
                         if (func == "getEmail") return () => "puppet11112@gmail.com";
                         if (func == "showToken") return () => true;
-                        if (func == "__proto__") return proxy;
+                        // if (func == "__proto__") return proxy;
                         return obj[func];
                     }
                 });
