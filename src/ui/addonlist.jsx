@@ -107,8 +107,8 @@ export default class CardList extends BDV2.reactComponent {
     getAddons() {
         const sortedAddons = this.props.list.sort((a, b) => {
             const cap = this.state.sort.charAt(0).toUpperCase() + this.state.sort.slice(1);
-            const first = a.plugin ? this.getString(a.plugin[`get${cap}`]()) : a[this.state.sort];
-            const second = b.plugin ? this.getString(b.plugin[`get${cap}`]()) : b[this.state.sort];
+            const first = a.plugin && a.plugin[`get${cap}`] ? this.getString(a.plugin[`get${cap}`]()) : a[this.state.sort];
+            const second = b.plugin && b.plugin[`get${cap}`] ? this.getString(b.plugin[`get${cap}`]())  : b[this.state.sort];
             if (typeof(first) == "string") return first.toLocaleLowerCase().localeCompare(second.toLocaleLowerCase());
             if (first > second) return 1;
             if (second > first) return -1;

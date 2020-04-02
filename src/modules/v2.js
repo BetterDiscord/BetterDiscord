@@ -9,17 +9,25 @@ export default new class V2 {
             delete req.m.__extra_id__;
             delete req.c.__extra_id__;
 
+            const shouldProtect = theModule => {
+                if (theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort) return true;
+                if (theModule.getToken || theModule.getEmail || theModule.showToken) return true;
+                return false;
+            };
+
             const protect = theModule => {
                 if (theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort) return null;
                 if (!theModule.getToken && !theModule.getEmail && !theModule.showToken) return theModule;
-                return new Proxy(theModule, {
+                const proxy = new Proxy(theModule, {
                     get: function(obj, func) {
                         if (func == "getToken") return () => "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
                         if (func == "getEmail") return () => "puppet11112@gmail.com";
                         if (func == "showToken") return () => true;
+                        if (func == "__proto__") return proxy;
                         return obj[func];
                     }
                 });
+                return proxy;
             };
 
             const find = (filter) => {
