@@ -158,7 +158,7 @@ export default new class V2_SettingsPanel {
 
         if (id == "fork-wp-1") {
             Utils.setWindowPreference("transparent", enabled);
-            if (enabled) Utils.setWindowPreference("backgroundColor", null);
+            if (enabled) Utils.setWindowPreference("backgroundColor", '#00000000');
             else Utils.setWindowPreference("backgroundColor", "#2f3136");
         }
 
@@ -195,19 +195,6 @@ export default new class V2_SettingsPanel {
         if (settingsCookie["fork-ps-5"]) {
             ContentManager.watchContent("plugin");
             ContentManager.watchContent("theme");
-        }
-        
-        if (settingsCookie["fork-wp-1"]) {
-            // structure copied from ./reactDevTools
-            const electron = require("electron");
-            const BrowserWindow = electron.remote.BrowserWindow;
-            const currentWindow = BrowserWindow.getAllWindows()[0];
-            currentWindow.webContents.on('devtools-closed', () => {
-                // 2 times is absolutely required, 3 times helps
-                currentWindow.setBackgroundColor('#01000001');
-                currentWindow.setBackgroundColor('#01000000');
-                currentWindow.setBackgroundColor('#00000000');
-            });
         }
 
         if (settingsCookie["bda-gs-8"]) dMode.startDebugListener();
