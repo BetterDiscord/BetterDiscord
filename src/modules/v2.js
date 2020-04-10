@@ -19,6 +19,10 @@ export default new class V2 {
                 if (theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort) return null;
                 if (!theModule.getToken && !theModule.getEmail && !theModule.showToken) return theModule;
                 const proxy = new Proxy(theModule, {
+                    getOwnPropertyDescriptor: function(obj, prop) {
+                        if (prop === "getToken" || prop === "getEmail" || prop === "showToken") return undefined;
+                        return Object.getOwnPropertyDescriptor(obj, prop);
+                    },
                     get: function(obj, func) {
                         if (func == "getToken") return () => "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
                         if (func == "getEmail") return () => "puppet11112@gmail.com";

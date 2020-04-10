@@ -4,7 +4,11 @@ export default function() {
         get: function () {
             const contentWindow = Reflect.apply(contentWindowGetter, this, arguments);
             return new Proxy(contentWindow, {
-                get: function (obj, prop) {
+                getOwnPropertyDescriptor: function(obj, prop) {
+                    if (prop === "localStorage") return undefined;
+                    return Object.getOwnPropertyDescriptor(obj, prop);
+                },
+                get: function(obj, prop) {
                     if (prop === "localStorage") return null;
                     const val = obj[prop];
                     if (typeof val === "function") return val.bind(obj);
