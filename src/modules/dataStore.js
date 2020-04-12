@@ -8,7 +8,6 @@ const releaseChannel = DiscordNative.globals.releaseChannel;
 
 export default new class DataStore {
     constructor() {
-        this.config = 
         this.data = {settings: {stable: {}, canary: {}, ptb: {}}};
         this.pluginData = {};
     }

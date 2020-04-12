@@ -320,7 +320,7 @@ export default class Utils {
     static showChangelogModal(options = {}) {
         const ModalStack = WebpackModules.findByProps("push", "update", "pop", "popWithKey");
         const ChangelogClasses = WebpackModules.findByProps("fixed", "improved");
-        const TextElement = WebpackModules.findByProps("Sizes", "Weights");
+        const TextElement = WebpackModules.findByDisplayName("Text");
         const FlexChild = WebpackModules.findByProps("Child");
         const Titles = WebpackModules.findByProps("Tags", "default");
         const Changelog = WebpackModules.find(m => m.defaultProps && m.defaultProps.selectable == false);
@@ -342,7 +342,7 @@ export default class Utils {
         const renderHeader = function() {
             return ce(FlexChild.Child, {grow: 1, shrink: 1},
                 ce(Titles.default, {tag: Titles.Tags.H4}, title),
-                ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY, className: ChangelogClasses.date}, subtitle)
+                ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD, className: ChangelogClasses.date}, subtitle)
             );
         };
     
@@ -356,10 +356,10 @@ export default class Utils {
                 BDV2.joinBD2();
             };
             const supportLink = Anchor ? ce(Anchor, {onClick: joinSupportServer}, "Join our Discord Server.") : ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
-            const defaultFooter = ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY}, "Need support? ", supportLink);
+            const defaultFooter = ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
             return ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter);
         };
-    
+
         ModalStack.push(function(props) {
             return ce(Changelog, Object.assign({
                 className: ChangelogClasses.container,
