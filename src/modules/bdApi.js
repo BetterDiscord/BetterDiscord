@@ -93,7 +93,7 @@ BdApi.alert = function (title, content) {
 /**
  * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
  * @param {string} title - title of the modal
- * @param {(string|ReactElement|Array<string|ReactElement>)} children - a single or mixed array of react elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
+ * @param {(string|ReactElement|Array<string|ReactElement>)} children - a single or mixed array of react elements and strings. Every string is wrapped in Discord's `Markdown` component so strings will show and render properly.
  * @param {object} [options] - options to modify the modal
  * @param {boolean} [options.danger=false] - whether the main button should be red or not
  * @param {string} [options.confirmText=Okay] - text for the confirmation/submit button
@@ -102,28 +102,7 @@ BdApi.alert = function (title, content) {
  * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
  */
 BdApi.showConfirmationModal = function (title, content, options = {}) {
-    const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
-    const TextElement = BdApi.findModuleByProps("Sizes", "Weights");
-    const ConfirmationModal = BdApi.findModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");
-    if (!ModalStack || !ConfirmationModal || !TextElement) return mainCore.alert(title, content);
-
-    const {onConfirm, onCancel, confirmText, cancelText, danger = false} = options;
-    if (typeof(content) == "string") content = TextElement({color: TextElement.Colors.PRIMARY, children: [content]});
-    else if (Array.isArray(content)) content = TextElement({color: TextElement.Colors.PRIMARY, children: content});
-    content = [content];
-
-    const emptyFunction = () => {};
-    ModalStack.push(function(props) {
-        return BdApi.React.createElement(ConfirmationModal, Object.assign({
-            header: title,
-            children: content,
-            red: danger,
-            confirmText: confirmText ? confirmText : "Okay",
-            cancelText: cancelText ? cancelText : "Cancel",
-            onConfirm: onConfirm ? onConfirm : emptyFunction,
-            onCancel: onCancel ? onCancel : emptyFunction
-        }, props));
-    });
+    Utils.showConfirmationModal(title, content, options);
 };
 
 //Show toast alert

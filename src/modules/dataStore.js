@@ -8,6 +8,7 @@ const releaseChannel = DiscordNative.globals.releaseChannel;
 
 export default new class DataStore {
     constructor() {
+        this.config = 
         this.data = {settings: {stable: {}, canary: {}, ptb: {}}};
         this.pluginData = {};
     }
@@ -30,6 +31,19 @@ export default new class DataStore {
         }
     }
 
+    get injectionPath() {
+        if (this._injectionPath) return this._injectionPath;
+        const electron = require("electron").remote.app;
+        const base = electron.getAppPath();
+        const roamingBase = electron.getPath("userData");
+        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector");
+        const location = path.resolve(base, "..", "app");
+        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
+        if (!realLocation) return this._injectionPath = null;
+        return this._injectionPath = realLocation;
+    }
+
+    get configFile() {return this._configFile || (this._configFile = path.resolve(this.injectionPath, "betterdiscord", "config.json"));}
     get BDFile() {return this._BDFile || (this._BDFile = path.resolve(bdConfig.dataPath, "bdstorage.json"));}
     get settingsFile() {return this._settingsFile || (this._settingsFile = path.resolve(bdConfig.dataPath, "bdsettings.json"));}
     getPluginFile(pluginName) {return path.resolve(ContentManager.pluginsFolder, pluginName + ".config.json");}

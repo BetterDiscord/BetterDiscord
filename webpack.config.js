@@ -1,6 +1,6 @@
 const path = require("path");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
-const TerserPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   mode: "development",
@@ -19,7 +19,10 @@ module.exports = {
     fs: `require("fs")`,
     path: `require("path")`,
     request: `require("request")`,
-    events: `require("events")`
+    events: `require("events")`,
+    rimraf: `require("rimraf")`,
+    yauzl: `require("yauzl")`,
+    mkdirp: `require("mkdirp")`
   },
   resolve: {
     extensions: [".js", ".jsx"],

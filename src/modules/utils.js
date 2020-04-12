@@ -1,4 +1,4 @@
-import {bbdVersion} from "../0globals";
+import {bbdVersion, settingsCookie} from "../0globals";
 import WebpackModules from "./webpackModules";
 import BDV2 from "./v2";
 import DOM from "./domtools";
@@ -10,36 +10,26 @@ export default class Utils {
     static get screenHeight() { return Math.max(document.documentElement.clientHeight, window.innerHeight || 0); }
 
     static get WindowConfigFile() {
-        if (this._windowConfigFile) return this._windowConfigFile;
-        const electron = require("electron").remote.app;
-        const path = require("path");
-        const base = electron.getAppPath();
-        const roamingBase = electron.getPath("userData");
-        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json");
-        const location = path.resolve(base, "..", "app", "config.json");
-        const fs = require("fs");
-        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
-        if (!realLocation) return this._windowConfigFile = null;
-        return this._windowConfigFile = realLocation;
+        return this._windowConfigFile = null;
     }
 
     static getAllWindowPreferences() {
-        if (!this.WindowConfigFile) return {}; // Tempfix until new injection on other platforms
-        return __non_webpack_require__(this.WindowConfigFile);
+        return {
+            transparent: settingsCookie["fork-wp-1"] || settingsCookie.transparency,
+            frame: settingsCookie.frame
+        };
     }
     
     static getWindowPreference(key) {
-        if (!this.WindowConfigFile) return undefined; // Tempfix until new injection on other platforms
-        return this.getAllWindowPreferences()[key];
+        if (key === "transparent") return settingsCookie["fork-wp-1"] || settingsCookie.transparency;
+        if (key === "frame") return settingsCookie.frame;
+        return null;
     }
     
     static setWindowPreference(key, value) {
-        if (!this.WindowConfigFile) return; // Tempfix until new injection on other platforms
-        const fs = require("fs");
-        const prefs = this.getAllWindowPreferences();
-        prefs[key] = value;
-        delete __non_webpack_require__.cache[this.WindowConfigFile];
-        fs.writeFileSync(this.WindowConfigFile, JSON.stringify(prefs, null, 4));
+        if (key === "transparent") return settingsCookie["fork-wp-1"] = settingsCookie.transparency = value;
+        if (key === "frame") return settingsCookie.frame = value;
+        return null;
     }
 
     static stripBOM(content) {
@@ -379,6 +369,41 @@ export default class Utils {
                 renderHeader: renderHeader,
                 renderFooter: renderFooter,
                 children: changelogItems
+            }, props));
+        });
+    }
+
+    /**
+     * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
+     * @param {string} title - title of the modal
+     * @param {(string|ReactElement|Array<string|ReactElement>)} children - a single or mixed array of react elements and strings. Every string is wrapped in Discord's `Markdown` component so strings will show and render properly.
+     * @param {object} [options] - options to modify the modal
+     * @param {boolean} [options.danger=false] - whether the main button should be red or not
+     * @param {string} [options.confirmText=Okay] - text for the confirmation/submit button
+     * @param {string} [options.cancelText=Cancel] - text for the cancel button
+     * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
+     * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
+     */
+    static showConfirmationModal(title, content, options = {}) {
+        const ModalStack = WebpackModules.findByProps("push", "update", "pop", "popWithKey");
+        const Markdown = WebpackModules.findByDisplayName("Markdown");
+        const ConfirmationModal = WebpackModules.find(m => m.defaultProps && m.key && m.key() == "confirm-modal");
+        if (!ModalStack || !ConfirmationModal || !Markdown) return Utils.alert(title, content);
+
+        const emptyFunction = () => {};
+        const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = "Okay", cancelText = "Cancel", danger = false} = options;
+
+        if (!Array.isArray(content)) content = [content];
+        content = content.map(c => typeof(c) === "string" ? BDV2.React.createElement(Markdown, null, c) : c);
+        ModalStack.push(function(props) {
+            return BDV2.React.createElement(ConfirmationModal, Object.assign({
+                header: title,
+                children: content,
+                red: danger,
+                confirmText: confirmText,
+                cancelText: cancelText,
+                onConfirm: onConfirm,
+                onCancel: onCancel
             }, props));
         });
     }

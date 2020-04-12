@@ -2,24 +2,23 @@
 export const minimumDiscordVersion = "0.0.306";
 export const currentDiscordVersion = (window.DiscordNative && window.DiscordNative.remoteApp && window.DiscordNative.remoteApp.getVersion && window.DiscordNative.remoteApp.getVersion()) || "0.0.306";
 export const minSupportedVersion = "0.3.0";
-export const bbdVersion = "0.3.2";
+export const bbdVersion = "0.3.3";
 export const bbdChangelog = {
-    description: "More big things.",
+    description: "Big things are coming.",
     changes: [
         {
             title: "What's New?",
             items: [
-                "**jQuery** is no longer used internally in BBD. This should speed things up and hopefully close some memory leaks.",
-                "**VoiceMode** was redone to act more like it used to."
+                "**In-App Updater** for the injection module now exists to try and decrease the number of issues with updates to the injector.",
+                "**Window Transparency** changes were made to more compatible with external window managers and addons like Glasscord.",
+                "Initialization sequence has once again been changed slightly to hopefully improve loading times."
             ]
         },
         {
-            title: "Improvements",
-            type: "improved",
+            title: "Bug Fixes",
+            type: "fixed",
             items: [
-                "**Copy Selector** option was revamped to be more consistent and functional.",
-                "**Emote Menu** has gone through some serious changes to be more efficient and less buggy.",
-                "Some speed improvements when entering the plugins and themes tabs."
+                "Some fixes related to showing modals in the `BdApi`."
             ]
         }
     ]

@@ -14,7 +14,10 @@ import DOM from "./domtools";
 import BDLogo from "../ui/bdLogo";
 import TooltipWrap from "../ui/tooltipWrap";
 
-function Core() {}
+function Core() {
+    // Object.assign(bdConfig, __non_webpack_require__(DataStore.configFile));
+    // this.init();
+}
 
 Core.prototype.setConfig = function(config) {
     Object.assign(bdConfig, config);
@@ -43,10 +46,23 @@ Core.prototype.init = async function() {
 
     const latestLocalVersion = bdConfig.updater ? bdConfig.updater.LatestVersion : bdConfig.latestVersion;
     if (latestLocalVersion > bdConfig.version) {
-        Utils.alert("Update Available", `
-            An update for BandagedBD is available (${latestLocalVersion})! Please Reinstall!<br /><br />
-            <a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>
-        `);
+        Utils.showConfirmationModal("Update Available", [`There is an update available for BandagedBD's Injector (${latestLocalVersion}).`, "You can either update and restart now, or later."], {
+            confirmText: "Update Now",
+            cancelText: "Maybe Later",
+            onConfirm: async () => {
+                const onUpdateFailed = () => {Utils.alert("Could Not Update", `Unable to update automatically, please download the installer and reinstall normally.<br /><br /><a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>`);};
+                try {
+                    const didUpdate = await this.updateInjector();
+                    if (!didUpdate) return onUpdateFailed();
+                    const app = require("electron").remote.app;
+                    app.relaunch();
+                    app.exit();
+                }
+                catch (err) {
+                    onUpdateFailed();
+                }
+            }
+        });
     }
 
     Utils.log("Startup", "Initializing Settings");
@@ -279,6 +295,92 @@ Core.prototype.patchGuildSeparator = function() {
     this.guildSeparatorPatch = Utils.monkeyPatch(Guilds.prototype, "render", {after: (data) => {
         data.returnValue.props.children[1].props.children[3].type = GuildSeparator;
     }});
+};
+
+Core.prototype.updateInjector = async function() {
+    const injectionPath = DataStore.injectionPath;
+    if (!injectionPath) return false;
+
+    const fs = require("fs");
+    const path = require("path");
+    const rmrf = require("rimraf");
+    const yauzl = require("yauzl");
+    const mkdirp = require("mkdirp");
+    const request = require("request");
+
+    const parentPath = path.resolve(injectionPath, "..");
+    const folderName = path.basename(injectionPath);
+    const zipLink = "https://github.com/rauenzi/BetterDiscordApp/archive/injector.zip";
+    const savedZip = path.resolve(parentPath, "injector.zip");
+    const extractedFolder = path.resolve(parentPath, "BetterDiscordApp-injector");
+
+    // Download the injector zip file
+    Utils.log("InjectorUpdate", "Downloading " + zipLink);
+    let success = await new Promise(resolve => {
+        request.get({url: zipLink, encoding: null}, async (error, response, body) => {
+            if (error || response.statusCode !== 200) return resolve(false);
+            // Save a backup in case someone has their own copy
+            const alreadyExists = await new Promise(res => fs.exists(savedZip, res));
+            if (alreadyExists) await new Promise(res => fs.rename(savedZip, `${savedZip}.bak${Math.round(performance.now())}`, res));
+
+            Utils.log("InjectorUpdate", "Writing " + savedZip);
+            fs.writeFile(savedZip, body, err => resolve(!err));
+        });
+    });
+    if (!success) return success;
+
+    // Check and delete rename extraction
+    const alreadyExists = await new Promise(res => fs.exists(extractedFolder, res));
+    if (alreadyExists) await new Promise(res => fs.rename(extractedFolder, `${extractedFolder}.bak${Math.round(performance.now())}`, res));
+    
+    // Unzip the downloaded zip file
+    const zipfile = await new Promise(r => yauzl.open(savedZip, {lazyEntries: true}, (err, zip) =>  r(zip)));
+    zipfile.on("entry", function(entry) {
+        // Skip directories, they are handled with mkdirp
+        if (entry.fileName.endsWith("/")) return zipfile.readEntry();
+
+        Utils.log("InjectorUpdate", "Extracting " + entry.fileName);
+        // Make any needed parent directories
+        const fullPath = path.resolve(parentPath, entry.fileName);
+        mkdirp.sync(path.dirname(fullPath));
+        zipfile.openReadStream(entry, function(err, readStream) {
+            if (err) return success = false;
+            readStream.on("end", function() {zipfile.readEntry();}); // Go to next file after this
+            readStream.pipe(fs.createWriteStream(fullPath));
+        });
+    });
+    zipfile.readEntry(); // Start reading
+
+    // Wait for the final file to finish
+    await new Promise(resolve => zipfile.once("end", resolve));
+
+    // Save a backup in case something goes wrong during final step
+    const backupFolder = path.resolve(parentPath, `${folderName}.bak${Math.round(performance.now())}`);
+    await new Promise(resolve => fs.rename(injectionPath, backupFolder, resolve));
+
+    // Rename the extracted folder to what it should be
+    Utils.log("InjectorUpdate", `Renaming ${path.basename(extractedFolder)} to ${folderName}`);
+    success = await new Promise(resolve => fs.rename(extractedFolder, injectionPath, err => resolve(!err)));
+    if (!success) {
+        Utils.err("InjectorUpdate", "Failed to rename the final directory");
+        return success;
+    }
+
+    // If rename had issues, delete what we tried to rename and restore backup
+    if (!success) {
+        Utils.err("InjectorUpdate", "Something went wrong... restoring backups.");
+        await new Promise(resolve => rmrf(extractedFolder, resolve));
+        await new Promise(resolve => fs.rename(backupFolder, injectionPath, resolve));
+        return success;
+    }
+
+    // If we've gotten to this point, everything should have gone smoothly.
+    // Cleanup the backup folder then remove the zip
+    await new Promise(resolve => rmrf(backupFolder, resolve));
+    await new Promise(resolve => fs.unlink(savedZip, resolve));
+
+    Utils.log("InjectorUpdate", "Injector Updated!");
+    return success;
 };
 
 export default new Core();
