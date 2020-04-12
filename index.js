@@ -2,14 +2,20 @@ const path = require("path");
 const electron = require("electron");
 const Module = require("module");
 const BetterDiscord = require("./betterdiscord");
-const config = require("./config");
 
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
         options.webPreferences.nodeIntegration = true;
-        if (process.platform !== "win32" && process.platform !== "darwin") config.frame = true;
-        Object.assign(options, config)
+        if (BetterDiscord.getSetting("fork-wp-1") || BetterDiscord.getSetting("transparency")) {
+            options.transparent = true;
+            options.backgroundColor = "#00000000";
+        }
+
+        // Only affect frame if it is *explicitly* set
+        const shouldHaveFrame = BetterDiscord.getSetting("frame");
+        if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
+
         super(options);
         new BetterDiscord(this);
     }

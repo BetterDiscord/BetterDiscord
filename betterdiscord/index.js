@@ -1,5 +1,7 @@
+const fs = require("fs");
 const path = require("path");
 const electron = require("electron");
+const buildInfoFile = path.resolve(electron.app.getAppPath(), "..", "build_info.json");
 const Module = require("module").Module;
 Module.globalPaths.push(path.resolve(electron.app.getAppPath(), "..", "app.asar", "node_modules"));
 
@@ -27,10 +29,10 @@ Utils.setLogFile(config.dataPath + "/logs.log");
 
 const BetterDiscord = class BetterDiscord {
     constructor(mainWindow) {
-        this.mainWindow = mainWindow;
+        mainWindow.__betterDiscord = this;
         Utils.setWindow(mainWindow);
 
-        this.disableCSP();
+        this.disableCSP(mainWindow);
 
         Utils.log("Hooking dom-ready");
         mainWindow.webContents.on("dom-ready", this.load.bind(this));
@@ -59,8 +61,8 @@ const BetterDiscord = class BetterDiscord {
         ];
     }
 
-    disableCSP() {
-        this.mainWindow.webContents.session.webRequest.onHeadersReceived(function(details, callback) {
+    disableCSP(browserWindow) {
+        browserWindow.webContents.session.webRequest.onHeadersReceived(function(details, callback) {
             if (!details.responseHeaders["content-security-policy-report-only"] && !details.responseHeaders["content-security-policy"]) return callback({cancel: false});
             delete details.responseHeaders["content-security-policy-report-only"];
             delete details.responseHeaders["content-security-policy"];
@@ -86,7 +88,7 @@ const BetterDiscord = class BetterDiscord {
         if (!remoteConfig)  {
             Utils.log("Could not load updater, using backup");
             remoteConfig = {
-                version: "0.3.3"
+                version: "0.4.0"
             };
         }
         config.latestVersion = remoteConfig.version;
@@ -99,12 +101,8 @@ const BetterDiscord = class BetterDiscord {
         Utils.makeFolder(config.dataPath + "themes/");
     }
 
-    ensureModules() {
-        return Utils.runJS(`(async()=>{
-            while("undefined" === typeof webpackJsonp) await new Promise(requestAnimationFrame);
-            for(const started = performance.now(); webpackJsonp.length < 13 - (performance.now() - started) / 5000;)
-                await new Promise(setImmediate);
-        })()`);
+    async saveConfig() {
+        return new Promise(resolve => fs.writeFile(path.resolve(__dirname, "config.json"), JSON.stringify(config, null, 4), resolve));
     }
 
     async loadApp() {
@@ -123,7 +121,13 @@ const BetterDiscord = class BetterDiscord {
         }
 
         Utils.log("Starting Up");
-        Utils.runJS(`var mainCore = new Core(${JSON.stringify(config)}); mainCore.init();`);
+        Utils.runJS(`(() => {
+            try {
+                var mainCore = new Core(${JSON.stringify(config)});
+                mainCore.init();
+            }
+            catch (err) {}
+        })();`);
     }
 
     async load() {
@@ -133,9 +137,20 @@ const BetterDiscord = class BetterDiscord {
 
         Utils.log("Loading");
         this.ensureFolders();
-        //await this.ensureModules();
+        await this.saveConfig();
         await this.loadApp();
         Utils.saveLogs();
+    }
+
+    static getSetting(key) {
+        if (this._settings) return this._settings[key];
+        const settingsFile = config.dataPath + "/bdstorage.json";
+        if (!fs.existsSync(settingsFile) || !fs.existsSync(buildInfoFile)) return this._settings = {};
+        const buildInfo = require(buildInfoFile);
+        const settings = require(settingsFile);
+        const channelSettings = settings[buildInfo.releaseChannel];
+        this._settings = channelSettings || {}
+        return this._settings[key];
     }
 
 };
