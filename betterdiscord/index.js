@@ -88,7 +88,7 @@ const BetterDiscord = class BetterDiscord {
         if (!remoteConfig)  {
             Utils.log("Could not load updater, using backup");
             remoteConfig = {
-                version: "0.4.0"
+                version: "0.4.1"
             };
         }
         config.latestVersion = remoteConfig.version;
@@ -144,12 +144,12 @@ const BetterDiscord = class BetterDiscord {
 
     static getSetting(key) {
         if (this._settings) return this._settings[key];
-        const settingsFile = config.dataPath + "/bdstorage.json";
+        const settingsFile = path.resolve(config.dataPath, "bdstorage.json");
         if (!fs.existsSync(settingsFile) || !fs.existsSync(buildInfoFile)) return this._settings = {};
         const buildInfo = require(buildInfoFile);
         const settings = require(settingsFile);
-        const channelSettings = settings[buildInfo.releaseChannel];
-        this._settings = channelSettings || {}
+        const channelSettings = settings.settings && settings.settings[buildInfo.releaseChannel] && settings.settings[buildInfo.releaseChannel].settings;
+        this._settings = channelSettings || {};
         return this._settings[key];
     }
 
