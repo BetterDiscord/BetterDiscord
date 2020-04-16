@@ -308,7 +308,7 @@ export default class Utils {
             DOM.addClass(modal, "closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.querySelector(".bd-backdrop").on("click", () => {
+        modal.querySelector(".bd-backdrop").addEventListener("click", () => {
             DOM.addClass(modal, "closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
