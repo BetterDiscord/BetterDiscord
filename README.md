@@ -27,7 +27,7 @@ The above can be automatically done in script form.
 try {
     const fs = require("fs");
     const path = require("path");
-    const configPath = path.join(Utils.injectionPath, "betterdiscord", "config.json");
+    const configPath = path.join(DataStore.injectionPath, "betterdiscord", "config.json");
     const config = require(configPath);
     config.branch = branch;
     config.minified = minified;
