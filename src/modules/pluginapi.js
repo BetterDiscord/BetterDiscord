@@ -240,4 +240,45 @@ BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
 };
 
+// const makeAddonAPI = (cookie, list, manager) => new class AddonAPI {
+
+//     get folder() {return manager.folder;}
+
+//     isEnabled(name) {
+//         return !!cookie[name];
+//     }
+
+//     enable(name) {
+//         return manager.enable(name);
+//     }
+
+//     disable(name) {
+//         return manager.disable(name);
+//     }
+
+//     toggle(name) {
+//         if (cookie[name]) this.disable(name);
+//         else this.enable(name);
+//     }
+
+//     reload(name) {
+//         return manager.reload(name);
+//     }
+
+//     get(name) {
+//         if (list.hasOwnProperty(name)) {
+//             if (list[name].plugin) return list[name].plugin;
+//             return list[name];
+//         }
+//         return null;
+//     }
+
+//     getAll() {
+//         return Object.keys(list).map(k => this.get(k)).filter(a => a);
+//     }
+// };
+
+// BdApi.Plugins = makeAddonAPI(pluginCookie, bdplugins, pluginModule);
+// BdApi.Themes = makeAddonAPI(themeCookie, bdthemes, themeModule);
+
 export default BdApi;

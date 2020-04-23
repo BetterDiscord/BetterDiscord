@@ -1,3 +1,4 @@
+import {Config} from "data";
 import WebpackModules from "./webpackmodules";
 import DiscordModules from "./discordmodules";
 import Utilities from "./utilities";
@@ -15,23 +16,62 @@ export default new class ComponentPatcher {
 
     patchSocial() {
         if (this.socialPatch) return;
+        // const TabBar = WebpackModules.getByDisplayName("TabBar");
+        // const Anchor = WebpackModules.getByDisplayName("Anchor");
+        // if (!TabBar || !Anchor) return;
+        // this.socialPatch = Patcher.after("ThemeHelper", TabBar.prototype, "render", (_, __, returnValue) => {
+        //     const children = returnValue.props.children;
+        //     if (!children || !children.length) return;
+        //     if (children[children.length - 2].type.displayName !== "Separator") return;
+        //     if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
+        //     const original = children[children.length - 1].type;
+        //     const newOne = function() {
+        //         const returnVal = original(...arguments);
+        //         returnVal.props.children.push(DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", rel: "author", title: "BandagedBD", target: "_blank"},
+        //             DiscordModules.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+        //         ));
+        //         return returnVal;
+        //     };
+        //     children[children.length - 1].type = newOne;
+        // });
+
+        if (this.socialPatch) return;
         const TabBar = WebpackModules.getByDisplayName("TabBar");
         const Anchor = WebpackModules.getByDisplayName("Anchor");
-        if (!TabBar || !Anchor) return;
-        this.socialPatch = Patcher.after("ThemeHelper", TabBar.prototype, "render", (_, __, returnValue) => {
+        if (!TabBar) return;
+        this.socialPatch = Patcher.after("ComponentPatcher", TabBar.prototype, "render", (thisObject, args, returnValue) => {
             const children = returnValue.props.children;
-            if (!children || !children.length) return;
-            if (children[children.length - 2].type.displayName !== "Separator") return;
-            if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
-            const original = children[children.length - 1].type;
-            const newOne = function() {
-                const returnVal = original(...arguments);
-                returnVal.props.children.push(DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", rel: "author", title: "BandagedBD", target: "_blank"},
-                    DiscordModules.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
-                ));
+            if (!children || !children.length || children.length < 3) return;
+            if (children[children.length - 3].type.displayName !== "Separator") return;
+            if (!children[children.length - 2].type.toString().includes("socialLinks")) return;
+            if (Anchor) {
+                const original = children[children.length - 2].type;
+                const newOne = function() {
+                    const returnVal = original(...arguments);
+                    returnVal.props.children.push(
+                        // DiscordModules.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD"},
+                            DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
+                                DiscordModules.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                            )
+                        // )
+                    );
+                    return returnVal;
+                };
+                children[children.length - 2].type = newOne;
+            }
+
+            const injector = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `Injector ${Config.version}`);
+            const versionHash = `(${Config.hash ? Config.hash.substring(0, 7) : Config.branch})`;
+            const additional = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BBD ${Config.bbdVersion} `, DiscordModules.React.createElement("span", {className: "versionHash-2gXjIB da-versionHash"}, versionHash));
+            
+
+            const originalVersions = children[children.length - 1].type;
+            children[children.length - 1].type = function() {
+                const returnVal = originalVersions(...arguments);
+                returnVal.props.children.splice(returnVal.props.children.length - 1, 0, injector);
+                returnVal.props.children.splice(1, 0, additional);
                 return returnVal;
             };
-            children[children.length - 1].type = newOne;
         });
     }
 

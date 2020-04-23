@@ -72,7 +72,7 @@ export default new class SettingsRenderer {
                 if (panel.clickListener) panel.onClick = (event) => panel.clickListener(thisObject, event, returnValue);
                 insert(panel);
             }
-            insert({section: "CUSTOM", element: Attribution});
+            // insert({section: "CUSTOM", element: Attribution});
         });
         this.forceUpdate();
     }
