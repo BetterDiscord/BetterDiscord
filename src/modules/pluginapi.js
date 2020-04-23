@@ -230,6 +230,10 @@ BdApi.isThemeEnabled = function(name) {
     return ThemeManager.isEnabled(theme.id);
 };
 
+BdApi.isSettingEnabled = function(name) {
+    return null;
+};
+
 // Gets data
 BdApi.getBDData = function(key) {
     return DataStore.getBDData(key);
@@ -280,5 +284,38 @@ BdApi.setBDData = function(key, data) {
 
 // BdApi.Plugins = makeAddonAPI(pluginCookie, bdplugins, pluginModule);
 // BdApi.Themes = makeAddonAPI(themeCookie, bdthemes, themeModule);
+
+BdApi.Plugins = BdApi.themes = new class AddonAPI {
+
+    get folder() {return "";}
+
+    isEnabled(name) {
+        return null;
+    }
+
+    enable(name) {
+        return null;
+    }
+
+    disable(name) {
+        return null;
+    }
+
+    toggle(name) {
+        return null;
+    }
+
+    reload(name) {
+        return null;
+    }
+
+    get(name) {
+        return null;
+    }
+
+    getAll() {
+        return [];
+    }
+};
 
 export default BdApi;
