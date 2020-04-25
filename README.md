@@ -9,6 +9,8 @@ BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](ht
 
 # Installation
 
+## Auto Installers
+
 ### Windows
 Grab the `exe` file from [here](https://github.com/rauenzi/BetterDiscordApp/releases/latest/download/BandagedBD_Windows.exe).
 
@@ -17,6 +19,26 @@ Grab the `zip` file from [here](https://github.com/rauenzi/BetterDiscordApp/rele
 
 ### Linux
 See this [gist](https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77cf31172).
+
+## Manual Installation
+
+### Windows
+1. Download and extract this: https://github.com/rauenzi/BetterDiscordApp/archive/injector.zip
+2. Rename `BetterDiscordApp-injector` to `app`.
+3. Go to `%localappdata%\Discord\`, and locate the directory with the largest version number (e.g. `app-0.0.306`).
+4. Within `app-0.0.306` navigate to `resources`.
+5. If an `app` folder already exists inside `resources`, delete it.
+6. Move the `app` folder (the one you downloaded and renamed) inside of `resources`.
+7. Fully quit Discord and restart it.
+
+### macOS/OS X
+1. Download and extract this: https://github.com/rauenzi/BetterDiscordApp/archive/injector.zip
+2. Rename `BetterDiscordApp-injector` to `app`.
+3. Go to `/Applications/`, right click `Discord.app` and select `Show Package Contents`.
+4. Within `Discord.app` navigate to `Contents` -> `Resources`.
+5. If an `app` folder already exists inside `Resources`, delete it.
+6. Move the `app` folder (the one you downloaded and renamed) inside of `Resources`.
+7. Fully quit Discord and restart it.
 
 # FAQ
 
@@ -55,6 +77,10 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
     <img src="https://cdn.discordapp.com/avatars/629231564261425163/a_36cc7d2940b4ffb8a660b1076ab2087f.webp" width="100px;" alt="Justxn"/><br />
     <strong>Justxn</strong><br />
 </td>
+<td align="center">
+    <img src="https://cdn.discordapp.com/attachments/682750073448169513/682763113296429087/definitely_not_the_dick_police.png" width="100px;" alt="monkey"/><br />
+    <a href="https://heartunderbla.de" target="_blank" rel="noreferrer noopener"><strong>monkey</strong></a><br />
+</td>
 </tr>
 </table>
 
@@ -72,6 +98,14 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
     <td align="center">
 		<img src="https://avatars0.githubusercontent.com/u/24623601" width="50px;" alt="NFLD99"/><br />
 		<a href="https://github.com/NFLD99" target="_blank" rel="noreferrer noopener"><strong>NFLD99</strong></a>
+	</td>
+    <td align="center">
+		<img src="https://avatars3.githubusercontent.com/u/20338746?s=460&u=d9ebab4f6f0f5221390bca1eaf8f191acd275afe&v=4" width="50px;" alt="Gibbu"/><br />
+		<a href="https://github.com/Gibbu" target="_blank" rel="noreferrer noopener"><strong>Gibbu</strong></a>
+	</td>
+    <td align="center">
+		<img src="https://i.postimg.cc/5NVxqMnb/Cute-Squid-Circle.png" width="50px;" alt="Tenuit"/><br />
+		<strong>Tenuit</strong>
 	</td>
 </tr>
 </table>
