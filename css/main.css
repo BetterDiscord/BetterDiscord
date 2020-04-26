@@ -2113,3 +2113,16 @@ body .ace_closeButton:active {
 .bd-search-wrapper > svg {
   margin-right: 2px;
 }
+
+
+.bd-chat-badge {
+  vertical-align: bottom;
+  line-height: 1.375rem;
+  display: inline-block;
+  height: 1.25rem;
+}
+
+.bd-member-badge {
+  height: 15px;
+  margin-left: 4px;
+}

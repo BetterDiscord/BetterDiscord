@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 
 const BrowserWindow = electron.remote.BrowserWindow;
-const currentWindow = BrowserWindow.getAllWindows()[0];
+const webContents = electron.remote.getCurrentWebContents();
 
 
 export default new class reactDevTools {
@@ -38,10 +38,11 @@ export default new class reactDevTools {
     }
 
     start() {
-        currentWindow.webContents.on("devtools-opened", this.listener);
+        setImmediate(() => webContents.on("devtools-opened", this.listener));
+        if (webContents.isDevToolsOpened()) this.listener();
     }
 
     stop() {
-        currentWindow.webContents.removeListener("devtools-opened", this.listener);
+        webContents.removeListener("devtools-opened", this.listener);
     }
 };  

@@ -120,8 +120,8 @@ export default class EmulatedTooltip {
     /** Shows the tooltip. Automatically called on mouseenter. Will attempt to flip if position was wrong. */
 	show() {
         this.tooltipElement.className = `${TooltipClasses.tooltip} ${getClass(this.style)}`;
-        this.labelElement.textContent = this.label;
-		this.element.appendTo(this.container);
+		this.labelElement.textContent = this.label;
+		this.container.append(this.element);
 
 		if (this.side == "top") {
 			if (this.canShowAbove || (!this.canShowAbove && this.preventFlip)) this.showAbove();

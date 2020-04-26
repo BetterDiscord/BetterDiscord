@@ -115,6 +115,8 @@ Core.prototype.init = async function() {
     Utils.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
     Utils.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
     Utils.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
+    Utils.suppressErrors(this.patchMessageHeader.bind(this), "BD Badge Chat Patch")();
+    Utils.suppressErrors(this.patchMemberList.bind(this), "BD Badge Member List Patch")();
 };
 
 Core.prototype.checkForGuilds = function() {
@@ -294,6 +296,48 @@ Core.prototype.patchGuildSeparator = function() {
     };
     this.guildSeparatorPatch = Utils.monkeyPatch(Guilds.prototype, "render", {after: (data) => {
         data.returnValue.props.children[1].props.children[3].type = GuildSeparator;
+    }});
+};
+
+Core.prototype.patchMessageHeader = function() {
+    if (this.messageHeaderPatch) return;
+    const MessageHeader = WebpackModules.findByProps("MessageTimestamp");
+    const Anchor = WebpackModules.find(m => m.displayName == "Anchor");
+    if (!Anchor || !MessageHeader || !MessageHeader.default) return;
+    this.messageHeaderPatch = Utils.monkeyPatch(MessageHeader, "default", {after: (data) => {
+        const author = Utils.getNestedProp(data.methodArguments[0], "message.author");
+        // const header = Utils.getNestedProp(data.returnValue, "props.children.1.props");
+        const children = Utils.getNestedProp(data.returnValue, "props.children.1.props.children.1.props.children");
+        if (!children || !author || !author.id || author.id !== "249746236008169473") return;
+        // if (header && header.className) header.className += " "
+        if (!Array.isArray(children)) return;
+        children.push(
+            BDV2.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD Developer"},
+                BDV2.React.createElement(Anchor, {className: "bd-chat-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
+                    BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                )
+            )
+        );
+    }});
+};
+
+Core.prototype.patchMemberList = function() {
+    if (this.memberListPatch) return;
+    const MemberListItem = WebpackModules.findByDisplayName("MemberListItem");
+    const Anchor = WebpackModules.find(m => m.displayName == "Anchor");
+    if (!Anchor || !MemberListItem || !MemberListItem.prototype || !MemberListItem.prototype.renderDecorators) return;
+    this.memberListPatch = Utils.monkeyPatch(MemberListItem.prototype, "renderDecorators", {after: (data) => {
+        const user = Utils.getNestedProp(data.thisObject, "props.user");
+        const children = Utils.getNestedProp(data.returnValue, "props.children");
+        if (!children || !user || !user.id || user.id !== "249746236008169473") return;
+        if (!Array.isArray(children)) return;
+        children.push(
+            BDV2.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD Developer"},
+                BDV2.React.createElement(Anchor, {className: "bd-member-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
+                    BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                )
+            )
+        );
     }});
 };
 

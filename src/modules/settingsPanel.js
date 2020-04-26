@@ -182,7 +182,7 @@ export default new class V2_SettingsPanel {
     }
 
     async initializeSettings() {
-        settingsCookie["bda-gs-4"] = false; // Disable voice mode for people temporarily because people suck and are terrible.
+        if (settingsCookie.reactDevTools) reactDevTools.start();
         if (settingsCookie["bda-gs-2"]) DOM.addClass(document.body, "bd-minimal");
         if (settingsCookie["bda-gs-3"]) DOM.addClass(document.body, "bd-minimal-chan");
         if (settingsCookie["bda-gs-1"]) publicServersModule.addButton();
@@ -199,7 +199,6 @@ export default new class V2_SettingsPanel {
 
         if (settingsCookie["bda-gs-8"]) dMode.startDebugListener();
         if (settingsCookie["fork-dm-1"]) dMode.startCopySelector();
-        if (settingsCookie.reactDevTools) reactDevTools.start();
 
         this.saveSettings();
     }
