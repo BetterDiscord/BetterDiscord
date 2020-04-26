@@ -314,7 +314,7 @@ Core.prototype.patchMessageHeader = function() {
         children.push(
             BDV2.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD Developer"},
                 BDV2.React.createElement(Anchor, {className: "bd-chat-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
-                    BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                    BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
                 )
             )
         );
@@ -334,7 +334,7 @@ Core.prototype.patchMemberList = function() {
         children.push(
             BDV2.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD Developer"},
                 BDV2.React.createElement(Anchor, {className: "bd-member-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
-                    BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                    BDV2.React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
                 )
             )
         );
