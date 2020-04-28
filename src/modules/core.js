@@ -199,6 +199,10 @@ Core.prototype.showChangelogModal = function(options = {}) {
     return Utils.showChangelogModal(options);
 };
 
+Core.prototype.alert = function(title, content) {
+    return Utils.alert(title, content);
+};
+
 Core.prototype.patchSocial = function() {
     if (this.socialPatch) return;
     const TabBar = WebpackModules.find(m => m.displayName == "TabBar");

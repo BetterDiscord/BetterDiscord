@@ -78,16 +78,7 @@ BdApi.getCore = function () {
  * @param {string} content - a string of text to display in the modal
  */
 BdApi.alert = function (title, content) {
-    const ModalStack = BdApi.findModuleByProps("push", "update", "pop", "popWithKey");
-    const AlertModal = BdApi.findModuleByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");
-    if (!ModalStack || !AlertModal) return mainCore.alert(title, content);
-
-    ModalStack.push(function(props) {
-        return BdApi.React.createElement(AlertModal, Object.assign({
-            title: title,
-            body: content,
-        }, props));
-    });
+    Utils.showConfirmationModal(title, content, {cancelText: null});
 };
 
 /**
