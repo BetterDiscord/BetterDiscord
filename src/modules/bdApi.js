@@ -78,7 +78,7 @@ BdApi.getCore = function () {
  * @param {string} content - a string of text to display in the modal
  */
 BdApi.alert = function (title, content) {
-    Utils.showConfirmationModal(title, content, {cancelText: null});
+    return Utils.showConfirmationModal(title, content, {cancelText: null});
 };
 
 /**
@@ -91,9 +91,11 @@ BdApi.alert = function (title, content) {
  * @param {string} [options.cancelText=Cancel] - text for the cancel button
  * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
  * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
+ * @param {string} [options.key] - key used to identify the modal. If not provided, one is generated and returned
+ * @returns {string} - the key used for this modal
  */
 BdApi.showConfirmationModal = function (title, content, options = {}) {
-    Utils.showConfirmationModal(title, content, options);
+    return Utils.showConfirmationModal(title, content, options);
 };
 
 //Show toast alert

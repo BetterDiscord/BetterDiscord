@@ -360,7 +360,7 @@ export default class Utils {
             return ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter);
         };
 
-        ModalStack.push(function(props) {
+        return ModalStack.push(function(props) {
             return ce(Changelog, Object.assign({
                 className: ChangelogClasses.container,
                 selectable: true,
@@ -383,6 +383,8 @@ export default class Utils {
      * @param {string} [options.cancelText=Cancel] - text for the cancel button
      * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
      * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
+     * @param {string} [options.key] - key used to identify the modal. If not provided, one is generated and returned
+     * @returns {string} - the key used for this modal
      */
     static showConfirmationModal(title, content, options = {}) {
         const ModalStack = WebpackModules.findByProps("push", "update", "pop", "popWithKey");
@@ -391,21 +393,19 @@ export default class Utils {
         if (!ModalStack || !ConfirmationModal || !Markdown) return Utils.alert(title, content);
 
         const emptyFunction = () => {};
-        const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = "Okay", cancelText = "Cancel", danger = false} = options;
+        const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = "Okay", cancelText = "Cancel", danger = false, key = undefined} = options;
 
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? BDV2.React.createElement(Markdown, null, c) : c);
-        ModalStack.push(function(props) {
-            return BDV2.React.createElement(ConfirmationModal, Object.assign({
-                header: title,
-                children: content,
-                red: danger,
-                confirmText: confirmText,
-                cancelText: cancelText,
-                onConfirm: onConfirm,
-                onCancel: onCancel
-            }, props));
-        });
+        return ModalStack.push(ConfirmationModal, {
+            header: title,
+            children: content,
+            red: danger,
+            confirmText: confirmText,
+            cancelText: cancelText,
+            onConfirm: onConfirm,
+            onCancel: onCancel
+        }, key);
     }
 }
 
