@@ -146,11 +146,16 @@ const BetterDiscord = class BetterDiscord {
         if (this._settings) return this._settings[key];
         const settingsFile = path.resolve(config.dataPath, "bdstorage.json");
         if (!fs.existsSync(settingsFile) || !fs.existsSync(buildInfoFile)) return this._settings = {};
-        const buildInfo = require(buildInfoFile);
-        const settings = require(settingsFile);
-        const channelSettings = settings.settings && settings.settings[buildInfo.releaseChannel] && settings.settings[buildInfo.releaseChannel].settings;
-        this._settings = channelSettings || {};
-        return this._settings[key];
+        try {
+            const buildInfo = require(buildInfoFile);
+            const settings = require(settingsFile);
+            const channelSettings = settings.settings && settings.settings[buildInfo.releaseChannel] && settings.settings[buildInfo.releaseChannel].settings;
+            this._settings = channelSettings || {};
+            return this._settings[key];
+        }
+        catch {
+            return this._settings = {};
+        }
     }
 
 };
