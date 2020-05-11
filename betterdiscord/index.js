@@ -145,7 +145,10 @@ const BetterDiscord = class BetterDiscord {
     static getSetting(key) {
         if (this._settings) return this._settings[key];
         const settingsFile = path.resolve(config.dataPath, "bdstorage.json");
-        if (!fs.existsSync(settingsFile) || !fs.existsSync(buildInfoFile)) return this._settings = {};
+        if (!fs.existsSync(settingsFile) || !fs.existsSync(buildInfoFile)) {
+            this._settings = {};
+            return this._settings[key];
+        }
         try {
             const buildInfo = require(buildInfoFile);
             const settings = require(settingsFile);
@@ -154,7 +157,8 @@ const BetterDiscord = class BetterDiscord {
             return this._settings[key];
         }
         catch {
-            return this._settings = {};
+            this._settings = {};
+            return this._settings[key];
         }
     }
 
