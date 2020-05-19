@@ -12,7 +12,19 @@
 
 import Utils from "../modules/utils";
 import WebpackModules from "../modules/webpackModules";
+//<div class="layer-v9HyYc disabledPointerEvents-1ptgTB" style="position: absolute; left: 237px; bottom: 51px;">
+//	<div class="tooltip-2QfLtc tooltipTop-XDDSxx tooltipBlack-PPG47z tooltipDisablePointerEvents-3eaBGN" style="opacity: 1; transform: none;">
+//		<div class="tooltipPointer-3ZfirK"></div>
+//		<div class="tooltipContent-bqVLWK">User Settings</div>
+//	</div>
+//</div>
 
+//<div class="layer-v9HyYc" style="top: 860px; left: 632.5px;">
+//	<div class="tooltip-2QfLtc tooltipBlack-PPG47z tooltipTop-XDDSxx">
+//		<div class="tooltipPointer-3ZfirK"></div>
+//		Changelog
+//	</div>
+//</div>
 const TooltipClasses = WebpackModules.findByProps("tooltip", "tooltipBlack");
 const TooltipLayers = WebpackModules.findByProps("layer", "layerContainer");
 
@@ -68,7 +80,8 @@ export default class EmulatedTooltip {
 		this.tooltipElement = document.createElement("div");
 		this.tooltipElement.className = `${TooltipClasses.tooltip} ${getClass(this.style)}`;
 
-		this.labelElement = document.createTextNode("TEST");
+		this.labelElement = document.createElement("div");
+		this.labelElement.className = TooltipClasses.tooltipContent;
 		const pointerElement = document.createElement("div");
 		pointerElement.className = TooltipClasses.tooltipPointer;
 
