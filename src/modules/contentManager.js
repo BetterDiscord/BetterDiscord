@@ -144,6 +144,7 @@ export default new class ContentManager {
                     content = "";
                 }
                 else {
+                    // Utils.warn("Module Not Exported", `${meta.name}, please start setting module.exports`);
                     content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
                 }
             }
