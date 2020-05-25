@@ -306,6 +306,13 @@ export default new class V2_SettingsPanel {
         
             render() {return this.props.children;}
         }
+        const originalRender = ContentList.prototype.render;
+        Object.defineProperty(ContentList.prototype, "render", {
+            enumerable: false,
+            configurable: false,
+            set: function() {console.warn("Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+            get: () => originalRender
+        });
         const list = type === "plugins" ? Object.values(bdplugins) : Object.values(bdthemes);
         return BDV2.reactDom.render(BDV2.react.createElement(ContentList, {type, onChange: this.sideBarOnClick}, BDV2.react.createElement(CardList, {type, list})), this.root);
     }

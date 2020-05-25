@@ -15,3 +15,11 @@ export default class BDErrorBoundary extends BDV2.reactComponent {
       return this.props.children; 
     }
 }
+
+const originalRender = BDErrorBoundary.prototype.render;
+Object.defineProperty(BDErrorBoundary.prototype, "render", {
+    enumerable: false,
+    configurable: false,
+    set: function() {console.warn("Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+    get: () => originalRender
+});

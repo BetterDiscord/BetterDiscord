@@ -176,3 +176,11 @@ export default class CardList extends BDV2.reactComponent {
             </Scroller>;
     }
 }
+
+const originalRender = CardList.prototype.render;
+Object.defineProperty(CardList.prototype, "render", {
+    enumerable: false,
+    configurable: false,
+    set: function() {console.warn("Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+    get: () => originalRender
+});
