@@ -229,6 +229,7 @@ Core.prototype.patchSocial = function() {
             children[children.length - 2].type = newOne;
         }
 
+        const blm = BDV2.React.createElement(Anchor, {href: "https://blacklivesmatters.carrd.co/", target: "_blank"}, BDV2.react.createElement("div", {className: "size12-3cLvbJ", style: {textTransform: "uppercase"}}, `#BlackLivesMatter`));
         const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `Injector ${bdConfig.version}`);
         const versionHash = `(${bdConfig.hash ? bdConfig.hash.substring(0, 7) : bdConfig.branch})`;
         const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BBD ${bbdVersion} `, BDV2.react.createElement("span", {className: "versionHash-2gXjIB da-versionHash"}, versionHash));
@@ -239,6 +240,7 @@ Core.prototype.patchSocial = function() {
             const returnVal = originalVersions(...arguments);
             returnVal.props.children.splice(returnVal.props.children.length - 1, 0, injector);
             returnVal.props.children.splice(1, 0, additional);
+            returnVal.props.children.unshift(blm);
             return returnVal;
         };
     }});
