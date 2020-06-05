@@ -2,11 +2,13 @@ const path = require("path");
 const electron = require("electron");
 const Module = require("module");
 const BetterDiscord = require("./betterdiscord");
+electron.app.commandLine.appendSwitch("no-force-async-hooks-checks");
 
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
         options.webPreferences.nodeIntegration = true;
+		options.webPreferences.enableRemoteModule = true;
         if (BetterDiscord.getSetting("fork-wp-1") || BetterDiscord.getSetting("transparency")) {
             options.transparent = true;
             options.backgroundColor = "#00000000";
