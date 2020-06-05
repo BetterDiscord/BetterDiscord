@@ -159,28 +159,28 @@ export default class EmulatedTooltip {
 
     /** Force showing the tooltip above the node. */
 	showAbove() {
-		this.tooltipElement.addClass(getClass("top"));
+		this.tooltipElement.classList.add(getClass("top"));
 		this.element.style.setProperty("top", toPx(this.node.getBoundingClientRect().top - this.element.offsetHeight - 10));
 		this.centerHorizontally();
 	}
 
     /** Force showing the tooltip below the node. */
 	showBelow() {
-		this.tooltipElement.addClass(getClass("bottom"));
+		this.tooltipElement.classList.add(getClass("bottom"));
 		this.element.style.setProperty("top", toPx(this.node.getBoundingClientRect().top + this.node.offsetHeight + 10));
 		this.centerHorizontally();
 	}
 
     /** Force showing the tooltip to the left of the node. */
 	showLeft() {
-		this.tooltipElement.addClass(getClass("left"));
+		this.tooltipElement.classList.add(getClass("left"));
 		this.element.style.setProperty("left", toPx(this.node.getBoundingClientRect().left - this.element.offsetWidth - 10));
 		this.centerVertically();
 	}
 
     /** Force showing the tooltip to the right of the node. */
 	showRight() {
-		this.tooltipElement.addClass(getClass("right"));
+		this.tooltipElement.classList.add(getClass("right"));
 		this.element.style.setProperty("left", toPx(this.node.getBoundingClientRect().left + this.node.offsetWidth + 10));
 		this.centerVertically();
 	}
