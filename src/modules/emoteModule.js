@@ -54,6 +54,8 @@ EmoteModule.prototype.init = async function () {
         }
     };
 
+    if (bdConfig.local) return;
+
     await this.getBlacklist();
     await this.loadEmoteData(emoteInfo);
 

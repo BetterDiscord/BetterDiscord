@@ -58,7 +58,6 @@ There are two: [The main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the 
 # Supporters
 These people have all subscribed to the `True Supporter` tier on Patreon to support BandagedBD.
 
-
 <table>
 <tr>
 <td align="center">
@@ -82,8 +81,12 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
     <a href="https://heartunderbla.de" target="_blank" rel="noreferrer noopener"><strong>monkey</strong></a><br />
 </td>
 <td align="center">
-    <img src="https://avatars3.githubusercontent.com/u/20338746?s=460&u=d9ebab4f6f0f5221390bca1eaf8f191acd275afe&v=4" width="50px;" alt="Gibbu"/><br />
+    <img src="https://avatars3.githubusercontent.com/u/20338746?s=460&u=d9ebab4f6f0f5221390bca1eaf8f191acd275afe&v=4" width="100px;" alt="Gibbu"/><br />
     <a href="https://github.com/Gibbu" target="_blank" rel="noreferrer noopener"><strong>Gibbu</strong></a>
+</td>
+<td align="center">
+    <img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/25717114/c100599e58174499b44b4307c26f9312/1.jpeg" width="100px;" alt="Orekieh"/><br />
+    <strong>Orekieh</strong>
 </td>
 </tr>
 </table>

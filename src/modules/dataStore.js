@@ -4,7 +4,7 @@ import ContentManager from "./contentManager";
 
 const fs = require("fs");
 const path = require("path");
-const releaseChannel = DiscordNative.globals.releaseChannel;
+const releaseChannel = DiscordNative.globals ? DiscordNative.globals.releaseChannel : DiscordNative.app ? DiscordNative.app.getReleaseChannel() : "stable";
 
 export default new class DataStore {
     constructor() {
