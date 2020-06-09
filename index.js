@@ -49,6 +49,6 @@ if (process.platform == "win32" || process.platform == "darwin") {
     const basePath = path.join(__dirname, "..", "app.asar");
     const pkg = require(path.join(basePath, "package.json"));
     electron.app.setAppPath(basePath);
-    electron.app.setName(pkg.name);
+    electron.app.name = pkg.name;
     Module._load(path.join(basePath, pkg.main), null, true);
 }

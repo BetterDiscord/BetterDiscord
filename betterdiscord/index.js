@@ -115,8 +115,14 @@ const BetterDiscord = class BetterDiscord {
 			}
 			catch (err) {
 				const backup = Utils.formatString(data.backup, {minified: config.minified ? ".min" : ""});
+				Utils.error(err)
 				Utils.warn(`Could not load ${url}. Using backup ${backup}`);
-				await injector(backup);
+				try {
+					await injector(backup);
+				}
+				catch (err) {
+					return Utils.error(err);
+				}
 			}
         }
 

@@ -72,8 +72,8 @@ module.exports = class Utils {
         return this.runJS(`new Promise((resolve, reject) => {
             var link = document.createElement("link");
             link.rel = "stylesheet";
-            link.onload = resolve;
-            link.onerror = reject;
+            link.onload = () => resolve();
+            link.onerror = () => reject();
             link.href = "${url}";
             document.head.appendChild(link);
         });`);
@@ -83,8 +83,8 @@ module.exports = class Utils {
         return this.runJS(`new Promise((resolve, reject) => {
             var script = document.createElement("script");
             script.type = "text/javascript";
-            script.onload = resolve;
-            script.onerror = reject;
+            script.onload = () => resolve();
+            script.onerror = () => reject();
             script.src = "${url}";
             document.body.appendChild(script);
         });`);
