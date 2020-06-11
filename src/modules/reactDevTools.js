@@ -5,9 +5,9 @@ const electron = require("electron");
 const fs = require("fs");
 const path = require("path");
 
-const BrowserWindow = electron.remote.BrowserWindow;
+const addExtension = electron.remote.session.defaultSession.loadExtension || electron.remote.BrowserWindow.addDevToolsExtension;
+const remExtension = electron.remote.session.defaultSession.removeExtension || electron.remote.BrowserWindow.removeDevToolsExtension;
 const webContents = electron.remote.getCurrentWebContents();
-
 
 export default new class reactDevTools {
     constructor() {
@@ -30,8 +30,8 @@ export default new class reactDevTools {
 
     listener() {
         if (!this.isExtensionInstalled) return;
-        BrowserWindow.removeDevToolsExtension("React Developer Tools");
-        const didInstall = BrowserWindow.addDevToolsExtension(this.extensionPath);
+        remExtension("React Developer Tools");
+        const didInstall = addExtension(this.extensionPath);
 
         if (didInstall) Utils.log("React DevTools", "Successfully installed react devtools.");
         else Utils.err("React DevTools", "Couldn't find react devtools in chrome extensions!");
