@@ -1,5 +1,8 @@
 {
-	"extends": "eslint:recommended",
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "plugins": [
+        "react"
+    ],
 	"env": {
         "browser": true,
         "node": true,
@@ -7,7 +10,10 @@
     },
     "parserOptions": {
         "ecmaVersion": 8,
-        "sourceType": "module"
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
     },
     "rules": {
         "semi": 2,
@@ -24,7 +30,12 @@
         "quote-props": ["error", "consistent-as-needed", {"keywords": true}],
         "object-curly-spacing": ["error", "never", { "objectsInObjects": false }],
         "no-var": "error",
-        "prefer-const": "error"
+        "prefer-const": "error",
+        "react/jsx-uses-react": "error",
+        "react/jsx-uses-vars": "error",
+        "react/prop-types": "off",
+        "react/jsx-no-target-blank": "error",
+        "react/jsx-key": "off"
     },
     "globals": {
         "webpackJsonp": false,
@@ -32,16 +43,12 @@
         "Set": false,
         "WeakMap": false,
         "Promise": false,
-        "bdplugins": false,
-        "bdthemes": false,
-        "betterDiscordIPC": false,
-        "bdVersion": false,
-        "version": false,
-        "_bdhash": true,
         "ace": false,
         "Reflect": false,
+        "Array": false,
         "DiscordNative": false,
         "self": "off",
-        "name": "off"
+        "name": "off",
+        "__non_webpack_require__": false
     }
 }
