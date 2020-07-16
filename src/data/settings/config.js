@@ -53,8 +53,9 @@ export default [
         collapsible: true,
         shown: false,
         settings: [
-            {type: "switch", id: "developerMode", value: false},
-            {type: "switch", id: "copySelector", value: false, enableWith: "developerMode"}
+            {type: "switch", id: "debuggerHotkey", value: false},
+            {type: "switch", id: "copySelector", value: false},
+            {type: "switch", id: "reactDevTools", value: false}
         ]
     },
     {

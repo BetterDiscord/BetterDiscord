@@ -1,10 +1,10 @@
-import Builtin from "../structs/builtin";
+import Builtin from "../../structs/builtin";
 
 import {EmoteConfig} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings, Strings} from "modules";
-import BDEmote from "../ui/emote";
-import Toasts from "../ui/toasts";
-import FormattableString from "../structs/string";
+import BDEmote from "../../ui/emote";
+import Toasts from "../../ui/toasts";
+import FormattableString from "../../structs/string";
 const request = require("request");
 
 const EmoteURLs = {
@@ -53,7 +53,6 @@ export default new class EmoteModule extends Builtin {
 
     initialize() {
         super.initialize();
-        window.emoteModule = this;
         const storedFavorites = DataStore.getBDData("favoriteEmotes");
         this.favoriteEmotes = storedFavorites || {};
         this.addFavorite = this.addFavorite.bind(this);
@@ -67,15 +66,12 @@ export default new class EmoteModule extends Builtin {
         await this.getBlacklist();
         await this.loadEmoteData();
 
-        // while (!this.MessageContentComponent) await new Promise(resolve => setTimeout(resolve, 100));
-        // this.patchMessageContent();
         Events.on("emotes-favorite-added", this.addFavorite);
         Events.on("emotes-favorite-removed", this.removeFavorite);
         Events.on("setting-updated", this.onCategoryToggle);
     }
 
     disabled() {
-        console.log("DISABLED");
         Events.off("setting-updated", this.onCategoryToggle);
         Events.off("emotes-favorite-added", this.addFavorite);
         Events.off("emotes-favorite-removed", this.removeFavorite);

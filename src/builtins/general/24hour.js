@@ -1,4 +1,4 @@
-import Builtin from "../structs/builtin";
+import Builtin from "../../structs/builtin";
 import {DiscordModules} from "modules";
 
 export default new class TwentyFourHour extends Builtin {

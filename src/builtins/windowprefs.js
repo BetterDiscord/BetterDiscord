@@ -1,50 +1,52 @@
 import Builtin from "../structs/builtin";
-
-const fs = require("fs");
-const path = require("path");
+import Modals from "../ui/modals";
+import {DataStore, Strings} from "modules";
 
 export default new class WindowPrefs extends Builtin {
     get name() {return "WindowPrefs";}
     get category() {return "window";}
     get id() {return "transparency";}
 
-    get WindowConfigFile() {
-        if (this._windowConfigFile) return this._windowConfigFile;
-        const electron = require("electron").remote.app;
-        const base = electron.getAppPath();
-        const roamingBase = electron.getPath("userData");
-        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json");
-        const location = path.resolve(base, "..", "app", "config.json");
-        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
-        if (!realLocation) return this._windowConfigFile = null;
-        return this._windowConfigFile = realLocation;
+    initialize() {
+        super.initialize();
+        this.prefs = DataStore.getData("windowprefs") || {};
     }
 
     enabled() {
         this.setWindowPreference("transparent", true);
-        this.setWindowPreference("backgroundColor", null);
+        this.setWindowPreference("backgroundColor", "#00000000");
+        this.showModal(Strings.WindowPrefs.enabledInfo);
     }
 
     disabled() {
-        this.setWindowPreference("transparent", false);
-        this.setWindowPreference("backgroundColor", "#2f3136");
+        this.deleteWindowPreference("transparent");
+        this.deleteWindowPreference("backgroundColor");
+        this.showModal(Strings.WindowPrefs.disabledInfo);
     }
 
-    getAllWindowPreferences() {
-        if (!this.WindowConfigFile) return {};
-        return __non_webpack_require__(this.WindowConfigFile);
+    showModal(info) {
+        Modals.showConfirmationModal(Strings.Modals.additionalInfo, info, {
+            confirmText: Strings.Modals.restartNow,
+            cancelText: Strings.Modals.restartLater,
+            onConfirm: () => {
+                const app = require("electron").remote.app;
+                app.relaunch();
+                app.exit();
+            }
+        });
     }
 
     getWindowPreference(key) {
-        if (!this.WindowConfigFile) return undefined;
-        return this.getAllWindowPreferences()[key];
+        return this.prefs[key];
     }
 
     setWindowPreference(key, value) {
-        if (!this.WindowConfigFile) return;
-        const prefs = this.getAllWindowPreferences();
-        prefs[key] = value;
-        delete require.cache[this.WindowConfigFile];
-        fs.writeFileSync(this.WindowConfigFile, JSON.stringify(prefs, null, 4));
+        this.prefs[key] = value;
+        DataStore.setData("windowprefs", this.prefs);
+    }
+
+    deleteWindowPreference(key) {
+        delete this.prefs[key];
+        DataStore.setData("windowprefs", this.prefs);
     }
 };

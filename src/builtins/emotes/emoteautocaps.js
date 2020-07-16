@@ -1,4 +1,4 @@
-import Builtin from "../structs/builtin";
+import Builtin from "../../structs/builtin";
 
 import {Utilities} from "modules";
 

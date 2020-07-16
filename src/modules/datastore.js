@@ -2,7 +2,7 @@ import {Config} from "data";
 import Utilities from "./utilities";
 const fs = require("fs");
 const path = require("path");
-const releaseChannel = DiscordNative.globals.releaseChannel;
+const releaseChannel = DiscordNative.globals ? DiscordNative.globals.releaseChannel : DiscordNative.app ? DiscordNative.app.getReleaseChannel() : "stable";
 
 // Schema
 // =======================
@@ -34,6 +34,18 @@ export default new class DataStore {
         this.cacheData = Utilities.testJSON(fs.readFileSync(this.cacheFile).toString()) || {};
     }
 
+    get injectionPath() {
+        if (this._injectionPath) return this._injectionPath;
+        const electron = require("electron").remote.app;
+        const base = electron.getAppPath();
+        const roamingBase = electron.getPath("userData");
+        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector");
+        const location = path.resolve(base, "..", "app");
+        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
+        if (!realLocation) return this._injectionPath = null;
+        return this._injectionPath = realLocation;
+    }
+
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
@@ -44,7 +56,7 @@ export default new class DataStore {
 
 
     _getFile(key) {
-        if (key == "settings" || key == "plugins" || key == "themes") return path.resolve(this.dataFolder, `${key}.json`);
+        if (key == "settings" || key == "plugins" || key == "themes" || key == "window") return path.resolve(this.dataFolder, `${key}.json`);
         return path.resolve(this.dataFolder, `misc.json`);
     }
 

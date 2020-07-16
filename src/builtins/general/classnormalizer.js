@@ -1,4 +1,4 @@
-import Builtin from "../structs/builtin";
+import Builtin from "../../structs/builtin";
 import {WebpackModules} from "modules";
 
 const normalizedPrefix = "da";
@@ -115,8 +115,25 @@ export default new class ClassNormalizer extends Builtin {
     patchDOMMethods() {
         const contains = DOMTokenList.prototype.contains;
         DOMTokenList.prototype.contains = function(token) {
-            const tokens = token.split(" ");
-            return tokens.every(t => contains.call(this, t));
+            // const tokens = token.split(" ");
+            return Reflect.apply(contains, this, [token.split(" ")[0]]);
+            // return tokens.every(t => contains.call(this, t));
+        };
+
+        const add = DOMTokenList.prototype.add;
+        DOMTokenList.prototype.add = function(...tokens) {
+            for (let t = 0; t < tokens.length; t++) {
+                tokens[t] = tokens[t].split(" ")[0];
+            }
+            return Reflect.apply(add, this, tokens);
+        };
+
+        const remove = DOMTokenList.prototype.remove;
+        DOMTokenList.prototype.remove = function(...tokens) {
+            for (let t = 0; t < tokens.length; t++) {
+                tokens[t] = tokens[t].split(" ")[0];
+            }
+            return Reflect.apply(remove, this, tokens);
         };
     }
 

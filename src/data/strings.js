@@ -110,13 +110,17 @@ export default {
             },
             developer: {
                 name: "Developer Settings",
-                developerMode: {
-                    name: "Developer Mode",
+                debuggerHotkey: {
+                    name: "Debugger Hotkey",
                     note: "Allows activating debugger when pressing F8"
                 },
                 copySelector: {
                     name: "Copy Selector",
                     note: "Adds a \"Copy Selector\" option to context menus when developer mode is active"
+                },
+                reactDevTools: {
+                    name: "React Developer Tools",
+                    note: "Injects your local installation of React Developer Tools into Discord"
                 }
             },
             window: {
@@ -192,8 +196,9 @@ export default {
         addonSettings: "Settings",
         website: "Website",
         source: "Source",
-        server: "Support Server",
+        invite: "Support Server",
         donate: "Donate",
+        patreon: "Patreon",
         name: "Name",
         author: "Author",
         version: "Version",
@@ -244,12 +249,31 @@ export default {
         name: "Name",
         message: "Message",
         error: "Error",
-        addonErrors: "Addon Errors"
+        addonErrors: "Addon Errors",
+        restartRequired: "Restart Required",
+        restartNow: "Restart Now",
+        restartLater: "Restart Later",
+        additionalInfo: "Additional Info"
     },
     Sorting: {
         sortBy: "Sort By",
         order: "Order",
         ascending: "Ascending",
         descending: "Descending"
+    },
+    WindowPrefs: {
+        enabledInfo: "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
+        disabledInfo: "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
+    },
+    Startup: {
+        notSupported: "Not Supported",
+        versionMismatch: "BandagedBD Injector v{{injector}} is not supported by the latest remote (v{{remote}}).\n\nPlease download the latest version from [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        incompatibleApp: "BandagedBD does not work with {{app}}. Please uninstall one of them.",
+        updateNow: "Update Now",
+        maybeLater: "Maybe Later",
+        updateAvailable: "Update Available",
+        updateInfo: "There is an update available for BandagedBD's Injector ({{version}}).\n\nYou can either update and restart now, or later.",
+        updateFailed: "Could Not Update",
+        manualUpdate: "Unable to update automatically, please download the installer and reinstall normally.\n\n[Download Installer](https://github.com/rauenzi/BetterDiscordApp/releases/latest)"
     }
 };

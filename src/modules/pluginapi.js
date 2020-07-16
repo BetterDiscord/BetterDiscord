@@ -7,6 +7,8 @@ import Toasts from "../ui/toasts";
 import Modals from "../ui/modals";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
+import Settings from "./settingsmanager";
+import Logger from "./logger";
 
 const BdApi = {
     get React() { return DiscordModules.React; },
@@ -23,7 +25,9 @@ const BdApi = {
         const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
         if (!realLocation) return this._windowConfigFile = null;
         return this._windowConfigFile = realLocation;
-    }
+    },
+    get settings() {return Settings.collections;},
+    get emotes() {return {};}
 };
 
 BdApi.getAllWindowPreferences = function() {
@@ -215,23 +219,38 @@ BdApi.testJSON = function(data) {
 //Get another plugin
 //name = name of plugin
 BdApi.getPlugin = function (name) {
+    Logger.warn("BdApi", "getPlugin is deprecated. Please make use of the addon api (BdApi.Plugins)");
     return PluginManager.addonList.find(a => a.name == name);
 };
 
 BdApi.isPluginEnabled = function(name) {
+    Logger.warn("BdApi", "isPluginEnabled is deprecated. Please make use of the addon api (BdApi.Plugins)");
     const plugin = this.getPlugin(name);
     if (!plugin) return false;
     return PluginManager.isEnabled(plugin.id);
 };
 
 BdApi.isThemeEnabled = function(name) {
+    Logger.warn("BdApi", "isThemeEnabled is deprecated. Please make use of the addon api (BdApi.Themes)");
     const theme = ThemeManager.addonList.find(a => a.name == name);
     if (!theme) return false;
     return ThemeManager.isEnabled(theme.id);
 };
 
-BdApi.isSettingEnabled = function(name) {
-    return null;
+BdApi.isSettingEnabled = function(collection, category, id) {
+    return Settings.get(collection, category, id);
+};
+
+BdApi.enableSetting = function(collection, category, id) {
+    return Settings.set(collection, category, id, true);
+};
+
+BdApi.disableSetting = function(collection, category, id) {
+    return Settings.set(collection, category, id, false);
+};
+
+BdApi.toggleSetting = function(collection, category, id) {
+    return Settings.set(collection, category, id, !Settings.get(collection, category, id));
 };
 
 // Gets data
@@ -244,78 +263,18 @@ BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
 };
 
-// const makeAddonAPI = (cookie, list, manager) => new class AddonAPI {
-
-//     get folder() {return manager.folder;}
-
-//     isEnabled(name) {
-//         return !!cookie[name];
-//     }
-
-//     enable(name) {
-//         return manager.enable(name);
-//     }
-
-//     disable(name) {
-//         return manager.disable(name);
-//     }
-
-//     toggle(name) {
-//         if (cookie[name]) this.disable(name);
-//         else this.enable(name);
-//     }
-
-//     reload(name) {
-//         return manager.reload(name);
-//     }
-
-//     get(name) {
-//         if (list.hasOwnProperty(name)) {
-//             if (list[name].plugin) return list[name].plugin;
-//             return list[name];
-//         }
-//         return null;
-//     }
-
-//     getAll() {
-//         return Object.keys(list).map(k => this.get(k)).filter(a => a);
-//     }
-// };
-
-// BdApi.Plugins = makeAddonAPI(pluginCookie, bdplugins, pluginModule);
-// BdApi.Themes = makeAddonAPI(themeCookie, bdthemes, themeModule);
-
-BdApi.Plugins = BdApi.themes = new class AddonAPI {
-
-    get folder() {return "";}
-
-    isEnabled(name) {
-        return null;
-    }
-
-    enable(name) {
-        return null;
-    }
-
-    disable(name) {
-        return null;
-    }
-
-    toggle(name) {
-        return null;
-    }
-
-    reload(name) {
-        return null;
-    }
-
-    get(name) {
-        return null;
-    }
-
-    getAll() {
-        return [];
-    }
+const makeAddonAPI = (manager) => new class AddonAPI {
+    get folder() {return manager.folder;}
+    isEnabled(idOrFile) {return manager.isEnabled(idOrFile);}
+    enable(idOrAddon) {return manager.enableAddon(idOrAddon);}
+    disable(idOrAddon) {return manager.disableAddon(idOrAddon);}
+    toggle(idOrAddon) {return manager.toggleAddon(idOrAddon);}
+    reload(idOrFileOrAddon) {return manager.reloadAddon(idOrFileOrAddon);}
+    get(idOrFile) {return manager.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);}
+    getAll() {return manager.addonList;}
 };
+
+BdApi.Plugins = makeAddonAPI(PluginManager);
+BdApi.Themes = makeAddonAPI(ThemeManager);
 
 export default BdApi;

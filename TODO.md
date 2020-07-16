@@ -1,37 +1,36 @@
 # To-Do List
 
-This list only reflects the items that have needed to be done since June 2019, there was a lot of progress/change before this point.
+This list only reflects the items that have needed to be done since July 2020, there was a lot of progress/change before this point.
 
 Note: The items listed here are not in any sort of priority order.
 
-### In Progress
-- Redo emotemenu
-- Remove all jquery usage
+### To Do (Remote Side)
+- Use DOM in place of jQuery
+- Use fetch/require in place of $.ajax
+- Dependency loading (jquery, css, config file)
+- Stop depending on injector giving config
+- Fix floating window module
+- Dummyproof public servers
 
-### To Dummy/Crash Proof
-- PublicServers react
-- Floating window
+### To Do (Injector)
+- Update to new windowprefs location
+- Remove dependency management
+- Remove string script injection/communication with remote
 
-### To Complete
+### To Do (Meta)
+- Update README (info, patrons)
+- Add issue template
+- Add gh funding
+
+### Someday
 - Move old utilities to BdApi
 - Component patcher (also does additional classes, etc)
 - Plugin Class
 - New Plugin API
 - Require patch
 - Backwards compatibility module (with deprecation notices)
-    - Modify old monkeyPatch to really use Patcher
+- Modify old monkeyPatch to really use Patcher
 - Repo browser
 - Addon update system
-- PublicServer button patch
-- Redo devmode
 - Rewrite emote auto caps
-
-### Potential Ideas
-- Rearchitect to not use remote files
-- Modify CSP rather than entirely remove
-
-### Done
-- PublicServers React Rewrite
-- Rewrite plugin/theme cards
-- Addon list controls
-- Use an actual patcher and not monkeyPatch
+- Modify CSP rather than entirely remove or use privileged scheme

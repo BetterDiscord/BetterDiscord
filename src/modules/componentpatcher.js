@@ -5,6 +5,9 @@ import Utilities from "./utilities";
 import Patcher from "./patcher";
 import BDLogo from "../ui/icons/bdlogo";
 
+const React = DiscordModules.React;
+const Tooltip = WebpackModules.getByDisplayName("Tooltip");
+
 export default new class ComponentPatcher {
 
     initialize() {
@@ -12,29 +15,11 @@ export default new class ComponentPatcher {
         Utilities.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
         Utilities.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
         Utilities.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
+        Utilities.suppressErrors(this.patchMessageHeader.bind(this), "BD Message Header Patch")();
+        Utilities.suppressErrors(this.patchMemberList.bind(this), "BD Member List Patch")();
     }
 
     patchSocial() {
-        if (this.socialPatch) return;
-        // const TabBar = WebpackModules.getByDisplayName("TabBar");
-        // const Anchor = WebpackModules.getByDisplayName("Anchor");
-        // if (!TabBar || !Anchor) return;
-        // this.socialPatch = Patcher.after("ThemeHelper", TabBar.prototype, "render", (_, __, returnValue) => {
-        //     const children = returnValue.props.children;
-        //     if (!children || !children.length) return;
-        //     if (children[children.length - 2].type.displayName !== "Separator") return;
-        //     if (!children[children.length - 1].type.toString().includes("socialLinks")) return;
-        //     const original = children[children.length - 1].type;
-        //     const newOne = function() {
-        //         const returnVal = original(...arguments);
-        //         returnVal.props.children.push(DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", rel: "author", title: "BandagedBD", target: "_blank"},
-        //             DiscordModules.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
-        //         ));
-        //         return returnVal;
-        //     };
-        //     children[children.length - 1].type = newOne;
-        // });
-
         if (this.socialPatch) return;
         const TabBar = WebpackModules.getByDisplayName("TabBar");
         const Anchor = WebpackModules.getByDisplayName("Anchor");
@@ -49,11 +34,9 @@ export default new class ComponentPatcher {
                 const newOne = function() {
                     const returnVal = original(...arguments);
                     returnVal.props.children.push(
-                        // DiscordModules.React.createElement(TooltipWrap, {color: "black", side: "top", text: "BandagedBD"},
-                            DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"},
-                                DiscordModules.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
-                            )
-                        // )
+                        DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BandagedBD", target: "_blank"},
+                            DiscordModules.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
+                        )
                     );
                     return returnVal;
                 };
@@ -82,7 +65,7 @@ export default new class ComponentPatcher {
         const reactInstance = Utilities.getReactInstance(document.querySelector(`.${listItemClass} .${blobClass}`).parentElement);
         const GuildComponent = reactInstance.return.type;
         if (!GuildComponent) return;
-        this.guildListItemsPatch = Patcher.after("ThemeHelper", GuildComponent.prototype, "render", (thisObject, _, returnValue) => {
+        this.guildListItemsPatch = Patcher.after("ComponentPatcher", GuildComponent.prototype, "render", (thisObject, _, returnValue) => {
             if (!returnValue || !thisObject) return;
             const guildData = thisObject.props;
             returnValue.props.className += " bd-guild";
@@ -100,7 +83,7 @@ export default new class ComponentPatcher {
         if (this.guildPillPatch) return;
         const guildPill = WebpackModules.getModule(m => m.default && !m.default.displayName && m.default.toString && m.default.toString().includes("translate3d"));
         if (!guildPill) return;
-        this.guildPillPatch = Patcher.after("ThemeHelper", guildPill, "default", (_, args, returnValue) => {
+        this.guildPillPatch = Patcher.after("ComponentPatcher", guildPill, "default", (_, args, returnValue) => {
             const props = args[0];
             if (props.unread) returnValue.props.className += " bd-unread";
             if (props.selected) returnValue.props.className += " bd-selected";
@@ -119,10 +102,50 @@ export default new class ComponentPatcher {
             returnValue.props.className += " bd-guild-separator";
             return returnValue;
         };
-        this.guildSeparatorPatch = Patcher.after("ThemeHelper", Guilds.prototype, "render", (_, __, returnValue) => {
+        this.guildSeparatorPatch = Patcher.after("ComponentPatcher", Guilds.prototype, "render", (_, __, returnValue) => {
             const Separator = Utilities.findInReactTree(returnValue, m => m.type && !m.type.displayName && typeof(m.type) == "function" && Utilities.isEmpty(m.props));
             if (!Separator) return;
             Separator.type = GuildSeparator;
+        });
+    }
+
+    patchMessageHeader() {
+        if (this.messageHeaderPatch) return;
+        const MessageHeader = WebpackModules.getByProps("MessageTimestamp");
+        const Anchor = WebpackModules.find(m => m.displayName == "Anchor");
+        if (!Anchor || !MessageHeader || !MessageHeader.default) return;
+        this.messageHeaderPatch = Patcher.after("ComponentPatcher", MessageHeader, "default", (_, args, returnValue) => {
+            const author = Utilities.getNestedProp(args[0], "message.author");
+            const children = Utilities.getNestedProp(returnValue, "props.children.1.props.children.1.props.children");
+            if (!children || !author || !author.id || author.id !== "249746236008169473") return;
+            if (!Array.isArray(children)) return;
+            children.push(
+                React.createElement(Tooltip, {color: "black", position: "top", text: "BandagedBD Developer"},
+                    props => React.createElement(Anchor, Object.assign({className: "bd-chat-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"}, props),
+                        React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
+                    )
+                )
+            );
+        });
+    }
+
+    patchMemberList() {
+        if (this.memberListPatch) return;
+        const MemberListItem = WebpackModules.findByDisplayName("MemberListItem");
+        const Anchor = WebpackModules.find(m => m.displayName == "Anchor");
+        if (!Anchor || !MemberListItem || !MemberListItem.prototype || !MemberListItem.prototype.renderDecorators) return;
+        this.memberListPatch = Patcher.after("ComponentPatcher", MemberListItem.prototype, "renderDecorators", (thisObject, args, returnValue) => {
+            const user = Utilities.getNestedProp(thisObject, "props.user");
+            const children = Utilities.getNestedProp(returnValue, "props.children");
+            if (!children || !user || !user.id || user.id !== "249746236008169473") return;
+            if (!Array.isArray(children)) return;
+            children.push(
+                React.createElement(Tooltip, {color: "black", position: "top", text: "BandagedBD Developer"},
+                    props => React.createElement(Anchor, Object.assign({className: "bd-member-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"}, props),
+                        React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
+                    )
+                )
+            );
         });
     }
 

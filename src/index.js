@@ -1,4 +1,5 @@
 import {Config} from "data";
+import secure from "./secure";
 import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
 import PluginManager from "./modules/pluginmanager";
@@ -6,14 +7,15 @@ import ThemeManager from "./modules/thememanager";
 import Events from "./modules/emitter";
 import Settings from "./modules/settingsmanager";
 import DataStore from "./modules/datastore";
-import EmoteModule from "./builtins/emotes";
+import EmoteModule from "./builtins/emotes/emotes";
 import DomManager from "./modules/dommanager";
 import Utilities from "./modules/utilities";
 import ReactComponents from "./modules/reactcomponents";
 import Strings from "./modules/strings";
 
 // Perform some setup
-// proxyLocalStorage();
+secure();
+
 const loadingIcon = document.createElement("div");
 loadingIcon.className = "bd-loaderv2";
 loadingIcon.title = "BandagedBD is loading...";

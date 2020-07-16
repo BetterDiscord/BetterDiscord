@@ -3,7 +3,7 @@ import {React, WebpackModules, Patcher, ReactComponents, Utilities, Settings, Ev
 import AddonList from "./settings/addonlist";
 import SettingsGroup from "./settings/group";
 import SettingsTitle from "./settings/title";
-import Attribution from "./settings/attribution";
+import Header from "./settings/sidebarheader";
 
 export default new class SettingsRenderer {
 
@@ -43,11 +43,6 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        ReactComponents.get("FluxContainer(GuildSettings)", m => m.displayName == "FluxContainer(GuildSettings)").then(c => console.log("COMPONENT", c));
-        // const GuildSettings = await ReactComponents.get("FluxContainer(GuildSettings)", m => m.displayName == "FluxContainer(GuildSettings)");
-        // Patcher.after("SettingsManager", GuildSettings.prototype, "render", (thisObject) => {
-        //     thisObject._reactInternalFiber.return.return.return.return.return.return.memoizedProps.id = "guild-settings";
-        // });
         const UserSettings = await ReactComponents.get("UserSettings", m => m.prototype && m.prototype.generateSections);
         Patcher.after("SettingsManager", UserSettings.prototype, "render", (thisObject) => {
             thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
@@ -59,7 +54,8 @@ export default new class SettingsRenderer {
                 location++;
             };
             insert({section: "DIVIDER"});
-            insert({section: "HEADER", label: "BandagedBD"});
+            // Header
+            insert({section: "CUSTOM", element: Header});
             for (const collection of Settings.collections) {
                 if (collection.disabled) continue;
                 insert({

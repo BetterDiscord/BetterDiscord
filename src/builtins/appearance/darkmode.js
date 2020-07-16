@@ -1,4 +1,4 @@
-import Builtin from "../structs/builtin";
+import Builtin from "../../structs/builtin";
 
 export default new class DarkMode extends Builtin {
     get name() {return "DarkMode";}

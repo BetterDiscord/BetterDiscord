@@ -1,4 +1,4 @@
-import {React} from "modules";
+import {React, Logger} from "modules";
 import Title from "./title";
 import Divider from "./divider";
 import Switch from "./components/switch";
@@ -68,3 +68,11 @@ export default class Group extends React.Component {
                 </div>;
     }
 }
+
+const originalRender = Group.prototype.render;
+Object.defineProperty(Group.prototype, "render", {
+    enumerable: false,
+    configurable: false,
+    set: function() {Logger.warn("Group", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+    get: () => originalRender
+});

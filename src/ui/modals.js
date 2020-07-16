@@ -1,5 +1,6 @@
 import {Config} from "data";
-import {Logger, WebpackModules, Utilities, React, Settings, Strings} from "modules";
+import {Logger, WebpackModules, Utilities, React, Settings, Strings, DOM, DiscordModules} from "modules";
+import FormattableString from "../structs/string";
 
 export default class Modals {
 
@@ -9,15 +10,13 @@ export default class Modals {
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
     static get TextElement() {return WebpackModules.getByProps("Sizes", "Weights");}
     static get ConfirmationModal() {return WebpackModules.getModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");}
+    static get Markdown() {return WebpackModules.findByDisplayName("Markdown");}
 
     static default(title, content) {
-        const backdrop = WebpackModules.getByProps("backdrop") || {backdrop: "backdrop-1wrmKb"};
-        const baseModalClasses = WebpackModules.getModule(m => m.modal && m.inner && !m.sizeMedium) || {modal: "modal-36zFtW", inner: "inner-2VEzy9"};
-        const modalClasses = WebpackModules.getByProps("sizeMedium") || {modal: "backdrop-1wrmKb", sizeMedium: "sizeMedium-ctncE5", content: "content-2KoCOZ", header: "header-2nhbou", footer: "footer-30ewN8", close: "close-hhyjWJ", inner: "inner-2Z5QZX"};
         const modal = Utilities.parseHTML(`<div class="bd-modal-wrapper theme-dark">
-                <div class="bd-backdrop ${backdrop.backdrop}"></div>
-                <div class="bd-modal ${baseModalClasses.modal}">
-                    <div class="bd-modal-inner ${baseModalClasses.inner}">
+                <div class="bd-backdrop backdrop-1wrmKB"></div>
+                <div class="bd-modal modal-1UGdnR">
+                    <div class="bd-modal-inner inner-1JeGVc">
                         <div class="header header-1R_AjF">
                             <div class="title">${title}</div>
                         </div>
@@ -28,7 +27,7 @@ export default class Modals {
                                 </div>
                             </div>
                         </div>
-                        <div class="footer ${modalClasses.footer}">
+                        <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
                             <button type="button" class="bd-button">${Strings.Modals.okay}</button>
                         </div>
                     </div>
@@ -46,62 +45,54 @@ export default class Modals {
     }
 
     static alert(title, content) {
-        if (this.ModalStack && this.AlertModal) return this.default(title, content);
-        this.ModalStack.push(function(props) {
-            return React.createElement(this.AlertModal, Object.assign({
-                title: title,
-                body: content,
-            }, props));
-        });
+        this.showConfirmationModal(title, content);
     }
 
     /**
      * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
      * @param {string} title - title of the modal
-     * @param {(string|ReactElement|Array<string|ReactElement>)} children - a single or mixed array of react elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
+     * @param {(string|ReactElement|Array<string|ReactElement>)} children - a single or mixed array of react elements and strings. Everything is wrapped in Discord's `Markdown` component so strings will show and render properly.
      * @param {object} [options] - options to modify the modal
      * @param {boolean} [options.danger=false] - whether the main button should be red or not
      * @param {string} [options.confirmText=Okay] - text for the confirmation/submit button
      * @param {string} [options.cancelText=Cancel] - text for the cancel button
      * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
      * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
+     * @param {string} [options.key] - key used to identify the modal. If not provided, one is generated and returned
+     * @returns {string} - the key used for this modal
      */
     static showConfirmationModal(title, content, options = {}) {
-        const TextElement = this.TextElement;
+        const Markdown = this.Markdown;
         const ConfirmationModal = this.ConfirmationModal;
         const ModalStack = this.ModalStack;
-        if (!this.ModalStack || !this.ConfirmationModal || !this.TextElement) return this.alert(title, content);
-
-        const {onConfirm, onCancel, confirmText, cancelText, danger = false} = options;
-        if (typeof(content) == "string") content = TextElement.default({color: TextElement.Colors.PRIMARY, children: [content]});
-        else if (Array.isArray(content)) content = TextElement.default({color: TextElement.Colors.PRIMARY, children: content});
-        content = [content];
+        if (content instanceof FormattableString) content = content.toString();
+        if (!this.ModalStack || !this.ConfirmationModal || !this.Markdown) return this.default(title, content);
 
         const emptyFunction = () => {};
-        ModalStack.push(function(props) {
-            return React.createElement(ConfirmationModal, Object.assign({
-                header: title,
-                children: content,
-                red: danger,
-                confirmText: confirmText ? confirmText : Strings.Modals.okay,
-                cancelText: cancelText ? cancelText : Strings.Modals.cancel,
-                onConfirm: onConfirm ? onConfirm : emptyFunction,
-                onCancel: onCancel ? onCancel : emptyFunction
-            }, props));
-        });
+        const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
+        
+        if (!Array.isArray(content)) content = [content];
+        content = content.map(c => typeof(c) === "string" ? React.createElement(Markdown, null, c) : c);
+
+        return ModalStack.push(ConfirmationModal, {
+            header: title,
+            children: content,
+            red: danger,
+            confirmText: confirmText,
+            cancelText: cancelText,
+            onConfirm: onConfirm,
+            onCancel: onCancel
+        }, key);
     }
 
     static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
         if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
-        const backdrop = WebpackModules.getByProps("backdrop") || {backdrop: "backdrop-1wrmKb"};
-        const baseModalClasses = WebpackModules.getModule(m => m.modal && m.inner && !m.sizeMedium) || {modal: "modal-36zFtW", inner: "inner-2VEzy9"};
-        const modalClasses = WebpackModules.getByProps("sizeMedium") || {modal: "modal-3v8ziU", sizeMedium: "sizeMedium-ctncE5", content: "content-2KoCOZ", header: "header-2nhbou", footer: "footer-30ewN8", close: "close-hhyjWJ", inner: "inner-2Z5QZX"};
         const modal = $(`<div class="bd-modal-wrapper theme-dark">
-                        <div class="bd-backdrop ${backdrop.backdrop}"></div>
-                        <div class="bd-modal bd-content-modal ${baseModalClasses.modal}">
-                            <div class="bd-modal-inner ${baseModalClasses.inner}">
-                                <div class="header ${modalClasses.header}"><div class="title">${Strings.Modals.addonErrors}</div></div>
+                        <div class="bd-backdrop backdrop-1wrmKB"></div>
+                        <div class="bd-modal bd-content-modal modal-1UGdnR">
+                            <div class="bd-modal-inner inner-1JeGVc">
+                                <div class="header header-1R_AjF"><div class="title">${Strings.Modals.addonErrors}</div></div>
                                 <div class="bd-modal-body">
                                     <div class="tab-bar-container">
                                         <div class="tab-bar TOP">
@@ -114,13 +105,13 @@ export default class Modals {
                                         <div class="table-column column-message">${Strings.Modals.message}</div>
                                         <div class="table-column column-error">${Strings.Modals.error}</div>
                                     </div>
-                                    <div class="scroller-wrap fade ${modalClasses.content}">
+                                    <div class="scroller-wrap fade">
                                         <div class="scroller">
 
                                         </div>
                                     </div>
                                 </div>
-                                <div class="footer ${modalClasses.footer}">
+                                <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
                                     <button type="button" class="bd-button">${Strings.Modals.okay}</button>
                                 </div>
                             </div>
@@ -168,15 +159,15 @@ export default class Modals {
         else modal.find(".tab-bar-item")[1].click();
     }
 
-    showChangelogModal(options = {}) {
+    static showChangelogModal(options = {}) {
         const ModalStack = WebpackModules.getByProps("push", "update", "pop", "popWithKey");
         const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
-        const TextElement = WebpackModules.getByProps("Sizes", "Weights");
+        const TextElement = WebpackModules.findByDisplayName("Text");
         const FlexChild = WebpackModules.getByProps("Child");
         const Titles = WebpackModules.getByProps("Tags", "default");
         const Changelog = WebpackModules.getModule(m => m.defaultProps && m.defaultProps.selectable == false);
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
-        if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return;
+        if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
     
         const {image = "https://repository-images.githubusercontent.com/105473537/957b5480-7c26-11e9-8401-50fa820cbae5", description = "", changes = [], title = "BandagedBD", subtitle = `v${Config.bbdVersion}`, footer} = options;
         const ce = React.createElement;
@@ -193,7 +184,7 @@ export default class Modals {
         const renderHeader = function() {
             return ce(FlexChild.Child, {grow: 1, shrink: 1},
                 ce(Titles.default, {tag: Titles.Tags.H4}, title),
-                ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY, className: ChangelogClasses.date}, subtitle)
+                ce(TextElement, {size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD, className: ChangelogClasses.date}, subtitle)
             );
         };
     
@@ -204,23 +195,21 @@ export default class Modals {
                 click.preventDefault();
                 click.stopPropagation();
                 ModalStack.pop();
-                // TODO: BDV2.joinBD2();
+                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel("2HScm8j");
             };
             const supportLink = Anchor ? ce(Anchor, {onClick: joinSupportServer}, "Join our Discord Server.") : ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
-            const defaultFooter = ce(TextElement,{size: TextElement.Sizes.SMALL, color: TextElement.Colors.PRIMARY}, "Need support? ", supportLink);
+            const defaultFooter = ce(TextElement, {size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
             return ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter);
         };
     
-        ModalStack.push(function(props) {
-            return ce(Changelog, Object.assign({
-                className: ChangelogClasses.container,
-                selectable: true,
-                onScroll: _ => _,
-                onClose: _ => _,
-                renderHeader: renderHeader,
-                renderFooter: renderFooter,
-                children: changelogItems
-            }, props));
+        return ModalStack.push(Changelog, {
+            className: ChangelogClasses.container,
+            selectable: true,
+            onScroll: _ => _,
+            onClose: _ => _,
+            renderHeader: renderHeader,
+            renderFooter: renderFooter,
+            children: changelogItems
         });
     }
 }

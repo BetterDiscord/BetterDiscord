@@ -1,4 +1,4 @@
-import {React, Settings, Strings, Events} from "modules";
+import {React, Settings, Strings, Events, Logger} from "modules";
 
 import Modals from "../modals";
 import SettingsTitle from "./title";
@@ -6,6 +6,7 @@ import ReloadIcon from "../icons/reload";
 import AddonCard from "./addoncard";
 import Dropdown from "./components/dropdown";
 import Search from "./components/search";
+import ErrorBoundary from  "../errorboundary";
 
 export default class AddonList extends React.Component {
 
@@ -69,7 +70,11 @@ export default class AddonList extends React.Component {
     render() {
         const {title, folder, addonList, addonState, onChange, reload} = this.props;
         const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
-        const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: () => {require("electron").shell.openItem(folder);}} : null;
+        const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: () => {
+            const shell = require("electron").shell;
+            const open = shell.openItem || shell.openPath;
+            open(folder);
+        }} : null;
         const sortedAddons = addonList.sort((a, b) => {
             const first = a[this.state.sort];
             const second = b[this.state.sort];
@@ -105,7 +110,7 @@ export default class AddonList extends React.Component {
                 }
                 const hasSettings = addon.type && typeof(addon.plugin.getSettingsPanel) === "function";
                 const getSettings = hasSettings && addon.plugin.getSettingsPanel.bind(addon.plugin);
-                return <AddonCard editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />;
+                return <ErrorBoundary><AddonCard editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
             })}
             </div>
         ];
@@ -133,3 +138,11 @@ export default class AddonList extends React.Component {
         });
     }
 }
+
+const originalRender = AddonList.prototype.render;
+Object.defineProperty(AddonList.prototype, "render", {
+    enumerable: false,
+    configurable: false,
+    set: function() {Logger.warn("AddonList", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+    get: () => originalRender
+});

@@ -10,6 +10,7 @@ export {default as DataStore} from "./datastore";
 export {default as Events} from "./emitter";
 export {default as Settings} from "./settingsmanager";
 export {default as DOMManager} from "./dommanager";
+export {default as DOM} from "./domtools";
 export {default as Logger} from "./logger";
 export {default as Patcher} from "./patcher";
 export {default as ReactComponents} from "./reactcomponents";

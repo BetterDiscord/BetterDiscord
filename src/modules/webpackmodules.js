@@ -4,8 +4,6 @@
  * @version 0.0.2
  */
 
-// import DiscordModules from "./discordmodules";
-
 /**
  * Checks if a given module matches a set of parameters.
  * @callback module:WebpackModules.Filters~filter
@@ -99,6 +97,25 @@ export class Filters {
     }
 }
 
+const protect = theModule => {
+    if (theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort) return null;
+    if (!theModule.getToken && !theModule.getEmail && !theModule.showToken) return theModule;
+    const proxy = new Proxy(theModule, {
+        getOwnPropertyDescriptor: function(obj, prop) {
+            if (prop === "getToken" || prop === "getEmail" || prop === "showToken") return undefined;
+            return Object.getOwnPropertyDescriptor(obj, prop);
+        },
+        get: function(obj, func) {
+            if (func == "getToken") return () => "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
+            if (func == "getEmail") return () => "puppet11112@gmail.com";
+            if (func == "showToken") return () => true;
+            // if (func == "__proto__") return proxy;
+            return obj[func];
+        }
+    });
+    return proxy;
+};
+
 export default class WebpackModules {
 
     static find(filter, first = true) {return this.getModule(filter, first);}
@@ -125,9 +142,10 @@ export default class WebpackModules {
             if (exports.__esModule && exports.default && filter(exports.default)) foundModule = exports.default;
             if (filter(exports)) foundModule = exports;
             if (!foundModule) continue;
-            if (first) return foundModule;
-            rm.push(foundModule);
+            if (first) return protect(foundModule);
+            rm.push(protect(foundModule));
         }
+        
         return first || rm.length == 0 ? undefined : rm;
     }
 

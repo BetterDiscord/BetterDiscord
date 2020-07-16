@@ -18,7 +18,10 @@ module.exports = {
     fs: `require("fs")`,
     path: `require("path")`,
     request: `require("request")`,
-    events: `require("events")`
+    events: `require("events")`,
+    rimraf: `require("rimraf")`,
+    yauzl: `require("yauzl")`,
+    mkdirp: `require("mkdirp")`
   },
   resolve: {
     extensions: [".js", ".jsx"],
