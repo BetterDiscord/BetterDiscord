@@ -7,11 +7,6 @@ export default new class WindowPrefs extends Builtin {
     get category() {return "window";}
     get id() {return "transparency";}
 
-    initialize() {
-        super.initialize();
-        this.prefs = DataStore.getData("windowprefs") || {};
-    }
-
     enabled() {
         this.setWindowPreference("transparent", true);
         this.setWindowPreference("backgroundColor", "#00000000");
@@ -25,6 +20,7 @@ export default new class WindowPrefs extends Builtin {
     }
 
     showModal(info) {
+        if (!this.initialized) return;
         Modals.showConfirmationModal(Strings.Modals.additionalInfo, info, {
             confirmText: Strings.Modals.restartNow,
             cancelText: Strings.Modals.restartLater,
@@ -37,16 +33,19 @@ export default new class WindowPrefs extends Builtin {
     }
 
     getWindowPreference(key) {
-        return this.prefs[key];
+        const prefs = DataStore.getData("windowprefs") || {};
+        return prefs[key];
     }
 
     setWindowPreference(key, value) {
-        this.prefs[key] = value;
-        DataStore.setData("windowprefs", this.prefs);
+        const prefs = DataStore.getData("windowprefs") || {};
+        prefs[key] = value;
+        DataStore.setData("windowprefs", prefs);
     }
 
     deleteWindowPreference(key) {
-        delete this.prefs[key];
-        DataStore.setData("windowprefs", this.prefs);
+        const prefs = DataStore.getData("windowprefs") || {};
+        delete prefs[key];
+        DataStore.setData("windowprefs", prefs);
     }
 };

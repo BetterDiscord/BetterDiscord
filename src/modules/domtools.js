@@ -575,9 +575,9 @@ export default class DOMTools {
         const [type, namespace] = event.split(".");
         const hasDelegate = delegate && callback;
         if (!callback) callback = delegate;
-        const eventFunc = !hasDelegate ? callback : function(event) {
-            if (event.target.matches(delegate)) {
-                callback(event);
+        const eventFunc = !hasDelegate ? callback : function(ev) {
+            if (ev.target.matches(delegate)) {
+                callback(ev);
             }
         };
 
@@ -615,12 +615,12 @@ export default class DOMTools {
         const [type, namespace] = event.split(".");
         const hasDelegate = delegate && callback;
         if (!callback) callback = delegate;
-        const eventFunc = !hasDelegate ? function(event) {
-            callback(event);
+        const eventFunc = !hasDelegate ? function(ev) {
+            callback(ev);
             element.removeEventListener(type, eventFunc);
-        } : function(event) {
-            if (!event.target.matches(delegate)) return;
-            callback(event);
+        } : function(ev) {
+            if (!ev.target.matches(delegate)) return;
+            callback(ev);
             element.removeEventListener(type, eventFunc);
         };
 
@@ -689,9 +689,9 @@ export default class DOMTools {
 
         const hasDelegate = delegate && callback;
         if (!callback) callback = delegate;
-        const eventFunc = !hasDelegate ? callback : function(event) {
-            if (event.target.matches(delegate)) {
-                callback(event);
+        const eventFunc = !hasDelegate ? callback : function(ev) {
+            if (ev.target.matches(delegate)) {
+                callback(ev);
             }
         };
 

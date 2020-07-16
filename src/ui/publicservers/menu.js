@@ -32,6 +32,7 @@ export default class PublicServers extends React.Component {
         this.searchKeyDown = this.searchKeyDown.bind(this);
         this.connect = this.connect.bind(this);
         this.loadNextPage = this.loadNextPage.bind(this);
+        this.join = this.join.bind(this);
     }
 
     componentDidMount() {
@@ -106,7 +107,7 @@ export default class PublicServers extends React.Component {
         const connectButton = this.state.user ? null : {title: Strings.PublicServers.connect, onClick: this.connect};
         const pinned = this.state.category == "All" || !this.state.user ? this.bdServer : null;
         const servers = this.state.results.servers.map((server) => {
-            return React.createElement(ServerCard, {key: server.identifier, server: server, joined: Connection.hasJoined(server.identifier), defaultAvatar: Connection.getDefaultAvatar});
+            return React.createElement(ServerCard, {key: server.identifier, server: server, joined: Connection.hasJoined(server.identifier), join: this.join, defaultAvatar: Connection.getDefaultAvatar});
         });
         return [React.createElement(SettingsTitle, {text: this.title, button: connectButton}),
             pinned,

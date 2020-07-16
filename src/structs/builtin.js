@@ -17,6 +17,7 @@ export default class BuiltinModule {
             if (enabled) this.enable();
             else this.disable();
         });
+        this.initialized = true;
     }
 
     registerSetting(collection, category, id, onEnable, onDisable) {

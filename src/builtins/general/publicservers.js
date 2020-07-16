@@ -38,17 +38,5 @@ export default new class PublicServers extends Builtin {
         label.addEventListener("click", () => {this.openPublicServers();});
         btn.append(label);
         return btn;
-
-        // const btn = $("<div/>", {
-        //     "class": DiscordModules.GuildClasses.listItem,
-        //     "id": "bd-pub-li"
-        // }).append($("<div/>", {
-        //     "class": "wrapper-25eVIn " + DiscordModules.GuildClasses.circleButtonMask,
-        //     "text": Strings.PublicServers.button,
-        //     "id": "bd-pub-button",
-        //     "click": () => { this.openPublicServers(); }
-        // }));
-
-        // return btn;
     }
 };

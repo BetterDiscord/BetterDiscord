@@ -136,7 +136,7 @@ export default class PluginUpdater {
 	 * @returns {HTMLElement} check for update button
 	 */
 	static createUpdateButton() {
-		const updateButton = DOMTools.parseHTML(`<button class="bd-pfbtn bd-updatebtn" style="left: 220px;">Check for Updates</button>`);
+		const updateButton = DOMTools.createElement(`<button class="bd-pfbtn bd-updatebtn" style="left: 220px;">Check for Updates</button>`);
 		updateButton.onclick = function () {
 			window.PluginUpdates.checkAll();
 		};
@@ -181,7 +181,7 @@ export default class PluginUpdater {
 			if (oldRNM || newRNM || BBDLoader) return;
 			if (!window.PluginUpdates.downloaded) {
 				window.PluginUpdates.downloaded = [];
-				const button = DOMTools.parseHTML(`<button class="btn btn-reload ${DiscordClasses.Notices.btn} ${DiscordClasses.Notices.button}">Reload</button>`);
+				const button = DOMTools.createElement(`<button class="btn btn-reload ${DiscordClasses.Notices.btn} ${DiscordClasses.Notices.button}">Reload</button>`);
 				const tooltip = new EmulatedTooltip(button, window.PluginUpdates.downloaded.join(", "), {side: "top"});
 				button.addEventListener("click", (e) => {
 					e.preventDefault();
@@ -205,7 +205,7 @@ export default class PluginUpdater {
 	 */
 	static showUpdateNotice(pluginName, updateLink) {
 		if (!document.getElementById("pluginNotice"))  {
-			const noticeElement = DOMTools.parseHTML(`<div class="${DiscordClasses.Notices.notice} ${DiscordClasses.Notices.noticeInfo}" id="pluginNotice">
+			const noticeElement = DOMTools.createElement(`<div class="${DiscordClasses.Notices.notice} ${DiscordClasses.Notices.noticeInfo}" id="pluginNotice">
 														<div class="${DiscordClasses.Notices.dismiss}" id="pluginNoticeDismiss"></div>
 														<span class="notice-message">The following plugins have updates:</span>&nbsp;&nbsp;<strong id="outdatedPlugins"></strong>
 													</div>`);
@@ -218,7 +218,7 @@ export default class PluginUpdater {
 		}
 		const pluginNoticeID = pluginName + "-notice";
 		if (document.getElementById(pluginNoticeID)) return;
-		const pluginNoticeElement = DOMTools.parseHTML(`<span id="${pluginNoticeID}">${pluginName}</span>`);
+		const pluginNoticeElement = DOMTools.createElement(`<span id="${pluginNoticeID}">${pluginName}</span>`);
 		pluginNoticeElement.addEventListener("click", () => {
 			this.downloadPlugin(pluginName, updateLink);
 		});

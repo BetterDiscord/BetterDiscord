@@ -1,3 +1,4 @@
+import {Config} from "data";
 import Utilities from "./utilities";
 import WebpackModules from "./webpackmodules";
 import DiscordModules from "./discordmodules";
@@ -13,40 +14,24 @@ import Logger from "./logger";
 const BdApi = {
     get React() { return DiscordModules.React; },
     get ReactDOM() { return DiscordModules.ReactDOM; },
-    get WindowConfigFile() {
-        if (this._windowConfigFile) return this._windowConfigFile;
-        const electron = require("electron").remote.app;
-        const path = require("path");
-        const base = electron.getAppPath();
-        const roamingBase = electron.getPath("userData");
-        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector", "config.json");
-        const location = path.resolve(base, "..", "app", "config.json");
-        const fs = require("fs");
-        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
-        if (!realLocation) return this._windowConfigFile = null;
-        return this._windowConfigFile = realLocation;
-    },
+    get WindowConfigFile() {return "";},
     get settings() {return Settings.collections;},
-    get emotes() {return {};}
+    get emotes() {return {};},
+    get version() {return Config.version;}
 };
 
 BdApi.getAllWindowPreferences = function() {
-    if (!this.WindowConfigFile) return {};
-    return __non_webpack_require__(this.WindowConfigFile);
+    return DataStore.getData("windowprefs") || {};
 };
 
 BdApi.getWindowPreference = function(key) {
-    if (!this.WindowConfigFile) return undefined;
     return this.getAllWindowPreferences()[key];
 };
 
 BdApi.setWindowPreference = function(key, value) {
-    if (!this.WindowConfigFile) return;
-    const fs = require("fs");
     const prefs = this.getAllWindowPreferences();
     prefs[key] = value;
-    delete require.cache[this.WindowConfigFile];
-    fs.writeFileSync(this.WindowConfigFile, JSON.stringify(prefs, null, 4));
+    return DataStore.setData("windowprefs", prefs);
 };
 
 //Inject CSS to document head
@@ -276,5 +261,9 @@ const makeAddonAPI = (manager) => new class AddonAPI {
 
 BdApi.Plugins = makeAddonAPI(PluginManager);
 BdApi.Themes = makeAddonAPI(ThemeManager);
+
+Object.freeze(BdApi);
+Object.freeze(BdApi.Plugins);
+Object.freeze(BdApi.Themes);
 
 export default BdApi;

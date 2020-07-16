@@ -1,4 +1,4 @@
-import {React, Utilities, Patcher} from "modules";
+import {React, ReactDOM, DOM, WebpackModules} from "modules";
 
 import FloatingWindow from "./window";
 
@@ -9,9 +9,15 @@ class FloatingWindowContainer extends React.Component {
         this.state = {windows: []};
     }
 
+    get minY() {
+        const appContainer = DOM.query(`#app-mount > div[class*="app-"`);
+        if (appContainer) return appContainer.offsetTop;
+        return 0;
+    }
+
     render() {
         return this.state.windows.map(window =>
-            <FloatingWindow {...window} close={this.close.bind(this, window.id)}>
+            <FloatingWindow {...window} close={this.close.bind(this, window.id)} minY={this.minY}>
                     {window.children}
             </FloatingWindow>
         );
@@ -43,11 +49,9 @@ class FloatingWindowContainer extends React.Component {
 }
 
 const containerRef = React.createRef();
-// const container = <FloatingWindowContainer ref={containerRef} />;
-// const App = Utilities.findInReactTree(Utilities.getReactInstance(document.querySelector(".app-19_DXt")), m => m && m.type && m.type.displayName && m.type.displayName == "App");
-// Patcher.after("FloatingContainer", App.type.prototype, "render", (thisObject, args, returnValue) => {
-//     const group = Utilities.findInRenderTree(returnValue, m => m && m[6] && m[6].type && m[6].type.displayName == "LayerContainer", {walkable: ["children", "props"]});
-//     group.push(container);
-// });
-// App.stateNode.forceUpdate();
+const container = <FloatingWindowContainer ref={containerRef} />;
+const wrapped = React.createElement(WebpackModules.getByProps("AppReferencePositionLayer").AppLayerProvider().props.layerContext.Provider, {value: [document.querySelector("#app-mount > .layerContainer-yqaFcK")]}, container);
+const div = DOM.createElement(`<div id="floating-windows-layer">`);
+DOM.query("#app-mount").append(div);
+ReactDOM.render(wrapped, div);
 export default containerRef.current;

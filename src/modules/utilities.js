@@ -1,5 +1,6 @@
 import {Config} from "data";
 import Logger from "./logger";
+import DOM from "./domtools";
 
 export default class Utilities {
 
@@ -27,7 +28,7 @@ export default class Utilities {
     }
 
     static getTextArea() {
-        return $(".channelTextArea-1LDbYG textarea");
+        return DOM.query(".channelTextArea-1LDbYG textarea");
     }
 
     static insertText(textarea, text) {

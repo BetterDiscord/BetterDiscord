@@ -5,12 +5,9 @@ This list only reflects the items that have needed to be done since July 2020, t
 Note: The items listed here are not in any sort of priority order.
 
 ### To Do (Remote Side)
-- Use DOM in place of jQuery
-- Use fetch/require in place of $.ajax
 - Dependency loading (jquery, css, config file)
 - Stop depending on injector giving config
-- Fix floating window module
-- Dummyproof public servers
+- Fix emote render
 
 ### To Do (Injector)
 - Update to new windowprefs location

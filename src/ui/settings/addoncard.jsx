@@ -35,22 +35,6 @@ export default class AddonCard extends React.Component {
         if (!this.state.settingsOpen) return;
         if (this.settingsPanel instanceof Node) this.panelRef.current.appendChild(this.settingsPanel);
 
-        // if (!SettingsCookie["fork-ps-3"]) return;
-        // const isHidden = (container, element) => {
-        //     const cTop = container.scrollTop;
-        //     const cBottom = cTop + container.clientHeight;
-        //     const eTop = element.offsetTop;
-        //     const eBottom = eTop + element.clientHeight;
-        //     return  (eTop < cTop || eBottom > cBottom);
-        // };
-
-        // const panel = $(this.panelRef.current);
-        // const container = panel.parents(".scroller-2FKFPG");
-        // if (!isHidden(container[0], panel[0])) return;
-        // container.animate({
-        //     scrollTop: panel.offset().top - container.offset().top + container.scrollTop() - 30
-        // }, 300);
-
         setImmediate(() => {
             const isHidden = (container, element) => {
                 const cTop = container.scrollTop;

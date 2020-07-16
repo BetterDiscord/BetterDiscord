@@ -22,76 +22,64 @@ export default class PublicServersConnection {
     }
 
     static search({term = "", category = "", from = 0} = {}) {
+        const request = require("request");
         return new Promise(resolve => {
             const queries = [];
             if (category) queries.push(`category=${category.replace(/ /g, "%20")}`);
             if (term) queries.push(`term=${term.replace(/ /g, "%20")}`);
             if (from) queries.push(`from=${from}`);
             const query = `?${queries.join("&")}`;
-            $.ajax({
-                method: "GET",
-                url: `${this.endPoint}${query}`,
-                success: data => {
-                    const next = data.size + data.from;
-                    resolve({
-                        servers: data.results,
-                        size: data.size,
-                        from: data.from,
-                        total: data.total,
-                        next: next >= data.total ? null : next
-                    });
-                },
-                error: () => resolve(null)
-            });
-        });
-    }
-
-    static join(id, native = false) {
-        return new Promise(resolve => {
-            if (native) return InviteActions.acceptInvite(id), resolve(true);
-            $.ajax({
-                method: "GET",
-                url: `${this.joinEndPoint}/${id}`,
-                headers: {
-                    "Accept": "application/json;",
-                    "Content-Type": "application/json;" ,
-                    "x-discord-token": this._accessToken
-                },
-                crossDomain: true,
-                xhrFields: {
-                    withCredentials: true
-                },
-                success: () => resolve(true),
-                error: () => resolve(false)
-            });
-        });
-    }
-
-    static checkConnection() {
-        return new Promise(resolve => {
-            try {
-                $.ajax({
-                    method: "GET",
-                    url: this.connectEndPoint,
-                    headers: {
-                        "Accept": "application/json;",
-                        "Content-Type": "application/json;"
-                    },
-                    crossDomain: true,
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    success: data => {
-                        this._accessToken = data.access_token;
-                        resolve(data);
-                    },
-                    error: () => resolve(false)
+            request.get({url: `${this.endPoint}${query}${query ? "&schema=new" : "?schema=new"}`, json: true}, (err, resp, data) => {
+                if (err) return resolve(null);
+                const next = data.size + data.from;
+                resolve({
+                    servers: data.results,
+                    size: data.size,
+                    from: data.from,
+                    total: data.total,
+                    next: next >= data.total ? null : next
                 });
-            }
-            catch (error) {
-                resolve(false);
-            }
+            });
         });
+    }
+
+    static async join(id, native = false) {
+        if (native) return InviteActions.acceptInvite(id);
+        try {
+            await fetch(`${this.joinEndPoint}/${id}`,{
+                method: "GET",
+                credentials: "include",
+                mode: "cors",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            });
+            return true;
+        }
+        catch (e) {
+            return false;
+        }
+    }
+
+    static async checkConnection() {
+        try {
+            const response = await fetch(`https://auth.discordservers.com/info`,{
+                method: "GET",
+                credentials: "include",
+                mode: "cors",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                }
+            });
+            const data = await response.json();
+            this._accessToken = data.access_token;
+            return data;
+        }
+        catch (error) {
+            return false;
+        }
     }
 
     static connect() {

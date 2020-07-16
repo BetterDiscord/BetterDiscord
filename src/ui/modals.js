@@ -1,5 +1,5 @@
 import {Config} from "data";
-import {Logger, WebpackModules, Utilities, React, Settings, Strings, DOM, DiscordModules} from "modules";
+import {Logger, WebpackModules, React, Settings, Strings, DOM, DiscordModules} from "modules";
 import FormattableString from "../structs/string";
 
 export default class Modals {
@@ -13,7 +13,7 @@ export default class Modals {
     static get Markdown() {return WebpackModules.findByDisplayName("Markdown");}
 
     static default(title, content) {
-        const modal = Utilities.parseHTML(`<div class="bd-modal-wrapper theme-dark">
+        const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">
                     <div class="bd-modal-inner inner-1JeGVc">
@@ -34,11 +34,11 @@ export default class Modals {
                 </div>
             </div>`);
         modal.querySelector(".footer button").addEventListener("click", () => {
-            modal.addClass("closing");
+            modal.classList.add("closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
         modal.querySelector(".bd-backdrop").addEventListener("click", () => {
-            modal.addClass("closing");
+            modal.classList.add("closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
         document.querySelector("#app-mount").append(modal);
@@ -88,7 +88,7 @@ export default class Modals {
     static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
         if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
-        const modal = $(`<div class="bd-modal-wrapper theme-dark">
+        const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">
                         <div class="bd-backdrop backdrop-1wrmKB"></div>
                         <div class="bd-modal bd-content-modal modal-1UGdnR">
                             <div class="bd-modal-inner inner-1JeGVc">
@@ -119,19 +119,19 @@ export default class Modals {
                     </div>`);
 
         const generateTab = function(errors) {
-            const container = $(`<div class="errors">`);
+            const container = DOM.createElement(`<div class="errors">`);
             for (const err of errors) {
-                const error = $(`<div class="error">
+                const error = DOM.createElement(`<div class="error">
                                     <div class="table-column column-name">${err.name ? err.name : err.file}</div>
                                     <div class="table-column column-message">${err.message}</div>
                                     <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
                                 </div>`);
                 container.append(error);
                 if (err.error) {
-                    error.find("a").on("click", (e) => {
+                    error.querySelectorAll("a").forEach(el => el.addEventListener("click", (e) => {
                         e.preventDefault();
                         Logger.stacktrace("AddonError", `Error details for ${err.name ? err.name : err.file}.`, err.error);
-                    });
+                    }));
                 }
             }
             return container;
@@ -139,24 +139,27 @@ export default class Modals {
 
         const tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
 
-        modal.find(".tab-bar-item").on("click", (e) => {
+        modal.querySelectorAll(".tab-bar-item").forEach(el => el.addEventListener("click", (e) => {
             e.preventDefault();
-            modal.find(".tab-bar-item").removeClass("selected");
-            $(e.target).addClass("selected");
-            modal.find(".scroller").empty().append(tabs[$(e.target).index()]);
-        });
+            const selected = modal.querySelector(".tab-bar-item.selected");
+            if (selected) DOM.removeClass(selected, "selected");
+            DOM.addClass(e.target, "selected");
+            const scroller = modal.querySelector(".scroller");
+            scroller.innerHTML = "";
+            scroller.append(tabs[DOM.index(e.target)]);
+        }));
 
-        modal.find(".footer button").on("click", () => {
-            modal.addClass("closing");
+        modal.querySelector(".footer button").addEventListener("click", () => {
+            DOM.addClass(modal, "closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.find(".bd-backdrop").on("click", () => {
-            modal.addClass("closing");
+        modal.querySelector(".bd-backdrop").addEventListener("click", () => {
+            DOM.addClass(modal, "closing");
             setTimeout(() => { modal.remove(); }, 300);
         });
-        modal.appendTo("#app-mount");
-        if (pluginErrors.length) modal.find(".tab-bar-item")[0].click();
-        else modal.find(".tab-bar-item")[1].click();
+        DOM.query("#app-mount").append(modal);
+        if (pluginErrors.length) modal.querySelector(".tab-bar-item").click();
+        else modal.querySelectorAll(".tab-bar-item")[1].click();
     }
 
     static showChangelogModal(options = {}) {

@@ -5,6 +5,20 @@ import CloseButton from "../icons/close";
 import MaximizeIcon from "../icons/fullscreen";
 import Modals from "../modals";
 
+// const Draggable = WebpackModules.getByDisplayName("Draggable");
+// {
+//     "dragAnywhere": true,
+//     "className": "pictureInPictureWindow-1B5qSe",
+//     "maxX": 1969,
+//     "maxY": this.maxY,
+//     "onDragStart": "ƒ () {}",
+//     "onDrag": "ƒ () {}",
+//     "onDragEnd": "ƒ () {}",
+//     "children": "<div />",
+//     "initialX": 0,
+//     "initialY": 0
+//   }
+
 export default class FloatingWindow extends React.Component {
 
     constructor(props) {
@@ -14,6 +28,11 @@ export default class FloatingWindow extends React.Component {
 
         this.offX = 0;
         this.offY = 0;
+
+        this.maxX = this.props.maxX || Screen.width;
+        this.maxY = this.props.maxY || Screen.height;
+        this.minX = this.props.minX || 0;
+        this.minY = this.props.minY || 0;
 
         this.titlebar = React.createRef();
         this.window = React.createRef();
@@ -33,19 +52,23 @@ export default class FloatingWindow extends React.Component {
     }
 
     onResizeStart() {
-        this.currentWidth = this.window.current.style.width;
-        this.currentHeight = this.window.current.style.height;
+        this.currentWidth = this.window.current.offsetWidth;
+        this.currentHeight = this.window.current.offsetHeight;
     }
 
     onDragStop() {
         document.removeEventListener("mousemove", this.onDrag, true);
-        if (this.props.onResize) {
-            const width = this.window.current.style.width;
-            const height = this.window.current.style.height;
-            if (width != this.currentWidth || height != this.currentHeight) this.props.onResize();
-            this.currentWidth = width;
-            this.currentHeight = height;
+        const width = this.window.current.offsetWidth;
+        const height = this.window.current.offsetHeight;
+        if (width != this.currentWidth || height != this.currentHeight) {
+            if (this.props.onResize) this.props.onResize();
+            const left = parseInt(this.window.current.style.left);
+            const top = parseInt(this.window.current.style.top);
+            if (left + width >= this.maxX) this.window.current.style.width = (this.maxX - left) + "px";
+            if (top + height >= this.maxY) this.window.current.style.height = (this.maxY - top) + "px";
         }
+        this.currentWidth = width;
+        this.currentHeight = height;
     }
 
     onDragStart(e) {
@@ -57,8 +80,16 @@ export default class FloatingWindow extends React.Component {
 
     onDrag(e) {
         const div = this.window.current;
-        div.style.top = (e.clientY - this.offY) + "px";
-        div.style.left = (e.clientX - this.offX) + "px";
+        let newTop = (e.clientY - this.offY);
+        if (newTop <= this.minY) newTop = this.minY;
+        if (newTop + this.currentHeight >= this.maxY) newTop = this.maxY - this.currentHeight;
+
+        let newLeft = (e.clientX - this.offX);
+        if (newLeft <= this.minX) newLeft = this.minX;
+        if (newLeft + this.currentWidth >= this.maxX) newLeft = this.maxX - this.currentWidth;
+
+        div.style.top = newTop + "px";
+        div.style.left = newLeft + "px";
     }
 
     componentWillUnmount() {
@@ -104,9 +135,18 @@ export default class FloatingWindow extends React.Component {
     maximize() {
         this.window.current.style.width = "100%";
         this.window.current.style.height = "100%";
-        this.window.current.style.top = "20px";
-        this.window.current.style.left = "0px";
         if (this.props.onResize) this.props.onResize();
+
+        const width = this.window.current.offsetWidth;
+        const height = this.window.current.offsetHeight;
+        const left = parseInt(this.window.current.style.left);
+        const top = parseInt(this.window.current.style.top);
+
+        const right = left + width;
+        const bottom = top + height;
+
+        if (bottom > this.maxY) this.window.current.style.top = (this.maxY - height) + "px";
+        if (right > this.maxX) this.window.current.style.left = (this.maxX - width) + "px";
     }
 
     confirmClose() {

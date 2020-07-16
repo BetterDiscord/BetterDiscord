@@ -195,6 +195,7 @@
   -webkit-app-region: no-drag;
   position: fixed;
   z-index: 1001;
+  box-sizing: border-box;
 }
 
 .floating-window.modal-open {

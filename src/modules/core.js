@@ -43,8 +43,6 @@ Core.prototype.init = async function() {
         return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
     }
 
-    console.log(Config);
-
     const latestLocalVersion = Config.updater ? Config.updater.LatestVersion : Config.latestVersion;
     if (latestLocalVersion > Config.version) {
         Modals.showConfirmationModal(Strings.Startup.updateAvailable, Strings.Startup.updateInfo.format({version: latestLocalVersion}), {
@@ -65,8 +63,6 @@ Core.prototype.init = async function() {
             }
         });
     }
-
-    
 
 
     Logger.log("Startup", "Initializing Settings");
@@ -93,7 +89,7 @@ Core.prototype.init = async function() {
 
     const previousVersion = DataStore.getBDData("version");
     if (Config.bbdVersion > previousVersion) {
-        this.showChangelogModal(Changelog);
+        Modals.showChangelogModal(Changelog);
         DataStore.setBDData("version", Config.bbdVersion);
     }
 };

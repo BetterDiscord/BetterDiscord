@@ -1,5 +1,6 @@
 import Builtin from "../../structs/builtin";
-import {Utilities, Events} from "modules";
+import {Utilities, Events, DOM} from "modules";
+import Modals from "../../ui/modals";
 
 import EmoteModule from "./emotes";
 
@@ -31,7 +32,7 @@ const favoritesHTML = `<div id="bd-qem-favourite-container">
 
 const makeEmote = (emote, url, options = {}) => {
     const {onContextMenu, onClick} = options;
-    const emoteContainer = Utilities.parseHTML(`<div class="emote-container">
+    const emoteContainer = DOM.createElement(`<div class="emote-container">
         <img class="emote-icon" alt="${emote}" src="${url}" title="${emote}">
     </div>`);
     if (onContextMenu) emoteContainer.addEventListener("contextmenu", onContextMenu);
@@ -51,13 +52,13 @@ export default new class EmoteMenu extends Builtin {
         super();
         this.lastTab = "bd-qem-emojis";
 
-        this.qmeHeader = Utilities.parseHTML(headerHTML);
+        this.qmeHeader = DOM.createElement(headerHTML);
         for (const button of this.qmeHeader.getElementsByTagName("button")) button.addEventListener("click", this.switchMenu.bind(this));
 
-        this.teContainer = Utilities.parseHTML(twitchEmoteHTML);
+        this.teContainer = DOM.createElement(twitchEmoteHTML);
         this.teContainerInner = this.teContainer.querySelector(".emote-menu-inner");
 
-        this.faContainer = Utilities.parseHTML(favoritesHTML);
+        this.faContainer = DOM.createElement(favoritesHTML);
         this.faContainerInner = this.faContainer.querySelector(".emote-menu-inner");
 
         this.observer = new MutationObserver(mutations => {for (const mutation of mutations) this.observe(mutation);});
@@ -67,16 +68,17 @@ export default new class EmoteMenu extends Builtin {
     }
 
     async enabled() {
-        this.log("Starting to observe");
-        this.observer.observe(document.getElementById("app-mount"), {
-            childList: true,
-            subtree: true
-        });
-        this.hideEmojiCancel = this.registerSetting(this.hideEmojisID, this.enableHideEmojis, this.disableHideEmojis);
-        if (this.hideEmojis) this.enableHideEmojis();
-        if (EmoteModule.emotesLoaded) this.updateTwitchEmotes();
-        this.updateFavorites();
-        Events.on("emotes-loaded", this.updateTwitchEmotes);
+        return Modals.alert("Emote Menu Broken", "Emote Menu is currently broken, it is recommended to disable this until it is fixed.");
+        // this.log("Starting to observe");
+        // this.observer.observe(document.getElementById("app-mount"), {
+        //     childList: true,
+        //     subtree: true
+        // });
+        // this.hideEmojiCancel = this.registerSetting(this.hideEmojisID, this.enableHideEmojis, this.disableHideEmojis);
+        // if (this.hideEmojis) this.enableHideEmojis();
+        // if (EmoteModule.emotesLoaded) this.updateTwitchEmotes();
+        // this.updateFavorites();
+        // Events.on("emotes-loaded", this.updateTwitchEmotes);
     }
 
     disabled() {
