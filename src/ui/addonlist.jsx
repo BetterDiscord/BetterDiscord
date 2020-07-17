@@ -33,7 +33,9 @@ export default class CardList extends BDV2.reactComponent {
     }
 
     openFolder() {
-        require("electron").shell.openItem(this.isPlugins ? ContentManager.pluginsFolder : ContentManager.themesFolder);
+        const shell = require("electron").shell;
+        const open = shell.openPath || shell.openItem;
+        open(this.isPlugins ? ContentManager.pluginsFolder : ContentManager.themesFolder);
     }
 
     edit(name) {
