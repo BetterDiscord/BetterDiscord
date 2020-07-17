@@ -1,17 +1,17 @@
-import {Config} from "data";
+// import {Config} from "data";
 import secure from "./secure";
 import Core from "./modules/core";
 import BdApi from "./modules/pluginapi";
-import PluginManager from "./modules/pluginmanager";
-import ThemeManager from "./modules/thememanager";
-import Events from "./modules/emitter";
-import Settings from "./modules/settingsmanager";
-import DataStore from "./modules/datastore";
-import EmoteModule from "./builtins/emotes/emotes";
-import DomManager from "./modules/dommanager";
-import Utilities from "./modules/utilities";
-import ReactComponents from "./modules/reactcomponents";
-import Strings from "./modules/strings";
+// import PluginManager from "./modules/pluginmanager";
+// import ThemeManager from "./modules/thememanager";
+// import Events from "./modules/emitter";
+// import Settings from "./modules/settingsmanager";
+// import DataStore from "./modules/datastore";
+// import EmoteModule from "./builtins/emotes/emotes";
+// import DomManager from "./modules/dommanager";
+// import Utilities from "./modules/utilities";
+// import ReactComponents from "./modules/reactcomponents";
+// import Strings from "./modules/strings";
 
 // Perform some setup
 secure();
@@ -27,24 +27,24 @@ window.BdApi = BdApi;
 // window.settingsCookie = SettingsCookie;
 // window.pluginCookie = PluginCookie;
 // window.themeCookie = ThemeCookie;
-window.pluginModule = PluginManager;
-window.themeModule = ThemeManager;
-// window.bdthemes = Themes;
-// window.bdplugins = Plugins;
-window.bdEmotes = EmoteModule.Emotes;
-window.bemotes = EmoteModule.blacklist;
-// window.bdPluginStorage = bdPluginStorage;
-window.settingsModule = Settings;
-window.DataStore = DataStore;
+// window.pluginModule = PluginManager;
+// window.themeModule = ThemeManager;
+// // window.bdthemes = Themes;
+// // window.bdplugins = Plugins;
+// window.bdEmotes = EmoteModule.Emotes;
+// window.bemotes = EmoteModule.blacklist;
+// // window.bdPluginStorage = bdPluginStorage;
+// window.settingsModule = Settings;
+// window.DataStore = DataStore;
 
 
-window.DomManager = DomManager;
-window.utils = Utilities;
-window.Components = ReactComponents;
+// window.DomManager = DomManager;
+// window.utils = Utilities;
+// window.Components = ReactComponents;
 
-window.BDEvents = Events;
-window.bdConfig = Config;
-window.Strings = Strings;
+// window.BDEvents = Events;
+// window.bdConfig = Config;
+// window.Strings = Strings;
 
 export default class CoreWrapper {
     constructor(config) {

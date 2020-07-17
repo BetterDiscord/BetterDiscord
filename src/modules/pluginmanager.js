@@ -97,6 +97,7 @@ export default new class PluginManager extends AddonManager {
             module.exports = meta;
             return "";
         }
+        Logger.warn(this.name, `${meta.name}, please start assigning module.exports`);
         fileContent += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
         return fileContent;
     }
