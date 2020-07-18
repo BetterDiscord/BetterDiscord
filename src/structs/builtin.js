@@ -57,12 +57,14 @@ export default class BuiltinModule {
 
     async enable() {
         this.log("Enabled");
-        await this.enabled();
+        try {await this.enabled();}
+        catch (e) {this.stacktrace("Could not be enabled", e);}
     }
 
     async disable() {
         this.log("Disabled");
-        await this.disabled();
+        try {await this.disabled();}
+        catch (e) {this.stacktrace("Could not be disabled", e);}
     }
 
     async enabled() {}

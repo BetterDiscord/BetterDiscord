@@ -46,7 +46,7 @@ export default class Modals {
     }
 
     static alert(title, content) {
-        this.showConfirmationModal(title, content);
+        this.showConfirmationModal(title, content, {cancelText: ""});
     }
 
     /**

@@ -68,6 +68,7 @@ export default new class EmoteMenu extends Builtin {
     }
 
     async enabled() {
+        // Temporary measure, so not using Strings/translation
         return Modals.alert("Emote Menu Broken", "Emote Menu is currently broken, it is recommended to disable this until it is fixed.");
         // this.log("Starting to observe");
         // this.observer.observe(document.getElementById("app-mount"), {

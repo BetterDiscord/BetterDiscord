@@ -39,6 +39,7 @@ export default class Group extends React.Component {
             container.style.setProperty("height", "");
             container.classList.remove("animating");
         }, timeout));
+        if (this.props.onDrawerToggle) this.props.onDrawerToggle(this.state.collapsed);
     }
 
     onChange(id, value) {

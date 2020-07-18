@@ -1,5 +1,5 @@
 import Builtin from "../../structs/builtin";
-import {DOM, DiscordModules} from "modules";
+import {DOM, DiscordModules, Strings} from "modules";
 
 export default new class DeveloperMode extends Builtin {
     get name() {return "DeveloperMode";}
@@ -49,7 +49,7 @@ export default new class DeveloperMode extends Builtin {
 
             const cmg = DOM.createElement(`<div class="itemGroup-1tL0uz da-itemGroup">`);
             const cmi = DOM.createElement(`<div class="item-1Yvehc itemBase-tz5SeC da-item da-itemBase clickable-11uBi- da-clickable">`);
-            cmi.append(DOM.createElement(`<div class="label-JWQiNe da-label">Copy Selector</div>`));
+            cmi.append(DOM.createElement(`<div class="label-JWQiNe da-label">${Strings.Developer.copySelector}</div>`));
             cmi.addEventListener("click", () => {
                 DiscordModules.ElectronModule.copy(selector);
                 cm.style.display = "none";

@@ -211,14 +211,13 @@ export default {
         confirmationText: "You have unsaved changes to {{name}}. Closing this window will lose all those changes.",
         enabled: "{{name}} has been enabled.",
         disabled: "{{name}} has been disabled.",
+        couldNotEnable: "{{name}} could not be enabled.",
+        couldNotDisable: "{{name}} could not be disabled.",
+        couldNotStart: "{{name}} could not be started.",
+        couldNotStop: "{{name}} could not be stopped.",
+        methodError: "{{method}} could not be fired.",
         unknownAuthor: "Unknown Author",
         noDescription: "Description not provided."
-    },
-    Emotes: {
-        loading: "Loading emotes in the background do not reload.",
-        loaded: "All emotes successfully loaded.",
-        clearEmotes: "Clear Emote Data",
-        favoriteAction: "Favorite!"
     },
     CustomCSS: {
         confirmationText: "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -228,6 +227,15 @@ export default {
         openDetached: "Detach Window",
         settings: "Editor Settings",
         editorTitle: "Custom CSS Editor"
+    },
+    Developer: {
+        copySelector: "Copy Selector"
+    },
+    Emotes: {
+        loading: "Loading emotes in the background do not reload.",
+        loaded: "All emotes successfully loaded.",
+        clearEmotes: "Clear Emote Data",
+        favoriteAction: "Favorite!"
     },
     PublicServers: {
         button: "public",
@@ -259,15 +267,15 @@ export default {
         restartLater: "Restart Later",
         additionalInfo: "Additional Info"
     },
+    ReactDevTools: {
+      notFound: "Extension Not Found",
+      notFoundDetails: "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."  
+    },
     Sorting: {
         sortBy: "Sort By",
         order: "Order",
         ascending: "Ascending",
         descending: "Descending"
-    },
-    WindowPrefs: {
-        enabledInfo: "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
-        disabledInfo: "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     },
     Startup: {
         notSupported: "Not Supported",
@@ -278,6 +286,12 @@ export default {
         updateAvailable: "Update Available",
         updateInfo: "There is an update available for BandagedBD's Injector ({{version}}).\n\nYou can either update and restart now, or later.",
         updateFailed: "Could Not Update",
-        manualUpdate: "Unable to update automatically, please download the installer and reinstall normally.\n\n[Download Installer](https://github.com/rauenzi/BetterDiscordApp/releases/latest)"
+        manualUpdate: "Unable to update automatically, please download the installer and reinstall normally.\n\n[Download Installer](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        jqueryFailed: "jQuery Failed To Load",
+        jqueryFailedDetails: "jQuery could not be loaded, and some plugins may not work properly. Proceed at your own risk."
+    },
+    WindowPrefs: {
+        enabledInfo: "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
+        disabledInfo: "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     }
 };

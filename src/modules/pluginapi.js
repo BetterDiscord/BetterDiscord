@@ -10,6 +10,7 @@ import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import Logger from "./logger";
+import Patcher from "./patcher";
 
 const BdApi = {
     get React() { return DiscordModules.React; },
@@ -148,43 +149,65 @@ BdApi.deleteData = function(pluginName, key) {
 };
 
 // Patches other functions
+// BdApi.monkeyPatch = function(what, methodName, options) {
+//     const {before, after, instead, once = false, silent = false, force = false} = options;
+//     const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
+//     if (!silent) console.log("patch", methodName, "of", displayName); // eslint-disable-line no-console
+//     if (!what[methodName]) {
+//         if (force) what[methodName] = function() {};
+//         else return console.error(methodName, "does not exist for", displayName); // eslint-disable-line no-console
+//     }
+//     const origMethod = what[methodName];
+//     const cancel = () => {
+//         if (!silent) console.log("unpatch", methodName, "of", displayName); // eslint-disable-line no-console
+//         what[methodName] = origMethod;
+//     };
+//     what[methodName] = function() {
+//         const data = {
+//             thisObject: this,
+//             methodArguments: arguments,
+//             cancelPatch: cancel,
+//             originalMethod: origMethod,
+//             callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
+//         };
+//         if (instead) {
+//             const tempRet = Utilities.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
+//             if (tempRet !== undefined) data.returnValue = tempRet;
+//         }
+//         else {
+//             if (before) Utilities.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
+//             data.callOriginalMethod();
+//             if (after) Utilities.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
+//         }
+//         if (once) cancel();
+//         return data.returnValue;
+//     };
+//     what[methodName].__monkeyPatched = true;
+//     if (!what[methodName].__originalMethod) what[methodName].__originalMethod = origMethod;
+//     what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
+//     return cancel;
+// };
 BdApi.monkeyPatch = function(what, methodName, options) {
-    const {before, after, instead, once = false, silent = false, force = false} = options;
-    const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
-    if (!silent) console.log("patch", methodName, "of", displayName); // eslint-disable-line no-console
-    if (!what[methodName]) {
-        if (force) what[methodName] = function() {};
-        else return console.error(methodName, "does not exist for", displayName); // eslint-disable-line no-console
-    }
-    const origMethod = what[methodName];
-    const cancel = () => {
-        if (!silent) console.log("unpatch", methodName, "of", displayName); // eslint-disable-line no-console
-        what[methodName] = origMethod;
+    const {before, after, instead, once = false} = options;
+    const patchType = before ? "before" : after ? "after" : instead ? "instead" : "";
+    if (!patchType) return Logger.err("BdApi", "Must provide one of: after, before, instead");
+    const originalMethod = what[methodName];
+    const data = {
+        originalMethod: originalMethod,
+        callOriginalMethod: () => data.originalMethod.apply(data.thisObject, data.methodArguments)
     };
-    what[methodName] = function() {
-        const data = {
-            thisObject: this,
-            methodArguments: arguments,
-            cancelPatch: cancel,
-            originalMethod: origMethod,
-            callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
-        };
-        if (instead) {
-            const tempRet = Utilities.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
-            if (tempRet !== undefined) data.returnValue = tempRet;
+    data.cancelPatch = Patcher[patchType]("BdApi", what, methodName, (thisObject, args, returnValue) => {
+        data.thisObject = thisObject;
+        data.methodArguments = args;
+        data.returnValue = returnValue;
+        try {
+            Reflect.apply(options[patchType], null, [data]);
+            if (once) data.cancelPatch();
         }
-        else {
-            if (before) Utilities.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
-            data.callOriginalMethod();
-            if (after) Utilities.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
+        catch (err) {
+            // Logger.err("monkeyPatch", `Error in the ${patchType} of ${methodName}`);
         }
-        if (once) cancel();
-        return data.returnValue;
-    };
-    what[methodName].__monkeyPatched = true;
-    if (!what[methodName].__originalMethod) what[methodName].__originalMethod = origMethod;
-    what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
-    return cancel;
+    });
 };
 // Event when element is removed
 BdApi.onRemoved = function(node, callback) {
@@ -255,15 +278,30 @@ const makeAddonAPI = (manager) => new class AddonAPI {
     disable(idOrAddon) {return manager.disableAddon(idOrAddon);}
     toggle(idOrAddon) {return manager.toggleAddon(idOrAddon);}
     reload(idOrFileOrAddon) {return manager.reloadAddon(idOrFileOrAddon);}
-    get(idOrFile) {return manager.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);}
-    getAll() {return manager.addonList;}
+    get(idOrFile) {return manager.getAddon(idOrFile);}
+    getAll() {return manager.addonList.map(a => manager.getAddon(a.id));}
 };
 
 BdApi.Plugins = makeAddonAPI(PluginManager);
 BdApi.Themes = makeAddonAPI(ThemeManager);
+BdApi.Patcher = {
+    patch: (caller, moduleToPatch, functionName, callback, options = {}) => {
+        if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of patch must be a string representing the caller");
+        if (options.type !== "before" && options.type !== "instead" && options.type !== "after") return Logger.err("BdApi.Patcher", "options.type must be one of: before, instead, after");
+        return Patcher.pushChildPatch(caller, moduleToPatch, functionName, callback, options);
+    },
+    before: (caller, moduleToPatch, functionName, callback, options = {}) => BdApi.Patcher.patch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "before"})),
+    instead: (caller, moduleToPatch, functionName, callback, options = {}) => BdApi.Patcher.patch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "instead"})),
+    after: (caller, moduleToPatch, functionName, callback, options = {}) => BdApi.Patcher.patch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "after"})),
+    unpatchAll: (caller) => {
+        if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of unpatchAll must be a string representing the caller");
+        return Patcher.unpatchAll(caller);
+    }
+};
 
 Object.freeze(BdApi);
 Object.freeze(BdApi.Plugins);
 Object.freeze(BdApi.Themes);
+Object.freeze(BdApi.Patcher);
 
 export default BdApi;

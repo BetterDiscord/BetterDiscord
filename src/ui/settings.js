@@ -1,4 +1,4 @@
-import {React, WebpackModules, Patcher, ReactComponents, Utilities, Settings, Events} from "modules";
+import {React, WebpackModules, Patcher, ReactComponents, Utilities, Settings, Events, DataStore} from "modules";
 
 import AddonList from "./settings/addonlist";
 import SettingsGroup from "./settings/group";
@@ -12,6 +12,20 @@ export default new class SettingsRenderer {
         Events.on("strings-updated", this.forceUpdate);
     }
 
+    onDrawerToggle(collection, group, state) {
+        const drawerStates = DataStore.getBDData("drawerStates") || {};
+        if (!drawerStates[collection]) drawerStates[collection] = {};
+        drawerStates[collection][group] = state;
+        DataStore.setBDData("drawerStates", drawerStates);
+    }
+
+    getDrawerState(collection, group, defaultValue) {
+        const drawerStates = DataStore.getBDData("drawerStates") || {};
+        if (!drawerStates[collection]) return defaultValue;
+        if (!drawerStates[collection].hasOwnProperty(group)) return defaultValue;
+        return drawerStates[collection][group];
+    }
+
     onChange(onChange) {
         return (collection, category, id) => {
             const before = Settings.collections.length + Settings.panels.length;
@@ -21,16 +35,20 @@ export default new class SettingsRenderer {
         };
     }
 
-    buildSettingsPanel(title, config, state, onChange, button = null) {
+    buildSettingsPanel(id, title, config, state, onChange, button = null) {
         config.forEach(section => {
             section.settings.forEach(item => item.value = state[section.id][item.id]);
         });
-        return this.getSettingsPanel(title, config, this.onChange(onChange), button);
+        return this.getSettingsPanel(id, title, config, this.onChange(onChange), button);
     }
 
-    getSettingsPanel(title, groups, onChange, button = null) {
+    getSettingsPanel(id, title, groups, onChange, button = null) {
         return [React.createElement(SettingsTitle, {text: title, button: button}), groups.map(section => {
-            return React.createElement(SettingsGroup, Object.assign({}, section, {onChange}));
+            return React.createElement(SettingsGroup, Object.assign({}, section, {
+                onChange: onChange,
+                onDrawerToggle: state => this.onDrawerToggle(id, section.id, state),
+                shown: this.getDrawerState(id, section.id, section.hasOwnProperty("shown") ? section.shown : true)
+            }));
         })];
     }
 
@@ -61,14 +79,13 @@ export default new class SettingsRenderer {
                 insert({
                     section: collection.name,
                     label: collection.name,
-                    element: () => this.buildSettingsPanel(collection.name, collection.settings, Settings.state[collection.id], Settings.onSettingChange.bind(Settings, collection.id), collection.button ? collection.button : null)
+                    element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.state[collection.id], Settings.onSettingChange.bind(Settings, collection.id), collection.button ? collection.button : null)
                 });
             }
             for (const panel of Settings.panels.sort((a,b) => a.order > b.order)) {
                 if (panel.clickListener) panel.onClick = (event) => panel.clickListener(thisObject, event, returnValue);
                 insert(panel);
             }
-            // insert({section: "CUSTOM", element: Attribution});
         });
         this.forceUpdate();
     }

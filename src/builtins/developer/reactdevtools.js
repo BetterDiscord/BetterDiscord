@@ -1,6 +1,6 @@
 import Builtin from "../../structs/builtin";
 import Modals from "../../ui/modals";
-
+import {Strings} from "modules";
 
 const electron = require("electron");
 const fs = require("fs");
@@ -37,7 +37,7 @@ export default new class ReactDevTools extends Builtin {
 
     enabled() {
         if (!this.isExtensionInstalled) this.findExtension();
-        if (!this.isExtensionInstalled) return Modals.alert("Extension Not Found", "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation.");
+        if (!this.isExtensionInstalled) return Modals.alert(Strings.ReactDevTools.notFound, Strings.ReactDevTools.notFoundDetails);
         setImmediate(() => webContents.on("devtools-opened", this.listener));
         if (webContents.isDevToolsOpened()) this.listener();
     }
