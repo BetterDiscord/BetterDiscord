@@ -387,25 +387,26 @@ export default class Utils {
      * @returns {string} - the key used for this modal
      */
     static showConfirmationModal(title, content, options = {}) {
-        const ModalStack = WebpackModules.findByProps("push", "update", "pop", "popWithKey");
+        const ModalActions = WebpackModules.findByProps("openModal", "updateModal");
         const Markdown = WebpackModules.findByDisplayName("Markdown");
-        const ConfirmationModal = WebpackModules.find(m => m.defaultProps && m.key && m.key() == "confirm-modal");
-        if (!ModalStack || !ConfirmationModal || !Markdown) return Utils.alert(title, content);
+        const ConfirmationModal = WebpackModules.findByDisplayName("ConfirmModal");
+        if (!ModalActions || !ConfirmationModal || !Markdown) return Utils.alert(title, content);
 
         const emptyFunction = () => {};
         const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = "Okay", cancelText = "Cancel", danger = false, key = undefined} = options;
 
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? BDV2.React.createElement(Markdown, null, c) : c);
-        return ModalStack.push(ConfirmationModal, {
-            header: title,
-            children: content,
-            red: danger,
-            confirmText: confirmText,
-            cancelText: cancelText,
-            onConfirm: onConfirm,
-            onCancel: onCancel
-        }, key);
+        return ModalActions.openModal(props => {
+            return BDV2.React.createElement(ConfirmationModal, Object.assign({
+                header: title,
+                red: danger,
+                confirmText: confirmText,
+                cancelText: cancelText,
+                onConfirm: onConfirm,
+                onCancel: onCancel
+            }, props), content);
+        }, {modalKey: key});
     }
 }
 
