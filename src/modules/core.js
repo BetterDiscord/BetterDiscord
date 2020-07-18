@@ -14,16 +14,24 @@ import DOM from "./domtools";
 import BDLogo from "../ui/bdLogo";
 import TooltipWrap from "../ui/tooltipWrap";
 
+const {ipcRenderer} = require("electron");
 function Core() {
-    // Object.assign(bdConfig, __non_webpack_require__(DataStore.configFile));
-    // this.init();
+    ipcRenderer.invoke("bd-config", "get").then(injectorConfig => {
+        if (this.hasStarted) return;
+        Object.assign(bdConfig, injectorConfig);
+        this.init();
+    });
 }
 
 Core.prototype.setConfig = function(config) {
+    if (this.hasStarted) return;
     Object.assign(bdConfig, config);
 };
 
 Core.prototype.init = async function() {
+    if (this.hasStarted) return;
+    this.hasStarted = true;
+    
     if (!Array.prototype.flat) {
         Utils.alert("Not Supported", "BetterDiscord v" + bbdVersion + " does not support this old version (" + currentDiscordVersion + ") of Discord. Please update your Discord installation before proceeding.");
         return;
