@@ -7,7 +7,7 @@ Note: The items listed here are not in any sort of priority order.
 ### To Do (Remote Side)
 - Dependency loading (jquery, css, config file)
 - Stop depending on injector giving config
-- Fix emote render
+- Abstract out more UI strings
 
 ### To Do (Injector)
 - Update to new windowprefs location

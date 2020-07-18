@@ -1,4 +1,4 @@
-import {React, ReactDOM, DOM, WebpackModules} from "modules";
+import {React, DOM} from "modules";
 
 import FloatingWindow from "./window";
 
@@ -10,7 +10,7 @@ class FloatingWindowContainer extends React.Component {
     }
 
     get minY() {
-        const appContainer = DOM.query(`#app-mount > div[class*="app-"`);
+        const appContainer = DOM.query(`#app-mount > div[class*="app-"]`);
         if (appContainer) return appContainer.offsetTop;
         return 0;
     }
@@ -48,10 +48,4 @@ class FloatingWindowContainer extends React.Component {
     }
 }
 
-const containerRef = React.createRef();
-const container = <FloatingWindowContainer ref={containerRef} />;
-const wrapped = React.createElement(WebpackModules.getByProps("AppReferencePositionLayer").AppLayerProvider().props.layerContext.Provider, {value: [document.querySelector("#app-mount > .layerContainer-yqaFcK")]}, container);
-const div = DOM.createElement(`<div id="floating-windows-layer">`);
-DOM.query("#app-mount").append(div);
-ReactDOM.render(wrapped, div);
-export default containerRef.current;
+export default FloatingWindowContainer;

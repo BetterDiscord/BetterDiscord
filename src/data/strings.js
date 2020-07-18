@@ -209,6 +209,10 @@ export default {
         deleteAddon: "Delete",
         confirmDelete: "Are you sure you want to delete {{name}}?",
         confirmationText: "You have unsaved changes to {{name}}. Closing this window will lose all those changes.",
+        enabled: "{{name}} has been enabled.",
+        disabled: "{{name}} has been disabled.",
+        unknownAuthor: "Unknown Author",
+        noDescription: "Description not provided."
     },
     Emotes: {
         loading: "Loading emotes in the background do not reload.",

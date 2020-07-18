@@ -121,17 +121,6 @@ export default class FloatingWindow extends React.Component {
                 </div>;
     }
 
-    async close() {
-        let shouldClose = true;
-        const confirmClose = typeof(this.props.confirmClose) == "function" ? this.props.confirmClose() : this.props.confirmClose;
-        if (confirmClose) {
-            this.setState({modalOpen: true});
-            shouldClose = await this.confirmClose();
-            this.setState({modalOpen: false});
-        }
-        if (this.props.close && shouldClose) this.props.close();
-    }
-
     maximize() {
         this.window.current.style.width = "100%";
         this.window.current.style.height = "100%";
@@ -145,8 +134,35 @@ export default class FloatingWindow extends React.Component {
         const right = left + width;
         const bottom = top + height;
 
+        // Prevent expanding off the bottom and right and readjust position
         if (bottom > this.maxY) this.window.current.style.top = (this.maxY - height) + "px";
         if (right > this.maxX) this.window.current.style.left = (this.maxX - width) + "px";
+
+        const newLeft = parseInt(this.window.current.style.left);
+        const newTop = parseInt(this.window.current.style.top);
+
+        // For small screens it's possible this pushes us off the other direction... we need to readjust size
+        if (newTop < this.minY) {
+            const difference = this.minY - newTop;
+            this.window.current.style.top = this.minY + "px";
+            this.window.current.style.height = (height - difference) + "px";
+        }
+        if (newLeft < this.minX) {
+            const difference = this.minX - newLeft;
+            this.window.current.style.left = this.minX + "px";
+            this.window.current.style.height = (width - difference) + "px";
+        }
+    }
+
+    async close() {
+        let shouldClose = true;
+        const confirmClose = typeof(this.props.confirmClose) == "function" ? this.props.confirmClose() : this.props.confirmClose;
+        if (confirmClose) {
+            this.setState({modalOpen: true});
+            shouldClose = await this.confirmClose();
+            this.setState({modalOpen: false});
+        }
+        if (this.props.close && shouldClose) this.props.close();
     }
 
     confirmClose() {

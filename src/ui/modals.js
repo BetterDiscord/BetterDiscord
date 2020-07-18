@@ -6,10 +6,11 @@ export default class Modals {
 
     static get shouldShowAddonErrors() {return Settings.get("settings", "addons", "addonErrors");}
 
+    static get ModalActions() {return WebpackModules.getByProps("openModal", "updateModal");}
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
     static get TextElement() {return WebpackModules.getByProps("Sizes", "Weights");}
-    static get ConfirmationModal() {return WebpackModules.getModule(m => m.defaultProps && m.key && m.key() == "confirm-modal");}
+    static get ConfirmationModal() {return WebpackModules.findByDisplayName("ConfirmModal");}
     static get Markdown() {return WebpackModules.findByDisplayName("Markdown");}
 
     static default(title, content) {
@@ -64,9 +65,9 @@ export default class Modals {
     static showConfirmationModal(title, content, options = {}) {
         const Markdown = this.Markdown;
         const ConfirmationModal = this.ConfirmationModal;
-        const ModalStack = this.ModalStack;
+        const ModalActions = this.ModalActions;
         if (content instanceof FormattableString) content = content.toString();
-        if (!this.ModalStack || !this.ConfirmationModal || !this.Markdown) return this.default(title, content);
+        if (!this.ModalActions || !this.ConfirmationModal || !this.Markdown) return this.default(title, content);
 
         const emptyFunction = () => {};
         const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
@@ -74,15 +75,16 @@ export default class Modals {
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? React.createElement(Markdown, null, c) : c);
 
-        return ModalStack.push(ConfirmationModal, {
-            header: title,
-            children: content,
-            red: danger,
-            confirmText: confirmText,
-            cancelText: cancelText,
-            onConfirm: onConfirm,
-            onCancel: onCancel
-        }, key);
+        return ModalActions.openModal(props => {
+            return React.createElement(ConfirmationModal, Object.assign({
+                header: title,
+                red: danger,
+                confirmText: confirmText,
+                cancelText: cancelText,
+                onConfirm: onConfirm,
+                onCancel: onCancel
+            }, props), content);
+        }, {modalKey: key});
     }
 
     static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {

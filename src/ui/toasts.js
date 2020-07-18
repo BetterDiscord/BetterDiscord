@@ -1,4 +1,4 @@
-import {WebpackModules, Settings} from "modules";
+import {WebpackModules, Settings, DOMManager} from "modules";
 
 const channelsClass = WebpackModules.getByProps("sidebar", "hasNotice").sidebar.split(" ")[0];
 const membersWrapClass = WebpackModules.getByProps("membersWrap").membersWrap.split(" ")[0];
@@ -65,6 +65,6 @@ export default class Toasts {
         toastWrapper.style.setProperty("left", left + "px");
         toastWrapper.style.setProperty("width", width + "px");
         toastWrapper.style.setProperty("bottom", bottom + "px");
-        document.querySelector("#app-mount").appendChild(toastWrapper);
+        DOMManager.bdBody.appendChild(toastWrapper);
     }
 }

@@ -1,7 +1,7 @@
 import Builtin from "../structs/builtin";
 import {Settings, DataStore, React, WebpackModules, Events, DOMManager, Strings} from "modules";
 import CSSEditor from "../ui/customcss/csseditor";
-import FloatingWindowContainer from "../ui/floating/container";
+import FloatingWindows from "../ui/floatingwindows";
 import SettingsTitle from "../ui/settings/title";
 import Utilities from "../modules/utilities";
 
@@ -131,7 +131,7 @@ export default new class CustomCSS extends Builtin {
             onChange: this.onChange.bind(this)
         });
 
-        FloatingWindowContainer.open({
+        FloatingWindows.open({
             onClose: () => {
                 this.isDetached = false;
             },

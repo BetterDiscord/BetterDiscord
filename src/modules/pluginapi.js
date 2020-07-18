@@ -249,7 +249,7 @@ BdApi.setBDData = function(key, data) {
 };
 
 const makeAddonAPI = (manager) => new class AddonAPI {
-    get folder() {return manager.folder;}
+    get folder() {return manager.addonFolder;}
     isEnabled(idOrFile) {return manager.isEnabled(idOrFile);}
     enable(idOrAddon) {return manager.enableAddon(idOrAddon);}
     disable(idOrAddon) {return manager.disableAddon(idOrAddon);}

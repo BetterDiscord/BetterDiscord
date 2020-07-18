@@ -10,7 +10,7 @@ import DiscordModules from "./discordmodules";
 import Strings from "./strings";
 
 import AddonEditor from "../ui/misc/addoneditor";
-import FloatingWindowContainer from "../ui/floating/container";
+import FloatingWindows from "../ui/floatingwindows";
 
 const React = DiscordModules.React;
 
@@ -82,21 +82,22 @@ export default class AddonManager {
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
         this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename || !filename.endsWith(this.extension)) return;
-            await new Promise(r => setTimeout(r, 50));
-            try {fs.statSync(path.resolve(this.addonFolder, filename));}
+            await new Promise(r => setTimeout(r, 100));
+            try {
+                const stats = fs.statSync(path.resolve(this.addonFolder, filename));
+                if (!stats.isFile()) return;
+                if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
+                if (typeof(stats.mtime.getTime()) !== "number") return;
+                if (this.timeCache[filename] == stats.mtime.getTime()) return;
+                this.timeCache[filename] = stats.mtime.getTime();
+                if (eventType == "rename") this.loadAddon(filename, true);
+                if (eventType == "change") this.reloadAddon(filename, true);
+            }
             catch (err) {
                 if (err.code !== "ENOENT") return;
                 delete this.timeCache[filename];
                 this.unloadAddon(filename, true);
             }
-            if (!fs.statSync(path.resolve(this.addonFolder, filename)).isFile()) return;
-            const stats = fs.statSync(path.resolve(this.addonFolder, filename));
-            if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
-            if (typeof(stats.mtime.getTime()) !== "number") return;
-            if (this.timeCache[filename] == stats.mtime.getTime()) return;
-            this.timeCache[filename] = stats.mtime.getTime();
-            if (eventType == "rename") this.loadAddon(filename, true);
-            if (eventType == "change") this.reloadAddon(filename, true);
         });
     }
 
@@ -160,6 +161,9 @@ export default class AddonManager {
             fileContent = stripBOM(fileContent);
             const stats = fs.statSync(filename);
             const meta = self.extractMeta(fileContent);
+            if (!meta.author) meta.author = Strings.Addons.unknownAuthor;
+            if (!meta.version) meta.version = "???";
+            if (!meta.description) meta.description = Strings.Addons.noDescription;
             meta.id = meta.name;
             meta.filename = path.basename(filename);
             meta.added = stats.atimeMs;
@@ -301,7 +305,7 @@ export default class AddonManager {
             language: this.language
         });
 
-        FloatingWindowContainer.open({
+        FloatingWindows.open({
             onClose: () => {
                 this.isDetached = false;
             },

@@ -84,6 +84,10 @@ export default class BuiltinModule {
         Logger.stacktrace(this.name, message, error);
     }
 
+    before(object, func, callback) {
+        return Patcher.before(this.name, object, func, callback);
+    }
+
     after(object, func, callback) {
         return Patcher.after(this.name, object, func, callback);
     }

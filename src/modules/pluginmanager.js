@@ -112,7 +112,7 @@ export default new class PluginManager extends AddonManager {
         try {
             plugin.start();
             this.emit("started", addon.id);
-            Toasts.show(`${addon.name} v${addon.version} has started.`);
+            Toasts.show(Strings.Addons.enabled.format({name: addon.name, version: addon.version}));
         }
         catch (err) {
             this.state[addon.id] = false;
@@ -129,7 +129,7 @@ export default new class PluginManager extends AddonManager {
         try {
             plugin.stop();
             this.emit("stopped", addon.id);
-            Toasts.show(`${addon.name} v${addon.version} has stopped.`);
+            Toasts.show(Strings.Addons.disabled.format({name: addon.name, version: addon.version}));
         }
         catch (err) {
             this.state[addon.id] = false;

@@ -37,7 +37,7 @@ export default new class EmoteModule extends Builtin {
 
     get(id) {return super.get("emotes", "general", id);}
 
-    get MessageContentComponent() {return WebpackModules.getModule(m => m.defaultProps && m.defaultProps.hasOwnProperty("disableButtons"));}
+    get MessageComponent() {return WebpackModules.find(m => m.default && m.default.displayName && m.default.displayName == "Message");}
 
     get Emotes() {return Emotes;}
     get TwitchGlobal() {return Emotes.TwitchGlobal;}
@@ -69,6 +69,7 @@ export default new class EmoteModule extends Builtin {
         Events.on("emotes-favorite-added", this.addFavorite);
         Events.on("emotes-favorite-removed", this.removeFavorite);
         Events.on("setting-updated", this.onCategoryToggle);
+        this.patchMessageContent();
     }
 
     disabled() {
@@ -113,71 +114,66 @@ export default new class EmoteModule extends Builtin {
 
     patchMessageContent() {
         if (this.cancelEmoteRender) return;
-        this.cancelEmoteRender = this.after(this.MessageContentComponent.prototype, "render", (thisObj, args, retVal) => {
-            this.after(retVal.props, "children", (t, a, returnValue) => {
-                if (this.categories.length == 0) return;
-                const markup = returnValue.props.children[1];
-                if (!markup.props.children) return;
-                const nodes = markup.props.children[1];
-                if (!nodes || !nodes.length) return;
-                for (let n = 0; n < nodes.length; n++) {
-                    const node = nodes[n];
-                    if (typeof(node) !== "string") continue;
-                    const words = node.split(/([^\s]+)([\s]|$)/g);
-                    for (let c = 0, clen = this.categories.length; c < clen; c++) {
-                        for (let w = 0, wlen = words.length; w < wlen; w++) {
-                            const emote = words[w];
-                            const emoteSplit = emote.split(":");
-                            const emoteName = emoteSplit[0];
-                            let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
-                            let emoteOverride = emoteModifier.slice(0);
+        this.cancelEmoteRender = this.before(this.MessageComponent, "default", (thisObj, args) => {
+            const nodes = args[0].childrenMessageContent.props.content;
+            if (!nodes || !nodes.length) return;
+            for (let n = 0; n < nodes.length; n++) {
+                const node = nodes[n];
+                if (typeof(node) !== "string") continue;
+                const words = node.split(/([^\s]+)([\s]|$)/g);
+                for (let c = 0, clen = this.categories.length; c < clen; c++) {
+                    for (let w = 0, wlen = words.length; w < wlen; w++) {
+                        const emote = words[w];
+                        const emoteSplit = emote.split(":");
+                        const emoteName = emoteSplit[0];
+                        let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
+                        let emoteOverride = emoteModifier.slice(0);
 
-                            if (emoteName.length < 4 || blacklist.includes(emoteName)) continue;
-                            if (!modifiers.includes(emoteModifier) || !Settings.get("emotes", "general", "modifiers")) emoteModifier = "";
-                            if (!overrides.includes(emoteOverride)) emoteOverride = "";
-                            else emoteModifier = emoteOverride;
+                        if (emoteName.length < 4 || blacklist.includes(emoteName)) continue;
+                        if (!modifiers.includes(emoteModifier) || !Settings.get("emotes", "general", "modifiers")) emoteModifier = "";
+                        if (!overrides.includes(emoteOverride)) emoteOverride = "";
+                        else emoteModifier = emoteOverride;
 
-                            let current = this.categories[c];
-                            if (emoteOverride === "twitch") {
-                                if (Emotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
-                                else if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
-                            }
-                            else if (emoteOverride === "subscriber") {
-                                if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
-                            }
-                            else if (emoteOverride === "bttv") {
-                                if (Emotes.BTTV[emoteName]) current = "BTTV";
-                            }
-                            else if (emoteOverride === "ffz") {
-                                if (Emotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
-                            }
-
-                            if (!Emotes[current][emoteName]) continue;
-                            const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
-                            if (!results) continue;
-                            const pre = nodes[n].substring(0, results.index + results[1].length);
-                            const post = nodes[n].substring(results.index + results[0].length - results[2].length);
-                            nodes[n] = pre;
-                            const emoteComponent = DiscordModules.React.createElement(BDEmote, {name: emoteName, url: EmoteURLs[current].format({id: Emotes[current][emoteName]}), modifier: emoteModifier, isFavorite: this.isFavorite(emoteName)});
-                            nodes.splice(n + 1, 0, post);
-                            nodes.splice(n + 1, 0, emoteComponent);
+                        let current = this.categories[c];
+                        if (emoteOverride === "twitch") {
+                            if (Emotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
+                            else if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
                         }
+                        else if (emoteOverride === "subscriber") {
+                            if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
+                        }
+                        else if (emoteOverride === "bttv") {
+                            if (Emotes.BTTV[emoteName]) current = "BTTV";
+                        }
+                        else if (emoteOverride === "ffz") {
+                            if (Emotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
+                        }
+
+                        if (!Emotes[current][emoteName]) continue;
+                        const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
+                        if (!results) continue;
+                        const pre = nodes[n].substring(0, results.index + results[1].length);
+                        const post = nodes[n].substring(results.index + results[0].length - results[2].length);
+                        nodes[n] = pre;
+                        const emoteComponent = DiscordModules.React.createElement(BDEmote, {name: emoteName, url: EmoteURLs[current].format({id: Emotes[current][emoteName]}), modifier: emoteModifier, isFavorite: this.isFavorite(emoteName)});
+                        nodes.splice(n + 1, 0, post);
+                        nodes.splice(n + 1, 0, emoteComponent);
                     }
                 }
-                const onlyEmotes = nodes.every(r => {
-                    if (typeof(r) == "string" && r.replace(/\s*/, "") == "") return true;
-                    else if (r.type && r.type.name == "BDEmote") return true;
-                    else if (r.props && r.props.children && r.props.children.props && r.props.children.props.emojiName) return true;
-                    return false;
-                });
-                if (!onlyEmotes) return;
-
-                for (const node of nodes) {
-                    if (typeof(node) != "object") continue;
-                    if (node.type.name == "BDEmote") node.props.jumboable = true;
-                    else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
-                }
+            }
+            const onlyEmotes = nodes.every(r => {
+                if (typeof(r) == "string" && r.replace(/\s*/, "") == "") return true;
+                else if (r.type && r.type.name == "BDEmote") return true;
+                else if (r.props && r.props.children && r.props.children.props && r.props.children.props.emojiName) return true;
+                return false;
             });
+            if (!onlyEmotes) return;
+
+            for (const node of nodes) {
+                if (typeof(node) != "object") continue;
+                if (node.type.name == "BDEmote") node.props.jumboable = true;
+                else if (node.props && node.props.children && node.props.children.props && node.props.children.props.emojiName) node.props.children.props.jumboable = true;
+            }
         });
     }
 
