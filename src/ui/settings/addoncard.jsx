@@ -45,8 +45,8 @@ export default class AddonCard extends React.Component {
             };
 
             const thisNode = this.panelRef.current;
-            const container = thisNode.closest(".scroller");
-            if (!isHidden(container, thisNode)) return;
+            const container = thisNode.closest(".scrollerBase-289Jih");
+            if (!container || !isHidden(container, thisNode)) return;
             const thisNodeOffset = DOM.offset(thisNode);
             const containerOffset = DOM.offset(container);
             const original = container.scrollTop;
@@ -66,6 +66,7 @@ export default class AddonCard extends React.Component {
     onChange() {
         this.props.onChange && this.props.onChange(this.props.addon.id);
         this.props.enabled = !this.props.enabled;
+        this.forceUpdate();
     }
 
     showSettings() {
