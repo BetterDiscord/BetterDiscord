@@ -49,7 +49,7 @@ export default new class EmoteModule extends Builtin {
     getUrl(category, name) {return EmoteURLs[category].format({id: Emotes[category][name]});}
 
     getCategory(category) {return Emotes[category];}
-    getRemoteFile(category) {return Utilities.repoUrl(`data/emotes/${category.toLowerCase()}.json`);}
+    getRemoteFile(category) {return Utilities.repoUrl(`assets/emotes/${category.toLowerCase()}.json`);}
 
     initialize() {
         super.initialize();

@@ -49,7 +49,7 @@ export default new class LocaleManager {
 	downloadLocale(locale, hash = "") {
 		return new Promise(resolve => {
 			const options = {
-				url: Utilities.repoUrl(`data/locales/${locale}.json`),
+				url: Utilities.repoUrl(`assets/locales/${locale}.json`),
 				timeout: 2000,
 				json: true
 			};
