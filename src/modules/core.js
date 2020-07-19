@@ -14,6 +14,23 @@ import DOM from "./domtools";
 import BDLogo from "../ui/bdLogo";
 import TooltipWrap from "../ui/tooltipWrap";
 
+const dependencies = [
+    {
+        name: "jquery",
+        type: "script",
+        url: "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js",
+        backup: "//cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js",
+        local: null
+    },
+    {
+        name: "bd-stylesheet",
+        type: "style",
+        url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/css/main{{minified}}.css",
+        backup: "//rauenzi.github.io/BetterDiscordApp/css/main{{minified}}.css",
+        local: "{{localServer}}/BetterDiscordApp/css/main.css"
+    }
+];
+
 const {ipcRenderer} = require("electron");
 function Core() {
     ipcRenderer.invoke("bd-config", "get").then(injectorConfig => {
@@ -83,7 +100,7 @@ Core.prototype.init = async function() {
     });
 
 
-    this.injectExternals();
+    await this.injectExternals();
 
     await this.checkForGuilds();
     BDV2.initialize();
@@ -147,6 +164,19 @@ Core.prototype.checkForGuilds = function() {
 Core.prototype.injectExternals = async function() {
     await DOM.addScript("ace-script", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
     if (window.require.original) window.require = window.require.original;
+    if (window.$ && window.jQuery) return; // Dependencies already loaded
+    const jqueryUrl = Utils.formatString((bdConfig.local && dependencies[0].local != null) ? dependencies[0].local : dependencies[0].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer});
+    try {await DOM.addScript("jquery", jqueryUrl);}
+    catch (_) {
+        try {
+            const backup = Utils.formatString(dependencies[0].backup, {minified: bdConfig.minified ? ".min" : ""});
+            await DOM.addScript("jquery", backup);
+        }
+        catch (__) {
+            Utils.alert("jQuery Not Loaded", "Unable to load jQuery, some plugins may fail to work. Proceed at your own risk.");
+        }
+    }
+    document.head.append(DOM.createElement(`<link rel="stylesheet" href=${Utils.formatString((bdConfig.local && dependencies[1].local != null) ? dependencies[1].local : dependencies[1].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer})}>`));
 };
 
 Core.prototype.initSettings = function () {
