@@ -1,5 +1,6 @@
 {
     "name": "betterdiscord",
+    "version": "0.5.0",
     "description": "BetterDiscord",
     "main": "index.js",
     "private": true,

@@ -12,53 +12,45 @@ Object.assign(config, {
     dataPath: (process.platform == "win32" ? process.env.APPDATA : process.platform == "darwin" ? process.env.HOME + "/Library/Preferences" :  process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : process.env.HOME + "/.config") + "/BetterDiscord/"
 });
 Utils.makeFolder(config.dataPath);
-Utils.setLogFile(config.dataPath + "/logs.log");
+Utils.setLogFile(config.dataPath + "/injector.log");
+
+const ipc = electron.ipcMain;
+ipc.handle("bd-config", async (event, cmd, data) => {
+    if (cmd == "get") return config;
+    if (cmd == "key") return config[data];
+    if (cmd == "set") return Object.assign(config, data);
+});
+
+ipc.handle("bd-hash", async () => {
+    return config.hash;
+});
 
 
 // Process
 // ===================================
 // Delete CSP
-// Load config
+// Get updater
+// Get commit hash
+// Ensure folders
+// Save config
 // Hook DOM Ready
-//  Call load
-//      Get updater
-//      Wait for webpack modules
-//      Load app
-//          Inject jquery, css, js
-//          Call startup script
+//   Inject remote script
+//   Save logs
 
-const BetterDiscord = class BetterDiscord {
-    constructor(mainWindow) {
-        mainWindow.__betterDiscord = this;
+module.exports = new class BetterDiscord {
+
+    async setup(mainWindow) {
         Utils.setWindow(mainWindow);
-
         this.disableCSP(mainWindow);
 
+        await this.getUpdater();
+        await this.getCommitHash();
+
+        Utils.log("Loading");
+        this.ensureFolders();
+        await this.saveConfig();
         Utils.log("Hooking dom-ready");
         mainWindow.webContents.on("dom-ready", this.load.bind(this));
-    }
-
-    get externalData() {
-        return [
-            {
-                type: "script",
-                url: "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js",
-                backup: "//cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js",
-                local: null
-            },
-            {
-                type: "style",
-                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/css/main{{minified}}.css",
-                backup: "//rauenzi.github.io/BetterDiscordApp/css/main{{minified}}.css",
-                local: config.localServer + "/BetterDiscordApp/css/main.css"
-            },
-            {
-                type: "script",
-                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/js/main{{minified}}.js",
-                backup: "//rauenzi.github.io/BetterDiscordApp/js/main{{minified}}.js",
-                local: config.localServer + "/BetterDiscordApp/js/main.js"
-            }
-        ];
     }
 
     disableCSP(browserWindow) {
@@ -70,10 +62,10 @@ const BetterDiscord = class BetterDiscord {
         });
     }
 
-	async getCommitHash() {
+    async getCommitHash() {
         Utils.log("Getting commit hash");
         let hash = await Utils.getCommitHash(config.repo, config.branch);
-		Utils.log(hash);
+        Utils.log(hash);
         if (!hash)  {
             Utils.log("Could not get commit hash, using backup");
             hash = "master";
@@ -87,16 +79,13 @@ const BetterDiscord = class BetterDiscord {
         let remoteConfig = await Utils.getUpdater(config.repo, config.injectorBranch);
         if (!remoteConfig)  {
             Utils.log("Could not load updater, using backup");
-            remoteConfig = {
-                version: "0.4.1"
-            };
+            remoteConfig = {version: "0.5.0"};
         }
         config.latestVersion = remoteConfig.version;
         Utils.log("Latest Version: " + config.latestVersion);
     }
 
     ensureFolders() {
-        Utils.makeFolder(config.dataPath);
         Utils.makeFolder(config.dataPath + "plugins/");
         Utils.makeFolder(config.dataPath + "themes/");
     }
@@ -105,50 +94,39 @@ const BetterDiscord = class BetterDiscord {
         return new Promise(resolve => fs.writeFile(path.resolve(__dirname, "config.json"), JSON.stringify(config, null, 4), resolve));
     }
 
-    async loadApp() {
-        for (const data of this.externalData) {
-            const url = Utils.formatString((config.local && data.local != null) ? data.local : data.url, {repo: config.repo, hash: config.hash, minified: config.minified ? ".min" : ""});
-            Utils.log(`Loading Resource (${url})`);
-			const injector = (data.type == "script" ? Utils.injectScript : Utils.injectStyle).bind(Utils);
-			try {
-				await injector(url);
-			}
-			catch (err) {
-				const backup = Utils.formatString(data.backup, {minified: config.minified ? ".min" : ""});
-				Utils.error(err)
-				Utils.warn(`Could not load ${url}. Using backup ${backup}`);
-				try {
-					await injector(backup);
-				}
-				catch (err) {
-					return Utils.error(err);
-				}
-			}
-        }
-
-        Utils.log("Starting Up");
-        Utils.runJS(`(() => {
-            try {
-                var mainCore = new Core(${JSON.stringify(config)});
-                mainCore.init();
-            }
-            catch (err) {}
-        })();`);
-    }
-
     async load() {
         Utils.log("Hooked dom-ready");
-        await this.getUpdater();
-        await this.getCommitHash();
-
-        Utils.log("Loading");
-        this.ensureFolders();
-        await this.saveConfig();
         await this.loadApp();
         Utils.saveLogs();
     }
 
-    static getSetting(key) {
+    async loadApp() {
+        const baseUrl = "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/dist/index{{minified}}.js";
+        const backupUrl = "//rauenzi.github.io/BetterDiscordApp/dist/index{{minified}}.js";
+        const localUrl = config.localServer + "/BetterDiscordApp/dist/index.js";
+        const url = Utils.formatString(config.local ? localUrl : baseUrl, {repo: config.repo, hash: config.hash, minified: config.minified ? ".min" : ""});
+        Utils.log(`Loading Resource (${url})`);
+        try {
+            await Utils.injectScript(url);
+        }
+        catch (err) {
+            const backup = Utils.formatString(backupUrl, {minified: config.minified ? ".min" : ""});
+            Utils.error(err);
+            Utils.warn(`Could not load ${url}. Using backup ${backup}`);
+            try {await Utils.injectScript(backup);}
+            catch (err) {return Utils.error(err);}
+        }
+    }
+
+    getWindowPrefs() {
+        if (!fs.existsSync(buildInfoFile)) return {};
+        const buildInfo = require(buildInfoFile);
+        const prefsFile = path.resolve(config.dataPath, "data", buildInfo.releaseChannel, "windowprefs.json");
+        if (!fs.existsSync(prefsFile)) return {};
+        return require(prefsFile);
+    }
+
+    getSetting(key) {
         if (this._settings) return this._settings[key];
         const settingsFile = path.resolve(config.dataPath, "bdstorage.json");
         if (!fs.existsSync(settingsFile) || !fs.existsSync(buildInfoFile)) {
@@ -162,12 +140,9 @@ const BetterDiscord = class BetterDiscord {
             this._settings = channelSettings || {};
             return this._settings[key];
         }
-        catch {
+        catch (_) {
             this._settings = {};
             return this._settings[key];
         }
     }
-
 };
-
-module.exports = BetterDiscord;

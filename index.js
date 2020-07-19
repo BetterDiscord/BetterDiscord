@@ -6,10 +6,14 @@ electron.app.commandLine.appendSwitch("no-force-async-hooks-checks");
 
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
-        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options);
+        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) {super(options); return;}
         options.webPreferences.nodeIntegration = true;
-		options.webPreferences.enableRemoteModule = true;
-        if (BetterDiscord.getSetting("fork-wp-1") || BetterDiscord.getSetting("transparency")) {
+        options.webPreferences.enableRemoteModule = true;
+        Object.assign(options, BetterDiscord.getWindowPrefs()); // Assign new style window prefs if they exist
+
+        // Don't allow just "truthy" values
+        const shouldBeTransparent = BetterDiscord.getSetting("transparency");
+        if (typeof(shouldBeTransparent) === "boolean" && shouldBeTransparent) {
             options.transparent = true;
             options.backgroundColor = "#00000000";
         }
@@ -19,15 +23,8 @@ class BrowserWindow extends electron.BrowserWindow {
         if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
 
         super(options);
-        new BetterDiscord(this);
+        BetterDiscord.setup(this);
     }
-}
-
-Object.assign(BrowserWindow, electron.BrowserWindow); // Retains the original functions
-
-if (electron.deprecate && electron.deprecate.promisify) {
-    const originalDeprecate = electron.deprecate.promisify; // Grab original deprecate promisify
-    electron.deprecate.promisify = (originalFunction) => originalFunction ? originalDeprecate(originalFunction) : () => void 0; // Override with falsey check
 }
 
 const onReady = () => {
