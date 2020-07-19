@@ -29,11 +29,11 @@ ipc.handle("bd-hash", async () => {
 // Process
 // ===================================
 // Delete CSP
-// Get updater
-// Get commit hash
-// Ensure folders
-// Save config
 // Hook DOM Ready
+//   Get updater
+//   Get commit hash
+//   Ensure folders
+//   Save config
 //   Inject remote script
 //   Save logs
 
@@ -43,12 +43,6 @@ module.exports = new class BetterDiscord {
         Utils.setWindow(mainWindow);
         this.disableCSP(mainWindow);
 
-        await this.getUpdater();
-        await this.getCommitHash();
-
-        Utils.log("Loading");
-        this.ensureFolders();
-        await this.saveConfig();
         Utils.log("Hooking dom-ready");
         mainWindow.webContents.on("dom-ready", this.load.bind(this));
     }
@@ -79,7 +73,7 @@ module.exports = new class BetterDiscord {
         let remoteConfig = await Utils.getUpdater(config.repo, config.injectorBranch);
         if (!remoteConfig)  {
             Utils.log("Could not load updater, using backup");
-            remoteConfig = {version: "0.5.0"};
+            remoteConfig = {version: config.version};
         }
         config.latestVersion = remoteConfig.version;
         Utils.log("Latest Version: " + config.latestVersion);
@@ -96,8 +90,13 @@ module.exports = new class BetterDiscord {
 
     async load() {
         Utils.log("Hooked dom-ready");
+        await this.getUpdater();
+        await this.getCommitHash();
+
+        Utils.log("Loading");
+        this.ensureFolders();
+        await this.saveConfig();
         await this.loadApp();
-        Utils.saveLogs();
     }
 
     async loadApp() {

@@ -79,16 +79,17 @@ module.exports = class Utils {
     static _log(message) {
         console.log("[BetterDiscord]" + message);
         if (!this.logFile) return;
-        this.logData += message;
+        this.appendLog(message);
     }
 
     static setLogFile(file) {
         this.logFile = file;
-        this.logData = "";
-        fs.writeFileSync(file, this.logData);
+        fs.writeFileSync(file, "");
     }
 
-    static saveLogs() {
-        fs.writeFileSync(this.logFile, this.logData);
+    static appendLog(message) {
+        if (!this.logFile) return;
+        try {fs.appendFileSync(this.logFile, message);}
+        catch {console.log("[BetterDiscord] Could not append log file.");}
     }
 };
