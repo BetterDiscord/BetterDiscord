@@ -1,12 +1,12 @@
 {
     "name": "bandagedbd",
-    "version": "0.2.3",
+    "version": "1.0.0",
     "description": "Enhances Discord adding functionality and themes.",
     "main": "js/main.js",
     "scripts": {
         "build": "webpack --progress --colors",
         "watch": "webpack --progress --colors --watch",
-        "build-prod": "webpack --progress --colors --mode production -o js/main.min.js --devtool none",
+        "build-prod": "webpack --progress --colors --mode production -o dist/index.min.js --devtool none",
         "test": "echo \"Error: no test specified\" && exit 1",
         "minify": "npm run build-prod && npm run minify-css",
         "minify-css": "gulp minify-css",

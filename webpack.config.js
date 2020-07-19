@@ -7,8 +7,8 @@ module.exports = {
   devtool: "eval-source-map",
   entry: "./src/index.js",
   output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "js"),
+    filename: "index.js",
+    path: path.resolve(__dirname, "dist"),
     library: "Core",
     libraryTarget: "var",
     libraryExport: "default"

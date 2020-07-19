@@ -42,9 +42,9 @@ export default new class Core {
             {
                 name: "bd-stylesheet",
                 type: "style",
-                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/css/main{{minified}}.css",
-                backup: "//rauenzi.github.io/BetterDiscordApp/css/main{{minified}}.css",
-                local: "{{localServer}}/BetterDiscordApp/css/main.css"
+                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/dist/style.css",
+                backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
+                local: "{{localServer}}/BetterDiscordApp/dist/style.css"
             }
         ];
     }
@@ -141,7 +141,7 @@ export default new class Core {
 
     async loadDependencies() {
         for (const data of this.dependencies) {
-            const url = Utilities.formatString((Config.local && data.local != null) ? data.local : data.url, {repo: Config.repo, hash: Config.hash, minified: Config.minified ? ".min" : "", localServer: Config.localServer});
+            const url = Utilities.formatString((Config.local && data.local != null) ? data.local : data.url, {repo: Config.repo, hash: Config.hash, localServer: Config.localServer});
             Logger.log(`Startup`, `Loading Resource (${url})`);
 			const injector = (data.type == "script" ? DOMManager.injectScript : DOMManager.linkStyle).bind(DOMManager);
 			try {
