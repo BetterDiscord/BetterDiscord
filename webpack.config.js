@@ -8,11 +8,8 @@ module.exports = {
   devtool: "eval-cheap-source-map",
   entry: "./src/index.js",
   output: {
-    filename: "main.js",
-    path: path.resolve(__dirname, "js"),
-    library: "Core",
-    libraryTarget: "var",
-    libraryExport: "default"
+    filename: "remote.js",
+    path: path.resolve(__dirname, "dist")
   },
   externals: {
     electron: `require("electron")`,

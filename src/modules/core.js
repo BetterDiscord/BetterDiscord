@@ -25,8 +25,8 @@ const dependencies = [
     {
         name: "bd-stylesheet",
         type: "style",
-        url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/dist/style{{minified}}.css",
-        backup: "//rauenzi.github.io/BetterDiscordApp/dist/style{{minified}}.css",
+        url: "//betterdiscord.zerebos.com/dist/style.css",
+        backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
         local: "{{localServer}}/BetterDiscordApp/dist/style.css"
     }
 ];

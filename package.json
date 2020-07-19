@@ -1,18 +1,16 @@
 {
     "name": "bandagedbd",
-    "version": "0.2.3",
+    "version": "0.3.5",
     "description": "Enhances Discord adding functionality and themes.",
-    "main": "js/main.js",
+    "main": "src/index.js",
     "scripts": {
         "build": "webpack --progress --colors",
         "watch": "webpack --progress --colors --watch",
-        "build-prod": "webpack --progress --colors --mode production -o js/main.min.js --devtool none",
+        "build-prod": "webpack --progress --colors --mode production -o dist/remote.js --devtool none",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "minify": "gulp minify-js && gulp minify-css",
-        "minify-js": "gulp minify-js",
         "minify-css": "gulp minify-css",
-        "watch-js": "gulp watch-js",
-        "watch-css": "gulp watch-css"
+        "watch-css": "gulp watch-css",
+        "deploy": "npm run build-prod && npm run minify-css"
     },
     "repository": {
         "type": "git",
@@ -25,17 +23,16 @@
     },
     "homepage": "https://github.com/rauenzi/BetterDiscordApp#readme",
     "devDependencies": {
-        "@babel/core": "^7.3.4",
-        "@babel/preset-env": "^7.3.4",
-        "@babel/preset-react": "^7.0.0",
-        "@babel/register": "^7.0.0",
-        "babel-loader": "^8.0.6",
-        "circular-dependency-plugin": "^5.0.2",
-        "gulp": "^4.0.0",
-        "gulp-babel-minify": "^0.5.1",
-        "gulp-csso": "^3.0.1",
-        "gulp-rename": "^1.4.0",
-        "webpack": "^4.29.6",
-        "webpack-cli": "^3.2.3"
+        "@babel/core": "^7.10.5",
+        "@babel/preset-env": "^7.10.4",
+        "@babel/preset-react": "^7.10.4",
+        "@babel/register": "^7.10.5",
+        "babel-loader": "^8.1.0",
+        "circular-dependency-plugin": "^5.2.0",
+        "gulp": "^4.0.2",
+        "gulp-csso": "^4.0.1",
+        "gulp-rename": "^2.0.0",
+        "webpack": "^4.43.0",
+        "webpack-cli": "^3.3.12"
     }
 }

@@ -23,31 +23,31 @@ EmoteModule.prototype.init = async function () {
 
     const emoteInfo = {
         TwitchGlobal: {
-            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_global.json`,
+            url: `https://betterdiscord.zerebos.com/assets/emotedata_twitch_global.json`,
             variable: "TwitchGlobal",
             oldVariable: "emotesTwitch",
             getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`
         },
         TwitchSubscriber: {
-            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_twitch_subscriber.json`,
+            url: `https://betterdiscord.zerebos.com/assets/emotedata_twitch_subscriber.json`,
             variable: "TwitchSubscriber",
             oldVariable: "subEmotesTwitch",
             getEmoteURL: (e) => `https://static-cdn.jtvnw.net/emoticons/v1/${e}/1.0`
         },
         FrankerFaceZ: {
-            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_ffz.json`,
+            url: `https://betterdiscord.zerebos.com/assets/emotedata_ffz.json`,
             variable: "FrankerFaceZ",
             oldVariable: "emotesFfz",
             getEmoteURL: (e) => `https://cdn.frankerfacez.com/emoticon/${e}/1`
         },
         BTTV: {
-            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_bttv.json`,
+            url: `https://betterdiscord.zerebos.com/assets/emotedata_bttv.json`,
             variable: "BTTV",
             oldVariable: "emotesBTTV",
             getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`
         },
         BTTV2: {
-            url: `https://rauenzi.github.io/BetterDiscordApp/data/emotedata_bttv2.json`,
+            url: `https://betterdiscord.zerebos.com/assets/emotedata_bttv2.json`,
             variable: "BTTV2",
             oldVariable: "emotesBTTV2",
             getEmoteURL: (e) => `https://cdn.betterttv.net/emote/${e}/1x`
@@ -248,7 +248,7 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
 
 EmoteModule.prototype.getBlacklist = function () {
     return new Promise(resolve => {
-        require("request").get({url: "https://rauenzi.github.io/BetterDiscordApp/data/emotefilter.json", json: true}, function (err, resp, data) {
+        require("request").get({url: "https://betterdiscord.zerebos.com/assets/emotefilter.json", json: true}, function (err, resp, data) {
             if (err) return resolve(bemotes);
             resolve(bemotes.splice(0, 0, ...data.blacklist));
         });
