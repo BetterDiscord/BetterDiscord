@@ -7,8 +7,12 @@ electron.app.commandLine.appendSwitch("no-force-async-hooks-checks");
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) {super(options); return;}
+        const originalPreload = options.webPreferences.preload;
+        options.webPreferences.preload = path.join(__dirname, "preload.js");
         options.webPreferences.nodeIntegration = true;
         options.webPreferences.enableRemoteModule = true;
+        options.webPreferences.contextIsolation = false;
+		
         Object.assign(options, BetterDiscord.getWindowPrefs()); // Assign new style window prefs if they exist
 
         // Don't allow just "truthy" values
@@ -23,6 +27,7 @@ class BrowserWindow extends electron.BrowserWindow {
         if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
 
         super(options);
+        this.__preload = originalPreload;
         BetterDiscord.setup(this);
     }
 }
