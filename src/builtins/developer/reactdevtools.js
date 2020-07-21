@@ -7,7 +7,6 @@ const fs = require("fs");
 const path = require("path");
 
 const BrowserWindow = electron.remote.BrowserWindow;
-const webContents = electron.remote.getCurrentWebContents();
 
 export default new class ReactDevTools extends Builtin {
     get name() {return "ReactDevTools";}
@@ -32,26 +31,19 @@ export default new class ReactDevTools extends Builtin {
         }
         this.extensionPath = extensionPath;
         this.isExtensionInstalled = fs.existsSync(extensionPath);
-        this.listener = this.listener.bind(this);
     }
 
     enabled() {
         if (!this.isExtensionInstalled) this.findExtension();
         if (!this.isExtensionInstalled) return Modals.alert(Strings.ReactDevTools.notFound, Strings.ReactDevTools.notFoundDetails);
-        setImmediate(() => webContents.on("devtools-opened", this.listener));
-        if (webContents.isDevToolsOpened()) this.listener();
+
+        const didInstall = BrowserWindow.addDevToolsExtension(this.extensionPath);
+        if (didInstall) this.log("Successfully installed react devtools.");
+        else this.error("Couldn't find react devtools in chrome extensions!");
     }
 
     disabled() {
-        webContents.removeListener("devtools-opened", this.listener);
-    }
-
-    listener() {
         if (!this.isExtensionInstalled) return;
         BrowserWindow.removeDevToolsExtension("React Developer Tools");
-        const didInstall = BrowserWindow.addDevToolsExtension(this.extensionPath);
-
-        if (didInstall) this.log("Successfully installed react devtools.");
-        else this.error("Couldn't find react devtools in chrome extensions!");
     }
 };

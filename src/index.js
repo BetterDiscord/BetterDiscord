@@ -11,14 +11,3 @@ window.BdApi = BdApi;
 
 // Add loading icon at the bottom right
 LoadingIcon.show();
-
-// Backwards compatibility for now
-export default class CoreWrapper {
-    constructor(config) {
-        Core.setConfig(config);
-    }
-
-    init() {
-        Core.init();
-    }
-}

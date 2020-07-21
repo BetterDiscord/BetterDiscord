@@ -102,9 +102,13 @@ export default class AddonCard extends React.Component {
             props.dangerouslySetInnerHTML = this.settingsPanel;
         }
 
+        let child = null;
+        if (typeof(this.settingsPanel) === "function") child = <this.settingsPanel />;
+        if (this.settingsPanel.$$typeof && this.settingsPanel.$$typeof === Symbol.for("react.element")) child = this.settingsPanel;
+
         return <div className="bd-addon-card settings-open bd-switch-item">
                     <div className="bd-close" onClick={this.closeSettings}><CloseButton /></div>
-                    <div {...props}><ErrorBoundary>{this.settingsPanel instanceof React.Component || typeof(this.settingsPanel) === "function" ? this.settingsPanel : null}</ErrorBoundary></div>
+                    <div {...props}><ErrorBoundary>{child}</ErrorBoundary></div>
                 </div>;
     }
 
