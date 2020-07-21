@@ -75,7 +75,7 @@ export default class AddonCard extends React.Component {
     }
 
     closeSettings() {
-        this.panelRef.current.innerHTML = "";
+        if (this.settingsPanel instanceof Node) this.panelRef.current.innerHTML = "";
         this.setState({settingsOpen: false});
     }
 
