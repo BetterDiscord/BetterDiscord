@@ -97,7 +97,7 @@ export default class AddonCard extends React.Component {
         catch (err) { Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err); }
 
         const props = {id: `${name}-settings`, className: "addon-settings", ref: this.panelRef};
-        if (typeof(settingsPanel) == "string") {
+        if (typeof(this.settingsPanel) == "string") {
             Logger.warn("Addon Settings", "Using a DOMString is officially deprecated.");
             props.dangerouslySetInnerHTML = this.settingsPanel;
         }

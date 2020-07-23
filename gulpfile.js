@@ -11,6 +11,6 @@ gulp.task("watch-css", function() {
 function minifyCSS() {
   return gulp.src("./src/styles/index.css")
         .pipe(csso({restructure: false}))
-        .pipe(rename("style.min.css"))
+        .pipe(rename("style.css"))
         .pipe(gulp.dest("./dist"));
 }
