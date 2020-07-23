@@ -1,0 +1,186 @@
+#emote-container {
+    padding: 10px;
+}
+
+.emote-container {
+    display: inline-block;
+    padding: 2px;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    position: relative;
+}
+
+.emote-icon {
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    cursor: pointer;
+}
+
+.emote.stop-animation {
+    animation: none;
+}
+
+.emote-container:hover {
+    background: rgba(123, 123, 123, 0.37);
+}
+
+.emoteflip,
+.emotespinflip {
+    transform: scaleX(-1);
+}
+
+.emotespin {
+    animation: 1s emote-spin infinite linear;
+}
+
+.emote1spin {
+    animation: 1s emote-spin-reverse infinite linear;
+}
+
+.emotespin2 {
+    animation: 0.5s emote-spin infinite linear;
+}
+
+.emote2spin {
+    animation: 0.5s emote-spin-reverse infinite linear;
+}
+
+.emotespin3 {
+    animation: 0.2s emote-spin infinite linear;
+}
+
+.emote3spin {
+    animation: 0.2s emote-spin-reverse infinite linear;
+}
+
+.emotepulse {
+    animation: 1s emote-pulse infinite linear;
+}
+
+.emotetr {
+    transform: translateX(-3px);
+}
+
+.emotebl {
+    transform: translateY(-3px);
+}
+
+.emotebr {
+    transform: translate(-3px, -3px);
+}
+
+.emoteshake {
+    animation: 1s emote-shake infinite linear;
+}
+
+.emoteflap {
+    transform: scaleY(-1);
+}
+
+.emoteshake2 {
+    animation: emote-shake2 0.3s linear infinite;
+}
+
+.emoteshake3 {
+    animation: emote-shake3 0.1s linear infinite;
+}
+
+@keyframes emote-shake2 {
+    25% {
+        transform: translate(-1px, -1px);
+    }
+
+    50% {
+        transform: translate(-1px, 1px);
+    }
+
+    75% {
+        transform: translate(1px, 1px);
+    }
+
+    75% {
+        transform: translate(1px, -1px);
+    }
+}
+
+@keyframes emote-shake3 {
+    25% {
+        transform: translate(-1px, -1px);
+    }
+
+    50% {
+        transform: translate(-1px, 1px);
+    }
+
+    75% {
+        transform: translate(1px, 1px);
+    }
+
+    75% {
+        transform: translate(1px, -1px);
+    }
+}
+
+@keyframes emote-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes emote-spin-reverse {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes emote-pulse {
+    0% {
+        -webkit-transform: scale(1, 1);
+    }
+
+    50% {
+        -webkit-transform: scale(1.2, 1.2);
+    }
+
+    100% {
+        -webkit-transform: scale(1, 1);
+    }
+}
+
+@keyframes emote-shake {
+    10%,
+    90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}

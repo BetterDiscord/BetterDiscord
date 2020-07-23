@@ -1,0 +1,17 @@
+.bd-sidebar-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bd-sidebar-header .bd-changelog-button {
+    height: 16px;
+}
+
+.bd-sidebar-header .bd-icon {
+    cursor: pointer;
+    fill: #72767d;
+}
+
+.bd-sidebar-header .bd-icon:hover {
+    fill: #fff;
+}

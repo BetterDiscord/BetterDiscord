@@ -1,8 +1,8 @@
 import secure from "./secure";
 import patchModuleLoad from "./moduleloader";
-import Core from "./modules/core";
-import BdApi from "./modules/pluginapi";
 import LoadingIcon from "./loadingicon";
+import BetterDiscord from "./modules/core";
+import BdApi from "./modules/pluginapi";
 
 // Perform some setup
 secure();
@@ -11,3 +11,4 @@ window.BdApi = BdApi;
 
 // Add loading icon at the bottom right
 LoadingIcon.show();
+new BetterDiscord();

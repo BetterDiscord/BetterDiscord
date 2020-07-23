@@ -7,10 +7,17 @@
         "build": "webpack --progress --colors",
         "watch": "webpack --progress --colors --watch",
         "build-prod": "webpack --progress --colors --mode production -o dist/index.min.js --devtool none",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "minify": "npm run build-prod && npm run minify-css",
+        "lint-js": "eslint --ext .jsx,.js src/",
+        
+        "build-css": "gulp build-css",
+        "watch-css": "gulp watch-css",
         "minify-css": "gulp minify-css",
-        "watch-css": "gulp watch-css"
+        "lint-css": "stylelint src/styles/*.css && stylelint src/styles/**/*.css && stylelint dist/style.css",
+        
+        "minify": "npm run build-prod && npm run minify-css",
+        "build-all": "npm run build-prod && npm run build-css && npm run minify-css",
+        "lint": "npm run lint-js && npm run lint-css",
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
@@ -29,9 +36,15 @@
         "@babel/register": "^7.10.5",
         "babel-loader": "^8.1.0",
         "circular-dependency-plugin": "^5.2.0",
+        "eslint": "^7.5.0",
+        "eslint-plugin-react": "^7.20.3",
         "gulp": "^4.0.2",
-        "gulp-csso": "^4.0.1",
+        "gulp-postcss": "^8.0.0",
         "gulp-rename": "^2.0.0",
+        "postcss-csso": "^4.0.0",
+        "postcss-easy-import": "^3.0.0",
+        "stylelint": "^13.6.1",
+        "stylelint-config-standard": "^20.0.0",
         "webpack": "^4.43.0",
         "webpack-cli": "^3.3.12"
     }

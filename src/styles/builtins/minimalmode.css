@@ -1,0 +1,233 @@
+/* Messages */
+.bd-minimal .divider-32i8lo {
+    opacity: 0;
+}
+
+/* message avatars */
+.bd-minimal .large-3ChYtB {
+    max-width: 20px;
+    max-height: 20px;
+    background-size: 100%;
+    margin-right: 2px;
+    margin-top: 0;
+    border-radius: 0;
+}
+
+/* message content */
+.bd-minimal .content-3dzVd8 {
+    border-left: 2px solid #ebebeb;
+    padding-left: 2px;
+}
+
+.bd-minimal .theme-dark .content-3dzVd8 {
+    border-left: 2px solid #303030;
+}
+
+/* message username */
+.bd-minimal .username-_4ZSMR {
+    font-size: small;
+}
+
+/* message group */
+.bd-minimal .container-1YxwTf {
+    padding: 5px;
+}
+
+/* message embed */
+.bd-minimal .embed-IeVjo6 {
+    padding: 2px;
+}
+
+/* Member List */
+.bd-minimal .membersWrap-2h-GB4 {
+    min-width: 0;
+}
+
+/* member list avatars */
+.bd-minimal .members-1998pB .small-5Os1Bb {
+    max-width: 15px;
+    max-height: 15px;
+    background-size: 15px 15px;
+}
+
+/* member list avatars */
+.bd-minimal .members-1998pB .small-5Os1Bb .status-oxiHuE {
+    height: 5px;
+    width: 5px;
+}
+
+/* member list list item */
+.bd-minimal .members-1998pB .member-3W1lQa {
+    padding: 5px;
+}
+
+/* member list item inner */
+.bd-minimal .members-1998pB .memberInner-2CPc3V {
+    transform: scale(0.9);
+}
+
+/* member list role label */
+.bd-minimal .members-1998pB .membersGroup-v9BXpm {
+    margin-top: 3px;
+    transform: scale(0.9);
+}
+
+/* channel list */
+.bd-minimal .channels-Ie2l6A {
+    width: 160px;
+}
+
+/* Channel List */
+.bd-minimal.bd-minimal-chan .channels-Ie2l6A {
+    display: none;
+}
+
+/* channel list guild name */
+.bd-minimal .channels-Ie2l6A header span {
+    font-size: 12px;
+}
+
+/* channel item */
+.bd-minimal .containerDefault-3GGEv_ {
+    transform: scale(0.9);
+}
+
+/* channel name */
+.bd-minimal .content-3at_AU {
+    transform: scale(0.9);
+}
+
+/* channel icon */
+.bd-minimal .icon-1_QxNX {
+    width: 14px;
+    height: 14px;
+}
+
+/* Guild List */
+.bd-minimal .wrapper-1Rf91z .scroller-2FKFPG .listItem-2P_4kh {
+    width: 20px;
+    height: 20px;
+    background-size: 100%;
+    font-size: 15px;
+    line-height: 20px;
+    margin: 0 12.5px 8px;
+}
+
+/* guild link and icon */
+.bd-minimal .wrapper-1Rf91z .scroller-2FKFPG .wrapper-25eVIn a,
+.bd-minimal .listItem-2P_4kh .wrapper-25eVIn .icon-27yU2q {
+    width: 20px;
+    height: 20px;
+    background-size: 100%;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+/* guild inner */
+.bd-minimal .listItem-2P_4kh .wrapper-25eVIn {
+    width: 20px;
+    height: 20px;
+    background-size: 100%;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+.bd-minimal .listItem-2P_4kh svg,
+.bd-minimal .listItem-2P_4kh foreignObject[mask] {
+    mask: none;
+}
+
+/* home icon */
+.bd-minimal .wrapper-1Rf91z .scroller-2FKFPG .homeIcon-tEMBK1 {
+    width: 10px;
+    height: 10px;
+    background-size: 100%;
+    font-size: 15px;
+    line-height: 20px;
+}
+
+/* add and search */
+.bd-minimal .circleIconButton-jET_ig {
+    height: 20px;
+    width: 20px;
+}
+
+.bd-minimal .circleIconButton-jET_ig svg {
+    height: 14px;
+    width: 14px;
+}
+
+/* friends online */
+.bd-minimal .wrapper-1Rf91z .scroller-2FKFPG .friendsOnline-_wi_fM {
+    margin-left: -15px;
+    font-size: 7px;
+}
+
+/* public servers button */
+.bd-minimal #bd-pub-li {
+    height: 16px;
+}
+
+.bd-minimal #bd-pub-button {
+    font-size: 8px;
+    line-height: 16px;
+    height: 16px;
+}
+
+/* guild list */
+.bd-minimal .wrapper-1Rf91z,
+.bd-minimal .wrapper-1Rf91z .scrollerWrap-1IAIlv,
+.bd-minimal .wrapper-1Rf91z .scroller-2FKFPG {
+    width: 45px;
+}
+
+/* separator */
+.bd-minimal .wrapper-1Rf91z .guildSeparator-3s64Iy {
+    margin-left: -15px;
+}
+
+/* unread icon */
+.bd-minimal .wrapper-1Rf91z .scroller-2FKFPG .listItem-2P_4kh .wrapper-sa6paO {
+    height: 20px;
+    margin-top: 0;
+    margin-left: -12.5px;
+}
+
+/* audio/video */
+.bd-minimal .wrapper-1Rf91z .scroller-2FKFPG .iconBadge-2wi9r4 {
+    width: 12px;
+    height: 12px;
+    background-size: 12px;
+}
+
+/* Account Container */
+.bd-minimal .container-2Thooq .avatarSmall-3ACRaI {
+    width: 15px;
+    height: 15px;
+    background-size: 15px 15px;
+}
+
+/* status */
+.bd-minimal .container-2Thooq .avatarSmall-3ACRaI .status-oxiHuE {
+    height: 5px;
+    width: 5px;
+}
+
+/* username and discrim */
+.bd-minimal .container-2Thooq .accountDetails-3k9g4n {
+    transform: scale(0.8);
+}
+
+/* 3 buttons */
+.bd-minimal .container-2Thooq .button-2b6hmh {
+    height: 14px;
+    width: 14px;
+    background-size: 14px 14px;
+    margin-left: 3px;
+}
+
+/* 3 buttons icons */
+.bd-minimal .container-2Thooq .button-2b6hmh svg {
+    height: 14px;
+    width: 14px;
+}

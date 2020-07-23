@@ -21,7 +21,7 @@ import Utilities from "./utilities";
 const {ipcRenderer} = require("electron");
 const GuildClasses = DiscordModules.GuildClasses;
 
-export default new class Core {
+export default class Core {
     constructor() {
         ipcRenderer.invoke("bd-config", "get").then(injectorConfig => {
             if (this.hasStarted) return;
@@ -42,9 +42,9 @@ export default new class Core {
             {
                 name: "bd-stylesheet",
                 type: "style",
-                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/dist/style.css",
-                backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
-                local: "{{localServer}}/BetterDiscordApp/dist/style.css"
+                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/dist/style.min.css",
+                backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.min.css",
+                local: "{{localServer}}/BetterDiscordApp/dist/style.min.css"
             }
         ];
     }
@@ -247,4 +247,4 @@ export default new class Core {
         Logger.log("InjectorUpdate", "Injector Updated!");
         return success;
     }
-};
+}

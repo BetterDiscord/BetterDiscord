@@ -1,0 +1,147 @@
+/* Emoji Picker */
+.bd-dark #bd-qem-favourite-container,
+.bd-dark #bd-qem-twitch-container {
+    background-color: #353535;
+}
+
+.bd-dark #bd-qem {
+    border-bottom: 1px solid #464646;
+    background: #353535;
+}
+
+.bd-dark #bd-qem button {
+    background: #353535;
+    border-left: 1px solid #242424;
+    box-shadow: #424242 1px 0 0 0;
+    color: #fff;
+}
+
+.bd-dark #bd-qem button.active {
+    background-color: #292929;
+}
+
+.bd-dark #bd-qem button:hover {
+    background-color: #303030;
+}
+
+.bd-dark .emojiPicker-3m1S-j {
+    background-color: #353535;
+}
+
+.bd-dark .emojiPicker-3m1S-j .category-2U57w6 {
+    background-color: #353535;
+}
+
+.bd-dark .emojiPicker-3m1S-j .header-1nkwgG .searchBar-2pWH0_ {
+    background-color: #2b2b2b;
+}
+
+.bd-dark .emojiPicker-3m1S-j .searchBar-2pWH0_ input {
+    color: #fff;
+}
+
+.bd-dark .emojiPicker-3m1S-j .searchBar-2pWH0_ input::-webkit-input-placeholder {
+    color: #fff;
+}
+
+.bd-dark .emojiPicker-3m1S-j .scroller-3vODG7 .emojiItem-109bjA.selected-39BZ4S {
+    background-color: rgba(123, 123, 123, 0.37);
+}
+
+.bd-dark .emojiPicker-3m1S-j .dimmer-3iH-5D.visible-3k45bQ {
+    background-color: rgba(62, 62, 62, 0.65);
+}
+
+.bd-dark .emojiPicker-3m1S-j .diversitySelector-tmmMv0 .popout-2nUePc {
+    background: #353535;
+    border-color: #202020;
+}
+
+.bd-dark #bd-qem-favourite-container .scroller::-webkit-scrollbar,
+.bd-dark #bd-qem-favourite-container .scroller::-webkit-scrollbar-track,
+.bd-dark #bd-qem-favourite-container .scroller::-webkit-scrollbar-track-piece,
+.bd-dark #bd-qem-twitch-container .scroller::-webkit-scrollbar,
+.bd-dark #bd-qem-twitch-container .scroller::-webkit-scrollbar-track,
+.bd-dark #bd-qem-twitch-container .scroller::-webkit-scrollbar-track-piece,
+.bd-dark .emojiPicker-3m1S-j .scroller-3vODG7::-webkit-scrollbar,
+.bd-dark .emojiPicker-3m1S-j .scroller-3vODG7::-webkit-scrollbar-track,
+.bd-dark .emojiPicker-3m1S-j .scroller-3vODG7::-webkit-scrollbar-track-piece {
+    background-color: #303030 !important;
+    border-color: #303030 !important;
+}
+
+.bd-dark #bd-qem-twitch-container .scroller::-webkit-scrollbar-thumb,
+.bd-dark #bd-qem-favourite-container .scroller::-webkit-scrollbar-thumb,
+.bd-dark .emojiPicker-3g68GS .scroller-3vODG7::-webkit-scrollbar-thumb {
+    border-color: #202020 !important;
+    background-color: #202020 !important;
+}
+
+/* add/create server */
+.bd-dark .theme-light .slide-2pHaq5 {
+    background: #36393f;
+}
+
+.bd-dark .theme-dark .action-1lSjCi,
+.bd-dark .theme-light .action-1lSjCi {
+    background: #2f3136;
+}
+
+/* centered or */
+.bd-dark .theme-dark .or-3THJsp,
+.bd-dark .theme-light .or-3THJsp {
+    background: #2f3136;
+    order: 2;
+    height: 56px;
+    width: 56px;
+    top: 103px;
+    line-height: 56px;
+    left: calc(50% - 29px);
+    border-radius: 50%;
+    border: 2px solid #484b52;
+}
+
+.bd-dark .create-3jownz {
+    order: 1;
+}
+
+.bd-dark .join-33Tr-7 {
+    order: 3;
+}
+
+.bd-dark .theme-dark .actionIcon-2IISM_,
+.bd-dark .theme-light .actionIcon-2IISM_ {
+    filter: grayscale(100%) brightness(60%);
+}
+
+.bd-dark .theme-light .footer-2yfCgX {
+    background: #2f3136;
+}
+
+/* Region Select */
+.bd-dark .regionSelectModal-12e-57 {
+    background: #36393f;
+}
+
+.bd-dark .regionSelectModal-12e-57 .regionSelectModalOption-2DSIZ3 {
+    background: #2f3136;
+    border: 2px solid #484b52;
+}
+
+/* Ace Editor Settings */
+.bd-dark ~ div #ace_settingsmenu {
+    color: #f6f6f7;
+    background: #36393f;
+    box-shadow: 0 0 0 1px rgba(32, 34, 37, 0.6), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+}
+
+.bd-dark ~ div #ace_settingsmenu select,
+.bd-dark ~ div #ace_settingsmenu input[type="text"] {
+    color: #f6f6f7;
+    background: #2f3136;
+    border: 1px solid #484b52;
+}
+
+.bd-dark ~ div .ace_closeButton::before {
+    color: #f6f6f7;
+}

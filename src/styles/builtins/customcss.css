@@ -1,0 +1,132 @@
+#bd-editor-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+#bd-editor-controls button {
+    margin: 0 5px 0 0;
+    background: none;
+    color: #fff;
+    height: 26px;
+    font-weight: 600;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+}
+
+#bd-editor-controls button:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#bd-editor-controls button svg {
+    fill: white;
+}
+
+#bd-editor-controls button:last-of-type {
+    margin-right: 0;
+}
+
+#bd-editor-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #272822;
+    color: #fff;
+    border: none;
+    box-shadow: 0 1px 0 0 #2f3129 inset;
+    padding: 5px;
+}
+
+.editor-wrapper {
+    display: flex;
+}
+
+.ace_editor {
+    line-height: normal;
+    font-family: Consolas, monospace;
+    box-sizing: border-box;
+    height: calc(100vh - 250px);
+    font-size: 14px;
+    width: 100%;
+}
+
+.bd-monokai .editor .ace_gutter {
+    background: #2f3136;
+}
+
+.bd-monokai .ace_editor {
+    background: #292b2f;
+}
+
+.bd-monokai #bd-editor-controls {
+    background: #202225;
+}
+
+.theme-light #bd-editor-controls {
+    background: #e8e8e8;
+    border: 1px solid #fff;
+    border-top: 1px solid #adadad;
+    box-shadow: inset 0 1px 0 0 white;
+}
+
+.controls-section {
+    display: flex;
+    align-items: center;
+}
+
+.controls-section .checkbox-inner {
+    width: 14px;
+    height: 14px;
+}
+
+.controls-section .checkbox-inner .checkbox:checked + span::after {
+    left: 2px;
+    top: -2px;
+}
+
+.controls-section .checkbox-label {
+    font-size: 14px;
+}
+
+/* Ace Editor Settings */
+#ace_settingsmenu_container {
+    background: rgba(0, 0, 0, 0.7) !important; /* stylelint-disable-line important */
+}
+
+body #ace_settingsmenu {
+    padding-top: 35px;
+}
+
+body .ace_closeButton {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    z-index: 10000;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+body .ace_closeButton::before {
+    content: "✖";
+    color: #36393f;
+}
+
+body .ace_closeButton:active {
+    transform: translateY(2px);
+}
+
+/* editor help text */
+#bd-editor-controls .help-text {
+    margin-top: 8px;
+    margin-bottom: 3px;
+    font-size: 14px;
+}
+
+#bd-editor-controls .help-text .inline {
+    background: #2f3129;
+    padding: 0.2em;
+    margin: -0.2em 0;
+    border-radius: 3px;
+}

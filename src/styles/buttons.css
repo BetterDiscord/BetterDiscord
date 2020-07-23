@@ -1,0 +1,26 @@
+.bd-button {
+    background-color: #3e82e5;
+    color: white;
+    border-radius: 3px;
+    padding: 2px 6px;
+}
+
+.bd-button:hover {
+    background-color: rgb(56, 117, 206);
+}
+
+.bd-button:active {
+    background-color: rgb(50, 104, 183);
+}
+
+.bd-button.bd-button-success {
+    background-color: #3ac15c;
+}
+
+.bd-button.bd-button-success:hover {
+    background-color: rgb(52, 174, 83);
+}
+
+.bd-button.bd-button-success:active {
+    background-color: rgb(46, 154, 74);
+}

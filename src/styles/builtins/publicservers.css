@@ -1,0 +1,236 @@
+#bd-pub-li {
+    height: 20px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+#bd-pub-button {
+    border-radius: 4px;
+    background-color: rgb(47, 49, 54);
+    color: #b9bbbe;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+    height: 20px;
+}
+
+.bd-server-card .bd-server-tags {
+    flex: 1 1 auto;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    line-height: 24px;
+    font-size: 12px;
+    color: #b9bbbe;
+    font-weight: 700;
+    margin-right: 10px;
+}
+
+/* .ui-card.ui-card-primary.bd-server-card:first-child {
+  margin-bottom: 13px;
+}
+
+.ui-card.ui-card-primary.bd-server-card:first-child:after {
+  border: 3px solid #7289da;
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+} */
+
+.bd-server-card.bd-server-card-pinned {
+    margin-bottom: 15px;
+}
+
+.bd-server-card.bd-server-card-pinned::after {
+    background: #3a71c1;
+    content: "";
+    height: 3px;
+    width: 100%;
+    display: block;
+    margin-top: 7px;
+    position: absolute;
+    top: 100%;
+}
+
+.bd-server-description-container {
+    color: #b9bbbe;
+    min-height: 65px;
+    max-height: 65px;
+    border-top: 1px solid #3f4146;
+    border-bottom: 1px solid #3f4146;
+    padding-top: 5px;
+    font-size: 13px;
+}
+
+.bd-server-header {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    justify-content: space-between;
+    font-weight: 600;
+}
+
+.bd-server-card {
+    display: flex;
+    position: relative;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    background: rgba(32, 34, 37, 0.6);
+    border-color: #202225;
+    margin-bottom: 8px;
+}
+
+.bd-server-header,
+.bd-server-footer {
+    display: flex;
+    color: #b9bbbe;
+}
+
+.bd-server-card .bd-button {
+    margin-top: 4px;
+}
+
+.bd-server-content {
+    padding: 5px 10px;
+    flex: 1;
+}
+
+.bd-server-image {
+    min-width: 115px;
+    min-height: 115px;
+    max-width: 115px;
+    max-height: 115px;
+}
+
+.bd-server-name {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-right: 15px;
+    max-width: 330px;
+    flex: 1 1 50%;
+}
+
+.bd-layer {
+    -ms-flex-direction: column;
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    bottom: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+/* #pubslayer .ui-tab-bar-item {
+  color: #b9bbbe;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin-bottom: 2px;
+  padding: 6px 10px;
+  position: relative;
+  font-size: 16px;
+  line-height: 20px;
+  border-radius: 3px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+#pubslayer .ui-tab-bar-item:hover {
+  color: #f6f6f7;
+  background-color: hsla(216,4%,74%,.1);
+}
+
+#pubslayer .ui-tab-bar-item.selected {
+  color: #fff;
+  background-color: #7289da;
+}
+
+#pubslayer .ui-tab-bar-header {
+  color: #72767d;
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 16px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+#pubslayer #bd-settings-sidebar .ui-tab-bar-separator {
+  background-color: hsla(218,5%,47%,.3);
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 1px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+}
+
+#pubslayer h2.ui-form-title {
+  color: #f6f6f7;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+#pubslayer h5.ui-form-title {
+  color: #f6f6f7;
+} */
+
+#pubslayer button {
+    background: #7289da;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    padding: 2px 16px;
+    border: none;
+    border-radius: 3px;
+    transition: background-color 0.17s ease;
+}
+
+#pubslayer button:hover {
+    background-color: #677bc4;
+}
+
+#pubslayer input {
+    color: #f6f6f7;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    height: 30px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    outline: none;
+    transition: background-color 0.15s ease, border 0.15s ease;
+}
+
+#bd-connection {
+    margin-left: 10px;
+}
+
+.bd-footnote {
+    color: #b9bbbe;
+    font-size: 11px;
+}
+
+.bd-button-next,
+.bd-button-reconnect {
+    margin: 5px 10px 10px 0;
+    width: 100%;
+    min-height: 20px;
+}

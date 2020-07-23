@@ -8,10 +8,7 @@ module.exports = {
   entry: "./src/index.js",
   output: {
     filename: "index.js",
-    path: path.resolve(__dirname, "dist"),
-    library: "Core",
-    libraryTarget: "var",
-    libraryExport: "default"
+    path: path.resolve(__dirname, "dist")
   },
   externals: {
     electron: `require("electron")`,
@@ -51,7 +48,7 @@ module.exports = {
   plugins: [
     new CircularDependencyPlugin({
       // exclude detection of files based on a RegExp
-      exclude: /a\.js|node_modules/,
+      exclude: /node_modules/,
       // add errors to webpack instead of warnings
       // failOnError: true,
       // set the current working directory for displaying module paths

@@ -1,0 +1,124 @@
+@keyframes open-window {
+    from {
+        transform: scale(0.9);
+    }
+
+    to {
+        transform: none;
+    }
+}
+
+.floating-window {
+    animation: open-window 200ms ease;
+    min-width: 200px;
+    min-height: 300px;
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    -webkit-app-region: no-drag;
+    position: fixed;
+    z-index: 1001;
+    box-sizing: border-box;
+}
+
+.floating-window.modal-open {
+    z-index: 999;
+}
+
+.floating-window.resizable {
+    overflow: auto;
+    resize: both;
+    padding-bottom: 10px;
+    background: #202225;
+}
+
+.floating-window-titlebar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #202225; /* #2F3129background-color: #202225; */
+    color: white;
+    border-bottom: 1px solid #272822;
+}
+
+.floating-window-content {
+    display: flex;
+    flex-direction: column;
+    background: #2f3129;
+    color: white;
+    flex: 1;
+}
+
+.floating-window-titlebar .title {
+    /* font-weight: bold; */
+    flex: 1;
+    text-align: center;
+    padding: 2px 0;
+}
+
+.floating-window-buttons {
+    display: flex;
+}
+
+.floating-window-buttons .button {
+    cursor: pointer;
+    padding: 0 2px;
+}
+
+.floating-window-buttons .button svg {
+    fill: #dcddde;
+    margin-top: 1.5px;
+}
+
+.floating-window-buttons .button:hover svg {
+    fill: white;
+}
+
+.floating-window-buttons .button:hover {
+    background-color: #36393f;
+}
+
+.floating-window-buttons .close-button:hover {
+    background-color: #f04747;
+}
+
+.floating-window-buttons .close-button:hover svg path.fill {
+    fill: white;
+}
+
+.floating-window-content #bd-editor-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.floating-window .editor-wrapper {
+    flex: 1;
+}
+
+.floating-window .ace_editor {
+    height: auto;
+    flex: 1;
+}
+
+.floating-window #bd-editor-controls {
+    height: auto;
+    background: #202225;
+    border: none;
+    box-shadow: 0 1px 0 0 #2f3129 inset;
+}
+
+#floating-editor-window {
+    min-width: 340px;
+    min-height: 280px;
+    max-height: 900px;
+    max-width: 750px;
+}
+
+.floating-addon-window {
+    min-width: 535px;
+    min-height: 605px;
+    max-height: 90%;
+    max-width: 90%;
+}

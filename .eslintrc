@@ -3,6 +3,11 @@
     "plugins": [
         "react"
     ],
+    "settings": {
+        "react": {
+            "version": "16.12.0"
+        }
+    },
 	"env": {
         "browser": true,
         "node": true,
@@ -34,6 +39,7 @@
         "object-curly-spacing": ["error", "never", { "objectsInObjects": false }],
         "no-var": "error",
         "prefer-const": "error",
+        "no-prototype-builtins": "off",
         "react/jsx-uses-react": "error",
         "react/jsx-uses-vars": "error",
         "react/prop-types": "off",

@@ -90,7 +90,7 @@ export default class Logger {
     }
 
     static parseType(type) {
-        return LogTypes.hasOwnProperty(type) ? LogTypes[type] : "log";
+        return LogTypes[type] || "log";
     }
 
 }
