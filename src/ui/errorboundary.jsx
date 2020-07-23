@@ -1,17 +1,17 @@
 import {React, Logger} from "modules";
-
+import {remote} from "electron";
 export default class ErrorBoundary extends React.Component {
     constructor(props) {
       super(props);
       this.state = {hasError: false};
     }
 
-    componentDidCatch() {
+    componentDidCatch(error, errorInfo) {
       this.setState({hasError: true});
     }
 
     render() {
-      if (this.state.hasError) return <div className="react-error">Component Error</div>;  
+      if (this.state.hasError) return <div onClick={() => remote.getCurrentWindow().openDevTools()} className="react-error">There was an unexpected Error. Click to open console for more details.</div>;  
       return this.props.children; 
     }
 }

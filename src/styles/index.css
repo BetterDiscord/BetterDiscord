@@ -1,3 +1,11 @@
+/* Error Boundary stuff */
+.react-error {
+	color: red;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+	cursor: pointer;
+}
+
 .bd-settings-group.collapsible .bd-settings-title {
   display: flex;
   justify-content: space-between;
