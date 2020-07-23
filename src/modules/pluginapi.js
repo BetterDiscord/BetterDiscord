@@ -11,13 +11,14 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import Logger from "./logger";
 import Patcher from "./patcher";
+import Emotes from "../builtins/emotes/emotes";
 
 const BdApi = {
     get React() { return DiscordModules.React; },
     get ReactDOM() { return DiscordModules.ReactDOM; },
     get WindowConfigFile() {return "";},
     get settings() {return Settings.collections;},
-    get emotes() {return {};},
+    get emotes() {return Emotes.Emotes;},
     get version() {return Config.version;}
 };
 
