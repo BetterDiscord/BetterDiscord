@@ -1,4 +1,4 @@
-import {React, Utilities, WebpackModules, DiscordModules} from "modules";
+import {React, WebpackModules, DiscordModules} from "modules";
 import EmoteModule from "../builtins/emotes/emotes";
 const {openContextMenu, closeContextMenu} = WebpackModules.getByProps("openContextMenu");
 const {MenuItem, MenuGroup} = WebpackModules.find(m => m.MenuRadioItem && !m.default);
@@ -18,19 +18,7 @@ export default class EmoteIcon extends React.Component {
             <MenuGroup>
                 <MenuItem id="remove-favorite" onClick={this.handleUnfavorite.bind(this)} onClose={() => closeContextMenu()}/>
             </MenuGroup>
-        </ContextMenu>)
-        openContextMenu(e, () => React.createElement(ContextMenu, {
-            onClose: () => closeContextMenu(),
-            navId: "EmoteContextMenu",
-            children: React.createElement(MenuItem, {
-                label: "Remove Favorite",
-                id: "remove-favorite",
-                action: () => {
-                    closeContextMenu();
-                    EmoteModule.removeFavorite(this.props.emote);
-                }
-            })
-        }))
+        </ContextMenu>);
     }
     handleUnfavorite() {
         EmoteModule.removeFavorite(this.props.emote);

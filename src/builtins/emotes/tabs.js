@@ -7,8 +7,7 @@ export default [
         id: "twitchEmotes",
         label: "Twitch Emotes",
         element: () => React.createElement(EmoteMenuCard, {
-            children: Object.entries(EmoteModule.getCategory("TwitchGlobal")).map(([emote]) => {
-                // if (!EmoteModule.getCategory("TwitchGlobal").hasOwnProperty(emote)) return null;
+            children: Object.keys(EmoteModule.getCategory("TwitchGlobal")).map(emote=> {
                 const url = EmoteModule.getUrl("TwitchGlobal", emote);
                 return React.createElement(EmoteIcon, {emote, url});
             }),
