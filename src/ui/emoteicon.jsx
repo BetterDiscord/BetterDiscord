@@ -14,14 +14,15 @@ export default class EmoteIcon extends React.Component {
         this.inserText(this.props.emote);
     }
     handleOnContextMenu(e) {
-        openContextMenu(e, () => <ContextMenu navId="EmoteContextMenu" onClose={() => closeContextMenu()}>
+        openContextMenu(e, () => <ContextMenu navId="EmoteContextMenu" onClose={closeContextMenu}>
             <MenuGroup>
-                <MenuItem id="remove-favorite" onClick={this.handleUnfavorite.bind(this)} onClose={() => closeContextMenu()}/>
+                <MenuItem label={EmoteModule.isFavorite(this.props.emote) ? "Remove Favorite" : "Add Favorite"} id="favorite" action={this.handlefavorite.bind(this)} onClose={closeContextMenu}/>
             </MenuGroup>
         </ContextMenu>);
     }
-    handleUnfavorite() {
-        EmoteModule.removeFavorite(this.props.emote);
+    handlefavorite() {
+        closeContextMenu();
+        EmoteModule.isFavorite(this.props.emote) ? EmoteModule.removeFavorite(this.props.emote) : EmoteModule.addFavorite(this.props.emote, this.props.url);
     }
     inserText(emote) {
         ComponentDispatch.dispatchToLastSubscribed("INSERT_TEXT", {content: emote})
