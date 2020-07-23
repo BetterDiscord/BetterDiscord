@@ -13,8 +13,7 @@ export default new class EmoteMenu extends Builtin {
     constructor() {
         super();
     }
-    async enabled() {
-        if (this.hideEmojis) this.enableHideEmojis();
+    enabled() {
         this.before(EmojiPicker, "type", (_, [args], ret) => {
             if(args.expressionPickerView == "emoji" && this.hideEmojis) args.expressionPickerView = "gif";
         }); 
