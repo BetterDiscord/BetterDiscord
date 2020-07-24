@@ -8,7 +8,7 @@ class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) {super(options); return;}
         const originalPreload = options.webPreferences.preload;
-        options.webPreferences.preload = path.join(__dirname, "preload.js");
+        options.webPreferences.preload = path.join(__dirname, "betterdiscord", "preload.js");
         options.webPreferences.nodeIntegration = true;
         options.webPreferences.enableRemoteModule = true;
         options.webPreferences.contextIsolation = false;
@@ -27,7 +27,7 @@ class BrowserWindow extends electron.BrowserWindow {
         if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
 
         super(options);
-        this.__preload = originalPreload;
+        this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
     }
 }

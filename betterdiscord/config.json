@@ -1,5 +1,6 @@
 {
     "local": false,
+    "localPath": "",
     "localServer": "//localhost:8080",
     "repo": "rauenzi",
     "branch": "master",

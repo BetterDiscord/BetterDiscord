@@ -100,6 +100,9 @@ module.exports = new class BetterDiscord {
     }
 
     async loadApp() {
+        if (config.local && config.localPath) {
+            if (fs.existsSync(path.resolve(config.localPath, "index.js"))) return;
+        }
         const baseUrl = "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/dist/index{{minified}}.js";
         const backupUrl = "//rauenzi.github.io/BetterDiscordApp/dist/index{{minified}}.js";
         const localUrl = config.localServer + "/BetterDiscordApp/dist/index.js";
