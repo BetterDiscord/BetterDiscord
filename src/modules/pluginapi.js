@@ -11,13 +11,17 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import Logger from "./logger";
 import Patcher from "./patcher";
+import Emotes from "../builtins/emotes/emotes";
 
 const BdApi = {
     get React() { return DiscordModules.React; },
     get ReactDOM() { return DiscordModules.ReactDOM; },
     get WindowConfigFile() {return "";},
     get settings() {return Settings.collections;},
-    get emotes() {return {};},
+    get emotes() {return new Proxy(Emotes.Emotes, {
+        get() { return Emotes.Emotes},
+        set() { Logger.warn("Emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
+    });},
     get version() {return Config.version;}
 };
 

@@ -128,3 +128,6 @@
 .bd-qme-hidden #bd-qem-emojis {
     display: none;
 }
+.bd-em-scroller {
+    height: 400px;
+}
