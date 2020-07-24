@@ -1,6 +1,6 @@
 # To-Do List
 
-This list only reflects the items that have needed to be done since July 2020, there was a lot of progress/change before this point.
+This list only reflects the items that have needed to be done since July 23 2020, there was a lot of progress/change before this point.
 
 Note: The items listed here are not in any sort of priority order.
 
@@ -8,10 +8,8 @@ Note: The items listed here are not in any sort of priority order.
 - Transition code
 
 ### To Do (Injector)
-- Update to new windowprefs location
-- Remove dependency management
-- Remove string script injection/communication with remote
-- expand ipc/config commands
+- Expand ipc/config commands
+- Move more to preload
 
 ### To Do (Meta)
 - Update README (info, patrons)
@@ -19,7 +17,6 @@ Note: The items listed here are not in any sort of priority order.
 - Add gh funding
 
 ### Someday
-- Switch from /css and /js to /release
 - Move old utilities to BdApi
 - Component patcher (also does additional classes, etc)
 - Plugin Class

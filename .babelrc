@@ -1,0 +1,20 @@
+{
+    "presets": [[
+        "@babel/env",
+        {
+            "targets": {
+                "node": "12.8.1"
+            }
+        }
+    ]],
+    "plugins": [[
+        "module-resolver",
+        {
+            "alias": {
+                "builtins": "./src/builtins/builtins.js",
+                "data": "./src/data/data.js",
+                "modules": "./src/modules/modules.js"
+            }
+        }
+    ]]
+}
