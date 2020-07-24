@@ -21,8 +21,8 @@ export default new class EmoteMenu extends Builtin {
 			const head = Utilities.getNestedProp(ret, "props.children.props.children.1.props.children.0.props.children.props.children");
 			const body = Utilities.getNestedProp(ret, "props.children.props.children.1.props.children");
 			if(!head || !body) return ret;
-            const currentTab = Tabs.find(e => e.id === selected);
 			const selected = args.expressionPickerView;
+            const currentTab = Tabs.find(e => e.id === selected);
 			let tabProps = head[0].props;
 			head.push(
                 ...Tabs.map(e => React.createElement("div", {
