@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require("path");
+
 import LocaleManager from "./localemanager";
 
 import Logger from "./logger";
@@ -17,6 +20,7 @@ import ComponentPatcher from "./componentpatcher";
 import Strings from "./strings";
 import LoadingIcon from "../loadingicon";
 import Utilities from "./utilities";
+import { DOM } from "modules";
 
 const {ipcRenderer} = require("electron");
 const GuildClasses = DiscordModules.GuildClasses;
@@ -44,7 +48,8 @@ export default class Core {
                 type: "style",
                 url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/dist/style.min.css",
                 backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.min.css",
-                local: "{{localServer}}/BetterDiscordApp/dist/style.min.css"
+                local: "{{localServer}}/BetterDiscordApp/dist/style.min.css",
+                localPath: "style.min.css"
             }
         ];
     }
@@ -141,6 +146,13 @@ export default class Core {
 
     async loadDependencies() {
         for (const data of this.dependencies) {
+            if (Config.local && Config.localPath && data.localPath) {
+                if (fs.existsSync(path.resolve(Config.localPath, data.localPath))) {
+                    const css = fs.readFileSync(path.resolve(Config.localPath, data.localPath)).toString();
+                    DOMManager.injectStyle(data.name, css);
+                    continue;
+                }
+            }
             const url = Utilities.formatString((Config.local && data.local != null) ? data.local : data.url, {repo: Config.repo, hash: Config.hash, localServer: Config.localServer});
             Logger.log(`Startup`, `Loading Resource (${url})`);
 			const injector = (data.type == "script" ? DOMManager.injectScript : DOMManager.linkStyle).bind(DOMManager);

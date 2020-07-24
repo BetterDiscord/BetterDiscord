@@ -12,8 +12,9 @@
         "watch-css": "gulp watch-css",
         "minify-css": "gulp minify-css",
         "lint-css": "stylelint src/styles/*.css && stylelint src/styles/**/*.css && stylelint dist/style.css",
+        "dist": "npm run minify",
         "minify": "npm run build-prod && npm run minify-css",
-        "build-all": "npm run build-prod && npm run build-css && npm run minify-css",
+        "build-all": "npm run build && npm run build-prod && npm run build-css && npm run minify-css",
         "lint": "npm run lint-js && npm run lint-css",
         "test": "mocha --require @babel/register --recursive \"./tests/*.js\""
     },
