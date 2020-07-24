@@ -419,6 +419,10 @@ body .ace_closeButton:active {
     display: none;
 }
 
+.bd-em-scroller {
+    height: 400px;
+}
+
 #emote-container {
     padding: 10px;
 }
