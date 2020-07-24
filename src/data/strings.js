@@ -217,7 +217,18 @@ export default {
         couldNotStop: "{{name}} could not be stopped.",
         methodError: "{{method}} could not be fired.",
         unknownAuthor: "Unknown Author",
-        noDescription: "Description not provided."
+        noDescription: "Description not provided.",
+        alreadyExists: "There is already a {{type}} with name {{name}}",
+        alreadWatching: "Already watching  addons.",
+        metaError: "META could not be parsed.",
+        missingNameData: "META missing name data.",
+        metaNotFound: "META was not found.",
+        compileError: "Could not be compiled.",
+        wasUnloaded: "{{name}} was unloaded.",
+        alreadyWatching: "Already watching {{prefix}} addons.",
+        startingWatch: "Starting to watch {{prefix}} addons.",
+        wasNotWatching: "Was not watching {{prefix}} addons.",
+        noLongerWatching: "No longer watching {{prefix}} addons."
     },
     CustomCSS: {
         confirmationText: "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",

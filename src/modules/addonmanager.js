@@ -8,7 +8,6 @@ import MetaError from "../structs/metaerror";
 import Toasts from "../ui/toasts";
 import DiscordModules from "./discordmodules";
 import Strings from "./strings";
-
 import AddonEditor from "../ui/misc/addoneditor";
 import FloatingWindows from "../ui/floatingwindows";
 
@@ -78,8 +77,8 @@ export default class AddonManager {
     }
 
     watchAddons() {
-        if (this.watcher) return Logger.error(this.name, `Already watching ${this.prefix} addons.`);
-        Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
+        if (this.watcher) return Logger.error(this.name, Strings.Addons.startingWatch.format({prefix: this.prefix}));
+        Logger.log(this.name, Strings.Addons.alreadyWatching.format({prefix: this.prefix}));
         this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename || !filename.endsWith(this.extension)) return;
             await new Promise(r => setTimeout(r, 100));
@@ -102,10 +101,10 @@ export default class AddonManager {
     }
 
     unwatchAddons() {
-        if (!this.watcher) return Logger.error(this.name, `Was not watching ${this.prefix} addons.`);
+        if (!this.watcher) return Logger.error(this.name, Strings.Addons.wasNotWatching.format({prefix: this.prefix}));
         this.watcher.close();
         delete this.watcher;
-        Logger.log(this.name, `No longer watching ${this.prefix} addons.`);
+        Logger.log(this.name, Strings.Addons.noLongerWatching.format({prefix: this.prefix}));
     }
 
     extractMeta(fileContent) {
@@ -114,15 +113,15 @@ export default class AddonManager {
         if (hasOldMeta) return this.parseOldMeta(fileContent);
         const hasNewMeta = firstLine.includes("/**");
         if (hasNewMeta) return this.parseNewMeta(fileContent);
-        throw new MetaError("META was not found.");
+        throw new MetaError(Strings.Addons.metaNotFound);
     }
 
     parseOldMeta(fileContent) {
         const meta = fileContent.split("\n")[0];
         const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
         const parsed = Utilities.testJSON(metaData);
-        if (!parsed) throw new MetaError("META could not be parsed.");
-        if (!parsed.name) throw new MetaError("META missing name data.");
+        if (!parsed) throw new MetaError(Strings.Addons.metaError);
+        if (!parsed.name) throw new MetaError(Strings.Addons.missingNameData);
         parsed.format = "json";
         return parsed;
     }
@@ -177,10 +176,11 @@ export default class AddonManager {
     // Subclasses should use the return (if not AddonError) and push to this.addonList
     loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
+        const isPlugin = this.prefix == "plugins";
         try {__non_webpack_require__(path.resolve(this.addonFolder, filename));}
-        catch (error) {return new AddonError(filename, filename, "Could not be compiled.", {message: error.message, stack: error.stack});}
+        catch (error) {return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack});}
         const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
-        if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, `There is already a plugin with name ${addon.name}`);
+        if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: isPlugin ? "plugin" : "theme", name: addon.name}));
         const error = this.initializeAddon(addon);
         if (error) return error;
         this.addonList.push(addon);
@@ -198,7 +198,7 @@ export default class AddonManager {
         delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.addonFolder, addon.filename))];
         this.addonList.splice(this.addonList.indexOf(addon), 1);
         this.emit("unloaded", addon.id);
-        if (shouldToast) Toasts.success(`${addon.name} was unloaded.`);
+        if (shouldToast) Toasts.success(Strings.Addons.wasUnloaded.format({name: addon.name}));
         return true;
     }
 
