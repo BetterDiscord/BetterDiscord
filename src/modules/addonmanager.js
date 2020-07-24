@@ -176,7 +176,7 @@ export default class AddonManager {
     // Subclasses should use the return (if not AddonError) and push to this.addonList
     loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
-        const isPlugin = this.prefix == "plugins";
+        const isPlugin = this.prefix == "plugin";
         try {__non_webpack_require__(path.resolve(this.addonFolder, filename));}
         catch (error) {return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack});}
         const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
