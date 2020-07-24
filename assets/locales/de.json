@@ -1,0 +1,307 @@
+{
+	"Panels": {
+		"plugins": "Plugins",
+		"themes": "Themes",
+		"customcss": "Custom-CSS"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Einstellungen",
+			"general": {
+				"name": "Allgemein",
+				"emotes": {
+					"name": "Emote-Funktion",
+					"note": "Aktiviert die BD Emote-Funktion."
+				},
+				"publicServers": {
+					"name": "Öffentliche Sever",
+					"note": "Zeigt den Button zum Öffnen einer Liste öffentlicher Server."
+				},
+				"voiceDisconnect": {
+					"name": "Verbindung zum Sprachchat trennen",
+					"note": "Trennt beim Schließen von Discord die Verbindung zum Sprachchat."
+				},
+				"twentyFourHour": {
+					"name": "24h Zeitstempel",
+					"note": "Zeigt die Zeitstempel in einem 24h format an."
+				},
+				"classNormalizer": {
+					"name": "Normalisierte klassen",
+					"note": "Fügt stetige Klassen zu Elementen hinzu (z.B. .da-channels zu .channels-Ie2l6A)"
+				},
+				"showToasts": {
+					"name": "Benachrichtigungen anzeigen",
+					"note": "Zeigt kleine Benachrichtigung für wichtige informationen an."
+				}
+			},
+			"appearance": {
+				"name": "Aussehen",
+				"voiceMode": {
+					"name": "Sprachmodus",
+					"note": "Verbirgt alles, was kein Sprachkanal ist."
+				},
+				"minimalMode": {
+					"name": "Minimaler Modus",
+					"note": "Verbirgt Elemente und reduziert die Größe von elementen."
+				},
+				"hideChannels": {
+					"name": "Kanäle verbergen",
+					"note": "Verbirgt Kanäle, wenn \"Minimaler Modus\" aktiviert ist."
+				},
+				"darkMode": {
+					"name": "Dunkelmodus",
+					"note": "Aktivert einen noch dunkleren Modus in Discord."
+				},
+				"coloredText": {
+					"name": "Farbiger Text",
+					"note": "Macht die Textfarbe gleich mit der Rollenfarbe."
+				}
+			},
+			"addons": {
+				"name": "Erweiterungs-Manager",
+				"addonErrors": {
+					"name": "Zeige Erweiterungsfehler",
+					"note": "Zeigt einen Popup mit Erweiterungsfehlern."
+				},
+				"autoScroll": {
+					"name": "Zu Einstellungen scollen",
+					"note": "Scrollt automatisch zu den Erweiterungs-Einstellungen."
+				},
+				"autoReload": {
+					"name": "Automatisches Laden",
+					"note": "Läd und entfernt Plugins und Themes automatisch."
+				},
+				"editAction": {
+					"name": "Bearbeitungsaktion",
+					"note": "Wo Plugins und Themes zum Bearbeiten geöffnet werden.",
+					"options": {
+						"detached": "Popout-Fenster",
+						"system": "System-Editor"
+					}
+				}
+			},
+			"customcss": {
+				"name": "Custom-CSS",
+				"customcss": {
+					"name": "Custom-CSS",
+					"note": "Aktiviert den \"Custom-CSS\"-Tab in den Einstellungen."
+				},
+				"liveUpdate": {
+					"name": "Live-Aktualisierung",
+					"note": "Aktualisiere den CSS-Editor beim Bearbeiten."
+				},
+				"startDetached": {
+					"name": "Als Popout starten",
+					"note": "Das Klicken auf den \"Custom-CSS\"-Tab öffnet den editor in einem Popoup-Fenster."
+				},
+				"nativeOpen": {
+					"name": "Im System-Editor öffnen",
+					"note": "Das Klicken auf den \"Custom-CSS\"-Tab öffnet dein \"Custom-CSS\" in deinem System-Editor."
+				},
+				"openAction": {
+					"name": "Editor-Location",
+					"note": "Wo Custom-CSS standardmäßig geöffnet werden soll",
+					"options": {
+						"settings": "Einstellungs-Menü",
+						"detached": "Popout-Fenster",
+						"system": "System-Editor"
+					}
+				}
+			},
+			"developer": {
+				"name": "Entwickler-Einstellungen",
+				"debuggerHotkey": {
+					"name": "Debugger-Hotkey",
+					"note": "Starte den Debugger durch das Drücken der F8-Taste."
+				},
+				"copySelector": {
+					"name": "Selektor kopieren",
+					"note": "Fügt eine \"Selektor kopieren\"-Option zu den Context-Menüs hinzu."
+				},
+				"reactDevTools": {
+					"name": "React-Developer-Tools",
+					"note": "Fügt die lokale Installation der React Developer Tools in Discord hinzu."
+				}
+			},
+			"window": {
+				"name": "Fenster-Einstellungen",
+				"transparency": {
+					"name": "Transparenz aktivieren",
+					"note": "Macht den Discord-Hintergrund transparent."
+				},
+				"frame": {
+					"name": "Standard-Design",
+					"note": "Stellt das Hauptfenster im Standard-Design des Betriebssystems dar."
+				}
+			}
+		},
+		"emotes": {
+			"name": "Emotes",
+			"general": {
+				"name": "Allgemein",
+				"download": {
+					"name": "Emotes herunterladen",
+					"note": "Lade Emotes herunter, wenn sie nicht mehr aktuell sind"
+				},
+				"emoteMenu": {
+					"name": "Emote-Menü",
+					"note": "Twitch- und favorisierte Emotes im Emote-Menü anzeigen"
+				},
+				"hideEmojiMenu": {
+					"name": "Emoji-Menü verstecken",
+					"note": "Versteckt Discords Emoji-Menü bei der Nutzung des Emote-Menüs"
+				},
+				"autoCaps": {
+					"name": "Automatische Großschreibung von Emotes",
+					"note": "Emote-Befehle werden automatisch großgeschrieben"
+				},
+				"showNames": {
+					"name": "Namen anzeigen",
+					"note": "Zeigt den Emote-Namen beim Hovern über diesem an"
+				},
+				"modifiers": {
+					"name": "Emote-Modifikatoren anzeigen",
+					"note": "Aktiviert Emote-Modifikatoren (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+				},
+				"animateOnHover": {
+					"name": "Beim Hovern animieren",
+					"note": "Animiert Emote-Modifikatoren nur beim Hovern über dem Emote"
+				}
+			},
+			"categories": {
+				"name": "Kategorien",
+				"twitchglobal": {
+					"name": "Twitch Global",
+					"note": "Twitch-Global-Emotes anzeigen"
+				},
+				"twitchsubscriber": {
+					"name": "Twitch Subscribers",
+					"note": "Twitch-Subscriber-Emotes anzeigen"
+				},
+				"frankerfacez": {
+					"name": "FrankerFaceZ",
+					"note": "FFZ-Emotes anzeigen"
+				},
+				"bttv": {
+					"name": "BetterTTV",
+					"note": "BTTV-Emotes anzeigen"
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} von {{author}}",
+		"openFolder": "Öffne {{type}}-Ordner",
+		"reload": "Neu laden",
+		"addonSettings": "Einstellungen",
+		"website": "Website",
+		"source": "Source",
+		"invite": "Support-Server",
+		"donate": "Spenden",
+		"patreon": "Patreon",
+		"name": "Name",
+		"author": "Autor",
+		"version": "Version",
+		"added": "Hinzufügedatum",
+		"modified": "Bearbeitungsdatum",
+		"search": "{{type}} suchen",
+		"editAddon": "Bearbeiten",
+		"deleteAddon": "Löschen",
+		"confirmDelete": "Bist du dir sicher, dass du {{name}} löschen willst?",
+		"confirmationText": "Du hast ungespeicherte Änderungen in {{name}}. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
+		"enabled": "{{name}} wurde aktiviert.",
+		"disabled": "{{name}} wurde deaktiviert.",
+		"couldNotEnable": "{{name}} konnte nicht aktiviert werden.",
+		"couldNotDisable": "{{name}} konnte nicht deaktiviert werden.",
+		"couldNotStart": "{{name}} konnte nicht gestartet werden.",
+		"couldNotStop": "{{name}} konnte nicht gestoppt werden.",
+		"methodError": "{{method}} konnte nicht ausgeführt werden.",
+		"unknownAuthor": "Unbekannter Autor",
+		"noDescription": "Keine Beschreibung angegeben.",
+		"alreadyExists": "Es existiert bereits ein {{type}} mit dem Namen {{name}}",
+		"metaError": "META konnte nicht geparst werden.",
+		"missingNameData": "META missing name data.",
+		"metaNotFound": "META nicht gefunden.",
+		"compileError": "Konnte nicht kompiliert werden.",
+		"wasUnloaded": "{{name}} was unloaded.",
+		"alreadyWatching": "Already watching {{prefix}} addons.",
+		"startingWatch": "Starting to watch {{prefix}} addons.",
+		"wasNotWatching": "Was not watching {{prefix}} addons.",
+		"noLongerWatching": "No longer watching {{prefix}} addons."
+	},
+	"CustomCSS": {
+		"confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
+		"update": "Aktualisieren",
+		"save": "Speichern",
+		"openNative": "Im System-Editor öffnen",
+		"openDetached": "Fenster trennen",
+		"settings": "Editor-Einstellungen",
+		"editorTitle": "Custom-CSS-Editor"
+	},
+	"Developer": {
+		"copySelector": "Selektor kopieren"
+	},
+	"Emotes": {
+		"loading": "Lade alle Emotes im Hintergrund.",
+		"loaded": "Alle Emotes erfolgreich geladen.",
+		"clearEmotes": "Emote-Daten löschen",
+		"favoriteAction": "Favorisieren!"
+	},
+	"PublicServers": {
+		"button": "public",
+		"join": "Beitreten",
+		"joining": "Trete bei",
+		"joined": "Beigetreten",
+		"loading": "Laden",
+		"loadMore": "Mehr laden",
+		"notConnected": "Nicht mit DiscordServers.com verbunden!",
+		"search": "Suchen",
+		"connect": "Verbinden",
+		"reconnect": "Wiederverbinden",
+		"categories": "Kategorien",
+		"connection": "Verbunden als: {{username}}#{{discriminator}}",
+		"results": "Zeige {{start}}-{{end}} von {{total}} Ergebnissen in {{category}}",
+		"query": "für {{query}}"
+	},
+	"Modals": {
+		"confirmAction": "Bist du dir sicher?",
+		"okay": "Okay",
+		"cancel": "Abbrechen",
+		"close": "Schließen",
+		"name": "Name",
+		"message": "Nachricht",
+		"error": "Fehler",
+		"addonErrors": "Erweiterungsfehler",
+		"restartRequired": "Neustart erforderlich",
+		"restartNow": "Jetzt neustarten",
+		"restartLater": "Später neustarten",
+		"additionalInfo": "Zusätzliche Informationen"
+	},
+	"ReactDevTools": {
+		"notFound": "Erweiterung nicht gefunden",
+		"notFoundDetails": "React Developer Tools-Erweiterung konnte nicht gefunden werden. Füg die Erweiterung zu deiner Chrome-Installation hinzu."
+	},
+	"Sorting": {
+		"sortBy": "Sortieren nach",
+		"order": "Reihenfolge",
+		"ascending": "Aufsteigend",
+		"descending": "Absteigend"
+	},
+	"Startup": {
+		"notSupported": "Nicht unterstützt",
+		"versionMismatch": "BandagedBD Injector v{{injector}} wird nicht von der letzten Onlineversion (v{{remote}}) unterstützt.\n\nBitte lade den neusten Installer von [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest) herunter.",
+		"incompatibleApp": "BandagedBD ist nicht mit {{app}} kompatiblem. Bitte entferne entweder BetterDiscord oder {{app}}.",
+		"updateNow": "Jetzt aktualisieren",
+		"maybeLater": "Später",
+		"updateAvailable": "Update verfügbar",
+		"updateInfo": "Ein Update für BandagedBDs Injector ({{version}}) ist verfügbar.\n\nDu kannst entweder jetzt oder später aktualisieren und neustarten",
+		"updateFailed": "Konnte nicht aktualisiert werden",
+		"manualUpdate": "Die automatische Aktualisierung schlug fehl. Bitte lade den Installer herunter und installiere BetterDiscord erneut.\n\n[Installer herunterladen](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+		"jqueryFailed": "jQuery konnte nicht geladen werden",
+		"jqueryFailedDetails": "jQuery konnte nicht geladen werden, wodurch einige Plugins gegebenenfalls nicht richtig funktionieren."
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Um diese Funktion zu verwenden, benötigst du ein Theme mit transparentem Hintergrund. Auf Windows funktioniert das Maximieren des Fensters ggf. nicht mehr.\n\nUm die Änderungen zu übernehmen muss Discord neugeladen werden. Willst du jetzt neuladen?",
+		"disabledInfo": "Um die Änderungen zu übernehmen muss Discord neugeladen werden. Willst du jetzt neuladen?"
+	}
+}
