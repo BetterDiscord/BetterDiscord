@@ -22,3 +22,5 @@ deploy:
   local_dir: ./dist
   name: BetterDiscord Deployment
   target_branch: gh-pages
+  on:
+    branch: development

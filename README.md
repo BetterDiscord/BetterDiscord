@@ -1,4 +1,4 @@
-# BandagedBD [![Build Status][travis-badge]][travis-link] [![Language Grade][lgtm-badge]][lgtm-link] [![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link]
+# BandagedBD [![Build Status][travis-badge]][travis-link] ![Netlify][netlify-badge] [![Language Grade][lgtm-badge]][lgtm-link] ![GitHub Releases][downloads-badge] 
 
 [patreon-badge]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.herokuapp.com%2FZerebos&style=flat-square
 [patreon-link]: https://patreon.com/Zerebos
@@ -9,8 +9,17 @@
 [lgtm-badge]: https://img.shields.io/lgtm/grade/javascript/g/rauenzi/BetterDiscordApp.svg?style=flat-square
 [lgtm-link]: https://lgtm.com/projects/g/rauenzi/BetterDiscordApp/context:javascript
 
-[travis-badge]: https://img.shields.io/travis/rauenzi/BetterDiscordApp.svg?&style=flat-square&branch=development
-[travis-link]: https://travis-ci.org/rauenzi/BetterDiscordApp
+[travis-badge]: https://img.shields.io/travis/com/rauenzi/BetterDiscordApp.svg?style=flat-square&branch=development
+[travis-link]: https://travis-ci.com/rauenzi/BetterDiscordApp
+
+[netlify-badge]: https://img.shields.io/netlify/0c2be7e5-9327-4243-a2bf-68272c00c253?style=flat-square
+[downloads-badge]: https://img.shields.io/github/downloads/rauenzi/BetterDiscordApp/latest/total?style=flat-square
+
+<!-- [![Netlify Status](https://api.netlify.com/api/v1/badges/0c2be7e5-9327-4243-a2bf-68272c00c253/deploy-status)](https://app.netlify.com/sites/vigorous-visvesvaraya-98a425/deploys) -->
+
+
+
+[![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link]
 
 This branch is for the ongoing rewrite of BandagedBD. You can view what I believe to be left in the TODO.md file.
 
