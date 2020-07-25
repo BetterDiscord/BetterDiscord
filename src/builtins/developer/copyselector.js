@@ -71,7 +71,6 @@ export default new class DeveloperMode extends Builtin {
     }
 
     getRules(element, css = element.ownerDocument.styleSheets) {
-        //if (window.getMatchedCSSRules) return window.getMatchedCSSRules(element);
         const sheets = [...css].filter(s => !s.href || !s.href.includes("BetterDiscordApp"));
         const rules = sheets.map(s => [...(s.cssRules || [])]).flat();
         const elementRules = rules.filter(r => r && r.selectorText && element.matches(r.selectorText) && r.style.length && r.selectorText.split(", ").length < 8 && !r.selectorText.split(", ").includes("*"));

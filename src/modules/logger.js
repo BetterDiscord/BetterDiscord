@@ -29,10 +29,10 @@ export default class Logger {
      *
      * @param {string} module - Name of the calling module.
      * @param {string} message - Message or error to have logged.
-	 * @param {Error} error - Error object to log with the message.
+     * @param {Error} error - Error object to log with the message.
      */
     static stacktrace(module, message, error) {
-		console.error(`%c[${module}]%c ${message}\n\n%c`, "color: #3a71c1; font-weight: 700;", "color: red; font-weight: 700;", "color: red;", error);
+        console.error(`%c[${module}]%c ${message}\n\n%c`, "color: #3a71c1; font-weight: 700;", "color: red; font-weight: 700;", "color: red;", error);
     }
 
     /**
@@ -41,7 +41,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {string} message - Messages to have logged.
      */
-    static err(module, ...message) { Logger._log(module, message, "error"); }
+    static err(module, ...message) {Logger._log(module, message, "error");}
 
     /**
      * Logs a warning message.
@@ -49,7 +49,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    static warn(module, ...message) { Logger._log(module, message, "warn"); }
+    static warn(module, ...message) {Logger._log(module, message, "warn");}
 
     /**
      * Logs an informational message.
@@ -57,7 +57,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    static info(module, ...message) { Logger._log(module, message, "info"); }
+    static info(module, ...message) {Logger._log(module, message, "info");}
 
     /**
      * Logs used for debugging purposes.
@@ -65,7 +65,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    static debug(module, ...message) { Logger._log(module, message, "debug"); }
+    static debug(module, ...message) {Logger._log(module, message, "debug");}
 
     /**
      * Logs used for basic loggin.
@@ -73,7 +73,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    static log(module, ...message) { Logger._log(module, message); }
+    static log(module, ...message) {Logger._log(module, message);}
 
     /**
      * Logs strings using different console levels and a module label.
@@ -86,7 +86,6 @@ export default class Logger {
         type = Logger.parseType(type);
         if (!Array.isArray(message)) message = [message];
         console[type](`%c[BandagedBD]%c [${module}]%c`, "color: #3E82E5; font-weight: 700;", "color: #3a71c1;", "", ...message);
-        //console.log(`%c[BandagedBD]%c [${moduleName}]%c ${message}`, "color: #3a71c1; font-weight: 700;", "color: #3a71c1;", "");
     }
 
     static parseType(type) {

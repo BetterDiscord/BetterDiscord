@@ -5,8 +5,6 @@ import LocaleManager from "./localemanager";
 
 import Logger from "./logger";
 import {Config, Changelog} from "data";
-// import EmoteModule from "./emotes";
-// import QuickEmoteMenu from "../builtins/emotemenu";
 import DOMManager from "./dommanager";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
@@ -20,7 +18,6 @@ import ComponentPatcher from "./componentpatcher";
 import Strings from "./strings";
 import LoadingIcon from "../loadingicon";
 import Utilities from "./utilities";
-import { DOM } from "modules";
 
 const {ipcRenderer} = require("electron");
 const GuildClasses = DiscordModules.GuildClasses;
@@ -80,7 +77,7 @@ export default class Core {
                 confirmText: Strings.Startup.updateNow,
                 cancelText: Strings.Startup.maybeLater,
                 onConfirm: async () => {
-                    const onUpdateFailed = () => { Modals.alert(Strings.Startup.updateFailed, Strings.Startup.manualUpdate); };
+                    const onUpdateFailed = () => {Modals.alert(Strings.Startup.updateFailed, Strings.Startup.manualUpdate);};
                     try {
                         const didUpdate = await this.updateInjector();
                         if (!didUpdate) return onUpdateFailed();
@@ -155,21 +152,21 @@ export default class Core {
             }
             const url = Utilities.formatString((Config.local && data.local != null) ? data.local : data.url, {repo: Config.repo, hash: Config.hash, localServer: Config.localServer});
             Logger.log(`Startup`, `Loading Resource (${url})`);
-			const injector = (data.type == "script" ? DOMManager.injectScript : DOMManager.linkStyle).bind(DOMManager);
-			try {
-				await injector(data.name, url);
-			}
-			catch (err) {
-				const backup = Utilities.formatString(data.backup, {minified: Config.minified ? ".min" : ""});
-				Logger.stacktrace(`Startup`, `Could not load ${url}. Using backup ${backup}`, err);
-				try {
-					await injector(data.name, backup);
-				}
-				catch (e) {
+            const injector = (data.type == "script" ? DOMManager.injectScript : DOMManager.linkStyle).bind(DOMManager);
+            try {
+                await injector(data.name, url);
+            }
+            catch (err) {
+                const backup = Utilities.formatString(data.backup, {minified: Config.minified ? ".min" : ""});
+                Logger.stacktrace(`Startup`, `Could not load ${url}. Using backup ${backup}`, err);
+                try {
+                    await injector(data.name, backup);
+                }
+                catch (e) {
                     Logger.stacktrace(`Startup`, `Could not load ${url}. Using backup ${backup}`, err);
-                    if (data.name === "jquery")  Modals.alert(Strings.Startup.jqueryFailed, Strings.Startup.jqueryFailedDetails);
-				}
-			}
+                    if (data.name === "jquery") Modals.alert(Strings.Startup.jqueryFailed, Strings.Startup.jqueryFailedDetails);
+                }
+            }
         }
     }
 
@@ -177,8 +174,9 @@ export default class Core {
         const injectionPath = DataStore.injectionPath;
         if (!injectionPath) return false;
 
-        const fs = require("fs");
-        const path = require("path");
+        // Currently in module scope
+        // const fs = require("fs");
+        // const path = require("path");
         const rmrf = require("rimraf");
         const yauzl = require("yauzl");
         const mkdirp = require("mkdirp");
@@ -210,7 +208,10 @@ export default class Core {
         if (alreadyExists) await new Promise(res => fs.rename(extractedFolder, `${extractedFolder}.bak${Math.round(performance.now())}`, res));
 
         // Unzip the downloaded zip file
-        const zipfile = await new Promise(r => yauzl.open(savedZip, {lazyEntries: true}, (err, zip) => r(zip)));
+        const zipfile = await new Promise((r, rej) => yauzl.open(savedZip, {lazyEntries: true}, (err, zip) => {
+            if (err) return rej(err);
+            r(zip);
+        }));
         zipfile.on("entry", function (entry) {
             // Skip directories, they are handled with mkdirp
             if (entry.fileName.endsWith("/")) return zipfile.readEntry();
@@ -221,7 +222,7 @@ export default class Core {
             mkdirp.sync(path.dirname(fullPath));
             zipfile.openReadStream(entry, function (err, readStream) {
                 if (err) return success = false;
-                readStream.on("end", function () { zipfile.readEntry(); }); // Go to next file after this
+                readStream.on("end", function () {zipfile.readEntry();}); // Go to next file after this
                 readStream.pipe(fs.createWriteStream(fullPath));
             });
         });

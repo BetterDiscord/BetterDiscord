@@ -99,7 +99,7 @@ export default class FloatingWindow extends React.Component {
 
     render() {
         const top = this.props.center ? (Screen.height / 2) - (this.props.height / 2) : this.props.top;
-        const left = this.props.center ? (Screen.width / 2) - (this.props.width / 2) : this.props.left ;
+        const left = this.props.center ? (Screen.width / 2) - (this.props.width / 2) : this.props.left;
         // console.log(top, left);
         const className = `floating-window${` ${this.props.className}` || ""}${this.props.resizable ? " resizable" : ""}${this.state.modalOpen ? " modal-open" : ""}`;
         const styles = {height: this.props.height, width: this.props.width, left: left || 0, top: top || 0};

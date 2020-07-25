@@ -22,4 +22,4 @@ export default [
             return React.createElement(EmoteIcon, {emote, url});
         }))
     }
-]
+];

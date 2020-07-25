@@ -6,7 +6,7 @@ import ReloadIcon from "../icons/reload";
 import AddonCard from "./addoncard";
 import Dropdown from "./components/dropdown";
 import Search from "./components/search";
-import ErrorBoundary from  "../errorboundary";
+import ErrorBoundary from "../errorboundary";
 
 export default class AddonList extends React.Component {
 
@@ -18,7 +18,7 @@ export default class AddonList extends React.Component {
         this.search = this.search.bind(this);
         this.update = this.update.bind(this);
     }
-    
+
     componentDidMount() {
         Events.on(`${this.props.prefix}-loaded`, this.update);
         Events.on(`${this.props.prefix}-unloaded`, this.update);
@@ -70,10 +70,12 @@ export default class AddonList extends React.Component {
     render() {
         const {title, folder, addonList, addonState, onChange, reload} = this.props;
         const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
-        const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: () => {
-            const shell = require("electron").shell;
-            const open = shell.openItem || shell.openPath;
-            open(folder);
+        const button = folder ? {
+            title: Strings.Addons.openFolder.format({type: title}),
+            onClick: () => {
+                const shell = require("electron").shell;
+                const open = shell.openItem || shell.openPath;
+                open(folder);
         }} : null;
         const sortedAddons = addonList.sort((a, b) => {
             const first = a[this.state.sort];

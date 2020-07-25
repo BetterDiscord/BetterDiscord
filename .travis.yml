@@ -13,6 +13,7 @@ install:
 script:
   - npm run build-all
   - npm run test
+  - npm run lint
 
 deploy:
   provider: pages
