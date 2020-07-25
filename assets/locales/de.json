@@ -227,7 +227,8 @@
 		"alreadyWatching": "Already watching {{prefix}} addons.",
 		"startingWatch": "Starting to watch {{prefix}} addons.",
 		"wasNotWatching": "Was not watching {{prefix}} addons.",
-		"noLongerWatching": "No longer watching {{prefix}} addons."
+		"noLongerWatching": "No longer watching {{prefix}} addons.",
+		"wrongFilename": "{{filename}} hat einen falschen Datei-namen."
 	},
 	"CustomCSS": {
 		"confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
