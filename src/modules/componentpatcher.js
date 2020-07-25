@@ -98,7 +98,7 @@ export default new class ComponentPatcher {
         const guildComponents = WebpackModules.getByProps("renderListItem");
         if (!guildComponents || !Guilds) return;
         const GuildSeparator = function() {
-            const returnValue = guildComponents.Separator(...arguments);
+            const returnValue = guildComponents.Separator(...arguments); // eslint-disable-line new-cap
             returnValue.props.className += " bd-guild-separator";
             return returnValue;
         };

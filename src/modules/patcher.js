@@ -14,7 +14,7 @@ import WebpackModules from "./webpackmodules";
 
 export default class Patcher {
 
-    static get patches() { return this._patches || (this._patches = []); }
+    static get patches() {return this._patches || (this._patches = []);}
 
     /**
      * Returns all the patches done by a specific caller
@@ -22,12 +22,12 @@ export default class Patcher {
      * @method
      */
     static getPatchesByCaller(name) {
-		if (!name) return [];
+        if (!name) return [];
         const patches = [];
         for (const patch of this.patches) {
-			for (const childPatch of patch.children) {
-				if (childPatch.caller === name) patches.push(childPatch);
-			}
+            for (const childPatch of patch.children) {
+                if (childPatch.caller === name) patches.push(childPatch);
+            }
         }
         return patches;
     }
@@ -41,20 +41,20 @@ export default class Patcher {
         if (typeof patches === "string") patches = this.getPatchesByCaller(patches);
 
         for (const patch of patches) {
-			patch.unpatch();
+            patch.unpatch();
         }
-	}
+    }
 
-	static resolveModule(module) {
+    static resolveModule(module) {
         if (module instanceof Function || (module instanceof Object && !(module instanceof Array))) return module;
         if (typeof module === "string") return DiscordModules[module];
         if (module instanceof Array) return WebpackModules.findByUniqueProperties(module);
         return null;
-	}
+    }
 
     static makeOverride(patch) {
         return function () {
-            let returnValue = undefined;
+            let returnValue;
             if (!patch.children || !patch.children.length) return patch.originalFunction.apply(this, arguments);
             for (const superPatch of patch.children.filter(c => c.type === "before")) {
                 try {
@@ -70,7 +70,7 @@ export default class Patcher {
             else {
                 for (const insteadPatch of insteads) {
                     try {
-						const tempReturn = insteadPatch.callback(this, arguments, patch.originalFunction.bind(this));
+                        const tempReturn = insteadPatch.callback(this, arguments, patch.originalFunction.bind(this));
                         if (typeof(tempReturn) !== "undefined") returnValue = tempReturn;
                     }
                     catch (err) {
@@ -81,7 +81,7 @@ export default class Patcher {
 
             for (const slavePatch of patch.children.filter(c => c.type === "after")) {
                 try {
-					const tempReturn = slavePatch.callback(this, arguments, returnValue);
+                    const tempReturn = slavePatch.callback(this, arguments, returnValue);
                     if (typeof(tempReturn) !== "undefined") returnValue = tempReturn;
                 }
                 catch (err) {
@@ -98,7 +98,7 @@ export default class Patcher {
 
     static makePatch(module, functionName, name) {
         const patch = {
-			name,
+            name,
             module,
             functionName,
             originalFunction: module[functionName],
@@ -112,7 +112,8 @@ export default class Patcher {
             children: []
         };
         patch.proxyFunction = module[functionName] = this.makeOverride(patch);
-        return this.patches.push(patch), patch;
+        this.patches.push(patch);
+        return patch;
     }
 
     /**
@@ -145,7 +146,7 @@ export default class Patcher {
      * @param {boolean} [options.forcePatch=true] Set to `true` to patch even if the function doesnt exist. (Adds noop function in place).
      * @return {module:Patcher~unpatch} Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
-    static before(caller, moduleToPatch, functionName, callback, options = {}) { return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "before"})); }
+    static before(caller, moduleToPatch, functionName, callback, options = {}) {return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "before"}));}
 
     /**
      * This method patches onto another function, allowing your code to run after.
@@ -160,7 +161,7 @@ export default class Patcher {
      * @param {boolean} [options.forcePatch=true] Set to `true` to patch even if the function doesnt exist. (Adds noop function in place).
      * @return {module:Patcher~unpatch} Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
-    static after(caller, moduleToPatch, functionName, callback, options = {}) { return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "after"})); }
+    static after(caller, moduleToPatch, functionName, callback, options = {}) {return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "after"}));}
 
     /**
      * This method patches onto another function, allowing your code to run instead.
@@ -175,7 +176,7 @@ export default class Patcher {
      * @param {boolean} [options.forcePatch=true] Set to `true` to patch even if the function doesnt exist. (Adds noop function in place).
      * @return {module:Patcher~unpatch} Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
-    static instead(caller, moduleToPatch, functionName, callback, options = {}) { return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "instead"})); }
+    static instead(caller, moduleToPatch, functionName, callback, options = {}) {return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "instead"}));}
 
     /**
      * This method patches onto another function, allowing your code to run before, instead or after the original function.
@@ -193,16 +194,16 @@ export default class Patcher {
      * @return {module:Patcher~unpatch} Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
      */
     static pushChildPatch(caller, moduleToPatch, functionName, callback, options = {}) {
-		const {type = "after", forcePatch = true} = options;
-		const module = this.resolveModule(moduleToPatch);
-		if (!module) return null;
-		if (!module[functionName] && forcePatch) module[functionName] = function() {};
-		if (!(module[functionName] instanceof Function)) return null;
+        const {type = "after", forcePatch = true} = options;
+        const module = this.resolveModule(moduleToPatch);
+        if (!module) return null;
+        if (!module[functionName] && forcePatch) module[functionName] = function() {};
+        if (!(module[functionName] instanceof Function)) return null;
 
-		if (typeof moduleToPatch === "string") options.displayName = moduleToPatch;
+        if (typeof moduleToPatch === "string") options.displayName = moduleToPatch;
         const displayName = options.displayName || module.displayName || module.name || module.constructor.displayName || module.constructor.name;
 
-		const patchId = `${displayName}.${functionName}`;
+        const patchId = `${displayName}.${functionName}`;
         const patch = this.patches.find(p => p.module == module && p.functionName == functionName) || this.makePatch(module, functionName, patchId);
         if (!patch.proxyFunction) this.rePatch(patch);
         const child = {
@@ -213,10 +214,10 @@ export default class Patcher {
             unpatch: () => {
                 patch.children.splice(patch.children.findIndex(cpatch => cpatch.id === child.id && cpatch.type === type), 1);
                 if (patch.children.length <= 0) {
-					const patchNum = this.patches.findIndex(p => p.module == module && p.functionName == functionName);
-					this.patches[patchNum].revert();
-					this.patches.splice(patchNum, 1);
-				}
+                    const patchNum = this.patches.findIndex(p => p.module == module && p.functionName == functionName);
+                    this.patches[patchNum].revert();
+                    this.patches.splice(patchNum, 1);
+                }
             }
         };
         patch.children.push(child);

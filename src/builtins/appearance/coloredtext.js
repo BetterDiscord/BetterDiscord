@@ -18,7 +18,7 @@ export default new class ColoredText extends Builtin {
 
     injectColoredText() {
         this.after(MessageContent.prototype, "render", (thisObject, args, retVal) => {
-            this.after(retVal.props, "children", {silent: true, after: ({returnValue}) => {
+            this.after(retVal.props, "children", {after: ({returnValue}) => {
                 const markup = returnValue.props.children[1];
                 const roleColor = thisObject.props.message.colorString;
                 if (markup && roleColor) markup.props.style = {color: roleColor};

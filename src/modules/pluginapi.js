@@ -14,14 +14,16 @@ import Patcher from "./patcher";
 import Emotes from "../builtins/emotes/emotes";
 
 const BdApi = {
-    get React() { return DiscordModules.React; },
-    get ReactDOM() { return DiscordModules.ReactDOM; },
+    get React() {return DiscordModules.React;},
+    get ReactDOM() {return DiscordModules.ReactDOM;},
     get WindowConfigFile() {return "";},
     get settings() {return Settings.collections;},
-    get emotes() {return new Proxy(Emotes.Emotes, {
-        get() { return Emotes.Emotes},
-        set() { Logger.warn("Emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
-    });},
+    get emotes() {
+        return new Proxy(Emotes.Emotes, {
+            get() {return Emotes.Emotes;},
+            set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
+        });
+    },
     get version() {return Config.version;}
 };
 
@@ -39,28 +41,28 @@ BdApi.setWindowPreference = function(key, value) {
     return DataStore.setData("windowprefs", prefs);
 };
 
-//Inject CSS to document head
-//id = id of element
-//css = custom css
+// Inject CSS to document head
+// id = id of element
+// css = custom css
 BdApi.injectCSS = function (id, css) {
     DOMManager.injectStyle(id, css);
 };
 
-//Clear css/remove any element
-//id = id of element
+// Clear css/remove any element
+// id = id of element
 BdApi.clearCSS = function (id) {
     DOMManager.removeStyle(id);
 };
 
-//Inject CSS to document head
-//id = id of element
-//css = custom css
+// Inject CSS to document head
+// id = id of element
+// css = custom css
 BdApi.linkJS = function (id, url) {
     return DOMManager.injectScript(id, url);
 };
 
-//Clear css/remove any element
-//id = id of element
+// Clear css/remove any element
+// id = id of element
 BdApi.unlinkJS = function (id) {
     DOMManager.removeScript(id);
 };
@@ -228,8 +230,8 @@ BdApi.testJSON = function(data) {
     return Utilities.testJSON(data);
 };
 
-//Get another plugin
-//name = name of plugin
+// Get another plugin
+// name = name of plugin
 BdApi.getPlugin = function (name) {
     Logger.warn("BdApi", "getPlugin is deprecated. Please make use of the addon api (BdApi.Plugins)");
     return PluginManager.addonList.find(a => a.name == name);

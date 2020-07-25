@@ -36,11 +36,11 @@ export default class Modals {
             </div>`);
         modal.querySelector(".footer button").addEventListener("click", () => {
             modal.classList.add("closing");
-            setTimeout(() => { modal.remove(); }, 300);
+            setTimeout(() => {modal.remove();}, 300);
         });
         modal.querySelector(".bd-backdrop").addEventListener("click", () => {
             modal.classList.add("closing");
-            setTimeout(() => { modal.remove(); }, 300);
+            setTimeout(() => {modal.remove();}, 300);
         });
         document.querySelector("#app-mount").append(modal);
     }
@@ -153,11 +153,11 @@ export default class Modals {
 
         modal.querySelector(".footer button").addEventListener("click", () => {
             DOM.addClass(modal, "closing");
-            setTimeout(() => { modal.remove(); }, 300);
+            setTimeout(() => {modal.remove();}, 300);
         });
         modal.querySelector(".bd-backdrop").addEventListener("click", () => {
             DOM.addClass(modal, "closing");
-            setTimeout(() => { modal.remove(); }, 300);
+            setTimeout(() => {modal.remove();}, 300);
         });
         DOM.query("#app-mount").append(modal);
         if (pluginErrors.length) modal.querySelector(".tab-bar-item").click();

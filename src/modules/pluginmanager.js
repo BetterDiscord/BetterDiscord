@@ -72,7 +72,8 @@ export default new class PluginManager extends AddonManager {
     initializeAddon(addon) {
         if (!addon.type) return new AddonError(addon.name, addon.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""});
         try {
-            const thePlugin = new addon.type();
+            const PluginClass = addon.type;
+            const thePlugin = new PluginClass();
             addon.plugin = thePlugin;
             addon.name = thePlugin.getName() || addon.name;
             addon.author = thePlugin.getAuthor() || addon.author || "No author";
@@ -160,8 +161,8 @@ export default new class PluginManager extends AddonManager {
             const plugin = this.addonList[i].plugin;
             if (!this.state[this.addonList[i].id]) continue;
             if (typeof(plugin.onSwitch) === "function") {
-                try { plugin.onSwitch(); }
-                catch (err) { Logger.stacktrace(this.name, "Unable to fire onSwitch for " + this.addonList[i].name + ".", err); }
+                try {plugin.onSwitch();}
+                catch (err) {Logger.stacktrace(this.name, "Unable to fire onSwitch for " + this.addonList[i].name + ".", err);}
             }
         }
     }
@@ -171,8 +172,8 @@ export default new class PluginManager extends AddonManager {
             const plugin = this.addonList[i].plugin;
             if (!this.state[this.addonList[i].id]) continue;
             if (typeof plugin.observer === "function") {
-                try { plugin.observer(mutation); }
-                catch (err) { Logger.stacktrace(this.name, "Unable to fire observer for " + this.addonList[i].name + ".", err); }
+                try {plugin.observer(mutation);}
+                catch (err) {Logger.stacktrace(this.name, "Unable to fire observer for " + this.addonList[i].name + ".", err);}
             }
         }
     }

@@ -247,9 +247,7 @@ export default class WebpackModules {
     static get require() {
         if (this._require) return this._require;
         const id = "bbd-webpackmodules";
-        const __webpack_require__ = typeof(window.webpackJsonp) == "function" ? window.webpackJsonp([], {
-            [id]: (module, exports, __internal_require__) => exports.default = __internal_require__
-        }, [id]).default : window.webpackJsonp.push([[], {
+        const __webpack_require__ = window.webpackJsonp.push([[], {
             [id]: (module, exports, __internal_require__) => module.exports = __internal_require__
         }, [[id]]]);
         delete __webpack_require__.m[id];

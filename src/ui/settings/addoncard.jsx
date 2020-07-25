@@ -4,7 +4,7 @@ import ReloadIcon from "../icons/reload";
 import EditIcon from "../icons/edit";
 import DeleteIcon from "../icons/delete";
 import Switch from "./components/switch";
-import ErrorBoundary from  "../errorboundary";
+import ErrorBoundary from "../errorboundary";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 
@@ -41,7 +41,7 @@ export default class AddonCard extends React.Component {
                 const cBottom = cTop + container.clientHeight;
                 const eTop = element.offsetTop;
                 const eBottom = eTop + element.clientHeight;
-                return  (eTop < cTop || eBottom > cBottom);
+                return (eTop < cTop || eBottom > cBottom);
             };
 
             const thisNode = this.panelRef.current;
@@ -93,8 +93,8 @@ export default class AddonCard extends React.Component {
     get settingsComponent() {
         const addon = this.props.addon;
         const name = this.getString(addon.name);
-        try { this.settingsPanel = this.props.getSettingsPanel(); }
-        catch (err) { Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err); }
+        try {this.settingsPanel = this.props.getSettingsPanel();}
+        catch (err) {Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err);}
 
         const props = {id: `${name}-settings`, className: "addon-settings", ref: this.panelRef};
         if (typeof(this.settingsPanel) == "string") {
@@ -141,7 +141,7 @@ export default class AddonCard extends React.Component {
     }
 
     makeButton(title, children, action) {
-        return  <Tooltip color="black" position="top" text={title}>
+        return <Tooltip color="black" position="top" text={title}>
                     {(props) => {
                         return <div {...props} className="bd-addon-button" onClick={action}>{children}</div>;
                     }}

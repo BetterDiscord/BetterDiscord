@@ -53,8 +53,8 @@ export default class Utilities {
 
     static suppressErrors(method, message) {
         return (...params) => {
-            try { return method(...params);	}
-            catch (e) { Logger.stacktrace("SuppressedError", "Error occurred in " + message, e); }
+            try {return method(...params);}
+            catch (e) {Logger.stacktrace("SuppressedError", "Error occurred in " + message, e);}
         };
     }
 
@@ -129,9 +129,16 @@ export default class Utilities {
         for (let i = 0; i < extenders.length; i++) {
             for (const key in extenders[i]) {
                 if (extenders[i].hasOwnProperty(key)) {
-                    if (typeof extendee[key] === "object" && typeof extenders[i][key] === "object") this.extend(extendee[key], extenders[i][key]);
-                    else if (typeof extenders[i][key] === "object") extendee[key] = {}, this.extend(extendee[key], extenders[i][key]);
-                    else extendee[key] = extenders[i][key];
+                    if (typeof extendee[key] === "object" && typeof extenders[i][key] === "object") {
+                        this.extend(extendee[key], extenders[i][key]);
+                    }
+                    else if (typeof extenders[i][key] === "object") {
+                        extendee[key] = {};
+                        this.extend(extendee[key], extenders[i][key]);
+                    }
+                    else {
+                        extendee[key] = extenders[i][key];
+                    }
                 }
             }
         }
@@ -174,7 +181,7 @@ export default class Utilities {
 
         if (typeof tree !== "object" || tree == null) return undefined;
 
-        let tempReturn = undefined;
+        let tempReturn;
         if (tree instanceof Array) {
             for (const value of tree) {
                 tempReturn = this.findInTree(value, searchFilter, {walkable, ignore});
@@ -228,36 +235,36 @@ export default class Utilities {
     }
 
     /**
-	 * Grabs a value from the react internal instance. Allows you to grab
-	 * long depth values safely without accessing no longer valid properties.
-	 * @param {HTMLElement} node - node to obtain react instance of
-	 * @param {object} options - options for the search
-	 * @param {array} [options.include] - list of items to include from the search
-	 * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] - list of items to exclude from the search
-	 * @param {callable} [options.filter=_=>_] - filter to check the current instance with (should return a boolean)
-	 * @return {(*|null)} the owner instance or undefined if not found.
-	 */
-	static getOwnerInstance(node, {include, exclude = ["Popout", "Tooltip", "Scroller", "BackgroundFlash"], filter = _ => _} = {}) {
-		if (node === undefined) return undefined;
-		const excluding = include === undefined;
-		const nameFilter = excluding ? exclude : include;
-		function getDisplayName(owner) {
-			const type = owner.type;
-			if (!type) return null;
-			return type.displayName || type.name || null;
-		}
-		function classFilter(owner) {
-			const name = getDisplayName(owner);
-			return (name !== null && !!(nameFilter.includes(name) ^ excluding));
-		}
+     * Grabs a value from the react internal instance. Allows you to grab
+     * long depth values safely without accessing no longer valid properties.
+     * @param {HTMLElement} node - node to obtain react instance of
+     * @param {object} options - options for the search
+     * @param {array} [options.include] - list of items to include from the search
+     * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] - list of items to exclude from the search
+     * @param {callable} [options.filter=_=>_] - filter to check the current instance with (should return a boolean)
+     * @return {(*|null)} the owner instance or undefined if not found.
+     */
+    static getOwnerInstance(node, {include, exclude = ["Popout", "Tooltip", "Scroller", "BackgroundFlash"], filter = _ => _} = {}) {
+        if (node === undefined) return undefined;
+        const excluding = include === undefined;
+        const nameFilter = excluding ? exclude : include;
+        function getDisplayName(owner) {
+            const type = owner.type;
+            if (!type) return null;
+            return type.displayName || type.name || null;
+        }
+        function classFilter(owner) {
+            const name = getDisplayName(owner);
+            return (name !== null && !!(nameFilter.includes(name) ^ excluding));
+        }
 
-		let curr = this.getReactInstance(node);
-		for (curr = curr && curr.return; curr !== null; curr = curr.return) {
-			if (curr === null) continue;
-			const owner = curr.stateNode;
-			if (curr !== null && !(owner instanceof HTMLElement) && classFilter(curr) && filter(owner)) return owner;
-		}
+        let curr = this.getReactInstance(node);
+        for (curr = curr && curr.return; curr !== null; curr = curr.return) {
+            if (curr === null) continue;
+            const owner = curr.stateNode;
+            if (curr !== null && !(owner instanceof HTMLElement) && classFilter(curr) && filter(owner)) return owner;
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

@@ -8,6 +8,6 @@ export default class EmoteMenuCard extends React.Component {
                     {this.props.children}
                 </div>
             </Scroller>
-        </div>
+        </div>;
     }
 }

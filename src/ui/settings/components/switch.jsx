@@ -16,7 +16,7 @@ export default class Switch extends React.Component {
     render() {
         const enabledClass = this.props.disabled ? " bd-switch-disabled" : "";
         const checkedClass = this.state.checked ? " bd-switch-checked" : "";
-        return  <div className={`bd-switch` + enabledClass + checkedClass}>
+        return <div className={`bd-switch` + enabledClass + checkedClass}>
                     <input type="checkbox" id={this.props.id} className={`bd-checkbox`} disabled={this.props.disabled} checked={this.state.checked} onChange={this.onChange} />
                 </div>;
     }

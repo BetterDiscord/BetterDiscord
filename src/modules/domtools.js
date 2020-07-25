@@ -44,48 +44,48 @@ export default class DOMTools {
     }
 
     /**
-	 * Adds a style to the document.
-	 * @param {string} id - identifier to use as the element id
-	 * @param {string} css - css to add to the document
-	 */
-	static addStyle(id, css) {
-		document.head.append(DOMTools.createElement(`<style id="${id}">${css}</style>`));
-	}
+     * Adds a style to the document.
+     * @param {string} id - identifier to use as the element id
+     * @param {string} css - css to add to the document
+     */
+    static addStyle(id, css) {
+        document.head.append(DOMTools.createElement(`<style id="${id}">${css}</style>`));
+    }
 
-	/**
-	 * Removes a style from the document.
-	 * @param {string} id - original identifier used
-	 */
-	static removeStyle(id) {
-		const element = document.getElementById(id);
-		if (element) element.remove();
-	}
+    /**
+     * Removes a style from the document.
+     * @param {string} id - original identifier used
+     */
+    static removeStyle(id) {
+        const element = document.getElementById(id);
+        if (element) element.remove();
+    }
 
-	/**
-	 * Adds/requires a remote script to be loaded
-	 * @param {string} id - identifier to use for this script
-	 * @param {string} url - url from which to load the script
-	 * @returns {Promise} promise that resolves when the script is loaded
-	 */
-	static addScript(id, url) {
-		return new Promise(resolve => {
-			const script = document.createElement("script");
-			script.id = id;
-			script.src = url;
-			script.type = "text/javascript";
-			script.onload = resolve;
-			document.head.append(script);
-		});
-	}
+    /**
+     * Adds/requires a remote script to be loaded
+     * @param {string} id - identifier to use for this script
+     * @param {string} url - url from which to load the script
+     * @returns {Promise} promise that resolves when the script is loaded
+     */
+    static addScript(id, url) {
+        return new Promise(resolve => {
+            const script = document.createElement("script");
+            script.id = id;
+            script.src = url;
+            script.type = "text/javascript";
+            script.onload = resolve;
+            document.head.append(script);
+        });
+    }
 
-	/**
-	 * Removes a remote script from the document.
-	 * @param {string} id - original identifier used
-	 */
-	static removeScript(id) {
+    /**
+     * Removes a remote script from the document.
+     * @param {string} id - original identifier used
+     */
+    static removeScript(id) {
         id = this.escapeID(id);
-		const element = document.getElementById(id);
-		if (element) element.remove();
+        const element = document.getElementById(id);
+        if (element) element.remove();
     }
     
     // https://javascript.info/js-animation
@@ -546,7 +546,7 @@ export default class DOMTools {
         return element.getBoundingClientRect();
     }
 
-    static get listeners() { return this._listeners || (this._listeners = {}); }
+    static get listeners() {return this._listeners || (this._listeners = {});}
 
     /**
      * This is similar to jQuery's `on` function and can *hopefully* be used in the same way.
@@ -647,7 +647,10 @@ export default class DOMTools {
     static __offAll(event, element) {
         const [type, namespace] = event.split(".");
         let matchFilter = listener => listener.event == type, defaultFilter = _ => _;
-        if (element) matchFilter = l => l.event == type && l.element == element, defaultFilter = l => l.element == element;
+        if (element) {
+            matchFilter = l => l.event == type && l.element == element;
+            defaultFilter = l => l.element == element;
+        }
         const listeners = this.listeners[namespace] || [];
         const list = type ? listeners.filter(matchFilter) : listeners.filter(defaultFilter);
         for (let c = 0; c < list.length; c++) list[c].cancel();
@@ -721,16 +724,16 @@ export default class DOMTools {
     }
 
     /** Shorthand for {@link module:DOMTools.onMountChange} with third parameter `true` */
-    static onMount(node, callback) { return this.onMountChange(node, callback); }
+    static onMount(node, callback) {return this.onMountChange(node, callback);}
 
     /** Shorthand for {@link module:DOMTools.onMountChange} with third parameter `false` */
-    static onUnmount(node, callback) { return this.onMountChange(node, callback, false); }
+    static onUnmount(node, callback) {return this.onMountChange(node, callback, false);}
 
     /** Alias for {@link module:DOMTools.onMount} */
-    static onAdded(node, callback) { return this.onMount(node, callback); }
+    static onAdded(node, callback) {return this.onMount(node, callback);}
 
     /** Alias for {@link module:DOMTools.onUnmount} */
-    static onRemoved(node, callback) { return this.onUnmount(node, callback, false); }
+    static onRemoved(node, callback) {return this.onUnmount(node, callback, false);}
 
     /**
      * Helper function which combines multiple elements into one parent element

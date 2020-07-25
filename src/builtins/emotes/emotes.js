@@ -196,7 +196,7 @@ export default new class EmoteModule extends Builtin {
             const etag = DataStore.getCacheHash("emotes", category);
             if (!etag) return resolve(false);
             request.head({url: this.getRemoteFile(category), headers: {"If-None-Match": etag}}, (err, resp) => {
-                resolve(resp.statusCode == 304);
+                resolve(!err && resp.statusCode == 304);
             });
         });
     }

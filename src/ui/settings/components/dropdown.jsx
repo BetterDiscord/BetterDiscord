@@ -34,7 +34,7 @@ export default class Select extends React.Component {
     get options() {
         const selected = this.selected;
         return <div className="bd-select-options">
-            {this.props.options.map(opt => 
+            {this.props.options.map(opt =>
                 <div className={`bd-select-option${selected.value == opt.value ? " selected" : ""}`} onClick={this.onChange.bind(this, opt.value)}>{opt.label}</div>
             )}
         </div>;
@@ -43,7 +43,7 @@ export default class Select extends React.Component {
     render() {
         const style = this.props.style == "transparent" ? " bd-select-transparent" : "";
         const isOpen = this.state.open ? " menu-open" : "";
-        return  <div className={`bd-select${style}${isOpen}`} onClick={this.showMenu} ref={this.dropdown}>
+        return <div className={`bd-select${style}${isOpen}`} onClick={this.showMenu} ref={this.dropdown}>
                     <div className="bd-select-value">{this.selected.label}</div>
                     <Arrow className="bd-select-arrow" />
                     {this.state.open && this.options}

@@ -11,4 +11,4 @@ window.BdApi = BdApi;
 
 // Add loading icon at the bottom right
 LoadingIcon.show();
-new BetterDiscord();
+new BetterDiscord(); // eslint-disable-line no-new
