@@ -6,13 +6,13 @@ electron.app.commandLine.appendSwitch("no-force-async-hooks-checks");
 
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
-        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) {super(options); return;}
+        if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options); // eslint-disable-line constructor-super
         const originalPreload = options.webPreferences.preload;
         options.webPreferences.preload = path.join(__dirname, "betterdiscord", "preload.js");
         options.webPreferences.nodeIntegration = true;
         options.webPreferences.enableRemoteModule = true;
         options.webPreferences.contextIsolation = false;
-		
+
         Object.assign(options, BetterDiscord.getWindowPrefs()); // Assign new style window prefs if they exist
 
         // Don't allow just "truthy" values
@@ -28,23 +28,33 @@ class BrowserWindow extends electron.BrowserWindow {
 
         super(options);
         this.__originalPreload = originalPreload;
-        BetterDiscord.setup(this);
     }
 }
 
-const onReady = () => {
-    Object.assign(BrowserWindow, electron.BrowserWindow); // Assigns the new chrome-specific functions
-    const electronPath = require.resolve("electron");
-    const newElectron = Object.assign({}, electron, {BrowserWindow}); // Create new electron object
-    require.cache[electronPath].exports = newElectron; // Try to assign the exports as the new electron
-    if (require.cache[electronPath].exports === newElectron) return; // If it worked, return
-    delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
-    require.cache[electronPath].exports = newElectron; // Try to assign again after deleting
+// Reassign electron using proxy to avoid the onReady issue, thanks Powercord!
+const newElectron = new Proxy(electron, {
+    get: function(target, prop) {
+        if (prop === "BrowserWindow") return BrowserWindow;
+        return target[prop];
+    }
+});
+const electronPath = require.resolve("electron");
+delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
+require.cache[electronPath].exports = newElectron; // Try to assign again after deleting
+
+// Remove the CSP
+const removeCSP = () => {
+    electron.session.defaultSession.webRequest.onHeadersReceived(function(details, callback) {
+        if (!details.responseHeaders["content-security-policy-report-only"] && !details.responseHeaders["content-security-policy"]) return callback({cancel: false});
+        delete details.responseHeaders["content-security-policy-report-only"];
+        delete details.responseHeaders["content-security-policy"];
+        callback({cancel: false, responseHeaders: details.responseHeaders});
+    });   
 };
 
-// Do the electron assignment
-if (process.platform == "win32" || process.platform == "darwin") electron.app.once("ready", onReady);
-else onReady();
+// Remove CSP immediately on linux since they install to discord_desktop_core still
+if (process.platform == "win32" || process.platform == "darwin") electron.app.once("ready", removeCSP);
+else removeCSP();
 
 // Use Discord's info to run the app
 if (process.platform == "win32" || process.platform == "darwin") {

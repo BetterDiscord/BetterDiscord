@@ -1,10 +1,4 @@
 {
     "local": false,
-    "localPath": "",
-    "localServer": "//localhost:8080",
-    "repo": "rauenzi",
-    "branch": "master",
-    "injectorBranch": "injector",
-    "minified": true,
-    "version": "0.5.1"
+    "localPath": ""
 }
