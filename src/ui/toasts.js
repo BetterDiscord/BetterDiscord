@@ -1,9 +1,9 @@
 import {WebpackModules, Settings, DOMManager} from "modules";
 
-const channelsClass = WebpackModules.getByProps("sidebar", "hasNotice").sidebar.split(" ")[0];
-const membersWrapClass = WebpackModules.getByProps("membersWrap").membersWrap.split(" ")[0];
-
 export default class Toasts {
+
+    static get ChannelsClass() {return WebpackModules.getByProps("sidebar", "hasNotice").sidebar.split(" ")[0];}
+    static get MembersWrapClass() {return WebpackModules.getByProps("membersWrap").membersWrap.split(" ")[0];}
 
     static get shouldShowToasts() {return Settings.get("settings", "general", "showToasts");}
 
@@ -53,8 +53,8 @@ export default class Toasts {
 
     static ensureContainer() {
         if (document.querySelector(".bd-toasts")) return;
-        const container = document.querySelector(`.${channelsClass} + div`);
-        const memberlist = container.querySelector(`.${membersWrapClass}`);
+        const container = document.querySelector(`.${this.ChannelsClass} + div`);
+        const memberlist = container.querySelector(`.${this.MembersWrapClass}`);
         const form = container ? container.querySelector("form") : null;
         const left = container ? container.getBoundingClientRect().left : 310;
         const right = memberlist ? memberlist.getBoundingClientRect().left : 0;

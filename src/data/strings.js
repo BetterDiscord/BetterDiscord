@@ -224,11 +224,7 @@ export default {
         missingNameData: "META missing name data.",
         metaNotFound: "META was not found.",
         compileError: "Could not be compiled.",
-        wasUnloaded: "{{name}} was unloaded.",
-        alreadyWatching: "Already watching {{prefix}} addons.",
-        startingWatch: "Starting to watch {{prefix}} addons.",
-        wasNotWatching: "Was not watching {{prefix}} addons.",
-        noLongerWatching: "No longer watching {{prefix}} addons."
+        wasUnloaded: "{{name}} was unloaded."
     },
     CustomCSS: {
         confirmationText: "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -290,12 +286,12 @@ export default {
     },
     Startup: {
         notSupported: "Not Supported",
-        versionMismatch: "BandagedBD Injector v{{injector}} is not supported by the latest remote (v{{remote}}).\n\nPlease download the latest version from [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        incompatibleApp: "BandagedBD does not work with {{app}}. Please uninstall one of them.",
+        versionMismatch: "BetterDiscord Injector v{{injector}} is not supported by the latest remote (v{{remote}}).\n\nPlease download the latest version from [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        incompatibleApp: "BetterDiscord does not work with {{app}}. Please uninstall one of them.",
         updateNow: "Update Now",
         maybeLater: "Maybe Later",
         updateAvailable: "Update Available",
-        updateInfo: "There is an update available for BandagedBD's Injector ({{version}}).\n\nYou can either update and restart now, or later.",
+        updateInfo: "There is an update available for BetterDiscord's Injector ({{version}}).\n\nYou can either update and restart now, or later.",
         updateFailed: "Could Not Update",
         manualUpdate: "Unable to update automatically, please download the installer and reinstall normally.\n\n[Download Installer](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
         jqueryFailed: "jQuery Failed To Load",

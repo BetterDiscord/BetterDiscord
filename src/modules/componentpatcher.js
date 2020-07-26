@@ -34,7 +34,7 @@ export default new class ComponentPatcher {
                 const newOne = function() {
                     const returnVal = original(...arguments);
                     returnVal.props.children.push(
-                        DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BandagedBD", target: "_blank"},
+                        DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BetterDiscord", target: "_blank"},
                             DiscordModules.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
                         )
                     );
@@ -45,7 +45,7 @@ export default new class ComponentPatcher {
 
             const injector = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `Injector ${Config.version}`);
             const versionHash = `(${Config.hash ? Config.hash.substring(0, 7) : Config.branch})`;
-            const additional = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BBD ${Config.bbdVersion} `, DiscordModules.React.createElement("span", {className: "versionHash-2gXjIB da-versionHash"}, versionHash));
+            const additional = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BD ${Config.bdVersion} `, DiscordModules.React.createElement("span", {className: "versionHash-2gXjIB da-versionHash"}, versionHash));
             
 
             const originalVersions = children[children.length - 1].type;
@@ -120,8 +120,8 @@ export default new class ComponentPatcher {
             if (!children || !author || !author.id || author.id !== "249746236008169473") return;
             if (!Array.isArray(children)) return;
             children.push(
-                React.createElement(Tooltip, {color: "black", position: "top", text: "BandagedBD Developer"},
-                    props => React.createElement(Anchor, Object.assign({className: "bd-chat-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"}, props),
+                React.createElement(Tooltip, {color: "black", position: "top", text: "BetterDiscord Developer"},
+                    props => React.createElement(Anchor, Object.assign({className: "bd-chat-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BetterDiscord", target: "_blank"}, props),
                         React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
                     )
                 )
@@ -140,8 +140,8 @@ export default new class ComponentPatcher {
             if (!children || !user || !user.id || user.id !== "249746236008169473") return;
             if (!Array.isArray(children)) return;
             children.push(
-                React.createElement(Tooltip, {color: "black", position: "top", text: "BandagedBD Developer"},
-                    props => React.createElement(Anchor, Object.assign({className: "bd-member-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BandagedBD", target: "_blank"}, props),
+                React.createElement(Tooltip, {color: "black", position: "top", text: "BetterDiscord Developer"},
+                    props => React.createElement(Anchor, Object.assign({className: "bd-member-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BetterDiscord", target: "_blank"}, props),
                         React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
                     )
                 )

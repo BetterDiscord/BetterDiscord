@@ -70,6 +70,14 @@
                 "autoReload": {
                     "name": "Automatic Loading",
                     "note": "Automatically loads, reloads, and unloads plugins and themes"
+                },
+                "editAction": {
+                    "name": "Edit Action",
+                    "note": "Where plugins & themes appear when editing",
+                    "options": {
+                        "detached": "Detached Window",
+                        "system": "System Editor"
+                    }
                 }
             },
             "customcss": {
@@ -89,17 +97,30 @@
                 "nativeOpen": {
                     "name": "Open in Native Editor",
                     "note": "Clicking the Custom CSS tab opens your custom css in your native editor"
+                },
+                "openAction": {
+                    "name": "Editor Location",
+                    "note": "Where Custom CSS should open by default",
+                    "options": {
+                        "settings": "Settings Menu",
+                        "detached": "Detached Window",
+                        "system": "System Editor"
+                    }
                 }
             },
             "developer": {
                 "name": "Developer Settings",
-                "developerMode": {
-                    "name": "Developer Mode",
+                "debuggerHotkey": {
+                    "name": "Debugger Hotkey",
                     "note": "Allows activating debugger when pressing F8"
                 },
                 "copySelector": {
                     "name": "Copy Selector",
                     "note": "Adds a \"Copy Selector\" option to context menus when developer mode is active"
+                },
+                "reactDevTools": {
+                    "name": "React Developer Tools",
+                    "note": "Injects your local installation of React Developer Tools into Discord"
                 }
             },
             "window": {
@@ -120,7 +141,7 @@
                 "name": "General",
                 "download": {
                     "name": "Download Emotes",
-                    "note": "Download emotes once a week to stay up to date"
+                    "note": "Download emotes whenever they are out of date"
                 },
                 "emoteMenu": {
                     "name": "Emote Menu",
@@ -149,11 +170,15 @@
             },
             "categories": {
                 "name": "Categories",
-                "twitch": {
-                    "name": "Twitch",
-                    "note": "Show Twitch global & subscriber emotes"
+                "twitchglobal": {
+                    "name": "Twitch Globals",
+                    "note": "Show Twitch global emotes"
                 },
-                "ffz": {
+                "twitchsubscriber": {
+                    "name": "Twitch Subscribers",
+                    "note": "Show Twitch subscriber emotes"
+                },
+                "frankerfacez": {
                     "name": "FrankerFaceZ",
                     "note": "Show emotes from FFZ"
                 },
@@ -171,14 +196,35 @@
         "addonSettings": "Settings",
         "website": "Website",
         "source": "Source",
-        "server": "Support Server",
-        "donate": "Donate"
-    },
-    "Emotes": {
-        "downloading": "Downloading emotes in the background do not reload.",
-        "downloaded": "All emotes successfully downloaded.",
-        "clearEmotes": "Clear Emote Data",
-        "favoriteAction": "Favorite!"
+        "invite": "Support Server",
+        "donate": "Donate",
+        "patreon": "Patreon",
+        "name": "Name",
+        "author": "Author",
+        "version": "Version",
+        "added": "Date Added",
+        "modified": "Date Modified",
+        "search": "Search {{type}}",
+        "editAddon": "Edit",
+        "deleteAddon": "Delete",
+        "confirmDelete": "Are you sure you want to delete {{name}}?",
+        "confirmationText": "You have unsaved changes to {{name}}. Closing this window will lose all those changes.",
+        "enabled": "{{name}} has been enabled.",
+        "disabled": "{{name}} has been disabled.",
+        "couldNotEnable": "{{name}} could not be enabled.",
+        "couldNotDisable": "{{name}} could not be disabled.",
+        "couldNotStart": "{{name}} could not be started.",
+        "couldNotStop": "{{name}} could not be stopped.",
+        "methodError": "{{method}} could not be fired.",
+        "unknownAuthor": "Unknown Author",
+        "noDescription": "Description not provided.",
+        "alreadyExists": "There is already a {{type}} with name {{name}}",
+        "alreadWatching": "Already watching  addons.",
+        "metaError": "META could not be parsed.",
+        "missingNameData": "META missing name data.",
+        "metaNotFound": "META was not found.",
+        "compileError": "Could not be compiled.",
+        "wasUnloaded": "{{name}} was unloaded."
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -188,6 +234,15 @@
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
         "editorTitle": "Custom CSS Editor"
+    },
+    "Developer": {
+        "copySelector": "Copy Selector"
+    },
+    "Emotes": {
+        "loading": "Loading emotes in the background do not reload.",
+        "loaded": "All emotes successfully loaded.",
+        "clearEmotes": "Clear Emote Data",
+        "favoriteAction": "Favorite!"
     },
     "PublicServers": {
         "button": "public",
@@ -206,12 +261,44 @@
         "query": "for {{query}}"
     },
     "Modals": {
-        "confirmClose": "Are You Sure?",
+        "confirmAction": "Are You Sure?",
         "okay": "Okay",
         "cancel": "Cancel",
+        "close": "Close",
         "name": "Name",
         "message": "Message",
         "error": "Error",
-        "addonErrors": "Addon Errors"
+        "addonErrors": "Addon Errors",
+        "restartRequired": "Restart Required",
+        "restartNow": "Restart Now",
+        "restartLater": "Restart Later",
+        "additionalInfo": "Additional Info"
+    },
+    "ReactDevTools": {
+        "notFound": "Extension Not Found",
+        "notFoundDetails": "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
+    },
+    "Sorting": {
+        "sortBy": "Sort By",
+        "order": "Order",
+        "ascending": "Ascending",
+        "descending": "Descending"
+    },
+    "Startup": {
+        "notSupported": "Not Supported",
+        "versionMismatch": "BetterDiscord Injector v{{injector}} is not supported by the latest remote (v{{remote}}).\n\nPlease download the latest version from [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "incompatibleApp": "BetterDiscord does not work with {{app}}. Please uninstall one of them.",
+        "updateNow": "Update Now",
+        "maybeLater": "Maybe Later",
+        "updateAvailable": "Update Available",
+        "updateInfo": "There is an update available for BetterDiscord's Injector ({{version}}).\n\nYou can either update and restart now, or later.",
+        "updateFailed": "Could Not Update",
+        "manualUpdate": "Unable to update automatically, please download the installer and reinstall normally.\n\n[Download Installer](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "jQuery Failed To Load",
+        "jqueryFailedDetails": "jQuery could not be loaded, and some plugins may not work properly. Proceed at your own risk."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
+        "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     }
 }

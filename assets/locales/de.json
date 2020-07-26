@@ -223,11 +223,7 @@
 		"missingNameData": "META missing name data.",
 		"metaNotFound": "META nicht gefunden.",
 		"compileError": "Konnte nicht kompiliert werden.",
-		"wasUnloaded": "{{name}} was unloaded.",
-		"alreadyWatching": "Already watching {{prefix}} addons.",
-		"startingWatch": "Starting to watch {{prefix}} addons.",
-		"wasNotWatching": "Was not watching {{prefix}} addons.",
-		"noLongerWatching": "No longer watching {{prefix}} addons."
+		"wasUnloaded": "{{name}} was unloaded."
 	},
 	"CustomCSS": {
 		"confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
@@ -289,12 +285,12 @@
 	},
 	"Startup": {
 		"notSupported": "Nicht unterstützt",
-		"versionMismatch": "BandagedBD Injector v{{injector}} wird nicht von der letzten Onlineversion (v{{remote}}) unterstützt.\n\nBitte lade den neusten Installer von [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest) herunter.",
-		"incompatibleApp": "BandagedBD ist nicht mit {{app}} kompatiblem. Bitte entferne entweder BetterDiscord oder {{app}}.",
+		"versionMismatch": "BetterDiscord Injector v{{injector}} wird nicht von der letzten Onlineversion (v{{remote}}) unterstützt.\n\nBitte lade den neusten Installer von [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest) herunter.",
+		"incompatibleApp": "BetterDiscord ist nicht mit {{app}} kompatiblem. Bitte entferne entweder BetterDiscord oder {{app}}.",
 		"updateNow": "Jetzt aktualisieren",
 		"maybeLater": "Später",
 		"updateAvailable": "Update verfügbar",
-		"updateInfo": "Ein Update für BandagedBDs Injector ({{version}}) ist verfügbar.\n\nDu kannst entweder jetzt oder später aktualisieren und neustarten",
+		"updateInfo": "Ein Update für BetterDiscords Injector ({{version}}) ist verfügbar.\n\nDu kannst entweder jetzt oder später aktualisieren und neustarten",
 		"updateFailed": "Konnte nicht aktualisiert werden",
 		"manualUpdate": "Die automatische Aktualisierung schlug fehl. Bitte lade den Installer herunter und installiere BetterDiscord erneut.\n\n[Installer herunterladen](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
 		"jqueryFailed": "jQuery konnte nicht geladen werden",

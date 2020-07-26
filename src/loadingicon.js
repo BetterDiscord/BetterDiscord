@@ -30,7 +30,7 @@ iconStyle.textContent = css;
 const loadingIcon = document.createElement("div");
 loadingIcon.id = "bd-loading-icon";
 loadingIcon.className = "bd-loaderv2";
-loadingIcon.title = "BandagedBD is loading...";
+loadingIcon.title = "BetterDiscord is loading...";
 
 export default class {
     static show() {

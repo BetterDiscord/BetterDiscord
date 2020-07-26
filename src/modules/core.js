@@ -37,15 +37,13 @@ export default class Core {
                 name: "jquery",
                 type: "script",
                 url: "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js",
-                backup: "//cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js",
-                local: null
+                backup: "//cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js"
             },
             {
                 name: "bd-stylesheet",
                 type: "style",
                 url: "//betterdiscord.zerebos.com/dist/style.css",
                 backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
-                local: "{{localServer}}/BetterDiscordApp/dist/style.css",
                 localPath: "style.css"
             }
         ];
@@ -67,7 +65,7 @@ export default class Core {
         DataStore.initialize();
         await LocaleManager.initialize();
 
-        if (Config.version < Config.minSupportedVersion) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.versionMismatch.format({injector: Config.version, remote: Config.bbdVersion}));
+        if (Config.version < Config.minSupportedVersion) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.versionMismatch.format({injector: Config.version, remote: Config.bdVersion}));
         if (window.ED) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "EnhancedDiscord"}));
         if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
 
@@ -117,9 +115,9 @@ export default class Core {
         Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
 
         const previousVersion = DataStore.getBDData("version");
-        if (Config.bbdVersion > previousVersion) {
+        if (Config.bdVersion > previousVersion) {
             Modals.showChangelogModal(Changelog);
-            DataStore.setBDData("version", Config.bbdVersion);
+            DataStore.setBDData("version", Config.bdVersion);
         }
     }
 
@@ -150,7 +148,7 @@ export default class Core {
                     continue;
                 }
             }
-            const url = Utilities.formatString((Config.local && data.local != null) ? data.local : data.url, {repo: Config.repo, hash: Config.hash, localServer: Config.localServer});
+            const url = Utilities.formatString(data.url, {repo: Config.repo, hash: Config.hash});
             Logger.log(`Startup`, `Loading Resource (${url})`);
             const injector = (data.type == "script" ? DOMManager.injectScript : DOMManager.linkStyle).bind(DOMManager);
             try {
