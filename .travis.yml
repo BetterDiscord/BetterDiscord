@@ -14,7 +14,7 @@ install:
   - npm install
 
 script:
-  - npm run build-all
+  - npm run deploy
   - npm run test
   - npm run lint
 
