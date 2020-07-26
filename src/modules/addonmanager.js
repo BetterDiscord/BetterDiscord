@@ -8,7 +8,6 @@ import MetaError from "../structs/metaerror";
 import Toasts from "../ui/toasts";
 import DiscordModules from "./discordmodules";
 import Strings from "./strings";
-
 import AddonEditor from "../ui/misc/addoneditor";
 import FloatingWindows from "../ui/floatingwindows";
 
@@ -114,15 +113,15 @@ export default class AddonManager {
         if (hasOldMeta) return this.parseOldMeta(fileContent);
         const hasNewMeta = firstLine.includes("/**");
         if (hasNewMeta) return this.parseNewMeta(fileContent);
-        throw new MetaError("META was not found.");
+        throw new MetaError(Strings.Addons.metaNotFound);
     }
 
     parseOldMeta(fileContent) {
         const meta = fileContent.split("\n")[0];
         const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
         const parsed = Utilities.testJSON(metaData);
-        if (!parsed) throw new MetaError("META could not be parsed.");
-        if (!parsed.name) throw new MetaError("META missing name data.");
+        if (!parsed) throw new MetaError(Strings.Addons.metaError);
+        if (!parsed.name) throw new MetaError(Strings.Addons.missingNameData);
         parsed.format = "json";
         return parsed;
     }
@@ -178,9 +177,9 @@ export default class AddonManager {
     loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
         try {__non_webpack_require__(path.resolve(this.addonFolder, filename));}
-        catch (error) {return new AddonError(filename, filename, "Could not be compiled.", {message: error.message, stack: error.stack});}
+        catch (error) {return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack});}
         const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
-        if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, `There is already a plugin with name ${addon.name}`);
+        if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}));
         const error = this.initializeAddon(addon);
         if (error) return error;
         this.addonList.push(addon);
