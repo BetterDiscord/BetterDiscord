@@ -44,8 +44,12 @@ export default new class DataStore {
         fs.renameSync(oldFile, `${oldFile}.bak`); // rename file after grabbing data to prevent loop
         const setChannelData = (channel, key, value, ext = "json") => fs.writeFileSync(path.resolve(this.baseFolder, channel, `${key}.${ext}`), JSON.stringify(value, null, 4));
         const channels = ["stable", "canary", "ptb"];
-        const customcss = atob(oldData.bdcustomcss);
-        const favoriteEmotes = oldData.bdfavemotes ? JSON.parse(atob(oldData.bdfavemotes)) : "";
+        let customcss = "";
+        let favoriteEmotes = {};
+        try {customcss = oldData.bdcustomcss ? atob(oldData.bdcustomcss) : "";}
+        catch (e) {console.error(e);} // eslint-disable-line no-console
+        try {favoriteEmotes = oldData.bdfavemotes ? JSON.parse(atob(oldData.bdfavemotes)) : {};}
+        catch (e) {console.error(e);} // eslint-disable-line no-console
         for (const channel of channels) {
             if (!fs.existsSync(path.resolve(this.baseFolder, channel))) fs.mkdirSync(path.resolve(this.baseFolder, channel));
             const channelData = oldData.settings[channel];
