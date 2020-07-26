@@ -221,12 +221,13 @@ export default class Modals {
                 renderFooter: renderFooter,
             }, props), changelogItems);
         });
-            const closeModal = ModalActions.closeModal;
-            ModalActions.closeModal = function(k) {
-                if (k !== key) Reflect.apply(closeModal, this, arguments);
-                setTimeout(() => {if (originalRoot) OriginalModalClasses.root = originalRoot;}, 1000);
-                ModalActions.closeModal = closeModal;
-            };
+        
+        const closeModal = ModalActions.closeModal;
+        ModalActions.closeModal = function(k) {
+            Reflect.apply(closeModal, this, arguments);
+            setTimeout(() => {if (originalRoot && k === key) OriginalModalClasses.root = originalRoot;}, 1000);
+            ModalActions.closeModal = closeModal;
+        };
         return key;
     }
 }

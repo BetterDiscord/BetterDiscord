@@ -178,7 +178,7 @@ import {deepclone, isEmpty} from "./utilties"; // Avoid this
 
 ### CSS Styleguide
 
-All CSS must adhere to the [Stylelint rules](https://github.com/rauenzi/BetterDiscordApp/blob/development/.stylelintrc) of the repo.
+All CSS must adhere to the [Stylelint rules](https://github.com/rauenzi/BetterDiscordApp/blob/stable/.stylelintrc) of the repo.
 
 Some other style related points not covered by ESLint:
 
