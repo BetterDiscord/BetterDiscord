@@ -10,7 +10,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "minify-css": "gulp minify-css",
         "watch-css": "gulp watch-css",
-        "deploy": "npm run build-prod && npm run minify-css"
+        "build-all": "npm run build-prod && npm run minify-css"
     },
     "repository": {
         "type": "git",
