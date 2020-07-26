@@ -19,15 +19,13 @@ const dependencies = [
         name: "jquery",
         type: "script",
         url: "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js",
-        backup: "//cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js",
-        local: null
+        backup: "//cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js"
     },
     {
         name: "bd-stylesheet",
         type: "style",
         url: "//betterdiscord.zerebos.com/dist/style.css",
-        backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
-        local: "{{localServer}}/BetterDiscordApp/dist/style.css"
+        backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css"
     }
 ];
 
@@ -165,7 +163,7 @@ Core.prototype.injectExternals = async function() {
     await DOM.addScript("ace-script", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
     if (window.require.original) window.require = window.require.original;
     if (window.$ && window.jQuery) return; // Dependencies already loaded
-    const jqueryUrl = Utils.formatString((bdConfig.local && dependencies[0].local != null) ? dependencies[0].local : dependencies[0].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer});
+    const jqueryUrl = Utils.formatString(dependencies[0].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer});
     try {await DOM.addScript("jquery", jqueryUrl);}
     catch (_) {
         try {
@@ -176,7 +174,7 @@ Core.prototype.injectExternals = async function() {
             Utils.alert("jQuery Not Loaded", "Unable to load jQuery, some plugins may fail to work. Proceed at your own risk.");
         }
     }
-    document.head.append(DOM.createElement(`<link rel="stylesheet" href=${Utils.formatString((bdConfig.local && dependencies[1].local != null) ? dependencies[1].local : dependencies[1].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer})}>`));
+    document.head.append(DOM.createElement(`<link rel="stylesheet" href=${Utils.formatString(dependencies[1].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer})}>`));
 };
 
 Core.prototype.initSettings = function () {
