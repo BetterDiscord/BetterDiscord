@@ -15,3 +15,12 @@
     height: 15px;
     margin-left: 4px;
 }
+
+.bd-changelog-modal {
+    width: 650px;
+}
+
+.bd-changelog-modal video {
+    width: 100%;
+    border-radius: 20px;
+}

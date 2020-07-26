@@ -115,9 +115,7 @@
         "Symbol": "readonly",
         
         "alert": "off",
-        "atob": "off",
         "blur": "off",
-        "btoa": "off",
         "caches": "off",
         "close": "off",
         "closed": "off",

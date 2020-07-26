@@ -1,11 +1,10 @@
-import {Config} from "data";
 import Logger from "./logger";
 import DOM from "./domtools";
 
 export default class Utilities {
 
     static repoUrl(path) {
-        return `https://cdn.staticaly.com/gh/${Config.repo}/BetterDiscordApp/${Config.hash}/${path}`;
+        return `https://betterdiscord.zerebos.com/${path}`;
     }
 
     /**

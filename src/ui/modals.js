@@ -176,7 +176,7 @@ export default class Modals {
     
         const {image = "https://repository-images.githubusercontent.com/105473537/957b5480-7c26-11e9-8401-50fa820cbae5", description = "", changes = [], title = "BandagedBD", subtitle = `v${Config.bbdVersion}`, footer} = options;
         const ce = React.createElement;
-        const changelogItems = [ce("img", {src: image})];
+        const changelogItems = [options.video ? ce("video", {src: options.video, poster: options.poster, controls: true, className: ChangelogClasses.video}) : ce("img", {src: image})];
         if (description) changelogItems.push(ce("p", null, MarkdownParser.parse(description)));
         for (let c = 0; c < changes.length; c++) {
             const entry = changes[c];
@@ -206,15 +206,27 @@ export default class Modals {
             const defaultFooter = ce(TextElement, {size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
             return ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter);
         };
-    
-        return ModalStack.push(Changelog, {
-            className: ChangelogClasses.container,
-            selectable: true,
-            onScroll: _ => _,
-            onClose: _ => _,
-            renderHeader: renderHeader,
-            renderFooter: renderFooter,
-            children: changelogItems
+
+        const ModalActions = this.ModalActions;
+        const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen");
+        const originalRoot = OriginalModalClasses.root;
+        if (originalRoot) OriginalModalClasses.root = `${originalRoot} bd-changelog-modal`;
+        const key = ModalActions.openModal(props => {
+            return React.createElement(Changelog, Object.assign({
+                className: `bd-changelog ${ChangelogClasses.container}`,
+                selectable: true,
+                onScroll: _ => _,
+                onClose: _ => _,
+                renderHeader: renderHeader,
+                renderFooter: renderFooter,
+            }, props), changelogItems);
         });
+            const closeModal = ModalActions.closeModal;
+            ModalActions.closeModal = function(k) {
+                if (k !== key) Reflect.apply(closeModal, this, arguments);
+                setTimeout(() => {if (originalRoot) OriginalModalClasses.root = originalRoot;}, 1000);
+                ModalActions.closeModal = closeModal;
+            };
+        return key;
     }
 }

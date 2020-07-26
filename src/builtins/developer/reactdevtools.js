@@ -37,9 +37,14 @@ export default new class ReactDevTools extends Builtin {
         if (!this.isExtensionInstalled) this.findExtension();
         if (!this.isExtensionInstalled) return Modals.alert(Strings.ReactDevTools.notFound, Strings.ReactDevTools.notFoundDetails);
 
-        const didInstall = BrowserWindow.addDevToolsExtension(this.extensionPath);
-        if (didInstall) this.log("Successfully installed react devtools.");
-        else this.error("Couldn't find react devtools in chrome extensions!");
+        try {
+            const didInstall = BrowserWindow.addDevToolsExtension(this.extensionPath);
+            if (didInstall) this.log("Successfully installed react devtools.");
+            else this.error("Couldn't find react devtools in chrome extensions!");
+        }
+        catch (err) {
+            this.error("Couldn't add the extension!");
+        }
     }
 
     disabled() {

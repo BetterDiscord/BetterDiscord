@@ -21,7 +21,7 @@ const Emotes = {
     FrankerFaceZ: {}
 };
 
-const blacklist = [];
+const blocklist = [];
 const overrides = ["twitch", "subscriber", "bttv", "ffz"];
 const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
 
@@ -44,7 +44,7 @@ export default new class EmoteModule extends Builtin {
     get TwitchSubscriber() {return Emotes.TwitchSubscriber;}
     get BTTV() {return Emotes.BTTV;}
     get FrankerFaceZ() {return Emotes.FrankerFaceZ;}
-    get blacklist() {return blacklist;}
+    get blocklist() {return blocklist;}
     get favorites() {return this.favoriteEmotes;}
     getUrl(category, name) {return EmoteURLs[category].format({id: Emotes[category][name]});}
 
@@ -63,7 +63,7 @@ export default new class EmoteModule extends Builtin {
 
     async enabled() {
         Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: this.resetEmotes});
-        await this.getBlacklist();
+        await this.getBlocklist();
         await this.loadEmoteData();
 
         Events.on("emotes-favorite-added", this.addFavorite);
@@ -129,7 +129,7 @@ export default new class EmoteModule extends Builtin {
                         let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
                         let emoteOverride = emoteModifier.slice(0);
 
-                        if (emoteName.length < 4 || blacklist.includes(emoteName)) continue;
+                        if (emoteName.length < 4 || blocklist.includes(emoteName)) continue;
                         if (!modifiers.includes(emoteModifier) || !Settings.get("emotes", "general", "modifiers")) emoteModifier = "";
                         if (!overrides.includes(emoteOverride)) emoteOverride = "";
                         else emoteModifier = emoteOverride;
@@ -177,14 +177,14 @@ export default new class EmoteModule extends Builtin {
         });
     }
 
-    async getBlacklist() {
+    async getBlocklist() {
         try {
-            const category = "Blacklist";
+            const category = "Blocklist";
             const exists = DataStore.emotesExist(category);
             const valid = await this.isCacheValid(category);
             const useCache = (valid) || (!valid && exists && !this.shouldDownload);
             const list = useCache ? DataStore.getEmoteData(category) : await this.downloadEmotes(category);
-            blacklist.push(...list);
+            blocklist.push(...list);
         }
         catch (err) {
             // TODO: Log this
@@ -253,7 +253,7 @@ export default new class EmoteModule extends Builtin {
                 }
 
                 for (const emote in parsedData) {
-                    if (emote.length < 4 || blacklist.includes(emote) || !parsedData[emote]) {
+                    if (emote.length < 4 || blocklist.includes(emote) || !parsedData[emote]) {
                         delete parsedData[emote];
                         continue;
                     }

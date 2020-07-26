@@ -32,6 +32,46 @@ export default new class DataStore {
             this.data[file.split(".")[0]] = __non_webpack_require__(path.resolve(this.dataFolder, file));
         }
         this.cacheData = Utilities.testJSON(fs.readFileSync(this.cacheFile).toString()) || {};
+
+        this.convertOldData(); // Convert old data if it exists (routine checks existence and removes existence)
+    }
+
+    convertOldData() {
+        const oldFile = path.join(Config.dataPath, "bdstorage.json");
+        if (!fs.existsSync(oldFile)) return;
+
+        const oldData = __non_webpack_require__(oldFile); // got the data
+        fs.renameSync(oldFile, `${oldFile}.bak`); // rename file after grabbing data to prevent loop
+        const setChannelData = (channel, key, value, ext = "json") => fs.writeFileSync(path.resolve(this.baseFolder, channel, `${key}.${ext}`), JSON.stringify(value, null, 4));
+        const channels = ["stable", "canary", "ptb"];
+        const customcss = atob(oldData.bdcustomcss);
+        const favoriteEmotes = oldData.bdfavemotes ? JSON.parse(atob(oldData.bdfavemotes)) : "";
+        for (const channel of channels) {
+            if (!fs.existsSync(path.resolve(this.baseFolder, channel))) fs.mkdirSync(path.resolve(this.baseFolder, channel));
+            const channelData = oldData.settings[channel];
+            if (!channelData) continue;
+            const oldSettings = channelData.settings;
+            const newSettings = {
+                general: {publicServers: oldSettings["bda-gs-1"], voiceDisconnect: oldSettings["bda-dc-0"], twentyFourHour: oldSettings["bda-gs-6"], classNormalizer: oldSettings["fork-ps-4"], showToasts: oldSettings["fork-ps-2"]},
+                appearance: {voiceMode: oldSettings["bda-gs-4"], minimalMode: oldSettings["bda-gs-2"], hideChannels: oldSettings["bda-gs-3"], darkMode: oldSettings["bda-gs-5"], coloredText: oldSettings["bda-gs-7"]},
+                addons: {addonErrors: oldSettings["fork-ps-1"], autoScroll: oldSettings["fork-ps-3"], autoReload: oldSettings["fork-ps-5"]},
+                developer: {debuggerHotkey: oldSettings["bda-gs-8"], copySelector: oldSettings["fork-dm-1"], reactDevTools: oldSettings.reactDevTools}
+            };
+
+            const newEmotes = {
+                general: {download: oldSettings["fork-es-3"], emoteMenu: oldSettings["bda-es-0"], hideEmojiMenu: !oldSettings["bda-es-9"], showNames: oldSettings["bda-es-6"], modifiers: oldSettings["bda-es-8"], animateOnHover: oldSettings["fork-es-2"]},
+                categories: {twitchglobal: oldSettings["bda-es-7"], twitchsubscriber: oldSettings["bda-es-7"], frankerfacez: oldSettings["bda-es-1"], bttv: oldSettings["bda-es-2"]}
+            };
+
+            setChannelData(channel, "settings", newSettings); // settingsCookie
+            setChannelData(channel, "emotes", newEmotes); // emotes (from settingsCookie)
+            setChannelData(channel, "plugins", channelData.plugins); // pluginCookie
+            setChannelData(channel, "themes", channelData.themes); // themeCookie
+            setChannelData(channel, "misc", {favoriteEmotes}); // favorite emotes
+            fs.writeFileSync(path.resolve(this.baseFolder, channel, "custom.css"), customcss); // customcss
+        }
+        
+        this.initialize(); // Reinitialize data store with the converted data
     }
 
     get injectionPath() {

@@ -9,7 +9,7 @@ gulp.task("build-css", buildCSS);
 gulp.task("minify-css", minifyCSS);
 
 gulp.task("watch-css", function() {
-  return gulp.watch(["./src/styles/index.css"], minifyCSS);
+  return gulp.watch(["./src/styles/*.css", "./src/styles/**/*.css"], minifyCSS);
 });
 
 function runBuild(minified) {
@@ -17,7 +17,7 @@ function runBuild(minified) {
   if (minified) plugins.push(postcssCSSO({restructure: false}));
   return gulp.src("./src/styles/index.css")
         .pipe(postcss(plugins))
-        .pipe(rename(minified ? "style.min.css" : "style.css"))
+        .pipe(rename("style.css"))
         .pipe(gulp.dest("./dist"));
 }
 

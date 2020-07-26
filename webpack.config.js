@@ -8,7 +8,7 @@ module.exports = {
   devtool: "eval-source-map",
   entry: "./src/index.js",
   output: {
-    filename: "index.js",
+    filename: "remote.js",
     path: path.resolve(__dirname, "dist")
   },
   externals: {
@@ -56,7 +56,7 @@ module.exports = {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
-          compress: {drop_debugger:false}
+          compress: {drop_debugger: false}
         }
       })
     ]

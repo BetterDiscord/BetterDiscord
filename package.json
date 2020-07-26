@@ -2,32 +2,32 @@
     "name": "bandagedbd",
     "version": "1.0.0",
     "description": "Enhances Discord adding functionality and themes.",
-    "main": "js/main.js",
+    "main": "src/index.js",
     "scripts": {
         "build": "webpack --progress --colors",
         "watch": "webpack --progress --colors --watch",
-        "build-prod": "webpack --progress --colors --mode production -o dist/index.min.js --devtool none",
+        "build-prod": "webpack --progress --colors --mode production -o dist/remote.js --devtool none",
         "lint-js": "eslint --ext .jsx,.js src/",
+
         "build-css": "gulp build-css",
         "watch-css": "gulp watch-css",
-        "minify-css": "gulp minify-css",
-        "lint-css": "stylelint src/styles/*.css && stylelint src/styles/**/*.css && stylelint dist/style.css",
-        "dist": "npm run minify",
-        "minify": "npm run build-prod && npm run minify-css",
-        "build-all": "npm run build && npm run build-prod && npm run build-css && npm run minify-css",
+        "build-prod-css": "gulp minify-css",
+        "lint-css": "stylelint src/styles/*.css && stylelint src/styles/**/*.css",
+
+        "prod": "npm run build-prod && npm run build-prod-css",
         "lint": "npm run lint-js && npm run lint-css",
-        "test": "mocha --require @babel/register --recursive \"./tests/*.js\""
+        "test": "mocha --require @babel/register --recursive \"./tests/*.js\"",
+        "deploy": "npm run prod"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/rauenzi/BetterDiscordApp.git"
     },
     "author": "rauenzi",
-    "license": "MIT",
     "bugs": {
         "url": "https://github.com/rauenzi/BetterDiscordApp/issues"
     },
-    "homepage": "https://github.com/rauenzi/BetterDiscordApp#readme",
+    "homepage": "https://github.com/rauenzi/BetterDiscordApp",
     "devDependencies": {
         "@babel/core": "^7.10.5",
         "@babel/preset-env": "^7.10.4",

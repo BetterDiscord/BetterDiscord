@@ -43,10 +43,10 @@ export default class Core {
             {
                 name: "bd-stylesheet",
                 type: "style",
-                url: "//cdn.staticaly.com/gh/{{repo}}/BetterDiscordApp/{{hash}}/dist/style.min.css",
-                backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.min.css",
-                local: "{{localServer}}/BetterDiscordApp/dist/style.min.css",
-                localPath: "style.min.css"
+                url: "//betterdiscord.zerebos.com/dist/style.css",
+                backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
+                local: "{{localServer}}/BetterDiscordApp/dist/style.css",
+                localPath: "style.css"
             }
         ];
     }
