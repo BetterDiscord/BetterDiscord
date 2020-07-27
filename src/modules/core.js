@@ -31,10 +31,13 @@ const dependencies = [
 
 const {ipcRenderer} = require("electron");
 function Core() {
-    ipcRenderer.invoke("bd-config", "get").then(injectorConfig => {
+    ipcRenderer.invoke("bd-config").then(injectorConfig => {
         if (this.hasStarted) return;
         Object.assign(bdConfig, injectorConfig);
         this.init();
+    });
+    ipcRenderer.invoke("bd-injector-info").then(injectorInfo => {
+        bdConfig.version = injectorInfo.version;
     });
 }
 
@@ -265,18 +268,14 @@ Core.prototype.patchSocial = function() {
             children[children.length - 2].type = newOne;
         }
 
-        const blm = BDV2.React.createElement(Anchor, {href: "https://blacklivesmatters.carrd.co/", target: "_blank"}, BDV2.react.createElement("div", {className: "size12-3cLvbJ", style: {textTransform: "uppercase"}}, `#BlackLivesMatter`));
         const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `Injector ${bdConfig.version}`);
-        const versionHash = `(${bdConfig.hash ? bdConfig.hash.substring(0, 7) : bdConfig.branch})`;
-        const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BBD ${bbdVersion} `, BDV2.react.createElement("span", {className: "versionHash-2gXjIB da-versionHash"}, versionHash));
-        
+        const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BBD ${bbdVersion} `);
 
         const originalVersions = children[children.length - 1].type;
         children[children.length - 1].type = function() {
             const returnVal = originalVersions(...arguments);
             returnVal.props.children.splice(returnVal.props.children.length - 1, 0, injector);
             returnVal.props.children.splice(1, 0, additional);
-            returnVal.props.children.unshift(blm);
             return returnVal;
         };
     }});
