@@ -15,8 +15,6 @@ install:
 
 script:
   - npm run deploy
-  - npm run test
-  - npm run lint
 
 deploy:
   provider: pages
