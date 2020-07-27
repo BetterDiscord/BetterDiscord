@@ -1,10 +1,14 @@
-import {bdConfig} from "../0globals";
 import Utils from "./utils";
 import ContentManager from "./contentManager";
 
 const fs = require("fs");
 const path = require("path");
 const releaseChannel = DiscordNative.globals ? DiscordNative.globals.releaseChannel : DiscordNative.app ? DiscordNative.app.getReleaseChannel() : "stable";
+
+let dataPath = "";
+if (process.platform === "win32") dataPath = process.env.APPDATA;
+else if (process.platform === "darwin") dataPath = path.join(process.env.HOME, "Library", "Preferences");
+else dataPath = path.join(process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : process.env.HOME, ".config");
 
 export default new class DataStore {
     constructor() {
@@ -14,6 +18,9 @@ export default new class DataStore {
 
     initialize() {
         try {
+            if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
+            if (!fs.existsSync(path.join(dataPath, "plugins"))) fs.mkdirSync(path.join(dataPath, "plugins"));
+            if (!fs.existsSync(path.join(dataPath, "themes"))) fs.mkdirSync(path.join(dataPath, "themes"));
             if (!fs.existsSync(this.BDFile)) fs.writeFileSync(this.BDFile, JSON.stringify(this.data, null, 4));
             const data = __non_webpack_require__(this.BDFile);
             if (data.hasOwnProperty("settings")) this.data = data;
@@ -43,8 +50,8 @@ export default new class DataStore {
     }
 
     get configFile() {return this._configFile || (this._configFile = path.resolve(this.injectionPath, "betterdiscord", "config.json"));}
-    get BDFile() {return this._BDFile || (this._BDFile = path.resolve(bdConfig.dataPath, "bdstorage.json"));}
-    get settingsFile() {return this._settingsFile || (this._settingsFile = path.resolve(bdConfig.dataPath, "bdsettings.json"));}
+    get BDFile() {return this._BDFile || (this._BDFile = path.resolve(dataPath, "bdstorage.json"));}
+    get settingsFile() {return this._settingsFile || (this._settingsFile = path.resolve(dataPath, "bdsettings.json"));}
     getPluginFile(pluginName) {return path.resolve(ContentManager.pluginsFolder, pluginName + ".config.json");}
 
     getSettingGroup(key) {
