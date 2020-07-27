@@ -21,9 +21,9 @@ else if (process.platform === "darwin") dataPath = path.join(process.env.HOME, "
 else dataPath = path.join(process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : process.env.HOME, ".config");
 config.dataPath = path.join(dataPath, "BetterDiscord") + "/";
 
-if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
-if (!fs.existsSync(path.join(dataPath, "plugins"))) fs.mkdirSync(path.join(dataPath, "plugins"));
-if (!fs.existsSync(path.join(dataPath, "themes"))) fs.mkdirSync(path.join(dataPath, "themes"));
+if (!fs.existsSync(config.dataPath)) fs.mkdirSync(config.dataPath);
+if (!fs.existsSync(path.join(config.dataPath, "plugins"))) fs.mkdirSync(path.join(config.dataPath, "plugins"));
+if (!fs.existsSync(path.join(config.dataPath, "themes"))) fs.mkdirSync(path.join(config.dataPath, "themes"));
 
 module.exports = class BetterDiscord {
     static getWindowPrefs() {
