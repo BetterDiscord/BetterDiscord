@@ -18,7 +18,7 @@ ipc.handle("bd-injector-info", async () => {
 let dataPath = "";
 if (process.platform === "win32") dataPath = process.env.APPDATA;
 else if (process.platform === "darwin") dataPath = path.join(process.env.HOME, "Library", "Preferences");
-else dataPath = path.join(process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : process.env.HOME, ".config");
+else dataPath = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config");
 config.dataPath = path.join(dataPath, "BetterDiscord") + "/";
 
 if (!fs.existsSync(config.dataPath)) fs.mkdirSync(config.dataPath);

@@ -27,7 +27,7 @@ currentWindow.webContents.on("dom-ready", async () => {
         return require(localRemote);
     }
 
-    const baseUrl = "https://betterdiscord.zerebos.com/dist/remote.js";
+    const baseUrl = "https://www.gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/dist/remote.js";
     const backupUrl = "https://rauenzi.github.io/BetterDiscordApp/dist/remote.js";
 
     Logger.log(`Loading Resource (${baseUrl})`);
