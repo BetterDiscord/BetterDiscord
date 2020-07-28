@@ -1,0 +1,28 @@
+language: node_js
+
+node_js:
+- "node"
+
+git:
+  autocrlf: true
+
+branches:
+  only:
+  - master
+
+install:
+  - npm install
+
+script:
+  - npm run deploy
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $TRAVIS_ACCESS
+  keep_history: true
+  local_dir: .
+  name: BetterDiscord Deployment
+  target_branch: gh-pages
+  on:
+    branch: master

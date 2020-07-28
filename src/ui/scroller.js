@@ -27,3 +27,11 @@ export default class V2C_Scroller extends BDV2.reactComponent {
         );
     }
 }
+
+const originalRender = V2C_Scroller.prototype.render;
+Object.defineProperty(V2C_Scroller.prototype, "render", {
+    enumerable: false,
+    configurable: false,
+    set: function() {console.warn("Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+    get: () => originalRender
+});

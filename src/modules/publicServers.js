@@ -54,8 +54,8 @@ export default new class V2_PublicServers {
     _appendButton() {
         if (DOM.query("#bd-pub-li")) return;
         const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
-        const guilds = DOM.query(`.${wrapper} .scroller-2FKFPG >:first-child`);
-        DOM.after(guilds, this.button);
+        const guilds = DOM.query(`.${wrapper} .scroller-2TZvBN >:first-child`);
+        if (guilds) DOM.after(guilds, this.button);
     }
 
     addButton() {
@@ -70,6 +70,7 @@ export default new class V2_PublicServers {
     removeButton() {
         this.guildPatch();
         delete this.guildPatch;
-        DOM.query("#bd-pub-li").remove();
+        const button = DOM.query("#bd-pub-li");
+        if (button) button.remove();
     }
 };

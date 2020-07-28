@@ -2,23 +2,16 @@
 export const minimumDiscordVersion = "0.0.306";
 export const currentDiscordVersion = (window.DiscordNative && window.DiscordNative.remoteApp && window.DiscordNative.remoteApp.getVersion && window.DiscordNative.remoteApp.getVersion()) || "0.0.306";
 export const minSupportedVersion = "0.3.0";
-export const bbdVersion = "0.3.4";
+export const bbdVersion = "0.3.5";
 export const bbdChangelog = {
     description: "Big things are coming.",
     changes: [
         {
-            title: "What's New?",
-            items: [
-                "**In-App Updater** for the injection module now exists to try and decrease the number of issues with updates to the injector.",
-                "**Window Transparency** changes were made to more compatible with external window managers and addons like Glasscord.",
-                "Initialization sequence has once again been changed slightly to hopefully improve loading times."
-            ]
-        },
-        {
             title: "Bug Fixes",
             type: "fixed",
             items: [
-                "Some fixes related to showing modals in the `BdApi`."
+                "Some fixes related to showing modals in the `BdApi`.",
+                "Fixed the open folder buttons for plugins and themes"
             ]
         }
     ]

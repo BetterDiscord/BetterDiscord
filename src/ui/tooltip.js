@@ -25,12 +25,12 @@ import WebpackModules from "../modules/webpackModules";
 //		Changelog
 //	</div>
 //</div>
-const TooltipClasses = WebpackModules.findByProps("tooltip", "tooltipBlack");
+const TooltipClasses = () => WebpackModules.findByProps("tooltip", "tooltipBlack");
 const TooltipLayers = WebpackModules.findByProps("layer", "layerContainer");
 
 const getClass = function(sideOrColor) {
     const upperCase = sideOrColor[0].toUpperCase() + sideOrColor.slice(1);
-    const tooltipClass = TooltipClasses[`tooltip${upperCase}`];
+    const tooltipClass = TooltipClasses()[`tooltip${upperCase}`];
     if (tooltipClass) return tooltipClass;
     return null;
 };
@@ -78,12 +78,12 @@ export default class EmulatedTooltip {
 		this.element.className = TooltipLayers.layer;
 
 		this.tooltipElement = document.createElement("div");
-		this.tooltipElement.className = `${TooltipClasses.tooltip} ${getClass(this.style)}`;
+		this.tooltipElement.className = `${TooltipClasses().tooltip} ${getClass(this.style)}`;
 
 		this.labelElement = document.createElement("div");
-		this.labelElement.className = TooltipClasses.tooltipContent;
+		this.labelElement.className = TooltipClasses().tooltipContent;
 		const pointerElement = document.createElement("div");
-		pointerElement.className = TooltipClasses.tooltipPointer;
+		pointerElement.className = TooltipClasses().tooltipPointer;
 
 		this.tooltipElement.append(pointerElement);
 		this.tooltipElement.append(this.labelElement);
@@ -132,7 +132,7 @@ export default class EmulatedTooltip {
 
     /** Shows the tooltip. Automatically called on mouseenter. Will attempt to flip if position was wrong. */
 	show() {
-        this.tooltipElement.className = `${TooltipClasses.tooltip} ${getClass(this.style)}`;
+        this.tooltipElement.className = `${TooltipClasses().tooltip} ${getClass(this.style)}`;
 		this.labelElement.textContent = this.label;
 		this.container.append(this.element);
 

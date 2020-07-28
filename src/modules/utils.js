@@ -71,6 +71,24 @@ export default class Utils {
         }
     }
 
+    /**
+     * Format strings with placeholders (`{{placeholder}}`) into full strings.
+     * Quick example: `PluginUtilities.formatString("Hello, {{user}}", {user: "Zerebos"})`
+     * would return "Hello, Zerebos".
+     * @param {string} string - string to format
+     * @param {object} values - object literal of placeholders to replacements
+     * @returns {string} the properly formatted string
+     */
+    static formatString(string, values) {
+        for (const val in values) {
+            let replacement = values[val];
+            if (Array.isArray(replacement)) replacement = JSON.stringify(replacement);
+            if (typeof(replacement) === "object" && replacement !== null) replacement = replacement.toString();
+            string = string.replace(new RegExp(`{{${val}}}`, "g"), replacement);
+        }
+        return string;
+    }
+
     static escape(s) {
         return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
     }
@@ -387,25 +405,26 @@ export default class Utils {
      * @returns {string} - the key used for this modal
      */
     static showConfirmationModal(title, content, options = {}) {
-        const ModalStack = WebpackModules.findByProps("push", "update", "pop", "popWithKey");
+        const ModalActions = WebpackModules.findByProps("openModal", "updateModal");
         const Markdown = WebpackModules.findByDisplayName("Markdown");
-        const ConfirmationModal = WebpackModules.find(m => m.defaultProps && m.key && m.key() == "confirm-modal");
-        if (!ModalStack || !ConfirmationModal || !Markdown) return Utils.alert(title, content);
+        const ConfirmationModal = WebpackModules.findByDisplayName("ConfirmModal");
+        if (!ModalActions || !ConfirmationModal || !Markdown) return Utils.alert(title, content);
 
         const emptyFunction = () => {};
         const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = "Okay", cancelText = "Cancel", danger = false, key = undefined} = options;
 
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? BDV2.React.createElement(Markdown, null, c) : c);
-        return ModalStack.push(ConfirmationModal, {
-            header: title,
-            children: content,
-            red: danger,
-            confirmText: confirmText,
-            cancelText: cancelText,
-            onConfirm: onConfirm,
-            onCancel: onCancel
-        }, key);
+        return ModalActions.openModal(props => {
+            return BDV2.React.createElement(ConfirmationModal, Object.assign({
+                header: title,
+                red: danger,
+                confirmText: confirmText,
+                cancelText: cancelText,
+                onConfirm: onConfirm,
+                onCancel: onCancel
+            }, props), content);
+        }, {modalKey: key});
     }
 }
 

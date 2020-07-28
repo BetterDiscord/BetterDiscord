@@ -14,16 +14,42 @@ import DOM from "./domtools";
 import BDLogo from "../ui/bdLogo";
 import TooltipWrap from "../ui/tooltipWrap";
 
+const dependencies = [
+    {
+        name: "jquery",
+        type: "script",
+        url: "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js",
+        backup: "//cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js"
+    },
+    {
+        name: "bd-stylesheet",
+        type: "style",
+        url: "//betterdiscord.zerebos.com/dist/style.css",
+        backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css"
+    }
+];
+
+const {ipcRenderer} = require("electron");
 function Core() {
-    // Object.assign(bdConfig, __non_webpack_require__(DataStore.configFile));
-    // this.init();
+    ipcRenderer.invoke("bd-config").then(injectorConfig => {
+        if (this.hasStarted) return;
+        Object.assign(bdConfig, injectorConfig);
+        this.init();
+    });
+    ipcRenderer.invoke("bd-injector-info").then(injectorInfo => {
+        bdConfig.version = injectorInfo.version;
+    });
 }
 
 Core.prototype.setConfig = function(config) {
+    if (this.hasStarted) return;
     Object.assign(bdConfig, config);
 };
 
 Core.prototype.init = async function() {
+    if (this.hasStarted) return;
+    this.hasStarted = true;
+    
     if (!Array.prototype.flat) {
         Utils.alert("Not Supported", "BetterDiscord v" + bbdVersion + " does not support this old version (" + currentDiscordVersion + ") of Discord. Please update your Discord installation before proceeding.");
         return;
@@ -75,7 +101,7 @@ Core.prototype.init = async function() {
     });
 
 
-    this.injectExternals();
+    await this.injectExternals();
 
     await this.checkForGuilds();
     BDV2.initialize();
@@ -139,6 +165,19 @@ Core.prototype.checkForGuilds = function() {
 Core.prototype.injectExternals = async function() {
     await DOM.addScript("ace-script", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
     if (window.require.original) window.require = window.require.original;
+    if (window.$ && window.jQuery) return; // Dependencies already loaded
+    const jqueryUrl = Utils.formatString(dependencies[0].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer});
+    try {await DOM.addScript("jquery", jqueryUrl);}
+    catch (_) {
+        try {
+            const backup = Utils.formatString(dependencies[0].backup, {minified: bdConfig.minified ? ".min" : ""});
+            await DOM.addScript("jquery", backup);
+        }
+        catch (__) {
+            Utils.alert("jQuery Not Loaded", "Unable to load jQuery, some plugins may fail to work. Proceed at your own risk.");
+        }
+    }
+    document.head.append(DOM.createElement(`<link rel="stylesheet" href=${Utils.formatString(dependencies[1].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer})}>`));
 };
 
 Core.prototype.initSettings = function () {
@@ -229,18 +268,14 @@ Core.prototype.patchSocial = function() {
             children[children.length - 2].type = newOne;
         }
 
-        const blm = BDV2.React.createElement(Anchor, {href: "https://blacklivesmatters.carrd.co/", target: "_blank"}, BDV2.react.createElement("div", {className: "size12-3cLvbJ", style: {textTransform: "uppercase"}}, `#BlackLivesMatter`));
         const injector = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `Injector ${bdConfig.version}`);
-        const versionHash = `(${bdConfig.hash ? bdConfig.hash.substring(0, 7) : bdConfig.branch})`;
-        const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BBD ${bbdVersion} `, BDV2.react.createElement("span", {className: "versionHash-2gXjIB da-versionHash"}, versionHash));
-        
+        const additional = BDV2.react.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BBD ${bbdVersion} `);
 
         const originalVersions = children[children.length - 1].type;
         children[children.length - 1].type = function() {
             const returnVal = originalVersions(...arguments);
             returnVal.props.children.splice(returnVal.props.children.length - 1, 0, injector);
             returnVal.props.children.splice(1, 0, additional);
-            returnVal.props.children.unshift(blm);
             return returnVal;
         };
     }});
