@@ -24,7 +24,7 @@ const dependencies = [
     {
         name: "bd-stylesheet",
         type: "style",
-        url: "//betterdiscord.zerebos.com/dist/style.css",
+        url: "https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/dist/style.css",
         backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css"
     }
 ];
@@ -38,7 +38,16 @@ function Core() {
     });
     ipcRenderer.invoke("bd-injector-info").then(injectorInfo => {
         bdConfig.version = injectorInfo.version;
+
+        const request = require("request");
+        request.get({url: `https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/injector/package.json`, json: true}, (err, resp, body) => {
+            let remoteVersion = "0.6.1";
+            if (!err && resp.statusCode == 200) remoteVersion = body.version || remoteVersion;
+            bdConfig.latestVersion = remoteVersion;
+            this.checkInjectorUpdate();
+        });
     });
+    
 }
 
 Core.prototype.setConfig = function(config) {
@@ -68,27 +77,6 @@ Core.prototype.init = async function() {
     if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) {
         Utils.alert("Not Supported", "BandagedBD does not work with Powercord. Please uninstall one of them.");
         return;
-    }
-
-    const latestLocalVersion = bdConfig.updater ? bdConfig.updater.LatestVersion : bdConfig.latestVersion;
-    if (latestLocalVersion > bdConfig.version) {
-        Utils.showConfirmationModal("Update Available", [`There is an update available for BandagedBD's Injector (${latestLocalVersion}).`, "You can either update and restart now, or later."], {
-            confirmText: "Update Now",
-            cancelText: "Maybe Later",
-            onConfirm: async () => {
-                const onUpdateFailed = () => {Utils.alert("Could Not Update", `Unable to update automatically, please download the installer and reinstall normally.<br /><br /><a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>`);};
-                try {
-                    const didUpdate = await this.updateInjector();
-                    if (!didUpdate) return onUpdateFailed();
-                    const app = require("electron").remote.app;
-                    app.relaunch();
-                    app.exit();
-                }
-                catch (err) {
-                    onUpdateFailed();
-                }
-            }
-        });
     }
 
     Utils.log("Startup", "Initializing Settings");
@@ -380,6 +368,29 @@ Core.prototype.patchMemberList = function() {
             )
         );
     }});
+};
+
+Core.prototype.checkInjectorUpdate = function() {
+    const latestLocalVersion = bdConfig.updater ? bdConfig.updater.LatestVersion : bdConfig.latestVersion;
+    if (latestLocalVersion > bdConfig.version) {
+        Utils.showConfirmationModal("Update Available", [`There is an update available for BandagedBD's Injector (${latestLocalVersion}).`, "You can either update and restart now, or later."], {
+            confirmText: "Update Now",
+            cancelText: "Maybe Later",
+            onConfirm: async () => {
+                const onUpdateFailed = () => {Utils.alert("Could Not Update", `Unable to update automatically, please download the installer and reinstall normally.<br /><br /><a href='https://github.com/rauenzi/BetterDiscordApp/releases/latest' target='_blank'>Download Installer</a>`);};
+                try {
+                    const didUpdate = await this.updateInjector();
+                    if (!didUpdate) return onUpdateFailed();
+                    const app = require("electron").remote.app;
+                    app.relaunch();
+                    app.exit();
+                }
+                catch (err) {
+                    onUpdateFailed();
+                }
+            }
+        });
+    }
 };
 
 Core.prototype.updateInjector = async function() {
