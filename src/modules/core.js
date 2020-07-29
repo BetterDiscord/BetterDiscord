@@ -22,12 +22,16 @@ import Utilities from "./utilities";
 const {ipcRenderer} = require("electron");
 const GuildClasses = DiscordModules.GuildClasses;
 
-export default class Core {
-    constructor() {
+export default new class Core {
+    startup() {
         ipcRenderer.invoke("bd-config", "get").then(injectorConfig => {
             if (this.hasStarted) return;
             Object.assign(Config, injectorConfig);
             this.init();
+        });
+        ipcRenderer.invoke("bd-injector-info").then(injectorInfo => {
+            Config.version = injectorInfo.version;
+            this.checkInjectorUpdate();
         });
     }
 
@@ -42,7 +46,7 @@ export default class Core {
             {
                 name: "bd-stylesheet",
                 type: "style",
-                url: "//betterdiscord.zerebos.com/dist/style.css",
+                url: "https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/dist/style.css",
                 backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
                 localPath: "style.css"
             }
@@ -68,27 +72,6 @@ export default class Core {
         if (Config.version < Config.minSupportedVersion) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.versionMismatch.format({injector: Config.version, remote: Config.bdVersion}));
         if (window.ED) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "EnhancedDiscord"}));
         if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
-
-        const latestLocalVersion = Config.updater ? Config.updater.LatestVersion : Config.latestVersion;
-        if (latestLocalVersion > Config.version) {
-            Modals.showConfirmationModal(Strings.Startup.updateAvailable, Strings.Startup.updateInfo.format({version: latestLocalVersion}), {
-                confirmText: Strings.Startup.updateNow,
-                cancelText: Strings.Startup.maybeLater,
-                onConfirm: async () => {
-                    const onUpdateFailed = () => {Modals.alert(Strings.Startup.updateFailed, Strings.Startup.manualUpdate);};
-                    try {
-                        const didUpdate = await this.updateInjector();
-                        if (!didUpdate) return onUpdateFailed();
-                        const app = require("electron").remote.app;
-                        app.relaunch();
-                        app.exit();
-                    }
-                    catch (err) {
-                        onUpdateFailed();
-                    }
-                }
-            });
-        }
 
 
         Logger.log("Startup", "Initializing Settings");
@@ -165,6 +148,37 @@ export default class Core {
                     if (data.name === "jquery") Modals.alert(Strings.Startup.jqueryFailed, Strings.Startup.jqueryFailedDetails);
                 }
             }
+        }
+    }
+
+    async checkInjectorUpdate() {
+        const request = require("request");
+        const latestVersion = await new Promise(resolve => {
+            request.get({url: `https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/injector/package.json`, json: true}, (err, resp, body) => {
+                let remoteVersion = "0.6.1";
+                if (!err && resp.statusCode == 200) remoteVersion = body.version || remoteVersion;
+                return resolve(remoteVersion);
+            });
+        });
+
+        if (latestVersion > Config.version) {
+            Modals.showConfirmationModal(Strings.Startup.updateAvailable, Strings.Startup.updateInfo.format({version: latestVersion}), {
+                confirmText: Strings.Startup.updateNow,
+                cancelText: Strings.Startup.maybeLater,
+                onConfirm: async () => {
+                    const onUpdateFailed = () => {Modals.alert(Strings.Startup.updateFailed, Strings.Startup.manualUpdate);};
+                    try {
+                        const didUpdate = await this.updateInjector();
+                        if (!didUpdate) return onUpdateFailed();
+                        const app = require("electron").remote.app;
+                        app.relaunch();
+                        app.exit();
+                    }
+                    catch (err) {
+                        onUpdateFailed();
+                    }
+                }
+            });
         }
     }
 
@@ -258,4 +272,4 @@ export default class Core {
         Logger.log("InjectorUpdate", "Injector Updated!");
         return success;
     }
-}
+};

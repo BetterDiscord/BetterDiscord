@@ -21,10 +21,6 @@
                     "name": "Lämna Röst",
                     "note": "Lämna röstsamtal när Discord stängs ner"
                 },
-                "twentyFourHour": {
-                    "name": "24-Timmars Tidsstämpel",
-                    "note": "Visar 24-timmars tidsstämplar istället för AM/PM"
-                },
                 "classNormalizer": {
                     "name": "Normalisera Klasser",
                     "note": "Lägger till statiska klasser för att underlätta teman (ex. lägger till .da-channels på .channels-Ie2l6A)"
@@ -39,6 +35,10 @@
                 "voiceMode": {
                     "name": "Röstläge",
                     "note": "Gömmer allt förutom röstchatt"
+                },
+                "twentyFourHour": {
+                    "name": "24-Timmars Tidsstämpel",
+                    "note": "Visar 24-timmars tidsstämplar istället för AM/PM"
                 },
                 "minimalMode": {
                     "name": "Minimalt Läge",

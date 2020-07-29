@@ -1,5 +1,5 @@
 {
-    "name": "bandagedbd",
+    "name": "betterdiscord",
     "version": "1.0.0",
     "description": "Enhances Discord adding functionality and themes.",
     "main": "src/index.js",

@@ -21,7 +21,8 @@ export default new class DataStore {
     }
 
     initialize() {
-        if (!fs.existsSync(this.baseFolder)) fs.mkdirSync(this.baseFolder);
+        const newStorageExists = fs.existsSync(this.baseFolder);
+        if (!newStorageExists) fs.mkdirSync(this.baseFolder);
         if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
         if (!fs.existsSync(this.localeFolder)) fs.mkdirSync(this.localeFolder);
         if (!fs.existsSync(this.emoteFolder)) fs.mkdirSync(this.emoteFolder);
@@ -33,7 +34,7 @@ export default new class DataStore {
         }
         this.cacheData = Utilities.testJSON(fs.readFileSync(this.cacheFile).toString()) || {};
 
-        this.convertOldData(); // Convert old data if it exists (routine checks existence and removes existence)
+        if (!newStorageExists) this.convertOldData(); // Convert old data if it exists (routine checks existence and removes existence)
     }
 
     convertOldData() {
@@ -56,8 +57,8 @@ export default new class DataStore {
             if (!channelData) continue;
             const oldSettings = channelData.settings;
             const newSettings = {
-                general: {publicServers: oldSettings["bda-gs-1"], voiceDisconnect: oldSettings["bda-dc-0"], twentyFourHour: oldSettings["bda-gs-6"], classNormalizer: oldSettings["fork-ps-4"], showToasts: oldSettings["fork-ps-2"]},
-                appearance: {voiceMode: oldSettings["bda-gs-4"], minimalMode: oldSettings["bda-gs-2"], hideChannels: oldSettings["bda-gs-3"], darkMode: oldSettings["bda-gs-5"], coloredText: oldSettings["bda-gs-7"]},
+                general: {publicServers: oldSettings["bda-gs-1"], voiceDisconnect: oldSettings["bda-dc-0"], classNormalizer: oldSettings["fork-ps-4"], showToasts: oldSettings["fork-ps-2"]},
+                appearance: {twentyFourHour: oldSettings["bda-gs-6"], voiceMode: oldSettings["bda-gs-4"], minimalMode: oldSettings["bda-gs-2"], hideChannels: oldSettings["bda-gs-3"], darkMode: oldSettings["bda-gs-5"], coloredText: oldSettings["bda-gs-7"]},
                 addons: {addonErrors: oldSettings["fork-ps-1"], autoScroll: oldSettings["fork-ps-3"], autoReload: oldSettings["fork-ps-5"]},
                 developer: {debuggerHotkey: oldSettings["bda-gs-8"], copySelector: oldSettings["fork-dm-1"], reactDevTools: oldSettings.reactDevTools}
             };

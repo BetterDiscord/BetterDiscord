@@ -13,7 +13,7 @@ export default new class LocaleManager {
 
     constructor() {
         this.locale = "";
-        this.strings = {};
+        this.strings = Utilities.extend({}, DefaultStrings);
     }
 
     async initialize() {

@@ -246,7 +246,7 @@ export default class WebpackModules {
      */
     static get require() {
         if (this._require) return this._require;
-        const id = "bbd-webpackmodules";
+        const id = "bd-webpackmodules";
         const __webpack_require__ = window.webpackJsonp.push([[], {
             [id]: (module, exports, __internal_require__) => module.exports = __internal_require__
         }, [[id]]]);

@@ -21,10 +21,6 @@
 					"name": "Verbindung zum Sprachchat trennen",
 					"note": "Trennt beim Schließen von Discord die Verbindung zum Sprachchat."
 				},
-				"twentyFourHour": {
-					"name": "24h Zeitstempel",
-					"note": "Zeigt die Zeitstempel in einem 24h format an."
-				},
 				"classNormalizer": {
 					"name": "Normalisierte klassen",
 					"note": "Fügt stetige Klassen zu Elementen hinzu (z.B. .da-channels zu .channels-Ie2l6A)"
@@ -39,6 +35,10 @@
 				"voiceMode": {
 					"name": "Sprachmodus",
 					"note": "Verbirgt alles, was kein Sprachkanal ist."
+				},
+				"twentyFourHour": {
+					"name": "24h Zeitstempel",
+					"note": "Zeigt die Zeitstempel in einem 24h format an."
 				},
 				"minimalMode": {
 					"name": "Minimaler Modus",

@@ -21,10 +21,6 @@
                     "name": "ボイスチャンネル自動切断",
                     "note": "Discordを終了する際、自動的にボイスチャンネルから切断します。"
                 },
-                "twentyFourHour": {
-                    "name": "24時間表記",
-                    "note": "時間を24時間表記に変更します。"
-                },
                 "classNormalizer": {
                     "name": "クラス標準化",
                     "note": "値が変動しないCSSクラスを追加します。"
@@ -39,6 +35,10 @@
                 "voiceMode": {
                     "name": "ボイスモード",
                     "note": "ボイスチャンネル以外を表示しないようにします"
+                },
+                "twentyFourHour": {
+                    "name": "24時間表記",
+                    "note": "時間を24時間表記に変更します。"
                 },
                 "minimalMode": {
                     "name": "コンパクトモード",

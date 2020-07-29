@@ -21,10 +21,6 @@
                     "name": "Voice Disconnect",
                     "note": "Disconnect from voice server when closing Discord"
                 },
-                "twentyFourHour": {
-                    "name": "24-Hour Timestamps",
-                    "note": "Hides channels when in minimal mode"
-                },
                 "classNormalizer": {
                     "name": "Normalize Classes",
                     "note": "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)"
@@ -43,6 +39,10 @@
                 "minimalMode": {
                     "name": "Minimal Mode",
                     "note": "Hide elements and reduce the size of elements"
+                },
+                "twentyFourHour": {
+                    "name": "24-Hour Timestamps",
+                    "note": "Hides channels when in minimal mode"
                 },
                 "hideChannels": {
                     "name": "Hide Channels",

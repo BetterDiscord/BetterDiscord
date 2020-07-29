@@ -4,7 +4,7 @@ import DOM from "./domtools";
 export default class Utilities {
 
     static repoUrl(path) {
-        return `https://betterdiscord.zerebos.com/${path}`;
+        return `https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/${path}`;
     }
 
     /**

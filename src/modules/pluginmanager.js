@@ -1,7 +1,6 @@
 import {Config} from "data";
 import Logger from "./logger";
 import AddonManager from "./addonmanager";
-import Utilities from "./utilities";
 import AddonError from "../structs/addonerror";
 import Settings from "./settingsmanager";
 import Strings from "./strings";
@@ -70,17 +69,17 @@ export default new class PluginManager extends AddonManager {
 
     /* Overrides */
     initializeAddon(addon) {
-        if (!addon.type) return new AddonError(addon.name, addon.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""});
+        if (!addon.exports) return new AddonError(addon.name, addon.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""});
         try {
-            const PluginClass = addon.type;
+            const PluginClass = addon.exports;
             const thePlugin = new PluginClass();
-            addon.plugin = thePlugin;
+            addon.instance = thePlugin;
             addon.name = thePlugin.getName() || addon.name;
             addon.author = thePlugin.getAuthor() || addon.author || "No author";
             addon.description = thePlugin.getDescription() || addon.description || "No description";
             addon.version = thePlugin.getVersion() || addon.version || "No version";
             try {
-                if (typeof(addon.plugin.load) == "function") addon.plugin.load();
+                if (typeof(addon.instance.load) == "function") addon.instance.load();
             }
             catch (error) {
                 this.state[addon.id] = false;
@@ -91,16 +90,11 @@ export default new class PluginManager extends AddonManager {
     }
 
     getFileModification(module, fileContent, meta) {
+        fileContent += `\nif (!module.exports || !module.exports.prototype || !module.exports.prototype.start) {module.exports = ${meta.exports || meta.name};}`;
         module._compile(fileContent, module.filename);
-        const didExport = !Utilities.isEmpty(module.exports);
-        if (didExport) {
-            meta.type = module.exports;
-            module.exports = meta;
-            return "";
-        }
-        Logger.warn(this.name, `${meta.name}, please start assigning module.exports`);
-        fileContent += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
-        return fileContent;
+        meta.exports = module.exports;
+        module.exports = meta;
+        return "";
     }
 
     startAddon(id) {return this.startPlugin(id);}
@@ -110,7 +104,7 @@ export default new class PluginManager extends AddonManager {
     startPlugin(idOrAddon) {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
-        const plugin = addon.plugin;
+        const plugin = addon.instance;
         try {
             plugin.start();
         }
@@ -127,7 +121,7 @@ export default new class PluginManager extends AddonManager {
     stopPlugin(idOrAddon) {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
-        const plugin = addon.plugin;
+        const plugin = addon.instance;
         try {
             plugin.stop();
         }
@@ -144,7 +138,7 @@ export default new class PluginManager extends AddonManager {
     getPlugin(idOrFile) {
         const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
         if (!addon) return;
-        return addon.plugin;
+        return addon.instance;
     }
 
     setupFunctions() {
@@ -158,7 +152,7 @@ export default new class PluginManager extends AddonManager {
     onSwitch() {
         this.emit("page-switch");
         for (let i = 0; i < this.addonList.length; i++) {
-            const plugin = this.addonList[i].plugin;
+            const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
             if (typeof(plugin.onSwitch) === "function") {
                 try {plugin.onSwitch();}
@@ -169,7 +163,7 @@ export default new class PluginManager extends AddonManager {
 
     onMutation(mutation) {
         for (let i = 0; i < this.addonList.length; i++) {
-            const plugin = this.addonList[i].plugin;
+            const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
             if (typeof plugin.observer === "function") {
                 try {plugin.observer(mutation);}

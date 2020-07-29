@@ -7,8 +7,7 @@ export default [
             {type: "switch", id: "emotes", value: true},
             {type: "switch", id: "publicServers", value: true},
             {type: "switch", id: "voiceDisconnect", value: false},
-            {type: "switch", id: "twentyFourHour", value: false},
-            {type: "switch", id: "classNormalizer", value: true},
+            {type: "switch", id: "classNormalizer", value: false},
             {type: "switch", id: "showToasts", value: true}
         ]
     },
@@ -17,10 +16,11 @@ export default [
         id: "appearance",
         collapsible: true,
         settings: [
+            {type: "switch", id: "twentyFourHour", value: false},
             {type: "switch", id: "voiceMode", value: false},
             {type: "switch", id: "minimalMode", value: false},
             {type: "switch", id: "hideChannels", value: false, enableWith: "minimalMode"},
-            {type: "switch", id: "darkMode", value: true},
+            {type: "switch", id: "darkMode", value: false},
             {type: "switch", id: "coloredText", value: false}
         ]
     },

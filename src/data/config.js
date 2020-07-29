@@ -1,7 +1,6 @@
 export default {
     local: false,
     localPath: "",
-    localServer: "//localhost:8080",
     minified: true,
     version: "0.6.0",
     branch: "stable",
