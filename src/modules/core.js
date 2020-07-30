@@ -24,8 +24,8 @@ const dependencies = [
     {
         name: "bd-stylesheet",
         type: "style",
-        url: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
-        backup: "//gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/dist/style.css"
+        url: "//rauenzi.github.io/BetterDiscordApp/dist/style.min.css",
+        backup: "//gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/dist/style.min.css"
     }
 ];
 
