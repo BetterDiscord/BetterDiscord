@@ -46,8 +46,8 @@ export default new class Core {
             {
                 name: "bd-stylesheet",
                 type: "style",
-                url: "https://rauenzi.github.io/BetterDiscordApp/dist/style.css",
-                backup: "https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/dist/style.css",
+                url: "//cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/{{hash}}/dist/style.css",
+                backup: "https://rauenzi.github.io/BetterDiscordApp/dist/style.css",
                 localPath: "style.css"
             }
         ];
@@ -131,14 +131,14 @@ export default new class Core {
                     continue;
                 }
             }
-            const url = Utilities.formatString(data.url, {repo: Config.repo, hash: Config.hash});
+            const url = Utilities.formatString(data.url, {hash: Config.hash});
             Logger.log(`Startup`, `Loading Resource (${url})`);
             const injector = (data.type == "script" ? DOMManager.injectScript : DOMManager.linkStyle).bind(DOMManager);
             try {
                 await injector(data.name, url);
             }
             catch (err) {
-                const backup = Utilities.formatString(data.backup, {minified: Config.minified ? ".min" : ""});
+                const backup = Utilities.formatString(data.backup);
                 Logger.stacktrace(`Startup`, `Could not load ${url}. Using backup ${backup}`, err);
                 try {
                     await injector(data.name, backup);

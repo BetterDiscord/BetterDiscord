@@ -8,7 +8,7 @@ git:
 
 branches:
   only:
-  - stable
+  - development
 
 install:
   - npm install
@@ -25,6 +25,6 @@ deploy:
   keep_history: true
   local_dir: .
   name: BetterDiscord Deployment
-  target_branch: gh-pages
+  target_branch: gh-pages-development
   on:
-    branch: stable
+    branch: development

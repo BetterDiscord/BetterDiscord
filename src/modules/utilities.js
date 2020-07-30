@@ -1,10 +1,11 @@
+import {Config} from "data";
 import Logger from "./logger";
 import DOM from "./domtools";
 
 export default class Utilities {
 
     static repoUrl(path) {
-        return `https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/${path}`;
+        return `https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/${Config.hash}/${path}`;
     }
 
     /**
