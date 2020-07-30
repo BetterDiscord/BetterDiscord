@@ -3,7 +3,7 @@
 export {default as CustomCSS} from "./customcss";
 export {default as WindowPrefs} from "./windowprefs";
 
-export {default as TwentyFourHour} from "./general/24hour";
+export {default as TwentyFourHour} from "./appearance/24hour";
 export {default as ClassNormalizer} from "./general/classnormalizer";
 export {default as PublicServers} from "./general/publicservers";
 export {default as VoiceDisconnect} from "./general/voicedisconnect";

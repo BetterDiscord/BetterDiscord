@@ -112,6 +112,8 @@ export default class Patcher {
             children: []
         };
         patch.proxyFunction = module[functionName] = this.makeOverride(patch);
+        module[functionName].__originalFunction = patch.originalFunction;
+        module[functionName].toString = () => patch.originalFunction.toString();
         this.patches.push(patch);
         return patch;
     }

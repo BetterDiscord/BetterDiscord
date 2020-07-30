@@ -1,7 +1,7 @@
 import Builtin from "../../structs/builtin";
 import {WebpackModules} from "modules";
 
-const MessageContent = WebpackModules.getModule(m => m.default && m.default.displayName && m.default.displayName == "Message");
+
 
 export default new class ColoredText extends Builtin {
     get name() {return "ColoredText";}
@@ -13,16 +13,28 @@ export default new class ColoredText extends Builtin {
     }
 
     disabled() {
+        this.removeColoredText();
         this.unpatchAll();
     }
 
     injectColoredText() {
-        this.after(MessageContent.prototype, "render", (thisObject, args, retVal) => {
-            this.after(retVal.props, "children", {after: ({returnValue}) => {
-                const markup = returnValue.props.children[1];
-                const roleColor = thisObject.props.message.colorString;
-                if (markup && roleColor) markup.props.style = {color: roleColor};
-            }});
+        const MessageContent = WebpackModules.getModule(m => m.default && m.default.displayName && m.default.displayName == "Message");
+        this.before(MessageContent, "default", (thisObject, [props]) => {
+            if (!props || !props.childrenMessageContent) return;
+            const messageContent = props.childrenMessageContent;
+            if (!messageContent.type || !messageContent.type.type || messageContent.type.type.displayName != "MessageContent") return;
+
+            const originalType = messageContent.type.type;
+            if (originalType.__originalMethod) return; // Don't patch again
+            messageContent.type.type = function(childProps) {
+                const returnValue = originalType(childProps);
+                const roleColor = childProps.message.colorString || "";
+                returnValue.props.style = {color: roleColor};
+                return returnValue;
+            };
+
+            messageContent.type.type.__originalMethod = originalType;
+            Object.assign(messageContent.type.type, originalType);
         });
     }
 

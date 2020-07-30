@@ -40,14 +40,14 @@ export default new class Core {
             {
                 name: "jquery",
                 type: "script",
-                url: "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js",
-                backup: "//cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js"
+                url: "https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js",
+                backup: "https://cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js"
             },
             {
                 name: "bd-stylesheet",
                 type: "style",
-                url: "https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/dist/style.css",
-                backup: "//rauenzi.github.io/BetterDiscordApp/dist/style.css",
+                url: "https://rauenzi.github.io/BetterDiscordApp/dist/style.css",
+                backup: "https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/dist/style.css",
                 localPath: "style.css"
             }
         ];

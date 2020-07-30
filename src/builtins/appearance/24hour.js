@@ -3,7 +3,7 @@ import {DiscordModules} from "modules";
 
 export default new class TwentyFourHour extends Builtin {
     get name() {return "24Hour";}
-    get category() {return "general";}
+    get category() {return "appearance";}
     get id() {return "twentyFourHour";}
 
     enabled() {
