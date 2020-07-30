@@ -5,7 +5,7 @@ const config = require("./config.json");
 const buildInfoFile = path.resolve(electron.app.getAppPath(), "..", "build_info.json");
 
 const ipc = electron.ipcMain;
-ipc.handle("bd-config", async () => {return config;}); // deprecated
+ipc.handle("bd-config", async () => {return JSON.parse(fs.readFileSync(__dirname + "/config.json").toString());}); // deprecated
 ipc.handle("bd-discord-info", async () => {return buildInfoFile;});
 ipc.handle("bd-injector-info", async () => {
     return {
@@ -24,6 +24,8 @@ config.dataPath = path.join(dataPath, "BetterDiscord") + "/";
 if (!fs.existsSync(config.dataPath)) fs.mkdirSync(config.dataPath);
 if (!fs.existsSync(path.join(config.dataPath, "plugins"))) fs.mkdirSync(path.join(config.dataPath, "plugins"));
 if (!fs.existsSync(path.join(config.dataPath, "themes"))) fs.mkdirSync(path.join(config.dataPath, "themes"));
+
+fs.writeFileSync(__dirname + "/config.json", JSON.stringify(config, null, 4));
 
 module.exports = class BetterDiscord {
     static getWindowPrefs() {
