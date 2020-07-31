@@ -56,7 +56,7 @@ EmoteModule.prototype.init = async function () {
 
     if (bdConfig.local) return;
 
-    await this.getBlacklist();
+    await this.getBlockedEmotes();
     await this.loadEmoteData(emoteInfo);
 
     while (!BDV2.MessageComponent) await new Promise(resolve => setTimeout(resolve, 100));
@@ -198,8 +198,13 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 
     for (const e in emoteInfo) {
         await new Promise(r => setTimeout(r, 1000));
-        const data = await this.downloadEmotes(emoteInfo[e]);
-        bdEmotes[emoteInfo[e].variable] = data;
+        try {
+            const data = await this.downloadEmotes(emoteInfo[e]);
+            bdEmotes[emoteInfo[e].variable] = data;
+        }
+        catch (err) {
+            bdEmotes[emoteInfo[e].variable] = {};
+        }
     }
 
     if (settingsCookie["fork-ps-2"]) Utils.showToast("All emotes successfully downloaded.", {type: "success"});
@@ -209,10 +214,11 @@ EmoteModule.prototype.loadEmoteData = async function(emoteInfo) {
 };
 
 EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
+    emoteMeta.url = Utils.formatString(emoteMeta.url, {hash: bdConfig.hash});
     const request = require("request");
     const options = {
         url: emoteMeta.url,
-        timeout: emoteMeta.timeout ? emoteMeta.timeout : 5000,
+        timeout: emoteMeta.timeout ? emoteMeta.timeout : 12000,
         json: true
     };
 
@@ -222,12 +228,6 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
         request(options, (error, response, parsedData) => {
             if (error) {
                 Utils.err("Emotes", "Could not download " + emoteMeta.variable, error);
-                if (emoteMeta.backup) {
-                    emoteMeta.url = emoteMeta.backup;
-                    emoteMeta.backup = null;
-                    if (emoteMeta.backupParser) emoteMeta.parser = emoteMeta.backupParser;
-                    return resolve(this.downloadEmotes(emoteMeta));
-                }
                 return reject({});
             }
 
@@ -246,11 +246,11 @@ EmoteModule.prototype.downloadEmotes = function(emoteMeta) {
     });
 };
 
-EmoteModule.prototype.getBlacklist = function () {
+EmoteModule.prototype.getBlockedEmotes = function () {
     return new Promise(resolve => {
-        require("request").get({url: "https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/gh-pages/assets/emotefilter.json", json: true}, function (err, resp, data) {
+        require("request").get({url: Utils.formatString("https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/{{hash}}/assets/emotefilter.json", {hash: bdConfig.hash}), json: true}, function (err, resp, data) {
             if (err) return resolve(bemotes);
-            resolve(bemotes.splice(0, 0, ...data.blacklist));
+            resolve(bemotes.splice(0, 0, ...data));
         });
     });
 };
