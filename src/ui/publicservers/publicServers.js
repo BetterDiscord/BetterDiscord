@@ -235,11 +235,11 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
 
     get sidebar() {
         return BDV2.react.createElement(
-            "div",
-            {className: "sidebar", key: "ps"},
+            "nav",
+            {className: "sidebar-CFHs9e", key: "ps"},
             BDV2.react.createElement(
                 "div",
-                {className: "ui-tab-bar SIDE"},
+                {className: "ui-tab-bar side side-8zPYf6"},
                 BDV2.react.createElement(
                     "div",
                     {className: "ui-tab-bar-header", style: {fontSize: "16px"}},
