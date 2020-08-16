@@ -18,6 +18,7 @@ script:
   - npm run test
   - npm run lint
 
+before_deploy: "echo 'node_modules' > .gitignore"
 deploy:
   provider: pages
   skip_cleanup: true

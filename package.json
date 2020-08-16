@@ -8,12 +8,10 @@
         "watch": "webpack --progress --colors --watch",
         "build-prod": "webpack --progress --colors --mode production -o dist/remote.js --devtool none",
         "lint-js": "eslint --ext .jsx,.js src/",
-
         "build-css": "gulp build-css",
         "watch-css": "gulp watch-css",
         "build-prod-css": "gulp minify-css",
         "lint-css": "stylelint src/styles/*.css && stylelint src/styles/**/*.css",
-
         "prod": "npm run build-prod && npm run build-prod-css",
         "lint": "npm run lint-js && npm run lint-css",
         "test": "mocha --require @babel/register --recursive \"./tests/*.js\"",
@@ -41,7 +39,7 @@
         "gulp": "^4.0.2",
         "gulp-postcss": "^8.0.0",
         "gulp-rename": "^2.0.0",
-        "mocha": "^8.0.1",
+        "mocha": "^8.1.1",
         "postcss-csso": "^4.0.0",
         "postcss-easy-import": "^3.0.0",
         "stylelint": "^13.6.1",

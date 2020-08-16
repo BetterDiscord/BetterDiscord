@@ -1,4 +1,4 @@
-import {WebpackModules, Settings, DOMManager} from "modules";
+import {WebpackModules, Settings, DOMManager, Logger} from "modules";
 
 export default class Toasts {
 
@@ -33,28 +33,33 @@ export default class Toasts {
      * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the bd setting
      */
     static show(content, options = {}) {
-        const {type = "", icon = true, timeout = 3000, forceShow = false} = options;
-        if (!this.shouldShowToasts && !forceShow) return;
-        this.ensureContainer();
-        const toastElem = document.createElement("div");
-        toastElem.classList.add("bd-toast");
-        if (type) toastElem.classList.add("toast-" + type);
-        if (type && icon) toastElem.classList.add("icon");
-        toastElem.innerText = content;
-        document.querySelector(".bd-toasts").appendChild(toastElem);
-        setTimeout(() => {
-            toastElem.classList.add("closing");
+        try {
+            const {type = "", icon = true, timeout = 3000, forceShow = false} = options;
+            if (!this.shouldShowToasts && !forceShow) return;
+            this.ensureContainer();
+            const toastElem = document.createElement("div");
+            toastElem.classList.add("bd-toast");
+            if (type) toastElem.classList.add("toast-" + type);
+            if (type && icon) toastElem.classList.add("icon");
+            toastElem.innerText = content;
+            document.querySelector(".bd-toasts").appendChild(toastElem);
             setTimeout(() => {
-                toastElem.remove();
-                if (!document.querySelectorAll(".bd-toasts .bd-toast").length) document.querySelector(".bd-toasts").remove();
-            }, 300);
-        }, timeout);
+                toastElem.classList.add("closing");
+                setTimeout(() => {
+                    toastElem.remove();
+                    if (!document.querySelectorAll(".bd-toasts .bd-toast").length) document.querySelector(".bd-toasts").remove();
+                }, 300);
+            }, timeout);
+        }
+        catch (err) {
+            Logger.stacktrace("Toasts", "Unable to show toast", err);
+        }
     }
 
     static ensureContainer() {
         if (document.querySelector(".bd-toasts")) return;
         const container = document.querySelector(`.${this.ChannelsClass} + div`);
-        const memberlist = container.querySelector(`.${this.MembersWrapClass}`);
+        const memberlist = container ? container.querySelector(`.${this.MembersWrapClass}`) : null;
         const form = container ? container.querySelector("form") : null;
         const left = container ? container.getBoundingClientRect().left : 310;
         const right = memberlist ? memberlist.getBoundingClientRect().left : 0;
