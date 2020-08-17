@@ -7,9 +7,6 @@ const Logger = require("./logger");
 const Module = require("module").Module;
 Module.globalPaths.push(path.resolve(electron.remote.app.getAppPath(), "..", "app.asar", "node_modules"));
 
-// Cause DiscordNative to get put in global
-electron.contextBridge.exposeInMainWorld = (key, val) => window[key] = val;
-
 // Define script injector
 const injectScript = url => new Promise(resolve => {
     const script = document.createElement("script");
@@ -84,4 +81,14 @@ currentWindow.webContents.on("dom-ready", async () => {
 });
 
 // Load Discord's original preload
-if (currentWindow.__originalPreload) require(currentWindow.__originalPreload);
+if (currentWindow.__originalPreload) {
+	
+	// Restore original preload for future windows
+	process.electronBinding("command_line").appendSwitch("preload", currentWindow.__originalPreload);
+	
+	// Make sure DiscordNative gets exposed
+	electron.contextBridge.exposeInMainWorld = (key, val) => window[key] = val;
+	
+	// Run original preload
+	require(currentWindow.__originalPreload);
+}
