@@ -12,10 +12,10 @@ BandagedBD (Bandaged BetterDiscord) is a fork of the original [BetterDiscord](ht
 ## Auto Installers
 
 ### Windows
-Grab the `exe` file from [here](https://github.com/rauenzi/BetterDiscordApp/releases/latest/download/BandagedBD_Windows.exe).
+Grab the `exe` file from [here](https://github.com/rauenzi/BBDInstaller/releases/latest/download/BandagedBD.exe).
 
 ### macOS/OS X
-Grab the `zip` file from [here](https://github.com/rauenzi/BetterDiscordApp/releases/latest/download/BandagedBD_Mac.zip).
+Grab the `zip` file from [here](https://github.com/rauenzi/BBDInstaller/releases/latest/download/BandagedBD_Mac.zip).
 
 ### Linux
 See this [gist](https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77cf31172).
