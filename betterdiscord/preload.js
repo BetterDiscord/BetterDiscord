@@ -75,7 +75,7 @@ currentWindow.webContents.on("dom-ready", async () => {
     Object.assign(config, {hash});
     fs.writeFileSync(__dirname + "/config.json", JSON.stringify(config, null, 4));
     const baseUrl = `//cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/${hash}/dist/remote.js`;
-    const backupUrl = "https://rauenzi.github.io/BetterDiscordApp/dist/index.min.js";
+    const backupUrl = "https://rauenzi.github.io/BetterDiscordApp/dist/remote.js";
 
     await loadResource(baseUrl, backupUrl, injectScript);
 });
