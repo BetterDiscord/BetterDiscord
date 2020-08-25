@@ -151,7 +151,7 @@ Core.prototype.checkForGuilds = function() {
 };
 
 Core.prototype.injectExternals = async function() {
-    await DOM.addScript("ace-script", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js");
+    await DOM.addScript("ace-script", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js");
     if (window.require.original) window.require = window.require.original;
     if (window.$ && window.jQuery) return; // Dependencies already loaded
     const jqueryUrl = Utils.formatString(dependencies[0].url, {repo: bdConfig.repo, hash: bdConfig.hash, minified: bdConfig.minified ? ".min" : "", localServer: bdConfig.localServer});
