@@ -134,21 +134,15 @@ export default new class ContentManager {
                 meta.css = content;
                 if (meta.format == "json") meta.css = meta.css.split("\n").slice(1).join("\n");
                 content = `module.exports = ${JSON.stringify(meta)};`;
+                module._compile(content, filename);
             }
             if (isPlugin) {
-                module._compile(content, module.filename);
-                const didExport = !Utils.isEmpty(module.exports);
-                if (didExport) {
-                    meta.type = module.exports;
-                    module.exports = meta;
-                    content = "";
-                }
-                else {
-                    Utils.warn("Module Not Exported", `${meta.name}, please start setting module.exports`);
-                    content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
-                }
+                content += `\nif (module.exports.default) {module.exports = module.exports.default;}\nif (!module.exports.prototype || !module.exports.prototype.start) {module.exports = ${meta.exports || meta.name};}`;
+                module._compile(content, filename);
+                meta.type = module.exports;
+                module.exports = meta;
             }
-            module._compile(content, filename);
+            
         };
     }
 
