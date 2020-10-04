@@ -35,7 +35,7 @@
         "babel-plugin-module-resolver": "^4.0.0",
         "circular-dependency-plugin": "^5.2.0",
         "eslint": "^7.5.0",
-        "eslint-plugin-react": "^7.20.3",
+        "eslint-plugin-react": "^7.21.3",
         "gulp": "^4.0.2",
         "gulp-postcss": "^8.0.0",
         "gulp-rename": "^2.0.0",

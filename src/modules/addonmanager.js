@@ -87,15 +87,15 @@ export default class AddonManager {
             if (!filename.endsWith(this.extension)) {
                 // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
                 const match = filename.match(this.duplicatePattern);
-                if (!match) continue;
+                if (!match) return;
                 const ext = match[0];
                 const truncated = filename.replace(ext, "");
                 const newFilename = truncated + this.extension;
 
                 // If this file already exists, give a warning and move on.
-                if (fs.existsSync(newFile)) {
+                if (fs.existsSync(newFilename)) {
                     Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
-                    continue;
+                    return;
                 }
                 
                 // Rename the file and let it go on
@@ -298,7 +298,7 @@ export default class AddonManager {
                 const newFilename = truncated + this.extension;
 
                 // If this file already exists, give a warning and move on.
-                if (fs.existsSync(newFile)) {
+                if (fs.existsSync(newFilename)) {
                     Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
                     continue;
                 }
@@ -311,7 +311,7 @@ export default class AddonManager {
         }
 
         this.saveState();
-        //if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
+        // if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
         return errors;
     }
 
