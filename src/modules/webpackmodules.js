@@ -25,7 +25,10 @@ export class Filters {
         return module => {
             const component = filter(module);
             if (!component) return false;
-            return props.every(property => component[property] !== undefined);
+            for (let p = 0; p < props.length; p++) {
+                if (component[props[p]] === undefined) return false;
+            }
+            return true;
         };
     }
 
@@ -40,7 +43,10 @@ export class Filters {
             const component = filter(module);
             if (!component) return false;
             if (!component.prototype) return false;
-            return fields.every(field => component.prototype[field] !== undefined);
+            for (let f = 0; f < fields.length; f++) {
+                if (component.prototype[fields[f]] === undefined) return false;
+            }
+            return true;
         };
     }
 
@@ -54,7 +60,10 @@ export class Filters {
         return module => {
             const method = filter(module);
             if (!method) return false;
-            return method.toString([]).search(search) !== -1;
+            let methodString = "";
+            try {methodString = method.toString([]);}
+            catch (err) {methodString = method.toString();}
+            return methodString.search(search) !== -1;
         };
     }
 
@@ -65,7 +74,9 @@ export class Filters {
      */
     static byString(...strings) {
         return module => {
-            const moduleString = module.toString([]);
+            let moduleString = "";
+            try {moduleString = module.toString([]);}
+            catch (err) {moduleString = module.toString();}
             for (const s of strings) {
                 if (!moduleString.includes(s)) return false;
             }
@@ -130,6 +141,10 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getModule(filter, first = true) {
+        const wrappedFilter = (m) => {
+            try {return filter(m);}
+            catch (err) {return false;}
+        };
         const modules = this.getAllModules();
         const rm = [];
         for (const index in modules) {
@@ -139,8 +154,8 @@ export default class WebpackModules {
             let foundModule = null;
 
             if (!exports) continue;
-            if (exports.__esModule && exports.default && filter(exports.default)) foundModule = exports.default;
-            if (filter(exports)) foundModule = exports;
+            if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = exports.default;
+            if (wrappedFilter(exports)) foundModule = exports;
             if (!foundModule) continue;
             if (first) return protect(foundModule);
             rm.push(protect(foundModule));

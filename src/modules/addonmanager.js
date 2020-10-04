@@ -33,6 +33,7 @@ export default class AddonManager {
     get name() {return "";}
     get moduleExtension() {return "";}
     get extension() {return "";}
+    get duplicatePattern() {return /./;}
     get addonFolder() {return "";}
     get language() {return "";}
     get prefix() {return "addon";}
@@ -80,10 +81,30 @@ export default class AddonManager {
         if (this.watcher) return Logger.error(this.name, `Already watching ${this.prefix} addons.`);
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
         this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
-            if (!eventType || !filename || !filename.endsWith(this.extension)) return;
+            if (!eventType || !filename) return;
+
+            const absolutePath = path.resolve(this.addonFolder, filename);
+            if (!filename.endsWith(this.extension)) {
+                // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
+                const match = filename.match(this.duplicatePattern);
+                if (!match) continue;
+                const ext = match[0];
+                const truncated = filename.replace(ext, "");
+                const newFilename = truncated + this.extension;
+
+                // If this file already exists, give a warning and move on.
+                if (fs.existsSync(newFile)) {
+                    Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
+                    continue;
+                }
+                
+                // Rename the file and let it go on
+                fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
+            }
+            
             await new Promise(r => setTimeout(r, 100));
             try {
-                const stats = fs.statSync(path.resolve(this.addonFolder, filename));
+                const stats = fs.statSync(absolutePath);
                 if (!stats.isFile()) return;
                 if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
                 if (typeof(stats.mtime.getTime()) !== "number") return;
@@ -266,13 +287,31 @@ export default class AddonManager {
         const files = fs.readdirSync(this.addonFolder);
 
         for (const filename of files) {
-            if (!fs.statSync(path.resolve(this.addonFolder, filename)).isFile() || !filename.endsWith(this.extension)) continue;
+            const absolutePath = path.resolve(this.addonFolder, filename);
+            if (!fs.statSync(absolutePath).isFile()) continue;
+            if (!filename.endsWith(this.extension)) {
+                // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
+                const match = filename.match(this.duplicatePattern);
+                if (!match) continue;
+                const ext = match[0];
+                const truncated = filename.replace(ext, "");
+                const newFilename = truncated + this.extension;
+
+                // If this file already exists, give a warning and move on.
+                if (fs.existsSync(newFile)) {
+                    Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
+                    continue;
+                }
+                
+                // Rename the file and let it go on
+                fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
+            }
             const addon = this.loadAddon(filename, false);
             if (addon instanceof AddonError) errors.push(addon);
         }
 
         this.saveState();
-        if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
+        //if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
         return errors;
     }
 

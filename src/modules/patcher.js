@@ -46,9 +46,9 @@ export default class Patcher {
     }
 
     static resolveModule(module) {
-        if (module instanceof Function || (module instanceof Object && !(module instanceof Array))) return module;
+        if (!module || typeof(module) === "function" || (typeof(module) === "object" && !Array.isArray(module))) return module;
         if (typeof module === "string") return DiscordModules[module];
-        if (module instanceof Array) return WebpackModules.findByUniqueProperties(module);
+        if (Array.isArray(module)) return WebpackModules.findByUniqueProperties(module);
         return null;
     }
 
@@ -112,6 +112,7 @@ export default class Patcher {
             children: []
         };
         patch.proxyFunction = module[functionName] = this.makeOverride(patch);
+        Object.assign(module[functionName], patch.originalFunction);
         module[functionName].__originalFunction = patch.originalFunction;
         module[functionName].toString = () => patch.originalFunction.toString();
         this.patches.push(patch);
@@ -217,6 +218,7 @@ export default class Patcher {
                 patch.children.splice(patch.children.findIndex(cpatch => cpatch.id === child.id && cpatch.type === type), 1);
                 if (patch.children.length <= 0) {
                     const patchNum = this.patches.findIndex(p => p.module == module && p.functionName == functionName);
+                    if (patchNum < 0) return;
                     this.patches[patchNum].revert();
                     this.patches.splice(patchNum, 1);
                 }
