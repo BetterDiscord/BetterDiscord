@@ -29,6 +29,7 @@
         "@babel/register": "^7.10.5",
         "babel-loader": "^8.1.0",
         "circular-dependency-plugin": "^5.2.0",
+        "eslint-plugin-react": "^7.21.3",
         "gulp": "^4.0.2",
         "gulp-csso": "^4.0.1",
         "gulp-rename": "^2.0.0",

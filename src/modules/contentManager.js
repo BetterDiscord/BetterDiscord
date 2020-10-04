@@ -37,6 +37,8 @@ export default new class ContentManager {
         const isPlugin = contentType === "plugin";
         const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
         const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
+
+        this._updateTimeCache(baseFolder, fileEnding);
         this.watchers[contentType] = fs.watch(baseFolder, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename || !filename.endsWith(fileEnding)) return;
             await new Promise(r => setTimeout(r, 50));
@@ -62,6 +64,17 @@ export default new class ContentManager {
                 else themeModule.reloadTheme(filename);
             }
         });
+    }
+
+    _updateTimeCache(directory, extension) {
+        const files = fs.readdirSync(directory);
+        for (const filename of files) {
+            if (!fs.statSync(path.resolve(directory, filename)).isFile() || !filename.endsWith(extension)) continue;
+            const stats = fs.statSync(path.resolve(directory, filename));
+            if (!stats || !stats.mtime || !stats.mtime.getTime()) continue;
+            if (typeof(stats.mtime.getTime()) !== "number") continue;
+            this.timeCache[filename] = stats.mtime.getTime();
+        }
     }
 
     unwatchContent(contentType) {

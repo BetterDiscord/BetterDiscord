@@ -996,6 +996,15 @@ body .ace_closeButton:active {
   display: inline-block;
   margin-bottom: 20px;
 }
+#bd-settingspane-container .ui-section-panel-title > .ui-form-title {
+  margin-bottom: 0;
+}
+#bd-settingspane-container .ui-section-panel-title > .ui-form-title {
+  margin-bottom: 0;
+}
+#bd-settingspane-container .ui-section-panel-title + .ui-form-title {
+  margin-top: 30px;
+}
 .theme-dark #bd-settingspane-container h2.ui-form-title {
   color: #f6f6f7;
 }
