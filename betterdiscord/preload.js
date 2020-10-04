@@ -41,8 +41,8 @@ const getFile = function(url) {
     });
 }
 
-const getCommitHash = async function() {
-    const url = "https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/gh-pages";
+const getCommitHash = async function(branch = "gh-pages") {
+    const url = `https://api.github.com/repos/rauenzi/BetterDiscordApp/commits/${branch}`;
     Logger.log("Getting hash from: " + url);
     const data = await getFile(url);
     const parsed = testJSON(data);
@@ -71,7 +71,7 @@ currentWindow.webContents.on("dom-ready", async () => {
     }
 
 
-    const hash = await getCommitHash();
+    const hash = await getCommitHash(config.branch);
     Object.assign(config, {hash});
     fs.writeFileSync(__dirname + "/config.json", JSON.stringify(config, null, 4));
     const baseUrl = `//cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/${hash}/dist/remote.js`;
