@@ -78,7 +78,7 @@ export default class AddonManager {
     }
 
     watchAddons() {
-        if (this.watcher) return Logger.error(this.name, `Already watching ${this.prefix} addons.`);
+        if (this.watcher) return Logger.err(this.name, `Already watching ${this.prefix} addons.`);
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
         this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename) return;
@@ -206,7 +206,7 @@ export default class AddonManager {
         this.addonList.push(addon);
         if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
         this.emit("loaded", addon.id);
-
+        
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
     }
