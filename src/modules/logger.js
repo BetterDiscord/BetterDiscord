@@ -48,7 +48,7 @@ export default class Logger {
      * @param {string} module NAme of the calling module
      * @param  {...any} message Messages to have logged.
      */
-    static error(module, ...message){Logger._log(module, message, "error");}
+    static error(module, ...message) {Logger._log(module, message, "error");}
 
     /**
      * Logs a warning message.
