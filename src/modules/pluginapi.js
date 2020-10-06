@@ -194,7 +194,7 @@ BdApi.deleteData = function(pluginName, key) {
 //     return cancel;
 // };
 BdApi.monkeyPatch = function(what, methodName, options) {
-    const {before, after, instead, once = false} = options;
+    const {before, after, instead, once = false, callerId = "BdApi"} = options;
     const patchType = before ? "before" : after ? "after" : instead ? "instead" : "";
     if (!patchType) return Logger.err("BdApi", "Must provide one of: after, before, instead");
     const originalMethod = what[methodName];
@@ -202,7 +202,7 @@ BdApi.monkeyPatch = function(what, methodName, options) {
         originalMethod: originalMethod,
         callOriginalMethod: () => data.originalMethod.apply(data.thisObject, data.methodArguments)
     };
-    data.cancelPatch = Patcher[patchType]("BdApi", what, methodName, (thisObject, args, returnValue) => {
+    data.cancelPatch = Patcher[patchType](callerId, what, methodName, (thisObject, args, returnValue) => {
         data.thisObject = thisObject;
         data.methodArguments = args;
         data.returnValue = returnValue;
@@ -211,9 +211,10 @@ BdApi.monkeyPatch = function(what, methodName, options) {
             if (once) data.cancelPatch();
         }
         catch (err) {
-            // Logger.err("monkeyPatch", `Error in the ${patchType} of ${methodName}`);
+            Logger.err(`${callerId}:monkeyPatch`, `Error in the ${patchType} of ${methodName}`);
         }
     });
+    return data.cancelPatch;
 };
 // Event when element is removed
 BdApi.onRemoved = function(node, callback) {

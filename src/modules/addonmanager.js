@@ -199,10 +199,13 @@ export default class AddonManager {
         if (typeof(filename) === "undefined") return;
         try {__non_webpack_require__(path.resolve(this.addonFolder, filename));}
         catch (error) {return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack});}
+
         const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
         if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}));
+
         const error = this.initializeAddon(addon);
         if (error) return error;
+
         this.addonList.push(addon);
         if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
         this.emit("loaded", addon.id);
@@ -225,8 +228,8 @@ export default class AddonManager {
     reloadAddon(idOrFileOrAddon, shouldToast = true) {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         const didUnload = this.unloadAddon(addon, shouldToast, true);
-        if (!didUnload) return didUnload;
-        return this.loadAddon(addon.filename, shouldToast);
+        if (addon && !didUnload) return didUnload;
+        return this.loadAddon(addon ? addon.filename : idOrFileOrAddon, shouldToast);
     }
 
     isLoaded(idOrFile) {
@@ -288,7 +291,10 @@ export default class AddonManager {
 
         for (const filename of files) {
             const absolutePath = path.resolve(this.addonFolder, filename);
-            if (!fs.statSync(absolutePath).isFile()) continue;
+            const stats = fs.statSync(absolutePath);
+            if (!stats || !stats.isFile()) continue;
+            this.timeCache[filename] = stats.mtime.getTime();
+
             if (!filename.endsWith(this.extension)) {
                 // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
                 const match = filename.match(this.duplicatePattern);
@@ -311,7 +317,7 @@ export default class AddonManager {
         }
 
         this.saveState();
-        // if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
+        if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
         return errors;
     }
 
