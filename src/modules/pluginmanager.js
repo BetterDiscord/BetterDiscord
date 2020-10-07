@@ -56,10 +56,11 @@ export default new class PluginManager extends AddonManager {
     togglePlugin(id) {return this.toggleAddon(id);}
 
     unloadPlugin(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
+    loadPlugin(filename) {return this.loadAddon(filename);}
 
-    loadPlugin(filename) {
-        const error = this.loadAddon(filename);
-        if (error) Modals.showAddonErrors({themes: [error]});
+    loadAddon(filename) {
+        const error = super.loadAddon(filename);
+        if (error) Modals.showAddonErrors({plugins: [error]});
     }
 
     reloadPlugin(idOrFileOrAddon) {
