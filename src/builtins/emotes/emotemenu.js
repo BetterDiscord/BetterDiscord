@@ -16,8 +16,8 @@ export default new class EmoteMenu extends Builtin {
             if (props.expressionPickerView == "emoji" && this.hideEmojis) props.expressionPickerView = "gif";
         }); 
         this.after(EmojiPicker, "type", (_, [props], returnValue) => {
-            const head = Utilities.getNestedProp(returnValue, "props.children.props.children.1.props.children.0.props.children.props.children");
-            const body = Utilities.getNestedProp(returnValue, "props.children.props.children.1.props.children");
+            const head = Utilities.getNestedProp(returnValue, "props.children.props.children.props.children.1.props.children.0.props.children.props.children");
+            const body = Utilities.getNestedProp(returnValue, "props.children.props.children.props.children.1.props.children");
             if (!head || !body) return returnValue;
             
             const selected = props.expressionPickerView;
@@ -36,7 +36,7 @@ export default new class EmoteMenu extends Builtin {
                 }, e.label))
             ));
             if (currentTab) body[2] = currentTab.element();
-            if (this.hideEmojis) head.splice(head.findIndex(e=>e.props.id == "emoji-picker-tab"), 1);
+            if (this.hideEmojis) head.splice(head.findIndex(e => e && e.props && e.props.id == "emoji-picker-tab"), 1);
         });
     }
 
