@@ -54,7 +54,7 @@ export default new class DataStore {
         for (const channel of channels) {
             if (!fs.existsSync(path.resolve(this.baseFolder, channel))) fs.mkdirSync(path.resolve(this.baseFolder, channel));
             const channelData = oldData.settings[channel];
-            if (!channelData) continue;
+            if (!channelData || !channelData.settings) continue;
             const oldSettings = channelData.settings;
             const newSettings = {
                 general: {publicServers: oldSettings["bda-gs-1"], voiceDisconnect: oldSettings["bda-dc-0"], classNormalizer: oldSettings["fork-ps-4"], showToasts: oldSettings["fork-ps-2"]},
