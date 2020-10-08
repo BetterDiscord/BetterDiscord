@@ -63,20 +63,20 @@ const loadResource = async function(base, backup, injector) {
 // Setup in renderer context
 const currentWindow = electron.remote.getCurrentWindow();
 currentWindow.webContents.on("dom-ready", async () => {
+    const hash = await getCommitHash(config.branch);
+    Object.assign(config, {hash});
+    fs.writeFileSync(__dirname + "/config.json", JSON.stringify(config, null, 4));
+
     while (!window.webpackJsonp || window.webpackJsonp.flat().flat().length <= 6000) await new Promise(r => setTimeout(r, 100));
+
     if (config.local && config.localPath && fs.existsSync(config.localPath)) {
         const localRemote = path.resolve(config.localPath, "remote.js");
         Logger.log(`Loading Local Remote (${localRemote})`);
         return require(localRemote);
     }
-
-
-    const hash = await getCommitHash(config.branch);
-    Object.assign(config, {hash});
-    fs.writeFileSync(__dirname + "/config.json", JSON.stringify(config, null, 4));
+    
     const baseUrl = `//cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/${hash}/dist/remote.js`;
     const backupUrl = "https://rauenzi.github.io/BetterDiscordApp/dist/remote.js";
-
     await loadResource(baseUrl, backupUrl, injectScript);
 });
 
