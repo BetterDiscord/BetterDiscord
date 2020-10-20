@@ -92,7 +92,7 @@ export default new class PluginManager extends AddonManager {
     }
 
     getFileModification(module, fileContent, meta) {
-        fileContent += `\nif (!module.exports || !module.exports.prototype || !module.exports.prototype.start) {module.exports = ${meta.exports || meta.name};}`;
+        fileContent += `\nif (module.exports.default) {module.exports = module.exports.default;}\nif (!module.exports.prototype || !module.exports.prototype.start) {module.exports = ${meta.exports || meta.name};}`;
         module._compile(fileContent, module.filename);
         meta.exports = module.exports;
         module.exports = meta;
