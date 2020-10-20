@@ -1,5 +1,6 @@
 import {Config} from "data";
 import Utilities from "./utilities";
+import Logger from "./logger";
 const fs = require("fs");
 const path = require("path");
 const releaseChannel = DiscordNative.globals ? DiscordNative.globals.releaseChannel : DiscordNative.app ? DiscordNative.app.getReleaseChannel() : "stable";
@@ -48,9 +49,9 @@ export default new class DataStore {
         let customcss = "";
         let favoriteEmotes = {};
         try {customcss = oldData.bdcustomcss ? atob(oldData.bdcustomcss) : "";}
-        catch (e) {console.error(e);} // eslint-disable-line no-console
+        catch (e) {Logger.stacktrace("DataStore:convertOldData", "Error decoding custom css", e);}
         try {favoriteEmotes = oldData.bdfavemotes ? JSON.parse(atob(oldData.bdfavemotes)) : {};}
-        catch (e) {console.error(e);} // eslint-disable-line no-console
+        catch (e) {Logger.stacktrace("DataStore:convertOldData", "Error decoding favorite emotes", e);}
         for (const channel of channels) {
             if (!fs.existsSync(path.resolve(this.baseFolder, channel))) fs.mkdirSync(path.resolve(this.baseFolder, channel));
             const channelData = oldData.settings[channel];
@@ -70,8 +71,8 @@ export default new class DataStore {
 
             setChannelData(channel, "settings", newSettings); // settingsCookie
             setChannelData(channel, "emotes", newEmotes); // emotes (from settingsCookie)
-            setChannelData(channel, "plugins", channelData.plugins); // pluginCookie
-            setChannelData(channel, "themes", channelData.themes); // themeCookie
+            setChannelData(channel, "plugins", channelData.plugins || {}); // pluginCookie
+            setChannelData(channel, "themes", channelData.themes || {}); // themeCookie
             setChannelData(channel, "misc", {favoriteEmotes}); // favorite emotes
             fs.writeFileSync(path.resolve(this.baseFolder, channel, "custom.css"), customcss); // customcss
         }
