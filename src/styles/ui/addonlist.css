@@ -146,8 +146,8 @@
     border-radius: 3px;
     outline: none;
     border: 0;
-    background-color: #202225;
-    color: #fff;
+    background-color: var(--background-tertiary);
+    color: var(--text-muted);
     display: flex;
     align-items: center;
 }
@@ -156,12 +156,13 @@
     padding: 2px 3px;
     background: none;
     border: 0;
-    color: #fff;
+    color: var(--text-muted);
     flex: 1;
 }
 
 .bd-search-wrapper > svg {
     margin-right: 2px;
+    fill: var(--interactive-normal);
 }
 
 .bd-addon-controls {

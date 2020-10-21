@@ -38,7 +38,7 @@
     justify-content: space-between;
     align-items: center;
     background: #202225; /* #2F3129background-color: #202225; */
-    color: white;
+    color: #fff;
     border-bottom: 1px solid #272822;
 }
 
@@ -46,7 +46,7 @@
     display: flex;
     flex-direction: column;
     background: #2f3129;
-    color: white;
+    color: #fff;
     flex: 1;
 }
 
@@ -72,7 +72,7 @@
 }
 
 .floating-window-buttons .button:hover svg {
-    fill: white;
+    fill: #fff;
 }
 
 .floating-window-buttons .button:hover {
@@ -84,7 +84,7 @@
 }
 
 .floating-window-buttons .close-button:hover svg path.fill {
-    fill: white;
+    fill: #fff;
 }
 
 .floating-window-content #bd-editor-panel {

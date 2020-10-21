@@ -19,7 +19,7 @@
 }
 
 #bd-editor-controls button svg {
-    fill: white;
+    fill: #fff;
 }
 
 #bd-editor-controls button:last-of-type {

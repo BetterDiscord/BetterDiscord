@@ -1,8 +1,8 @@
 .bd-button {
     background-color: #3e82e5;
-    color: white;
+    color: #fff;
     border-radius: 3px;
-    padding: 2px 6px;
+    padding: 3px 6px;
 }
 
 .bd-button:hover {

@@ -82,7 +82,7 @@
 .bd-toast.toast-warning,
 .bd-toast.toast-warn {
     background-color: #ffa600;
-    color: white;
+    color: #fff;
 }
 
 .bd-toast.toast-warning.icon,
