@@ -9,9 +9,9 @@
 
 .bd-sidebar-header .bd-icon {
     cursor: pointer;
-    fill: #72767d;
+    fill: var(--interactive-normal);
 }
 
 .bd-sidebar-header .bd-icon:hover {
-    fill: #fff;
+    fill: var(--interactive-hover);
 }

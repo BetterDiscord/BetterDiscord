@@ -5,7 +5,7 @@
 }
 
 .bd-reload:hover {
-    fill: #fff;
+    fill: #ffffff;
 }
 
 .bd-reload-header {
@@ -162,7 +162,7 @@
 
 .bd-search-wrapper > svg {
     margin-right: 2px;
-    fill:var(--interactive-normal);
+    fill: var(--interactive-normal);
 }
 
 .bd-addon-controls {
