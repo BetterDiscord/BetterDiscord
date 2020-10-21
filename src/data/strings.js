@@ -42,7 +42,7 @@ export default {
                 },
                 twentyFourHour: {
                     name: "24-Hour Timestamps",
-                    note: "Hides channels when in minimal mode"
+                    note: "Converts 12-hour timestamps to 24-hour format"
                 },
                 hideChannels: {
                     name: "Hide Channels",

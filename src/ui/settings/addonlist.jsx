@@ -110,7 +110,7 @@ export default class AddonList extends React.Component {
                     matches = matches || addon.description.toLocaleLowerCase().includes(this.state.query);
                     if (!matches) return null;
                 }
-                const hasSettings = addon.type && typeof(addon.instance.getSettingsPanel) === "function";
+                const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
                 const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
                 return <ErrorBoundary><AddonCard editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
             })}
