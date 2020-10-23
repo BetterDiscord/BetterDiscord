@@ -98,18 +98,22 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
 
 <table>
 <tr>
-	<td align="center">
-		<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png" width="50px;" alt="William JCM"/><br />
-		<a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
-	</td>
     <td align="center">
-		<img src="https://avatars0.githubusercontent.com/u/24623601" width="50px;" alt="NFLD99"/><br />
-		<a href="https://github.com/NFLD99" target="_blank" rel="noreferrer noopener"><strong>NFLD99</strong></a>
-	</td>
+        <img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png" width="50px;" alt="William JCM"/><br />
+        <a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
+    </td>
     <td align="center">
-		<img src="https://i.postimg.cc/5NVxqMnb/Cute-Squid-Circle.png" width="50px;" alt="Tenuit"/><br />
-		<strong>Tenuit</strong>
-	</td>
+        <img src="https://avatars0.githubusercontent.com/u/24623601" width="50px;" alt="NFLD99"/><br />
+        <a href="https://github.com/NFLD99" target="_blank" rel="noreferrer noopener"><strong>NFLD99</strong></a>
+    </td>
+    <td align="center">
+        <img src="https://i.postimg.cc/5NVxqMnb/Cute-Squid-Circle.png" width="50px;" alt="Tenuit"/><br />
+        <strong>Tenuit</strong>
+    </td>
+    <td align="center">
+        <img src="https://avatars0.githubusercontent.com/u/16616715" width="50px;" alt="Pu"/><br />
+        <a href="https://github.com/Puv1s" target="_blank" rel="noreferrer noopener"><strong>Pu</strong></a>
+    </td>
 </tr>
 </table>
 
