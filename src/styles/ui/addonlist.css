@@ -156,8 +156,12 @@
     padding: 2px 3px;
     background: none;
     border: 0;
-    color: var(--text-muted);
+    color: var(--text-normal);
     flex: 1;
+}
+
+.bd-search::-webkit-input-placeholder {
+    color: var(--text-muted);
 }
 
 .bd-search-wrapper > svg {
