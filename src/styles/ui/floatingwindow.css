@@ -52,7 +52,7 @@
 
 .floating-window-titlebar .title {
     /* font-weight: bold; */
-    font-size: .85em;
+    font-size: 0.85em;
     font-weight: 600;
     color: var(--header-secondary);
     flex: 1;

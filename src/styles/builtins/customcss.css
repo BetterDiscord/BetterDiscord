@@ -80,7 +80,7 @@
 
 .editor-wrapper .bd-monokai .ace_marker-layer .ace_selection {
     background: #3e82e5;
-    opacity: .5;
+    opacity: 0.5;
 }
 
 .controls-section {
@@ -100,7 +100,7 @@
 
 .controls-section .checkbox-label {
     font-size: 14px;
-    font-weight:500;
+    font-weight: 500;
 }
 
 /* Ace Editor Settings */
