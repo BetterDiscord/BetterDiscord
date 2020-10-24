@@ -85,7 +85,7 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
     <a href="https://github.com/Gibbu" target="_blank" rel="noreferrer noopener"><strong>Gibbu</strong></a>
 </td>
 <td align="center">
-    <img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/25717114/c100599e58174499b44b4307c26f9312/1.jpeg" width="100px;" alt="Orekieh"/><br />
+    <img src="https://i.imgur.com/ImS2OCB.png" width="100px;" alt="Orekieh"/><br />
     <strong>Orekieh</strong>
 </td>
 </tr>
@@ -113,6 +113,10 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
     <td align="center">
         <img src="https://avatars0.githubusercontent.com/u/16616715" width="50px;" alt="Pu"/><br />
         <a href="https://github.com/Puv1s" target="_blank" rel="noreferrer noopener"><strong>Pu</strong></a>
+    </td>
+    <td align="center">
+        <img src="https://cdn.discordapp.com/attachments/769608503496278036/769680733693804625/tacoindustries.jpg" width="50px;" alt="Paco"/><br />
+        <strong>Paco</strong>
     </td>
 </tr>
 </table>
