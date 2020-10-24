@@ -2,13 +2,13 @@ import Builtin from "../../structs/builtin";
 import WebpackModules from "../../modules/webpackmodules";
 import Utilities from "../../modules/utilities";
 
-export default new class NitroGiftPickerHider extends Builtin {
-    get name() {return "NitroGiftPickerHider";}
+export default new class HideGiftButton extends Builtin {
+    get name() {return "HideGiftButton";}
     get category() {return "appearance";}
-    get id() {return "nitroGiftPickerHider";}
+    get id() {return "hideGiftButton";}
 
     enabled() {
-        this.unpatch = this.after(WebpackModules.find(m => m.type && m.type.render && m.type.render.displayName === "ChannelTextAreaContainer").type, "render", (_, __, returnValue) => {
+        this.after(WebpackModules.find(m => m.type && m.type.render && m.type.render.displayName === "ChannelTextAreaContainer").type, "render", (_, __, returnValue) => {
             const buttons = Utilities.getNestedProp(returnValue, "props.children.props.children.props.children.1.props.children.props.children.2.props.children");
             if (Array.isArray(buttons)) {
                 for (const button of buttons) {
@@ -24,6 +24,6 @@ export default new class NitroGiftPickerHider extends Builtin {
     }
 
     disabled() {
-        this.unpatch();
+        this.unpatchAll();
     }
 };

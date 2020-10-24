@@ -11,7 +11,7 @@ branches:
   - development
 
 install:
-  - npm install
+  - npm ci
 
 script:
   - npm run deploy

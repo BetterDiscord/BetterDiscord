@@ -3,13 +3,15 @@
 export {default as CustomCSS} from "./customcss";
 export {default as WindowPrefs} from "./windowprefs";
 
-export {default as TwentyFourHour} from "./appearance/24hour";
 export {default as ClassNormalizer} from "./general/classnormalizer";
 export {default as PublicServers} from "./general/publicservers";
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
 
+export {default as TwentyFourHour} from "./appearance/24hour";
 export {default as ColoredText} from "./appearance/coloredtext";
 export {default as DarkMode} from "./appearance/darkmode";
+export {default as HideGIFButton} from "./appearance/hidegifbutton";
+export {default as HideGiftButton} from "./appearance/hidegiftbutton";
 export {default as MinimalMode} from "./appearance/minimalmode";
 export {default as VoiceMode} from "./appearance/voicemode";
 

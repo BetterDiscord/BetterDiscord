@@ -17,8 +17,8 @@ export default [
         collapsible: true,
         settings: [
             {type: "switch", id: "twentyFourHour", value: false},
-            {type: "switch", id: "nitroGiftPickerHider", value: false},
-            {type: "switch", id: "gifPickerHider", value: false},
+            {type: "switch", id: "hideGiftButton", value: false},
+            {type: "switch", id: "hideGIFButton", value: false},
             {type: "switch", id: "voiceMode", value: false},
             {type: "switch", id: "minimalMode", value: false},
             {type: "switch", id: "hideChannels", value: false, enableWith: "minimalMode"},
