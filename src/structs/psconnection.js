@@ -21,11 +21,11 @@ export default class PublicServersConnection {
         return SortedGuildStore.getFlattenedGuildIds().includes(id);
     }
 
-    static search({term = "", category = "", from = 0} = {}) {
+    static search({term = "", keyword = "", from = 0} = {}) {
         const request = require("request");
         return new Promise(resolve => {
             const queries = [];
-            if (category) queries.push(`category=${category.replace(/ /g, "%20")}`);
+            if (keyword) queries.push(`keyword=${keyword.replace(/ /g, "%20").toLowerCase()}`);
             if (term) queries.push(`term=${term.replace(/ /g, "%20")}`);
             if (from) queries.push(`from=${from}`);
             const query = `?${queries.join("&")}`;
@@ -64,7 +64,7 @@ export default class PublicServersConnection {
 
     static async checkConnection() {
         try {
-            const response = await fetch(`https://auth.discordservers.com/info`,{
+            const response = await fetch(this.connectEndPoint, {
                 method: "GET",
                 credentials: "include",
                 mode: "cors",
@@ -75,6 +75,19 @@ export default class PublicServersConnection {
             });
             const data = await response.json();
             this._accessToken = data.access_token;
+            return data;
+        }
+        catch (error) {
+            return false;
+        }
+    }
+
+    static async getDashboard() {
+        try {
+            const response = await fetch(`${this.endPoint}/dashboard`, {
+                method: "GET"
+            });
+            const data = await response.json();
             return data;
         }
         catch (error) {

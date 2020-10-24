@@ -99,16 +99,19 @@ export default class AddonCard extends React.Component {
         const props = {id: `${name}-settings`, className: "addon-settings", ref: this.panelRef};
         if (typeof(this.settingsPanel) == "string") {
             Logger.warn("Addon Settings", "Using a DOMString is officially deprecated.");
-            props.dangerouslySetInnerHTML = this.settingsPanel;
+            props.dangerouslySetInnerHTML = {__html: this.settingsPanel};
         }
 
-        let child = null;
+        let child;
         if (typeof(this.settingsPanel) === "function") child = <this.settingsPanel />;
         if (this.settingsPanel.$$typeof && this.settingsPanel.$$typeof === Symbol.for("react.element")) child = this.settingsPanel;
+        if (child) child = <ErrorBoundary>{child}</ErrorBoundary>;
 
         return <div className="bd-addon-card settings-open bd-switch-item">
                     <div className="bd-close" onClick={this.closeSettings}><CloseButton /></div>
-                    <div {...props}><ErrorBoundary>{child}</ErrorBoundary></div>
+                    <div {...props}>
+                        {child}
+                    </div>
                 </div>;
     }
 

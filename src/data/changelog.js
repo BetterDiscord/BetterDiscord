@@ -11,7 +11,8 @@ export default {
                 "**Floating editors** for both custom css and plugins/themes are now available. (See video above)",
                 "**Settings panels** are completely new and sleek. They are also highly extensible for potential future features :eyes:",
                 "**Translations** are now integrated starting with only a couple languages, but feel free to contribute your own!",
-                "**Emote menu** now uses React Patching and properly integrates into the new Emoji Picker. (Thanks Strencher#1044!)"
+                "**Emote menu** now uses React Patching and properly integrates into the new Emoji Picker. (Thanks Strencher#1044!)",
+                "**Public servers** got a new makeover thanks to some design help from Tropical and Gibbu!"
             ]
         },
         {
