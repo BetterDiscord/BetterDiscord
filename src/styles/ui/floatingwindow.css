@@ -29,32 +29,34 @@
     overflow: auto;
     resize: both;
     padding-bottom: 10px;
-    background: #202225;
+    background: var(--background-tertiary);
 }
 
 .floating-window-titlebar {
     width: 100%;
+    height: 28px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #202225; /* #2F3129background-color: #202225; */
     color: #fff;
-    border-bottom: 1px solid #272822;
+    background: var(--background-tertiary); /* #2F3129background-color: #202225; */
 }
 
 .floating-window-content {
     display: flex;
     flex-direction: column;
-    background: #2f3129;
+    background: var(--background-secondary);
     color: #fff;
     flex: 1;
 }
 
 .floating-window-titlebar .title {
     /* font-weight: bold; */
+    font-size: 0.85em;
+    font-weight: 600;
+    color: var(--header-secondary);
     flex: 1;
-    text-align: center;
-    padding: 2px 0;
+    padding: 0 8px;
 }
 
 .floating-window-buttons {
@@ -63,28 +65,30 @@
 
 .floating-window-buttons .button {
     cursor: pointer;
-    padding: 0 2px;
+    height: 28px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--interactive-normal);
 }
 
-.floating-window-buttons .button svg {
-    fill: #dcddde;
-    margin-top: 1.5px;
+.floating-window-buttons .button svg,
+.floating-window-buttons .close-button:hover svg path.fill {
+    fill: currentColor;
 }
 
-.floating-window-buttons .button:hover svg {
-    fill: #fff;
+.floating-window-buttons .maximize-button:hover {
+    background: var(--background-modifier-hover);
 }
 
-.floating-window-buttons .button:hover {
-    background-color: #36393f;
+.floating-window-buttons .maximize-button:active {
+    background: var(--background-modifier-active);
 }
 
 .floating-window-buttons .close-button:hover {
-    background-color: #f04747;
-}
-
-.floating-window-buttons .close-button:hover svg path.fill {
-    fill: #fff;
+    background: #f04747;
+    color: #fff;
 }
 
 .floating-window-content #bd-editor-panel {
@@ -103,10 +107,11 @@
 }
 
 .floating-window #bd-editor-controls {
+    z-index: 10;
     height: auto;
-    background: #202225;
+    background: var(--background-secondary-alt);
     border: none;
-    box-shadow: 0 1px 0 0 #2f3129 inset;
+    box-shadow: var(--elevation-low);
 }
 
 #floating-editor-window {

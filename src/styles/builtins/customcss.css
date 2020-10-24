@@ -6,7 +6,7 @@
 #bd-editor-controls button {
     margin: 0 5px 0 0;
     background: none;
-    color: #fff;
+    color: var(--interactive-normal);
     height: 26px;
     font-weight: 600;
     border-radius: 3px;
@@ -15,26 +15,28 @@
 }
 
 #bd-editor-controls button:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--background-modifier-hover);
+    color: var(--interactive-hover);
+}
+
+#bd-editor-controls button:active {
+    background: var(--background-modifier-active);
 }
 
 #bd-editor-controls button svg {
-    fill: #fff;
-}
-
-#bd-editor-controls button:last-of-type {
-    margin-right: 0;
+    fill: currentColor;
 }
 
 #bd-editor-controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #272822;
+    background: var(--background-secondary-alt);
     color: #fff;
     border: none;
-    box-shadow: 0 1px 0 0 #2f3129 inset;
+    box-shadow: var(--elevation-low);
     padding: 5px;
+    z-index: 10;
 }
 
 .editor-wrapper {
@@ -51,22 +53,34 @@
 }
 
 .bd-monokai .editor .ace_gutter {
-    background: #2f3136;
+    background: var(--background-secondary-alt);
+    color: var(--header-secondary);
+    font-size: 12px;
 }
 
 .bd-monokai .ace_editor {
-    background: #292b2f;
+    background: var(--background-secondary);
 }
 
-.bd-monokai #bd-editor-controls {
-    background: #202225;
+.bd-monokai .ace_line {
+    color: var(--text-normal);
 }
 
-.theme-light #bd-editor-controls {
-    background: #e8e8e8;
-    border: 1px solid #fff;
-    border-top: 1px solid #adadad;
-    box-shadow: inset 0 1px 0 0 white;
+.editor-wrapper .bd-monokai .ace_cursor {
+    color: var(--text-normal);
+}
+
+.editor-wrapper .bd-monokai .ace_gutter-active-line {
+    background: var(--background-tertiary);
+}
+
+.editor-wrapper .bd-monokai .ace_marker-layer .ace_active-line {
+    background: var(--background-secondary-alt);
+}
+
+.editor-wrapper .bd-monokai .ace_marker-layer .ace_selection {
+    background: #3e82e5;
+    opacity: 0.5;
 }
 
 .controls-section {
@@ -86,6 +100,7 @@
 
 .controls-section .checkbox-label {
     font-size: 14px;
+    font-weight: 500;
 }
 
 /* Ace Editor Settings */

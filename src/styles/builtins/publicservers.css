@@ -1,17 +1,17 @@
 #bd-pub-li {
-    height: 20px;
+    height: 24px;
     margin-bottom: 10px;
     overflow: hidden;
 }
 
 #bd-pub-button {
-    border-radius: 4px;
-    background-color: rgb(47, 49, 54);
-    color: #b9bbbe;
+    border-radius: 3px;
+    background-color: var(--background-secondary);
+    color: var(--interactive-normal);
     text-align: center;
     font-size: 12px;
-    line-height: 20px;
-    height: 20px;
+    line-height: 24px;
+    height: 24px;
 }
 
 .bd-layer {
