@@ -55,6 +55,14 @@ export default {
                 coloredText: {
                     name: "Colored Text",
                     note: "Make text colour the same as role color"
+                },
+                gifpickerhider: {
+                    name: "Hide Gift Picker",
+                    note: "Hides the Gif picker button in the textarea"
+                },
+                nitroGiftPickerHider: {
+                    name: "Hide NitroGift Picker",
+                    note: "Hides the NitroGift button in the textarea"
                 }
             },
             addons: {
