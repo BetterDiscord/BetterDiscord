@@ -16,8 +16,8 @@ export default new class GifPickerHider extends Builtin {
                     const renderFunc = Utilities.getNestedProp(button, "type.type.render");
                     if (!renderFunc) continue;
     
-                    // "ChannelGIFPickerButton" for sticker button
-                    if (["ChannelStickerPickerButton"].includes(renderFunc.displayName)) {
+                    // "ChannelStickerPickerButton" for sticker button
+                    if (["ChannelGIFPickerButton"].includes(renderFunc.displayName)) {
                         button.props.disabled = true;
                         break;
                     }
