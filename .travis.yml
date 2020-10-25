@@ -14,9 +14,9 @@ install:
   - npm ci
 
 script:
+  - npm run lint-prod
+  - npm run test-prod
   - npm run deploy
-  - npm run test
-  - npm run lint
 
 before_deploy: "echo 'node_modules' > .gitignore"
 deploy:
