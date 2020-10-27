@@ -73,8 +73,8 @@
     color: var(--interactive-normal);
 }
 
-.floating-window-buttons .button svg,
-.floating-window-buttons .close-button:hover svg path.fill {
+.floating-window-buttons .button svg, 
+.floating-window-buttons .button .fill {
     fill: currentColor;
 }
 
