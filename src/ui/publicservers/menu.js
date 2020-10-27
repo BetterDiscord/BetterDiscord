@@ -11,19 +11,6 @@ const SettingsView = WebpackModules.getByDisplayName("SettingsView");
 const GuildActions = WebpackModules.getByProps("transitionToGuildSync");
 const LayerManager = WebpackModules.getByProps("popLayer");
 
-const betterDiscordServer = {
-    name: "BetterDiscord",
-    members: 55000,
-    categories: ["community", "programming", "support"],
-    description: "Official BetterDiscord server for plugins, themes, support, etc",
-    identifier: "86004744966914048",
-    iconUrl: "https://cdn.discordapp.com/icons/86004744966914048/292e7f6bfff2b71dfd13e508a859aedd.webp",
-    nativejoin: true,
-    invite_code: "BJD2yvJ",
-    pinned: true,
-    insertDate: 1517806800
-};
-
 export default class PublicServers extends React.Component {
 
     constructor(props) {
@@ -67,19 +54,15 @@ export default class PublicServers extends React.Component {
 
     async getDashboard() {
         const dashboardData = await Connection.getDashboard();
-        const featuredFirst = dashboardData.results[0].key === "featured";
-        const featuredServers = dashboardData.results[featuredFirst ? 0 : 1].response.hits;
-        const popularServers = dashboardData.results[featuredFirst ? 1 : 0].response.hits;
-        const mainKeywords = dashboardData.mainKeywords.map(k => k.charAt(0).toUpperCase() + k.slice(1)).sort();
-
-        featuredServers.unshift(betterDiscordServer);
         
-        this.featured = featuredServers;
-        this.popular = popularServers;
-        this.keywords = mainKeywords;
+        this.featured = dashboardData.featured;
+        this.popular = dashboardData.popular;
+        this.keywords = dashboardData.keywords;
         
         this.setState({loading: false});
         this.changeTab(this.state.tab);
+
+        if (!this.keywords || !this.keywords.length) Modals.showConfirmationModal("Connection Error", "There was an error connecting to DiscordServers.com, it's possible their website/api is down. Please try again later.");
     }
 
     async connect() {

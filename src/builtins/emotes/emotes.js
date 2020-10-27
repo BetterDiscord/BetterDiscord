@@ -274,23 +274,3 @@ export default new class EmoteModule extends Builtin {
         this.loadEmoteData();
     }
 };
-
-
-// (async () => {
-//     const emoteData = await new Promise(resolve => {
-//         const req = require("request");
-//         req.get({url: "https://twitchemotes.com/api_cache/v3/global.json", json: true}, (err, resp, parsedData) => {
-//             for (const emote in parsedData) {
-//                 if (emote.length < 4 || window.bemotes.includes(emote)) {
-//                     delete parsedData[emote];
-//                     continue;
-//                 }
-//                 parsedData[emote] = parsedData[emote].id;
-//             }
-//             resolve(parsedData);
-//         });
-//     });
-//     const fs = require("fs");
-//     fs.writeFileSync("Z:\\Programming\\BetterDiscordStuff\\BetterDiscordApp\\data\\emotes\\global.json", JSON.stringify(emoteData));
-//     return emoteData;
-// })();

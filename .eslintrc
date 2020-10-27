@@ -107,6 +107,7 @@
         "Proxy": "readonly",
         "Set": "readonly",
         "WeakMap": "readonly",
+        "Map": "readonly",
         "Promise": "readonly",
         "ace": "readonly",
         "Reflect": "readonly",

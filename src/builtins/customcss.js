@@ -148,6 +148,7 @@ export default new class CustomCSS extends Builtin {
             children: editor,
             confirmClose: () => {
                 if (!editorRef || !editorRef.current) return false;
+                if (Settings.get("settings", "customcss", "liveUpdate")) return false;
                 return editorRef.current.hasUnsavedChanges;
             },
             confirmationText: Strings.CustomCSS.confirmationText

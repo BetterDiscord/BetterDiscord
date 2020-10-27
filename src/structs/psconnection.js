@@ -6,44 +6,96 @@ const InviteActions = WebpackModules.getByProps("acceptInvite");
 
 const BrowserWindow = require("electron").remote.BrowserWindow;
 
+const betterDiscordServer = {
+    name: "BetterDiscord",
+    members: 55000,
+    categories: ["community", "programming", "support"],
+    description: "Official BetterDiscord server for plugins, themes, support, etc",
+    identifier: "86004744966914048",
+    iconUrl: "https://cdn.discordapp.com/icons/86004744966914048/292e7f6bfff2b71dfd13e508a859aedd.webp",
+    nativejoin: true,
+    invite_code: "BJD2yvJ",
+    pinned: true,
+    insertDate: 1517806800
+};
 
-export default class PublicServersConnection {
+export default new class PublicServersConnection {
 
-    static get endPoint() {return "https://search.discordservers.com";}
-    static get joinEndPoint() {return "https://j.discordservers.com";}
-    static get connectEndPoint() {return "https://auth.discordservers.com/info";}
+    constructor() {
+        this.cache = new Map();
+        this.cache.set("featured", [betterDiscordServer]);
+        this.cache.set("popular", []);
+        this.cache.set("keywords", []);
+        this.cache.set("accessToken", "");
 
-    static getDefaultAvatar() {
+        window.debugPS = this;
+    }
+
+    get endPoint() {return "https://search.discordservers.com";}
+    get joinEndPoint() {return "https://j.discordservers.com";}
+    get connectEndPoint() {return "https://auth.discordservers.com/info";}
+
+    getDefaultAvatar() {
         return AvatarDefaults.DEFAULT_AVATARS[Math.floor(Math.random() * 5)];
     }
 
-    static hasJoined(id) {
+    hasJoined(id) {
         return SortedGuildStore.getFlattenedGuildIds().includes(id);
     }
 
-    static search({term = "", keyword = "", from = 0} = {}) {
-        const request = require("request");
-        return new Promise(resolve => {
-            const queries = [];
-            if (keyword) queries.push(`keyword=${keyword.replace(/ /g, "%20").toLowerCase()}`);
-            if (term) queries.push(`term=${term.replace(/ /g, "%20")}`);
-            if (from) queries.push(`from=${from}`);
-            const query = `?${queries.join("&")}`;
-            request.get({url: `${this.endPoint}${query}${query ? "&schema=new" : "?schema=new"}`, json: true}, (err, resp, data) => {
-                if (err) return resolve(null);
-                const next = data.size + data.from;
-                resolve({
-                    servers: data.results,
-                    size: data.size,
-                    from: data.from,
-                    total: data.total,
-                    next: next >= data.total ? null : next
-                });
-            });
-        });
+    async search({term = "", keyword = "", from = 0} = {}) {
+        if (this.cache.has(term + keyword + from)) return this.cache.get(term + keyword + from);
+
+        const queries = [];
+        if (keyword) queries.push(`keyword=${keyword.replace(/ /g, "%20").toLowerCase()}`);
+        if (term) queries.push(`term=${term.replace(/ /g, "%20")}`);
+        if (from) queries.push(`from=${from}`);
+        const query = `?${queries.join("&")}`;
+
+        try {
+            const response = await fetch(`${this.endPoint}${query}`, {method: "GET"});
+            const data = await response.json();
+            const next = data.size + data.from;
+            const results = {
+                servers: data.results,
+                size: data.size,
+                from: data.from,
+                total: data.total,
+                next: next >= data.total ? null : next
+            };
+            this.cache.set(term + keyword + from, results);
+            return results;
+        }
+        catch (error) {
+            return null;
+        }
     }
 
-    static async join(id, native = false) {
+    async getDashboard() {
+        const cachedKeywords = this.cache.get("keywords");
+        if (cachedKeywords && cachedKeywords.length) return {featured: this.cache.get("featured"), popular: this.cache.get("popular"), keywords: cachedKeywords};
+        try {
+            const response = await fetch(`${this.endPoint}/dashboard`, {method: "GET"});
+            const data = await response.json();
+
+            const featuredFirst = data.results[0].key === "featured";
+            const featuredServers = data.results[featuredFirst ? 0 : 1].response.hits;
+            const popularServers = data.results[featuredFirst ? 1 : 0].response.hits;
+            const mainKeywords = data.mainKeywords.map(k => k.charAt(0).toUpperCase() + k.slice(1)).sort();
+
+            featuredServers.unshift(betterDiscordServer);
+            
+            this.cache.set("featured", featuredServers);
+            this.cache.set("popular", popularServers);
+            this.cache.set("keywords", mainKeywords);
+            return {featured: this.cache.get("featured"), popular: this.cache.get("popular"), keywords: this.cache.get("keywords")};
+        }
+        catch (error) {
+            return {featured: this.cache.get("featured"), popular: this.cache.get("popular"), keywords: this.cache.get("keywords")};
+        }
+    }
+
+    async join(id, native = false) {
         if (native) return InviteActions.acceptInvite(id);
         try {
             await fetch(`${this.joinEndPoint}/${id}`,{
@@ -62,7 +114,7 @@ export default class PublicServersConnection {
         }
     }
 
-    static async checkConnection() {
+    async checkConnection() {
         try {
             const response = await fetch(this.connectEndPoint, {
                 method: "GET",
@@ -82,20 +134,7 @@ export default class PublicServersConnection {
         }
     }
 
-    static async getDashboard() {
-        try {
-            const response = await fetch(`${this.endPoint}/dashboard`, {
-                method: "GET"
-            });
-            const data = await response.json();
-            return data;
-        }
-        catch (error) {
-            return false;
-        }
-    }
-
-    static connect() {
+    connect() {
         return new Promise(resolve => {
             const joinWindow = new BrowserWindow(this.windowOptions);
             const url = `https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=${this.connectEndPoint}`;
@@ -108,7 +147,7 @@ export default class PublicServersConnection {
         });
     }
 
-    static get windowOptions() {
+    get windowOptions() {
         return {
             width: 490,
             height: 500,
@@ -125,5 +164,4 @@ export default class PublicServersConnection {
             }
         };
     }
-
-}
+};
