@@ -1,4 +1,4 @@
-import {WebpackModules} from "modules";
+import {Logger, WebpackModules} from "modules";
 
 const SortedGuildStore = WebpackModules.getByProps("getSortedGuilds");
 const AvatarDefaults = WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");
@@ -18,6 +18,8 @@ const betterDiscordServer = {
     pinned: true,
     insertDate: 1517806800
 };
+
+const ITEMS_PER_PAGE = 50;
 
 export default new class PublicServersConnection {
 
@@ -43,9 +45,10 @@ export default new class PublicServersConnection {
         return SortedGuildStore.getFlattenedGuildIds().includes(id);
     }
 
-    async search({term = "", keyword = "", from = 0} = {}) {
-        if (this.cache.has(term + keyword + from)) return this.cache.get(term + keyword + from);
+    async search({term = "", keyword = "", page = 1} = {}) {
+        if (this.cache.has(term + keyword + page)) return this.cache.get(term + keyword + page);
 
+        const from = (page - 1) * ITEMS_PER_PAGE;
         const queries = [];
         if (keyword) queries.push(`keyword=${keyword.replace(/ /g, "%20").toLowerCase()}`);
         if (term) queries.push(`term=${term.replace(/ /g, "%20")}`);
@@ -55,19 +58,18 @@ export default new class PublicServersConnection {
         try {
             const response = await fetch(`${this.endPoint}${query}`, {method: "GET"});
             const data = await response.json();
-            const next = data.size + data.from;
             const results = {
                 servers: data.results,
                 size: data.size,
-                from: data.from,
                 total: data.total,
-                next: next >= data.total ? null : next
+                page: Math.ceil(from / ITEMS_PER_PAGE) + 1,
+                numPages: Math.ceil(data.total / ITEMS_PER_PAGE)
             };
-            this.cache.set(term + keyword + from, results);
+            this.cache.set(term + keyword + page, results);
             return results;
         }
         catch (error) {
-            return null;
+            Logger.stacktrace("PublicServers", "Could not reach search endpoint.", error);
         }
     }
 
@@ -91,6 +93,7 @@ export default new class PublicServersConnection {
             return {featured: this.cache.get("featured"), popular: this.cache.get("popular"), keywords: this.cache.get("keywords")};
         }
         catch (error) {
+            Logger.stacktrace("PublicServers", "Could not download dashboard.", error);
             return {featured: this.cache.get("featured"), popular: this.cache.get("popular"), keywords: this.cache.get("keywords")};
         }
     }
@@ -109,7 +112,8 @@ export default new class PublicServersConnection {
             });
             return true;
         }
-        catch (e) {
+        catch (error) {
+            Logger.warn("PublicServers", "Could not join server.");
             return false;
         }
     }
@@ -130,6 +134,7 @@ export default new class PublicServersConnection {
             return data;
         }
         catch (error) {
+            Logger.warn("PublicServers", "Could not verify connection.");
             return false;
         }
     }
