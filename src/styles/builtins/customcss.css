@@ -32,7 +32,7 @@
     align-items: center;
     justify-content: space-between;
     background: var(--background-secondary-alt);
-    color: #fff;
+    color: var(--text-normal);
     border: none;
     box-shadow: var(--elevation-low);
     padding: 5px;
