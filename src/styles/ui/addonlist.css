@@ -31,7 +31,7 @@
     border-radius: 5px;
     overflow: hidden;
     background: var(--background-secondary-alt);
-}   
+}
 
 .bd-addon-list .bd-addon-card.settings-open {
     max-height: 800px;
