@@ -27,10 +27,11 @@
 .bd-addon-list .bd-addon-card {
     max-height: 175px;
     margin-bottom: 20px;
-    padding: 12px;
+    padding: 16px;
     border-radius: 5px;
     overflow: hidden;
     background: var(--background-secondary-alt);
+    border: 1px solid var(--background-tertiary);
 }
 
 .bd-addon-list .bd-addon-card.settings-open {
