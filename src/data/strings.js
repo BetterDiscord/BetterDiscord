@@ -71,10 +71,6 @@ export default {
                     name: "Show Addon Errors",
                     note: "Shows a modal with plugin/theme errors"
                 },
-                autoScroll: {
-                    name: "Scroll To Settings",
-                    note: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)"
-                },
                 autoReload: {
                     name: "Automatic Loading",
                     note: "Automatically loads, reloads, and unloads plugins and themes"
@@ -223,6 +219,7 @@ export default {
         couldNotDisable: "{{name}} could not be disabled.",
         couldNotStart: "{{name}} could not be started.",
         couldNotStop: "{{name}} could not be stopped.",
+        settingsError: "Could not open settings for {{name}}",
         methodError: "{{method}} could not be fired.",
         unknownAuthor: "Unknown Author",
         noDescription: "Description not provided.",
@@ -276,6 +273,7 @@ export default {
     Modals: {
         confirmAction: "Are You Sure?",
         okay: "Okay",
+        done: "Done",
         cancel: "Cancel",
         nevermind: "Nevermind",
         close: "Close",

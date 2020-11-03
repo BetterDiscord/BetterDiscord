@@ -242,3 +242,7 @@
     opacity: 0.2;
     cursor: not-allowed;
 }
+
+.bd-pagination + .bd-settings-title {
+    margin-top: 20px;
+}

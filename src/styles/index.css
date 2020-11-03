@@ -4,6 +4,7 @@
 @import "./ui/*";
 @import "./buttons.css";
 @import "./spinner.css";
+@import "./search.css";
 
 .bd-chat-badge {
     vertical-align: bottom;

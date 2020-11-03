@@ -1,5 +1,6 @@
 import {React, Logger} from "modules";
 import {remote} from "electron";
+
 export default class ErrorBoundary extends React.Component {
     constructor(props) {
       super(props);

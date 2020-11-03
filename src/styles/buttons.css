@@ -3,6 +3,7 @@
     color: #fff;
     border-radius: 3px;
     padding: 3px 6px;
+    transition: opacity 250ms ease;
 }
 
 .bd-button:hover {
@@ -23,4 +24,24 @@
 
 .bd-button.bd-button-success:active {
     background-color: rgb(46, 154, 74);
+}
+
+.bd-button.bd-button-danger {
+    background-color: #f04747;
+}
+
+.bd-button.bd-button-danger:hover {
+    background-color: rgb(237, 42, 42);
+}
+
+.bd-button.bd-button-danger:active {
+    background-color: rgb(230, 18, 18);
+}
+
+.bd-button-disabled {
+    opacity: 0.4;
+}
+
+.bd-button-disabled:hover {
+    cursor: not-allowed;
 }

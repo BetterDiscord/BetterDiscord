@@ -164,10 +164,10 @@ export default class PublicServers extends React.Component {
         else if (this.state.results.total) content = React.createElement("div", {className: "bd-card-list"}, servers);
 
         return [React.createElement(SettingsTitle, {text: this.title, button: connectButton}),
-            (this.state.tab !== "Featured" && this.state.tab !== "Popular") && this.pagination,
+            this.state.results.numPages > 1 && this.pagination,
             content,
-            (this.state.tab !== "Featured" && this.state.tab !== "Popular") && this.pagination,
-            this.state.results.servers.length > 0 && React.createElement(SettingsTitle, {text: this.title})
+            this.state.results.numPages > 1 && this.pagination,
+            this.state.results.numPages > 1 && this.state.query && React.createElement(SettingsTitle, {text: this.title})
         ];
     }
 

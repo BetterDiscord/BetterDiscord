@@ -1,6 +1,7 @@
 import {Config} from "data";
 import {Logger, WebpackModules, React, Settings, Strings, DOM, DiscordModules} from "modules";
 import FormattableString from "../structs/string";
+import ErrorBoundary from "./errorboundary";
 
 export default class Modals {
 
@@ -8,10 +9,15 @@ export default class Modals {
 
     static get ModalActions() {return WebpackModules.getByProps("openModal", "updateModal");}
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
+    static get ModalComponents() {return WebpackModules.getByProps("ModalRoot");}
+    static get ModalClasses() {return WebpackModules.getByProps("modal", "content");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
+    static get FlexElements() {return WebpackModules.getByProps("Child", "Align");}
+    static get FormTitle() {return WebpackModules.findByDisplayName("FormTitle");}
     static get TextElement() {return WebpackModules.getByProps("Sizes", "Weights");}
     static get ConfirmationModal() {return WebpackModules.findByDisplayName("ConfirmModal");}
     static get Markdown() {return WebpackModules.findByDisplayName("Markdown");}
+    static get Buttons() {return WebpackModules.getByProps("ButtonColors");}
 
     static default(title, content) {
         const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">
@@ -78,7 +84,7 @@ export default class Modals {
         return ModalActions.openModal(props => {
             return React.createElement(ConfirmationModal, Object.assign({
                 header: title,
-                red: danger,
+                confirmButtonColor: danger ? this.Buttons.ButtonColors.RED : this.Buttons.ButtonColors.PRIMARY,
                 confirmText: confirmText,
                 cancelText: cancelText,
                 onConfirm: onConfirm,
@@ -229,5 +235,56 @@ export default class Modals {
             ModalActions.closeModal = closeModal;
         };
         return key;
+    }
+
+    static showAddonSettingsModal(name, panel) {
+
+        let child = panel;
+        if (panel instanceof Node || typeof(panel) === "string") {
+            child = class ReactWrapper extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.elementRef = React.createRef();
+                    this.element = panel;
+                }
+        
+                componentDidMount() {
+                    if (this.element instanceof Node) this.elementRef.current.appendChild(this.element);
+                    // if (typeof(this.element) === "string") this.elementRef.current.appendChild(this.element);
+                }
+
+                render() {
+                    const props = {
+                        className: "bd-addon-settings-wrap",
+                        ref: this.elementRef
+                    };
+                    if (typeof(this.element) === "string") props.dangerouslySetInnerHTML = {__html: this.element};
+                    return React.createElement("div", props);
+                }
+            };
+        }
+        if (typeof(child) === "function") child = React.createElement(child);
+
+        const mc = this.ModalComponents;
+        const modal = props => {
+            return React.createElement(mc.ModalRoot, Object.assign({size: mc.ModalSize.MEDIUM, className: "bd-addon-modal"}, props), 
+                React.createElement(mc.ModalHeader, {separator: false, className: "bd-addon-modal-header"},
+                    React.createElement(this.FormTitle, {tag: "h4"}, `${name} Settings`),
+                    React.createElement(this.FlexElements.Child, {grow: 0},
+                        React.createElement(mc.ModalCloseButton, {onClick: props.onClose})
+                    )
+                ),
+                React.createElement(mc.ModalContent, {className: "bd-addon-modal-settings"}, 
+                    React.createElement(ErrorBoundary, {}, child)    
+                ),
+                React.createElement(mc.ModalFooter, {className: "bd-addon-modal-footer"},
+                    React.createElement(this.Buttons.default, {onClick: props.onClose, className: "bd-button"}, Strings.Modals.done)
+                )
+            );
+        };
+
+        return this.ModalActions.openModal(props => {
+            return React.createElement(modal, props);
+        });
     }
 }
