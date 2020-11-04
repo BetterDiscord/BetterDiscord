@@ -54,14 +54,15 @@ export default class DOMManager {
         return this.removeStyle(id);
     }
 
-    static linkStyle(id, url) {
+    static linkStyle(id, url, {documentHead = false} = {}) {
         id = this.escapeID(id);
         return new Promise(resolve => {
             const link = this.getElement(`#${id}`, this.bdStyles) || this.createElement("link", {id});
             link.rel = "stylesheet";
             link.href = url;
             link.onload = resolve;
-            this.bdStyles.append(link);
+            const target = documentHead ? document.head : this.bdStyles;
+            target.append(link);
         });
     }
 

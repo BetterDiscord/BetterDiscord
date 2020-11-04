@@ -2,8 +2,16 @@
     opacity: 0.6;
 }
 
+.bd-social-logo path {
+    fill: white;
+}
+
 .bd-social-link:hover .bd-social-logo {
     opacity: 1;
+}
+
+.bd-social-link:hover .bd-social-logo path:first-of-type {
+    fill: #3e82e5;
 }
 
 .standardSidebarView-3F1I7i .bd-versioninfo-wrapper {

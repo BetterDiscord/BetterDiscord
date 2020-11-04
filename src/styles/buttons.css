@@ -1,4 +1,7 @@
 .bd-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     background-color: #3e82e5;
     color: #fff;
     border-radius: 3px;
@@ -31,11 +34,11 @@
 }
 
 .bd-button.bd-button-danger:hover {
-    background-color: rgb(237, 42, 42);
+    background-color: #d84040;
 }
 
 .bd-button.bd-button-danger:active {
-    background-color: rgb(230, 18, 18);
+    background-color: #c03939;
 }
 
 .bd-button-disabled {

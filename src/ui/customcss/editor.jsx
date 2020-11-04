@@ -1,4 +1,4 @@
-import {React, WebpackModules} from "modules";
+import {React, WebpackModules, DiscordModules} from "modules";
 
 import Checkbox from "./checkbox";
 
@@ -12,11 +12,6 @@ export default class CodeEditor extends React.Component {
 
     constructor(props) {
         super(props);
-        
-        for (const control of this.props.controls) {
-            if (control.type == "checkbox") continue;
-            if (control.onClick == "showSettings") control.onClick = this.showSettings.bind(this);
-        }
 
         this.props.theme = this.props.theme.toLowerCase().replace(/ /g, "_");
         if (!themes.includes(this.props.theme)) this.props.theme = CodeEditor.defaultProps.theme;
@@ -24,6 +19,7 @@ export default class CodeEditor extends React.Component {
         this.props.language = this.props.language.toLowerCase().replace(/ /g, "_");
         if (!languages.includes(this.props.language)) this.props.language = CodeEditor.defaultProps.language;
 
+        this.bindings = [];
         this.onChange = this.onChange.bind(this);
     }
 
@@ -40,47 +36,29 @@ export default class CodeEditor extends React.Component {
     static get themes() {return themes;}
 
     componentDidMount() {
-        this.editor = ace.edit(this.props.id);
+        this.editor = window.monaco.editor.create(document.getElementById(this.props.id), {
+            value: this.props.value,
+            language: this.props.language,
+            theme: DiscordModules.UserSettingsStore.theme == "light" ? "vs" : "vs-dark"
+        });
 
-        // Add id to the ace menu container
-        const originalShow = this.editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec;
-        this.editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec = function() {
-            originalShow.apply(this, arguments);
-            const observer = new MutationObserver(mutations => {
-                for (const mutation of mutations) {
-                    if (!mutation.addedNodes.length || !(mutation.addedNodes[0] instanceof Element)) continue;
-                    const node = mutation.addedNodes[0];
-                    if (node.parentElement !== document.body || !node.querySelector("#ace_settingsmenu")) continue;
-                    node.id = "ace_settingsmenu_container";
-                    observer.disconnect();
-                }
-            });
-            observer.observe(document.body, {childList: true});
-        };
-
-        const theme = this.props.theme == CodeEditor.defaultProps.theme ? this.props.theme.split("-")[1] : this.props.theme;
-        this.editor.setTheme(`ace/theme/${theme}`);
-        this.editor.session.setMode(`ace/mode/${this.props.language}`);
-        this.editor.setShowPrintMargin(false);
-        this.editor.setFontSize(this.props.fontSize);
-        this.editor.on("change", this.onChange);
+        this.bindings.push(this.editor.onDidChangeModelContent(this.onChange));
     }
 
     componentWillUnmount() {
-        this.editor.destroy();
+        for (const binding of this.bindings) binding.dispose();
+        this.editor.dispose();
     }
 
-    get value() {return this.editor.session.getValue();}
-    set value(newValue) {
-        this.editor.setValue(newValue);
-    }
+    get value() {return this.editor.getValue();}
+    set value(newValue) {this.editor.setValue(newValue);}
 
     onChange() {
         if (this.props.onChange) this.props.onChange(this.value);
     }
 
     showSettings() {return this.editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec(this.editor);}
-    resize() {return this.editor.resize();}
+    resize() {return this.editor.layout();}
 
     buildControl(control) {
         if (control.type == "checkbox") return this.makeCheckbox(control);
@@ -100,7 +78,7 @@ export default class CodeEditor extends React.Component {
     }
 
     render() {
-        if (this.editor && this.editor.resize) this.editor.resize();
+        if (this.editor && this.editor.resize) this.editor.layout();
 
         const controlsLeft = this.props.controls.filter(c => c.side != "right").map(this.buildControl.bind(this));
         const controlsRight = this.props.controls.filter(c => c.side == "right").map(this.buildControl.bind(this));
@@ -115,7 +93,7 @@ export default class CodeEditor extends React.Component {
                         </div>
                     </div>
                     <div className="editor-wrapper">
-                        <div id={this.props.id} className={"editor " + this.props.theme}>{this.props.value}</div>
+                        <div id={this.props.id} className={"editor " + this.props.theme}></div>
                     </div>
                 </div>;
     }

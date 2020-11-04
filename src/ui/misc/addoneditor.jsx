@@ -3,7 +3,6 @@ import {React, Strings} from "modules";
 import Editor from "../customcss/editor";
 import Save from "../icons/save";
 import Edit from "../icons/edit";
-import Cog from "../icons/cog";
 
 export default class AddonEditor extends React.Component {
 
@@ -18,8 +17,7 @@ export default class AddonEditor extends React.Component {
 
         this.controls = [
             {label: React.createElement(Save, {size: "18px"}), tooltip: Strings.CustomCSS.save, onClick: this.save},
-            {label: React.createElement(Edit, {size: "18px"}), tooltip: Strings.CustomCSS.openNative, onClick: this.openNative},
-            {label: React.createElement(Cog, {size: "18px"}), tooltip: Strings.CustomCSS.settings, onClick: "showSettings"}
+            {label: React.createElement(Edit, {size: "18px"}), tooltip: Strings.CustomCSS.openNative, onClick: this.openNative}
         ];
     }
 

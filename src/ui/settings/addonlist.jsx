@@ -1,4 +1,4 @@
-import {React, Settings, Strings, Events, Logger} from "modules";
+import {React, Settings, Strings, Events, Logger, WebpackModules} from "modules";
 
 import Modals from "../modals";
 import SettingsTitle from "./title";
@@ -8,15 +8,25 @@ import Dropdown from "./components/dropdown";
 import Search from "./components/search";
 import ErrorBoundary from "../errorboundary";
 
+import ListIcon from "../icons/list";
+import GridIcon from "../icons/grid";
+import NoResults from "../blankslates/noresults";
+import EmptyImage from "../blankslates/emptyimage";
+
+const Tooltip = WebpackModules.getByDisplayName("Tooltip");
+
 export default class AddonList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {sort: "name", ascending: true, query: ""};
+        this.state = {sort: "name", ascending: true, query: "", view: "list"};
         this.sort = this.sort.bind(this);
         this.reverse = this.reverse.bind(this);
         this.search = this.search.bind(this);
         this.update = this.update.bind(this);
+        this.listView = this.listView.bind(this);
+        this.gridView = this.gridView.bind(this);
+        this.openFolder = this.openFolder.bind(this);
     }
 
     componentDidMount() {
@@ -31,6 +41,14 @@ export default class AddonList extends React.Component {
 
     update() {
         this.forceUpdate();
+    }
+
+    listView() {
+        this.setState({view: "list"});
+    }
+
+    gridView() {
+        this.setState({view: "grid"});
     }
 
     reload() {
@@ -50,6 +68,12 @@ export default class AddonList extends React.Component {
         this.setState({query: event.target.value.toLocaleLowerCase()});
     }
 
+    openFolder() {
+        const shell = require("electron").shell;
+        const open = shell.openItem || shell.openPath;
+        open(this.props.folder);
+    }
+
     get sortOptions() {
         return [
             {label: Strings.Addons.name, value: "name"},
@@ -67,17 +91,25 @@ export default class AddonList extends React.Component {
         ];
     }
 
+    get emptyImage() {
+        return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type: this.props.title})} message={Strings.Addons.blankSlateMessage.format({link: "https://betterdiscordlibrary.com/themes", type: this.props.title}).toString()}>
+            <button className="bd-button" onClick={this.openFolder}>{Strings.Addons.openFolder.format({type: this.props.title})}</button>
+        </EmptyImage>;
+    }
+
+    makeControlButton(title, children, action, selected = false) {
+        return <Tooltip color="black" position="top" text={title}>
+                    {(props) => {
+                        return <button {...props} className={"bd-button bd-view-button" + (selected ? " selected" : "")} onClick={action}>{children}</button>;
+                    }}
+                </Tooltip>;
+    }
+
     render() {
         const {title, folder, addonList, addonState, onChange, reload} = this.props;
         const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
-        const button = folder ? {
-            title: Strings.Addons.openFolder.format({type: title}),
-            onClick: () => {
-                const shell = require("electron").shell;
-                const open = shell.openItem || shell.openPath;
-                open(folder);
-        }} : null;
-        const sortedAddons = addonList.sort((a, b) => {
+        const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: this.openFolder} : null;
+        let sortedAddons = addonList.sort((a, b) => {
             const first = a[this.state.sort];
             const second = b[this.state.sort];
             if (typeof(first) == "string") return first.toLocaleLowerCase().localeCompare(second.toLocaleLowerCase());
@@ -86,34 +118,44 @@ export default class AddonList extends React.Component {
             return 0;
         });
         if (!this.state.ascending) sortedAddons.reverse();
+        if (this.state.query) {
+            sortedAddons = sortedAddons.filter(addon => {
+                let matches = addon.name.toLocaleLowerCase().includes(this.state.query);
+                matches = matches || addon.author.toLocaleLowerCase().includes(this.state.query);
+                matches = matches || addon.description.toLocaleLowerCase().includes(this.state.query);
+                if (!matches) return false;
+                return true;
+            });
+        }
         return [
             <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon className="bd-reload" onClick={this.reload.bind(this)} />} />,
-            <div className="bd-controls bd-addon-controls">
+            <div className={"bd-controls bd-addon-controls"}>
                 <Search onChange={this.search} placeholder={`${Strings.Addons.search.format({type: this.props.title})}...`} />
-                <div className="bd-addon-dropdowns">
-                    <div className="bd-select-wrapper">
-                        <label className="bd-label">{Strings.Sorting.sortBy}:</label>
-                        <Dropdown options={this.sortOptions} onChange={this.sort} style="transparent" />
+                <div className="bd-controls-advanced">
+                    <div className="bd-addon-dropdowns">
+                        <div className="bd-select-wrapper">
+                            <label className="bd-label">{Strings.Sorting.sortBy}:</label>
+                            <Dropdown options={this.sortOptions} onChange={this.sort} style="transparent" />
+                        </div>
+                        <div className="bd-select-wrapper">
+                            <label className="bd-label">{Strings.Sorting.order}:</label>
+                            <Dropdown options={this.directions} onChange={this.reverse} style="transparent" />
+                        </div>
                     </div>
-                    <div className="bd-select-wrapper">
-                        <label className="bd-label">{Strings.Sorting.order}:</label>
-                        <Dropdown options={this.directions} onChange={this.reverse} style="transparent" />
+                    <div className="bd-addon-views">
+                        {this.makeControlButton("List View", <ListIcon />, this.listView, this.state.view === "list")}
+                        {this.makeControlButton("Grid View", <GridIcon />, this.gridView, this.state.view === "grid")}
                     </div>
-                    
                 </div>
             </div>,
-            <div key="addonList" className={"bd-addon-list"}>
+            <div key="addonList" className={"bd-addon-list" + (this.state.view == "grid" ? " bd-grid-view" : "")}>
             {sortedAddons.map(addon => {
-                if (this.state.query) {
-                    let matches = addon.name.toLocaleLowerCase().includes(this.state.query);
-                    matches = matches || addon.author.toLocaleLowerCase().includes(this.state.query);
-                    matches = matches || addon.description.toLocaleLowerCase().includes(this.state.query);
-                    if (!matches) return null;
-                }
                 const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
                 const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
                 return <ErrorBoundary><AddonCard editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
             })}
+            {this.props.addonList.length === 0 && this.emptyImage}
+            {this.state.query && sortedAddons.length == 0 && this.props.addonList.length !== 0 && <NoResults />}
             </div>
         ];
     }

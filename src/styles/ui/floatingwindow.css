@@ -48,6 +48,7 @@
     background: var(--background-secondary);
     color: #fff;
     flex: 1;
+    overflow: hidden;
 }
 
 .floating-window-titlebar .title {
@@ -95,13 +96,16 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    height: 100%;
+    overflow: hidden;
 }
 
 .floating-window .editor-wrapper {
     flex: 1;
+    overflow: hidden;
 }
 
-.floating-window .ace_editor {
+.floating-window .editor {
     height: auto;
     flex: 1;
 }

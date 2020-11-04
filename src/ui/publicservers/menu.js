@@ -2,7 +2,7 @@ import {React, WebpackModules, Strings} from "modules";
 import Modals from "../modals";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
-import EmptyResults from "./noresults";
+import EmptyResults from "../blankslates/noresults";
 import Connection from "../../structs/psconnection";
 import Search from "../settings/components/search";
 import Previous from "../icons/previous";

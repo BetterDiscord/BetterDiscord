@@ -22,6 +22,7 @@ const LinkIcons = {
 };
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
+const MarkdownParser = WebpackModules.getByProps("markdownToReact");
 
 export default class AddonCard extends React.Component {
 
@@ -141,7 +142,7 @@ export default class AddonCard extends React.Component {
                             <span className="bd-title">{this.buildTitle(name, version, author)}</span>
                             <Switch checked={this.props.enabled} onChange={this.onChange} />
                     </div>
-                    <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{description}</div></div>
+                    <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{MarkdownParser.markdownToReact(description)}</div></div>
                     {this.footer}
                 </div>;
     }

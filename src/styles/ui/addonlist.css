@@ -16,7 +16,8 @@
     margin-right: 5px;
 }
 
-.bd-controls {
+.bd-controls,
+.bd-controls-advanced {
     display: flex;
 }
 
@@ -24,18 +25,26 @@
     user-select: text;
 }
 
+.bd-addon-list.bd-grid-view {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+    row-gap: 10px;
+}
+
 .bd-addon-list .bd-addon-card {
-    max-height: 175px;
+    display: flex;
+    flex-direction: column;
     margin-bottom: 20px;
-    padding: 12px;
+    padding: 16px;
     border-radius: 5px;
     overflow: hidden;
     background: var(--background-secondary-alt);
+    border: 1px solid var(--background-tertiary);
 }
 
-.bd-addon-list .bd-addon-card.settings-open {
-    max-height: 800px;
-    overflow-y: auto;
+.bd-addon-list.bd-grid-view .bd-addon-card {
+    margin-bottom: 0;
 }
 
 .bd-addon-list .bd-addon-header {
@@ -49,11 +58,16 @@
     overflow: hidden;
 }
 
+.bd-description-wrap {
+    flex: 1;
+}
+
 .bd-addon-list .bd-description {
     word-break: break-word;
     margin-bottom: 5px;
     padding: 5px 0;
     overflow-y: auto;
+    max-height: 175px;
     font-size: 14px;
     line-height: 18px;
     -webkit-line-clamp: 3;
@@ -161,6 +175,7 @@
 
 .bd-addon-modal-settings {
     /* padding: 16px; */
+    padding: 0 16px 16px 16px;
 }
 
 .bd-addon-modal-footer .bd-button {
@@ -177,4 +192,30 @@
 
 .bd-addon-modal-footer .bd-button:active {
     background-color: rgb(50, 104, 183);
+}
+
+.bd-addon-views {
+    display: flex;
+    margin-left: 10px;
+}
+
+.bd-addon-views .bd-view-button {
+    background-color: transparent;
+    padding: 3px 4px;
+}
+
+.bd-addon-views .bd-view-button:hover {
+    background-color: var(--background-modifier-selected);
+}
+
+.bd-addon-views .bd-view-button:active {
+    background-color: var(--background-modifier-accent);
+}
+
+.bd-addon-views .bd-view-button.selected {
+    background-color: #3e82e5;
+}
+
+.bd-addon-views .bd-view-button + .bd-view-button {
+    margin-left: 5px;
 }

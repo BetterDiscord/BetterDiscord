@@ -2,6 +2,7 @@
 
 @import "./builtins/*";
 @import "./ui/*";
+@import "./blankslates/*";
 @import "./buttons.css";
 @import "./spinner.css";
 @import "./search.css";

@@ -229,7 +229,9 @@ export default {
         missingNameData: "META missing name data.",
         metaNotFound: "META was not found.",
         compileError: "Could not be compiled.",
-        wasUnloaded: "{{name}} was unloaded."
+        wasUnloaded: "{{name}} was unloaded.",
+        blankSlateHeader: "You don't have any {{type}}!",
+        blankSlateMessage: "Grab some from [this website]({{link}}) and add them to your {{type}} folder."
     },
     CustomCSS: {
         confirmationText: "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",

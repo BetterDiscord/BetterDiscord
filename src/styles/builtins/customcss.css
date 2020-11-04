@@ -43,9 +43,8 @@
     display: flex;
 }
 
+.editor,
 .ace_editor {
-    line-height: normal;
-    font-family: Consolas, monospace;
     box-sizing: border-box;
     height: calc(100vh - 250px);
     font-size: 14px;
