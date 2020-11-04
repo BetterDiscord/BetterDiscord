@@ -1,7 +1,6 @@
 import {React, WebpackModules} from "modules";
 
 const EmptyImageClasses = WebpackModules.getByProps("emptyImage") || {};
-const MarkdownParser = WebpackModules.getByProps("markdownToReact");
 
 export default class EmptyImage extends React.Component {
     render() {
@@ -11,7 +10,7 @@ export default class EmptyImage extends React.Component {
                         {this.props.title || "You don't have anything!"}
                     </div>
                     <div className={`bd-empty-image-message`}>
-                        {MarkdownParser.markdownToReact(this.props.message || "You should probably get something.")}
+                        {this.props.message || "You should probably get something."}
                     </div>
                     {this.props.children}
                 </div>;

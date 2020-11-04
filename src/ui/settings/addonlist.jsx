@@ -12,6 +12,7 @@ import ListIcon from "../icons/list";
 import GridIcon from "../icons/grid";
 import NoResults from "../blankslates/noresults";
 import EmptyImage from "../blankslates/emptyimage";
+import FormattableString from "../../structs/string";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 
@@ -92,7 +93,9 @@ export default class AddonList extends React.Component {
     }
 
     get emptyImage() {
-        return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type: this.props.title})} message={Strings.Addons.blankSlateMessage.format({link: "https://betterdiscordlibrary.com/themes", type: this.props.title}).toString()}>
+        let message = Strings.Addons.blankSlateMessage.format({type: this.props.title});
+        message = FormattableString.prototype.replaceLink.call(message, label => <a className="anchor-3Z-8Bb anchorUnderlineOnHover-2ESHQB cta" href="https://betterdiscordlibrary.com/themes" target="_blank" rel="noopener noreferrer">{label}</a>);
+        return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type: this.props.title})} message={message}>
             <button className="bd-button" onClick={this.openFolder}>{Strings.Addons.openFolder.format({type: this.props.title})}</button>
         </EmptyImage>;
     }
@@ -127,6 +130,17 @@ export default class AddonList extends React.Component {
                 return true;
             });
         }
+
+        const renderedCards = sortedAddons.map(addon => {
+            const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
+            const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
+            return <ErrorBoundary><AddonCard editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
+        });
+
+        const hasAddonsInstalled = this.props.addonList.length !== 0;
+        const isSearching = !!this.state.query;
+        const hasResults = sortedAddons.length !== 0;
+
         return [
             <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon className="bd-reload" onClick={this.reload.bind(this)} />} />,
             <div className={"bd-controls bd-addon-controls"}>
@@ -148,15 +162,9 @@ export default class AddonList extends React.Component {
                     </div>
                 </div>
             </div>,
-            <div key="addonList" className={"bd-addon-list" + (this.state.view == "grid" ? " bd-grid-view" : "")}>
-            {sortedAddons.map(addon => {
-                const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
-                const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
-                return <ErrorBoundary><AddonCard editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
-            })}
-            {this.props.addonList.length === 0 && this.emptyImage}
-            {this.state.query && sortedAddons.length == 0 && this.props.addonList.length !== 0 && <NoResults />}
-            </div>
+            !hasAddonsInstalled && this.emptyImage,
+            isSearching && !hasResults && hasAddonsInstalled && <NoResults />,
+            hasAddonsInstalled && <div key="addonList" className={"bd-addon-list" + (this.state.view == "grid" ? " bd-grid-view" : "")}>{renderedCards}</div>
         ];
     }
 
