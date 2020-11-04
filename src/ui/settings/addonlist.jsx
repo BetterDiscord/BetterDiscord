@@ -1,4 +1,4 @@
-import {React, Settings, Strings, Events, Logger, WebpackModules} from "modules";
+import {React, Settings, Strings, Events, Logger, WebpackModules, DataStore} from "modules";
 
 import Modals from "../modals";
 import SettingsTitle from "./title";
@@ -12,7 +12,6 @@ import ListIcon from "../icons/list";
 import GridIcon from "../icons/grid";
 import NoResults from "../blankslates/noresults";
 import EmptyImage from "../blankslates/emptyimage";
-import FormattableString from "../../structs/string";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 
@@ -20,7 +19,7 @@ export default class AddonList extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {sort: "name", ascending: true, query: "", view: "list"};
+        this.state = {query: "", sort: this.getControlState("sort", "name"), ascending: this.getControlState("ascending", true), view: this.getControlState("view", "list")};
         this.sort = this.sort.bind(this);
         this.reverse = this.reverse.bind(this);
         this.search = this.search.bind(this);
@@ -40,16 +39,22 @@ export default class AddonList extends React.Component {
         Events.off(`${this.props.prefix}-unloaded`, this.update);
     }
 
+    onControlChange(control, value) {
+        const addonlistControls = DataStore.getBDData("addonlistControls") || {};
+        if (!addonlistControls[this.props.title.toLowerCase()]) addonlistControls[this.props.title.toLowerCase()] = {};
+        addonlistControls[this.props.title.toLowerCase()][control] = value;
+        DataStore.setBDData("addonlistControls", addonlistControls);
+    }
+
+    getControlState(control, defaultValue) {
+        const addonlistControls = DataStore.getBDData("addonlistControls") || {};
+        if (!addonlistControls[this.props.title.toLowerCase()]) return defaultValue;
+        if (!addonlistControls[this.props.title.toLowerCase()].hasOwnProperty(control)) return defaultValue;
+        return addonlistControls[this.props.title.toLowerCase()][control];
+    }
+
     update() {
         this.forceUpdate();
-    }
-
-    listView() {
-        this.setState({view: "list"});
-    }
-
-    gridView() {
-        this.setState({view: "grid"});
     }
 
     reload() {
@@ -57,11 +62,20 @@ export default class AddonList extends React.Component {
         this.forceUpdate();
     }
 
+    listView() {this.changeView("list");}
+    gridView() {this.changeView("grid");}
+    changeView(view) {
+        this.onControlChange("view", view);
+        this.setState({view});
+    }
+
     reverse(value) {
+        this.onControlChange("ascending", value);
         this.setState({ascending: value});
     }
 
     sort(value) {
+        this.onControlChange("sort", value);
         this.setState({sort: value});
     }
 
@@ -93,8 +107,7 @@ export default class AddonList extends React.Component {
     }
 
     get emptyImage() {
-        let message = Strings.Addons.blankSlateMessage.format({type: this.props.title});
-        message = FormattableString.prototype.replaceLink.call(message, label => <a className="anchor-3Z-8Bb anchorUnderlineOnHover-2ESHQB cta" href="https://betterdiscordlibrary.com/themes" target="_blank" rel="noopener noreferrer">{label}</a>);
+        const message = Strings.Addons.blankSlateMessage.format({link: `https://betterdiscordlibrary.com/${this.props.title.toLowerCase()}`, type: this.props.title}).toString();
         return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type: this.props.title})} message={message}>
             <button className="bd-button" onClick={this.openFolder}>{Strings.Addons.openFolder.format({type: this.props.title})}</button>
         </EmptyImage>;
@@ -149,11 +162,11 @@ export default class AddonList extends React.Component {
                     <div className="bd-addon-dropdowns">
                         <div className="bd-select-wrapper">
                             <label className="bd-label">{Strings.Sorting.sortBy}:</label>
-                            <Dropdown options={this.sortOptions} onChange={this.sort} style="transparent" />
+                            <Dropdown options={this.sortOptions} value={this.state.sort} onChange={this.sort} style="transparent" />
                         </div>
                         <div className="bd-select-wrapper">
                             <label className="bd-label">{Strings.Sorting.order}:</label>
-                            <Dropdown options={this.directions} onChange={this.reverse} style="transparent" />
+                            <Dropdown options={this.directions} value={this.state.ascending} onChange={this.reverse} style="transparent" />
                         </div>
                     </div>
                     <div className="bd-addon-views">

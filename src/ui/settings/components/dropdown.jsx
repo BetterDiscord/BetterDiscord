@@ -4,7 +4,7 @@ import Arrow from "../../icons/downarrow";
 export default class Select extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {open: false, value: this.props.value || this.props.options[0].value};
+        this.state = {open: false, value: this.props.hasOwnProperty("value") ? this.props.value : this.props.options[0].value};
         this.dropdown = React.createRef();
         this.onChange = this.onChange.bind(this);
         this.showMenu = this.showMenu.bind(this);

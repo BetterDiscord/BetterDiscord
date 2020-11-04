@@ -74,6 +74,10 @@
     color: var(--header-secondary);
 }
 
+.bd-description em {
+    font-style: italic;
+}
+
 .bd-addon-list .scroller::-webkit-scrollbar-track-piece,
 .bd-addon-list .scroller::-webkit-scrollbar-thumb {
     border-radius: 0 !important;

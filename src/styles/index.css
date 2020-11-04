@@ -27,3 +27,11 @@
     width: 100%;
     border-radius: 20px;
 }
+
+.bd-link {
+    text-decoration: none;
+}
+
+.bd-link:hover {
+    text-decoration: underline;
+}

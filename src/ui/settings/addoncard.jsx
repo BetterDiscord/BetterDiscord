@@ -1,4 +1,5 @@
 import {React, Logger, Strings, WebpackModules, DiscordModules} from "modules";
+import SimpleMarkdown from "../../structs/markdown";
 import ReloadIcon from "../icons/reload";
 import EditIcon from "../icons/edit";
 import DeleteIcon from "../icons/delete";
@@ -141,7 +142,7 @@ export default class AddonCard extends React.Component {
                             <span className="bd-title">{this.buildTitle(name, version, author)}</span>
                             <Switch checked={this.props.enabled} onChange={this.onChange} />
                     </div>
-                    <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{description}</div></div>
+                    <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{SimpleMarkdown.parseToReact(description)}</div></div>
                     {this.footer}
                 </div>;
     }
