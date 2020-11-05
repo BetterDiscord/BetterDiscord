@@ -1,6 +1,5 @@
 #bd-pub-li {
     height: 24px;
-    margin-bottom: 10px;
     overflow: hidden;
 }
 
@@ -53,7 +52,8 @@
     grid-template-columns: repeat(auto-fill, minmax(248px, 1fr));
 }
 
-.bd-server-card {
+.bd-server-card,
+.bd-place-holder-card {
     display: flex;
     flex-direction: column;
     height: 320px;
@@ -230,8 +230,10 @@
     padding: 0;
 }
 
-.bd-pagination button:hover {
+.bd-pagination button:hover,
+.bd-pagination button:active {
     opacity: 1;
+    background: transparent;
 }
 
 .bd-pagination button svg {

@@ -1,15 +1,14 @@
 .bd-spinner {
-    margin: 100px auto;
-    width: 57px;
-    height: 57px;
+    width: 32px;
+    height: 32px;
     position: relative;
 }
 
 .bd-cube1,
 .bd-cube2 {
     background-color: #3e82e5;
-    width: 15px;
-    height: 15px;
+    width: 10px;
+    height: 10px;
     position: absolute;
     top: 0;
     left: 0;
@@ -22,19 +21,19 @@
 
 @keyframes bd-sk-cubemove {
     25% {
-        transform: translateX(42px) rotate(-90deg) scale(0.5);
+        transform: translateX(22px) rotate(-90deg) scale(0.5);
     }
 
     50% {
-        transform: translateX(42px) translateY(42px) rotate(-179deg);
+        transform: translateX(22px) translateY(22px) rotate(-179deg);
     }
 
     50.1% {
-        transform: translateX(42px) translateY(42px) rotate(-180deg);
+        transform: translateX(22px) translateY(22px) rotate(-180deg);
     }
 
     75% {
-        transform: translateX(0) translateY(42px) rotate(-270deg) scale(0.5);
+        transform: translateX(0) translateY(22px) rotate(-270deg) scale(0.5);
     }
 
     100% {

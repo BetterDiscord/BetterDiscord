@@ -148,6 +148,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 5px;
 }
 
 .bd-addon-controls .bd-search {
@@ -206,6 +208,14 @@
 .bd-addon-views .bd-view-button {
     background-color: transparent;
     padding: 3px 4px;
+}
+
+.bd-addon-views .bd-view-button svg {
+    fill: var(--interactive-normal);
+}
+
+.bd-addon-views .bd-view-button.selected svg {
+    fill: #fff;
 }
 
 .bd-addon-views .bd-view-button:hover {
