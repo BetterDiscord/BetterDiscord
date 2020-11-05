@@ -5,238 +5,230 @@
 .bd-minimal .membersWrap-2h-GB4,
 .bd-minimal .nowPlayingColumn-2sl4cE,
 .bd-minimal .bannerImage-1jOskm {
-	width: 200px;
-	min-width: auto;
+    width: 200px;
+    min-width: auto;
 }
-
 
 /* User Container */
 
 .bd-minimal .container-3baos1 .noWrap-3jynv6 {
-	display: none;
-	opacity: 0;
-	pointer-events: none;
+    display: none;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .bd-minimal .container-3baos1:hover .noWrap-3jynv6 {
-	display: flex;
-	opacity: 1;
-	pointer-events: all;
+    display: flex;
+    opacity: 1;
+    pointer-events: all;
 }
 
 .bd-minimal .container-3baos1 {
-	height: 45px;
+    height: 45px;
 }
-
 
 /* Header container heights */
 
 .bd-minimal .container-1r6BKw,
 .bd-minimal .header-2o-2hj,
 .bd-minimal .searchBar-6Kv8R2 {
-	height: 40px;
+    height: 40px;
 }
 
-.bd-minimal .libraryHeader-3g95kE:before {
-	top: 40px;
+.bd-minimal .libraryHeader-3g95kE::before {
+    top: 40px;
 }
-
 
 /* Settings */
 
 .bd-minimal .sidebarRegion-VFTUkN {
-	flex: 0;
+    flex: 0;
 }
 
 .bd-minimal .contentColumn-2hrIYH,
 .bd-minimal .customColumn-Rb6toI {
-	flex-grow: 1;
-	max-width: 100%;
+    flex-grow: 1;
+    max-width: 100%;
 }
 
-.bd-minimal .customScroller-26gWhv>div,
-.bd-minimal .sidebarScrollable-1qPI87+.content-1rPSz4 {
-	max-width: unset;
+.bd-minimal .customScroller-26gWhv > div,
+.bd-minimal .sidebarScrollable-1qPI87 + .content-1rPSz4 {
+    max-width: unset;
 }
 
 .bd-minimal .bd-addon-list .bd-addon-card {
-	padding: 10px;
-	margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 .bd-minimal .bd-addon-list.bd-grid-view {
-	grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
 }
-
 
 /* Friends (https://tropix126.github.io/BetterDiscordStuff/midnight/css/base.css) */
 
 @keyframes slide-out-enable {
-	0% {
-		pointer-events: none;
-	}
-	100% {
-		pointer-events: all;
-	}
+    0% {
+        pointer-events: none;
+    }
+
+    100% {
+        pointer-events: all;
+    }
 }
 
 .bd-minimal .nowPlayingColumn-2sl4cE {
-	min-width: unset;
-	position: absolute;
-	right: 0;
-	height: 100%;
-	width: 300px;
-	transform: translateX(250px);
-	background: var(--background-secondary-alt);
-	transition: 250ms cubic-bezier(.52, 0, .74, 0);
-	z-index: 1;
+    min-width: unset;
+    position: absolute;
+    right: 0;
+    height: 100%;
+    width: 300px;
+    transform: translateX(250px);
+    background: var(--background-secondary-alt);
+    transition: 250ms cubic-bezier(0.52, 0, 0.74, 0);
+    z-index: 1;
 }
 
 .bd-minimal .nowPlayingColumn-2sl4cE::after {
-	content: '|||';
-	color: var(--header-primary);
-	font-size: 12px;
-	position: absolute;
-	left: 25px;
-	top: 50%;
-	transform: translateY(-50%) translateX(-50%);
-	transition: 250ms ease;
+    content: '|||';
+    color: var(--header-primary);
+    font-size: 12px;
+    position: absolute;
+    left: 25px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    transition: 250ms ease;
 }
 
 .bd-minimal .nowPlayingColumn-2sl4cE:hover::after {
-	opacity: 0;
+    opacity: 0;
 }
 
 .bd-minimal .nowPlayingColumn-2sl4cE:hover {
-	transform: none;
+    transform: none;
 }
 
 .bd-minimal .peopleColumn-29fq28 {
-	margin-right: 50px;
+    margin-right: 50px;
 }
 
 @media (max-width: 1200px) {
-	.bd-minimal .peopleColumn-29fq28 {
-		margin-right: 0;
-	}
+    .bd-minimal .peopleColumn-29fq28 {
+        margin-right: 0;
+    }
 }
 
 .bd-minimal .nowPlayingColumn-2sl4cE .nowPlayingScroller-2XrVUt {
-	pointer-events: none;
-	opacity: 0;
-	transform: scale(.95);
-	transition: 250ms cubic-bezier(.52, 0, .74, 0);
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.95);
+    transition: 250ms cubic-bezier(0.52, 0, 0.74, 0);
 }
 
 .bd-minimal .nowPlayingColumn-2sl4cE:hover .nowPlayingScroller-2XrVUt {
-	opacity: 1;
-	transform: none;
+    opacity: 1;
+    transform: none;
 }
 
 .bd-minimal .nowPlayingColumn-2sl4cE:hover .itemCard-v9viV7 {
-	animation: slide-out-enable 450ms linear forwards;
+    animation: slide-out-enable 450ms linear forwards;
 }
-
 
 /* Context menus (status picker) */
 
 .bd-minimal .item-1tOPte {
-	min-height: 18px;
+    min-height: 18px;
 }
 
 .bd-minimal .styleFixed-sX-yHV {
-	width: 180px;
+    width: 180px;
 }
 
 .bd-minimal .description-2L932D {
-	display: none;
+    display: none;
 }
-
 
 /* Tooltips */
 
 .bd-minimal .tooltip-2QfLtc {
-	border-radius: 4px;
+    border-radius: 4px;
 }
 
 .bd-minimal .tooltipContent-bqVLWK {
-	padding: 4px 8px;
-	font-size: 13px;
+    padding: 4px 8px;
+    font-size: 13px;
 }
-
 
 /* Chat input */
 
 .bd-minimal .form-2fGMdU {
-	padding-left: 10px;
-	padding-right: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
-
 
 /* Guilds */
 
 .bd-minimal .base-3dtUhz {
-	left: 55px;
+    left: 55px;
 }
 
 .bd-minimal .wrapper-1Rf91z {
-	width: 55px;
+    width: 55px;
 }
 
 .bd-minimal .wrapper-1Rf91z .wrapper-sa6paO {
-	height: 35px;
+    height: 35px;
 }
 
 .bd-minimal .wrapper-1Rf91z .item-2hkk8m {
-	max-height: 20px;
+    max-height: 20px;
 }
 
 .bd-minimal .wrapper-1Rf91z div[style*="height: 56px"],
 .bd-minimal .wrapper-1Rf91z [role=group] {
-	height: auto !important;
+    height: auto !important;
 }
 
 .bd-minimal .wrapper-1Rf91z .listItem-2P_4kh,
 .bd-minimal .wrapper-1Rf91z .unreadMentionsIndicatorBottom-BXS58x,
 .bd-minimal .wrapper-1Rf91z .unreadMentionsIndicatorTop-gA6RCh,
 .bd-minimal .wrapper-1Rf91z .wrapper-21YSNc {
-	width: 100%;
+    width: 100%;
 }
 
 .bd-minimal .wrapper-1Rf91z .guildsError-b7zR5H,
 .bd-minimal .wrapper-1Rf91z .svg-1X37T1,
 .bd-minimal .wrapper-1Rf91z .wrapper-25eVIn,
 .bd-minimal .wrapper-1Rf91z .placeholderMask-3K9THS {
-	width: 35px;
-	height: 35px;
+    width: 35px;
+    height: 35px;
 }
 
 .bd-minimal .wrapper-1Rf91z .wrapper-21YSNc .folder-21wGz3,
 .bd-minimal .wrapper-1Rf91z .wrapper-21YSNc .folderIconWrapper-226oVY {
-	background: transparent;
+    background: transparent;
 }
 
 .bd-minimal .wrapper-1Rf91z .wrapper-21YSNc .expandedFolderBackground-2sPsd- {
-	left: 10px;
-	width: 35px;
+    left: 10px;
+    width: 35px;
 }
 
 .bd-minimal .wrapper-1Rf91z #bd-pub-button {
-	height: 20px;
-	line-height: 20px;
-	font-size: 10px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 10px;
 }
-
 
 /* Private channels horizontal icons */
 
 .bd-minimal .channel-2QD9_O[href="/channels/@me"],
 .bd-minimal .channel-2QD9_O[href="/library"],
 .bd-minimal .channel-2QD9_O[href="/store"] {
-	width: calc(33% - 8px);
-	margin-left: 8px;
-	padding: 0;
-	display: inline-block;
+    width: calc(33% - 8px);
+    margin-left: 8px;
+    padding: 0;
+    display: inline-block;
 }
 
 .bd-minimal .channel-2QD9_O[href="/channels/@me"] .content-3QAtGj,
@@ -245,16 +237,16 @@
 .bd-minimal .channel-2QD9_O[href="/channels/@me"] .children-gzQq2t,
 .bd-minimal .channel-2QD9_O[href="/library"] .children-gzQq2t,
 .bd-minimal .channel-2QD9_O[href="/store"] .children-gzQq2t {
-	display: none;
+    display: none;
 }
 
 .bd-minimal .channel-2QD9_O[href="/channels/@me"] .avatar-3uk_u9,
 .bd-minimal .channel-2QD9_O[href="/library"] .avatar-3uk_u9,
 .bd-minimal .channel-2QD9_O[href="/store"] .avatar-3uk_u9 {
-	margin: 0;
-	flex-grow: 1;
+    margin: 0;
+    flex-grow: 1;
 }
 
 .bd-minimal .layout-2DM8Md {
-	justify-content: center;
+    justify-content: center;
 }
