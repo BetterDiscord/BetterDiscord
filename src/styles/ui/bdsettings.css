@@ -1,9 +1,9 @@
-.bd-social-logo {
-    opacity: 0.6;
+.theme-dark .bd-social-logo path {
+    fill: #adadad;
 }
 
-.bd-social-logo path {
-    fill: white;
+.theme-light .bd-social-logo path {
+    fill: #b9bbbe;
 }
 
 .bd-social-link:hover .bd-social-logo {
