@@ -160,7 +160,7 @@ export default class PublicServers extends React.Component {
         });
 
         let content = React.createElement(EmptyResults);
-        if (this.state.loading) content = this.loadingIndicator;
+        if (this.state.loading) content = this.loadingScreen;
         else if (this.state.results.total) content = React.createElement("div", {className: "bd-card-list"}, servers);
 
         return [React.createElement(SettingsTitle, {text: this.title, button: connectButton}),
@@ -171,12 +171,14 @@ export default class PublicServers extends React.Component {
         ];
     }
 
-    get loadingIndicator() {
-        return <div className="bd-loading">
-                <div className="bd-spinner">
-                    <div className="bd-cube1"></div>
-                    <div className="bd-cube2"></div>
-                </div>
+    get loadingScreen() {
+        return <div className="bd-card-list">
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
             </div>;
     }
 

@@ -267,11 +267,11 @@ export default class Modals {
 
         const mc = this.ModalComponents;
         const modal = props => {
-            return React.createElement(mc.ModalRoot, Object.assign({size: mc.ModalSize.MEDIUM, className: "bd-addon-modal"}, props), 
+            return React.createElement(mc.ModalRoot, Object.assign({size: mc.ModalSize.SMALL, className: "bd-addon-modal"}, props), 
                 React.createElement(mc.ModalHeader, {separator: false, className: "bd-addon-modal-header"},
                     React.createElement(this.FormTitle, {tag: "h4"}, `${name} Settings`),
                     React.createElement(this.FlexElements.Child, {grow: 0},
-                        React.createElement(mc.ModalCloseButton, {onClick: props.onClose})
+                        React.createElement(mc.ModalCloseButton, {className: "bd-modal-close", onClick: props.onClose})
                     )
                 ),
                 React.createElement(mc.ModalContent, {className: "bd-addon-modal-settings"}, 

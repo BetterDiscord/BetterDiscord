@@ -1,6 +1,19 @@
+@keyframes bd-placeholder-card-pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+
+    to {
+        opacity: 0.6;
+    }
+}
+
 #bd-pub-li {
     height: 24px;
-    margin-bottom: 10px;
     overflow: hidden;
 }
 
@@ -64,6 +77,16 @@
     transition: box-shadow 0.2s ease-out, transform 0.2s ease-out, background 0.2s ease-out, opacity 0.2s ease-in;
     cursor: pointer;
     background-color: var(--background-secondary-alt);
+}
+
+.bd-placeholder-card {
+    background-color: var(--background-secondary-alt);
+    animation: bd-placeholder-card-pulse 1.8s ease-in-out infinite;
+    height: 320px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    position: relative;
 }
 
 .bd-server-card:hover {
@@ -230,8 +253,10 @@
     padding: 0;
 }
 
-.bd-pagination button:hover {
+.bd-pagination button:hover,
+.bd-pagination button:active {
     opacity: 1;
+    background: transparent;
 }
 
 .bd-pagination button svg {
