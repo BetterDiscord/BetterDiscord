@@ -138,10 +138,10 @@ export default class CardList extends BDV2.reactComponent {
         return rendered;
     }
 
-    getName(addon) {return this.getString(addon.plugin ? addon.plugin.getName() : addon.name);}
-    getAuthor(addon) {return this.getString(addon.plugin ? addon.plugin.getAuthor() : addon.author);}
-    getDescription(addon) {return this.getString(addon.plugin ? addon.plugin.getDescription() : addon.description);}
-    getVersion(addon) {return this.getString(addon.plugin ? addon.plugin.getVersion() : addon.version);}
+    getName(addon) {return this.getString(addon.name);}
+    getAuthor(addon) {return this.getString(addon.author);}
+    getDescription(addon) {return this.getString(addon.description);}
+    getVersion(addon) {return this.getString(addon.version);}
 
     render() {
         const refreshIcon = <Tooltip color="black" position="top" text="Reload List">

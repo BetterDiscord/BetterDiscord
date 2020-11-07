@@ -16,6 +16,7 @@ install:
 script:
   - npm run deploy
 
+before_deploy: "echo 'node_modules' > .gitignore"
 deploy:
   provider: pages
   skip_cleanup: true

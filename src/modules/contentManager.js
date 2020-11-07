@@ -168,6 +168,9 @@ export default new class ContentManager {
                 getVersion: () => {return "???";}
             },
             name: data.name || data.filename,
+            author: "None",
+            description: "No description",
+            version: "0.0.0",
             filename: data.filename,
             source: data.source ? data.source : "",
             website: data.website ? data.website : ""
@@ -186,8 +189,12 @@ export default new class ContentManager {
             if (!content.type) return;
             try {
                 content.plugin = new content.type();
-                delete bdplugins[content.plugin.getName()];
-                bdplugins[content.plugin.getName()] = content;
+                content.name = content.plugin.getName ? content.plugin.getName() : content.name || "No name";
+                content.author = content.plugin.getAuthor ? content.plugin.getAuthor() : content.author || "No author";
+                content.description = content.plugin.getDescription ? content.plugin.getDescription() : content.description || "No description";
+                content.version = content.plugin.getVersion ? content.plugin.getVersion() : content.version || "No version";
+                delete bdplugins[content.name];
+                bdplugins[content.name] = content;
             }
             catch (error) {return {name: filename, file: filename, message: "Could not be constructed.", error: {message: error.message, stack: error.stack}};}
         }
@@ -227,7 +234,7 @@ export default new class ContentManager {
         const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
         const files = fs.readdirSync(basedir);
         const contentList = Object.values(isPlugin ? bdplugins : bdthemes);
-        const removed = contentList.filter(t => !files.includes(t.filename)).map(c => isPlugin ? c.plugin.getName() : c.name);
+        const removed = contentList.filter(t => !files.includes(t.filename)).map(c => c.name);
         const added = files.filter(f => !contentList.find(t => t.filename == f) && f.endsWith(fileEnding) && fs.statSync(path.resolve(basedir, f)).isFile());
         return {added, removed};
     }
