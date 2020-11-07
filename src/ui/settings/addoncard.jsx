@@ -11,6 +11,8 @@ import MoneyIcon from "../icons/dollarsign";
 import WebIcon from "../icons/globe";
 import PatreonIcon from "../icons/patreon";
 import SupportIcon from "../icons/support";
+import ExtIcon from "../icons/extension";
+import ThemeIcon from "../icons/theme";
 import Modals from "../modals";
 import Toasts from "../toasts";
 
@@ -23,6 +25,11 @@ const LinkIcons = {
 };
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
+const LayerStack = WebpackModules.getByProps("popLayer");
+const UserStore = WebpackModules.getByProps("getCurrentUser");
+const ChannelStore = WebpackModules.getByProps("getDMFromUserId");
+const PrivateChannelActions = WebpackModules.getByProps("openPrivateChannel");
+const ChannelActions = WebpackModules.getByProps("selectPrivateChannel");
 
 export default class AddonCard extends React.Component {
 
@@ -38,6 +45,7 @@ export default class AddonCard extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.reload = this.reload.bind(this);
         this.showSettings = this.showSettings.bind(this);
+        this.messageAuthor = this.messageAuthor.bind(this);
     }
 
     showSettings() {
@@ -66,15 +74,34 @@ export default class AddonCard extends React.Component {
         this.forceUpdate();
     }
 
+    messageAuthor() {
+        if (!this.props.addon.authorId) return;
+        if (LayerStack) LayerStack.popLayer();
+        if (!UserStore || !ChannelActions || !ChannelStore || !PrivateChannelActions) return;
+        const selfId = UserStore.getCurrentUser().id;
+        if (selfId == this.props.addon.authorId) return;
+        const privateChannelId = ChannelStore.getDMFromUserId(this.props.addon.authorId);
+        if (privateChannelId) return ChannelActions.selectPrivateChannel(privateChannelId);
+        PrivateChannelActions.openPrivateChannel(selfId, this.props.addon.authorId);
+    }
+
     buildTitle(name, version, author) {
-        const title = Strings.Addons.title.split(/({{[A-Za-z]+}})/);
-        const nameIndex = title.findIndex(s => s == "{{name}}");
-        if (nameIndex) title[nameIndex] = React.createElement("span", {className: "bd-name"}, name);
-        const versionIndex = title.findIndex(s => s == "{{version}}");
-        if (nameIndex) title[versionIndex] = React.createElement("span", {className: "bd-version"}, version);
-        const authorIndex = title.findIndex(s => s == "{{author}}");
-        if (nameIndex) title[authorIndex] = React.createElement("span", {className: "bd-author"}, author);
-        return title.flat();
+        const authorArray = Strings.Addons.byline.split(/({{[A-Za-z]+}})/);
+        const authorComponent = author.link || author.id
+                                ? <a className="bd-link bd-link-website" href={author.link || null} onClick={this.messageAuthor} target="_blank" rel="noopener noreferrer">{author.name}</a>
+                                : <span className="bd-author">{author.name}</span>;
+
+        const authorIndex = authorArray.findIndex(s => s == "{{author}}");
+        if (authorIndex) authorArray[authorIndex] = authorComponent;
+
+        return [
+            React.createElement("div", {className: "bd-name"}, name),
+            React.createElement("div", {className: "bd-meta"}, 
+                React.createElement("span", {className: "bd-version"}, `v${version}`),
+                ...authorArray
+            )
+        ];
+            
     }
 
     buildLink(which) {
@@ -139,7 +166,8 @@ export default class AddonCard extends React.Component {
 
         return <div id={`${addon.id}-card`} className="bd-addon-card settings-closed">
                     <div className="bd-addon-header">
-                            <span className="bd-title">{this.buildTitle(name, version, author)}</span>
+                            {this.props.type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
+                            <div className="bd-title">{this.buildTitle(name, version, {name: author, id: this.props.addon.authorId, link: this.props.addon.authorLink})}</div>
                             <Switch checked={this.props.enabled} onChange={this.onChange} />
                     </div>
                     <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{SimpleMarkdown.parseToReact(description)}</div></div>

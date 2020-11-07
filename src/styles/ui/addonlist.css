@@ -36,11 +36,9 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
-    padding: 16px;
     border-radius: 5px;
     overflow: hidden;
-    background: var(--background-secondary-alt);
-    border: 1px solid var(--background-tertiary);
+    background: var(--background-secondary);
 }
 
 .bd-addon-list.bd-grid-view .bd-addon-card {
@@ -49,6 +47,8 @@
 
 .bd-addon-list .bd-addon-header {
     color: var(--header-primary);
+    background: var(--background-secondary-alt);
+    padding: 16px;
     font-size: 14px;
     line-height: 20px;
     font-weight: 600;
@@ -58,8 +58,42 @@
     overflow: hidden;
 }
 
+.bd-addon-header .bd-icon {
+    margin-right: 8px;
+}
+
+.bd-title,
+.bd-name,
+.bd-meta {
+    display: inline;
+}
+
+.bd-title {
+    flex: 1;
+}
+
+.bd-meta {
+    color: var(--text-muted);
+}
+
+.bd-name::after,
+.bd-version::after {
+    display: inline;
+    content: " ";
+}
+
+.bd-grid-view .bd-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.bd-grid-view .bd-meta {
+    font-size: 12px;
+}
+
 .bd-description-wrap {
     flex: 1;
+    padding: 8px 16px 0 16px;
 }
 
 .bd-addon-list .bd-description {
@@ -88,8 +122,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 8px;
-    border-top: thin solid var(--background-modifier-accent);
+    padding: 8px 16px 16px 16px;
     overflow: hidden;
 }
 

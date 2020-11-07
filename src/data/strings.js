@@ -195,6 +195,7 @@ export default {
     },
     Addons: {
         title: "{{name}} v{{version}} by {{author}}",
+        byline: "by {{author}}",
         openFolder: "Open {{type}} Folder",
         reload: "Reload",
         addonSettings: "Settings",

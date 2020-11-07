@@ -22,6 +22,7 @@ export default new class ThemeManager extends AddonManager {
     initialize() {
         const errors = super.initialize();
         Settings.registerPanel("themes", Strings.Panels.themes, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
+            type: this.prefix,
             folder: this.addonFolder,
             onChange: this.toggleTheme.bind(this),
             reload: this.reloadTheme.bind(this),

@@ -54,7 +54,7 @@ export default new class PublicServersConnection {
         if (term) queries.push(`term=${term.replace(/ /g, "%20")}`);
         if (from) queries.push(`from=${from}`);
         const query = `?${queries.join("&")}`;
-
+        
         try {
             const response = await fetch(`${this.endPoint}${query}`, {method: "GET"});
             const data = await response.json();

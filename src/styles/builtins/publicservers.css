@@ -256,7 +256,12 @@
 .bd-pagination button:hover,
 .bd-pagination button:active {
     opacity: 1;
-    background: transparent;
+    background: var(--background-accent);
+}
+
+.bd-pagination button:active {
+    opacity: 1;
+    background: var(--background-secondary);
 }
 
 .bd-pagination button svg {

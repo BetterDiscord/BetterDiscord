@@ -78,14 +78,20 @@ export default new class SettingsRenderer {
                 if (collection.disabled) continue;
                 insert({
                     section: collection.name,
-                    label: collection.name,
+                    label: collection.name.toString(),
+                    className: `bd-${collection.id}-tab`,
                     element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.state[collection.id], Settings.onSettingChange.bind(Settings, collection.id), collection.button ? collection.button : null)
                 });
             }
             for (const panel of Settings.panels.sort((a,b) => a.order > b.order)) {
                 if (panel.clickListener) panel.onClick = (event) => panel.clickListener(thisObject, event, returnValue);
+                if (!panel.className) panel.className = `bd-${panel.id}-tab`;
+                if (typeof(panel.label) !== "string") panel.label = panel.label.toString();
                 insert(panel);
             }
+            // for (const tab of returnValue) {
+            //     if (!tab.className) tab.className = `${DOM.escapeID(tab.section).toLowerCase()}-tab`;
+            // }
         });
         this.forceUpdate();
     }

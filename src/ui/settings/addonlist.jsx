@@ -41,16 +41,16 @@ export default class AddonList extends React.Component {
 
     onControlChange(control, value) {
         const addonlistControls = DataStore.getBDData("addonlistControls") || {};
-        if (!addonlistControls[this.props.title.toLowerCase()]) addonlistControls[this.props.title.toLowerCase()] = {};
-        addonlistControls[this.props.title.toLowerCase()][control] = value;
+        if (!addonlistControls[this.props.type]) addonlistControls[this.props.type] = {};
+        addonlistControls[this.props.type][control] = value;
         DataStore.setBDData("addonlistControls", addonlistControls);
     }
 
     getControlState(control, defaultValue) {
         const addonlistControls = DataStore.getBDData("addonlistControls") || {};
-        if (!addonlistControls[this.props.title.toLowerCase()]) return defaultValue;
-        if (!addonlistControls[this.props.title.toLowerCase()].hasOwnProperty(control)) return defaultValue;
-        return addonlistControls[this.props.title.toLowerCase()][control];
+        if (!addonlistControls[this.props.type]) return defaultValue;
+        if (!addonlistControls[this.props.type].hasOwnProperty(control)) return defaultValue;
+        return addonlistControls[this.props.type][control];
     }
 
     update() {
@@ -107,9 +107,9 @@ export default class AddonList extends React.Component {
     }
 
     get emptyImage() {
-        const message = Strings.Addons.blankSlateMessage.format({link: `https://betterdiscordlibrary.com/${this.props.title.toLowerCase()}`, type: this.props.title}).toString();
-        return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type: this.props.title})} message={message}>
-            <button className="bd-button" onClick={this.openFolder}>{Strings.Addons.openFolder.format({type: this.props.title})}</button>
+        const message = Strings.Addons.blankSlateMessage.format({link: `https://betterdiscordlibrary.com/${this.props.type}`, type: this.props.type}).toString();
+        return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type: this.props.type})} message={message}>
+            <button className="bd-button" onClick={this.openFolder}>{Strings.Addons.openFolder.format({type: this.props.type})}</button>
         </EmptyImage>;
     }
 
@@ -147,7 +147,7 @@ export default class AddonList extends React.Component {
         const renderedCards = sortedAddons.map(addon => {
             const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
-            return <ErrorBoundary><AddonCard editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
+            return <ErrorBoundary><AddonCard type={this.props.type} editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
         });
 
         const hasAddonsInstalled = this.props.addonList.length !== 0;

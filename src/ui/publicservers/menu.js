@@ -16,8 +16,8 @@ const EMPTY_RESULTS = {
     servers: [],
     size: 0,
     total: 0,
-    page: 0,
-    numPages: 0
+    page: 1,
+    numPages: 1
 };
 
 export default class PublicServers extends React.Component {
@@ -166,13 +166,14 @@ export default class PublicServers extends React.Component {
         return [React.createElement(SettingsTitle, {text: this.title, button: connectButton}),
             this.state.results.numPages > 1 && this.pagination,
             content,
-            this.state.results.numPages > 1 && this.pagination,
-            this.state.results.numPages > 1 && this.state.query && React.createElement(SettingsTitle, {text: this.title})
+            this.state.results.numPages > 1 && this.pagination
         ];
     }
 
     get loadingScreen() {
         return <div className="bd-card-list">
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
                 <div className="bd-placeholder-card"></div>
                 <div className="bd-placeholder-card"></div>
                 <div className="bd-placeholder-card"></div>
