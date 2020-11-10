@@ -1,0 +1,304 @@
+{
+    "Panels": {
+        "plugins": "Плагины",
+        "themes": "Темы",
+        "customcss": "Custom CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Настройки",
+            "general": {
+                "name": "Основные",
+                "emotes": {
+                    "name": "Система Emotes",
+                    "note": "Включает систему Emotes BD"
+                },
+                "publicServers": {
+                    "name": "Публичные сервера",
+                    "note": "Показать кнопку публичных серверов"
+                },
+                "voiceDisconnect": {
+                    "name": "Отключить голосовой канал",
+                    "note": "Отключиться от голосового канала сервера при закрытии Discord"
+                },
+                "classNormalizer": {
+                    "name": "Нормализовать классы",
+                    "note": "Добавляет постоянные классы к элементам в помощь темам. (например .da-channels to .channels-Ie2l6A)"
+                },
+                "showToasts": {
+                    "name": "Всплывающие уведомления",
+                    "note": "Показывает небольшое уведомление для важной информации"
+                }
+            },
+            "appearance": {
+                "name": "Внешний вид",
+                "voiceMode": {
+                    "name": "Голосовой режим",
+                    "note": "Скрыть все, что не является голосовым каналом"
+                },
+                "minimalMode": {
+                    "name": "Минимальный режим",
+                    "note": "Скрыть и уменьшить размеры элементов"
+                },
+                "twentyFourHour": {
+                    "name": "24-часовой формат",
+                    "note": "Преобразует 12-часовой формат времени в 24-часовой формат"
+                },
+                "hideChannels": {
+                    "name": "Скрыть каналы",
+                    "note": "Скрывает каналы в минимальном режиме"
+                },
+                "darkMode": {
+                    "name": "Тёмный режим",
+                    "note": "Сделать определенные элементы тёмными по умолчанию"
+                },
+                "coloredText": {
+                    "name": "Цветной текст",
+                    "note": "Сделать цвет текста таким же, как цвет роли"
+                }
+            },
+            "addons": {
+                "name": "Менеджер расширений",
+                "addonErrors": {
+                    "name": "Показать ошибки расширений",
+                    "note": "Показать окно с ошибками плагина/темы"
+                },
+                "autoScroll": {
+                    "name": "Прокрутить до настроек",
+                    "note": "Автоматическая прокрутка к настройкам плагина при нажатии кнопки (только если кнопка находится вне поля зрения)"
+                },
+                "autoReload": {
+                    "name": "Автоматическая загрузка",
+                    "note": "Автоматически загружает, перезагружает и выгружает плагины и темы"
+                },
+                "editAction": {
+                    "name": "Edit Action",
+                    "note": "Where plugins & themes appear when editing",
+                    "options": {
+                        "detached": "Отдельное окно",
+                        "system": "Системный редактор"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "Custom CSS",
+                "customcss": {
+                    "name": "Custom CSS",
+                    "note": "Включает вкладку Custom CSS"
+                },
+                "liveUpdate": {
+                    "name": "Автоматическое обновление",
+                    "note": "Обновляет CSS по мере ввода"
+                },
+                "startDetached": {
+                    "name": "Запустить отдельно",
+                    "note": "При нажатии на вкладку Custom CSS редактор открывается в отдельном окне"
+                },
+                "nativeOpen": {
+                    "name": "Открыть в собственном редакторе",
+                    "note": "Щелчок по вкладке Custom CSS открывается в вашем собственном редакторе"
+                },
+                "openAction": {
+                    "name": "Редактор",
+                    "note": "Где Custom CSS должен открываться по умолчанию",
+                    "options": {
+                        "settings": "Меню настроек",
+                        "detached": "Отдельное окно",
+                        "system": "Системный редактор"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Настройки разработчика",
+                "debuggerHotkey": {
+                    "name": "Горячая клавиша отладчика",
+                    "note": "Позволяет активировать отладчик при нажатии F8"
+                },
+                "copySelector": {
+                    "name": "Скопировать селектор",
+                    "note": "Добавить \"Copy Selector\" в контекстное меню, когда режим разработчика включен"
+                },
+                "reactDevTools": {
+                    "name": "Инструменты разработчика React",
+                    "note": "Внедряет в Discord React Developer Tools"
+                }
+            },
+            "window": {
+                "name": "Настройки окна",
+                "transparency": {
+                    "name": "Включить прозрачность",
+                    "note": "Обеспечивает прозрачность главного окна (необходим перезапуск)"
+                },
+                "frame": {
+                    "name": "Шапка окна",
+                    "note": "Добавляет рамку окна собственной ОС в главное окно"
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emotes",
+            "general": {
+                "name": "Основные",
+                "download": {
+                    "name": "Загрузить Emotes",
+                    "note": "Загрузить Emotes, когда они устарели"
+                },
+                "emoteMenu": {
+                    "name": "Меню Emotes",
+                    "note": "Показывать Twitch/Избранные Emotes в меню эмодзи"
+                },
+                "hideEmojiMenu": {
+                    "name": "Скрыть меню Emotes",
+                    "note": "Скрывает меню эмодзи Discord при использовании меню Emotes"
+                },
+                "autoCaps": {
+                    "name": "Автоматическое преобразование в верхний регистр",
+                    "note": "Автоматическое преобразование команд Emotes в верхний регистр"
+                },
+                "showNames": {
+                    "name": "Показать имя",
+                    "note": "Показывать имена Emotes при наведении"
+                },
+                "modifiers": {
+                    "name": "Показать модификаторы Emotes",
+                    "note": "Включить модификаторы Emotes (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Анимация при наведении",
+                    "note": "Анимируйте Emotes только при наведении курсора"
+                }
+            },
+            "categories": {
+                "name": "Категории",
+                "twitchglobal": {
+                    "name": "Глобальные Twitch",
+                    "note": "Показать глобальные Twitch "
+                },
+                "twitchsubscriber": {
+                    "name": "Twitch подписки",
+                    "note": "Показать Emotes подписок Twitch"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "Показать Emotes из FFZ"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Показать Emotes из BTTV"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} от {{author}}",
+        "openFolder": "Открыть папку {{type}}",
+        "reload": "Перезагрузить",
+        "addonSettings": "Настройки",
+        "website": "Сайт",
+        "source": "Источник",
+        "invite": "Сервер поддержки",
+        "donate": "Донат",
+        "patreon": "Patreon",
+        "name": "Имя",
+        "author": "Автор",
+        "version": "Версия",
+        "added": "Дата добавления",
+        "modified": "Дата изменения",
+        "search": "Искать {{type}}",
+        "editAddon": "Редактировать",
+        "deleteAddon": "Удалить",
+        "confirmDelete": "Вы уверены, что хотите удалить {{name}}?",
+        "confirmationText": "У вас есть несохраненные изменения в {{name}}. При закрытии этого окна все изменения будут потеряны.",
+        "enabled": "{{name}} включён.",
+        "disabled": "{{name}} выключен.",
+        "couldNotEnable": "{{name}} не может быть включён.",
+        "couldNotDisable": "{{name}} не может быть отключён.",
+        "couldNotStart": "{{name}} не может быть запущен.",
+        "couldNotStop": "{{name}} не может быть остановлен.",
+        "methodError": "{{method}} не может быть уволен.",
+        "unknownAuthor": "Неизвестный автор",
+        "noDescription": "Нету описания.",
+        "alreadyExists": "{{type}} уже существует с именем {{name}}",
+        "alreadWatching": "Already watching  addons.",
+        "metaError": "Не удалось проанализировать META.",
+        "missingNameData": "В META отсутствуют данные об имени.",
+        "metaNotFound": "META не найдена.",
+        "compileError": "Не удалось скомпилировать.",
+        "wasUnloaded": "{{name}} был выгружен."
+    },
+    "CustomCSS": {
+        "confirmationText": "У вас есть несохраненные изменения в CSS. При закрытии этого окна все изменения будут потеряны.",
+        "update": "Обновить",
+        "save": "Сохранить",
+        "openNative": "Открыть в системном редакторе",
+        "openDetached": "Отдельное окно",
+        "settings": "Настройки редактора",
+        "editorTitle": "Редактор Custom CSS"
+    },
+    "Developer": {
+        "copySelector": "Copy Selector"
+    },
+    "Emotes": {
+        "loading": "Загрузка Emotes в фоновом режиме.",
+        "loaded": "Все Emotes успешно загружены.",
+        "clearEmotes": "Очистить данные Emotes",
+        "favoriteAction": "Избранный!"
+    },
+    "PublicServers": {
+        "button": "public",
+        "join": "Присоединиться",
+        "joining": "Присоединение",
+        "joined": "Присоединился",
+        "loading": "Загрузка",
+        "loadMore": "Загрузить больше",
+        "notConnected": "Не подключен к DiscordServers.com!",
+        "search": "Поиск",
+        "connect": "Подключить",
+        "reconnect": "Переподключиться",
+        "categories": "Категории",
+        "connection": "Подключён как: {{username}}#{{discriminator}}",
+        "results": "Показано {{start}}-{{end}} из {{total}} результатов в {{category}}",
+        "query": "для {{query}}"
+    },
+    "Modals": {
+        "confirmAction": "Ты уверен?",
+        "okay": "Ок",
+        "cancel": "Отмена",
+        "close": "Закрыть",
+        "name": "Имя",
+        "message": "Сообщение",
+        "error": "Ошибка",
+        "addonErrors": "Ошибки расширений",
+        "restartRequired": "Требуется перезагрузка",
+        "restartNow": "Перезагрузить сейчас",
+        "restartLater": "Перезагрузить позже",
+        "additionalInfo": "Дополнительная информация"
+    },
+    "ReactDevTools": {
+        "notFound": "Расширение не найдено",
+        "notFoundDetails": "Не удалось найти расширение React Developer Tools на вашем ПК. Пожалуйста, установите расширение в локальную установку Chrome."
+    },
+    "Sorting": {
+        "sortBy": "Сортировать по",
+        "order": "Порядок",
+        "ascending": "По возрастанию",
+        "descending": "По убыванию"
+    },
+    "Startup": {
+        "notSupported": "Не поддерживается",
+        "versionMismatch": "BetterDiscord Injector v{{injector}} не поддерживается последней версией remote (v{{remote}}).\n\nПожалуйста, скачайте последнюю версию с [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "incompatibleApp": "BetterDiscord не работает с {{app}}. Пожалуйста, удалите один из них.",
+        "updateNow": "Обновить сейчас",
+        "maybeLater": "Может быть позже",
+        "updateAvailable": "Обновление доступно",
+        "updateInfo": "Доступно обновление для BetterDiscord's Injector ({{version}}).\n\nВы можете обновить и перезапустить сейчас или позже.",
+        "updateFailed": "Не удалось обновить",
+        "manualUpdate": "Не удается обновить автоматически, загрузите установщик и переустановите его в обычном режиме.\n\n[Download Installer](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "Не удалось загрузить jQuery",
+        "jqueryFailedDetails": "Не удалось загрузить jQuery, некоторые плагины могут работать некорректно. Действуйте на свой страх и риск."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Для правильной работы этой опции требуется прозрачная тема. On Windows this may break your aero snapping and maximizing.\n\nЧтобы изменения вступили в силу, необходимо перезапустить Discord. Вы хотите перезапустить сейчас?",
+        "disabledInfo": "Чтобы изменения вступили в силу, необходимо перезапустить Discord. Вы хотите перезапустить сейчас?"
+    }
+}
