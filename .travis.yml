@@ -11,10 +11,10 @@ branches:
   - master
 
 install:
-  - npm install
+  - npm ci
 
 script:
-  - npm run deploy
+  - npm run build-prod
 
 before_deploy: "echo 'node_modules' > .gitignore"
 deploy:

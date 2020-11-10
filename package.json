@@ -7,10 +7,7 @@
         "build": "webpack --progress --colors",
         "watch": "webpack --progress --colors --watch",
         "build-prod": "webpack --progress --colors --mode production -o dist/remote.js --devtool none",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "minify-css": "gulp minify-css",
-        "watch-css": "gulp watch-css",
-        "deploy": "npm run build-prod && npm run minify-css"
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
@@ -29,10 +26,8 @@
         "@babel/register": "^7.10.5",
         "babel-loader": "^8.1.0",
         "circular-dependency-plugin": "^5.2.0",
+        "css-loader": "^5.0.1",
         "eslint-plugin-react": "^7.21.3",
-        "gulp": "^4.0.2",
-        "gulp-csso": "^4.0.1",
-        "gulp-rename": "^2.0.0",
         "webpack": "^4.43.0",
         "webpack-cli": "^3.3.12"
     }

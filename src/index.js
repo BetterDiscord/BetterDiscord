@@ -1,6 +1,9 @@
 import localStorageFix from "./localStorageFix";
 import loadingIcon from "./loadingIcon";
+import addStyles from "./addstyles";
+
 localStorageFix();
+addStyles();
 loadingIcon();
 
 const deprecateGlobal = (key, value) => {
