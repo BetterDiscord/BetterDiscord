@@ -66,14 +66,23 @@
 .bd-name,
 .bd-meta {
     display: inline;
+    line-height: normal;
 }
 
 .bd-title {
     flex: 1;
+    min-width: 0;
 }
 
 .bd-meta {
-    color: var(--text-muted);
+    color: var(--header-secondary);
+    font-weight: 500;
+}
+
+.bd-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .bd-name::after,
