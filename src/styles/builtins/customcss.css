@@ -80,6 +80,7 @@
 
 .monaco-editor:not(.rename-box),
 .monaco-editor .overflow-guard,
+.monaco-editor .overlayWidgets,
 #bd-customcss-editor > div > .overflow-guard > div:nth-child(3) {
     width: 100% !important;
 }
