@@ -26,6 +26,16 @@
     outline: none;
 }
 
+.bd-changelog-modal code.inline {
+    padding: 0.2em;
+    margin: -0.2em 0;
+    border-radius: 3px;
+    font-size: 85%;
+    line-height: 1.125rem;
+    white-space: pre-wrap;
+    background: var(--background-secondary);
+}
+
 .bd-link {
     text-decoration: none;
 }

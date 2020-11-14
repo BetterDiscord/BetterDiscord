@@ -121,6 +121,16 @@
     font-style: italic;
 }
 
+.bd-description code {
+    padding: 0.2em;
+    margin: -0.2em 0;
+    border-radius: 3px;
+    font-size: 85%;
+    line-height: 1.125rem;
+    white-space: pre-wrap;
+    background: var(--background-secondary-alt);
+}
+
 .bd-addon-list .scroller::-webkit-scrollbar-track-piece,
 .bd-addon-list .scroller::-webkit-scrollbar-thumb {
     border-radius: 0 !important;
