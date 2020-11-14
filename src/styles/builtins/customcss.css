@@ -93,3 +93,7 @@
 .monaco-editor .editor-scrollable {
     width: calc(100% - 64px) !important;
 }
+
+.monaco-editor .view-overlays .current-line {
+    width:1e+06px !important;
+}
