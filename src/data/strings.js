@@ -231,7 +231,7 @@ export default {
         metaNotFound: "META was not found.",
         compileError: "Could not be compiled.",
         wasUnloaded: "{{name}} was unloaded.",
-        blankSlateHeader: "You don't have any {{type}}!",
+        blankSlateHeader: "You don't have any {{type}}s!",
         blankSlateMessage: "Grab some from [this website]({{link}}) and add them to your {{type}} folder."
     },
     CustomCSS: {
