@@ -152,3 +152,22 @@ export default new class ComponentPatcher {
 };
 
 // as part of utility classes, i would like a way to distinguish channel types from the .content-3at_AU element. other than that, can't think of anything
+
+// Tropical's notes
+
+/* 
+html [maximized | bd]
+.iconWrapper-2OrFZ1 [type]
+.sidebar-2K8pFh [guild-id]
+.wrapper-2jXpOf [voice | text | announcement | store | private | nsfw]
+.chat-3bRxxu [channnel | guild-id]
+.listItem-2P_4kh [type | state]
+.privateChannels-1nO12o [library-hidden]
+.member-3-YXUe [user-id]
+.message-2qnXI6 [type | author-id | group-end]
+.wrapper-3t9DeA [user-id | status]
+.userPopout-3XzG_A [state | user-id]
+.root-SR8cQa [state | user-id]
+.contentRegion-3nDuYy [settings-page]
+.item-PXvHYJ [settings-page]
+*/
