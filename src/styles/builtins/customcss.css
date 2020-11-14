@@ -78,7 +78,7 @@
     height: 100% !important;
 }
 
-.monaco-editor,
+.monaco-editor:not(.rename-box),
 .monaco-editor .overflow-guard,
 #bd-customcss-editor > div > .overflow-guard > div:nth-child(3) {
     width: 100% !important;
@@ -95,5 +95,5 @@
 }
 
 .monaco-editor .view-overlays .current-line {
-    width:1e+06px !important;
+    width: 1e+06px !important;
 }
