@@ -19,7 +19,8 @@
     margin-left: 4px;
 }
 
-.bd-changelog-modal video {
+.bd-changelog-modal video,
+.bd-changelog-modal img {
     width: 100%;
     border-radius: 5px;
     outline: none;

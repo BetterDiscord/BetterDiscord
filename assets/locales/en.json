@@ -44,10 +44,6 @@
                     "name": "24-Hour Timestamps",
                     "note": "Converts 12-hour timestamps to 24-hour format"
                 },
-                "hideChannels": {
-                    "name": "Hide Channels",
-                    "note": "Hides channels when in minimal mode"
-                },
                 "darkMode": {
                     "name": "Dark Mode",
                     "note": "Make certain elements dark by default"

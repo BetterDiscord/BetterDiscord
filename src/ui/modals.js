@@ -180,7 +180,7 @@ export default class Modals {
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
         if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
     
-        const {image = "https://repository-images.githubusercontent.com/105473537/957b5480-7c26-11e9-8401-50fa820cbae5", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.bdVersion}`, footer} = options;
+        const {image = "https://i.imgur.com/8sctUVV.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.bdVersion}`, footer} = options;
         const ce = React.createElement;
         const changelogItems = [options.video ? ce("video", {src: options.video, poster: options.poster, controls: true, className: ChangelogClasses.video}) : ce("img", {src: image})];
         if (description) changelogItems.push(ce("p", null, MarkdownParser.parse(description)));
