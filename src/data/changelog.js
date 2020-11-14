@@ -13,7 +13,7 @@ export default {
                 "**Settings panels** are completely new and sleek. They are also highly extensible for potential future features :eyes:",
                 "**Translations** are now integrated starting with only a couple languages, but feel free to contribute your own!",
                 "**Public servers** got a new makeover thanks to some design help from Tropical and Gibbu!",
-                "We added settings to hide the **Gif Picker** and the **Nitro Gift** in the textarea."
+                "We added settings to hide the **Gif Picker** and the **Nitro Gift** buttons in the textarea."
             ]
         },
         {
