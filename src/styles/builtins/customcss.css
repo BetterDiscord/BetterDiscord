@@ -69,3 +69,27 @@
     font-size: 14px;
     font-weight: 500;
 }
+
+.monaco-editor:not(.rename-box),
+.monaco-editor .overflow-guard,
+.monaco-editor .editor-scrollable,
+.monaco-editor .minimap-shadow-visible,
+.monaco-editor .decorationsOverviewRuler {
+    height: 100% !important;
+}
+
+.monaco-editor,
+.monaco-editor .overflow-guard,
+#bd-customcss-editor > div > .overflow-guard > div:nth-child(3) {
+    width: 100% !important;
+}
+
+.monaco-editor .minimap {
+    right: 14px;
+    left: unset !important;
+    height: 100% !important;
+}
+
+.monaco-editor .editor-scrollable {
+    width: calc(100% - 64px) !important;
+}
