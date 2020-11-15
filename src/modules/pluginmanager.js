@@ -35,6 +35,7 @@ export default new class PluginManager extends AddonManager {
         const errors = super.initialize();
         this.setupFunctions();
         Settings.registerPanel("plugins", Strings.Panels.plugins, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
+            type: this.prefix,
             folder: this.addonFolder,
             onChange: this.togglePlugin.bind(this),
             reload: this.reloadPlugin.bind(this),
@@ -76,10 +77,10 @@ export default new class PluginManager extends AddonManager {
             const PluginClass = addon.exports;
             const thePlugin = new PluginClass();
             addon.instance = thePlugin;
-            addon.name = thePlugin.getName() || addon.name;
-            addon.author = thePlugin.getAuthor() || addon.author || "No author";
-            addon.description = thePlugin.getDescription() || addon.description || "No description";
-            addon.version = thePlugin.getVersion() || addon.version || "No version";
+            addon.name = thePlugin.getName ? thePlugin.getName() : addon.name || "No name";
+            addon.author = thePlugin.getAuthor ? thePlugin.getAuthor() : addon.author || "No author";
+            addon.description = thePlugin.getDescription ? thePlugin.getDescription() : addon.description || "No description";
+            addon.version = thePlugin.getVersion ? thePlugin.getVersion() : addon.version || "No version";
             try {
                 if (typeof(addon.instance.load) == "function") addon.instance.load();
             }

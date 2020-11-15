@@ -56,13 +56,13 @@ export default {
                     name: "Colored Text",
                     note: "Make text colour the same as role color"
                 },
-                gifPickerHider: {
-                    name: "Hide Gift Picker",
-                    note: "Hides the Gif picker button in the textarea"
+                hideGIFButton: {
+                    name: "Hide GIF Button",
+                    note: "Hides the GIF picker button in the textarea"
                 },
-                nitroGiftPickerHider: {
-                    name: "Hide NitroGift Picker",
-                    note: "Hides the NitroGift button in the textarea"
+                hideGiftButton: {
+                    name: "Hide Gift Button",
+                    note: "Hides the Nitro Gift button in the textarea"
                 }
             },
             addons: {
@@ -70,10 +70,6 @@ export default {
                 addonErrors: {
                     name: "Show Addon Errors",
                     note: "Shows a modal with plugin/theme errors"
-                },
-                autoScroll: {
-                    name: "Scroll To Settings",
-                    note: "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)"
                 },
                 autoReload: {
                     name: "Automatic Loading",
@@ -199,6 +195,7 @@ export default {
     },
     Addons: {
         title: "{{name}} v{{version}} by {{author}}",
+        byline: "by {{author}}",
         openFolder: "Open {{type}} Folder",
         reload: "Reload",
         addonSettings: "Settings",
@@ -223,6 +220,7 @@ export default {
         couldNotDisable: "{{name}} could not be disabled.",
         couldNotStart: "{{name}} could not be started.",
         couldNotStop: "{{name}} could not be stopped.",
+        settingsError: "Could not open settings for {{name}}",
         methodError: "{{method}} could not be fired.",
         unknownAuthor: "Unknown Author",
         noDescription: "Description not provided.",
@@ -232,7 +230,9 @@ export default {
         missingNameData: "META missing name data.",
         metaNotFound: "META was not found.",
         compileError: "Could not be compiled.",
-        wasUnloaded: "{{name}} was unloaded."
+        wasUnloaded: "{{name}} was unloaded.",
+        blankSlateHeader: "You don't have any {{type}}!",
+        blankSlateMessage: "Grab some from [this website]({{link}}) and add them to your {{type}} folder."
     },
     CustomCSS: {
         confirmationText: "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -261,6 +261,9 @@ export default {
         loadMore: "Load More",
         notConnected: "Not Connected",
         connectionRequired: "You must connect your account in order to join servers.",
+        connectionError: "Connection Error",
+        connectionErrorMessage: "There was an error connecting to DiscordServers.com, it's possible their website/api is down. Please try again later.",
+        pagination: "Page {{page}} of {{count}}",
         search: "Search",
         connect: "Connect",
         reconnect: "Reconnect",
@@ -273,6 +276,7 @@ export default {
     Modals: {
         confirmAction: "Are You Sure?",
         okay: "Okay",
+        done: "Done",
         cancel: "Cancel",
         nevermind: "Nevermind",
         close: "Close",

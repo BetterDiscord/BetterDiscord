@@ -2,7 +2,10 @@
 
 @import "./builtins/*";
 @import "./ui/*";
+@import "./blankslates/*";
 @import "./buttons.css";
+@import "./spinner.css";
+@import "./search.css";
 
 .bd-chat-badge {
     vertical-align: bottom;
@@ -16,11 +19,16 @@
     margin-left: 4px;
 }
 
-.bd-changelog-modal {
-    width: 650px;
-}
-
 .bd-changelog-modal video {
     width: 100%;
-    border-radius: 20px;
+    border-radius: 5px;
+    outline: none;
+}
+
+.bd-link {
+    text-decoration: none;
+}
+
+.bd-link:hover {
+    text-decoration: underline;
 }

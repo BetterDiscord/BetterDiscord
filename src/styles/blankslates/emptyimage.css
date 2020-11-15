@@ -1,0 +1,20 @@
+.bd-empty-image-container {
+    background: transparent;
+}
+
+.bd-empty-image-header {
+    color: var(--header-primary);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.bd-empty-image-message {
+    color: var(--header-secondary);
+    margin-bottom: 8px;
+}
+
+.bd-empty-image-container .bd-button {
+    margin-top: 10px;
+    padding: 10px 16px;
+}

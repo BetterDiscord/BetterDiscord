@@ -46,6 +46,7 @@ export default class AddonManager {
         this.timeCache = {};
         this.addonList = [];
         this.state = {};
+        this.windows = new Set();
     }
 
     initialize() {
@@ -343,9 +344,12 @@ export default class AddonManager {
         const fullPath = path.resolve(this.addonFolder, addon.filename);
         const content = fs.readFileSync(fullPath).toString();
 
+        if (this.windows.has(fullPath)) return;
+        this.windows.add(fullPath);
+
         const editorRef = React.createRef();
         const editor = React.createElement(AddonEditor, {
-            id: "bd-floating-editor-" + addon.name,
+            id: "bd-floating-editor-" + addon.id,
             ref: editorRef,
             content: content,
             save: this.saveAddon.bind(this, addon),
@@ -355,14 +359,14 @@ export default class AddonManager {
 
         FloatingWindows.open({
             onClose: () => {
-                this.isDetached = false;
+                this.windows.delete(fullPath);
             },
             onResize: () => {
                 if (!editorRef || !editorRef.current || !editorRef.current.resize) return;
                 editorRef.current.resize();
             },
             title: addon.name,
-            id: content.id,
+            id: "bd-floating-window-" + addon.id,
             className: "floating-addon-window",
             height: 470,
             width: 410,

@@ -17,8 +17,8 @@ export default [
         collapsible: true,
         settings: [
             {type: "switch", id: "twentyFourHour", value: false},
-            {type: "switch", id: "nitroGiftPickerHider", value: false},
-            {type: "switch", id: "gifPickerHider", value: false},
+            {type: "switch", id: "hideGiftButton", value: false},
+            {type: "switch", id: "hideGIFButton", value: false},
             {type: "switch", id: "voiceMode", value: false},
             {type: "switch", id: "minimalMode", value: false},
             {type: "switch", id: "hideChannels", value: false, enableWith: "minimalMode"},
@@ -33,7 +33,6 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "addonErrors", value: true},
-            {type: "switch", id: "autoScroll", value: true},
             {type: "switch", id: "autoReload", value: true},
             {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]}
         ]

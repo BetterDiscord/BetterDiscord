@@ -222,3 +222,13 @@
 .bd-modal-wrapper .bd-content-modal .scroller {
     padding-top: 0;
 }
+
+.bd-modal-close {
+    padding: 0;
+    height: 18px;
+}
+
+.bd-modal-close svg {
+    width: 18px;
+    height: 18px;
+}

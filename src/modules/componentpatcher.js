@@ -150,3 +150,5 @@ export default new class ComponentPatcher {
     }
 
 };
+
+// as part of utility classes, i would like a way to distinguish channel types from the .content-3at_AU element. other than that, can't think of anything

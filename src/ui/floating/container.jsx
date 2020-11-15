@@ -17,24 +17,27 @@ class FloatingWindowContainer extends React.Component {
 
     render() {
         return this.state.windows.map(window =>
-            <FloatingWindow {...window} close={this.close.bind(this, window.id)} minY={this.minY}>
+            <FloatingWindow {...window} close={this.close.bind(this, window.id)} minY={this.minY} key={window.id}>
                     {window.children}
             </FloatingWindow>
         );
     }
 
     open(window) {
-        this.setState({
-            windows: [...this.state.windows, window]
+        this.setState(state => {
+            state.windows.push(window);
+            return {windows: state.windows};
         });
     }
 
     close(id) {
-        this.setState({
-            windows: this.state.windows.filter(w => {
-                if (w.id == id && w.onClose) w.onClose();
-                return w.id != id;
-            })
+        this.setState(state => {
+            return {
+                windows: state.windows.filter(w => {
+                    if (w.id == id && w.onClose) w.onClose();
+                    return w.id != id;
+                })
+            };
         });
     }
 

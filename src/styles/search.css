@@ -1,0 +1,27 @@
+.bd-search-wrapper {
+    padding: 3px;
+    border-radius: 3px;
+    outline: none;
+    border: 0;
+    background-color: var(--background-tertiary);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+}
+
+.bd-search {
+    padding: 2px 3px;
+    background: none;
+    border: 0;
+    color: var(--text-normal);
+    flex: 1;
+}
+
+.bd-search::-webkit-input-placeholder {
+    color: var(--text-muted);
+}
+
+.bd-search-wrapper > svg {
+    margin-right: 2px;
+    fill: var(--interactive-normal);
+}

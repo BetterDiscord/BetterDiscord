@@ -2,26 +2,22 @@ import {React, WebpackModules, Strings} from "modules";
 import Modals from "../modals";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
-import EmptyResults from "./noresults";
+import EmptyResults from "../blankslates/noresults";
 import Connection from "../../structs/psconnection";
 import Search from "../settings/components/search";
-
+import Previous from "../icons/previous";
+import Next from "../icons/next";
 
 const SettingsView = WebpackModules.getByDisplayName("SettingsView");
 const GuildActions = WebpackModules.getByProps("transitionToGuildSync");
 const LayerManager = WebpackModules.getByProps("popLayer");
 
-const betterDiscordServer = {
-    name: "BetterDiscord",
-    members: 55000,
-    categories: ["community", "programming", "support"],
-    description: "Official BetterDiscord server for plugins, themes, support, etc",
-    identifier: "86004744966914048",
-    iconUrl: "https://cdn.discordapp.com/icons/86004744966914048/292e7f6bfff2b71dfd13e508a859aedd.webp",
-    nativejoin: true,
-    invite_code: "BJD2yvJ",
-    pinned: true,
-    insertDate: 1517806800
+const EMPTY_RESULTS = {
+    servers: [],
+    size: 0,
+    total: 0,
+    page: 1,
+    numPages: 1
 };
 
 export default class PublicServers extends React.Component {
@@ -33,13 +29,7 @@ export default class PublicServers extends React.Component {
             query: "",
             loading: true,
             user: null,
-            results: {
-                servers: [],
-                size: 0,
-                from: 0,
-                total: 0,
-                next: null
-            }
+            results: Object.assign({}, EMPTY_RESULTS)
         };
 
         this.featured = [];
@@ -49,6 +39,7 @@ export default class PublicServers extends React.Component {
         this.changeTab = this.changeTab.bind(this);
         this.searchKeyDown = this.searchKeyDown.bind(this);
         this.connect = this.connect.bind(this);
+        this.loadPreviousPage = this.loadPreviousPage.bind(this);
         this.loadNextPage = this.loadNextPage.bind(this);
         this.join = this.join.bind(this);
         this.navigateTo = this.navigateTo.bind(this);
@@ -67,19 +58,15 @@ export default class PublicServers extends React.Component {
 
     async getDashboard() {
         const dashboardData = await Connection.getDashboard();
-        const featuredFirst = dashboardData.results[0].key === "featured";
-        const featuredServers = dashboardData.results[featuredFirst ? 0 : 1].response.hits;
-        const popularServers = dashboardData.results[featuredFirst ? 1 : 0].response.hits;
-        const mainKeywords = dashboardData.mainKeywords.map(k => k.charAt(0).toUpperCase() + k.slice(1)).sort();
-
-        featuredServers.unshift(betterDiscordServer);
         
-        this.featured = featuredServers;
-        this.popular = popularServers;
-        this.keywords = mainKeywords;
+        this.featured = dashboardData.featured;
+        this.popular = dashboardData.popular;
+        this.keywords = dashboardData.keywords;
         
         this.setState({loading: false});
         this.changeTab(this.state.tab);
+
+        if (!this.keywords || !this.keywords.length) Modals.showConfirmationModal(Strings.PublicServers.connectionError, Strings.PublicServers.connectionErrorMessage);
     }
 
     async connect() {
@@ -94,18 +81,10 @@ export default class PublicServers extends React.Component {
         else this.search(term);
     }
 
-    async search(term = "", from = 0) {
+    async search(term = "", page = 1) {
         this.setState({query: term, loading: true});
-        const results = await Connection.search({term, keyword: this.state.tab == "All" || this.state.tab == "Featured" || this.state.tab == "Popular" ? "" : this.state.tab, from});
-        if (!results) {
-            return this.setState({results: {
-                servers: [],
-                size: 0,
-                from: 0,
-                total: 0,
-                next: null
-            }});
-        }
+        const results = await Connection.search({term, keyword: this.state.tab == "All" || this.state.tab == "Featured" || this.state.tab == "Popular" ? "" : this.state.tab, page});
+        if (!results) return this.setState({results: Object.assign({}, EMPTY_RESULTS)});
 
         this.setState({loading: false, results});
     }
@@ -117,18 +96,26 @@ export default class PublicServers extends React.Component {
             return this.setState({results: {
                 servers: this[this.state.tab.toLowerCase()],
                 size: this[this.state.tab.toLowerCase()].length,
-                from: 0,
                 total: this[this.state.tab.toLowerCase()].length,
-                next: null
+                page: 1,
+                numPages: 1
             }});
         }
 
         this.search();
     }
 
+    get hasPrevious() {return this.state.results.page > 1;}
+    get hasNext() {return this.state.results.page < this.state.results.numPages;}
+
+    loadPreviousPage() {
+        if (this.state.loading || !this.hasPrevious) return;
+        this.search(this.state.query, this.state.results.page - 1);
+    }
+
     loadNextPage() {
-        if (this.state.loading) return;
-        this.search(this.state.query, this.state.results.next);
+        if (this.state.loading || !this.hasNext) return;
+        this.search(this.state.query, this.state.results.page + 1);
     }
 
     async join(id, native = false) {
@@ -150,17 +137,20 @@ export default class PublicServers extends React.Component {
     }
 
     get searchBox() {
-        return <Search onKeyDown={this.searchKeyDown} className="bd-server-search" placeholder={`${Strings.PublicServers.search}...`} />;
+        return <Search onKeyDown={this.searchKeyDown} className="bd-server-search" placeholder={`${Strings.PublicServers.search}...`} value={this.state.query} />;
     }
 
     get title() {
         if (this.state.loading) return `${Strings.PublicServers.loading}...`;
-        const start = this.state.results.from + 1;
-        const total = this.state.results.total;
-        const end = this.state.results.next ? this.state.results.next : total;
-        let title = Strings.PublicServers.results.format({start, end, total, category: this.state.tab});
-        if (this.state.query) title += " " + Strings.PublicServers.query.format({query: this.state.query});
-        return title;
+        if (this.state.query) {
+            const start = ((this.state.results.page - 1) * this.state.results.size) + 1;
+            const total = this.state.results.total;
+            const end = this.hasNext ? (start - 1) + this.state.results.size : total;
+            let title = Strings.PublicServers.results.format({start, end, total, category: this.state.tab});
+            if (this.state.query) title += " " + Strings.PublicServers.query.format({query: this.state.query});
+            return title;
+        }
+        return this.state.tab;
     }
 
     get content() {
@@ -168,14 +158,37 @@ export default class PublicServers extends React.Component {
         const servers = this.state.results.servers.map((server) => {
             return React.createElement(ServerCard, {key: server.identifier, server: server, joined: Connection.hasJoined(server.identifier), join: this.join, navigateTo: this.navigateTo, defaultAvatar: Connection.getDefaultAvatar});
         });
+
+        let content = React.createElement(EmptyResults);
+        if (this.state.loading) content = this.loadingScreen;
+        else if (this.state.results.total) content = React.createElement("div", {className: "bd-card-list"}, servers);
+
         return [React.createElement(SettingsTitle, {text: this.title, button: connectButton}),
-            this.state.results.total ? React.createElement("div", {className: "bd-card-list"}, servers) : React.createElement(EmptyResults),
-            this.state.results.next ? this.nextButton : null,
-            this.state.results.servers.length > 0 && React.createElement(SettingsTitle, {text: this.title})];
+            this.state.results.numPages > 1 && this.pagination,
+            content,
+            this.state.results.numPages > 1 && this.pagination
+        ];
     }
 
-    get nextButton() {
-        return React.createElement("button", {type: "button", className: "bd-button bd-button-next", onClick: this.loadNextPage}, this.state.loading ? Strings.PublicServers.loading : Strings.PublicServers.loadMore);
+    get loadingScreen() {
+        return <div className="bd-card-list">
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+                <div className="bd-placeholder-card"></div>
+            </div>;
+    }
+
+    get pagination() {
+        return React.createElement("div", {className: "bd-pagination"},
+            React.createElement("button", {type: "button", className: "bd-button bd-pagination-previous", disabled: !this.hasPrevious, onClick: this.loadPreviousPage}, <Previous />),
+            React.createElement("span", {className: "bd-pagination-info"}, Strings.PublicServers.pagination.format({page: this.state.results.page, count: this.state.results.numPages})),
+            React.createElement("button", {type: "button", className: "bd-button bd-pagination-next", disabled: !this.hasNext, onClick: this.loadNextPage}, <Next />)
+        );
     }
 
     get connection() {

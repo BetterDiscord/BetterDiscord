@@ -1,9 +1,17 @@
-.bd-social-logo {
-    opacity: 0.6;
+.theme-dark .bd-social-logo path {
+    fill: #adadad;
+}
+
+.theme-light .bd-social-logo path {
+    fill: #b9bbbe;
 }
 
 .bd-social-link:hover .bd-social-logo {
     opacity: 1;
+}
+
+.bd-social-link:hover .bd-social-logo path:first-of-type {
+    fill: #3e82e5;
 }
 
 .standardSidebarView-3F1I7i .bd-versioninfo-wrapper {
@@ -157,7 +165,6 @@
     height: 18px;
     left: 0;
     transition: transform 0.15s ease-in-out, width 0.1s ease-in-out, left 0.1s ease-in-out;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .bd-switch .bd-checkbox {

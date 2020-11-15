@@ -1,8 +1,12 @@
 .bd-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     background-color: #3e82e5;
     color: #fff;
     border-radius: 3px;
     padding: 3px 6px;
+    transition: opacity 250ms ease;
 }
 
 .bd-button:hover {
@@ -23,4 +27,24 @@
 
 .bd-button.bd-button-success:active {
     background-color: rgb(46, 154, 74);
+}
+
+.bd-button.bd-button-danger {
+    background-color: #f04747;
+}
+
+.bd-button.bd-button-danger:hover {
+    background-color: #d84040;
+}
+
+.bd-button.bd-button-danger:active {
+    background-color: #c03939;
+}
+
+.bd-button-disabled {
+    opacity: 0.4;
+}
+
+.bd-button-disabled:hover {
+    cursor: not-allowed;
 }

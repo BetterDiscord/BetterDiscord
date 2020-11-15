@@ -112,7 +112,7 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
     <a href="https://github.com/Gibbu" target="_blank" rel="noreferrer noopener"><strong>Gibbu</strong></a>
 </td>
 <td align="center">
-    <img src="https://c10.patreonusercontent.com/3/eyJ3IjoyMDB9/patreon-media/p/user/25717114/c100599e58174499b44b4307c26f9312/1.jpeg" width="100px;" alt="Orekieh"/><br />
+    <img src="https://i.imgur.com/ImS2OCB.png" width="100px;" alt="Orekieh"/><br />
     <strong>Orekieh</strong>
 </td>
 </tr>
@@ -125,18 +125,26 @@ These people have all subscribed to the `Bandager` tier on Patreon to support me
 
 <table>
 <tr>
-	<td align="center">
-		<img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png" width="50px;" alt="William JCM"/><br />
-		<a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
-	</td>
     <td align="center">
-		<img src="https://avatars0.githubusercontent.com/u/24623601" width="50px;" alt="NFLD99"/><br />
-		<a href="https://github.com/NFLD99" target="_blank" rel="noreferrer noopener"><strong>NFLD99</strong></a>
-	</td>
+        <img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png" width="50px;" alt="William JCM"/><br />
+        <a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
+    </td>
     <td align="center">
-		<img src="https://i.postimg.cc/5NVxqMnb/Cute-Squid-Circle.png" width="50px;" alt="Tenuit"/><br />
-		<strong>Tenuit</strong>
-	</td>
+        <img src="https://avatars0.githubusercontent.com/u/24623601" width="50px;" alt="NFLD99"/><br />
+        <a href="https://github.com/NFLD99" target="_blank" rel="noreferrer noopener"><strong>NFLD99</strong></a>
+    </td>
+    <td align="center">
+        <img src="https://i.postimg.cc/5NVxqMnb/Cute-Squid-Circle.png" width="50px;" alt="Tenuit"/><br />
+        <strong>Tenuit</strong>
+    </td>
+    <td align="center">
+        <img src="https://avatars0.githubusercontent.com/u/16616715" width="50px;" alt="Pu"/><br />
+        <a href="https://github.com/Puv1s" target="_blank" rel="noreferrer noopener"><strong>Pu</strong></a>
+    </td>
+    <td align="center">
+        <img src="https://cdn.discordapp.com/attachments/769608503496278036/769680733693804625/tacoindustries.jpg" width="50px;" alt="Paco"/><br />
+        <strong>Paco</strong>
+    </td>
 </tr>
 </table>
 
