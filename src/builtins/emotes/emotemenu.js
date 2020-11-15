@@ -1,8 +1,13 @@
 import Builtin from "../../structs/builtin";
 import {Utilities, WebpackModules, React} from "modules";
-import Tabs from "./tabs";
-
+import EmoteModule from "./emotes";
+import EmoteMenuCard from "../../ui/emotemenucard";
+import EmoteIcon from "../../ui/emoteicon";
+import Category from "./category";
+import Favorite from "../../ui/icons/favorite";
+import Twitch from "../../ui/icons/twitch";
 const EmojiPicker = WebpackModules.find(m => m.type && m.type.displayName == "ExpressionPicker");
+
 export default new class EmoteMenu extends Builtin {
     get name() {return "EmoteMenu";}
     get collection() {return "emotes";}
@@ -11,32 +16,57 @@ export default new class EmoteMenu extends Builtin {
     get hideEmojisID() {return "hideEmojiMenu";}
     get hideEmojis() {return this.get(this.hideEmojisID);}
 
+    getSelected(body) {
+        if (body[1]) return {id: "stickers", index: 1};
+        else if (body[2]) return {id: "gif", index: 2};
+        else if (body[3]) return {id: "emoji", index: 3};
+        return {id: "bd-emotes", index: 3};
+    }
+
     enabled() {
-        this.before(EmojiPicker, "type", (_, [props]) => {
-            if (props.expressionPickerView == "emoji" && this.hideEmojis) props.expressionPickerView = "gif";
-        }); 
-        this.after(EmojiPicker, "type", (_, [props], returnValue) => {
+        this.after(EmojiPicker, "type", (_, __, returnValue) => {
             const head = Utilities.getNestedProp(returnValue, "props.children.props.children.props.children.1.props.children.0.props.children.props.children");
             const body = Utilities.getNestedProp(returnValue, "props.children.props.children.props.children.1.props.children");
             if (!head || !body) return returnValue;
-            
-            const selected = props.expressionPickerView;
-            const currentTab = Tabs.find(e => e.id === selected);
+
+            let activePicker = this.getSelected(body);
+            let isActive = activePicker.id == "bd-emotes";
             const tabProps = head[0].props;
+            if (!isActive && activePicker.id == "emoji" && this.hideEmojis) {
+                activePicker = {id: "bd-emotes", index: 3};
+                isActive = true;
+            }
+            if (this.hideEmojis) head.splice(head.findIndex(e => e && e.props && e.props.id == "emoji-picker-tab"), 1);
             head.push(
-                ...Tabs.map(e => React.createElement("div", {
-                    "id": e.id + "-tab",
+                React.createElement("div", {
+                    "id": "bd-emotes-tab",
                     "role": "tab",
-                    "aria-selected": selected == e.id,
+                    "aria-selected": isActive,
                     "className": tabProps.className,
                 }, React.createElement(tabProps.children.type, {
-                    viewType: e.id,
-                    isActive: selected == e.id,
-                    setActiveView: tabProps.children.props.setActiveView
-                }, e.label))
+                    viewType: "bd-emotes",
+                    isActive: isActive,
+                }, "Twitch")
             ));
-            if (currentTab) body[2] = currentTab.element();
-            if (this.hideEmojis) head.splice(head.findIndex(e => e && e.props && e.props.id == "emoji-picker-tab"), 1);
+            if (isActive) {
+                body[activePicker.index] = React.createElement(EmoteMenuCard, {
+                    type: "twitch",
+                }, [
+                    React.createElement(Category, {
+                        label: "Favorites",
+                        icon: React.createElement(Favorite, {}),
+                    }, Object.entries(EmoteModule.favorites).map(([emote, url]) => {
+                        return React.createElement(EmoteIcon, {emote, url});
+                    })),
+                    React.createElement(Category, {
+                        label: "Twitch Emotes",
+                        icon: React.createElement(Twitch, {}) 
+                    }, Object.keys(EmoteModule.getCategory("TwitchGlobal")).map(emote=> {
+                        const url = EmoteModule.getUrl("TwitchGlobal", emote);
+                        return React.createElement(EmoteIcon, {emote, url});
+                    }))
+                ]);
+            }
         });
     }
 
