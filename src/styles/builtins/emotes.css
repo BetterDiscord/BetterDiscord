@@ -17,14 +17,6 @@
 }
 
 .bd-emote-header-1 {
-    color: var(--header-secondary);
-    justify-content: flex-start;
-    font-size: 12px;
-    font-weight: 600;
-    transition: color 0.125s;
-}
-
-.bd-emote-header-1 {
     align-items: center;
     display: flex;
 }
