@@ -18,15 +18,27 @@
 }
 
 .bd-button.bd-button-success {
-    background-color: #3ac15c;
+    background-color: #43b581;
 }
 
 .bd-button.bd-button-success:hover {
-    background-color: rgb(52, 174, 83);
+    background-color: #3ca374;
 }
 
 .bd-button.bd-button-success:active {
-    background-color: rgb(46, 154, 74);
+    background-color: #369167;
+}
+
+.bd-button.bd-button-warning {
+    background-color: #faa61a;
+}
+
+.bd-button.bd-button-warning:hover {
+    background-color: #e19517;
+}
+
+.bd-button.bd-button-warning:active {
+    background-color: #c88515;
 }
 
 .bd-button.bd-button-danger {
