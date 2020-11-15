@@ -128,7 +128,7 @@
     font-size: 85%;
     line-height: 1.125rem;
     white-space: pre-wrap;
-    background: var(--background-secondary-alt);
+    background: var(--background-tertiary);
 }
 
 .bd-addon-list .scroller::-webkit-scrollbar-track-piece,
