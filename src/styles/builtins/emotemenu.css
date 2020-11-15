@@ -108,20 +108,18 @@
     background-color: #e2e2e2;
 }
 
-#bd-qem-twitch-container,
-#bd-qem-favourite-container {
+#bd-emote-menu {
     width: 346px;
     height: 329px;
     background-color: #fff;
     border-radius: 0 0 5px 5px;
 }
 
-#bd-qem-twitch-container .scroller-wrap,
-#bd-qem-favourite-container .scroller-wrap {
+#bd-emote-menu .scrollerBase-289Jih {
     height: 100%;
 }
 
-.emote-menu-inner {
+.bd-emote-menu-inner {
     padding: 5px 0 0 15px;
 }
 
