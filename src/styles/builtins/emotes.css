@@ -20,6 +20,8 @@
     cursor: pointer;
     position: sticky;
     top: 0;
+    background: var(--background-secondary);
+    z-index: 2;
 }
 
 .bd-emote-wrapper {
