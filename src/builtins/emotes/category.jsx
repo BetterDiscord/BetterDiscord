@@ -10,8 +10,8 @@ export default class Category extends React.Component {
     }
     render() {
         return <div className="bd-emote-category">
-            <div className="bd-emote-header">
-                <div className="bd-emote-header-1" onClick={() => this.setState({opened: !this.state.opened})}>
+            <div className="bd-emote-content">
+                <div className="bd-emote-header" onClick={() => this.setState({opened: !this.state.opened})}>
                     <div className="bd-emote-headerIcon">
                         {this.props.icon ? this.props.icon : null}
                     </div>

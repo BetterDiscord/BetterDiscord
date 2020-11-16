@@ -1,8 +1,22 @@
+.bd-emote-header {
+    color: var(--header-secondary);
+    justify-content: flex-start;
+    font-size: 12px;
+    font-weight: 600;
+    transition: color 0.125s;
+    align-items: center;
+    display: flex;
+}
+
+.bd-emote-scroller {
+    max-height: 380px;
+}
+
 .bd-emote-category {
     margin-bottom: 12px;
 }
 
-.bd-emote-header {
+.bd-emote-content {
     cursor: pointer;
     position: sticky;
     top: 0;
@@ -14,11 +28,6 @@
     height: 32px;
     padding: 0 4px;
     z-index: 1;
-}
-
-.bd-emote-header-1 {
-    align-items: center;
-    display: flex;
 }
 
 .bd-emote-headerIcon {
