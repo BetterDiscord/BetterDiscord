@@ -1,3 +1,64 @@
+.bd-emote-header {
+    color: var(--header-secondary);
+    justify-content: flex-start;
+    font-size: 12px;
+    font-weight: 600;
+    transition: color 0.125s;
+    align-items: center;
+    display: flex;
+}
+
+.bd-emote-scroller {
+    max-height: 380px;
+}
+
+.bd-emote-category {
+    margin-bottom: 12px;
+}
+
+.bd-emote-content {
+    cursor: pointer;
+    position: sticky;
+    top: 0;
+    background: var(--background-secondary);
+    z-index: 2;
+}
+
+.bd-emote-wrapper {
+    background-color: var(--background-secondary);
+    box-sizing: border-box;
+    height: 32px;
+    padding: 0 4px;
+    z-index: 1;
+}
+
+.bd-emote-headerIcon {
+    width: 14px;
+    height: 14px;
+    margin-right: 8px;
+}
+
+.bd-emote-headerLabel {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    margin-right: 8px;
+}
+
+.bd-emote-headerIcon + .bd-emote-headerLabel {
+    margin-left: 8px;
+}
+
+.bd-emote-headerCollapseIcon .bd-emote-opened {
+    transition: 0.3s;
+}
+
+.bd-emote-headerCollapseIcon .bd-emote-closed {
+    transform: rotate(90deg);
+    transition: 0.3s;
+}
+
 #emote-container {
     padding: 10px;
 }
