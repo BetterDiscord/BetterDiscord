@@ -58,12 +58,9 @@
     overflow: hidden;
 }
 
-.bd-addon-list .bd-addon-header .bd-icon {
-    fill: var(--header-primary);
-}
-
 .bd-addon-header .bd-icon {
     margin-right: 8px;
+    fill: var(--header-primary);
 }
 
 .bd-title,
