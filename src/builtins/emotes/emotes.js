@@ -62,7 +62,7 @@ export default new class EmoteModule extends Builtin {
     }
 
     async enabled() {
-        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: this.resetEmotes});
+        Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: this.resetEmotes.bind(this)});
         await this.getBlocklist();
         await this.loadEmoteData();
 
