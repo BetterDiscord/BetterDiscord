@@ -44,10 +44,6 @@
 					"name": "Minimaler Modus",
 					"note": "Verbirgt Elemente und reduziert die Größe von elementen."
 				},
-				"hideChannels": {
-					"name": "Kanäle verbergen",
-					"note": "Verbirgt Kanäle, wenn \"Minimaler Modus\" aktiviert ist."
-				},
 				"darkMode": {
 					"name": "Dunkelmodus",
 					"note": "Aktivert einen noch dunkleren Modus in Discord."

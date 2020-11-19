@@ -60,20 +60,30 @@
 
 .bd-addon-header .bd-icon {
     margin-right: 8px;
+    fill: var(--header-primary);
 }
 
 .bd-title,
 .bd-name,
 .bd-meta {
     display: inline;
+    line-height: normal;
 }
 
 .bd-title {
     flex: 1;
+    min-width: 0;
 }
 
 .bd-meta {
-    color: var(--text-muted);
+    color: var(--channels-default);
+    font-weight: 500;
+}
+
+.bd-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .bd-name::after,
@@ -110,6 +120,16 @@
 
 .bd-description em {
     font-style: italic;
+}
+
+.bd-description code {
+    padding: 0.2em;
+    margin: -0.2em 0;
+    border-radius: 3px;
+    font-size: 85%;
+    line-height: 1.125rem;
+    white-space: pre-wrap;
+    background: var(--background-tertiary);
 }
 
 .bd-addon-list .scroller::-webkit-scrollbar-track-piece,

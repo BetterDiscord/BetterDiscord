@@ -43,43 +43,11 @@
     display: flex;
 }
 
-.editor,
-.ace_editor {
+.editor {
     box-sizing: border-box;
     height: calc(100vh - 250px);
     font-size: 14px;
     width: 100%;
-}
-
-.bd-monokai .editor .ace_gutter {
-    background: var(--background-secondary-alt);
-    color: var(--header-secondary);
-    font-size: 12px;
-}
-
-.bd-monokai .ace_editor {
-    background: var(--background-secondary);
-}
-
-.bd-monokai .ace_line {
-    color: var(--text-normal);
-}
-
-.editor-wrapper .bd-monokai .ace_cursor {
-    color: var(--text-normal);
-}
-
-.editor-wrapper .bd-monokai .ace_gutter-active-line {
-    background: var(--background-tertiary);
-}
-
-.editor-wrapper .bd-monokai .ace_marker-layer .ace_active-line {
-    background: var(--background-secondary-alt);
-}
-
-.editor-wrapper .bd-monokai .ace_marker-layer .ace_selection {
-    background: #3e82e5;
-    opacity: 0.5;
 }
 
 .controls-section {
@@ -102,45 +70,31 @@
     font-weight: 500;
 }
 
-/* Ace Editor Settings */
-#ace_settingsmenu_container {
-    background: rgba(0, 0, 0, 0.7) !important; /* stylelint-disable-line important */
+.monaco-editor:not(.rename-box),
+.monaco-editor .overflow-guard,
+.monaco-editor .editor-scrollable,
+.monaco-editor .minimap-shadow-visible,
+.monaco-editor .decorationsOverviewRuler {
+    height: 100% !important;
 }
 
-body #ace_settingsmenu {
-    padding-top: 35px;
+.monaco-editor:not(.rename-box),
+.monaco-editor .overflow-guard,
+.monaco-editor .overlayWidgets,
+#bd-customcss-editor > div > .overflow-guard > div:nth-child(3) {
+    width: 100% !important;
 }
 
-body .ace_closeButton {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    z-index: 10000;
-    padding: 0;
-    cursor: pointer;
-    background: none;
-    border: none;
+.monaco-editor .minimap {
+    right: 14px;
+    left: unset !important;
+    height: 100% !important;
 }
 
-body .ace_closeButton::before {
-    content: "✖";
-    color: #36393f;
+.monaco-editor .editor-scrollable {
+    width: calc(100% - 64px) !important;
 }
 
-body .ace_closeButton:active {
-    transform: translateY(2px);
-}
-
-/* editor help text */
-#bd-editor-controls .help-text {
-    margin-top: 8px;
-    margin-bottom: 3px;
-    font-size: 14px;
-}
-
-#bd-editor-controls .help-text .inline {
-    background: #2f3129;
-    padding: 0.2em;
-    margin: -0.2em 0;
-    border-radius: 3px;
+.monaco-editor .view-overlays .current-line {
+    width: 1e+06px !important;
 }

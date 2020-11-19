@@ -59,7 +59,7 @@ export default new class DataStore {
             const oldSettings = channelData.settings;
             const newSettings = {
                 general: {publicServers: oldSettings["bda-gs-1"], voiceDisconnect: oldSettings["bda-dc-0"], classNormalizer: oldSettings["fork-ps-4"], showToasts: oldSettings["fork-ps-2"]},
-                appearance: {twentyFourHour: oldSettings["bda-gs-6"], voiceMode: oldSettings["bda-gs-4"], minimalMode: oldSettings["bda-gs-2"], hideChannels: oldSettings["bda-gs-3"], darkMode: oldSettings["bda-gs-5"], coloredText: oldSettings["bda-gs-7"]},
+                appearance: {twentyFourHour: oldSettings["bda-gs-6"], voiceMode: oldSettings["bda-gs-4"], minimalMode: oldSettings["bda-gs-2"], darkMode: oldSettings["bda-gs-5"], coloredText: oldSettings["bda-gs-7"]},
                 addons: {addonErrors: oldSettings["fork-ps-1"], autoReload: oldSettings["fork-ps-5"]},
                 developer: {debuggerHotkey: oldSettings["bda-gs-8"], copySelector: oldSettings["fork-dm-1"], reactDevTools: oldSettings.reactDevTools}
             };

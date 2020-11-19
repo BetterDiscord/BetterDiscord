@@ -21,7 +21,6 @@ export default [
             {type: "switch", id: "hideGIFButton", value: false},
             {type: "switch", id: "voiceMode", value: false},
             {type: "switch", id: "minimalMode", value: false},
-            {type: "switch", id: "hideChannels", value: false, enableWith: "minimalMode"},
             {type: "switch", id: "darkMode", value: false},
             {type: "switch", id: "coloredText", value: false}
         ]

@@ -44,10 +44,6 @@
                     "name": "Minimalt Läge",
                     "note": "Gömmer och förminskar komponenter"
                 },
-                "hideChannels": {
-                    "name": "Göm Kanaler",
-                    "note": "Gömmer kanaler när minimalt läge är aktiverat"
-                },
                 "darkMode": {
                     "name": "Mörkt Läge",
                     "note": "Gör vissa komponenter mörka"

@@ -4,7 +4,7 @@
 .bd-minimal .members-1998pB,
 .bd-minimal .membersWrap-2h-GB4,
 .bd-minimal .nowPlayingColumn-2sl4cE,
-.bd-minimal .bannerImage-1jOskm {
+.bd-minimal .bannerImage-3KhIJ6 {
     width: 200px;
     min-width: auto;
 }
@@ -30,7 +30,7 @@
 /* Header container heights */
 
 .bd-minimal .container-1r6BKw,
-.bd-minimal .header-2o-2hj,
+.bd-minimal .header-2V-4Sw,
 .bd-minimal .searchBar-6Kv8R2 {
     height: 40px;
 }
@@ -57,7 +57,6 @@
 }
 
 .bd-minimal .bd-addon-list .bd-addon-card {
-    padding: 10px;
     margin-bottom: 10px;
 }
 
@@ -157,6 +156,17 @@
 .bd-minimal .tooltipContent-bqVLWK {
     padding: 4px 8px;
     font-size: 13px;
+}
+
+/* Messages */
+
+.bd-minimal .cozy-3raOZG.wrapper-2a6GCs .avatar-1BDn8e {
+    width: 32px;
+    height: 32px;
+}
+
+.bd-minimal .cozy-3raOZG.wrapper-2a6GCs {
+    padding-left: 64px;
 }
 
 /* Chat input */

@@ -48,18 +48,6 @@
     margin-bottom: 5px;
 }
 
-.bd-empty-results {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--text-normal);
-    margin-top: 100px;
-}
-
-.bd-empty-results svg {
-    margin-bottom: 20px;
-}
-
 .bd-card-list {
     display: grid;
     grid-gap: 16px;

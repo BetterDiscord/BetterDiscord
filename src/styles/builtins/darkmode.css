@@ -127,21 +127,3 @@
     background: #2f3136;
     border: 2px solid #484b52;
 }
-
-/* Ace Editor Settings */
-.bd-dark ~ div #ace_settingsmenu {
-    color: #f6f6f7;
-    background: #36393f;
-    box-shadow: 0 0 0 1px rgba(32, 34, 37, 0.6), 0 2px 10px 0 rgba(0, 0, 0, 0.2);
-}
-
-.bd-dark ~ div #ace_settingsmenu select,
-.bd-dark ~ div #ace_settingsmenu input[type="text"] {
-    color: #f6f6f7;
-    background: #2f3136;
-    border: 1px solid #484b52;
-}
-
-.bd-dark ~ div .ace_closeButton::before {
-    color: #f6f6f7;
-}

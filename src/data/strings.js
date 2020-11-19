@@ -44,10 +44,6 @@ export default {
                     name: "24-Hour Timestamps",
                     note: "Converts 12-hour timestamps to 24-hour format"
                 },
-                hideChannels: {
-                    name: "Hide Channels",
-                    note: "Hides channels when in minimal mode"
-                },
                 darkMode: {
                     name: "Dark Mode",
                     note: "Make certain elements dark by default"
@@ -231,7 +227,7 @@ export default {
         metaNotFound: "META was not found.",
         compileError: "Could not be compiled.",
         wasUnloaded: "{{name}} was unloaded.",
-        blankSlateHeader: "You don't have any {{type}}!",
+        blankSlateHeader: "You don't have any {{type}}s!",
         blankSlateMessage: "Grab some from [this website]({{link}}) and add them to your {{type}} folder."
     },
     CustomCSS: {
