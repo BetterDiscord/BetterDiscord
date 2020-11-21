@@ -8,7 +8,7 @@ const {ComponentDispatch} = WebpackModules.getByProps("ComponentDispatch");
 
 export default class EmoteIcon extends React.Component {
     render() {
-        return <div className="emote-container" onClick={this.handleOnClick.bind(this)} onContextMenu={this.handleOnContextMenu.bind(this)}>
+        return <div className="bd-emote-item" onClick={this.handleOnClick.bind(this)} onContextMenu={this.handleOnContextMenu.bind(this)}>
             <img src={this.props.url} alt={this.props.emote} title={this.props.emote}/>
         </div>;
     }
