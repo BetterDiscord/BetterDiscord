@@ -148,6 +148,7 @@
 
 .bd-controls > .bd-addon-button {
     border-radius: 0;
+    padding: 3px 6px;
 }
 
 .bd-links .bd-addon-button + .bd-addon-button {
@@ -164,6 +165,10 @@
 
 .bd-controls > .bd-addon-button:last-of-type {
     border-radius: 0 3px 3px 0;
+}
+
+.bd-controls > .bd-addon-button:only-child {
+    border-radius: 3px;
 }
 
 .bd-controls + .bd-addon-list {
