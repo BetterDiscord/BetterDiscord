@@ -69,7 +69,7 @@ export default new class V2 {
             react: this.WebpackModules.findByUniqueProperties(["Component", "PureComponent", "Children", "createElement", "cloneElement"]),
             reactDom: this.WebpackModules.findByUniqueProperties(["findDOMNode"])
         };
-        this.getInternalInstance = e => e[Object.keys(e).find(k => k.startsWith("__reactInternalInstance"))];
+        this.getInternalInstance = e => e[Object.keys(e).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber"))];
     }
 
     initialize() {
