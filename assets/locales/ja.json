@@ -130,10 +130,6 @@
                     "name": "絵文字自動補完",
                     "note": "絵文字を自動で補完します"
                 },
-                "showNames": {
-                    "name": "名前を表示",
-                    "note": "ホバー時に絵文字の名前を表示します"
-                },
                 "modifiers": {
                     "name": "BetterDiscord絵文字を表示",
                     "note": "BetterDiscordの絵文字を有効化します(flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"

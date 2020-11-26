@@ -130,10 +130,6 @@
                     "name": "Automatiskt Stor Bokstav I Emotes",
                     "note": "Gör automatiskt stor bokstav i emote kommandon"
                 },
-                "showNames": {
-                    "name": "Visa namn",
-                    "note": "Visa namn när musen hålls över en emote"
-                },
                 "modifiers": {
                     "name": "Visa Emote Modifierare",
                     "note": "Aktivera emote modifierare (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
