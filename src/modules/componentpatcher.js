@@ -57,8 +57,8 @@ export default new class ComponentPatcher {
             };
         });
     }
-
-    patchGuildListItems() {
+    
+    /*patchGuildListItems() {
         if (this.guildListItemsPatch) return;
         const listItemClass = DiscordModules.GuildClasses.listItem.split(" ")[0];
         const blobClass = DiscordModules.GuildClasses.blobContainer.split(" ")[0];
@@ -107,7 +107,7 @@ export default new class ComponentPatcher {
             if (!Separator) return;
             Separator.type = GuildSeparator;
         });
-    }
+    }*/
 
     patchMessageHeader() {
         if (this.messageHeaderPatch) return;
@@ -156,18 +156,19 @@ export default new class ComponentPatcher {
 // Tropical's notes
 
 /* 
-html [maximized | bd]
+html [maximized | bd | stable | canary | ptb]
 .iconWrapper-2OrFZ1 [type]
 .sidebar-2K8pFh [guild-id]
-.wrapper-2jXpOf [voice | text | announcement | store | private | nsfw]
-.chat-3bRxxu [channnel | guild-id]
+.wrapper-2jXpOf [voice | text | announcement | store | private | nsfw | rules]
+.chat-3bRxxu [channnel-name | guild-id]
 .listItem-2P_4kh [type | state]
 .privateChannels-1nO12o [library-hidden]
 .member-3-YXUe [user-id]
-.message-2qnXI6 [type | author-id | group-end]
+.message-2qnXI6 [type | author-id | group-end | message-content]
 .wrapper-3t9DeA [user-id | status]
-.userPopout-3XzG_A [state | user-id]
-.root-SR8cQa [state | user-id]
+.userPopout-3XzG_A [user-id]
+.root-SR8cQa [user-id]
 .contentRegion-3nDuYy [settings-page]
 .item-PXvHYJ [settings-page]
+.wrapper-35wsBm [valid | expired | joined]
 */
