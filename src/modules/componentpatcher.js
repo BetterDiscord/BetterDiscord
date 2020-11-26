@@ -12,9 +12,11 @@ export default new class ComponentPatcher {
 
     initialize() {
         Utilities.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
+        /*
         Utilities.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
         Utilities.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
         Utilities.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
+        */
         Utilities.suppressErrors(this.patchMessageHeader.bind(this), "BD Message Header Patch")();
         Utilities.suppressErrors(this.patchMemberList.bind(this), "BD Member List Patch")();
     }
@@ -108,8 +110,7 @@ export default new class ComponentPatcher {
             if (!Separator) return;
             Separator.type = GuildSeparator;
         });
-    }
-    */
+    }*/
 
     patchMessageHeader() {
         if (this.messageHeaderPatch) return;
