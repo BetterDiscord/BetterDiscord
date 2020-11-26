@@ -63,7 +63,8 @@ export default new class SettingsRenderer {
     async patchSections() {
         const UserSettings = await ReactComponents.get("UserSettings", m => m.prototype && m.prototype.generateSections);
         Patcher.after("SettingsManager", UserSettings.prototype, "render", (thisObject) => {
-            thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
+            const internalFiber = thisObject[Object.keys(thisObject).find(e => e.startsWith("_reactInternals") || e.startsWith("_reactInternalFiber"))];
+            if (internalFiber) internalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
         });
         Patcher.after("SettingsManager", UserSettings.prototype, "generateSections", (thisObject, args, returnValue) => {
             let location = returnValue.findIndex(s => s.section.toLowerCase() == "linux") + 1;
