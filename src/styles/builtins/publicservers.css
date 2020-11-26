@@ -67,20 +67,20 @@
     background-color: var(--activity-card-background);
 }
 
+.theme-light .bd-server-card {
+    box-shadow: 0 0 0 1px rgba(185, 187, 190, 0.3), var(--elevation-medium);
+}
+
+.theme-dark .bd-server-card {
+    background-color: var(--background-secondary-alt);
+}
+
 .bd-server-card:hover,
 .bd-server-card:focus,
 .theme-light .bd-server-card:hover,
 .theme-light .bd-server-card:focus {
     transform: translateY(-1px);
     box-shadow: var(--elevation-high);
-}
-
-.theme-light .bd-server-card {
-    box-shadow: 0 0 0 1px rgba(185,187,190,.3), var(--elevation-medium);
-}
-
-.theme-dark .bd-server-card {
-    background-color: var(--background-secondary-alt);
 }
 
 .theme-dark .bd-server-card:hover,

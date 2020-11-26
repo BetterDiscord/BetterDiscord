@@ -58,7 +58,8 @@ export default new class ComponentPatcher {
         });
     }
     
-    /*patchGuildListItems() {
+    /*
+    patchGuildListItems() {
         if (this.guildListItemsPatch) return;
         const listItemClass = DiscordModules.GuildClasses.listItem.split(" ")[0];
         const blobClass = DiscordModules.GuildClasses.blobContainer.split(" ")[0];
@@ -107,7 +108,8 @@ export default new class ComponentPatcher {
             if (!Separator) return;
             Separator.type = GuildSeparator;
         });
-    }*/
+    }
+    */
 
     patchMessageHeader() {
         if (this.messageHeaderPatch) return;
