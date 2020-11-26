@@ -170,7 +170,7 @@ export default class AddonCard extends React.Component {
                             <div className="bd-title">{this.buildTitle(name, version, {name: author, id: this.props.addon.authorId, link: this.props.addon.authorLink})}</div>
                             <Switch checked={this.props.enabled} onChange={this.onChange} />
                     </div>
-                    <div className="bd-description-wrap scroller-wrap fade"><div className="bd-description scroller">{SimpleMarkdown.parseToReact(description)}</div></div>
+                    <div className="bd-description-wrap"><div className="bd-description">{SimpleMarkdown.parseToReact(description)}</div></div>
                     {this.footer}
                 </div>;
     }
