@@ -179,7 +179,6 @@
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 5px;
 }
 
 .bd-addon-controls .bd-search {
