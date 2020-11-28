@@ -228,7 +228,34 @@ export default new class V2_SettingsPanel {
 
     get coreComponent() {
         return BDV2.react.createElement(Scroller, {contentColumn: true, fade: true, dark: true},
-            BDV2.react.createElement(SectionedSettingsPanel, {key: "cspanel", onChange: this.onChange, sections: this.coreSettings}),
+            BDV2.react.createElement(SectionedSettingsPanel, {key: "cspanel", title: "BetterDiscord Settings", onChange: this.onChange, sections: this.coreSettings, button: {
+                title: "Try BD Beta",
+                onClick: () => {
+                    const fs = require("fs");
+                    const path = require("path");
+                    const configFile = path.join(DataStore.injectionPath, "betterdiscord", "config.json");
+                    if (!fs.existsSync(configFile)) {
+                            return Utils.showConfirmationModal("File Not Found", "Could not find the config file. Please **do not ask for support** for this.", {
+                            cancelText: null,
+                            confirmText: "Okay"
+                        });
+                    }
+                    const config = JSON.parse(fs.readFileSync(configFile).toString());
+                    config.branch = "gh-pages-development";
+                    config.local = false;
+                    fs.writeFileSync(configFile, JSON.stringify(config, null, 4));
+                    Utils.showConfirmationModal("Success!", "Sucessfully switched to BD Beta. A restart of Discord is required for this to take effect. Would you like to restart now?", {
+                        danger: true,
+                        confirmText: "Restart Now",
+                        cancelText: "Restart Later",
+                        onConfirm: () => {
+                            const app = require("electron").remote.app;
+                            app.relaunch();
+                            app.exit();
+                        }
+                    });
+                }
+            }}),
             BDV2.react.createElement(Tools, {key: "tools"})
         );
     }

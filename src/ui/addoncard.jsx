@@ -173,10 +173,10 @@ export default class V2C_PluginCard extends BDV2.reactComponent {
     delete() {this.props.remove(this.name);}
     reload() {this.props.reload(this.name);}
 
-    get name() {return this.getString(this.props.addon.plugin ? this.props.addon.plugin.getName() : this.props.addon.name);}
-    get author() {return this.getString(this.props.addon.plugin ? this.props.addon.plugin.getAuthor() : this.props.addon.author);}
-    get description() {return this.getString(this.props.addon.plugin ? this.props.addon.plugin.getDescription() : this.props.addon.description);}
-    get version() {return this.getString(this.props.addon.plugin ? this.props.addon.plugin.getVersion() : this.props.addon.version);}
+    get name() {return this.getString(this.props.addon.name);}
+    get author() {return this.getString(this.props.addon.author);}
+    get description() {return this.getString(this.props.addon.description);}
+    get version() {return this.getString(this.props.addon.version);}
 
     render() {
         if (this.state.settings) return this.settingsComponent;

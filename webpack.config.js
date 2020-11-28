@@ -43,6 +43,10 @@ module.exports = {
             }
         }], "@babel/react"]
         }
+      },
+      {
+        test: /\.css$/i,
+        use: ["css-loader"],
       }
     ]
   },

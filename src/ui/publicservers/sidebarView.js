@@ -20,12 +20,11 @@ export default class V2C_SidebarView extends BDV2.reactComponent {
             ),
             BDV2.react.createElement("div", {className: "contentRegion-3nDuYy content-region"},
                 BDV2.react.createElement("div", {className: "contentTransitionWrap-3hqOEW content-transition-wrap"},
-                    BDV2.react.createElement("div", {className: "scrollerWrap-2lJEkd firefoxFixScrollFlex-cnI2ix contentRegionScrollerWrap-3YZXdm content-region-scroller-wrap scrollerThemed-2oenus themeGhost-28MSn0 scrollerTrack-1ZIpsv"},
                         BDV2.react.createElement("div", {className: "scroller-2FKFPG firefoxFixScrollFlex-cnI2ix contentRegionScroller-26nc1e content-region-scroller scroller", ref: "contentScroller"},
+
                             BDV2.react.createElement("div", {className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"}, content.component),
                             tools.component
                         )
-                    )
                 )
             )
         );

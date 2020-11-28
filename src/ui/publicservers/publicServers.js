@@ -235,11 +235,11 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
 
     get sidebar() {
         return BDV2.react.createElement(
-            "div",
-            {className: "sidebar", key: "ps"},
+            "nav",
+            {className: "sidebar-CFHs9e", key: "ps"},
             BDV2.react.createElement(
                 "div",
-                {className: "ui-tab-bar SIDE"},
+                {className: "ui-tab-bar side side-8zPYf6"},
                 BDV2.react.createElement(
                     "div",
                     {className: "ui-tab-bar-header", style: {fontSize: "16px"}},
@@ -316,7 +316,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
             "div",
             {ref: "content", key: "pc", className: "contentColumn-2hrIYH contentColumnDefault-1VQkGM content-column default"},
             BDV2.react.createElement(SettingsTitle, {text: self.state.title}),
-            self.bdServer,
+            // self.bdServer,
             self.state.servers.map((server) => {
                 return BDV2.react.createElement(ServerCard, {key: server.identifier, server: server, join: self.join, guildList: guildList, fallback: defaultList[Math.floor(Math.random() * 5)]});
             }),
@@ -364,7 +364,7 @@ export default class V2C_PublicServers extends BDV2.reactComponent {
                         "Connect"
                     )
                 )
-            ), self.bdServer
+            ), //self.bdServer
         )];
     }
 

@@ -37,6 +37,8 @@ export default new class ContentManager {
         const isPlugin = contentType === "plugin";
         const baseFolder = isPlugin ? this.pluginsFolder : this.themesFolder;
         const fileEnding = isPlugin ? ".plugin.js" : ".theme.css";
+
+        this._updateTimeCache(baseFolder, fileEnding);
         this.watchers[contentType] = fs.watch(baseFolder, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename || !filename.endsWith(fileEnding)) return;
             await new Promise(r => setTimeout(r, 50));
@@ -62,6 +64,17 @@ export default new class ContentManager {
                 else themeModule.reloadTheme(filename);
             }
         });
+    }
+
+    _updateTimeCache(directory, extension) {
+        const files = fs.readdirSync(directory);
+        for (const filename of files) {
+            if (!fs.statSync(path.resolve(directory, filename)).isFile() || !filename.endsWith(extension)) continue;
+            const stats = fs.statSync(path.resolve(directory, filename));
+            if (!stats || !stats.mtime || !stats.mtime.getTime()) continue;
+            if (typeof(stats.mtime.getTime()) !== "number") continue;
+            this.timeCache[filename] = stats.mtime.getTime();
+        }
     }
 
     unwatchContent(contentType) {
@@ -134,21 +147,15 @@ export default new class ContentManager {
                 meta.css = content;
                 if (meta.format == "json") meta.css = meta.css.split("\n").slice(1).join("\n");
                 content = `module.exports = ${JSON.stringify(meta)};`;
+                module._compile(content, filename);
             }
             if (isPlugin) {
-                module._compile(content, module.filename);
-                const didExport = !Utils.isEmpty(module.exports);
-                if (didExport) {
-                    meta.type = module.exports;
-                    module.exports = meta;
-                    content = "";
-                }
-                else {
-                    Utils.warn("Module Not Exported", `${meta.name}, please start setting module.exports`);
-                    content += `\nmodule.exports = ${JSON.stringify(meta)};\nmodule.exports.type = ${meta.exports || meta.name};`;
-                }
+                content += `\nif (module.exports.default) {module.exports = module.exports.default;}\nif (!module.exports.prototype || !module.exports.prototype.start) {module.exports = ${meta.exports || meta.name};}`;
+                module._compile(content, filename);
+                meta.type = module.exports;
+                module.exports = meta;
             }
-            module._compile(content, filename);
+            
         };
     }
 
@@ -161,6 +168,9 @@ export default new class ContentManager {
                 getVersion: () => {return "???";}
             },
             name: data.name || data.filename,
+            author: "None",
+            description: "No description",
+            version: "0.0.0",
             filename: data.filename,
             source: data.source ? data.source : "",
             website: data.website ? data.website : ""
@@ -179,8 +189,12 @@ export default new class ContentManager {
             if (!content.type) return;
             try {
                 content.plugin = new content.type();
-                delete bdplugins[content.plugin.getName()];
-                bdplugins[content.plugin.getName()] = content;
+                content.name = content.plugin.getName ? content.plugin.getName() : content.name || "No name";
+                content.author = content.plugin.getAuthor ? content.plugin.getAuthor() : content.author || "No author";
+                content.description = content.plugin.getDescription ? content.plugin.getDescription() : content.description || "No description";
+                content.version = content.plugin.getVersion ? content.plugin.getVersion() : content.version || "No version";
+                delete bdplugins[content.name];
+                bdplugins[content.name] = content;
             }
             catch (error) {return {name: filename, file: filename, message: "Could not be constructed.", error: {message: error.message, stack: error.stack}};}
         }
@@ -220,7 +234,7 @@ export default new class ContentManager {
         const basedir = isPlugin ? this.pluginsFolder : this.themesFolder;
         const files = fs.readdirSync(basedir);
         const contentList = Object.values(isPlugin ? bdplugins : bdthemes);
-        const removed = contentList.filter(t => !files.includes(t.filename)).map(c => isPlugin ? c.plugin.getName() : c.name);
+        const removed = contentList.filter(t => !files.includes(t.filename)).map(c => c.name);
         const added = files.filter(f => !contentList.find(t => t.filename == f) && f.endsWith(fileEnding) && fs.statSync(path.resolve(basedir, f)).isFile());
         return {added, removed};
     }

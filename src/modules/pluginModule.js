@@ -15,15 +15,16 @@ PluginModule.prototype.loadPlugins = function () {
     for (let i = 0; i < plugins.length; i++) {
         let plugin, name;
 
+        const addon = bdplugins[plugins[i]];
         try {
-            plugin = bdplugins[plugins[i]].plugin;
-            name = plugin.getName();
+            plugin = addon.plugin;
+            name = addon.name;
             if (plugin.load && typeof(plugin.load) == "function") plugin.load();
         }
         catch (err) {
             pluginCookie[name] = false;
             Utils.err("Plugins", name + " could not be loaded.", err);
-            bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, message: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
+            bdpluginErrors.push({name: name, file: addon.filename, message: "load() could not be fired.", error: {message: err.message, stack: err.stack}});
             continue;
         }
 
@@ -32,12 +33,12 @@ PluginModule.prototype.loadPlugins = function () {
         if (pluginCookie[name]) {
             try {
                 plugin.start();
-                if (settingsCookie["fork-ps-2"]) Utils.showToast(`${plugin.getName()} v${plugin.getVersion()} has started.`);
+                if (settingsCookie["fork-ps-2"]) Utils.showToast(`${addon.name} v${addon.version} has started.`);
             }
             catch (err) {
                 pluginCookie[name] = false;
                 Utils.err("Plugins", name + " could not be started.", err);
-                bdpluginErrors.push({name: name, file: bdplugins[plugins[i]].filename, message: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
+                bdpluginErrors.push({name: name, file: addon.filename, message: "start() could not be fired.", error: {message: err.message, stack: err.stack}});
             }
         }
     }
@@ -50,10 +51,10 @@ PluginModule.prototype.loadPlugins = function () {
 PluginModule.prototype.startPlugin = function(plugin, reload = false) {
     try {
         bdplugins[plugin].plugin.start();
-        if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has started.`);
+        if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${bdplugins[plugin].name} v${bdplugins[plugin].version} has started.`);
     }
     catch (err) {
-        if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be started.`, {type: "error"});
+        if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${bdplugins[plugin].name} v${bdplugins[plugin].version} could not be started.`, {type: "error"});
         pluginCookie[plugin] = false;
         this.savePluginData();
         Utils.err("Plugins", plugin + " could not be started.", err);
@@ -63,11 +64,11 @@ PluginModule.prototype.startPlugin = function(plugin, reload = false) {
 PluginModule.prototype.stopPlugin = function(plugin, reload = false) {
     try {
         bdplugins[plugin].plugin.stop();
-        if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} has stopped.`);
+        if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${bdplugins[plugin].name} v${bdplugins[plugin].version} has stopped.`);
     }
     catch (err) {
-        if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${bdplugins[plugin].plugin.getName()} v${bdplugins[plugin].plugin.getVersion()} could not be stopped.`, {type: "error"});
-        Utils.err("Plugins", bdplugins[plugin].plugin.getName() + " could not be stopped.", err);
+        if (settingsCookie["fork-ps-2"] && !reload) Utils.showToast(`${bdplugins[plugin].name} v${bdplugins[plugin].version} could not be stopped.`, {type: "error"});
+        Utils.err("Plugins", bdplugins[plugin].name + " could not be stopped.", err);
     }
 };
 
@@ -109,18 +110,19 @@ PluginModule.prototype.loadPlugin = function(filename) {
         if (settingsCookie["fork-ps-2"]) Utils.showToast(`${filename} could not be loaded.`, {type: "error"});
         return Utils.err("ContentManager", `${filename} could not be loaded.`, error);
     }
-    const plugin = Object.values(bdplugins).find(p => p.filename == filename).plugin;
+    const addon = Object.values(bdplugins).find(p => p.filename == filename);
+    const plugin = addon.plugin;
     try { if (plugin.load && typeof(plugin.load) == "function") plugin.load();}
     catch (err) {if (settingsCookie["fork-ps-1"]) Utils.showContentErrors({plugins: [err]});}
-    Utils.log("ContentManager", `${plugin.getName()} v${plugin.getVersion()} was loaded.`);
-    if (settingsCookie["fork-ps-2"]) Utils.showToast(`${plugin.getName()} v${plugin.getVersion()} was loaded.`, {type: "success"});
-    BDEvents.dispatch("plugin-loaded", plugin.getName());
+    Utils.log("ContentManager", `${addon.name} v${addon.version} was loaded.`);
+    if (settingsCookie["fork-ps-2"]) Utils.showToast(`${addon.name} v${addon.version} was loaded.`, {type: "success"});
+    BDEvents.dispatch("plugin-loaded", addon.name);
 };
 
 PluginModule.prototype.unloadPlugin = function(filenameOrName) {
-    const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
-    if (!bdplugin) return;
-    const plugin = bdplugin.plugin.getName();
+    const addon = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
+    if (!addon) return;
+    const plugin = addon.name;
     if (pluginCookie[plugin]) this.disablePlugin(plugin, true);
     const error = ContentManager.unloadContent(bdplugins[plugin].filename, "plugin");
     delete bdplugins[plugin];
@@ -145,7 +147,7 @@ PluginModule.prototype.delete = function(filenameOrName) {
 PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     const bdplugin = Object.values(bdplugins).find(p => p.filename == filenameOrName) || bdplugins[filenameOrName];
     if (!bdplugin) return this.loadPlugin(filenameOrName);
-    const plugin = bdplugin.plugin.getName();
+    const plugin = bdplugin.name;
     const enabled = pluginCookie[plugin];
     if (enabled) this.stopPlugin(plugin, true);
     const error = ContentManager.reloadContent(bdplugins[plugin].filename, "plugin");
@@ -156,8 +158,8 @@ PluginModule.prototype.reloadPlugin = function(filenameOrName) {
     }
     if (bdplugins[plugin].plugin.load && typeof(bdplugins[plugin].plugin.load) == "function") bdplugins[plugin].plugin.load();
     if (enabled) this.startPlugin(plugin, true);
-    Utils.log("ContentManager", `${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`);
-    if (settingsCookie["fork-ps-2"]) Utils.showToast(`${plugin} v${bdplugins[plugin].plugin.getVersion()} was reloaded.`, {type: "success"});
+    Utils.log("ContentManager", `${plugin} v${bdplugins[plugin].version} was reloaded.`);
+    if (settingsCookie["fork-ps-2"]) Utils.showToast(`${plugin} v${bdplugins[plugin].version} was reloaded.`, {type: "success"});
     BDEvents.dispatch("plugin-reloaded", plugin);
 };
 
@@ -194,11 +196,12 @@ PluginModule.prototype.savePluginData = function () {
 PluginModule.prototype.newMessage = function () {
     const plugins = Object.keys(bdplugins);
     for (let i = 0; i < plugins.length; i++) {
-        const plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) continue;
+        const addon = bdplugins[plugins[i]];
+        const plugin = addon.plugin;
+        if (!pluginCookie[addon.name]) continue;
         if (typeof plugin.onMessage === "function") {
             try { plugin.onMessage(); }
-            catch (err) { Utils.err("Plugins", "Unable to fire onMessage for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Plugins", "Unable to fire onMessage for " + addon.name + ".", err); }
         }
     }
 };
@@ -206,11 +209,12 @@ PluginModule.prototype.newMessage = function () {
 PluginModule.prototype.channelSwitch = function () {
     const plugins = Object.keys(bdplugins);
     for (let i = 0; i < plugins.length; i++) {
-        const plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) continue;
+        const addon = bdplugins[plugins[i]];
+        const plugin = addon.plugin;
+        if (!pluginCookie[addon.name]) continue;
         if (typeof plugin.onSwitch === "function") {
             try { plugin.onSwitch(); }
-            catch (err) { Utils.err("Plugins", "Unable to fire onSwitch for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Plugins", "Unable to fire onSwitch for " + addon.name + ".", err); }
         }
     }
 };
@@ -218,11 +222,12 @@ PluginModule.prototype.channelSwitch = function () {
 PluginModule.prototype.rawObserver = function(e) {
     const plugins = Object.keys(bdplugins);
     for (let i = 0; i < plugins.length; i++) {
-        const plugin = bdplugins[plugins[i]].plugin;
-        if (!pluginCookie[plugin.getName()]) continue;
+        const addon = bdplugins[plugins[i]];
+        const plugin = addon.plugin;
+        if (!pluginCookie[addon.name]) continue;
         if (typeof plugin.observer === "function") {
             try { plugin.observer(e); }
-            catch (err) { Utils.err("Plugins", "Unable to fire observer for " + plugin.getName() + ".", err); }
+            catch (err) { Utils.err("Plugins", "Unable to fire observer for " + addon.name + ".", err); }
         }
     }
 };
