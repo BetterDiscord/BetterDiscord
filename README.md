@@ -118,11 +118,15 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
         <img src="https://cdn.discordapp.com/attachments/769608503496278036/769680733693804625/tacoindustries.jpg" width="50px;" alt="Paco"/><br />
         <strong>Paco</strong>
     </td>
+    <td align="center">
+        <img src="https://cdn.discordapp.com/avatars/198801443279339520/4ae8e82ea9b136da4831ca6ac7c5082b.png" width="50px;" alt="Jordan"/><br />
+        <a href="https://reddit.com/r/kotlin" target="_blank" rel="noreferrer noopener"><strong>Jordan</strong></a>
+    </td>
 </tr>
 </table>
 
 # Donors
-These people have either donated or subscribed to the most basic patron tier to support BandagedBD.
+These people have either donated or subscribed to the most basic patron tier to support me.
 
 <table>
 <tr>
@@ -165,6 +169,10 @@ These people have either donated or subscribed to the most basic patron tier to 
     <td align="center">
         <img src="https://media.discordapp.net/attachments/575576868166828032/692136786893340752/pfp.gif" width="25px;" /><br />
         <strong>Akira</strong>
+    </td>
+    <td align="center">
+        <img src="https://i.pinimg.com/originals/07/c3/7d/07c37d854719dd633a11ff3f681d2019.jpg" width="25px;" /><br />
+        <strong>Pixel</strong>
     </td>
 </tr>
 </table>
