@@ -60,6 +60,7 @@ BdApi.unlinkJS = function (id) {
 //Get another plugin
 //name = name of plugin
 BdApi.getPlugin = function (name) {
+    Utils.warn("Deprecation Notice", `BdApi.getPlugin() will be removed in future versions. Please use the BdApi.Plugins API`);
     if (bdplugins.hasOwnProperty(name)) {
         return bdplugins[name].plugin;
     }
@@ -173,10 +174,12 @@ BdApi.testJSON = function(data) {
 };
 
 BdApi.isPluginEnabled = function(name) {
+    Utils.warn("Deprecation Notice", `BdApi.isPluginEnabled() will be removed in future versions. Please use the BdApi.Plugins API`);
     return !!pluginCookie[name];
 };
 
 BdApi.isThemeEnabled = function(name) {
+    Utils.warn("Deprecation Notice", `BdApi.isThemeEnabled() will be removed in future versions. Please use the BdApi.Themes API`);
     return !!themeCookie[name];
 };
 
