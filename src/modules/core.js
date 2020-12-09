@@ -124,11 +124,16 @@ export default new class Core {
 
     async loadDependencies() {
         for (const data of this.dependencies) {
-            if (Config.local && Config.localPath && data.localPath) {
-                if (fs.existsSync(path.resolve(Config.localPath, data.localPath))) {
-                    const css = fs.readFileSync(path.resolve(Config.localPath, data.localPath)).toString();
+            if (Config.local && Config.localPath && data.localPath && data.type == "style") {
+                const stylepath = path.resolve(Config.localPath, data.localPath);
+                if (fs.existsSync(stylepath)) {
+                    Logger.log("Startup", `Loading local stylesheet from (${stylepath})`);
+                    const css = fs.readFileSync(stylepath).toString();
                     DOMManager.injectStyle(data.name, css);
                     continue;
+                } 
+                else {
+                    Logger.warn("Startup", "Local stylesheet was not found, loading remote...");
                 }
             }
             const url = Utilities.formatString(data.url, {hash: Config.hash});
