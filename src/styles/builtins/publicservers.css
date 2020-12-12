@@ -64,7 +64,28 @@
     position: relative;
     transition: box-shadow 0.2s ease-out, transform 0.2s ease-out, background 0.2s ease-out, opacity 0.2s ease-in;
     cursor: pointer;
+    background-color: var(--activity-card-background);
+}
+
+.theme-light .bd-server-card {
+    box-shadow: 0 0 0 1px rgba(185, 187, 190, 0.3), var(--elevation-medium);
+}
+
+.theme-dark .bd-server-card {
     background-color: var(--background-secondary-alt);
+}
+
+.bd-server-card:hover,
+.bd-server-card:focus,
+.theme-light .bd-server-card:hover,
+.theme-light .bd-server-card:focus {
+    transform: translateY(-1px);
+    box-shadow: var(--elevation-high);
+}
+
+.theme-dark .bd-server-card:hover,
+.theme-dark .bd-server-card:focus {
+    background-color: var(--background-tertiary);
 }
 
 .bd-placeholder-card {
@@ -75,12 +96,6 @@
     overflow: hidden;
     border-radius: 8px;
     position: relative;
-}
-
-.bd-server-card:hover {
-    background-color: var(--background-tertiary);
-    transform: translateY(-1px);
-    box-shadow: var(--elevation-high);
 }
 
 .bd-server-header {
@@ -166,7 +181,7 @@
     -webkit-box-orient: vertical;
     color: var(--header-secondary);
     font-size: 14px;
-    line-height: 18px;
+    line-height: normal;
 }
 
 .bd-server-footer {

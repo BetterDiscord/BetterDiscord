@@ -148,6 +148,7 @@
 
 .bd-controls > .bd-addon-button {
     border-radius: 0;
+    padding: 3px 6px;
 }
 
 .bd-links .bd-addon-button + .bd-addon-button {
@@ -166,16 +167,18 @@
     border-radius: 0 3px 3px 0;
 }
 
+.bd-controls > .bd-addon-button:only-child {
+    border-radius: 3px;
+}
+
 .bd-controls + .bd-addon-list {
     margin-top: 10px;
 }
 
 .bd-addon-controls {
-    display: flex;
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 5px;
 }
 
 .bd-addon-controls .bd-search {

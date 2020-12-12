@@ -5,16 +5,16 @@
     background-color: #3e82e5;
     color: #fff;
     border-radius: 3px;
-    padding: 3px 6px;
-    transition: opacity 250ms ease;
+    padding: 4px 8px;
+    transition: background-color 0.17s ease, color 0.17s ease, opacity 250ms ease;
 }
 
 .bd-button:hover {
-    background-color: rgb(56, 117, 206);
+    background-color: #3875ce;
 }
 
 .bd-button:active {
-    background-color: rgb(50, 104, 183);
+    background-color: #3268b7;
 }
 
 .bd-button.bd-button-success {

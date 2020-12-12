@@ -155,10 +155,6 @@ export default {
                     name: "Emote Autocapitalization",
                     note: "Autocapitalize emote commands"
                 },
-                showNames: {
-                    name: "Show Names",
-                    note: "Show emote names on hover"
-                },
                 modifiers: {
                     name: "Show Emote Modifiers",
                     note: "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"

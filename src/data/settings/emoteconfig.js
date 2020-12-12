@@ -8,7 +8,6 @@ export default [
             {type: "switch", id: "download", value: true},
             {type: "switch", id: "emoteMenu", value: true},
             {type: "switch", id: "hideEmojiMenu", value: false, enableWith: "emoteMenu"},
-            {type: "switch", id: "showNames", value: true},
             {type: "switch", id: "modifiers", value: true},
             {type: "switch", id: "animateOnHover", value: false}
         ]

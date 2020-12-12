@@ -151,10 +151,6 @@
 					"name": "Automatische Großschreibung von Emotes",
 					"note": "Emote-Befehle werden automatisch großgeschrieben"
 				},
-				"showNames": {
-					"name": "Namen anzeigen",
-					"note": "Zeigt den Emote-Namen beim Hovern über diesem an"
-				},
 				"modifiers": {
 					"name": "Emote-Modifikatoren anzeigen",
 					"note": "Aktiviert Emote-Modifikatoren (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"

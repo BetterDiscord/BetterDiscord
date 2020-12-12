@@ -65,7 +65,7 @@ export default new class DataStore {
             };
 
             const newEmotes = {
-                general: {download: oldSettings["fork-es-3"], emoteMenu: oldSettings["bda-es-0"], hideEmojiMenu: !oldSettings["bda-es-9"], showNames: oldSettings["bda-es-6"], modifiers: oldSettings["bda-es-8"], animateOnHover: oldSettings["fork-es-2"]},
+                general: {download: oldSettings["fork-es-3"], emoteMenu: oldSettings["bda-es-0"], hideEmojiMenu: !oldSettings["bda-es-9"], modifiers: oldSettings["bda-es-8"], animateOnHover: oldSettings["fork-es-2"]},
                 categories: {twitchglobal: oldSettings["bda-es-7"], twitchsubscriber: oldSettings["bda-es-7"], frankerfacez: oldSettings["bda-es-1"], bttv: oldSettings["bda-es-2"]}
             };
 

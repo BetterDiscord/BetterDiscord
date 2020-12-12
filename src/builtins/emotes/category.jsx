@@ -5,23 +5,23 @@ export default class Category extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            opened: true
+            expanded: true
         };
     }
     render() {
         return <div className="bd-emote-category">
-            <div className="bd-emote-content">
-                <div className="bd-emote-header" onClick={() => this.setState({opened: !this.state.opened})}>
-                    <div className="bd-emote-headerIcon">
+            <div className={`bd-emote-header ${this.state.expanded ? "expanded" : "collapsed"}`}>
+                <div className="bd-emote-header-inner" onClick={() => this.setState({expanded: !this.state.expanded})}>
+                    <div className="bd-emote-header-icon">
                         {this.props.icon ? this.props.icon : null}
                     </div>
-                    <div className="bd-emote-headerLabel">{this.props.label}</div>
-                    <div className="bd-emote-headerCollapseIcon">
-                        <DownArrow className={this.state.opened ? "bd-emote-opened" : "bd-emote-closed"}/>
+                    <div className="bd-emote-header-label">{this.props.label}</div>
+                    <div className={`bd-emote-collapse-icon ${this.state.expanded ? "expanded" : "collapsed"}`}>
+                        <DownArrow/>
                     </div>
                 </div>
             </div>
-            {this.state.opened && this.props.children}
+            {this.state.expanded && this.props.children}
         </div>;
     }
 }

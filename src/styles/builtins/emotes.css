@@ -1,95 +1,51 @@
-.bd-emote-header {
-    color: var(--header-secondary);
-    justify-content: flex-start;
-    font-size: 12px;
-    font-weight: 600;
-    transition: color 0.125s;
-    align-items: center;
-    display: flex;
-}
-
-.bd-emote-scroller {
-    max-height: 380px;
-}
-
-.bd-emote-category {
-    margin-bottom: 12px;
-}
-
-.bd-emote-content {
-    cursor: pointer;
-    position: sticky;
-    top: 0;
-    background: var(--background-secondary);
-    z-index: 2;
-}
-
-.bd-emote-wrapper {
-    background-color: var(--background-secondary);
-    box-sizing: border-box;
-    height: 32px;
-    padding: 0 4px;
-    z-index: 1;
-}
-
-.bd-emote-headerIcon {
-    width: 14px;
-    height: 14px;
-    margin-right: 8px;
-}
-
-.bd-emote-headerLabel {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    white-space: nowrap;
-    margin-right: 8px;
-}
-
-.bd-emote-headerIcon + .bd-emote-headerLabel {
-    margin-left: 8px;
-}
-
-.bd-emote-headerCollapseIcon .bd-emote-opened {
-    transition: 0.3s;
-}
-
-.bd-emote-headerCollapseIcon .bd-emote-closed {
-    transform: rotate(90deg);
-    transition: 0.3s;
-}
-
-#emote-container {
-    padding: 10px;
-}
-
-.emote-container {
-    display: inline-block;
-    padding: 2px;
-    border-radius: 5px;
-    width: 30px;
-    height: 30px;
+.emotewrapper {
     position: relative;
+    display: inline-flex;
+    object-fit: contain;
+    margin: -0.1em 0.05em -0.2em 0.1em;
+    vertical-align: top;
 }
 
-.emote-icon {
-    max-width: 100%;
-    max-height: 100%;
+.emotewrapper.jumboable {
+    margin-bottom: 0;
+    margin-top: 0.2em;
+    vertical-align: -0.3em;
+}
+
+.emote {
+    height: 1.45em;
+}
+
+.emote.jumboable {
+    height: 2rem;
+}
+
+.fav {
+    display: none;
     position: absolute;
-    margin: auto;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    width: 15px;
+    height: 15px;
+    right: -7px;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAzFBMVEUAAABQUFBMTExLS0tNTU1MTExNTU1NTU1MTExMTExNTU1LS0tEREBEREBEREBEREBJSUhLS0tLS0tEREBNTU1NTU1NTU1EREArKyhNTU1NTU0AAABMTExKSklMTExNTU1NTU1NTU1KSkpMTExKSkhNTU1KSkpISEZNTU1LS0tAQDxOTk5KSkpLS0tNTU1MTExMTEx/f39MTExMTExLS0pLS0tMTExNTU1NTU1LS0pNTU1NTU1NTU1NTU1NTU1NTUxNTU1NTU1NTUxMTEzB8C/5AAAAOnRSTlMAI8X96oWAgYSF68QBAg0PMCb9BIuLgQUD4N0Bh0mKhZSOQ4gcrKscaW8QRE6fmJyjAshASceG7cIpqQOxTQAAALVJREFUGFddx6FOA0EYAOGZvd07Qm6vVCAAgUUgQEDfX/YZMAigqaFN7iC5tsmPqGPUN/AvUVeoEbGOCElJz08Uzeixqu4AqomVVSNngOVjTqDGZSl3UFtPGV2ot2zaq96YM9p5Ddzcf/nTTAlj+/sNtNu8OcwkIsbPBtrUfMQeEhGQmHbmGIFMwLPzu6UMIwBNgToshgq8Nr2ki+Oy7ebDHp70LRPWB6OZgfWLWei7fJonOOsPCGA9kVlssOoAAAAASUVORK5CYII=");
+    border: none;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-color: #303030;
+    border-radius: 5px;
+    top: -7px;
     cursor: pointer;
+}
+
+.fav.active {
+    background-color: yellow;
+}
+
+.emotewrapper:hover .fav {
+    display: block;
 }
 
 .emote.stop-animation {
     animation: none;
-}
-
-.emote-container:hover {
-    background: rgba(123, 123, 123, 0.37);
 }
 
 .emoteflip,
