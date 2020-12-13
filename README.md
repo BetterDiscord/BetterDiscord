@@ -26,7 +26,7 @@ See this [gist](https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77
 1. Download and extract this: https://github.com/rauenzi/BetterDiscordApp/archive/injector.zip
 2. Rename `BetterDiscordApp-injector` to `app`.
 3. Go to `%localappdata%\Discord\`, and locate the directory with the largest version number (e.g. `app-0.0.306`).
-4. Within `app-0.0.306` navigate to `resources`.
+4. Within `app-0.0.309` navigate to `resources`.
 5. If an `app` folder already exists inside `resources`, delete it.
 6. Move the `app` folder (the one you downloaded and renamed) inside of `resources`.
 7. Fully quit Discord and restart it.
@@ -51,7 +51,7 @@ BBD has some other built-in features such as Emotes from Twitch, FFZ, and BBTV, 
 In our support servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
 
 ### Support Servers?
-There are two: [The main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the backup](https://discord.gg/2HScm8j).
+There are two: [The main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the backup](https://discord.gg/sbA3xCJ).
 
 
 
@@ -61,7 +61,7 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
 <table>
 <tr>
 <td align="center">
-    <img src="https://cdn.discordapp.com/avatars/196098063092154368/90f1a7202955dac7a6c685cca3181ab1.webp" width="100px;" alt="Kraken"/><br />
+    <img src="https://cdn.discordapp.com/avatars/196098063092154368/252a880bf095f3238a02c1ff57d45d6a.webp" width="100px;" alt="Kraken"/><br />
     <strong>Kraken</strong><br />
 </td>
 <td align="center">
@@ -99,7 +99,7 @@ These people have all subscribed to the `Bandager` tier on Patreon to support Ba
 <table>
 <tr>
     <td align="center">
-        <img src="https://cdn.discordapp.com/avatars/332199319169925120/4709f8f0c9cb7ababd85459bf71848b9.png" width="50px;" alt="William JCM"/><br />
+        <img src="https://cdn.discordapp.com/avatars/332199319169925120/d71c9049a93487647774c46420b9cdb3.png" width="50px;" alt="William JCM"/><br />
         <a href="https://github.com/williamjcm" target="_blank" rel="noreferrer noopener"><strong>William JCM</strong></a>
     </td>
     <td align="center">
