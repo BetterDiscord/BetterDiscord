@@ -44,10 +44,6 @@
 					"name": "Minimaler Modus",
 					"note": "Verbirgt Elemente und reduziert die Größe von elementen."
 				},
-				"darkMode": {
-					"name": "Dunkelmodus",
-					"note": "Aktivert einen noch dunkleren Modus in Discord."
-				},
 				"coloredText": {
 					"name": "Farbiger Text",
 					"note": "Macht die Textfarbe gleich mit der Rollenfarbe."

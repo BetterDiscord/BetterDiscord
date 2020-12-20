@@ -44,10 +44,6 @@
                     "name": "Minimalt Läge",
                     "note": "Gömmer och förminskar komponenter"
                 },
-                "darkMode": {
-                    "name": "Mörkt Läge",
-                    "note": "Gör vissa komponenter mörka"
-                },
                 "coloredText": {
                     "name": "Färgad Text",
                     "note": "Gör att text får samma färg som rollfärgen"

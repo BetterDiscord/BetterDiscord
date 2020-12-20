@@ -18,13 +18,19 @@
 }
 
 #bd-pub-button {
-    border-radius: 3px;
-    background-color: var(--background-secondary);
-    color: var(--interactive-normal);
+    border-radius: 4px;
+    background-color: var(--background-primary);
+    color: var(--text-normal);
     text-align: center;
     font-size: 12px;
     line-height: 24px;
     height: 24px;
+    transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+
+#bd-pub-button:hover {
+    color:#fff;
+    background-color: #3e82e5;
 }
 
 #bd-connection {

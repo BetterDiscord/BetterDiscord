@@ -1,7 +1,7 @@
 import Builtin from "../../structs/builtin";
 import {DiscordModules} from "modules";
 
-export default new class DarkMode extends Builtin {
+export default new class VoiceDisconnect extends Builtin {
     get name() {return "VoiceDisconnect";}
     get category() {return "general";}
     get id() {return "voiceDisconnect";}

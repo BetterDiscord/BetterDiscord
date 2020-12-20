@@ -44,10 +44,6 @@ export default {
                     name: "24-Hour Timestamps",
                     note: "Converts 12-hour timestamps to 24-hour format"
                 },
-                darkMode: {
-                    name: "Dark Mode",
-                    note: "Make certain elements dark by default"
-                },
                 coloredText: {
                     name: "Colored Text",
                     note: "Make text colour the same as role color"
