@@ -13,7 +13,7 @@ dataPath = path.join(dataPath, "BetterDiscord");
 
 export default new class DataStore {
     constructor() {
-        this.data = {settings: {stable: {}, canary: {}, ptb: {}}};
+        this.data = {settings: {stable: {}, canary: {}, ptb: {}, development: {}}};
         this.pluginData = {};
     }
 
@@ -25,8 +25,8 @@ export default new class DataStore {
             if (!fs.existsSync(this.settingsFile)) return;
             let settings = __non_webpack_require__(this.settingsFile);
             fs.unlinkSync(this.settingsFile);
-            if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}}, {[releaseChannel]: settings});
-            else settings = Object.assign({stable: {}, canary: {}, ptb: {}}, settings);
+            if (settings.hasOwnProperty("settings")) settings = Object.assign({stable: {}, canary: {}, ptb: {}, development: {}}, {[releaseChannel]: settings});
+            else settings = Object.assign({stable: {}, canary: {}, ptb: {}, development: {}}, settings);
             this.setBDData("settings", settings);
         }
         catch (err) {
