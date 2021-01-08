@@ -18,9 +18,10 @@ export default new class ColoredText {
             if (!messageContent.type || !messageContent.type.type || messageContent.type.type.displayName != "MessageContent") return;
             const originalType = messageContent.type.type;
             if (originalType.__originalMethod) return; // Don't patch again
+            const self = this;
             messageContent.type.type = function(props) {
                 const returnValue = originalType(props);
-                const roleColor = settingsCookie["bda-gs-7"] ? ColoredText.getRoleColor(props.message.channel_id, props.message.author.id) || "" : "";
+                const roleColor = settingsCookie["bda-gs-7"] ? self.getRoleColor(props.message.channel_id, props.message.author.id) || "" : "";
                 returnValue.props.style = {color: roleColor};
                 return returnValue;
             };
