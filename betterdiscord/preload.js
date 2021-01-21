@@ -82,15 +82,16 @@ currentWindow.webContents.on("dom-ready", async () => {
 
 // Load Discord's original preload
 if (currentWindow.__originalPreload) {
-	
-	// Restore original preload for future windows
-	process.electronBinding("command_line").appendSwitch("preload", currentWindow.__originalPreload);
-	
-	// Make sure DiscordNative gets exposed
-	electron.contextBridge.exposeInMainWorld = (key, val) => window[key] = val;
-	
+    
+    // Restore original preload for future windows
+    process.electronBinding("command_line").appendSwitch("preload", currentWindow.__originalPreload);
+    
+    // Make sure DiscordNative gets exposed
+    electron.contextBridge.exposeInMainWorld = (key, val) => window[key] = val;
+    
     // Run original preload
     const originalProcessOn = process.on;
-    try {require(currentWindow.__originalPreload);} catch {}
+    process.on = () => {};
+    require(currentWindow.__originalPreload);
     process.on = originalProcessOn;
 }
