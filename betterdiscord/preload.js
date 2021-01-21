@@ -89,6 +89,8 @@ if (currentWindow.__originalPreload) {
 	// Make sure DiscordNative gets exposed
 	electron.contextBridge.exposeInMainWorld = (key, val) => window[key] = val;
 	
-	// Run original preload
-	require(currentWindow.__originalPreload);
+    // Run original preload
+    const originalProcessOn = process.on;
+    try {require(currentWindow.__originalPreload);} catch {}
+    process.on = originalProcessOn;
 }
