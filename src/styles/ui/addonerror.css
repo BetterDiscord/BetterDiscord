@@ -1,0 +1,44 @@
+.tab-bar.TOP .tab-bar-item:nth-child(1) {
+    margin-left: 20px;
+}
+
+.bd-addonError {
+    margin: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bd-addonError-header {
+    display: flex;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    align-items: center;
+}
+
+.bd-addonError-message {
+    font-weight: 700;
+}
+
+.bd-addonError-body {
+    padding: 10px;
+    background: var(--background-mobile-secondary);
+}
+
+.bd-addonError-header svg {
+    margin-right: 7px;
+}
+
+.bd-addonError-stack-header svg {
+    float: right;
+    transform: rotate(90deg);
+    transition: 0.4s;
+    color: #fff;
+}
+
+.bd-addonError-stack.opened svg {
+    transform: rotate(0deg);
+}
+
+.bd-addonError-stack-header {
+    color: #b9bbbe;
+}
