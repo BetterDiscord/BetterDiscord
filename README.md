@@ -51,7 +51,7 @@ BBD has some other built-in features such as Emotes from Twitch, FFZ, and BBTV, 
 In our support servers we have channels with lists of official plugins and themes. Please note we do not have an official listing on a website and are **not affiliated with any of those websites**.
 
 ### Support Servers?
-There are two: [The main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the backup](https://discord.gg/2HScm8j).
+There are two: [The main server](https://discord.gg/BJD2yvJ), and [the backup](https://discord.gg/sbA3xCJ).
 
 
 
