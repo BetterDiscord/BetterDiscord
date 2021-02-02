@@ -52,25 +52,25 @@ export default new class V2_PublicServers {
     }
 
     _appendButton() {
-        if (DOM.query("#bd-pub-li")) return;
+        /*if (DOM.query("#bd-pub-li")) return;
         const wrapper = BDV2.guildClasses.wrapper.split(" ")[0];
         const guilds = DOM.query(`.${wrapper} .scroller-2TZvBN >:first-child`);
-        if (guilds) DOM.after(guilds, this.button);
+        if (guilds) DOM.after(guilds, this.button);*/
     }
 
     addButton() {
-        if (this.guildPatch) return;
+        /*if (this.guildPatch) return;
         const GuildList = webpackModules.find(m => m.default && m.default.displayName == "NavigableGuilds");
         const GuildListOld = webpackModules.findByDisplayName("Guilds");
         if (!GuildList && !GuildListOld) Utils.warn("PublicServer", "Can't find GuildList component");
         this.guildPatch = Utils.monkeyPatch(GuildList ? GuildList : GuildListOld.prototype, GuildList ? "default" : "render", {after: this._appendButton});
-        this._appendButton();
+        this._appendButton();*/
     }
 
     removeButton() {
-        this.guildPatch();
+        /*this.guildPatch();
         delete this.guildPatch;
         const button = DOM.query("#bd-pub-li");
-        if (button) button.remove();
+        if (button) button.remove();*/
     }
 };
