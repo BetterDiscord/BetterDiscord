@@ -2,7 +2,7 @@ import {settingsCookie} from "../0globals";
 import BDV2 from "./v2";
 import Utils from "./utils";
 
-const ChannelStore = BDV2.WebpackModules.findByUniqueProperties(["getChannel", "getGuildChannels"]);
+const ChannelStore = BDV2.WebpackModules.findByUniqueProperties(["getChannel", "getDMUserIds"]);
 const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
 
 export default new class ColoredText {
