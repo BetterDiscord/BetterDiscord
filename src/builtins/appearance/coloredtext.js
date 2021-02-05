@@ -1,5 +1,5 @@
 import Builtin from "../../structs/builtin";
-import {WebpackModules} from "modules";
+import {WebpackModules, DiscordModules} from "modules";
 
 
 
@@ -26,9 +26,10 @@ export default new class ColoredText extends Builtin {
 
             const originalType = messageContent.type.type;
             if (originalType.__originalMethod) return; // Don't patch again
-            messageContent.type.type = function(childProps) {
+            const self = this;
+            messageContent.type.type = function (childProps) {
                 const returnValue = originalType(childProps);
-                const roleColor = childProps.message.colorString || "";
+                const roleColor = self.getRoleColor(childProps.message.channel_id, childProps.message.author.id) || "";
                 returnValue.props.style = {color: roleColor};
                 return returnValue;
             };
@@ -36,6 +37,14 @@ export default new class ColoredText extends Builtin {
             messageContent.type.type.__originalMethod = originalType;
             Object.assign(messageContent.type.type, originalType);
         });
+    }
+
+    getRoleColor(channelId, memberId) {
+        const channel = DiscordModules.ChannelStore.getChannel(channelId);
+        if (!channel) return "";
+        const member = DiscordModules.GuildMemberStore.getMember(channel.guild_id, memberId);
+        if (!member) return "";
+        return member.colorString;
     }
 
     removeColoredText() {

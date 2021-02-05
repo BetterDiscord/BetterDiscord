@@ -28,7 +28,7 @@ export default Utilities.memoizeObject({
     get GuildPermissions() {return WebpackModules.getByProps("getGuildPermissions");},
 
     /* Channel Store & Actions */
-    get ChannelStore() {return WebpackModules.getByProps("getChannels", "getDMFromUserId");},
+    get ChannelStore() {return WebpackModules.getByProps("getChannel", "getDMFromUserId");},
     get SelectedChannelStore() {return WebpackModules.getByProps("getLastSelectedChannelId");},
     get ChannelActions() {return WebpackModules.getByProps("selectChannel");},
     get PrivateChannelActions() {return WebpackModules.getByProps("openPrivateChannel");},
