@@ -20,7 +20,14 @@ const BdApi = {
     get settings() {return Settings.collections;},
     get emotes() {
         return new Proxy(Emotes.Emotes, {
-            get() {return Emotes.Emotes;},
+            get(category) {
+                const group = Emotes.Emotes[category];
+                if (!group) return undefined;
+                return new Proxy(group, {
+                    get(emote) {return group[emote];},
+                    set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
+                });
+            },
             set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
         });
     },
@@ -229,27 +236,6 @@ BdApi.suppressErrors = function(method, message) {
 // Tests for valid JSON
 BdApi.testJSON = function(data) {
     return Utilities.testJSON(data);
-};
-
-// Get another plugin
-// name = name of plugin
-BdApi.getPlugin = function (name) {
-    Logger.warn("BdApi", "getPlugin is deprecated. Please make use of the addon api (BdApi.Plugins)");
-    return PluginManager.addonList.find(a => a.name == name);
-};
-
-BdApi.isPluginEnabled = function(name) {
-    Logger.warn("BdApi", "isPluginEnabled is deprecated. Please make use of the addon api (BdApi.Plugins)");
-    const plugin = this.getPlugin(name);
-    if (!plugin) return false;
-    return PluginManager.isEnabled(plugin.id);
-};
-
-BdApi.isThemeEnabled = function(name) {
-    Logger.warn("BdApi", "isThemeEnabled is deprecated. Please make use of the addon api (BdApi.Themes)");
-    const theme = ThemeManager.addonList.find(a => a.name == name);
-    if (!theme) return false;
-    return ThemeManager.isEnabled(theme.id);
 };
 
 BdApi.isSettingEnabled = function(collection, category, id) {

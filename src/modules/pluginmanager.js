@@ -141,7 +141,7 @@ export default new class PluginManager extends AddonManager {
     getPlugin(idOrFile) {
         const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
         if (!addon) return;
-        return addon.instance;
+        return addon;
     }
 
     setupFunctions() {
