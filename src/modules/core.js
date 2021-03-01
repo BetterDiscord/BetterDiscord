@@ -17,7 +17,7 @@ import DiscordModules from "./discordmodules";
 import ComponentPatcher from "./componentpatcher";
 import Strings from "./strings";
 import LoadingIcon from "../loadingicon";
-import Utilities from "./utilities";
+import Styles from "../styles/index.css";
 
 const {ipcRenderer} = require("electron");
 const GuildClasses = DiscordModules.GuildClasses;
@@ -38,18 +38,6 @@ export default new class Core {
         });
     }
 
-    get dependencies() {
-        return [
-            {
-                name: "bd-stylesheet",
-                type: "style",
-                url: "//cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/{{hash}}/dist/style.css",
-                backup: "https://rauenzi.github.io/BetterDiscordApp/dist/style.css",
-                localPath: "style.css"
-            }
-        ];
-    }
-
     setConfig(config) {
         if (this.hasStarted) return;
         Object.assign(Config, config);
@@ -59,9 +47,8 @@ export default new class Core {
         if (this.hasStarted) return;
         this.hasStarted = true;
 
-        // Load dependencies asynchronously if they don't exist
-        let dependencyPromise = new Promise(r => r());
-        if (!window.$ || !window.jQuery) dependencyPromise = this.loadDependencies();
+        // Load css early
+        DOMManager.injectStyle("bd-stylesheet", Styles.toString());
 
         DataStore.initialize();
         await LocaleManager.initialize();
@@ -80,7 +67,6 @@ export default new class Core {
         ComponentPatcher.initialize();
         for (const module in Builtins) Builtins[module].initialize();
 
-        await dependencyPromise;
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
         const pluginErrors = PluginManager.initialize();
@@ -118,40 +104,6 @@ export default new class Core {
 
             checkForGuilds();
         });
-    }
-
-    async loadDependencies() {
-        for (const data of this.dependencies) {
-            if (Config.local && Config.localPath && data.localPath && data.type == "style") {
-                const stylepath = path.resolve(Config.localPath, data.localPath);
-                if (fs.existsSync(stylepath)) {
-                    Logger.log("Startup", `Loading local stylesheet from (${stylepath})`);
-                    const css = fs.readFileSync(stylepath).toString();
-                    DOMManager.injectStyle(data.name, css);
-                    continue;
-                } 
-                else {
-                    Logger.warn("Startup", "Local stylesheet was not found, loading remote...");
-                }
-            }
-            const url = Utilities.formatString(data.url, {hash: Config.hash});
-            Logger.log(`Startup`, `Loading Resource (${url})`);
-            const injector = (data.type == "script" ? DOMManager.injectScript : DOMManager.linkStyle).bind(DOMManager);
-            try {
-                await injector(data.name, url);
-            }
-            catch (err) {
-                const backup = Utilities.formatString(data.backup);
-                Logger.stacktrace(`Startup`, `Could not load ${url}. Using backup ${backup}`, err);
-                try {
-                    await injector(data.name, backup);
-                }
-                catch (e) {
-                    Logger.stacktrace(`Startup`, `Could not load ${url}. Using backup ${backup}`, err);
-                    if (data.name === "jquery") Modals.alert(Strings.Startup.jqueryFailed, Strings.Startup.jqueryFailedDetails);
-                }
-            }
-        }
     }
 
     async checkInjectorUpdate() {

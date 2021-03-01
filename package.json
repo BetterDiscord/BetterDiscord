@@ -15,8 +15,7 @@
         "lint": "npm run lint-js && npm run lint-css",
         "test": "mocha --require @babel/register --recursive \"./tests/*.js\"",
         "lint-prod": "npm run lint-js -- --quiet && npm run lint-css -- --quiet",
-        "test-prod": "npm run test -- --reporter min",
-        "deploy": "npm run build-prod && npm run build-prod-css"
+        "test-prod": "npm run test -- --reporter min"
     },
     "repository": {
         "type": "git",
@@ -35,6 +34,7 @@
         "babel-loader": "^8.1.0",
         "babel-plugin-module-resolver": "^4.0.0",
         "circular-dependency-plugin": "^5.2.0",
+        "css-loader": "^5.1.0",
         "eslint": "^7.12.0",
         "eslint-plugin-react": "^7.21.5",
         "mocha": "^8.2.0",
@@ -42,6 +42,7 @@
         "postcss-cli": "^8.1.0",
         "postcss-csso": "^4.0.0",
         "postcss-easy-import": "^3.0.0",
+        "postcss-loader": "^5.0.0",
         "stylelint": "^13.7.2",
         "stylelint-config-standard": "^20.0.0",
         "webpack": "^4.43.0",
