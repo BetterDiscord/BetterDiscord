@@ -3,7 +3,8 @@ import Utilities from "./utilities";
 import Logger from "./logger";
 const fs = require("fs");
 const path = require("path");
-const releaseChannel = DiscordNative.globals ? DiscordNative.globals.releaseChannel : DiscordNative.app ? DiscordNative.app.getReleaseChannel() : "stable";
+const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable";
+const discordVersion = window?.DiscordNative?.remoteApp?.getVersion?.() ?? "0.0.309";
 
 // Schema
 // =======================
@@ -82,10 +83,9 @@ export default new class DataStore {
 
     get injectionPath() {
         if (this._injectionPath) return this._injectionPath;
-        const electron = require("electron").remote.app;
-        const base = electron.getAppPath();
-        const roamingBase = electron.getPath("userData");
-        const roamingLocation = path.resolve(roamingBase, electron.getVersion(), "modules", "discord_desktop_core", "injector");
+        const base = Config.appPath;
+        const roamingBase = Config.userData;
+        const roamingLocation = path.resolve(roamingBase, discordVersion, "modules", "discord_desktop_core", "injector");
         const location = path.resolve(base, "..", "app");
         const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
         if (!realLocation) return this._injectionPath = null;

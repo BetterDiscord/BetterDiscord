@@ -10,7 +10,12 @@ import Modals from "../ui/modals";
 import SettingsRenderer from "../ui/settings";
 
 const path = require("path");
-const electronRemote = require("electron").remote;
+const electron = require("electron");
+const ipc = electron.ipcRenderer;
+const vm = require("vm");
+// const electronRemote = require("electron").remote;
+
+// window.$ = window.jQuery = function() {}
 
 export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
@@ -23,6 +28,7 @@ export default new class PluginManager extends AddonManager {
 
     constructor() {
         super();
+        this.promises = {};
         this.onSwitch = this.onSwitch.bind(this);
         this.observer = new MutationObserver((mutations) => {
             for (let i = 0, mlen = mutations.length; i < mlen; i++) {
@@ -31,8 +37,8 @@ export default new class PluginManager extends AddonManager {
         });
     }
 
-    initialize() {
-        const errors = super.initialize();
+    async initialize() {
+        const errors = await super.initialize();
         this.setupFunctions();
         Settings.registerPanel("plugins", Strings.Panels.plugins, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
             type: this.prefix,
@@ -59,13 +65,13 @@ export default new class PluginManager extends AddonManager {
     unloadPlugin(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
     loadPlugin(filename) {return this.loadAddon(filename);}
 
-    loadAddon(filename) {
-        const error = super.loadAddon(filename);
+    async loadAddon(filename) {
+        const error = await super.loadAddon(filename);
         if (error) Modals.showAddonErrors({plugins: [error]});
     }
 
-    reloadPlugin(idOrFileOrAddon) {
-        const error = this.reloadAddon(idOrFileOrAddon);
+    async reloadPlugin(idOrFileOrAddon) {
+        const error = await this.reloadAddon(idOrFileOrAddon);
         if (error) Modals.showAddonErrors({plugins: [error]});
         return typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
     }
@@ -94,9 +100,27 @@ export default new class PluginManager extends AddonManager {
 
     getFileModification(module, fileContent, meta) {
         fileContent += `\nif (module.exports.default) {module.exports = module.exports.default;}\nif (!module.exports.prototype || !module.exports.prototype.start) {module.exports = ${meta.exports || meta.name};}`;
-        module._compile(fileContent, module.filename);
-        meta.exports = module.exports;
-        module.exports = meta;
+
+        window.global = window;
+        window.module = module;
+        window.__filename = path.basename(module.filename);
+        window.__dirname = this.addonFolder;
+        const wrapped = `(${vm.compileFunction(fileContent, ["exports", "require", "module", "__filename", "__dirname"])})`;
+        // console.log(module);
+        module.exports = new Promise(resolve => {
+            ipc.invoke("EXEC_JS", `${wrapped}(window.module.exports, window.require, window.module, window.__filename, window.__dirname)`).then(() => {
+                // console.log(window.module);
+                meta.exports = module.exports;
+                module.exports = meta;
+                delete window.module;
+                delete window.__filename;
+                delete window.__dirname;
+                resolve();
+            });
+        });
+        // module._compile(fileContent, module.filename);
+        // meta.exports = module.exports;
+        // module.exports = meta;
         return "";
     }
 
@@ -145,7 +169,8 @@ export default new class PluginManager extends AddonManager {
     }
 
     setupFunctions() {
-        electronRemote.getCurrentWebContents().on("did-navigate-in-page", this.onSwitch.bind(this));
+        // electronRemote.getCurrentWebContents().on("did-navigate-in-page", this.onSwitch.bind(this));
+        ipc.on("DID_NAVIGATE_IN_PAGE", this.onSwitch);
         this.observer.observe(document, {
             childList: true,
             subtree: true

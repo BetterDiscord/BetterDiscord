@@ -19,8 +19,8 @@ export default new class ThemeManager extends AddonManager {
     get prefix() {return "theme";}
     get language() {return "css";}
 
-    initialize() {
-        const errors = super.initialize();
+    async initialize() {
+        const errors = await super.initialize();
         Settings.registerPanel("themes", Strings.Panels.themes, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
             type: this.prefix,
             folder: this.addonFolder,
@@ -45,10 +45,10 @@ export default new class ThemeManager extends AddonManager {
 
     unloadTheme(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
     loadTheme(filename) {return this.loadAddon(filename);}
-    reloadTheme(idOrFileOrAddon) {return this.reloadAddon(idOrFileOrAddon);}
+    async reloadTheme(idOrFileOrAddon) {return await this.reloadAddon(idOrFileOrAddon);}
 
-    loadAddon(filename) {
-        const error = super.loadAddon(filename);
+    async loadAddon(filename) {
+        const error = await super.loadAddon(filename);
         if (error) Modals.showAddonErrors({themes: [error]});
     }
 

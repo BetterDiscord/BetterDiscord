@@ -137,8 +137,8 @@ BdApi.findModuleByDisplayName = function(name) {
 
 // Gets react instance
 BdApi.getInternalInstance = function(node) {
-    if (!(node instanceof window.jQuery) && !(node instanceof Element)) return undefined;
-    if (node instanceof jQuery) node = node[0];
+    // if (!(node instanceof window.jQuery) && !(node instanceof Element)) return undefined;
+    // if (node instanceof jQuery) node = node[0];
     return Utilities.getReactInstance(node);
 };
 

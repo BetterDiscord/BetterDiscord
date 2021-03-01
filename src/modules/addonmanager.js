@@ -16,7 +16,7 @@ const React = DiscordModules.React;
 const path = require("path");
 const fs = require("fs");
 const Module = require("module").Module;
-Module.globalPaths.push(path.resolve(require("electron").remote.app.getAppPath(), "node_modules"));
+// Module.globalPaths.push(path.resolve(require("electron").remote.app.getAppPath(), "node_modules"));
 
 const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
@@ -49,14 +49,14 @@ export default class AddonManager {
         this.windows = new Set();
     }
 
-    initialize() {
+    async initialize() {
         this.originalRequire = Module._extensions[this.moduleExtension];
         Module._extensions[this.moduleExtension] = this.getAddonRequire();
         Settings.on(this.collection, this.category, this.id, (enabled) => {
             if (enabled) this.watchAddons();
             else this.unwatchAddons();
         });
-        return this.loadAllAddons();
+        return await this.loadAllAddons();
     }
 
     // Subclasses should overload this and modify the addon object as needed to fully load it
@@ -196,12 +196,21 @@ export default class AddonManager {
     }
 
     // Subclasses should use the return (if not AddonError) and push to this.addonList
-    loadAddon(filename, shouldToast = false) {
+    async loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
-        try {__non_webpack_require__(path.resolve(this.addonFolder, filename));}
-        catch (error) {return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack});}
+        try {
+            const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
+            await Promise.resolve(addon);
+        }
+        catch (error) {
+            return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack});
+        }
 
         const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
+        // console.log(addon);
+        // await Promise.resolve(addon);
+        // addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
+        // console.log(addon);
         if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}));
 
         const error = this.initializeAddon(addon);
@@ -226,11 +235,11 @@ export default class AddonManager {
         return true;
     }
 
-    reloadAddon(idOrFileOrAddon, shouldToast = true) {
+    async reloadAddon(idOrFileOrAddon, shouldToast = true) {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         const didUnload = this.unloadAddon(addon, shouldToast, true);
         if (addon && !didUnload) return didUnload;
-        return this.loadAddon(addon ? addon.filename : idOrFileOrAddon, shouldToast);
+        return await this.loadAddon(addon ? addon.filename : idOrFileOrAddon, shouldToast);
     }
 
     isLoaded(idOrFile) {
@@ -285,7 +294,7 @@ export default class AddonManager {
         for (const name of results.removed) this.unloadAddon(name);
     }
 
-    loadAllAddons() {
+    async loadAllAddons() {
         this.loadState();
         const errors = [];
         const files = fs.readdirSync(this.addonFolder);
@@ -313,7 +322,7 @@ export default class AddonManager {
                 // Rename the file and let it go on
                 fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
             }
-            const addon = this.loadAddon(filename, false);
+            const addon = await this.loadAddon(filename, false);
             if (addon instanceof AddonError) errors.push(addon);
         }
 

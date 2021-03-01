@@ -25,9 +25,8 @@ export default new class WindowPrefs extends Builtin {
             confirmText: Strings.Modals.restartNow,
             cancelText: Strings.Modals.restartLater,
             onConfirm: () => {
-                const app = require("electron").remote.app;
-                app.relaunch();
-                app.exit();
+                const ipc = require("electron").ipcRenderer;
+                ipc.send("RELAUNCH");
             }
         });
     }

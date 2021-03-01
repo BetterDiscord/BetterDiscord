@@ -744,13 +744,4 @@ export default class DOMTools {
         for (let e = 0; e < elements.length; e++) domWrapper.appendChild(elements[e]);
         return domWrapper;
     }
-
-    /**
-     * Resolves the node to an HTMLElement. This is mainly used by library modules.
-     * @param {(jQuery|Element)} node - node to resolve
-     */
-    static resolveElement(node) {
-        if (!(node instanceof jQuery) && !(node instanceof Element)) return undefined;
-        return node instanceof jQuery ? node[0] : node;
-    }
 }

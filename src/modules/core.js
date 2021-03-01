@@ -31,18 +31,15 @@ export default new class Core {
         });
         ipcRenderer.invoke("bd-injector-info").then(injectorInfo => {
             Config.version = injectorInfo.version;
+            Config.path = injectorInfo.path;
+            Config.appPath = injectorInfo.appPath;
+            Config.userData = injectorInfo.userData;
             this.checkInjectorUpdate();
         });
     }
 
     get dependencies() {
         return [
-            {
-                name: "jquery",
-                type: "script",
-                url: "https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js",
-                backup: "https://cdn.jsdelivr.net/gh/jquery/jquery@2.0.0/jquery.min.js"
-            },
             {
                 name: "bd-stylesheet",
                 type: "style",
@@ -85,6 +82,7 @@ export default new class Core {
 
         await dependencyPromise;
         Logger.log("Startup", "Loading Plugins");
+        // const pluginErrors = [];
         const pluginErrors = PluginManager.initialize();
 
         Logger.log("Startup", "Loading Themes");
@@ -175,9 +173,8 @@ export default new class Core {
                     try {
                         const didUpdate = await this.updateInjector();
                         if (!didUpdate) return onUpdateFailed();
-                        const app = require("electron").remote.app;
-                        app.relaunch();
-                        app.exit();
+                        const ipc = require("electron").ipcRenderer;
+                        ipc.send("RELAUNCH");
                     }
                     catch (err) {
                         onUpdateFailed();

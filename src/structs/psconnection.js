@@ -4,7 +4,7 @@ const SortedGuildStore = WebpackModules.getByProps("getSortedGuilds");
 const AvatarDefaults = WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");
 const InviteActions = WebpackModules.getByProps("acceptInvite");
 
-const BrowserWindow = require("electron").remote.BrowserWindow;
+// const BrowserWindow = require("electron").remote.BrowserWindow;
 
 const betterDiscordServer = {
     name: "BetterDiscord",
@@ -140,16 +140,16 @@ export default new class PublicServersConnection {
     }
 
     connect() {
-        return new Promise(resolve => {
-            const joinWindow = new BrowserWindow(this.windowOptions);
-            const url = `https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=${this.connectEndPoint}`;
-            joinWindow.webContents.on("did-navigate", (event, navUrl) => {
-                if (navUrl != this.connectEndPoint) return;
-                joinWindow.close();
-                resolve();
-            });
-            joinWindow.loadURL(url);
-        });
+        // return new Promise(resolve => {
+        //     const joinWindow = new BrowserWindow(this.windowOptions);
+        //     const url = `https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=${this.connectEndPoint}`;
+        //     joinWindow.webContents.on("did-navigate", (event, navUrl) => {
+        //         if (navUrl != this.connectEndPoint) return;
+        //         joinWindow.close();
+        //         resolve();
+        //     });
+        //     joinWindow.loadURL(url);
+        // });
     }
 
     get windowOptions() {
