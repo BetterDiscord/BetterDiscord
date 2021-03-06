@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "target": "es2020",
+      "allowSyntheticDefaultImports": false,
+      "baseUrl": "./",
+      "paths": {
+        "modules": ["./src/modules/modules.js"],
+        "builtins": ["./src/builtins/builtins.js"],
+        "data": ["./src/data/data.js"],
+        "common": ["../common"]
+      }
+    },
+    "exclude": ["node_modules"]
+  }

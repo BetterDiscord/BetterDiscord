@@ -1,51 +1,23 @@
 {
     "name": "betterdiscord",
     "version": "1.0.0",
-    "description": "Enhances Discord adding functionality and themes.",
+    "description": "Enhances Discord by adding functionality and themes.",
     "main": "src/index.js",
     "scripts": {
-        "build": "webpack --progress --colors",
-        "watch": "webpack --progress --colors --watch",
-        "build-prod": "webpack --display errors-only --mode production -o dist/remote.js --devtool none",
-        "lint-js": "eslint --ext .jsx,.js src/",
-        "build-css": "postcss src/styles/index.css -o dist/style.css",
-        "watch-css": "postcss src/styles/index.css -o dist/style.css -w",
-        "build-prod-css": "postcss src/styles/index.css -o dist/style.css --no-map --env production",
-        "lint-css": "stylelint src/styles/*.css && stylelint src/styles/**/*.css",
-        "lint": "npm run lint-js && npm run lint-css",
-        "test": "mocha --require @babel/register --recursive \"./tests/*.js\"",
-        "lint-prod": "npm run lint-js -- --quiet && npm run lint-css -- --quiet",
-        "test-prod": "npm run test -- --reporter min"
+        "install": "cd injector && npm install && cd ../renderer && npm install",
+        "build": "npm run build-injector && npm run build-renderer",
+        "build-prod": "npm run build-prod --prefix injector && npm run build-prod --prefix renderer",
+        "build-injector": "npm run build --prefix injector",
+        "build-renderer": "npm run build --prefix renderer",
+        "inject": "node scripts/inject.js",
+        "lint": "eslint --ext .js common/ && npm run lint --prefix injector && npm run lint --prefix renderer",
+        "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
+        "dist": "npm run build-prod && node scripts/pack.js"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/rauenzi/BetterDiscordApp.git"
-    },
-    "author": "rauenzi",
-    "bugs": {
-        "url": "https://github.com/rauenzi/BetterDiscordApp/issues"
-    },
-    "homepage": "https://github.com/rauenzi/BetterDiscordApp",
     "devDependencies": {
-        "@babel/core": "^7.12.3",
-        "@babel/preset-env": "^7.12.1",
-        "@babel/preset-react": "^7.12.1",
-        "@babel/register": "^7.12.1",
-        "babel-loader": "^8.1.0",
-        "babel-plugin-module-resolver": "^4.0.0",
-        "circular-dependency-plugin": "^5.2.0",
-        "css-loader": "^5.1.0",
+        "asar": "^3.0.3",
         "eslint": "^7.12.0",
         "eslint-plugin-react": "^7.21.5",
-        "mocha": "^8.2.0",
-        "postcss": "^8.1.4",
-        "postcss-cli": "^8.1.0",
-        "postcss-csso": "^4.0.0",
-        "postcss-easy-import": "^3.0.0",
-        "postcss-loader": "^5.0.0",
-        "stylelint": "^13.7.2",
-        "stylelint-config-standard": "^20.0.0",
-        "webpack": "^4.43.0",
-        "webpack-cli": "^3.3.12"
+        "mocha": "^8.2.0"
     }
 }

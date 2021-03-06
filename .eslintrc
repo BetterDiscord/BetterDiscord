@@ -1,15 +1,5 @@
 {
-    "extends": ["eslint:recommended", "plugin:react/recommended"],
-    "plugins": [
-        "react"
-    ],
-    "settings": {
-        "react": {
-            "version": "16.12.0"
-        }
-    },
 	"env": {
-        "browser": true,
         "node": true
     },
     "parserOptions": {
@@ -91,64 +81,17 @@
         "template-curly-spacing": "error",
         "wrap-iife": ["error", "inside"],
         "yield-star-spacing": "error",
-        "yoda": "error",
-        
-
-        "react/display-name": "off",
-        "react/prop-types": "off",
-        "react/jsx-key": "off",
-        "react/jsx-no-target-blank": "error",
-        "react/jsx-uses-react": "error",
-        "react/jsx-uses-vars": "error"
+        "yoda": "error"
     },
     "globals": {
-        "webpackJsonp": "readonly",
         "Proxy": "readonly",
         "Set": "readonly",
         "WeakMap": "readonly",
         "Map": "readonly",
         "Promise": "readonly",
-        "ace": "readonly",
         "Reflect": "readonly",
         "DiscordNative": "readonly",
         "__non_webpack_require__": "readonly",
-        "Symbol": "readonly",
-        
-        "alert": "off",
-        "blur": "off",
-        "caches": "off",
-        "close": "off",
-        "closed": "off",
-        "confirm": "off",
-        "crypto": "off",
-        "defaultstatus": "off",
-        "event": "off",
-        "external": "off",
-        "find": "off",
-        "focus": "off",
-        "frames": "off",
-        "history": "off",
-        "length": "off",
-        "location": "off",
-        "locationbar": "off",
-        "menubar": "off",
-        "name": "off",
-        "navigator": "off",
-        "open": "off",
-        "opener": "off",
-        "origin": "off",
-        "parent": "off",
-        "personalbar": "off",
-        "print": "off",
-        "prompt": "off",
-        "screen": "off",
-        "scroll": "off",
-        "scrollbars": "off",
-        "self": "off",
-        "status": "off",
-        "statusbar": "off",
-        "stop": "off",
-        "toolbar": "off",
-        "top": "off"
+        "Symbol": "readonly"
     }
 }

@@ -33,15 +33,15 @@ This project and everyone participating in it is governed by the [Code of Conduc
 
 ### BetterDiscord Architecture
 
-BetterDiscord is currently broken up into two main pieces--the local injector, and the remote application.
+BetterDiscord is currently broken up into two main pieces--the local injector, and the renderer application.
 
 #### Injector
 
-The injector is the piece that runs on the user's computer, and the piece added by the [installer](https://github.com/rauenzi/BBDInstaller). The main job of this package is to inject into Discord and load the remote package. The injector and its code lives on the [injector branch](https://github.com/rauenzi/BetterDiscordApp/tree/injector).
+The injector is the piece that runs on the user's computer, and the piece added by the [installer](https://github.com/rauenzi/BBDInstaller). The main job of this package is to inject into Discord and load the renderer package. The injector and its code lives in the `injector` folder.
 
-#### Remote Application
+#### Renderer Application
 
-This is the main payload of BetterDiscord. This is what gets linked remotely by the [injector](#injector). This portion is where most of the user interaction and development will be. This module is responsible for loading plugins and themes, as well as handling settings, emotes and more.
+This is the main payload of BetterDiscord. This is what gets linked executed in the renderer context by the [injector](#injector). This portion is where most of the user interaction and development will be. This module is responsible for loading plugins and themes, as well as handling settings, emotes and more.
 
 ## How Can I Contribute?
 

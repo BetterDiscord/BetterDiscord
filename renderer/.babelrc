@@ -1,0 +1,21 @@
+{
+    "presets": [[
+        "@babel/env",
+        {
+            "targets": {
+                "node": "12.14.1"
+            }
+        }
+    ]],
+    "plugins": [[
+        "module-resolver",
+        {
+            "alias": {
+                "builtins": "./src/builtins/builtins.js",
+                "data": "./src/data/data.js",
+                "modules": "./src/modules/modules.js",
+                "common": "../common"
+            }
+        }
+    ]]
+}
