@@ -19,9 +19,7 @@ export default [
             {type: "switch", id: "twentyFourHour", value: false},
             {type: "switch", id: "hideGiftButton", value: false},
             {type: "switch", id: "hideGIFButton", value: false},
-            {type: "switch", id: "voiceMode", value: false},
             {type: "switch", id: "minimalMode", value: false},
-            {type: "switch", id: "darkMode", value: false},
             {type: "switch", id: "coloredText", value: false}
         ]
     },

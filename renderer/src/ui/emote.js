@@ -53,7 +53,7 @@ export default class BDEmote extends React.Component {
 
     render() {
         return React.createElement(TooltipWrapper, {
-                color: "black",
+                color: "primary",
                 position: "top",
                 text: this.label,
                 delay: 750

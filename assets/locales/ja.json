@@ -32,10 +32,6 @@
             },
             "appearance": {
                 "name": "外観",
-                "voiceMode": {
-                    "name": "ボイスモード",
-                    "note": "ボイスチャンネル以外を表示しないようにします"
-                },
                 "twentyFourHour": {
                     "name": "24時間表記",
                     "note": "時間を24時間表記に変更します。"
@@ -43,10 +39,6 @@
                 "minimalMode": {
                     "name": "コンパクトモード",
                     "note": "表示をコンパクトにします。"
-                },
-                "darkMode": {
-                    "name": "ダークモード",
-                    "note": "ダークモードを有効にします"
                 },
                 "coloredText": {
                     "name": "カラーテキスト",

@@ -32,10 +32,6 @@
             },
             "appearance": {
                 "name": "Utseende",
-                "voiceMode": {
-                    "name": "Röstläge",
-                    "note": "Gömmer allt förutom röstchatt"
-                },
                 "twentyFourHour": {
                     "name": "24-Timmars Tidsstämpel",
                     "note": "Visar 24-timmars tidsstämplar istället för AM/PM"
@@ -43,10 +39,6 @@
                 "minimalMode": {
                     "name": "Minimalt Läge",
                     "note": "Gömmer och förminskar komponenter"
-                },
-                "darkMode": {
-                    "name": "Mörkt Läge",
-                    "note": "Gör vissa komponenter mörka"
                 },
                 "coloredText": {
                     "name": "Färgad Text",

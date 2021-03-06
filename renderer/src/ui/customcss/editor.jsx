@@ -77,7 +77,7 @@ export default class CodeEditor extends React.Component {
     }
 
     makeButton(button) {
-        return <Tooltip color="black" position="top" text={button.tooltip}>
+        return <Tooltip color="primary" position="top" text={button.tooltip}>
                     {props => {
                         return <button {...props} className="btn btn-primary" onClick={(event) => {button.onClick(event, this.value);}}>{button.label}</button>;
                     }}

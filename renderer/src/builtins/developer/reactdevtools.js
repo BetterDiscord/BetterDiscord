@@ -23,6 +23,7 @@ export default new class ReactDevTools extends Builtin {
         Modals.showConfirmationModal(Strings.Modals.additionalInfo, Strings.Modals.restartPrompt, {
             confirmText: Strings.Modals.restartNow,
             cancelText: Strings.Modals.restartLater,
+            danger: true,
             onConfirm: () => IPC.relaunch()
         });
     }

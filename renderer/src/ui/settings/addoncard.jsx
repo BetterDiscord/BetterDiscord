@@ -143,7 +143,7 @@ export default class AddonCard extends React.Component {
     }
 
     makeButton(title, children, action) {
-        return <Tooltip color="black" position="top" text={title}>
+        return <Tooltip color="primary" position="top" text={title}>
                     {(props) => {
                         return <div {...props} className="bd-addon-button" onClick={action}>{children}</div>;
                     }}
@@ -151,7 +151,7 @@ export default class AddonCard extends React.Component {
     }
 
     makeControlButton(title, children, action, {danger = false, disabled = false} = {}) {
-        return <Tooltip color="black" position="top" text={title}>
+        return <Tooltip color="primary" position="top" text={title}>
                     {(props) => {
                         return <button {...props} className={"bd-button bd-addon-button" + (danger ? " bd-button-danger" : "") + (disabled ? " bd-button-disabled" : "")} onClick={action}>{children}</button>;
                     }}

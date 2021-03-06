@@ -85,7 +85,7 @@ export default class Modals {
         return ModalActions.openModal(props => {
             return React.createElement(ConfirmationModal, Object.assign({
                 header: title,
-                confirmButtonColor: danger ? this.Buttons.ButtonColors.RED : this.Buttons.ButtonColors.PRIMARY,
+                confirmButtonColor: danger ? this.Buttons.ButtonColors.RED : this.Buttons.ButtonColors.BRAND,
                 confirmText: confirmText,
                 cancelText: cancelText,
                 onConfirm: onConfirm,

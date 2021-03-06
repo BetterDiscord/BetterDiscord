@@ -32,10 +32,6 @@ export default {
             },
             appearance: {
                 name: "Appearance",
-                voiceMode: {
-                    name: "Voice Mode",
-                    note: "Hides everything that isn't voice chat"
-                },
                 minimalMode: {
                     name: "Minimal Mode",
                     note: "Hide elements and reduce the size of elements"
@@ -43,10 +39,6 @@ export default {
                 twentyFourHour: {
                     name: "24-Hour Timestamps",
                     note: "Converts 12-hour timestamps to 24-hour format"
-                },
-                darkMode: {
-                    name: "Dark Mode",
-                    note: "Make certain elements dark by default"
                 },
                 coloredText: {
                     name: "Colored Text",

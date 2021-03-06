@@ -115,7 +115,7 @@ export default class AddonList extends React.Component {
     }
 
     makeControlButton(title, children, action, selected = false) {
-        return <Tooltip color="black" position="top" text={title}>
+        return <Tooltip color="primary" position="top" text={title}>
                     {(props) => {
                         return <button {...props} className={"bd-button bd-view-button" + (selected ? " selected" : "")} onClick={action}>{children}</button>;
                     }}

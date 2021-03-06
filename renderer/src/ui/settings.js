@@ -66,7 +66,7 @@ export default new class SettingsRenderer {
             thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
         });
         Patcher.after("SettingsManager", UserSettings.prototype, "generateSections", (thisObject, args, returnValue) => {
-            let location = returnValue.findIndex(s => s.section.toLowerCase() == "linux") + 1;
+            let location = returnValue.findIndex(s => s.section.toLowerCase() == "changelog") - 1;
             const insert = (section) => {
                 returnValue.splice(location, 0, section);
                 location++;

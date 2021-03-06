@@ -20,6 +20,7 @@ export default new class WindowPrefs extends Builtin {
         Modals.showConfirmationModal(Strings.Modals.additionalInfo, info, {
             confirmText: Strings.Modals.restartNow,
             cancelText: Strings.Modals.restartLater,
+            danger: true,
             onConfirm: () => IPC.relaunch()
         });
     }

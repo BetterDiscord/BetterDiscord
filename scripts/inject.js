@@ -2,11 +2,13 @@ const args = process.argv;
 const fs = require("fs");
 const path = require("path");
 
+const doSanityChecks = require("./validate");
+const buildPackage = require("./package");
+
 const useBdRelease = args[2] && args[2].toLowerCase() === "release";
 const releaseInput = useBdRelease ? args[3] && args[3].toLowerCase() : args[2] && args[2].toLowerCase();
 const release = releaseInput === "canary" ? "Discord Canary" : releaseInput === "ptb" ? "Discord PTB" : "Discord";
-console.log(`Injecting into version ${release}`);
-
+const bdPath = useBdRelease ? path.resolve(__dirname, "..", "dist", "betterdiscord.asar") : path.resolve(__dirname, "..", "dist");
 const discordPath = (function() {
     if (process.platform === "win32") {
         const basedir = path.join(process.env.LOCALAPPDATA, release.replace(/ /g, ""));
@@ -27,8 +29,13 @@ const discordPath = (function() {
     }
 })();
 
+doSanityChecks(bdPath);
+buildPackage(bdPath);
+console.log("");
+
+console.log(`Injecting into ${release}`);
 if (!fs.existsSync(discordPath)) throw new Error(`Cannot find directory for ${release}`);
-console.log(`Found ${release} in ${discordPath}`);
+console.log(`    ✅ Found ${release} in ${discordPath}`);
 
 const appPath = path.join(discordPath, "app");
 const packageJson = path.join(appPath, "package.json");
@@ -38,15 +45,13 @@ if (!fs.existsSync(appPath)) fs.mkdirSync(appPath);
 if (fs.existsSync(packageJson)) fs.unlinkSync(packageJson);
 if (fs.existsSync(indexJs)) fs.unlinkSync(indexJs);
 
-const bdPath = useBdRelease ? path.resolve(__dirname, "..", "dist", "betterdiscord.asar") : path.resolve(__dirname, "..", "dist");
-
-console.log(`Writing package.json`);
 fs.writeFileSync(packageJson, JSON.stringify({
     name: "betterdiscord",
     main: "index.js",
 }, null, 4));
+console.log("    ✅ Wrote package.json");
 
-console.log(`Writing index.js`);
 fs.writeFileSync(indexJs, `require("${bdPath.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}");`);
-
+console.log("    ✅ Wrote index.js");
+console.log("");
 console.log(`Injection successful, please restart ${release}.`);

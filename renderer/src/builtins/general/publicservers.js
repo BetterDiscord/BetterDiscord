@@ -24,7 +24,7 @@ export default new class PublicServers extends Builtin {
 
     _appendButton() {
         const wrapper = DiscordModules.GuildClasses.wrapper.split(" ")[0];
-        const guilds = DOM.query(`.${wrapper} .scroller-2TZvBN >:first-child`);
+        const guilds = DOM.query(`.${wrapper} .listItem-2P_4kh`);
         DOM.after(guilds, this.button);
     }
 

@@ -32,10 +32,6 @@
 			},
 			"appearance": {
 				"name": "Aussehen",
-				"voiceMode": {
-					"name": "Sprachmodus",
-					"note": "Verbirgt alles, was kein Sprachkanal ist."
-				},
 				"twentyFourHour": {
 					"name": "24h Zeitstempel",
 					"note": "Zeigt die Zeitstempel in einem 24h format an."
@@ -43,10 +39,6 @@
 				"minimalMode": {
 					"name": "Minimaler Modus",
 					"note": "Verbirgt Elemente und reduziert die Größe von elementen."
-				},
-				"darkMode": {
-					"name": "Dunkelmodus",
-					"note": "Aktivert einen noch dunkleren Modus in Discord."
 				},
 				"coloredText": {
 					"name": "Farbiger Text",

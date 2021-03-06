@@ -123,7 +123,7 @@ export default new class ComponentPatcher {
             if (!children || !author || !author.id || author.id !== "249746236008169473") return;
             if (!Array.isArray(children)) return;
             children.push(
-                React.createElement(Tooltip, {color: "black", position: "top", text: "BetterDiscord Developer"},
+                React.createElement(Tooltip, {color: "primary", position: "top", text: "BetterDiscord Developer"},
                     props => React.createElement(Anchor, Object.assign({className: "bd-chat-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BetterDiscord", target: "_blank"}, props),
                         React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
                     )
@@ -143,7 +143,7 @@ export default new class ComponentPatcher {
             if (!children || !user || !user.id || user.id !== "249746236008169473") return;
             if (!Array.isArray(children)) return;
             children.push(
-                React.createElement(Tooltip, {color: "black", position: "top", text: "BetterDiscord Developer"},
+                React.createElement(Tooltip, {color: "primary", position: "top", text: "BetterDiscord Developer"},
                     props => React.createElement(Anchor, Object.assign({className: "bd-member-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BetterDiscord", target: "_blank"}, props),
                         React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
                     )

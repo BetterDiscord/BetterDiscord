@@ -58,7 +58,7 @@
     transition: transform 0.1s;
 }
 
-.bd-emote-collapse-icon.expanded svg {
+.bd-emote-collapse-icon.collapsed svg {
     transform: rotate(-90deg);
 }
 
