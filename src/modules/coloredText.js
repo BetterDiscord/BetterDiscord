@@ -2,7 +2,7 @@ import {settingsCookie} from "../0globals";
 import BDV2 from "./v2";
 import Utils from "./utils";
 
-const MessageContent = BDV2.WebpackModules.find(m => m.type?.displayName === "MessageContent")
+const MessageContent = BDV2.WebpackModules.find(m => m.type?.displayName === "MessageContent");
 const ChannelStore = BDV2.WebpackModules.findByUniqueProperties(["getChannel", "getDMUserIds"]);
 const GuildMemberStore = BDV2.WebpackModules.findByUniqueProperties(["getMember"]);
 
