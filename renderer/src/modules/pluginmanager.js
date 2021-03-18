@@ -38,8 +38,8 @@ export default new class PluginManager extends AddonManager {
         });
     }
 
-    async initialize() {
-        const errors = await super.initialize();
+    initialize() {
+        const errors = super.initialize();
         this.setupFunctions();
         Settings.registerPanel("plugins", Strings.Panels.plugins, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
             type: this.prefix,
@@ -66,13 +66,13 @@ export default new class PluginManager extends AddonManager {
     unloadPlugin(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
     loadPlugin(filename) {return this.loadAddon(filename);}
 
-    async loadAddon(filename) {
-        const error = await super.loadAddon(filename);
+    loadAddon(filename) {
+        const error = super.loadAddon(filename);
         if (error) Modals.showAddonErrors({plugins: [error]});
     }
 
-    async reloadPlugin(idOrFileOrAddon) {
-        const error = await this.reloadAddon(idOrFileOrAddon);
+    reloadPlugin(idOrFileOrAddon) {
+        const error = this.reloadAddon(idOrFileOrAddon);
         if (error) Modals.showAddonErrors({plugins: [error]});
         return typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
     }
@@ -107,21 +107,19 @@ export default new class PluginManager extends AddonManager {
         window.__filename = path.basename(module.filename);
         window.__dirname = this.addonFolder;
         const wrapped = `(${vm.compileFunction(fileContent, ["exports", "require", "module", "__filename", "__dirname"]).toString()})`;
-        // console.log(module);
-        module.exports = new Promise(resolve => {
-            IPC.runScript(`${wrapped}(window.module.exports, window.require, window.module, window.__filename, window.__dirname)`).then(() => {
-                // console.log(window.module);
-                meta.exports = module.exports;
-                module.exports = meta;
-                delete window.module;
-                delete window.__filename;
-                delete window.__dirname;
-                resolve();
-            });
-        });
-        // module._compile(fileContent, module.filename);
-        // meta.exports = module.exports;
-        // module.exports = meta;
+        const final = `${wrapped}(window.module.exports, window.require, window.module, window.__filename, window.__dirname)`;
+
+        const container = document.createElement("script");
+        container.innerHTML = final;
+        container.id = `${meta.id}-script-container`;
+        // container.src = `data:text/javascript;${btoa(final)}`;
+        document.head.append(container);
+
+        meta.exports = module.exports;
+        module.exports = meta;
+        delete window.module;
+        delete window.__filename;
+        delete window.__dirname;
         return "";
     }
 
@@ -139,7 +137,7 @@ export default new class PluginManager extends AddonManager {
         catch (err) {
             this.state[addon.id] = false;
             Toasts.error(Strings.Addons.couldNotStart.format({name: addon.name, version: addon.version}));
-            Logger.stacktrace(this.name, addon.name + " could not be started.", err);
+            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
             return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "start()"}), {message: err.message, stack: err.stack});
         }
         this.emit("started", addon.id);
@@ -156,7 +154,7 @@ export default new class PluginManager extends AddonManager {
         catch (err) {
             this.state[addon.id] = false;
             Toasts.error(Strings.Addons.couldNotStop.format({name: addon.name, version: addon.version}));
-            Logger.stacktrace(this.name, addon.name + " could not be stopped.", err);
+            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
             return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "stop()"}), {message: err.message, stack: err.stack});
         }
         this.emit("stopped", addon.id);
@@ -185,7 +183,7 @@ export default new class PluginManager extends AddonManager {
             if (!this.state[this.addonList[i].id]) continue;
             if (typeof(plugin.onSwitch) === "function") {
                 try {plugin.onSwitch();}
-                catch (err) {Logger.stacktrace(this.name, "Unable to fire onSwitch for " + this.addonList[i].name + ".", err);}
+                catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err);}
             }
         }
     }
@@ -196,7 +194,7 @@ export default new class PluginManager extends AddonManager {
             if (!this.state[this.addonList[i].id]) continue;
             if (typeof plugin.observer === "function") {
                 try {plugin.observer(mutation);}
-                catch (err) {Logger.stacktrace(this.name, "Unable to fire observer for " + this.addonList[i].name + ".", err);}
+                catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err);}
             }
         }
     }

@@ -22,6 +22,8 @@ electron.app.once("ready", async () => {
     await ReactDevTools.install();
 });
 
+let hasCrashed = false;
+
 export default class BetterDiscord {
     static getWindowPrefs() {
         if (!fs.existsSync(buildInfoFile)) return {};
@@ -89,12 +91,24 @@ export default class BetterDiscord {
 
         // When DOM is available, pass the renderer over the wall
         browserWindow.webContents.on("dom-ready", () => {
-            this.injectRenderer(browserWindow);
+            if (!hasCrashed) return this.injectRenderer(browserWindow);
+
+            // If a previous crash was detected, show a message explaining why BD isn't there
+            electron.dialog.showMessageBox({
+                title: "BetterDiscord Crashed",
+                type: "warning",
+                message: "BetterDiscord seems to have crashed your Discord client.",
+                detail: "BetterDiscord has automatically disabled itself temporarily. Try removing all your plugins then restarting Discord."
+            });
         });
 
         // This is used to alert renderer code to onSwitch events
         browserWindow.webContents.on("did-navigate-in-page", () => {
             browserWindow.webContents.send(IPCEvents.NAVIGATE);
+        });
+
+        browserWindow.webContents.on("render-process-gone", (event, details) => {
+            hasCrashed = true;
         });
     }
 }

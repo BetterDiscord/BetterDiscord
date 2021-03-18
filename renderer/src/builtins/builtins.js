@@ -17,6 +17,5 @@ export {default as EmoteModule} from "./emotes/emotes";
 export {default as EmoteMenu} from "./emotes/emotemenu";
 // export {default as EmoteAutocaps} from "./emotes/emoteautocaps";
 
-export {default as CopySelector} from "./developer/copyselector";
 export {default as Debugger} from "./developer/debugger";
 export {default as ReactDevTools} from "./developer/reactdevtools";

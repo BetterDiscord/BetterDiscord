@@ -48,14 +48,14 @@ export default class AddonManager {
         this.windows = new Set();
     }
 
-    async initialize() {
+    initialize() {
         this.originalRequire = Module._extensions[this.moduleExtension];
         Module._extensions[this.moduleExtension] = this.getAddonRequire();
         Settings.on(this.collection, this.category, this.id, (enabled) => {
             if (enabled) this.watchAddons();
             else this.unwatchAddons();
         });
-        return await this.loadAllAddons();
+        return this.loadAllAddons();
     }
 
     // Subclasses should overload this and modify the addon object as needed to fully load it
@@ -195,11 +195,10 @@ export default class AddonManager {
     }
 
     // Subclasses should use the return (if not AddonError) and push to this.addonList
-    async loadAddon(filename, shouldToast = false) {
+    loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
         try {
             const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
-            await Promise.resolve(addon);
         }
         catch (error) {
             return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack});
@@ -234,11 +233,11 @@ export default class AddonManager {
         return true;
     }
 
-    async reloadAddon(idOrFileOrAddon, shouldToast = true) {
+    reloadAddon(idOrFileOrAddon, shouldToast = true) {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         const didUnload = this.unloadAddon(addon, shouldToast, true);
         if (addon && !didUnload) return didUnload;
-        return await this.loadAddon(addon ? addon.filename : idOrFileOrAddon, shouldToast);
+        return this.loadAddon(addon ? addon.filename : idOrFileOrAddon, shouldToast);
     }
 
     isLoaded(idOrFile) {
@@ -293,7 +292,7 @@ export default class AddonManager {
         for (const name of results.removed) this.unloadAddon(name);
     }
 
-    async loadAllAddons() {
+    loadAllAddons() {
         this.loadState();
         const errors = [];
         const files = fs.readdirSync(this.addonFolder);
@@ -321,7 +320,7 @@ export default class AddonManager {
                 // Rename the file and let it go on
                 fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
             }
-            const addon = await this.loadAddon(filename, false);
+            const addon = this.loadAddon(filename, false);
             if (addon instanceof AddonError) errors.push(addon);
         }
 

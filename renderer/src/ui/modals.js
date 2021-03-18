@@ -215,7 +215,7 @@ export default class Modals {
         };
 
         const ModalActions = this.ModalActions;
-        const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen");
+        const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen", "root");
         const originalRoot = OriginalModalClasses.root;
         if (originalRoot) OriginalModalClasses.root = `${originalRoot} bd-changelog-modal`;
         const key = ModalActions.openModal(props => {

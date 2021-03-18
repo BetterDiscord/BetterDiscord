@@ -26,11 +26,18 @@ export default new class Core {
         // (() => {
         //     const fs = require("fs");
         //     fs.appendFileSync("Z:\\debug.log", "\n\n\n");
-        //     window.ocl = console.log;
-        //     console.log = (...args) => {
+
+        //     const toFile = orig => (...args) => {
         //         fs.appendFileSync("Z:\\debug.log", JSON.stringify(args) + "\n");
-        //         window.ocl(...args);
+        //         orig(...args);
         //     };
+
+        //     window.ocl = console.log;
+        //     window.oce = console.error;
+        //     window.ocx = console.exception;
+        //     console.log = toFile(window.ocl);
+        //     console.error = toFile(window.oce);
+        //     console.exception = toFile(window.ocx);
         // })();
         
         Config.appPath = process.env.DISCORD_APP_PATH;
@@ -106,7 +113,7 @@ export default new class Core {
                 const guild = GuildClasses.listItem.split(" ")[0];
                 const blob = GuildClasses.blobContainer.split(" ")[0];
                 if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(Config.deferLoaded = true);
-                else if (timesChecked >= 50) return resolve(Config.deferLoaded = true);
+                // else if (timesChecked >= 50) return resolve(Config.deferLoaded = true);
                 setTimeout(checkForGuilds, 100);
             };
 

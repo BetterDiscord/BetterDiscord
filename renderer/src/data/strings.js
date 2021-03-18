@@ -106,10 +106,6 @@ export default {
                     name: "Debugger Hotkey",
                     note: "Allows activating debugger when pressing F8"
                 },
-                copySelector: {
-                    name: "Copy Selector",
-                    note: "Adds a \"Copy Selector\" option to context menus when developer mode is active"
-                },
                 reactDevTools: {
                     name: "React Developer Tools",
                     note: "Injects your local installation of React Developer Tools into Discord"
@@ -226,9 +222,6 @@ export default {
         openDetached: "Detach Window",
         settings: "Editor Settings",
         editorTitle: "Custom CSS Editor"
-    },
-    Developer: {
-        copySelector: "Copy Selector"
     },
     Emotes: {
         loading: "Loading emotes in the background do not reload.",

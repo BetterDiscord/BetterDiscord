@@ -52,7 +52,6 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "debuggerHotkey", value: false},
-            {type: "switch", id: "copySelector", value: false},
             {type: "switch", id: "reactDevTools", value: false}
         ]
     },

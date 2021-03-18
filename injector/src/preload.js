@@ -21,7 +21,12 @@ if (preload) {
     process.electronBinding("command_line").appendSwitch("preload", preload);
     
     // Run original preload
-    try {require(preload);}
+    try {
+        const originalKill = process.kill;
+        process.kill = function() {};
+        require(preload);
+        process.kill = originalKill;
+    }
     catch (e) {
         // TODO bail out
     }
