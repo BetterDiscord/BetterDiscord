@@ -5,13 +5,14 @@
     "main": "src/index.js",
     "private": true,
     "scripts": {
-        "build": "cp ./src/preload.js ../dist/preload.js && webpack --progress --color",
-        "watch": "cp ./src/preload.js ../dist/preload.js && webpack --progress --color --watch",
-        "build-prod": "cp ./src/preload.js ../dist/preload.js && webpack --stats minimal --mode production",
+        "build": "webpack --progress --color",
+        "watch": "webpack --progress --color --watch",
+        "build-prod": "webpack --stats minimal --mode production",
         "lint": "eslint --ext .js src/"
     },
     "devDependencies": {
         "circular-dependency-plugin": "^5.2.2",
+        "copy-webpack-plugin": "^8.0.0",
         "eslint": "^7.21.0",
         "webpack": "^5.24.2",
         "webpack-cli": "^4.5.0"

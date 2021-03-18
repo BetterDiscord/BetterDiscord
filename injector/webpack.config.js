@@ -1,4 +1,5 @@
 const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
@@ -32,6 +33,14 @@ module.exports = (env, argv) => ({
     new CircularDependencyPlugin({
       exclude: /node_modules/,
       cwd: process.cwd(),
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, "src", "preload.js"),
+          to: path.resolve(__dirname, "..", "dist", "preload.js")
+        },
+      ],
     })
   ],
   optimization: {

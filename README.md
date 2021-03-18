@@ -53,19 +53,16 @@ See this [gist](https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77
 6. Move the `app` folder (the one you downloaded and renamed) inside of `Resources`.
 7. Fully quit Discord and restart it.
 
-## Local Installation
+## Development Installation
 
-By default BD loads majority of the package through a CDN at runtime so you always have the latest version. However, if you'd rather only load something from your PC and update when you want, you can do that too!
+For normal users, installing via the installers makes the most sense. However when wanting to either develop BetterDiscord, or when the installers do not work, this option can be used.
 
 **Prerequisites**: [Node.js](https://nodejs.org/en/) 12.x+ and the package manager [npm](https://www.npmjs.com/).
 
 1. Clone this repository `git clone https://github.com/rauenzi/BetterDiscordApp.git`
 2. Install dependencies with `npm install`
-3. Build both the JavaScript and CSS bundles with `npm run deploy` this will create a `style.css` and `remote.js` in the `dist` folder.
-4. Follow the steps for [manual installation](#manual-installation) from before.
-5. Inside the `app` folder you created as a part of that process, find the file `betterdiscord\config.json`
-6. Edit the file and change the value of `local` to `true` and change the `localPath` value to match the <u>absolute</u> path of the `dist` folder from step 3.
-7. Fully quit Discord and restart it.
+3. Build both the Injector and Renderer bundles with `npm run build` this will create a `injector.js`, `preload.js`, and `renderer.js` in the `dist` folder.
+4. Run the inject script to inject the local files into your Discord client (`npm run inject`). Alternately install it to non-stable using `npm run inject canary`.
 
 # FAQ
 
