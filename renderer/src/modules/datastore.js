@@ -26,6 +26,9 @@ export default new class DataStore {
     }
 
     initialize() {
+        const bdFolderExists = fs.existsSync(Config.dataPath);
+        if (!bdFolderExists) fs.mkdirSync(Config.dataPath);
+
         const newStorageExists = fs.existsSync(this.baseFolder);
         if (!newStorageExists) fs.mkdirSync(this.baseFolder);
 
