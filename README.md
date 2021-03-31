@@ -12,7 +12,7 @@
 [travis-badge]: https://img.shields.io/travis/com/rauenzi/BetterDiscordApp.svg?style=flat-square&branch=stable
 [travis-link]: https://travis-ci.com/rauenzi/BetterDiscordApp
 
-[downloads-badge]: https://img.shields.io/github/downloads/rauenzi/BetterDiscordApp/latest/total?style=flat-square
+[downloads-badge]: https://img.shields.io/github/downloads/BetterDiscord/Installer/latest/total?style=flat-square
 
 
 
@@ -25,39 +25,20 @@ BetterDiscord is a client modification for Discord. This allows you to add plugi
 ## Auto Installers
 
 ### Windows
-Grab the `exe` file from [here](https://github.com/rauenzi/BBDInstaller/releases/latest/download/BandagedBD.exe).
+Grab the `exe` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe).
 
 ### macOS/OS X
-Grab the `zip` file from [here](https://github.com/rauenzi/BBDInstaller/releases/latest/download/BandagedBD_Mac.zip).
+Grab the `zip` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip).
 
 ### Linux
-See this [gist](https://gist.github.com/ObserverOfTime/d7e60eb9aa7fe837545c8cb77cf31172).
+Grab the `AppImage` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage).
+
 
 ## Manual Installation
 
-### Windows
-1. Download and extract this: https://github.com/rauenzi/BetterDiscordApp/archive/injector.zip
-2. Rename `BetterDiscordApp-injector` to `app`.
-3. Go to `%localappdata%\Discord\`, and locate the directory with the largest version number (e.g. `app-0.0.306`).
-4. Within `app-0.0.306` navigate to `resources`.
-5. If an `app` folder already exists inside `resources`, delete it.
-6. Move the `app` folder (the one you downloaded and renamed) inside of `resources`.
-7. Fully quit Discord and restart it.
-
-### macOS/OS X
-1. Download and extract this: https://github.com/rauenzi/BetterDiscordApp/archive/injector.zip
-2. Rename `BetterDiscordApp-injector` to `app`.
-3. Go to `/Applications/`, right click `Discord.app` and select `Show Package Contents`.
-4. Within `Discord.app` navigate to `Contents` -> `Resources`.
-5. If an `app` folder already exists inside `Resources`, delete it.
-6. Move the `app` folder (the one you downloaded and renamed) inside of `Resources`.
-7. Fully quit Discord and restart it.
-
-## Development Installation
-
 For normal users, installing via the installers makes the most sense. However when wanting to either develop BetterDiscord, or when the installers do not work, this option can be used.
 
-**Prerequisites**: [Node.js](https://nodejs.org/en/) 12.x+ and the package manager [npm](https://www.npmjs.com/).
+**Prerequisites**: [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) 12.x+ and the package manager [npm](https://www.npmjs.com/).
 
 1. Clone this repository `git clone https://github.com/rauenzi/BetterDiscordApp.git`
 2. Install dependencies with `npm install`

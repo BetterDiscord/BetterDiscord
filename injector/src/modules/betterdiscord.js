@@ -99,6 +99,7 @@ export default class BetterDiscord {
                 message: "BetterDiscord seems to have crashed your Discord client.",
                 detail: "BetterDiscord has automatically disabled itself temporarily. Try removing all your plugins then restarting Discord."
             });
+            hasCrashed = false;
         });
 
         // This is used to alert renderer code to onSwitch events
