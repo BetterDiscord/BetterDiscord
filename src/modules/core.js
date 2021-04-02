@@ -24,15 +24,15 @@ function Core() {
     ipcRenderer.invoke("bd-injector-info").then(injectorInfo => {
         bdConfig.version = injectorInfo.version;
 
-        const request = require("request");
-        request.get({url: `https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/injector/package.json`, json: true}, (err, resp, body) => {
-            let remoteVersion = "0.6.1";
-            if (!err && resp.statusCode == 200) remoteVersion = body.version || remoteVersion;
-            bdConfig.latestVersion = remoteVersion;
-            this.checkInjectorUpdate();
-        });
+        // const request = require("request");
+        // request.get({url: `https://gitcdn.xyz/repo/rauenzi/BetterDiscordApp/injector/package.json`, json: true}, (err, resp, body) => {
+        //     let remoteVersion = "0.6.1";
+        //     if (!err && resp.statusCode == 200) remoteVersion = body.version || remoteVersion;
+        //     bdConfig.latestVersion = remoteVersion;
+        //     this.checkInjectorUpdate();
+        // });
     });
-    
+
 }
 
 Core.prototype.setConfig = function(config) {
@@ -43,7 +43,7 @@ Core.prototype.setConfig = function(config) {
 Core.prototype.init = async function() {
     if (this.hasStarted) return;
     this.hasStarted = true;
-    
+
     if (!Array.prototype.flat) {
         Utils.alert("Not Supported", "BetterDiscord v" + bbdVersion + " does not support this old version (" + currentDiscordVersion + ") of Discord. Please update your Discord installation before proceeding.");
         return;
@@ -63,6 +63,8 @@ Core.prototype.init = async function() {
         Utils.alert("Not Supported", "BandagedBD does not work with Powercord. Please uninstall one of them.");
         return;
     }
+
+    Utils.alert("Not Supported", `The version of BetterDiscord you are using has been discontinued. Please reinstall using the new installer found here: <a href="https://github.com/BetterDiscord/Installer/releases/latest" target="_blank">https://github.com/BetterDiscord/Installer/releases/latest</a>`);
 
     Utils.log("Startup", "Initializing Settings");
     this.initSettings();
@@ -137,7 +139,7 @@ Core.prototype.checkForGuilds = function() {
 
 Core.prototype.injectExternals = async function() {
     await DOM.addScript("ace-script", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js");
-    
+
     if (window.require.original) window.require = window.require.original;
     if (window.$ && window.jQuery) return; // Dependencies already loaded
 
@@ -412,7 +414,7 @@ Core.prototype.updateInjector = async function() {
     // Check and delete rename extraction
     const alreadyExists = await new Promise(res => fs.exists(extractedFolder, res));
     if (alreadyExists) await new Promise(res => fs.rename(extractedFolder, `${extractedFolder}.bak${Math.round(performance.now())}`, res));
-    
+
     // Unzip the downloaded zip file
     const zipfile = await new Promise(r => yauzl.open(savedZip, {lazyEntries: true}, (err, zip) =>  r(zip)));
     zipfile.on("entry", function(entry) {
