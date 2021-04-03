@@ -52,7 +52,7 @@ export default new class SettingsManager {
 
     removePanel(id) {
         const location = this.panels.findIndex(c => c.id == id);
-        if (!location < 0) return Logger.error("Settings", "No collection with id " + id);
+        if (location < 0) return Logger.error("Settings", "No collection with id " + id);
         this.panels.splice(location, 1);
     }
 
