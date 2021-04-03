@@ -55,6 +55,7 @@ export default new class ThemeManager extends AddonManager {
     /* Overrides */
     getFileModification(module, fileContent, meta) {
         meta.css = fileContent;
+        if (meta.format == "json") meta.css = meta.css.split("\n").slice(1).join("\n");
         return `module.exports = ${JSON.stringify(meta)};`;
     }
 

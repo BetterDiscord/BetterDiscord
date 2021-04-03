@@ -12,14 +12,15 @@ Object.defineProperty(window, "webpackJsonp", {
 electron.webFrame.top.context.global = electron.webFrame.top.context;
 electron.webFrame.top.context.require = require;
 electron.webFrame.top.context.process = process;
+electron.webFrame.top.context.Buffer = Buffer;
 
 // Load Discord's original preload
 const preload = process.env.DISCORD_PRELOAD;
 if (preload) {
-    
+
     // Restore original preload for future windows
     process.electronBinding("command_line").appendSwitch("preload", preload);
-    
+
     // Run original preload
     try {
         const originalKill = process.kill;
