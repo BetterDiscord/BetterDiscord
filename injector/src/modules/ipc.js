@@ -70,6 +70,11 @@ const inspectElement = async event => {
     event.sender.devToolsWebContents.executeJavaScript("DevToolsAPI.enterInspectElementMode();");
 };
 
+const setMinimumSize = (event, width, height) => {
+    const window = BrowserWindow.fromWebContents(event.sender);
+    window.setMinimumSize(width, height);
+};
+
 export default class IPCMain {
     static registerEvents() {
         ipc.on(IPCEvents.GET_PATH, getPath);
@@ -77,6 +82,7 @@ export default class IPCMain {
         ipc.on(IPCEvents.OPEN_DEVTOOLS, openDevTools);
         ipc.on(IPCEvents.CLOSE_DEVTOOLS, closeDevTools);
         ipc.on(IPCEvents.INSPECT_ELEMENT, inspectElement);
+        ipc.on(IPCEvents.MINIMUM_SIZE, setMinimumSize);
         ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
         ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
     }

@@ -10,3 +10,4 @@ export const OPEN_DEVTOOLS      = "bd-open-devtools";
 export const CLOSE_DEVTOOLS     = "bd-close-devtools";
 export const OPEN_WINDOW        = "bd-open-window";
 export const INSPECT_ELEMENT    = "bd-inspect-element";
+export const MINIMUM_SIZE       = "bd-minimum-size";

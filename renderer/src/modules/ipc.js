@@ -33,6 +33,10 @@ export default new class IPCRenderer {
     }
 
     inspectElement() {
-        ipc.send(IPCEvents.INSPECT_ELEMENT);
+        return ipc.send(IPCEvents.INSPECT_ELEMENT);
+    }
+
+    setMinimumSize(width, height) {
+        return ipc.send(IPCEvents.MINIMUM_SIZE, width, height);
     }
 };

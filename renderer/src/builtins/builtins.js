@@ -12,6 +12,7 @@ export {default as ColoredText} from "./appearance/coloredtext";
 export {default as HideGIFButton} from "./appearance/hidegifbutton";
 export {default as HideGiftButton} from "./appearance/hidegiftbutton";
 export {default as MinimalMode} from "./appearance/minimalmode";
+export {default as RemoveMinimumSize} from "./appearance/removeminimumsize";
 
 export {default as EmoteModule} from "./emotes/emotes";
 export {default as EmoteMenu} from "./emotes/emotemenu";

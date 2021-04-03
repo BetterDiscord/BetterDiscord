@@ -22,10 +22,6 @@ electron.app.once("ready", async () => {
 });
 
 
-if (BetterDiscord.getSetting("general", "mediaKeys")) {
-    electron.app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,MediaSessionService");
-}
-
 let hasCrashed = false;
 export default class BetterDiscord {
     static getWindowPrefs() {
@@ -86,6 +82,7 @@ export default class BetterDiscord {
     }
 
     static setup(browserWindow) {
+
         // Setup some useful vars to avoid blocking IPC calls
         process.env.DISCORD_PRELOAD = browserWindow.__originalPreload;
         process.env.DISCORD_APP_PATH = appPath;
@@ -115,4 +112,8 @@ export default class BetterDiscord {
             hasCrashed = true;
         });
     }
+}
+
+if (BetterDiscord.getSetting("general", "mediaKeys")) {
+    electron.app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,MediaSessionService");
 }

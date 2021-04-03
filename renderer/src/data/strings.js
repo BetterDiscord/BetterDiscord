@@ -47,6 +47,10 @@ export default {
                 hideGiftButton: {
                     name: "Hide Gift Button",
                     note: "Hides the Nitro Gift button in the textarea"
+                },
+                removeMinimumSize: {
+                    name: "Remove Minimum Size",
+                    note: "Removes Discord's forced minimum window size of 940x500"
                 }
             },
             addons: {
