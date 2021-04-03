@@ -1,0 +1,288 @@
+{
+    "Panels": {
+        "plugins": "Plugins",
+        "themes": "Thèmes",
+        "customcss": "CSS personnalisé"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Réglages",
+            "general": {
+                "name": "Général",
+                "emotes": {
+                    "name": "Système Émojis",
+                    "note": "Active le système d'émojis de BD"
+                },
+                "publicServers": {
+                    "name": "Serveurs publics",
+                    "note": "Afficher boutton des serveurs publics"
+                },
+                "voiceDisconnect": {
+                    "name": "Déconnexion vocale",
+                    "note": "Déconnexion du serveur vocal lors de la fermeture de Discord"
+                },
+                "classNormalizer": {
+                    "name": "Normaliser les classes",
+                    "note": "Ajoute des classes stables aux éléments pour aider les thèmes. (par exemple, ajoute .da-channels à .channels-Ie2l6A)"
+                },
+                "showToasts": {
+                    "name": "Afficher notifications bulles",
+                    "note": "Afficher une petite notification pour les informations importantes"
+                }
+            },
+            "appearance": {
+                "name": "Apparance",
+                "minimalMode": {
+                    "name": "Mode Minimal",
+                    "note": "Masquer les éléments et réduire leurs tailles"
+                },
+                "twentyFourHour": {
+                    "name": "Horodatage en 24-Heures",
+                    "note": "Convertir l'horodatage 12-heures au format 24-heures"
+                },
+                "coloredText": {
+                    "name": "Texte Coloré",
+                    "note": "Faire en sorte que la couleur du texte soit la même que celle du rôle"
+                }
+            },
+            "addons": {
+                "name": "Gestionnaire Extension",
+                "addonErrors": {
+                    "name": "Afficher Erreures Extensions",
+                    "note": "Affiche une modale avec les erreurs de plugin/thème"
+                },
+                "autoScroll": {
+                    "name": "Défilement jsqu'à Réglages",
+                    "note": "Défilement automatique jusqu'aux réglages des extensions lorsce que le bouton est cliqué (seulement si hors visibilité)"
+                },
+                "autoReload": {
+                    "name": "Chargement automatique",
+                    "note": "Changements, rechargements, et déchargements des extensions et des thèmes automatique"
+                },
+                "editAction": {
+                    "name": "Action Édition",
+                    "note": "Où les thèmes & extensions apparêtrons lors de l'édition",
+                    "options": {
+                        "detached": "Fenêtre détachée",
+                        "system": "Éditeur système"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "CSS Personnalisé",
+                "customcss": {
+                    "name": "CSS Personnalisé",
+                    "note": "Activer l'onglet de CSS personnalisé"
+                },
+                "liveUpdate": {
+                    "name": "Mise à Jour Directe",
+                    "note": "Mettre à jour le CSS lorsce que vous écrivez"
+                },
+                "startDetached": {
+                    "name": "Démarrage Détaché",
+                    "note": "En cliquant sur l'onglet CSS Personnalisé, l'éditeur s'ouvre dans une fenêtre distincte."
+                },
+                "nativeOpen": {
+                    "name": "Ouvrir dans Éditeur Natif",
+                    "note": "En cliquant sur CSS Personnalisé,l'onglet ouvrira votre css personnalisé dans votre éditeur natif"
+                },
+                "openAction": {
+                    "name": "Emplacement Éditeur",
+                    "note": "Où le CSS personnalisé doit s'ouvrir par défaut",
+                    "options": {
+                        "settings": "Menu Réglages",
+                        "detached": "Fenêtre Détachée",
+                        "system": "Éditeur système"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Réglages Développeur",
+                "debuggerHotkey": {
+                    "name": "Touches Raccourcis Débuggueur",
+                    "note": "Permettre l'activation du débuggueur quand F8 est préssé"
+                },
+                "copySelector": {
+                    "name": "Copier Sélecteur",
+                    "note": "Ajouter une option \"Copier Sélecteur\" aux menus de contextes quand le mode développeur est actif"
+                },
+                "reactDevTools": {
+                    "name": "Outils Développeurs React",
+                    "note": "Injecter votre installation locale d'Outils Développeurs React dans Discord"
+                }
+            },
+            "window": {
+                "name": "Fenêtre Préférences",
+                "transparency": {
+                    "name": "Activer Transparence",
+                    "note": "Permet à la fenêtre principale d'être transparente. (requires restart)"
+                },
+                "frame": {
+                    "name": "Cadre Fenêtre",
+                    "note": "Ajoute le cadre de la fenêtre native de l'OS à la fenêtre principale."
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emoticônes",
+            "general": {
+                "name": "Général",
+                "download": {
+                    "name": "Télécharger Émojis",
+                    "note": "Télécharger les émojis même s'ils ne sont plus à jour"
+                },
+                "emoteMenu": {
+                    "name": "Menu Émojis",
+                    "note": "Afficher Twitch/Émojis favoris dans le menu des émojis"
+                },
+                "hideEmojiMenu": {
+                    "name": "Masquer Menu Émojis",
+                    "note": "Masquer le menu des émojis de Discord quand le menu des émojis est utilisé"
+                },
+                "autoCaps": {
+                    "name": "Autocapitalisation des émojis",
+                    "note": "Mise en majuscule automatique des commandes émojis"
+                },
+                "modifiers": {
+                    "name": "Afficher Modificateur Emojis",
+                    "note": "Activer les mods émojis (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animation Au Survol",
+                    "note": "Animer les modificateurs d'émojis uniquement au survol"
+                }
+            },
+            "categories": {
+                "name": "Catégories",
+                "twitchglobal": {
+                    "name": "Twitch Globaux",
+                    "note": "Afficher les émojis globaux de Twitch"
+                },
+                "twitchsubscriber": {
+                    "name": "Abonnés Twitch",
+                    "note": "Afficher les émojis des abonnés Twitch"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "Afficher les émojis de FFZ"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Afficher les émojis de BTTV"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} de {{author}}",
+        "openFolder": "Ouvrir dossier {{type}}",
+        "reload": "Recharger",
+        "addonSettings": "Réglages",
+        "website": "Site web",
+        "source": "Source",
+        "invite": "Server de support",
+        "donate": "Don",
+        "patreon": "Patreon",
+        "name": "Nom",
+        "author": "Auteur",
+        "version": "Version",
+        "added": "Date d'Ajout",
+        "modified": "Date Modifiée",
+        "search": "Rechercher {{type}}",
+        "editAddon": "Édition",
+        "deleteAddon": "Suppression",
+        "confirmDelete": "Êtes-vous sûr de vouloir supprimer {{name}}?",
+        "confirmationText": "Vous n'avez pas sauvegardé les changements pour {{name}}. Fermer cette fenêtre fera perdre ces changements.",
+        "enabled": "{{name}} à été activé.",
+        "disabled": "{{name}} à été désactivé.",
+        "couldNotEnable": "{{name}} ne peut pas être activé.",
+        "couldNotDisable": "{{name}} n'a pas pu être désactivé.",
+        "couldNotStart": "{{name}} n'a pas pu être lancé.",
+        "couldNotStop": "{{name}} n'a pas pu être arrêté.",
+        "methodError": "{{method}} n'a pas pu être renvoyé.",
+        "unknownAuthor": "Auteur Inconnu",
+        "noDescription": "Description non fournie.",
+        "alreadyExists": "Il y a déjà un {{type}} avec comme nom {{name}}",
+        "alreadWatching": "Déjà en train de regarder les extensions.",
+        "metaError": "META n'a pas pu être analysé.",
+        "missingNameData": "Données META manquantes pour le nom.",
+        "metaNotFound": "Données METAnon introuvables.",
+        "compileError": "Impossible à compiler.",
+        "wasUnloaded": "{{name}} à été déchargé."
+    },
+    "CustomCSS": {
+        "confirmationText": "Vous avez des changements non sauvegardés dans votre CSS Personnalisé. Fermer cette fenêtre vous fera perdre ces changements.",
+        "update": "Mise à jour",
+        "save": "Sauvegarder",
+        "openNative": "Ouvrir dans Éediteur Système",
+        "openDetached": "Fenêtre Détachée",
+        "settings": "Réglages Éditeur",
+        "editorTitle": "Éditeur CSS Personnalisé"
+    },
+    "Developer": {
+        "copySelector": "Copier Sélecteur"
+    },
+    "Emotes": {
+        "loading": "Le chargement des emotes en arrière-plan ne se recharge pas.",
+        "loaded": "Tous les émojis sont chargés avec succès.",
+        "clearEmotes": "Éffacer Données Émojis",
+        "favoriteAction": "Favoris!"
+    },
+    "PublicServers": {
+        "button": "public",
+        "join": "Joindre",
+        "joining": "Rejoindre",
+        "joined": "Rejoins",
+        "loading": "Chargement",
+        "loadMore": "Charger plus",
+        "notConnected": "Non connecté à DiscordServers.com!",
+        "search": "Recherche",
+        "connect": "Connecter",
+        "reconnect": "Reconnecter",
+        "categories": "Catégories",
+        "connection": "Connecté en tant que: {{username}}#{{discriminator}}",
+        "results": "Afficher {{start}}-{{end}} de {{total}} résultats dans {{category}}",
+        "query": "pour {{query}}"
+    },
+    "Modals": {
+        "confirmAction": "Êtes-vous sûr?",
+        "okay": "Okay",
+        "cancel": "Annuler",
+        "close": "Fermer",
+        "name": "Nom",
+        "message": "Message",
+        "error": "Erreur",
+        "addonErrors": "Erreurs Extension",
+        "restartRequired": "Redémarrage RequisRestart Required",
+        "restartNow": "Redémarrer Maintenant",
+        "restartLater": "Redémarrer Ultérieurement",
+        "additionalInfo": "Info Additionnelle"
+    },
+    "ReactDevTools": {
+        "notFound": "Extension Non Trouvée",
+        "notFoundDetails": "Impossible de trouver l'extension de React Developer Tools sur ton PC. Merci d'installer l'extension dans votre your installation locale de Chrome."
+    },
+    "Sorting": {
+        "sortBy": "Trier Par",
+        "order": "Ordre",
+        "ascending": "Ascendant",
+        "descending": "Descendant"
+    },
+    "Startup": {
+        "notSupported": "Non supporté",
+        "versionMismatch": "Injecteur BetterDiscord v{{injector}} n'est pas supporté par le dernier (v{{remote}}).\n\nMerci de télécharger la dernière version depuis [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "incompatibleApp": "BetterDiscord ne fonctionne pas avec {{app}}. Merci de désinstaller l'une d'elles.",
+        "updateNow": "Mettre à Jour Maintenant",
+        "maybeLater": "Peut Être Plus Tard",
+        "updateAvailable": "Mise à Jour Disponible",
+        "updateInfo": "Il y a une mise à jour disponible pour l'injecteur de BetterDiscord ({{version}}).\n\nVous pouvez soit mettre à jour et redémarrer maintenant, soit plus tard.",
+        "updateFailed": "Mise à Jour Impossible",
+        "manualUpdate": "Mise à jour automatique impossible, merci de télécharger l'installateur et de le réinstaller normalement.\n\n[Télécharger Installateur](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "Échec Chargement jQuery",
+        "jqueryFailedDetails": "jQuery n'a pas pu être chargé, et plusieures extensions pourraient ne pas fonctionner correctement. Précédez à vos propres risques."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Cette option requière un thème transparent pour pouvoir fonctionner correctement. Sous Windows, cela peut casser une perturbation du style aéro et lors de la maximisation..\n\nAfin de prendre effet, Discord doit être redémarré. Voulez-vous redémarrer maintenant?",
+        "disabledInfo": "Pour prendre effet, Discord à besoin de redémarrer. Voulez-vous redémarrer maintenant?"
+    }
+}
