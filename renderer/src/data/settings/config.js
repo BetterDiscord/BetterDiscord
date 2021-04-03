@@ -8,7 +8,8 @@ export default [
             {type: "switch", id: "publicServers", value: true},
             {type: "switch", id: "voiceDisconnect", value: false},
             {type: "switch", id: "classNormalizer", value: false},
-            {type: "switch", id: "showToasts", value: true}
+            {type: "switch", id: "showToasts", value: true},
+            {type: "switch", id: "mediaKeys", value: false}
         ]
     },
     {
@@ -52,7 +53,8 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "debuggerHotkey", value: false},
-            {type: "switch", id: "reactDevTools", value: false}
+            {type: "switch", id: "reactDevTools", value: false},
+            {type: "switch", id: "inspectElement", value: false}
         ]
     },
     {

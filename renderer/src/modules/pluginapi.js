@@ -21,6 +21,7 @@ const BdApi = {
     get emotes() {
         return new Proxy(Emotes.Emotes, {
             get(category) {
+                if (category === "blocklist") return Emotes.blocklist;
                 const group = Emotes.Emotes[category];
                 if (!group) return undefined;
                 return new Proxy(group, {

@@ -31,4 +31,8 @@ export default new class IPCRenderer {
     openWindow(url, options) {
         return ipc.invoke(IPCEvents.OPEN_WINDOW, url, options);
     }
+
+    inspectElement() {
+        ipc.send(IPCEvents.INSPECT_ELEMENT);
+    }
 };

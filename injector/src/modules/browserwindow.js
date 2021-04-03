@@ -1,5 +1,5 @@
-const electron = require("electron");
-const path = require("path");
+import electron from "electron";
+import path from "path";
 
 import BetterDiscord from "./betterdiscord";
 

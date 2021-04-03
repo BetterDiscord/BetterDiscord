@@ -8,20 +8,20 @@ const getPath = (event, pathReq) => {
         case "appPath":
             returnPath = app.getAppPath();
             break;
-        case "appData": 
-        case "userData": 
-        case "home": 
-        case "cache": 
-        case "temp": 
-        case "exe": 
-        case "module": 
-        case "desktop": 
-        case "documents": 
-        case "downloads": 
-        case "music": 
-        case "pictures": 
-        case "videos": 
-        case "recent": 
+        case "appData":
+        case "userData":
+        case "home":
+        case "cache":
+        case "temp":
+        case "exe":
+        case "module":
+        case "desktop":
+        case "documents":
+        case "downloads":
+        case "music":
+        case "pictures":
+        case "videos":
+        case "recent":
         case "logs":
             returnPath = app.getPath(pathReq);
             break;
@@ -62,12 +62,21 @@ const createBrowserWindow = async (event, url, {windowOptions, closeOnUrl} = {})
     });
 };
 
+const inspectElement = async event => {
+    if (!event.sender.isDevToolsOpened()) {
+        event.sender.openDevTools();
+        while (!event.sender.isDevToolsOpened()) await new Promise(r => setTimeout(r, 100));
+    }
+    event.sender.devToolsWebContents.executeJavaScript("DevToolsAPI.enterInspectElementMode();");
+};
+
 export default class IPCMain {
     static registerEvents() {
         ipc.on(IPCEvents.GET_PATH, getPath);
         ipc.on(IPCEvents.RELAUNCH, relaunch);
         ipc.on(IPCEvents.OPEN_DEVTOOLS, openDevTools);
         ipc.on(IPCEvents.CLOSE_DEVTOOLS, closeDevTools);
+        ipc.on(IPCEvents.INSPECT_ELEMENT, inspectElement);
         ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
         ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
     }

@@ -1,4 +1,4 @@
-const electron = require("electron");
+import electron from "electron";
 
 export default class {
     static remove() {

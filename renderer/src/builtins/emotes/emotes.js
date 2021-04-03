@@ -37,7 +37,7 @@ export default new class EmoteModule extends Builtin {
 
     get(id) {return super.get("emotes", "general", id);}
 
-    get MessageComponent() {return WebpackModules.find(m => m.default && m.default.displayName && m.default.displayName == "Message");}
+    get MessageComponent() {return WebpackModules.find(m => m.default && m.default.toString().search("childrenRepliedMessage") > -1);}
 
     get Emotes() {return Emotes;}
     get TwitchGlobal() {return Emotes.TwitchGlobal;}

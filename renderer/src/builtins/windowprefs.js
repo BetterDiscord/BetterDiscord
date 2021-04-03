@@ -1,6 +1,6 @@
 import Builtin from "../structs/builtin";
 import Modals from "../ui/modals";
-import {DataStore, Strings, IPC} from "modules";
+import {Strings, IPC} from "modules";
 
 export default new class WindowPrefs extends Builtin {
     get name() {return "WindowPrefs";}

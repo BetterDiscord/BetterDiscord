@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const electron = require("electron");
+import fs from "fs";
+import path from "path";
+import electron from "electron";
 
 import ReactDevTools from "./reactdevtools";
 import * as IPCEvents from "common/constants/ipcevents";
@@ -21,8 +21,12 @@ electron.app.once("ready", async () => {
     await ReactDevTools.install();
 });
 
-let hasCrashed = false;
 
+if (BetterDiscord.getSetting("general", "mediaKeys")) {
+    electron.app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,MediaSessionService");
+}
+
+let hasCrashed = false;
 export default class BetterDiscord {
     static getWindowPrefs() {
         if (!fs.existsSync(buildInfoFile)) return {};
@@ -37,7 +41,7 @@ export default class BetterDiscord {
 
         try {
             const buildInfo = __non_webpack_require__(buildInfoFile);
-            const settingsFile = path.resolve(dataPath, "data", buildInfo.releaseChannel, "settings.json");           
+            const settingsFile = path.resolve(dataPath, "data", buildInfo.releaseChannel, "settings.json");
             this._settings = __non_webpack_require__(settingsFile) ?? {};
             return this._settings[category]?.[key];
         }

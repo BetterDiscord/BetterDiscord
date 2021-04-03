@@ -109,6 +109,10 @@ export default {
                 reactDevTools: {
                     name: "React Developer Tools",
                     note: "Injects your local installation of React Developer Tools into Discord"
+                },
+                inspectElement: {
+                    name: "Inspect Element Hotkey",
+                    note: "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
                 }
             },
             window: {
@@ -150,6 +154,10 @@ export default {
                 animateOnHover: {
                     name: "Animate On Hover",
                     note: "Only animate the emote modifiers on hover"
+                },
+                mediaKeys: {
+                    name: "Disable Media Keys",
+                    note: "Prevents Discord from hijacking your media keys after playing a video."
                 }
             },
             categories: {
@@ -269,7 +277,7 @@ export default {
     },
     ReactDevTools: {
       notFound: "Extension Not Found",
-      notFoundDetails: "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."    
+      notFoundDetails: "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
     },
     Sorting: {
         sortBy: "Sort By",

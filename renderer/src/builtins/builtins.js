@@ -6,6 +6,7 @@ export {default as WindowPrefs} from "./windowprefs";
 export {default as ClassNormalizer} from "./general/classnormalizer";
 export {default as PublicServers} from "./general/publicservers";
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
+export {default as MediaKeys} from "./general/mediakeys";
 
 export {default as TwentyFourHour} from "./appearance/24hour";
 export {default as ColoredText} from "./appearance/coloredtext";
@@ -19,3 +20,4 @@ export {default as EmoteMenu} from "./emotes/emotemenu";
 
 export {default as Debugger} from "./developer/debugger";
 export {default as ReactDevTools} from "./developer/reactdevtools";
+export {default as InspectElement} from "./developer/inspectelement";
