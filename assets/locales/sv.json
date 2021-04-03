@@ -21,10 +21,6 @@
                     "name": "Lämna Röst",
                     "note": "Lämna röstsamtal när Discord stängs ner"
                 },
-                "classNormalizer": {
-                    "name": "Normalisera Klasser",
-                    "note": "Lägger till statiska klasser för att underlätta teman (ex. lägger till .da-channels på .channels-Ie2l6A)"
-                },
                 "showToasts": {
                     "name": "Visa Toasts",
                     "note": "Visar en liten notification för viktig information"

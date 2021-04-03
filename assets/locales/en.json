@@ -21,10 +21,6 @@
                     "name": "Voice Disconnect",
                     "note": "Disconnect from voice server when closing Discord"
                 },
-                "classNormalizer": {
-                    "name": "Normalize Classes",
-                    "note": "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)"
-                },
                 "showToasts": {
                     "name": "Show Toasts",
                     "note": "Shows a small notification for important information"
@@ -43,6 +39,14 @@
                 "coloredText": {
                     "name": "Colored Text",
                     "note": "Make text colour the same as role color"
+                },
+                "hideGIFButton": {
+                    "name": "Hide GIF Button",
+                    "note": "Hides the GIF picker button in the textarea"
+                },
+                "hideGiftButton": {
+                    "name": "Hide Gift Button",
+                    "note": "Hides the Nitro Gift button in the textarea"
                 }
             },
             "addons": {
@@ -50,10 +54,6 @@
                 "addonErrors": {
                     "name": "Show Addon Errors",
                     "note": "Shows a modal with plugin/theme errors"
-                },
-                "autoScroll": {
-                    "name": "Scroll To Settings",
-                    "note": "Auto-scrolls to a plugin's settings when the button is clicked (only if out of view)"
                 },
                 "autoReload": {
                     "name": "Automatic Loading",
@@ -102,13 +102,13 @@
                     "name": "Debugger Hotkey",
                     "note": "Allows activating debugger when pressing F8"
                 },
-                "copySelector": {
-                    "name": "Copy Selector",
-                    "note": "Adds a \"Copy Selector\" option to context menus when developer mode is active"
-                },
                 "reactDevTools": {
                     "name": "React Developer Tools",
                     "note": "Injects your local installation of React Developer Tools into Discord"
+                },
+                "inspectElement": {
+                    "name": "Inspect Element Hotkey",
+                    "note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
                 }
             },
             "window": {
@@ -150,6 +150,10 @@
                 "animateOnHover": {
                     "name": "Animate On Hover",
                     "note": "Only animate the emote modifiers on hover"
+                },
+                "mediaKeys": {
+                    "name": "Disable Media Keys",
+                    "note": "Prevents Discord from hijacking your media keys after playing a video."
                 }
             },
             "categories": {
@@ -175,6 +179,7 @@
     },
     "Addons": {
         "title": "{{name}} v{{version}} by {{author}}",
+        "byline": "by {{author}}",
         "openFolder": "Open {{type}} Folder",
         "reload": "Reload",
         "addonSettings": "Settings",
@@ -199,6 +204,7 @@
         "couldNotDisable": "{{name}} could not be disabled.",
         "couldNotStart": "{{name}} could not be started.",
         "couldNotStop": "{{name}} could not be stopped.",
+        "settingsError": "Could not open settings for {{name}}",
         "methodError": "{{method}} could not be fired.",
         "unknownAuthor": "Unknown Author",
         "noDescription": "Description not provided.",
@@ -208,7 +214,9 @@
         "missingNameData": "META missing name data.",
         "metaNotFound": "META was not found.",
         "compileError": "Could not be compiled.",
-        "wasUnloaded": "{{name}} was unloaded."
+        "wasUnloaded": "{{name}} was unloaded.",
+        "blankSlateHeader": "You don't have any {{type}}s!",
+        "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder."
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -218,9 +226,6 @@
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
         "editorTitle": "Custom CSS Editor"
-    },
-    "Developer": {
-        "copySelector": "Copy Selector"
     },
     "Emotes": {
         "loading": "Loading emotes in the background do not reload.",
@@ -235,11 +240,16 @@
         "joined": "Joined",
         "loading": "Loading",
         "loadMore": "Load More",
-        "notConnected": "Not connected to DiscordServers.com!",
+        "notConnected": "Not Connected",
+        "connectionRequired": "You must connect your account in order to join servers.",
+        "connectionError": "Connection Error",
+        "connectionErrorMessage": "There was an error connecting to DiscordServers.com, it's possible their website/api is down. Please try again later.",
+        "pagination": "Page {{page}} of {{count}}",
         "search": "Search",
         "connect": "Connect",
         "reconnect": "Reconnect",
         "categories": "Categories",
+        "keywords": "Keywords",
         "connection": "Connected as: {{username}}#{{discriminator}}",
         "results": "Showing {{start}}-{{end}} of {{total}} results in {{category}}",
         "query": "for {{query}}"
@@ -247,7 +257,9 @@
     "Modals": {
         "confirmAction": "Are You Sure?",
         "okay": "Okay",
+        "done": "Done",
         "cancel": "Cancel",
+        "nevermind": "Nevermind",
         "close": "Close",
         "name": "Name",
         "message": "Message",
@@ -256,7 +268,8 @@
         "restartRequired": "Restart Required",
         "restartNow": "Restart Now",
         "restartLater": "Restart Later",
-        "additionalInfo": "Additional Info"
+        "additionalInfo": "Additional Info",
+        "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     },
     "ReactDevTools": {
         "notFound": "Extension Not Found",

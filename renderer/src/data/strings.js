@@ -21,10 +21,6 @@ export default {
                     name: "Voice Disconnect",
                     note: "Disconnect from voice server when closing Discord"
                 },
-                classNormalizer: {
-                    name: "Normalize Classes",
-                    note: "Adds stable classes to elements to help themes. (e.g. adds .da-channels to .channels-Ie2l6A)"
-                },
                 showToasts: {
                     name: "Show Toasts",
                     note: "Shows a small notification for important information"

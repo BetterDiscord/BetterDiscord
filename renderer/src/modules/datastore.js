@@ -68,7 +68,7 @@ export default new class DataStore {
             if (!channelData || !channelData.settings) continue;
             const oldSettings = channelData.settings;
             const newSettings = {
-                general: {publicServers: oldSettings["bda-gs-1"], voiceDisconnect: oldSettings["bda-dc-0"], classNormalizer: oldSettings["fork-ps-4"], showToasts: oldSettings["fork-ps-2"]},
+                general: {publicServers: oldSettings["bda-gs-1"], voiceDisconnect: oldSettings["bda-dc-0"], showToasts: oldSettings["fork-ps-2"]},
                 appearance: {twentyFourHour: oldSettings["bda-gs-6"], minimalMode: oldSettings["bda-gs-2"], coloredText: oldSettings["bda-gs-7"]},
                 addons: {addonErrors: oldSettings["fork-ps-1"], autoReload: oldSettings["fork-ps-5"]},
                 developer: {debuggerHotkey: oldSettings["bda-gs-8"], reactDevTools: oldSettings.reactDevTools}
@@ -86,7 +86,7 @@ export default new class DataStore {
             setChannelData(channel, "misc", {favoriteEmotes}); // favorite emotes
             fs.writeFileSync(path.resolve(this.baseFolder, channel, "custom.css"), customcss); // customcss
         }
-        
+
         this.initialize(); // Reinitialize data store with the converted data
     }
 

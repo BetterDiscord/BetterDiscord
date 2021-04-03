@@ -21,10 +21,6 @@
 					"name": "Verbindung zum Sprachchat trennen",
 					"note": "Trennt beim Schließen von Discord die Verbindung zum Sprachchat."
 				},
-				"classNormalizer": {
-					"name": "Normalisierte klassen",
-					"note": "Fügt stetige Klassen zu Elementen hinzu (z.B. .da-channels zu .channels-Ie2l6A)"
-				},
 				"showToasts": {
 					"name": "Benachrichtigungen anzeigen",
 					"note": "Zeigt kleine Benachrichtigung für wichtige informationen an."
