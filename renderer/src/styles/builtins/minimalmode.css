@@ -161,12 +161,18 @@
 /* Messages */
 
 .bd-minimal .cozy-3raOZG.wrapper-2a6GCs .avatar-1BDn8e {
+    transform: scale(.75);
     width: 32px;
     height: 32px;
 }
 
 .bd-minimal .cozy-3raOZG.wrapper-2a6GCs {
     padding-left: 64px;
+}
+
+.buttons-cl5qTG {
+   transform: scale(.75);
+   transform-origin: right;
 }
 
 /* Chat input */
@@ -182,49 +188,43 @@
     left: 55px;
 }
 
-.bd-minimal .wrapper-1Rf91z {
+.bd-minimal .guilds-1SWlCJ {
     width: 55px;
 }
 
-.bd-minimal .wrapper-1Rf91z .wrapper-sa6paO {
+.bd-minimal .guilds-1SWlCJ .wrapper-sa6paO {
     height: 35px;
 }
 
-.bd-minimal .wrapper-1Rf91z .item-2hkk8m {
+.bd-minimal .guilds-1SWlCJ .wrapper-sa6paO span {
     max-height: 20px;
 }
 
-.bd-minimal .wrapper-1Rf91z div[style*="height: 56px"],
-.bd-minimal .wrapper-1Rf91z [role=group] {
+.bd-minimal .guilds-1SWlCJ div[style*="height: 56px"],
+.bd-minimal .guilds-1SWlCJ [role=group] {
     height: auto !important;
 }
 
-.bd-minimal .wrapper-1Rf91z .listItem-2P_4kh,
-.bd-minimal .wrapper-1Rf91z .unreadMentionsIndicatorBottom-BXS58x,
-.bd-minimal .wrapper-1Rf91z .unreadMentionsIndicatorTop-gA6RCh,
-.bd-minimal .wrapper-1Rf91z .wrapper-21YSNc {
+.bd-minimal .guilds-1SWlCJ .listItem-GuPuDH,
+.bd-minimal .guilds-1SWlCJ [class*="unreadMentionsIndicator"],
+.bd-minimal .guilds-1SWlCJ .wrapper-3Njo_c {
     width: 100%;
 }
 
-.bd-minimal .wrapper-1Rf91z .guildsError-b7zR5H,
-.bd-minimal .wrapper-1Rf91z .svg-1X37T1,
-.bd-minimal .wrapper-1Rf91z .wrapper-25eVIn,
-.bd-minimal .wrapper-1Rf91z .placeholderMask-3K9THS {
+.bd-minimal .guilds-1SWlCJ .wrapper-25eVIn,
+.bd-minimal .guilds-1SWlCJ [class*="guildsError-"],
+.bd-minimal .guilds-1SWlCJ svg[width="48"] {
     width: 35px;
     height: 35px;
 }
 
-.bd-minimal .wrapper-1Rf91z .wrapper-21YSNc .folder-21wGz3,
-.bd-minimal .wrapper-1Rf91z .wrapper-21YSNc .folderIconWrapper-226oVY {
+.bd-minimal .guilds-1SWlCJ .wrapper-21YSNc > span {
     background: transparent;
-}
-
-.bd-minimal .wrapper-1Rf91z .wrapper-21YSNc .expandedFolderBackground-2sPsd- {
     left: 10px;
     width: 35px;
 }
 
-.bd-minimal .wrapper-1Rf91z #bd-pub-button {
+.bd-minimal .guilds-1SWlCJ #bd-pub-button {
     height: 20px;
     line-height: 20px;
     font-size: 10px;
