@@ -1,6 +1,5 @@
 {
     "name": "betterdiscord-renderer",
-    "version": "1.0.0",
     "description": "Renderer portion of the BetterDiscord application.",
     "private": true,
     "main": "src/index.js",

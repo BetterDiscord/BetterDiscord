@@ -45,21 +45,18 @@ export default new class ComponentPatcher {
                 children[children.length - 2].type = newOne;
             }
 
-            const injector = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `Injector ${Config.version}`);
-            const versionHash = `(${Config.hash ? Config.hash.substring(0, 7) : Config.branch})`;
-            const additional = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BD ${Config.bdVersion} `, DiscordModules.React.createElement("span", {className: "versionHash-2gXjIB da-versionHash"}, versionHash));
-            
+            const additional = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BetterDiscord ${Config.version}`);
+
 
             const originalVersions = children[children.length - 1].type;
             children[children.length - 1].type = function() {
                 const returnVal = originalVersions(...arguments);
-                returnVal.props.children.splice(returnVal.props.children.length - 1, 0, injector);
                 returnVal.props.children.splice(1, 0, additional);
                 return returnVal;
             };
         });
     }
-    
+
     /*
     patchGuildListItems() {
         if (this.guildListItemsPatch) return;
@@ -158,7 +155,7 @@ export default new class ComponentPatcher {
 
 // Tropical's notes
 
-/* 
+/*
 html [maximized | bd | stable | canary | ptb]
 .iconWrapper-2OrFZ1 [type]
 .sidebar-2K8pFh [guild-id]

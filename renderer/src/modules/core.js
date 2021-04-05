@@ -1,3 +1,4 @@
+const path = require("path");
 import LocaleManager from "./localemanager";
 
 import Logger from "common/logger";
@@ -13,6 +14,7 @@ import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
 import ComponentPatcher from "./componentpatcher";
 import Strings from "./strings";
+import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
 
@@ -39,7 +41,7 @@ export default new class Core {
         //     console.error = toFile(window.oce);
         //     console.exception = toFile(window.ocx);
         // })();
-        
+
         Config.appPath = process.env.DISCORD_APP_PATH;
         Config.userData = process.env.DISCORD_USER_DATA;
         Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
@@ -55,7 +57,6 @@ export default new class Core {
         await LocaleManager.initialize();
 
         Logger.log("Startup", "Performing incompatibility checks");
-        if (Config.version < Config.minSupportedVersion) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.versionMismatch.format({injector: Config.version, remote: Config.bdVersion}));
         if (window.ED) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "EnhancedDiscord"}));
         if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
 
@@ -97,10 +98,12 @@ export default new class Core {
         Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
 
         const previousVersion = DataStore.getBDData("version");
-        if (Config.bdVersion > previousVersion) {
+        if (Config.version > previousVersion) {
             Modals.showChangelogModal(Changelog);
-            DataStore.setBDData("version", Config.bdVersion);
+            DataStore.setBDData("version", Config.version);
         }
+
+        this.checkForUpdate();
     }
 
     waitForGuilds() {
@@ -112,12 +115,64 @@ export default new class Core {
                 const wrapper = GuildClasses.wrapper.split(" ")[0];
                 const guild = GuildClasses.listItem.split(" ")[0];
                 const blob = GuildClasses.blobContainer.split(" ")[0];
-                if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve(Config.deferLoaded = true);
-                // else if (timesChecked >= 50) return resolve(Config.deferLoaded = true);
+                if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve();
+                // else if (timesChecked >= 50) return resolve();
                 setTimeout(checkForGuilds, 100);
             };
 
             checkForGuilds();
         });
+    }
+
+    async checkForUpdate() {
+        const resp = await fetch(`https://api.github.com/repos/rauenzi/BetterDiscordApp/releases/latest`,{
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "User-Agent": "BetterDiscord Updater"
+            }
+        });
+
+        const data = await resp.json();
+        const remoteVersion = data.tag_name.startsWith("v") ? data.tag_name.slice(1) : data.tag_name;
+        const hasUpdate = remoteVersion > Config.version;
+        if (!hasUpdate) return;
+
+        Modals.showConfirmationModal("Update", "There is an update, would you like to update now?", {
+            confirmText: "Update",
+            cancelText: "Skip",
+            onConfirm: () => this.update(data)
+        });
+    }
+
+    async update(releaseInfo) {
+        try {
+            const asar = releaseInfo.assets.find(a => a.name === "betterdiscord.asar");
+            const request = require("request");
+            const buff = await new Promise((resolve, reject) =>
+                request(asar.url, {encoding: null, headers: {"User-Agent": "BD Updater", "Accept": "application/octet-stream"}}, (err, resp, body) => {
+                if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
+                return resolve(body);
+            }));
+
+            const asarPath = path.join(DataStore.baseFolder, "betterdiscord.asar");
+            console.log(asarPath);
+            const fs = require("original-fs");
+            fs.writeFileSync(asarPath, buff);
+
+            Modals.showConfirmationModal("Update Successful!", "BetterDiscord updated successfully. Discord needs to restart in order for it to take effect. Do you want to do this now?", {
+                confirmText: Strings.Modals.restartNow,
+                cancelText: Strings.Modals.restartLater,
+                danger: true,
+                onConfirm: () => IPC.relaunch()
+            });
+        }
+        catch (err) {
+            console.error(err);
+            Modals.showConfirmationModal("Update Failed", "BetterDiscord failed to update. Please download the latest version of the installer from GitHub (https://github.com/BetterDiscord/Installer/releases/latest) and reinstall.", {
+                cancelText: ""
+            });
+        }
     }
 };

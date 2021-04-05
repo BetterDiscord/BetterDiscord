@@ -78,7 +78,7 @@ export default class Modals {
 
         const emptyFunction = () => {};
         const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
-        
+
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? React.createElement(Markdown, null, c) : c);
 
@@ -180,8 +180,8 @@ export default class Modals {
         const Changelog = WebpackModules.getModule(m => m.defaultProps && m.defaultProps.selectable == false);
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
         if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
-    
-        const {image = "https://i.imgur.com/8sctUVV.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.bdVersion}`, footer} = options;
+
+        const {image = "https://i.imgur.com/8sctUVV.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.version}`, footer} = options;
         const ce = React.createElement;
         const changelogItems = [options.video ? ce("video", {src: options.video, poster: options.poster, controls: true, className: ChangelogClasses.video}) : ce("img", {src: image})];
         if (description) changelogItems.push(ce("p", null, MarkdownParser.parse(description)));
@@ -199,7 +199,7 @@ export default class Modals {
                 ce(TextElement, {size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD, className: ChangelogClasses.date}, subtitle)
             );
         };
-    
+
         const renderFooter = () => {
             const Anchor = WebpackModules.getModule(m => m.displayName == "Anchor");
             const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
@@ -228,7 +228,7 @@ export default class Modals {
                 renderFooter: renderFooter,
             }, props), changelogItems);
         });
-        
+
         const closeModal = ModalActions.closeModal;
         ModalActions.closeModal = function(k) {
             Reflect.apply(closeModal, this, arguments);
@@ -248,7 +248,7 @@ export default class Modals {
                     this.elementRef = React.createRef();
                     this.element = panel;
                 }
-        
+
                 componentDidMount() {
                     if (this.element instanceof Node) this.elementRef.current.appendChild(this.element);
                     // if (typeof(this.element) === "string") this.elementRef.current.appendChild(this.element);
@@ -268,15 +268,15 @@ export default class Modals {
 
         const mc = this.ModalComponents;
         const modal = props => {
-            return React.createElement(mc.ModalRoot, Object.assign({size: mc.ModalSize.MEDIUM, className: "bd-addon-modal"}, props), 
+            return React.createElement(mc.ModalRoot, Object.assign({size: mc.ModalSize.MEDIUM, className: "bd-addon-modal"}, props),
                 React.createElement(mc.ModalHeader, {separator: false, className: "bd-addon-modal-header"},
                     React.createElement(this.FormTitle, {tag: "h4"}, `${name} Settings`),
                     React.createElement(this.FlexElements.Child, {grow: 0},
                         React.createElement(mc.ModalCloseButton, {className: "bd-modal-close", onClick: props.onClose})
                     )
                 ),
-                React.createElement(mc.ModalContent, {className: "bd-addon-modal-settings"}, 
-                    React.createElement(ErrorBoundary, {}, child)    
+                React.createElement(mc.ModalContent, {className: "bd-addon-modal-settings"},
+                    React.createElement(ErrorBoundary, {}, child)
                 ),
                 React.createElement(mc.ModalFooter, {className: "bd-addon-modal-footer"},
                     React.createElement(this.Buttons.default, {onClick: props.onClose, className: "bd-button"}, Strings.Modals.done)

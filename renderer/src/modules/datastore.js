@@ -29,6 +29,12 @@ export default new class DataStore {
         const bdFolderExists = fs.existsSync(Config.dataPath);
         if (!bdFolderExists) fs.mkdirSync(Config.dataPath);
 
+        const pluginFolderExists = fs.existsSync(this.pluginFolder);
+        if (!pluginFolderExists) fs.mkdirSync(this.pluginFolder);
+
+        const themeFolderExists = fs.existsSync(this.themeFolder);
+        if (!themeFolderExists) fs.mkdirSync(this.themeFolder);
+
         const newStorageExists = fs.existsSync(this.baseFolder);
         if (!newStorageExists) fs.mkdirSync(this.baseFolder);
 
@@ -101,6 +107,8 @@ export default new class DataStore {
         return this._injectionPath = realLocation;
     }
 
+    get pluginFolder() {return this._pluginFolder || (this._pluginFolder = path.resolve(Config.dataPath, "plugins"));}
+    get themeFolder() {return this._themeFolder || (this._themeFolder = path.resolve(Config.dataPath, "themes"));}
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}

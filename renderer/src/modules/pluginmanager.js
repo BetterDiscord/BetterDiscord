@@ -22,7 +22,7 @@ export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
     get moduleExtension() {return ".js";}
     get extension() {return ".plugin.js";}
-    get duplicatePattern() {return /\.plugin\([0-9]+\)\.js/;}
+    get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
     get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
     get prefix() {return "plugin";}
     get language() {return "javascript";}

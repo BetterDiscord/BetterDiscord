@@ -1,6 +1,8 @@
 const path = require("path");
+const webpack = require("webpack");
 const CircularDependencyPlugin = require("circular-dependency-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const basePkg = require("../package.json");
 
 module.exports = {
   mode: "development",
@@ -14,6 +16,7 @@ module.exports = {
   externals: {
     electron: `require("electron")`,
     fs: `require("fs")`,
+    "original-fs": `require("original-fs")`,
     path: `require("path")`,
     request: `require("request")`,
     events: `require("events")`,
@@ -40,7 +43,7 @@ module.exports = {
           presets: [["@babel/env", {
               targets: {
                   node: "12.14.1",
-                  chrome: "80"
+                  chrome: "83"
               }
           }], "@babel/react"]
         }
@@ -55,6 +58,9 @@ module.exports = {
     new CircularDependencyPlugin({
       exclude: /node_modules/,
       cwd: process.cwd(),
+    }),
+    new webpack.DefinePlugin({
+      "process.env.__VERSION__": JSON.stringify(basePkg.version)
     })
   ],
   optimization: {

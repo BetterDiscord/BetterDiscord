@@ -287,7 +287,6 @@ export default {
     },
     Startup: {
         notSupported: "Not Supported",
-        versionMismatch: "BetterDiscord Injector v{{injector}} is not supported by the latest remote (v{{remote}}).\n\nPlease download the latest version from [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
         incompatibleApp: "BetterDiscord does not work with {{app}}. Please uninstall one of them.",
         updateNow: "Update Now",
         maybeLater: "Maybe Later",
