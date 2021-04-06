@@ -66,9 +66,10 @@ export default new class PluginManager extends AddonManager {
     unloadPlugin(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
     loadPlugin(filename) {return this.loadAddon(filename);}
 
-    loadAddon(filename) {
+    loadAddon(filename, shouldCTE = true) {
         const error = super.loadAddon(filename);
-        if (error) Modals.showAddonErrors({plugins: [error]});
+        if (error && shouldCTE) Modals.showAddonErrors({plugins: [error]});
+        return error;
     }
 
     reloadPlugin(idOrFileOrAddon) {
@@ -79,7 +80,7 @@ export default new class PluginManager extends AddonManager {
 
     /* Overrides */
     initializeAddon(addon) {
-        if (!addon.exports) return new AddonError(addon.name, addon.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""});
+        if (!addon.exports) return new AddonError(addon.name, addon.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""}, this.prefix);
         try {
             const PluginClass = addon.exports;
             const thePlugin = new PluginClass();
@@ -93,10 +94,10 @@ export default new class PluginManager extends AddonManager {
             }
             catch (error) {
                 this.state[addon.id] = false;
-                return new AddonError(addon.name, addon.filename, "load() could not be fired.", {message: error.message, stack: error.stack});
+                return new AddonError(addon.name, addon.filename, "load() could not be fired.", {message: error.message, stack: error.stack}, this.prefix);
             }
         }
-        catch (error) {return new AddonError(addon.name, addon.filename, "Could not be constructed.", {message: error.message, stack: error.stack});}
+        catch (error) {return new AddonError(addon.name, addon.filename, "Could not be constructed.", {message: error.message, stack: error.stack}, this.prefix);}
     }
 
     getFileModification(module, fileContent, meta) {
@@ -138,7 +139,7 @@ export default new class PluginManager extends AddonManager {
             this.state[addon.id] = false;
             Toasts.error(Strings.Addons.couldNotStart.format({name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
-            return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "start()"}), {message: err.message, stack: err.stack});
+            return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "start()"}), {message: err.message, stack: err.stack}, this.prefix);
         }
         this.emit("started", addon.id);
         Toasts.show(Strings.Addons.enabled.format({name: addon.name, version: addon.version}));
@@ -155,7 +156,7 @@ export default new class PluginManager extends AddonManager {
             this.state[addon.id] = false;
             Toasts.error(Strings.Addons.couldNotStop.format({name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
-            return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "stop()"}), {message: err.message, stack: err.stack});
+            return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "stop()"}), {message: err.message, stack: err.stack}, this.prefix);
         }
         this.emit("stopped", addon.id);
         Toasts.show(Strings.Addons.disabled.format({name: addon.name, version: addon.version}));

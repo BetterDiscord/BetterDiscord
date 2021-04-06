@@ -1,0 +1,44 @@
+.be-modal .tab-bar.TOP .tab-bar-item:nth-child(1) {
+    margin-left: 20px;
+}
+
+.bd-addon-error {
+    margin: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bd-addon-error-header {
+    display: flex;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    align-items: center;
+}
+
+.bd-addon-error-message {
+    font-weight: 700;
+}
+
+.bd-addon-error-body {
+    padding: 10px;
+    background: var(--background-mobile-secondary);
+}
+
+.bd-addon-error-header svg {
+    margin-right: 7px;
+}
+
+.bd-addon-error-stack-header svg {
+    float: right;
+    transform: rotate(90deg);
+    transition: 0.4s;
+    color: #fff;
+}
+
+.bd-addon-error-stack.opened svg {
+    transform: rotate(0deg);
+}
+
+.bd-addon-error-stack-header {
+    color: #b9bbbe;
+}

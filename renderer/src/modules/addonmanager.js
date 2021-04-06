@@ -201,7 +201,7 @@ export default class AddonManager {
             const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
         }
         catch (error) {
-            return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack});
+            return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack}, this.prefix);
         }
 
         const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
@@ -209,7 +209,7 @@ export default class AddonManager {
         // await Promise.resolve(addon);
         // addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
         // console.log(addon);
-        if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}));
+        if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
 
         const error = this.initializeAddon(addon);
         if (error) return error;

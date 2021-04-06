@@ -90,6 +90,10 @@ export default class BuiltinModule {
         return Patcher.before(this.name, object, func, callback);
     }
 
+    instead(object, func, callback) {
+        return Patcher.instead(this.name, object, func, callback);
+    }
+
     after(object, func, callback) {
         return Patcher.after(this.name, object, func, callback);
     }

@@ -2,6 +2,7 @@ import {Config} from "data";
 import Logger from "common/logger";
 import {WebpackModules, React, Settings, Strings, DOM, DiscordModules} from "modules";
 import FormattableString from "../structs/string";
+import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 
 export default class Modals {
@@ -53,7 +54,7 @@ export default class Modals {
     }
 
     static alert(title, content) {
-        this.showConfirmationModal(title, content, {cancelText: ""});
+        this.showConfirmationModal(title, content, {cancelText: null});
     }
 
     /**
@@ -97,78 +98,21 @@ export default class Modals {
     static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
         if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
-        const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">
-                        <div class="bd-backdrop backdrop-1wrmKB"></div>
-                        <div class="bd-modal bd-content-modal modal-1UGdnR">
-                            <div class="bd-modal-inner inner-1JeGVc">
-                                <div class="header header-1R_AjF"><div class="title">${Strings.Modals.addonErrors}</div></div>
-                                <div class="bd-modal-body">
-                                    <div class="tab-bar-container">
-                                        <div class="tab-bar TOP">
-                                            <div class="tab-bar-item">${Strings.Panels.plugins}</div>
-                                            <div class="tab-bar-item">${Strings.Panels.themes}</div>
-                                        </div>
-                                    </div>
-                                    <div class="table-header">
-                                        <div class="table-column column-name">${Strings.Modals.name}</div>
-                                        <div class="table-column column-message">${Strings.Modals.message}</div>
-                                        <div class="table-column column-error">${Strings.Modals.error}</div>
-                                    </div>
-                                    <div class="scroller-wrap fade">
-                                        <div class="scroller">
+        
+        if (this.addonErrorsRef && this.addonErrorsRef.current) {
+            return this.addonErrorsRef.current.refreshTabs(Array.isArray(pluginErrors) ? pluginErrors : [], Array.isArray(themeErrors) ? themeErrors : []);
+        }
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
-                                    <button type="button" class="bd-button">${Strings.Modals.okay}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`);
-
-        const generateTab = function(errors) {
-            const container = DOM.createElement(`<div class="errors">`);
-            for (const err of errors) {
-                const error = DOM.createElement(`<div class="error">
-                                    <div class="table-column column-name">${err.name ? err.name : err.file}</div>
-                                    <div class="table-column column-message">${err.message}</div>
-                                    <div class="table-column column-error"><a class="error-link" href="">${err.error ? err.error.message : ""}</a></div>
-                                </div>`);
-                container.append(error);
-                if (err.error) {
-                    error.querySelectorAll("a").forEach(el => el.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        Logger.stacktrace("AddonError", `Error details for ${err.name ? err.name : err.file}.`, err.error);
-                    }));
-                }
-            }
-            return container;
-        };
-
-        const tabs = [generateTab(pluginErrors), generateTab(themeErrors)];
-
-        modal.querySelectorAll(".tab-bar-item").forEach(el => el.addEventListener("click", (e) => {
-            e.preventDefault();
-            const selected = modal.querySelector(".tab-bar-item.selected");
-            if (selected) DOM.removeClass(selected, "selected");
-            DOM.addClass(e.target, "selected");
-            const scroller = modal.querySelector(".scroller");
-            scroller.innerHTML = "";
-            scroller.append(tabs[DOM.index(e.target)]);
-        }));
-
-        modal.querySelector(".footer button").addEventListener("click", () => {
-            DOM.addClass(modal, "closing");
-            setTimeout(() => {modal.remove();}, 300);
-        });
-        modal.querySelector(".bd-backdrop").addEventListener("click", () => {
-            DOM.addClass(modal, "closing");
-            setTimeout(() => {modal.remove();}, 300);
-        });
-        DOM.query("#app-mount").append(modal);
-        if (pluginErrors.length) modal.querySelector(".tab-bar-item").click();
-        else modal.querySelectorAll(".tab-bar-item")[1].click();
+        this.addonErrorsRef = React.createRef();
+        this.ModalActions.openModal(props => React.createElement(this.ModalComponents.ModalRoot, Object.assign(props, {
+            size: "medium",
+            children: React.createElement(AddonErrorModal, {
+                ref: this.addonErrorsRef,
+                pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
+                themeErrors: Array.isArray(themeErrors) ? themeErrors : [],
+                onClose: props.onClose
+            })
+        })));
     }
 
     static showChangelogModal(options = {}) {

@@ -47,9 +47,10 @@ export default new class ThemeManager extends AddonManager {
     loadTheme(filename) {return this.loadAddon(filename);}
     reloadTheme(idOrFileOrAddon) {return this.reloadAddon(idOrFileOrAddon);}
 
-    loadAddon(filename) {
+    loadAddon(filename, shouldCTE = true) {
         const error = super.loadAddon(filename);
-        if (error) Modals.showAddonErrors({themes: [error]});
+        if (error && shouldCTE) Modals.showAddonErrors({themes: [error]});
+        return error;
     }
 
     /* Overrides */

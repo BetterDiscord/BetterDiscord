@@ -153,7 +153,7 @@ export default new class Core {
         catch (err) {
             Logger.stacktrace("Updater", "Failed to update", err);
             Modals.showConfirmationModal("Update Failed", "BetterDiscord failed to update. Please download the latest version of the installer from GitHub (https://github.com/BetterDiscord/Installer/releases/latest) and reinstall.", {
-                cancelText: ""
+                cancelText: null
             });
         }
     }
