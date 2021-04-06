@@ -113,6 +113,14 @@ export default {
                 inspectElement: {
                     name: "Inspect Element Hotkey",
                     note: "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
+                },
+                devToolsWarning: {
+                    name: "Stop DevTools Warning",
+                    note: "Stops Discord from printing out their \"Hold Up!\" message"
+                },
+                debugLogs: {
+                    name: "Debug Logs",
+                    note: "Outputs everything from the console into the debug.log file in the BetterDiscord folder"
                 }
             },
             window: {

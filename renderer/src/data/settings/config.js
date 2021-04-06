@@ -54,7 +54,9 @@ export default [
         settings: [
             {type: "switch", id: "debuggerHotkey", value: false},
             {type: "switch", id: "reactDevTools", value: false},
-            {type: "switch", id: "inspectElement", value: false}
+            {type: "switch", id: "inspectElement", value: false},
+            {type: "switch", id: "devToolsWarning", value: false},
+            {type: "switch", id: "debugLogs", value: false}
         ]
     },
     {

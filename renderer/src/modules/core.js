@@ -25,23 +25,6 @@ export default new class Core {
         if (this.hasStarted) return;
         this.hasStarted = true;
 
-        // (() => {
-        //     const fs = require("fs");
-        //     fs.appendFileSync("Z:\\debug.log", "\n\n\n");
-
-        //     const toFile = orig => (...args) => {
-        //         fs.appendFileSync("Z:\\debug.log", JSON.stringify(args) + "\n");
-        //         orig(...args);
-        //     };
-
-        //     window.ocl = console.log;
-        //     window.oce = console.error;
-        //     window.ocx = console.exception;
-        //     console.log = toFile(window.ocl);
-        //     console.error = toFile(window.oce);
-        //     console.exception = toFile(window.ocx);
-        // })();
-
         Config.appPath = process.env.DISCORD_APP_PATH;
         Config.userData = process.env.DISCORD_USER_DATA;
         Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
@@ -139,7 +122,7 @@ export default new class Core {
         const hasUpdate = remoteVersion > Config.version;
         if (!hasUpdate) return;
 
-        Modals.showConfirmationModal("Update", "There is an update, would you like to update now?", {
+        Modals.showConfirmationModal("Update Available", `BetterDiscord (${Config.version}) has an available update available (${remoteVersion}). Would you like to update now?`, {
             confirmText: "Update",
             cancelText: "Skip",
             onConfirm: () => this.update(data)
@@ -151,13 +134,12 @@ export default new class Core {
             const asar = releaseInfo.assets.find(a => a.name === "betterdiscord.asar");
             const request = require("request");
             const buff = await new Promise((resolve, reject) =>
-                request(asar.url, {encoding: null, headers: {"User-Agent": "BD Updater", "Accept": "application/octet-stream"}}, (err, resp, body) => {
+                request(asar.url, {encoding: null, headers: {"User-Agent": "BetterDiscord Updater", "Accept": "application/octet-stream"}}, (err, resp, body) => {
                 if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
                 return resolve(body);
             }));
 
             const asarPath = path.join(DataStore.baseFolder, "betterdiscord.asar");
-            console.log(asarPath);
             const fs = require("original-fs");
             fs.writeFileSync(asarPath, buff);
 
@@ -169,7 +151,7 @@ export default new class Core {
             });
         }
         catch (err) {
-            console.error(err);
+            Logger.stacktrace("Updater", "Failed to update", err);
             Modals.showConfirmationModal("Update Failed", "BetterDiscord failed to update. Please download the latest version of the installer from GitHub (https://github.com/BetterDiscord/Installer/releases/latest) and reinstall.", {
                 cancelText: ""
             });

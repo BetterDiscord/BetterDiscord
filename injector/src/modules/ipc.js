@@ -75,6 +75,8 @@ const setMinimumSize = (event, width, height) => {
     window.setMinimumSize(width, height);
 };
 
+const stopDevtoolsWarning = event => event.sender.removeAllListeners("devtools-opened");
+
 export default class IPCMain {
     static registerEvents() {
         ipc.on(IPCEvents.GET_PATH, getPath);
@@ -83,6 +85,7 @@ export default class IPCMain {
         ipc.on(IPCEvents.CLOSE_DEVTOOLS, closeDevTools);
         ipc.on(IPCEvents.INSPECT_ELEMENT, inspectElement);
         ipc.on(IPCEvents.MINIMUM_SIZE, setMinimumSize);
+        ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
         ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
         ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
     }

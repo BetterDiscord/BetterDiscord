@@ -21,3 +21,5 @@ export {default as EmoteMenu} from "./emotes/emotemenu";
 export {default as Debugger} from "./developer/debugger";
 export {default as ReactDevTools} from "./developer/reactdevtools";
 export {default as InspectElement} from "./developer/inspectelement";
+export {default as StopDevToolsWarning} from "./developer/devtoolswarning";
+export {default as DebugLogs} from "./developer/debuglogs";

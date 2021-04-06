@@ -39,4 +39,8 @@ export default new class IPCRenderer {
     setMinimumSize(width, height) {
         return ipc.send(IPCEvents.MINIMUM_SIZE, width, height);
     }
+
+    stopDevtoolsWarning() {
+        return ipc.send(IPCEvents.DEVTOOLS_WARNING);
+    }
 };

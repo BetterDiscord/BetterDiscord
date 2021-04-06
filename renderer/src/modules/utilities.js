@@ -58,6 +58,11 @@ export default class Utilities {
         };
     }
 
+    static occurrences(source, substring) {
+        const regex = new RegExp(substring, "g");
+        return (source.match(regex) || []).length;
+    }
+
     static onRemoved(node, callback) {
         const observer = new MutationObserver((mutations) => {
             for (let m = 0; m < mutations.length; m++) {
