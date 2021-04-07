@@ -67,7 +67,7 @@ export default new class PluginManager extends AddonManager {
     loadPlugin(filename) {return this.loadAddon(filename);}
 
     loadAddon(filename, shouldCTE = true) {
-        const error = super.loadAddon(filename);
+        const error = super.loadAddon(filename, shouldCTE);
         if (error && shouldCTE) Modals.showAddonErrors({plugins: [error]});
         return error;
     }

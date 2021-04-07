@@ -9,12 +9,14 @@ export default new class HideGiftButton extends Builtin {
 
     enabled() {
         this.after(WebpackModules.find(m => m.type && m.type.render && m.type.render.displayName === "ChannelTextAreaContainer").type, "render", (_, __, returnValue) => {
-            const buttons = Utilities.getNestedProp(returnValue, "props.children.props.children.1.props.children.props.children.2.props.children");
+            const buttons = Utilities.getNestedProp(returnValue, "props.children.0.props.children.1.props.children.1.props.children.2.props.children");
             if (Array.isArray(buttons)) {
                 for (const button of buttons) {
-                    if (!button || !button.props) continue;
-                    if (button.props.hasOwnProperty("shouldRenderPremiumGiftButton")) {
-                        button.props.shouldRenderPremiumGiftButton = false;
+                    if (!button) continue;
+                    const renderFunc = Utilities.getNestedProp(button, "type.type");
+                    if (!renderFunc) continue;
+    
+                    if (renderFunc.displayName === "ChannelPremiumGiftButton") {
                         button.props.disabled = true;
                         break;
                     }

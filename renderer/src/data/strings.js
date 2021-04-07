@@ -24,6 +24,10 @@ export default {
                 showToasts: {
                     name: "Show Toasts",
                     note: "Shows a small notification for important information"
+                },
+                mediaKeys: {
+                    name: "Disable Media Keys",
+                    note: "Prevents Discord from hijacking your media keys after playing a video."
                 }
             },
             appearance: {
@@ -162,10 +166,6 @@ export default {
                 animateOnHover: {
                     name: "Animate On Hover",
                     note: "Only animate the emote modifiers on hover"
-                },
-                mediaKeys: {
-                    name: "Disable Media Keys",
-                    note: "Prevents Discord from hijacking your media keys after playing a video."
                 }
             },
             categories: {
