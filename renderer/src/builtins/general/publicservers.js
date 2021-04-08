@@ -13,7 +13,7 @@ export default new class PublicServers extends Builtin {
         const GuildList = WebpackModules.find(m => m.type && m.type.displayName == "NavigableGuilds");
         const GuildListOld = WebpackModules.findByDisplayName("Guilds");
         if (!GuildList && !GuildListOld) this.warn("Can't find GuildList component");
-        this.guildPatch = this.after(GuildList ? GuildList : GuildListOld.prototype, GuildList ? "type" : "render", this._appendButton);
+        this.guildPatch = this.after(GuildList ? GuildList : GuildListOld.prototype, GuildList ? "type" : "render", () => {this._appendButton();});
         this._appendButton();
     }
 
@@ -22,8 +22,15 @@ export default new class PublicServers extends Builtin {
         DOM.query("#bd-pub-li").remove();
     }
 
-    _appendButton() {
+    async _appendButton() {
+        await new Promise(r => setTimeout(r, 1000));
+        
+        const existing = DOM.query("#bd-pub-li");
+        if (existing) return;
+
         const guilds = DOM.query(`.${DiscordModules.GuildClasses.wrapper} .${DiscordModules.GuildClasses.listItem}`);
+        if (!guilds) return;
+
         DOM.after(guilds, this.button);
     }
 

@@ -1,11 +1,14 @@
 import Builtin from "../../structs/builtin";
 
-import {EmoteConfig} from "data";
+import {EmoteConfig, Config} from "data";
 import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings, Strings} from "modules";
 import BDEmote from "../../ui/emote";
+import Modals from "../../ui/modals";
 import Toasts from "../../ui/toasts";
 import FormattableString from "../../structs/string";
 const request = require("request");
+const path = require("path");
+const fs = require("fs");
 
 const EmoteURLs = {
     TwitchGlobal: new FormattableString(`https://static-cdn.jtvnw.net/emoticons/v1/{{id}}/1.0`),
@@ -25,13 +28,14 @@ const blocklist = [];
 const overrides = ["twitch", "subscriber", "bttv", "ffz"];
 const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
 
-export default new class EmoteModule extends Builtin {
+ export default new class EmoteModule extends Builtin {
     get name() {return "Emotes";}
     get collection() {return "settings";}
     get category() {return "general";}
     get id() {return "emotes";}
     get categories() {return Object.keys(Emotes).filter(k => this.isCategoryEnabled(k));}
     get shouldDownload() {return Settings.get("emotes", this.category, "download");}
+    get asarPath() {return path.join(DataStore.baseFolder, "emotes.asar");}
 
     isCategoryEnabled(id) {return super.get("emotes", "categories", id.toLowerCase());}
 
@@ -63,7 +67,7 @@ export default new class EmoteModule extends Builtin {
 
     async enabled() {
         Settings.registerCollection("emotes", "Emotes", EmoteConfig, {title: Strings.Emotes.clearEmotes, onClick: this.resetEmotes.bind(this)});
-        await this.getBlocklist();
+        // await this.getBlocklist();
         await this.loadEmoteData();
 
         Events.on("emotes-favorite-added", this.addFavorite);
@@ -177,30 +181,6 @@ export default new class EmoteModule extends Builtin {
         });
     }
 
-    async getBlocklist() {
-        try {
-            const category = "Blocklist";
-            const exists = DataStore.emotesExist(category);
-            const valid = await this.isCacheValid(category);
-            const useCache = (valid) || (!valid && exists && !this.shouldDownload);
-            const list = useCache ? DataStore.getEmoteData(category) : await this.downloadEmotes(category);
-            blocklist.push(...list);
-        }
-        catch (err) {
-            // TODO: Log this
-        }
-    }
-
-    isCacheValid(category) {
-        return new Promise(resolve => {
-            const etag = DataStore.getCacheHash("emotes", category);
-            if (!etag) return resolve(false);
-            request.head({url: this.getRemoteFile(category), headers: {"If-None-Match": etag}}, (err, resp) => {
-                resolve(!err && resp.statusCode == 304);
-            });
-        });
-    }
-
     async loadEmoteData(categories) {
         if (!categories) categories = this.categories;
         if (!Array.isArray(categories)) categories = [categories];
@@ -208,21 +188,25 @@ export default new class EmoteModule extends Builtin {
         categories = categories.map(k => all.find(c => c.toLowerCase() == k.toLowerCase()));
         Toasts.show(Strings.Emotes.loading, {type: "info"});
         this.emotesLoaded = false;
+        const localOutdated = Config.release.tag_name > DataStore.getBDData("emoteVersion");
 
-        for (const category of categories) {
-            const exists = DataStore.emotesExist(category);
-            const valid = await this.isCacheValid(category);
-            const useCache = (valid) || (!valid && exists && !this.shouldDownload);
-            let data = null;
-            if (useCache) {
-                this.log(`Loading ${category} emotes from local cache.`);
-                const cachedData = DataStore.getEmoteData(category);
-                const hasData = Object.keys(cachedData).length > 0;
-                if (hasData) data = cachedData;
+        if (!fs.existsSync(this.asarPath) || (localOutdated && this.shouldDownload)) await this.downloadEmotes();
+
+        try {
+            for (const category of categories) {
+                this.log(category);
+                const EmoteData = __non_webpack_require__(path.join(this.asarPath, category.toLowerCase()));
+                Object.assign(Emotes[category], EmoteData);
+                delete __non_webpack_require__.cache[path.join(this.asarPath, category.toLowerCase())];
+                await new Promise(r => setTimeout(r, 1000));
             }
-            if (!data) data = await this.downloadEmotes(category);
-            Object.assign(Emotes[category], data);
-            await new Promise(r => setTimeout(r, 1000));
+
+            const EmoteData = __non_webpack_require__(path.join(this.asarPath, "blocklist"));
+            blocklist.push(...EmoteData);
+            delete __non_webpack_require__.cache[path.join(this.asarPath, "blocklist")];
+        }
+        catch (err) {
+            this.log("Failed to load emotes.");
         }
 
         this.emotesLoaded = true;
@@ -241,36 +225,32 @@ export default new class EmoteModule extends Builtin {
         }
     }
 
-    downloadEmotes(category) {
-        const url = this.getRemoteFile(category);
-        this.log(`Downloading ${category} from ${url}`);
-        const options = {url: url, timeout: 10000, json: true};
-        return new Promise(resolve => {
-            request.get(options, (error, response, parsedData) => {
-                if (error || response.statusCode != 200) {
-                    this.stacktrace(`Could not download ${category} emotes.`, error);
-                    return resolve({});
-                }
+    async downloadEmotes() {
+        try {
+            const asar = Config.release.assets.find(a => a.name === "emotes.asar");
+            this.log(`Downloading emotes from: ${asar.url}`);
+            const buff = await new Promise((resolve, reject) =>
+                request(asar.url, {encoding: null, headers: {"User-Agent": "BetterDiscord Emotes", "Accept": "application/octet-stream"}}, (err, resp, body) => {
+                if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
+                return resolve(body);
+            }));
 
-                for (const emote in parsedData) {
-                    if (emote.length < 4 || blocklist.includes(emote) || !parsedData[emote]) {
-                        delete parsedData[emote];
-                        continue;
-                    }
-                    // parsedData[emote] = EmoteURLs[category].format({id: parsedData[emote]});
-                }
-                DataStore.saveEmoteData(category, parsedData);
-                DataStore.setCacheHash("emotes", category, response.headers.etag);
-                resolve(parsedData);
-                this.log(`Downloaded ${category}`);
-            });
-        });
+            this.log("Successfully downloaded emotes.asar");
+            const asarPath = this.asarPath;
+            const originalFs = require("original-fs");
+            originalFs.writeFileSync(asarPath, buff);
+            this.log(`Saved emotes.asar to ${asarPath}`);
+            DataStore.setBDData("emoteVersion", Config.release.tag_name);
+        }
+        catch (err) {
+            this.stacktrace("Failed to download emotes.", err);
+            Modals.showConfirmationModal(Strings.Emotes.downloadFailed, Strings.Emotes.failureMessage, {cancelText: null});
+        }
     }
 
     resetEmotes() {
-        const categories = Object.keys(Emotes);
-        this.unloadEmoteData(categories);
-        for (const cat of categories) DataStore.invalidateCache("emotes", cat);
+        this.unloadEmoteData();
+        DataStore.setBDData("emoteVersion", "0");
         this.loadEmoteData();
     }
 };

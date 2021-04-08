@@ -25,48 +25,57 @@ export default new class EmoteMenu extends Builtin {
 
     enabled() {
         this.after(EmojiPicker, "type", (_, __, returnValue) => {
-            const head = Utilities.getNestedProp(returnValue, "props.children.props.children.props.children.1.props.children.0.props.children.props.children");
-            const body = Utilities.getNestedProp(returnValue, "props.children.props.children.props.children.1.props.children");
-            if (!head || !body) return returnValue;
+            const originalChildren = Utilities.getNestedProp(returnValue, "props.children.props.children");
+            if (!originalChildren || originalChildren.__patched) return;
+            returnValue.props.children.props.children = (props) => {
+                const childrenReturn = Reflect.apply(originalChildren, null, [props]);
+                const head = Utilities.getNestedProp(childrenReturn, "props.children.props.children.1.props.children.0.props.children.props.children");
+                const body = Utilities.getNestedProp(childrenReturn, "props.children.props.children.1.props.children");
+                if (!head || !body) return childrenReturn;
 
-            let activePicker = this.getSelected(body);
-            let isActive = activePicker.id == "bd-emotes";
-            const tabProps = head[0].props;
-            if (!isActive && activePicker.id == "emoji" && this.hideEmojis) {
-                activePicker = {id: "bd-emotes", index: 3};
-                isActive = true;
-            }
-            if (this.hideEmojis) head.splice(head.findIndex(e => e && e.props && e.props.id == "emoji-picker-tab"), 1);
-            head.push(
-                React.createElement("div", {
-                    "id": "bd-emotes-tab",
-                    "role": "tab",
-                    "aria-selected": isActive,
-                    "className": tabProps.className,
-                }, React.createElement(tabProps.children.type, {
-                    viewType: "bd-emotes",
-                    isActive: isActive,
-                }, "Twitch")
-            ));
-            if (isActive) {
-                body[activePicker.index] = React.createElement(EmoteMenuCard, {
-                    type: "twitch",
-                }, [
-                    React.createElement(Category, {
-                        label: "Favorites",
-                        icon: React.createElement(Favorite, {}),
-                    }, Object.entries(EmoteModule.favorites).map(([emote, url]) => {
-                        return React.createElement(EmoteIcon, {emote, url});
-                    })),
-                    React.createElement(Category, {
-                        label: "Twitch Emotes",
-                        icon: React.createElement(Twitch, {}) 
-                    }, Object.keys(EmoteModule.getCategory("TwitchGlobal")).map(emote=> {
-                        const url = EmoteModule.getUrl("TwitchGlobal", emote);
-                        return React.createElement(EmoteIcon, {emote, url});
-                    }))
-                ]);
-            }
+                let activePicker = this.getSelected(body);
+                let isActive = activePicker.id == "bd-emotes";
+                const tabProps = head[0].props;
+                if (!isActive && activePicker.id == "emoji" && this.hideEmojis) {
+                    activePicker = {id: "bd-emotes", index: 3};
+                    isActive = true;
+                }
+                if (this.hideEmojis) head.splice(head.findIndex(e => e && e.props && e.props.id == "emoji-picker-tab"), 1);
+                head.push(
+                    React.createElement("div", {
+                        "id": "bd-emotes-tab",
+                        "role": "tab",
+                        "aria-selected": isActive,
+                        "className": tabProps.className,
+                    }, React.createElement(tabProps.children.type, {
+                        viewType: "bd-emotes",
+                        isActive: isActive,
+                    }, "Twitch")
+                ));
+                if (isActive) {
+                    body[activePicker.index] = React.createElement(EmoteMenuCard, {
+                        type: "twitch",
+                    }, [
+                        React.createElement(Category, {
+                            label: "Favorites",
+                            icon: React.createElement(Favorite, {}),
+                        }, Object.entries(EmoteModule.favorites).map(([emote, url]) => {
+                            return React.createElement(EmoteIcon, {emote, url});
+                        })),
+                        React.createElement(Category, {
+                            label: "Twitch Emotes",
+                            icon: React.createElement(Twitch, {}) 
+                        }, Object.keys(EmoteModule.getCategory("TwitchGlobal")).map(emote=> {
+                            const url = EmoteModule.getUrl("TwitchGlobal", emote);
+                            return React.createElement(EmoteIcon, {emote, url});
+                        }))
+                    ]);
+                }
+
+                return childrenReturn;
+            };
+
+            returnValue.props.children.props.children.__patched = true;
         });
     }
 

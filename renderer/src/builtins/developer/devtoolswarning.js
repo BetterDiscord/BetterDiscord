@@ -9,7 +9,7 @@ export default new class StopDevToolsWarning extends Builtin {
 
     enabled() {
         // IPC.stopDevtoolsWarning();
-        DiscordNative?.window?.setDevtoolsCallbacks(null, null);
+        window?.DiscordNative?.window?.setDevtoolsCallbacks(null, null);
     }
 
     disabled() {
@@ -17,6 +17,6 @@ export default new class StopDevToolsWarning extends Builtin {
         const stringModule = WebpackModules.getByProps("Messages");
         const hideModule = WebpackModules.getModule(m => Object.keys(m).some(k => k.startsWith("hide")));
         if (!devtoolsModule || !stringModule || !hideModule) return;
-        devtoolsModule(stringModule, hideModule, DiscordNative);
+        devtoolsModule(stringModule, hideModule, window?.DiscordNative);
     }
 };

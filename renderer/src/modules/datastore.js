@@ -39,7 +39,7 @@ export default new class DataStore {
         if (!newStorageExists) fs.mkdirSync(this.baseFolder);
 
         if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
-        if (!fs.existsSync(this.localeFolder)) fs.mkdirSync(this.localeFolder);
+        // if (!fs.existsSync(this.localeFolder)) fs.mkdirSync(this.localeFolder);
         if (!fs.existsSync(this.emoteFolder)) fs.mkdirSync(this.emoteFolder);
 
         if (!fs.existsSync(this.cacheFile)) fs.writeFileSync(this.cacheFile, JSON.stringify({}));

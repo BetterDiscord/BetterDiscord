@@ -14,15 +14,15 @@ module.exports = {
     path: path.resolve(__dirname, "..", "dist")
   },
   externals: {
-    electron: `require("electron")`,
-    fs: `require("fs")`,
+    "electron": `require("electron")`,
+    "fs": `require("fs")`,
     "original-fs": `require("original-fs")`,
-    path: `require("path")`,
-    request: `require("request")`,
-    events: `require("events")`,
-    rimraf: `require("rimraf")`,
-    yauzl: `require("yauzl")`,
-    mkdirp: `require("mkdirp")`
+    "path": `require("path")`,
+    "request": `require("request")`,
+    "events": `require("events")`,
+    "rimraf": `require("rimraf")`,
+    "yauzl": `require("yauzl")`,
+    "mkdirp": `require("mkdirp")`
   },
   resolve: {
     extensions: [".js", ".jsx"],

@@ -37,12 +37,13 @@ export default new class Core {
         DataStore.initialize();
 
         Logger.log("Startup", "Initializing LocaleManager");
-        await LocaleManager.initialize();
+        LocaleManager.initialize();
 
         Logger.log("Startup", "Performing incompatibility checks");
         if (window.ED) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "EnhancedDiscord"}));
         if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
 
+        this.checkForUpdate();
 
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
@@ -85,8 +86,6 @@ export default new class Core {
             Modals.showChangelogModal(Changelog);
             DataStore.setBDData("version", Config.version);
         }
-
-        this.checkForUpdate();
     }
 
     waitForGuilds() {
@@ -118,6 +117,7 @@ export default new class Core {
         });
 
         const data = await resp.json();
+        Object.assign(Config.release, data);
         const remoteVersion = data.tag_name.startsWith("v") ? data.tag_name.slice(1) : data.tag_name;
         const hasUpdate = remoteVersion > Config.version;
         if (!hasUpdate) return;

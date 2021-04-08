@@ -20,12 +20,12 @@ const BdApi = {
     get settings() {return Settings.collections;},
     get emotes() {
         return new Proxy(Emotes.Emotes, {
-            get(category) {
+            get(obj, category) {
                 if (category === "blocklist") return Emotes.blocklist;
                 const group = Emotes.Emotes[category];
                 if (!group) return undefined;
                 return new Proxy(group, {
-                    get(emote) {return group[emote];},
+                    get(cat, emote) {return group[emote];},
                     set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
                 });
             },

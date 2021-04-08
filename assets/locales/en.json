@@ -24,6 +24,10 @@
                 "showToasts": {
                     "name": "Show Toasts",
                     "note": "Shows a small notification for important information"
+                },
+                "mediaKeys": {
+                    "name": "Disable Media Keys",
+                    "note": "Prevents Discord from hijacking your media keys after playing a video."
                 }
             },
             "appearance": {
@@ -47,6 +51,10 @@
                 "hideGiftButton": {
                     "name": "Hide Gift Button",
                     "note": "Hides the Nitro Gift button in the textarea"
+                },
+                "removeMinimumSize": {
+                    "name": "Remove Minimum Size",
+                    "note": "Removes Discord's forced minimum window size of 940x500"
                 }
             },
             "addons": {
@@ -109,6 +117,14 @@
                 "inspectElement": {
                     "name": "Inspect Element Hotkey",
                     "note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
+                },
+                "devToolsWarning": {
+                    "name": "Stop DevTools Warning",
+                    "note": "Stops Discord from printing out their \"Hold Up!\" message"
+                },
+                "debugLogs": {
+                    "name": "Debug Logs",
+                    "note": "Outputs everything from the console into the debug.log file in the BetterDiscord folder"
                 }
             },
             "window": {
@@ -150,10 +166,6 @@
                 "animateOnHover": {
                     "name": "Animate On Hover",
                     "note": "Only animate the emote modifiers on hover"
-                },
-                "mediaKeys": {
-                    "name": "Disable Media Keys",
-                    "note": "Prevents Discord from hijacking your media keys after playing a video."
                 }
             },
             "categories": {
@@ -231,7 +243,9 @@
         "loading": "Loading emotes in the background do not reload.",
         "loaded": "All emotes successfully loaded.",
         "clearEmotes": "Clear Emote Data",
-        "favoriteAction": "Favorite!"
+        "favoriteAction": "Favorite!",
+        "downloadFailed": "Download Failed",
+        "failureMessage": "BetterDiscord failed to download emotes, please check your internet connection and firewall."
     },
     "PublicServers": {
         "button": "public",
@@ -283,7 +297,6 @@
     },
     "Startup": {
         "notSupported": "Not Supported",
-        "versionMismatch": "BetterDiscord Injector v{{injector}} is not supported by the latest remote (v{{remote}}).\n\nPlease download the latest version from [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
         "incompatibleApp": "BetterDiscord does not work with {{app}}. Please uninstall one of them.",
         "updateNow": "Update Now",
         "maybeLater": "Maybe Later",
