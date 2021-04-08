@@ -29,6 +29,10 @@
                     "name": "Afficher notifications bulles",
                     "note": "Afficher une petite notification pour les informations importantes"
                 }
+                "mediaKeys": {
+                    "name": "Désactiver Touches Médias",
+                    "note": "Empêche Discord de détourner vos touches multimédia après la lecture d'une vidéo."
+                }
             },
             "appearance": {
                 "name": "Apparance",
@@ -43,6 +47,18 @@
                 "coloredText": {
                     "name": "Texte Coloré",
                     "note": "Faire en sorte que la couleur du texte soit la même que celle du rôle"
+                }
+                "hideGIFButton": {
+                    "name": "Masquer Bouton GIF",
+                    "note": "Masque le bouton du sélecteur de GIF dans la zone de texte."
+                },
+                "hideGiftButton": {
+                    "name": "Masquer Bouton Gift",
+                    "note": "Masque le bouton Nitro Gift dans la zone de texte"
+                },
+                "removeMinimumSize": {
+                    "name": "Supprimer Taille Minimale",
+                    "note": "Supprime l taille de fenêtre mainiale forçée de 940x500"
                 }
             },
             "addons": {
@@ -102,13 +118,21 @@
                     "name": "Touches Raccourcis Débuggueur",
                     "note": "Permettre l'activation du débuggueur quand F8 est préssé"
                 },
-                "copySelector": {
-                    "name": "Copier Sélecteur",
-                    "note": "Ajouter une option \"Copier Sélecteur\" aux menus de contextes quand le mode développeur est actif"
-                },
                 "reactDevTools": {
                     "name": "Outils Développeurs React",
                     "note": "Injecter votre installation locale d'Outils Développeurs React dans Discord"
+                }
+                "inspectElement": {
+                    "name": "Touche Inspection Élément",
+                    "note": "Active le raccourcis clavier de l'inspecteur d'élément (ctrl + shift + c) qui est commun à la plupart des navigateurs"
+                },
+                "devToolsWarning": {
+                    "name": "Arrêter Avertissements Outils Développement",
+                    "note": "Empêche Discord d'imprimer son message \"Hold Up\""
+                },
+                "debugLogs": {
+                    "name": "Journaux Débuggage",
+                    "note": "Transmettre tout ce qui se trouve dans la console au fichier debug.log situé dans le dossier BetterDiscord."
                 }
             },
             "window": {
@@ -227,6 +251,8 @@
         "loaded": "Tous les émojis sont chargés avec succès.",
         "clearEmotes": "Éffacer Données Émojis",
         "favoriteAction": "Favoris!"
+        "downloadFailed": "Téléchargement Échoué",
+        "failureMessage": "BetterDiscord à échoué dans le téléchargement des émojis, merci de vérifier votre connexion internet et votre pare-feu."
     },
     "PublicServers": {
         "button": "public",
