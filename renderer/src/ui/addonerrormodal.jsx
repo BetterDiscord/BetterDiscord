@@ -7,31 +7,48 @@ const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaul
 
 const joinClassNames = (...classNames) => classNames.filter(e => e).join(" ");
 
-class Collapse extends React.Component {
+class AddonError extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {opened: false};
-    }
 
+        this.state = {
+            expanded: false
+        };
+    }
     toggle() {
-        if (!this.props.error.stack) return;
-        this.setState({opened: !this.state.opened});
+        this.setState({expanded: !this.state.expanded});
     }
-
-    render() {
-        const title = this.props.error.error ? this.props.error.message : this.props.error.message;
-        const stack = this.props.error.error && this.props.error.error.stack;
-
-        return <div className={joinClassNames("bd-addon-error-stack", this.state.opened && "opened")}>
-            <div onClick={() => {this.toggle();}} className="bd-addon-error-stack-header">
-                {!this.state.opened && title}
-                {stack
-                    ? <>
-                        <DownArrow />
-                        {this.state.opened && <div className="bd-addon-error-stack-shown">{Parser ? Parser.codeBlock.react({content: stack, lang: "js"}, null, {}) : stack}</div>}
-                    </>
-                    : null}
+    renderErrorBody(err) {
+        const stack = err.error && err.stack;
+        if (!this.state.expanded || !stack) return null;
+        return <div className="bd-addon-error-body">
+            <div class="divider-3573oO topDivider-3G26Ct"></div>
+            <div className="bd-addon-error-stack">
+                {Parser ? Parser.codeBlock.react({content: stack, lang: "js"}, null, {}) : stack}
             </div>
+        </div>;
+    }
+    render() {
+        const err = this.props.err;
+        return <div key={`${err.type}-${this.props.index}`} className={joinClassNames("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
+            <div className="bd-addon-error-header" onClick={() => {this.toggle();}} >
+                <div class="bd-addon-error-icon">
+                    {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
+                </div>
+                <div class="bd-addon-error-header-inner">
+                    <h3 className="bd-addon-error-file secondaryHeader-2oeRPO base-1x0h_U size16-1P40sf">{err.name}</h3>
+                    <div className="bd-addon-error-details detailsWrapper-3XSaoN">
+                        <svg class="detailsIcon-2LZ7Bq" aria-hidden="false" width="16" height="16" viewBox="0 0 24 24">
+                            <path d="M12 2C6.4764 2 2 6.4764 2 12C2 17.5236 6.4764 22 12 22C17.5236 22 22 17.5236 22 12C22 6.4764 17.5236 2 12 2ZM12 5.6C12.4422 5.6 12.8 5.95781 12.8 6.4V11.5376L16.5625 13.7126C16.9453 13.9329 17.0703 14.4173 16.85 14.8001C16.6297 15.183 16.1453 15.3079 15.7625 15.0876L11.6873 12.7376C11.656 12.7251 11.6279 12.7048 11.5998 12.6876C11.3607 12.5486 11.1998 12.2954 11.1998 12.0001V6.4001C11.1998 5.9579 11.5578 5.6 12 5.6Z" fill="currentColor"></path>
+                        </svg>
+                        <div class="colorHeaderSecondary-3Sp3Ft size12-3cLvbJ">{err.message}</div>
+                    </div>
+                </div>
+                <svg class="bd-addon-error-expander" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path>
+                </svg>
+            </div>
+            {this.renderErrorBody(err)}
         </div>;
     }
 }
@@ -39,11 +56,10 @@ class Collapse extends React.Component {
 export default class AddonErrorModal extends React.Component {
     constructor(props) {
         super(props);
-
         const tabs = this.getTabs();
 
         this.state = {
-            selectedTab: tabs[0].id
+            selectedTab: tabs[0].id,
         };
     }
 
@@ -79,18 +95,6 @@ export default class AddonErrorModal extends React.Component {
         ].filter(e => e));
     }
 
-    renderError(err) {
-        return <div className="bd-addon-error">
-            <div className="bd-addon-error-header">
-                {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
-                <div className="bd-addon-error-message">{err.name} - {err.message}</div>
-            </div>
-            <div className="bd-addon-error-body">
-                <Collapse error={err} message={err.message} />
-            </div>
-        </div>;
-    }
-
     switchToTab(id) {
         this.setState({selectedTab: id});
     }
@@ -98,25 +102,18 @@ export default class AddonErrorModal extends React.Component {
     render() {
         const selectedTab = this.getTabs().find(e => this.state.selectedTab === e.id);
         const tabs = this.getTabs();
-        return <div className="bd-modal bd-content-modal modal-1UGdnR">
-            <div className="bd-modal-inner inner-1JeGVc">
-                <div className="header header-1R_AjF"><div className="title">{Strings.Modals.addonErrors}</div></div>
-                <div className="bd-modal-body">
-                    <div className="tab-bar-container">
-                        <div className="tab-bar TOP">
-                            {tabs.map(tab => <div onClick={() => {this.switchToTab(tab.id);}} className={joinClassNames("tab-bar-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
-                        </div>
-                    </div>
-                    <div className="scroller-wrap fade">
-                        <div className="scroller">
-                            {selectedTab.errors.map(error => this.renderError(error))}
-                        </div>
-                    </div>
-                </div>
-                <div className="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
-                    <button type="button" onClick={() => {this.props.onClose();}} className="bd-button">{Strings.Modals.okay}</button>
+        return <>
+            <div className="bd-error-modal-header header-1TKi98">
+                <h4 className="colorStandard-2KCXvj size14-e6ZScH h4-AQvcAz title-3sZWYQ defaultColor-1_ajX0 marginBottom8-AtZOdT">{Strings.Modals.addonErrors}</h4>
+                <div className="bd-tab-bar">
+                    {tabs.map(tab => <div onClick={() => {this.switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
                 </div>
             </div>
-        </div>;
+            <div className="bd-error-modal-content content-1LAB8Z thin-1ybCId scrollerBase-289Jih">
+                <div className="bd-addon-errors">
+                    {selectedTab.errors.map((error, index) => <AddonError index={index} err={error} />)}
+                </div>
+            </div>
+        </>;
     }
 }
