@@ -161,7 +161,7 @@
 /* Messages */
 
 .bd-minimal .cozy-3raOZG.wrapper-2a6GCs .avatar-1BDn8e {
-    transform: scale(.75);
+    transform: scale(0.75);
     width: 32px;
     height: 32px;
 }
@@ -171,8 +171,8 @@
 }
 
 .bd-minimal .buttons-cl5qTG {
-   transform: scale(.75);
-   transform-origin: right;
+    transform: scale(0.75);
+    transform-origin: right;
 }
 
 /* Chat input */

@@ -49,13 +49,13 @@
     transition: transform 0.2s ease;
 }
 
-.bd-addon-error.collapsed .bd-addon-error-expander {
-    transform: rotate(90deg);
+.bd-addon-error-expander,
+.bd-addon-error-icon {
+    flex: 0 0 auto;
 }
 
-.bd-addon-error-icon,
-.bd-addon-error-expander {
-    flex: 0 0 auto;
+.bd-addon-error.collapsed .bd-addon-error-expander {
+    transform: rotate(90deg);
 }
 
 .bd-addon-error-header-inner {

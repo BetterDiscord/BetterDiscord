@@ -37,8 +37,8 @@ class AddonError extends React.Component {
                 <div className="bd-addon-error-header-inner">
                     <h3 className="bd-addon-error-file secondaryHeader-2oeRPO base-1x0h_U size16-1P40sf">{err.name}</h3>
                     <div className="bd-addon-error-details detailsWrapper-3XSaoN">
-                        <svg className="detailsIcon-2LZ7Bq" aria-hidden="false" width="16" height="16" viewBox="0 0 24 24">
-                            <path d="M12 2C6.4764 2 2 6.4764 2 12C2 17.5236 6.4764 22 12 22C17.5236 22 22 17.5236 22 12C22 6.4764 17.5236 2 12 2ZM12 5.6C12.4422 5.6 12.8 5.95781 12.8 6.4V11.5376L16.5625 13.7126C16.9453 13.9329 17.0703 14.4173 16.85 14.8001C16.6297 15.183 16.1453 15.3079 15.7625 15.0876L11.6873 12.7376C11.656 12.7251 11.6279 12.7048 11.5998 12.6876C11.3607 12.5486 11.1998 12.2954 11.1998 12.0001V6.4001C11.1998 5.9579 11.5578 5.6 12 5.6Z" fill="currentColor"></path>
+                        <svg className="detailsIcon-2LZ7Bq" aria-hidden="false" width="16" height="16" viewBox="0 0 12 12">
+                            <path fill="currentColor" d="M6 1C3.243 1 1 3.244 1 6c0 2.758 2.243 5 5 5s5-2.242 5-5c0-2.756-2.243-5-5-5zm0 2.376a.625.625 0 110 1.25.625.625 0 010-1.25zM7.5 8.5h-3v-1h1V6H5V5h1a.5.5 0 01.5.5v2h1v1z"></path>
                         </svg>
                         <div className="colorHeaderSecondary-3Sp3Ft size12-3cLvbJ">{err.message}</div>
                     </div>
