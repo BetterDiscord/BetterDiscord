@@ -12,12 +12,15 @@
     width: 40px;
     height: 24px;
     background-color: var(--switch-color);
-    transition: 150ms linear background-color;
+    transition: 250ms cubic-bezier(0, .3, .7, 1) background-color;
     position: relative;
 }
 
 .bd-switch input:active + .bd-switch-body {
     --switch-color: rgba(100, 137, 126);
+}
+
+.full-motion .bd-switch input:active + .bd-switch-body {
     --symbol1path: path('M6.56666 11.0013L6.56666 8.96683L13.5667 8.96683L13.5667 11.0013L6.56666 11.0013Z');
     --symbol2path: path('M13.5582 8.96683L13.5582 11.0013L6.56192 11.0013L6.56192 8.96683L13.5582 8.96683Z');
 }
@@ -30,13 +33,16 @@
 
 .bd-switch input:checked:active + .bd-switch-body {
     --switch-color: rgba(81, 162, 128);
+}
+
+.full-motion .bd-switch input:checked:active + .bd-switch-body {
     --symbol1path: path('M6.56666 11.0013L6.56666 8.96683L13.5667 8.96683L13.5667 11.0013L6.56666 11.0013Z');
     --symbol2path: path('M13.5582 8.96683L13.5582 11.0013L6.56192 11.0013L6.56192 8.96683L13.5582 8.96683Z');
 }
 
 .bd-switch .bd-switch-symbol path {
     fill: var(--switch-color);
-    transition: 150ms linear;
+    transition: 250ms cubic-bezier(0, .3, .7, 1);
 }
 
 .bd-switch .bd-switch-symbol path:first-child {
@@ -65,7 +71,7 @@
     width: 28px;
     height: 18px;
     margin: 3px;
-    transition: 150ms linear;
+    transition: 250ms cubic-bezier(0, .3, .7, 1);
 }
 
 .bd-switch input:active + .bd-switch-body .bd-switch-slider {
@@ -80,18 +86,18 @@
     left: 8px;
 }
 
-.bd-switch-body .bd-switch-slider .switch-handle {
-    transition: 150ms linear;
+.bd-switch-body .bd-switch-slider .bd-switch-handle {
+    transition: 250ms cubic-bezier(0, .3, .7, 1);
     position: relative;
 }
 
-.bd-switch input:active + .bd-switch-body .switch-handle {
+.bd-switch input:active + .bd-switch-body .bd-switch-handle {
     width: 28px;
     height: 18px;
     y: 1;
     x: 0;
 }
 
-.bd-switch input:checked:active + .bd-switch-body .switch-handle {
+.bd-switch input:checked:active + .bd-switch-body .bd-switch-handle {
     x: 0;
 }
