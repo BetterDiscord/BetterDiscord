@@ -21,7 +21,7 @@ class AddonError extends React.Component {
         const stack = err.error && err.stack;
         if (!this.state.expanded || !stack) return null;
         return <div className="bd-addon-error-body">
-            <div class="divider-3573oO topDivider-3G26Ct"></div>
+            <div className="divider-3573oO topDivider-3G26Ct"></div>
             <div className="bd-addon-error-stack">
                 {Parser ? Parser.codeBlock.react({content: stack, lang: "js"}, null, {}) : stack}
             </div>
@@ -31,20 +31,20 @@ class AddonError extends React.Component {
         const err = this.props.err;
         return <div key={`${err.type}-${this.props.index}`} className={joinClassNames("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
             <div className="bd-addon-error-header" onClick={() => {this.toggle();}} >
-                <div class="bd-addon-error-icon">
+                <div className="bd-addon-error-icon">
                     {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
                 </div>
-                <div class="bd-addon-error-header-inner">
+                <div className="bd-addon-error-header-inner">
                     <h3 className="bd-addon-error-file secondaryHeader-2oeRPO base-1x0h_U size16-1P40sf">{err.name}</h3>
                     <div className="bd-addon-error-details detailsWrapper-3XSaoN">
-                        <svg class="detailsIcon-2LZ7Bq" aria-hidden="false" width="16" height="16" viewBox="0 0 24 24">
+                        <svg className="detailsIcon-2LZ7Bq" aria-hidden="false" width="16" height="16" viewBox="0 0 24 24">
                             <path d="M12 2C6.4764 2 2 6.4764 2 12C2 17.5236 6.4764 22 12 22C17.5236 22 22 17.5236 22 12C22 6.4764 17.5236 2 12 2ZM12 5.6C12.4422 5.6 12.8 5.95781 12.8 6.4V11.5376L16.5625 13.7126C16.9453 13.9329 17.0703 14.4173 16.85 14.8001C16.6297 15.183 16.1453 15.3079 15.7625 15.0876L11.6873 12.7376C11.656 12.7251 11.6279 12.7048 11.5998 12.6876C11.3607 12.5486 11.1998 12.2954 11.1998 12.0001V6.4001C11.1998 5.9579 11.5578 5.6 12 5.6Z" fill="currentColor"></path>
                         </svg>
-                        <div class="colorHeaderSecondary-3Sp3Ft size12-3cLvbJ">{err.message}</div>
+                        <div className="colorHeaderSecondary-3Sp3Ft size12-3cLvbJ">{err.message}</div>
                     </div>
                 </div>
-                <svg class="bd-addon-error-expander" width="24" height="24" viewBox="0 0 24 24">
-                    <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path>
+                <svg className="bd-addon-error-expander" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path>
                 </svg>
             </div>
             {this.renderErrorBody(err)}

@@ -116,11 +116,10 @@ export default class Modals {
                 }),
                 React.createElement(this.ModalComponents.ModalFooter, {
                     className: "bd-error-modal-footer",
-                    children: React.createElement(this.Buttons.default, {
-                        onClick: props.onClose,
-                        className: "bd-button"
-                    }, Strings.Modals.okay)
-                })
+                }, React.createElement(this.Buttons.default, {
+                    onClick: props.onClose,
+                    className: "bd-button"
+                }, Strings.Modals.okay))
             ]
         })));
     }
