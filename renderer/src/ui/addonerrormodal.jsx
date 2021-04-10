@@ -102,7 +102,7 @@ export default class AddonErrorModal extends React.Component {
         const selectedTab = this.getTabs().find(e => this.state.selectedTab === e.id);
         const tabs = this.getTabs();
         return <>
-            <div className="bd-error-modal-header header-1TKi98">
+            <div className="bd-error-modal-header header-1TKi98 separator-2-RRj_">
                 <h4 className="colorStandard-2KCXvj size14-e6ZScH h4-AQvcAz title-3sZWYQ defaultColor-1_ajX0 marginBottom8-AtZOdT">{Strings.Modals.addonErrors}</h4>
                 <div className="bd-tab-bar">
                     {tabs.map(tab => <div onClick={() => {this.switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
