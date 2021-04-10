@@ -1,5 +1,4 @@
 import {React, Strings, WebpackModules} from "modules";
-import DownArrow from "./icons/downarrow";
 import Extension from "./icons/extension";
 import ThemeIcon from "./icons/theme";
 
