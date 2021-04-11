@@ -18,21 +18,11 @@
 
 [![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link]
 
+# Forked, so you can use the installer to install it to Discord Development build. Install instructions are below.
+
 BetterDiscord is a client modification for Discord. This allows you to add plugins and themes to your personal copy of Discord. BetterDiscord also adds a number of other features out of the box.
 
 # Installation
-
-## Auto Installers
-
-### Windows
-Grab the `exe` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe).
-
-### macOS/OS X
-Grab the `zip` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip).
-
-### Linux
-Grab the `AppImage` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage).
-
 
 ## Manual Installation
 
@@ -40,10 +30,10 @@ For normal users, installing via the installers makes the most sense. However wh
 
 **Prerequisites**: [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) 12.x+ and the package manager [npm](https://www.npmjs.com/).
 
-1. Clone this repository `git clone https://github.com/rauenzi/BetterDiscordApp.git`
+1. Clone this repository `git clone https://github.com/dikahdoff/BetterDiscordApp.git`
 2. Install dependencies with `npm install`
 3. Build both the Injector and Renderer bundles with `npm run build` this will create a `injector.js`, `preload.js`, and `renderer.js` in the `dist` folder.
-4. Run the inject script to inject the local files into your Discord client (`npm run inject`). Alternately install it to non-stable using `npm run inject canary`.
+4. Run the inject script to inject the local files into your Discord client (`npm run inject dev`). Alternately install it to canary using `npm run inject canary` or to stable using `npm run inject`.
 
 # FAQ
 
