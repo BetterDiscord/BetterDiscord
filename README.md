@@ -8,10 +8,6 @@ BetterDiscord is a client modification for Discord. This allows you to add plugi
 
 # Installation
 
-## Auto Installation
-
-Not supported by the Dev Build
-
 ## Manual Installation
 
 For normal users, installing via the installers makes the most sense. However when wanting to either develop BetterDiscord, or when the installers do not work, this option can be used.
@@ -26,6 +22,18 @@ For normal users, installing via the installers makes the most sense. However wh
     - To install it to Development: `npm run inject dev`
     - To install it to Canary: `npm run inject canary`
     - To install it to PTB: `npm run inject ptb`.
+
+## Auto Installation
+
+Not supported by the Dev Build. For other versions:
+### Windows
+Grab the `exe` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe).
+
+### macOS/OS X
+Grab the `zip` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip).
+
+### Linux
+Grab the `AppImage` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage).
 
 # FAQ
 
