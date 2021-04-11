@@ -21,7 +21,11 @@ For normal users, installing via the installers makes the most sense. However wh
 1. Clone this repository `git clone https://github.com/dikahdoff/BetterDiscordApp.git`
 2. Install dependencies with `npm install`
 3. Build both the Injector and Renderer bundles with `npm run build` this will create a `injector.js`, `preload.js`, and `renderer.js` in the `dist` folder.
-4. Run the inject script to inject the local files into your Discord client (`npm run inject dev`). Alternately install it to canary using `npm run inject canary` or to stable using `npm run inject`.
+4. Run the inject script to inject the local files into your Discord client 
+    - To install it to Stable: `npm run inject`
+    - To install it to Development: `npm run inject dev`
+    - To install it to Canary: `npm run inject canary`
+    - To install it to PTB: `npm run inject ptb`.
 
 # FAQ
 
