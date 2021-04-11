@@ -25,7 +25,7 @@ For normal users, installing via the installers makes the most sense. However wh
 
 ## Auto Installation
 
-Not supported by the Dev Build. For other versions:
+**Not supported by the Dev Build.** For other versions:
 ### Windows
 Grab the `exe` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe).
 
