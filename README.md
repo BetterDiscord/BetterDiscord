@@ -1,28 +1,16 @@
-# BetterDiscord [![Build Status][travis-badge]][travis-link] [![Language Grade][lgtm-badge]][lgtm-link] ![GitHub Releases][downloads-badge] 
+# BetterDiscord ![GitHub Releases][downloads-badge] 
 
-[patreon-badge]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.herokuapp.com%2FZerebos&style=flat-square
-[patreon-link]: https://patreon.com/Zerebos
-
-[paypal-badge]: https://img.shields.io/badge/Paypal-Donate!-%2300457C.svg?logo=paypal&style=flat-square
-[paypal-link]: https://paypal.me/ZackRauen
-
-[lgtm-badge]: https://img.shields.io/lgtm/grade/javascript/g/rauenzi/BetterDiscordApp.svg?style=flat-square
-[lgtm-link]: https://lgtm.com/projects/g/rauenzi/BetterDiscordApp/context:javascript
-
-[travis-badge]: https://img.shields.io/travis/com/rauenzi/BetterDiscordApp.svg?style=flat-square&branch=stable
-[travis-link]: https://travis-ci.com/rauenzi/BetterDiscordApp
-
-[downloads-badge]: https://img.shields.io/github/downloads/BetterDiscord/Installer/latest/total?style=flat-square
-
-
-
-[![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link]
+Donation links to the devs are in the original repo's README: https://github.com/rauenzi/BetterDiscordApp
 
 # Forked, so you can use the installer to install it to Discord Development build. Install instructions are below.
 
 BetterDiscord is a client modification for Discord. This allows you to add plugins and themes to your personal copy of Discord. BetterDiscord also adds a number of other features out of the box.
 
 # Installation
+
+## Auto Installation
+
+Not supported by the Dev Build
 
 ## Manual Installation
 
