@@ -1,4 +1,4 @@
-# BetterDiscord ![GitHub Releases][downloads-badge] 
+# BetterDiscord
 
 Donation links to the devs are in the original repo's README: https://github.com/rauenzi/BetterDiscordApp
 
