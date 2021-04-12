@@ -89,16 +89,13 @@ export default new class Core {
     }
 
     waitForGuilds() {
-        let timesChecked = 0;
         return new Promise(resolve => {
             const checkForGuilds = function () {
-                timesChecked++;
                 if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
                 const wrapper = GuildClasses.wrapper.split(" ")[0];
                 const guild = GuildClasses.listItem.split(" ")[0];
                 const blob = GuildClasses.blobContainer.split(" ")[0];
                 if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve();
-                // else if (timesChecked >= 50) return resolve();
                 setTimeout(checkForGuilds, 100);
             };
 

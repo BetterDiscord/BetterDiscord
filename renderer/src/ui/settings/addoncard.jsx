@@ -36,9 +36,6 @@ export default class AddonCard extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            settingsOpen: false
-        };
 
         this.settingsPanel = "";
         this.panelRef = React.createRef();

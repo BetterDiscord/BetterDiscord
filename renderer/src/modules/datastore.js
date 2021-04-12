@@ -6,9 +6,6 @@ const path = require("path");
 const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable";
 const discordVersion = window?.DiscordNative?.remoteApp?.getVersion?.() ?? "0.0.309";
 
-// const releaseChannel = "stable";
-// const discordVersion = "0.0.309";
-
 // Schema
 // =======================
 // %appdata%\BetterDiscord

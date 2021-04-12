@@ -4,7 +4,6 @@ import AddonManager from "./addonmanager";
 import AddonError from "../structs/addonerror";
 import Settings from "./settingsmanager";
 import Strings from "./strings";
-import IPC from "./ipc";
 import Events from "./emitter";
 
 import Toasts from "../ui/toasts";
@@ -12,11 +11,7 @@ import Modals from "../ui/modals";
 import SettingsRenderer from "../ui/settings";
 
 const path = require("path");
-const electron = require("electron");
 const vm = require("vm");
-// const electronRemote = require("electron").remote;
-
-// window.$ = window.jQuery = function() {}
 
 export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}

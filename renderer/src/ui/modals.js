@@ -195,7 +195,6 @@ export default class Modals {
 
                 componentDidMount() {
                     if (this.element instanceof Node) this.elementRef.current.appendChild(this.element);
-                    // if (typeof(this.element) === "string") this.elementRef.current.appendChild(this.element);
                 }
 
                 render() {

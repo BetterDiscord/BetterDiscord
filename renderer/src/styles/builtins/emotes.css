@@ -13,11 +13,16 @@
 }
 
 .emote {
-    height: 1.45em;
+    object-fit: contain;
+    width: 1.375em;
+    height: 1.375em;
+    vertical-align: bottom;
 }
 
 .emote.jumboable {
-    height: 2rem;
+    width: 3rem;
+    height: 3rem;
+    min-height: 3rem;
 }
 
 .fav {

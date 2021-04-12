@@ -198,7 +198,7 @@ export default class AddonManager {
     loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
         try {
-            const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
+            __non_webpack_require__(path.resolve(this.addonFolder, filename));
         }
         catch (error) {
             return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack}, this.prefix);

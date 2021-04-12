@@ -31,8 +31,6 @@ export default class BDEmote extends React.Component {
 
     onMouseEnter() {
         if (!this.state.shouldAnimate && this.animateOnHover) this.setState({shouldAnimate: true});
-        // if (!this.state.isFavorite && EmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: true});
-        // else if (this.state.isFavorite && !EmoteMenu.favoriteEmotes[this.label]) this.setState({isFavorite: false});
     }
 
     onMouseLeave() {

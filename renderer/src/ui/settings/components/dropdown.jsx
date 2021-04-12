@@ -50,14 +50,3 @@ export default class Select extends React.Component {
                 </div>;
     }
 }
-
-// return <div className="bd-select-wrap">
-// <label className="bd-label">{this.props.label}</label>
-// <div className={`bd-select${style}${isOpen}`} onClick={this.showMenu} ref={this.dropdown}>
-//     <div className="bd-select-controls">
-//         <div className="bd-select-value">{this.selected.label}</div>
-//         <Arrow className="bd-select-arrow" />
-//     </div>
-// </div>
-// {this.state.open && this.options}
-// </div>;

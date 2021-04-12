@@ -89,9 +89,6 @@ export default new class SettingsRenderer {
                 if (typeof(panel.label) !== "string") panel.label = panel.label.toString();
                 insert(panel);
             }
-            // for (const tab of returnValue) {
-            //     if (!tab.className) tab.className = `${DOM.escapeID(tab.section).toLowerCase()}-tab`;
-            // }
         });
         this.forceUpdate();
     }

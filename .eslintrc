@@ -1,5 +1,6 @@
 {
-	"env": {
+    "extends": "eslint:recommended",
+    "env": {
         "node": true
     },
     "parserOptions": {

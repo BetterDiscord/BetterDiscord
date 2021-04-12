@@ -20,7 +20,6 @@ export default class ServerCard extends React.Component {
         super(props);
         if (!this.props.server.iconUrl) this.props.server.iconUrl = this.props.defaultAvatar();
         this.state = {
-            imageError: false,
             joined: this.props.joined
         };
         this.join = this.join.bind(this);
@@ -60,7 +59,6 @@ export default class ServerCard extends React.Component {
 
     handleError() {
         this.props.server.iconUrl = this.props.defaultAvatar();
-        this.setState({imageError: true});
     }
 
     async join() {

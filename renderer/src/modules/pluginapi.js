@@ -36,20 +36,16 @@ const BdApi = {
 };
 
 BdApi.getAllWindowPreferences = function() {
-    // return DataStore.getData("windowprefs") || {};
-    // TODO: mark deprecated
+    Logger.warn("Deprecated", "BdApi.getAllWindowPreferences() has been deprecated due to the new handling of window transparency.");
 };
 
-BdApi.getWindowPreference = function(key) {
-    // return this.getAllWindowPreferences()[key];
-    // TODO: mark deprecated
+BdApi.getWindowPreference = function() {
+    Logger.warn("Deprecated", "BdApi.getWindowPreference() has been deprecated due to the new handling of window transparency.");
+    return null;
 };
 
-BdApi.setWindowPreference = function(key, value) {
-    // const prefs = this.getAllWindowPreferences();
-    // prefs[key] = value;
-    // return DataStore.setData("windowprefs", prefs);
-    // TODO: mark deprecated
+BdApi.setWindowPreference = function() {
+    Logger.warn("Deprecated", "BdApi.setWindowPreference() has been deprecated due to the new handling of window transparency.");
 };
 
 // Inject CSS to document head

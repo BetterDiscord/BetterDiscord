@@ -1,4 +1,4 @@
-import {ipcMain as ipc, BrowserWindow, app, dialog} from "electron";
+import {ipcMain as ipc, BrowserWindow, app} from "electron";
 
 import * as IPCEvents from "common/constants/ipcevents";
 

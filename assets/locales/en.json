@@ -51,10 +51,6 @@
                 "hideGiftButton": {
                     "name": "Hide Gift Button",
                     "note": "Hides the Nitro Gift button in the textarea"
-                },
-                "removeMinimumSize": {
-                    "name": "Remove Minimum Size",
-                    "note": "Removes Discord's forced minimum window size of 940x500"
                 }
             },
             "addons": {
@@ -136,6 +132,10 @@
                 "frame": {
                     "name": "Window Frame",
                     "note": "Adds the native os window frame to the main window"
+                },
+                "removeMinimumSize": {
+                    "name": "Remove Minimum Size",
+                    "note": "Removes Discord's forced minimum window size of 940x500"
                 }
             }
         },

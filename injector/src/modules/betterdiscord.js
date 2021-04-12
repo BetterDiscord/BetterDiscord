@@ -108,7 +108,7 @@ export default class BetterDiscord {
             browserWindow.webContents.send(IPCEvents.NAVIGATE);
         });
 
-        browserWindow.webContents.on("render-process-gone", (event, details) => {
+        browserWindow.webContents.on("render-process-gone", () => {
             hasCrashed = true;
         });
     }

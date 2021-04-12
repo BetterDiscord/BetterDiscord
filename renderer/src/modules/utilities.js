@@ -81,7 +81,7 @@ export default class Utilities {
     }
 
     static isEmpty(obj) {
-        if (obj == null || obj == undefined || obj == "") return true;
+        if (obj === null || typeof(undefined) === "undefined" || obj === "") return true;
         if (typeof(obj) !== "object") return false;
         if (Array.isArray(obj)) return obj.length == 0;
         for (const key in obj) {
@@ -119,6 +119,25 @@ export default class Utilities {
         }});
 
         return proxy;
+    }
+
+    /**
+     * Protects prototypes from external assignment.
+     * 
+     * Needs some work before full usage
+     * @param {Class} Component - component with prototype to protect
+     */
+    static protectPrototype(Component) {
+        const descriptors = Object.getOwnPropertyDescriptors(Component.prototype);
+        for (const name in descriptors) {
+            const descriptor = descriptors[name];
+            descriptor.configurable = false;
+            descriptor.enumerable = false;
+            if (Object.prototype.hasOwnProperty.call(descriptor, "get")) descriptor.set = () => Logger.warn("protectPrototype", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");
+            if (Object.prototype.hasOwnProperty.call(descriptor, "value") && typeof(descriptor.value) === "function") descriptor.value.bind(Component.prototype);
+            if (Object.prototype.hasOwnProperty.call(descriptor, "writable")) descriptor.writable = false;
+        }
+        Object.defineProperties(Component.prototype, descriptors);
     }
 
     /**
@@ -265,9 +284,8 @@ export default class Utilities {
 
         let curr = this.getReactInstance(node);
         for (curr = curr && curr.return; curr !== null; curr = curr.return) {
-            if (curr === null) continue;
             const owner = curr.stateNode;
-            if (curr !== null && !(owner instanceof HTMLElement) && classFilter(curr) && filter(owner)) return owner;
+            if (!(owner instanceof HTMLElement) && classFilter(curr) && filter(owner)) return owner;
         }
 
         return null;

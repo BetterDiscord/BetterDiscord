@@ -93,13 +93,14 @@ export default class PublicServers extends React.Component {
         if (this.state.loading) return;
         await new Promise(resolve => this.setState({tab: id}, resolve));
         if (this.state.tab === "Featured" || this.state.tab == "Popular") {
-            return this.setState({results: {
+            const fakeResults = {
                 servers: this[this.state.tab.toLowerCase()],
                 size: this[this.state.tab.toLowerCase()].length,
                 total: this[this.state.tab.toLowerCase()].length,
                 page: 1,
                 numPages: 1
-            }});
+            };
+            return this.setState({results: fakeResults});
         }
 
         this.search();

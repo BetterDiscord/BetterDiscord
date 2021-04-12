@@ -1,7 +1,6 @@
 // Export these two first because they add settings/panels
 
 export {default as CustomCSS} from "./customcss";
-export {default as WindowPrefs} from "./windowprefs";
 
 export {default as PublicServers} from "./general/publicservers";
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
@@ -12,7 +11,6 @@ export {default as ColoredText} from "./appearance/coloredtext";
 export {default as HideGIFButton} from "./appearance/hidegifbutton";
 export {default as HideGiftButton} from "./appearance/hidegiftbutton";
 export {default as MinimalMode} from "./appearance/minimalmode";
-export {default as RemoveMinimumSize} from "./appearance/removeminimumsize";
 
 export {default as EmoteModule} from "./emotes/emotes";
 export {default as EmoteMenu} from "./emotes/emotemenu";
@@ -23,3 +21,6 @@ export {default as ReactDevTools} from "./developer/reactdevtools";
 export {default as InspectElement} from "./developer/inspectelement";
 export {default as StopDevToolsWarning} from "./developer/devtoolswarning";
 export {default as DebugLogs} from "./developer/debuglogs";
+
+export {default as WindowPrefs} from "./window/transparency";
+export {default as RemoveMinimumSize} from "./window/removeminimumsize";
