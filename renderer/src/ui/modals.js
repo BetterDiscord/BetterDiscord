@@ -106,12 +106,21 @@ export default class Modals {
         this.addonErrorsRef = React.createRef();
         this.ModalActions.openModal(props => React.createElement(this.ModalComponents.ModalRoot, Object.assign(props, {
             size: "medium",
-            children: React.createElement(AddonErrorModal, {
-                ref: this.addonErrorsRef,
-                pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
-                themeErrors: Array.isArray(themeErrors) ? themeErrors : [],
-                onClose: props.onClose
-            })
+            className: "bd-error-modal",
+            children: [
+                React.createElement(AddonErrorModal, {
+                    ref: this.addonErrorsRef,
+                    pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
+                    themeErrors: Array.isArray(themeErrors) ? themeErrors : [],
+                    onClose: props.onClose
+                }),
+                React.createElement(this.ModalComponents.ModalFooter, {
+                    className: "bd-error-modal-footer",
+                }, React.createElement(this.Buttons.default, {
+                    onClick: props.onClose,
+                    className: "bd-button"
+                }, Strings.Modals.okay))
+            ]
         })));
     }
 
@@ -213,10 +222,7 @@ export default class Modals {
         const modal = props => {
             return React.createElement(mc.ModalRoot, Object.assign({size: mc.ModalSize.MEDIUM, className: "bd-addon-modal"}, props),
                 React.createElement(mc.ModalHeader, {separator: false, className: "bd-addon-modal-header"},
-                    React.createElement(this.FormTitle, {tag: "h4"}, `${name} Settings`),
-                    React.createElement(this.FlexElements.Child, {grow: 0},
-                        React.createElement(mc.ModalCloseButton, {className: "bd-modal-close", onClick: props.onClose})
-                    )
+                    React.createElement(this.FormTitle, {tag: "h4"}, `${name} Settings`)
                 ),
                 React.createElement(mc.ModalContent, {className: "bd-addon-modal-settings"},
                     React.createElement(ErrorBoundary, {}, child)
