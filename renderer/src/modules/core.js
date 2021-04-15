@@ -18,8 +18,6 @@ import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
 
-const GuildClasses = DiscordModules.GuildClasses;
-
 export default new class Core {
     async startup() {
         if (this.hasStarted) return;
@@ -89,6 +87,8 @@ export default new class Core {
     }
 
     waitForGuilds() {
+        // TODO: experiment with waiting for CONNECTION_OPEN event instead
+        const GuildClasses = DiscordModules.GuildClasses;
         return new Promise(resolve => {
             const checkForGuilds = function () {
                 if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
