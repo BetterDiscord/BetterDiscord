@@ -343,7 +343,10 @@ export default class AddonManager {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         const fullPath = path.resolve(this.addonFolder, addon.filename);
         if (typeof(system) == "undefined") system = Settings.get("settings", "addons", "editAction") == "system";
-        if (system) return require("electron").shell.openItem(`${fullPath}`);
+        if (system) {
+            const shell = require("electron").shell;
+            return (shell.openItem || shell.openPath)(`${fullPath}`);
+        }
         return this.openDetached(addon);
     }
 
