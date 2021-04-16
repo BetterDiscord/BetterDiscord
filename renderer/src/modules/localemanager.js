@@ -6,8 +6,8 @@ import Events from "./emitter";
 const {Dispatcher, DiscordConstants, UserSettingsStore} = DiscordModules;
 
 export default new class LocaleManager {
-    get discordLocale() {return UserSettingsStore.locale.split("-")[0];}
-    get defaultLocale() {return "en";}
+    get discordLocale() {return UserSettingsStore.locale;}
+    get defaultLocale() {return "en-US";}
 
     constructor() {
         this.locale = "";
@@ -18,7 +18,7 @@ export default new class LocaleManager {
         this.setLocale(this.discordLocale);
         Dispatcher.subscribe(DiscordConstants.ActionTypes.USER_SETTINGS_UPDATE, ({settings}) => {
             const newLocale = settings.locale;
-            if (newLocale && newLocale != this.locale) this.setLocale(newLocale.split("-")[0]);
+            if (newLocale && newLocale != this.locale) this.setLocale(newLocale);
         });
     }
 

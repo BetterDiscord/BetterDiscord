@@ -8,11 +8,12 @@
     --switch-color: rgb(114, 118, 125);
     --symbol1path: path('M5.13231 6.72963L6.7233 5.13864L14.855 13.2704L13.264 14.8614L5.13231 6.72963Z');
     --symbol2path: path('M13.2704 5.13864L14.8614 6.72963L6.72963 14.8614L5.13864 13.2704L13.2704 5.13864Z');
+
     border-radius: 14px;
     width: 40px;
     height: 24px;
     background-color: var(--switch-color);
-    transition: 250ms cubic-bezier(0, .3, .7, 1) background-color;
+    transition: 250ms cubic-bezier(0, 0.3, 0.7, 1) background-color;
     position: relative;
 }
 
@@ -20,15 +21,15 @@
     --switch-color: rgba(100, 137, 126);
 }
 
-.full-motion .bd-switch input:active + .bd-switch-body {
-    --symbol1path: path('M6.56666 11.0013L6.56666 8.96683L13.5667 8.96683L13.5667 11.0013L6.56666 11.0013Z');
-    --symbol2path: path('M13.5582 8.96683L13.5582 11.0013L6.56192 11.0013L6.56192 8.96683L13.5582 8.96683Z');
-}
-
 .bd-switch input:checked + .bd-switch-body {
     --switch-color: rgb(67, 181, 129);
     --symbol1path: path('M7.89561 14.8538L6.30462 13.2629L14.3099 5.25755L15.9009 6.84854L7.89561 14.8538Z');
     --symbol2path: path('M4.08643 11.0903L5.67742 9.49929L9.4485 13.2704L7.85751 14.8614L4.08643 11.0903Z');
+}
+
+.full-motion .bd-switch input:active + .bd-switch-body {
+    --symbol1path: path('M6.56666 11.0013L6.56666 8.96683L13.5667 8.96683L13.5667 11.0013L6.56666 11.0013Z');
+    --symbol2path: path('M13.5582 8.96683L13.5582 11.0013L6.56192 11.0013L6.56192 8.96683L13.5582 8.96683Z');
 }
 
 .bd-switch input:checked:active + .bd-switch-body {
@@ -42,7 +43,7 @@
 
 .bd-switch .bd-switch-symbol path {
     fill: var(--switch-color);
-    transition: 250ms cubic-bezier(0, .3, .7, 1);
+    transition: 250ms cubic-bezier(0, 0.3, 0.7, 1);
 }
 
 .bd-switch .bd-switch-symbol path:first-child {
@@ -71,7 +72,7 @@
     width: 28px;
     height: 18px;
     margin: 3px;
-    transition: 250ms cubic-bezier(0, .3, .7, 1);
+    transition: 250ms cubic-bezier(0, 0.3, 0.7, 1);
 }
 
 .bd-switch input:active + .bd-switch-body .bd-switch-slider {
@@ -87,7 +88,7 @@
 }
 
 .bd-switch-body .bd-switch-slider .bd-switch-handle {
-    transition: 250ms cubic-bezier(0, .3, .7, 1);
+    transition: 250ms cubic-bezier(0, 0.3, 0.7, 1);
     position: relative;
 }
 
