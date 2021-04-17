@@ -1,86 +1,63 @@
-/* New */
-.bd-addon-error-modal-header {
-	display: grid;
-	grid-template-rows: auto auto;
-}
-
 .bd-addon-error-tabbar-item {
-	padding-top: 8px;
-	padding-bottom: 8px;
-	margin-right: 20px;
-}
-
-/* Old */
-.bd-addon-errors {
-	margin-top: 16px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    margin-right: 20px;
 }
 
 .bd-addon-error {
-	position: relative;
-	border-radius: 5px;
-	padding: 0;
-	margin-bottom: 16px;
-	background: var(--deprecated-card-editable-bg);
-	padding-top: 20px;
-	padding-bottom: 20px;
-	padding-left: 16px;
-	padding-right: 16px;
-	border: 1px solid;
+    position: relative;
+    border-radius: 5px;
+    padding: 0;
+    margin-bottom: 16px;
+    background: var(--deprecated-card-editable-bg);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border: 1px solid;
 }
 
 .theme-dark .bd-addon-error {
-	border-color: var(--background-secondary-alt);
+    border-color: var(--background-secondary-alt);
 }
 
 .theme-light .bd-addon-error {
-	border-color: var(--background-tertiary);
+    border-color: var(--background-tertiary);
 }
 
 .bd-addon-error.expanded .bd-addon-error-header {
-	padding-bottom: 20px;
+    padding-bottom: 20px;
 }
 
 .bd-addon-error-icon {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	align-self: flex-start;
-	background-color: var(--background-floating);
-	width: 48px;
-	height: 48px;
-	border-radius: 50%;
-	margin-right: 10px;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    background-color: var(--background-floating);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
 
 .bd-addon-error-icon svg {
-	fill: var(--interactive-normal);
-	width: 24px !important;
-	height: 24px !important;
-}
-
-.bd-addon-error-icon {
-	flex: 0 0 auto;
+    fill: var(--interactive-normal);
+    width: 24px !important;
+    height: 24px !important;
 }
 
 .bd-addon-error-tabbar-item:first-of-type {
-	margin-left: 0;
-}
-
-.bd-addon-error-modal-header {
-	display: inline-block;
-}
-
-.bd-addon-error-modal-header-top {
-	display: flex;
-	justify-content: space-between;
+    margin-left: 0;
 }
 
 .bd-addon-error-content {
-	padding-top: 16px;
-	padding-bottom: 0;
+    padding-top: 16px;
+    padding-bottom: 0;
 }
 
 .bd-addon-error-stack pre {
-	margin: 0px;
-	max-width: unset;
+    margin: 0;
+    max-width: unset;
 }
