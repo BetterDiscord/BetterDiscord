@@ -1,18 +1,45 @@
 import Logger from "common/logger";
 import {React, Strings, WebpackModules} from "modules";
+import url from "url";
+import util from "util";
 
 const Text = WebpackModules.getByDisplayName("Text");
 
-// let reactErrors;
-// fetch(
-//     "https://raw.githubusercontent.com/facebook/react/master/scripts/error-codes/codes.json"
-// )
-//     .then((response) => response.json())
-//     .then((body) => {
-//         reactErrors = body;
-//     });
+let reactInvariants;
 
-class ErrorBoundary extends React.Component {
+function getInvariants() {
+    return new Promise((resolve) => {
+        fetch(
+            "https://raw.githubusercontent.com/facebook/react/master/scripts/error-codes/codes.json"
+        )
+            .then((response) => response.json())
+            .then((body) => {
+                reactInvariants = body;
+                resolve(reactInvariants);
+            });
+    });
+}
+
+function makeReactErrorString(newReactInvariants, error) {
+    const reactUrl = url.parse(
+        error.message.substring(
+            error.message.indexOf("; visit ") + 8,
+            error.message.indexOf(" for the full message")
+        ),
+        true
+    );
+    const invariant = reactUrl.query.invariant;
+    const args = reactUrl.query["args[]"];
+
+    return newReactInvariants
+        ? `React Invariant Violation #${invariant}\n${util.format(
+                newReactInvariants[invariant],
+                ...args
+          )}`
+        : "";
+}
+
+export default class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
 
@@ -34,7 +61,26 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) {
             const Fallback = this.props.fallback ?? false;
-            Logger.log(Fallback);
+
+            let reactErrorString;
+            if (reactInvariants) {
+                reactErrorString = makeReactErrorString(reactInvariants, this.state.error);
+                if (!this.props.silent) {
+                    Logger.log("ErrorBoundary", reactErrorString);
+                }
+            }
+            else {
+                getInvariants().then((newReactInvariants) => {
+                    reactErrorString = makeReactErrorString(newReactInvariants, this.state.error);
+                    this.setState({
+                        reactErrorString,
+                    });
+                    if (!this.props.silent) {
+                        Logger.log("ErrorBoundary", reactErrorString);
+                    }
+                });
+            }
+
             if (Fallback) {
                 return (
                     <ErrorBoundary
@@ -50,7 +96,10 @@ class ErrorBoundary extends React.Component {
                             </ErrorBoundary>
                         )}
                     >
-                        <Fallback />
+                        <Fallback
+                            {...this.state}
+                            reactErrorString={reactErrorString ?? this.state.reactErrorString}
+                        />
                     </ErrorBoundary>
                 );
             }
@@ -61,7 +110,7 @@ class ErrorBoundary extends React.Component {
 }
 
 const originalRender = ErrorBoundary.prototype.render;
-export default Object.defineProperty(ErrorBoundary.prototype, "render", {
+Object.defineProperty(ErrorBoundary.prototype, "render", {
     enumerable: false,
     configurable: false,
     set: function () {

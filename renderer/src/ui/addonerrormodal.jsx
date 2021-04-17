@@ -149,6 +149,7 @@ export function AddonError(props) {
             className={`bd-addon-error ${expanded ? "expanded" : "collapsed"}`}
             direction={Flex.Direction.VERTICAL}
         >
+            {{gbfhd: "fdjhs"}}
             <Flex
                 align={Flex.Align.CENTER}
                 onClick={() => {
