@@ -1,118 +1,198 @@
-import {React, Strings, WebpackModules} from "modules";
+import { React, Strings, WebpackModules } from "modules";
 import Extension from "./icons/extension";
 import ThemeIcon from "./icons/theme";
+import DetailsIcon from "./icons/details";
+import ErrorBoundary from "./errorboundary";
 
-const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
+const { useState, useEffect } = React;
 
-const joinClassNames = (...classNames) => classNames.filter(e => e).join(" ");
+const ButtonModule = WebpackModules.getByProps("ButtonColors");
+const TabBarModule = WebpackModules.getModule(
+	(m) => m?.default?.displayName === "TabBar"
+);
+const ModalModule = WebpackModules.getByProps("ModalRoot");
 
-class AddonError extends React.Component {
-    constructor(props) {
-        super(props);
+const UserSettingsModule = WebpackModules.getByProps("open", "updateAccount");
 
-        this.state = {
-            expanded: false
-        };
-    }
-    toggle() {
-        this.setState({expanded: !this.state.expanded});
-    }
-    renderErrorBody(err) {
-        const stack = err.error && err.stack;
-        if (!this.state.expanded || !stack) return null;
-        return <div className="bd-addon-error-body">
-            <div className="divider-3573oO topDivider-3G26Ct"></div>
-            <div className="bd-addon-error-stack">
-                {Parser ? Parser.codeBlock.react({content: stack, lang: "js"}, null, {}) : stack}
-            </div>
-        </div>;
-    }
-    render() {
-        const err = this.props.err;
-        return <div key={`${err.type}-${this.props.index}`} className={joinClassNames("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
-            <div className="bd-addon-error-header" onClick={() => {this.toggle();}} >
-                <div className="bd-addon-error-icon">
-                    {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
-                </div>
-                <div className="bd-addon-error-header-inner">
-                    <h3 className="bd-addon-error-file secondaryHeader-2oeRPO base-1x0h_U size16-1P40sf">{err.name}</h3>
-                    <div className="bd-addon-error-details detailsWrapper-3XSaoN">
-                        <svg className="detailsIcon-2LZ7Bq" aria-hidden="false" width="16" height="16" viewBox="0 0 12 12">
-                            <path fill="currentColor" d="M6 1C3.243 1 1 3.244 1 6c0 2.758 2.243 5 5 5s5-2.242 5-5c0-2.756-2.243-5-5-5zm0 2.376a.625.625 0 110 1.25.625.625 0 010-1.25zM7.5 8.5h-3v-1h1V6H5V5h1a.5.5 0 01.5.5v2h1v1z"></path>
-                        </svg>
-                        <div className="colorHeaderSecondary-3Sp3Ft size12-3cLvbJ">{err.message}</div>
-                    </div>
-                </div>
-                <svg className="bd-addon-error-expander" width="24" height="24" viewBox="0 0 24 24">
-                    <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path>
-                </svg>
-            </div>
-            {this.renderErrorBody(err)}
-        </div>;
-    }
+const FormTitle = WebpackModules.getByDisplayName("FormTitle");
+const FormDivider = WebpackModules.getByDisplayName("FormDivider");
+const Header = WebpackModules.getByDisplayName("Header");
+const Text = WebpackModules.getByDisplayName("Text");
+const Caret = WebpackModules.getByDisplayName("Caret");
+const Flex = WebpackModules.getByDisplayName("Flex");
+const TabBar = TabBarModule?.default;
+const Button = ButtonModule?.default;
+
+const expandIconClasses = WebpackModules.getByProps("expandIcon");
+const dividerClasses = WebpackModules.getByProps("topDivider");
+const detailsClasses = WebpackModules.getByProps(
+	"detailsWrapper",
+	"detailsIcon"
+);
+const markupClasses = {
+	...WebpackModules.getByProps("blockquoteContainer", "markup"),
+	...WebpackModules.getByProps("zalgo", "messageContent"),
+};
+
+const parser = Object(WebpackModules.getByProps("defaultRules", "parse"));
+
+export default function AddonErrorModal(props) {
+	const [selectedTab, setSelectedTab] = useState("plugins");
+	const [errors, setErrors] = useState([]);
+
+	useEffect(() => {
+		switch (selectedTab) {
+			case "plugins":
+				setErrors(
+					props.pluginErrors.map((error, index) => (
+						<AddonError
+							key={`${error.name}-${index}`}
+							type={selectedTab}
+							error={error}
+						/>
+					))
+				);
+				break;
+			case "themes":
+				setErrors(
+					props.themeErrors.map((error, index) => (
+						<AddonError
+							key={`${error.name}-${index}`}
+							type={selectedTab}
+							error={error}
+						/>
+					))
+				);
+				break;
+			default:
+				setErrors(<Text>{Strings.Modals.nevermind}</Text>);
+				break;
+		}
+	}, [JSON.stringify(errors), selectedTab]);
+
+	return (
+		<ErrorBoundary
+			fallback={() => <Text>{Strings.Addons.errorLoadingErrors}</Text>}
+		>
+			<ModalModule.ModalHeader>
+				<Flex direction={Flex.Direction.VERTICAL}>
+					<Flex justify={Flex.Justify.SPACE_BETWEEN}>
+						<FormTitle tag="h4">{Strings.Modals.addonErrors}</FormTitle>
+						<ModalModule.ModalCloseButton onClick={props.onClose} />
+					</Flex>
+					<TabBar
+						look={TabBarModule.Looks.GREY}
+						type={TabBarModule.Types.TOP_PILL}
+						selectedItem={selectedTab}
+						onItemSelect={(item) => setSelectedTab(item)}
+					>
+						<TabBarModule.Item
+							id="plugins"
+							className="bd-addon-error-tabbar-item"
+						>
+							{Strings.Panels.plugins}
+						</TabBarModule.Item>
+						<TabBarModule.Item
+							id="themes"
+							className="bd-addon-error-tabbar-item"
+						>
+							{Strings.Panels.themes}
+						</TabBarModule.Item>
+					</TabBar>
+				</Flex>
+			</ModalModule.ModalHeader>
+			<ModalModule.ModalContent className="bd-addon-error-content">
+				<ErrorBoundary
+					fallback={() => <Text>{Strings.Addons.errorLoadingErrors}</Text>}
+				>
+					{errors}
+				</ErrorBoundary>
+			</ModalModule.ModalContent>
+			<ModalModule.ModalFooter>
+				<Button color={ButtonModule.ButtonColors.BRAND} onClick={props.onClose}>
+					{Strings.Modals.done}
+				</Button>
+				<Button
+					style={{ marginRight: "8px" }}
+					color={ButtonModule.ButtonColors.TRANSPARENT}
+					onClick={() => {
+						props.onClose();
+						// Discord.
+						UserSettingsModule.open("Settings");
+						setTimeout(() => UserSettingsModule.open("plugins"), 1e1);
+					}}
+				>
+					{Strings.Addons.pluginSettings}
+				</Button>
+				<Button
+					style={{ marginRight: "8px" }}
+					color={ButtonModule.ButtonColors.TRANSPARENT}
+					onClick={() => {
+						props.onClose();
+						// Discord.
+						UserSettingsModule.open("Settings");
+						setTimeout(() => UserSettingsModule.open("themes"), 1e1);
+					}}
+				>
+					{Strings.Addons.themeSettings}
+				</Button>
+			</ModalModule.ModalFooter>
+		</ErrorBoundary>
+	);
 }
 
-export default class AddonErrorModal extends React.Component {
-    constructor(props) {
-        super(props);
-        const tabs = this.getTabs();
+export function AddonError(props) {
+	const [expanded, setExpanded] = useState(false);
 
-        this.state = {
-            selectedTab: tabs[0].id,
-        };
-    }
-
-    mergeErrors(errors1 = [], errors2 = []) {
-        const list = [];
-        const allErrors = [...errors2, ...errors1];
-        for (const error of allErrors) {
-            if (list.find(e => e.file === error.file)) continue;
-            list.push(error);
-        }
-        return list;
-    }
-
-    refreshTabs(pluginErrors, themeErrors) {
-        this._tabs = null;
-        this.props.pluginErrors = this.mergeErrors(this.props.pluginErrors, pluginErrors);
-        this.props.themeErrors = this.mergeErrors(this.props.themeErrors, themeErrors);
-        this.forceUpdate();
-    }
-
-    generateTab(id, errors) {
-        return {
-            id: id,
-            name: Strings.Panels[id],
-            errors: errors
-        };
-    }
-
-    getTabs() {
-        return this._tabs || (this._tabs = [
-            this.props.pluginErrors.length && this.generateTab("plugins", this.props.pluginErrors),
-            this.props.themeErrors.length && this.generateTab("themes", this.props.themeErrors)
-        ].filter(e => e));
-    }
-
-    switchToTab(id) {
-        this.setState({selectedTab: id});
-    }
-
-    render() {
-        const selectedTab = this.getTabs().find(e => this.state.selectedTab === e.id);
-        const tabs = this.getTabs();
-        return <>
-            <div className="bd-error-modal-header header-1TKi98 separator-2-RRj_">
-                <h4 className="colorStandard-2KCXvj size14-e6ZScH h4-AQvcAz title-3sZWYQ defaultColor-1_ajX0 marginBottom8-AtZOdT">{Strings.Modals.addonErrors}</h4>
-                <div className="bd-tab-bar">
-                    {tabs.map(tab => <div onClick={() => {this.switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
-                </div>
-            </div>
-            <div className="bd-error-modal-content content-1LAB8Z thin-1ybCId scrollerBase-289Jih">
-                <div className="bd-addon-errors">
-                    {selectedTab.errors.map((error, index) => <AddonError index={index} err={error} />)}
-                </div>
-            </div>
-        </>;
-    }
+	return (
+		<Flex
+			className={`bd-addon-error ${expanded ? "expanded" : "collapsed"}`}
+			direction={Flex.Direction.VERTICAL}
+		>
+			<Flex
+				className="bd-addon-error-header"
+				align={Flex.Align.CENTER}
+				onClick={() => {
+					setExpanded(!expanded);
+				}}
+			>
+				<div className="bd-addon-error-icon">
+					{props.type === "plugins" ? <Extension /> : <ThemeIcon />}
+				</div>
+				<Flex direction={Flex.Direction.VERTICAL}>
+					<Header tag="h3" size={Header.Sizes.SIZE_16}>
+						{props.error.name}
+					</Header>
+					<Flex
+						align={Flex.Align.CENTER}
+						wrap={Flex.Wrap.WRAP}
+						className={`bd-addon-error-details ${detailsClasses.detailsWrapper}`}
+					>
+						<DetailsIcon />
+						<Text
+							color={Text.Colors.HEADER_SECONDARY}
+							size={Text.Sizes.SIZE_12}
+						>
+							{props.error.message}
+						</Text>
+					</Flex>
+				</Flex>
+				<Caret className={expandIconClasses.expandIcon} expanded={expanded} />
+			</Flex>
+			{expanded ? (
+				<>
+					<FormDivider className={dividerClasses.topDivider} />
+					<div
+						className={`bd-addon-error-stack ${markupClasses.markup} ${markupClasses.messageContent}`}
+					>
+						{parser.defaultRules.codeBlock.react(
+							{ content: props.error.stack, lang: "ruby" },
+							null,
+							{}
+						)}
+					</div>
+				</>
+			) : null}
+		</Flex>
+	);
 }
