@@ -150,6 +150,7 @@ export function AddonError(props) {
             direction={Flex.Direction.VERTICAL}
         >
             <Flex
+                className="bd-addon-error-header"
                 align={Flex.Align.CENTER}
                 onClick={() => {
                     setExpanded(!expanded);
