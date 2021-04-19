@@ -160,7 +160,7 @@ export default class Modals {
                 click.preventDefault();
                 click.stopPropagation();
                 ModalStack.pop();
-                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel("2HScm8j");
+                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel("0Tmfo5ZbORCRqbAd");
             };
             const supportLink = Anchor ? ce(Anchor, {onClick: joinSupportServer}, "Join our Discord Server.") : ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
             const defaultFooter = ce(TextElement, {size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
