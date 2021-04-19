@@ -266,51 +266,14 @@ export default class Modals {
             );
         };
 
-        const renderFooter = (onClose) => {
-            return () => {
-                const Anchor = WebpackModules.getModule(
-                    (m) => m.displayName == "Anchor"
-                );
-                const AnchorClasses = WebpackModules.getByProps(
-                    "anchorUnderlineOnHover"
-                ) || {
-                    anchor: "anchor-3Z-8Bb",
-                    anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB",
-                };
-                const joinSupportServer = (click) => {
-                    click.preventDefault();
-                    click.stopPropagation();
-                    onClose();
-                    DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel(
-                        (() =>
-                            ["0Tmfo5ZbORCRqbAd", "sbA3xCJ"][Math.floor(Math.random() * 2)])()
-                    );
-                };
-                const supportLink = Anchor
-                    ? ce(
-                            Anchor,
-                            {onClick: joinSupportServer},
-                            "Join our Discord Server."
-                      )
-                    : ce(
-                            "a",
-                            {
-                                className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`,
-                                onClick: joinSupportServer,
-                            },
-                            "Join our Discord Server."
-                      );
-                const defaultFooter = ce(
-                    TextElement,
-                    {size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD},
-                    "Need support? ",
-                    supportLink
-                );
-                return ce(
-                    FlexChild.Child,
-                    {grow: 1, shrink: 1},
-                    footer ? footer : defaultFooter
-                );
+        const renderFooter = () => {
+            const Anchor = WebpackModules.getModule(m => m.displayName == "Anchor");
+            const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
+            const joinSupportServer = (click) => {
+                click.preventDefault();
+                click.stopPropagation();
+                ModalStack.pop();
+                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel("0Tmfo5ZbORCRqbAd");
             };
         };
 

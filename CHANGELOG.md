@@ -2,7 +2,7 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
-## Unreleased
+## 1.1.0
 
 ### Added
 - Added an option to prevent Discord from hijacking the media keys.
@@ -13,6 +13,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - Added a basic core updater to hopefully prevent the need for future installs.
 - Added an option to log out all console logs to file for developers.
 - Added an option to disable Discord's console warning.
+- Added translations for the following languages: French, Slovak, Polish, Portuguese (BR), Chinese (Traditional), Chinese (Simplified)
 
 ### Removed
 - Class normalizer was removed as it does more harm than good.
@@ -39,6 +40,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 - Fixed multiple error modals showing on startup if multiple plugins had errors.
 - Fixed incorrect styling on emotes.
 - Fixed system editor edit buttons using an old Electron API (`openItem` vs `openPath`)
+- Fixed an issue for those using exclusively server folders
 
 
 ## 1.0.0

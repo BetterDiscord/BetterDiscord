@@ -1,41 +1,41 @@
 export default {
-    video: "https://cdn.discordapp.com/attachments/769669826120777739/777059779368976394/b0cs2x.mp4",
-    poster: "https://i.imgur.com/P50xFON.png",
-    description: "The rewrite you didn't even know about is finally here.",
+    description: "BetterDiscord is now accepting translations. If you'd like to contribute reach out to an admin about getting access to POEditor.",
     changes: [
         {
-            title: "What's New?",
+            title: "New Features",
+            type: "added",
             items: [
-                "**Everything** is entirely rewritten, for better or worse.",
-                "**Emotes and Custom CSS** can be completely turned off for those not interested. It saves on memory too by not loading those components.",
-                "**Floating editors** for both custom css and plugins/themes are now available.",
-                "**Monaco** is now used as the main CSS editor, in place of Ace.",
-                "**Settings panels** are completely new and sleek. They are also highly extensible for potential future features :eyes:",
-                "**Translations** are now integrated starting with only a couple languages, but feel free to contribute your own!",
-                "**Public servers** got a new makeover thanks to some design help from Tropical and Gibbu!",
-                "We added settings to hide the **Gif Picker** and the **Nitro Gift** buttons in the textarea."
+                "**Media Keys** can now be optionally prevented from being hijacked by Discord in settings.",
+                "The plugin **RemoveMinimumSize** was absorbed into BetterDiscord and can be enabled in settings.",
+                "**Update checks** should now happen within BetterDiscord so you won't have to reinstall when BetterDiscord updates.",
+                "Addon error modals got a __makeover__ thanks to Strencher (https://github.com/Strencher) and Tropical (https://github.com/Tropix126)",
+                "**Translations** were added thanks to help from the community! Languages include: French, Slovak, Polish, Portuguese (BR), Chinese (Traditional), Chinese (Simplified)"
             ]
         },
         {
-            title: "Minor Stuff",
+            title: "Power Users & Developers",
             type: "improved",
             items: [
-                "**Patcher API** was added to `BdApi` under `BdApi.Patcher`. The old `BdApi.monkeyPatch` was patched to use the Patcher as well. This allows plugins and patches to play nice with one another.",
-                "**jQuery** usage was totally eliminated and is now ___deprecated___ for plugins.",
-                "**General performance** improvements throughout the app, from startup to emotes to addons.",
-                "**Exporting** by plugins is now highly encouraged over trying to match your meta name and class name.",
-                "**Plugins and Themes** pages have more options for sorting, views and more. The entire panel got a facelift!",
-                "**Blankslates** have been added all over for that added UX.",
-                "**Several unused UI features** have been removed for a more performant and usable experience.",
-                "**Debugger Hotkey** is now a built-in feature!"
+                "There is a now a command-line option to launch Discord without BetterDiscord injecting itself. Just use `--vanilla`.",
+                "`ctrl`+`shift`+`c` can now be used globally to activate inspect element, even with devtools closed.",
+                "Added emote blocklist to `BdApi` via `BdApi.Emotes.blocklist`",
+                "All console logs can now be logged into the BetterDiscord folder (`BetterDiscord/data/<releaseChannel>/debug.log`) by flipping the switch in settings.",
+                "The repeated console warnings can be completely removed in Developer Settings."
             ]
         },
         {
             title: "Fixes",
             type: "fixed",
             items: [
-                "**Minimal mode** has been redesigned from the ground up and now works as intended.",
-                "**Emote menus** are fixed and now use React Patching to properly integrate into the new Emoji Picker. (Thanks Strencher#1044!)"
+                "**Colored Text**, **Hide GIF Button**, **Hide Gift Button**, and **PublicServers** should all work again",
+                "Older themes should work with BetterDiscord again.",
+                "Certain issues with plugins crashing should be fixed.",
+                "More folders are automatically created to help for those attempting manual or 3rd-party installs.",
+                "Fixed an issue with an incorrect path being used on Mac.",
+                "Solved a bug that caused multiple error modals to occur on startup instead of consolidating to one.",
+                "Emote system should be functional, and the styling has been updating to match Discord's.",
+                "Using system editor to edit plugins/themes should work instead of causing an error.",
+                "Fixed a startup issue for users that had all their servers in collapsed folders."
             ]
         }
     ]
