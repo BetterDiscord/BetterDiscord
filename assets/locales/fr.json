@@ -95,7 +95,7 @@
                 },
                 "liveUpdate": {
                     "name": "Mise à Jour Directe",
-                    "note": "Mettre à jour le CSS lorsce que vous écrivez"
+                    "note": "Mettre à jour le CSS lorsque que vous écrivez"
                 },
                 "startDetached": {
                     "name": "Démarrage Détaché",
