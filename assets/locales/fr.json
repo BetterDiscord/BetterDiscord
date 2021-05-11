@@ -10,19 +10,19 @@
             "general": {
                 "name": "Général",
                 "emotes": {
-                    "name": "Système Émojis",
+                    "name": "Système d'émojis",
                     "note": "Active le système d'émojis de BD"
                 },
                 "publicServers": {
                     "name": "Serveurs publics",
-                    "note": "Afficher boutton des serveurs publics"
+                    "note": "Afficher bouton des serveurs publics"
                 },
                 "voiceDisconnect": {
                     "name": "Déconnexion vocale",
                     "note": "Déconnexion du serveur vocal lors de la fermeture de Discord"
                 },
                 "showToasts": {
-                    "name": "Afficher notifications bulles",
+                    "name": "Afficher bulles de notification",
                     "note": "Afficher une petite notification pour les informations importantes"
                 },
                 "mediaKeys": {
@@ -31,47 +31,47 @@
                 }
             },
             "appearance": {
-                "name": "Apparance",
+                "name": "Apparence",
                 "minimalMode": {
-                    "name": "Mode Minimal",
+                    "name": "Mode minimal",
                     "note": "Masquer les éléments et réduire leurs tailles"
                 },
                 "twentyFourHour": {
-                    "name": "Horodatage en 24-Heures",
-                    "note": "Convertir l'horodatage 12-heures au format 24-heures"
+                    "name": "Horodatage en 24h",
+                    "note": "Convertir l'horodatage 12h au format 24h"
                 },
                 "coloredText": {
-                    "name": "Texte Coloré",
+                    "name": "Texte coloré",
                     "note": "Faire en sorte que la couleur du texte soit la même que celle du rôle"
                 },
                 "hideGIFButton": {
-                    "name": "Masquer Bouton GIF",
+                    "name": "Masquer le bouton GIF",
                     "note": "Masque le bouton du sélecteur de GIF dans la zone de texte"
                 },
                 "hideGiftButton": {
-                    "name": "Masquer Bouton Gift",
+                    "name": "Masquer bouton Gift",
                     "note": "Masquer le bouton Nitro Gift dans la zone de texte"
                 }
             },
             "window": {
                 "removeMinimumSize": {
                     "name": "Supprimer Taille Minimale",
-                    "note": "Supprimer la taille de fenêtre minimale forçée de Discord qui est de 940x500"
+                    "note": "Supprimer la limite de taille de la fenêtre Discord qui est de 940x500 (par défaut)"
                 },
                 "name": "Fenêtre Préférences",
                 "transparency": {
                     "name": "Activer Transparence",
-                    "note": "Permet à la fenêtre principale d'être transparente. (requires restart)"
+                    "note": "Permet à la fenêtre principale d'être transparente. (redémarrage requis)"
                 },
                 "frame": {
                     "name": "Cadre Fenêtre",
-                    "note": "Ajoute le cadre de la fenêtre native de l'OS à la fenêtre principale."
+                    "note": "Ajoute le cadre de la fenêtre native de l'OS à la fenêtre principale"
                 }
             },
             "addons": {
-                "name": "Gestionnaire Extension",
+                "name": "Gestionnaire d'extensions",
                 "addonErrors": {
-                    "name": "Afficher Erreures Extensions",
+                    "name": "Afficher Erreurs Extensions",
                     "note": "Affiche une modale avec les erreurs de plugin/thème"
                 },
                 "autoReload": {
@@ -80,7 +80,7 @@
                 },
                 "editAction": {
                     "name": "Action Édition",
-                    "note": "Où les thèmes & extensions apparêtrons lors de l'édition",
+                    "note": "Où les thèmes & extensions apparaîtront lors de l'édition",
                     "options": {
                         "detached": "Fenêtre détachée",
                         "system": "Éditeur système"
@@ -95,7 +95,7 @@
                 },
                 "liveUpdate": {
                     "name": "Mise à Jour Directe",
-                    "note": "Mettre à jour le CSS lorsque que vous écrivez"
+                    "note": "Mettre à jour le CSS lorsque vous écrivez"
                 },
                 "startDetached": {
                     "name": "Démarrage Détaché",
