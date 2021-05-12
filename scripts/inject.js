@@ -25,7 +25,14 @@ const discordPath = (function() {
         return path.join(appPath, "Contents", "Resources");
     }
     else if (process.platform === "linux") {
-        return path.join("/usr", "share", release.toLowerCase().replace(/ /g, "-"), "resources");
+        const baseDirs = [
+            "/usr/share", // Ubuntu?
+            "/opt",       // Gentoo
+        ];
+        for (const baseDir of baseDirs) {
+            const appPath = path.join(baseDir, release.toLowerCase().replace(/ /g, "-"), "resources");
+            if (fs.existsSync(appPath)) return appPath;
+        }
     }
 })();
 
