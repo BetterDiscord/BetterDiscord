@@ -42,7 +42,7 @@
                 },
                 "coloredText": {
                     "name": "Colored Text",
-                    "note": "Make text colour the same as role color"
+                    "note": "Make text color the same as role color"
                 },
                 "hideGIFButton": {
                     "name": "Hide GIF Button",
