@@ -108,7 +108,7 @@ export default class AddonList extends React.Component {
     }
 
     get emptyImage() {
-        const message = Strings.Addons.blankSlateMessage.format({link: `https://betterdiscordlibrary.com/${this.props.type}s`, type: this.props.type}).toString();
+        const message = Strings.Addons.blankSlateMessage.format({link: `https://betterdiscord.app/${this.props.type}s`, type: this.props.type}).toString();
         return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type: this.props.type})} message={message}>
             <button className="bd-button" onClick={this.openFolder}>{Strings.Addons.openFolder.format({type: this.props.type})}</button>
         </EmptyImage>;
