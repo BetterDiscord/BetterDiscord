@@ -26,8 +26,9 @@ const discordPath = (function() {
     }
     else if (process.platform === "linux") {
         const baseDirs = [
-            "/usr/share", // Ubuntu?
-            "/opt",       // Gentoo
+            "/usr/share", // Ubuntu?, Mint?, Debian?
+            "/opt",       // Manjaro?, Arch?, Gentoo
+            "/usr/lib64", // Fedora?
         ];
         for (const baseDir of baseDirs) {
             const appPath = path.join(baseDir, release.toLowerCase().replace(/ /g, "-"), "resources");
