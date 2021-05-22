@@ -214,8 +214,9 @@ BdApi.monkeyPatch = function(what, methodName, options) {
         data.methodArguments = args;
         data.returnValue = returnValue;
         try {
-            Reflect.apply(options[patchType], null, [data]);
+            const patchReturn = Reflect.apply(options[patchType], null, [data]);
             if (once) data.cancelPatch();
+            return patchReturn;
         }
         catch (err) {
             Logger.err(`${callerId}:monkeyPatch`, `Error in the ${patchType} of ${methodName}`);

@@ -2,6 +2,22 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.1.1
+
+### Added
+
+### Removed
+
+### Changed
+- Plugin loader now removes the used `script` tags
+- URLs reflect new website
+
+### Fixed
+- Fixed an issue with hiding GIF and Gift buttons
+- Fixed certain plugin patches not returning values
+- Fixed an issue with the settings patch failing
+
+
 ## 1.1.0
 
 ### Added
