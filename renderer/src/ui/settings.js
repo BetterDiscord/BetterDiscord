@@ -64,6 +64,7 @@ export default new class SettingsRenderer {
         const UserSettings = WebpackModules.getByDisplayName("SettingsView");
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject, args, returnValue) => {
             let location = returnValue.findIndex(s => s.section.toLowerCase() == "changelog") - 1;
+            if (location < 0) return;
             const insert = (section) => {
                 returnValue.splice(location, 0, section);
                 location++;
