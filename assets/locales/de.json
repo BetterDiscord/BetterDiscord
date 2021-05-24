@@ -130,12 +130,12 @@
                     "note": "Aktiviert das Tastenkürzel für \"Element Untersuchen\" (Strg + Shift + C), welches in gängen Browsern vorhanden ist"
                 },
                 "devToolsWarning": {
-                    "name": "",
-                    "note": ""
+                    "name": "Stop DevTools Warning",
+                    "note": "Verhindert, dass Discord die Nachricht \"Hold Up!\" ausgibt."
                 },
                 "debugLogs": {
-                    "name": "",
-                    "note": ""
+                    "name": "Debug Logs",
+                    "note": "Gibt alles von der Konsole in die Datei debug.log im BetterDiscord-Ordner aus"
                 }
             }
         },
@@ -191,7 +191,7 @@
     },
     "Addons": {
         "title": "{{name}} v{{version}} von {{author}}",
-        "byline": "",
+        "byline": "von {{author}}",
         "openFolder": "Öffne {{type}}-Ordner",
         "reload": "Neu laden",
         "addonSettings": "Einstellungen",
@@ -216,19 +216,19 @@
         "couldNotDisable": "{{name}} konnte nicht deaktiviert werden.",
         "couldNotStart": "{{name}} konnte nicht gestartet werden.",
         "couldNotStop": "{{name}} konnte nicht gestoppt werden.",
-        "settingsError": "",
+        "settingsError": "Konnte die Einstellungen für {{name}} nicht öffnen",
         "methodError": "{{method}} konnte nicht ausgeführt werden.",
         "unknownAuthor": "Unbekannter Autor",
         "noDescription": "Keine Beschreibung angegeben.",
         "alreadyExists": "Es existiert bereits ein {{type}} mit dem Namen {{name}}",
-        "alreadWatching": "",
+        "alreadWatching": "Sie sehen bereits Addons.",
         "metaError": "META konnte nicht geparst werden.",
         "missingNameData": "META missing name data.",
         "metaNotFound": "META nicht gefunden.",
         "compileError": "Konnte nicht kompiliert werden.",
         "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "",
-        "blankSlateMessage": ""
+        "blankSlateHeader": "Sie haben keine {{typ}}!",
+        "blankSlateMessage": "Holen Sie sich einige von [this website]({{link}}) und fügen Sie sie zu Ihrem Ordner {{type}} hinzu."
     },
     "CustomCSS": {
         "confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
@@ -244,26 +244,26 @@
         "loaded": "Alle Emotes erfolgreich geladen.",
         "clearEmotes": "Emote-Daten löschen",
         "favoriteAction": "Favorisieren!",
-        "downloadFailed": "",
-        "failureMessage": ""
+        "downloadFailed": "Download Gescheitert",
+        "failureMessage": "BetterDiscord konnte keine Emotes herunterladen, bitte überprüfen Sie Ihre Internetverbindung und Firewall."
     },
     "PublicServers": {
-        "button": "public",
+        "button": "Öffentlich",
         "join": "Beitreten",
         "joining": "Trete bei",
         "joined": "Beigetreten",
         "loading": "Laden",
         "loadMore": "Mehr laden",
         "notConnected": "Nicht mit DiscordServers.com verbunden!",
-        "connectionRequired": "",
-        "connectionError": "",
-        "connectionErrorMessage": "",
-        "pagination": "",
+        "connectionRequired": "Sie müssen Ihr Konto verbinden, um Servern beitreten zu können.",
+        "connectionError": "Verbindungsfehler",
+        "connectionErrorMessage": "Es ist ein Fehler beim Verbinden mit DiscordServers.com aufgetreten, möglicherweise ist die Website/Api nicht verfügbar. Bitte versuchen Sie es später erneut.",
+        "pagination": "Seite {{page}} von {{count}}",
         "search": "Suchen",
         "connect": "Verbinden",
         "reconnect": "Wiederverbinden",
         "categories": "Kategorien",
-        "keywords": "",
+        "keywords": "Stichwörter",
         "connection": "Verbunden als: {{username}}#{{discriminator}}",
         "results": "Zeige {{start}}-{{end}} von {{total}} Ergebnissen in {{category}}",
         "query": "für {{query}}"
@@ -271,9 +271,9 @@
     "Modals": {
         "confirmAction": "Bist du dir sicher?",
         "okay": "Okay",
-        "done": "",
+        "done": "Fertig",
         "cancel": "Abbrechen",
-        "nevermind": "",
+        "nevermind": "Doch nicht",
         "close": "Schließen",
         "name": "Name",
         "message": "Nachricht",
@@ -283,7 +283,7 @@
         "restartNow": "Jetzt neustarten",
         "restartLater": "Später neustarten",
         "additionalInfo": "Zusätzliche Informationen",
-        "restartPrompt": ""
+        "restartPrompt": "Um wirksam zu werden, muss Discord neu gestartet werden. Möchten Sie jetzt neu starten?"
     },
     "ReactDevTools": {
         "notFound": "Erweiterung nicht gefunden",
