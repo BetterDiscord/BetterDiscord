@@ -1,0 +1,314 @@
+{
+    "Panels": {
+        "plugins": "Pluginy",
+        "themes": "Témy",
+        "customcss": "Custom CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Nastavenia",
+            "general": {
+                "name": "Základné",
+                "emotes": {
+                    "name": "Emote Systém",
+                    "note": "Povoliť BD emote systém"
+                },
+                "publicServers": {
+                    "name": "Verejné servery",
+                    "note": "Zobraziť tlačidlo verejných serverov"
+                },
+                "voiceDisconnect": {
+                    "name": "Odpojenie hovoru",
+                    "note": "Odpojiť z hovoru pri vypnutí Discordu"
+                },
+                "showToasts": {
+                    "name": "Zobraziť toasty",
+                    "note": "Zobraziť notifikáciu pre dôležité info"
+                },
+                "mediaKeys": {
+                    "name": "Zakázať Média tlačidlá",
+                    "note": "Zabráni Discordu prevziať kontrolu nad média tlačidlami po prehratí videa."
+                }
+            },
+            "appearance": {
+                "name": "Vzhľad",
+                "minimalMode": {
+                    "name": "Minimálny režim",
+                    "note": "Skryť elementy a zmenšiť veľkosť elementov"
+                },
+                "twentyFourHour": {
+                    "name": "24-Hodinové časové značky",
+                    "note": "Konvertuje 12-hod. časové značky na 24-hod. formát"
+                },
+                "coloredText": {
+                    "name": "Farebný text",
+                    "note": "Zafarbí text každej správy podľa farby role"
+                },
+                "hideGIFButton": {
+                    "name": "Skryť GIF Tlačidlo",
+                    "note": "Skryje tlačidlo na výber GIF-u v textovom poli"
+                },
+                "hideGiftButton": {
+                    "name": "Skryť tlačidlo \"Darovať\"",
+                    "note": "Skryje tlačidlo na darovanie Nitra"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Zrušiť minimálnu velkosť",
+                    "note": "Zruší minimálnu veľkosť Discord okna 940x500"
+                },
+                "name": "Vlastnosti Okna",
+                "transparency": {
+                    "name": "Povoliť priehľadnosť",
+                    "note": "Povolí, aby bolo hlavné okno priehľadné (potrebný reštart)"
+                },
+                "frame": {
+                    "name": "Rám okna",
+                    "note": "Pridá klasický OS rám pre hlavné okno"
+                }
+            },
+            "addons": {
+                "name": "Manažér doplnkov",
+                "addonErrors": {
+                    "name": "Zobraziť chyby doplnkov",
+                    "note": "Zobrazí panel s chybou pluginu alebo témy"
+                },
+                "autoReload": {
+                    "name": "Automatické načítanie",
+                    "note": "Automaticky načítava a obnovuje pluginy a témy"
+                },
+                "editAction": {
+                    "name": "Úprava akcie",
+                    "note": "Kde sa pluginy a témy zobrazia pri editovaní",
+                    "options": {
+                        "detached": "Oddelené okno",
+                        "system": "Systémový editor"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "Custom CSS",
+                "customcss": {
+                    "name": "Custom CSS",
+                    "note": "Aktivuje kartu \"Custom CSS\""
+                },
+                "liveUpdate": {
+                    "name": "Živý update",
+                    "note": "Aktualizuje css pri zmene"
+                },
+                "startDetached": {
+                    "name": "Spustiť oddelené",
+                    "note": "Kliknutie na kartu Custom CSS ju otvori v oddelenom okne"
+                },
+                "nativeOpen": {
+                    "name": "Otvoriť v natívnom editore",
+                    "note": "Kliknutie na kartu Custom CSS ju otvori v natívnom editore"
+                },
+                "openAction": {
+                    "name": "Cesta editora",
+                    "note": "Predvolený spôsob otvorenia Custom CSS",
+                    "options": {
+                        "settings": "Menu nastavení",
+                        "detached": "Oddelené okno",
+                        "system": "Systémový editor"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Vývojarske nastavenia",
+                "debuggerHotkey": {
+                    "name": "Klávesová skratka Debuggera",
+                    "note": "Povolí spustenie debuggera pri stlačení F8"
+                },
+                "reactDevTools": {
+                    "name": "React Developer Tools",
+                    "note": "Pridá inštaláciu React Developer Tools do Discordu"
+                },
+                "inspectElement": {
+                    "name": "Klávesová skratka Inspect Element",
+                    "note": "Povolí klávesovú skratku Inspect Element (ctrl + shift + c) ako pre bežné prehliadače"
+                },
+                "devToolsWarning": {
+                    "name": "Vypnúť DevTools Upozornenia",
+                    "note": "Vypne \"Hold Up!\" upozornenie od Discordu v konzole"
+                },
+                "debugLogs": {
+                    "name": "Výpis ladenia",
+                    "note": "Zapíše všetko z konzole do súboru debug.log v BetterDiscord zložke"
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emoty",
+            "general": {
+                "name": "Všeobecné",
+                "download": {
+                    "name": "Stiahnuť Emoty",
+                    "note": "Stiahnuť Emoty ak sú zastaralé"
+                },
+                "emoteMenu": {
+                    "name": "Emote Menu",
+                    "note": "Zobraziť Twtich/Obľúbené emoty v emote menu"
+                },
+                "hideEmojiMenu": {
+                    "name": "Skryť Emoji Menu",
+                    "note": "Skryje Discord Emoji menu pri používaní emote menu"
+                },
+                "autoCaps": {
+                    "name": "Automatická kapitalizácia Emote",
+                    "note": "Automaticky kapitalizuje emote commandy"
+                },
+                "modifiers": {
+                    "name": "Zobraziť Emote Modifikátory",
+                    "note": "Povoliť emote modifikátory (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animovať pri umiestnení kurzora",
+                    "note": "Animovať emote modifikátory iba pri umiestnení kurzora"
+                }
+            },
+            "categories": {
+                "name": "Kategórie",
+                "twitchglobal": {
+                    "name": "Twtich globálne",
+                    "note": "Zobraziť globálne Twitch emoty"
+                },
+                "twitchsubscriber": {
+                    "name": "Twitch predplatitelia",
+                    "note": "Zobraziť predplatiteľské Twitch emoty"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "Zobraziť FFZ emoty"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Zobraziť BTTV emoty"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} od {{author}}",
+        "byline": "od {{author}}",
+        "openFolder": "Otvoriť {{type}} Zložku",
+        "reload": "Znova načítať",
+        "addonSettings": "Nastavenia",
+        "website": "Stránka",
+        "source": "Zdroj",
+        "invite": "Server podpory",
+        "donate": "Prispieť",
+        "patreon": "Patreon",
+        "name": "Meno",
+        "author": "Autor",
+        "version": "Verzia",
+        "added": "Dátum pridania",
+        "modified": "Dátum zmeny",
+        "search": "Hľadať {{type}}",
+        "editAddon": "Upraviť",
+        "deleteAddon": "Zmazať",
+        "confirmDelete": "Ste si istý, že chcete zmazať {{name}}?",
+        "confirmationText": "Máte neuložené zmeny pre {{name}}. Zatvorením tohto okna stratíte všetky zmeny.",
+        "enabled": "{{name}} bol aktivovaný.",
+        "disabled": "{{name}} bol deaktivovaný.",
+        "couldNotEnable": "{{name}} nebolo možné aktivovať.",
+        "couldNotDisable": "{{name}} nebolo možné deaktivovať.",
+        "couldNotStart": "{{name}} nebolo možné spustiť.",
+        "couldNotStop": "{{name}} nebolo možné zastaviť.",
+        "settingsError": "Nie je možné otvoriť nastavenia pre {{name}}",
+        "methodError": "{{method}} nemohla byť vykonaná.",
+        "unknownAuthor": "Neznámy Autor",
+        "noDescription": "Bez popisu.",
+        "alreadyExists": "{{type}} s menom {{name}} už existuje",
+        "alreadWatching": "Doplnky sa už sledujú.",
+        "metaError": "META sa nepodarila načítať.",
+        "missingNameData": "META chýbajúce dáta názvu.",
+        "metaNotFound": "META nebola nájedná.",
+        "compileError": "Nepodarilo sa zostaviť.",
+        "wasUnloaded": "{{name}} bol odpojený.",
+        "blankSlateHeader": "Nenachádza sa žiadny/žiadna {{type}}!",
+        "blankSlateMessage": "Nájdi nejaké na [tejto stránke]({{link}}) a pridaj ich do zložky pre {{type}}."
+    },
+    "CustomCSS": {
+        "confirmationText": "Máte neuložené zmeny pre Custom CSS. Zatvorením tohto okna stratíte všetky zmeny.",
+        "update": "Aktualizovať",
+        "save": "Uložiť",
+        "openNative": "Otvoriť v Systémovom Editore",
+        "openDetached": "Oddeliť Okno",
+        "settings": "Nastavenia Editora",
+        "editorTitle": "Custom CSS Editor"
+    },
+    "Emotes": {
+        "loading": "Načítavanie emotov v pozadí, nerefreshujte.",
+        "loaded": "Všetky emoty úspešne načítané.",
+        "clearEmotes": "Vyčistiť emote dáta",
+        "favoriteAction": "Uložiť!",
+        "downloadFailed": "Sťahovanie Zlyhalo",
+        "failureMessage": "BetterDiscord nedokázal načítať emoty, prosím skontrolujte internetové pripojenie a firewall."
+    },
+    "PublicServers": {
+        "button": "verejné",
+        "join": "Pridať",
+        "joining": "Pridávanie",
+        "joined": "Pridaný",
+        "loading": "Načítavanie",
+        "loadMore": "Načítať Viac",
+        "notConnected": "Nepripojený",
+        "connectionRequired": "Musíte pripojiť svoj účet pre pripojenie sa na servery.",
+        "connectionError": "Chyba spojenia",
+        "connectionErrorMessage": "Pri pripájaní k serveru DiscordServers.com sa vyskytla chyba. Je možné, že ich webové stránky / rozhranie API nefunguje. Skúste neskôr prosím.",
+        "pagination": "Stránka {{page}} z {{count}}",
+        "search": "Hľadať",
+        "connect": "Pripojiť",
+        "reconnect": "Znova pripojiť",
+        "categories": "Kategórie",
+        "keywords": "Kľúčové slová",
+        "connection": "Pripojený ako: {{username}}#{{discriminator}}",
+        "results": "Zobrazených {{start}}-{{end}} z {{total}} výsledkov v {{category}}",
+        "query": "pre {{query}}"
+    },
+    "Modals": {
+        "confirmAction": "Ste si istý?",
+        "okay": "Ok",
+        "done": "Dokončiť",
+        "cancel": "Zrušiť",
+        "nevermind": "Radšej nie",
+        "close": "Zavrieť",
+        "name": "Meno",
+        "message": "Správa",
+        "error": "Chyba",
+        "addonErrors": "Chyby Doplnkov",
+        "restartRequired": "Potrebný Reštart",
+        "restartNow": "Reštartovať Teraz",
+        "restartLater": "Reštartovať Neskôr",
+        "additionalInfo": "Ďalšie Info",
+        "restartPrompt": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
+    },
+    "ReactDevTools": {
+        "notFound": "Rozšírenie sa nenašlo",
+        "notFoundDetails": "Nebolo možné nájsť rozšírenie React Developer Tools na vašom PC. Prosím nainštalujte rozšírenie vo vašom prehliadači Chrome."
+    },
+    "Sorting": {
+        "sortBy": "Triediť podľa",
+        "order": "Poradie",
+        "ascending": "Vzostupne",
+        "descending": "Zostupne"
+    },
+    "Startup": {
+        "notSupported": "Nie je podporované",
+        "incompatibleApp": "BetterDiscord nefunguje s {{app}}. Prosím odinštalujte jednu z nich.",
+        "updateNow": "Aktualizovať teraz",
+        "maybeLater": "Možno neskôr",
+        "updateAvailable": "Aktualizácia dostupná",
+        "updateInfo": "K dispozícii je aktualizácia injektora pre BetterDiscord ({{version}}).\n\nMôžete ju aktualizovať a reštartovať teraz alebo neskôr.",
+        "updateFailed": "Nebolo možné aktualizovať",
+        "manualUpdate": "Nie je možné automaticky aktualizovať. Stiahnite si inštalátor a pre-inštalujte BetterDiscord normálne.\n\n[Stiahnuť Inštalátor](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "Nepodarilo sa načítať jQuery",
+        "jqueryFailedDetails": "Nepodarilo sa načítať jQuery a niektoré doplnky nemusia fungovať správne. Postupujte na svoje vlastné riziko."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Táto možnosť si vyžaduje priehľadnú tému, aby správne fungovala. V systéme Windows to môže spôsobiť prerušenie a maximalizáciu vášho aero.\n\nNa to, aby sa prejavila účinnosť, je potrebné reštartovať Discord. Chcete reštartovať teraz?",
+        "disabledInfo": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
+    }
+}

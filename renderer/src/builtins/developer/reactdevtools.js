@@ -2,9 +2,6 @@ import Builtin from "../../structs/builtin";
 import Modals from "../../ui/modals";
 import {Strings, IPC} from "modules";
 
-const fs = require("fs");
-const path = require("path");
-
 export default new class ReactDevTools extends Builtin {
     get name() {return "ReactDevTools";}
     get category() {return "developer";}

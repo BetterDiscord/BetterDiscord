@@ -148,7 +148,7 @@
 
 .bd-controls > .bd-addon-button {
     border-radius: 0;
-    padding: 3px 6px;
+    padding: 4px 6px;
 }
 
 .bd-links .bd-addon-button + .bd-addon-button {
@@ -215,10 +215,6 @@
 
 .bd-addon-modal-footer .bd-button {
     background-color: #3e82e5;
-    color: #fff;
-    border-radius: 3px;
-    padding: 3px 6px;
-    transition: opacity 250ms ease;
 }
 
 .bd-addon-modal-footer .bd-button:hover {

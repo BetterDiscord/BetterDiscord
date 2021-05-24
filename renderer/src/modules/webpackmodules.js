@@ -171,19 +171,6 @@ export default class WebpackModules {
     static getModules(filter) {return this.getModule(filter, false);}
 
     /**
-     * Finds a module by its name.
-     * @param {String} name The name of the module
-     * @param {Function} fallback A function to use to filter modules if not finding a known module
-     * @return {Any}
-     */
-    // static getModuleByName(name, fallback) {
-    //     if (DiscordModules.hasOwnProperty(name)) return DiscordModules[name];
-    //     if (!fallback) return undefined;
-    //     const module = this.getModule(fallback, true);
-    //     return module ? DiscordModules[name] = module : undefined;
-    // }
-
-    /**
      * Finds a module by its display name.
      * @param {String} name The display name of the module
      * @return {Any}

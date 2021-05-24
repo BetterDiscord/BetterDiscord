@@ -36,7 +36,7 @@ export default new class ComponentPatcher {
                 const newOne = function() {
                     const returnVal = original(...arguments);
                     returnVal.props.children.push(
-                        DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/BandagedBD", title: "BetterDiscord", target: "_blank"},
+                        DiscordModules.React.createElement(Anchor, {className: "bd-social-link", href: "https://twitter.com/_BetterDiscord_", title: "BetterDiscord", target: "_blank"},
                             DiscordModules.React.createElement(BDLogo, {size: "16px", className: "bd-social-logo"})
                         )
                     );

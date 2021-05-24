@@ -140,16 +140,6 @@ export default new class PublicServersConnection {
     }
 
     async connect() {
-        // return new Promise(resolve => {
-        //     const joinWindow = new BrowserWindow(this.windowOptions);
-        //     const url = `https://auth.discordservers.com/connect?scopes=guilds.join&previousUrl=${this.connectEndPoint}`;
-        //     joinWindow.webContents.on("did-navigate", (event, navUrl) => {
-        //         if (navUrl != this.connectEndPoint) return;
-        //         joinWindow.close();
-        //         resolve();
-        //     });
-        //     joinWindow.loadURL(url);
-        // });
         await IPC.openWindow(this.authorizeEndPoint, {
             windowOptions: this.windowOptions,
             closeOnUrl: this.connectEndPoint

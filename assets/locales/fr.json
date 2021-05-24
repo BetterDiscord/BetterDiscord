@@ -21,13 +21,13 @@
                     "name": "Déconnexion vocale",
                     "note": "Déconnexion du serveur vocal lors de la fermeture de Discord"
                 },
-                "classNormalizer": {
-                    "name": "Normaliser les classes",
-                    "note": "Ajoute des classes stables aux éléments pour aider les thèmes. (par exemple, ajoute .da-channels à .channels-Ie2l6A)"
-                },
                 "showToasts": {
                     "name": "Afficher notifications bulles",
                     "note": "Afficher une petite notification pour les informations importantes"
+                },
+                "mediaKeys": {
+                    "name": "Désactiver Touches Médias",
+                    "note": "Empêche Discord de détourner vos touches multimédia après la lecture d'une vidéo."
                 }
             },
             "appearance": {
@@ -43,6 +43,29 @@
                 "coloredText": {
                     "name": "Texte Coloré",
                     "note": "Faire en sorte que la couleur du texte soit la même que celle du rôle"
+                },
+                "hideGIFButton": {
+                    "name": "Masquer Bouton GIF",
+                    "note": "Masque le bouton du sélecteur de GIF dans la zone de texte"
+                },
+                "hideGiftButton": {
+                    "name": "Masquer Bouton Gift",
+                    "note": "Masquer le bouton Nitro Gift dans la zone de texte"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Supprimer Taille Minimale",
+                    "note": "Supprimer la taille de fenêtre minimale forçée de Discord qui est de 940x500"
+                },
+                "name": "Fenêtre Préférences",
+                "transparency": {
+                    "name": "Activer Transparence",
+                    "note": "Permet à la fenêtre principale d'être transparente. (requires restart)"
+                },
+                "frame": {
+                    "name": "Cadre Fenêtre",
+                    "note": "Ajoute le cadre de la fenêtre native de l'OS à la fenêtre principale."
                 }
             },
             "addons": {
@@ -50,10 +73,6 @@
                 "addonErrors": {
                     "name": "Afficher Erreures Extensions",
                     "note": "Affiche une modale avec les erreurs de plugin/thème"
-                },
-                "autoScroll": {
-                    "name": "Défilement jsqu'à Réglages",
-                    "note": "Défilement automatique jusqu'aux réglages des extensions lorsce que le bouton est cliqué (seulement si hors visibilité)"
                 },
                 "autoReload": {
                     "name": "Chargement automatique",
@@ -102,24 +121,21 @@
                     "name": "Touches Raccourcis Débuggueur",
                     "note": "Permettre l'activation du débuggueur quand F8 est préssé"
                 },
-                "copySelector": {
-                    "name": "Copier Sélecteur",
-                    "note": "Ajouter une option \"Copier Sélecteur\" aux menus de contextes quand le mode développeur est actif"
-                },
                 "reactDevTools": {
                     "name": "Outils Développeurs React",
                     "note": "Injecter votre installation locale d'Outils Développeurs React dans Discord"
-                }
-            },
-            "window": {
-                "name": "Fenêtre Préférences",
-                "transparency": {
-                    "name": "Activer Transparence",
-                    "note": "Permet à la fenêtre principale d'être transparente. (requires restart)"
                 },
-                "frame": {
-                    "name": "Cadre Fenêtre",
-                    "note": "Ajoute le cadre de la fenêtre native de l'OS à la fenêtre principale."
+                "inspectElement": {
+                    "name": "Touche Inspection Élément",
+                    "note": "Active le raccourcis clavier de l'inspecteur d'élément (ctrl + shift + c) qui est commun à la plupart des navigateurs"
+                },
+                "devToolsWarning": {
+                    "name": "Arrêter Avertissements Outils Développement",
+                    "note": "Empêche Discord d'imprimer son message \\\"Hold Up\\\""
+                },
+                "debugLogs": {
+                    "name": "Journaux Débuggage",
+                    "note": "Transmettre tout ce qui se trouve dans la console au fichier debug.log situé dans le dossier BetterDiscord"
                 }
             }
         },
@@ -175,6 +191,7 @@
     },
     "Addons": {
         "title": "{{name}} v{{version}} de {{author}}",
+        "byline": "par {{author}}",
         "openFolder": "Ouvrir dossier {{type}}",
         "reload": "Recharger",
         "addonSettings": "Réglages",
@@ -199,6 +216,7 @@
         "couldNotDisable": "{{name}} n'a pas pu être désactivé.",
         "couldNotStart": "{{name}} n'a pas pu être lancé.",
         "couldNotStop": "{{name}} n'a pas pu être arrêté.",
+        "settingsError": "Impossible d'ouvrir les paramètres pour {{name}}",
         "methodError": "{{method}} n'a pas pu être renvoyé.",
         "unknownAuthor": "Auteur Inconnu",
         "noDescription": "Description non fournie.",
@@ -208,7 +226,9 @@
         "missingNameData": "Données META manquantes pour le nom.",
         "metaNotFound": "Données METAnon introuvables.",
         "compileError": "Impossible à compiler.",
-        "wasUnloaded": "{{name}} à été déchargé."
+        "wasUnloaded": "{{name}} à été déchargé.",
+        "blankSlateHeader": "You don't have any ",
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "Vous avez des changements non sauvegardés dans votre CSS Personnalisé. Fermer cette fenêtre vous fera perdre ces changements.",
@@ -219,14 +239,13 @@
         "settings": "Réglages Éditeur",
         "editorTitle": "Éditeur CSS Personnalisé"
     },
-    "Developer": {
-        "copySelector": "Copier Sélecteur"
-    },
     "Emotes": {
         "loading": "Le chargement des emotes en arrière-plan ne se recharge pas.",
         "loaded": "Tous les émojis sont chargés avec succès.",
         "clearEmotes": "Éffacer Données Émojis",
-        "favoriteAction": "Favoris!"
+        "favoriteAction": "Favoris!",
+        "downloadFailed": "Échec Téléchargement",
+        "failureMessage": "BetterDiscord n'a pas réussi à télécharger les émotes, veuillez vérifier votre connexion Internet et votre pare-feu."
     },
     "PublicServers": {
         "button": "public",
@@ -236,10 +255,15 @@
         "loading": "Chargement",
         "loadMore": "Charger plus",
         "notConnected": "Non connecté à DiscordServers.com!",
+        "connectionRequired": "Vous devez connecter votre compte afin de rejoindre les serveurs.",
+        "connectionError": "Erreur Connexion",
+        "connectionErrorMessage": "Une erreur s'est produite lors de la connexion à DiscordServers.com, il est possible que leur site Web/api soit en panne. Veuillez réessayer plus tard.",
+        "pagination": "Page {{page}} de {{count}}",
         "search": "Recherche",
         "connect": "Connecter",
         "reconnect": "Reconnecter",
         "categories": "Catégories",
+        "keywords": "Mots Clés",
         "connection": "Connecté en tant que: {{username}}#{{discriminator}}",
         "results": "Afficher {{start}}-{{end}} de {{total}} résultats dans {{category}}",
         "query": "pour {{query}}"
@@ -247,7 +271,9 @@
     "Modals": {
         "confirmAction": "Êtes-vous sûr?",
         "okay": "Okay",
+        "done": "Terminé",
         "cancel": "Annuler",
+        "nevermind": "Jamais",
         "close": "Fermer",
         "name": "Nom",
         "message": "Message",
@@ -256,7 +282,8 @@
         "restartRequired": "Redémarrage RequisRestart Required",
         "restartNow": "Redémarrer Maintenant",
         "restartLater": "Redémarrer Ultérieurement",
-        "additionalInfo": "Info Additionnelle"
+        "additionalInfo": "Info Additionnelle",
+        "restartPrompt": "Pour prendre effet, Discord à besoin d'être redémarré. Voulez-vous le redémarrer maintenant?"
     },
     "ReactDevTools": {
         "notFound": "Extension Non Trouvée",
@@ -270,7 +297,6 @@
     },
     "Startup": {
         "notSupported": "Non supporté",
-        "versionMismatch": "Injecteur BetterDiscord v{{injector}} n'est pas supporté par le dernier (v{{remote}}).\n\nMerci de télécharger la dernière version depuis [GitHub](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
         "incompatibleApp": "BetterDiscord ne fonctionne pas avec {{app}}. Merci de désinstaller l'une d'elles.",
         "updateNow": "Mettre à Jour Maintenant",
         "maybeLater": "Peut Être Plus Tard",

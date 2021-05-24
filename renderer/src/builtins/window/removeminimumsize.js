@@ -3,7 +3,7 @@ import IPC from "../../modules/ipc";
 
 export default new class RemoveMinimumSize extends Builtin {
     get name() {return "RemoveMinimumSize";}
-    get category() {return "appearance";}
+    get category() {return "window";}
     get id() {return "removeMinimumSize";}
 
     enabled() {

@@ -1,0 +1,314 @@
+{
+    "Panels": {
+        "plugins": "Wtyczki",
+        "themes": "Motywy",
+        "customcss": "Niestandardowy CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Ustawienia",
+            "general": {
+                "name": "Ogólne",
+                "emotes": {
+                    "name": "System emoji",
+                    "note": "Aktywuje system emoji BetterDiscorda"
+                },
+                "publicServers": {
+                    "name": "Publiczne serwery",
+                    "note": "Wyświetla przycisk do publicznych serwerów"
+                },
+                "voiceDisconnect": {
+                    "name": "Rozłączaj z czatem głosowym",
+                    "note": "Rozłącza z serwerem czatu głosowego przy wyłączaniu Discorda"
+                },
+                "showToasts": {
+                    "name": "Wyświetlaj okienka powiadomień",
+                    "note": "Wyświetla małe powiadomienia dla ważnych zdarzeń"
+                },
+                "mediaKeys": {
+                    "name": "Wyłącz przyciski multimedialne",
+                    "note": "Zapobiega korzystaniu z klawiszy multimedialnych przez Discorda podczas odtwarzania filmów."
+                }
+            },
+            "appearance": {
+                "name": "Wygląd",
+                "minimalMode": {
+                    "name": "Tryb kompaktowy",
+                    "note": "Zmniejsza lub ukrywa niektóre elementy interfejsu"
+                },
+                "twentyFourHour": {
+                    "name": "24-godzinne znaczniki czasu",
+                    "note": "Zmienia 12-godzinne znaczniki czasu na format 24-godzinny"
+                },
+                "coloredText": {
+                    "name": "Kolorowy tekst",
+                    "note": "Zmienia kolor wiadomości na kolor głównej roli użytkownika"
+                },
+                "hideGIFButton": {
+                    "name": "Ukryj przycisk z GIF-ami",
+                    "note": "Ukrywa przycisk z menu GIF-ów w polu tekstowym"
+                },
+                "hideGiftButton": {
+                    "name": "Ukryj przycisk do podarowywania Nitro",
+                    "note": "Ukrywa przycisk do podarowywania Nitro w polu tekstowym"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Usuń limit minimalnego rozmiaru okna",
+                    "note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (940x500)"
+                },
+                "name": "Ustawienia okna",
+                "transparency": {
+                    "name": "Włącz przezroczystość",
+                    "note": "Dodaje efekt przezroczytstości do okna Discorda (wymaga ponownego uruchomienia)"
+                },
+                "frame": {
+                    "name": "Ramka okna",
+                    "note": "Dodaje systemową ramkę do okna Discorda"
+                }
+            },
+            "addons": {
+                "name": "Menedżer dodatków",
+                "addonErrors": {
+                    "name": "Wyświetlaj błędy dodatków",
+                    "note": "Wyświetla okno z błędami wtyczek i motywów"
+                },
+                "autoReload": {
+                    "name": "Automatyczne załadowywanie",
+                    "note": "Automatycznie ładuje, przeładowuje i odładowuje wtyczki oraz motywy"
+                },
+                "editAction": {
+                    "name": "Edytor dodatków",
+                    "note": "Ustawia domyślny edytor kodu wtyczek i motywów",
+                    "options": {
+                        "detached": "Osobne okno",
+                        "system": "Edytor systemowy"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "Niestandardowy CSS",
+                "customcss": {
+                    "name": "Niestandardowy CSS",
+                    "note": "Wyświetla zakładkę z niestandardoweym kodem CSS"
+                },
+                "liveUpdate": {
+                    "name": "Automatyczny podgląd",
+                    "note": "Aktualizuje CSS Discorda wraz z pisaniem kodu"
+                },
+                "startDetached": {
+                    "name": "Osobne okno edytora",
+                    "note": "Kliknięcie na zakładkę z niestandardowym kodem CSS uruchomi edytor w osobnym oknie"
+                },
+                "nativeOpen": {
+                    "name": "Otwórz w edytorze systemowym",
+                    "note": "Kliknięcie na zakładkę z niestandardowym kodem CSS uruchomi plik w edytorze systemowym"
+                },
+                "openAction": {
+                    "name": "Domyślny edytor",
+                    "note": "Ustawia domyślny edytor niestandardowego kodu CSS",
+                    "options": {
+                        "settings": "Ustawienia",
+                        "detached": "Osobne okno",
+                        "system": "Edytor systemowy"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Ustawienia dla programistów",
+                "debuggerHotkey": {
+                    "name": "Debugger",
+                    "note": "Uruchamia debugger po naciśnięciu F8"
+                },
+                "reactDevTools": {
+                    "name": "React Developer Tools",
+                    "note": "Wprowadza zainstalowane na twoim komputerze rozszerzenie React Developer Tools do Discorda"
+                },
+                "inspectElement": {
+                    "name": "Narzędzie „Zbadaj element”",
+                    "note": "Umożliwia korzystanie z narzędzia „Zbadaj element” po użyciu skrótu klawiszowego Ctrl+Shift+C"
+                },
+                "devToolsWarning": {
+                    "name": "Nie wyświetlaj ostrzeżenia o szybkim wysyłaniu wiadomości",
+                    "note": "Zapobiega wyświetlaniu informacji o zbyt szybkim wysyłaniu wiadomości przez Discorda"
+                },
+                "debugLogs": {
+                    "name": "Dziennik zdarzeń",
+                    "note": "Przekierowuje informacje z konsoli do pliku debug.log w folderze BetterDiscorda"
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emoji",
+            "general": {
+                "name": "Ogólne",
+                "download": {
+                    "name": "Pobieraj emoji",
+                    "note": "Pobiera emoji, gdy jest dostępna aktualizacja"
+                },
+                "emoteMenu": {
+                    "name": "Menu emoji",
+                    "note": "Wyświetla ulubione emoji oraz emoji z Twitcha w oddzielnym menu"
+                },
+                "hideEmojiMenu": {
+                    "name": "Ukryj menu emoji",
+                    "note": "Ukrywa menu z emoji Discorda"
+                },
+                "autoCaps": {
+                    "name": "Automatyczna zmiana wielkości liter w emoji",
+                    "note": "Automatycznie zmienia wielkość liter przy wprowadzaniu emoji"
+                },
+                "modifiers": {
+                    "name": "Pokazuj modyfikacje emoji",
+                    "note": "Wyświetla modyfikacje emoji (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animacje po najechaniu",
+                    "note": "Wyświetla animacje wyłącznie przy najechaniu na zmodyfikowane emoji"
+                }
+            },
+            "categories": {
+                "name": "Kategorie",
+                "twitchglobal": {
+                    "name": "Globalne emoji Twitcha",
+                    "note": "Wyświetla globalne emoji Twitcha"
+                },
+                "twitchsubscriber": {
+                    "name": "Emoji dla subskrybentów Twitcha",
+                    "note": "Wyświetla emoji dla subskrybentów Twitcha"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "Wyświetla emoji z FrankerFaceZ"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Wyświetla emoji z BetterTTV"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} (wersja {{version}}) autorstwa {{author}}",
+        "byline": "autorstwa {{author}}",
+        "openFolder": "Otwórz folder ({{type}})",
+        "reload": "Odśwież",
+        "addonSettings": "Ustawienia",
+        "website": "Strona internetowa",
+        "source": "Źródło",
+        "invite": "Wspomóż serwer",
+        "donate": "Przekaż darowiznę",
+        "patreon": "Patreon",
+        "name": "Nazwa",
+        "author": "Twórca",
+        "version": "Wersja",
+        "added": "Data dodania",
+        "modified": "Data modyfikacji",
+        "search": "Wyszukaj",
+        "editAddon": "Edytuj",
+        "deleteAddon": "Usuń",
+        "confirmDelete": "Czy na pewno chcesz usunąć {{name}}?",
+        "confirmationText": "Masz niezapisane zmiany w kodzie {{name}}. Zamknięcie tego okna spowoduje utratę danych.",
+        "enabled": "Dodatek {{name}} został włączony.",
+        "disabled": "Dodatek {{name}} został wyłączony.",
+        "couldNotEnable": "Dodatek {{name}} nie może zostać włączony.",
+        "couldNotDisable": "Dodatek {{name}} nie może zostać wyłączony.",
+        "couldNotStart": "Dodatek {{name}} nie może zostać włączony.",
+        "couldNotStop": "Dodatek {{name}} nie może zostać wyłączony.",
+        "settingsError": "Nie udało się otworzyć ustawień {{name}}",
+        "methodError": "Metoda {{method}} nie może zostać wywołana.",
+        "unknownAuthor": "Nieznany twórca",
+        "noDescription": "Brak opisu.",
+        "alreadyExists": "Masz już dodatek z nazwą {{name}}",
+        "alreadWatching": "Dodatki są już obserwowane.",
+        "metaError": "Nie udało się przetworzyć metadanych.",
+        "missingNameData": "Brak nazwy dodatku w metadanych.",
+        "metaNotFound": "Nie odnaleziono metadanych.",
+        "compileError": "Błąd kompilacji.",
+        "wasUnloaded": "Dodatek {{name}} został odładowany.",
+        "blankSlateHeader": "Wygląda na to, że nic tu nie ma!",
+        "blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu."
+    },
+    "CustomCSS": {
+        "confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okienka spowoduje utratę danych.",
+        "update": "Zaktualizuj",
+        "save": "Zapisz",
+        "openNative": "Otwórz w edytorze systemowym",
+        "openDetached": "Otwórz w osobnym oknie",
+        "settings": "Ustawienia edytora",
+        "editorTitle": "Edytor niestandardowego kodu CSS"
+    },
+    "Emotes": {
+        "loading": "Ładowanie emoji w tle, nie odświeżaj Discorda.",
+        "loaded": "Wszystkie emoji zostały załadowane poprawnie.",
+        "clearEmotes": "Wyczyść dane emoji",
+        "favoriteAction": "Dodaj do ulubionych",
+        "downloadFailed": "Pobieranie nie powiodło się",
+        "failureMessage": "Nie udało się pobrać emoji, sprawdź swoje połączenie z internetem lub zaporę ogniową."
+    },
+    "PublicServers": {
+        "button": "serwery",
+        "join": "Dołącz",
+        "joining": "Dołączanie",
+        "joined": "Dołączono",
+        "loading": "Ładowanie",
+        "loadMore": "Załaduj więcej",
+        "notConnected": "Nie połączono",
+        "connectionRequired": "Musisz połączyć swoje konto, by wejść na serwer.",
+        "connectionError": "Błąd połączenia",
+        "connectionErrorMessage": "Wystąpił błąd podczas łączenia z DiscordServers.com (najprawdopodobniej ich strona lub API nie działa). Spróbuj ponownie później.",
+        "pagination": "Strona {{page}} z {{count}}",
+        "search": "Wyszukaj",
+        "connect": "Połącz",
+        "reconnect": "Odnów połączenie",
+        "categories": "Kategorie",
+        "keywords": "Słowa klucze",
+        "connection": "Połączono jako: {{username}}#{{discriminator}}",
+        "results": "Wyświetlanie {{start}}-{{end}} z {{total}} wszystkich wyników w {{category}}",
+        "query": "dla {{query}}"
+    },
+    "Modals": {
+        "confirmAction": "Czy na pewno chcesz to zrobić?",
+        "okay": "Zamknij",
+        "done": "Potwierdź",
+        "cancel": "Anuluj",
+        "nevermind": "Anuluj",
+        "close": "Zamknij",
+        "name": "Nazwa",
+        "message": "Komunikat",
+        "error": "Błąd",
+        "addonErrors": "Błędy wtyczek",
+        "restartRequired": "Wymagane ponowne uruchomienie",
+        "restartNow": "Zrestartuj teraz",
+        "restartLater": "Zrestartuj później",
+        "additionalInfo": "Dodatkowe informacje",
+        "restartPrompt": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
+    },
+    "ReactDevTools": {
+        "notFound": "Nie znaleziono rozszerzenia",
+        "notFoundDetails": "Nie udało się znaleźć React Developer Tools na twoim urządzeniu. By kontynuuować, zainstaluj to rozszerzenie w swoim Chrome."
+    },
+    "Sorting": {
+        "sortBy": "Sortuj wg",
+        "order": "Kolejność",
+        "ascending": "Rosnąca",
+        "descending": "Malejąca"
+    },
+    "Startup": {
+        "notSupported": "Brak wsparcia",
+        "incompatibleApp": "BetterDiscord nie jest kompatybilny z {{app}}. Odinstaluj jedną z tych aplikacji.",
+        "updateNow": "Zaktualizuj teraz",
+        "maybeLater": "Może później",
+        "updateAvailable": "Dostępna jest aktualizacja",
+        "updateInfo": "Dostępna jest aktualizacja injectora BetterDiscorda ({{version}}).\n\nZaktualizuj go teraz lub później.",
+        "updateFailed": "Aktualizacja nie powiodła się",
+        "manualUpdate": "Nie udało się zaktualizować BetterDiscorda automatycznie. Pobierz instalator i zainstaluj BD ponownie.\n\n[Pobierz instalator](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "Ładowanie jQuery nie powiodło się",
+        "jqueryFailedDetails": "Nie udało się załadować jQuery i niektóre wtyczki mogą nie działać poprawnie. Kontynuuj na własne ryzyko."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?",
+        "disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
+    }
+}

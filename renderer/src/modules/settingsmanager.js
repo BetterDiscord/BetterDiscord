@@ -36,7 +36,7 @@ export default new class SettingsManager {
 
     removeCollection(id) {
         const location = this.collections.findIndex(c => c.id == id);
-        if (!location < 0) return Logger.error("Settings", "No collection with id " + id);
+        if (location < 0) return Logger.error("Settings", "No collection with id " + id);
         this.collections.splice(location, 1);
     }
 

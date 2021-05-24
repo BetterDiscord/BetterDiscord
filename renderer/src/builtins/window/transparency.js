@@ -1,9 +1,9 @@
-import Builtin from "../structs/builtin";
-import Modals from "../ui/modals";
+import Builtin from "../../structs/builtin";
+import Modals from "../../ui/modals";
 import {Strings, IPC} from "modules";
 
-export default new class WindowPrefs extends Builtin {
-    get name() {return "WindowPrefs";}
+export default new class WindowTransparency extends Builtin {
+    get name() {return "WindowTransparency";}
     get category() {return "window";}
     get id() {return "transparency";}
 

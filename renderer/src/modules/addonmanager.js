@@ -16,6 +16,8 @@ const React = DiscordModules.React;
 const path = require("path");
 const fs = require("fs");
 const Module = require("module").Module;
+const shell = require("electron").shell;
+const openItem = shell.openItem || shell.openPath;
 
 const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
@@ -198,17 +200,13 @@ export default class AddonManager {
     loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
         try {
-            const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
+            __non_webpack_require__(path.resolve(this.addonFolder, filename));
         }
         catch (error) {
             return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack}, this.prefix);
         }
 
         const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
-        // console.log(addon);
-        // await Promise.resolve(addon);
-        // addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
-        // console.log(addon);
         if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
 
         const error = this.initializeAddon(addon);
@@ -343,7 +341,7 @@ export default class AddonManager {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         const fullPath = path.resolve(this.addonFolder, addon.filename);
         if (typeof(system) == "undefined") system = Settings.get("settings", "addons", "editAction") == "system";
-        if (system) return require("electron").shell.openItem(`${fullPath}`);
+        if (system) return openItem(`${fullPath}`);
         return this.openDetached(addon);
     }
 

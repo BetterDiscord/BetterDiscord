@@ -18,8 +18,6 @@ import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
 
-const GuildClasses = DiscordModules.GuildClasses;
-
 export default new class Core {
     async startup() {
         if (this.hasStarted) return;
@@ -43,6 +41,7 @@ export default new class Core {
         if (window.ED) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "EnhancedDiscord"}));
         if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
 
+        Logger.log("Startup", "Getting update information");
         this.checkForUpdate();
 
         Logger.log("Startup", "Initializing Settings");
@@ -89,16 +88,14 @@ export default new class Core {
     }
 
     waitForGuilds() {
-        let timesChecked = 0;
+        // TODO: experiment with waiting for CONNECTION_OPEN event instead
+        const GuildClasses = DiscordModules.GuildClasses;
         return new Promise(resolve => {
             const checkForGuilds = function () {
-                timesChecked++;
                 if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
                 const wrapper = GuildClasses.wrapper.split(" ")[0];
                 const guild = GuildClasses.listItem.split(" ")[0];
-                const blob = GuildClasses.blobContainer.split(" ")[0];
-                if (document.querySelectorAll(`.${wrapper} .${guild} .${blob}`).length > 0) return resolve();
-                // else if (timesChecked >= 50) return resolve();
+                if (document.querySelectorAll(`.${wrapper} .${guild}`).length > 0) return resolve();
                 setTimeout(checkForGuilds, 100);
             };
 
@@ -122,6 +119,7 @@ export default new class Core {
         const hasUpdate = remoteVersion > Config.version;
         if (!hasUpdate) return;
 
+        // TODO: move to strings file when updater is complete.
         Modals.showConfirmationModal("Update Available", `BetterDiscord (${Config.version}) has an available update available (${remoteVersion}). Would you like to update now?`, {
             confirmText: "Update",
             cancelText: "Skip",

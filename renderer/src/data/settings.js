@@ -20,8 +20,7 @@ export default [
             {type: "switch", id: "hideGiftButton", value: false},
             {type: "switch", id: "hideGIFButton", value: false},
             {type: "switch", id: "minimalMode", value: false},
-            {type: "switch", id: "coloredText", value: false},
-            {type: "switch", id: "removeMinimumSize", value: false}
+            {type: "switch", id: "coloredText", value: false}
         ]
     },
     {
@@ -66,6 +65,7 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "transparency", value: false},
+            {type: "switch", id: "removeMinimumSize", value: false},
             {type: "switch", id: "frame", value: false, hidden: true}
         ]
     }
