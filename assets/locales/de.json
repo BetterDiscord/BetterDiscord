@@ -221,14 +221,14 @@
         "unknownAuthor": "Unbekannter Autor",
         "noDescription": "Keine Beschreibung angegeben.",
         "alreadyExists": "Es existiert bereits ein {{type}} mit dem Namen {{name}}",
-        "alreadWatching": "Sie sehen bereits Addons.",
+        "alreadWatching": "Du siehst bereits Addons.",
         "metaError": "META konnte nicht geparst werden.",
         "missingNameData": "META missing name data.",
         "metaNotFound": "META nicht gefunden.",
         "compileError": "Konnte nicht kompiliert werden.",
         "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "Sie haben keine {{typ}}!",
-        "blankSlateMessage": "Holen Sie sich einige von [this website]({{link}}) und fügen Sie sie zu Ihrem Ordner {{type}} hinzu."
+        "blankSlateHeader": "Du hast keine {{typ}}!",
+        "blankSlateMessage": "Hole dir eigene von [this website]({{link}}) und fügen Sie sie zu Ihrem Ordner {{type}} hinzu."
     },
     "CustomCSS": {
         "confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
@@ -245,7 +245,7 @@
         "clearEmotes": "Emote-Daten löschen",
         "favoriteAction": "Favorisieren!",
         "downloadFailed": "Download Gescheitert",
-        "failureMessage": "BetterDiscord konnte keine Emotes herunterladen, bitte überprüfen Sie Ihre Internetverbindung und Firewall."
+        "failureMessage": "BetterDiscord konnte keine Emotes herunterladen, bitte überprüfe deine Ihre Internetverbindung und Firewall."
     },
     "PublicServers": {
         "button": "Öffentlich",
@@ -255,9 +255,9 @@
         "loading": "Laden",
         "loadMore": "Mehr laden",
         "notConnected": "Nicht mit DiscordServers.com verbunden!",
-        "connectionRequired": "Sie müssen Ihr Konto verbinden, um Servern beitreten zu können.",
+        "connectionRequired": "Du musst dein Konto verbinden, um Servern beitreten zu können.",
         "connectionError": "Verbindungsfehler",
-        "connectionErrorMessage": "Es ist ein Fehler beim Verbinden mit DiscordServers.com aufgetreten, möglicherweise ist die Website/Api nicht verfügbar. Bitte versuchen Sie es später erneut.",
+        "connectionErrorMessage": "Es ist ein Fehler beim Verbinden mit DiscordServers.com aufgetreten, möglicherweise ist die Website/Api nicht verfügbar. Bitte versuch es später erneut.",
         "pagination": "Seite {{page}} von {{count}}",
         "search": "Suchen",
         "connect": "Verbinden",
@@ -283,7 +283,7 @@
         "restartNow": "Jetzt neustarten",
         "restartLater": "Später neustarten",
         "additionalInfo": "Zusätzliche Informationen",
-        "restartPrompt": "Um wirksam zu werden, muss Discord neu gestartet werden. Möchten Sie jetzt neu starten?"
+        "restartPrompt": "Um wirksam zu werden, muss Discord neu gestartet werden. Möchtest du jetzt neu starten?"
     },
     "ReactDevTools": {
         "notFound": "Erweiterung nicht gefunden",
