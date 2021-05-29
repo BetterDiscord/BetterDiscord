@@ -1,4 +1,4 @@
-import {React, WebpackModules, Patcher, ReactComponents, Utilities, Settings, Events, DataStore} from "modules";
+import {React, WebpackModules, Patcher, Utilities, Settings, Events, DataStore} from "modules";
 
 import AddonList from "./settings/addonlist";
 import SettingsGroup from "./settings/group";
@@ -60,13 +60,11 @@ export default new class SettingsRenderer {
         }, options));
     }
 
-    async patchSections() {
-        const UserSettings = await ReactComponents.get("UserSettings", m => m.prototype && m.prototype.generateSections);
-        Patcher.after("SettingsManager", UserSettings.prototype, "render", (thisObject) => {
-            thisObject._reactInternalFiber.return.return.return.return.return.return.return.memoizedProps.id = "user-settings";
-        });
-        Patcher.after("SettingsManager", UserSettings.prototype, "generateSections", (thisObject, args, returnValue) => {
+    patchSections() {
+        const UserSettings = WebpackModules.getByDisplayName("SettingsView");
+        Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject, args, returnValue) => {
             let location = returnValue.findIndex(s => s.section.toLowerCase() == "changelog") - 1;
+            if (location < 0) return;
             const insert = (section) => {
                 returnValue.splice(location, 0, section);
                 location++;
@@ -90,14 +88,13 @@ export default new class SettingsRenderer {
                 insert(panel);
             }
         });
-        this.forceUpdate();
     }
 
     forceUpdate() {
         const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
-        const stateNode = Utilities.findInReactTree(Utilities.getReactInstance(node), m => m && m.generateSections, {walkable: ["return", "stateNode"]});
+        const stateNode = Utilities.findInReactTree(Utilities.getReactInstance(node), m => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
         if (stateNode) stateNode.forceUpdate();
     }
 };

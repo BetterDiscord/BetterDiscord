@@ -116,6 +116,7 @@ export default new class PluginManager extends AddonManager {
         delete window.module;
         delete window.__filename;
         delete window.__dirname;
+        container.remove();
         return "";
     }
 
