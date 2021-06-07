@@ -29,10 +29,13 @@ const findExtension = function() {
             }
         }
         // Return empty if no installation found
-        if (!foundExtension)
+        if (!foundExtension) {
             return "";
-        
-    } else extensionPath += `/Default/Extensions/${REACT_DEVTOOLS_ID}`;
+        }
+    }
+    else {
+        extensionPath += `/Default/Extensions/${REACT_DEVTOOLS_ID}`;
+    } 
     
     // Get latest version
     if (fs.existsSync(extensionPath)) {
