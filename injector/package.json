@@ -1,7 +1,7 @@
 {
-    "name": "betterdiscord-injector",
-    "version": "0.6.2",
-    "description": "BetterDiscord injector module",
+    "name": "SC-Cord",
+    "version": "1.0.0",
+    "description": "SC Cord injector!",
     "main": "src/index.js",
     "private": true,
     "scripts": {
