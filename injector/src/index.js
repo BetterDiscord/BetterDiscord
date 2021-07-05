@@ -1,5 +1,5 @@
 import path from "path";
-import {app} from "electron";
+import {app, ipcMain} from "electron";
 import Module from "module";
 
 import ipc from "./modules/ipc";
@@ -9,8 +9,9 @@ import CSP from "./modules/csp";
 if (!process.argv.includes("--vanilla")) {
     process.env.NODE_OPTIONS = "--no-force-async-hooks-checks";
     app.commandLine.appendSwitch("no-force-async-hooks-checks");
-    process.electronBinding("command_line").appendSwitch("no-force-async-hooks-checks");
-
+    ipcMain.on("register_preload", (_, preload) => {
+        app.commandLine.appendSwitch("preload", preload);
+    });
 
     // Patch and replace the built-in BrowserWindow
     BrowserWindow.patchBrowserWindow();
