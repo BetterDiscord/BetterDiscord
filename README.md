@@ -33,17 +33,49 @@ Grab the `zip` file from [here](https://github.com/BetterDiscord/Installer/relea
 ### Linux
 Grab the `AppImage` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage).
 
-
 ## Manual Installation
 
 For normal users, installing via the installers makes the most sense. However when wanting to either develop BetterDiscord, or when the installers do not work, this option can be used.
 
-**Prerequisites**: [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) 12.x+ and the package manager [npm](https://www.npmjs.com/).
+### Prerequisites
+- [Git](https://git-scm.com)
+- [Node.js](https://nodejs.org/en/) with `npm`.
+- Command line of your choice.
 
-1. Clone this repository `git clone https://github.com/rauenzi/BetterDiscordApp.git`
-2. Install dependencies with `npm install`
-3. Build both the Injector and Renderer bundles with `npm run build` this will create a `injector.js`, `preload.js`, and `renderer.js` in the `dist` folder.
-4. Run the inject script to inject the local files into your Discord client (`npm run inject`). Alternately install it to non-stable using `npm run inject canary`.
+### 1: Clone the repository
+```ps
+git clone https://github.com/rauenzi/BetterDiscordApp.git
+```
+### 2: Install dependencies
+```ps
+npm install
+```
+### 3: Run Build Script
+This will create a `injector.js`, `preload.js`, and `renderer.js` in the `dist` folder.
+```ps
+npm run build
+```
+### 4: Inject into your Discord client
+#### Install to Stable
+```ps
+npm run inject
+```
+#### Install to PTB
+```ps
+npm run inject ptb
+```
+#### Install to Canary
+```ps
+npm run inject canary
+```
+
+## Additional Scripts
+
+### Compiling & Distribution
+This will create a `betterdiscord.asar` file in the `dist` folder.
+```ps
+npm run dist
+```
 
 # FAQ
 
@@ -57,8 +89,6 @@ On our [official website](https://betterdiscord.app/) or on our [support servers
 
 ### Support Servers?
 There are two: [The main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the backup](https://discord.gg/2HScm8j).
-
-
 
 # Supporters
 These people have all subscribed to the `True Supporter` tier on Patreon to support me.
