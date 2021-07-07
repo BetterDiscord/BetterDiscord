@@ -41,7 +41,7 @@ const preload = process.env.DISCORD_PRELOAD;
 if (preload) {
 
     // Restore original preload for future windows
-    electron.ipcRenderer.send("register_preload", preload);
+    electron.ipcRenderer.send("bd-register-preload", preload);
     // Run original preload
     try {
         const originalKill = process.kill;
