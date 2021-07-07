@@ -4,7 +4,7 @@ import DiscordModules from "./discordmodules";
 import Utilities from "./utilities";
 import Patcher from "./patcher";
 import BDLogo from "../ui/icons/bdlogo";
-import Logger from "../../../common/logger";
+import Logger from "common/logger";
 
 const React = DiscordModules.React;
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
@@ -125,7 +125,7 @@ export default new class ComponentPatcher {
             if (guildData.animatable) returnValue.props.className += " bd-animatable";
             if (guildData.unavailable) returnValue.props.className += " bd-unavailable";
             if (guildData.screenshare) returnValue.props.className += " bd-screenshare";
-            if (guildData.liveStage) returnValue.props.className += " bd-liveStage";
+            if (guildData.liveStage) returnValue.props.className += " bd-live-stage";
             if (this.isGuildMuted(guildData.guild.id)) returnValue.props.className += " bd-muted";
 
             return returnValue;
