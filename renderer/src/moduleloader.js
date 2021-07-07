@@ -7,6 +7,10 @@ export default function() {
     const load = Module._load;
 
     Module._load = function(request) {
+        if (request === "process") {
+            return window.process;
+        }
+
         if (request === namespace || request.startsWith(prefix)) {
             const requested = request.substr(prefix.length);
             if (requested == "bdapi") return BdApi;
