@@ -24,14 +24,8 @@ BetterDiscord is a client modification for Discord. This allows you to add plugi
 
 ## Auto Installers
 
-### Windows
-Grab the `exe` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe).
-
-### macOS/OS X
-Grab the `zip` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip).
-
-### Linux
-Grab the `AppImage` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage).
+| [Windows (7+)](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe)  | [macOS (10.10+)](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip) | [Linux](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage) |
+| ------------- | ------------- | ------------- |
 
 ## Manual Installation
 
