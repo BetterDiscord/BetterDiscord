@@ -118,6 +118,7 @@ const openDialog = (event, options = {}) => {
         }
     ].filter(e => e));
 };
+
 const registerPreload = (event, path) => {
     app.commandLine.appendSwitch("preload", path);
 };

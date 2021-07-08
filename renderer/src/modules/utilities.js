@@ -80,29 +80,6 @@ export default class Utilities {
         observer.observe(document.body, {subtree: true, childList: true});
     }
 
-    static onAdded(selector, callback) {
-        if (document.body.querySelector(selector)) return callback(document.body.querySelector(selector));
-
-        const observer = new MutationObserver((mutations) => {
-            for (let m = 0; m < mutations.length; m++) {
-                for (let i = 0; i < mutations[m].addedNodes.length; i++) {
-                    const mutation = mutations[m].addedNodes[i];
-                    if (mutation.nodeType === 3) continue; // ignore text
-                    const directMatch = mutation.matches(selector) && mutation;
-                    const childrenMatch = mutation.querySelector(selector);
-                    if (directMatch || childrenMatch) {
-                        observer.disconnect();
-                        return callback(directMatch ?? childrenMatch);
-                    }
-                }
-            }
-        });
-
-        observer.observe(document.body, {subtree: true, childList: true});
-
-        return () => {observer.disconnect();};
-    }
-
     static isEmpty(obj) {
         if (obj === null || typeof(undefined) === "undefined" || obj === "") return true;
         if (typeof(obj) !== "object") return false;
