@@ -43,4 +43,8 @@ export default new class IPCRenderer {
     stopDevtoolsWarning() {
         return ipc.send(IPCEvents.DEVTOOLS_WARNING);
     }
+
+    openDialog(options) {
+        return ipc.invoke(IPCEvents.OPEN_DIALOG, options);
+    }
 };
