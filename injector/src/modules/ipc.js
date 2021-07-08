@@ -96,7 +96,7 @@ const openDialog = (event, options = {}) => {
         open: dialog.showOpenDialog,
         save: dialog.showSaveDialog
     }[mode];
-    if (!openFunction) throw new Error("Unkown Mode: " + mode);
+    if (!openFunction) return Promise.resolve({error: "Unkown Mode: " + mode});
 
     return openFunction.apply(dialog, [
         modal && BrowserWindow.fromWebContents(event.sender), 

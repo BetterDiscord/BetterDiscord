@@ -267,8 +267,11 @@ BdApi.setBDData = function(key, data) {
 };
 
 // Opens a filesystem dialog
-BdApi.openDialog = function (options) {
-    return ipc.openDialog(options);
+BdApi.openDialog = async function (options) {
+    const data = await ipc.openDialog(options);
+    if (data.error) throw new Error(data.error);
+
+    return data;
 };
 
 const makeAddonAPI = (manager) => new class AddonAPI {
