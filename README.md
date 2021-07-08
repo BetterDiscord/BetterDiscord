@@ -97,7 +97,7 @@ BD has some other built-in features such as Emotes from Twitch, FFZ, and BBTV, a
 On our [official website](https://betterdiscord.app/) or on our [support servers](https://github.com/rauenzi/BetterDiscordApp#support-servers) where we have channels with lists of <u>official</u> plugins and themes.
 
 ### Support Servers?
-There are two: [The main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the backup](https://discord.gg/2HScm8j).
+There are two: [the main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the backup](https://discord.gg/sbA3xCJ).
 
 # Supporters
 These people have all subscribed to the `True Supporter` tier on Patreon to support me.
