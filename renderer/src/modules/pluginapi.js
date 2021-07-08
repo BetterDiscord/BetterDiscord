@@ -12,6 +12,7 @@ import Settings from "./settingsmanager";
 import Logger from "common/logger";
 import Patcher from "./patcher";
 import Emotes from "../builtins/emotes/emotes";
+import ipc from "./ipc";
 
 const BdApi = {
     get React() {return DiscordModules.React;},
@@ -263,6 +264,11 @@ BdApi.getBDData = function(key) {
 // Sets data
 BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
+};
+
+// Opens a filesystem dialog
+BdApi.openDialog = function (options) {
+    return ipc.openDialog(options);
 };
 
 const makeAddonAPI = (manager) => new class AddonAPI {
