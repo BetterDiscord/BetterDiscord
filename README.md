@@ -51,7 +51,7 @@ For normal users, installing via the installers makes the most sense. However wh
 
 ### 1: Clone the repository
 ```ps
-git clone https://github.com/rauenzi/BetterDiscordApp.git
+git clone https://github.com/BetterDiscord/BetterDiscord.git
 ```
 ### 2: Install dependencies
 ```ps
