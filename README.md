@@ -220,3 +220,11 @@ These people have either donated or subscribed to the most basic patron tier to 
     </td>
 </tr>
 </table>
+
+# Contributors
+
+For information on contributing to this project, please see [CONTRIBUTING.md](/CONTRIBUTING.md).
+
+<a href="https://github.com/betterdiscord/installer/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=betterdiscord/betterdiscord" />
+</a>
