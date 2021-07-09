@@ -209,6 +209,6 @@ const originalRender = AddonList.prototype.render;
 Object.defineProperty(AddonList.prototype, "render", {
     enumerable: false,
     configurable: false,
-    set: function() {Logger.warn("AddonList", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+    set: function() {Logger.warn("AddonList", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");},
     get: () => originalRender
 });

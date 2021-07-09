@@ -178,6 +178,6 @@ const originalRender = AddonCard.prototype.render;
 Object.defineProperty(AddonCard.prototype, "render", {
     enumerable: false,
     configurable: false,
-    set: function() {Logger.warn("AddonCard", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+    set: function() {Logger.warn("AddonCard", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");},
     get: () => originalRender
 });

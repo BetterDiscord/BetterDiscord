@@ -5,7 +5,7 @@ import DOM from "./domtools";
 export default class Utilities {
 
     static repoUrl(path) {
-        return `https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/${Config.hash}/${path}`;
+        return `https://cdn.staticaly.com/gh/BetterDiscord/BetterDiscord/${Config.hash}/${path}`;
     }
 
     /**
@@ -156,7 +156,7 @@ export default class Utilities {
             const descriptor = descriptors[name];
             descriptor.configurable = false;
             descriptor.enumerable = false;
-            if (Object.prototype.hasOwnProperty.call(descriptor, "get")) descriptor.set = () => Logger.warn("protectPrototype", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");
+            if (Object.prototype.hasOwnProperty.call(descriptor, "get")) descriptor.set = () => Logger.warn("protectPrototype", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");
             if (Object.prototype.hasOwnProperty.call(descriptor, "value") && typeof(descriptor.value) === "function") descriptor.value.bind(Component.prototype);
             if (Object.prototype.hasOwnProperty.call(descriptor, "writable")) descriptor.writable = false;
         }

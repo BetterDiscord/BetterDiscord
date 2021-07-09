@@ -18,7 +18,7 @@ const Developers = [
 
 const DeveloperBadge = function DeveloperBadge({type, size = 16}) {
     return React.createElement(Tooltip, {color: "primary", position: "top", text: "BetterDiscord Developer"},
-        props => React.createElement(Anchor, Object.assign({className: `bd-${type}-badge`, href: "https://github.com/rauenzi/BetterDiscordApp", title: "BetterDiscord", target: "_blank"}, props),
+        props => React.createElement(Anchor, Object.assign({className: `bd-${type}-badge`, href: "https://github.com/BetterDiscord/BetterDiscord", title: "BetterDiscord", target: "_blank"}, props),
             React.createElement(BDLogo, {size, className: "bd-logo"})
         )
     );
