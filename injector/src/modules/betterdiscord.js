@@ -95,10 +95,10 @@ export default class BetterDiscord {
 
             // If a previous crash was detected, show a message explaining why BD isn't there
             electron.dialog.showMessageBox({
-                title: "BetterDiscord Crashed",
+                title: "Discord Crashed",
                 type: "warning",
-                message: "BetterDiscord seems to have crashed your Discord client.",
-                detail: "BetterDiscord has automatically disabled itself temporarily. Try removing all your plugins then restarting Discord."
+                message: "BetterDiscord might have crashed your Discord client.",
+                detail: "BetterDiscord has automatically disabled itself, to enable it again, restart Discord.\n\nThis issue may have been caused by a plugin. Try removing all of your plugins or moving them out of the plugins folder and check if BetterDiscord still crashes."
             });
             hasCrashed = false;
         });
