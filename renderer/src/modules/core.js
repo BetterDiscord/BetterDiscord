@@ -17,6 +17,7 @@ import Strings from "./strings";
 import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
+import Editor from "./editor";
 
 export default new class Core {
     async startup() {
@@ -58,6 +59,9 @@ export default new class Core {
 
         Logger.log("Startup", "Initializing ComponentPatcher");
         ComponentPatcher.initialize();
+
+        Logger.log("Startup", "Initializing Editor");
+        Editor.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
