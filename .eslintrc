@@ -22,7 +22,6 @@
         "handle-callback-err": "error",
         "key-spacing": "error",
         "keyword-spacing": "error",
-        "linebreak-style": ["error", "windows"],
         "new-cap": ["error", {"newIsCap": true}],
         "no-array-constructor": "error",
         "no-caller": "error",
