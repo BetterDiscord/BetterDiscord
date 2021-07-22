@@ -14,7 +14,6 @@ export default class Select extends React.Component {
     showMenu(event) {
         event.preventDefault();
         event.stopPropagation();
-        const isOpened = this.state.open;
 
         this.setState((state) => ({open: !state.open}), () => {
             if (!this.state.open) return;
