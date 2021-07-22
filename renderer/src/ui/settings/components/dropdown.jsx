@@ -16,8 +16,10 @@ export default class Select extends React.Component {
         event.stopPropagation();
         const isOpened = this.state.open;
 
-        this.setState({open: !isOpened}, () => {
-            if (!isOpened) document.addEventListener("click", this.hideMenu);
+        this.setState((state) => ({open: !state.open}), () => {
+            if (!this.state.open) return;
+
+            document.addEventListener("click", this.hideMenu);
         });
     }
 
