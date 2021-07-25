@@ -96,12 +96,17 @@ export default class AddonManager {
 
                 // If this file already exists, give a warning and move on.
                 if (fs.existsSync(newFilename)) {
-                    Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
+                    Logger.warn(this.name, `Duplicate files found: ${filename} and ${newFilename}`);
                     return;
                 }
                 
                 // Rename the file and let it go on
-                fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
+                try {
+                    fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
+                }
+                catch (error) {
+                    Logger.err(this.name, `Could not rename file: ${filename} ${newFilename}`, error);
+                }
             }
             
             await new Promise(r => setTimeout(r, 100));
@@ -200,9 +205,11 @@ export default class AddonManager {
     loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
         try {
+            delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.addonFolder, filename))];
             __non_webpack_require__(path.resolve(this.addonFolder, filename));
         }
         catch (error) {
+            Logger.err(this.name, `Could not load ${path.basename(filename)}:`, error);
             return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack}, this.prefix);
         }
 
