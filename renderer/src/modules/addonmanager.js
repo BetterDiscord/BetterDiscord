@@ -96,7 +96,7 @@ export default class AddonManager {
 
                 // If this file already exists, give a warning and move on.
                 if (fs.existsSync(newFilename)) {
-                    Logger.warn(this.name `Duplicate files found: ${filename} and ${newFilename}`);
+                    Logger.warn(this.name, `Duplicate files found: ${filename} and ${newFilename}`);
                     return;
                 }
                 
