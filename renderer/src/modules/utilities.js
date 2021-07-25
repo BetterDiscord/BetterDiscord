@@ -278,7 +278,7 @@ export default class Utilities {
 
     static getReactInstance(node) {
         if (node.__reactInternalInstance$) return node.__reactInternalInstance$;
-        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance"))] || null;
+        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber"))] || null;
     }
 
     /**

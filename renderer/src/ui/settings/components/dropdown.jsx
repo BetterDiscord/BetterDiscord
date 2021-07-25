@@ -13,7 +13,11 @@ export default class Select extends React.Component {
 
     showMenu(event) {
         event.preventDefault();
-        this.setState({open: true}, () => {
+        event.stopPropagation();
+
+        this.setState((state) => ({open: !state.open}), () => {
+            if (!this.state.open) return;
+
             document.addEventListener("click", this.hideMenu);
         });
     }
