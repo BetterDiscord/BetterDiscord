@@ -192,7 +192,7 @@
     "Addons": {
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "por {{author}}",
-        "openFolder": "Abrir Pasta de {{type}}s",
+        "openFolder": "Abrir Pasta de {{type}}",
         "reload": "Recarregar",
         "addonSettings": "Configurações",
         "website": "Site",
