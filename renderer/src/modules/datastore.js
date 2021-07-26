@@ -195,9 +195,13 @@ export default new class DataStore {
     }
 
     getPluginData(pluginName, key) {
-        if (this.pluginData[pluginName] !== undefined) return this.pluginData[pluginName][key] || undefined;
+        if (this.pluginData[pluginName] !== undefined) {
+            if (this.pluginData[pluginName][key] === false) return false;
+            return this.pluginData[pluginName][key] || undefined;
+        }
         if (!fs.existsSync(this.getPluginFile(pluginName))) return undefined;
         this.pluginData[pluginName] = JSON.parse(fs.readFileSync(this.getPluginFile(pluginName)));
+        if (this.pluginData[pluginName][key] === false) return false;
         return this.pluginData[pluginName][key] || undefined;
     }
 
