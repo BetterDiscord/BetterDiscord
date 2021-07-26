@@ -21,6 +21,6 @@ const originalRender = ErrorBoundary.prototype.render;
 Object.defineProperty(ErrorBoundary.prototype, "render", {
     enumerable: false,
     configurable: false,
-    set: function() {Logger.warn("ErrorBoundary", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");},
+    set: function() {Logger.warn("ErrorBoundary", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");},
     get: () => originalRender
 });

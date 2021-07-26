@@ -12,6 +12,7 @@ import Settings from "./settingsmanager";
 import Logger from "common/logger";
 import Patcher from "./patcher";
 import Emotes from "../builtins/emotes/emotes";
+import ipc from "./ipc";
 
 const BdApi = {
     get React() {return DiscordModules.React;},
@@ -26,10 +27,10 @@ const BdApi = {
                 if (!group) return undefined;
                 return new Proxy(group, {
                     get(cat, emote) {return group[emote];},
-                    set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
+                    set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");}
                 });
             },
-            set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
+            set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");}
         });
     },
     get version() {return Config.version;}
@@ -263,6 +264,14 @@ BdApi.getBDData = function(key) {
 // Sets data
 BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
+};
+
+// Opens a filesystem dialog
+BdApi.openDialog = async function (options) {
+    const data = await ipc.openDialog(options);
+    if (data.error) throw new Error(data.error);
+
+    return data;
 };
 
 const makeAddonAPI = (manager) => new class AddonAPI {
