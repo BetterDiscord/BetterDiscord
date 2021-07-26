@@ -61,12 +61,11 @@ export default new class Core {
         ComponentPatcher.initialize();
 
         Logger.log("Startup", "Initializing Editor");
-        Editor.initialize();
+        await Editor.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
-            if (module === "CustomCSS") await Builtins[module].initialize();
-            else Builtins[module].initialize();
+            Builtins[module].initialize();
         }
 
         Logger.log("Startup", "Loading Plugins");
