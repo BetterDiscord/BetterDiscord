@@ -23,18 +23,24 @@ Object.defineProperty(window, "webpackJsonp", {
 electron.webFrame.top.context.global = electron.webFrame.top.context;
 electron.webFrame.top.context.require = require;
 electron.webFrame.top.context.Buffer = Buffer;
-electron.webFrame.top.context.process = new class PatchedProcess extends NodeEvents {
-    get __ORIGINAL_PROCESS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED__() {return process;}
 
-    constructor() {
-        super();
+if (process.platform === "darwin" && process.env.DISCORD_RELEASE_CHANNEL !== "canary") {
+    electron.webFrame.top.context.process = process;
+}
+else {
+    electron.webFrame.top.context.process = new class PatchedProcess extends NodeEvents {
+        get __ORIGINAL_PROCESS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED__() {return process;}
 
-        Object.assign(this, 
-            cloneObject(process, {}, Object.keys(NodeEvents.prototype)),
-            cloneObject(process, {})
-        );
-    }
-};
+        constructor() {
+            super();
+
+            Object.assign(this,
+                cloneObject(process, {}, Object.keys(NodeEvents.prototype)),
+                cloneObject(process, {})
+            );
+        }
+    };
+}
 
 // Load Discord's original preload
 const preload = process.env.DISCORD_PRELOAD;

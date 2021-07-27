@@ -77,6 +77,12 @@ export default class BetterDiscord {
     static setup(browserWindow) {
 
         // Setup some useful vars to avoid blocking IPC calls
+        try {
+            process.env.DISCORD_RELEASE_CHANNEL = __non_webpack_require__(buildInfoFile).releaseChannel;
+        }
+        catch (e) {
+            process.env.DISCORD_RELEASE_CHANNEL = "stable";
+        }
         process.env.DISCORD_PRELOAD = browserWindow.__originalPreload;
         process.env.DISCORD_APP_PATH = appPath;
         process.env.DISCORD_USER_DATA = electron.app.getPath("userData");
