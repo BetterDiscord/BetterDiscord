@@ -36,10 +36,6 @@ export default new class DataStore {
         if (!newStorageExists) fs.mkdirSync(this.baseFolder);
 
         if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
-        // if (!fs.existsSync(this.localeFolder)) fs.mkdirSync(this.localeFolder);
-        // if (!fs.existsSync(this.emoteFolder)) fs.mkdirSync(this.emoteFolder);
-
-        // if (!fs.existsSync(this.cacheFile)) fs.writeFileSync(this.cacheFile, JSON.stringify({}));
         if (!fs.existsSync(this.customCSS)) fs.writeFileSync(this.customCSS, "");
 
         const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
@@ -49,10 +45,9 @@ export default new class DataStore {
             catch (e) {Logger.stacktrace("DataStore", `Could not load file ${file}`, e);}
             this.data[file.split(".")[0]] = data;
         }
-        // this.cacheData = Utilities.testJSON(fs.readFileSync(this.cacheFile).toString()) || {};
 
         if (newStorageExists) return;
-        
+
         try {this.convertOldData();} // Convert old data if it exists (routine checks existence and removes existence)
         catch (e) {Logger.stacktrace("DataStore", `Could not convert old data.`, e);}
     }
@@ -115,9 +110,6 @@ export default new class DataStore {
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
-    // get localeFolder() {return this._localeFolder || (this._localeFolder = path.resolve(this.baseFolder, `locales`));}
-    // get emoteFolder() {return this._emoteFolder || (this._emoteFolder = path.resolve(this.baseFolder, `emotes`));}
-    // get cacheFile() {return this._cacheFile || (this._cacheFile = path.resolve(this.baseFolder, `.cache`));}
     getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
 
 
@@ -145,38 +137,6 @@ export default new class DataStore {
         fs.writeFileSync(path.resolve(this.localeFolder, `${locale}.json`), JSON.stringify(strings, null, 4));
     }
 
-    // getCacheHash(category, key) {
-    //     if (!this.cacheData[category]) return "";
-    //     if (!fs.existsSync(path.resolve(this.baseFolder, category, `${key}.json`))) return "";
-    //     return this.cacheData[category][key] || "";
-    // }
-
-    // setCacheHash(category, key, hash) {
-    //     if (!this.cacheData[category]) this.cacheData[category] = {};
-    //     this.cacheData[category][key] = hash;
-    //     fs.writeFileSync(this.cacheFile, JSON.stringify(this.cacheData));
-    // }
-
-    // invalidateCache(category, key) {
-    //     if (!this.cacheData[category]) return;
-    //     delete this.cacheData[category][key];
-    //     fs.writeFileSync(this.cacheFile, JSON.stringify(this.cacheData));
-    // }
-
-    // emotesExist(category) {
-    //     return fs.existsSync(path.resolve(this.emoteFolder, `${category}.json`));
-    // }
-
-    // getEmoteData(category) {
-    //     const file = path.resolve(this.emoteFolder, `${category}.json`);
-    //     if (!fs.existsSync(file)) return null;
-    //     return Utilities.testJSON(fs.readFileSync(file).toString());
-    // }
-
-    // saveEmoteData(category, data) {
-    //     fs.writeFileSync(path.resolve(this.emoteFolder, `${category}.json`), JSON.stringify(data));
-    // }
-
     getData(key) {
         return this.data[key] || "";
     }
@@ -194,22 +154,31 @@ export default new class DataStore {
         return fs.writeFileSync(this.customCSS, css);
     }
 
-    getPluginData(pluginName, key) {
-        if (this.pluginData[pluginName] !== undefined) return this.pluginData[pluginName][key] || undefined;
-        if (!fs.existsSync(this.getPluginFile(pluginName))) return undefined;
+    ensurePluginData(pluginName) {
+        if (typeof(this.pluginData[pluginName]) !== "undefined") return; // Already have data cached
+
+        // Setup blank data if config doesn't exist
+        if (!fs.existsSync(this.getPluginFile(pluginName))) return this.pluginData[pluginName] = {};
+
+        // Getting here means not cached, read from disk
         this.pluginData[pluginName] = JSON.parse(fs.readFileSync(this.getPluginFile(pluginName)));
-        return this.pluginData[pluginName][key] || undefined;
+    }
+
+    getPluginData(pluginName, key) {
+        this.ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
+        return this.pluginData[pluginName][key]; // Return blindly to allow falsey values
     }
 
     setPluginData(pluginName, key, value) {
-        if (value === undefined) return;
-        if (this.pluginData[pluginName] === undefined) this.pluginData[pluginName] = {};
-        this.pluginData[pluginName][key] = value;
-        fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4));
+        if (value === undefined) return; // Can't set undefined, use deletePluginData
+        this.ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
+
+        this.pluginData[pluginName][key] = value; // Set the value blindly to allow falsey values
+        fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4)); // Save to disk
     }
 
     deletePluginData(pluginName, key) {
-        if (this.pluginData[pluginName] === undefined) this.pluginData[pluginName] = {};
+        this.ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
         delete this.pluginData[pluginName][key];
         fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4));
     }
