@@ -12,6 +12,7 @@ import Settings from "./settingsmanager";
 import Logger from "common/logger";
 import Patcher from "./patcher";
 import Emotes from "../builtins/emotes/emotes";
+import ipc from "./ipc";
 
 const BdApi = {
     get React() {return DiscordModules.React;},
@@ -26,10 +27,10 @@ const BdApi = {
                 if (!group) return undefined;
                 return new Proxy(group, {
                     get(cat, emote) {return group[emote];},
-                    set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
+                    set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");}
                 });
             },
-            set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");}
+            set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");}
         });
     },
     get version() {return Config.version;}
@@ -265,6 +266,14 @@ BdApi.setBDData = function(key, data) {
     return DataStore.setBDData(key, data);
 };
 
+// Opens a filesystem dialog
+BdApi.openDialog = async function (options) {
+    const data = await ipc.openDialog(options);
+    if (data.error) throw new Error(data.error);
+
+    return data;
+};
+
 const makeAddonAPI = (manager) => new class AddonAPI {
     get folder() {return manager.addonFolder;}
     isEnabled(idOrFile) {return manager.isEnabled(idOrFile);}
@@ -287,6 +296,10 @@ BdApi.Patcher = {
     before: (caller, moduleToPatch, functionName, callback, options = {}) => BdApi.Patcher.patch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "before"})),
     instead: (caller, moduleToPatch, functionName, callback, options = {}) => BdApi.Patcher.patch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "instead"})),
     after: (caller, moduleToPatch, functionName, callback, options = {}) => BdApi.Patcher.patch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "after"})),
+    getPatchesByCaller: (caller) => {
+        if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of getPatchesByCaller must be a string representing the caller");
+        return Patcher.getPatchesByCaller(caller);
+    },
     unpatchAll: (caller) => {
         if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of unpatchAll must be a string representing the caller");
         return Patcher.unpatchAll(caller);

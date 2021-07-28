@@ -12,3 +12,5 @@ export const OPEN_WINDOW        = "bd-open-window";
 export const INSPECT_ELEMENT    = "bd-inspect-element";
 export const MINIMUM_SIZE       = "bd-minimum-size";
 export const DEVTOOLS_WARNING   = "bd-remove-devtools-message";
+export const OPEN_DIALOG        = "bd-open-dialog";
+export const REGISTER_PRELOAD   = "bd-register-preload";

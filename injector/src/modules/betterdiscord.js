@@ -15,13 +15,6 @@ if (process.platform === "win32" || process.platform === "darwin") dataPath = pa
 else dataPath = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config"); // This will help with snap packages eventually
 dataPath = path.join(dataPath, "BetterDiscord") + "/";
 
-
-electron.app.once("ready", async () => {
-    if (!BetterDiscord.getSetting("developer", "reactDevTools")) return;
-    await ReactDevTools.install();
-});
-
-
 let hasCrashed = false;
 export default class BetterDiscord {
     static getWindowPrefs() {
@@ -84,6 +77,12 @@ export default class BetterDiscord {
     static setup(browserWindow) {
 
         // Setup some useful vars to avoid blocking IPC calls
+        try {
+            process.env.DISCORD_RELEASE_CHANNEL = __non_webpack_require__(buildInfoFile).releaseChannel;
+        }
+        catch (e) {
+            process.env.DISCORD_RELEASE_CHANNEL = "stable";
+        }
         process.env.DISCORD_PRELOAD = browserWindow.__originalPreload;
         process.env.DISCORD_APP_PATH = appPath;
         process.env.DISCORD_USER_DATA = electron.app.getPath("userData");
@@ -112,6 +111,12 @@ export default class BetterDiscord {
             hasCrashed = true;
         });
     }
+}
+
+if (BetterDiscord.getSetting("developer", "reactDevTools")) {
+    electron.app.whenReady().then(async ()=>{
+        await ReactDevTools.install();
+    });
 }
 
 if (BetterDiscord.getSetting("general", "mediaKeys")) {

@@ -228,24 +228,28 @@
 /* Private channels horizontal icons */
 
 .bd-minimal .channel-2QD9_O[href="/channels/@me"],
+.bd-minimal .channel-2QD9_O[href="/discovery"],
 .bd-minimal .channel-2QD9_O[href="/library"],
 .bd-minimal .channel-2QD9_O[href="/store"] {
-    width: calc(33% - 8px);
+    width: calc(25% - 8px);
     margin-left: 8px;
     padding: 0;
     display: inline-block;
 }
 
 .bd-minimal .channel-2QD9_O[href="/channels/@me"] .content-3QAtGj,
+.bd-minimal .channel-2QD9_O[href="/discovery"] .content-3QAtGj,
 .bd-minimal .channel-2QD9_O[href="/library"] .content-3QAtGj,
 .bd-minimal .channel-2QD9_O[href="/store"] .content-3QAtGj,
 .bd-minimal .channel-2QD9_O[href="/channels/@me"] .children-gzQq2t,
+.bd-minimal .channel-2QD9_O[href="/discovery"] .children-gzQq2t,
 .bd-minimal .channel-2QD9_O[href="/library"] .children-gzQq2t,
 .bd-minimal .channel-2QD9_O[href="/store"] .children-gzQq2t {
     display: none;
 }
 
 .bd-minimal .channel-2QD9_O[href="/channels/@me"] .avatar-3uk_u9,
+.bd-minimal .channel-2QD9_O[href="/discovery"] .avatar-3uk_u9,
 .bd-minimal .channel-2QD9_O[href="/library"] .avatar-3uk_u9,
 .bd-minimal .channel-2QD9_O[href="/store"] .avatar-3uk_u9 {
     margin: 0;

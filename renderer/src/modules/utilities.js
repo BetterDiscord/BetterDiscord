@@ -5,7 +5,7 @@ import DOM from "./domtools";
 export default class Utilities {
 
     static repoUrl(path) {
-        return `https://cdn.staticaly.com/gh/rauenzi/BetterDiscordApp/${Config.hash}/${path}`;
+        return `https://cdn.staticaly.com/gh/BetterDiscord/BetterDiscord/${Config.hash}/${path}`;
     }
 
     /**
@@ -80,6 +80,29 @@ export default class Utilities {
         observer.observe(document.body, {subtree: true, childList: true});
     }
 
+    static onAdded(selector, callback) {
+        if (document.body.querySelector(selector)) return callback(document.body.querySelector(selector));
+
+        const observer = new MutationObserver((mutations) => {
+            for (let m = 0; m < mutations.length; m++) {
+                for (let i = 0; i < mutations[m].addedNodes.length; i++) {
+                    const mutation = mutations[m].addedNodes[i];
+                    if (mutation.nodeType === 3) continue; // ignore text
+                    const directMatch = mutation.matches(selector) && mutation;
+                    const childrenMatch = mutation.querySelector(selector);
+                    if (directMatch || childrenMatch) {
+                        observer.disconnect();
+                        return callback(directMatch ?? childrenMatch);
+                    }
+                }
+            }
+        });
+
+        observer.observe(document.body, {subtree: true, childList: true});
+
+        return () => {observer.disconnect();};
+    }
+
     static isEmpty(obj) {
         if (obj === null || typeof(undefined) === "undefined" || obj === "") return true;
         if (typeof(obj) !== "object") return false;
@@ -133,7 +156,7 @@ export default class Utilities {
             const descriptor = descriptors[name];
             descriptor.configurable = false;
             descriptor.enumerable = false;
-            if (Object.prototype.hasOwnProperty.call(descriptor, "get")) descriptor.set = () => Logger.warn("protectPrototype", "Addon policy for plugins #5 https://github.com/rauenzi/BetterDiscordApp/wiki/Addon-Policies#plugins");
+            if (Object.prototype.hasOwnProperty.call(descriptor, "get")) descriptor.set = () => Logger.warn("protectPrototype", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");
             if (Object.prototype.hasOwnProperty.call(descriptor, "value") && typeof(descriptor.value) === "function") descriptor.value.bind(Component.prototype);
             if (Object.prototype.hasOwnProperty.call(descriptor, "writable")) descriptor.writable = false;
         }
@@ -255,7 +278,7 @@ export default class Utilities {
 
     static getReactInstance(node) {
         if (node.__reactInternalInstance$) return node.__reactInternalInstance$;
-        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance"))] || null;
+        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber"))] || null;
     }
 
     /**

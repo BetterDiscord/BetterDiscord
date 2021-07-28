@@ -2,6 +2,44 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.2.1
+
+### Added
+- Added `getPatchesByCaller` to `BdApi.Patcher`
+
+### Removed
+
+### Changed
+- Internal react keys updated for new version in Discord (Thanks [Strencher](https://github.com/Strencher))
+- Monaco editor now loads for all cases rather than just for custom css (Thanks [Qb](https://github.com/QbDesu))
+- MacOS on Discord non-canary will use the default `process` object
+
+### Fixed
+- Fixed failed plugin loads being permanently cached (Thanks [Strencher](https://github.com/Strencher))
+- Fixed duplicate file renaming sometimes causing crashed (Thanks [Strencher](https://github.com/Strencher))
+- Fixed plugin data retrieval when using falsey values
+- Fixed plugin data being overwritten if a read did not occur first
+- Fixed react dev tools time of installation to comply with linux injection. (Thanks [Qb](https://github.com/QbDesu))
+
+## 1.2.0
+
+### Added
+- `openDialog` function added to `BdApi` to enable save/load of files.
+
+### Removed
+
+### Changed
+- Emote menu now more seamlessly integrates with Discord.
+- Support for other chrome profiles added when using React DevTools. (Thanks [CrizGames](https://github.com/CrizGames))
+- Console errors from plugins should now properly map to the local file.
+
+### Fixed
+- Fixed several crashing issues related to voice and video chats.
+- Fixed the incompatibility with Canary/PTB
+- Fixed missing class names on guild elements.
+- Fixed minimal mode for new Discovery tab. (Thanks [dav1312](https://github.com/dav1312))
+
+
 ## 1.1.1
 
 ### Added

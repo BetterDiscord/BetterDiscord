@@ -26,33 +26,6 @@ export default new class CustomCSS extends Builtin {
     }
 
     async enabled() {
-        if (!window.monaco && !window.MonacoEnvironment) {
-            Object.defineProperty(window, "MonacoEnvironment", {
-                value: {
-                    getWorkerUrl: function() {
-                        return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
-                            self.MonacoEnvironment = {
-                                baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min'
-                            };
-                            importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/base/worker/workerMain.min.js');`
-                        )}`;
-                    }
-                }
-            });
-
-            const commonjsLoader = window.require;
-            delete window.module; // Make monaco think this isn't a local node script or else it freaks out
-
-            DOMManager.linkStyle("monaco-style", "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/editor/editor.main.min.css", {documentHead: true});
-            await DOMManager.injectScript("monaco-script", "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs/loader.min.js");
-
-            const amdLoader = window.require; // Grab Monaco's amd loader
-            window.require = commonjsLoader; // Revert to commonjs
-            // this.log(amdLoader, window.require);
-            amdLoader.config({paths: {vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min/vs"}});
-            amdLoader(["vs/editor/editor.main"], () => {}); // exposes the monaco global
-        }
-
         Settings.registerPanel(this.id, Strings.Panels.customcss, {
             order: 2,
             element: () => [<SettingsTitle text={Strings.CustomCSS.editorTitle} />, React.createElement(CSSEditor, {
@@ -67,7 +40,7 @@ export default new class CustomCSS extends Builtin {
                 if (this.isDetached) return;
                 if (this.nativeOpen) return this.openNative();
                 else if (this.startDetached) return this.openDetached(this.savedCss);
-                const settingsView = Utilities.findInRenderTree(thisObject._reactInternalFiber, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
+                const settingsView = Utilities.findInRenderTree(thisObject._reactInternals, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
                 if (settingsView && settingsView.onSetSection) settingsView.onSetSection(this.id);
             }
         });

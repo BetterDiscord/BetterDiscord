@@ -4,27 +4,47 @@ import DiscordModules from "./discordmodules";
 import Utilities from "./utilities";
 import Patcher from "./patcher";
 import BDLogo from "../ui/icons/bdlogo";
+import Logger from "common/logger";
 
 const React = DiscordModules.React;
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
+const MutedStore = WebpackModules.getByProps("isMuted");
+const Anchor = WebpackModules.getByDisplayName("Anchor");
+
+const Developers = [
+    /* Zerebos#7790 */
+    "249746236008169473"
+];
+
+const DeveloperBadge = function DeveloperBadge({type, size = 16}) {
+    return React.createElement(Tooltip, {color: "primary", position: "top", text: "BetterDiscord Developer"},
+        props => React.createElement(Anchor, Object.assign({className: `bd-${type}-badge`, href: "https://github.com/BetterDiscord/BetterDiscord", title: "BetterDiscord", target: "_blank"}, props),
+            React.createElement(BDLogo, {size, className: "bd-logo"})
+        )
+    );
+};
 
 export default new class ComponentPatcher {
+    warn(...message) {return Logger.warn("ComponentPatcher", ...message);}
+    error(...message) {return Logger.error("ComponentPatcher", ...message);}
+    debug(...message) {return Logger.debug("ComponentPatcher", ...message);}
 
     initialize() {
         Utilities.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
-        /*
+    
         Utilities.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
         Utilities.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
+        /*
         Utilities.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
         */
         Utilities.suppressErrors(this.patchMessageHeader.bind(this), "BD Message Header Patch")();
         Utilities.suppressErrors(this.patchMemberList.bind(this), "BD Member List Patch")();
+        Utilities.suppressErrors(this.patchProfile.bind(this), "BD Profile Badges Patch")();
     }
 
     patchSocial() {
         if (this.socialPatch) return;
         const TabBar = WebpackModules.getByDisplayName("TabBar");
-        const Anchor = WebpackModules.getByDisplayName("Anchor");
         if (!TabBar) return;
         this.socialPatch = Patcher.after("ComponentPatcher", TabBar.prototype, "render", (thisObject, args, returnValue) => {
             const children = returnValue.props.children;
@@ -57,15 +77,43 @@ export default new class ComponentPatcher {
         });
     }
 
-    /*
-    patchGuildListItems() {
+    isGuildMuted(guildId) {
+        if (!MutedStore || typeof(MutedStore.isMuted) !== "function") return false;
+
+        return MutedStore.isMuted(guildId);
+    }
+    
+    /**
+     * @updated 07.07.2021
+     */
+    async patchGuildListItems() {
         if (this.guildListItemsPatch) return;
-        const listItemClass = DiscordModules.GuildClasses.listItem.split(" ")[0];
-        const blobClass = DiscordModules.GuildClasses.blobContainer.split(" ")[0];
-        const reactInstance = Utilities.getReactInstance(document.querySelector(`.${listItemClass} .${blobClass}`).parentElement);
-        const GuildComponent = reactInstance.return.type;
-        if (!GuildComponent) return;
-        this.guildListItemsPatch = Patcher.after("ComponentPatcher", GuildComponent.prototype, "render", (thisObject, _, returnValue) => {
+        const guildClasses = WebpackModules.getByProps("downloadProgressCircle", "guilds");
+        if (!guildClasses) return this.warn("Failed to get guilds classes!");
+
+        const start = Date.now();
+        const guilds = await new Promise((resolve) => Utilities.onAdded(`.${guildClasses.guilds}`, resolve));
+        if (!guilds) return this.error("Cannot find guilds component.");
+        const reactInstance = Utilities.getReactInstance(guilds);
+        if (!reactInstance) return this.error("Failed to get Guilds instance.");
+        const GuildComponent = await new Promise((resolve) => {
+            let tries = 0;
+            const searchForGuild = function () {
+                tries++;
+                const guild = Utilities.findInTree(reactInstance, e => e?.type?.displayName === "Guild", {walkable: ["child", "sibling"]});
+                if (guild) {resolve(guild);} 
+                else if (tries < 10) {setTimeout(searchForGuild, 300);} 
+                else {resolve(null);}
+            };
+
+            searchForGuild();
+        });
+        
+        if (!GuildComponent || typeof(GuildComponent.type) !== "function") return this.error("Failed to get Guild component.");
+        this.debug(`Found Guild component in ${Date.now() - start}ms`);
+
+        const Guild = GuildComponent.type;
+        this.guildListItemsPatch = Patcher.after("ComponentPatcher", Guild.prototype, "render", (thisObject, _, returnValue) => {
             if (!returnValue || !thisObject) return;
             const guildData = thisObject.props;
             returnValue.props.className += " bd-guild";
@@ -75,10 +123,17 @@ export default new class ComponentPatcher {
             if (guildData.video) returnValue.props.className += " bd-video";
             if (guildData.badge) returnValue.props.className += " bd-badge";
             if (guildData.animatable) returnValue.props.className += " bd-animatable";
+            if (guildData.unavailable) returnValue.props.className += " bd-unavailable";
+            if (guildData.screenshare) returnValue.props.className += " bd-screenshare";
+            if (guildData.liveStage) returnValue.props.className += " bd-live-stage";
+            if (this.isGuildMuted(guildData.guild.id)) returnValue.props.className += " bd-muted";
+
             return returnValue;
         });
-    }
 
+        if (reactInstance.forceUpdate) reactInstance.forceUpdate();
+    }
+    
     patchGuildPills() {
         if (this.guildPillPatch) return;
         const guildPill = WebpackModules.getModule(m => m.default && !m.default.displayName && m.default.toString && m.default.toString().includes("translate3d"));
@@ -91,7 +146,7 @@ export default new class ComponentPatcher {
             return returnValue;
         });
     }
-
+    /*
     patchGuildSeparator() {
         if (this.guildSeparatorPatch) return;
         const Guilds = WebpackModules.getByDisplayName("Guilds");
@@ -109,42 +164,62 @@ export default new class ComponentPatcher {
         });
     }*/
 
+    /**
+     * @updated 07.07.2021
+     */
     patchMessageHeader() {
         if (this.messageHeaderPatch) return;
-        const MessageHeader = WebpackModules.getByProps("MessageTimestamp");
-        const Anchor = WebpackModules.find(m => m.displayName == "Anchor");
-        if (!Anchor || !MessageHeader || !MessageHeader.default) return;
-        this.messageHeaderPatch = Patcher.after("ComponentPatcher", MessageHeader, "default", (_, args, returnValue) => {
-            const author = Utilities.getNestedProp(args[0], "message.author");
-            const children = Utilities.getNestedProp(returnValue, "props.children.1.props.children.1.props.children");
-            if (!children || !author || !author.id || author.id !== "249746236008169473") return;
+        const MessageTimestamp = WebpackModules.getModule(m => m?.default?.toString().indexOf("showTimestampOnHover") > -1);
+        this.messageHeaderPatch = Patcher.after("ComponentPatcher", MessageTimestamp, "default", (_, [{message}], returnValue) => {
+            const userId = Utilities.getNestedProp(message, "author.id");
+            if (Developers.indexOf(userId) < 0) return;
+            const children = Utilities.getNestedProp(returnValue, "props.children.1.props.children");
             if (!Array.isArray(children)) return;
-            children.push(
-                React.createElement(Tooltip, {color: "primary", position: "top", text: "BetterDiscord Developer"},
-                    props => React.createElement(Anchor, Object.assign({className: "bd-chat-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BetterDiscord", target: "_blank"}, props),
-                        React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
-                    )
-                )
+
+            children.splice(2, 0, 
+                React.createElement(DeveloperBadge, {
+                    type: "chat"
+                })
             );
         });
     }
 
+    /**
+     * @updated 07.07.2021
+     */
     patchMemberList() {
         if (this.memberListPatch) return;
         const MemberListItem = WebpackModules.findByDisplayName("MemberListItem");
-        const Anchor = WebpackModules.find(m => m.displayName == "Anchor");
-        if (!Anchor || !MemberListItem || !MemberListItem.prototype || !MemberListItem.prototype.renderDecorators) return;
+        if (!MemberListItem?.prototype?.renderDecorators) return;
         this.memberListPatch = Patcher.after("ComponentPatcher", MemberListItem.prototype, "renderDecorators", (thisObject, args, returnValue) => {
             const user = Utilities.getNestedProp(thisObject, "props.user");
             const children = Utilities.getNestedProp(returnValue, "props.children");
-            if (!children || !user || !user.id || user.id !== "249746236008169473") return;
+            if (!children || Developers.indexOf(user.id) < 0) return;
             if (!Array.isArray(children)) return;
             children.push(
-                React.createElement(Tooltip, {color: "primary", position: "top", text: "BetterDiscord Developer"},
-                    props => React.createElement(Anchor, Object.assign({className: "bd-member-badge", href: "https://github.com/rauenzi/BetterDiscordApp", title: "BetterDiscord", target: "_blank"}, props),
-                        React.createElement(BDLogo, {size: "16px", className: "bd-logo"})
-                    )
-                )
+               React.createElement(DeveloperBadge, {
+                   type: "member"
+               })
+            );
+        });
+    }
+
+    /**
+     * @updated 07.07.2021
+     */
+    patchProfile() {
+        if (this.profilePatch) return;
+        const UserProfileBadgeList = WebpackModules.getModule(m => m?.default?.displayName === "UserProfileBadgeList");
+        this.profilePatch = Patcher.after("ComponentPatcher", UserProfileBadgeList, "default", (_, [{user}], res) => {
+            if (Developers.indexOf(user?.id) < 0) return;
+            const children = Utilities.getNestedProp(res, "props.children");
+            if (!Array.isArray(children)) return;
+
+            children.unshift(
+                React.createElement(DeveloperBadge, {
+                    type: "profile",
+                    size: 18
+                })
             );
         });
     }
