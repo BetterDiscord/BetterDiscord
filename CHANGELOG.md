@@ -5,6 +5,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 ## 1.2.1
 
 ### Added
+- Added `getPatchesByCaller` to `BdApi.Patcher`
 
 ### Removed
 
