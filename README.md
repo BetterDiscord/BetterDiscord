@@ -27,15 +27,16 @@
 
 ## Auto Installers
 
-<a href="https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe" target="_blank">
-    <img src="https://img.shields.io/badge/Windows%20(7+)-Download-3a71c1?logo=Windows&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge" alt="Windows"/>
-</a>
-<a href="https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip" target="_blank">
-    <img src="https://img.shields.io/badge/macOS%20(10.10+)-Download-3a71c1?logo=Apple&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge" alt="Mac"/>
-</a>
-<a href="https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage" target="_blank">
-    <img src="https://img.shields.io/badge/Linux-Download-3a71c1?logo=Linux&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge" alt="Linux"/>
-</a>
+[![Windows Installer][windows-badge]][windows-link] [![Mac Installer][mac-badge]][mac-link] [![Linux Installer][linux-badge]][linux-link]
+
+[windows-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe
+[windows-badge]: https://img.shields.io/badge/Windows%20(7+)-Download-3a71c1?logo=Windows&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
+
+[mac-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip
+[mac-badge]: https://img.shields.io/badge/macOS%20(10.10+)-Download-3a71c1?logo=Apple&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
+
+[linux-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage
+[linux-badge]: https://img.shields.io/badge/Linux-Download-3a71c1?logo=Linux&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
 ## Manual Installation
 
