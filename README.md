@@ -97,8 +97,6 @@ The easiest way to find plugins and themes is to browse them on [our website: ht
 ### Support Servers?
 There are two: [The main server](https://discord.gg/bnSUxedypU), and [the backup](https://discord.gg/XqSpb9e3dq).
 
-
-
 # Supporters
 These people have all subscribed to the `True Supporter` tier on Patreon to support me.
 
@@ -135,10 +133,8 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
 </tr>
 </table>
 
-
 # Bandagers
 These people have all subscribed to the `Bandager` tier on Patreon to support me.
-
 
 <table>
 <tr>
