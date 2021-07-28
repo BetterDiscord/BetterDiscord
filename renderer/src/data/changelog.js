@@ -1,24 +1,25 @@
 export default {
-    description: "Most of these fixes in this update come from Strencher (https://github.com/Strencher).",
+    description: "Temporary relief to those on MacOS.",
     changes: [
         {
             title: "Fixes",
             type: "fixed",
             items: [
-                "Fixed several crashing issues related to voice and video chats.",
-                "Fixed the incompatibility with Canary/PTB",
-                "Fixed missing class names on guild elements.",
-                "Fixed minimal mode for new Discovery tab. Thanks, dav1312 (https://github.com/dav1312)."
+                "Fixed open plugin/theme folder on Mac.",
+                "Fixed screensharing, audio and video on Mac.",
+                "Fixed dropdowns, and custom css page not opening. Thanks, Strencher. (https://github.com/Strencher)",
+                "Fixed popout editor not working when custom css was disabled. Thanks, Qb. (https://github.com/QbDesu)",
+                "Fixed crashing for some users when duplicate files were found. Thanks, Strencher. (https://github.com/Strencher)"
             ]
         },
         {
             title: "Power Users & Developers",
             type: "improved",
             items: [
-                "Console errors from plugins should now properly map to the local file.",
-                "Support for other chrome profiles added when using React DevTools. Thanks, CrizGames (https://github.com/CrizGames).",
-                "Emote menu handling is improved.",
-                "`openDialog` added to `BdApi`."
+                "Plugin data retrieval will now turn the correct values instead of `undefined` for falsey values.",
+                "Plugin data can now be set before being retrieved.",
+                "Plugins that fail on initial load will no longer be forever in a broken state. Thanks, Strencher. (https://github.com/Strencher)",
+                "React DevTools should now work on Linux! Thanks, Qb. (https://github.com/QbDesu)"
             ]
         }
     ]
