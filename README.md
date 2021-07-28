@@ -1,25 +1,21 @@
-<h1 align="center">BetterDiscord</h1>
+# BetterDiscord
+[![Language Grade][lgtm-badge]][lgtm-link] ![GitHub Releases][downloads-badge] [![Discord][discord-badge]][discord-link] [![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link]
 
-<p align="center">
-    <a href="https://lgtm.com/projects/g/BetterDiscord/BetterDiscord/context:javascript" target="_blank">
-        <img src="https://img.shields.io/lgtm/grade/javascript/g/BetterDiscord/BetterDiscord.svg?labelColor=0c0d10&style=for-the-badge" alt="Quality"/>
-    </a>
-    <a href="https://discord.gg/0Tmfo5ZbORCRqbAd" target="_blank">
-        <img src="https://img.shields.io/badge/support%20server-join-green?labelColor=0c0d10&color=7289da&style=for-the-badge&logo=discord&logoColor=7289da" alt="Discord"/>
-    </a>
-    <a href="https://github.com/BetterDiscord/installer/releases/" target="_blank">
-        <img src="https://img.shields.io/github/downloads/BetterDiscord/Installer/total?labelColor=0c0d10&color=3a71c1&style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyLjI1IDM4LjVIMzUuNzVDMzYuNzE2NSAzOC41IDM3LjUgMzkuMjgzNSAzNy41IDQwLjI1QzM3LjUgNDEuMTY4MiAzNi43OTI5IDQxLjkyMTIgMzUuODkzNSA0MS45OTQyTDM1Ljc1IDQySDEyLjI1QzExLjI4MzUgNDIgMTAuNSA0MS4yMTY1IDEwLjUgNDAuMjVDMTAuNSAzOS4zMzE4IDExLjIwNzEgMzguNTc4OCAxMi4xMDY1IDM4LjUwNThMMTIuMjUgMzguNUgzNS43NUgxMi4yNVpNMjMuNjA2NSA2LjI1NThMMjMuNzUgNi4yNUMyNC42NjgyIDYuMjUgMjUuNDIxMiA2Ljk1NzExIDI1LjQ5NDIgNy44NTY0N0wyNS41IDhWMjkuMzMzTDMwLjI5MzEgMjQuNTQwN0MzMC45NzY1IDIzLjg1NzMgMzIuMDg0NiAyMy44NTczIDMyLjc2OCAyNC41NDA3QzMzLjQ1MTQgMjUuMjI0MiAzMy40NTE0IDI2LjMzMjIgMzIuNzY4IDI3LjAxNTZMMjQuOTg5OCAzNC43OTM4QzI0LjMwNjQgMzUuNDc3MiAyMy4xOTg0IDM1LjQ3NzIgMjIuNTE1IDM0Ljc5MzhMMTQuNzM2OCAyNy4wMTU2QzE0LjA1MzQgMjYuMzMyMiAxNC4wNTM0IDI1LjIyNDIgMTQuNzM2OCAyNC41NDA3QzE1LjQyMDIgMjMuODU3MyAxNi41MjgyIDIzLjg1NzMgMTcuMjExNyAyNC41NDA3TDIyIDI5LjMyOVY4QzIyIDcuMDgxODMgMjIuNzA3MSA2LjMyODgxIDIzLjYwNjUgNi4yNTU4TDIzLjc1IDYuMjVMMjMuNjA2NSA2LjI1NThaIiBmaWxsPSIjM2E3MWMxIi8+Cjwvc3ZnPgo=" alt="Downloads"/>
-    </a>
-    <br>
-    <a href="https://patreon.com/Zerebos" target="_blank">
-        <img src="https://img.shields.io/badge/Patreon-Donate-%2300457C.svg?logo=Patreon&logoColor=ff424d&labelColor=0c0d10&color=ff424d&style=for-the-badge" alt="Patreon"/>
-    </a>
-    <a href="https://paypal.me/ZackRauen" target="_blank">
-        <img src="https://img.shields.io/badge/Paypal-Donate-%2300457C.svg?logo=Paypal&labelColor=0c0d10&color=002f86&style=for-the-badge" alt="Patreon"/>
-    </a>
-    <br><br>
-    BetterDiscord is a client modification for Discord. This allows you to add plugins and themes to your personal copy of Discord. BetterDiscord also adds a number of other features out of the box.
-</p>
+[lgtm-badge]: https://img.shields.io/lgtm/grade/javascript/g/BetterDiscord/BetterDiscord.svg?labelColor=0c0d10&style=for-the-badge
+[lgtm-link]: https://lgtm.com/projects/g/BetterDiscord/BetterDiscord/context:javascript
+
+[downloads-badge]: https://img.shields.io/github/downloads/BetterDiscord/Installer/total?labelColor=0c0d10&color=3a71c1&style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyLjI1IDM4LjVIMzUuNzVDMzYuNzE2NSAzOC41IDM3LjUgMzkuMjgzNSAzNy41IDQwLjI1QzM3LjUgNDEuMTY4MiAzNi43OTI5IDQxLjkyMTIgMzUuODkzNSA0MS45OTQyTDM1Ljc1IDQySDEyLjI1QzExLjI4MzUgNDIgMTAuNSA0MS4yMTY1IDEwLjUgNDAuMjVDMTAuNSAzOS4zMzE4IDExLjIwNzEgMzguNTc4OCAxMi4xMDY1IDM4LjUwNThMMTIuMjUgMzguNUgzNS43NUgxMi4yNVpNMjMuNjA2NSA2LjI1NThMMjMuNzUgNi4yNUMyNC42NjgyIDYuMjUgMjUuNDIxMiA2Ljk1NzExIDI1LjQ5NDIgNy44NTY0N0wyNS41IDhWMjkuMzMzTDMwLjI5MzEgMjQuNTQwN0MzMC45NzY1IDIzLjg1NzMgMzIuMDg0NiAyMy44NTczIDMyLjc2OCAyNC41NDA3QzMzLjQ1MTQgMjUuMjI0MiAzMy40NTE0IDI2LjMzMjIgMzIuNzY4IDI3LjAxNTZMMjQuOTg5OCAzNC43OTM4QzI0LjMwNjQgMzUuNDc3MiAyMy4xOTg0IDM1LjQ3NzIgMjIuNTE1IDM0Ljc5MzhMMTQuNzM2OCAyNy4wMTU2QzE0LjA1MzQgMjYuMzMyMiAxNC4wNTM0IDI1LjIyNDIgMTQuNzM2OCAyNC41NDA3QzE1LjQyMDIgMjMuODU3MyAxNi41MjgyIDIzLjg1NzMgMTcuMjExNyAyNC41NDA3TDIyIDI5LjMyOVY4QzIyIDcuMDgxODMgMjIuNzA3MSA2LjMyODgxIDIzLjYwNjUgNi4yNTU4TDIzLjc1IDYuMjVMMjMuNjA2NSA2LjI1NThaIiBmaWxsPSIjM2E3MWMxIi8+Cjwvc3ZnPgo=
+
+[discord-badge]: https://img.shields.io/badge/support%20server-join-green?labelColor=0c0d10&color=7289da&style=for-the-badge&logo=discord&logoColor=7289da
+[discord-link]: https://discord.gg/bnSUxedypU
+
+[patreon-badge]: https://img.shields.io/badge/Patreon-Donate-%2300457C.svg?logo=Patreon&logoColor=ff424d&labelColor=0c0d10&color=ff424d&style=for-the-badge
+[patreon-link]: https://patreon.com/Zerebos
+
+[paypal-badge]: https://img.shields.io/badge/Paypal-Donate-%2300457C.svg?logo=Paypal&labelColor=0c0d10&color=002f86&style=for-the-badge
+[paypal-link]: https://paypal.me/ZackRauen
+
+BetterDiscord is a client modification for Discord. This allows you to add plugins and themes to your personal copy of Discord. BetterDiscord also adds a number of other features out of the box.
 
 ---
 
@@ -95,7 +91,7 @@ BD has some other built-in features such as Emotes from Twitch, FFZ, and BBTV, a
 The easiest way to find plugins and themes is to browse them on [our website: https://betterdiscord.app/](https://betterdiscord.app/). Additionally, in our [support servers](#support-servers) we have channels with lists of <u>official</u> plugins and themes.
 
 ### Support Servers?
-There are two: [The main server](https://discord.gg/bnSUxedypU), and [the backup](https://discord.gg/XqSpb9e3dq).
+There are two: [The main server][discord-link], and [the backup](https://discord.gg/XqSpb9e3dq).
 
 # Supporters
 These people have all subscribed to the `True Supporter` tier on Patreon to support me.
