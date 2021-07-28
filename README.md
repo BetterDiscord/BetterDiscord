@@ -1,11 +1,8 @@
 <h1 align="center">BetterDiscord</h1>
 
 <p align="center">
-    <a href="https://travis-ci.com/rauenzi/BetterDiscordApp" target="_blank">
-        <img src="https://img.shields.io/travis/com/rauenzi/BetterDiscordApp.svg?labelColor=0c0d10&style=for-the-badge&branch=stable" alt="Build"/>
-    </a>
-    <a href="https://lgtm.com/projects/g/rauenzi/BetterDiscordApp/context:javascript" target="_blank">
-        <img src="https://img.shields.io/lgtm/grade/javascript/g/rauenzi/BetterDiscordApp.svg?labelColor=0c0d10&style=for-the-badge" alt="Quality"/>
+    <a href="https://lgtm.com/projects/g/BetterDiscord/BetterDiscord/context:javascript" target="_blank">
+        <img src="https://img.shields.io/lgtm/grade/javascript/g/BetterDiscord/BetterDiscord.svg?labelColor=0c0d10&style=for-the-badge" alt="Quality"/>
     </a>
     <a href="https://discord.gg/0Tmfo5ZbORCRqbAd" target="_blank">
         <img src="https://img.shields.io/badge/support%20server-join-green?labelColor=0c0d10&color=7289da&style=for-the-badge&logo=discord&logoColor=7289da" alt="Discord"/>
@@ -94,7 +91,7 @@ This is a client modification for Discord. It allows you to add plugins and them
 BD has some other built-in features such as Emotes from Twitch, FFZ, and BBTV, as well as an in-client server browser.
 
 ### Where can I get plugins and themes?
-On our [official website](https://betterdiscord.app/) or on our [support servers](#support-servers) where we have channels with lists of <u>official</u> plugins and themes.
+The easiest way to find plugins and themes is to browse them on [our website: https://betterdiscord.app/](https://betterdiscord.app/). Additionally, in our [support servers](#support-servers) we have channels with lists of <u>official</u> plugins and themes.
 
 ### Support Servers?
 There are two: [the main server](https://discord.gg/0Tmfo5ZbORCRqbAd), and [the backup](https://discord.gg/sbA3xCJ).
