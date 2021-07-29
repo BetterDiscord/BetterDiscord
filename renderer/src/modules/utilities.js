@@ -146,7 +146,7 @@ export default class Utilities {
 
     /**
      * Protects prototypes from external assignment.
-     * 
+     *
      * Needs some work before full usage
      * @param {Class} Component - component with prototype to protect
      */

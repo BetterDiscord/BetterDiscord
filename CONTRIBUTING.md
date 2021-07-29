@@ -149,7 +149,7 @@ Some other style related points not covered by ESLint:
   ```js
   // Use this:
   export default class ClassName {
-  
+
   }
 
   // Instead of:

@@ -24,7 +24,7 @@ export default new class EmoteMenu extends Builtin {
             if (!originalChildren || originalChildren.__patched) return;
 
             const activePicker = useExpressionPickerStore((state) => state.activeView);
-            
+
             returnValue.props.children.props.children = (props) => {
                 const childrenReturn = Reflect.apply(originalChildren, null, [props]);
 
@@ -70,7 +70,7 @@ export default new class EmoteMenu extends Builtin {
                                 })),
                                 React.createElement(Category, {
                                     label: "Twitch Emotes",
-                                    icon: React.createElement(Twitch, {}) 
+                                    icon: React.createElement(Twitch, {})
                                 }, Object.keys(EmoteModule.getCategory("TwitchGlobal")).map((emote) => {
                                     const url = EmoteModule.getUrl("TwitchGlobal", emote);
                                     return React.createElement(EmoteIcon, {emote, url});

@@ -17,7 +17,7 @@
  * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
  * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * From: https://github.com/rauenzi/BDPluginLibrary
  */
 
@@ -36,7 +36,7 @@
  * Function that automatically removes added listener.
  * @callback module:DOMTools~CancelListener
  */
- 
+
 export default class DOMTools {
 
     static escapeID(id) {
@@ -87,25 +87,25 @@ export default class DOMTools {
         const element = document.getElementById(id);
         if (element) element.remove();
     }
-    
+
     // https://javascript.info/js-animation
     static animate({timing = _ => _, update, duration}) {
         const start = performance.now();
-      
+
         requestAnimationFrame(function animate(time) {
           // timeFraction goes from 0 to 1
           let timeFraction = (time - start) / duration;
           if (timeFraction > 1) timeFraction = 1;
-      
+
           // calculate the current animation state
           const progress = timing(timeFraction);
-      
+
           update(progress); // draw it
-      
+
           if (timeFraction < 1) {
             requestAnimationFrame(animate);
           }
-      
+
         });
       }
 
@@ -153,7 +153,7 @@ export default class DOMTools {
      * Parses a string of HTML and returns the results. If the second parameter is true,
      * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
      * This is extremely useful if you have a list of elements at the top level, they can then be appended all at once to another node.
-     * 
+     *
      * If the second parameter is false, then the return value will be the list of parsed
      * nodes and there were multiple top level nodes, otherwise the single node is returned.
      * @param {string} html - HTML to be parsed
@@ -170,7 +170,7 @@ export default class DOMTools {
 
     /** Alternate name for {@link module:DOMTools.parseHTML} */
     static createElement(html, fragment = false) {return this.parseHTML(html, fragment);}
-    
+
     /**
      * Takes a string of html and escapes it using the brower's own escaping mechanism.
      * @param {String} html - html to be escaped
@@ -323,7 +323,7 @@ export default class DOMTools {
      * @returns {Array<Element>} - The list of siblings
      */
     static nextUntil(element, selector) {
-        const next = []; 
+        const next = [];
         while (element.nextElementSibling && !element.nextElementSibling.matches(selector)) next.push(element = element.nextElementSibling);
         return next;
     }
@@ -358,7 +358,7 @@ export default class DOMTools {
      * @returns {Array<Element>} - The list of siblings
      */
     static previousUntil(element, selector) {
-        const previous = []; 
+        const previous = [];
         while (element.previousElementSibling && !element.previousElementSibling.matches(selector)) previous.push(element = element.previousElementSibling);
         return previous;
     }
@@ -450,7 +450,7 @@ export default class DOMTools {
     /**
      * Sets or gets css styles for a specific element. If `value` is provided
      * then it sets the style and returns the element to allow for chaining,
-     * otherwise returns the style.  
+     * otherwise returns the style.
      * @param {Element} element - Element to set the CSS of
      * @param {string} attribute - Attribute to get or set
      * @param {string} [value] - Value to set for attribute
@@ -465,7 +465,7 @@ export default class DOMTools {
     /**
      * Sets or gets the width for a specific element. If `value` is provided
      * then it sets the width and returns the element to allow for chaining,
-     * otherwise returns the width.  
+     * otherwise returns the width.
      * @param {Element} element - Element to set the CSS of
      * @param {string} [value] - Width to set
      * @returns {Element|string} - When setting a value, element is returned for chaining, otherwise the value is returned.
@@ -479,7 +479,7 @@ export default class DOMTools {
     /**
      * Sets or gets the height for a specific element. If `value` is provided
      * then it sets the height and returns the element to allow for chaining,
-     * otherwise returns the height.  
+     * otherwise returns the height.
      * @param {Element} element - Element to set the CSS of
      * @param {string} [value] - Height to set
      * @returns {Element|string} - When setting a value, element is returned for chaining, otherwise the value is returned.
@@ -550,21 +550,21 @@ export default class DOMTools {
 
     /**
      * This is similar to jQuery's `on` function and can *hopefully* be used in the same way.
-     * 
+     *
      * Rather than attempt to explain, I'll show some example usages.
-     * 
+     *
      * The following will add a click listener (in the `myPlugin` namespace) to `element`.
      * `DOMTools.on(element, "click.myPlugin", () => {console.log("clicked!");});`
-     * 
+     *
      * The following will add a click listener (in the `myPlugin` namespace) to `element` that only fires when the target is a `.block` element.
      * `DOMTools.on(element, "click.myPlugin", ".block", () => {console.log("clicked!");});`
-     * 
+     *
      * The following will add a click listener (without namespace) to `element`.
      * `DOMTools.on(element, "click", () => {console.log("clicked!");});`
-     * 
+     *
      * The following will add a click listener (without namespace) to `element` that only fires once.
      * `const cancel = DOMTools.on(element, "click", () => {console.log("fired!"); cancel();});`
-     * 
+     *
      * @param {Element} element - Element to add listener to
      * @param {string} event - Event to listen to with option namespace (e.g. "event.namespace")
      * @param {(string|callable)} delegate - Selector to run on element to listen to
@@ -604,7 +604,7 @@ export default class DOMTools {
     /**
      * Functionality for this method matches {@link module:DOMTools.on} but automatically cancels itself
      * and removes the listener upon the first firing of the desired event.
-     * 
+     *
      * @param {Element} element - Element to add listener to
      * @param {string} event - Event to listen to with option namespace (e.g. "event.namespace")
      * @param {(string|callable)} delegate - Selector to run on element to listen to
@@ -655,30 +655,30 @@ export default class DOMTools {
         const list = type ? listeners.filter(matchFilter) : listeners.filter(defaultFilter);
         for (let c = 0; c < list.length; c++) list[c].cancel();
     }
-    
+
     /**
      * This is similar to jQuery's `off` function and can *hopefully* be used in the same way.
-     * 
+     *
      * Rather than attempt to explain, I'll show some example usages.
-     * 
+     *
      * The following will remove a click listener called `onClick` (in the `myPlugin` namespace) from `element`.
      * `DOMTools.off(element, "click.myPlugin", onClick);`
-     * 
+     *
      * The following will remove a click listener called `onClick` (in the `myPlugin` namespace) from `element` that only fired when the target is a `.block` element.
      * `DOMTools.off(element, "click.myPlugin", ".block", onClick);`
-     * 
+     *
      * The following will remove a click listener (without namespace) from `element`.
      * `DOMTools.off(element, "click", onClick);`
-     * 
+     *
      * The following will remove all listeners in namespace `myPlugin` from `element`.
      * `DOMTools.off(element, ".myPlugin");`
-     * 
+     *
      * The following will remove all click listeners in namespace `myPlugin` from *all elements*.
      * `DOMTools.off("click.myPlugin");`
-     * 
+     *
      * The following will remove all listeners in namespace `myPlugin` from *all elements*.
      * `DOMTools.off(".myPlugin");`
-     * 
+     *
      * @param {(Element|string)} element - Element to remove listener from
      * @param {string} [event] - Event to listen to with option namespace (e.g. "event.namespace")
      * @param {(string|callable)} [delegate] - Selector to run on element to listen to

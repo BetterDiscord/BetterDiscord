@@ -31,7 +31,7 @@ export default new class ComponentPatcher {
 
     initialize() {
         Utilities.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
-    
+
         Utilities.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
         Utilities.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
         /*
@@ -82,7 +82,7 @@ export default new class ComponentPatcher {
 
         return MutedStore.isMuted(guildId);
     }
-    
+
     /**
      * @updated 07.07.2021
      */
@@ -101,14 +101,14 @@ export default new class ComponentPatcher {
             const searchForGuild = function () {
                 tries++;
                 const guild = Utilities.findInTree(reactInstance, e => e?.type?.displayName === "Guild", {walkable: ["child", "sibling"]});
-                if (guild) {resolve(guild);} 
-                else if (tries < 10) {setTimeout(searchForGuild, 300);} 
+                if (guild) {resolve(guild);}
+                else if (tries < 10) {setTimeout(searchForGuild, 300);}
                 else {resolve(null);}
             };
 
             searchForGuild();
         });
-        
+
         if (!GuildComponent || typeof(GuildComponent.type) !== "function") return this.error("Failed to get Guild component.");
         this.debug(`Found Guild component in ${Date.now() - start}ms`);
 
@@ -133,7 +133,7 @@ export default new class ComponentPatcher {
 
         if (reactInstance.forceUpdate) reactInstance.forceUpdate();
     }
-    
+
     patchGuildPills() {
         if (this.guildPillPatch) return;
         const guildPill = WebpackModules.getModule(m => m.default && !m.default.displayName && m.default.toString && m.default.toString().includes("translate3d"));
@@ -176,7 +176,7 @@ export default new class ComponentPatcher {
             const children = Utilities.getNestedProp(returnValue, "props.children.1.props.children");
             if (!Array.isArray(children)) return;
 
-            children.splice(2, 0, 
+            children.splice(2, 0,
                 React.createElement(DeveloperBadge, {
                     type: "chat"
                 })

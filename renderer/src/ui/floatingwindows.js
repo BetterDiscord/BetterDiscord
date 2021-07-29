@@ -17,7 +17,7 @@ export default class FloatingWindows {
         ReactDOM.render(wrapped, div);
         this.ref = containerRef;
     }
-    
+
     static open(window) {
         if (!this.ref) this.initialize();
         return this.ref.current.open(window);

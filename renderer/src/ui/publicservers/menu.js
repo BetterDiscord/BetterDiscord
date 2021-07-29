@@ -58,11 +58,11 @@ export default class PublicServers extends React.Component {
 
     async getDashboard() {
         const dashboardData = await Connection.getDashboard();
-        
+
         this.featured = dashboardData.featured;
         this.popular = dashboardData.popular;
         this.keywords = dashboardData.keywords;
-        
+
         this.setState({loading: false});
         this.changeTab(this.state.tab);
 

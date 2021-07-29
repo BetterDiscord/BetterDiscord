@@ -21,7 +21,7 @@
     },
     "globals": {
         "webpackJsonp": "readonly",
-        
+
         "alert": "off",
         "blur": "off",
         "caches": "off",

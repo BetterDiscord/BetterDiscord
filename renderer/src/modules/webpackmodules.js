@@ -160,7 +160,7 @@ export default class WebpackModules {
             if (first) return protect(foundModule);
             rm.push(protect(foundModule));
         }
-        
+
         return first || rm.length == 0 ? undefined : rm;
     }
 

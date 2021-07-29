@@ -23,7 +23,7 @@ export default new class Editor {
 
         DOMManager.linkStyle("monaco-style", `${baseUrl}/vs/editor/editor.main.min.css`, {documentHead: true});
         await DOMManager.injectScript("monaco-script", `${baseUrl}/vs/loader.min.js`);
-        
+
         const amdLoader = window.require; // Grab Monaco's amd loader
         window.require = commonjsLoader; // Revert to commonjs
         // this.log(amdLoader, window.require);

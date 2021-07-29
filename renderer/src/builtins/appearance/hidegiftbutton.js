@@ -15,7 +15,7 @@ export default new class HideGiftButton extends Builtin {
                     if (!button) continue;
                     const renderFunc = Utilities.getNestedProp(button, "type.type");
                     if (!renderFunc) continue;
-    
+
                     if (renderFunc.displayName === "ChannelPremiumGiftButton") {
                         button.props.disabled = true;
                         break;

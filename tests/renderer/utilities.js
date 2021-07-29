@@ -2,7 +2,7 @@ import assert from "assert";
 import Utilities from "../../renderer/src/modules/utilities";
 
 describe("Utilities", function() {
-    
+
     describe("suppressErrors", function() {
         it("Prevent error propagation", function() {
             const thrower = () => {throw new Error("Error");};
@@ -126,7 +126,7 @@ describe("Utilities", function() {
 
     describe("findInReactTree", function() {
         const originalFindInTree = Utilities.findInTree;
-        
+
         it("Passes the original object", function() {
             const myObj = {props: "foo"};
             Utilities.findInTree = function(obj) { assert.deepEqual(obj, myObj); return Reflect.apply(originalFindInTree, Utilities, arguments); };

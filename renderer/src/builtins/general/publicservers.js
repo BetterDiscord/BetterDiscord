@@ -24,7 +24,7 @@ export default new class PublicServers extends Builtin {
 
     async _appendButton() {
         await new Promise(r => setTimeout(r, 1000));
-        
+
         const existing = DOM.query("#bd-pub-li");
         if (existing) return;
 

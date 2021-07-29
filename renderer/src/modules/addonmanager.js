@@ -99,7 +99,7 @@ export default class AddonManager {
                     Logger.warn(this.name, `Duplicate files found: ${filename} and ${newFilename}`);
                     return;
                 }
-                
+
                 // Rename the file and let it go on
                 try {
                     fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
@@ -108,7 +108,7 @@ export default class AddonManager {
                     Logger.err(this.name, `Could not rename file: ${filename} ${newFilename}`, error);
                 }
             }
-            
+
             await new Promise(r => setTimeout(r, 100));
             try {
                 const stats = fs.statSync(absolutePath);
@@ -222,7 +222,7 @@ export default class AddonManager {
         this.addonList.push(addon);
         if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
         this.emit("loaded", addon.id);
-        
+
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
     }
@@ -321,7 +321,7 @@ export default class AddonManager {
                     Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
                     continue;
                 }
-                
+
                 // Rename the file and let it go on
                 fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
             }

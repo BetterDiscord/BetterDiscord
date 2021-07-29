@@ -54,7 +54,7 @@ export default new class PublicServersConnection {
         if (term) queries.push(`term=${term.replace(/ /g, "%20")}`);
         if (from) queries.push(`from=${from}`);
         const query = `?${queries.join("&")}`;
-        
+
         try {
             const response = await fetch(`${this.endPoint}${query}`, {method: "GET"});
             const data = await response.json();
@@ -86,7 +86,7 @@ export default new class PublicServersConnection {
             const mainKeywords = data.mainKeywords.map(k => k.charAt(0).toUpperCase() + k.slice(1)).sort();
 
             featuredServers.unshift(betterDiscordServer);
-            
+
             this.cache.set("featured", featuredServers);
             this.cache.set("popular", popularServers);
             this.cache.set("keywords", mainKeywords);

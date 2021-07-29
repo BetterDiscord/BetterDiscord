@@ -94,12 +94,12 @@ export default class AddonCard extends React.Component {
 
         return [
             React.createElement("div", {className: "bd-name"}, name),
-            React.createElement("div", {className: "bd-meta"}, 
+            React.createElement("div", {className: "bd-meta"},
                 React.createElement("span", {className: "bd-version"}, `v${version}`),
                 ...authorArray
             )
         ];
-            
+
     }
 
     buildLink(which) {
@@ -134,7 +134,7 @@ export default class AddonCard extends React.Component {
         const links = ["website", "source", "invite", "donate", "patreon"];
         const linkComponents = links.map(this.buildLink.bind(this)).filter(c => c);// linkComponents.map((comp, i) => i < linkComponents.length - 1 ? [comp, " | "] : comp).flat()
         return <div className="bd-footer">
-                    <span className="bd-links">{linkComponents}</span> 
+                    <span className="bd-links">{linkComponents}</span>
                     {this.controls}
                 </div>;
     }
