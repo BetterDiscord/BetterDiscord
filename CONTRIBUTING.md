@@ -128,6 +128,10 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ## Styleguides
 
+### Documents
+
+* Remove trailing/unnecessary whitespace
+
 ### Git Commit Messages
 
 * Use the present tense ("Add feature" not "Added feature")
