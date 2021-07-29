@@ -218,6 +218,7 @@ These people have either donated or subscribed to the most basic patron tier to 
 
 For information on contributing to this project, please see [CONTRIBUTING.md](/CONTRIBUTING.md).
 
-<a href="https://github.com/betterdiscord/betterdiscord/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=betterdiscord/betterdiscord" />
-</a>
+[![Contributors][contributors-image]][contributors-link]
+
+[contributors-image]: https://contrib.rocks/image?repo=betterdiscord/betterdiscord
+[contributors-link]: https://github.com/betterdiscord/betterdiscord/graphs/contributors
