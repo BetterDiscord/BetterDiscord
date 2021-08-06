@@ -17,7 +17,7 @@ export default class Notices {
         Object.assign(element, options);
         const filteredChildren = children.filter((n) => n);
     
-        if (filteredChildren.length > 0) Reflect.apply(element.append, element, filteredChildren);
+        if (filteredChildren.length > 0) element.append(...filteredChildren);
 
         return element;
     }
