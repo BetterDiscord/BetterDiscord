@@ -218,6 +218,7 @@
         "couldNotStop": "{{name}} konnte nicht gestoppt werden.",
         "settingsError": "",
         "methodError": "{{method}} konnte nicht ausgeführt werden.",
+        "noName": "Kein Name",
         "unknownAuthor": "Unbekannter Autor",
         "noDescription": "Keine Beschreibung angegeben.",
         "alreadyExists": "Es existiert bereits ein {{type}} mit dem Namen {{name}}",

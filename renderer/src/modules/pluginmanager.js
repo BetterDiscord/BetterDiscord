@@ -80,12 +80,12 @@ export default new class PluginManager extends AddonManager {
             const PluginClass = addon.exports;
             const thePlugin = new PluginClass();
             addon.instance = thePlugin;
-            addon.name = thePlugin.getName ? thePlugin.getName() : addon.name || "No name";
-            addon.author = thePlugin.getAuthor ? thePlugin.getAuthor() : addon.author || "No author";
-            addon.description = thePlugin.getDescription ? thePlugin.getDescription() : addon.description || "No description";
-            addon.version = thePlugin.getVersion ? thePlugin.getVersion() : addon.version || "No version";
+            addon.name = thePlugin.getName ? thePlugin.getName() : addon.name || Strings.Addons.noName;
+            addon.author = thePlugin.getAuthor ? thePlugin.getAuthor() : addon.author || Strings.Addons.unknownAuthor;
+            addon.description = thePlugin.getDescription ? thePlugin.getDescription() : addon.description || Strings.Addons.noDescription;
+            addon.version = thePlugin.getVersion ? thePlugin.getVersion() : addon.version || Strings.Addons.noVersion;
             try {
-                if (typeof(addon.instance.load) == "function") addon.instance.load();
+                if (typeof(addon.instance.load) == "function") addon.instance.load(addon);
             }
             catch (error) {
                 this.state[addon.id] = false;

@@ -189,7 +189,7 @@ export default class AddonManager {
             const stats = fs.statSync(filename);
             const meta = self.extractMeta(fileContent);
             if (!meta.author) meta.author = Strings.Addons.unknownAuthor;
-            if (!meta.version) meta.version = "???";
+            if (!meta.version) meta.version = Strings.Addons.noVersion;
             if (!meta.description) meta.description = Strings.Addons.noDescription;
             meta.id = meta.name;
             meta.filename = path.basename(filename);
