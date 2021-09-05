@@ -43,14 +43,6 @@
                 "coloredText": {
                     "name": "Kolorowy tekst",
                     "note": "Zmienia kolor wiadomości na kolor głównej roli użytkownika"
-                },
-                "hideGIFButton": {
-                    "name": "Ukryj przycisk z GIF-ami",
-                    "note": "Ukrywa przycisk z menu GIF-ów w polu tekstowym"
-                },
-                "hideGiftButton": {
-                    "name": "Ukryj przycisk do podarowywania Nitro",
-                    "note": "Ukrywa przycisk do podarowywania Nitro w polu tekstowym"
                 }
             },
             "window": {

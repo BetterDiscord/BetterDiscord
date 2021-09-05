@@ -43,14 +43,6 @@
                 "coloredText": {
                     "name": "Texte Coloré",
                     "note": "Faire en sorte que la couleur du texte soit la même que celle du rôle"
-                },
-                "hideGIFButton": {
-                    "name": "Masquer Bouton GIF",
-                    "note": "Masque le bouton du sélecteur de GIF dans la zone de texte"
-                },
-                "hideGiftButton": {
-                    "name": "Masquer Bouton Gift",
-                    "note": "Masquer le bouton Nitro Gift dans la zone de texte"
                 }
             },
             "window": {

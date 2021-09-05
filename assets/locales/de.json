@@ -43,14 +43,6 @@
                 "coloredText": {
                     "name": "Farbiger Text",
                     "note": "Färbe Text gleich wie die Rolle"
-                },
-                "hideGIFButton": {
-                    "name": "Verstecke GIF-Knopf",
-                    "note": "Entfernt den Knopf für die GIF-Auswahl aus dem Eingabebereich"
-                },
-                "hideGiftButton": {
-                    "name": "Verstecke Geschenk-Knopf",
-                    "note": "Entfernt den Knopf für Nitro-Geschenke aus dem Eingabebereich"
                 }
             },
             "window": {

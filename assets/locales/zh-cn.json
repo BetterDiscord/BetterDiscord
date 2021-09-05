@@ -43,14 +43,6 @@
                 "coloredText": {
                     "name": "彩色文字",
                     "note": "将消息颜色与发送者的角色颜色同步"
-                },
-                "hideGIFButton": {
-                    "name": "隐藏 GIF 按钮",
-                    "note": "隐藏输入框右侧的 GIF 选择器"
-                },
-                "hideGiftButton": {
-                    "name": "隐藏礼物按钮",
-                    "note": "隐藏输入框右侧的 Nitro 礼物按钮"
                 }
             },
             "window": {

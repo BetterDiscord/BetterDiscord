@@ -43,14 +43,6 @@
                 "coloredText": {
                     "name": "Farebný text",
                     "note": "Zafarbí text každej správy podľa farby role"
-                },
-                "hideGIFButton": {
-                    "name": "Skryť GIF Tlačidlo",
-                    "note": "Skryje tlačidlo na výber GIF-u v textovom poli"
-                },
-                "hideGiftButton": {
-                    "name": "Skryť tlačidlo \"Darovať\"",
-                    "note": "Skryje tlačidlo na darovanie Nitra"
                 }
             },
             "window": {

@@ -43,14 +43,6 @@
                 "coloredText": {
                     "name": "Texto Colorido",
                     "note": "Faz com que a cor do texto seja a mesma do cargo"
-                },
-                "hideGIFButton": {
-                    "name": "Esconder o Botão de GIF",
-                    "note": "Esconde o botão do selecionador de GIFs na caixa de texto"
-                },
-                "hideGiftButton": {
-                    "name": "Esconder o Botão de Presente",
-                    "note": "Esconde o botão de enviar nitro na caixa de texto"
                 }
             },
             "window": {
