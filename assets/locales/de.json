@@ -310,5 +310,8 @@
     "WindowPrefs": {
         "enabledInfo": "Um diese Funktion zu verwenden, benötigst du ein Theme mit transparentem Hintergrund. Auf Windows funktioniert das Maximieren des Fensters ggf. nicht mehr.\n\nUm die Änderungen zu übernehmen muss Discord neugeladen werden. Willst du jetzt neuladen?",
         "disabledInfo": "Um die Änderungen zu übernehmen muss Discord neugeladen werden. Willst du jetzt neuladen?"
+    },
+    "RecoveryMode": {
+        "noticeMessage": "BetterDiscord ist im Wiederherstellungsmodus und lädt weder Addons noch CustomCSS. Versuche Plugins zu entfernen und lade Discord neu."
     }
 }

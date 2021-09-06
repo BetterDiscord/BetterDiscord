@@ -310,5 +310,8 @@
     "WindowPrefs": {
         "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
         "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
+    },
+    "RecoveryMode": {
+        "noticeMessage": "BetterDiscord is in Recovery Mode and won't load any addons or CustomCSS. Try removing plugins and reloading Discord."
     }
 }

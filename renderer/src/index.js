@@ -11,4 +11,4 @@ window.BdApi = BdApi;
 
 // Add loading icon at the bottom right
 LoadingIcon.show();
-BetterDiscord.startup();
+BetterDiscord.startup().then(()=>LoadingIcon.hide());

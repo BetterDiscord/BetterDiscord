@@ -15,9 +15,9 @@ import DiscordModules from "./discordmodules";
 import ComponentPatcher from "./componentpatcher";
 import Strings from "./strings";
 import IPC from "./ipc";
-import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
 import Editor from "./editor";
+import { showRecoveryNotice } from "./recoverymode";
 
 export default new class Core {
     async startup() {
@@ -31,6 +31,11 @@ export default new class Core {
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
+
+        if (window.BD_RECOVERY_MODE) {
+            Logger.log("Startup", "Detected Recovery Mode");
+            return showRecoveryNotice();
+        }
 
         Logger.log("Startup", "Initializing DataStore");
         DataStore.initialize();
@@ -75,9 +80,6 @@ export default new class Core {
         Logger.log("Startup", "Loading Themes");
         // const themeErrors = [];
         const themeErrors = ThemeManager.initialize();
-
-        Logger.log("Startup", "Removing Loading Icon");
-        LoadingIcon.hide();
 
         // Show loading errors
         Logger.log("Startup", "Collecting Startup Errors");
