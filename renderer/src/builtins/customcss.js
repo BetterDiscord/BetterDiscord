@@ -4,6 +4,7 @@ import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindows from "../ui/floatingwindows";
 import SettingsTitle from "../ui/settings/title";
 import Utilities from "../modules/utilities";
+import { isRecoveryMode } from "../modules/recoverymode";
 
 const fs = require("fs");
 const electron = require("electron");
@@ -100,6 +101,8 @@ export default new class CustomCSS extends Builtin {
     }
 
     insertCSS(newCss) {
+        if (isRecoveryMode()) return;
+
         if (typeof(newCss) === "undefined") newCss = this.insertedCss;
         else this.insertedCss = newCss;
         DOMManager.updateCustomCSS(newCss);

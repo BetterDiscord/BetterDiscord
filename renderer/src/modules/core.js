@@ -60,17 +60,17 @@ export default new class Core {
         Logger.log("Startup", "Initializing ComponentPatcher");
         ComponentPatcher.initialize();
 
-        if (isRecoveryMode()) {
-            Logger.log("Startup", "Detected Recovery Mode");
-            return showRecoveryNotice();
-        }
-
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
             Builtins[module].initialize();
+        }
+
+        if (isRecoveryMode()) {
+            Logger.log("Startup", "Detected Recovery Mode");
+            return showRecoveryNotice();
         }
 
         Logger.log("Startup", "Loading Plugins");
