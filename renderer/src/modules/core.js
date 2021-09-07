@@ -32,11 +32,6 @@ export default new class Core {
         Logger.log("Startup", "Injecting BD Styles");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
 
-        if (window.BD_RECOVERY_MODE) {
-            Logger.log("Startup", "Detected Recovery Mode");
-            return showRecoveryNotice();
-        }
-
         Logger.log("Startup", "Initializing DataStore");
         DataStore.initialize();
 
@@ -45,7 +40,7 @@ export default new class Core {
 
         Logger.log("Startup", "Performing incompatibility checks");
         if (window.ED) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "EnhancedDiscord"}));
-        if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
+        if (window?.WebSocket?.name && window.WebSocket.name.includes("Patched")) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
 
         Logger.log("Startup", "Getting update information");
         this.checkForUpdate();
@@ -64,6 +59,11 @@ export default new class Core {
 
         Logger.log("Startup", "Initializing ComponentPatcher");
         ComponentPatcher.initialize();
+
+        if (window.BD_RECOVERY_MODE) {
+            Logger.log("Startup", "Detected Recovery Mode");
+            return showRecoveryNotice();
+        }
 
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
