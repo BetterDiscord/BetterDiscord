@@ -1,17 +1,17 @@
 .bd-notice-success {
-    --color: #43b581;
+    --color: #3ba55d;
 }
 
 .bd-notice-error {
-    --color: #f04747;
+    --color: #ED4245;
 }
 
 .bd-notice-info {
-    --color: #4a90e2;
+    --color: #4A8FE1;
 }
 
 .bd-notice-warning {
-    --color: #ffa600;
+    --color: #FAA81A;
 }
 
 .bd-notice-closing {
@@ -39,10 +39,13 @@
     z-index: 101;
     flex-shrink: 0;
     flex-grow: 0;
-    border-radius: 8px 0 0;
     box-shadow: var(--elevation-low);
     color: #fff;
-    background: var(--color, var(--background-mobile-primary));
+    background: var(--color, var(--brand-experiment-600, #3C45A5));
+}
+
+.bd-notice:first-child {
+    border-radius: 8px 0 0;
 }
 
 .bd-notice-close {

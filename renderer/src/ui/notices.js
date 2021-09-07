@@ -31,29 +31,30 @@ export default class Notices {
      * @param {string} content Content of the notice
      * @param {object} options Options for the notice.
      * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
-     * @param {Array<{label: string, onClick: (onClose: () => void) => void}>} [options.buttons] Buttons that should be added next to the notice text.
+     * @param {Array<{label: string, onClick: (immediately?: boolean = false) => void}>} [options.buttons] Buttons that should be added next to the notice text.
      * @param {number} [options.timeout=10000] Timeout until the toast is closed. Won't fire if it's set to 0;
-     * @returns {void}
+     * @returns {(immediately?: boolean = false) => void}
      */
     static show(content, options = {}) {
         const {type, buttons = [], timeout = 10000} = options;
         const haveContainer = this.ensureContainer();
         if (!haveContainer) return;
 
-        const closeNotification = function () {
-            if (noticeElement) {
-                noticeElement.classList.add("bd-notice-closing");
-                setTimeout(() => {
-                    noticeElement.remove();
-                }, 300);
-            }
+        const closeNotification = function (immediately = false) {
+            if (noticeElement == null) return false; // Check if it's already been removed
+
+            // Immediately remove the notice without adding the closing class.
+            if (immediately) return noticeElement.remove();
+
+            noticeElement.classList.add("bd-notice-closing");
+            setTimeout(() => {noticeElement.remove();}, 300);
         };
 
         const noticeElement = this.createElement("div", {
             className: this.joinClassNames("bd-notice", type && `bd-notice-${type}`),
         }, this.createElement("div", {
             className: "bd-notice-close",
-            onclick: closeNotification
+            onclick: closeNotification.bind(null, false)
         }), this.createElement("span", {
             className: "bd-notice-content"
         }, content), ...buttons.map((button) => {
@@ -70,6 +71,8 @@ export default class Notices {
         if (timeout > 0) {
             setTimeout(closeNotification, timeout);
         }
+
+        return closeNotification;
     }
 
     static ensureContainer() {
