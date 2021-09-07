@@ -17,7 +17,7 @@ import Strings from "./strings";
 import IPC from "./ipc";
 import Styles from "../styles/index.css";
 import Editor from "./editor";
-import { showRecoveryNotice } from "./recoverymode";
+import { isRecoveryMode, showRecoveryNotice } from "./recoverymode";
 
 export default new class Core {
     async startup() {
@@ -60,7 +60,7 @@ export default new class Core {
         Logger.log("Startup", "Initializing ComponentPatcher");
         ComponentPatcher.initialize();
 
-        if (window.BD_RECOVERY_MODE) {
+        if (isRecoveryMode()) {
             Logger.log("Startup", "Detected Recovery Mode");
             return showRecoveryNotice();
         }

@@ -1,7 +1,7 @@
 import { Strings } from "modules";
 import PluginManager from "./pluginmanager";
-import ThemeManager from "./thememanager";
 import Notices from "../ui/notices";
+import { RECOVERY_MODE_KEY } from "common/constants/recoverymode";
 
 const shell = require("electron").shell;
 
@@ -40,5 +40,8 @@ export const showRecoveryNotice = async () => {
             }
         ), 0
     )
-    
+}
+
+export const isRecoveryMode = () => {
+    return !!window[RECOVERY_MODE_KEY];
 }

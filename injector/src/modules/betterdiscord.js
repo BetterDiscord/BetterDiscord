@@ -4,6 +4,7 @@ import electron from "electron";
 
 import ReactDevTools from "./reactdevtools";
 import * as IPCEvents from "common/constants/ipcevents";
+import { RECOVERY_MODE_KEY } from "common/constants/recoverymode";
 
 // Build info file only exists for non-linux (for current injection)
 const appPath = electron.app.getAppPath();
@@ -64,10 +65,8 @@ export default class BetterDiscord {
         if (!fs.existsSync(location)) return; // TODO: cut a fatal log
         const content = fs.readFileSync(location).toString();
 
-        if (recoveryMode) {
-            await browserWindow.webContents.executeJavaScript("window.BD_RECOVERY_MODE = true;");
-        }
-
+        if (recoveryMode) await browserWindow.webContents.executeJavaScript(`window.${RECOVERY_MODE_KEY} = true;`);
+        
         const success = await browserWindow.webContents.executeJavaScript(`
             (() => {
                 try {
