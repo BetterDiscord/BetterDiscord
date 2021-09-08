@@ -1,5 +1,5 @@
 import {React, DiscordModules} from "modules";
-import MagnifyingGlass from "../icons/magnifyingglass";
+import {MagnifyingGlass} from "icons";
 
 export default class NoResults extends React.Component {
     render() {

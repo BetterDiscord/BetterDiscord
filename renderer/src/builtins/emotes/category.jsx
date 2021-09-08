@@ -1,5 +1,5 @@
 import {React} from "modules";
-import DownArrow from "../../ui/icons/downarrow";
+import {DownArrow} from "icons";
 
 export default class Category extends React.Component {
     constructor(props) {

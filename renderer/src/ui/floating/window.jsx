@@ -1,8 +1,7 @@
 import {React, Strings} from "modules";
 
 import Screen from "../../structs/screen";
-import CloseButton from "../icons/close";
-import MaximizeIcon from "../icons/fullscreen";
+import {Close as CloseIcon, Fullscreen as MaximizeIcon} from "icons";
 import Modals from "../modals";
 
 // const Draggable = WebpackModules.getByDisplayName("Draggable");
@@ -111,7 +110,7 @@ export default class FloatingWindow extends React.Component {
                                 <MaximizeIcon size="18px" />
                             </div>
                             <div className="button close-button" onClick={this.close}>
-                                <CloseButton />
+                                <CloseIcon />
                             </div>
                         </div>
                     </div>

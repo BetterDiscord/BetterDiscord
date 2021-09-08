@@ -3,14 +3,12 @@ import {React, Settings, Strings, Events, WebpackModules, DataStore} from "modul
 
 import Modals from "../modals";
 import SettingsTitle from "./title";
-import ReloadIcon from "../icons/reload";
+import {Reload as ReloadIcon, List as ListIcon, Grid as GridIcon} from "icons";
 import AddonCard from "./addoncard";
 import Dropdown from "./components/dropdown";
 import Search from "./components/search";
 import ErrorBoundary from "../errorboundary";
 
-import ListIcon from "../icons/list";
-import GridIcon from "../icons/grid";
 import NoResults from "../blankslates/noresults";
 import EmptyImage from "../blankslates/emptyimage";
 

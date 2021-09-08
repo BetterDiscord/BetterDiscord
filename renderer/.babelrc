@@ -14,6 +14,7 @@
                 "builtins": "./src/builtins/builtins.js",
                 "data": "./src/data/data.js",
                 "modules": "./src/modules/modules.js",
+                "icons": "./src/ui/icons/icons.js",
                 "common": "../common"
             }
         }

@@ -5,8 +5,7 @@ import ServerCard from "./card";
 import EmptyResults from "../blankslates/noresults";
 import Connection from "../../structs/psconnection";
 import Search from "../settings/components/search";
-import Previous from "../icons/previous";
-import Next from "../icons/next";
+import {Previous, Next} from "icons";
 
 const SettingsView = WebpackModules.getByDisplayName("SettingsView");
 const GuildActions = WebpackModules.getByProps("transitionToGuildSync");

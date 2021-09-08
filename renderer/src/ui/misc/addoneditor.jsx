@@ -1,8 +1,7 @@
 import {React, Strings} from "modules";
 
 import Editor from "../customcss/editor";
-import Save from "../icons/save";
-import Edit from "../icons/edit";
+import {Save, Edit} from "icons";
 
 export default class AddonEditor extends React.Component {
 

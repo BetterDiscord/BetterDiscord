@@ -1,5 +1,5 @@
 import {React} from "modules";
-import SearchIcon from "../../icons/search";
+import {Search as SearchIcon} from "icons";
 
 export default class Search extends React.Component {
     constructor(props) {

@@ -1,6 +1,6 @@
 import {Changelog} from "data";
 import {React, WebpackModules} from "modules";
-import HistoryIcon from "../icons/history";
+import {History} from "icons";
 import Modals from "../modals";
 
 const SidebarComponents = WebpackModules.getModule(m => m.Header && m.Separator && m.Item);
@@ -13,7 +13,7 @@ export default class SettingsTitle extends React.Component {
                     <Tooltip color="primary" position="top" text="Changelog">
                         {props =>
                             <div {...props} className="bd-changelog-button" onClick={() => Modals.showChangelogModal(Changelog)}>
-                                <HistoryIcon className="bd-icon" size="16px" />
+                                <History className="bd-icon" size="16px" />
                             </div>
                         }
                     </Tooltip>

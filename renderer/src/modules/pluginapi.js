@@ -13,6 +13,8 @@ import Logger from "common/logger";
 import Patcher from "./patcher";
 import Emotes from "../builtins/emotes/emotes";
 import ipc from "./ipc";
+import ErrorBoundary from "../ui/errorboundary";
+import * as Icons from "icons";
 
 const BdApi = {
     get React() {return DiscordModules.React;},
@@ -306,9 +308,14 @@ BdApi.Patcher = {
     }
 };
 
+BdApi.Components = {
+    ErrorBoundary, Icons
+}
+
 Object.freeze(BdApi);
 Object.freeze(BdApi.Plugins);
 Object.freeze(BdApi.Themes);
 Object.freeze(BdApi.Patcher);
+Object.freeze(BdApi.Components);
 
 export default BdApi;

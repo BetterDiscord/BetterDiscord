@@ -1,6 +1,5 @@
 import {React, Strings, WebpackModules} from "modules";
-import Extension from "./icons/extension";
-import ThemeIcon from "./icons/theme";
+import {Extension, Theme} from "icons";
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
 
@@ -32,7 +31,7 @@ class AddonError extends React.Component {
         return <div key={`${err.type}-${this.props.index}`} className={joinClassNames("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
             <div className="bd-addon-error-header" onClick={() => {this.toggle();}} >
                 <div className="bd-addon-error-icon">
-                    {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
+                    {err.type == "plugin" ? <Extension /> : <Theme />}
                 </div>
                 <div className="bd-addon-error-header-inner">
                     <h3 className="bd-addon-error-file secondaryHeader-2oeRPO base-1x0h_U size16-1P40sf">{err.name}</h3>

@@ -1,19 +1,21 @@
 import Logger from "common/logger";
 import {React, Strings, WebpackModules, DiscordModules} from "modules";
 import SimpleMarkdown from "../../structs/markdown";
-import ReloadIcon from "../icons/reload";
-import EditIcon from "../icons/edit";
-import DeleteIcon from "../icons/delete";
-import CogIcon from "../icons/cog";
+import {
+    Reload as ReloadIcon,
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+    Cog as CogIcon,
+    GitHub as GitHubIcon,
+    DollarSign as MoneyIcon,
+    Globe as WebIcon,
+    Patreon as PatreonIcon,
+    Support as SupportIcon,
+    Extension as ExtIcon,
+    Theme as ThemeIcon
+} from "icons";
 import Switch from "./components/switch";
 
-import GitHubIcon from "../icons/github";
-import MoneyIcon from "../icons/dollarsign";
-import WebIcon from "../icons/globe";
-import PatreonIcon from "../icons/patreon";
-import SupportIcon from "../icons/support";
-import ExtIcon from "../icons/extension";
-import ThemeIcon from "../icons/theme";
 import Modals from "../modals";
 import Toasts from "../toasts";
 
