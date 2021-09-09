@@ -15,6 +15,8 @@ import Emotes from "../builtins/emotes/emotes";
 import ipc from "./ipc";
 import ErrorBoundary from "../ui/errorboundary";
 import * as Icons from "icons";
+import Editor from "src/ui/customcss/editor";
+import FloatingWindows from "src/ui/floatingwindows";
 
 const BdApi = {
     get React() {return DiscordModules.React;},
@@ -276,6 +278,11 @@ BdApi.openDialog = async function (options) {
     return data;
 };
 
+// Opens a floating window by adding it to the container
+BdApi.openFloatingWindow = function (window) {
+    return FloatingWindows.open(window);
+}
+
 const makeAddonAPI = (manager) => new class AddonAPI {
     get folder() {return manager.addonFolder;}
     isEnabled(idOrFile) {return manager.isEnabled(idOrFile);}
@@ -309,8 +316,10 @@ BdApi.Patcher = {
 };
 
 BdApi.Components = {
-    ErrorBoundary, Icons
-}
+    ErrorBoundary,
+    Icons,
+    Editor
+};
 
 Object.freeze(BdApi);
 Object.freeze(BdApi.Plugins);
