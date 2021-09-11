@@ -1,4 +1,4 @@
-# BetterDiscord [![Language Grade][lgtm-badge]][lgtm-link] ![GitHub Releases][downloads-badge] [![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link]
+# BetterDiscord [![Language Grade][lgtm-badge]][lgtm-link] ![GitHub Releases][downloads-badge] [![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link] 
 
 [patreon-badge]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3DZerebos%26type%3Dpatrons&style=flat-square
 [patreon-link]: https://patreon.com/Zerebos
@@ -22,6 +22,7 @@ BetterDiscord is a client modification for Discord. This allows you to add plugi
 ## Auto Installers
 
 ### Windows
+i was here
 Grab the `exe` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe).
 
 ### macOS/OS X
