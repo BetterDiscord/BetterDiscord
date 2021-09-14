@@ -6,16 +6,39 @@ const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 
 const languages = ["abap", "abc", "actionscript", "ada", "apache_conf", "asciidoc", "assembly_x86", "autohotkey", "batchfile", "bro", "c_cpp", "c9search", "cirru", "clojure", "cobol", "coffee", "coldfusion", "csharp", "csound_document", "csound_orchestra", "csound_score", "css", "curly", "d", "dart", "diff", "dockerfile", "dot", "drools", "dummy", "dummysyntax", "eiffel", "ejs", "elixir", "elm", "erlang", "forth", "fortran", "ftl", "gcode", "gherkin", "gitignore", "glsl", "gobstones", "golang", "graphqlschema", "groovy", "haml", "handlebars", "haskell", "haskell_cabal", "haxe", "hjson", "html", "html_elixir", "html_ruby", "ini", "io", "jack", "jade", "java", "javascript", "json", "jsoniq", "jsp", "jssm", "jsx", "julia", "kotlin", "latex", "less", "liquid", "lisp", "livescript", "logiql", "lsl", "lua", "luapage", "lucene", "makefile", "markdown", "mask", "matlab", "maze", "mel", "mushcode", "mysql", "nix", "nsis", "objectivec", "ocaml", "pascal", "perl", "pgsql", "php", "pig", "powershell", "praat", "prolog", "properties", "protobuf", "python", "r", "razor", "rdoc", "red", "rhtml", "rst", "ruby", "rust", "sass", "scad", "scala", "scheme", "scss", "sh", "sjs", "smarty", "snippets", "soy_template", "space", "sql", "sqlserver", "stylus", "svg", "swift", "tcl", "tex", "text", "textile", "toml", "tsx", "twig", "typescript", "vala", "vbscript", "velocity", "verilog", "vhdl", "wollok", "xml", "xquery", "yaml", "django"];
 
-export default class CodeEditor extends React.Component {
-    static get defaultId() {return "bd-editor";}
 
+
+export default class Editor extends React.Component {
+    static get defaultId() {return "bd-editor";}
+    /**
+     * @typedef button
+     * @property {(event: MouseEvent,value: string)=>void} onClick The function to call when the button is clicked.
+     * @property {string} label The label of the button.
+     * @property {string} tooltip The tooltip of the button.
+     * @property {"left"|"right"} side The side of the toolbar to put the button on.
+     */
+    /**
+     * @typedef checkbox
+     * @property {(checked: boolean)=>void} onChange The function to call when the checkbox is ticked/unticked.
+     * @property {string} label The label of the button.
+     * @property {boolean} checked Whether the checkbox is initially ticked or not.
+     * @property {"left"|"right"} side The side of the toolbar to put the checkbox on.
+     */
+    /**
+     * @param {object} props
+     * @param {string} props.id The id of the editor element. Defaults to "bd-editor".
+     * @param {string} props.language The language used for syntax highlighting.
+     * @param {string} props.code The initial code in the editor.
+     * @param {(string)=>void} props.onChange The callback to call when the code changes.
+     * @param {(button|checkbox)[]} props.controls The buttons to show in the toolbar.
+     */
     constructor(props) {
         super(props);
 
-        this.props.theme = DiscordModules.UserSettingsStore && DiscordModules.UserSettingsStore.theme === "light" ? "vs" : "vs-dark";
+        this.props.theme = DiscordModules.UserSettingsStore?.theme === "light" ? "vs" : "vs-dark";
 
         this.props.language = this.props.language.toLowerCase().replace(/ /g, "_");
-        if (!languages.includes(this.props.language)) this.props.language = CodeEditor.defaultProps.language;
+        if (!languages.includes(this.props.language)) this.props.language = Editor.defaultProps.language;
 
         this.bindings = [];
         this.resize = this.resize.bind(this);
@@ -75,7 +98,7 @@ export default class CodeEditor extends React.Component {
     makeCheckbox(checkbox) {
         return <Checkbox text={checkbox.label} onChange={checkbox.onChange} checked={checkbox.checked} />;
     }
-
+    
     makeButton(button) {
         return <Tooltip color="primary" position="top" text={button.tooltip}>
                     {props => {
@@ -105,3 +128,11 @@ export default class CodeEditor extends React.Component {
                 </div>;
     }
 }
+
+const originalRender = Editor.prototype.render;
+Object.defineProperty(Editor.prototype, "render", {
+    enumerable: false,
+    configurable: false,
+    set: function() {Logger.warn("Editor", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");},
+    get: () => originalRender
+});

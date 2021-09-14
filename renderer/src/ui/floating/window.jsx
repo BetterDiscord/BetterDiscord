@@ -175,3 +175,11 @@ export default class FloatingWindow extends React.Component {
         });
     }
 }
+
+const originalRender = FloatingWindow.prototype.render;
+Object.defineProperty(FloatingWindow.prototype, "render", {
+    enumerable: false,
+    configurable: false,
+    set: function() {Logger.warn("FloatingWindow", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");},
+    get: () => originalRender
+});

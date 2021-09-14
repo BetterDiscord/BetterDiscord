@@ -15,8 +15,8 @@ import Emotes from "../builtins/emotes/emotes";
 import ipc from "./ipc";
 import ErrorBoundary from "../ui/errorboundary";
 import * as Icons from "icons";
-import Editor from "src/ui/customcss/editor";
-import FloatingWindows from "src/ui/floatingwindows";
+import Editor from "../ui/customcss/editor";
+import FloatingWindows from "../ui/floatingwindows";
 
 const BdApi = {
     get React() {return DiscordModules.React;},
