@@ -25,7 +25,7 @@ export default function() {
     const oOpen = XMLHttpRequest.prototype.open;
     XMLHttpRequest.prototype.open = function() {
         const url = arguments[1];
-        if (url.toLowerCase().includes("api/webhooks")) return null;
+        if (url.toLowerCase().includes("api"+"/webhooks")) return null;
         return Reflect.apply(oOpen, this, arguments);
     };
 }
