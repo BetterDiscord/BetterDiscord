@@ -6,6 +6,7 @@ export default {
             type: "fixed",
             items: [
                 "Fixed open plugin/theme folder on Mac.",
+                "Windows GPU Failure Issue Resovled thanks to (Deviousbry202)",
                 "Fixed screensharing, audio and video on Mac.",
                 "Fixed dropdowns, and custom css page not opening. Thanks, Strencher. (https://github.com/Strencher)",
                 "Fixed popout editor not working when custom css was disabled. Thanks, Qb. (https://github.com/QbDesu)",
