@@ -10,7 +10,7 @@ export default {
                 "Backend API Failure fixed due to failure code `221`",
                 "Fixed screensharing, audio and video on Mac.",
                 "Fixed dropdowns, and custom css page not opening. Thanks, Strencher. (https://github.com/Strencher)",
-                "Fixed popout editor not working when custom css was disabled. Thanks, Qb. (https://github.com/QbDesu)",
+                "Fixed popout editor, not working when custom css was disabled. Thanks, Qb. (https://github.com/QbDesu)",
                 "Fixed crashing for some users when duplicate files were found. Thanks, Strencher. (https://github.com/Strencher)"
             ]
         },
