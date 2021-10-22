@@ -58,14 +58,14 @@
                     "name": "Rimuovi la grandezza minima",
                     "note": "Rimuove la grandezza minima forzata di 940x500 di Discord"
                 },
-                "name": "nome",
+                "name": "",
                 "transparency": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "frame": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 }
             },
             "addons": {
@@ -116,75 +116,75 @@
                 }
             },
             "developer": {
-                "name": "nome",
+                "name": "",
                 "debuggerHotkey": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "reactDevTools": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "inspectElement": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "devToolsWarning": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "debugLogs": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 }
             }
         },
         "emotes": {
-            "name": "nome",
+            "name": "",
             "general": {
-                "name": "nome",
+                "name": "",
                 "download": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "emoteMenu": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "hideEmojiMenu": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "autoCaps": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "modifiers": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "animateOnHover": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 }
             },
             "categories": {
-                "name": "nome",
+                "name": "",
                 "twitchglobal": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "twitchsubscriber": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "frankerfacez": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 },
                 "bttv": {
-                    "name": "nome",
-                    "note": "nota"
+                    "name": "",
+                    "note": ""
                 }
             }
         }
@@ -200,7 +200,7 @@
         "invite": "invita",
         "donate": "donare",
         "patreon": "patreon",
-        "name": "nome",
+        "name": "",
         "author": "autore",
         "version": "versione",
         "added": "aggiunto",
@@ -275,7 +275,7 @@
         "cancel": "cancellare",
         "nevermind": "non importa",
         "close": "chiudere",
-        "name": "nome",
+        "name": "",
         "message": "messaggio",
         "error": "errore",
         "addonErrors": "addonErrors",

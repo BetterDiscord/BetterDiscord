@@ -27,7 +27,7 @@ export default new class PublicServers extends Builtin {
         const existing = DOM.query("#bd-pub-li");
         if (existing) return;
 
-        const guilds = DOM.query(`.${DiscordModules.GuildClasses.wrapper} .${DiscordModules.GuildClasses.listItem}`);
+        const guilds = DOM.query(`.${DiscordModules.GuildClasses.guilds} .${DiscordModules.GuildClasses.listItem}`);
         if (!guilds) return;
 
         DOM.after(guilds, this.button);
@@ -39,7 +39,7 @@ export default new class PublicServers extends Builtin {
 
     get button() {
         const btn = DOM.createElement(`<div id="bd-pub-li" class="${DiscordModules.GuildClasses.listItem}">`);
-        const label = DOM.createElement(`<div id="bd-pub-button" class="${"wrapper-25eVIn " + DiscordModules.GuildClasses.circleButtonMask}">${Strings.PublicServers.button}</div>`);
+        const label = DOM.createElement(`<div id="bd-pub-button" class="${DiscordModules.GuildClasses.wrapper + " " + DiscordModules.GuildClasses.circleIconButton}">${Strings.PublicServers.button}</div>`);
         label.addEventListener("click", () => {this.openPublicServers();});
         btn.append(label);
         return btn;

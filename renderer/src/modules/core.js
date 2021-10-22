@@ -97,6 +97,7 @@ export default new class Core {
         window.webpackJsonp = [];
         window.webpackJsonp.length = 10000; // In case plugins are waiting for that.
         window.webpackJsonp.flat = () => window.webpackJsonp;
+        // eslint-disable-next-line no-empty-pattern
         window.webpackJsonp.push = ([[], module, [[id]]]) => {
             return module[id]({}, {}, WebpackModules.require);
         };
@@ -108,9 +109,9 @@ export default new class Core {
         return new Promise(resolve => {
             const checkForGuilds = function () {
                 if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
-                const wrapper = GuildClasses.wrapper.split(" ")[0];
+                const guildList = GuildClasses.guilds.split(" ")[0];
                 const guild = GuildClasses.listItem.split(" ")[0];
-                if (document.querySelectorAll(`.${wrapper} .${guild}`).length > 0) return resolve();
+                if (document.querySelectorAll(`.${guildList} .${guild}`).length > 0) return resolve();
                 setTimeout(checkForGuilds, 100);
             };
 

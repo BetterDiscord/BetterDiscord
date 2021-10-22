@@ -146,10 +146,11 @@ export default Utilities.memoizeObject({
 
     /* Commonly Used Classes */
     get GuildClasses() {
-        const guildsWrapper = WebpackModules.getByProps("wrapper", "unreadMentionsBar");
-        const guilds = WebpackModules.getByProps("guildsError", "selected");
-        const pill = WebpackModules.getByProps("blobContainer");
-        return Object.assign({}, guildsWrapper, guilds, pill);
+        const guildsWrapper = WebpackModules.getByProps("base", "guilds");
+        const guilds = WebpackModules.getByProps("wrapper", "acronym");
+        const pill = WebpackModules.getByProps("circleIconButton");
+        const listItem = WebpackModules.getByProps("listItem");
+        return Object.assign({}, guildsWrapper, listItem, guilds, pill);
     },
 
     get LayerStack() {return WebpackModules.getByProps("pushLayer");}
