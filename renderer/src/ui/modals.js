@@ -18,8 +18,8 @@ export default class Modals {
     static get FormTitle() {return WebpackModules.findByDisplayName("FormTitle");}
     static get TextElement() {return WebpackModules.getByProps("Sizes", "Weights");}
     static get ConfirmationModal() {return WebpackModules.findByDisplayName("ConfirmModal");}
-    static get Markdown() {return WebpackModules.findByDisplayName("Markdown");}
-    static get Buttons() {return WebpackModules.getByProps("ButtonColors");}
+    static get Markdown() {return WebpackModules.find(m => m.displayName === "Markdown" && m.rules);}
+    static get Buttons() {return WebpackModules.getByProps("ButtonSizes");}
 
     static default(title, content) {
         const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">

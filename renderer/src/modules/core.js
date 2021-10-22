@@ -18,6 +18,7 @@ import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
 import Editor from "./editor";
+import {WebpackModules} from "modules";
 
 export default new class Core {
     async startup() {
@@ -67,7 +68,7 @@ export default new class Core {
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
-
+        this.polyfillWebpack();
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
         const pluginErrors = PluginManager.initialize();
@@ -88,6 +89,17 @@ export default new class Core {
             Modals.showChangelogModal(Changelog);
             DataStore.setBDData("version", Config.version);
         }
+    }
+
+    polyfillWebpack() {
+        if (typeof(webpackJsonp) !== "undefined") return;
+
+        window.webpackJsonp = [];
+        window.webpackJsonp.length = 10000; // In case plugins are waiting for that.
+        window.webpackJsonp.flat = () => window.webpackJsonp;
+        window.webpackJsonp.push = ([[], module, [[id]]]) => {
+            return module[id]({}, {}, WebpackModules.require);
+        };
     }
 
     waitForGuilds() {
