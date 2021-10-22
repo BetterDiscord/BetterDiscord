@@ -1,1 +1,314 @@
-{}
+{
+    "Panels": {
+        "plugins": "Eklentiler",
+        "themes": "Temalar",
+        "customcss": "Özel CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Ayarlar",
+            "general": {
+                "name": "Genel",
+                "emotes": {
+                    "name": "Emoji Sistemi",
+                    "note": "BD'nin emoji sistemini etkileştirir"
+                },
+                "publicServers": {
+                    "name": "Herkese-açık Sunucular",
+                    "note": "Herkese-açık Sunucu düğmesini göster"
+                },
+                "voiceDisconnect": {
+                    "name": "Ses Kanalından Ayrılma",
+                    "note": "Discord'u kapatırken aktif ses kanalından ayrılır"
+                },
+                "showToasts": {
+                    "name": "Bildirimleri Göster",
+                    "note": "Önemli bilgilendirmeler için küçük bir bidirim gösterir"
+                },
+                "mediaKeys": {
+                    "name": "Medya Tuşlarını Deaktive Et",
+                    "note": "Bir video oynattıktan sonra Discord'un Multimedya tuşlarını ele geçirmesini engeller."
+                }
+            },
+            "appearance": {
+                "name": "Görünüm",
+                "minimalMode": {
+                    "name": "Minimal Görünüm",
+                    "note": "Elementleri gizler ve boyutlarını düşürür"
+                },
+                "twentyFourHour": {
+                    "name": "24-Saat Zaman Formatı",
+                    "note": "12-Saat formatlamasını 24-Saat ile değiştirir"
+                },
+                "coloredText": {
+                    "name": "Renkli Yazı",
+                    "note": "Yazı rengini rol rengiyle aynı yap"
+                },
+                "hideGIFButton": {
+                    "name": "GIF tuşunu gizle",
+                    "note": "Yazı kutusundaki GIF tuşunu gizler"
+                },
+                "hideGiftButton": {
+                    "name": "Hediye tuşunu gizle",
+                    "note": "Yazı kutusundaki Nitro Hediye tuşunu gizler"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Minimum boyutu kaldır",
+                    "note": "Discord'un 940x500 boyut limitini kaldırır"
+                },
+                "name": "Pencere Tercihleri",
+                "transparency": {
+                    "name": "Şeffaflığı Etkinleştir",
+                    "note": "Ana pencerenin şeffaf olmasına el verir (yeniden başlatma gerekli)"
+                },
+                "frame": {
+                    "name": "Pencere Çerçevesi",
+                    "note": "Yerel işletim sistemi penceresini ana pencereye ekler"
+                }
+            },
+            "addons": {
+                "name": "Eklenti Yöneticisi",
+                "addonErrors": {
+                    "name": "Eklenti Hatalarını Göster",
+                    "note": "Eklenti/tema hatalarında yazı baloncuğu gösterir"
+                },
+                "autoReload": {
+                    "name": "Otomatik Yükleme",
+                    "note": "Temaları ve eklentileri otomatik olarak başlatır, yeniden-başlatır ve kapatır"
+                },
+                "editAction": {
+                    "name": "Eylemi düzenle",
+                    "note": "Eklenti ve temaları düzenlerken çıkacakları yer",
+                    "options": {
+                        "detached": "Bağımsız Pencere",
+                        "system": "Sistem Düzenleyici"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "Özel CSS",
+                "customcss": {
+                    "name": "Özel CSS",
+                    "note": "Özel CSS sekmesini aktifleştirir"
+                },
+                "liveUpdate": {
+                    "name": "Canlı Güncelleme",
+                    "note": "Yazdıkca CSS'i günceller"
+                },
+                "startDetached": {
+                    "name": "Bağımsız Başlat",
+                    "note": "Özel CSS sekme tuşuna basınca bağımsız sekmede açar"
+                },
+                "nativeOpen": {
+                    "name": "Seçili editör'de aç",
+                    "note": "Özel CSS sekme tuşuna basınca seçili yazı editörünüzde açar"
+                },
+                "openAction": {
+                    "name": "Editör Yeri",
+                    "note": "Özel CSS'in varsayılan açılma yeri",
+                    "options": {
+                        "settings": "Ayarlar Menüsü",
+                        "detached": "Bağımsız Pencere",
+                        "system": "Sistem Editörü"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Geliştirici (Developer) Ayarları",
+                "debuggerHotkey": {
+                    "name": "Hata ayıklayıcı kısayolu",
+                    "note": "F8'e basınca hata ayıklayıcının açılmasını sağlar"
+                },
+                "reactDevTools": {
+                    "name": "React Geliştirici Araçları",
+                    "note": "Yerli React Geliştirici araçlarınızı Discord'a ekler"
+                },
+                "inspectElement": {
+                    "name": "Öğeyi Denetle Kısayolu",
+                    "note": "Çoğu tarayıca yaygın olan (ctrl + shift + c) Öğeyi Denetle kısayolunu etkinleştirir"
+                },
+                "devToolsWarning": {
+                    "name": "DevTools uyarısını kapat",
+                    "note": "Discord'un \"Bekle!\" mesajını yazmasını engeller"
+                },
+                "debugLogs": {
+                    "name": "Hata Ayıklama çıktıları",
+                    "note": "Konsoldaki herşeyi BetterDiscord klasöründeki debug.log dosyasına kaydeder"
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emojiler",
+            "general": {
+                "name": "Genel",
+                "download": {
+                    "name": "Emoji Indir",
+                    "note": "Eski olduklarında emojileri indir"
+                },
+                "emoteMenu": {
+                    "name": "Emoji Menüsü",
+                    "note": "Twitch/Favori emojileri emoji menüsünde göster"
+                },
+                "hideEmojiMenu": {
+                    "name": "Emoji Menüsünü Gizle",
+                    "note": "Emoji Menüsünü kullanırken Discord'ün emoji menüsünü gizler"
+                },
+                "autoCaps": {
+                    "name": "Emoji Kapitalizasyonu",
+                    "note": "Otomatik olarak emoji komutlarını kapitalize et"
+                },
+                "modifiers": {
+                    "name": "Emoji Değiştiricilerini Göster",
+                    "note": "Emoji modlarını etkinleştir  (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Üzerindeyken Oynat",
+                    "note": "Sadece fare emoji üzerindeyken oynat"
+                }
+            },
+            "categories": {
+                "name": "Kategoriler",
+                "twitchglobal": {
+                    "name": "Twitch Globaller",
+                    "note": "Twitch Global emojilerini göster"
+                },
+                "twitchsubscriber": {
+                    "name": "Twitch Aboneleri",
+                    "note": "Twitch Abone emojilerini göster"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "FFZ emojilerini göster"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "BTTV emojilerini göster"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{author}} tarafından {{name}} v{{version}}",
+        "byline": "{{author}} tarafından",
+        "openFolder": "{{type}} Dosyasını Aç",
+        "reload": "Yeniden-Başlat",
+        "addonSettings": "Ayarlar",
+        "website": "Website",
+        "source": "Kaynak",
+        "invite": "Destek Sunucusu",
+        "donate": "Bağış",
+        "patreon": "Patreon",
+        "name": "İsim",
+        "author": "Yapımcı",
+        "version": "Versiyon",
+        "added": "Eklenim Tarihi",
+        "modified": "Düzenlenme Tarihi",
+        "search": "{{type}} ara",
+        "editAddon": "Düzenle",
+        "deleteAddon": "Sil",
+        "confirmDelete": "{{name}} eklentisini silmek istediğinize emin misiniz?",
+        "confirmationText": "{{name}} eklentisinde kaydedilmemiş değişiklikler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
+        "enabled": "{{name}} başlatıldı.",
+        "disabled": "{{name}} kapatıldı.",
+        "couldNotEnable": "{{name}} başlatılamadı.",
+        "couldNotDisable": "{{name}} kapatılamadı.",
+        "couldNotStart": "{{name}} başlatılamadı.",
+        "couldNotStop": "{{name}} durdurulamadı.",
+        "settingsError": "{{name}} için ayarlar açılamadı.",
+        "methodError": "{{method}} çalıştırılamadı.",
+        "unknownAuthor": "Bilinmeyen Yapımcı",
+        "noDescription": "Açıklama Yok.",
+        "alreadyExists": "{{name}} isimli bir {{type}} zaten var",
+        "alreadWatching": "Eklentiler zaten izleniyor.",
+        "metaError": "META ayrıştırılamadı.",
+        "missingNameData": "META isim verisi yok.",
+        "metaNotFound": "META bulunamadı.",
+        "compileError": "Derlenemedi.",
+        "wasUnloaded": "{{name}} çıkarıldı.",
+        "blankSlateHeader": "Hiç {{type}}(a/e)arın yok!",
+        "blankSlateMessage": "[Bu siteden]({{link}}) al ve {{type}} klasörüne ekle."
+    },
+    "CustomCSS": {
+        "confirmationText": "Özel CSS'inde kaydedilmemiş değişimler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
+        "update": "Güncelle",
+        "save": "Kaydet",
+        "openNative": "Sistem Editöründe aç",
+        "openDetached": "Pencereyi Ayır",
+        "settings": "Editör Ayarları",
+        "editorTitle": "Özel CSS Editörü"
+    },
+    "Emotes": {
+        "loading": "Arkaplanda emojiler yükleniyor yeniden başlatmayınız.",
+        "loaded": "Bütün emojiler yüklendi.",
+        "clearEmotes": "Emoji Verilerini Sil",
+        "favoriteAction": "Favori ekle!",
+        "downloadFailed": "Yükleme başarısız oldu",
+        "failureMessage": "BetterDiscord emojileri yüklemede başarısız oldu, lütfen internet bağlantınızı kontrol ediniz."
+    },
+    "PublicServers": {
+        "button": "Herkese Açık",
+        "join": "Katıl",
+        "joining": "Katılınıyor",
+        "joined": "Katılındı",
+        "loading": "Yükleniyor",
+        "loadMore": "Daha Fazla Yükle",
+        "notConnected": "Bağlı Değil",
+        "connectionRequired": "Sunuculara katılmak için hesabını bağlamalısın.",
+        "connectionError": "Bağlantı Hatası.",
+        "connectionErrorMessage": "DiscordServers.com'a bağlanırken hata oldu, websitelerini kapalı olması mümkün. Lütfen daha sonra tekrar deneyiniz.",
+        "pagination": "{{count}} içerisinden {{page}}. sayfa",
+        "search": "Ara",
+        "connect": "Bağlan",
+        "reconnect": "Geri Bağlan",
+        "categories": "Kategoriler",
+        "keywords": "Anahtar Kelimeler",
+        "connection": "{{username}}#{{discriminator}} olarak bağlanıldı",
+        "results": "{{category}} kategorisinde {{total}} üzerinden {{start}}-{{end}} gösteriliyor",
+        "query": "{{query}} için"
+    },
+    "Modals": {
+        "confirmAction": "Emin Misin?",
+        "okay": "Tamam",
+        "done": "Bitti",
+        "cancel": "İptal",
+        "nevermind": "Boşver",
+        "close": "Kapat",
+        "name": "İsim",
+        "message": "Mesaj",
+        "error": "Hata",
+        "addonErrors": "Eklenti Hataları",
+        "restartRequired": "Yeniden Başlatma Lazım",
+        "restartNow": "Şimdi Yeniden Başlat",
+        "restartLater": "Sonra Yeniden Başlat",
+        "additionalInfo": "Ek Bilgi",
+        "restartPrompt": "Etki görmek için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
+    },
+    "ReactDevTools": {
+        "notFound": "Eklenti Bulunamadı",
+        "notFoundDetails": "React Geliştirici Araçları bilgisayarınızda bulunamadı.\nLütfen eklentiyi Chrome tarayıcınıza indiriniz."
+    },
+    "Sorting": {
+        "sortBy": "Göre Sırala",
+        "order": "Sıra",
+        "ascending": "Yükselen",
+        "descending": "Azalan"
+    },
+    "Startup": {
+        "notSupported": "Desteklenmiyor",
+        "incompatibleApp": "BetterDiscord {{app}} ile çalışmıyor. Lütfen birini siliniz.",
+        "updateNow": "Şimdi Güncelle",
+        "maybeLater": "Belki Sonra",
+        "updateAvailable": "Güncelleme Mevcut",
+        "updateInfo": "BetterDiscord'un enjektörü için yeni bir version var ({{version}}).\n\nŞimdi yeniden başlatabilir, veya sonra.",
+        "updateFailed": "Güncellenemedi",
+        "manualUpdate": "Otomatik güncellenemiyor, lütfen normal olarak yükleyiciyi indirin ve kurun.\n\n[Yükleyiciyi indir]\n(https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "jQuery yüklemesi başarısız oldu",
+        "jqueryFailedDetails": "jQuery yüklenemedi, bazı eklentiler çalışmaya bilir. Kendi sorumluluğunuzda ilerleyin."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Bu seçeneğin düzgün çalışması için şeffaf bir tema gerekiyor.\nWindows'da bu aero snapping ve maksimize etmeyi bozabilir.\n\nEtki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?",
+        "disabledInfo": "Etki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
+    }
+}

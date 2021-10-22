@@ -14,27 +14,27 @@
                     "note": "Aktiviert das BD-Emotesystem"
                 },
                 "publicServers": {
-                    "name": "Öffentliche Sever",
-                    "note": "Zeige Knopf für öffentliche Server"
+                    "name": "Öffentliche Server",
+                    "note": "Zeigt den Knopf für öffentliche Server"
                 },
                 "voiceDisconnect": {
                     "name": "Verbindung zum Sprachchat trennen",
-                    "note": "Trenne beim Schließen von Discord die Verbindung zum Sprachchat"
+                    "note": "Trennt beim Schließen von Discord die Verbindung zum Sprachchat"
                 },
                 "showToasts": {
                     "name": "Toast-Benachrichtigungen anzeigen",
-                    "note": "Zeigt eine kleine Benachrichtigung für wichtige informationen an"
+                    "note": "Zeigt eine kleine Benachrichtigung für wichtige Informationen an"
                 },
                 "mediaKeys": {
-                    "name": "Deaktiviere Medien-Tasten",
-                    "note": "Verhindert dass Discord deine Medien-Tasten nach dem Abspielen eines Videos beansprucht."
+                    "name": "Medien-Tasten deaktivieren",
+                    "note": "Verhindert, dass Discord deine Medien-Tasten nach dem Abspielen eines Videos beansprucht"
                 }
             },
             "appearance": {
                 "name": "Erscheinungsbild",
                 "minimalMode": {
                     "name": "Minimaler Modus",
-                    "note": "Verstecke und verkleinere Elemente"
+                    "note": "Versteckt und verkleinert zahlreiche Elemente"
                 },
                 "twentyFourHour": {
                     "name": "24-Stunden Zeitstempel",
@@ -42,15 +42,15 @@
                 },
                 "coloredText": {
                     "name": "Farbiger Text",
-                    "note": "Färbe Text gleich wie die Rolle"
+                    "note": "Färbt Text entsprechend der Rollenfarbe"
                 },
                 "hideGIFButton": {
-                    "name": "Verstecke GIF-Knopf",
-                    "note": "Entfernt den Knopf für die GIF-Auswahl aus dem Eingabebereich"
+                    "name": "GIF-Knopf verstecken",
+                    "note": "Entfernt den Knopf für die GIF-Auswahl aus der Nachrichteneingabe"
                 },
                 "hideGiftButton": {
-                    "name": "Verstecke Geschenk-Knopf",
-                    "note": "Entfernt den Knopf für Nitro-Geschenke aus dem Eingabebereich"
+                    "name": "Geschenk-Knopf verstecken",
+                    "note": "Entfernt den Knopf für Nitro-Geschenke aus der Nachrichteneingabe"
                 }
             },
             "window": {
@@ -61,18 +61,18 @@
                 "name": "Fenster-Einstellungen",
                 "transparency": {
                     "name": "Transparenz aktivieren",
-                    "note": "Macht den Discord-Hintergrund transparent."
+                    "note": "Macht den Discord-Hintergrund transparent (Benötigt Discord Neustart)"
                 },
                 "frame": {
                     "name": "Standard-Design",
-                    "note": "Stellt das Hauptfenster im Standard-Design des Betriebssystems dar."
+                    "note": "Stellt das Hauptfenster im Standard-Design des Betriebssystems dar"
                 }
             },
             "addons": {
                 "name": "Erweiterungsverwaltung",
                 "addonErrors": {
-                    "name": "Zeige Fehlernachricht für Erweiterungen",
-                    "note": "Zeigt ein modales Popup bei Ladefehlern von Erweiterungen an"
+                    "name": "Fehlernachricht für Erweiterungen anzeigen",
+                    "note": "Zeigt ein Informationsfenster bei Ladefehlern von Erweiterungen an"
                 },
                 "autoReload": {
                     "name": "Automatisches Laden",
@@ -80,7 +80,7 @@
                 },
                 "editAction": {
                     "name": "Bearbeitungsaktion",
-                    "note": "Wo Plugins und Themes zum Bearbeiten geöffnet werden",
+                    "note": "Bestimmt womit Plugins und Themes zum Bearbeiten geöffnet werden",
                     "options": {
                         "detached": "Losgelöstes Fenster",
                         "system": "Systemweiter Standard-Texteditor"
@@ -91,26 +91,26 @@
                 "name": "Custom-CSS",
                 "customcss": {
                     "name": "Custom-CSS",
-                    "note": "Macht Custom-CSS in den Einstellungen verfügbar"
+                    "note": "Aktiviert den Custom-CSS Reiter in den Einstellungen"
                 },
                 "liveUpdate": {
                     "name": "Echtzeitaktualisierung",
-                    "note": "Wendet die Eingabe noch während des Schreibens an"
+                    "note": "Aktualisert den CSS Code während des Schreibens"
                 },
                 "startDetached": {
                     "name": "In losgelöstem Fenster öffnen",
-                    "note": "Das Klicken von \"Custom-CSS\" in den Einstellungen öffnet den Editor in einem separaten Fenster"
+                    "note": "Das Öffnen des \\\"Custom-CSS\\\"-Reiters öffnet den Editor in einem separaten Fenster"
                 },
                 "nativeOpen": {
                     "name": "Im System-Editor öffnen",
-                    "note": "Das Klicken von \"Custom-CSS\" in den Einstellungen öffnet den Editor im systemweiten Standard-Texteditor"
+                    "note": "Das Öffnen des \\\"Custom-CSS\\\"-Reiters öffnet den Editor im systemweiten Standard-Texteditor"
                 },
                 "openAction": {
                     "name": "Editormodus",
                     "note": "Wo soll Custom-CSS standardmäßig geöffnet werden",
                     "options": {
                         "settings": "in den Einstellungen",
-                        "detached": "in losgelöstem Fenster",
+                        "detached": "im losgelöstem Fenster",
                         "system": "im Standard-Texteditor"
                     }
                 }
@@ -127,15 +127,15 @@
                 },
                 "inspectElement": {
                     "name": "Tastenkürzel für \"Element untersuchen\"",
-                    "note": "Aktiviert das Tastenkürzel für \"Element Untersuchen\" (Strg + Shift + C), welches in gängen Browsern vorhanden ist"
+                    "note": "Aktiviert das Tastenkürzel für \\\"Element Untersuchen\\\" (Strg + Shift + C), welches in gängigen Browsern vorhanden ist"
                 },
                 "devToolsWarning": {
-                    "name": "",
-                    "note": ""
+                    "name": "Entwicklerwerkzeuge Warnungen stoppen",
+                    "note": "Hält Discord davon ab ihre \\\"Hold Up!\\\" Warnung zu zeigen"
                 },
                 "debugLogs": {
-                    "name": "",
-                    "note": ""
+                    "name": "Debugger Logs",
+                    "note": "Speichert alle Ausgaben aus der Konsole in die \\\"debug.log\\\" Datei im BetterDiscord Verzeichnis"
                 }
             }
         },
@@ -191,12 +191,12 @@
     },
     "Addons": {
         "title": "{{name}} v{{version}} von {{author}}",
-        "byline": "",
-        "openFolder": "Öffne {{type}}-Ordner",
+        "byline": "von {{author}}",
+        "openFolder": "{{type}}-Ordner öffnen",
         "reload": "Neu laden",
         "addonSettings": "Einstellungen",
-        "website": "Website",
-        "source": "Source",
+        "website": "Webseite",
+        "source": "Quelle",
         "invite": "Support-Server",
         "donate": "Spenden",
         "patreon": "Patreon",
@@ -216,19 +216,19 @@
         "couldNotDisable": "{{name}} konnte nicht deaktiviert werden.",
         "couldNotStart": "{{name}} konnte nicht gestartet werden.",
         "couldNotStop": "{{name}} konnte nicht gestoppt werden.",
-        "settingsError": "",
+        "settingsError": "Einstellungen für {{name}} konnten nicht geöffnet werden",
         "methodError": "{{method}} konnte nicht ausgeführt werden.",
         "unknownAuthor": "Unbekannter Autor",
         "noDescription": "Keine Beschreibung angegeben.",
         "alreadyExists": "Es existiert bereits ein {{type}} mit dem Namen {{name}}",
-        "alreadWatching": "",
+        "alreadWatching": "Erweiterungen werden bereits beobachtet.",
         "metaError": "META konnte nicht geparst werden.",
-        "missingNameData": "META missing name data.",
+        "missingNameData": "META enthält keinen \\\"name\\\" Parameter.",
         "metaNotFound": "META nicht gefunden.",
         "compileError": "Konnte nicht kompiliert werden.",
-        "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "",
-        "blankSlateMessage": ""
+        "wasUnloaded": "{{name}} wurde entladen.",
+        "blankSlateHeader": "Du besitzt keine {{type}}s!",
+        "blankSlateMessage": "Lade dir welche von [this website]({{link}}) herunter und füge sie deinem {{type}} Ordner hinzu."
     },
     "CustomCSS": {
         "confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
@@ -244,8 +244,8 @@
         "loaded": "Alle Emotes erfolgreich geladen.",
         "clearEmotes": "Emote-Daten löschen",
         "favoriteAction": "Favorisieren!",
-        "downloadFailed": "",
-        "failureMessage": ""
+        "downloadFailed": "Download fehlgeschlagen",
+        "failureMessage": "BetterDiscord konnte die Emotes nicht herunterladen, bitte überprüfe deine Internetverbindung und Firewall."
     },
     "PublicServers": {
         "button": "public",
@@ -255,25 +255,25 @@
         "loading": "Laden",
         "loadMore": "Mehr laden",
         "notConnected": "Nicht mit DiscordServers.com verbunden!",
-        "connectionRequired": "",
-        "connectionError": "",
-        "connectionErrorMessage": "",
-        "pagination": "",
+        "connectionRequired": "Du musst dein Konto verbinden, um Server beitreten zu können.",
+        "connectionError": "Verbindungsfehler",
+        "connectionErrorMessage": "Bei der Verbindung zu DiscordServers.com ist ein Fehler aufgetreten. Es ist möglich, dass die Website/Api offline ist. Versuch es später noch einmal.",
+        "pagination": "Seite {{page}} von {{count}}",
         "search": "Suchen",
         "connect": "Verbinden",
         "reconnect": "Wiederverbinden",
         "categories": "Kategorien",
-        "keywords": "",
+        "keywords": "Schlüsselwörter",
         "connection": "Verbunden als: {{username}}#{{discriminator}}",
-        "results": "Zeige {{start}}-{{end}} von {{total}} Ergebnissen in {{category}}",
+        "results": "{{start}}-{{end}} von {{total}} Ergebnissen in {{category}} angezeigt",
         "query": "für {{query}}"
     },
     "Modals": {
         "confirmAction": "Bist du dir sicher?",
         "okay": "Okay",
-        "done": "",
+        "done": "Fertig",
         "cancel": "Abbrechen",
-        "nevermind": "",
+        "nevermind": "Egal",
         "close": "Schließen",
         "name": "Name",
         "message": "Nachricht",
@@ -283,11 +283,11 @@
         "restartNow": "Jetzt neustarten",
         "restartLater": "Später neustarten",
         "additionalInfo": "Zusätzliche Informationen",
-        "restartPrompt": ""
+        "restartPrompt": "Damit die Veränderungen wirksam werden, muss Discord neu gestartet werden. Möchtest du jetzt neustarten?"
     },
     "ReactDevTools": {
         "notFound": "Erweiterung nicht gefunden",
-        "notFoundDetails": "React Developer Tools-Erweiterung konnte nicht gefunden werden. Füg die Erweiterung zu deiner Chrome-Installation hinzu."
+        "notFoundDetails": "React-Entwicklerwerkzeuge-Erweiterung konnte nicht gefunden werden. Füg die Erweiterung zu deiner Chrome-Installation hinzu."
     },
     "Sorting": {
         "sortBy": "Sortieren nach",
@@ -297,18 +297,18 @@
     },
     "Startup": {
         "notSupported": "Nicht unterstützt",
-        "incompatibleApp": "BetterDiscord ist nicht mit {{app}} kompatiblem. Bitte entferne entweder BetterDiscord oder {{app}}.",
+        "incompatibleApp": "BetterDiscord ist nicht mit {{app}} kompatibel. Bitte entferne entweder BetterDiscord oder {{app}}.",
         "updateNow": "Jetzt aktualisieren",
         "maybeLater": "Später",
         "updateAvailable": "Update verfügbar",
-        "updateInfo": "Ein Update für BetterDiscords Injector ({{version}}) ist verfügbar.\n\nDu kannst entweder jetzt oder später aktualisieren und neustarten",
+        "updateInfo": "Ein Update für BetterDiscords Injector ({{version}}) ist verfügbar.\n\nDu kannst entweder jetzt oder später aktualisieren und neustarten.",
         "updateFailed": "Konnte nicht aktualisiert werden",
-        "manualUpdate": "Die automatische Aktualisierung schlug fehl. Bitte lade den Installer herunter und installiere BetterDiscord erneut.\n\n[Installer herunterladen](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "manualUpdate": "Bei der automatischen Aktualisierung ist ein Fehler aufgetreten. Bitte lade das Installationsprogramm herunter und installiere BetterDiscord erneut.\n\n[Installationsprogramm herunterladen](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
         "jqueryFailed": "jQuery konnte nicht geladen werden",
         "jqueryFailedDetails": "jQuery konnte nicht geladen werden, wodurch einige Plugins gegebenenfalls nicht richtig funktionieren."
     },
     "WindowPrefs": {
-        "enabledInfo": "Um diese Funktion zu verwenden, benötigst du ein Theme mit transparentem Hintergrund. Auf Windows funktioniert das Maximieren des Fensters ggf. nicht mehr.\n\nUm die Änderungen zu übernehmen muss Discord neugeladen werden. Willst du jetzt neuladen?",
-        "disabledInfo": "Um die Änderungen zu übernehmen muss Discord neugeladen werden. Willst du jetzt neuladen?"
+        "enabledInfo": "Um diese Funktion zu verwenden, benötigst du ein Theme mit transparentem Hintergrund. Auf Windows funktioniert das Einrasten für maximierte Fenster ggf. nicht mehr.\n\nUm die Änderungen zu übernehmen muss Discord neugestartet werden. Möchtest du jetzt neustarten?",
+        "disabledInfo": "Um die Änderungen zu übernehmen muss Discord neugestartet werden. Möchtest du jetzt neustarten?"
     }
 }

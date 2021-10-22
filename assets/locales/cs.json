@@ -1,1 +1,314 @@
-{}
+{
+    "Panels": {
+        "plugins": "Pluginy",
+        "themes": "Témata",
+        "customcss": "Vlastní CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Nastavení",
+            "general": {
+                "name": "Obecné",
+                "emotes": {
+                    "name": "Systém emotů",
+                    "note": "Povolí systém emotů BD"
+                },
+                "publicServers": {
+                    "name": "Veřejné servery",
+                    "note": "Zobrazí tlačítko veřejných serverů"
+                },
+                "voiceDisconnect": {
+                    "name": "Odpojení z hlas. kanálu",
+                    "note": "Odpojit z hlasového kanálu při zavření Discordu"
+                },
+                "showToasts": {
+                    "name": "Zobrazit vyskakovací okna",
+                    "note": "Zobrazí malé oznámení pro důležité informace"
+                },
+                "mediaKeys": {
+                    "name": "Zakázat klávesy médií",
+                    "note": "Zabrání Discordu přivlastnění kláves médií při přehrávání videa."
+                }
+            },
+            "appearance": {
+                "name": "Vzhled",
+                "minimalMode": {
+                    "name": "Minimalistický režim",
+                    "note": "Skryje prvky a zmenší velikost prvků"
+                },
+                "twentyFourHour": {
+                    "name": "24-hodinová časová razítka",
+                    "note": "Převede 12-hodinová razítka na 24-hodinový formát"
+                },
+                "coloredText": {
+                    "name": "Barevný text",
+                    "note": "Udělá barvu textu stejnou jako barvu role"
+                },
+                "hideGIFButton": {
+                    "name": "Skrýt tlačítko GIF",
+                    "note": "Skryje tlačítko pro výběr GIFů v textové oblasti"
+                },
+                "hideGiftButton": {
+                    "name": "Skrýt tlačítko dárku",
+                    "note": "Skryje tlačítko darování Nitra v textové oblasti"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Odebrat minimální velikost",
+                    "note": "Odebere Discordem vynucenou minimální velikost okna 940x500"
+                },
+                "name": "Předvolby okna",
+                "transparency": {
+                    "name": "Povolit průhlednost",
+                    "note": "Povolí průhlednost hlavního okna (vyžaduje restart)"
+                },
+                "frame": {
+                    "name": "Okraj okna",
+                    "note": "Přidá nativní systémový okraj okna k hlavnímu oknu"
+                }
+            },
+            "addons": {
+                "name": "Správce doplňků",
+                "addonErrors": {
+                    "name": "Zobrazit chyby doplňků",
+                    "note": "Zobrazí okno s chybami pluginů/témat"
+                },
+                "autoReload": {
+                    "name": "Automatické načítání",
+                    "note": "Automaticky načte, znovu načte a odnačte pluginy a témata"
+                },
+                "editAction": {
+                    "name": "Upravit akci",
+                    "note": "Kde se objeví doplňky a témata při úpravě",
+                    "options": {
+                        "detached": "Oddělené okno",
+                        "system": "Systémový editor"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "Vlastní CSS",
+                "customcss": {
+                    "name": "Vlastní CSS",
+                    "note": "Povolí záložku Vlastní CSS"
+                },
+                "liveUpdate": {
+                    "name": "Okamžitá aktualizace",
+                    "note": "Aktualizuje CSS při psaní"
+                },
+                "startDetached": {
+                    "name": "Spustit odděleně",
+                    "note": "Kliknutí na záložku Vlastní CSS otevře editor v odděleném okně"
+                },
+                "nativeOpen": {
+                    "name": "Otevřít v nativním editoru",
+                    "note": "Kliknutí na záložku Vlastní CSS otevře tvé vlastní CSS ve tvém nativním editoru"
+                },
+                "openAction": {
+                    "name": "Lokace editoru",
+                    "note": "Kde se má ve výchozím nastavení otevřít Vlastní CSS",
+                    "options": {
+                        "settings": "Menu nastavení",
+                        "detached": "Oddělené okno",
+                        "system": "Systémový editor"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Vývojářská nastavení",
+                "debuggerHotkey": {
+                    "name": "Zkratka ladění",
+                    "note": "Povolí aktivaci ladění při stisknutí F8"
+                },
+                "reactDevTools": {
+                    "name": "Vývojářské nástroje React",
+                    "note": "Vloží tvou lokální instalaci React Developer Tools do Discordu"
+                },
+                "inspectElement": {
+                    "name": "Zkratka prozkoumání prvku",
+                    "note": "Povolí klávesovou zkratku prozkoumání prvku (Ctrl + Shift + C), která je normální ve většině prohlížečů"
+                },
+                "devToolsWarning": {
+                    "name": "Zastavit varování DevTools",
+                    "note": "Zabrání Discordu vypisovat jeho \"Zadrž!\" zprávu"
+                },
+                "debugLogs": {
+                    "name": "Ladicí protokoly",
+                    "note": "Vypíše vše z konzole do souboru debug.log ve složce BetterDiscordu"
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emoty",
+            "general": {
+                "name": "Obecné",
+                "download": {
+                    "name": "Stáhnout emoty",
+                    "note": "Stáhne emoty vždy, kdy jsou zastaralé"
+                },
+                "emoteMenu": {
+                    "name": "Menu emotů",
+                    "note": "Zobrazit Twitch/oblíbené emoty v menu emotů"
+                },
+                "hideEmojiMenu": {
+                    "name": "Skrýt menu smajlíků",
+                    "note": "Skryje menu smajlíků Discordu při používání menu emotů"
+                },
+                "autoCaps": {
+                    "name": "Automatická kapitalizace emotů",
+                    "note": "Automatická kapitalizace emote příkazů"
+                },
+                "modifiers": {
+                    "name": "Zobrazit modifikátory emotů",
+                    "note": "Povolit modifikátory emotů (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animovat při přejetí",
+                    "note": "Animovat modifikátory emotů pouze při přejetí myší"
+                }
+            },
+            "categories": {
+                "name": "Kategorie",
+                "twitchglobal": {
+                    "name": "Globální Twitch",
+                    "note": "Zobrazí globální Twitch emoty"
+                },
+                "twitchsubscriber": {
+                    "name": "Odběratelé Twitch",
+                    "note": "Zobrazí odběratelské Twitch emoty"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "Zobrazí emoty od FFZ"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Zobrazí emoty od BTTV"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} od {{author}}",
+        "byline": "od {{author}}",
+        "openFolder": "Otevřít složku {{type}}",
+        "reload": "Znovu načíst",
+        "addonSettings": "Nastavení",
+        "website": "Web",
+        "source": "Zdroj",
+        "invite": "Server podpory",
+        "donate": "Přispět",
+        "patreon": "Patreon",
+        "name": "Název",
+        "author": "Autor",
+        "version": "Verze",
+        "added": "Datum přidání",
+        "modified": "Datum upravení",
+        "search": "Hledat {{type}}",
+        "editAddon": "Upravit",
+        "deleteAddon": "Odstranit",
+        "confirmDelete": "Opravdu chceš odstranit {{name}}?",
+        "confirmationText": "Máš neuložené změny u {{name}}. Zavřením tohoto okna je všechny ztratíš.",
+        "enabled": "Doplněk {{name}} byl povolen.",
+        "disabled": "Doplněk {{name}} byl zakázán.",
+        "couldNotEnable": "Doplněk {{name}} nemohl být povolen.",
+        "couldNotDisable": "Doplněk {{name}} nemohl být zakázán.",
+        "couldNotStart": "Doplněk {{name}} nemohl být spuštěn.",
+        "couldNotStop": "Doplněk {{name}} nemohl být zastaven.",
+        "settingsError": "Nepodařilo se otevřít nastavení {{name}}",
+        "methodError": "Nepodařilo se spustit metodu {{method}}.",
+        "unknownAuthor": "Neznámý autor",
+        "noDescription": "Bez popisu.",
+        "alreadyExists": "Již existuje {{type}} s názvem {{name}}",
+        "alreadWatching": "Již sledujete doplňky.",
+        "metaError": "META být nemohl parsován.",
+        "missingNameData": "META chybějící údaje názvu.",
+        "metaNotFound": "META nebyl nalezen.",
+        "compileError": "Nepodařilo se zkompilovat.",
+        "wasUnloaded": "Doplněk {{name}} byl odnačten.",
+        "blankSlateHeader": "Nemáš žádné/žádný {{type}}!",
+        "blankSlateMessage": "Najdi si nějaké na [tomto webu]({{link}}) a přidej je do své {{type}} složky."
+    },
+    "CustomCSS": {
+        "confirmationText": "Máš neuložené změny ve vlastním CSS. Zavřením tohoto okna je všechny ztratíš.",
+        "update": "Aktualizovat",
+        "save": "Uložit",
+        "openNative": "Otevřít v systémovém editoru",
+        "openDetached": "Oddělit okno",
+        "settings": "Nastavení editoru",
+        "editorTitle": "Okno vlastního CSS"
+    },
+    "Emotes": {
+        "loading": "Načítání emotů v pozadí - neobnovuj.",
+        "loaded": "Všechny emoty byly úspěšně načteny.",
+        "clearEmotes": "Vyčistit data emotů",
+        "favoriteAction": "Oblíbené!",
+        "downloadFailed": "Stahování selhalo",
+        "failureMessage": "BetterDiscordu se nepodařilo stáhnout emoty, zkontroluj prosím své internetové připojení a firewall."
+    },
+    "PublicServers": {
+        "button": "veřejné",
+        "join": "Připojit se",
+        "joining": "Připojuji se",
+        "joined": "Připojen",
+        "loading": "Načítání",
+        "loadMore": "Načíst více",
+        "notConnected": "Nepřipojen",
+        "connectionRequired": "Aby ses mohl/a připojovat na servery, musíš připojit svůj účet.",
+        "connectionError": "Chyba spojení",
+        "connectionErrorMessage": "Při připojování k DiscordServers.com se vyskytla chyba, je možné, že jejich web/API je offline. Zkus to prosím znovu později.",
+        "pagination": "Strana {{page}} z {{count}}",
+        "search": "Hledat",
+        "connect": "Připojit",
+        "reconnect": "Znovu připojit",
+        "categories": "Kategorie",
+        "keywords": "Klíčová slova",
+        "connection": "Připojen/a jako: {{username}}#{{discriminator}}",
+        "results": "Zobrazování {{start}}-{{end}} z {{total}} výsledků v kategorii {{category}}",
+        "query": "pro dotaz {{query}}"
+    },
+    "Modals": {
+        "confirmAction": "Opravdu?",
+        "okay": "Dobře",
+        "done": "Hotovo",
+        "cancel": "Zrušit",
+        "nevermind": "Ne",
+        "close": "Zavřít",
+        "name": "Název",
+        "message": "Zpráva",
+        "error": "Chyba",
+        "addonErrors": "Chyby doplňku",
+        "restartRequired": "Vyžadován restart",
+        "restartNow": "Restartovat nyní",
+        "restartLater": "Restartovat později",
+        "additionalInfo": "Dodatečné informace",
+        "restartPrompt": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
+    },
+    "ReactDevTools": {
+        "notFound": "Rozšíření nenalezeno",
+        "notFoundDetails": "Nepodařilo se nalézt rozšíření React Developer Tools na tvém počítači. Nainstaluj si prosím rozšíření na své lokální Chrome instalaci."
+    },
+    "Sorting": {
+        "sortBy": "Seřadit podle",
+        "order": "Pořadí",
+        "ascending": "Vzestupně",
+        "descending": "Sestupně"
+    },
+    "Startup": {
+        "notSupported": "Nepodporováno",
+        "incompatibleApp": "BetterDiscord nefunguje s {{app}}. Odinstaluj prosím jednu z nich.",
+        "updateNow": "Aktualizovat",
+        "maybeLater": "Možná později",
+        "updateAvailable": "Dostupná aktualizace",
+        "updateInfo": "Je dostupná nová aktualizace BetterDiscord Injectoru ({{version}}).\n\nMůžeš aktualizovat a restartovat buď teď, nebo později.",
+        "updateFailed": "Aktualizace selhala",
+        "manualUpdate": "Nepodařilo se automaticky nainstalovat aktualizaci, stáhni si prosím instalátor a normálně přeinstaluj aplikaci.\n\n[Stáhnout instalátor](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "Nepodařilo se načíst jQuery",
+        "jqueryFailedDetails": "Nepodařilo se načíst jQuery, některé pluginy nemusí fungovat správně. Pokračuj na vlastní nebezpečí."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Tato možnost vyžaduje průhledné téma, aby fungovala správně. Na Windows to může rozbít Areo přichytávání a maximalizování.\n\nAby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?",
+        "disabledInfo": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
+    }
+}
