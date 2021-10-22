@@ -30,6 +30,8 @@ export default new class ComponentPatcher {
     debug(...message) {return Logger.debug("ComponentPatcher", ...message);}
 
     initialize() {
+        this.guildsClasses = WebpackModules.getByProps("downloadProgressCircle", "guilds");
+
         Utilities.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
     
         Utilities.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
@@ -77,61 +79,69 @@ export default new class ComponentPatcher {
         });
     }
 
-    isGuildMuted(guildId) {
-        if (!MutedStore || typeof(MutedStore.isMuted) !== "function") return false;
+    async forceUpdateGuilds() {
+        const guildClasses = this.guildsClasses;
+        if (!guildClasses) return this.warn("Failed to get guilds classes!");
 
-        return MutedStore.isMuted(guildId);
+        const guilds = await new Promise((resolve) => Utilities.onAdded(`.${guildClasses.guilds}`, resolve));
+        const instance = Utilities.getOwnerInstance(guilds);
+        if (!instance) return this.error("Failed to get Guilds instance.");
+
+        instance.forceUpdate();
     }
     
     /**
-     * @updated 07.07.2021
+     * @updated 24.09.2021
      */
-    async patchGuildListItems() {
+    patchGuildListItems() {
         if (this.guildListItemsPatch) return;
-        const guildClasses = WebpackModules.getByProps("downloadProgressCircle", "guilds");
-        if (!guildClasses) return this.warn("Failed to get guilds classes!");
-
-        const start = Date.now();
-        const guilds = await new Promise((resolve) => Utilities.onAdded(`.${guildClasses.guilds}`, resolve));
-        if (!guilds) return this.error("Cannot find guilds component.");
-        const reactInstance = Utilities.getReactInstance(guilds);
-        if (!reactInstance) return this.error("Failed to get Guilds instance.");
-        const GuildComponent = await new Promise((resolve) => {
-            let tries = 0;
-            const searchForGuild = function () {
-                tries++;
-                const guild = Utilities.findInTree(reactInstance, e => e?.type?.displayName === "Guild", {walkable: ["child", "sibling"]});
-                if (guild) {resolve(guild);} 
-                else if (tries < 10) {setTimeout(searchForGuild, 300);} 
-                else {resolve(null);}
-            };
-
-            searchForGuild();
-        });
+        const GuildComponents = WebpackModules.getByProps("HubGuild");
         
-        if (!GuildComponent || typeof(GuildComponent.type) !== "function") return this.error("Failed to get Guild component.");
-        this.debug(`Found Guild component in ${Date.now() - start}ms`);
+        if (!GuildComponents || typeof(GuildComponents.default) !== "function") return this.error("Failed to get Guild component.");
 
-        const Guild = GuildComponent.type;
-        this.guildListItemsPatch = Patcher.after("ComponentPatcher", Guild.prototype, "render", (thisObject, _, returnValue) => {
-            if (!returnValue || !thisObject) return;
-            const guildData = thisObject.props;
-            returnValue.props.className += " bd-guild";
-            if (guildData.unread) returnValue.props.className += " bd-unread";
-            if (guildData.selected) returnValue.props.className += " bd-selected";
-            if (guildData.audio) returnValue.props.className += " bd-audio";
-            if (guildData.video) returnValue.props.className += " bd-video";
-            if (guildData.badge) returnValue.props.className += " bd-badge";
-            if (guildData.animatable) returnValue.props.className += " bd-animatable";
-            if (guildData.unavailable) returnValue.props.className += " bd-unavailable";
-            if (guildData.screenshare) returnValue.props.className += " bd-screenshare";
-            if (guildData.liveStage) returnValue.props.className += " bd-live-stage";
-            if (this.isGuildMuted(guildData.guild.id)) returnValue.props.className += " bd-muted";
+        const isGuildMuted = function (guildId) {
+            if (!MutedStore || typeof(MutedStore.isMuted) !== "function") return false;
+    
+            return MutedStore.isMuted(guildId);
+        };
+
+        function BDGuild(props) {
+            const {originalGuild, ...guildProps} = props;
+            const returnValue = Reflect.apply(originalGuild, this, [guildProps]);
+
+            try {
+                returnValue.props.className += " bd-guild";
+                if (guildProps.unread) returnValue.props.className += " bd-unread";
+                if (guildProps.selected) returnValue.props.className += " bd-selected";
+                if (guildProps.audio) returnValue.props.className += " bd-audio";
+                if (guildProps.video) returnValue.props.className += " bd-video";
+                if (guildProps.badge) returnValue.props.className += " bd-badge";
+                if (guildProps.animatable) returnValue.props.className += " bd-animatable";
+                if (guildProps.unavailable) returnValue.props.className += " bd-unavailable";
+                if (guildProps.screenshare) returnValue.props.className += " bd-screenshare";
+                if (guildProps.liveStage) returnValue.props.className += " bd-live-stage";
+                if (isGuildMuted(guildProps.guild.id)) returnValue.props.className += " bd-muted";
+            }
+            catch (err) {
+                Logger.error("ComponentPatcher:Guilds", `Error inside BDGuild:`, err);
+            }
 
             return returnValue;
+        }
+
+        this.guildListItemsPatch = Patcher.after("ComponentPatcher", GuildComponents, "default", (_, args, returnValue) => {
+            if (!returnValue || !returnValue.props) return;
+            
+            const original = returnValue.type;
+            
+            Object.assign(returnValue.props, {
+                originalGuild: original
+            });
+
+            returnValue.type = BDGuild;
         });
 
-        if (reactInstance.forceUpdate) reactInstance.forceUpdate();
+        this.forceUpdateGuilds();
     }
     
     patchGuildPills() {
