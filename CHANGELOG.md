@@ -2,6 +2,31 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.2.2
+
+### Added
+- Added Czech translation
+- Added Spanish translation
+- Added Hindi (partial) translation
+- Added Italian translation
+- Added Dutch translation
+- Added Norwegian translation
+- Added Portuguese (PT) translation
+- Added Romanian translation
+- Added Russian translation
+- Added Turkish translation
+
+### Removed
+
+### Changed
+- `window.webpackJsonp` is temporarily polyfilled for Canary but _will_ be disappearing
+- Updated French translation
+- Updated Germand translation
+
+### Fixed
+- Fixed public servers missing (Thanks [Strencher](https://github.com/Strencher))
+- Fixed guild classes missing (Thanks [Strencher](https://github.com/Strencher))
+
 ## 1.2.1
 
 ### Added
