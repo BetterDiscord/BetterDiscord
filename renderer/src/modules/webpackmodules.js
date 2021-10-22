@@ -128,6 +128,7 @@ const protect = theModule => {
 };
 
 export default class WebpackModules {
+    static get chunkName() {return "webpackChunkdiscord_app";}
 
     static find(filter, first = true) {return this.getModule(filter, first);}
     static findAll(filter) {return this.getModule(filter, false);}
@@ -249,9 +250,18 @@ export default class WebpackModules {
     static get require() {
         if (this._require) return this._require;
         const id = "bd-webpackmodules";
-        const __webpack_require__ = window.webpackJsonp.push([[], {
-            [id]: (module, exports, __internal_require__) => module.exports = __internal_require__
-        }, [[id]]]);
+        let __webpack_require__ = undefined;
+        if (typeof (webpackJsonp) !== "undefined") {
+            __webpack_require__ = window.webpackJsonp.push([[], {
+                [id]: (module, exports, __internal_require__) => module.exports = __internal_require__
+            }, [[id]]]);
+        } else if (typeof (window[this.chunkName]) !== "undefined") {
+            window[this.chunkName].push([[id], 
+                {},
+                __internal_require__ => __webpack_require__ = __internal_require__
+            ]);
+        }
+
         delete __webpack_require__.m[id];
         delete __webpack_require__.c[id];
         return this._require = __webpack_require__;
