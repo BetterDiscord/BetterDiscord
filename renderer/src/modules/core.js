@@ -98,7 +98,7 @@ export default new class Core {
         window.webpackJsonp.length = 10000; // In case plugins are waiting for that.
         window.webpackJsonp.flat = () => window.webpackJsonp;
         window.webpackJsonp.push = ([[], module, [[id]]]) => {
-            return module[id]({}, {}, WebpackModules._require);
+            return module[id]({}, {}, WebpackModules.require);
         };
     }
 
