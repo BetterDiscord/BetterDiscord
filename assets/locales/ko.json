@@ -1,1 +1,314 @@
-{}
+{
+    "Panels": {
+        "plugins": "플러그인",
+        "themes": "테마",
+        "customcss": "사용자 지정 CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "설정",
+            "general": {
+                "name": "일반",
+                "emotes": {
+                    "name": "이모트 시스템",
+                    "note": "BD의 이모트 시스템을 활성화합니다"
+                },
+                "publicServers": {
+                    "name": "공개 서버",
+                    "note": "공개 서버 버튼을 표시합니다"
+                },
+                "voiceDisconnect": {
+                    "name": "음성 연결 끊기",
+                    "note": "Discord를 닫을 때 음성 채널의 연결을 끊습니다"
+                },
+                "showToasts": {
+                    "name": "토스트 표시",
+                    "note": "중요한 정보를 위한 작은 알림을 표시합니다"
+                },
+                "mediaKeys": {
+                    "name": "미디어 키 비활성화",
+                    "note": "Discord가 영상을 재생한 후에 미디어 키를 가져가는 것을 방지합니다"
+                }
+            },
+            "appearance": {
+                "name": "모습",
+                "minimalMode": {
+                    "name": "미니멀 모드",
+                    "note": "요소들을 숨기거나 크기를 줄입니다"
+                },
+                "twentyFourHour": {
+                    "name": "24시간 형식 시간스탬프",
+                    "note": "12시간 형식의 시간스탬프를 24시간 형식으로 바꿉니다"
+                },
+                "coloredText": {
+                    "name": "색상 텍스트",
+                    "note": "역할 색상에 따라 텍스트에 색상을 추가합니다"
+                },
+                "hideGIFButton": {
+                    "name": "GIF 버튼 숨기기",
+                    "note": "메시지 입력창의 GIF 버튼을 숨깁니다"
+                },
+                "hideGiftButton": {
+                    "name": "선물 버튼 숨기기",
+                    "note": "메시지 입력창의 Nitro 선물 버튼을 숨깁니다"
+                }
+            },
+            "addons": {
+                "name": "애드온 관리자",
+                "addonErrors": {
+                    "name": "애드온 에러 표시",
+                    "note": "플러그인/테마 오류가 있는 모달을 표시합니다"
+                },
+                "autoReload": {
+                    "name": "자동 로딩 중",
+                    "note": "플러그인과 테마를 자동으로 로드, 리로드, 언로드합니다"
+                },
+                "editAction": {
+                    "name": "액션 수정",
+                    "note": "수정할 때 플러그인과 테마가 나타나는 곳",
+                    "options": {
+                        "detached": "분리 창",
+                        "system": "시스템 편집기"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "사용자 지정 CSS",
+                "customcss": {
+                    "name": "사용자 지정 CSS",
+                    "note": "사용자 지정 CSS 탭을 활성화합니다"
+                },
+                "liveUpdate": {
+                    "name": "실시간 업데이트",
+                    "note": "css를 작성하는 대로 업데이트합니다"
+                },
+                "startDetached": {
+                    "name": "분리 창 시작",
+                    "note": "사용자 지정 CSS 탭을 클릭하면 분리된 창에서 편집기가 열립니다"
+                },
+                "nativeOpen": {
+                    "name": "기본 편집기에서 열기",
+                    "note": "사용자 지정 CSS 탭을 클릭하면 기본 편집기에서 사용자 지정 css가 열립니다"
+                },
+                "openAction": {
+                    "name": "위치 편집기",
+                    "note": "기본적으로 사용자 지정 CSS가 열리는 곳",
+                    "options": {
+                        "settings": "설정 메뉴",
+                        "detached": "분리된 창",
+                        "system": "시스템 편집기"
+                    }
+                }
+            },
+            "developer": {
+                "name": "개발자 설정",
+                "debuggerHotkey": {
+                    "name": "디버거 단축키",
+                    "note": "F8을 누를 때 디버거를 활성화합니다"
+                },
+                "reactDevTools": {
+                    "name": "반응 개발자 도구",
+                    "note": "\반응 개발자 도구를 로컬 설치에 합니다"
+                },
+                "inspectElement": {
+                    "name": "요소 선택 단축키",
+                    "note": "대부분의 브라우저에서 가장 흔한 요소 선택 단축키를 활성화합니다 (ctrl + shift + c)"
+                },
+                "devToolsWarning": {
+                    "name": "데브툴 경고 멈추기",
+                    "note": "Discord가 \"Hold Up!\" 메시지를 표시하는 것을 멈춥니다"
+                },
+                "debugLogs": {
+                    "name": "디버그 로그",
+                    "note": "콘솔의 모든 것을 BetterDiscord 폴더의 debug.log 파일에 저장합니다"
+                }
+            },
+            "window": {
+                "name": "창 선호",
+                "transparency": {
+                    "name": "투명도 활성화",
+                    "note": "기본 창이 투명하게 보이는 것을 활성화합니다 (재시작 요구됨)"
+                },
+                "frame": {
+                    "name": "창 프레임",
+                    "note": "기본 창에 기본 OS 창 프레임을 추가합니다"
+                },
+                "removeMinimumSize": {
+                    "name": "최소 크기 제거",
+                    "note": "디스코드의 강제 창 최소 크기인 940x500을 제거합니다"
+                }
+            }
+        },
+        "emotes": {
+            "name": "이모트",
+            "general": {
+                "name": "일반",
+                "download": {
+                    "name": "이모트 다운로드",
+                    "note": "최신이 아닌 이모트를 다운로드합니다"
+                },
+                "emoteMenu": {
+                    "name": "이모트 메뉴",
+                    "note": "이모트 메뉴에 트위치/즐겨찾기 이모트를 표시합니다"
+                },
+                "hideEmojiMenu": {
+                    "name": "이모트 메뉴 숨기기",
+                    "note": "이모트 메뉴를 사용 중일 때 Discord의 이모지 메뉴를 숨깁니다"
+                },
+                "autoCaps": {
+                    "name": "이모트 자동 대문자",
+                    "note": "이모트 명령어에 자동 대문자를 사용합니다"
+                },
+                "modifiers": {
+                    "name": "이모트 수정기 표시",
+                    "note": "이모트 모드를 활성화합니다 (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "마우스 커서를 올렸을 때 움직임 표시",
+                    "note": "마우스 커서를 올린 이모트의 움직임만 표시합니다"
+                }
+            },
+            "categories": {
+                "name": "카테고리",
+                "twitchglobal": {
+                    "name": "트위치 글로벌",
+                    "note": "트위치 글로벌 이모트를 표시합니다"
+                },
+                "twitchsubscriber": {
+                    "name": "트위치 구독",
+                    "note": "트위치 구독 이모트를 표시합니다"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "FFZ 이모트를 표시합니다"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "BTTV 이모트를 표시합니다"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} by {{author}}",
+        "byline": "by {{author}}",
+        "openFolder": "{{type}} 폴더 열기",
+        "reload": "리로드",
+        "addonSettings": "설정",
+        "website": "웹사이트",
+        "source": "소스",
+        "invite": "서버 지원",
+        "donate": "기부",
+        "patreon": "패트리온",
+        "name": "이름",
+        "author": "제작자",
+        "version": "버전",
+        "added": "추가된 날짜",
+        "modified": "수정된 날짜",
+        "search": "{{type}} 검색",
+        "editAddon": "수정",
+        "deleteAddon": "삭제",
+        "confirmDelete": "{{name}}를 삭제하시겠습니까?",
+        "confirmationText": "{{name}}에 저장되지 않은 수정사항이 있습니다. 이 창을 닫으면 모든 수정이 취소됩니다.",
+        "enabled": "{{name}}이 활성화되었습니다",
+        "disabled": "{{name}}이 비활성화되었습니다",
+        "couldNotEnable": "{{name}} 활성화를 실패했습니다",
+        "couldNotDisable": "{{name}} 비활성화를 실패했습니다.",
+        "couldNotStart": "{{name}}시작을 실패했습니다",
+        "couldNotStop": "{{name}} 정지를 실패했습니다",
+        "settingsError": "{{name}}의 설정을 열 수 없습니다",
+        "methodError": "{{method}}(을)를 실행할 수 없습니다",
+        "unknownAuthor": "알 수 없는 제작자",
+        "noDescription": "설명이 제공되지 않았습니다",
+        "alreadyExists": "{{type}}(은)는 이미 {{name}}으로 존재합니다",
+        "alreadWatching": "이미 애드온을 보는 중입니다",
+        "metaError": "META 파싱에 실패했습니다",
+        "missingNameData": "META 이름 데이터 찾을 수 없음",
+        "metaNotFound": "META 찾을 수 없음",
+        "compileError": "컴파일에 실패했습니다",
+        "wasUnloaded": "{{name}}가 언로드되었습니다",
+        "blankSlateHeader": "{{type}}가 없습니다",
+        "blankSlateMessage": "[이 웹사이트]({{link}})에서 몇 가지를 {{type}} 폴더에 추가하세요"
+    },
+    "CustomCSS": {
+        "confirmationText": "사용자 지정 CSS에 저장되지 않은 수정사항이 있습니다. 이 창을 닫으면 모든 수정이 취소됩니다",
+        "update": "업데이트",
+        "save": "저장",
+        "openNative": "시스템 편집기에서 열기",
+        "openDetached": "분리된 창에서 열기",
+        "settings": "편집기 설정",
+        "editorTitle": "사용자  CSS 편집기"
+    },
+    "Emotes": {
+        "loading": "백그라운드에서 로딩된 이모트는 리로드하지 않습니다",
+        "loaded": "모든 이모트가 로드되었습니다",
+        "clearEmotes": "이모트 데이터 지우기,
+        "favoriteAction": "즐겨찾기,
+        "downloadFailed": "다운로드 실패",
+        "failureMessage": "BetterDiscord가 이모트 다운로드를 실패했습니다. 인터넷 상태와 방화벽을 확인해주세요
+    },
+    "PublicServers": {
+        "button": "공개",
+        "join": "참가",
+        "joining": "참가 중",
+        "joined": "참가함",
+        "loading": "로딩 중",
+        "loadMore": "더 불러오기",
+        "notConnected": "연결되지 않음",
+        "connectionRequired": "서버에 참가하기 위해서 계정을 연결해야 합니다,
+        "connectionError": "연결 오류",
+        "connectionErrorMessage": "DiscordServers.com 연결에 오류가 있습니다. 웹사이트/API가 꺼져있을 수 있습니다. 나중에 다시 시도하세요.",
+        "pagination": "{{page}} 페이지 중 {{count}}",
+        "search": "검색",
+        "connect": "연결",
+        "reconnect": "재연결",
+        "categories": "카테고리",
+        "keywords": "키워드",
+        "connection": "{{username}}#{{discriminator}}  연결됨,
+        "results": "{{category}} 의 검색결과에서 {{total}} 중 {{start}}-{{end}} 표시 중",
+        "query": "쿼리: {{query}}"
+    },
+    "Modals": {
+        "confirmAction": "확실합니까?",
+        "okay": "확인",
+        "done": "완료",
+        "cancel": "취소",
+        "nevermind": "무시",
+        "close": "닫기",
+        "name": "이름",
+        "message": "메시지",
+        "error": "오류",
+        "addonErrors": "애드온 오류",
+        "restartRequired": "재시작 요구됨",
+        "restartNow": "지금 재시작하기",
+        "restartLater": "나중에 재시작하기",
+        "additionalInfo": "추가 정보",
+        "restartPrompt": "적용을 위해 Discord가 재시작되어야 합니다. 지금 재시작하시겠습니까?"
+    },
+    "ReactDevTools": {
+        "notFound": "확장 프로그램을 찾을 수 없음",
+        "notFoundDetails": "PC에서 반응 개발자 도구 확장 프로그램을 찾을 수 없습니다. 기본 Chrome 설치 위치에 확장 프로그램을 설치해주세요."
+    },
+    "Sorting": {
+        "sortBy": "유형: ",
+        "order": "순서: ",
+        "ascending": "오름차순",
+        "descending": "내림차순"
+    },
+    "Startup": {
+        "notSupported": "지원되지 않음",
+        "incompatibleApp": "BetterDiscord는 {{app}}와 작동하지 않습니다. 하나를 제거해주세요.",
+        "updateNow": "지금 업데이트",
+        "maybeLater": "나중에 업데이트",
+        "updateAvailable": "업데이트 발견",
+        "updateInfo": "BetterDiscord 인젝터 ({{version}}) 업데이트가 발견되었습니다.\n\n지금 업데이트 및 재시작하거나 나중에 재시작할 수 있습니다.",
+        "updateFailed": "업데이트를 할 수 없습니다",
+        "manualUpdate": " 자동 업데이트를 할 수 없습니다. 설치기를 다운로드해서 재설치해주세요. \n\n[설치기 다운로드](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "jQuery 로드에 실패했습니다",
+        "jqueryFailedDetails": "jQuery를 로드할 수 없습니다. 일부 플러그인이 정상적으로 작동하지 않을 수 있습니다. 위험을 감수하고 진행하십시오."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "이 옵션은 제대로 작동하려면 투명한 테마가 필요합니다. Windows가 애어로 스내핑과 최대화를 고장낼 수 있습니다.\n\n적용을 위해 Discord가 재시작되어야 합니다. 지금 재시작하시겠습니까?",
+        "disabledInfo": "적용을 위해 Discord가 재시작되어야 합니다. 지금 재시작하시겠습니까?"
+    }
+}
