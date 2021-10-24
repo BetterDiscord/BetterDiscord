@@ -108,7 +108,7 @@
                 },
                 "reactDevTools": {
                     "name": "반응 개발자 도구",
-                    "note": "\반응 개발자 도구를 로컬 설치에 합니다"
+                    "note": "반응 개발자 도구를 로컬 설치에 합니다"
                 },
                 "inspectElement": {
                     "name": "요소 선택 단축키",
