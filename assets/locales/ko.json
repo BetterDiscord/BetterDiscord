@@ -242,10 +242,10 @@
     "Emotes": {
         "loading": "백그라운드에서 로딩된 이모트는 리로드하지 않습니다",
         "loaded": "모든 이모트가 로드되었습니다",
-        "clearEmotes": "이모트 데이터 지우기,
-        "favoriteAction": "즐겨찾기,
+        "clearEmotes": "이모트 데이터 지우기",
+        "favoriteAction": "즐겨찾기",
         "downloadFailed": "다운로드 실패",
-        "failureMessage": "BetterDiscord가 이모트 다운로드를 실패했습니다. 인터넷 상태와 방화벽을 확인해주세요
+        "failureMessage": "BetterDiscord가 이모트 다운로드를 실패했습니다. 인터넷 상태와 방화벽을 확인해주세요"
     },
     "PublicServers": {
         "button": "공개",
@@ -255,7 +255,7 @@
         "loading": "로딩 중",
         "loadMore": "더 불러오기",
         "notConnected": "연결되지 않음",
-        "connectionRequired": "서버에 참가하기 위해서 계정을 연결해야 합니다,
+        "connectionRequired": "서버에 참가하기 위해서 계정을 연결해야 합니다",
         "connectionError": "연결 오류",
         "connectionErrorMessage": "DiscordServers.com 연결에 오류가 있습니다. 웹사이트/API가 꺼져있을 수 있습니다. 나중에 다시 시도하세요.",
         "pagination": "{{page}} 페이지 중 {{count}}",
@@ -264,7 +264,7 @@
         "reconnect": "재연결",
         "categories": "카테고리",
         "keywords": "키워드",
-        "connection": "{{username}}#{{discriminator}}  연결됨,
+        "connection": "{{username}}#{{discriminator}}  연결됨",
         "results": "{{category}} 의 검색결과에서 {{total}} 중 {{start}}-{{end}} 표시 중",
         "query": "쿼리: {{query}}"
     },
