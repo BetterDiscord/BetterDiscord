@@ -149,7 +149,8 @@ export default Utilities.memoizeObject({
         const guildsWrapper = WebpackModules.getByProps("base", "guilds");
         const guilds = WebpackModules.getByProps("wrapper", "acronym");
         const pill = WebpackModules.getByProps("circleIconButton");
-        const listItem = WebpackModules.getByProps("listItem");
+        const listItemModules = WebpackModules.getAllByProps("listItem");
+        const listItem = listItemModules[listItemModules.length - 1];
         return Object.assign({}, guildsWrapper, listItem, guilds, pill);
     },
 
