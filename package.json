@@ -1,6 +1,6 @@
 {
     "name": "betterdiscord",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "description": "Enhances Discord by adding functionality and themes.",
     "main": "src/index.js",
     "scripts": {
