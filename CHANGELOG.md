@@ -3,6 +3,18 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## 1.3.0
+
+### Added
+
+### Removed
+
+### Changed
+- Startup now waits for current user to be populated or for CONNECTION_OPEN event
+
+### Fixed
+- Fixed emote menu causing crashes
+
 ## 1.2.4
 
 ### Added
