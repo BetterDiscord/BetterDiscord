@@ -52,8 +52,8 @@ export default new class Core {
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
-        Logger.log("Startup", "Waiting for guilds...");
-        await this.waitForGuilds();
+        Logger.log("Startup", "Waiting for connection...");
+        await this.waitForConnection();
 
         Logger.log("Startup", "Initializing ReactComponents");
         ReactComponents.initialize();
@@ -103,19 +103,10 @@ export default new class Core {
         };
     }
 
-    waitForGuilds() {
-        // TODO: experiment with waiting for CONNECTION_OPEN event instead
-        const GuildClasses = DiscordModules.GuildClasses;
-        return new Promise(resolve => {
-            const checkForGuilds = function () {
-                if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
-                const guildList = GuildClasses.guilds.split(" ")[0];
-                const guild = GuildClasses.listItem.split(" ")[0];
-                if (document.querySelectorAll(`.${guildList} .${guild}`).length > 0) return resolve();
-                setTimeout(checkForGuilds, 100);
-            };
-
-            checkForGuilds();
+    waitForConnection() {
+        return new Promise(done => {
+            if (DiscordModules.UserStore.getCurrentUser()) return done();
+            DiscordModules.Dispatcher.subscribe("CONNECTION_OPEN", done);
         });
     }
 
