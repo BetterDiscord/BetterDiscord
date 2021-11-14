@@ -35,7 +35,7 @@ export default new class EmoteMenu extends Builtin {
                     if (!head || !body) return childrenReturn;
 
                     const isActive = activePicker == "bd-emotes";
-                    const tabProps = head[0].props;
+                    const TabItem = head[0]?.type ?? (() => null);
 
                     if (!isActive && activePicker == "emoji" && this.hideEmojis) {
                         useExpressionPickerStore.setState({activeView: "bd-emotes"});
@@ -47,16 +47,14 @@ export default new class EmoteMenu extends Builtin {
                     }
 
                     head.push(
-                        React.createElement("div", {
-                            "id": "bd-emotes-tab",
-                            "role": "tab",
+                        React.createElement(TabItem, {
+                            "aria-controls": "bd-emotes",
+                            "id": "bd-emotes",
                             "aria-selected": isActive,
-                            "className": tabProps.className,
-                        }, React.createElement(tabProps.children.type, {
-                            viewType: "bd-emotes",
-                            isActive: isActive,
+                            "isActive": isActive,
+                            "viewType": "bd-emotes"
                         }, "Twitch")
-                    ));
+                    );
                     if (isActive) {
                         body.push(
                             React.createElement(EmoteMenuCard, {
