@@ -46,7 +46,10 @@ console.log(`Injecting into ${release}`);
 if (!fs.existsSync(discordPath)) throw new Error(`Cannot find directory for ${release}`);
 console.log(`    ✅ Found ${release} in ${discordPath}`);
 
-const appPath = path.join(discordPath, "app");
+const appPath = (function() {
+    if (fs.existsSync(path.join(discordPath, "index.js"))) return discordPath;
+    return path.join(discordPath, "app");
+})();
 const packageJson = path.join(appPath, "package.json");
 const indexJs = path.join(appPath, "index.js");
 
