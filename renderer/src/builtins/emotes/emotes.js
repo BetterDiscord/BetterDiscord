@@ -26,7 +26,7 @@ const Emotes = {
 
 const blocklist = [];
 const overrides = ["twitch", "subscriber", "bttv", "ffz"];
-const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
+const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap", "wide"];
 
  export default new class EmoteModule extends Builtin {
     get name() {return "Emotes";}

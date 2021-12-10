@@ -58,6 +58,11 @@
     transform: scaleX(-1);
 }
 
+.emotewide {
+    width: 6rem !important;
+    object-fit: fill;
+}
+
 .emotespin {
     animation: 1s emote-spin infinite linear;
 }
