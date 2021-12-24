@@ -1,14 +1,14 @@
 {
     "Panels": {
-        "plugins": "Плагины",
+        "plugins": "已安装的 Java-脚本",
         "themes": "Темы",
-        "customcss": "Быстрый CSS"
+        "customcss": "您的 KSS(CSS) "
     },
     "Collections": {
         "settings": {
-            "name": "Настройки",
+            "name": "選項",
             "general": {
-                "name": "Основные",
+                "name": "",
                 "emotes": {
                     "name": "",
                     "note": ""
@@ -18,11 +18,11 @@
                     "note": "Отображает кнопку публичных серверов"
                 },
                 "voiceDisconnect": {
-                    "name": "Отключение голосового чата",
-                    "note": "Отключает от голосового чата, когда Discord закрыт"
+                    "name": "掛斷電話",
+                    "note": "應用程序關閉時結束語音"
                 },
                 "showToasts": {
-                    "name": "Показывать уведомления",
+                    "name": "",
                     "note": "Показывает небольшие уведомления с важной информацией"
                 },
                 "mediaKeys": {
