@@ -19,15 +19,15 @@
                 },
                 "voiceDisconnect": {
                     "name": "Desconexão de Voz",
-                    "note": "Desconecta do servidor de voz quando o discord é fechado"
+                    "note": "Desconecta do servidor de voz quando o Discord é fechado"
                 },
                 "showToasts": {
                     "name": "Mostrar Toasts",
                     "note": "Mostra uma pequena notificação para informações importantes"
                 },
                 "mediaKeys": {
-                    "name": "Desabilitar Teclas de Media",
-                    "note": "Previne que o discord roube suas teclas de media depois de dar play em um vídeo"
+                    "name": "Desabilitar Teclas de Mídia",
+                    "note": "Previne que o Discord roube suas teclas de mídia depois de dar play em um vídeo"
                 }
             },
             "appearance": {
@@ -56,7 +56,7 @@
             "window": {
                 "removeMinimumSize": {
                     "name": "Remover Tamanho Mínimo",
-                    "note": "Remove o tamanho mínimo forçado pelo discord de 940x500"
+                    "note": "Remove o tamanho mínimo forçado pelo Discord de 940x500"
                 },
                 "name": "Preferências da Janela",
                 "transparency": {
@@ -72,7 +72,7 @@
                 "name": "Gerenciador de Addons",
                 "addonErrors": {
                     "name": "Mostrar erros dos Addons",
-                    "note": "Mostra um modal com os erros do plugin/tema"
+                    "note": "Mostra uma janela com os erros do plugin/tema"
                 },
                 "autoReload": {
                     "name": "Carregamento Automático",
@@ -91,11 +91,11 @@
                 "name": "CSS Personalizado",
                 "customcss": {
                     "name": "CSS Personalizado",
-                    "note": "Habilita a aba de css personalizado"
+                    "note": "Habilita a aba de CSS Personalizado"
                 },
                 "liveUpdate": {
                     "name": "Atualização em Tempo Real",
-                    "note": "Atualiza o css à medida que você digita"
+                    "note": "Atualiza o CSS à medida que você digita"
                 },
                 "startDetached": {
                     "name": "Iniciar Separado",
@@ -123,7 +123,7 @@
                 },
                 "reactDevTools": {
                     "name": "React Developer Tools",
-                    "note": "Injeta a sua instalação local do React Developer Tools no discord"
+                    "note": "Injeta a sua instalação local do React Developer Tools no Discord"
                 },
                 "inspectElement": {
                     "name": "Atalho para Inspecionar Elemento",
@@ -131,7 +131,7 @@
                 },
                 "devToolsWarning": {
                     "name": "Remove os Avisos de DevTools",
-                    "note": "Faz o discord parar de imprimir as mensagens de \"Calma Aí!\""
+                    "note": "Faz o Discord parar de exibir as mensagens de \"Calma Aí!\""
                 },
                 "debugLogs": {
                     "name": "Registro de Depuração",
@@ -149,7 +149,7 @@
                 },
                 "emoteMenu": {
                     "name": "Menu de Emotes",
-                    "note": "Mostra os emotes favoritos e da twitch no menu"
+                    "note": "Mostra os emotes favoritos e da Twitch no menu"
                 },
                 "hideEmojiMenu": {
                     "name": "Esconder o Menu de Emojis",
@@ -172,11 +172,11 @@
                 "name": "Categorias",
                 "twitchglobal": {
                     "name": "Globais da Twitch",
-                    "note": "Mostra os emotes globais da twitch"
+                    "note": "Mostra os emotes globais da Twitch"
                 },
                 "twitchsubscriber": {
                     "name": "Subscribers da Twitch",
-                    "note": "Mostra os emotes de subscribers da twitch"
+                    "note": "Mostra os emotes de subscribers da Twitch"
                 },
                 "frankerfacez": {
                     "name": "FrankerFaceZ",
@@ -192,7 +192,7 @@
     "Addons": {
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "por {{author}}",
-        "openFolder": "Abrir Pasta de {{type}}s",
+        "openFolder": "Abrir Pasta de {{type}}",
         "reload": "Recarregar",
         "addonSettings": "Configurações",
         "website": "Site",
@@ -283,7 +283,7 @@
         "restartNow": "Reiniciar Agora",
         "restartLater": "Reiniciar Mais Tarde",
         "additionalInfo": "Informações Adicionais",
-        "restartPrompt": "Para as mudanças terem efeito o discord precisa ser reinciado. Você deseja reiniciar agora?"
+        "restartPrompt": "Para as mudanças terem efeito o Discord precisa ser reinciado. Você deseja reiniciar agora?"
     },
     "ReactDevTools": {
         "notFound": "Extensão Não Encontrada",
@@ -309,6 +309,6 @@
     },
     "WindowPrefs": {
         "enabledInfo": "Essa opção necessita de um tema transparente para funcionar corretamente. No Windows isso pode quebrar o aero snapping e a maximização.\n\nO discord precisa ser reiniciado para as mudanças terem efeito. Você deseja reiniciar agora?",
-        "disabledInfo": "O discord precisa ser reiniciado para as mudanças terem efeito. Você deseja reiniciar agora?"
+        "disabledInfo": "O Discord precisa ser reiniciado para as mudanças terem efeito. Você deseja reiniciar agora?"
     }
 }
