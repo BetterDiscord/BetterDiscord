@@ -1,13 +1,11 @@
-import {React, WebpackModules} from "modules";
+import {React, DiscordClasses} from "modules";
 import SimpleMarkdown from "../../structs/markdown";
-
-const EmptyImageClasses = WebpackModules.getByProps("emptyImage") || {};
 
 export default class EmptyImage extends React.Component {
     render() {
-        return <div className={`bd-empty-image-container ${EmptyImageClasses.emptyContainer}` + (this.props.className ? ` ${this.props.className}` : "")}>
-                    <div className={`bd-empty-image ${EmptyImageClasses.emptyImage}`}></div>
-                    <div className={`bd-empty-image-header ${EmptyImageClasses.emptyHeader}`}>
+        return <div className={`bd-empty-image-container ${DiscordClasses.EmptyImage.emptyContainer}` + (this.props.className ? ` ${this.props.className}` : "")}>
+                    <div className={`bd-empty-image ${DiscordClasses.EmptyImage.emptyImage}`}></div>
+                    <div className={`bd-empty-image-header ${DiscordClasses.EmptyImage.emptyHeader}`}>
                         {this.props.title || "You don't have anything!"}
                     </div>
                     <div className={`bd-empty-image-message`}>

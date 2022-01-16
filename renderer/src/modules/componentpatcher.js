@@ -1,6 +1,7 @@
 import {Config} from "data";
 import WebpackModules from "./webpackmodules";
 import DiscordModules from "./discordmodules";
+import DiscordClasses from "./discordclasses";
 import Utilities from "./utilities";
 import Patcher from "./patcher";
 import BDLogo from "../ui/icons/bdlogo";
@@ -67,7 +68,7 @@ export default new class ComponentPatcher {
                 children[children.length - 2].type = newOne;
             }
 
-            const additional = DiscordModules.React.createElement("div", {className: "colorMuted-HdFt4q size12-3cLvbJ"}, `BetterDiscord ${Config.version}`);
+            const additional = DiscordModules.React.createElement("div", {className: `${DiscordClasses.Text.colorMuted} ${DiscordClasses.Text.size12}`}, `BetterDiscord ${Config.version}`);
 
 
             const originalVersions = children[children.length - 1].type;
