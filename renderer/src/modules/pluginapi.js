@@ -5,6 +5,7 @@ import DiscordModules from "./discordmodules";
 import DataStore from "./datastore";
 import DOMManager from "./dommanager";
 import Toasts from "../ui/toasts";
+import Notices from "../ui/notices";
 import Modals from "../ui/modals";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
@@ -111,6 +112,19 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
  */
 BdApi.showToast = function(content, options = {}) {
     Toasts.show(content, options);
+};
+
+/**
+ * Show a notice above discord's chat layer.
+ * @param {string|Node} content Content of the notice
+ * @param {object} options Options for the notice.
+ * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
+ * @param {Array<{label: string, onClick: (immediately?: boolean = false) => void}>} [options.buttons] Buttons that should be added next to the notice text.
+ * @param {number} [options.timeout=10000] Timeout until the notice is closed. Won't fire if it's set to 0;
+ * @returns {(immediately?: boolean = false) => void}
+ */
+ BdApi.showNotice = function (content, options = {}) {
+    return Notices.show(content, options);
 };
 
 // Finds module
