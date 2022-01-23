@@ -43,3 +43,9 @@
 .bd-link:hover {
     text-decoration: underline;
 }
+
+.bd-divider {
+    width: 100%;
+    height: 1px;
+    border-top: thin solid hsl(0deg 0% 100% / 6%);
+}
