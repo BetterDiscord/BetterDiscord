@@ -36,13 +36,11 @@ export default class Notices {
      * @returns {(immediately?: boolean = false) => void}
      */
     static show(content, options = {}) {
-        const {type, buttons = [], timeout = 10000} = options;
+        const {type, buttons = [], timeout = 0} = options;
         const haveContainer = this.ensureContainer();
         if (!haveContainer) return;
 
         const closeNotification = function (immediately = false) {
-            if (noticeElement == null) return false; // Check if it's already been removed
-
             // Immediately remove the notice without adding the closing class.
             if (immediately) return noticeElement.remove();
 
