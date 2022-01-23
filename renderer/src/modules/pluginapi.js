@@ -116,11 +116,11 @@ BdApi.showToast = function(content, options = {}) {
 
 /**
  * Show a notice above discord's chat layer.
- * @param {string} content Content of the notice
+ * @param {string|Node} content Content of the notice
  * @param {object} options Options for the notice.
  * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
  * @param {Array<{label: string, onClick: (immediately?: boolean = false) => void}>} [options.buttons] Buttons that should be added next to the notice text.
- * @param {number} [options.timeout=10000] Timeout until the toast is closed. Won't fire if it's set to 0;
+ * @param {number} [options.timeout=10000] Timeout until the notice is closed. Won't fire if it's set to 0;
  * @returns {(immediately?: boolean = false) => void}
  */
  BdApi.showNotice = function (content, options = {}) {
