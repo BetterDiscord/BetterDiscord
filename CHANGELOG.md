@@ -3,6 +3,22 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## 1.4.0
+
+### Added
+- Notices API (Thanks [Strencher](https://github.com/Strencher))
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed outdates styles and classnames (Thanks [Strencher](https://github.com/Strencher))
+- Fixed guild list classes being overwritten causing the public server button to not show
+- Fixed finding the wrong module for `ActionTypes` in custom css module
+- Fixed not removing customcss upon disable
+- Fixed media keys commandline switch not being applied
+
 ## 1.3.0
 
 ### Added

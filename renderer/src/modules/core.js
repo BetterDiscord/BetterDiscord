@@ -127,8 +127,8 @@ export default new class Core {
         if (!hasUpdate) return;
 
         // TODO: move to strings file when updater is complete.
-        Modals.showConfirmationModal("Update Available", `BetterDiscord (${Config.version}) has an available update available (${remoteVersion}). Would you like to update now?`, {
-            confirmText: "Update",
+        Modals.showConfirmationModal("Update Available", `BetterDiscord (v${Config.version}) has an update available (v${remoteVersion}). Would you like to update now?`, {
+            confirmText: "Update Now!",
             cancelText: "Skip",
             onConfirm: () => this.update(data)
         });
