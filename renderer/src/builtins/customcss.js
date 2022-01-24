@@ -9,7 +9,7 @@ const fs = require("fs");
 const electron = require("electron");
 const UserSettings = WebpackModules.getByProps("updateAccount");
 const Dispatcher = WebpackModules.getByProps("dirtyDispatch");
-const ActionTypes = WebpackModules.getByProps("ActionTypes").ActionTypes;
+const ActionTypes = WebpackModules.getByProps("ActionTypes", "ActivityFlags").ActionTypes;
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
@@ -52,6 +52,7 @@ export default new class CustomCSS extends Builtin {
     disabled() {
         Settings.removePanel(this.id);
         this.unwatchContent();
+        this.insertCSS("");
     }
 
     watchContent() {
@@ -150,6 +151,6 @@ export default new class CustomCSS extends Builtin {
         });
         this.isDetached = true;
         UserSettings.close();
-        Dispatcher.dirtyDispatch({type: ActionTypes.LAYER_POP});
+        Dispatcher.dispatch({type: ActionTypes.LAYER_POP});
     }
 };
