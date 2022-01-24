@@ -1,4 +1,4 @@
-# BetterDiscord [![Language Grade][lgtm-badge]][lgtm-link] ![GitHub Releases][downloads-badge] [![Patreon][patreon-badge]][patreon-link] [![Paypal][paypal-badge]][paypal-link]
+# BetterDiscord [![Language Grade][lgtm-badge]][lgtm-link] ![GitHub Releases][downloads-badge]
 
 [patreon-badge]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3DZerebos%26type%3Dpatrons&style=flat-square
 [patreon-link]: https://patreon.com/Zerebos

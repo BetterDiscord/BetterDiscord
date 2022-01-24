@@ -149,8 +149,8 @@ export default Utilities.memoizeObject({
         const guildsWrapper = WebpackModules.getByProps("base", "guilds");
         const guilds = WebpackModules.getByProps("wrapper", "acronym");
         const pill = WebpackModules.getByProps("circleIconButton");
-        const listItem = WebpackModules.getModule(m => m.listItem && !m.pill);
-        return Object.assign({}, guildsWrapper, listItem, guilds, pill);
+        const listItem = WebpackModules.getModule(m => m.listItem && !m.pill && !m.sidebar);
+        return Object.assign({}, guildsWrapper, guilds, pill, listItem);
     },
 
     get LayerStack() {return WebpackModules.getByProps("pushLayer");}

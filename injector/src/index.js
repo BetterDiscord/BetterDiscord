@@ -31,3 +31,8 @@ if (process.platform == "win32" || process.platform == "darwin") {
     Module._load(path.join(basePath, pkg.main), null, true);
 }
 
+// Needs to run this after Discord but before ready()
+if (!process.argv.includes("--vanilla")) {
+    const BetterDiscord = require("./modules/betterdiscord").default;
+    BetterDiscord.disableMediaKeys();
+}
