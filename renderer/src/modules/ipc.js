@@ -20,6 +20,10 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.CLOSE_DEVTOOLS);
     }
 
+    toggleDevTools() {
+        return ipc.send(IPCEvents.TOGGLE_DEVTOOLS);
+    }
+
     relaunch() {
         return ipc.send(IPCEvents.RELAUNCH);
     }

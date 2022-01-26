@@ -102,9 +102,13 @@
             },
             "developer": {
                 "name": "Developer Settings",
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "Enables toggling DevTools with ctrl+shift+i"
+                },
                 "debuggerHotkey": {
                     "name": "Debugger Hotkey",
-                    "note": "Allows activating debugger when pressing F8"
+                    "note": "Allows activating debugger when pressing F8 with DevTools open"
                 },
                 "reactDevTools": {
                     "name": "React Developer Tools",
