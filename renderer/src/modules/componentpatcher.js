@@ -31,15 +31,9 @@ export default new class ComponentPatcher {
     debug(...message) {return Logger.debug("ComponentPatcher", ...message);}
 
     initialize() {
-        this.guildsClasses = WebpackModules.getByProps("downloadProgressCircle", "guilds");
-
         Utilities.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
-    
         Utilities.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
         Utilities.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
-        /*
-        Utilities.suppressErrors(this.patchGuildSeparator.bind(this), "BD Guild Separator Patch")();
-        */
         Utilities.suppressErrors(this.patchMessageHeader.bind(this), "BD Message Header Patch")();
         Utilities.suppressErrors(this.patchMemberList.bind(this), "BD Member List Patch")();
         Utilities.suppressErrors(this.patchProfile.bind(this), "BD Profile Badges Patch")();
@@ -79,26 +73,13 @@ export default new class ComponentPatcher {
             };
         });
     }
-
-    async forceUpdateGuilds() {
-        const guildClasses = this.guildsClasses;
-        if (!guildClasses) return this.warn("Failed to get guilds classes!");
-
-        const guilds = await new Promise((resolve) => Utilities.onAdded(`.${guildClasses.guilds}`, resolve));
-        const instance = Utilities.getOwnerInstance(guilds);
-        if (!instance) return this.error("Failed to get Guilds instance.");
-
-        instance.forceUpdate();
-    }
     
-    /**
-     * @updated 24.09.2021
-     */
     patchGuildListItems() {
         if (this.guildListItemsPatch) return;
-        const GuildComponents = WebpackModules.getByProps("HubGuild");
-        
-        if (!GuildComponents || typeof(GuildComponents.default) !== "function") return this.error("Failed to get Guild component.");
+        const ListNavigators = WebpackModules.getByProps("ListNavigatorProvider");
+        const GuildComponent = WebpackModules.find(m => m.type && m.type.toString().includes("guildNode") && !m.type.toString().includes("Pending"));
+        if (!GuildComponent || typeof(GuildComponent.type) !== "function") return this.warn("Failed to get Guild component.");
+        if (!ListNavigators || typeof(ListNavigators.ListNavigatorProvider) !== "function") return this.warn("Failed to get ListNavigatorProvider component.");
 
         const isGuildMuted = function (guildId) {
             if (!MutedStore || typeof(MutedStore.isMuted) !== "function") return false;
@@ -106,48 +87,58 @@ export default new class ComponentPatcher {
             return MutedStore.isMuted(guildId);
         };
 
-        function BDGuild(props) {
-            const {originalGuild, ...guildProps} = props;
-            const returnValue = Reflect.apply(originalGuild, this, [guildProps]);
-
+        this.guildListItemsPatch = Patcher.after("ComponentPatcher", GuildComponent, "type", (_, [props], returnValue) => {
+            if (!returnValue || !returnValue.props) return;
+            
             try {
                 returnValue.props.className += " bd-guild";
-                if (guildProps.unread) returnValue.props.className += " bd-unread";
-                if (guildProps.selected) returnValue.props.className += " bd-selected";
-                if (guildProps.audio) returnValue.props.className += " bd-audio";
-                if (guildProps.video) returnValue.props.className += " bd-video";
-                if (guildProps.badge) returnValue.props.className += " bd-badge";
-                if (guildProps.animatable) returnValue.props.className += " bd-animatable";
-                if (guildProps.unavailable) returnValue.props.className += " bd-unavailable";
-                if (guildProps.screenshare) returnValue.props.className += " bd-screenshare";
-                if (guildProps.liveStage) returnValue.props.className += " bd-live-stage";
-                if (isGuildMuted(guildProps.guild.id)) returnValue.props.className += " bd-muted";
+                if (props.unread) returnValue.props.className += " bd-unread";
+                if (props.selected) returnValue.props.className += " bd-selected";
+                if (props.mediaState.audio) returnValue.props.className += " bd-audio";
+                if (props.mediaState.video) returnValue.props.className += " bd-video";
+                if (props.badge) returnValue.props.className += " bd-badge";
+                if (props.animatable) returnValue.props.className += " bd-animatable";
+                if (props.unavailable) returnValue.props.className += " bd-unavailable";
+                if (props.mediaState.screenshare) returnValue.props.className += " bd-screenshare";
+                if (props.mediaState.liveStage) returnValue.props.className += " bd-live-stage";
+                if (isGuildMuted(props.guild.id)) returnValue.props.className += " bd-muted";
             }
             catch (err) {
                 Logger.error("ComponentPatcher:Guilds", `Error inside BDGuild:`, err);
             }
-
-            return returnValue;
-        }
-
-        this.guildListItemsPatch = Patcher.after("ComponentPatcher", GuildComponents, "default", (_, args, returnValue) => {
-            if (!returnValue || !returnValue.props) return;
-            
-            const original = returnValue.type;
-            
-            Object.assign(returnValue.props, {
-                originalGuild: original
-            });
-
-            returnValue.type = BDGuild;
         });
 
-        this.forceUpdateGuilds();
+        const {useState} = DiscordModules.React;
+        function useForceUpdate() {
+            const [, setValue] = useState(false);
+            return () => setValue(v => !v); // update the state to force render
+        }
+
+        let hasForced = false;
+        this.cancelForceUpdate = Patcher.after("ComponentPatcher", ListNavigators, "ListNavigatorProvider", (_, __, returnValue) => {
+            if (returnValue.props.value.id !== "guildsnav") return;
+
+            const originalParent = Utilities.findInTree(returnValue, m => m?.props?.className, {walkable: ["children", "props"]});
+            if (!originalParent) return;
+            const original = originalParent.type;
+            originalParent.type = e => {
+                const forceUpdate = useForceUpdate();
+                if (!hasForced) {
+                    hasForced = true;
+                    setTimeout(() => {
+                        forceUpdate();
+                        this.cancelForceUpdate();
+                    }, 1);
+                }
+
+                return Reflect.apply(original, null, [e]);
+            };
+        });
     }
     
     patchGuildPills() {
         if (this.guildPillPatch) return;
-        const guildPill = WebpackModules.getModule(m => m.default && !m.default.displayName && m.default.toString && m.default.toString().includes("translate3d"));
+        const guildPill = WebpackModules.find(m => m.default.displayName === "AnimatedHalfPill");
         if (!guildPill) return;
         this.guildPillPatch = Patcher.after("ComponentPatcher", guildPill, "default", (_, args, returnValue) => {
             const props = args[0];
@@ -157,27 +148,7 @@ export default new class ComponentPatcher {
             return returnValue;
         });
     }
-    /*
-    patchGuildSeparator() {
-        if (this.guildSeparatorPatch) return;
-        const Guilds = WebpackModules.getByDisplayName("Guilds");
-        const guildComponents = WebpackModules.getByProps("renderListItem");
-        if (!guildComponents || !Guilds) return;
-        const GuildSeparator = function() {
-            const returnValue = guildComponents.Separator(...arguments); // eslint-disable-line new-cap
-            returnValue.props.className += " bd-guild-separator";
-            return returnValue;
-        };
-        this.guildSeparatorPatch = Patcher.after("ComponentPatcher", Guilds.prototype, "render", (_, __, returnValue) => {
-            const Separator = Utilities.findInReactTree(returnValue, m => m.type && !m.type.displayName && typeof(m.type) == "function" && Utilities.isEmpty(m.props));
-            if (!Separator) return;
-            Separator.type = GuildSeparator;
-        });
-    }*/
 
-    /**
-     * @updated 07.07.2021
-     */
     patchMessageHeader() {
         if (this.messageHeaderPatch) return;
         const MessageTimestamp = WebpackModules.getModule(m => m?.default?.toString().indexOf("showTimestampOnHover") > -1);
@@ -195,9 +166,6 @@ export default new class ComponentPatcher {
         });
     }
 
-    /**
-     * @updated 07.07.2021
-     */
     patchMemberList() {
         if (this.memberListPatch) return;
         const MemberListItem = WebpackModules.findByDisplayName("MemberListItem");
@@ -215,9 +183,6 @@ export default new class ComponentPatcher {
         });
     }
 
-    /**
-     * @updated 07.07.2021
-     */
     patchProfile() {
         if (this.profilePatch) return;
         const UserProfileBadgeList = WebpackModules.getModule(m => m?.default?.displayName === "UserProfileBadgeList");
@@ -236,25 +201,3 @@ export default new class ComponentPatcher {
     }
 
 };
-
-// as part of utility classes, i would like a way to distinguish channel types from the .content-3at_AU element. other than that, can't think of anything
-
-// Tropical's notes
-
-/*
-html [maximized | bd | stable | canary | ptb]
-.iconWrapper-2OrFZ1 [type]
-.sidebar-2K8pFh [guild-id]
-.wrapper-2jXpOf [voice | text | announcement | store | private | nsfw | rules]
-.chat-3bRxxu [channnel-name | guild-id]
-.listItem-2P_4kh [type | state]
-.privateChannels-1nO12o [library-hidden]
-.member-3-YXUe [user-id]
-.message-2qnXI6 [type | author-id | group-end | message-content]
-.wrapper-3t9DeA [user-id | status]
-.userPopout-3XzG_A [user-id]
-.root-SR8cQa [user-id]
-.contentRegion-3nDuYy [settings-page]
-.item-PXvHYJ [settings-page]
-.wrapper-35wsBm [valid | expired | joined]
-*/
