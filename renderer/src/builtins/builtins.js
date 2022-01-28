@@ -6,12 +6,6 @@ export {default as PublicServers} from "./general/publicservers";
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
 export {default as MediaKeys} from "./general/mediakeys";
 
-export {default as TwentyFourHour} from "./appearance/24hour";
-export {default as ColoredText} from "./appearance/coloredtext";
-export {default as HideGIFButton} from "./appearance/hidegifbutton";
-export {default as HideGiftButton} from "./appearance/hidegiftbutton";
-export {default as MinimalMode} from "./appearance/minimalmode";
-
 export {default as EmoteModule} from "./emotes/emotes";
 export {default as EmoteMenu} from "./emotes/emotemenu";
 // export {default as EmoteAutocaps} from "./emotes/emoteautocaps";
