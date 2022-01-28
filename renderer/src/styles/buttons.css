@@ -2,27 +2,27 @@
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: #3e82e5;
-    color: #fff;
+    background-color: #3E82E5;
+    color: #FFFFFF;
     border-radius: 3px;
     padding: 4px 8px;
     transition: background-color 0.17s ease, color 0.17s ease, opacity 250ms ease;
 }
 
 .bd-button:hover {
-    background-color: #3875ce;
+    background-color: #3875CE;
 }
 
 .bd-button:active {
-    background-color: #3268b7;
+    background-color: #3268B7;
 }
 
 .bd-button.bd-button-success {
-    background-color: #43b581;
+    background-color: #43B581;
 }
 
 .bd-button.bd-button-success:hover {
-    background-color: #3ca374;
+    background-color: #3CA374;
 }
 
 .bd-button.bd-button-success:active {
@@ -30,27 +30,27 @@
 }
 
 .bd-button.bd-button-warning {
-    background-color: #faa61a;
+    background-color: #FAA61A;
 }
 
 .bd-button.bd-button-warning:hover {
-    background-color: #e19517;
+    background-color: #E19517;
 }
 
 .bd-button.bd-button-warning:active {
-    background-color: #c88515;
+    background-color: #C88515;
 }
 
 .bd-button.bd-button-danger {
-    background-color: #f04747;
+    background-color: #F04747;
 }
 
 .bd-button.bd-button-danger:hover {
-    background-color: #d84040;
+    background-color: #D84040;
 }
 
 .bd-button.bd-button-danger:active {
-    background-color: #c03939;
+    background-color: #C03939;
 }
 
 .bd-button-disabled {

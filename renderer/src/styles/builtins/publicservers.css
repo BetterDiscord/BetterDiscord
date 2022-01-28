@@ -29,8 +29,8 @@
 }
 
 #bd-pub-button:hover {
-    color: #fff;
-    background-color: #3e82e5;
+    color: #FFFFFF;
+    background-color: #3E82E5;
 }
 
 #bd-connection {
@@ -38,7 +38,7 @@
 }
 
 .bd-footnote {
-    color: #b9bbbe;
+    color: #B9BBBE;
     font-size: 11px;
 }
 
@@ -204,7 +204,7 @@
 }
 
 .bd-server-count-dot {
-    background-color: #43b581;
+    background-color: #43B581;
     border-radius: 50%;
     width: 8px;
     height: 8px;
@@ -213,7 +213,7 @@
 }
 
 .bd-server-count + .bd-server-count .bd-server-count-dot {
-    background-color: #b9bbbe;
+    background-color: #B9BBBE;
 }
 
 .bd-server-count-text {
@@ -235,8 +235,8 @@
     padding: 0 4px;
     margin-top: 1px;
     border-radius: 3px;
-    background: #3e82e5;
-    color: #fff;
+    background: #3E82E5;
+    color: #FFFFFF;
 }
 
 .bd-pagination {

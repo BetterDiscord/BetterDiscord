@@ -3,7 +3,7 @@ import DOMManager from "./dommanager";
 export default new class Editor {
 
     async initialize() {
-        const baseUrl = "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min"
+        const baseUrl = "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0/min";
 
         Object.defineProperty(window, "MonacoEnvironment", {
             value: {

@@ -250,12 +250,13 @@ export default class WebpackModules {
     static get require() {
         if (this._require) return this._require;
         const id = "bd-webpackmodules";
-        let __webpack_require__ = undefined;
-        if (typeof (webpackJsonp) !== "undefined") {
+        let __webpack_require__;
+        if (typeof(webpackJsonp) !== "undefined") {
             __webpack_require__ = window.webpackJsonp.push([[], {
                 [id]: (module, exports, __internal_require__) => module.exports = __internal_require__
             }, [[id]]]);
-        } else if (typeof (window[this.chunkName]) !== "undefined") {
+        }
+        else if (typeof(window[this.chunkName]) !== "undefined") {
             window[this.chunkName].push([[id], 
                 {},
                 __internal_require__ => __webpack_require__ = __internal_require__

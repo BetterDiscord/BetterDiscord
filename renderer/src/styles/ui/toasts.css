@@ -45,7 +45,7 @@
 .bd-toast.toast-error,
 .bd-toast.toast-warning,
 .bd-toast.toast-warn {
-    color: #fff;
+    color: #FFFFFF;
 }
 
 .bd-toast.closing {
@@ -63,7 +63,7 @@
 }
 
 .bd-toast.toast-info {
-    background-color: #4a90e2;
+    background-color: #4A90E2;
 }
 
 .bd-toast.toast-info.icon {
@@ -71,7 +71,7 @@
 }
 
 .bd-toast.toast-success {
-    background-color: #43b581;
+    background-color: #43B581;
 }
 
 .bd-toast.toast-success.icon {
@@ -80,7 +80,7 @@
 
 .bd-toast.toast-danger,
 .bd-toast.toast-error {
-    background-color: #f04747;
+    background-color: #F04747;
 }
 
 .bd-toast.toast-danger.icon,
@@ -90,7 +90,7 @@
 
 .bd-toast.toast-warning,
 .bd-toast.toast-warn {
-    background-color: #ffa600;
+    background-color: #FFA600;
 }
 
 .bd-toast.toast-warning.icon,

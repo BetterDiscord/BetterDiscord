@@ -23,7 +23,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #3e82e5;
+    background: #3E82E5;
     padding: 20px;
     border-radius: 20px;
 }

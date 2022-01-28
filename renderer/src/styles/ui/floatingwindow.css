@@ -38,7 +38,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #fff;
+    color: #FFFFFF;
     background: var(--background-tertiary); /* #2F3129background-color: #202225; */
 }
 
@@ -46,7 +46,7 @@
     display: flex;
     flex-direction: column;
     background: var(--background-secondary);
-    color: #fff;
+    color: #FFFFFF;
     flex: 1;
     overflow: hidden;
 }
@@ -88,8 +88,8 @@
 }
 
 .floating-window-buttons .close-button:hover {
-    background: #f04747;
-    color: #fff;
+    background: #F04747;
+    color: #FFFFFF;
 }
 
 .floating-window-content #bd-editor-panel {

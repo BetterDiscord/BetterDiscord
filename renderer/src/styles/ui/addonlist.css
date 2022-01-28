@@ -1,11 +1,11 @@
 .bd-reload {
     cursor: pointer;
     vertical-align: top;
-    fill: #dcddde;
+    fill: #DCDDDE;
 }
 
 .bd-reload:hover {
-    fill: #fff;
+    fill: #FFFFFF;
 }
 
 .bd-reload-header {
@@ -156,7 +156,7 @@
 }
 
 .bd-controls > .bd-addon-button svg {
-    fill: #fff;
+    fill: #FFFFFF;
 }
 
 .bd-controls > .bd-addon-button:first-of-type {
@@ -214,7 +214,7 @@
 }
 
 .bd-addon-modal-footer .bd-button {
-    background-color: #3e82e5;
+    background-color: #3E82E5;
 }
 
 .bd-addon-modal-footer .bd-button:hover {
@@ -240,7 +240,7 @@
 }
 
 .bd-addon-views .bd-view-button.selected svg {
-    fill: #fff;
+    fill: #FFFFFF;
 }
 
 .bd-addon-views .bd-view-button:hover {
@@ -252,7 +252,7 @@
 }
 
 .bd-addon-views .bd-view-button.selected {
-    background-color: #3e82e5;
+    background-color: #3E82E5;
 }
 
 .bd-addon-views .bd-view-button + .bd-view-button {
