@@ -11,11 +11,17 @@ const Button = WebpackModules.getByProps("DropdownSizes");
 export default class StoreCard extends React.Component {
     get thumbnail() {return `https://${WEB_HOSTNAME}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;}
 
-    install = () => {
+    install = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         Modals.showInstallationModal({...this.props});
     }
 
     preview = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         Modals.showImageModal(this.thumbnail, {
             width: Utilities.getNestedProp(event, "target.naturalWidth"), 
             height: Utilities.getNestedProp(event, "target.naturalHeight")
