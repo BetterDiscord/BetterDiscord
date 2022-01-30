@@ -138,7 +138,7 @@ export default class PublicServers extends React.Component {
     }
 
     get searchBox() {
-        return <SearchBar onChange={this.searchKeyDown} className="bd-server-search" placeholder={`${Strings.PublicServers.search}...`} value={this.state.query} />;
+        return <SearchBar onKeyDown={this.searchKeyDown} className="bd-server-search" placeholder={`${Strings.PublicServers.search}...`} value={this.state.query} />;
     }
 
     get title() {
