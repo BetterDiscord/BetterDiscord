@@ -46,7 +46,7 @@
 }
 
 .bd-search-icon {
-    color: var(--interactive-normal);
+    color: var(--text-muted);
     box-sizing: border-box;
     display: flex;
     justify-content: center;
@@ -57,6 +57,7 @@
 
 .bd-search-icon.clickable {
     cursor: pointer;
+    color: var(--interactive-normal);
 }
 
 .bd-search-icon.clickable:hover {
