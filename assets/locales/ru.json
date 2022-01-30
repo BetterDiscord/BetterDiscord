@@ -228,7 +228,7 @@
         "compileError": "Не удалось скомпилировать.",
         "wasUnloaded": "{{name}} был выгружен.",
         "blankSlateHeader": "У вас нету {{type}}",
-        "blankSlateMessage": "Возьмите что-то с [этого сайта]({{link}}) и добавьте их в свою папку {{type}}."
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "У вас есть не сохраненные изменения в быстром CSS.  При закрытии этого окна все изменения будут потеряны.",

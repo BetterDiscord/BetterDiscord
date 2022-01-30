@@ -228,7 +228,7 @@
         "compileError": "Błąd kompilacji.",
         "wasUnloaded": "Dodatek {{name}} został odładowany.",
         "blankSlateHeader": "Wygląda na to, że nic tu nie ma!",
-        "blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu."
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okienka spowoduje utratę danych.",

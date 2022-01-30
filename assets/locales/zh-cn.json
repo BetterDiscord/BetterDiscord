@@ -228,7 +228,7 @@
         "compileError": "无法编译。",
         "wasUnloaded": "已卸载{{name}}。",
         "blankSlateHeader": "你还添加任何{{type}}！",
-        "blankSlateMessage": "你可以在[此网站]({{link}})中获取，并将其添加到你的{{type}}文件夹中。"
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "你还有未保存的更改，关闭此窗口将失去所有对自定义样式所做的更改。",

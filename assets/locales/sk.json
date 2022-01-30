@@ -228,7 +228,7 @@
         "compileError": "Nepodarilo sa zostaviť.",
         "wasUnloaded": "{{name}} bol odpojený.",
         "blankSlateHeader": "Nenachádza sa žiadny/žiadna {{type}}!",
-        "blankSlateMessage": "Nájdi nejaké na [tejto stránke]({{link}}) a pridaj ich do zložky pre {{type}}."
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "Máte neuložené zmeny pre Custom CSS. Zatvorením tohto okna stratíte všetky zmeny.",

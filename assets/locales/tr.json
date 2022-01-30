@@ -228,7 +228,7 @@
         "compileError": "Derlenemedi.",
         "wasUnloaded": "{{name}} çıkarıldı.",
         "blankSlateHeader": "Hiç {{type}}(a/e)arın yok!",
-        "blankSlateMessage": "[Bu siteden]({{link}}) al ve {{type}} klasörüne ekle."
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "Özel CSS'inde kaydedilmemiş değişimler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
