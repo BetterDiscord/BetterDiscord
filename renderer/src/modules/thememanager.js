@@ -30,6 +30,7 @@ export default new class ThemeManager extends AddonManager {
             saveAddon: this.saveAddon.bind(this),
             editAddon: this.editAddon.bind(this),
             deleteAddon: this.deleteAddon.bind(this),
+            isLoaded: this.isLoaded.bind(this),
             prefix: this.prefix
         })});
         return errors;

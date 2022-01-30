@@ -4,6 +4,7 @@ import {WebpackModules, React, Settings, Strings, DOM, DiscordModules} from "mod
 import FormattableString from "../structs/string";
 import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
+import InstallationModal from "./installationmodal";
 
 export default class Modals {
 
@@ -13,6 +14,8 @@ export default class Modals {
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get ModalComponents() {return WebpackModules.getByProps("ModalRoot");}
     static get ModalClasses() {return WebpackModules.getByProps("modal", "content");}
+    static get MaskedLink() {return WebpackModules.getByDisplayName("MaskedLink");}
+    static get ImageModal() {return WebpackModules.getByDisplayName("ImageModal");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
     static get FlexElements() {return WebpackModules.getByProps("Child", "Align");}
     static get FormTitle() {return WebpackModules.findByDisplayName("FormTitle");}
@@ -92,6 +95,29 @@ export default class Modals {
                 onConfirm: onConfirm,
                 onCancel: onCancel
             }, props), content);
+        }, {modalKey: key});
+    }
+
+    static showImageModal(src, options = {}) {
+        const {key = undefined, width = undefined, height = undefined} = options;
+        const ImageModal = this.ImageModal;
+        const MaskedLink = this.MaskedLink;
+        const {ModalRoot, ModalSize} = this.ModalComponents;
+
+        return this.ModalActions.openModal(props => {
+            return React.createElement(ModalRoot, Object.assign({}, props, {
+                size: ModalSize.DYNAMIC,
+                className: "bd-image-modal"
+            }), React.createElement(ImageModal, Object.assign({
+                className: "bd-image-modal-image",
+                src: src,
+                placeholder: src,
+                original: src,
+                width: width,
+                height: height,
+                onClickUntrusted: link => link.openHref(),
+                renderLinkComponent: props => React.createElement(MaskedLink, props)
+            }, props)));
         }, {modalKey: key});
     }
 
@@ -236,5 +262,21 @@ export default class Modals {
         return this.ModalActions.openModal(props => {
             return React.createElement(modal, props);
         });
+    }
+
+    static showInstallationModal(options = {}) {
+        const {type, name, id, version, thumbnail_url, description, latest_source_url, author, folder} = options;
+        const {ModalRoot} = this.ModalComponents;
+
+        this.ModalActions.openModal(props => React.createElement(ModalRoot, Object.assign(props, {
+            size: "small",
+            className: "bd-installation-modal",
+            children: [
+                React.createElement(InstallationModal, {
+                    ...options,
+                    closeModal: props.onClose
+                })
+            ]
+        })));
     }
 }

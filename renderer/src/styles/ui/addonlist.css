@@ -1,11 +1,32 @@
+.bd-addon-list-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bd-addon-list-filters,
+.bd-addon-list-controls {
+    display: flex;
+    align-items: center;
+}
+
+.bd-addon-list-controls {
+    margin-top: 16px;
+}
+
+.bd-addon-list-controls .bd-searchbar {
+    flex: 1 1 auto;
+    margin-right: 8px;
+}
+
 .bd-reload {
     cursor: pointer;
     vertical-align: top;
-    fill: #DCDDDE;
+    fill: #dcddde;
 }
 
 .bd-reload:hover {
-    fill: #FFFFFF;
+    fill: #fff;
 }
 
 .bd-reload-header {
@@ -14,11 +35,6 @@
 
 .bd-reload-card {
     margin-right: 5px;
-}
-
-.bd-controls,
-.bd-controls-advanced {
-    display: flex;
 }
 
 .bd-addon-list {
@@ -60,7 +76,7 @@
 
 .bd-addon-header .bd-icon {
     margin-right: 8px;
-    fill: var(--header-primary);
+    color: var(--header-primary);
 }
 
 .bd-title,
@@ -146,6 +162,11 @@
     overflow: hidden;
 }
 
+.bd-controls,
+.bd-controls-advanced {
+    display: flex;
+}
+
 .bd-controls > .bd-addon-button {
     border-radius: 0;
     padding: 4px 6px;
@@ -156,7 +177,7 @@
 }
 
 .bd-controls > .bd-addon-button svg {
-    fill: #FFFFFF;
+    fill: #fff;
 }
 
 .bd-controls > .bd-addon-button:first-of-type {
@@ -169,26 +190,6 @@
 
 .bd-controls > .bd-addon-button:only-child {
     border-radius: 3px;
-}
-
-.bd-controls + .bd-addon-list {
-    margin-top: 10px;
-}
-
-.bd-addon-controls {
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-
-.bd-addon-controls .bd-search {
-    font-size: 13px;
-    margin: 0;
-    width: 200px;
-}
-
-.bd-addon-dropdowns {
-    display: flex;
 }
 
 /* Error Boundary stuff */
@@ -214,7 +215,7 @@
 }
 
 .bd-addon-modal-footer .bd-button {
-    background-color: #3E82E5;
+    background-color: #3e82e5;
 }
 
 .bd-addon-modal-footer .bd-button:hover {
@@ -240,7 +241,7 @@
 }
 
 .bd-addon-views .bd-view-button.selected svg {
-    fill: #FFFFFF;
+    fill: #fff;
 }
 
 .bd-addon-views .bd-view-button:hover {
@@ -252,7 +253,7 @@
 }
 
 .bd-addon-views .bd-view-button.selected {
-    background-color: #3E82E5;
+    background-color: #3e82e5;
 }
 
 .bd-addon-views .bd-view-button + .bd-view-button {

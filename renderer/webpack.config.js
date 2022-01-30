@@ -30,7 +30,9 @@ module.exports = {
       modules$: path.resolve("src", "modules"),
       data$: path.resolve("src", "modules"),
       builtins$: path.resolve("src", "modules"),
-      common: path.resolve(__dirname, "..", "common")
+      common: path.resolve(__dirname, "..", "common"),
+      structs: path.resolve(__dirname, "src", "structs"),
+      icons$: path.resolve(__dirname, "src", "ui", "icons", "index.js")
     }
   },
   module: {
@@ -45,7 +47,10 @@ module.exports = {
                   node: "12.14.1",
                   chrome: "83"
               }
-          }], "@babel/react"]
+          }], "@babel/react"],
+          plugins: [
+            "@babel/plugin-proposal-class-properties"
+          ]
         }
       },
       {
@@ -61,6 +66,10 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env.__VERSION__": JSON.stringify(basePkg.version)
+    }),
+    new webpack.ProvidePlugin({
+      React: [path.resolve(__dirname, "src/modules/modules.js"), "React"],
+      ReactDOM: [path.resolve(__dirname, "src/modules/modules.js"), "ReactDOM"]
     })
   ],
   optimization: {

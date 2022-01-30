@@ -1,22 +1,45 @@
-import {React} from "modules";
-import SearchIcon from "../../icons/search";
+import {React, Utilities} from "modules";
+import {Close, Search} from "icons";
 
-export default class Search extends React.Component {
+const Sizes = {
+    SMALL: "small",
+    LARGE: "large",
+    MEDIUM: "medium"
+};
+
+export default class SearchBar extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {value: this.props.value};
-        this.onChange = this.onChange.bind(this);
+
+        this.state = {
+            hasContent: !!props.value,
+            value: props.value || ""
+        };
     }
 
-    onChange(e) {
-        this.setState({value: e.target.value});
-        if (this.props.onChange) this.props.onChange(e);
+    static get Sizes() {return Sizes;}
+
+    static get defaultProps() {
+        return {
+            size: Sizes.SMALL,
+            disabled: false
+        };
+    }
+
+    onChange = ({target: {value}}) => {
+        this.setState({value, hasContent: !!value});
+        if (typeof(this.props.onChange) === "function") this.props.onChange(value);
     }
 
     render() {
-        return <div className={"bd-search-wrapper" + (this.props.className ? ` ${this.props.className}` : "")}>
-                    <input onChange={this.onChange} onKeyDown={this.props.onKeyDown} type="text" className="bd-search" placeholder={this.props.placeholder} maxLength="50" value={this.state.value} />
-                    <SearchIcon />
-                </div>;
+        const {className, size = Sizes.SMALL, placeholder, disabled = false} = this.props;
+
+        return <div className={Utilities.joinClassNames("bd-searchbar", className, {disabled}, Sizes[size.toUpperCase()] ?? "SMALL")}>
+            <input onChange={this.onChange} disabled={disabled} type="text" placeholder={placeholder} maxLength="50" value={this.state.value} />
+            <div onClick={() => this.onChange({target: {value: ""}})} className={Utilities.joinClassNames("bd-search-icon", {clickable: this.state.hasContent})} tabIndex="-1" role="button">
+                <Close className={Utilities.joinClassNames("bd-search-close", {visible: this.state.hasContent})}/>
+                <Search className={Utilities.joinClassNames({visible: !this.state.hasContent})} />
+            </div>
+        </div>;
     }
 }

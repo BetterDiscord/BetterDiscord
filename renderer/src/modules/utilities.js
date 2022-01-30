@@ -1,6 +1,7 @@
 import {Config} from "data";
 import Logger from "common/logger";
 import DOM from "./domtools";
+import ClassName from "../structs/classname";
 
 export default class Utilities {
 
@@ -341,5 +342,68 @@ export default class Utilities {
         }
 
         return null;
+    }
+
+    /**
+     * Returns a function, that, as long as it continues to be invoked, will not
+     * be triggered. The function will be called after it stops being called for
+     * N milliseconds.
+     * 
+     * Adapted from the version by David Walsh (https://davidwalsh.name/javascript-debounce-function)
+     * 
+     * @param {function} executor 
+     * @param {number} delay 
+     */
+     static debounce(executor, delay) {
+        let timeout;
+        return function(...args) {
+            const callback = () => {
+                timeout = null;
+                Reflect.apply(executor, null, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(callback, delay);
+        };
+    }
+
+    /**
+     * Builds a classname string from any number of arguments. This includes arrays and objects.
+     * When given an array all values from the array are added to the list.
+     * When given an object they keys are added as the classnames if the value is truthy.
+     * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
+     * @param {...Any} argument - anything that should be used to add classnames.
+     */
+     static joinClassNames() {
+        const classes = [];
+        const hasOwn = {}.hasOwnProperty;
+
+        for (let i = 0; i < arguments.length; i++) {
+            const arg = arguments[i];
+            if (!arg) continue;
+
+            const argType = typeof arg;
+
+            if (argType === "string" || argType === "number") {
+                classes.push(arg);
+            }
+            else if (Array.isArray(arg) && arg.length) {
+                const inner = this.joinClassNames(arg);
+                if (inner) {
+                    classes.push(inner);
+                }
+            }
+            else if (arg instanceof ClassName) {
+                classes.push(arg.toString());
+            }
+            else if (argType === "object") {
+                for (const key in arg) {
+                    if (hasOwn.call(arg, key) && arg[key]) {
+                        classes.push(key);
+                    }
+                }
+            }
+        }
+
+        return classes.join(" ");
     }
 }

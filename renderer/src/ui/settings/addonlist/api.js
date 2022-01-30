@@ -1,0 +1,70 @@
+import {Utilities} from "modules";
+import {API_URL, WEB_HOSTNAME} from "./constants";
+import https from "https";
+
+export const README_CACHE = {plugin: {}, theme: {}};
+export const API_CACHE = {plugin: [], theme: [], lastFetch: 0};
+
+export const splitArray = (array, max) => {
+    const newArray = [];
+    for (const child of array) {
+        let lastIndex = newArray.length ? newArray.length - 1 : 0;
+        if (!newArray[lastIndex]) {newArray.push([]);}
+        else if (newArray[lastIndex].length >= max) {
+            lastIndex++;
+            newArray.push([]);
+        }
+        newArray[lastIndex].push(child);
+    }
+
+    return newArray;
+};
+
+export async function fetchData(type) {
+    return new Promise(resolve => {
+        https.get(API_URL.format({type}), res => {
+            const chunks = [];
+            res.on("data", chunk => chunks.push(chunk));
+
+            res.on("end", () => {
+                const json = Utilities.testJSON(chunks.join(""));
+                if (!Array.isArray(json)) return res.emit("error");
+                resolve(splitArray(json, 30));
+            });
+
+            res.on("error", console.error);
+        });
+    });
+}
+
+export async function fetchReadme(type, addonId) {
+    if (README_CACHE[type][addonId]) return API_CACHE[type][addonId];
+
+    return new Promise(resolve => {
+        https.get(`https://${WEB_HOSTNAME}/${type}/${encodeURI(addonId)}`, res => {
+            try {
+                const chunks = [];
+                res.on("data", chunk => chunks.push(chunk));
+
+                res.on("end", () => {
+                    try {
+                        const rawHTML = chunks.join("");
+                        const parsed = Object.assign(document.createElement("div"), {
+                            innerHTML: rawHTML
+                        });
+                        const [readme] = parsed.getElementsByClassName("markdown-body");
+                        console.log({parsed, readme});
+                        README_CACHE[addonId] = readme.outerHTML;
+                        resolve(readme.outerHTML);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                });
+
+                res.on("error", console.error);
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    });
+}

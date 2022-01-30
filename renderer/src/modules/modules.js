@@ -1,7 +1,9 @@
 export {default as WebpackModules} from "./webpackmodules";
 
 import DiscordModules from "./discordmodules";
+/**@type {typeof import("react")} */
 export const React = DiscordModules.React;
+/**@type {typeof import("react-dom")} */
 export const ReactDOM = DiscordModules.ReactDOM;
 export {DiscordModules};
 
