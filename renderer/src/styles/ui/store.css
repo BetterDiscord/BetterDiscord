@@ -395,21 +395,92 @@
 
 /* Detailed View */
 
+.bd-store-tooltip {
+    --background-floating: var(--background-secondary);
+}
+
 .bd-addon-detailed .bd-addon-readme h1 {
     font-size: 20px;
 }
 
-.bd-addon-detailed > h1 {
-    font-size: 25px;
-}
-
 .bd-addon-detailed {
     color: #ddd;
+    user-select: text;
 }
 
 .bd-addon-details {
     display: flex;
     align-items: center;
+}
+
+.bd-addon-detailed {
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--background-tertiary);
+}
+
+.bd-addon-banner {
+    background: var(--background-secondary);
+    max-height: 250px;
+    overflow: hidden;
+    display: block;
+}
+
+.bd-addon-banner img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.bd-addon-head img {
+    margin-top: -70px;
+    margin-left: 10px;
+    border-radius: 100px;
+    border: 7px solid var(--background-tertiary);
+    background: var(--background-tertiary);
+}
+
+.bd-addon-subheader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.bd-addon-info {
+    display: inline-flex;
+}
+
+.bd-addon-head, .bd-addon-column {
+    padding: 0 15px;
+}
+
+.bd-addon-head {
+    padding-top: 15px;
+}
+
+.bd-addon-stats {
+    display: flex;
+    gap: 10px;
+}
+
+.bd-addon-name {
+    font-size: 25px;
+    margin-top: 10px;
+    font-weight: 500;
+    margin: 10px 0;
+}
+
+.bd-addon-description {
+    color: var(--header-secondary);
+}
+
+.bd-addon-column {
+    margin-top: 20px;
+    padding: 15px;
+    border-top: thin solid var(--background-modifier-accent);
+}
+
+.bd-addon-readme {
+    display: block;
 }
 
 /* Install Modal */
