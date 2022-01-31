@@ -171,6 +171,11 @@
         }
     },
     "Addons": {
+        "installed": "Installed",
+        "install": "Install",
+        "store": "Store",
+        "list": "List",
+        "grid": "Grid",
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "by {{author}}",
         "openFolder": "Open {{type}} Folder",
@@ -209,7 +214,16 @@
         "compileError": "Could not be compiled.",
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
-        "blankSlateMessage": "Download some from the store to get started."
+        "blankSlateMessage": "Download some from the store to get started.",
+        "installConfirmation": "Do you want to add this to your installed {{type}}s?",
+        "likes": "Likes",
+        "downloads": "Downloads",
+        "likesAmount": "{{amount}} likes",
+        "downloadsAmount": "{{amount}} downloads",
+        "back": "Back",
+        "next": "Next",
+        "downloadError": "Failed to download {{type}}: {{error}}",
+        "writeError": "Failed to write {{type}} to disk: {{error}}"
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",

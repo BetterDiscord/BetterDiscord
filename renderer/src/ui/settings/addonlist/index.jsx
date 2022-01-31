@@ -14,8 +14,7 @@ const Button = WebpackModules.getByProps("BorderColors");
 
 const Pages = {
     installed: {
-        // TODO: Add strings
-        get label() {return "Installed"},
+        get label() {return Strings.Addons.installed},
         component: AddonsPage,
         defaults: {
             sort: "name",
@@ -24,8 +23,7 @@ const Pages = {
         }
     },
     store: {
-        // TODO: Add strings
-        get label() {return "Store"},
+        get label() {return Strings.Addons.store},
         component: AddonStore,
         state: {
             selectedTag: "all"

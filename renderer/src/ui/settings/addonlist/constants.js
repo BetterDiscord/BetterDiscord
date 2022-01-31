@@ -14,25 +14,25 @@ export const CONTROLS = {
             {label: Strings.Sorting.ascending, value: true},
             {label: Strings.Sorting.descending, value: false}
         ],
-        viewOptions: [ // TODO: Add strings
-            {label: "List", value: "list"},
-            {label: "Grid", value: "grid"}
+        viewOptions: [
+            {label: Strings.Addons.list, value: "list"},
+            {label: Strings.Addons.grid, value: "grid"}
         ]
     },
     store: {
-        sortOptions: [ // TODO: Add strings
+        sortOptions: [
             {label: Strings.Addons.name, value: "name"},
-            {label: "Likes", value: "likes"},
-            {label: "Downloads", value: "downloads"},
+            {label: Strings.Addons.likes, value: "likes"},
+            {label: Strings.Addons.downloads, value: "downloads"},
             {label: Strings.Addons.added, value: "release_date"}
         ],
         directions: [
             {label: Strings.Sorting.ascending, value: true},
             {label: Strings.Sorting.descending, value: false}
         ],
-        viewOptions: [ // TODO: Add strings
-            {label: "List", value: "list"},
-            {label: "Grid", value: "grid"}
+        viewOptions: [
+            {label: Strings.Addons.list, value: "list"},
+            {label: Strings.Addons.grid, value: "grid"}
         ]
     }
 };

@@ -1,4 +1,4 @@
-import {React, Utilities, WebpackModules} from "modules";
+import {React, Strings, Utilities, WebpackModules} from "modules";
 import {API_CACHE, fetchData, fetchReadme, splitArray} from "./api";
 import {WEB_HOSTNAME} from "./constants";
 import {Heart, Download} from "icons";
@@ -192,10 +192,9 @@ export default class StorePage extends React.Component {
                 : this.state.isLoaded && <NoResults/>
             }
             {this.state.isLoaded && addons.length > 1 && <nav className="bd-page-control">
-                {/* TODO: Add strings */}
                 <Button look={Button.Looks.BLANK} className="bd-page-button" onClick={handleSelect(s => s - 1)} disabled={!canGoBackward}>
                     <Previous />
-                    Back
+                    {Strings.Addons.back}
                 </Button>
                 {addons.length
                     ? addons.map((_, index) => <div className={Utilities.joinClassNames("bd-page-item bd-page-button", {selected: index === this.state.selectedPage})} onClick={handleSelect(() => index)}>
@@ -203,9 +202,8 @@ export default class StorePage extends React.Component {
                     </div>)
                     : null
                 }
-                {/* TODO: Add strings */}
                 <Button look={Button.Looks.BLANK} className="bd-page-button" onClick={handleSelect(s => s + 1)} disabled={!canGoForward}>
-                    Next
+                    {Strings.Addons.next}
                     <Next />
                 </Button>
             </nav>}

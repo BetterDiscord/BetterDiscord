@@ -33,8 +33,7 @@ export default class InstallationModal extends React.Component {
                 response.on("end", () => {
                     const data = chunks.join("");
                     fs.writeFileSync(path.resolve(this.props.folder, filename), data, error => {
-                        // TODO: Add strings
-                        if (error) Toasts.show(`Failed to write ${this.props.type} to disk: ${error}`, {type: "error"});
+                        if (error) Toasts.show(Strings.Addons.writeError.format({ type: this.props.type, error }), {type: "error"});
                     });
                     this.props.closeModal();
                     this.setState({isInstalling: false});
@@ -42,8 +41,7 @@ export default class InstallationModal extends React.Component {
             });
         }
         catch (error) {
-            // TODO: Add strings
-            Toasts.show(`Failed to download ${this.props.type}: ${error}`, {type: "error"});
+            Toasts.show(Strings.Addons.downloadError.format({ type: this.props.type, error }), {type: "error"});
         }
         this.setState({isInstalling: true});
     }
@@ -57,12 +55,13 @@ export default class InstallationModal extends React.Component {
                 <Tooltip className="bd-installation-icon" color="primary" position="top" text={author.display_name}>
                     <img alt={author.display_name} src={`https://github.com/${author.github_name}.png?size=44`} />
                 </Tooltip>
-                <ModalComponents.ModalCloseButton onClick={() => {this.props.closeModal();}} className="bd-installation-close"/>
+                <ModalComponents.ModalCloseButton onClick={this.props.closeModal} className="bd-installation-close"/>
             </ModalComponents.ModalHeader>
             <ModalComponents.ModalContent className="bd-installation-content">
                 <h5 className={Utilities.joinClassNames("bd-installation-name", DiscordClasses.Text.size16, DiscordClasses.Text.colorHeaderPrimary)}>{name}</h5>
-                {/* TODO: Add strings */}
-                <div className={Utilities.joinClassNames(DiscordClasses.Text.size14, DiscordClasses.Text.colorHeaderSecondary)}>Do you want to add this to your installed {type}s?</div>
+                <div className={Utilities.joinClassNames(DiscordClasses.Text.size14, DiscordClasses.Text.colorHeaderSecondary)}>
+                    {Strings.Addons.installConfirmation.format({type})}
+                </div>
                 <ul className="bd-installation-info">
                     <InfoItem icon={<Description aria-label={Strings.Addons.description} />} id="bd-info-description" label={Strings.Addons.description}>
                         {description}

@@ -1,4 +1,4 @@
-import {React, Utilities, WebpackModules} from "modules";
+import {React, Strings, Utilities, WebpackModules} from "modules";
 import {WEB_HOSTNAME} from "./constants";
 import path from "path";
 import url, {urlToHttpOptions} from "url";
@@ -70,8 +70,7 @@ export default class StoreCard extends React.Component {
                 </div>
                 <div className="bd-store-card-footer">
                     <div className="bd-store-card-stats">
-                        {/* TODO: Add strings */}
-                        <Tooltip color="primary" position="top" text={`${likes.toLocaleString()} likes`}>
+                        <Tooltip color="primary" position="top" text={Strings.Addons.likesAmount.format({ amount: likes })}>
                             {props =>
                                 <div {...props} className="bd-store-card-stat">
                                     <Heart />
@@ -79,7 +78,7 @@ export default class StoreCard extends React.Component {
                                 </div>
                             }
                         </Tooltip>
-                        <Tooltip color="primary" position="top" text={`${downloads.toLocaleString()} downloads`}>
+                        <Tooltip color="primary" position="top" text={Strings.Addons.downloadsAmount.format({ amount: downloads })}>
                             {props =>
                                 <div {...props} className="bd-store-card-stat">
                                     <Download />
@@ -88,8 +87,9 @@ export default class StoreCard extends React.Component {
                             }
                         </Tooltip>
                     </div>
-                    {/* TODO: Add strings */}
-                    <Button color={Button.Colors.GREEN} size={Button.Sizes.SMALL} onClick={this.install} disabled={isInstalled}>Install{isInstalled ? "ed" : ""}</Button>
+                    <Button color={Button.Colors.GREEN} size={Button.Sizes.SMALL} onClick={this.install} disabled={isInstalled}>
+                        {isInstalled ? Strings.Addons.installed : Strings.Addons.install}
+                    </Button>
                 </div>
             </div>
         </div>;
