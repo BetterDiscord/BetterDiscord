@@ -170,6 +170,8 @@ export default class AddonList extends React.Component {
         this.setState({sortStyle: value});
     }
 
+    editAddon = (id) => this.props.editAddon(id);
+
     deleteAddon = async (id) => {
         const addon = this.props.addonList.find(a => a.id === id);
         const shouldDelete = await this.confirmDelete(addon);
@@ -250,8 +252,8 @@ export default class AddonList extends React.Component {
                 reload={this.props.reload}
                 onChange={this.props.onChange}
                 refreshList={this.props.refreshList}
-                editAddon={this.props.editAddon}
                 isLoaded={this.props.isLoaded}
+                editAddon={this.editAddon}
                 deleteAddon={this.deleteAddon}
                 view={this.viewStyle}
                 sort={this.sortStyle}
