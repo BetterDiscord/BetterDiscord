@@ -7,7 +7,7 @@ const basePkg = require("../package.json");
 module.exports = {
   mode: "development",
   target: "node",
-  devtool: "eval-source-map",
+  devtool: false,
   entry: "./src/index.js",
   output: {
     filename: "renderer.js",
@@ -37,20 +37,12 @@ module.exports = {
     rules: [
       {
         test: /.jsx?$/,
-        loader: "babel-loader",
         exclude: /node_modules/,
-        query: {
-          presets: [["@babel/env", {
-              targets: {
-                  node: "12.14.1",
-                  chrome: "83"
-              }
-          }], "@babel/react"]
-        }
+        use: ["babel-loader"]
       },
       {
         test: /\.css$/i,
-        use: ["css-loader", "postcss-loader"],
+        use: [{loader: "css-loader", options: {"url": false, "import": false}}, "postcss-loader"],
       }
     ]
   },

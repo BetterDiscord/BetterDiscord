@@ -250,22 +250,22 @@ export default class WebpackModules {
     static get require() {
         if (this._require) return this._require;
         const id = "bd-webpackmodules";
-        let __webpack_require__;
+        let __discord_webpack_require__;
         if (typeof(webpackJsonp) !== "undefined") {
-            __webpack_require__ = window.webpackJsonp.push([[], {
+            __discord_webpack_require__ = window.webpackJsonp.push([[], {
                 [id]: (module, exports, __internal_require__) => module.exports = __internal_require__
             }, [[id]]]);
         }
         else if (typeof(window[this.chunkName]) !== "undefined") {
             window[this.chunkName].push([[id], 
                 {},
-                __internal_require__ => __webpack_require__ = __internal_require__
+                __internal_require__ => __discord_webpack_require__ = __internal_require__
             ]);
         }
 
-        delete __webpack_require__.m[id];
-        delete __webpack_require__.c[id];
-        return this._require = __webpack_require__;
+        delete __discord_webpack_require__.m[id];
+        delete __discord_webpack_require__.c[id];
+        return this._require = __discord_webpack_require__;
     }
 
     /**

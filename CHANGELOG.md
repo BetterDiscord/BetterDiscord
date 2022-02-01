@@ -2,6 +2,21 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.5.0
+
+### Added
+- `appSettings` override and corresponding toggle to enable DevTools (Thanks [Kyza](https://github.com/Kyza))
+- `bd-transparency` class is added to `document.body` when window transparency is enabled (Thanks [Strencher](https://github.com/Strencher))
+
+### Removed
+- Removed all appearance related `Builtin`s including: 24 Hour Timestamps, Colored Text, Hide GIF/Gift Button, and MinimalMode
+
+### Changed
+
+### Fixed
+- Fixed `DebugLogs` throwing errors or not writing `null`, `undefined`, and circular objects
+- Fixed guild utility classes not being added
+- Fixed toast location
 
 ## 1.4.0
 
