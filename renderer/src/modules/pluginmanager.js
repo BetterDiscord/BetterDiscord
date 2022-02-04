@@ -75,12 +75,13 @@ export default new class PluginManager extends AddonManager {
 
     /* Overrides */
     initializeAddon(addon) {
-        if (!addon.exports) return new AddonError(addon.name, addon.filename, "Plugin had no exports", {message: "Plugin had no exports or no name property.", stack: ""}, this.prefix);
+        if (!addon.exports || !addon.name) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin had no exports or @name property", {message: "Plugin had no exports or no @name property. @name property is required for all addons.", stack: ""}, this.prefix);
+
         try {
             const PluginClass = addon.exports;
             const thePlugin = new PluginClass();
             addon.instance = thePlugin;
-            addon.name = thePlugin.getName ? thePlugin.getName() : addon.name || "No name";
+            addon.name = thePlugin.getName ? thePlugin.getName() : addon.name;
             addon.author = thePlugin.getAuthor ? thePlugin.getAuthor() : addon.author || "No author";
             addon.description = thePlugin.getDescription ? thePlugin.getDescription() : addon.description || "No description";
             addon.version = thePlugin.getVersion ? thePlugin.getVersion() : addon.version || "No version";
