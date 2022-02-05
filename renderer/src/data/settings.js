@@ -40,8 +40,10 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "lineNumbers", value: true},
-            {type: "number", id: "fontSize", min: 2, value: 14},
             {type: "switch", id: "minimap", value: true},
+            {type: "switch", id: "hover", value: true},
+            {type: "switch", id: "quickSuggestions", value: true},
+            {type: "number", id: "fontSize", min: 2, value: 14},
             {type: "dropdown", id: "renderWhitespace", value: "selection", options: [{value: "none"}, {value: "all"}, {value: "selection"}]}
         ]
     },

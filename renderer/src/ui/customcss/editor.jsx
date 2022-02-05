@@ -39,6 +39,12 @@ export default class CodeEditor extends React.Component {
             fontSize: Settings.get("settings", "editor", "fontSize"),
             lineNumbers: Settings.get("settings", "editor", "lineNumbers"),
             minimap: {enabled: Settings.get("settings", "editor", "minimap")},
+            hover: {enabled: Settings.get("settings", "editor", "hover")},
+            quickSuggestions: {
+                other: Settings.get("settings", "editor", "quickSuggestions"),
+                comments: Settings.get("settings", "editor", "quickSuggestions"),
+                strings: Settings.get("settings", "editor", "quickSuggestions")
+            },
             renderWhitespace: Settings.get("settings", "editor", "renderWhitespace")
         });
 
