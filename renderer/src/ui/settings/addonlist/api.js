@@ -38,14 +38,18 @@ export async function fetchData(type) {
 }
 
 export async function fetchReadme(type, addonId) {
-    if (README_CACHE[type][addonId]) return API_CACHE[type][addonId];
+    // if (README_CACHE[type][addonId]) return API_CACHE[type][addonId];
+
+    // const data = await fetch(`https://api.${WEB_HOSTNAME}/v1/store/addons/readme/${addonId}`).then(response => response.text());
+    // README_CACHE[addonId] = data;
+
+    // return data;
 
     return new Promise(resolve => {
-        https.get(`https://${WEB_HOSTNAME}/${type}/${encodeURI(addonId)}`, res => {
+        https.get(`https://${WEB_HOSTNAME}/${type}?id=${addonId}`, res => {
             try {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
-
                 res.on("end", () => {
                     try {
                         const rawHTML = chunks.join("");
@@ -53,14 +57,12 @@ export async function fetchReadme(type, addonId) {
                             innerHTML: rawHTML
                         });
                         const [readme] = parsed.getElementsByClassName("markdown-body");
-                        console.log({parsed, readme});
-                        README_CACHE[addonId] = readme.outerHTML;
-                        resolve(readme.outerHTML);
+                        README_CACHE[addonId] = readme.innerHTML;
+                        resolve(readme.innerHTML);
                     } catch (error) {
                         console.error(error);
                     }
                 });
-
                 res.on("error", console.error);
             } catch (error) {
                 console.error(error);
