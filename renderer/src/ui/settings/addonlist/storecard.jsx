@@ -50,7 +50,7 @@ export default class StoreCard extends React.Component {
         return <div className="bd-store-card" data-addon-name={name} onClick={this.handleClick}>
             <div className="bd-store-card-header">
                 <div className="bd-store-card-splash">
-                    <img onClick={this.preview} alt={name} src={this.thumbnail} />
+                    <img key={this.thumbnail} onClick={this.preview} alt={name} src={this.thumbnail} />
                 </div>
                 <div className="bd-store-card-icon">
                     <Tooltip color="primary" position="top" text={author.display_name}>
