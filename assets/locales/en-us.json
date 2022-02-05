@@ -77,6 +77,30 @@
                     }
                 }
             },
+            "editor": {
+                "name": "Editor Preferences",
+                "lineNumbers": {
+                    "name": "Line Numbers",
+                    "note": "Enables showing line numbers on the side of the editor"
+                },
+                "fontSize": {
+                    "name": "Font Size",
+                    "note": "Size of the font (pt) to use in the editor"
+                },
+                "minimap": {
+                    "name": "Minimap",
+                    "note": "Enables showing the code minimap on the side of the editor"
+                },
+                "renderWhitespace": {
+                    "name": "Show Whitespace",
+                    "note": "When whitespace should be shown by the editor",
+                    "options": {
+                        "all": "Always",
+                        "none": "Never",
+                        "selection": "Selection"
+                    }
+                }
+            },
             "developer": {
                 "name": "Developer Settings",
                 "devTools": {
