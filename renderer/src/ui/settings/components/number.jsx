@@ -1,6 +1,6 @@
 import {React} from "modules";
 
-export default class Search extends React.Component {
+export default class Number extends React.Component {
     constructor(props) {
         super(props);
         this.state = {value: this.props.value};

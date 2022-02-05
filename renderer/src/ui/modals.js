@@ -143,6 +143,7 @@ export default class Modals {
             const type = ChangelogClasses[entry.type] ? ChangelogClasses[entry.type] : ChangelogClasses.added;
             const margin = c == 0 ? ChangelogClasses.marginTop : "";
             changelogItems.push(ce("h1", {className: `${type} ${margin}`,}, entry.title));
+            if (entry.description) changelogItems.push(ce("p", null, MarkdownParser.parse(entry.description)));
             const list = ce("ul", null, entry.items.map(i => ce("li", null, MarkdownParser.parse(i))));
             changelogItems.push(list);
         }
