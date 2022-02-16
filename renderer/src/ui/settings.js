@@ -4,6 +4,7 @@ import AddonList from "./settings/addonlist";
 import SettingsGroup from "./settings/group";
 import SettingsTitle from "./settings/title";
 import Header from "./settings/sidebarheader";
+import {Filters} from "../modules/webpackmodules";
 
 export default new class SettingsRenderer {
 
@@ -60,8 +61,9 @@ export default new class SettingsRenderer {
         }, options));
     }
 
-    patchSections() {
-        const UserSettings = WebpackModules.getByDisplayName("SettingsView");
+    async patchSections() {
+        const UserSettings = await WebpackModules.getLazy(Filters.byDisplayName("SettingsView"));
+        
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject, args, returnValue) => {
             let location = returnValue.findIndex(s => s.section.toLowerCase() == "changelog") - 1;
             if (location < 0) return;
@@ -91,7 +93,7 @@ export default new class SettingsRenderer {
     }
 
     forceUpdate() {
-        const viewClass = WebpackModules.getByProps("standardSidebarView").standardSidebarView.split(" ")[0];
+        const viewClass = WebpackModules.getByProps("standardSidebarView")?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
         const stateNode = Utilities.findInReactTree(Utilities.getReactInstance(node), m => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
