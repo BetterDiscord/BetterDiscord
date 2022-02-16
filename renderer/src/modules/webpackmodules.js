@@ -353,14 +353,18 @@ export default class WebpackModules {
             const originalModule = modules[moduleId];
 
             modules[moduleId] = (module, exports, require) => {
-                Reflect.apply(originalModule, null, [module, exports, require]);
+                try {
+                    Reflect.apply(originalModule, null, [module, exports, require]);
 
-                const listeners = [...this.listeners];
-                for (let i = 0; i < listeners.length; i++) {
-                    try {listeners[i](exports);}
-                    catch (error) {
-                        Logger.err("WebpackModules", "Could not fire callback listener:", error);
+                    const listeners = [...this.listeners];
+                    for (let i = 0; i < listeners.length; i++) {
+                        try {listeners[i](exports);}
+                        catch (error) {
+                            Logger.err("WebpackModules", "Could not fire callback listener:", error);
+                        }
                     }
+                } catch (error) {
+                    console.error(error);
                 }
             };
 
