@@ -3,6 +3,7 @@
  * @module WebpackModules
  * @version 0.0.2
  */
+import Logger from "../../../common/logger";
 
 /**
  * Checks if a given module matches a set of parameters.
@@ -128,8 +129,6 @@ const protect = theModule => {
 };
 
 export default class WebpackModules {
-    static get chunkName() {return "webpackChunkdiscord_app";}
-
     static find(filter, first = true) {return this.getModule(filter, first);}
     static findAll(filter) {return this.getModule(filter, false);}
     static findByUniqueProperties(props, first = true) {return first ? this.getByProps(...props) : this.getAllByProps(...props);}
@@ -254,7 +253,7 @@ export default class WebpackModules {
         if (fromCache) return Promise.resolve(fromCache);
 
         return new Promise((resolve) => {
-            const cancel = () => {this.removeListener(listener)};
+            const cancel = () => {this.removeListener(listener);};
             const listener = function (m) {
                 const directMatch = filter(m);
                 
@@ -360,11 +359,12 @@ export default class WebpackModules {
                     for (let i = 0; i < listeners.length; i++) {
                         try {listeners[i](exports);}
                         catch (error) {
-                            Logger.err("WebpackModules", "Could not fire callback listener:", error);
+                            Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);
                         }
                     }
-                } catch (error) {
-                    console.error(error);
+                }
+                catch (error) {
+                    Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
                 }
             };
 
