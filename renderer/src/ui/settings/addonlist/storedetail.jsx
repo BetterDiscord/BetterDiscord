@@ -9,7 +9,7 @@ export default function openStoreDetail(addon) {
     pushLayer(() => <StoreDetail {...addon} />);
 }
 
-class StoreDetail extends React.Component {
+export class StoreDetail extends React.Component {
     constructor(props) {
         super(props);
 
@@ -17,9 +17,7 @@ class StoreDetail extends React.Component {
     }
     componentDidMount() {
         // dirty hack for customizing layers created by pushLayer
-        // console.log(this.scrollerRef.current, this.scrollerRef.current.parentElement);
         this.scrollerRef.current.parentElement.classList.add("bd-store-details");
-        console.log(this.scrollerRef.current.parentElement.classList);
     }
     render() {
         return <>
@@ -38,7 +36,7 @@ class StoreDetail extends React.Component {
 }
 
 class Readme extends React.Component {
-    state = {readme: null}
+    state = { readme: null };
 
     async componentDidMount() {
         const readme = await fetchReadme(this.props.type, this.props.addonId);
@@ -48,6 +46,6 @@ class Readme extends React.Component {
 
     render() {
         const { readme } = this.state;
-        return readme ? <article class="bd-store-details-readme markdown-body" dangerouslySetInnerHTML={{ __html: readme }} /> : <Spinner type={Spinner.Type.SPINNING_CIRCLE} />
+        return readme ? <article class="bd-store-details-readme bd-markdown" dangerouslySetInnerHTML={{ __html: readme }} /> : <Spinner type={Spinner.Type.SPINNING_CIRCLE} />;
     }
 }

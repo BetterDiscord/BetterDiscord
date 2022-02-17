@@ -38,7 +38,7 @@ export async function fetchData(type) {
 }
 
 export async function fetchReadme(type, addonId) {
-    // if (README_CACHE[type][addonId]) return API_CACHE[type][addonId];
+    if (README_CACHE[type][addonId]) return API_CACHE[type][addonId];
 
     // const data = await fetch(`https://api.${WEB_HOSTNAME}/v1/store/addons/readme/${addonId}`).then(response => response.text());
     // README_CACHE[addonId] = data;
