@@ -164,8 +164,8 @@ export default class AddonManager {
             if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
                 out[field] = accum;
                 const l = line.indexOf(" ");
-                field = line.substr(1, l - 1);
-                accum = line.substr(l + 1);
+                field = line.slice(1, l >= 0 ? l : 0);
+                accum = line.slice(l + 1);
             }
             else {
                 accum += " " + line.replace("\\n", "\n").replace(escapedAtRegex, "@");
