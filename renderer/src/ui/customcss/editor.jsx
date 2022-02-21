@@ -1,4 +1,4 @@
-import {React, WebpackModules, DiscordModules} from "modules";
+import {React, WebpackModules, DiscordModules, Settings} from "modules";
 
 import Checkbox from "./checkbox";
 
@@ -35,7 +35,17 @@ export default class CodeEditor extends React.Component {
         this.editor = window.monaco.editor.create(document.getElementById(this.props.id), {
             value: this.props.value,
             language: this.props.language,
-            theme: DiscordModules.UserSettingsStore.theme == "light" ? "vs" : "vs-dark"
+            theme: DiscordModules.UserSettingsStore.theme == "light" ? "vs" : "vs-dark",
+            fontSize: Settings.get("settings", "editor", "fontSize"),
+            lineNumbers: Settings.get("settings", "editor", "lineNumbers"),
+            minimap: {enabled: Settings.get("settings", "editor", "minimap")},
+            hover: {enabled: Settings.get("settings", "editor", "hover")},
+            quickSuggestions: {
+                other: Settings.get("settings", "editor", "quickSuggestions"),
+                comments: Settings.get("settings", "editor", "quickSuggestions"),
+                strings: Settings.get("settings", "editor", "quickSuggestions")
+            },
+            renderWhitespace: Settings.get("settings", "editor", "renderWhitespace")
         });
 
         window.addEventListener("resize", this.resize);

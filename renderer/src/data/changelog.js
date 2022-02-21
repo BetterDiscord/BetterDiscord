@@ -1,22 +1,27 @@
 export default {
-    description: "Expect more soon!",
+    description: "Just some minor updates to keep things running smoothly!",
     changes: [
         {
             title: "What's new?",
             type: "added",
+            description: "Some basic preferences for the addon editor have been added including:",
             items: [
-                "New notices API for developers available via `BdApi.showNotice`! Docs coming soon."
+                "Font size adjustment",
+                "Line numbers toggle",
+                "Minimap toggle",
+                "Whitespace preference",
+                "Reference tooltips",
+                "Quick suggestions"
             ]
         },
         {
             title: "Fixes",
             type: "fixed",
             items: [
-                "Outdated styles and classnames have been fixed.",
-                "Public servers button shows again.",
-                "Disable Media Keys option actually prevents Discord from hijacking media keys again.",
-                "CustomCSS is removed if you disable the system.",
-                "CSS editor popout no longer turns the screen gray."
+                "All those `GuildComponent` errors should now be gone!",
+                "Public servers button shows up again if things get reloaded.",
+                "Plugin compilation errors point to console for more info.",
+                "Plugins with no `@name` property will now properly error.",
             ]
         }
     ]
