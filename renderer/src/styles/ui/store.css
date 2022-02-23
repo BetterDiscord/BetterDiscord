@@ -221,6 +221,32 @@
 	text-overflow: ellipsis;
 }
 
+.bd-store-card-badges {
+    position: absolute;
+    color: var(--header-secondary);
+    display: flex;
+    align-items: center;
+}
+
+.bd-store-card-badge + .bd-store-card-badge {
+    margin-left: 5px;
+}
+
+.bd-store-addons.grid-view .bd-store-card-badges {
+    top: 185px;
+    right: 5px;
+}
+
+.bd-store-card-new {
+    padding: 3px 5px;
+    background: #ed4245;
+    color: #fff;
+    border-radius: 8px;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
+}
+
 /* Store Cards -- List View */
 
 .bd-store-addons.list-view {
@@ -277,6 +303,11 @@
 
 .bd-store-addons.list-view .bd-store-card-body h5 {
     font-family: var(--text-display);
+}
+
+.bd-store-addons.list-view .bd-store-card-badges {
+    right: 0;
+    z-index: 1;
 }
 
 /* Pagination */
