@@ -19,6 +19,6 @@
         "asar": "^3.0.3",
         "eslint": "^7.12.0",
         "eslint-plugin-react": "^7.21.5",
-        "mocha": "^8.2.0"
+        "mocha": "^9.2.1"
     }
 }
