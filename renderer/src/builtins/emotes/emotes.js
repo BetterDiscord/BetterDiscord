@@ -217,7 +217,7 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
                     const post = node.substring(idx);
         
                     const el = DiscordModules.React.createElement(BDEmote, {
-                        url: EmoteURLs[override].format({id: Emotes[current][name]}),
+                        url: EmoteURLs[category].format({id: Emotes[category][name]}),
                         isFavorite: this.isFavorite(name),
                         name,
                         modifier,
