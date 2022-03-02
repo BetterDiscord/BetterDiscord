@@ -185,7 +185,7 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
                     // eat through whitespace
                     while (idx < len && isWhitespace(node[idx])) idx++;
             
-                    if (mismatch || name.length < 4) continue;
+                    if (mismatch || name.length < 4 || blocklist.includes(name)) continue;
 
                     let category = Overrides[override];
             
