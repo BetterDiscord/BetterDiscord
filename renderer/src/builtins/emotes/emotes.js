@@ -24,8 +24,14 @@ const Emotes = {
     FrankerFaceZ: {}
 };
 
+const Overrides = {
+    twitch: 'TwitchGlobal',
+    subscriber: 'TwitchSubscriber',
+    bttv: 'BTTV',
+    ffz: 'FFZ',
+};
+
 const blocklist = [];
-const overrides = ["twitch", "subscriber", "bttv", "ffz"];
 const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", "3spin", "tr", "bl", "br", "shake", "shake2", "shake3", "flap"];
 
  export default new class EmoteModule extends Builtin {
@@ -180,8 +186,10 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
                     while (idx < len && isWhitespace(node[idx])) idx++;
             
                     if (mismatch || name.length < 4) continue;
+
+                    let category = Overrides[override];
             
-                    if (!override || !(override in Emotes)) {
+                    if (!override || !(override in Overrides)) {
                         modifier = override;
             
                         // go through each source and see if we can find a match
@@ -189,13 +197,13 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
                             const emotes = Emotes[source];
             
                             if (name in emotes) {
-                                override = source;
+                                category = source;
                                 break;
                             }
                         }
             
-                        if (!override) continue;
-                    } else if (!(name in Emotes[override])) {
+                        if (!category) continue;
+                    } else if (!(name in Emotes[category])) {
                         continue;
                     }
             
