@@ -189,7 +189,7 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
 
                     let category = Overrides[override];
             
-                    if (!override || !(override in Overrides)) {
+                    if (!category) {
                         modifier = override;
             
                         // go through each source and see if we can find a match
