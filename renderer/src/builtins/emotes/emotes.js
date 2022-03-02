@@ -118,59 +118,116 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
 
     patchMessageContent() {
         if (this.cancelEmoteRender) return;
+
+        const STATE_NORMAL = 0;
+        const STATE_OVERRIDE = 1;
+        const STATE_MODIFIER = 2;
+
         this.cancelEmoteRender = this.before(this.MessageComponent, "default", (thisObj, args) => {
             const nodes = args[0].childrenMessageContent.props.content;
+
             if (!nodes || !nodes.length) return;
+
             for (let n = 0; n < nodes.length; n++) {
                 const node = nodes[n];
+        
                 if (typeof(node) !== "string") continue;
-                const words = node.split(/([^\s]+)([\s]|$)/g);
-                for (let c = 0, clen = this.categories.length; c < clen; c++) {
-                    for (let w = 0, wlen = words.length; w < wlen; w++) {
-                        const emote = words[w];
-                        const emoteSplit = emote.split(":");
-                        const emoteName = emoteSplit[0];
-                        let emoteModifier = emoteSplit[1] ? emoteSplit[1] : "";
-                        let emoteOverride = emoteModifier.slice(0);
-
-                        if (emoteName.length < 4 || blocklist.includes(emoteName)) continue;
-                        if (!modifiers.includes(emoteModifier) || !Settings.get("emotes", "general", "modifiers")) emoteModifier = "";
-                        if (!overrides.includes(emoteOverride)) emoteOverride = "";
-                        else emoteModifier = emoteOverride;
-
-                        let current = this.categories[c];
-                        if (emoteOverride === "twitch") {
-                            if (Emotes.TwitchGlobal[emoteName]) current = "TwitchGlobal";
-                            else if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
+        
+                let idx = 0;
+                let len = node.length;
+            
+                while (idx < len) {
+                    const start_idx = idx;
+                    let state = STATE_NORMAL;
+            
+                    let name = "";
+                    let override = "";
+                    let modifier = "";
+            
+                    let mismatch = false;
+            
+                    while (idx < len) {
+                        const char = node[idx];
+            
+                        if (isWhitespace(char)) break;
+            
+                        if (char === ":") {
+                            // Kappa:foo:bar:baz
+                            //              ^
+                            if (state >= STATE_MODIFIER) {
+                                mismatch = true;
+                                break;
+                            }
+            
+                            state++;
+                            idx++;
+                            continue;
                         }
-                        else if (emoteOverride === "subscriber") {
-                            if (Emotes.TwitchSubscriber[emoteName]) current = "TwitchSubscriber";
-                        }
-                        else if (emoteOverride === "bttv") {
-                            if (Emotes.BTTV[emoteName]) current = "BTTV";
-                        }
-                        else if (emoteOverride === "ffz") {
-                            if (Emotes.FrankerFaceZ[emoteName]) current = "FrankerFaceZ";
-                        }
-
-                        if (!Emotes[current][emoteName]) continue;
-                        const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
-                        if (!results) continue;
-                        const pre = nodes[n].substring(0, results.index + results[1].length);
-                        const post = nodes[n].substring(results.index + results[0].length - results[2].length);
-                        nodes[n] = pre;
-                        const emoteComponent = DiscordModules.React.createElement(BDEmote, {name: emoteName, url: EmoteURLs[current].format({id: Emotes[current][emoteName]}), modifier: emoteModifier, isFavorite: this.isFavorite(emoteName)});
-                        nodes.splice(n + 1, 0, post);
-                        nodes.splice(n + 1, 0, emoteComponent);
+            
+                        if (state === STATE_NORMAL) name += char;
+                        else if (state === STATE_OVERRIDE) override += char;
+                        else if (state === STATE_MODIFIER) modifier += char;
+            
+                        idx++;
                     }
+            
+                    if (mismatch) {
+                        // eat through non-whitespace
+                        while (idx < len && !isWhitespace(node[idx])) idx++;
+                    }
+            
+                    // eat through whitespace
+                    while (idx < len && isWhitespace(node[idx])) idx++;
+            
+                    if (mismatch || name.length < 4) continue;
+            
+                    if (!override || !(override in Emotes)) {
+                        modifier = override;
+            
+                        // go through each source and see if we can find a match
+                        for (let source in Emotes) {
+                            const emotes = Emotes[source];
+            
+                            if (name in emotes) {
+                                override = source;
+                                break;
+                            }
+                        }
+            
+                        if (!override) continue;
+                    } else if (!(name in Emotes[override])) {
+                        continue;
+                    }
+            
+                    if (!modifier || !modifiers.includes(modifier)) {
+                        if (state >= STATE_MODIFIER) continue;
+            
+                        modifier = null;
+                    }
+        
+                    const pre = node.substring(0, start_idx);
+                    const post = node.substring(idx);
+        
+                    const el = DiscordModules.React.createElement(BDEmote, {
+                        url: EmoteURLs[override].format({id: Emotes[current][name]}),
+                        isFavorite: this.isFavorite(name),
+                        name,
+                        modifier,
+                    });
+        
+                    nodes[n] = pre;
+                    nodes.splice(n + 1, 0, el, post);
+                    break;
                 }
             }
+
             const onlyEmotes = nodes.every(r => {
                 if (typeof(r) == "string" && r.replace(/\s*/, "") == "") return true;
                 else if (r.type && r.type.name == "BDEmote") return true;
                 else if (r.props && r.props.children && r.props.children.props && r.props.children.props.emojiName) return true;
                 return false;
             });
+
             if (!onlyEmotes) return;
 
             for (const node of nodes) {
@@ -254,3 +311,7 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
         this.loadEmoteData();
     }
 };
+
+function isWhitespace (char) {
+    return char === " " || char === "\n"
+}
