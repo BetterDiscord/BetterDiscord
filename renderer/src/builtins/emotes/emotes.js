@@ -208,8 +208,6 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
                     }
             
                     if (!modifier || !modifiers.includes(modifier)) {
-                        if (state >= STATE_MODIFIER) continue;
-            
                         modifier = null;
                     }
         
