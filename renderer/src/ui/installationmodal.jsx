@@ -79,7 +79,7 @@ export default class InstallationModal extends React.Component {
                         <Anchor href={latest_source_url} target="_blank" rel="noreferrer noopener">{path.basename(url.parse(latest_source_url).path)}</Anchor>
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
-                    <InfoItem icon={<Author aria-label={Strings.Addons.author} />} id="bd-info-author" label={Strings.Addons.author}>
+                    <InfoItem icon={<Author aria-label={Strings.Addons.author} />} id="bd-info-author" label={Strings.Addons.uploaded}>
                         <Anchor href={`http://${WEB_HOSTNAME}/developers/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</Anchor>
                     </InfoItem>
                 </ul>
