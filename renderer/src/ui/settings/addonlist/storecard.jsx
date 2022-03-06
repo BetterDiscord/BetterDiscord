@@ -2,7 +2,7 @@ import {React, Strings, Utilities, WebpackModules} from "modules";
 import {WEB_HOSTNAME} from "./constants";
 import path from "path";
 import url from "url";
-import {Heart, Download, Calendar} from "icons";
+import {Heart, Download} from "icons";
 import Modals from "../../modals";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
@@ -15,7 +15,7 @@ export default class StoreCard extends React.Component {
         event.preventDefault();
         event.stopPropagation();
 
-        Modals.showInstallationModal({...this.props});
+        Modals.showInstallationModal({...this.props });
     }
 
     preview = (event) => {
@@ -71,19 +71,16 @@ export default class StoreCard extends React.Component {
                     </Tooltip>
                 </div>
             </div>
-            <div className="bd-store-card-badges">
-                {this.monthsAgo <= 3
-                    ? <span className="bd-store-card-new bd-store-card-badge">new</span>
-                    : null
-                }
-                <Tooltip color="primary" position="top" text={`Added: ${new Date(release_date).toLocaleString()}`}>
-                    {props =>
-                        <Calendar {...props} className="bd-store-card-badge" />
-                    }
-                </Tooltip>
-            </div>
             <div className="bd-store-card-body">
-                <h5>{name}</h5>
+                <div class="bd-store-card-title">
+                    <h5>{name}</h5>
+                    {this.monthsAgo <= 3
+                        ? <Tooltip color="primary" position="top" text={Strings.Addons.uploadDate.format({ date: new Date(release_date).toLocaleString()})}>
+                            {props => <span {...props} className="bd-store-card-new-badge">{Strings.Addons.new}</span>}
+                        </Tooltip>
+                        : null
+                    }
+                </div>
                 <p>{description}</p>
                 <div className="bd-card-tags">
                     {

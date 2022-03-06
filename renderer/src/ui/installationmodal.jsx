@@ -1,6 +1,6 @@
 import {DiscordClasses, React, Strings, Utilities, WebpackModules} from "modules";
 import {WEB_HOSTNAME} from "./settings/addonlist/constants";
-import {Support, Version, Github, Author, Description} from "icons";
+import {Support, Version, Github, Author, Description, Clock} from "icons";
 import Toasts from "./toasts";
 import https from "https";
 import fs from "fs";
@@ -47,7 +47,7 @@ export default class InstallationModal extends React.Component {
     }
 
     render() {
-        const {name, id, description, author, type, version, latest_source_url} = this.props;
+        const {name, id, description, author, release_date, type, version, latest_source_url} = this.props;
 
         return <>
             <ModalComponents.ModalHeader className="bd-installation-header">
@@ -69,6 +69,10 @@ export default class InstallationModal extends React.Component {
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Version aria-label={Strings.Addons.version} />} id="bd-info-version" label={Strings.Addons.version}>
                         {version}
+                    </InfoItem>
+                    <div className="bd-info-divider" role="separator"></div>
+                    <InfoItem icon={<Clock aria-label={Strings.Addons.uploadDate.format({ date: new Date(release_date).toLocaleString()})} />} id="bd-info-upload-date" label={Strings.Addons.uploadDate.format({ date: new Date(release_date).toLocaleString()})}>
+                        {Strings.Addons.uploadDate.format({ date: new Date(release_date).toLocaleString()})}
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Github aria-label={Strings.Addons.source} />} id="bd-info-source" label={Strings.Addons.source}>

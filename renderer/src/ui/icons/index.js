@@ -28,4 +28,4 @@ export {default as Twitch} from "./twitch.jsx";
 export {default as Author} from "./author.jsx";
 export {default as Version} from "./version.jsx";
 export {default as Description} from "./description.jsx";
-export {default as Calendar} from "./calendar.jsx";
+export {default as Clock} from "./CLock.jsx";

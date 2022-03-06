@@ -132,7 +132,14 @@
 	overflow: hidden;
 }
 
+.bd-store-card-title {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+}
+
 .bd-store-card-body h5 {
+    max-width: 100%;
 	font-weight: 600;
 	color: var(--header-primary);
 	font-size: 16px;
@@ -221,30 +228,21 @@
 	text-overflow: ellipsis;
 }
 
-.bd-store-card-badges {
-    position: absolute;
-    color: var(--header-secondary);
-    display: flex;
+.bd-store-card-new-badge {
+    flex: 0 0 auto;
+    display: inline-flex;
     align-items: center;
-}
-
-.bd-store-card-badge + .bd-store-card-badge {
-    margin-left: 5px;
-}
-
-.bd-store-addons.grid-view .bd-store-card-badges {
-    top: 185px;
-    right: 5px;
-}
-
-.bd-store-card-new {
-    padding: 3px 5px;
-    background: #ed4245;
-    color: #fff;
-    border-radius: 8px;
     text-transform: uppercase;
+    border-radius: 8px;
+    height: 16px;
+    padding: 0 4px;
+    margin-left: 6px;
+    background-color: hsl(359, calc(var(--saturation-factor, 1) * 82.6%), 59.4%);
+    color: #fff;
+    text-align: center;
     font-size: 12px;
-    font-weight: 700;
+    line-height: 16px;
+    font-weight: 600;
 }
 
 /* Store Cards -- List View */
@@ -303,11 +301,6 @@
 
 .bd-store-addons.list-view .bd-store-card-body h5 {
     font-family: var(--text-display);
-}
-
-.bd-store-addons.list-view .bd-store-card-badges {
-    right: 0;
-    z-index: 1;
 }
 
 /* Pagination */
@@ -632,4 +625,8 @@
 
 #bd-info-author {
     --bd-info-icon-color: #fed648;
+}
+
+#bd-info-upload-date {
+    --bd-info-icon-color: #9bdd73;
 }
