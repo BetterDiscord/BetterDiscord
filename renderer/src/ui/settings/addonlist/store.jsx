@@ -1,4 +1,4 @@
-import {React, Strings, Utilities, WebpackModules} from "modules";
+import {React, Strings, Utilities, WebpackModules, DiscordClasses} from "modules";
 import {API_CACHE, fetchData, splitArray} from "./api";
 import NoResults from "../../blankslates/noresults";
 import {Next, Previous} from "icons";
@@ -100,12 +100,14 @@ export default class StorePage extends React.Component {
                     <Previous />
                     {Strings.Addons.back}
                 </Button>
-                {addons.length
-                    ? addons.map((_, index) => <div className={Utilities.joinClassNames("bd-page-item bd-page-button", {selected: index === this.state.selectedPage})} onClick={handleSelect(() => index)}>
-                        <span>{index + 1}</span>
-                    </div>)
-                    : null
-                }
+                <div class={`bd-page-buttons ${DiscordClasses.Scrollers.thin}`}>
+                    {addons.length
+                        ? addons.map((_, index) => <div role="button" aria-current="page" tabindex="0" className={Utilities.joinClassNames("bd-page-item bd-page-button", {selected: index === this.state.selectedPage})} onClick={handleSelect(() => index)}>
+                            <span>{index + 1}</span>
+                        </div>)
+                        : null
+                    }
+                </div>
                 <Button look={Button.Looks.BLANK} className="bd-page-button" onClick={handleSelect(s => s + 1)} disabled={!canGoForward}>
                     {Strings.Addons.next}
                     <Next />

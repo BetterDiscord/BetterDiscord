@@ -280,14 +280,25 @@
 }
 
 /* Pagination */
-.bd-page-control {
+.bd-page-control,
+.bd-page-buttons {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.bd-page-control {
     padding: 4px 0;
     bottom: 0;
-    width: 100%;
     margin-top: 16px;
+}
+
+.bd-page-buttons {
+    width: auto;
+    flex: 0 0 auto;
+    max-width: 80%;
+    overflow: auto; 
 }
 
 .bd-page-button {
@@ -300,6 +311,8 @@
     padding: 0 8px;
     margin: 4px;
     color: var(--header-primary);
+    background-color: transparent;
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     width: min-content;
