@@ -1,8 +1,8 @@
 import {React, Strings, Utilities, WebpackModules} from "modules";
 import {WEB_HOSTNAME} from "./constants";
 import path from "path";
-import url, {urlToHttpOptions} from "url";
-import {Heart, Download} from "icons";
+import url from "url";
+import {Heart, Download, Calendar} from "icons";
 import Modals from "../../modals";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
@@ -38,12 +38,23 @@ export default class StoreCard extends React.Component {
         if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
     }
 
+    get monthsAgo() {
+        const current = new Date();
+        const release = new Date(this.props.release_date);
+        let months = (((current.getFullYear() - release.getFullYear()) * 12) - release.getMonth()) + current.getMonth();
+
+        return Math.max(months, 0);
+    }
+
     handleClick = () => {
-        this.props.onDetailsView();
+        const {onDetailsView} = this.props;
+        if (typeof onDetailsView !== "function") return;
+
+        onDetailsView();
     }
 
     render() {
-        const {name, description, author, selectedTag, tags, likes, downloads} = this.props;
+        const {name, description, author, selectedTag, tags, likes, downloads, release_date} = this.props;
 
         const isInstalled = this.isInstalled;
 
@@ -59,6 +70,17 @@ export default class StoreCard extends React.Component {
                         }
                     </Tooltip>
                 </div>
+            </div>
+            <div className="bd-store-card-badges">
+                {this.monthsAgo <= 3
+                    ? <span className="bd-store-card-new bd-store-card-badge">new</span>
+                    : null
+                }
+                <Tooltip color="primary" position="top" text={`Added: ${new Date(release_date).toLocaleString()}`}>
+                    {props =>
+                        <Calendar {...props} className="bd-store-card-badge" />
+                    }
+                </Tooltip>
             </div>
             <div className="bd-store-card-body">
                 <h5>{name}</h5>

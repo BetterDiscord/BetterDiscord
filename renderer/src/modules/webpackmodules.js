@@ -3,6 +3,7 @@
  * @module WebpackModules
  * @version 0.0.2
  */
+import Logger from "../../../common/logger";
 
 /**
  * Checks if a given module matches a set of parameters.
@@ -128,8 +129,6 @@ const protect = theModule => {
 };
 
 export default class WebpackModules {
-    static get chunkName() {return "webpackChunkdiscord_app";}
-
     static find(filter, first = true) {return this.getModule(filter, first);}
     static findAll(filter) {return this.getModule(filter, false);}
     static findByUniqueProperties(props, first = true) {return first ? this.getByProps(...props) : this.getAllByProps(...props);}
@@ -245,27 +244,57 @@ export default class WebpackModules {
     }
 
     /**
+     * Finds a module that lazily loaded.
+     * @param {(m) => boolean} filter A function to use to filter modules.
+     * @returns {Promise<any>}
+     */
+    static getLazy(filter) {
+        const fromCache = this.getModule(filter);
+        if (fromCache) return Promise.resolve(fromCache);
+
+        return new Promise((resolve) => {
+            const cancel = () => {this.removeListener(listener);};
+            const listener = function (m) {
+                const directMatch = filter(m);
+                
+                if (directMatch) {
+                    cancel();
+                    return resolve(directMatch);
+                }
+
+                const defaultMatch = filter(m.default);
+                if (!defaultMatch) return; 
+
+                cancel();
+                resolve(m.default);
+            };
+
+            this.addListener(listener);
+        });
+    }
+
+    /**
      * Discord's __webpack_require__ function.
      */
     static get require() {
         if (this._require) return this._require;
         const id = "bd-webpackmodules";
-        let __webpack_require__;
+        let __discord_webpack_require__;
         if (typeof(webpackJsonp) !== "undefined") {
-            __webpack_require__ = window.webpackJsonp.push([[], {
+            __discord_webpack_require__ = window.webpackJsonp.push([[], {
                 [id]: (module, exports, __internal_require__) => module.exports = __internal_require__
             }, [[id]]]);
         }
         else if (typeof(window[this.chunkName]) !== "undefined") {
             window[this.chunkName].push([[id], 
                 {},
-                __internal_require__ => __webpack_require__ = __internal_require__
+                __internal_require__ => __discord_webpack_require__ = __internal_require__
             ]);
         }
 
-        delete __webpack_require__.m[id];
-        delete __webpack_require__.c[id];
-        return this._require = __webpack_require__;
+        delete __discord_webpack_require__.m[id];
+        delete __discord_webpack_require__.c[id];
+        return this._require = __discord_webpack_require__;
     }
 
     /**
@@ -276,4 +305,76 @@ export default class WebpackModules {
         return this.require.c;
     }
 
+    // Webpack Chunk Observing
+    static get chunkName() {return "webpackChunkdiscord_app";}
+
+    static initialize() {
+        this.handlePush = this.handlePush.bind(this);
+        this.listeners = new Set();
+        
+        this.__ORIGINAL_PUSH__ = window[this.chunkName].push;
+        Object.defineProperty(window[this.chunkName], "push", {
+            configurable: true,
+            get: () => this.handlePush,
+            set: (newPush) => {
+                this.__ORIGINAL_PUSH__ = newPush;
+
+                Object.defineProperty(window[this.chunkName], "push", {
+                    value: this.handlePush,
+                    configurable: true,
+                    writable: true
+                });
+            }
+        });
+    }    
+
+    /**
+     * Adds a listener for when discord loaded a chunk. Useful for subscribing to lazy loaded modules.
+     * @param {Function} listener - Function to subscribe for chunks
+     * @returns {Function} A cancelling function
+     */
+     static addListener(listener) {
+        this.listeners.add(listener);
+        return this.removeListener.bind(this, listener);
+    }
+
+    /**
+     * Removes a listener for when discord loaded a chunk.
+     * @param {Function} listener
+     * @returns {boolean}
+     */
+    static removeListener(listener) {return this.listeners.delete(listener);}
+
+    static handlePush(chunk) {
+        const [, modules] = chunk;
+
+        for (const moduleId in modules) {
+            const originalModule = modules[moduleId];
+
+            modules[moduleId] = (module, exports, require) => {
+                try {
+                    Reflect.apply(originalModule, null, [module, exports, require]);
+
+                    const listeners = [...this.listeners];
+                    for (let i = 0; i < listeners.length; i++) {
+                        try {listeners[i](exports);}
+                        catch (error) {
+                            Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);
+                        }
+                    }
+                }
+                catch (error) {
+                    Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
+                }
+            };
+
+            Object.assign(modules[moduleId], originalModule, {
+                toString: () => originalModule.toString()
+            });
+        }
+
+        return Reflect.apply(this.__ORIGINAL_PUSH__, window[this.chunkName], [chunk]);
+    }
 }
+
+WebpackModules.initialize();

@@ -1,0 +1,16 @@
+::-webkit-inner-spin-button,
+::-webkit-outer-spin-button {
+    opacity: 0.5;
+}
+
+.bd-number-input {
+    display: flex;
+    background-color: var(--deprecated-text-input-bg);
+    border: 1px solid var(--deprecated-text-input-border);
+    color: var(--text-normal);
+    font-size: 14px;
+    padding: 5px;
+    margin: 0;
+    border-radius: 3px;
+    width: 70px;
+}

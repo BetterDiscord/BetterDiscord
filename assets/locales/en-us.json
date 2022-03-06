@@ -77,6 +77,38 @@
                     }
                 }
             },
+            "editor": {
+                "name": "Editor Preferences",
+                "lineNumbers": {
+                    "name": "Line Numbers",
+                    "note": "Enables showing line numbers on the side of the editor"
+                },
+                "fontSize": {
+                    "name": "Font Size",
+                    "note": "Size of the font (pt) to use in the editor"
+                },
+                "minimap": {
+                    "name": "Minimap",
+                    "note": "Enables showing the code minimap on the side of the editor"
+                },
+                "hover": {
+                    "name": "Reference Tooltips",
+                    "note": "Enables showing the reference tooltips when hovering rules and selectors"
+                },
+                "quickSuggestions": {
+                    "name": "Quick Suggestions",
+                    "note": "Enables showing the autocomplete suggestions as you type"
+                },
+                "renderWhitespace": {
+                    "name": "Show Whitespace",
+                    "note": "When whitespace should be shown by the editor",
+                    "options": {
+                        "all": "Always",
+                        "none": "Never",
+                        "selection": "Selection"
+                    }
+                }
+            },
             "developer": {
                 "name": "Developer Settings",
                 "devTools": {
@@ -211,7 +243,7 @@
         "metaError": "META could not be parsed.",
         "missingNameData": "META missing name data.",
         "metaNotFound": "META was not found.",
-        "compileError": "Could not be compiled.",
+        "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
         "blankSlateMessage": "Download some from the store to get started.",

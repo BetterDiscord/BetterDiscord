@@ -10,10 +10,12 @@ export default new class PublicServers extends Builtin {
     get id() {return "publicServers";}
 
     enabled() {
-        // const GuildList = WebpackModules.find(m => m.type && m.type.toString().includes("guildsnav"));
-        // if (!GuildList) this.warn("Can't find GuildList component");
-        // this.guildPatch = this.after(GuildList, "type", () => {this._appendButton();});
         this._appendButton();
+        const ListNavigators = WebpackModules.getByProps("ListNavigatorProvider");
+        this.after(ListNavigators, "ListNavigatorProvider", (_, __, returnValue) => {
+            if (returnValue.props.value.id !== "guildsnav") return;
+            this._appendButton();
+        });
     }
 
     disabled() {

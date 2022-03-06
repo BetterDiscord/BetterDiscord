@@ -1,12 +1,14 @@
 {
-    "presets": [[
-        "@babel/env",
+    "presets": [
+        "@babel/react",
+        ["@babel/env",
         {
             "targets": {
-                "node": "12.14.1"
+                "node": "14.16.0",
+                "chrome": "91"
             }
-        }
-    ]],
+        }]
+    ],
     "plugins": [[
         "module-resolver",
         {

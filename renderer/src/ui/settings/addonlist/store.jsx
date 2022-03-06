@@ -3,6 +3,7 @@ import {API_CACHE, fetchData, splitArray} from "./api";
 import NoResults from "../../blankslates/noresults";
 import {Next, Previous} from "icons";
 import StoreCard from "./storecard";
+import openStoreDetail from "./storedetail";
 
 const Button = WebpackModules.getByProps("DropdownSizes");
 const Spinner = WebpackModules.getByDisplayName("Spinner");
@@ -90,6 +91,9 @@ export default class StorePage extends React.Component {
                             isInstalled={this.isInstalled}
                             selectedTag={this.props.state.selectedTag}
                             folder={this.props.folder}
+                            onDetailsView={() => {
+                                openStoreDetail(addon);
+                            }}
                         />;
                     })}
                 </div>

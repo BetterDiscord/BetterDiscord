@@ -9,7 +9,6 @@ import Logger from "common/logger";
 
 const React = DiscordModules.React;
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
-const MutedStore = WebpackModules.getByProps("isMuted");
 const Anchor = WebpackModules.getByDisplayName("Anchor");
 
 const Developers = [
@@ -77,15 +76,9 @@ export default new class ComponentPatcher {
     patchGuildListItems() {
         if (this.guildListItemsPatch) return;
         const ListNavigators = WebpackModules.getByProps("ListNavigatorProvider");
-        const GuildComponent = WebpackModules.find(m => m.type && m.type.toString().includes("guildNode") && !m.type.toString().includes("Pending"));
+        const GuildComponent = WebpackModules.find(m => m.type && m.type.toString().includes("guildNode") && m.type.toString().includes("treeitem"));
         if (!GuildComponent || typeof(GuildComponent.type) !== "function") return this.warn("Failed to get Guild component.");
         if (!ListNavigators || typeof(ListNavigators.ListNavigatorProvider) !== "function") return this.warn("Failed to get ListNavigatorProvider component.");
-
-        const isGuildMuted = function (guildId) {
-            if (!MutedStore || typeof(MutedStore.isMuted) !== "function") return false;
-    
-            return MutedStore.isMuted(guildId);
-        };
 
         this.guildListItemsPatch = Patcher.after("ComponentPatcher", GuildComponent, "type", (_, [props], returnValue) => {
             if (!returnValue || !returnValue.props) return;
@@ -101,10 +94,11 @@ export default new class ComponentPatcher {
                 if (props.unavailable) returnValue.props.className += " bd-unavailable";
                 if (props.mediaState.screenshare) returnValue.props.className += " bd-screenshare";
                 if (props.mediaState.liveStage) returnValue.props.className += " bd-live-stage";
-                if (isGuildMuted(props.guild.id)) returnValue.props.className += " bd-muted";
+                if (props.muted) returnValue.props.className += " bd-muted";
             }
             catch (err) {
                 Logger.error("ComponentPatcher:Guilds", `Error inside BDGuild:`, err);
+                this.guildListItemsPatch();
             }
         });
 

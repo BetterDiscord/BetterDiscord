@@ -4,6 +4,7 @@ import Title from "./title";
 import Divider from "./divider";
 import Switch from "./components/switch";
 import Dropdown from "./components/dropdown";
+import Number from "./components/number";
 import Item from "./components/item";
 
 const baseClassName = "bd-settings-group";
@@ -61,6 +62,7 @@ export default class Group extends React.Component {
                         {settings.filter(s => !s.hidden).map((setting) => {
                             let component = null;
                             if (setting.type == "dropdown") component = <Dropdown disabled={setting.disabled} id={setting.id} options={setting.options} value={setting.value} onChange={this.onChange.bind(this, setting.id)} />;
+                            if (setting.type == "number") component = <Number disabled={setting.disabled} id={setting.id} min={setting.min} max={setting.max} step={setting.step} value={setting.value} onChange={this.onChange.bind(this, setting.id)} />;
                             if (setting.type == "switch") component = <Switch disabled={setting.disabled} id={setting.id} checked={setting.value} onChange={this.onChange.bind(this, setting.id)} />;
                             if (!component) return null;
                             return <Item id={setting.id} key={setting.id} name={setting.name} note={setting.note}>{component}</Item>;

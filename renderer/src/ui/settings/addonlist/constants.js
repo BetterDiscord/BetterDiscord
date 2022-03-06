@@ -4,35 +4,35 @@ import FormattableString from "structs/string";
 export const CONTROLS = {
     installed: {
         sortOptions: [
-            {label: Strings.Addons.name, value: "name"},
-            {label: Strings.Addons.author, value: "author"},
-            {label: Strings.Addons.version, value: "version"},
-            {label: Strings.Addons.added, value: "added"},
-            {label: Strings.Addons.modified, value: "modified"}
+            {get label() {return Strings.Addons.name;}, value: "name"},
+            {get label() {return Strings.Addons.author;}, value: "author"},
+            {get label() {return Strings.Addons.version;}, value: "version"},
+            {get label() {return Strings.Addons.added;}, value: "added"},
+            {get label() {return Strings.Addons.modified;}, value: "modified"}
         ],
         directions: [
-            {label: Strings.Sorting.ascending, value: true},
-            {label: Strings.Sorting.descending, value: false}
+            {get label() {return Strings.Sorting.ascending;}, value: true},
+            {get label() {return Strings.Sorting.descending;}, value: false}
         ],
         viewOptions: [
-            {label: Strings.Addons.list, value: "list"},
-            {label: Strings.Addons.grid, value: "grid"}
+            {get label() {return Strings.Addons.list;}, value: "list"},
+            {get label() {return Strings.Addons.grid;}, value: "grid"}
         ]
     },
     store: {
         sortOptions: [
-            {label: Strings.Addons.name, value: "name"},
-            {label: Strings.Addons.likes, value: "likes"},
-            {label: Strings.Addons.downloads, value: "downloads"},
-            {label: Strings.Addons.added, value: "release_date"}
+            {get label() {return Strings.Addons.name;}, value: "name"},
+            {get label() {return Strings.Addons.likes;}, value: "likes"},
+            {get label() {return Strings.Addons.downloads;}, value: "downloads"},
+            {get label() {return Strings.Addons.added;}, value: "release_date"}
         ],
         directions: [
-            {label: Strings.Sorting.ascending, value: true},
-            {label: Strings.Sorting.descending, value: false}
+            {get label() {return Strings.Sorting.ascending;}, value: true},
+            {get label() {return Strings.Sorting.descending;}, value: false}
         ],
         viewOptions: [
-            {label: Strings.Addons.list, value: "list"},
-            {label: Strings.Addons.grid, value: "grid"}
+            {get label() {return Strings.Addons.list;}, value: "list"},
+            {get label() {return Strings.Addons.grid;}, value: "grid"}
         ]
     }
 };
