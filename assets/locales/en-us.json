@@ -28,6 +28,10 @@
                 "mediaKeys": {
                     "name": "Disable Media Keys",
                     "note": "Prevents Discord from hijacking your media keys after playing a video."
+                },
+                "store": {
+                    "name": "Store Builtin",
+                    "note": "Enables builtin function for the store"
                 }
             },
             "addons": {
