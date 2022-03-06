@@ -327,9 +327,8 @@
 
 .bd-page-buttons {
     width: auto;
-    flex: 0 0 auto;
-    max-width: 80%;
-    overflow: auto; 
+    overflow: auto;
+    flex: 1 1 auto;
 }
 
 .bd-page-button {
