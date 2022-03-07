@@ -24,6 +24,7 @@
 	height: 375px;
 	width: 100%;
 	overflow: hidden;
+    line-height: normal;
 	border-radius: 8px;
 	position: relative;
 	transition: box-shadow 0.2s ease-out, transform 0.2s ease-out, background 0.2s ease-out, opacity 0.2s ease-in, -webkit-box-shadow 0.2s ease-out, -webkit-transform 0.2s ease-out;

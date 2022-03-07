@@ -37,9 +37,10 @@ export const CONTROLS = {
     }
 };
 
-export const API_VERSION = "v1";
+export const API_VERSION = "latest";
 export const WEB_HOSTNAME = "betterdiscord.app";
-export const API_URL = new FormattableString(`https://api.${WEB_HOSTNAME}/${API_VERSION}/store/{{type}}s`);
+export const STORE_API_URL = new FormattableString(`https://api.${WEB_HOSTNAME}/${API_VERSION}/store/{{type}}s`);
+export const ADDON_API_URL = new FormattableString(`https://api.${WEB_HOSTNAME}/${API_VERSION}/store/{{addon}}`);
 export const DOWNLOAD_URL = new FormattableString(`https://${WEB_HOSTNAME}/download?id={{id}}`);
 export const TAGS = {
     themes: ["all", "flat", "transparent", "layout", "customizable", "fiction", "nature", "space", "dark", "light", "game", "anime", "red", "orange", "green", "purple", "black", "other", "yellow", "blue", "abstract"],

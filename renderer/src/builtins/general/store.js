@@ -1,7 +1,14 @@
 import Builtin from "../../structs/builtin";
 import {React, WebpackModules} from "modules";
+import { Config } from "data";
+import { fetchAddon } from "../../ui/settings/addonlist/api";
+import AddonManager from "../../modules/addonmanager";
 import PluginManager from "../../modules/pluginmanager";
 import ThemeManager from "../../modules/thememanager";
+import StoreCard from "../../ui/settings/addonlist/storecard";
+import openStoreDetail from "../../ui/settings/addonlist/storedetail";
+
+import path from "path";
 
 const {shell} = require("electron");
 
@@ -55,6 +62,11 @@ export default new class Store extends Builtin {
 
     renderContent(path, link) {
         switch (path) {
+            case "addon":
+                return React.createElement(React.Fragment, null, [
+                    link,
+                    React.createElement(EmbeddedStoreCard, { addon: "Slate" }, null)
+                ]);
             case "themesfolder":
             case "pluginsfolder":
                 link.props.onClick = () => {
@@ -82,3 +94,34 @@ export default new class Store extends Builtin {
         this.unpatchAll();
     }
 };
+
+class EmbeddedStoreCard extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            addon: null,
+            loading: true
+        };
+    }
+
+    async componentDidMount() {
+        const data = await fetchAddon(this.props.addon);
+
+        this.setState({
+            addon: data,
+            loading: false
+        });
+    }
+
+    render() {
+        return !this.state.loading ? React.createElement(StoreCard, {
+            ...this.state.addon,
+            isInstalled: AddonManager.isLoaded,
+            folder: this.state.addon.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder,
+            onDetailsView: () => {
+                openStoreDetail(this.state.addon);
+            }
+        }) : null;
+    }
+}

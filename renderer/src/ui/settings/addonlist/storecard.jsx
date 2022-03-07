@@ -15,7 +15,7 @@ export default class StoreCard extends React.Component {
         event.preventDefault();
         event.stopPropagation();
 
-        Modals.showInstallationModal({...this.props });
+        Modals.showInstallationModal({ ...this.props });
     }
 
     preview = (event) => {
@@ -54,11 +54,11 @@ export default class StoreCard extends React.Component {
     }
 
     render() {
-        const {name, description, author, selectedTag, tags, likes, downloads, release_date} = this.props;
+        const {name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
 
         const isInstalled = this.isInstalled;
 
-        return <div className="bd-store-card" data-addon-name={name} onClick={this.handleClick}>
+        return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.handleClick}>
             <div className="bd-store-card-header">
                 <div className="bd-store-card-splash">
                     <img key={this.thumbnail} onClick={this.preview} alt={name} src={this.thumbnail} />

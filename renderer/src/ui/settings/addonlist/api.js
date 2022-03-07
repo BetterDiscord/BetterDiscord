@@ -1,5 +1,5 @@
 import {Utilities} from "modules";
-import {API_URL, WEB_HOSTNAME} from "./constants";
+import {ADDON_API_URL, STORE_API_URL, WEB_HOSTNAME} from "./constants";
 import https from "https";
 
 export const README_CACHE = {plugin: {}, theme: {}};
@@ -22,7 +22,7 @@ export const splitArray = (array, max) => {
 
 export async function fetchData(type) {
     return new Promise(resolve => {
-        https.get(API_URL.format({type}), res => {
+        https.get(STORE_API_URL.format({type}), res => {
             const chunks = [];
             res.on("data", chunk => chunks.push(chunk));
 
@@ -30,6 +30,25 @@ export async function fetchData(type) {
                 const json = Utilities.testJSON(chunks.join(""));
                 if (!Array.isArray(json)) return res.emit("error");
                 resolve(splitArray(json, 30));
+            });
+
+            res.on("error", console.error);
+        });
+    });
+}
+
+export async function fetchAddon(addon) {
+    return new Promise(resolve => {
+        https.get(ADDON_API_URL.format({ addon }), res => {
+            const chunks = [];
+            res.on("data", chunk => chunks.push(chunk));
+
+            res.on("end", () => {
+                const json = Utilities.testJSON(chunks.join(""));
+
+                if (!json) return res.emit("error");
+
+                resolve(json);
             });
 
             res.on("error", console.error);
