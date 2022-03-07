@@ -1,6 +1,5 @@
 import Builtin from "../../structs/builtin";
 import {React, WebpackModules} from "modules";
-import { Config } from "data";
 import { fetchAddon } from "../../ui/settings/addonlist/api";
 import AddonManager from "../../modules/addonmanager";
 import PluginManager from "../../modules/pluginmanager";
