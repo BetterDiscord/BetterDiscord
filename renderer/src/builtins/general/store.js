@@ -108,9 +108,7 @@ class EmbeddedStoreCard extends React.Component {
 
     componentDidMount() {
         fetchAddon(this.props.addon).then(data => {
-            this.setState({
-                addon: data
-            });
+            if (data.id) this.setState({ addon: data });
         });
     }
 
