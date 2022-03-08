@@ -24,11 +24,11 @@ export default class InstallationModal extends React.Component {
 
     get thumbnail() {return `https://${WEB_HOSTNAME}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;}
 
-    install(id, sourceUrl) {
+    install(id, fileName) {
         try {
             const downloadUrl = `https://${WEB_HOSTNAME}/download?id=${id}`;
             https.get(downloadUrl, response => {
-                let chunks = [], filename = path.basename(url.parse(sourceUrl).path);
+                let chunks = [], filename = fileName;
                 response.on("data", chunk => chunks.push(chunk));
                 response.on("end", () => {
                     const data = chunks.join("");
@@ -47,7 +47,7 @@ export default class InstallationModal extends React.Component {
     }
 
     render() {
-        const {name, id, description, author, release_date, type, version, latest_source_url} = this.props;
+        const {name, id, description, author, release_date, type, version, file_name} = this.props;
 
         return <>
             <ModalComponents.ModalHeader className="bd-installation-header">
@@ -76,16 +76,16 @@ export default class InstallationModal extends React.Component {
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Github aria-label={Strings.Addons.source} />} id="bd-info-source" label={Strings.Addons.source}>
-                        <Anchor href={latest_source_url} target="_blank" rel="noreferrer noopener">{path.basename(url.parse(latest_source_url).path)}</Anchor>
+                        <Anchor href={`https://${WEB_HOSTNAME}/gh-redirect?id=${id}`} target="_blank" rel="noreferrer noopener">{file_name}</Anchor>
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Author aria-label={Strings.Addons.author} />} id="bd-info-author" label={Strings.Addons.uploaded}>
-                        <Anchor href={`http://${WEB_HOSTNAME}/developers/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</Anchor>
+                        <Anchor href={`https://${WEB_HOSTNAME}/developers/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</Anchor>
                     </InfoItem>
                 </ul>
             </ModalComponents.ModalContent>
             <ModalComponents.ModalFooter>
-                <Button onClick={() => {this.install(id, latest_source_url)}} color={Button.Colors.GREEN} disabled={this.state.isInstalling}>
+                <Button onClick={() => {this.install(id, file_name)}} color={Button.Colors.GREEN} disabled={this.state.isInstalling}>
                     {this.state.isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : (Strings.Modals.install ?? "Install")}
                 </Button>
             </ModalComponents.ModalFooter>

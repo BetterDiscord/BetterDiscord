@@ -1,13 +1,13 @@
 import Builtin from "../../structs/builtin";
 import {React, WebpackModules} from "modules";
 import { fetchAddon } from "../../ui/settings/addonlist/api";
-import AddonManager from "../../modules/addonmanager";
 import PluginManager from "../../modules/pluginmanager";
 import ThemeManager from "../../modules/thememanager";
 import StoreCard from "../../ui/settings/addonlist/storecard";
 import openStoreDetail from "../../ui/settings/addonlist/storedetail";
+import Modals from "../../ui/modals";
 
-import path from "path";
+import { URL } from "url";
 
 const {shell} = require("electron");
 
@@ -55,17 +55,20 @@ export default new class Store extends Builtin {
         this.after(SimpleMarkdown.defaultRules.link, "react", (_, [{target: url}], returnValue) => {
             if (!protocolRegex.test(url)) return;
 
-            return this.renderContent(url.slice(protocol.length), returnValue);
+            return this.renderContent(url, returnValue);
         });
     }
 
     renderContent(path, link) {
-        switch (path) {
+        const url = new URL(path);
+
+        switch (url.hostname) {
             case "addon":
-                return React.createElement(React.Fragment, null, [
-                    link,
-                    React.createElement(EmbeddedStoreCard, { addon: "Slate" }, null)
-                ]);
+                const addon = url.pathname.slice(1);
+
+                if (!addon) return link;
+
+                return React.createElement(EmbeddedStoreCard, { addon, link }, null)
             case "themesfolder":
             case "pluginsfolder":
                 link.props.onClick = () => {
@@ -99,28 +102,46 @@ class EmbeddedStoreCard extends React.Component {
         super(props);
 
         this.state = {
-            addon: null,
-            loading: true
+            addon: null
         };
     }
 
-    async componentDidMount() {
-        const data = await fetchAddon(this.props.addon);
-
-        this.setState({
-            addon: data,
-            loading: false
+    componentDidMount() {
+        fetchAddon(this.props.addon).then(data => {
+            this.setState({
+                addon: data
+            });
         });
     }
 
-    render() {
-        return !this.state.loading ? React.createElement(StoreCard, {
-            ...this.state.addon,
-            isInstalled: AddonManager.isLoaded,
-            folder: this.state.addon.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder,
-            onDetailsView: () => {
-                openStoreDetail(this.state.addon);
+    componentDidUpdate() {
+        if (this.state.addon) {
+            this.props.link.props.onClick = () => {
+                Modals.showInstallationModal({ ...this.state.addon, folder: this.folder });
             }
-        }) : null;
+        }
+    }
+
+    get folder() {
+        return this.state.addon.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder;
+    }
+
+    isInstalled = (name) => {
+        return this.state.addon.type === "theme" ? ThemeManager.isLoaded(name) : PluginManager.isLoaded(name);
+    }
+
+    render() {
+        return [
+            this.props.link,
+            this.state.addon ? React.createElement(StoreCard, {
+                ...this.state.addon,
+                folder: this.folder,
+                isInstalled: this.isInstalled,
+                className: "bd-store-card-embedded",
+                onDetailsView: () => {
+                    openStoreDetail(this.state.addon);
+                }
+            }) : null
+        ]
     }
 }

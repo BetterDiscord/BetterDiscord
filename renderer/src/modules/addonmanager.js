@@ -30,7 +30,7 @@ const stripBOM = function(fileContent) {
 };
 
 export default class AddonManager {
-
+    
     get name() {return "";}
     get moduleExtension() {return "";}
     get extension() {return "";}

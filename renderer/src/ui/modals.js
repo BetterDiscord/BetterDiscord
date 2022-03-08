@@ -266,7 +266,7 @@ export default class Modals {
     }
 
     static showInstallationModal(options = {}) {
-        const {type, name, id, version, thumbnail_url, release_date, description, latest_source_url, author, folder} = options;
+        const {type, name, id, version, thumbnail_url, release_date, description, author, folder} = options;
         const {ModalRoot} = this.ModalComponents;
 
         this.ModalActions.openModal(props => React.createElement(ModalRoot, Object.assign(props, {

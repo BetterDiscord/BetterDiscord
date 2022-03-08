@@ -29,7 +29,7 @@ export default class StoreCard extends React.Component {
     }
 
     get isInstalled() {
-        return this.props.isInstalled(path.basename(url.parse(this.props.latest_source_url).path));
+        return this.props.isInstalled(this.props.file_name);
     }
 
     abbreviateStat(n) {
