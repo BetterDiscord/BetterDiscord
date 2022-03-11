@@ -1,15 +1,41 @@
 import {React, Strings, Utilities, WebpackModules} from "modules";
 import {WEB_HOSTNAME} from "./constants";
-import path from "path";
-import url from "url";
 import {Heart, Download} from "icons";
+
 import Modals from "../../modals";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 const Button = WebpackModules.getByProps("DropdownSizes");
 
 export default class StoreCard extends React.Component {
-    get thumbnail() {return `https://${WEB_HOSTNAME}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;}
+    get thumbnail() {
+        return `https://${WEB_HOSTNAME}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;
+    }
+
+    get isInstalled() {
+        return this.props.isInstalled(this.props.file_name);
+    }
+
+    get monthsAgo() {
+        const current = new Date();
+        const release = new Date(this.props.release_date);
+        let months = (((current.getFullYear() - release.getFullYear()) * 12) - release.getMonth()) + current.getMonth();
+
+        return Math.max(months, 0);
+    }
+
+    abbreviateStat(n) {
+        if (n < 1e3) return n;
+        if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
+        if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
+    }
+
+    handleClick = () => {
+        const {onDetailsView} = this.props;
+        if (typeof onDetailsView !== "function") return;
+
+        onDetailsView();
+    }
 
     install = (event) => {
         event.preventDefault();
@@ -28,35 +54,8 @@ export default class StoreCard extends React.Component {
         });
     }
 
-    get isInstalled() {
-        return this.props.isInstalled(this.props.file_name);
-    }
-
-    abbreviateStat(n) {
-        if (n < 1e3) return n;
-        if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
-        if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
-    }
-
-    get monthsAgo() {
-        const current = new Date();
-        const release = new Date(this.props.release_date);
-        let months = (((current.getFullYear() - release.getFullYear()) * 12) - release.getMonth()) + current.getMonth();
-
-        return Math.max(months, 0);
-    }
-
-    handleClick = () => {
-        const {onDetailsView} = this.props;
-        if (typeof onDetailsView !== "function") return;
-
-        onDetailsView();
-    }
-
     render() {
-        const {name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
-
-        const isInstalled = this.isInstalled;
+        const {isInstalled, name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
 
         return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.handleClick}>
             <div className="bd-store-card-header">
@@ -106,8 +105,12 @@ export default class StoreCard extends React.Component {
                             }
                         </Tooltip>
                     </div>
-                    <Button color={Button.Colors.GREEN} size={Button.Sizes.SMALL} onClick={this.install} disabled={isInstalled}>
-                        {isInstalled ? Strings.Addons.installed : Strings.Addons.install}
+                    <Button
+                        color={isInstalled ? Button.Colors.GREEN : Button.Colors.RED}
+                        size={Button.Sizes.SMALL}
+                        onClick={this.install}
+                    >
+                        {isInstalled ? Strings.Addons.installed : Strings.Addons.deleteAddon}
                     </Button>
                 </div>
             </div>

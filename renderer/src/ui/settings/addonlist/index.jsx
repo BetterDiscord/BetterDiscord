@@ -67,14 +67,12 @@ export default class AddonList extends React.Component {
         }, 200);
     }
 
-    update = () => {this.forceUpdate();}
-
     componentDidMount() {
-        for (const event of this.events) Events.on(event, this.update);
+        for (const event of this.events) Events.on(event, this.forceUpdate);
     }
 
     componentWillUnmount() {
-        for (const event of this.events) Events.off(event, this.update);
+        for (const event of this.events) Events.off(event, this.forceUpdate);
     }
 
     get currentPage() {return this.state?.page || "installed";}
@@ -135,7 +133,6 @@ export default class AddonList extends React.Component {
         if (!controls[type]) controls[type] = {};
         controls[type][control] = value;
         DataStore.setBDData(id, controls);
-        // this.forceUpdate();
     }
 
     makeTab({label, selected, onSelect = () => {}}) {
@@ -219,11 +216,12 @@ export default class AddonList extends React.Component {
                         <Dropdown key={`${this.props.type}-${this.currentPage}`} options={CONTROLS[this.currentPage].directions} value={this.ascending} onChange={value => this.reverse(value)} style="transparent" />
                     </div>
                     <div className="bd-select-wrapper">
-                        <label className="bd-label">View</label>
+                        <label className="bd-label">{Strings.Addons.view}</label>
                         <Dropdown key={`${this.props.type}-${this.currentPage}`} options={CONTROLS[this.currentPage].viewOptions} value={this.viewStyle} onChange={value => this.changeView(value)} style="transparent" />
                     </div>
                 </div>
             </div>
+
             <div className="bd-addon-list-controls">
                 <SearchBar
                     key={this.props.type + "-search"}
@@ -238,7 +236,7 @@ export default class AddonList extends React.Component {
                 >{Strings.Addons.openFolder.format({type: _.upperFirst(this.props.type)})}</Button>
             </div>
             {this.pageControls}
-            {<Divider className={Utilities.joinClassNames(DiscordClasses.Margins.marginTop20.toString(), DiscordClasses.Margins.marginBottom20.toString())} />}
+            <Divider className={Utilities.joinClassNames(DiscordClasses.Margins.marginTop20.toString(), DiscordClasses.Margins.marginBottom20.toString())} />
             <Component
                 key={`${this.props.type}-${this.currentPage}`}
                 state={Object.assign({}, Pages[this.currentPage].state, this.state)}

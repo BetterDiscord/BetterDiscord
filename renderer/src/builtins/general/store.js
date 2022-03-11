@@ -120,24 +120,26 @@ class EmbeddedStoreCard extends React.Component {
         }
     }
 
-    get folder() {
-        return this.state.addon.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder;
-    }
-
     isInstalled = (name) => {
         return this.state.addon.type === "theme" ? ThemeManager.isLoaded(name) : PluginManager.isLoaded(name);
     }
 
+    get folder() {
+        return this.state.addon.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder;
+    }
+
     render() {
+        const {addon} = this.state;
+
         return [
             this.props.link,
-            this.state.addon ? React.createElement(StoreCard, {
-                ...this.state.addon,
+            addon ? React.createElement(StoreCard, {
+                ...addon,
                 folder: this.folder,
-                isInstalled: this.isInstalled,
+                isInstalled: this.isInstalled(addon.name),
                 className: "bd-store-card-embedded",
                 onDetailsView: () => {
-                    openStoreDetail(this.state.addon);
+                    openStoreDetail(addon);
                 }
             }) : null
         ]

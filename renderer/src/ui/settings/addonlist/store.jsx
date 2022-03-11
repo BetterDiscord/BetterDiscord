@@ -1,7 +1,7 @@
 import {React, Strings, Utilities, WebpackModules, DiscordClasses} from "modules";
 import {API_CACHE, fetchData, splitArray} from "./api";
-import NoResults from "../../blankslates/noresults";
 import {Next, Previous} from "icons";
+import NoResults from "../../blankslates/noresults";
 import StoreCard from "./storecard";
 import openStoreDetail from "./storedetail";
 
@@ -88,7 +88,7 @@ export default class StorePage extends React.Component {
                     {addons[this.state.selectedPage].map(addon => {
                         return <StoreCard
                             {...addon}
-                            isInstalled={this.isInstalled}
+                            isInstalled={this.isInstalled(addon.name)}
                             selectedTag={this.props.state.selectedTag}
                             folder={this.props.folder}
                             onDetailsView={() => {
@@ -97,7 +97,7 @@ export default class StorePage extends React.Component {
                         />;
                     })}
                 </div>
-                : this.state.isLoaded && <NoResults/>
+                : this.state.isLoaded && <NoResults />
             }
             {this.state.isLoaded && addons.length > 1 && <nav className="bd-page-control">
                 <Button look={Button.Looks.BLANK} className="bd-page-button" onClick={handleSelect(s => s - 1)} disabled={!canGoBackward}>
