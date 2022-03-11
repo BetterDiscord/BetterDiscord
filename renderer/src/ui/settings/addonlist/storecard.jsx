@@ -110,7 +110,7 @@ export default class StoreCard extends React.Component {
                         size={Button.Sizes.SMALL}
                         onClick={this.install}
                     >
-                        {isInstalled ? Strings.Addons.installed : Strings.Addons.deleteAddon}
+                        {isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.installed}
                     </Button>
                 </div>
             </div>
