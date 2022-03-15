@@ -68,11 +68,11 @@ export default class AddonList extends React.Component {
     }
 
     componentDidMount() {
-        for (const event of this.events) Events.on(event, this.forceUpdate);
+        for (const event of this.events) Events.on(event, this.update);
     }
 
     componentWillUnmount() {
-        for (const event of this.events) Events.off(event, this.forceUpdate);
+        for (const event of this.events) Events.off(event, this.update);
     }
 
     get currentPage() {return this.state?.page || "installed";}
@@ -111,6 +111,8 @@ export default class AddonList extends React.Component {
             type={this.props.type}
         />;
     }
+
+    update = () => {this.forceUpdate();}
 
     getControlState(control, defaultValue) {
         const {type} = this.props;
