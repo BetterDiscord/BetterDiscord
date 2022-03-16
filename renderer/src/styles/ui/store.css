@@ -181,6 +181,7 @@
 	color: var(--interactive-normal);
 	padding: 4px 6px;
 	font-size: 10px;
+    line-height: 1.15;
 	text-transform: uppercase;
 	font-weight: 600;
 	overflow: hidden;

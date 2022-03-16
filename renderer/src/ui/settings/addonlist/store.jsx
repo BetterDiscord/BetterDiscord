@@ -86,6 +86,7 @@ export default class StorePage extends React.Component {
             {(this.state.isLoaded && addons?.length && addons[this.state.selectedPage]) 
                 ? <div className={Utilities.joinClassNames("bd-store-addons", this.props.view + "-view")}>
                     {addons[this.state.selectedPage].map(addon => {
+                        {this.isInstalled(addon.name)}
                         return <StoreCard
                             {...addon}
                             isInstalled={this.isInstalled(addon.name)}

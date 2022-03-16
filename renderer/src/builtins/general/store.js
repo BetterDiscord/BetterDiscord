@@ -1,5 +1,5 @@
 import Builtin from "../../structs/builtin";
-import {React, WebpackModules} from "modules";
+import {React, DiscordModules, WebpackModules} from "modules";
 import { fetchAddon } from "../../ui/settings/addonlist/api";
 import PluginManager from "../../modules/pluginmanager";
 import ThemeManager from "../../modules/thememanager";
@@ -8,8 +8,6 @@ import openStoreDetail from "../../ui/settings/addonlist/storedetail";
 import Modals from "../../ui/modals";
 
 import { URL } from "url";
-
-const {shell} = require("electron");
 
 const protocol = "betterdiscord://";
 const protocolRegex = new RegExp(protocol, "i");
@@ -22,6 +20,34 @@ export default new class Store extends Builtin {
     enabled() {
         this.patchMarkdownParser();
         this.patchTrustedModule();
+        this.patchEmbeds();
+    }
+
+    patchEmbeds() {
+        const MessageAccessories = WebpackModules.getByProps("MessageAccessories")?.MessageAccessories;
+        const AUTOLINK_REGEX = new RegExp("^<([^: >]+:/[^ >]+)>");
+
+        if (!MessageAccessories.prototype.renderEmbeds) return;
+
+        this.instead(MessageAccessories.prototype, "renderEmbeds", (thisObject, methodArguments, renderEmbeds) => {
+            const embeds = Reflect.apply(renderEmbeds, thisObject, methodArguments);
+            const matchedProtocol = methodArguments[0]?.content.match(AUTOLINK_REGEX)?.[1].replace(/\s+/g, ' ').trim();
+
+            if (!protocolRegex.test(matchedProtocol)) return embeds;
+
+            const url = new URL(matchedProtocol);
+
+            if (url.hostname === "addon") {
+                const addon = url.pathname.slice(1);
+
+                return addon ? [
+                    ...(embeds ? embeds : []),
+                    React.createElement(EmbeddedStoreCard, { addon })
+                ] : embeds;
+            }
+
+            return embeds;
+        });
     }
 
     patchTrustedModule() {
@@ -48,7 +74,7 @@ export default new class Store extends Builtin {
     }
 
     patchMarkdownParser() {
-        const SimpleMarkdown = WebpackModules.getByProps("parseTopic", "defaultRules");
+        const { SimpleMarkdown } = DiscordModules;
 
         if (!SimpleMarkdown || !SimpleMarkdown.defaultRules.link) return;
 
@@ -62,34 +88,17 @@ export default new class Store extends Builtin {
     renderContent(path, link) {
         const url = new URL(path);
 
-        switch (url.hostname) {
-            case "addon":
-                const addon = url.pathname.slice(1);
+        if (url.hostname === "addon") {
+            const addon = url.pathname.slice(1);
 
-                if (!addon) return link;
+            if (!addon) return link;
 
-                return React.createElement(EmbeddedStoreCard, { addon, link }, null)
-            case "themesfolder":
-            case "pluginsfolder":
-                link.props.onClick = () => {
-                    this.openAddonFolder(path.replace("folder", ""));
-                };
-                
-                return link;
-            
-            default: return link;
+            link.props.onClick = (e) => {
+                Modals.showInstallationModal({ ...this.state.addon, folder: this.folder });
+            }
         }
-    }
 
-    openAddonFolder(type) {
-        switch (type) {
-            case "themes":
-                shell.openPath(ThemeManager.addonFolder);
-                break;
-            case "plugins":
-                shell.openPath(PluginManager.addonFolder);
-                break;
-        }
+        return link;
     }
 
     disabled() {
@@ -112,14 +121,6 @@ class EmbeddedStoreCard extends React.Component {
         });
     }
 
-    componentDidUpdate() {
-        if (this.state.addon) {
-            this.props.link.props.onClick = () => {
-                Modals.showInstallationModal({ ...this.state.addon, folder: this.folder });
-            }
-        }
-    }
-
     isInstalled = (name) => {
         return this.state.addon.type === "theme" ? ThemeManager.isLoaded(name) : PluginManager.isLoaded(name);
     }
@@ -132,7 +133,6 @@ class EmbeddedStoreCard extends React.Component {
         const {addon} = this.state;
 
         return [
-            this.props.link,
             addon ? React.createElement(StoreCard, {
                 ...addon,
                 folder: this.folder,
