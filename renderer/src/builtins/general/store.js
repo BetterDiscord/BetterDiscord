@@ -29,7 +29,7 @@ export default new class Store extends Builtin {
 
     patchEmbeds() {
         const MessageAccessories = WebpackModules.getByProps("MessageAccessories")?.MessageAccessories;
-        const AUTOLINK_REGEX = new RegExp("^<([^: >]+:/[^ >]+)>");
+        const AUTOLINK_REGEX = new RegExp("<([^: >]+:/[^ >]+)>");
 
         if (!MessageAccessories?.prototype.renderEmbeds) return;
 
