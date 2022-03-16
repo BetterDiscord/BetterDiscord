@@ -9,8 +9,8 @@ import Modals from "../../ui/modals";
 
 import { URL } from "url";
 
-const protocol = "betterdiscord://";
-const protocolRegex = new RegExp(protocol, "i");
+const BD_PROTOCOL = "betterdiscord:";
+const BD_PROTOCOL_REGEX = new RegExp(BD_PROTOCOL + "//", "i");
 
 export default new class Store extends Builtin {
     get name() {return "Store";}
@@ -29,30 +29,23 @@ export default new class Store extends Builtin {
 
     patchEmbeds() {
         const MessageAccessories = WebpackModules.getByProps("MessageAccessories")?.MessageAccessories;
-        const AUTOLINK_REGEX = new RegExp("<([^: >]+:/[^ >]+)>");
+        const PROTOCOL_REGEX = new RegExp("<([^: >]+:/[^ >]+)>", "g");
 
         if (!MessageAccessories?.prototype.renderEmbeds) return;
 
         this.instead(MessageAccessories.prototype, "renderEmbeds", (thisObject, methodArguments, renderEmbeds) => {
             const embeds = Reflect.apply(renderEmbeds, thisObject, methodArguments);
-            const matchedProtocol = methodArguments[0]?.content.match(AUTOLINK_REGEX)?.[1].replace(/\s+/g, ' ').trim();
+            const matchedProtocols = methodArguments[0]?.content.match(PROTOCOL_REGEX)?.map(match => {
+                const url = new URL(match.replace(/\s+/g, ' ').replaceAll(/[<>]+/g, "").trim());
 
-            if (!protocolRegex.test(matchedProtocol)) return embeds;
-
-            const url = new URL(matchedProtocol);
-
-            if (url.hostname === "addon") {
-                const addon = url.pathname.slice(1);
-
-                if (!addon) return embeds;
-
-                return [
-                    ...(embeds ? embeds : []),
-                    React.createElement(EmbeddedStoreCard, { addon })
-                ];
-            }
-
-            return embeds;
+                if (url.hostname === "addon" && url.protocol === BD_PROTOCOL) return url;
+            }).filter(m => m != null);
+            
+            if (!matchedProtocols || !matchedProtocols?.length) return embeds;
+            
+            return (embeds ?? []).concat(matchedProtocols.map(url => (
+                React.createElement(EmbeddedStoreCard, { addon: url.pathname.slice(1) }))
+            ));
         });
     }
 
@@ -64,7 +57,7 @@ export default new class Store extends Builtin {
         this.instead(TrustedModule, "handleClick", (thisObject, methodArguments, handleClick) => {
             const [{href, onClick}, event] = methodArguments;
 
-            if (protocolRegex.test(href)) {
+            if (BD_PROTOCOL_REGEX.test(href)) {
                 if (typeof onClick === "function") onClick(event);
 
                 if (event) {
@@ -82,10 +75,10 @@ export default new class Store extends Builtin {
     patchMarkdownParser() {
         const { SimpleMarkdown } = DiscordModules;
 
-        if (!SimpleMarkdown || !SimpleMarkdown.defaultRules.link) return;
+        if (!SimpleMarkdown?.defaultRules?.link) return;
 
         this.after(SimpleMarkdown.defaultRules.link, "react", (_, [{target: url}], returnValue) => {
-            if (!protocolRegex.test(url)) return;
+            if (!BD_PROTOCOL_REGEX.test(url)) return;
 
             return this.renderContent(url, returnValue);
         });
