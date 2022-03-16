@@ -106,11 +106,11 @@ export default class StoreCard extends React.Component {
                         </Tooltip>
                     </div>
                     <Button
-                        color={isInstalled ? Button.Colors.GREEN : Button.Colors.RED}
+                        color={isInstalled ? Button.Colors.RED : Button.Colors.GREEN}
                         size={Button.Sizes.SMALL}
                         onClick={this.install}
                     >
-                        {isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.installed}
+                        {isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.install}
                     </Button>
                 </div>
             </div>
