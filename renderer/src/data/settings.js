@@ -8,8 +8,7 @@ export default [
             {type: "switch", id: "publicServers", value: true},
             {type: "switch", id: "voiceDisconnect", value: false},
             {type: "switch", id: "showToasts", value: true},
-            {type: "switch", id: "mediaKeys", value: false},
-            {type: "switch", id: "store", value: true}
+            {type: "switch", id: "mediaKeys", value: false}
         ]
     },
     {
@@ -18,6 +17,7 @@ export default [
         collapsible: true,
         shown: false,
         settings: [
+            {type: "switch", id: "store", value: true},
             {type: "switch", id: "addonErrors", value: true},
             {type: "switch", id: "autoReload", value: true},
             {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]}

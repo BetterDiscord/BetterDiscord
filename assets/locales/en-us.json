@@ -28,14 +28,14 @@
                 "mediaKeys": {
                     "name": "Disable Media Keys",
                     "note": "Prevents Discord from hijacking your media keys after playing a video."
-                },
-                "store": {
-                    "name": "Store Builtin",
-                    "note": "Enables builtin function for the store"
                 }
             },
             "addons": {
                 "name": "Addon Manager",
+                "store": {
+                    "name": "Addon Store",
+                    "note": "Enables the Store, allowing you to download themes and plugins remotely."
+                },
                 "addonErrors": {
                     "name": "Show Addon Errors",
                     "note": "Shows a modal with plugin/theme errors"
@@ -231,6 +231,7 @@
         "uploaded": "Date Uploaded",
         "modified": "Date Modified",
         "search": "Search {{type}}",
+        "noResults": "We searched far and wide. Unfortunately, no results were found.",
         "editAddon": "Edit",
         "deleteAddon": "Delete",
         "confirmDelete": "Are you sure you want to delete {{name}}?",

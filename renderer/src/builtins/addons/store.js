@@ -14,7 +14,7 @@ const BD_PROTOCOL_REGEX = new RegExp(BD_PROTOCOL + "//", "i");
 
 export default new class Store extends Builtin {
     get name() {return "Store";}
-    get category() {return "general";}
+    get category() {return "addons";}
     get id() {return "store";}
 
     enabled() {

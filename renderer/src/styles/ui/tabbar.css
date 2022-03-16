@@ -25,7 +25,7 @@
     line-height: 20px;
 }
 
-.bd-tab-item:last-child {
+.bd-tab-item:last-of-type {
     margin: 0;
 }
 

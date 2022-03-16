@@ -6,12 +6,13 @@ export {default as PublicServers} from "./general/publicservers";
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
 export {default as MediaKeys} from "./general/mediakeys";
 
+export {default as Store} from "./addons/store";
+
 export {default as EmoteModule} from "./emotes/emotes";
 export {default as EmoteMenu} from "./emotes/emotemenu";
 // export {default as EmoteAutocaps} from "./emotes/emoteautocaps";
 
 export {default as DevToolsListener} from "./developer/devtools";
-export {default as Store} from "./general/store";
 export {default as Debugger} from "./developer/debugger";
 export {default as ReactDevTools} from "./developer/reactdevtools";
 export {default as InspectElement} from "./developer/inspectelement";

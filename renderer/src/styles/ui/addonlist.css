@@ -4,6 +4,10 @@
     justify-content: space-between;
 }
 
+.bd-addon-list-title .bd-settings-title:not(.bd-settings-group-title) {
+    margin-bottom: 0;
+}
+
 .bd-addon-list-filters,
 .bd-addon-list-controls {
     display: flex;
@@ -20,6 +24,7 @@
 }
 
 .bd-reload {
+    margin-left: 8px;
     cursor: pointer;
     vertical-align: top;
     fill: #dcddde;

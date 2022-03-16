@@ -55,9 +55,9 @@ export default new class SettingsRenderer {
 
     getAddonPanel(title, addonList, addonState, options = {}) {
         return React.createElement(AddonList, Object.assign({}, {
-            title: title,
-            addonList: addonList,
-            addonState: addonState
+            title,
+            addonList,
+            addonState
         }, options));
     }
 

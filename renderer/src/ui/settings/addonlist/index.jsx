@@ -4,6 +4,7 @@ import Dropdown from "../components/dropdown";
 import SearchBar from "../components/search";
 import Divider from "../divider";
 import Modals from "../../modals";
+import SettingsTitle from "../title";
 import {Reload} from "icons";
 
 import {TAGS, CONTROLS} from "./constants";
@@ -139,7 +140,7 @@ export default class AddonList extends React.Component {
 
     makeTab({label, selected, onSelect = () => {}}) {
         return <div
-            className={Utilities.joinClassNames("bd-tab-item", {selected: selected})}
+            className={Utilities.joinClassNames("bd-tab-item", {selected})}
             role="tab"
             aria-disabled="false"
             aria-selected={selected}
@@ -194,32 +195,55 @@ export default class AddonList extends React.Component {
     }
 
     render() {
-        const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
+        const showReloadIcon = !Settings.get("settings", "addons", "autoReload") && this.state.page === "installed";
+        const storeEnabled = Settings.get("settings", "addons", "store");
         const Component = Pages[this.currentPage]?.component || (() => null);
 
         return <React.Fragment>
             <div className="bd-addon-list-title">
-                <div className="bd-tab-bar" otherChildren={showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />}>
-                    {Object.entries(Pages).map(([id, props]) => {
-                        return this.makeTab({
-                            label: props.label,
-                            selected: this.state.page === id,
-                            onSelect: () => this.setState({page: id})
-                        });
-                    })}
-                </div>
+                {storeEnabled ?
+                    <div className="bd-tab-bar">
+                        {Object.entries(Pages).map(([id, props]) => {
+                            return this.makeTab({
+                                label: props.label,
+                                selected: this.state.page === id,
+                                onSelect: () => this.setState({page: id})
+                            });
+                        })}
+                        {showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />}
+                    </div>
+                    : <SettingsTitle key="title" text={this.props.title} otherChildren={showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />} />
+                }
                 <div className="bd-addon-list-filters">
                     <div className="bd-select-wrapper">
                         <label className="bd-label">{Strings.Sorting.sortBy}</label>
-                        <Dropdown key={`${this.props.type}-${this.currentPage}`} options={CONTROLS[this.currentPage].sortOptions} value={this.sortStyle} onChange={value => this.sort(value)} style="transparent" />
+                        <Dropdown
+                            key={`${this.props.type}-${this.currentPage}`}
+                            options={CONTROLS[this.currentPage].sortOptions}
+                            value={this.sortStyle}
+                            onChange={value => this.sort(value)}
+                            style="transparent"
+                        />
                     </div>
                     <div className="bd-select-wrapper">
                         <label className="bd-label">{Strings.Sorting.order}</label>
-                        <Dropdown key={`${this.props.type}-${this.currentPage}`} options={CONTROLS[this.currentPage].directions} value={this.ascending} onChange={value => this.reverse(value)} style="transparent" />
+                        <Dropdown
+                            key={`${this.props.type}-${this.currentPage}`}
+                            options={CONTROLS[this.currentPage].directions}
+                            value={this.ascending}
+                            onChange={value => this.reverse(value)}
+                            style="transparent"
+                        />
                     </div>
                     <div className="bd-select-wrapper">
                         <label className="bd-label">{Strings.Addons.view}</label>
-                        <Dropdown key={`${this.props.type}-${this.currentPage}`} options={CONTROLS[this.currentPage].viewOptions} value={this.viewStyle} onChange={value => this.changeView(value)} style="transparent" />
+                        <Dropdown
+                            key={`${this.props.type}-${this.currentPage}`}
+                            options={CONTROLS[this.currentPage].viewOptions}
+                            value={this.viewStyle}
+                            onChange={value => this.changeView(value)}
+                            style="transparent"
+                        />
                     </div>
                 </div>
             </div>
