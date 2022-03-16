@@ -23,11 +23,15 @@ export default new class Store extends Builtin {
         this.patchEmbeds();
     }
 
+    disabled() {
+        this.unpatchAll();
+    }
+
     patchEmbeds() {
         const MessageAccessories = WebpackModules.getByProps("MessageAccessories")?.MessageAccessories;
         const AUTOLINK_REGEX = new RegExp("^<([^: >]+:/[^ >]+)>");
 
-        if (!MessageAccessories.prototype.renderEmbeds) return;
+        if (!MessageAccessories?.prototype.renderEmbeds) return;
 
         this.instead(MessageAccessories.prototype, "renderEmbeds", (thisObject, methodArguments, renderEmbeds) => {
             const embeds = Reflect.apply(renderEmbeds, thisObject, methodArguments);
@@ -40,10 +44,12 @@ export default new class Store extends Builtin {
             if (url.hostname === "addon") {
                 const addon = url.pathname.slice(1);
 
-                return addon ? [
+                if (!addon) return embeds;
+
+                return [
                     ...(embeds ? embeds : []),
                     React.createElement(EmbeddedStoreCard, { addon })
-                ] : embeds;
+                ];
             }
 
             return embeds;
@@ -99,10 +105,6 @@ export default new class Store extends Builtin {
         }
 
         return link;
-    }
-
-    disabled() {
-        this.unpatchAll();
     }
 };
 
