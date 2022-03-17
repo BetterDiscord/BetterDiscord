@@ -93,9 +93,9 @@ export default class StorePage extends React.Component {
                             isInstalled={this.isInstalled(addon.name)}
                             selectedTag={this.props.state.selectedTag}
                             folder={this.props.folder}
-                            onDetailsView={() => {
-                                openStoreDetail(addon);
-                            }}
+                            // onDetailsView={() => {
+                            //     openStoreDetail(addon);
+                            // }}
                         />;
                     })}
                 </div>

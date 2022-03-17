@@ -134,9 +134,9 @@ class EmbeddedStoreCard extends React.Component {
                 confirmAddonDelete: this.state.addon.type === "theme" ? ThemeManager.confirmAddonDelete.bind(ThemeManager) : PluginManager.confirmAddonDelete.bind(PluginManager),
                 isInstalled: this.isInstalled(addon.name),
                 className: "bd-store-card-embedded",
-                onDetailsView: () => {
-                    openStoreDetail(addon);
-                }
+                // onDetailsView: () => {
+                //     openStoreDetail(addon);
+                // }
             }) : null
         ]
     }

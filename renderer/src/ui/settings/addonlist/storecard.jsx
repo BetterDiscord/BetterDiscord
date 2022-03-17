@@ -68,8 +68,6 @@ export default class StoreCard extends React.Component {
     render() {
         const {isInstalled, name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
 
-        console.log(this.props.confirmAddonDelete);
-
         return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.handleClick}>
             <div className="bd-store-card-header">
                 <div className="bd-store-card-splash">

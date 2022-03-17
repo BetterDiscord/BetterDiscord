@@ -336,12 +336,7 @@ export default class AddonManager {
     }
 
     deleteAddon(idOrFileOrAddon) {
-        console.log(idOrFileOrAddon);
-
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
-
-        console.log(addon);
-
         return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
     }
 
