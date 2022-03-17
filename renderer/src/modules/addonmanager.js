@@ -10,6 +10,7 @@ import DiscordModules from "./discordmodules";
 import Strings from "./strings";
 import AddonEditor from "../ui/misc/addoneditor";
 import FloatingWindows from "../ui/floatingwindows";
+import Modals from "../ui/modals";
 
 const React = DiscordModules.React;
 
@@ -335,7 +336,12 @@ export default class AddonManager {
     }
 
     deleteAddon(idOrFileOrAddon) {
+        console.log(idOrFileOrAddon);
+
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+
+        console.log(addon);
+
         return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
     }
 
@@ -350,6 +356,14 @@ export default class AddonManager {
         if (typeof(system) == "undefined") system = Settings.get("settings", "addons", "editAction") == "system";
         if (system) return openItem(`${fullPath}`);
         return this.openDetached(addon);
+    }
+
+    confirmAddonDelete(addon) {
+        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
+            danger: true,
+            confirmText: Strings.Addons.deleteAddon,
+            onConfirm: () => this.deleteAddon(addon)
+        });
     }
 
     openDetached(addon) {

@@ -1,4 +1,4 @@
-import {React, Strings, Utilities, WebpackModules} from "modules";
+import {React, Strings, Utilities, WebpackModules } from "modules";
 import {WEB_HOSTNAME} from "./constants";
 import {Heart, Download} from "icons";
 
@@ -44,6 +44,17 @@ export default class StoreCard extends React.Component {
         Modals.showInstallationModal({ ...this.props });
     }
 
+    delete = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.props.confirmAddonDelete({
+            filename: this.props.file_name,
+            name: this.props.name,
+            type: this.props.type
+        });
+    }
+
     preview = (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -56,6 +67,8 @@ export default class StoreCard extends React.Component {
 
     render() {
         const {isInstalled, name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
+
+        console.log(this.props.confirmAddonDelete);
 
         return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.handleClick}>
             <div className="bd-store-card-header">
@@ -108,7 +121,7 @@ export default class StoreCard extends React.Component {
                     <Button
                         color={isInstalled ? Button.Colors.RED : Button.Colors.GREEN}
                         size={Button.Sizes.SMALL}
-                        onClick={this.install}
+                        onClick={isInstalled ? this.delete : this.install}
                     >
                         {isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.install}
                     </Button>

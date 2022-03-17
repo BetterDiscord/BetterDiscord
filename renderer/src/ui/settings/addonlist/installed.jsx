@@ -59,7 +59,7 @@ export default class AddonList extends React.Component {
                 <AddonCard
                     type={this.props.type}
                     editAddon={this.props.editAddon.bind(this, addon.id)}
-                    deleteAddon={this.props.deleteAddon.bind(this, addon.id)}
+                    confirmAddonDelete={this.props.confirmAddonDelete.bind(this, addon)}
                     showReloadIcon={showReloadIcon}
                     key={addon.id}
                     enabled={addonState[addon.id]}

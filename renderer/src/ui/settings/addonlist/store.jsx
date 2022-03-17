@@ -89,6 +89,7 @@ export default class StorePage extends React.Component {
                         {this.isInstalled(addon.name)}
                         return <StoreCard
                             {...addon}
+                            confirmAddonDelete={this.props.confirmAddonDelete}
                             isInstalled={this.isInstalled(addon.name)}
                             selectedTag={this.props.state.selectedTag}
                             folder={this.props.folder}

@@ -170,24 +170,6 @@ export default class AddonList extends React.Component {
 
     editAddon = (id) => this.props.editAddon(id);
 
-    deleteAddon = async (id) => {
-        const addon = this.props.addonList.find(a => a.id === id);
-        const shouldDelete = await this.confirmDelete(addon);
-        if (!shouldDelete) return;
-        if (typeof (this.props.deleteAddon) === "function") this.props.deleteAddon(addon);
-    }
-
-    confirmDelete(addon) {
-        return new Promise(resolve => {
-            Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
-                danger: true,
-                confirmText: Strings.Addons.deleteAddon,
-                onConfirm: () => {resolve(true);},
-                onCancel: () => {resolve(false);}
-            });
-        });
-    }
-
     openFolder(folder) {
         const shell = require("electron").shell;
         const open = shell.openItem ?? shell.openPath;
@@ -276,7 +258,7 @@ export default class AddonList extends React.Component {
                 refreshList={this.props.refreshList}
                 isLoaded={this.props.isLoaded}
                 editAddon={this.editAddon}
-                deleteAddon={this.deleteAddon}
+                confirmAddonDelete={this.props.confirmAddonDelete}
                 view={this.viewStyle}
                 sort={this.sortStyle}
                 query={this.state.query}
