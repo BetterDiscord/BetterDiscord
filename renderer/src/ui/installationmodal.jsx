@@ -5,7 +5,6 @@ import Toasts from "./toasts";
 import https from "https";
 import fs from "fs";
 import path from "path";
-import url from "url";
 
 const ModalComponents = WebpackModules.getByProps("ModalRoot");
 const Anchor = WebpackModules.getByDisplayName("Anchor");
@@ -28,12 +27,12 @@ export default class InstallationModal extends React.Component {
         try {
             const downloadUrl = `https://${WEB_HOSTNAME}/download?id=${id}`;
             https.get(downloadUrl, response => {
-                let chunks = [], filename = fileName;
+                const chunks = [], filename = fileName;
                 response.on("data", chunk => chunks.push(chunk));
                 response.on("end", () => {
                     const data = chunks.join("");
                     fs.writeFileSync(path.resolve(this.props.folder, filename), data, error => {
-                        if (error) Toasts.show(Strings.Addons.writeError.format({ type: this.props.type, error }), {type: "error"});
+                        if (error) Toasts.show(Strings.Addons.writeError.format({type: this.props.type, error}), {type: "error"});
                     });
                     this.props.closeModal();
                     this.setState({isInstalling: false});
@@ -41,7 +40,7 @@ export default class InstallationModal extends React.Component {
             });
         }
         catch (error) {
-            Toasts.show(Strings.Addons.downloadError.format({ type: this.props.type, error }), {type: "error"});
+            Toasts.show(Strings.Addons.downloadError.format({type: this.props.type, error}), {type: "error"});
         }
         this.setState({isInstalling: true});
     }
@@ -71,8 +70,8 @@ export default class InstallationModal extends React.Component {
                         {version}
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
-                    <InfoItem icon={<Clock aria-label={Strings.Addons.uploadDate.format({ date: new Date(release_date).toLocaleString()})} />} id="bd-info-upload-date" label={Strings.Addons.uploadDate.format({ date: new Date(release_date).toLocaleString()})}>
-                        {Strings.Addons.uploadDate.format({ date: new Date(release_date).toLocaleString()})}
+                    <InfoItem icon={<Clock aria-label={Strings.Addons.uploadDate.format({date: new Date(release_date).toLocaleString()})} />} id="bd-info-upload-date" label={Strings.Addons.uploadDate.format({date: new Date(release_date).toLocaleString()})}>
+                        {Strings.Addons.uploadDate.format({date: new Date(release_date).toLocaleString()})}
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Github aria-label={Strings.Addons.source} />} id="bd-info-source" label={Strings.Addons.source}>
@@ -85,7 +84,7 @@ export default class InstallationModal extends React.Component {
                 </ul>
             </ModalComponents.ModalContent>
             <ModalComponents.ModalFooter>
-                <Button onClick={() => {this.install(id, file_name)}} color={Button.Colors.GREEN} disabled={this.state.isInstalling}>
+                <Button onClick={() => this.install(id, file_name)} color={Button.Colors.GREEN} disabled={this.state.isInstalling}>
                     {this.state.isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : (Strings.Modals.install ?? "Install")}
                 </Button>
             </ModalComponents.ModalFooter>
@@ -98,7 +97,7 @@ class InfoItem extends React.Component {
         return <li id={this.props.id}>
             <Tooltip className="bd-info-icon" color="primary" position="top" text={this.props.label}>
                 {
-                    this.props.icon  ? this.props.icon : <Support />
+                    this.props.icon ? this.props.icon : <Support />
                 }
             </Tooltip>
             <span>

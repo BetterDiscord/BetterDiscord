@@ -26,7 +26,7 @@ class AddonError extends React.Component {
         </div>;
     }
     render() {
-        const { err } = this.props;
+        const {err} = this.props;
         
         return <div key={`${err.type}-${this.props.index}`} className={Utilities.joinClassNames("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
             <div className="bd-addon-error-header" onClick={() => {this.toggle();}} >
@@ -104,7 +104,7 @@ export default class AddonErrorModal extends React.Component {
             <div className={`bd-error-modal-header ${DiscordClasses.Modal.header} ${DiscordClasses.Modal.separator}`}>
                 <h4 className={`${DiscordClasses.Titles.defaultColor} ${DiscordClasses.Text.size14} ${DiscordClasses.Titles.h4} ${DiscordClasses.Margins.marginBottom8}`}>{Strings.Modals.addonErrors}</h4>
                 <div className="bd-tab-bar">
-                    {tabs.map(tab => <div onClick={() => {this.switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
+                    {tabs.map(tab => <div onClick={() => {this.switchToTab(tab.id);}} className={Utilities.joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
                 </div>
             </div>
             <div className={`bd-error-modal-content ${DiscordClasses.Modal.content} ${DiscordClasses.Scrollers.thin}`}>

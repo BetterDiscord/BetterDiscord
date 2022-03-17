@@ -39,7 +39,7 @@ export async function fetchData(type) {
 
 export async function fetchAddon(addon) {
     return new Promise(resolve => {
-        https.get(ADDON_API_URL.format({ addon }), res => {
+        https.get(ADDON_API_URL.format({addon}), res => {
             const chunks = [];
             res.on("data", chunk => chunks.push(chunk));
 
@@ -78,12 +78,14 @@ export async function fetchReadme(type, addonId) {
                         const [readme] = parsed.getElementsByClassName("markdown-body");
                         README_CACHE[addonId] = readme.innerHTML;
                         resolve(readme.innerHTML);
-                    } catch (error) {
+                    }
+                    catch (error) {
                         console.error(error);
                     }
                 });
                 res.on("error", console.error);
-            } catch (error) {
+            }
+            catch (error) {
                 console.error(error);
             }
         });
