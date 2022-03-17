@@ -1,5 +1,5 @@
 import {React, Strings, Utilities, WebpackModules, DiscordClasses} from "modules";
-import {API_CACHE, fetchData, splitArray} from "./api";
+import {fetchData, splitArray} from "./api";
 import {Next, Previous} from "icons";
 import NoResults from "../../blankslates/noresults";
 import StoreCard from "./storecard";

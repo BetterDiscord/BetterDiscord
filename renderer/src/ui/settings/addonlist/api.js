@@ -3,7 +3,7 @@ import {ADDON_API_URL, STORE_API_URL, WEB_HOSTNAME} from "./constants";
 import https from "https";
 
 export const README_CACHE = {plugin: {}, theme: {}};
-export const API_CACHE = {plugin: [], theme: [], lastFetch: 0};
+export const API_CACHE = {plugin: [], theme: [], addon: []};
 
 export const splitArray = (array, max) => {
     const newArray = [];
@@ -44,6 +44,9 @@ export async function fetchData(type) {
 }
 
 export async function fetchAddon(addon) {
+    const cacheMatch = API_CACHE.addon.find(a => a[typeof addon === "string" ? "name" : "id"] === addon);
+    if (cacheMatch) return cacheMatch;
+
     return new Promise(resolve => {
         https.get(ADDON_API_URL.format({addon}), res => {
             const chunks = [];
@@ -53,6 +56,8 @@ export async function fetchAddon(addon) {
                 const json = Utilities.testJSON(chunks.join(""));
 
                 if (!json) return res.emit("error");
+
+                API_CACHE.addon.push(json);
 
                 resolve(json);
             });
