@@ -13,16 +13,18 @@ export default class StorePage extends React.Component {
         super(props);
 
         this.state = {
-            isLoaded: !!API_CACHE[props.type]?.length,
-            selectedPage: 0,
+            isLoaded: false,
+            addons: null,
+            selectedPage: 0
         };
     }
 
     componentDidMount() {
-        if (API_CACHE[this.props.type]?.length > 10) return;
         fetchData(this.props.type).then(data => {
-            API_CACHE[this.props.type] = data;
-            this.setState({isLoaded: true});
+            this.setState({
+                isLoaded: true,
+                addons: data
+            });
         });
     }
 
@@ -43,7 +45,7 @@ export default class StorePage extends React.Component {
         if (!this.state.isLoaded) return null;
         const {sort} = this.props;
 
-        const final = API_CACHE[this.props.type]
+        const final = this.state.addons
             .flat(10)
             .filter(this.filterTags)
             .sort((a, b) => {

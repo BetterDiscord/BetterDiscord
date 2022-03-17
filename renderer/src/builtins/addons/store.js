@@ -73,7 +73,7 @@ export default new class Store extends Builtin {
     }
 
     patchMarkdownParser() {
-        const { SimpleMarkdown } = DiscordModules;
+        const SimpleMarkdown = WebpackModules.getByProps("parseTopic", "defaultRules");
 
         if (!SimpleMarkdown?.defaultRules?.link) return;
 
@@ -88,12 +88,16 @@ export default new class Store extends Builtin {
         const url = new URL(path);
 
         if (url.hostname === "addon") {
-            const addon = url.pathname.slice(1);
-
-            if (!addon) return link;
-
-            link.props.onClick = (e) => {
-                Modals.showInstallationModal({ ...this.state.addon, folder: this.folder });
+            link.props.onClick = async () => {
+                const addon = url.pathname.slice(1);
+    
+                if (!addon) return;
+    
+                const data = await fetchAddon(addon);
+    
+                if (!data) return;
+    
+                Modals.showInstallationModal({ ...data, folder: data.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder });
             }
         }
 

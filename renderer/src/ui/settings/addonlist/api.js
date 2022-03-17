@@ -21,6 +21,8 @@ export const splitArray = (array, max) => {
 };
 
 export async function fetchData(type) {
+    if (API_CACHE[type].length) return API_CACHE[type];
+
     return new Promise(resolve => {
         https.get(STORE_API_URL.format({type}), res => {
             const chunks = [];
@@ -28,7 +30,11 @@ export async function fetchData(type) {
 
             res.on("end", () => {
                 const json = Utilities.testJSON(chunks.join(""));
+
                 if (!Array.isArray(json)) return res.emit("error");
+
+                API_CACHE[type] = splitArray(json, 30);
+
                 resolve(splitArray(json, 30));
             });
 
@@ -57,7 +63,7 @@ export async function fetchAddon(addon) {
 }
 
 export async function fetchReadme(type, addonId) {
-    if (README_CACHE[type][addonId]) return API_CACHE[type][addonId];
+    if (README_CACHE[type][addonId]) return README_CACHE[type][addonId];
 
     // const data = await fetch(`https://api.${WEB_HOSTNAME}/v1/store/addons/readme/${addonId}`).then(response => response.text());
     // README_CACHE[addonId] = data;
