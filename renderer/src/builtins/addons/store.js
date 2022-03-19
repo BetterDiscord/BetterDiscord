@@ -95,7 +95,7 @@ export default new class Store extends Builtin {
     
                 const data = await fetchAddon(addon);
     
-                if (!data) return;
+                if (!data?.id) return;
     
                 Modals.showInstallationModal({ ...data, folder: data.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder });
             }
