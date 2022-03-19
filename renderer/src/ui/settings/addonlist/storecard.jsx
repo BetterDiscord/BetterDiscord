@@ -12,10 +12,6 @@ export default class StoreCard extends React.Component {
         return `https://${WEB_HOSTNAME}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;
     }
 
-    get isInstalled() {
-        return this.props.isInstalled(this.props.file_name);
-    }
-
     get monthsAgo() {
         const current = new Date();
         const release = new Date(this.props.release_date);

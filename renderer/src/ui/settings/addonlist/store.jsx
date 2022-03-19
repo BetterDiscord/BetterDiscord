@@ -64,7 +64,9 @@ export default class StorePage extends React.Component {
         return splitArray(final, 16);
     }
 
-    isInstalled = (name) => {return this.props.isLoaded(name);}
+    isInstalled = (fileName) => {
+        return this.props.isLoaded(fileName);
+    }
 
     render() {
         if (this.props.query !== this.latestSearchQuery || this.props.state.selectedTag !== this.latestSelectedTag) this.setState({selectedPage: 0});
@@ -88,11 +90,10 @@ export default class StorePage extends React.Component {
             {(this.state.isLoaded && addons?.length && addons[this.state.selectedPage]) 
                 ? <div className={Utilities.joinClassNames("bd-store-addons", this.props.view + "-view")}>
                     {addons[this.state.selectedPage].map(addon => {
-                        {this.isInstalled(addon.name)}
                         return <StoreCard
                             {...addon}
                             confirmAddonDelete={this.props.confirmAddonDelete}
-                            isInstalled={this.isInstalled(addon.name)}
+                            isInstalled={this.isInstalled(addon.file_name)}
                             selectedTag={this.props.state.selectedTag}
                             folder={this.props.folder}
                             // onDetailsView={() => {
