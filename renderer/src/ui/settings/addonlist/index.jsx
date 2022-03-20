@@ -8,6 +8,7 @@ import SettingsTitle from "../title";
 import {Reload} from "icons";
 
 import {TAGS, CONTROLS} from "./constants";
+import {API_CACHE} from "./api";
 import AddonStore from "./store";
 import AddonsPage from "./installed";
 
@@ -149,9 +150,7 @@ export default class AddonList extends React.Component {
     }
 
     reload() {
-        console.log(`asdasdasd ${this}`);
-
-        if (typeof (this.props.reload) === "function") this.props.reload();
+        if (this.props.refreshList) this.props.refreshList();
         this.forceUpdate();
     }
 
@@ -179,7 +178,7 @@ export default class AddonList extends React.Component {
     }
 
     render() {
-        const showReloadIcon = !Settings.get("settings", "addons", "autoReload") && this.state.page === "installed";
+        const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
         const storeEnabled = Settings.get("settings", "addons", "store");
         const Component = Pages[this.currentPage]?.component || (() => null);
 

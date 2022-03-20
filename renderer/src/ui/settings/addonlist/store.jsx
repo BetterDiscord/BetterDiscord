@@ -92,6 +92,7 @@ export default class StorePage extends React.Component {
                     {addons[this.state.selectedPage].map(addon => {
                         return <StoreCard
                             {...addon}
+                            reload={this.props.reload}
                             confirmAddonDelete={this.props.confirmAddonDelete}
                             isInstalled={this.isInstalled(addon.file_name)}
                             selectedTag={this.props.state.selectedTag}
