@@ -149,6 +149,8 @@ export default class AddonList extends React.Component {
     }
 
     reload() {
+        console.log(`asdasdasd ${this}`);
+
         if (typeof (this.props.reload) === "function") this.props.reload();
         this.forceUpdate();
     }
@@ -192,7 +194,7 @@ export default class AddonList extends React.Component {
                                 onSelect: () => this.setState({page: id})
                             });
                         })}
-                        {showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />}
+                        {showReloadIcon && <Reload className="bd-reload" onClick={this.reload.bind(this)} />}
                     </div>
                     : <SettingsTitle key="title" text={this.props.title} otherChildren={showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />} />
                 }
