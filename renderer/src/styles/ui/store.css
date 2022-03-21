@@ -325,6 +325,7 @@
 }
 
 .bd-page-buttons {
+    flex-grow: 0;
     width: auto;
     overflow: auto;
 }
