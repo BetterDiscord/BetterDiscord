@@ -337,7 +337,9 @@ export default class AddonManager {
 
     deleteAddon(idOrFileOrAddon) {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
-        return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
+        const deletion = fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
+        if (!Settings.get("settings", "addons", "autoReload")) this.unloadAddon(addon);
+        return deletion;
     }
 
     saveAddon(idOrFileOrAddon, content) {
