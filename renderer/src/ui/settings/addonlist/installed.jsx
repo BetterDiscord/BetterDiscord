@@ -7,8 +7,7 @@ import ErrorBoundary from "../../errorboundary";
 import NoResults from "../../blankslates/noresults";
 import EmptyImage from "../../blankslates/emptyimage";
 
-
-export default class AddonList extends React.Component {
+export default class InstalledPage extends React.Component {
     componentDidMount() {
         Events.on(`${this.props.prefix}-loaded`, this.update);
         Events.on(`${this.props.prefix}-unloaded`, this.update);
@@ -84,8 +83,8 @@ export default class AddonList extends React.Component {
     }
 }
 
-const originalRender = AddonList.prototype.render;
-Object.defineProperty(AddonList.prototype, "render", {
+const originalRender = InstalledPage.prototype.render;
+Object.defineProperty(InstalledPage.prototype, "render", {
     enumerable: false,
     configurable: false,
     set: function() {Logger.warn("AddonList", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");},

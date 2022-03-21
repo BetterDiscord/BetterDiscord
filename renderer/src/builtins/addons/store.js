@@ -1,8 +1,8 @@
 import Builtin from "../../structs/builtin";
-import {React, DiscordModules, WebpackModules} from "modules";
-import { fetchAddon } from "../../ui/settings/addonlist/api";
+import {React, WebpackModules} from "modules";
 import PluginManager from "../../modules/pluginmanager";
 import ThemeManager from "../../modules/thememanager";
+import BdWebApi from "../../modules/bdwebapi";
 import StoreCard from "../../ui/settings/addonlist/storecard";
 import openStoreDetail from "../../ui/settings/addonlist/storedetail";
 import Modals from "../../ui/modals";
@@ -93,11 +93,15 @@ export default new class Store extends Builtin {
     
                 if (!addon) return;
     
-                const data = await fetchAddon(addon);
+                const data = await BdWebApi.getAddon(addon);
     
                 if (!data?.id) return;
     
-                Modals.showInstallationModal({ ...data, folder: data.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder });
+                Modals.showInstallationModal({
+                    ...data,
+                    folder: data.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder,
+                    reload: data.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager)
+                });
             }
         }
 
@@ -115,7 +119,7 @@ class EmbeddedStoreCard extends React.Component {
     }
 
     componentDidMount() {
-        fetchAddon(this.props.addon).then(data => {
+        BdWebApi.getAddon(this.props.addon).then(data => {
             if (data.id) this.setState({ addon: data });
         });
     }

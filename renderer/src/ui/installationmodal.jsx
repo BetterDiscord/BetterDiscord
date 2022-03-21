@@ -1,10 +1,6 @@
-import {DiscordClasses, React, Settings, Strings, Utilities, WebpackModules} from "modules";
-import {WEB_HOSTNAME} from "./settings/addonlist/constants";
+import {Settings, DiscordClasses, React, Strings, Utilities, WebpackModules} from "modules";
 import {Support, Version, Github, Author, Description, Clock} from "icons";
-import Toasts from "./toasts";
-import https from "https";
-import fs from "fs";
-import path from "path";
+import BdWebApi from "../modules/bdwebapi";
 
 const ModalComponents = WebpackModules.getByProps("ModalRoot");
 const Anchor = WebpackModules.getByDisplayName("Anchor");
@@ -22,29 +18,14 @@ export default class InstallationModal extends React.Component {
         };
     }
 
-    get thumbnail() {return `https://${WEB_HOSTNAME}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;}
+    get thumbnail() {return `https://${BdWebApi.webHostname}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;}
 
-    install(id, fileName) {
-        try {
-            const downloadUrl = `https://${WEB_HOSTNAME}/download?id=${id}`;
-            https.get(downloadUrl, response => {
-                const chunks = [], filename = fileName;
-                response.on("data", chunk => chunks.push(chunk));
-                response.on("end", () => {
-                    const data = chunks.join("");
-                    fs.writeFileSync(path.resolve(this.props.folder, filename), data, error => {
-                        if (error) Toasts.show(Strings.Addons.writeError.format({type: this.props.type, error}), {type: "error"});
-                    });
-                    if (!Settings.get("settings", "addons", "autoReload")) this.props.reload(fileName);
-                    this.props.onClose();
-                    this.setState({isInstalling: false});
-                });
-            });
-        }
-        catch (error) {
-            Toasts.show(Strings.Addons.downloadError.format({type: this.props.type, error}), {type: "error"});
-        }
+    async install(id, fileName) {
         this.setState({isInstalling: true});
+        await BdWebApi.installAddon(id, fileName, this.props.type);
+        if (!Settings.get("settings", "addons", "autoReload")) this.props.reload(fileName);
+        this.setState({isInstalling: false});
+        this.props.onClose();
     }
 
     onKeyDown(event) {
@@ -87,11 +68,11 @@ export default class InstallationModal extends React.Component {
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Github aria-label={Strings.Addons.source} />} id="bd-info-source" label={Strings.Addons.source}>
-                        <Anchor href={`https://${WEB_HOSTNAME}/gh-redirect?id=${id}`} target="_blank" rel="noreferrer noopener">{file_name}</Anchor>
+                        <Anchor href={`https://${BdWebApi.webHostname}/gh-redirect?id=${id}`} target="_blank" rel="noreferrer noopener">{file_name}</Anchor>
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Author aria-label={Strings.Addons.author} />} id="bd-info-author" label={Strings.Addons.uploaded}>
-                        <Anchor href={`https://${WEB_HOSTNAME}/developer/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</Anchor>
+                        <Anchor href={`https://${BdWebApi.webHostname}/developer/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</Anchor>
                     </InfoItem>
                 </ul>
             </ModalComponents.ModalContent>

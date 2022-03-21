@@ -4,20 +4,55 @@ import Dropdown from "../components/dropdown";
 import SearchBar from "../components/search";
 import Divider from "../divider";
 import Modals from "../../modals";
+import BdWebApi from "../../../modules/bdwebapi";
 import SettingsTitle from "../title";
 import {Reload} from "icons";
 
-import {TAGS, CONTROLS} from "./constants";
-import {API_CACHE} from "./api";
-import AddonStore from "./store";
-import AddonsPage from "./installed";
+import StorePage from "./store";
+import InstalledPage from "./installed";
 
 const Button = WebpackModules.getByProps("BorderColors");
 
-const Pages = {
+const CONTROLS = {
+    installed: {
+        sortOptions: [
+            {get label() {return Strings.Addons.name;}, value: "name"},
+            {get label() {return Strings.Addons.author;}, value: "author"},
+            {get label() {return Strings.Addons.version;}, value: "version"},
+            {get label() {return Strings.Addons.added;}, value: "added"},
+            {get label() {return Strings.Addons.modified;}, value: "modified"}
+        ],
+        directions: [
+            {get label() {return Strings.Sorting.ascending;}, value: true},
+            {get label() {return Strings.Sorting.descending;}, value: false}
+        ],
+        viewOptions: [
+            {get label() {return Strings.Addons.list;}, value: "list"},
+            {get label() {return Strings.Addons.grid;}, value: "grid"}
+        ]
+    },
+    store: {
+        sortOptions: [
+            {get label() {return Strings.Addons.name;}, value: "name"},
+            {get label() {return Strings.Addons.likes;}, value: "likes"},
+            {get label() {return Strings.Addons.downloads;}, value: "downloads"},
+            {get label() {return Strings.Addons.added;}, value: "release_date"}
+        ],
+        directions: [
+            {get label() {return Strings.Sorting.ascending;}, value: true},
+            {get label() {return Strings.Sorting.descending;}, value: false}
+        ],
+        viewOptions: [
+            {get label() {return Strings.Addons.list;}, value: "list"},
+            {get label() {return Strings.Addons.grid;}, value: "grid"}
+        ]
+    }
+};
+
+const PAGES = {
     installed: {
         get label() {return Strings.Addons.installed},
-        component: AddonsPage,
+        component: InstalledPage,
         defaults: {
             sort: "name",
             ascending: true,
@@ -26,13 +61,13 @@ const Pages = {
     },
     store: {
         get label() {return Strings.Addons.store},
-        component: AddonStore,
+        component: StorePage,
         state: {
             selectedTag: "all"
         },
         controls: ({setState, state, type}) => <div className="bd-store-tags">
             <div className="bd-store-tags-inner">
-                {TAGS[`${type}s`].map(tag => {
+                {BdWebApi.tags[type].map(tag => {
                     return <span
                         onClick={() => setState({selectedTag: tag})}
                         className={Utilities.joinClassNames({selected: state.selectedTag === tag})}
@@ -80,7 +115,7 @@ export default class AddonList extends React.Component {
     get currentPage() {return this.state?.page || "installed";}
 
     get defaults() {
-        const defaults = Pages[this.currentPage]?.defaults;
+        const defaults = PAGES[this.currentPage]?.defaults;
 
         return defaults || {
             sort: "name",
@@ -102,9 +137,9 @@ export default class AddonList extends React.Component {
     }
 
     get pageControls() {
-        if (!Pages[this.currentPage] || !Pages[this.currentPage].controls || !this.state.controlsVisible) return null;
+        if (!PAGES[this.currentPage] || !PAGES[this.currentPage].controls || !this.state.controlsVisible) return null;
 
-        const {controls: Controls} = Pages[this.currentPage];
+        const {controls: Controls} = PAGES[this.currentPage];
 
         return <Controls
             key={`controls-${this.props.type}`}
@@ -180,13 +215,13 @@ export default class AddonList extends React.Component {
     render() {
         const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
         const storeEnabled = Settings.get("settings", "addons", "store");
-        const Component = Pages[this.currentPage]?.component || (() => null);
+        const Page = PAGES[this.currentPage]?.component || (() => null);
 
         return <React.Fragment>
             <div className="bd-addon-list-title">
                 {storeEnabled ?
                     <div className="bd-tab-bar">
-                        {Object.entries(Pages).map(([id, props]) => {
+                        {Object.entries(PAGES).map(([id, props]) => {
                             return this.makeTab({
                                 label: props.label,
                                 selected: this.state.page === id,
@@ -246,9 +281,9 @@ export default class AddonList extends React.Component {
             </div>
             {this.pageControls}
             <Divider className={Utilities.joinClassNames(DiscordClasses.Margins.marginTop20.toString(), DiscordClasses.Margins.marginBottom20.toString())} />
-            <Component
+            <Page
                 key={`${this.props.type}-${this.currentPage}`}
-                state={Object.assign({}, Pages[this.currentPage].state, this.state)}
+                state={Object.assign({}, PAGES[this.currentPage].state, this.state)}
                 type={this.props.type}
                 title={this.props.title}
                 addonState={this.props.addonState}

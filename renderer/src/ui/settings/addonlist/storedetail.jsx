@@ -1,5 +1,5 @@
 import {React, WebpackModules} from "modules";
-import {fetchReadme} from "./api";
+import BdWebApi from "../../../modules/bdwebapi";
 
 const Spinner = WebpackModules.getByDisplayName("Spinner");
 const { ScrollerAuto: Scroller } = WebpackModules.getByProps("ScrollerAuto");
@@ -39,7 +39,7 @@ class Readme extends React.Component {
     state = { readme: null };
 
     async componentDidMount() {
-        const readme = await fetchReadme(this.props.type, this.props.addonId);
+        const readme = await BdWebApi.getReadme(this.props.type, this.props.addonId);
 
         this.setState({ readme });
     }

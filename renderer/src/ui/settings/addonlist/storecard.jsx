@@ -1,7 +1,6 @@
 import {React, Strings, Utilities, WebpackModules } from "modules";
-import {WEB_HOSTNAME} from "./constants";
 import {Heart, Download} from "icons";
-
+import BdWebApi from "../../../modules/bdwebapi";
 import Modals from "../../modals";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
@@ -9,7 +8,7 @@ const Button = WebpackModules.getByProps("DropdownSizes");
 
 export default class StoreCard extends React.Component {
     get thumbnail() {
-        return `https://${WEB_HOSTNAME}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;
+        return `https://${BdWebApi.webHostname}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;
     }
 
     get monthsAgo() {

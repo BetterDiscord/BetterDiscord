@@ -1,9 +1,10 @@
 import {React, Strings, Utilities, WebpackModules, DiscordClasses} from "modules";
-import {fetchData, splitArray} from "./api";
 import {Next, Previous} from "icons";
 import NoResults from "../../blankslates/noresults";
 import StoreCard from "./storecard";
 import openStoreDetail from "./storedetail";
+
+import BdWebApi from "../../../modules/bdwebapi";
 
 const Button = WebpackModules.getByProps("DropdownSizes");
 const Spinner = WebpackModules.getByDisplayName("Spinner");
@@ -20,7 +21,7 @@ export default class StorePage extends React.Component {
     }
 
     componentDidMount() {
-        fetchData(this.props.type).then(data => {
+        BdWebApi.getAddons(`${this.props.type}s`).then(data => {
             this.setState({
                 isLoaded: true,
                 addons: data
@@ -61,7 +62,7 @@ export default class StorePage extends React.Component {
             });
         if (!this.props.ascending) final.reverse();
         
-        return splitArray(final, 16);
+        return Utilities.splitArray(final, 16);
     }
 
     isInstalled = (fileName) => {
