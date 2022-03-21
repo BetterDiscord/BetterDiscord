@@ -35,6 +35,13 @@ export default new class BdWebApi {
     get endpoints() {return ENDPOINTS;}
     get tags() {return TAGS;}
     
+    /**
+     * Fetches an addon by ID and adds writes it to it's respective folder.
+     * @param {number} id - The ID of the addon to fetch.
+     * @param {string} fileName - The name of the file that the addon will be written to.
+     * @param {"theme" | "plugin"} type - The type of the addon (theme or plugin).
+     * @returns {Promise<void>}
+     */
     installAddon(id, fileName, type) {
         const addonFolder = (type === "theme" ? ThemeManager : PluginManager).addonFolder;
 
@@ -56,6 +63,11 @@ export default new class BdWebApi {
         })
     }
 
+    /**
+     * Fetches a list of all addons from the site.
+     * @param {"theme" | "plugin"} type - The type of the addon (theme or plugin).
+     * @returns {Promise<Array<Object>>}
+     */
     getAddons(type) {
         return new Promise((resolve) => {
             if (API_CACHE[type].length) resolve(API_CACHE[type]);
@@ -80,6 +92,11 @@ export default new class BdWebApi {
         });
     }
 
+    /**
+     * Fetches a single addon by name from the site.
+     * @param {string} name - The name of the addon to fetch.
+     * @returns {Promise<Object>}
+     */
     getAddon(name) {
         return new Promise(resolve => {
             const cacheMatch = API_CACHE.addon.find(a => a[typeof name === "string" ? "name" : "id"] === name);
