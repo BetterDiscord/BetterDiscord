@@ -1,4 +1,4 @@
-import {DiscordClasses, React, Strings, Utilities, WebpackModules} from "modules";
+import {DiscordClasses, React, Settings, Strings, Utilities, WebpackModules} from "modules";
 import {WEB_HOSTNAME} from "./settings/addonlist/constants";
 import {Support, Version, Github, Author, Description, Clock} from "icons";
 import Toasts from "./toasts";
@@ -16,6 +16,7 @@ export default class InstallationModal extends React.Component {
     constructor() {
         super(...arguments);
 
+        this.onKeyDown = this.onKeyDown.bind(this);
         this.state = {
             isInstalling: false
         };
@@ -34,7 +35,8 @@ export default class InstallationModal extends React.Component {
                     fs.writeFileSync(path.resolve(this.props.folder, filename), data, error => {
                         if (error) Toasts.show(Strings.Addons.writeError.format({type: this.props.type, error}), {type: "error"});
                     });
-                    this.props.closeModal();
+                    if (!Settings.get("settings", "addons", "autoReload")) this.props.reload(fileName);
+                    this.props.onClose();
                     this.setState({isInstalling: false});
                 });
             });
@@ -45,16 +47,26 @@ export default class InstallationModal extends React.Component {
         this.setState({isInstalling: true});
     }
 
+    onKeyDown(event) {
+        const {key} = event;
+
+        if (key === "Escape" || key === "Enter" || key === " ") event.stopPropagation();
+        if (key === "Escape") this.props.onClose();
+        if (key === "Enter" || key === " ") {
+            this.install(this.props.id, this.props.file_name);
+        }
+    }
+
     render() {
         const {name, id, description, author, release_date, type, version, file_name} = this.props;
 
-        return <>
+        return <ModalComponents.ModalRoot {...this.props} onKeyDown={this.onKeyDown} size="small" className="bd-installation-modal">
             <ModalComponents.ModalHeader className="bd-installation-header">
                 <img className="bd-installation-thumbnail" src={this.thumbnail} alt={`${name} thumbnail`}/>
                 <Tooltip className="bd-installation-icon" color="primary" position="top" text={author.display_name}>
                     <img alt={author.display_name} src={`https://github.com/${author.github_name}.png?size=44`} />
                 </Tooltip>
-                <ModalComponents.ModalCloseButton onClick={this.props.closeModal} className="bd-installation-close"/>
+                <ModalComponents.ModalCloseButton onClick={this.props.onClose} className="bd-installation-close"/>
             </ModalComponents.ModalHeader>
             <ModalComponents.ModalContent className="bd-installation-content">
                 <h5 className={Utilities.joinClassNames("bd-installation-name", DiscordClasses.Text.size16, DiscordClasses.Text.colorHeaderPrimary)}>{name}</h5>
@@ -88,7 +100,7 @@ export default class InstallationModal extends React.Component {
                     {this.state.isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : (Strings.Modals.install ?? "Install")}
                 </Button>
             </ModalComponents.ModalFooter>
-        </>;
+        </ModalComponents.ModalRoot>;
     }
 }
 

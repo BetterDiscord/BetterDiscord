@@ -266,17 +266,9 @@ export default class Modals {
     }
 
     static showInstallationModal(options = {}) {
-        const {ModalRoot} = this.ModalComponents;
-
-        this.ModalActions.openModal(props => React.createElement(ModalRoot, Object.assign(props, {
-            size: "small",
-            className: "bd-installation-modal",
-            children: [
-                React.createElement(InstallationModal, {
-                    ...options,
-                    closeModal: props.onClose
-                })
-            ]
-        })));
+        this.ModalActions.openModal(props => React.createElement(InstallationModal, {
+            ...props,
+            ...options
+        }));
     }
 }
