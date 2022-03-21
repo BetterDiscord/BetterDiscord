@@ -1,4 +1,4 @@
-import {React, Strings, Utilities, WebpackModules } from "modules";
+import {Settings, React, Strings, Utilities, WebpackModules} from "modules";
 import {Heart, Download} from "icons";
 import BdWebApi from "../../../modules/bdwebapi";
 import Modals from "../../modals";
@@ -25,31 +25,6 @@ export default class StoreCard extends React.Component {
         if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
     }
 
-    handleClick = () => {
-        const {onDetailsView} = this.props;
-        if (typeof onDetailsView !== "function") return;
-
-        onDetailsView();
-    }
-
-    install = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        Modals.showInstallationModal({ ...this.props });
-    }
-
-    delete = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        this.props.confirmAddonDelete({
-            filename: this.props.file_name,
-            name: this.props.name,
-            type: this.props.type
-        });
-    }
-
     preview = (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -60,10 +35,28 @@ export default class StoreCard extends React.Component {
         });
     }
 
+    onClick = (event) => {
+        const {onDetailsView} = this.props;
+        if (typeof onDetailsView !== "function") return;
+
+        onDetailsView();
+    }
+
+    onButtonClick = (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+
+        if (event.shiftKey) {
+            this.props.isInstalled ? this.props.deleteAddon(this.props.file_name) : this.props.installAddon(this.props.id, this.props.file_name, this.props.type);
+        } else {
+            this.props.isInstalled ? this.props.confirmAddonDelete(this.props.file_name) : Modals.showInstallationModal({ ...this.props });;
+        }
+    }
+
     render() {
         const {isInstalled, name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
 
-        return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.handleClick}>
+        return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.onClick}>
             <div className="bd-store-card-header">
                 <div className="bd-store-card-splash">
                     <img key={this.thumbnail} onClick={this.preview} alt={name} src={this.thumbnail} />
@@ -114,7 +107,7 @@ export default class StoreCard extends React.Component {
                     <Button
                         color={isInstalled ? Button.Colors.RED : Button.Colors.GREEN}
                         size={Button.Sizes.SMALL}
-                        onClick={isInstalled ? this.delete : this.install}
+                        onClick={this.onButtonClick}
                     >
                         {isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.install}
                     </Button>

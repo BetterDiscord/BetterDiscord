@@ -355,7 +355,9 @@ export default class AddonManager {
         return this.openDetached(addon);
     }
 
-    confirmAddonDelete(addon) {
+    confirmAddonDelete(idOrFileOrAddon) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+
         Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
             danger: true,
             confirmText: Strings.Addons.deleteAddon,

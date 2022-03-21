@@ -293,6 +293,7 @@ export default class AddonList extends React.Component {
                 onChange={this.props.onChange}
                 refreshList={this.props.refreshList}
                 isLoaded={this.props.isLoaded}
+                deleteAddon={this.props.deleteAddon}
                 editAddon={this.editAddon}
                 confirmAddonDelete={this.props.confirmAddonDelete}
                 view={this.viewStyle}

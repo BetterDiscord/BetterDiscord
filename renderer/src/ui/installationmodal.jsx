@@ -12,7 +12,6 @@ export default class InstallationModal extends React.Component {
     constructor() {
         super(...arguments);
 
-        this.onKeyDown = this.onKeyDown.bind(this);
         this.state = {
             isInstalling: false
         };
@@ -23,12 +22,11 @@ export default class InstallationModal extends React.Component {
     async install(id, fileName) {
         this.setState({isInstalling: true});
         await BdWebApi.installAddon(id, fileName, this.props.type);
-        if (!Settings.get("settings", "addons", "autoReload")) this.props.reload(fileName);
         this.setState({isInstalling: false});
         this.props.onClose();
     }
 
-    onKeyDown(event) {
+    onKeyDown = (event) => {
         const {key} = event;
 
         if (key === "Escape" || key === "Enter" || key === " ") event.stopPropagation();

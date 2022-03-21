@@ -95,6 +95,8 @@ export default class StorePage extends React.Component {
                             {...addon}
                             reload={this.props.reload}
                             confirmAddonDelete={this.props.confirmAddonDelete}
+                            deleteAddon={this.props.deleteAddon}
+                            installAddon={BdWebApi.installAddon.bind(this)}
                             isInstalled={this.isInstalled(addon.file_name)}
                             selectedTag={this.props.state.selectedTag}
                             folder={this.props.folder}

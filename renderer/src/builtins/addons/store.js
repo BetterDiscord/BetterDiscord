@@ -139,7 +139,9 @@ class EmbeddedStoreCard extends React.Component {
             addon ? React.createElement(StoreCard, {
                 ...addon,
                 folder: this.folder,
+                installAddon: BdWebApi.installAddon.bind(BdWebApi),
                 reload: this.state.addon.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager),
+                deleteAddon: this.state.addon.type === "theme" ? ThemeManager.deleteAddon.bind(ThemeManager) : PluginManager.deleteAddon.bind(PluginManager),
                 confirmAddonDelete: this.state.addon.type === "theme" ? ThemeManager.confirmAddonDelete.bind(ThemeManager) : PluginManager.confirmAddonDelete.bind(PluginManager),
                 isInstalled: this.isInstalled(addon.name),
                 className: "bd-store-card-embedded",
