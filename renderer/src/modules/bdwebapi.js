@@ -12,8 +12,8 @@ import https from "https";
 import path from "path";
 import fs from "fs";
 
-const README_CACHE = {plugin: {}, theme: {}};
 const API_CACHE = {plugins: [], themes: [], addon: []};
+const README_CACHE = {plugins: {}, themes: {}};
 
 const WEB_HOSTNAME = "betterdiscord.app";
 const API_VERSION = "latest";
@@ -57,9 +57,8 @@ export default new class BdWebApi {
     }
 
     getAddons(type) {
-        if (API_CACHE[type].length) return API_CACHE[type];
-
         return new Promise((resolve) => {
+            if (API_CACHE[type].length) resolve(API_CACHE[type]);
             https.get(ENDPOINTS.store.format({type}), res => {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
@@ -82,10 +81,10 @@ export default new class BdWebApi {
     }
 
     getAddon(name) {
-        const cacheMatch = API_CACHE.addon.find(a => a[typeof name === "string" ? "name" : "id"] === name);
-        if (cacheMatch) return cacheMatch;
-
         return new Promise(resolve => {
+            const cacheMatch = API_CACHE.addon.find(a => a[typeof name === "string" ? "name" : "id"] === name);
+            if (cacheMatch) resolve(cacheMatch);
+
             https.get(ENDPOINTS.addon.format({name}), res => {
                 
                 const chunks = [];
@@ -109,14 +108,9 @@ export default new class BdWebApi {
     }
 
     getReadme(id, type) {
-        if (README_CACHE[type][id]) return README_CACHE[type][id];
-
-        // const data = await fetch(`https://api.${WEB_HOSTNAME}/v1/store/addons/readme/${addonId}`).then(response => response.text());
-        // README_CACHE[addonId] = data;
-
-        // return data;
-
         return new Promise(resolve => {
+            if (README_CACHE[type][id]) resolve(README_CACHE[type][id]);
+
             https.get(`https://${WEB_HOSTNAME}/${type}?id=${id}`, res => {
                 try {
                     const chunks = [];
