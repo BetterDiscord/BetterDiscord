@@ -222,7 +222,7 @@ export default class AddonManager {
 
         this.addonList.push(addon);
         if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
-        this.emit("loaded", addon.id);
+        this.emit("loaded", addon);
         
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
@@ -234,7 +234,7 @@ export default class AddonManager {
         if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
         delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.addonFolder, addon.filename))];
         this.addonList.splice(this.addonList.indexOf(addon), 1);
-        this.emit("unloaded", addon.id);
+        this.emit("unloaded", addon);
         if (shouldToast) Toasts.success(`${addon.name} was unloaded.`);
         return true;
     }
@@ -262,8 +262,8 @@ export default class AddonManager {
         return this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
     }
 
-    enableAddon(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+    enableAddon(idOrFileOrAddon) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.getAddon(idOrFileOrAddon) : idOrFileOrAddon;
         if (!addon) return;
         if (this.state[addon.id]) return;
         this.state[addon.id] = true;
@@ -271,8 +271,8 @@ export default class AddonManager {
         this.saveState();
     }
 
-    disableAddon(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+    disableAddon(idOrFileOrAddon) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.getAddon(idOrFileOrAddon) : idOrFileOrAddon;
         if (!addon) return;
         if (!this.state[addon.id]) return;
         this.state[addon.id] = false;

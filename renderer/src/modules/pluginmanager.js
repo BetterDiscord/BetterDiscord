@@ -42,6 +42,7 @@ export default new class PluginManager extends AddonManager {
             onChange: this.togglePlugin.bind(this),
             reload: this.reloadPlugin.bind(this),
             refreshList: this.updatePluginList.bind(this),
+            enableAddon: this.enablePlugin.bind(this),
             saveAddon: this.saveAddon.bind(this),
             editAddon: this.editAddon.bind(this),
             deleteAddon: this.deleteAddon.bind(this),
@@ -56,8 +57,8 @@ export default new class PluginManager extends AddonManager {
     updatePluginList() {return this.updateList();}
     loadAllPlugins() {return this.loadAllAddons();}
 
-    enablePlugin(idOrAddon) {return this.enableAddon(idOrAddon);}
-    disablePlugin(idOrAddon) {return this.disableAddon(idOrAddon);}
+    enablePlugin(idOrFileAddon) {return this.enableAddon(idOrFileAddon);}
+    disablePlugin(idOrFileAddon) {return this.disableAddon(idOrFileAddon);}
     togglePlugin(id) {return this.toggleAddon(id);}
 
     unloadPlugin(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}

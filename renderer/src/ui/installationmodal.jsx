@@ -1,4 +1,4 @@
-import {Settings, DiscordClasses, React, Strings, Utilities, WebpackModules} from "modules";
+import {Settings, Events, DiscordClasses, React, Strings, Utilities, WebpackModules} from "modules";
 import {Support, Version, Github, Author, Description, Clock} from "icons";
 import BdWebApi from "../modules/bdwebapi";
 
@@ -12,6 +12,7 @@ export default class InstallationModal extends React.Component {
     constructor() {
         super(...arguments);
 
+        this.enable = this.enable.bind(this);
         this.state = {
             isInstalling: false
         };
@@ -19,11 +20,19 @@ export default class InstallationModal extends React.Component {
 
     get thumbnail() {return `https://${BdWebApi.webHostname}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;}
 
-    async install(id, fileName) {
+    async install(id, filename) {
         this.setState({isInstalling: true});
-        await BdWebApi.installAddon(id, fileName, this.props.type);
+        if (Settings.get("settings", "addons", "autoEnable")) {
+            Events.on(`${this.props.type}-loaded`, this.enable);
+        }
+        await this.props.installAddon(id, filename, this.props.type);
         this.setState({isInstalling: false});
         this.props.onClose();
+    }
+
+    enable(addon) {
+        if (this.props.enableAddon && addon.filename === this.props.file_name) this.props.enableAddon(addon);
+        Events.off(`${this.props.type}-loaded`, this.enable);
     }
 
     onKeyDown = (event) => {

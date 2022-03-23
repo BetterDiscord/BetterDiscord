@@ -65,8 +65,8 @@ export default class StorePage extends React.Component {
         return Utilities.splitArray(final, 16);
     }
 
-    isInstalled = (fileName) => {
-        return this.props.isLoaded(fileName);
+    isInstalled = (filename) => {
+        return this.props.isLoaded(filename);
     }
 
     render() {
@@ -99,6 +99,7 @@ export default class StorePage extends React.Component {
                             installAddon={BdWebApi.installAddon.bind(this)}
                             isInstalled={this.isInstalled(addon.file_name)}
                             selectedTag={this.props.state.selectedTag}
+                            enableAddon={this.props.enableAddon}
                             folder={this.props.folder}
                             // onDetailsView={() => {
                             //     openStoreDetail(addon);

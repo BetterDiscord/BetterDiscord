@@ -36,6 +36,10 @@
                     "name": "Addon Store",
                     "note": "Enables the Store, allowing you to download themes and plugins remotely."
                 },
+                "autoEnable": {
+                    "name": "Enable Addons on Install",
+                    "note": "Automatically enables addons when they are installed via the store."
+                },
                 "addonErrors": {
                     "name": "Show Addon Errors",
                     "note": "Shows a modal with plugin/theme errors"

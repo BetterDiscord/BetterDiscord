@@ -38,23 +38,23 @@ export default new class BdWebApi {
     /**
      * Fetches an addon by ID and adds writes it to it's respective folder.
      * @param {number} id - The ID of the addon to fetch.
-     * @param {string} fileName - The name of the file that the addon will be written to.
+     * @param {string} filename - The name of the file that the addon will be written to.
      * @param {"theme" | "plugin"} type - The type of the addon (theme or plugin).
      * @returns {Promise<Object>}
      */
-    installAddon(id, fileName, type) {
+    installAddon(id, filename, type) {
         const addonFolder = (type === "theme" ? ThemeManager : PluginManager).addonFolder;
 
         return new Promise(resolve => {
             https.get(ENDPOINTS.download.format({id}), response => {
-                const chunks = [], filename = fileName;
+                const chunks = [];
                 response.on("data", chunk => chunks.push(chunk));
                 response.on("end", () => {
                     const data = chunks.join("");
                     fs.writeFileSync(path.resolve(addonFolder, filename), data, error => {
                         if (error) Toasts.show(Strings.Addons.writeError.format({type, error}), {type: "error"});
                     });
-                    if (!Settings.get("settings", "addons", "autoReload")) type === "theme" ? ThemeManager.reloadTheme(fileName) : PluginManager.reloadPlugin(fileName);
+                    if (!Settings.get("settings", "addons", "autoReload")) type === "theme" ? ThemeManager.reloadTheme(filename) : PluginManager.reloadPlugin(filename);
                     resolve(data);
                 });
                 response.on("error", error => {
