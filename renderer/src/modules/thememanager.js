@@ -27,7 +27,6 @@ export default new class ThemeManager extends AddonManager {
             onChange: this.toggleTheme.bind(this),
             reload: this.reloadTheme.bind(this),
             refreshList: this.updateThemeList.bind(this),
-            enableAddon: this.enableTheme.bind(this),
             saveAddon: this.saveAddon.bind(this),
             editAddon: this.editAddon.bind(this),
             deleteAddon: this.deleteAddon.bind(this),

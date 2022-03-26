@@ -125,11 +125,11 @@ class EmbeddedStoreCard extends React.Component {
     }
 
     isInstalled = (filename) => {
-        return this.state.addon.type === "theme" ? ThemeManager.isLoaded(filename) : PluginManager.isLoaded(filename);
+        return (this.state.addon.type === "theme" ? ThemeManager : PluginManager).isLoaded(filename);
     }
 
     get folder() {
-        return this.state.addon.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder;
+        return (this.state.addon.type === "theme" ? ThemeManager : PluginManager).addonFolder;
     }
 
     render() {
@@ -144,7 +144,7 @@ class EmbeddedStoreCard extends React.Component {
                 reload: this.state.addon.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager),
                 deleteAddon: this.state.addon.type === "theme" ? ThemeManager.deleteAddon.bind(ThemeManager) : PluginManager.deleteAddon.bind(PluginManager),
                 confirmAddonDelete: this.state.addon.type === "theme" ? ThemeManager.confirmAddonDelete.bind(ThemeManager) : PluginManager.confirmAddonDelete.bind(PluginManager),
-                isInstalled: this.isInstalled(addon.name),
+                isInstalled: this.isInstalled.bind(this),
                 className: "bd-store-card-embedded",
                 // onDetailsView: () => {
                 //     openStoreDetail(addon);

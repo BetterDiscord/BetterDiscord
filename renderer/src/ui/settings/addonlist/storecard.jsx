@@ -6,6 +6,14 @@ const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 const Button = WebpackModules.getByProps("DropdownSizes");
 
 export default class StoreCard extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isInstalled: props.isInstalled(this.props.file_name)
+        };
+    }
+
     get monthsAgo() {
         const current = new Date();
         const release = new Date(this.props.release_date);
@@ -37,19 +45,33 @@ export default class StoreCard extends React.Component {
         onDetailsView();
     }
 
-    onButtonClick = event => {
+    onButtonClick = async event => {
         event.stopPropagation();
         event.preventDefault();
 
         if (event.shiftKey) {
-            this.props.isInstalled ? this.props.deleteAddon(this.props.file_name) : this.props.installAddon(this.props.id, this.props.file_name, this.props.type);
+            if (this.state.isInstalled) {
+                this.props.deleteAddon(this.props.file_name);
+                this.setState({isInstalled: false});
+            } else {
+                await this.props.installAddon(this.props.id, this.props.file_name, this.props.type);
+                this.setState({isInstalled: true});
+            }
         } else {
-            this.props.isInstalled ? this.props.confirmAddonDelete(this.props.file_name) : Modals.showInstallationModal({ ...this.props });
-        }
+            if (this.state.isInstalled) {
+                this.props.confirmAddonDelete(this.props.file_name, {
+                    onDelete: () => this.setState({isInstalled: false})
+                });
+            } else {
+                Modals.showInstallationModal({ ...this.props, onInstall: () => {
+                    this.setState({isInstalled: true});
+                }});
+            }
+        }   
     }
 
     render() {
-        const {isInstalled, name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
+        const {name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
 
         return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.onClick}>
             <div className="bd-store-card-header">
@@ -100,11 +122,11 @@ export default class StoreCard extends React.Component {
                         </Tooltip>
                     </div>
                     <Button
-                        color={isInstalled ? Button.Colors.RED : Button.Colors.GREEN}
+                        color={this.state.isInstalled ? Button.Colors.RED : Button.Colors.GREEN}
                         size={Button.Sizes.SMALL}
                         onClick={this.onButtonClick}
                     >
-                        {isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.install}
+                        {this.state.isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.install}
                     </Button>
                 </div>
             </div>

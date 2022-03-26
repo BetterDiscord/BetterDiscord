@@ -5,6 +5,7 @@ import Settings from "./settingsmanager";
 import ThemeManager from "./thememanager";
 import PluginManager from "./pluginmanager";
 import Strings from "./strings";
+import Events from "./emitter";
 import Logger from "common/logger";
 
 import Toasts from "../ui/toasts";
@@ -23,16 +24,26 @@ export default new class BdWebApi {
     get endpoints() {return Web.ENDPOINTS;}
     get pages() {return Web.PAGES;}
     get tags() {return Web.TAGS;}
+
+    static enable(add) {
+
+    }
     
     /**
-     * Fetches an addon by ID and adds writes it to it's respective folder.
+     * Fetches an addon by ID and adds writes it to it's respective folder. Enables the addon if the setting is on.
      * @param {number} id - The ID of the addon to fetch.
      * @param {string} filename - The name of the file that the addon will be written to.
      * @param {"theme" | "plugin"} type - The type of the addon (theme or plugin).
      * @returns {Promise<Object>}
      */
     installAddon(id, filename, type) {
-        const addonFolder = (type === "theme" ? ThemeManager : PluginManager).addonFolder;
+        const manager = type === "theme" ? ThemeManager : PluginManager;
+        const enable = installationId => {
+            const installation = manager.getAddon(installationId);
+
+            if (manager.enableAddon && installation.filename === filename) manager.enableAddon(installation);
+            Events.off(`${type}-loaded`, enable);
+        }
 
         return new Promise(resolve => {
             https.get(Web.ENDPOINTS.download(id), response => {
@@ -40,10 +51,11 @@ export default new class BdWebApi {
                 response.on("data", chunk => chunks.push(chunk));
                 response.on("end", () => {
                     const data = chunks.join("");
-                    fs.writeFileSync(path.resolve(addonFolder, filename), data, error => {
+                    fs.writeFileSync(path.resolve(manager.addonFolder, filename), data, error => {
                         if (error) Toasts.show(Strings.Addons.writeError.format({type, error}), {type: "error"});
                     });
                     if (!Settings.get("settings", "addons", "autoReload")) type === "theme" ? ThemeManager.reloadTheme(filename) : PluginManager.reloadPlugin(filename);
+                    if (Settings.get("settings", "addons", "autoEnable")) Events.on(`${type}-loaded`, enable);
                     resolve(data);
                 });
                 response.on("error", error => {

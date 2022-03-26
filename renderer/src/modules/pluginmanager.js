@@ -42,7 +42,6 @@ export default new class PluginManager extends AddonManager {
             onChange: this.togglePlugin.bind(this),
             reload: this.reloadPlugin.bind(this),
             refreshList: this.updatePluginList.bind(this),
-            enableAddon: this.enablePlugin.bind(this),
             saveAddon: this.saveAddon.bind(this),
             editAddon: this.editAddon.bind(this),
             deleteAddon: this.deleteAddon.bind(this),

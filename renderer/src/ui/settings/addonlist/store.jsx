@@ -96,9 +96,8 @@ export default class StorePage extends React.Component {
                             confirmAddonDelete={this.props.confirmAddonDelete}
                             deleteAddon={this.props.deleteAddon}
                             installAddon={BdWebApi.installAddon.bind(this)}
-                            isInstalled={this.isInstalled(addon.file_name)}
+                            isInstalled={this.isInstalled.bind(this)}
                             selectedTag={this.props.state.selectedTag}
-                            enableAddon={this.props.enableAddon}
                             folder={this.props.folder}
                             // onDetailsView={() => {
                             //     openStoreDetail(addon);

@@ -222,7 +222,7 @@ export default class AddonManager {
 
         this.addonList.push(addon);
         if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
-        this.emit("loaded", addon);
+        this.emit("loaded", addon.id);
         
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
@@ -234,7 +234,7 @@ export default class AddonManager {
         if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
         delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.addonFolder, addon.filename))];
         this.addonList.splice(this.addonList.indexOf(addon), 1);
-        this.emit("unloaded", addon);
+        this.emit("unloaded", addon.id);
         if (shouldToast) Toasts.success(`${addon.name} was unloaded.`);
         return true;
     }
@@ -355,13 +355,16 @@ export default class AddonManager {
         return this.openDetached(addon);
     }
 
-    confirmAddonDelete(idOrFileOrAddon) {
+    confirmAddonDelete(idOrFileOrAddon, options = {}) {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
 
         Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
             danger: true,
             confirmText: Strings.Addons.deleteAddon,
-            onConfirm: () => this.deleteAddon(addon)
+            onConfirm: () => {
+                if (typeof(options.onDelete) === "function") options.onDelete();
+                this.deleteAddon(addon);
+            }
         });
     }
 
