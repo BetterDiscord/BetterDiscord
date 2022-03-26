@@ -1,5 +1,6 @@
 import Logger from "common/logger";
 import {React, Settings, Strings, Events} from "modules";
+import {Web} from "data";
 
 import AddonCard from "./addoncard";
 import ErrorBoundary from "../../errorboundary";
@@ -23,7 +24,7 @@ export default class InstalledPage extends React.Component {
     }
 
     get emptyImage() {
-        const message = Strings.Addons.blankSlateMessage.format({link: `https://betterdiscord.app/${this.props.type}s`, type: this.props.type}).toString();
+        const message = Strings.Addons.blankSlateMessage.format({link: `${Web.PAGES[`${this.props.type}s`]}`, type: this.props.type}).toString();
         return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type: this.props.type})} message={message} />;
     }
 

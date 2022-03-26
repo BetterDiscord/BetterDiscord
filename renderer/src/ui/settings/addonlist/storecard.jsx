@@ -1,16 +1,11 @@
-import {Settings, React, Strings, Utilities, WebpackModules} from "modules";
+import {React, Strings, Utilities, WebpackModules} from "modules";
 import {Heart, Download} from "icons";
-import BdWebApi from "../../../modules/bdwebapi";
 import Modals from "../../modals";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 const Button = WebpackModules.getByProps("DropdownSizes");
 
 export default class StoreCard extends React.Component {
-    get thumbnail() {
-        return `https://${BdWebApi.webHostname}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;
-    }
-
     get monthsAgo() {
         const current = new Date();
         const release = new Date(this.props.release_date);
@@ -25,31 +20,31 @@ export default class StoreCard extends React.Component {
         if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
     }
 
-    preview = (event) => {
+    preview = event => {
         event.preventDefault();
         event.stopPropagation();
 
-        Modals.showImageModal(this.thumbnail, {
+        Modals.showImageModal(this.props.thumbnail, {
             width: Utilities.getNestedProp(event, "target.naturalWidth"), 
             height: Utilities.getNestedProp(event, "target.naturalHeight")
         });
     }
 
-    onClick = (event) => {
+    onClick = event => {
         const {onDetailsView} = this.props;
         if (typeof onDetailsView !== "function") return;
 
         onDetailsView();
     }
 
-    onButtonClick = (event) => {
+    onButtonClick = event => {
         event.stopPropagation();
         event.preventDefault();
 
         if (event.shiftKey) {
             this.props.isInstalled ? this.props.deleteAddon(this.props.file_name) : this.props.installAddon(this.props.id, this.props.file_name, this.props.type);
         } else {
-            this.props.isInstalled ? this.props.confirmAddonDelete(this.props.file_name) : Modals.showInstallationModal({ ...this.props });;
+            this.props.isInstalled ? this.props.confirmAddonDelete(this.props.file_name) : Modals.showInstallationModal({ ...this.props });
         }
     }
 
@@ -59,7 +54,7 @@ export default class StoreCard extends React.Component {
         return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.onClick}>
             <div className="bd-store-card-header">
                 <div className="bd-store-card-splash">
-                    <img key={this.thumbnail} onClick={this.preview} alt={name} src={this.thumbnail} />
+                    <img key={this.props.thumbnail} onClick={this.preview} alt={name} src={this.props.thumbnail} />
                 </div>
                 <div className="bd-store-card-icon">
                     <Tooltip color="primary" position="top" text={author.display_name}>

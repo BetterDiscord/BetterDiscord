@@ -1,3 +1,5 @@
+import { Web } from "data";
+
 import Utilities from "./utilities";
 import Settings from "./settingsmanager";
 import ThemeManager from "./thememanager";
@@ -6,7 +8,6 @@ import Strings from "./strings";
 import Logger from "common/logger";
 
 import Toasts from "../ui/toasts";
-import FormattableString from "../structs/string";
 
 import https from "https";
 import path from "path";
@@ -15,25 +16,13 @@ import fs from "fs";
 const API_CACHE = {plugins: [], themes: [], addon: []};
 const README_CACHE = {plugins: {}, themes: {}};
 
-const WEB_HOSTNAME = "betterdiscord.app";
-const API_VERSION = "latest";
-const API_BASE = `https://api.${WEB_HOSTNAME}/${API_VERSION}`;
-const ENDPOINTS = {
-    store: new FormattableString(`${API_BASE}/store/{{type}}`),
-    addon: new FormattableString(`${API_BASE}/store/{{name}}`),
-    download: new FormattableString(`https://${WEB_HOSTNAME}/download?id={{id}}`)
-}
-const TAGS = {
-    theme: ["all", "flat", "transparent", "layout", "customizable", "fiction", "nature", "space", "dark", "light", "game", "anime", "red", "orange", "green", "purple", "black", "other", "yellow", "blue", "abstract"],
-    plugin: ["all", "fun", "roles", "activity", "status", "game", "edit", "library", "notifications", "emotes", "channels", "shortcut", "enhancement", "servers", "chat", "security", "organization", "friends", "members", "utility", "developers", "search", "text", "voice"]
-}
-
 export default new class BdWebApi {
-    get apiVersion() {return API_VERSION;}
-    get webHostname() {return WEB_HOSTNAME;}
-    get apiBase() {return API_BASE;}
-    get endpoints() {return ENDPOINTS;}
-    get tags() {return TAGS;}
+    get apiVersion() {return Web.API_VERSION;}
+    get webHostname() {return Web.WEB_HOSTNAME;}
+    get apiBase() {return Web.API_BASE;}
+    get endpoints() {return Web.ENDPOINTS;}
+    get pages() {return Web.PAGES;}
+    get tags() {return Web.TAGS;}
     
     /**
      * Fetches an addon by ID and adds writes it to it's respective folder.
@@ -46,7 +35,7 @@ export default new class BdWebApi {
         const addonFolder = (type === "theme" ? ThemeManager : PluginManager).addonFolder;
 
         return new Promise(resolve => {
-            https.get(ENDPOINTS.download.format({id}), response => {
+            https.get(Web.ENDPOINTS.download(id), response => {
                 const chunks = [];
                 response.on("data", chunk => chunks.push(chunk));
                 response.on("end", () => {
@@ -59,9 +48,9 @@ export default new class BdWebApi {
                 });
                 response.on("error", error => {
                     Toasts.show(Strings.Addons.downloadError.format({type, error}), {type: "error"});
-                })
+                });
             });
-        })
+        });
     }
 
     /**
@@ -72,7 +61,7 @@ export default new class BdWebApi {
     getAddons(type) {
         return new Promise((resolve) => {
             if (API_CACHE[type].length) resolve(API_CACHE[type]);
-            https.get(ENDPOINTS.store.format({type}), res => {
+            https.get(Web.ENDPOINTS.store(type), res => {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
     
@@ -103,7 +92,7 @@ export default new class BdWebApi {
             const cacheMatch = API_CACHE.addon.find(a => a[typeof name === "string" ? "name" : "id"] === name);
             if (cacheMatch) resolve(cacheMatch);
 
-            https.get(ENDPOINTS.addon.format({name}), res => {
+            https.get(Web.ENDPOINTS.addon(name), res => {
                 
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
@@ -125,11 +114,13 @@ export default new class BdWebApi {
         });
     }
 
+    // Currently this is mainly here as a test and just scrapes HTML from the site.
+    // In the future, it will fetch from a README endpoint.
     getReadme(id, type) {
         return new Promise(resolve => {
             if (README_CACHE[type][id]) resolve(README_CACHE[type][id]);
 
-            https.get(`https://${WEB_HOSTNAME}/${type}?id=${id}`, res => {
+            https.get(`https://${Web.WEB_HOSTNAME}/${type}?id=${id}`, res => {
                 try {
                     const chunks = [];
                     res.on("data", chunk => chunks.push(chunk));

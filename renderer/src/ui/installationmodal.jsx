@@ -1,8 +1,8 @@
 import {Settings, Events, DiscordClasses, React, Strings, Utilities, WebpackModules} from "modules";
 import {Support, Version, Github, Author, Description, Clock} from "icons";
-import BdWebApi from "../modules/bdwebapi";
+import {Web} from "data";
 
-const ModalComponents = WebpackModules.getByProps("ModalRoot");
+const { ModalRoot, ModalHeader, ModalContent, ModalCloseButton, ModalFooter } = WebpackModules.getByProps("ModalRoot");
 const Anchor = WebpackModules.getByDisplayName("Anchor");
 const Button = WebpackModules.getByProps("BorderColors");
 const Spinner = WebpackModules.getByDisplayName("Spinner");
@@ -17,8 +17,6 @@ export default class InstallationModal extends React.Component {
             isInstalling: false
         };
     }
-
-    get thumbnail() {return `https://${BdWebApi.webHostname}${this.props.thumbnail_url ?? "/resources/store/missing.svg"}`;}
 
     async install(id, filename) {
         this.setState({isInstalling: true});
@@ -35,7 +33,7 @@ export default class InstallationModal extends React.Component {
         Events.off(`${this.props.type}-loaded`, this.enable);
     }
 
-    onKeyDown = (event) => {
+    onKeyDown = event => {
         const {key} = event;
 
         if (key === "Escape" || key === "Enter" || key === " ") event.stopPropagation();
@@ -48,15 +46,15 @@ export default class InstallationModal extends React.Component {
     render() {
         const {name, id, description, author, release_date, type, version, file_name} = this.props;
 
-        return <ModalComponents.ModalRoot {...this.props} onKeyDown={this.onKeyDown} size="small" className="bd-installation-modal">
-            <ModalComponents.ModalHeader className="bd-installation-header">
-                <img className="bd-installation-thumbnail" src={this.thumbnail} alt={`${name} thumbnail`}/>
+        return <ModalRoot {...this.props} onKeyDown={this.onKeyDown} size="small" className="bd-installation-modal">
+            <ModalHeader className="bd-installation-header">
+                <img className="bd-installation-thumbnail" src={this.props.thumbnail} alt={`${name} thumbnail`}/>
                 <Tooltip className="bd-installation-icon" color="primary" position="top" text={author.display_name}>
                     <img alt={author.display_name} src={`https://github.com/${author.github_name}.png?size=44`} />
                 </Tooltip>
-                <ModalComponents.ModalCloseButton onClick={this.props.onClose} className="bd-installation-close"/>
-            </ModalComponents.ModalHeader>
-            <ModalComponents.ModalContent className="bd-installation-content">
+                <ModalCloseButton onClick={this.props.onClose} className="bd-installation-close"/>
+            </ModalHeader>
+            <ModalContent className="bd-installation-content">
                 <h5 className={Utilities.joinClassNames("bd-installation-name", DiscordClasses.Text.size16, DiscordClasses.Text.colorHeaderPrimary)}>{name}</h5>
                 <div className={Utilities.joinClassNames(DiscordClasses.Text.size14, DiscordClasses.Text.colorHeaderSecondary)}>
                     {Strings.Addons.installConfirmation.format({type})}
@@ -75,20 +73,20 @@ export default class InstallationModal extends React.Component {
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Github aria-label={Strings.Addons.source} />} id="bd-info-source" label={Strings.Addons.source}>
-                        <Anchor href={`https://${BdWebApi.webHostname}/gh-redirect?id=${id}`} target="_blank" rel="noreferrer noopener">{file_name}</Anchor>
+                        <Anchor href={Web.ENDPOINTS.githubRedirect(id)} target="_blank" rel="noreferrer noopener">{file_name}</Anchor>
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Author aria-label={Strings.Addons.author} />} id="bd-info-author" label={Strings.Addons.uploaded}>
-                        <Anchor href={`https://${BdWebApi.webHostname}/developer/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</Anchor>
+                        <Anchor href={`${Web.PAGES.developer}/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</Anchor>
                     </InfoItem>
                 </ul>
-            </ModalComponents.ModalContent>
-            <ModalComponents.ModalFooter>
+            </ModalContent>
+            <ModalFooter>
                 <Button onClick={() => this.install(id, file_name)} color={Button.Colors.GREEN} disabled={this.state.isInstalling}>
                     {this.state.isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : (Strings.Modals.install ?? "Install")}
                 </Button>
-            </ModalComponents.ModalFooter>
-        </ModalComponents.ModalRoot>;
+            </ModalFooter>
+        </ModalRoot>;
     }
 }
 

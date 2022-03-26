@@ -1,10 +1,11 @@
 import {Settings, Strings, Events, WebpackModules, Utilities, DataStore, DiscordClasses} from "modules";
+import {Web} from "data";
+
+import {shell} from "electron";
 
 import Dropdown from "../components/dropdown";
 import SearchBar from "../components/search";
 import Divider from "../divider";
-import Modals from "../../modals";
-import BdWebApi from "../../../modules/bdwebapi";
 import SettingsTitle from "../title";
 import {Reload} from "icons";
 
@@ -67,7 +68,7 @@ const PAGES = {
         },
         controls: ({setState, state, type}) => <div className="bd-store-tags">
             <div className="bd-store-tags-inner">
-                {BdWebApi.tags[type].map(tag => {
+                {Web.TAGS[type].map(tag => {
                     return <span
                         onClick={() => setState({selectedTag: tag})}
                         className={Utilities.joinClassNames({selected: state.selectedTag === tag})}
@@ -207,7 +208,6 @@ export default class AddonList extends React.Component {
     editAddon = (id) => this.props.editAddon(id);
 
     openFolder(folder) {
-        const shell = require("electron").shell;
         const open = shell.openItem ?? shell.openPath;
         open(folder);
     }

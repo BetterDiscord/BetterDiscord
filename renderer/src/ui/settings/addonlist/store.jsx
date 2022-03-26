@@ -2,7 +2,7 @@ import {React, Strings, Utilities, WebpackModules, DiscordClasses} from "modules
 import {Next, Previous} from "icons";
 import NoResults from "../../blankslates/noresults";
 import StoreCard from "./storecard";
-import openStoreDetail from "./storedetail";
+// import openStoreDetail from "./storedetail";
 
 import BdWebApi from "../../../modules/bdwebapi";
 
@@ -29,7 +29,7 @@ export default class StorePage extends React.Component {
         });
     }
 
-    matchAddon =(addon, query) => {
+    matchAddon = (addon, query) => {
         let matches = ~addon.name.toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
         matches = matches || ~addon.author.display_name.toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
         matches = matches || ~addon.description.toLocaleLowerCase().indexOf(query.toLocaleLowerCase());
@@ -81,9 +81,7 @@ export default class StorePage extends React.Component {
             this.setState({selectedPage: getState(this.state.selectedPage)});
 
             const element = document.getElementsByClassName("bd-addon-list-title")[0]?.parentElement?.parentElement;
-            if (element) {
-                element.scrollTo(0, 0);
-            }
+            element?.scrollTo(0, 0);
         };
         
         return <div className="bd-addon-store">
@@ -93,6 +91,7 @@ export default class StorePage extends React.Component {
                     {addons[this.state.selectedPage].map(addon => {
                         return <StoreCard
                             {...addon}
+                            thumbnail={BdWebApi.endpoints.thumbnail(addon.thumbnail_url)}
                             reload={this.props.reload}
                             confirmAddonDelete={this.props.confirmAddonDelete}
                             deleteAddon={this.props.deleteAddon}

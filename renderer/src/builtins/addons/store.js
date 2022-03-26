@@ -4,7 +4,7 @@ import PluginManager from "../../modules/pluginmanager";
 import ThemeManager from "../../modules/thememanager";
 import BdWebApi from "../../modules/bdwebapi";
 import StoreCard from "../../ui/settings/addonlist/storecard";
-import openStoreDetail from "../../ui/settings/addonlist/storedetail";
+// import openStoreDetail from "../../ui/settings/addonlist/storedetail";
 import Modals from "../../ui/modals";
 
 import { URL } from "url";
@@ -99,7 +99,7 @@ export default new class Store extends Builtin {
     
                 Modals.showInstallationModal({
                     ...data,
-                    folder: data.type === "theme" ? ThemeManager.addonFolder : PluginManager.addonFolder,
+                    folder: (data.type === "theme" ? ThemeManager : PluginManager)?.addonFolder,
                     reload: data.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager)
                 });
             }
@@ -138,6 +138,7 @@ class EmbeddedStoreCard extends React.Component {
         return [
             addon ? React.createElement(StoreCard, {
                 ...addon,
+                thumbnail: BdWebApi.endpoints.thumbnail(addon.thumbnail_url),
                 folder: this.folder,
                 installAddon: BdWebApi.installAddon.bind(BdWebApi),
                 reload: this.state.addon.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager),
