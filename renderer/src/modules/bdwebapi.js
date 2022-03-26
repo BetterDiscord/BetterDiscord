@@ -1,4 +1,4 @@
-import { Web } from "data";
+import {Web} from "data";
 
 import Utilities from "./utilities";
 import Settings from "./settingsmanager";
@@ -148,4 +148,4 @@ export default new class BdWebApi {
             });
         });
     }
-}
+};

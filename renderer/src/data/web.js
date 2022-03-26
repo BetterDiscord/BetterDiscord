@@ -29,4 +29,4 @@ export default {
         faq: `https://${WEB_HOSTNAME}/faq`,
         docs: `https://${WEB_HOSTNAME}/docs`
     }
-}
+};
