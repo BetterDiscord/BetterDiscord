@@ -5,6 +5,7 @@ import ReloadIcon from "../icons/reload";
 import EditIcon from "../icons/edit";
 import DeleteIcon from "../icons/delete";
 import CogIcon from "../icons/cog";
+import HistoryIcon from "../icons/history";
 import Switch from "./components/switch";
 
 import GitHubIcon from "../icons/github";
@@ -43,6 +44,7 @@ export default class AddonCard extends React.Component {
         this.onChange = this.onChange.bind(this);
         this.reload = this.reload.bind(this);
         this.showSettings = this.showSettings.bind(this);
+        this.showChangelog = this.showChangelog.bind(this);
         this.messageAuthor = this.messageAuthor.bind(this);
     }
 
@@ -55,6 +57,18 @@ export default class AddonCard extends React.Component {
         catch (err) {
             Toasts.show(Strings.Addons.settingsError.format({name}), {type: "error"});
             Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err);
+        }
+    }
+
+    showChangelog() {
+        if (!this.props.hasChangelog) return;
+        const name = this.getString(this.props.addon.name);
+        try {
+            Modals.showAddonChangelogModal(name, this.props.getChangelogPanel());
+        }
+        catch (err) {
+            Toasts.show(Strings.Addons.changelogError.format({name}), {type: "error"});
+            Logger.stacktrace("Addon Changelog", "Unable to get changelog panel for " + name + ".", err);
         }
     }
 
@@ -123,6 +137,7 @@ export default class AddonCard extends React.Component {
 
     get controls() { // {this.props.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-addon-settings" disabled={!this.props.enabled}>{Strings.Addons.addonSettings}</button>}
         return <div className="bd-controls">
+                    {this.props.hasChangelog && this.makeControlButton(Strings.Addons.addonChangelog, <HistoryIcon size={"20px"} />, this.showChangelog)}
                     {this.props.hasSettings && this.makeControlButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, this.showSettings, {disabled: !this.props.enabled})}
                     {this.props.showReloadIcon && this.makeControlButton(Strings.Addons.reload, <ReloadIcon size={"20px"} />, this.reload)}
                     {this.props.editAddon && this.makeControlButton(Strings.Addons.editAddon, <EditIcon size={"20px"} />, this.props.editAddon)}

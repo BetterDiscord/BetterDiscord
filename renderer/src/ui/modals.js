@@ -192,7 +192,7 @@ export default class Modals {
         return key;
     }
 
-    static showAddonSettingsModal(name, panel) {
+    static showAddonModal(title, panel, className) {
 
         let child = panel;
         if (panel instanceof Node || typeof(panel) === "string") {
@@ -209,7 +209,7 @@ export default class Modals {
 
                 render() {
                     const props = {
-                        className: "bd-addon-settings-wrap",
+                        className,
                         ref: this.elementRef
                     };
                     if (typeof(this.element) === "string") props.dangerouslySetInnerHTML = {__html: this.element};
@@ -223,9 +223,9 @@ export default class Modals {
         const modal = props => {
             return React.createElement(mc.ModalRoot, Object.assign({size: mc.ModalSize.MEDIUM, className: "bd-addon-modal"}, props),
                 React.createElement(mc.ModalHeader, {separator: false, className: "bd-addon-modal-header"},
-                    React.createElement(this.FormTitle, {tag: "h4"}, `${name} Settings`)
+                    React.createElement(this.FormTitle, {tag: "h4"}, title)
                 ),
-                React.createElement(mc.ModalContent, {className: "bd-addon-modal-settings"},
+                React.createElement(mc.ModalContent, {className: "bd-addon-modal-content"},
                     React.createElement(ErrorBoundary, {}, child)
                 ),
                 React.createElement(mc.ModalFooter, {className: "bd-addon-modal-footer"},
@@ -237,5 +237,12 @@ export default class Modals {
         return this.ModalActions.openModal(props => {
             return React.createElement(modal, props);
         });
+    }
+
+    static showAddonSettingsModal(name, panel) {
+        return this.showAddonModal(Strings.Modals.addonSettings.format({name}), panel, "bd-addon-settings-wrap");
+    }
+    static showAddonChangelogModal(name, panel) {
+        return this.showAddonModal(Strings.Modals.addonChangelog.format({name}), panel, "bd-addon-changelog-wrap");
     }
 }
