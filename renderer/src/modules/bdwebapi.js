@@ -25,10 +25,6 @@ export default new class BdWebApi {
     get pages() {return Web.PAGES;}
     get tags() {return Web.TAGS;}
 
-    static enable(add) {
-
-    }
-    
     /**
      * Fetches an addon by ID and adds writes it to it's respective folder. Enables the addon if the setting is on.
      * @param {number} id - The ID of the addon to fetch.
