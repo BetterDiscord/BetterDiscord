@@ -10,7 +10,7 @@ const discordVersion = window?.DiscordNative?.remoteApp?.getVersion?.() ?? "0.0.
 // =======================
 // %appdata%\BetterDiscord
 //     -> data
-//         -> [releaseChannel]\ (stable/canary/ptb)
+//         -> [releaseChannel]\ (stable/canary/development/ptb)
 //             -> settings.json
 //             -> plugins.json
 //             -> themes.json
@@ -59,7 +59,7 @@ export default new class DataStore {
         const oldData = __non_webpack_require__(oldFile); // got the data
         fs.renameSync(oldFile, `${oldFile}.bak`); // rename file after grabbing data to prevent loop
         const setChannelData = (channel, key, value, ext = "json") => fs.writeFileSync(path.resolve(this.baseFolder, channel, `${key}.${ext}`), JSON.stringify(value, null, 4));
-        const channels = ["stable", "canary", "ptb"];
+        const channels = ["stable", "canary", "development", "ptb"];
         let customcss = "";
         let favoriteEmotes = {};
         try {customcss = oldData.bdcustomcss ? atob(oldData.bdcustomcss) : "";}

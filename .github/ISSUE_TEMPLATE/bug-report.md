@@ -20,7 +20,7 @@ assignees: ''
 <!-- If applicable, add screenshots to help explain your problem. -->
 
 **Discord Version**
-<!-- Stable, Canary, PTB -->
+<!-- Stable, Canary, Development, PTB -->
 
 **Additional Context**
 <!-- Add any other context about the problem here. -->
