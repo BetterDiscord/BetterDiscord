@@ -5,7 +5,7 @@ export default {
             title: "Fixes",
             type: "fixed",
             items: [
-                "BD loads again, thanks to Strencher for this late night fix while I was away"
+                "Injection on Canary is fixed!"
             ]
         }
     ]
