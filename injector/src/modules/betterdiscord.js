@@ -65,6 +65,8 @@ export default class BetterDiscord {
                 try {
                     ${content}
                     return true;
+                } catch {
+                    return false;
                 }
             })();
         `);
