@@ -63,7 +63,7 @@ export default new class BdWebApi {
 
     /**
      * Fetches a list of all addons from the site.
-     * @param {"theme" | "plugin"} type - The type of the addon (theme or plugin).
+     * @param {"themes" | "plugins"} type - The type of the addon (theme or plugin).
      * @returns {Promise<Array<Object>>}
      */
     getAddons(type) {
