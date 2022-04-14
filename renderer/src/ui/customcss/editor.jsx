@@ -32,25 +32,45 @@ export default class CodeEditor extends React.Component {
     }
 
     componentDidMount() {
-        this.editor = window.monaco.editor.create(document.getElementById(this.props.id), {
-            value: this.props.value,
-            language: this.props.language,
-            theme: DiscordModules.UserSettingsStore.theme == "light" ? "vs" : "vs-dark",
-            fontSize: Settings.get("settings", "editor", "fontSize"),
-            lineNumbers: Settings.get("settings", "editor", "lineNumbers"),
-            minimap: {enabled: Settings.get("settings", "editor", "minimap")},
-            hover: {enabled: Settings.get("settings", "editor", "hover")},
-            quickSuggestions: {
-                other: Settings.get("settings", "editor", "quickSuggestions"),
-                comments: Settings.get("settings", "editor", "quickSuggestions"),
-                strings: Settings.get("settings", "editor", "quickSuggestions")
-            },
-            renderWhitespace: Settings.get("settings", "editor", "renderWhitespace")
-        });
+        if (window.monaco?.editor) {
+            this.editor = window.monaco.editor.create(document.getElementById(this.props.id), {
+                value: this.props.value,
+                language: this.props.language,
+                theme: DiscordModules.UserSettingsStore.theme == "light" ? "vs" : "vs-dark",
+                fontSize: Settings.get("settings", "editor", "fontSize"),
+                lineNumbers: Settings.get("settings", "editor", "lineNumbers"),
+                minimap: {enabled: Settings.get("settings", "editor", "minimap")},
+                hover: {enabled: Settings.get("settings", "editor", "hover")},
+                quickSuggestions: {
+                    other: Settings.get("settings", "editor", "quickSuggestions"),
+                    comments: Settings.get("settings", "editor", "quickSuggestions"),
+                    strings: Settings.get("settings", "editor", "quickSuggestions")
+                },
+                renderWhitespace: Settings.get("settings", "editor", "renderWhitespace")
+            });
 
-        window.addEventListener("resize", this.resize);
+            this.bindings.push(this.editor.onDidChangeModelContent(this.onChange));
+        }
+        else {
+
+            const textarea = document.createElement("textarea");
+            textarea.className = "bd-fallback-editor";
+            textarea.value = this.props.value;
+            textarea.onchange = (e) => this.onChange(e.target.value);
+            textarea.oninput = (e) => this.onChange(e.target.value);
+
+            this.editor = {
+                dispose: () => textarea.remove(),
+                getValue: () => textarea.value,
+                setValue: (value) => textarea.value = value,
+                layout: () => {},
+            };
+
+            document.getElementById(this.props.id).appendChild(textarea);
+        }
+
         if (DiscordModules.UserSettingsStore) DiscordModules.UserSettingsStore.addChangeListener(this.onThemeChange);
-        this.bindings.push(this.editor.onDidChangeModelContent(this.onChange));
+        window.addEventListener("resize", this.resize);
     }
 
     componentWillUnmount() {
@@ -64,7 +84,7 @@ export default class CodeEditor extends React.Component {
         const newTheme = DiscordModules.UserSettingsStore.theme === "light" ? "vs" : "vs-dark";
         if (newTheme === this.props.theme) return;
         this.props.theme = newTheme;
-        window.monaco.editor.setTheme(this.props.theme);
+        if (window.monaco?.editor) window.monaco.editor.setTheme(this.props.theme);
     }
 
     get value() {return this.editor.getValue();}
