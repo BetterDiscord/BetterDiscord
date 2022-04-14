@@ -30,15 +30,8 @@ Object.assign(BrowserWindow, electron.BrowserWindow);
 
 export default class {
     static patchBrowserWindow() {
-        // Reassign electron using proxy to avoid the onReady issue, thanks Powercord!
-        const newElectron = new Proxy(electron, {
-            get: function(target, prop) {
-                if (prop === "BrowserWindow") return BrowserWindow;
-                return target[prop];
-            }
-        });
         const electronPath = __non_webpack_require__.resolve("electron");
         delete __non_webpack_require__.cache[electronPath].exports; // If it didn't work, try to delete existing
-        __non_webpack_require__.cache[electronPath].exports = newElectron; // Try to assign again after deleting
+        __non_webpack_require__.cache[electronPath].exports = {...electron, BrowserWindow}; // Try to assign again after deleting
     }
 }
