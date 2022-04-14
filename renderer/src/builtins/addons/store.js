@@ -90,17 +90,16 @@ export default new class Store extends Builtin {
         if (url.hostname === "addon") {
             link.props.onClick = async () => {
                 const addon = url.pathname.slice(1);
-    
                 if (!addon) return;
     
                 const data = await BdWebApi.getAddon(addon);
-    
                 if (!data?.id) return;
-    
+                const manager = data.type === "theme" ? ThemeManager : PluginManager;
+
                 Modals.showInstallationModal({
                     ...data,
-                    folder: (data.type === "theme" ? ThemeManager : PluginManager)?.addonFolder,
-                    reload: data.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager)
+                    folder: manager.addonFolder,
+                    reload: manager.reloadTheme.bind(manager)
                 });
             }
         }
@@ -125,25 +124,26 @@ class EmbeddedStoreCard extends React.Component {
     }
 
     isInstalled = (filename) => {
-        return (this.state.addon.type === "theme" ? ThemeManager : PluginManager).isLoaded(filename);
+        return manager.isLoaded(filename);
     }
 
-    get folder() {
-        return (this.state.addon.type === "theme" ? ThemeManager : PluginManager).addonFolder;
+    get manager() {
+        return this.state.addon.type === "theme" ? ThemeManager : PluginManager;
     }
 
     render() {
         const {addon} = this.state;
+        const {manager} = this;
 
         return [
             addon ? React.createElement(StoreCard, {
                 ...addon,
                 thumbnail: BdWebApi.endpoints.thumbnail(addon.thumbnail_url),
-                folder: this.folder,
+                folder: manager.addonfolder,
                 installAddon: BdWebApi.installAddon.bind(BdWebApi),
-                reload: this.state.addon.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager),
-                deleteAddon: this.state.addon.type === "theme" ? ThemeManager.deleteAddon.bind(ThemeManager) : PluginManager.deleteAddon.bind(PluginManager),
-                confirmAddonDelete: this.state.addon.type === "theme" ? ThemeManager.confirmAddonDelete.bind(ThemeManager) : PluginManager.confirmAddonDelete.bind(PluginManager),
+                reload: addon.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager),
+                deleteAddon: manager.deleteAddon.bind(manager),
+                confirmAddonDelete: manager.confirmAddonDelete.bind(manager),
                 isInstalled: this.isInstalled.bind(this),
                 className: "bd-store-card-embedded",
                 // onDetailsView: () => {
