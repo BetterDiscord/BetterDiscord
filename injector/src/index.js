@@ -5,6 +5,7 @@ import Module from "module";
 import ipc from "./modules/ipc";
 import BrowserWindow from "./modules/browserwindow";
 import CSP from "./modules/csp";
+import Secure from "./modules/secure";
 
 if (!process.argv.includes("--vanilla")) {
     process.env.NODE_OPTIONS = "--no-force-async-hooks-checks";
@@ -16,10 +17,10 @@ if (!process.argv.includes("--vanilla")) {
     // Register all IPC events
     ipc.registerEvents();
 
+    // Ready state agnostic because Linux users install to discord_desktop_core when the app is ready already
+    app.whenReady().then(() => CSP.remove());
 
-    // Remove CSP immediately on linux since they install to discord_desktop_core still
-    if (process.platform == "win32" || process.platform == "darwin") app.once("ready", CSP.remove);
-    else CSP.remove();
+    Secure.blockWebhooks();
 }
 
 // Enable DevTools on Stable.

@@ -21,11 +21,4 @@ export default function() {
     // Prevent interception by patching Reflect.apply and Function.prototype.bind
     Object.defineProperty(Reflect, "apply", {value: Reflect.apply, writable: false, configurable: false});
     Object.defineProperty(Function.prototype, "bind", {value: Function.prototype.bind, writable: false, configurable: false});
-
-    const oOpen = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function() {
-        const url = arguments[1];
-        if (url.toLowerCase().includes("api/webhooks")) return null;
-        return Reflect.apply(oOpen, this, arguments);
-    };
 }
