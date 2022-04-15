@@ -124,11 +124,11 @@ class EmbeddedStoreCard extends React.Component {
     }
 
     isInstalled = (filename) => {
-        return manager.isLoaded(filename);
+        return this.manager.isLoaded(filename);
     }
 
     get manager() {
-        return this.state.addon.type === "theme" ? ThemeManager : PluginManager;
+        return this.state.addon?.type === "theme" ? ThemeManager : PluginManager;
     }
 
     render() {
