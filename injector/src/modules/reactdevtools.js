@@ -5,47 +5,72 @@ import {session} from "electron";
 export const REACT_DEVTOOLS_ID = "fmkadmapgofadopljbjfkapdkoienihi";
 
 const findExtension = function() {
-    let extensionPath = "";
-    // Get path to user data folder
-    if (process.platform === "win32") extensionPath = path.resolve(process.env.LOCALAPPDATA, "Google/Chrome/User Data");
-    else if (process.platform === "linux") extensionPath = path.resolve(process.env.HOME, ".config/google-chrome");
-    else if (process.platform === "darwin") extensionPath = path.resolve(process.env.HOME, "Library/Application Support/Google/Chrome");
-    else extensionPath = path.resolve(process.env.HOME, ".config/chromium");
-
-    // If default profile doesn't exist
-    if (!fs.existsSync(extensionPath + "/Default")) {
-        const profiles = fs.readdirSync(extensionPath).filter((fileName) => {
-            // Check if file is a profile folder
-            return fileName.startsWith("Profile") && !fileName.endsWith("store");
-        });
-        // Check for a profile with react dev tools installed
-        let foundExtension = false;
-        for (const p of profiles) {
-            const exPath = `${extensionPath}/${p}/Extensions/${REACT_DEVTOOLS_ID}`;
-            if (fs.existsSync(exPath)) {
-                extensionPath = exPath;
-                foundExtension = true;
-                break;
-            }
-        }
-        // Return empty if no installation found
-        if (!foundExtension) {
-            return "";
-        }
+    let browserFolders;
+    switch (process.platform) {
+        case "win32": 
+            browserFolders = [
+                path.resolve(process.env.LOCALAPPDATA, "Google/Chrome/User Data"),
+                path.resolve(process.env.LOCALAPPDATA, "Chromium/User Data"),
+                path.resolve(process.env.LOCALAPPDATA, "Google/Chrome Beta/User Data"),
+                path.resolve(process.env.LOCALAPPDATA, "Google/Chrome SxS/User Data"),
+                path.resolve(process.env.LOCALAPPDATA, "Opera Software/Opera Stable"), // Opera stores things differently
+                path.resolve(process.env.LOCALAPPDATA, "BraveSoftware/Brave-Browser/User Data"),
+                path.resolve(process.env.LOCALAPPDATA, "Vivaldi/User Data")
+            ];
+            break;
+        case "darwin":
+            browserFolders = [
+                path.resolve(process.env.HOME, "Library/Application Support/Google/Chrome"),
+                path.resolve(process.env.HOME, "Library/Application Support/Chromium"),
+                path.resolve(process.env.HOME, "Library/Application Support/Google/Chrome Beta"),
+                path.resolve(process.env.HOME, "Library/Application Support/Google/Chrome Canary"),
+                path.resolve(process.env.HOME, "Library/Application Support/com.operasoftware.Opera"),
+                path.resolve(process.env.HOME, "Library/Application Support/BraveSoftware/Brave-Browser"),
+                path.resolve(process.env.HOME, "Library/Application Support/Vivaldi")
+            ];
+            break;
+        case "linux":
+        default:
+            browserFolders = [
+                path.resolve(process.env.HOME, ".config/google-chrome"),
+                path.resolve(process.env.HOME, ".config/chromium"),
+                path.resolve(process.env.HOME, ".config/google-chrome-beta"),
+                path.resolve(process.env.HOME, ".config/google-chrome-unstable"),
+                path.resolve(process.env.HOME, ".config/opera"),
+                path.resolve(process.env.HOME, ".config/BraveSoftware/Brave-Browser"),
+                path.resolve(process.env.HOME, ".config/vivaldi"),
+                path.resolve(process.env.HOME, ".config/vivaldi-snapshot")
+            ];
+            if ("CHROME_USER_DATA_DIR" in process.env) browserFolders.unshift(process.env.CHROME_USER_DATA_DIR);
+            break;
     }
-    else {
-        extensionPath += `/Default/Extensions/${REACT_DEVTOOLS_ID}`;
-    } 
-    
-    // Get latest version
-    if (fs.existsSync(extensionPath)) {
-        const versions = fs.readdirSync(extensionPath);
-        extensionPath = path.resolve(extensionPath, versions[versions.length - 1]);
+
+    let foundExtensionPath = null;
+
+    for (const browserFolder of browserFolders) {
+        if (!fs.existsSync(browserFolder)) continue;
+
+        const dirs = fs.readdirSync(browserFolder);
+        const profiles = dirs.filter(file => file === "Default" || file.startsWith("Profile"));
+
+        // Folder itself contains extensions, Opera does it this way
+        if (dirs.includes("Extensions")) profiles.push(".");
+
+        for (const profile of profiles) {
+
+            const reactDevtoolsFolder = path.join(browserFolder, profile, "Extensions", REACT_DEVTOOLS_ID);
+            if (!fs.existsSync(reactDevtoolsFolder)) continue;
+            
+            const versions = fs.readdirSync(reactDevtoolsFolder);
+            if (versions.length === 0) continue;
+
+            return foundExtensionPath = path.resolve(reactDevtoolsFolder, versions[versions.length - 1]);
+        }
+
+        if (foundExtensionPath) break;
     }
 
-    const isExtensionInstalled = fs.existsSync(extensionPath);
-    if (isExtensionInstalled) return extensionPath;
-    return "";
+    return foundExtensionPath;
 };
 
 export default class ReactDevTools {
