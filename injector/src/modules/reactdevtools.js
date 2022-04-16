@@ -15,7 +15,8 @@ const findExtension = function() {
                 path.resolve(process.env.LOCALAPPDATA, "Google/Chrome SxS/User Data"),
                 path.resolve(process.env.LOCALAPPDATA, "Opera Software/Opera Stable"), // Opera stores things differently
                 path.resolve(process.env.LOCALAPPDATA, "BraveSoftware/Brave-Browser/User Data"),
-                path.resolve(process.env.LOCALAPPDATA, "Vivaldi/User Data")
+                path.resolve(process.env.LOCALAPPDATA, "Vivaldi/User Data"),
+                path.resolve(process.env.LOCALAPPDATA, "Microsoft/Edge/User Data")
             ];
             break;
         case "darwin":
@@ -39,7 +40,8 @@ const findExtension = function() {
                 path.resolve(process.env.HOME, ".config/opera"),
                 path.resolve(process.env.HOME, ".config/BraveSoftware/Brave-Browser"),
                 path.resolve(process.env.HOME, ".config/vivaldi"),
-                path.resolve(process.env.HOME, ".config/vivaldi-snapshot")
+                path.resolve(process.env.HOME, ".config/vivaldi-snapshot"),
+                path.resolve(process.env.HOME, ".config/microsoft-edge")
             ];
             if ("CHROME_USER_DATA_DIR" in process.env) browserFolders.unshift(process.env.CHROME_USER_DATA_DIR);
             break;
