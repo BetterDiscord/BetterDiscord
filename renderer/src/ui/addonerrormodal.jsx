@@ -1,6 +1,7 @@
 import {React, Strings, WebpackModules, DiscordClasses} from "modules";
 import Extension from "./icons/extension";
 import ThemeIcon from "./icons/theme";
+import Divider from "./divider";
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
 
@@ -21,7 +22,7 @@ class AddonError extends React.Component {
         const stack = err.error && err.stack;
         if (!this.state.expanded || !stack) return null;
         return <div className="bd-addon-error-body">
-            <div className={`${DiscordClasses.Card.topDivider} ${DiscordClasses.Divider.divider}`} />
+            <Divider />
             <div className="bd-addon-error-stack">
                 {Parser ? Parser.codeBlock.react({content: stack, lang: "js"}, null, {}) : stack}
             </div>
