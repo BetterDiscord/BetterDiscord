@@ -1,4 +1,4 @@
-import {Settings, Strings, Events, WebpackModules, Utilities, DataStore, DiscordClasses} from "modules";
+import {React, Settings, Strings, Events, WebpackModules, Utilities, DataStore, DiscordClasses} from "modules";
 import {Web} from "data";
 
 import {shell} from "electron";
