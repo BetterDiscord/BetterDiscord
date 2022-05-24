@@ -1,5 +1,5 @@
 const WEB_HOSTNAME = "betterdiscord.app";
-const API_VERSION = "latest"; // TODO: switch this over to v2 when it's ready
+const API_VERSION = "v2";
 const API_BASE = `https://api.${WEB_HOSTNAME}/${API_VERSION}`;
 
 export default {
@@ -12,7 +12,7 @@ export default {
     },
     ENDPOINTS: {
         store: type => `${API_BASE}/store/${type}`,
-        addon: name => `${API_BASE}/store/${name}`,
+        addon: addon => `${API_BASE}/store/${addon}`,
         download: id => `https://${WEB_HOSTNAME}/download?id=${id}`,
         githubRedirect: id => `https://${WEB_HOSTNAME}/gh-redirect?id=${id}`,
         thumbnail: thumbnailUrl => `https://${WEB_HOSTNAME}${thumbnailUrl ?? "/resources/store/missing.svg"}`,
@@ -21,8 +21,8 @@ export default {
         home: `https://${WEB_HOSTNAME}/`,
         themes: `https://${WEB_HOSTNAME}/themes`,
         plugins: `https://${WEB_HOSTNAME}/plugins`,
-        theme: `https://${WEB_HOSTNAME}/plugin`,
-        plugin: `https://${WEB_HOSTNAME}/theme`,
+        theme: `https://${WEB_HOSTNAME}/theme`,
+        plugin: `https://${WEB_HOSTNAME}/plugin`,
         developers: `https://${WEB_HOSTNAME}/developers`,
         developer: `https://${WEB_HOSTNAME}/developer`,
         merch: `https://${WEB_HOSTNAME}/merch`,

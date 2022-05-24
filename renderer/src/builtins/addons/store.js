@@ -5,10 +5,10 @@ import ThemeManager from "../../modules/thememanager";
 import BdWebApi from "../../modules/bdwebapi";
 import StoreCard from "../../ui/settings/addonlist/storecard";
 // import openStoreDetail from "../../ui/settings/addonlist/storedetail";
-import Modals from "../../ui/modals";
 
-import { URL } from "url";
+import {URL} from "url";
 
+const PROTOCOL_REGEX = new RegExp("<([^: >]+:/[^ >]+)>", "g");
 const BD_PROTOCOL = "betterdiscord:";
 const BD_PROTOCOL_REGEX = new RegExp(BD_PROTOCOL + "//", "i");
 
@@ -29,7 +29,6 @@ export default new class Store extends Builtin {
 
     patchEmbeds() {
         const MessageAccessories = WebpackModules.getByProps("MessageAccessories")?.MessageAccessories;
-        const PROTOCOL_REGEX = new RegExp("<([^: >]+:/[^ >]+)>", "g");
 
         if (!MessageAccessories?.prototype.renderEmbeds) return;
 
@@ -43,9 +42,12 @@ export default new class Store extends Builtin {
             
             if (!matchedProtocols || !matchedProtocols?.length) return embeds;
             
-            return (embeds ?? []).concat(matchedProtocols.map(url => (
-                React.createElement(EmbeddedStoreCard, { addon: url.pathname.slice(1) }))
-            ));
+            return (embeds ?? []).concat(matchedProtocols.map(url => {
+                const parameter = url.pathname.slice(1);
+                const addon = Number.isNaN(Number(parameter)) ? parameter : Number(parameter);
+
+                return React.createElement(EmbeddedStoreCard, {addon});
+            }));
         });
     }
 
@@ -88,19 +90,17 @@ export default new class Store extends Builtin {
         const url = new URL(path);
 
         if (url.hostname === "addon") {
-            link.props.onClick = async () => {
-                const addon = url.pathname.slice(1);
-                if (!addon) return;
-    
-                const data = await BdWebApi.getAddon(addon);
-                if (!data?.id) return;
-                const manager = data.type === "theme" ? ThemeManager : PluginManager;
+            const parameter = url.pathname.slice(1);
+            const addon = Number.isNaN(Number(parameter)) ? parameter : Number(parameter);
+            if (!addon) return link;
 
-                Modals.showInstallationModal({
-                    ...data,
-                    folder: manager.addonFolder,
-                    reload: manager.reloadTheme.bind(manager)
-                });
+            link.props.onClick = async (event) => {
+                const data = await BdWebApi.getAddon(addon);
+
+                if (data?.type) {
+                    event.preventDefault();
+                    window.open((BdWebApi.pages[data.type] + (typeof(addon) === "number" ? "?id=" : "/") + addon), "_blank");
+                }
             }
         }
 

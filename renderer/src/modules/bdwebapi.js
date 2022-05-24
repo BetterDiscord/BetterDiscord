@@ -92,16 +92,15 @@ export default new class BdWebApi {
 
     /**
      * Fetches a single addon by name from the site.
-     * @param {string} name - The name of the addon to fetch.
+     * @param {string|number} addon - The name or ID of the addon to fetch.
      * @returns {Promise<Object>}
-     */
-    getAddon(name) {
+     */ 
+    getAddon(addon) {
         return new Promise(resolve => {
-            const cacheMatch = API_CACHE.addon.find(a => a[typeof name === "string" ? "name" : "id"] === name);
+            const cacheMatch = API_CACHE.addon.find(a => a[typeof addon === "number" ? "id" : "name"] === addon);
             if (cacheMatch) resolve(cacheMatch);
 
-            https.get(Web.ENDPOINTS.addon(name), res => {
-                
+            https.get(Web.ENDPOINTS.addon(addon), res => {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
                 
