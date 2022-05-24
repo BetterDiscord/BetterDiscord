@@ -119,7 +119,7 @@ class EmbeddedStoreCard extends React.Component {
 
     componentDidMount() {
         BdWebApi.getAddon(this.props.addon).then(data => {
-            if (data.id) this.setState({ addon: data });
+            if (data.id) this.setState({addon: data});
         });
     }
 

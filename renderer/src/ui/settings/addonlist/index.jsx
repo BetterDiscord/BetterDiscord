@@ -7,7 +7,7 @@ import Dropdown from "../components/dropdown";
 import SearchBar from "../components/search";
 import Divider from "../divider";
 import SettingsTitle from "../title";
-import {Reload} from "icons";
+import Reload from "../../icons/reload";
 
 import StorePage from "./store";
 import InstalledPage from "./installed";

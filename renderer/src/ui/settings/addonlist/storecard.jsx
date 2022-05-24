@@ -1,6 +1,8 @@
 import {React, Strings, Utilities, WebpackModules} from "modules";
-import {Heart, Download} from "icons";
+
 import Modals from "../../modals";
+import Heart from "../../icons/heart";
+import Download from "../../icons/download";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 const Button = WebpackModules.getByProps("DropdownSizes");
@@ -63,7 +65,7 @@ export default class StoreCard extends React.Component {
                     onDelete: () => this.setState({isInstalled: false})
                 });
             } else {
-                Modals.showInstallationModal({ ...this.props, onInstall: () => {
+                Modals.showInstallationModal({...this.props, onInstall: () => {
                     this.setState({isInstalled: true});
                 }});
             }
@@ -90,7 +92,7 @@ export default class StoreCard extends React.Component {
                 <div class="bd-store-card-title">
                     <h5>{name}</h5>
                     {this.monthsAgo <= 3
-                        ? <Tooltip color="primary" position="top" text={Strings.Addons.uploadDate.format({ date: new Date(release_date).toLocaleString()})}>
+                        ? <Tooltip color="primary" position="top" text={Strings.Addons.uploadDate.format({date: new Date(release_date).toLocaleString()})}>
                             {props => <span {...props} className="bd-store-card-new-badge">{Strings.Addons.new}</span>}
                         </Tooltip>
                         : null
@@ -104,7 +106,7 @@ export default class StoreCard extends React.Component {
                 </div>
                 <div className="bd-store-card-footer">
                     <div className="bd-store-card-stats">
-                        <Tooltip color="primary" position="top" text={Strings.Addons.likesAmount.format({ amount: likes })}>
+                        <Tooltip color="primary" position="top" text={Strings.Addons.likesAmount.format({amount: likes})}>
                             {props =>
                                 <div {...props} className="bd-store-card-stat">
                                     <Heart />
@@ -112,7 +114,7 @@ export default class StoreCard extends React.Component {
                                 </div>
                             }
                         </Tooltip>
-                        <Tooltip color="primary" position="top" text={Strings.Addons.downloadsAmount.format({ amount: downloads })}>
+                        <Tooltip color="primary" position="top" text={Strings.Addons.downloadsAmount.format({amount: downloads})}>
                             {props =>
                                 <div {...props} className="bd-store-card-stat">
                                     <Download />

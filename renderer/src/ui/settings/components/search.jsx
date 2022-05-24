@@ -1,5 +1,7 @@
 import {React, Utilities} from "modules";
-import {Close, Search} from "icons";
+
+import Close from "../../icons/close";
+import Search from "../../icons/search";
 
 const Sizes = {
     SMALL: "small",

@@ -120,39 +120,4 @@ export default new class BdWebApi {
             });
         });
     }
-
-    // Currently this is mainly here as a test and just scrapes HTML from the site.
-    // In the future, it will fetch from a README endpoint.
-    getReadme(id, type) {
-        return new Promise(resolve => {
-            if (README_CACHE[type][id]) resolve(README_CACHE[type][id]);
-
-            https.get(`https://${Web.WEB_HOSTNAME}/${type}?id=${id}`, res => {
-                try {
-                    const chunks = [];
-                    res.on("data", chunk => chunks.push(chunk));
-                    res.on("end", () => {
-                        try {
-                            const rawHTML = chunks.join("");
-                            const parsed = Object.assign(document.createElement("div"), {
-                                innerHTML: rawHTML
-                            });
-                            const [readme] = parsed.getElementsByClassName("markdown-body");
-                            README_CACHE[id] = readme.innerHTML;
-                            resolve(readme.innerHTML);
-                        }
-                        catch (error) {
-                            Logger.err("Addon Store", `Failed to parse README: ${error}`);
-                        }
-                    });
-                    res.on("error", (error) => {
-                        Logger.err("Addon Store", `Failed to get README: ${error}`);
-                    });
-                }
-                catch (error) {
-                    Logger.err("Addon Store", `Failed to get README: ${error}`);
-                }
-            });
-        });
-    }
 };

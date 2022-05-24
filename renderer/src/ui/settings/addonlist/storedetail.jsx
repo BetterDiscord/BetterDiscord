@@ -2,8 +2,8 @@ import {React, WebpackModules} from "modules";
 import BdWebApi from "../../../modules/bdwebapi";
 
 const Spinner = WebpackModules.getByDisplayName("Spinner");
-const { ScrollerAuto: Scroller } = WebpackModules.getByProps("ScrollerAuto");
-const { pushLayer } = WebpackModules.getByProps("pushLayer");
+const {ScrollerAuto: Scroller} = WebpackModules.getByProps("ScrollerAuto");
+const {pushLayer} = WebpackModules.getByProps("pushLayer");
 
 export default function openStoreDetail(addon) {
     pushLayer(() => <StoreDetail {...addon} />);
@@ -36,16 +36,16 @@ export class StoreDetail extends React.Component {
 }
 
 class Readme extends React.Component {
-    state = { readme: null };
+    state = {readme: null};
 
     async componentDidMount() {
         const readme = await BdWebApi.getReadme(this.props.type, this.props.addonId);
 
-        this.setState({ readme });
+        this.setState({readme});
     }
 
     render() {
-        const { readme } = this.state;
-        return readme ? <article class="bd-store-details-readme bd-markdown" dangerouslySetInnerHTML={{ __html: readme }} /> : <Spinner type={Spinner.Type.SPINNING_CIRCLE} />;
+        const {readme} = this.state;
+        return readme ? <article class="bd-store-details-readme bd-markdown" dangerouslySetInnerHTML={{__html: readme}} /> : <Spinner type={Spinner.Type.SPINNING_CIRCLE} />;
     }
 }

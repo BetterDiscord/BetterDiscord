@@ -1,5 +1,7 @@
 import {React, Strings, Utilities, WebpackModules, DiscordClasses} from "modules";
-import {Next, Previous} from "icons";
+
+import Next from "../../icons/next";
+import Previous from "../../icons/previous";
 import NoResults from "../../blankslates/noresults";
 import StoreCard from "./storecard";
 // import openStoreDetail from "./storedetail";

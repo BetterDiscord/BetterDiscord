@@ -1,12 +1,18 @@
 import {DiscordClasses, React, Strings, Utilities, WebpackModules} from "modules";
-import {Support, Version, Github, Author, Description, Clock} from "icons";
 import {Web} from "data";
 
-const { ModalRoot, ModalHeader, ModalContent, ModalCloseButton, ModalFooter } = WebpackModules.getByProps("ModalRoot");
+import Support from "./icons/support";
+import Version from "./icons/version";
+import Github from "./icons/github";
+import Author from "./icons/author";
+import Description from "./icons/description";
+import Clock from "./icons/clock";
+
 const Anchor = WebpackModules.getByDisplayName("Anchor");
 const Button = WebpackModules.getByProps("BorderColors");
 const Spinner = WebpackModules.getByDisplayName("Spinner");
 const {TooltipContainer: Tooltip} = WebpackModules.getByProps("TooltipContainer");
+const {ModalRoot, ModalHeader, ModalContent, ModalCloseButton, ModalFooter} = WebpackModules.getByProps("ModalRoot");
 
 export default class InstallationModal extends React.Component {
     constructor() {
