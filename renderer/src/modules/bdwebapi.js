@@ -39,7 +39,7 @@ export default new class BdWebApi {
 
             if (manager.enableAddon && installation.filename === filename) manager.enableAddon(installation);
             Events.off(`${type}-loaded`, enable);
-        }
+        };
 
         return new Promise(resolve => {
             https.get(Web.ENDPOINTS.download(id), response => {
