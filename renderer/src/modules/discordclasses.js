@@ -7,16 +7,6 @@ const combineClasses = function (...props) {
 };
 
 const DiscordClassModules = Utilities.memoizeObject({
-    get Divider() {
-        const toolbar = WebpackModules.getByProps("divider", "toolbar");
-        const discovery = WebpackModules.getByProps("divider", "emptyGuilds");
-        
-        return {
-            verticalDivider: toolbar.divider,
-            dividerLarge: discovery.divider,
-            divider: "bd-divider"
-        };
-    },
     get Text() {
         return combineClasses(
             ["size20", "size12"],
