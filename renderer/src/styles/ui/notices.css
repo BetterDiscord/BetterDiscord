@@ -1,0 +1,94 @@
+.bd-notice-success {
+    --color: #3BA55D;
+}
+
+.bd-notice-error {
+    --color: #ED4245;
+}
+
+.bd-notice-info {
+    --color: #4A8FE1;
+}
+
+.bd-notice-warning {
+    --color: #FAA81A;
+}
+
+.bd-notice-closing {
+    transition: height 400ms ease;
+    height: 0 !important;
+}
+
+@keyframes bd-open-notice {
+    from {
+        height: 0;
+    }
+}
+
+.bd-notice {
+    animation: bd-open-notice 400ms ease;
+    overflow: hidden;
+    height: 36px;
+    font-size: 14px;
+    line-height: 36px;
+    font-weight: 500;
+    text-align: center;
+    position: relative;
+    padding-left: 4px;
+    padding-right: 28px;
+    z-index: 101;
+    flex-shrink: 0;
+    flex-grow: 0;
+    box-shadow: var(--elevation-low);
+    color: #FFFFFF;
+    background: var(--color, var(--brand-experiment-600, #3C45A5));
+}
+
+.bd-notice:first-child {
+    border-radius: 8px 0 0;
+}
+
+.bd-notice-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 36px;
+    height: 36px;
+    background: url(https://discord.com/assets/7731c77d99babca1a8faec204d98c380.svg) no-repeat;
+    background-position: 50% 55%;
+    background-size: 10px 10px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+}
+
+.bd-notice-button {
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+    top: 6px;
+    border: 1px solid;
+    color: #FFFFFF;
+    border-radius: 3px;
+    height: 24px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 10px;
+    line-height: 22px;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    -webkit-app-region: no-drag;
+    border-color: #FFFFFF;
+    background: transparent;
+}
+
+.bd-notice-button:hover {
+    color: var(--color, var(--background-mobile-primary));
+    background: #FFFFFF;
+}
+
+.bd-notice-close:hover {
+    opacity: 1;
+}

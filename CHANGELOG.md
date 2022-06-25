@@ -2,6 +2,114 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.5.1
+
+### Added
+- `Number` settings component using builtin `input[type=number]`
+- Settings for monaco editor: font size, line numbers, minimap, whitespace, quick suggestions, tooltips
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed `GuildComponent` throwing errors
+- Fixed public servers button disappearing when guilds list rerenders
+- Fixed plugin compilation error not pointing to console
+- Fixed plugins with no `@name` attempting to load
+
+## 1.5.0
+
+### Added
+- `appSettings` override and corresponding toggle to enable DevTools (Thanks [Kyza](https://github.com/Kyza))
+- `bd-transparency` class is added to `document.body` when window transparency is enabled (Thanks [Strencher](https://github.com/Strencher))
+
+### Removed
+- Removed all appearance related `Builtin`s including: 24 Hour Timestamps, Colored Text, Hide GIF/Gift Button, and MinimalMode
+
+### Changed
+
+### Fixed
+- Fixed `DebugLogs` throwing errors or not writing `null`, `undefined`, and circular objects
+- Fixed guild utility classes not being added
+- Fixed toast location
+
+## 1.4.0
+
+### Added
+- Notices API (Thanks [Strencher](https://github.com/Strencher))
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed outdates styles and classnames (Thanks [Strencher](https://github.com/Strencher))
+- Fixed guild list classes being overwritten causing the public server button to not show
+- Fixed finding the wrong module for `ActionTypes` in custom css module
+- Fixed not removing customcss upon disable
+- Fixed media keys commandline switch not being applied
+
+## 1.3.0
+
+### Added
+
+### Removed
+
+### Changed
+- Startup now waits for current user to be populated or for CONNECTION_OPEN event
+
+### Fixed
+- Fixed emote menu causing crashes
+
+## 1.2.4
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed loading sequence using wrong classes
+
+## 1.2.3
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed translations not falling back to English
+- Fixed waiting for guilds due to class name changes
+
+## 1.2.2
+
+### Added
+- Added Czech translation
+- Added Spanish translation
+- Added Hindi (partial) translation
+- Added Italian translation
+- Added Dutch translation
+- Added Norwegian translation
+- Added Portuguese (PT) translation
+- Added Romanian translation
+- Added Russian translation
+- Added Turkish translation
+
+### Removed
+
+### Changed
+- `window.webpackJsonp` is temporarily polyfilled for Canary but _will_ be disappearing
+- Updated French translation
+- Updated Germand translation
+
+### Fixed
+- Fixed public servers missing (Thanks [Strencher](https://github.com/Strencher))
+- Fixed guild classes missing (Thanks [Strencher](https://github.com/Strencher))
+
 ## 1.2.1
 
 ### Added

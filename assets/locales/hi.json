@@ -1,1 +1,314 @@
-{}
+{
+    "Panels": {
+        "plugins": "प्लग-इन",
+        "themes": "विषयों",
+        "customcss": "कस्टम सीएसएस"
+    },
+    "Collections": {
+        "settings": {
+            "name": "समायोजन",
+            "general": {
+                "name": "आम",
+                "emotes": {
+                    "name": "भावना प्रणाली",
+                    "note": "BD के इमोशन सिस्टम को सक्षम करता है"
+                },
+                "publicServers": {
+                    "name": " सार्वजनिक सर्वर",
+                    "note": "सार्वजनिक सर्वर बटन प्रदर्शित करें"
+                },
+                "voiceDisconnect": {
+                    "name": "आवाज डिस्कनेक्ट",
+                    "note": "डिसॉर्डर को बंद करते समय वॉयस सर्वर से डिस्कनेक्ट करें"
+                },
+                "showToasts": {
+                    "name": "टोस्ट दिखाओ",
+                    "note": "महत्वपूर्ण जानकारी के लिए एक छोटी अधिसूचना दिखाता है"
+                },
+                "mediaKeys": {
+                    "name": "मीडिया कुंजी अक्षम करें",
+                    "note": "वीडियो चलाने के बाद डिस्कॉर्ड को अपनी मीडिया कुंजियों को हाईजैक करने से रोकें।"
+                }
+            },
+            "appearance": {
+                "name": "दिखावट",
+                "minimalMode": {
+                    "name": "न्यूनतम मोड",
+                    "note": "तत्वों को छुपाएं और तत्वों के आकार को कम करें"
+                },
+                "twentyFourHour": {
+                    "name": "24 घंटे का टाइमस्टैम्प",
+                    "note": "12-घंटे के टाइमस्टैम्प को 24-घंटे के प्रारूप में बदलें"
+                },
+                "coloredText": {
+                    "name": "रंगीन पाठ",
+                    "note": "टेक्स्ट रंग को भूमिका रंग के समान बनाएं"
+                },
+                "hideGIFButton": {
+                    "name": "जीआईएफ बटन छुपाएं",
+                    "note": "टेक्स्ट क्षेत्र में GIF पिकर बटन छुपाता है"
+                },
+                "hideGiftButton": {
+                    "name": "जीआईएफ बटन छुपाएं",
+                    "note": "टेक्स्ट क्षेत्र में नाइट्रो उपहार बटन छुपाता है"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "न्यूनतम आकार निकालें",
+                    "note": "940x500 . के डिस्कॉर्ड के मजबूर न्यूनतम विंडो आकार को हटा देता है\nध्यान दें"
+                },
+                "name": "",
+                "transparency": {
+                    "name": "",
+                    "note": ""
+                },
+                "frame": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "addons": {
+                "name": "एडऑन मैनेजर\n",
+                "addonErrors": {
+                    "name": "एडऑन त्रुटि दिखाएं",
+                    "note": "प्लगइन/थीम त्रुटियों के साथ एक मोडल दिखाता है"
+                },
+                "autoReload": {
+                    "name": "स्वचालित लोड हो रहा है",
+                    "note": "प्लगइन्स और थीम को स्वचालित रूप से लोड, पुनः लोड और अनलोड करता है"
+                },
+                "editAction": {
+                    "name": "क्रिया संपादित करें",
+                    "note": "संपादन करते समय प्लगइन्स और थीम कहाँ दिखाई देते हैं",
+                    "options": {
+                        "detached": "",
+                        "system": ""
+                    }
+                }
+            },
+            "customcss": {
+                "name": "",
+                "customcss": {
+                    "name": "",
+                    "note": ""
+                },
+                "liveUpdate": {
+                    "name": "",
+                    "note": ""
+                },
+                "startDetached": {
+                    "name": "",
+                    "note": ""
+                },
+                "nativeOpen": {
+                    "name": "",
+                    "note": ""
+                },
+                "openAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "settings": "",
+                        "detached": "",
+                        "system": ""
+                    }
+                }
+            },
+            "developer": {
+                "name": "",
+                "debuggerHotkey": {
+                    "name": "",
+                    "note": ""
+                },
+                "reactDevTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "inspectElement": {
+                    "name": "",
+                    "note": ""
+                },
+                "devToolsWarning": {
+                    "name": "",
+                    "note": ""
+                },
+                "debugLogs": {
+                    "name": "",
+                    "note": ""
+                }
+            }
+        },
+        "emotes": {
+            "name": "",
+            "general": {
+                "name": "",
+                "download": {
+                    "name": "",
+                    "note": ""
+                },
+                "emoteMenu": {
+                    "name": "",
+                    "note": ""
+                },
+                "hideEmojiMenu": {
+                    "name": "",
+                    "note": ""
+                },
+                "autoCaps": {
+                    "name": "",
+                    "note": ""
+                },
+                "modifiers": {
+                    "name": "",
+                    "note": ""
+                },
+                "animateOnHover": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "categories": {
+                "name": "",
+                "twitchglobal": {
+                    "name": "",
+                    "note": ""
+                },
+                "twitchsubscriber": {
+                    "name": "",
+                    "note": ""
+                },
+                "frankerfacez": {
+                    "name": "",
+                    "note": ""
+                },
+                "bttv": {
+                    "name": "",
+                    "note": ""
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "",
+        "byline": "",
+        "openFolder": "",
+        "reload": "",
+        "addonSettings": "",
+        "website": "",
+        "source": "",
+        "invite": "",
+        "donate": "",
+        "patreon": "",
+        "name": "",
+        "author": "",
+        "version": "",
+        "added": "",
+        "modified": "",
+        "search": "",
+        "editAddon": "",
+        "deleteAddon": "",
+        "confirmDelete": "",
+        "confirmationText": "",
+        "enabled": "",
+        "disabled": "",
+        "couldNotEnable": "",
+        "couldNotDisable": "",
+        "couldNotStart": "",
+        "couldNotStop": "",
+        "settingsError": "",
+        "methodError": "",
+        "unknownAuthor": "",
+        "noDescription": "",
+        "alreadyExists": "",
+        "alreadWatching": "",
+        "metaError": "",
+        "missingNameData": "",
+        "metaNotFound": "",
+        "compileError": "",
+        "wasUnloaded": "",
+        "blankSlateHeader": "",
+        "blankSlateMessage": ""
+    },
+    "CustomCSS": {
+        "confirmationText": "",
+        "update": "",
+        "save": "",
+        "openNative": "",
+        "openDetached": "",
+        "settings": "",
+        "editorTitle": ""
+    },
+    "Emotes": {
+        "loading": "",
+        "loaded": "",
+        "clearEmotes": "",
+        "favoriteAction": "",
+        "downloadFailed": "",
+        "failureMessage": ""
+    },
+    "PublicServers": {
+        "button": "",
+        "join": "",
+        "joining": "",
+        "joined": "",
+        "loading": "",
+        "loadMore": "",
+        "notConnected": "",
+        "connectionRequired": "",
+        "connectionError": "",
+        "connectionErrorMessage": "",
+        "pagination": "",
+        "search": "",
+        "connect": "",
+        "reconnect": "",
+        "categories": "",
+        "keywords": "",
+        "connection": "",
+        "results": "",
+        "query": ""
+    },
+    "Modals": {
+        "confirmAction": "",
+        "okay": "",
+        "done": "",
+        "cancel": "",
+        "nevermind": "",
+        "close": "",
+        "name": "",
+        "message": "",
+        "error": "",
+        "addonErrors": "",
+        "restartRequired": "",
+        "restartNow": "",
+        "restartLater": "",
+        "additionalInfo": "",
+        "restartPrompt": ""
+    },
+    "ReactDevTools": {
+        "notFound": "",
+        "notFoundDetails": ""
+    },
+    "Sorting": {
+        "sortBy": "",
+        "order": "",
+        "ascending": "",
+        "descending": ""
+    },
+    "Startup": {
+        "notSupported": "",
+        "incompatibleApp": "",
+        "updateNow": "",
+        "maybeLater": "",
+        "updateAvailable": "",
+        "updateInfo": "",
+        "updateFailed": "",
+        "manualUpdate": "",
+        "jqueryFailed": "",
+        "jqueryFailedDetails": ""
+    },
+    "WindowPrefs": {
+        "enabledInfo": "",
+        "disabledInfo": ""
+    }
+}

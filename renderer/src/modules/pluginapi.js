@@ -5,6 +5,7 @@ import DiscordModules from "./discordmodules";
 import DataStore from "./datastore";
 import DOMManager from "./dommanager";
 import Toasts from "../ui/toasts";
+import Notices from "../ui/notices";
 import Modals from "../ui/modals";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
@@ -113,6 +114,19 @@ BdApi.showToast = function(content, options = {}) {
     Toasts.show(content, options);
 };
 
+/**
+ * Show a notice above discord's chat layer.
+ * @param {string|Node} content Content of the notice
+ * @param {object} options Options for the notice.
+ * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
+ * @param {Array<{label: string, onClick: (immediately?: boolean = false) => void}>} [options.buttons] Buttons that should be added next to the notice text.
+ * @param {number} [options.timeout=10000] Timeout until the notice is closed. Won't fire if it's set to 0;
+ * @returns {(immediately?: boolean = false) => void}
+ */
+ BdApi.showNotice = function (content, options = {}) {
+    return Notices.show(content, options);
+};
+
 // Finds module
 BdApi.findModule = function(filter) {
     return WebpackModules.getModule(filter);
@@ -163,44 +177,6 @@ BdApi.deleteData = function(pluginName, key) {
 };
 
 // Patches other functions
-// BdApi.monkeyPatch = function(what, methodName, options) {
-//     const {before, after, instead, once = false, silent = false, force = false} = options;
-//     const displayName = options.displayName || what.displayName || what.name || what.constructor.displayName || what.constructor.name;
-//     if (!silent) console.log("patch", methodName, "of", displayName); // eslint-disable-line no-console
-//     if (!what[methodName]) {
-//         if (force) what[methodName] = function() {};
-//         else return console.error(methodName, "does not exist for", displayName); // eslint-disable-line no-console
-//     }
-//     const origMethod = what[methodName];
-//     const cancel = () => {
-//         if (!silent) console.log("unpatch", methodName, "of", displayName); // eslint-disable-line no-console
-//         what[methodName] = origMethod;
-//     };
-//     what[methodName] = function() {
-//         const data = {
-//             thisObject: this,
-//             methodArguments: arguments,
-//             cancelPatch: cancel,
-//             originalMethod: origMethod,
-//             callOriginalMethod: () => data.returnValue = data.originalMethod.apply(data.thisObject, data.methodArguments)
-//         };
-//         if (instead) {
-//             const tempRet = Utilities.suppressErrors(instead, "`instead` callback of " + what[methodName].displayName)(data);
-//             if (tempRet !== undefined) data.returnValue = tempRet;
-//         }
-//         else {
-//             if (before) Utilities.suppressErrors(before, "`before` callback of " + what[methodName].displayName)(data);
-//             data.callOriginalMethod();
-//             if (after) Utilities.suppressErrors(after, "`after` callback of " + what[methodName].displayName)(data);
-//         }
-//         if (once) cancel();
-//         return data.returnValue;
-//     };
-//     what[methodName].__monkeyPatched = true;
-//     if (!what[methodName].__originalMethod) what[methodName].__originalMethod = origMethod;
-//     what[methodName].displayName = "patched " + (what[methodName].displayName || methodName);
-//     return cancel;
-// };
 BdApi.monkeyPatch = function(what, methodName, options) {
     const {before, after, instead, once = false, callerId = "BdApi"} = options;
     const patchType = before ? "before" : after ? "after" : instead ? "instead" : "";
@@ -220,7 +196,7 @@ BdApi.monkeyPatch = function(what, methodName, options) {
             return patchReturn;
         }
         catch (err) {
-            Logger.err(`${callerId}:monkeyPatch`, `Error in the ${patchType} of ${methodName}`);
+            Logger.stacktrace(`${callerId}:monkeyPatch`, `Error in the ${patchType} of ${methodName}`, err);
         }
     });
     return data.cancelPatch;

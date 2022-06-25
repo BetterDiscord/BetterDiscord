@@ -1,1 +1,314 @@
-{}
+{
+    "Panels": {
+        "plugins": "plugin-uri",
+        "themes": "temă",
+        "customcss": "CSS personalizat"
+    },
+    "Collections": {
+        "settings": {
+            "name": "setări",
+            "general": {
+                "name": "general",
+                "emotes": {
+                    "name": "Sistemul de emote-uri",
+                    "note": "Activează sistemul de emote-uri din cadrul BD"
+                },
+                "publicServers": {
+                    "name": "servere publice",
+                    "note": "Afișează butonul de servere publice"
+                },
+                "voiceDisconnect": {
+                    "name": "Deconectare de la voce",
+                    "note": "Deconectează-te de la un canal de voce când inchizi Discord-ul"
+                },
+                "showToasts": {
+                    "name": "Arată mesajele de sistem",
+                    "note": "Afișează notificări pentru informațiile importante"
+                },
+                "mediaKeys": {
+                    "name": "Dezactivează tastele Media",
+                    "note": "Previn-o Discord din a fura tastele media după redarea unui videoclip."
+                }
+            },
+            "appearance": {
+                "name": "Aspect",
+                "minimalMode": {
+                    "name": "Mod Minimal",
+                    "note": "Ascunde elemente și redu"
+                },
+                "twentyFourHour": {
+                    "name": "Format de 24 de ore",
+                    "note": "Convertește formatul de 12 ore in cel de 24 de ore"
+                },
+                "coloredText": {
+                    "name": "Text colorat",
+                    "note": "Culoarea textului unui mesaj este aceeași cu culoarea rolului"
+                },
+                "hideGIFButton": {
+                    "name": "Ascunde butonul GIF",
+                    "note": "Ascunde butonul pentru mediul de GIF-uri in zona text"
+                },
+                "hideGiftButton": {
+                    "name": "Ascunde butonul de cadouri",
+                    "note": "Ascunde butonul de cadouri din zona de text"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Elimină mărimea minimă",
+                    "note": "Elimina marimea minima de 940x500 a ferestrei"
+                },
+                "name": "Preferinte în privința mărimii ferestrei",
+                "transparency": {
+                    "name": "Activează Transparența",
+                    "note": "Fă ca fereastra principală să fie transparentă (necesită repornire)"
+                },
+                "frame": {
+                    "name": "Cadrul ferestrei",
+                    "note": "Adaugă cadrul sistemului de operare în fereastra principală"
+                }
+            },
+            "addons": {
+                "name": "Manager de adăugiri",
+                "addonErrors": {
+                    "name": "Arată erorile adăugirilor",
+                    "note": "Afișează un modal cu erorile plugin-urilor/temelor"
+                },
+                "autoReload": {
+                    "name": "Incărcare automată",
+                    "note": "Încarcă, reîncarcă si dezactivează plugin-urile si temele in mod automat"
+                },
+                "editAction": {
+                    "name": "Modifică acțiunea",
+                    "note": "Unde apar plugin-urile si temele atunci când sunt editate",
+                    "options": {
+                        "detached": "Fereastră detașabilă",
+                        "system": "Editor de sistem"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "CSS personalizat",
+                "customcss": {
+                    "name": "CSS personalizat",
+                    "note": "Activează tab-ul de CSS personalizat"
+                },
+                "liveUpdate": {
+                    "name": "Actualizări live",
+                    "note": "Actualizează CSS-ul in timp ce scrii"
+                },
+                "startDetached": {
+                    "name": "Pornește intr-o altă fereastră",
+                    "note": "Click-ul pe tab-ul de CSS personalizat va deschide editor-ul intr-o fereastra separată"
+                },
+                "nativeOpen": {
+                    "name": "Deschide în editor-ul nativ",
+                    "note": "Click-ul pe fereastra de CSS personalizat va deschide editorul nativ al calculatorului"
+                },
+                "openAction": {
+                    "name": "Locația editorului",
+                    "note": "Unde ar trebui să se deschide CSS-ul personalizat",
+                    "options": {
+                        "settings": "Meniu de setări",
+                        "detached": "Fereastră detașabilă",
+                        "system": "Editor de sistem"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Setări de dezvoltator",
+                "debuggerHotkey": {
+                    "name": "Scurtătură pentru Debugger",
+                    "note": "Activează deschiderea debugger-ului la apasarea tastei F8"
+                },
+                "reactDevTools": {
+                    "name": "React Developer Tools",
+                    "note": "Instalează React Developer Tools in Discord"
+                },
+                "inspectElement": {
+                    "name": "Scurtătură pentru Inspect Element",
+                    "note": "Activează scurtătura pentru Inspect Element (CTRL + SHIFT + C) ce se găsește in cele mai multe browsere"
+                },
+                "devToolsWarning": {
+                    "name": "Dezactivează avertismentele",
+                    "note": "Opreste Discord-ul din a afișa mesajul \"Stai puțin!\""
+                },
+                "debugLogs": {
+                    "name": "Debug Logs",
+                    "note": "Transferă tot din consolă in fișierul debug.log din folderul BetterDiscord"
+                }
+            }
+        },
+        "emotes": {
+            "name": "Emoji-uri",
+            "general": {
+                "name": "general",
+                "download": {
+                    "name": "Descarcă emoji-urile",
+                    "note": "Descarcă emoji-urile oricănd nu mai sunt actualizate la zi"
+                },
+                "emoteMenu": {
+                    "name": "Meniu emoji",
+                    "note": "Arată emote-urile Twitch/Favorite în meniu"
+                },
+                "hideEmojiMenu": {
+                    "name": "Ascunde meniul de emoji-uri",
+                    "note": "Ascunde meniul de emoji-uri al Discord-ului atunci când folosiți meniul de emote-uri"
+                },
+                "autoCaps": {
+                    "name": "Scriere cu majusculă a emote-urilor",
+                    "note": "Scrie in mod automat cu majusculă comenzile pentru emote-uri"
+                },
+                "modifiers": {
+                    "name": "Arată modificările emote-urilor",
+                    "note": "Activează mod-urile pentru emote-uri (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animează la atingere",
+                    "note": "Animează emote-urile doar când treci cu cursorul peste ele"
+                }
+            },
+            "categories": {
+                "name": "Categorii",
+                "twitchglobal": {
+                    "name": "Twitch Globals",
+                    "note": "Arată emote-urile globale Twitch"
+                },
+                "twitchsubscriber": {
+                    "name": "Abonări Twitch",
+                    "note": "Arată emote-urile"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "Arată emote-urile de la FFZ"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Arată emote-urile de la BTTV"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} de {{author}}",
+        "byline": "de {{author}}",
+        "openFolder": "Deschide fișierul {{type}}",
+        "reload": "Reîmprospatează",
+        "addonSettings": "Setări",
+        "website": "Site Web",
+        "source": "Sursă",
+        "invite": "Susține Server-ul",
+        "donate": "Donează",
+        "patreon": "Patreon",
+        "name": "Nume",
+        "author": "Autor",
+        "version": "Versiune",
+        "added": "Data adăugării",
+        "modified": "Data modificării",
+        "search": "Caută {{type}}",
+        "editAddon": "Modifică",
+        "deleteAddon": "Șterge",
+        "confirmDelete": "Ești sigur că vrei să ștergi {{name}} ?",
+        "confirmationText": "Ai schimbări nesalvate la {{name}}. Închiderea acestei ferestre v-a duce la pierderea tuturor modificărilor.",
+        "enabled": "{{name}} a fost activat.",
+        "disabled": "{{name}} a fost dezactivat.",
+        "couldNotEnable": "{{name}} nu a putut fi activat.",
+        "couldNotDisable": "{{name}} nu a putut fi dezactivat.",
+        "couldNotStart": "{{name}} nu a putut porni.",
+        "couldNotStop": "{{name}} nu a putut fi oprit.",
+        "settingsError": "Nu s-au putut deschide setările pentru {{name}}",
+        "methodError": "{{method}} nu a putut fi executat.",
+        "unknownAuthor": "Autor necunoscut",
+        "noDescription": "Fără descriere.",
+        "alreadyExists": "Deja există un {{type}} cu numele {{name}}",
+        "alreadWatching": "Deja te uiti la addon-uri.",
+        "metaError": "META nu a putut fi analizat.",
+        "missingNameData": "META nu are un nume.",
+        "metaNotFound": "META nu a putut fi găsit.",
+        "compileError": "Nu s-a putut incărca.",
+        "wasUnloaded": "{{name}} a fost dezactivat.",
+        "blankSlateHeader": "Nu ai nici un {{type}}!",
+        "blankSlateMessage": "Descarcă câteva din [acest website]({{link}}) și adaugă-le in folder-ul tău {{type}}."
+    },
+    "CustomCSS": {
+        "confirmationText": "Ai modificări nesalvate in CSS-ul personalizat. Închiderea acestei ferestre va duce la anularea schimbărilor.",
+        "update": "Actualizare",
+        "save": "Salvează",
+        "openNative": "Deschide în editorul de sistem",
+        "openDetached": "Detașează fereastra",
+        "settings": "Setările editor-ului",
+        "editorTitle": "Editor de CSS personalizat"
+    },
+    "Emotes": {
+        "loading": "Emote-urile care se incarcă pe fundal nu se reîncarcă.",
+        "loaded": "Toate emote-urile s-au încărcat cu succes.",
+        "clearEmotes": "Curăță datele legate de emote-uri",
+        "favoriteAction": "Favorite!",
+        "downloadFailed": "Descărcarea a eșuat",
+        "failureMessage": "BetterDiscord nu a putut încărca emote-urile, te rugăm să verifici conexiunea la internet si firewall-ul."
+    },
+    "PublicServers": {
+        "button": "public",
+        "join": "Alătură-te",
+        "joining": "În curs de alăturare",
+        "joined": "Alăturat",
+        "loading": "Se încarcă",
+        "loadMore": "Încarcă mai multe",
+        "notConnected": "Deconectat",
+        "connectionRequired": "Trebuie să vă conectați pentru a vă alătura la servere.",
+        "connectionError": "Eroare de conexiune",
+        "connectionErrorMessage": "A apărut o eroare în conectarea la DiscordServers.com, este posibil ca website-ul/API-ul să fie offline. Vă rugăm să încercațti mai târziu.",
+        "pagination": "Pagina {{page}} din {{count}}",
+        "search": "Caută",
+        "connect": "Conectează-te",
+        "reconnect": "Reconectează-te",
+        "categories": "Categorii",
+        "keywords": "Cuvinte cheie",
+        "connection": "Conectat ca: {{username}}#{{discriminator}}",
+        "results": "Arătând {{start}}-{{end}} din {{total}} rezultate in {{category}}",
+        "query": "pentru {{query}}"
+    },
+    "Modals": {
+        "confirmAction": "Ești sigur ?",
+        "okay": "Okay",
+        "done": "Gata",
+        "cancel": "Anulează",
+        "nevermind": "Nu contează",
+        "close": "Închide",
+        "name": "Nume",
+        "message": "Mesaj",
+        "error": "Eroare",
+        "addonErrors": "Eroare a",
+        "restartRequired": "Repornirea este necesară",
+        "restartNow": "Repornește acum",
+        "restartLater": "Reîncarcă mai târziu",
+        "additionalInfo": "Informații adiționale",
+        "restartPrompt": "Pentru a fi aplicate, Discord trebuie să repornească. Dorești să il repornești acuma ?"
+    },
+    "ReactDevTools": {
+        "notFound": "Extensia nu a putut fi găsită",
+        "notFoundDetails": "Nu s-au putut găsi extensia React Developer Tools in calculatorul tău. Te rugăm să instalezi extensia în cadrul Chrome."
+    },
+    "Sorting": {
+        "sortBy": "Sortează După",
+        "order": "Ordonează",
+        "ascending": "Crescător",
+        "descending": "Descrescător"
+    },
+    "Startup": {
+        "notSupported": "Nesuportat",
+        "incompatibleApp": "BetterDiscord nu poate funcționa in tandem cu {{app}}. Te rugăm să dezinstalezi una dintre ele.",
+        "updateNow": "Actualizează acum",
+        "maybeLater": "Poate mai târziu",
+        "updateAvailable": "Actualizare Disponibilă",
+        "updateInfo": "Există o versiune mai nouă a BetterDiscord ({{version}}).\n\nPoți să actualizezi acum BD, sau mai incolo.",
+        "updateFailed": "Nu s-a putut actualiza",
+        "manualUpdate": "Nu am putut realiza actualizarea automată, te rugăm să descarci installer-ul și să reinstalezi in mod normal.\n\n[Descarcă installer-ul](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
+        "jqueryFailed": "jQuery nu a putut fi incărcat",
+        "jqueryFailedDetails": "jQuery nu poate fi încărcat, iar câteva plugin-uri posibil să nu meargă cum trebuie. Continuă pe propria răspundere."
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Această opțiune necesită o temă transparentă pentru a funcționa normal. \nPe Windows ar putea putea să strice maximizarea.\nPentru ca aceste efecte să intre în vigoare, Discord trebuie să repornească. Dorești să il repornești acum ?",
+        "disabledInfo": "Pentru ca aceste setări să intre în efect, Discord trebuie să repornească. Dorești să îl repornești acum ?"
+    }
+}

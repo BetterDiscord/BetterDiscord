@@ -1,9 +1,9 @@
 .theme-dark .bd-social-logo path {
-    fill: #adadad;
+    fill: #ADADAD;
 }
 
 .theme-light .bd-social-logo path {
-    fill: #b9bbbe;
+    fill: #B9BBBE;
 }
 
 .bd-social-link:hover .bd-social-logo {
@@ -11,7 +11,7 @@
 }
 
 .bd-social-link:hover .bd-social-logo path:first-of-type {
-    fill: #3e82e5;
+    fill: #3E82E5;
 }
 
 .bd-button-title {
@@ -160,6 +160,19 @@
     overflow: visible;
 }
 
+.bd-settings-title {
+    color: #FFFFFF;
+    font-weight: 600;
+    cursor: default;
+    flex: 1;
+}
+
+.bd-settings-title:not(.bd-settings-group-title) {
+    margin-bottom: 20px;
+    font-size: 20px;
+    line-height: 24px;
+}
+
 .bd-settings-group.collapsible .bd-settings-title {
     display: flex;
     justify-content: space-between;
@@ -206,6 +219,9 @@
 
 .bd-settings-title.bd-settings-group-title {
     margin-bottom: 10px;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: var(--interactive-normal);
 }
 
 .checkbox-item {

@@ -49,6 +49,10 @@ const runScript = async (event, script) => {
 
 const openDevTools = event => event.sender.openDevTools();
 const closeDevTools = event => event.sender.closeDevTools();
+const toggleDevTools = event => {
+    if (!event.sender.isDevToolsOpened()) openDevTools(event);
+    else closeDevTools(event);
+};
 
 const createBrowserWindow = (event, url, {windowOptions, closeOnUrl} = {}) => {
     return new Promise(resolve => {
@@ -128,6 +132,7 @@ export default class IPCMain {
         ipc.on(IPCEvents.RELAUNCH, relaunch);
         ipc.on(IPCEvents.OPEN_DEVTOOLS, openDevTools);
         ipc.on(IPCEvents.CLOSE_DEVTOOLS, closeDevTools);
+        ipc.on(IPCEvents.TOGGLE_DEVTOOLS, toggleDevTools);
         ipc.on(IPCEvents.INSPECT_ELEMENT, inspectElement);
         ipc.on(IPCEvents.MINIMUM_SIZE, setMinimumSize);
         ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);

@@ -30,29 +30,6 @@
                     "note": "Prevents Discord from hijacking your media keys after playing a video."
                 }
             },
-            "appearance": {
-                "name": "Appearance",
-                "minimalMode": {
-                    "name": "Minimal Mode",
-                    "note": "Hide elements and reduce the size of elements"
-                },
-                "twentyFourHour": {
-                    "name": "24-Hour Timestamps",
-                    "note": "Converts 12-hour timestamps to 24-hour format"
-                },
-                "coloredText": {
-                    "name": "Colored Text",
-                    "note": "Make text colour the same as role color"
-                },
-                "hideGIFButton": {
-                    "name": "Hide GIF Button",
-                    "note": "Hides the GIF picker button in the textarea"
-                },
-                "hideGiftButton": {
-                    "name": "Hide Gift Button",
-                    "note": "Hides the Nitro Gift button in the textarea"
-                }
-            },
             "addons": {
                 "name": "Addon Manager",
                 "addonErrors": {
@@ -100,11 +77,47 @@
                     }
                 }
             },
+            "editor": {
+                "name": "Editor Preferences",
+                "lineNumbers": {
+                    "name": "Line Numbers",
+                    "note": "Enables showing line numbers on the side of the editor"
+                },
+                "fontSize": {
+                    "name": "Font Size",
+                    "note": "Size of the font (pt) to use in the editor"
+                },
+                "minimap": {
+                    "name": "Minimap",
+                    "note": "Enables showing the code minimap on the side of the editor"
+                },
+                "hover": {
+                    "name": "Reference Tooltips",
+                    "note": "Enables showing the reference tooltips when hovering rules and selectors"
+                },
+                "quickSuggestions": {
+                    "name": "Quick Suggestions",
+                    "note": "Enables showing the autocomplete suggestions as you type"
+                },
+                "renderWhitespace": {
+                    "name": "Show Whitespace",
+                    "note": "When whitespace should be shown by the editor",
+                    "options": {
+                        "all": "Always",
+                        "none": "Never",
+                        "selection": "Selection"
+                    }
+                }
+            },
             "developer": {
                 "name": "Developer Settings",
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "Enables toggling DevTools with ctrl+shift+i"
+                },
                 "debuggerHotkey": {
                     "name": "Debugger Hotkey",
-                    "note": "Allows activating debugger when pressing F8"
+                    "note": "Allows activating debugger when pressing F8 with DevTools open"
                 },
                 "reactDevTools": {
                     "name": "React Developer Tools",
@@ -225,7 +238,7 @@
         "metaError": "META could not be parsed.",
         "missingNameData": "META missing name data.",
         "metaNotFound": "META was not found.",
-        "compileError": "Could not be compiled.",
+        "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
         "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder."

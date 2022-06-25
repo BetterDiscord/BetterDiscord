@@ -7,6 +7,16 @@ import Utilities from "../../modules/utilities";
 
 const timestamp = () => new Date().toISOString().replace("T", " ").replace("Z", "");
 const levels = ["log", "info", "warn", "error", "debug"];
+const getCircularReplacer = () => {
+    const seen = new WeakSet();
+    return (key, value) => {
+        if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) return "[Circular Reference]";
+            seen.add(value);
+        }
+        return value;
+    };
+};
 
 export default new class DebugLogs extends Builtin {
     get name() {return "DebugLogs";}
@@ -40,8 +50,9 @@ export default new class DebugLogs extends Builtin {
                 if (styleCount > 0) i += styleCount;
             }
 
-            if (typeof(arg) === "object") sanitized.push(JSON.stringify(arg));
-            if (arg.message && arg.stack) sanitized.push(`${arg.message}\n${arg.stack}`);
+            if (typeof(arg) === "undefined") sanitized.push("undefined");
+            if (typeof(arg) === "object" && arg && arg.message && arg.stack) sanitized.push(`${arg.message}\n${arg.stack}`);
+            else if (typeof(arg) === "object") sanitized.push(JSON.stringify(arg, getCircularReplacer()));
             if (typeof(arg) === "function" || typeof(arg) === "boolean" || typeof(arg) === "number") sanitized.push(arg.toString());
         }
         return sanitized.join(" ");

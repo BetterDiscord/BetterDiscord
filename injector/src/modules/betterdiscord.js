@@ -111,14 +111,16 @@ export default class BetterDiscord {
             hasCrashed = true;
         });
     }
+
+    static disableMediaKeys() {
+        if (!BetterDiscord.getSetting("general", "mediaKeys")) return;
+        const originalDisable = electron.app.commandLine.getSwitchValue("disable-features") || "";
+        electron.app.commandLine.appendSwitch("disable-features", `${originalDisable ? "," : ""}HardwareMediaKeyHandling,MediaSessionService`);
+    }
 }
 
 if (BetterDiscord.getSetting("developer", "reactDevTools")) {
     electron.app.whenReady().then(async ()=>{
         await ReactDevTools.install();
     });
-}
-
-if (BetterDiscord.getSetting("general", "mediaKeys")) {
-    electron.app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,MediaSessionService");
 }

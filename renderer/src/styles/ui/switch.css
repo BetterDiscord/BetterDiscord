@@ -2,6 +2,7 @@
 
 .bd-switch {
     position: relative;
+    transition: 250ms cubic-bezier(0, 0.3, 0.7, 1) filter, 250ms cubic-bezier(0, 0.3, 0.7, 1) opacity;
 }
 
 .bd-switch-body {
@@ -101,4 +102,9 @@
 
 .bd-switch input:checked:active + .bd-switch-body .bd-switch-handle {
     x: 0;
+}
+
+.bd-switch-disabled {
+    opacity: 0.5;
+    filter: grayscale(1);
 }

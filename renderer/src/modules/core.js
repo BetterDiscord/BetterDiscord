@@ -18,6 +18,7 @@ import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
 import Editor from "./editor";
+import {WebpackModules} from "modules";
 
 export default new class Core {
     async startup() {
@@ -51,8 +52,8 @@ export default new class Core {
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
-        Logger.log("Startup", "Waiting for guilds...");
-        await this.waitForGuilds();
+        Logger.log("Startup", "Waiting for connection...");
+        await this.waitForConnection();
 
         Logger.log("Startup", "Initializing ReactComponents");
         ReactComponents.initialize();
@@ -67,7 +68,7 @@ export default new class Core {
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
-
+        this.polyfillWebpack();
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
         const pluginErrors = PluginManager.initialize();
@@ -90,19 +91,22 @@ export default new class Core {
         }
     }
 
-    waitForGuilds() {
-        // TODO: experiment with waiting for CONNECTION_OPEN event instead
-        const GuildClasses = DiscordModules.GuildClasses;
-        return new Promise(resolve => {
-            const checkForGuilds = function () {
-                if (document.readyState != "complete") setTimeout(checkForGuilds, 100);
-                const wrapper = GuildClasses.wrapper.split(" ")[0];
-                const guild = GuildClasses.listItem.split(" ")[0];
-                if (document.querySelectorAll(`.${wrapper} .${guild}`).length > 0) return resolve();
-                setTimeout(checkForGuilds, 100);
-            };
+    polyfillWebpack() {
+        if (typeof(webpackJsonp) !== "undefined") return;
 
-            checkForGuilds();
+        window.webpackJsonp = [];
+        window.webpackJsonp.length = 10000; // In case plugins are waiting for that.
+        window.webpackJsonp.flat = () => window.webpackJsonp;
+        // eslint-disable-next-line no-empty-pattern
+        window.webpackJsonp.push = ([[], module, [[id]]]) => {
+            return module[id]({}, {}, WebpackModules.require);
+        };
+    }
+
+    waitForConnection() {
+        return new Promise(done => {
+            if (DiscordModules.UserStore.getCurrentUser()) return done();
+            DiscordModules.Dispatcher.subscribe("CONNECTION_OPEN", done);
         });
     }
 
@@ -123,8 +127,8 @@ export default new class Core {
         if (!hasUpdate) return;
 
         // TODO: move to strings file when updater is complete.
-        Modals.showConfirmationModal("Update Available", `BetterDiscord (${Config.version}) has an available update available (${remoteVersion}). Would you like to update now?`, {
-            confirmText: "Update",
+        Modals.showConfirmationModal("Update Available", `BetterDiscord (v${Config.version}) has an update available (v${remoteVersion}). Would you like to update now?`, {
+            confirmText: "Update Now!",
             cancelText: "Skip",
             onConfirm: () => this.update(data)
         });

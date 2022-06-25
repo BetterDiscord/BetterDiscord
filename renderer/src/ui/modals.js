@@ -18,8 +18,8 @@ export default class Modals {
     static get FormTitle() {return WebpackModules.findByDisplayName("FormTitle");}
     static get TextElement() {return WebpackModules.getByProps("Sizes", "Weights");}
     static get ConfirmationModal() {return WebpackModules.findByDisplayName("ConfirmModal");}
-    static get Markdown() {return WebpackModules.findByDisplayName("Markdown");}
-    static get Buttons() {return WebpackModules.getByProps("ButtonColors");}
+    static get Markdown() {return WebpackModules.find(m => m.displayName === "Markdown" && m.rules);}
+    static get Buttons() {return WebpackModules.getByProps("ButtonSizes");}
 
     static default(title, content) {
         const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">
@@ -134,7 +134,7 @@ export default class Modals {
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
         if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
 
-        const {image = "https://i.imgur.com/8sctUVV.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.version}`, footer} = options;
+        const {image = "https://i.imgur.com/wuh5yMK.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.version}`, footer} = options;
         const ce = React.createElement;
         const changelogItems = [options.video ? ce("video", {src: options.video, poster: options.poster, controls: true, className: ChangelogClasses.video}) : ce("img", {src: image})];
         if (description) changelogItems.push(ce("p", null, MarkdownParser.parse(description)));
@@ -143,6 +143,7 @@ export default class Modals {
             const type = ChangelogClasses[entry.type] ? ChangelogClasses[entry.type] : ChangelogClasses.added;
             const margin = c == 0 ? ChangelogClasses.marginTop : "";
             changelogItems.push(ce("h1", {className: `${type} ${margin}`,}, entry.title));
+            if (entry.description) changelogItems.push(ce("p", null, MarkdownParser.parse(entry.description)));
             const list = ce("ul", null, entry.items.map(i => ce("li", null, MarkdownParser.parse(i))));
             changelogItems.push(list);
         }

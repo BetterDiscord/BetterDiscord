@@ -10,11 +10,12 @@ export default new class PublicServers extends Builtin {
     get id() {return "publicServers";}
 
     enabled() {
-        const GuildList = WebpackModules.find(m => m.type && m.type.displayName == "NavigableGuilds");
-        const GuildListOld = WebpackModules.findByDisplayName("Guilds");
-        if (!GuildList && !GuildListOld) this.warn("Can't find GuildList component");
-        this.guildPatch = this.after(GuildList ? GuildList : GuildListOld.prototype, GuildList ? "type" : "render", () => {this._appendButton();});
         this._appendButton();
+        const ListNavigators = WebpackModules.getByProps("ListNavigatorProvider");
+        this.after(ListNavigators, "ListNavigatorProvider", (_, __, returnValue) => {
+            if (returnValue.props.value.id !== "guildsnav") return;
+            this._appendButton();
+        });
     }
 
     disabled() {
@@ -28,7 +29,7 @@ export default new class PublicServers extends Builtin {
         const existing = DOM.query("#bd-pub-li");
         if (existing) return;
 
-        const guilds = DOM.query(`.${DiscordModules.GuildClasses.wrapper} .${DiscordModules.GuildClasses.listItem}`);
+        const guilds = DOM.query(`.${DiscordModules.GuildClasses.guilds} .${DiscordModules.GuildClasses.listItem}`);
         if (!guilds) return;
 
         DOM.after(guilds, this.button);
@@ -40,7 +41,7 @@ export default new class PublicServers extends Builtin {
 
     get button() {
         const btn = DOM.createElement(`<div id="bd-pub-li" class="${DiscordModules.GuildClasses.listItem}">`);
-        const label = DOM.createElement(`<div id="bd-pub-button" class="${"wrapper-25eVIn " + DiscordModules.GuildClasses.circleButtonMask}">${Strings.PublicServers.button}</div>`);
+        const label = DOM.createElement(`<div id="bd-pub-button" class="${DiscordModules.GuildClasses.wrapper + " " + DiscordModules.GuildClasses.circleIconButton}">${Strings.PublicServers.button}</div>`);
         label.addEventListener("click", () => {this.openPublicServers();});
         btn.append(label);
         return btn;

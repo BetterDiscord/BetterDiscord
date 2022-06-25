@@ -1,1 +1,314 @@
-{}
+{
+    "Panels": {
+        "plugins": "Plug-ins",
+        "themes": "Temi",
+        "customcss": "CSS Personalizzato"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Impostazioni",
+            "general": {
+                "name": "Generale",
+                "emotes": {
+                    "name": "Sistema di Emotes",
+                    "note": "Abilita il sistema di Emotes di BD"
+                },
+                "publicServers": {
+                    "name": "Servers Pubblici",
+                    "note": "Mostra il pulsante di servers pubblici"
+                },
+                "voiceDisconnect": {
+                    "name": "Esci dalla chat vocale",
+                    "note": "Esci automaticamente dalla chat vocale quando chiudi Discord"
+                },
+                "showToasts": {
+                    "name": "Mostra Notifiche",
+                    "note": "Mostra delle piccole notifiche per le informazioni importanti"
+                },
+                "mediaKeys": {
+                    "name": "Disabilita i tasti multimediali",
+                    "note": "Impedisce a Discord di prendere il controllo dei tasti multimediali dopo la riproduzione di un video."
+                }
+            },
+            "appearance": {
+                "name": "Apparenze",
+                "minimalMode": {
+                    "name": "Modalità Minimale",
+                    "note": "Nascondi elementi e riducine la grandezza"
+                },
+                "twentyFourHour": {
+                    "name": "Formato orario 24 ore",
+                    "note": "Converte il formato orario di 12 ore in 24 ore"
+                },
+                "coloredText": {
+                    "name": "Testo Colorato",
+                    "note": "Colora il testo allo stesso modo del ruolo"
+                },
+                "hideGIFButton": {
+                    "name": "Nascondi il pulsante GIF",
+                    "note": "Nasconde il pulsante GIF nell'area di testo"
+                },
+                "hideGiftButton": {
+                    "name": "Nascondi il pulsante \"Regala Nitro\"",
+                    "note": "Nasconde il pulsante per regalare Nitro nell'area di testo"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Rimuovi la grandezza minima",
+                    "note": "Rimuove la grandezza minima forzata di 940x500 di Discord"
+                },
+                "name": "",
+                "transparency": {
+                    "name": "",
+                    "note": ""
+                },
+                "frame": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "addons": {
+                "name": "Gestore degli Add-ons",
+                "addonErrors": {
+                    "name": "Mostra gli errori degli Add-ons",
+                    "note": "Mostra un modale con errori dei plug-ins e temi"
+                },
+                "autoReload": {
+                    "name": "Caricamento Automatico",
+                    "note": "Attiva, aggiorna, e disattiva automaticamente plugins e temi quando spenti o accesi"
+                },
+                "editAction": {
+                    "name": "Modifica Azione",
+                    "note": "Dove appaiono plugins e temi durante le modifiche",
+                    "options": {
+                        "detached": "Finestra distaccata",
+                        "system": "Editor di sistema"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "CSS personalizzato",
+                "customcss": {
+                    "name": "CSS personalizzato",
+                    "note": "Abilita la scheda di CSS personalizzato"
+                },
+                "liveUpdate": {
+                    "name": "Aggiornamento automatico",
+                    "note": "Aggiorna l'aspetto della finestra mentre modifichi il codice CSS"
+                },
+                "startDetached": {
+                    "name": "Inizia una finestra a parte",
+                    "note": "Cliccare la scheda di CSS personalizzato apre l'editor in una finestra a parte"
+                },
+                "nativeOpen": {
+                    "name": "Apri nell'editor nativo",
+                    "note": "Cliccare la scheda di CSS personalizzato apre il CSS nel tuo editor nativo"
+                },
+                "openAction": {
+                    "name": "Locazione dell'editor",
+                    "note": "Dove il CSS personalizzato dovrebbe aprirsi di default",
+                    "options": {
+                        "settings": "Impostazioni",
+                        "detached": "staccato",
+                        "system": "sistema"
+                    }
+                }
+            },
+            "developer": {
+                "name": "",
+                "debuggerHotkey": {
+                    "name": "",
+                    "note": ""
+                },
+                "reactDevTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "inspectElement": {
+                    "name": "",
+                    "note": ""
+                },
+                "devToolsWarning": {
+                    "name": "",
+                    "note": ""
+                },
+                "debugLogs": {
+                    "name": "",
+                    "note": ""
+                }
+            }
+        },
+        "emotes": {
+            "name": "",
+            "general": {
+                "name": "",
+                "download": {
+                    "name": "",
+                    "note": ""
+                },
+                "emoteMenu": {
+                    "name": "",
+                    "note": ""
+                },
+                "hideEmojiMenu": {
+                    "name": "",
+                    "note": ""
+                },
+                "autoCaps": {
+                    "name": "",
+                    "note": ""
+                },
+                "modifiers": {
+                    "name": "",
+                    "note": ""
+                },
+                "animateOnHover": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "categories": {
+                "name": "",
+                "twitchglobal": {
+                    "name": "",
+                    "note": ""
+                },
+                "twitchsubscriber": {
+                    "name": "",
+                    "note": ""
+                },
+                "frankerfacez": {
+                    "name": "",
+                    "note": ""
+                },
+                "bttv": {
+                    "name": "",
+                    "note": ""
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "titolo",
+        "byline": "byline",
+        "openFolder": "openFolder",
+        "reload": "ricaricare",
+        "addonSettings": "addonSettings",
+        "website": "sito web",
+        "source": "fonte",
+        "invite": "invita",
+        "donate": "donare",
+        "patreon": "patreon",
+        "name": "",
+        "author": "autore",
+        "version": "versione",
+        "added": "aggiunto",
+        "modified": "modificato",
+        "search": "cerca",
+        "editAddon": "editAddon",
+        "deleteAddon": "deleteAddon",
+        "confirmDelete": "confirmDelete",
+        "confirmationText": "confirmationText",
+        "enabled": "abilitato",
+        "disabled": "disattivato",
+        "couldNotEnable": "couldNotEnable",
+        "couldNotDisable": "couldNotDisable",
+        "couldNotStart": "couldNotStart",
+        "couldNotStop": "couldNotStop",
+        "settingsError": "settingsError",
+        "methodError": "methodError",
+        "unknownAuthor": "unknownAuthor",
+        "noDescription": "noDescription",
+        "alreadyExists": "alreadyExists",
+        "alreadWatching": "alreadWatching",
+        "metaError": "metaErrore",
+        "missingNameData": "missingNameData",
+        "metaNotFound": "metaNotFound",
+        "compileError": "compileError",
+        "wasUnloaded": "wasUnloaded",
+        "blankSlateHeader": "blankSlateHeader",
+        "blankSlateMessage": "blankSlateMessage"
+    },
+    "CustomCSS": {
+        "confirmationText": "confirmationText",
+        "update": "aggiornamento",
+        "save": "salva",
+        "openNative": "openNative",
+        "openDetached": "openDetached",
+        "settings": "impostazioni",
+        "editorTitle": "editorTitle"
+    },
+    "Emotes": {
+        "loading": "caricamento",
+        "loaded": "caricato",
+        "clearEmotes": "clearEmotes",
+        "favoriteAction": "favoriteAction",
+        "downloadFailed": "downloadFailed",
+        "failureMessage": "failureMessage"
+    },
+    "PublicServers": {
+        "button": "pulsante",
+        "join": "unisciti a",
+        "joining": "unirsi a",
+        "joined": "ha aderito a",
+        "loading": "caricamento",
+        "loadMore": "loadMore",
+        "notConnected": "notConnected",
+        "connectionRequired": "connectionRequired",
+        "connectionError": "connectionError",
+        "connectionErrorMessage": "connectionErrorMessage",
+        "pagination": "paginazione",
+        "search": "cerca",
+        "connect": "collegare",
+        "reconnect": "ricollegare",
+        "categories": "categorie",
+        "keywords": "parole chiave",
+        "connection": "collegamento",
+        "results": "risultati",
+        "query": "interrogare"
+    },
+    "Modals": {
+        "confirmAction": "confirmAction",
+        "okay": "ok",
+        "done": "fatto",
+        "cancel": "cancellare",
+        "nevermind": "non importa",
+        "close": "chiudere",
+        "name": "",
+        "message": "messaggio",
+        "error": "errore",
+        "addonErrors": "addonErrors",
+        "restartRequired": "restartRequired",
+        "restartNow": "restartNow",
+        "restartLater": "restartLater",
+        "additionalInfo": "additionalInfo",
+        "restartPrompt": "restartPrompt"
+    },
+    "ReactDevTools": {
+        "notFound": "notFound",
+        "notFoundDetails": "notFoundDetails"
+    },
+    "Sorting": {
+        "sortBy": "sortBy",
+        "order": "ordine",
+        "ascending": "ascendente",
+        "descending": "discendente"
+    },
+    "Startup": {
+        "notSupported": "notSupported",
+        "incompatibleApp": "incompatibileApp",
+        "updateNow": "updateNow",
+        "maybeLater": "maybeLater",
+        "updateAvailable": "updateAvailable",
+        "updateInfo": "updateInfo",
+        "updateFailed": "updateFailed",
+        "manualUpdate": "manualUpdate",
+        "jqueryFailed": "jqueryFailed",
+        "jqueryFailedDetails": "jqueryFailedDetails"
+    },
+    "WindowPrefs": {
+        "enabledInfo": "enabledInfo",
+        "disabledInfo": "disabledInfo"
+    }
+}

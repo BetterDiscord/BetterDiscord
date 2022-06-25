@@ -113,6 +113,10 @@ export default class Utilities {
         return true;
     }
 
+    static isClass(obj) {
+        return typeof(obj) === "function" && /^\s*class\s+/.test(obj.toString());
+    }
+
     /**
      * Generates an automatically memoizing version of an object.
      * @author Zerebos
@@ -184,6 +188,35 @@ export default class Utilities {
                         this.extend(extendee[key], extenders[i][key]);
                     }
                     else {
+                        extendee[key] = extenders[i][key];
+                    }
+                }
+            }
+        }
+        return extendee;
+    }
+
+    /**
+     * Deep extends an object with a set of other objects. Objects later in the list
+     * of `extenders` have priority, that is to say if one sets a key to be a primitive,
+     * it will be overwritten with the next one with the same key. If it is an object,
+     * and the keys match, the object is extended. This happens recursively.
+     * @param {object} extendee - Object to be extended
+     * @param {...object} extenders - Objects to extend with
+     * @returns {object} - A reference to `extendee`
+     */
+    static extendTruthy(extendee, ...extenders) {
+        for (let i = 0; i < extenders.length; i++) {
+            for (const key in extenders[i]) {
+                if (extenders[i].hasOwnProperty(key)) {
+                    if (typeof extendee[key] === "object" && typeof extenders[i][key] === "object") {
+                        this.extendTruthy(extendee[key], extenders[i][key]);
+                    }
+                    else if (typeof extenders[i][key] === "object") {
+                        extendee[key] = {};
+                        this.extendTruthy(extendee[key], extenders[i][key]);
+                    }
+                    else if (extenders[i][key]) {
                         extendee[key] = extenders[i][key];
                     }
                 }

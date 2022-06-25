@@ -1,1 +1,314 @@
-{}
+{
+    "Panels": {
+        "plugins": "Plug-ins",
+        "themes": "Thema's",
+        "customcss": "Aangepaste CSS"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Instellingen",
+            "general": {
+                "name": "Algemeen",
+                "emotes": {
+                    "name": "Emote systeem",
+                    "note": "Schakel het emote-systeem van BD in"
+                },
+                "publicServers": {
+                    "name": "Openbare servers",
+                    "note": "Knop openbare servers weergeven"
+                },
+                "voiceDisconnect": {
+                    "name": "Stem Verbroken",
+                    "note": "Verbreek de verbinding met de oproep"
+                },
+                "showToasts": {
+                    "name": "Laat Toasts Zien",
+                    "note": "Toont een melding voor belangrijke informatie"
+                },
+                "mediaKeys": {
+                    "name": "Schakel mediatoetsen uit",
+                    "note": "Voorkomt dat Discord uw mediatoetsen kaapt na het afspelen van een video."
+                }
+            },
+            "appearance": {
+                "name": "Uiterlijk",
+                "minimalMode": {
+                    "name": "Minimale modus",
+                    "note": "Verberg elementen en verklein de elementen"
+                },
+                "twentyFourHour": {
+                    "name": "24",
+                    "note": "24-uurs tijdstempels"
+                },
+                "coloredText": {
+                    "name": "Gekleurde Tekst",
+                    "note": "Tekstkleur hetzelfde maken als rolkleur"
+                },
+                "hideGIFButton": {
+                    "name": "Verberg GIF knop.",
+                    "note": "Verbergt de GIF-kiezerknop in het tekstgebied"
+                },
+                "hideGiftButton": {
+                    "name": "Cadeauknop verbergen",
+                    "note": "Verbergt de Nitro Gift-knop in het tekstgebied"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "name": "",
+                "transparency": {
+                    "name": "",
+                    "note": ""
+                },
+                "frame": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "addons": {
+                "name": "",
+                "addonErrors": {
+                    "name": "",
+                    "note": ""
+                },
+                "autoReload": {
+                    "name": "",
+                    "note": ""
+                },
+                "editAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "detached": "",
+                        "system": ""
+                    }
+                }
+            },
+            "customcss": {
+                "name": "",
+                "customcss": {
+                    "name": "",
+                    "note": ""
+                },
+                "liveUpdate": {
+                    "name": "",
+                    "note": ""
+                },
+                "startDetached": {
+                    "name": "",
+                    "note": ""
+                },
+                "nativeOpen": {
+                    "name": "",
+                    "note": ""
+                },
+                "openAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "settings": "",
+                        "detached": "",
+                        "system": ""
+                    }
+                }
+            },
+            "developer": {
+                "name": "",
+                "debuggerHotkey": {
+                    "name": "",
+                    "note": ""
+                },
+                "reactDevTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "inspectElement": {
+                    "name": "",
+                    "note": ""
+                },
+                "devToolsWarning": {
+                    "name": "",
+                    "note": ""
+                },
+                "debugLogs": {
+                    "name": "",
+                    "note": ""
+                }
+            }
+        },
+        "emotes": {
+            "name": "",
+            "general": {
+                "name": "Algemeen",
+                "download": {
+                    "name": "",
+                    "note": ""
+                },
+                "emoteMenu": {
+                    "name": "Emote Menu",
+                    "note": ""
+                },
+                "hideEmojiMenu": {
+                    "name": "Verberg emoji-menu",
+                    "note": ""
+                },
+                "autoCaps": {
+                    "name": "",
+                    "note": ""
+                },
+                "modifiers": {
+                    "name": "",
+                    "note": ""
+                },
+                "animateOnHover": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "categories": {
+                "name": "",
+                "twitchglobal": {
+                    "name": "",
+                    "note": ""
+                },
+                "twitchsubscriber": {
+                    "name": "",
+                    "note": ""
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": ""
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Laat emotes zien van BTTV"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "",
+        "byline": "door {{author}}",
+        "openFolder": "Open {{type}} folder",
+        "reload": "Herladeen",
+        "addonSettings": "Instellingen",
+        "website": "Website",
+        "source": "Bronnen",
+        "invite": "Support Server",
+        "donate": "Donatie",
+        "patreon": "Patreon",
+        "name": "Naam",
+        "author": "Schrijver",
+        "version": "Versie",
+        "added": "Datum toegevoegd",
+        "modified": "Datum gewijzigd ",
+        "search": "",
+        "editAddon": "Bewerken",
+        "deleteAddon": "Verwijderen",
+        "confirmDelete": "Weet je het zeker dat je {{name}} wilt verwijderen?",
+        "confirmationText": "Je hebt niet-opgeslagen wijzigingen in {{naam}}. Als je dit venster sluit, gaan alle wijzigingen verloren.",
+        "enabled": "",
+        "disabled": "",
+        "couldNotEnable": "",
+        "couldNotDisable": "",
+        "couldNotStart": "",
+        "couldNotStop": "",
+        "settingsError": "",
+        "methodError": "",
+        "unknownAuthor": "Onbekende schrijver",
+        "noDescription": "Beschrijving kon niet worden weergegeven",
+        "alreadyExists": "",
+        "alreadWatching": "",
+        "metaError": "",
+        "missingNameData": "",
+        "metaNotFound": "",
+        "compileError": "",
+        "wasUnloaded": "",
+        "blankSlateHeader": "",
+        "blankSlateMessage": ""
+    },
+    "CustomCSS": {
+        "confirmationText": "",
+        "update": "",
+        "save": "",
+        "openNative": "",
+        "openDetached": "",
+        "settings": "",
+        "editorTitle": ""
+    },
+    "Emotes": {
+        "loading": "",
+        "loaded": "",
+        "clearEmotes": "",
+        "favoriteAction": "Favorieten",
+        "downloadFailed": "",
+        "failureMessage": ""
+    },
+    "PublicServers": {
+        "button": "openbaar",
+        "join": "",
+        "joining": "",
+        "joined": "",
+        "loading": "Aan het laden...",
+        "loadMore": "Laad meer...",
+        "notConnected": "Niet verbonden.",
+        "connectionRequired": "",
+        "connectionError": "",
+        "connectionErrorMessage": "",
+        "pagination": "",
+        "search": "Zoeken",
+        "connect": "Verbindeen",
+        "reconnect": "",
+        "categories": "Categorieën",
+        "keywords": "",
+        "connection": "",
+        "results": "",
+        "query": ""
+    },
+    "Modals": {
+        "confirmAction": "Weet je het zeker?",
+        "okay": "Oké",
+        "done": "",
+        "cancel": "Annuleren",
+        "nevermind": "",
+        "close": "Bijna",
+        "name": "Naam",
+        "message": "Berich",
+        "error": "Fout!",
+        "addonErrors": "",
+        "restartRequired": "",
+        "restartNow": "",
+        "restartLater": "",
+        "additionalInfo": "",
+        "restartPrompt": ""
+    },
+    "ReactDevTools": {
+        "notFound": "",
+        "notFoundDetails": ""
+    },
+    "Sorting": {
+        "sortBy": "",
+        "order": "Volgorde",
+        "ascending": "",
+        "descending": ""
+    },
+    "Startup": {
+        "notSupported": "Niet ondersteund",
+        "incompatibleApp": "",
+        "updateNow": "",
+        "maybeLater": "Misschien later ",
+        "updateAvailable": "Er is een update mogelijk",
+        "updateInfo": "",
+        "updateFailed": "",
+        "manualUpdate": "",
+        "jqueryFailed": "",
+        "jqueryFailedDetails": ""
+    },
+    "WindowPrefs": {
+        "enabledInfo": "",
+        "disabledInfo": ""
+    }
+}

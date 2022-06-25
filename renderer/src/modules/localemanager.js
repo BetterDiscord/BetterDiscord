@@ -32,7 +32,7 @@ export default new class LocaleManager {
             newStrings = Locales[this.defaultLocale];
         }
         this.locale = newLocale;
-        Utilities.extend(this.strings, newStrings);
+        Utilities.extendTruthy(this.strings, newStrings);
         Events.emit("strings-updated");
     }
 };

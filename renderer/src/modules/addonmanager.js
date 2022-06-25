@@ -209,7 +209,7 @@ export default class AddonManager {
             __non_webpack_require__(path.resolve(this.addonFolder, filename));
         }
         catch (error) {
-            Logger.err(this.name, `Could not load ${path.basename(filename)}:`, error);
+            Logger.stacktrace(this.name, `Could not load ${path.basename(filename)}:`, error);
             return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack}, this.prefix);
         }
 

@@ -22,6 +22,19 @@ if (!process.argv.includes("--vanilla")) {
     else CSP.remove();
 }
 
+// Enable DevTools on Stable.
+let fakeAppSettings;
+Object.defineProperty(global, "appSettings", {
+    get() {
+        return fakeAppSettings;
+    },
+    set(value) {
+        if (!value.hasOwnProperty("settings")) value.settings = {};
+        value.settings.DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING = true;
+        fakeAppSettings = value;
+    },
+});
+
 // Use Discord's info to run the app
 if (process.platform == "win32" || process.platform == "darwin") {
     const basePath = path.join(app.getAppPath(), "..", "app.asar");
@@ -31,3 +44,8 @@ if (process.platform == "win32" || process.platform == "darwin") {
     Module._load(path.join(basePath, pkg.main), null, true);
 }
 
+// Needs to run this after Discord but before ready()
+if (!process.argv.includes("--vanilla")) {
+    const BetterDiscord = require("./modules/betterdiscord").default;
+    BetterDiscord.disableMediaKeys();
+}

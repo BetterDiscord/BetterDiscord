@@ -59,7 +59,7 @@ export default class Toasts {
 
     static ensureContainer() {
         if (document.querySelector(".bd-toasts")) return;
-        const container = document.querySelector(`.${this.ChannelsClass} + div`);
+        const container = document.querySelector(`.${this.ChannelsClass} ~ div:not([style])`);
         const memberlist = container ? container.querySelector(`.${this.MembersWrapClass}`) : null;
         const form = container ? container.querySelector("form") : null;
         const left = container ? container.getBoundingClientRect().left : 310;
