@@ -96,7 +96,7 @@ export default new class PluginManager extends AddonManager {
             const meta = Object.assign({}, addon);
             delete meta.exports;
             const thePlugin = isClass ? new PluginClass(meta) : addon.exports(meta);
-            if (!thePlugin.start || !thePlugin.stop) return new AddonError(addon.name || addon.filename, addon.filename, "Missing start or stop function.", {message: "Plugins must have both a start and stop function.", stack: ""}, this.prefix);;
+            if (!thePlugin.start || !thePlugin.stop) return new AddonError(addon.name || addon.filename, addon.filename, "Missing start or stop function.", {message: "Plugins must have both a start and stop function.", stack: ""}, this.prefix);
 
             addon.instance = thePlugin;
             addon.name = thePlugin.getName ? thePlugin.getName() : addon.name;
