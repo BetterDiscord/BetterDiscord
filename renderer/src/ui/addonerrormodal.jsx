@@ -19,7 +19,7 @@ class AddonError extends React.Component {
         this.setState({expanded: !this.state.expanded});
     }
     renderErrorBody(err) {
-        const stack = err.error && err.stack;
+        const stack = err?.error?.stack ?? err.stack;
         if (!this.state.expanded || !stack) return null;
         return <div className="bd-addon-error-body">
             <Divider />

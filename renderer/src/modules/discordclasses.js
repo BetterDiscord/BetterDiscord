@@ -20,7 +20,7 @@ const DiscordClassModules = Utilities.memoizeObject({
         );
     },
     get EmptyImage() {return WebpackModules.getByProps("emptyImage", "emptyHeader");},
-    get Modal() {return WebpackModules.getByProps("content", "root", "header");},
+    get Modal() {return WebpackModules.getByProps("content", "root", "header", "close");},
     get Scrollers() {return WebpackModules.getByProps("thin", "scrollerBase", "content");},
     get Margins() {return WebpackModules.getByProps("marginXSmall", "marginBottom8");},
     get Integrations() {return WebpackModules.getByProps("secondaryHeader", "detailsWrapper");},
