@@ -13,7 +13,7 @@ export default new class DevToolsListener extends Builtin {
     }
 
     toggleDevTools(e) {
-        if (e.ctrlKey && e.shiftKey && e.which === 73) { // Ctrl + Shift + I
+        if (e.ctrlKey && e.shiftKey && e.key === "I") {
             e.stopPropagation();
             e.preventDefault();
             if (this.get(this.collection, this.category, this.id)) IPC.toggleDevTools();
