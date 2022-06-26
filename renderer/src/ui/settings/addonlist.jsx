@@ -96,7 +96,8 @@ export default class AddonList extends React.Component {
             {label: Strings.Addons.author, value: "author"},
             {label: Strings.Addons.version, value: "version"},
             {label: Strings.Addons.added, value: "added"},
-            {label: Strings.Addons.modified, value: "modified"}
+            {label: Strings.Addons.modified, value: "modified"},
+            {label: Strings.Addons.isEnabled, value: "isEnabled"}
         ];
     }
 
@@ -127,9 +128,12 @@ export default class AddonList extends React.Component {
         const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
         const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: this.openFolder} : null;
         let sortedAddons = addonList.sort((a, b) => {
-            const first = a[this.state.sort];
-            const second = b[this.state.sort];
-            if (typeof(first) == "string") return first.toLocaleLowerCase().localeCompare(second.toLocaleLowerCase());
+            const sortByEnabled = this.state.sort === "isEnabled";
+            const first = sortByEnabled ? addonState[a.id] : a[this.state.sort];
+            const second = sortByEnabled ? addonState[b.id] : b[this.state.sort]; 
+            const stringSort = (str1, str2) => str1.toLocaleLowerCase().localeCompare(str2.toLocaleLowerCase());
+            if (typeof(first) == "string") return stringSort(first, second);
+            if (typeof(first) == "boolean") return (first === second) ? stringSort(a.name, b.name) : first ? -1 : 1;
             if (first > second) return 1;
             if (second > first) return -1;
             return 0;

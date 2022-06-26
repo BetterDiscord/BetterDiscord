@@ -218,6 +218,7 @@
         "version": "Version",
         "added": "Date Added",
         "modified": "Date Modified",
+        "isEnabled": "Enabled",
         "search": "Search {{type}}",
         "editAddon": "Edit",
         "deleteAddon": "Delete",
