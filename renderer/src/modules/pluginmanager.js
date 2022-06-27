@@ -120,7 +120,7 @@ export default new class PluginManager extends AddonManager {
 
         window.global = window;
         window.module = module;
-        window.__filename = path.basename(module.filename);
+        window.__filename = module.filename;
         window.__dirname = this.addonFolder;
         const wrapped = `(${vm.compileFunction(fileContent, ["exports", "require", "module", "__filename", "__dirname"]).toString()})`;
         const final = `${wrapped}(window.module.exports, window.require, window.module, window.__filename, window.__dirname)\n//# sourceURL=betterdiscord://plugins/${window.__filename}`;

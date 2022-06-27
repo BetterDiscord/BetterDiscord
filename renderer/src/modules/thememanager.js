@@ -66,14 +66,14 @@ export default new class ThemeManager extends AddonManager {
     addTheme(idOrAddon) {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
-        DOMManager.injectTheme(addon.id, addon.css);
+        DOMManager.injectTheme(addon.id + "-theme-container", addon.css);
         Toasts.show(Strings.Addons.enabled.format({name: addon.name, version: addon.version}));
     }
 
     removeTheme(idOrAddon) {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
-        DOMManager.removeTheme(addon.id);
+        DOMManager.removeTheme(addon.id + "-theme-container");
         Toasts.show(Strings.Addons.disabled.format({name: addon.name, version: addon.version}));
     }
 };
