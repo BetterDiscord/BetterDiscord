@@ -14,7 +14,7 @@ export default new class DeveloperMode extends Builtin {
     }
 
     debugListener(e) {
-        if (e.which === 119 || e.which == 118) { // F8
+        if (e.key === "F7" || e.key == "F8") {
             debugger; // eslint-disable-line no-debugger
             e.preventDefault();
             e.stopImmediatePropagation();

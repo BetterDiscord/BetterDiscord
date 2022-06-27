@@ -1,7 +1,7 @@
 import {React, Strings, DiscordClasses, WebpackModules} from "modules";
 import Extension from "./icons/extension";
 import ThemeIcon from "./icons/theme";
-import Divider from "./settings/divider";
+import Divider from "./divider";
 
 const {ModalHeader, ModalContent} = WebpackModules.getByProps("ModalRoot");
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;

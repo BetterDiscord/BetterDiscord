@@ -15,7 +15,7 @@ export default new class InspectElement extends Builtin {
     }
 
     inspectElement(e) {
-        if (e.ctrlKey && e.shiftKey && e.which === 67) { // Ctrl + Shift + C
+        if (e.ctrlKey && e.shiftKey && e.key === "C") { // Ctrl + Shift + C
             IPC.inspectElement();
         }
     }

@@ -164,8 +164,8 @@ export default class AddonManager {
             if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
                 out[field] = accum;
                 const l = line.indexOf(" ");
-                field = line.substr(1, l - 1);
-                accum = line.substr(l + 1);
+                field = line.substring(1, l);
+                accum = line.substring(l + 1);
             }
             else {
                 accum += " " + line.replace("\\n", "\n").replace(escapedAtRegex, "@");
@@ -191,7 +191,7 @@ export default class AddonManager {
             if (!meta.author) meta.author = Strings.Addons.unknownAuthor;
             if (!meta.version) meta.version = "???";
             if (!meta.description) meta.description = Strings.Addons.noDescription;
-            meta.id = meta.name;
+            meta.id = path.basename(filename).replace(self.extension, "").replace(/ /g, "-");
             meta.filename = path.basename(filename);
             meta.added = stats.atimeMs;
             meta.modified = stats.mtimeMs;

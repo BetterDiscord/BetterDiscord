@@ -98,3 +98,11 @@
 .monaco-editor .view-overlays .current-line {
     width: 1e+06px !important;
 }
+
+.bd-fallback-editor {
+    height: 100%;
+    width: 100%;
+    resize: none;
+    overflow: auto;
+    white-space: nowrap;
+}

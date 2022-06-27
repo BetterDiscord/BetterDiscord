@@ -91,10 +91,11 @@ export default class DOMManager {
 
     static injectScript(id, url) {
         id = this.escapeID(id);
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             const script = this.getElement(`#${id}`, this.bdScripts) || this.createElement("script", {id});
             script.src = url;
             script.onload = resolve;
+            script.onerror = reject;
             this.bdScripts.append(script);
         });
     }
