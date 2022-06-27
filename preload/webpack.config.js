@@ -7,7 +7,7 @@ module.exports = (env, argv) => ({
   devtool: argv.mode === "production" ? undefined : "eval-source-map",
   entry: "./src/index.js",
   output: {
-    filename: "injector.js",
+    filename: "preload.js",
     path: path.resolve(__dirname, "..", "dist")
   },
   externals: {
