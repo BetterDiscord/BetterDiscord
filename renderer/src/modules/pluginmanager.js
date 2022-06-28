@@ -127,7 +127,7 @@ export default new class PluginManager extends AddonManager {
 
         const container = document.createElement("script");
         container.innerHTML = final;
-        container.id = `${meta.id}-script-container`;
+        container.id = `${meta.slug}-script-container`;
         // container.src = `data:text/javascript;${btoa(final)}`;
         document.head.append(container);
 

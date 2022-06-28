@@ -191,7 +191,8 @@ export default class AddonManager {
             if (!meta.author) meta.author = Strings.Addons.unknownAuthor;
             if (!meta.version) meta.version = "???";
             if (!meta.description) meta.description = Strings.Addons.noDescription;
-            meta.id = path.basename(filename).replace(self.extension, "").replace(/ /g, "-");
+            meta.id = meta.name;
+            meta.slug = path.basename(filename).replace(self.extension, "").replace(/ /g, "-");
             meta.filename = path.basename(filename);
             meta.added = stats.atimeMs;
             meta.modified = stats.mtimeMs;
