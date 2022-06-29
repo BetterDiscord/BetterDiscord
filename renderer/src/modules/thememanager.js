@@ -1,5 +1,6 @@
 import {Config} from "data";
 import AddonManager from "./addonmanager";
+import AddonError from "../structs/addonerror";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
 import Strings from "./strings";
@@ -12,7 +13,6 @@ const path = require("path");
 
 export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}
-    get moduleExtension() {return ".css";}
     get extension() {return ".theme.css";}
     get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
     get addonFolder() {return path.resolve(Config.dataPath, "themes");}
@@ -54,10 +54,14 @@ export default new class ThemeManager extends AddonManager {
     }
 
     /* Overrides */
-    getFileModification(module, fileContent, meta) {
+    initializeAddon(addon) {
+        if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
+    }
+
+    finalizeRequire(module, fileContent, meta) {
         meta.css = fileContent;
         if (meta.format == "json") meta.css = meta.css.split("\n").slice(1).join("\n");
-        return `module.exports = ${JSON.stringify(meta)};`;
+        module.exports = meta;
     }
 
     startAddon(id) {return this.addTheme(id);}

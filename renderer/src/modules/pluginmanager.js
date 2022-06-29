@@ -14,17 +14,16 @@ const path = require("path");
 const vm = require("vm");
 
 
-const fileModification = name => `
+const normalizeExports = name => `
 if (module.exports.default) {
     module.exports = module.exports.default;
 }
 if (typeof(module.exports) !== "function") {
-    module.exports = eval("${name};")
+    module.exports = eval("${name}");
 }`;
 
 export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
-    get moduleExtension() {return ".js";}
     get extension() {return ".plugin.js";}
     get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
     get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
@@ -115,29 +114,20 @@ export default new class PluginManager extends AddonManager {
         }
     }
 
-    getFileModification(module, fileContent, meta) {
-        fileContent += fileModification(meta.exports || meta.name);
-
-        window.global = window;
-        window.module = module;
-        window.__filename = module.filename;
-        window.__dirname = this.addonFolder;
-        const wrapped = `(${vm.compileFunction(fileContent, ["exports", "require", "module", "__filename", "__dirname"]).toString()})`;
-        const final = `${wrapped}(window.module.exports, window.require, window.module, window.__filename, window.__dirname)\n//# sourceURL=betterdiscord://plugins/${window.__filename}`;
-
-        const container = document.createElement("script");
-        container.innerHTML = final;
-        container.id = `${meta.slug}-script-container`;
-        // container.src = `data:text/javascript;${btoa(final)}`;
-        document.head.append(container);
-
+    finalizeRequire(module, fileContent, meta) {
+        fileContent += normalizeExports(meta.exports || meta.name);
+        fileContent += `\n//# sourceURL=betterdiscord://plugins/${module.filename}`;
+        try {
+            // Test if the code is valid gracefully
+            vm.compileFunction(fileContent, ["require", "module", "exports", "__filename", "__dirname"]);
+            const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], fileContent); // eslint-disable-line no-new-func
+            wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
+        }
+        catch (err) {
+            return new AddonError(meta.name || path.basename(module.filename), module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
+        }
         meta.exports = module.exports;
         module.exports = meta;
-        delete window.module;
-        delete window.__filename;
-        delete window.__dirname;
-        container.remove();
-        return "";
     }
 
     startAddon(id) {return this.startPlugin(id);}
