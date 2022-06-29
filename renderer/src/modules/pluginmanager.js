@@ -115,19 +115,17 @@ export default new class PluginManager extends AddonManager {
     }
 
     finalizeRequire(module, fileContent, meta) {
-        fileContent += normalizeExports(meta.exports || meta.name);
-        fileContent += `\n//# sourceURL=betterdiscord://plugins/${module.filename}`;
         try {
-            // Test if the code is valid gracefully
-            vm.compileFunction(fileContent, ["require", "module", "exports", "__filename", "__dirname"]);
-            const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], fileContent); // eslint-disable-line no-new-func
+            fileContent += normalizeExports(meta.exports || meta.name);
+            const compiled = `(${vm.compileFunction(fileContent, ["require", "module", "exports", "__filename", "__dirname"]).toString()})\n//# sourceURL=betterdiscord://plugins/${path.basename(module.filename)}`;
+            const wrappedPlugin = (0, eval)(compiled); // eslint-disable-line no-eval
             wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
+            meta.exports = module.exports;
+            module.exports = meta;
         }
         catch (err) {
             return new AddonError(meta.name || path.basename(module.filename), module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
         }
-        meta.exports = module.exports;
-        module.exports = meta;
     }
 
     startAddon(id) {return this.startPlugin(id);}
