@@ -59,9 +59,6 @@ export default class AddonManager {
     // Subclasses should overload this and modify the addon object as needed to fully load it
     initializeAddon() {return;}
 
-    // Subclasses should overload this and modify the fileContent as needed to require() the file
-    finalizeRequire(module, fileContent, meta) {return meta;}
-
     startAddon() {return;}
     stopAddon() {return;}
 
@@ -173,6 +170,7 @@ export default class AddonManager {
         return out;
     }
 
+    // Subclasses should overload this and modify the addon using the fileContent as needed to "require()"" the file
     requireAddon(filename) {
         let fileContent = fs.readFileSync(filename, "utf8");
         fileContent = stripBOM(fileContent);
