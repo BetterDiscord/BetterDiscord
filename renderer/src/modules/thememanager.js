@@ -58,10 +58,12 @@ export default new class ThemeManager extends AddonManager {
         if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
     }
 
-    finalizeRequire(module, fileContent, meta) {
-        meta.css = fileContent;
-        if (meta.format == "json") meta.css = meta.css.split("\n").slice(1).join("\n");
-        module.exports = meta;
+    requireAddon(filename) {
+        const addon = super.requireAddon(filename);
+        addon.css = addon.fileContent;
+        delete addon.fileContent;
+        if (addon.format == "json") addon.css = addon.css.split("\n").slice(1).join("\n");
+        return addon;
     }
 
     startAddon(id) {return this.addTheme(id);}

@@ -13,7 +13,6 @@ import SettingsRenderer from "../ui/settings";
 const path = require("path");
 const vm = require("vm");
 
-
 const normalizeExports = name => `
 if (module.exports.default) {
     module.exports = module.exports.default;
@@ -32,7 +31,6 @@ export default new class PluginManager extends AddonManager {
 
     constructor() {
         super();
-        this.promises = {};
         this.onSwitch = this.onSwitch.bind(this);
         this.observer = new MutationObserver((mutations) => {
             for (let i = 0, mlen = mutations.length; i < mlen; i++) {
@@ -114,19 +112,22 @@ export default new class PluginManager extends AddonManager {
         }
     }
 
-    finalizeRequire(module, fileContent, meta) {
+    requireAddon(filename) {
+        const addon = super.requireAddon(filename);
         try {
+            const module = {filename, exports: {}};
             // Test if the code is valid gracefully
-            vm.compileFunction(fileContent, ["require", "module", "exports", "__filename", "__dirname"]);
-            fileContent += normalizeExports(meta.exports || meta.name);
-            fileContent += `\n//# sourceURL=betterdiscord://plugins/${path.basename(module.filename)}`;
-            const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], fileContent); // eslint-disable-line no-new-func
+            vm.compileFunction(addon.fileContent, ["require", "module", "exports", "__filename", "__dirname"]);
+            addon.fileContent += normalizeExports(addon.exports || addon.name);
+            addon.fileContent += `\n//# sourceURL=betterdiscord://plugins/${addon.filename}`;
+            const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], addon.fileContent); // eslint-disable-line no-new-func
             wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
-            meta.exports = module.exports;
-            module.exports = meta;
+            addon.exports = module.exports;
+            delete addon.fileContent;
+            return addon;
         }
         catch (err) {
-            return new AddonError(meta.name || path.basename(module.filename), module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
+            return new AddonError(addon.name || addon.filename, module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
         }
     }
 
@@ -175,9 +176,7 @@ export default new class PluginManager extends AddonManager {
     }
 
     setupFunctions() {
-        // electronRemote.getCurrentWebContents().on("did-navigate-in-page", this.onSwitch.bind(this));
         Events.on("navigate", this.onSwitch);
-        // ipc.on(IPCEvents.NAVIGATE, this.onSwitch);
         this.observer.observe(document, {
             childList: true,
             subtree: true

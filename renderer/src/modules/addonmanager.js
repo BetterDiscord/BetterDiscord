@@ -174,24 +174,22 @@ export default class AddonManager {
     }
 
     requireAddon(filename) {
-        const module = {filename, exports: {}};
         let fileContent = fs.readFileSync(filename, "utf8");
         fileContent = stripBOM(fileContent);
         const stats = fs.statSync(filename);
-        const meta = this.extractMeta(fileContent);
-        if (!meta.author) meta.author = Strings.Addons.unknownAuthor;
-        if (!meta.version) meta.version = "???";
-        if (!meta.description) meta.description = Strings.Addons.noDescription;
-        // if (!meta.name || !meta.author || !meta.description || !meta.version) return new AddonError(meta.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
-        meta.id = meta.name;
-        meta.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
-        meta.filename = path.basename(filename);
-        meta.added = stats.atimeMs;
-        meta.modified = stats.mtimeMs;
-        meta.size = stats.size;
-        const error = this.finalizeRequire(module, fileContent, meta);
-        if (error) return error;
-        return module.exports;
+        const addon = this.extractMeta(fileContent);
+        if (!addon.author) addon.author = Strings.Addons.unknownAuthor;
+        if (!addon.version) addon.version = "???";
+        if (!addon.description) addon.description = Strings.Addons.noDescription;
+        // if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
+        addon.id = addon.name;
+        addon.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
+        addon.filename = path.basename(filename);
+        addon.added = stats.atimeMs;
+        addon.modified = stats.mtimeMs;
+        addon.size = stats.size;
+        addon.fileContent = fileContent;
+        return addon;
     }
 
     // Subclasses should use the return (if not AddonError) and push to this.addonList
