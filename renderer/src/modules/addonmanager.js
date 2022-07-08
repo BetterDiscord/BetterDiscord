@@ -15,7 +15,6 @@ const React = DiscordModules.React;
 
 const path = require("path");
 const fs = require("fs");
-const Module = require("module").Module;
 const shell = require("electron").shell;
 const openItem = shell.openItem || shell.openPath;
 
@@ -32,7 +31,6 @@ const stripBOM = function(fileContent) {
 export default class AddonManager {
 
     get name() {return "";}
-    get moduleExtension() {return "";}
     get extension() {return "";}
     get duplicatePattern() {return /./;}
     get addonFolder() {return "";}
@@ -51,8 +49,6 @@ export default class AddonManager {
     }
 
     initialize() {
-        this.originalRequire = Module._extensions[this.moduleExtension];
-        Module._extensions[this.moduleExtension] = this.getAddonRequire();
         Settings.on(this.collection, this.category, this.id, (enabled) => {
             if (enabled) this.watchAddons();
             else this.unwatchAddons();
@@ -62,9 +58,6 @@ export default class AddonManager {
 
     // Subclasses should overload this and modify the addon object as needed to fully load it
     initializeAddon() {return;}
-
-    // Subclasses should overload this and modify the fileContent as needed to require() the file
-    getFileModification(module, fileContent) {return fileContent;}
 
     startAddon() {return;}
     stopAddon() {return;}
@@ -177,43 +170,32 @@ export default class AddonManager {
         return out;
     }
 
-    getAddonRequire() {
-        const self = this;
-        // const baseFolder = this.addonFolder;
-        const originalRequire = this.originalRequire;
-        return function(module, filename) {
-            const possiblePath = path.resolve(self.addonFolder, path.basename(filename));
-            if (!fs.existsSync(possiblePath) || filename !== fs.realpathSync(possiblePath)) return Reflect.apply(originalRequire, this, arguments);
-            let fileContent = fs.readFileSync(filename, "utf8");
-            fileContent = stripBOM(fileContent);
-            const stats = fs.statSync(filename);
-            const meta = self.extractMeta(fileContent);
-            if (!meta.author) meta.author = Strings.Addons.unknownAuthor;
-            if (!meta.version) meta.version = "???";
-            if (!meta.description) meta.description = Strings.Addons.noDescription;
-            meta.id = path.basename(filename).replace(self.extension, "").replace(/ /g, "-");
-            meta.filename = path.basename(filename);
-            meta.added = stats.atimeMs;
-            meta.modified = stats.mtimeMs;
-            meta.size = stats.size;
-            fileContent = self.getFileModification(module, fileContent, meta);
-            module._compile(fileContent, filename);
-        };
+    // Subclasses should overload this and modify the addon using the fileContent as needed to "require()"" the file
+    requireAddon(filename) {
+        let fileContent = fs.readFileSync(filename, "utf8");
+        fileContent = stripBOM(fileContent);
+        const stats = fs.statSync(filename);
+        const addon = this.extractMeta(fileContent);
+        if (!addon.author) addon.author = Strings.Addons.unknownAuthor;
+        if (!addon.version) addon.version = "???";
+        if (!addon.description) addon.description = Strings.Addons.noDescription;
+        // if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
+        addon.id = addon.name;
+        addon.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
+        addon.filename = path.basename(filename);
+        addon.added = stats.atimeMs;
+        addon.modified = stats.mtimeMs;
+        addon.size = stats.size;
+        addon.fileContent = fileContent;
+        return addon;
     }
 
     // Subclasses should use the return (if not AddonError) and push to this.addonList
     loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
-        try {
-            delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.addonFolder, filename))];
-            __non_webpack_require__(path.resolve(this.addonFolder, filename));
-        }
-        catch (error) {
-            Logger.stacktrace(this.name, `Could not load ${path.basename(filename)}:`, error);
-            return new AddonError(filename, filename, Strings.Addons.compileError, {message: error.message, stack: error.stack}, this.prefix);
-        }
 
-        const addon = __non_webpack_require__(path.resolve(this.addonFolder, filename));
+        const addon = this.requireAddon(path.resolve(this.addonFolder, filename));
+        if (addon instanceof AddonError) return addon;
         if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
 
         const error = this.initializeAddon(addon);
@@ -231,7 +213,7 @@ export default class AddonManager {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         if (!addon) return false;
         if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
-        delete __non_webpack_require__.cache[__non_webpack_require__.resolve(path.resolve(this.addonFolder, addon.filename))];
+
         this.addonList.splice(this.addonList.indexOf(addon), 1);
         this.emit("unloaded", addon.id);
         if (shouldToast) Toasts.success(`${addon.name} was unloaded.`);

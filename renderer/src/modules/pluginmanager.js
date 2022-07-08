@@ -13,18 +13,16 @@ import SettingsRenderer from "../ui/settings";
 const path = require("path");
 const vm = require("vm");
 
-
-const fileModification = name => `
+const normalizeExports = name => `
 if (module.exports.default) {
     module.exports = module.exports.default;
 }
 if (typeof(module.exports) !== "function") {
-    module.exports = eval("${name};")
+    module.exports = eval("${name}");
 }`;
 
 export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
-    get moduleExtension() {return ".js";}
     get extension() {return ".plugin.js";}
     get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
     get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
@@ -33,7 +31,6 @@ export default new class PluginManager extends AddonManager {
 
     constructor() {
         super();
-        this.promises = {};
         this.onSwitch = this.onSwitch.bind(this);
         this.observer = new MutationObserver((mutations) => {
             for (let i = 0, mlen = mutations.length; i < mlen; i++) {
@@ -115,29 +112,23 @@ export default new class PluginManager extends AddonManager {
         }
     }
 
-    getFileModification(module, fileContent, meta) {
-        fileContent += fileModification(meta.exports || meta.name);
-
-        window.global = window;
-        window.module = module;
-        window.__filename = module.filename;
-        window.__dirname = this.addonFolder;
-        const wrapped = `(${vm.compileFunction(fileContent, ["exports", "require", "module", "__filename", "__dirname"]).toString()})`;
-        const final = `${wrapped}(window.module.exports, window.require, window.module, window.__filename, window.__dirname)\n//# sourceURL=betterdiscord://plugins/${window.__filename}`;
-
-        const container = document.createElement("script");
-        container.innerHTML = final;
-        container.id = `${meta.id}-script-container`;
-        // container.src = `data:text/javascript;${btoa(final)}`;
-        document.head.append(container);
-
-        meta.exports = module.exports;
-        module.exports = meta;
-        delete window.module;
-        delete window.__filename;
-        delete window.__dirname;
-        container.remove();
-        return "";
+    requireAddon(filename) {
+        const addon = super.requireAddon(filename);
+        try {
+            const module = {filename, exports: {}};
+            // Test if the code is valid gracefully
+            vm.compileFunction(addon.fileContent, ["require", "module", "exports", "__filename", "__dirname"]);
+            addon.fileContent += normalizeExports(addon.exports || addon.name);
+            addon.fileContent += `\n//# sourceURL=betterdiscord://plugins/${addon.filename}`;
+            const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], addon.fileContent); // eslint-disable-line no-new-func
+            wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
+            addon.exports = module.exports;
+            delete addon.fileContent;
+            return addon;
+        }
+        catch (err) {
+            return new AddonError(addon.name || addon.filename, module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
+        }
     }
 
     startAddon(id) {return this.startPlugin(id);}
@@ -185,9 +176,7 @@ export default new class PluginManager extends AddonManager {
     }
 
     setupFunctions() {
-        // electronRemote.getCurrentWebContents().on("did-navigate-in-page", this.onSwitch.bind(this));
         Events.on("navigate", this.onSwitch);
-        // ipc.on(IPCEvents.NAVIGATE, this.onSwitch);
         this.observer.observe(document, {
             childList: true,
             subtree: true

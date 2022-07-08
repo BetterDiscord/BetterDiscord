@@ -1,5 +1,6 @@
 import {Config} from "data";
 import AddonManager from "./addonmanager";
+import AddonError from "../structs/addonerror";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
 import Strings from "./strings";
@@ -12,7 +13,6 @@ const path = require("path");
 
 export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}
-    get moduleExtension() {return ".css";}
     get extension() {return ".theme.css";}
     get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
     get addonFolder() {return path.resolve(Config.dataPath, "themes");}
@@ -54,10 +54,16 @@ export default new class ThemeManager extends AddonManager {
     }
 
     /* Overrides */
-    getFileModification(module, fileContent, meta) {
-        meta.css = fileContent;
-        if (meta.format == "json") meta.css = meta.css.split("\n").slice(1).join("\n");
-        return `module.exports = ${JSON.stringify(meta)};`;
+    initializeAddon(addon) {
+        if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
+    }
+
+    requireAddon(filename) {
+        const addon = super.requireAddon(filename);
+        addon.css = addon.fileContent;
+        delete addon.fileContent;
+        if (addon.format == "json") addon.css = addon.css.split("\n").slice(1).join("\n");
+        return addon;
     }
 
     startAddon(id) {return this.addTheme(id);}
@@ -66,14 +72,14 @@ export default new class ThemeManager extends AddonManager {
     addTheme(idOrAddon) {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
-        DOMManager.injectTheme(addon.id + "-theme-container", addon.css);
+        DOMManager.injectTheme(addon.slug + "-theme-container", addon.css);
         Toasts.show(Strings.Addons.enabled.format({name: addon.name, version: addon.version}));
     }
 
     removeTheme(idOrAddon) {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
-        DOMManager.removeTheme(addon.id + "-theme-container");
+        DOMManager.removeTheme(addon.slug + "-theme-container");
         Toasts.show(Strings.Addons.disabled.format({name: addon.name, version: addon.version}));
     }
 };
