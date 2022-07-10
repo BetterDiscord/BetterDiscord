@@ -4,15 +4,16 @@
     "description": "Enhances Discord by adding functionality and themes.",
     "main": "src/index.js",
     "scripts": {
-        "build": "npm run build-injector && npm run build-renderer",
-        "build-prod": "npm run build-prod --prefix injector && npm run build-prod --prefix renderer",
-        "build-injector": "npm run build --prefix injector",
-        "build-renderer": "npm run build --prefix renderer",
+        "build": "pnpm run build-injector && pnpm run build-preload && pnpm run build-renderer",
+        "build-prod": "pnpm --filter injector build-prod && pnpm --filter preload build-prod && pnpm --filter renderer build-prod",
+        "build-injector": "pnpm --filter injector build",
+        "build-renderer": "pnpm --filter renderer build",
+        "build-preload": "pnpm --filter preload build",
         "pack-emotes": "node scripts/emotes.js",
         "inject": "node scripts/inject.js",
-        "lint": "eslint --ext .js common/ && npm run lint --prefix injector && npm run lint --prefix renderer",
+        "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint",
         "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
-        "dist": "npm run build-prod && node scripts/pack.js",
+        "dist": "pnpm run build-prod && node scripts/pack.js",
         "api": "jsdoc -X renderer/src/modules/pluginapi.js > jsdoc-ast.json"
     },
     "devDependencies": {

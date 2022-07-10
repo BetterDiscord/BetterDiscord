@@ -10,7 +10,7 @@
         "build-prod": "webpack --stats minimal --mode production",
         "lint": "eslint --ext .js src/"
     },
-    "peerDependencies": {
+    "devDependencies": {
         "webpack": "^5.73.0"
     }
 }
