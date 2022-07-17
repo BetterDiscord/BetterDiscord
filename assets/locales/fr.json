@@ -30,44 +30,6 @@
                     "note": "Empêche Discord de détourner vos touches multimédia après la lecture d'une vidéo."
                 }
             },
-            "appearance": {
-                "name": "Apparence",
-                "minimalMode": {
-                    "name": "Mode Minimal",
-                    "note": "Masquer les éléments et réduire leurs tailles"
-                },
-                "twentyFourHour": {
-                    "name": "Horodatage en 24-Heures",
-                    "note": "Convertit l'horodatage 12-heures au format 24-heures"
-                },
-                "coloredText": {
-                    "name": "Texte Coloré",
-                    "note": "Faire en sorte que la couleur du texte soit la même que celle du rôle"
-                },
-                "hideGIFButton": {
-                    "name": "Masquer le Bouton GIF",
-                    "note": "Masque le bouton du sélecteur de GIF dans la zone de texte"
-                },
-                "hideGiftButton": {
-                    "name": "Masquer le Bouton Gift",
-                    "note": "Masquer le bouton Nitro Gift dans la zone de texte"
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Enlever la Taille Minimale",
-                    "note": "Enlève la taille de fenêtre minimale forcée de Discord qui est de 940x500"
-                },
-                "name": "Fenêtre des Préférences",
-                "transparency": {
-                    "name": "Activer la Transparence",
-                    "note": "Permet à la fenêtre principale d'être transparente (nécessite un redémarrage)"
-                },
-                "frame": {
-                    "name": "Cadre de la Fenêtre",
-                    "note": "Ajoute le cadre de la fenêtre native de l'OS à la fenêtre principale."
-                }
-            },
             "addons": {
                 "name": "Gestionnaire d'Extensions",
                 "addonErrors": {
@@ -115,8 +77,44 @@
                     }
                 }
             },
+            "editor": {
+                "name": "Préférences de l'éditeur",
+                "lineNumbers": {
+                    "name": "Numéros de ligne",
+                    "note": "Active l'affichage des numéros de lignes sur le coté de l'éditeur"
+                },
+                "fontSize": {
+                    "name": "Taille de police",
+                    "note": "Taille de la police (pt) à utiliser dans l'éditeur"
+                },
+                "minimap": {
+                    "name": "Mini-carte",
+                    "note": "Active l'affichage de la mini-carte du code à coté de l'éditeur"
+                },
+                "hover": {
+                    "name": "Info-bulles de référence",
+                    "note": "Active l'affichage des infos-bulles de référence lors du survol des règles et des sélecteurs"
+                },
+                "quickSuggestions": {
+                    "name": "Suggestions Rapides",
+                    "note": "Active les suggestions rapides lors de l'édition"
+                },
+                "renderWhitespace": {
+                    "name": "Afficher les espaces blancs",
+                    "note": "Quand les espaces blancs doivent être affichés dans l'éditeur",
+                    "options": {
+                        "all": "Toujours",
+                        "none": "Jamais",
+                        "selection": "Sélection"
+                    }
+                }
+            },
             "developer": {
                 "name": "Réglages Développeur",
+                "devTools": {
+                    "name": "Outils Développeurs",
+                    "note": "Active l'affichage des outils développeurs avec ctrl+shift+i"
+                },
                 "debuggerHotkey": {
                     "name": "Touches Raccourcis du Débugueur",
                     "note": "Permettre l'activation du débugueur quand F8 est pressé"
@@ -136,6 +134,21 @@
                 "debugLogs": {
                     "name": "Journaux de Débogage",
                     "note": "Transmet tout ce qui se trouve dans la console au fichier debug.log situé dans le dossier de BetterDiscord"
+                }
+            },
+            "window": {
+                "name": "Préferences de la fenêtre",
+                "transparency": {
+                    "name": "Activer la transparence",
+                    "note": "Active la transparance de la fenêtre (nécessite un redémarrage)"
+                },
+                "frame": {
+                    "name": "Cadre de la fenêtre",
+                    "note": "Ajoute le cadre de la fenêtre du système d'exploitation natif à la fenêtre principale"
+                },
+                "removeMinimumSize": {
+                    "name": "Supprimer la taille de fenêtre minimale",
+                    "note": "Supprime la taille de fenêtre minimale forcée de Discord de 940x500"
                 }
             }
         },
@@ -205,6 +218,7 @@
         "version": "Version",
         "added": "Date d'Ajout",
         "modified": "Date Modifiée",
+        "isEnabled": "Activé",
         "search": "Rechercher {{type}}",
         "editAddon": "Édition",
         "deleteAddon": "Suppression",
