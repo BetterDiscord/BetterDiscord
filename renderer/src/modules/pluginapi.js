@@ -1,6 +1,6 @@
 import {Config} from "data";
 import Utilities from "./utilities";
-import WebpackModules from "./webpackmodules";
+import WebpackModules, {Filters} from "./webpackmodules";
 import DiscordModules from "./discordmodules";
 import DataStore from "./datastore";
 import DOMManager from "./dommanager";
@@ -134,7 +134,7 @@ BdApi.findModule = function(filter) {
 
 // Finds module
 BdApi.findAllModules = function(filter) {
-    return WebpackModules.getModule(filter, false);
+    return WebpackModules.getModule(filter, {first: false});
 };
 
 // Finds module
@@ -282,9 +282,44 @@ BdApi.Patcher = {
     }
 };
 
+BdApi.Webpack = {
+
+    Filters: Filters,
+
+    /**
+     * Finds a module using a filter function.
+     * @param {(exports, module, moduleId) => boolean} filter A function to use to filter modules
+     * @param {object} [options] Whether to return only the first matching module
+     * @param {Boolean} [options.first=true] Whether to return only the first matching module
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @return {Any}
+     */
+    getModule(filter, options = {}) {
+        if (Reflect.has(options, "first") && typeof(options.first) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.first", options.first, "boolean expected.");
+        if (Reflect.has(options, "defaultExport") && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        return WebpackModules.getModule(filter, options);
+    },
+
+    /**
+     * Finds a module that lazily loaded.
+     * @param {(exports) => boolean} filter A function to use to filter modules.
+     * @param {object} [options] Whether to return only the first matching module
+     * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @returns {Promise<any>}
+     */
+    waitForModule(filter, options = {}) {
+        if (Reflect.has(options, "defaultExport") && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (Reflect.has(options, "signal") && !(options.signal instanceof AbortSignal)) return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.signal", options.signal, "AbortSignal expected.");
+        return WebpackModules.getLazy(filter, options);
+    },
+};
+
 Object.freeze(BdApi);
 Object.freeze(BdApi.Plugins);
 Object.freeze(BdApi.Themes);
 Object.freeze(BdApi.Patcher);
+Object.freeze(BdApi.Webpack);
+Object.freeze(BdApi.Webpack.Filters);
 
 export default BdApi;
