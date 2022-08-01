@@ -11,6 +11,7 @@
         "build-renderer": "npm run build --prefix renderer",
         "pack-emotes": "node scripts/emotes.js",
         "inject": "node scripts/inject.js",
+        "uninject": "node scripts/uninject.js",
         "lint": "eslint --ext .js common/ && npm run lint --prefix injector && npm run lint --prefix renderer",
         "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
         "dist": "npm run build-prod && node scripts/pack.js"
