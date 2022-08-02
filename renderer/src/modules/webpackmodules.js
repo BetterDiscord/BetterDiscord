@@ -24,10 +24,12 @@ export class Filters {
      */
     static byProps(props, filter = m => m) {
         return module => {
+            if (!module) return false;
+            if (typeof(module) !== "object" && typeof(module) !== "function") return false;
             const component = filter(module);
             if (!component) return false;
             for (let p = 0; p < props.length; p++) {
-                if (!Reflect.has(component, props[p])) return false;
+                if (!(props[p] in component)) return false;
             }
             return true;
         };
@@ -41,11 +43,13 @@ export class Filters {
      */
     static byPrototypeFields(fields, filter = m => m) {
         return module => {
+            if (!module) return false;
+            if (typeof(module) !== "object" && typeof(module) !== "function") return false;
             const component = filter(module);
             if (!component) return false;
             if (!component.prototype) return false;
             for (let f = 0; f < fields.length; f++) {
-                if (!Reflect.has(component.prototype, fields[f])) return false;
+                if (!(fields[f] in component.prototype)) return false;
             }
             return true;
         };
@@ -155,7 +159,9 @@ export default class WebpackModules {
         };
         const modules = this.getAllModules();
         const rm = [];
-        for (const index in modules) {
+        const indices = Object.keys(modules);
+        for (let i = 0; i < indices.length; i++) {
+            const index = indices[i];
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
@@ -170,6 +176,54 @@ export default class WebpackModules {
         }
         
         return first || rm.length == 0 ? undefined : rm;
+    }
+
+    /**
+     * Finds multiple modules using multiple filters.
+     * 
+     * @param {...object} queries Whether to return only the first matching module
+     * @param {Function} queries.filter A function to use to filter modules
+     * @param {Boolean} [queries.first=true] Whether to return only the first matching module
+     * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
+     * @return {Any}
+     */
+    static getBulk(...queries) {
+        const modules = this.getAllModules();
+        const returnedModules = Array(queries.length);
+        const indices = Object.keys(modules);
+        for (let i = 0; i < indices.length; i++) {
+            const index = indices[i];
+            if (!modules.hasOwnProperty(index)) continue;
+            const module = modules[index];
+            const {exports} = module;
+            if (!exports) continue;
+
+            for (let q = 0; q < queries.length; q++) {
+                const query = queries[q];
+                const {filter, first = true, defaultExport = true} = query;
+                if (first && returnedModules[q]) continue; // If they only want the first, and we already found it, move on
+                if (!first && !returnedModules[q]) returnedModules[q] = []; // If they want multiple and we haven't setup the subarry, do it now
+
+                const wrappedFilter = (ex, mod, moduleId) => {
+                    try {
+                        return filter(ex, mod, moduleId);
+                    }
+                    catch (err) {
+                        Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                        return false;
+                    }
+                };
+
+                let foundModule = null;
+                if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
+                if (wrappedFilter(exports, module, index)) foundModule = exports;
+                if (!foundModule) continue;
+                if (first) returnedModules[q] = protect(foundModule);
+                else returnedModules[q].push(protect(foundModule));
+            }
+        }
+        
+        return returnedModules;
     }
 
     /**

@@ -264,6 +264,16 @@ const makeAddonAPI = (manager) => new class AddonAPI {
 BdApi.Plugins = makeAddonAPI(PluginManager);
 BdApi.Themes = makeAddonAPI(ThemeManager);
 BdApi.Patcher = {
+    bind: (id) => {
+        return {
+            patch: BdApi.Patcher.patch.bind(BdApi.Patcher, id),
+            before: BdApi.Patcher.before.bind(BdApi.Patcher, id),
+            instead: BdApi.Patcher.instead.bind(BdApi.Patcher, id),
+            after: BdApi.Patcher.after.bind(BdApi.Patcher, id),
+            getPatchesByCaller: BdApi.Patcher.getPatchesByCaller.bind(BdApi.Patcher, id),
+            unpatchAll: BdApi.Patcher.unpatchAll.bind(BdApi.Patcher, id),
+        };
+    },
     patch: (caller, moduleToPatch, functionName, callback, options = {}) => {
         if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of patch must be a string representing the caller");
         if (options.type !== "before" && options.type !== "instead" && options.type !== "after") return Logger.err("BdApi.Patcher", "options.type must be one of: before, instead, after");
@@ -295,10 +305,21 @@ BdApi.Webpack = {
      * @return {Any}
      */
     getModule(filter, options = {}) {
-        if (Reflect.has(options, "first") && typeof(options.first) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.first", options.first, "boolean expected.");
-        if (Reflect.has(options, "defaultExport") && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (("first" in options) && typeof(options.first) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.first", options.first, "boolean expected.");
+        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
         return WebpackModules.getModule(filter, options);
     },
+
+    /**
+     * Finds multiple modules using multiple filters.
+     * 
+     * @param {...object} queries Whether to return only the first matching module
+     * @param {Function} queries.filter A function to use to filter modules
+     * @param {Boolean} [queries.first=true] Whether to return only the first matching module
+     * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
+     * @return {Any}
+     */
+    getBulk(...queries) {return WebpackModules.getBulk(...queries);},
 
     /**
      * Finds a module that lazily loaded.
@@ -309,8 +330,8 @@ BdApi.Webpack = {
      * @returns {Promise<any>}
      */
     waitForModule(filter, options = {}) {
-        if (Reflect.has(options, "defaultExport") && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
-        if (Reflect.has(options, "signal") && !(options.signal instanceof AbortSignal)) return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.signal", options.signal, "AbortSignal expected.");
+        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (("signal" in options) && !(options.signal instanceof AbortSignal)) return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.signal", options.signal, "AbortSignal expected.");
         return WebpackModules.getLazy(filter, options);
     },
 };

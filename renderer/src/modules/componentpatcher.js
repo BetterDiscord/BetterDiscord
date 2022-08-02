@@ -135,7 +135,7 @@ export default new class ComponentPatcher {
     
     patchGuildPills() {
         if (this.guildPillPatch) return;
-        const guildPill = WebpackModules.find(m => m.default.displayName === "AnimatedHalfPill");
+        const guildPill = WebpackModules.find(m => m?.default?.displayName === "AnimatedHalfPill");
         if (!guildPill) return;
         this.guildPillPatch = Patcher.after("ComponentPatcher", guildPill, "default", (_, args, returnValue) => {
             const props = args[0];

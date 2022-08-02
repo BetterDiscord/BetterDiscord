@@ -38,7 +38,7 @@ const DiscordClasses = new Proxy(DiscordClassModules, {
         
         return new Proxy(list[item], {
             get(obj, prop) {
-                if (!Reflect.has(obj, prop)) return "";
+                if (!(prop in obj)) return "";
 
                 return new ClassName(obj[prop]);
             }

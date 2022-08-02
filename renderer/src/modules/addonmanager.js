@@ -155,7 +155,7 @@ export default class AddonManager {
         for (const line of block.split(splitRegex)) {
             if (line.length === 0) continue;
             if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
-                out[field] = accum;
+                out[field] = accum.trim();
                 const l = line.indexOf(" ");
                 field = line.substring(1, l);
                 accum = line.substring(l + 1);
