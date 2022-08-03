@@ -132,7 +132,7 @@ export default Utilities.memoizeObject({
 
     /* Electron & Other Internals with Utils*/
     get ElectronModule() {return WebpackModules.getByProps("setBadge");},
-    get Dispatcher() {return WebpackModules.getByProps("dirtyDispatch");},
+    get Dispatcher() {return WebpackModules.getByProps("dispatch", "subscribe");},
     get PathUtils() {return WebpackModules.getByProps("hasBasename");},
     get NotificationModule() {return WebpackModules.getByProps("showNotification");},
     get RouterModule() {return WebpackModules.getByProps("Router");},
