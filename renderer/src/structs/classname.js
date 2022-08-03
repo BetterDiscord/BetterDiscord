@@ -2,7 +2,6 @@
 
 /** 
  * Representation of a Class Name
- * @memberof module:DOMTools
  **/
 class ClassName {
     /**
@@ -38,14 +37,6 @@ class ClassName {
     valueOf() {
         return this.value;
     }
-    
-    // /**
-    //  * Returns the classname represented as {@link module:DOMTools.Selector}.
-    //  * @returns {Selector} selector representation of this class name.
-    //  */
-    // get selector() {
-    //     return new Selector(this.value);
-    // }
 
     get single() {
         return this.value.split(" ")[0];

@@ -133,8 +133,8 @@ const protect = theModule => {
 };
 
 export default class WebpackModules {
-    static find(filter, first = true) {return this.getModule(filter, first);}
-    static findAll(filter) {return this.getModule(filter, false);}
+    static find(filter, first = true) {return this.getModule(filter, {first});}
+    static findAll(filter) {return this.getModule(filter, {first: false});}
     static findByUniqueProperties(props, first = true) {return first ? this.getByProps(...props) : this.getAllByProps(...props);}
     static findByDisplayName(name) {return this.getByDisplayName(name);}
 
@@ -230,7 +230,7 @@ export default class WebpackModules {
      * Finds all modules matching a filter function.
      * @param {Function} filter A function to use to filter modules
      */
-    static getModules(filter) {return this.getModule(filter, false);}
+    static getModules(filter) {return this.getModule(filter, {first: false});}
 
     /**
      * Finds a module by its display name.
@@ -238,7 +238,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByDisplayName(name) {
-        return this.getModule(Filters.byDisplayName(name), true);
+        return this.getModule(Filters.byDisplayName(name));
     }
 
     /**
@@ -248,7 +248,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByRegex(regex, first = true) {
-        return this.getModule(Filters.byRegex(regex), first);
+        return this.getModule(Filters.byRegex(regex), {first});
     }
 
     /**
@@ -257,7 +257,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByPrototypes(...prototypes) {
-        return this.getModule(Filters.byPrototypeFields(prototypes), true);
+        return this.getModule(Filters.byPrototypeFields(prototypes));
     }
 
     /**
@@ -266,7 +266,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByPrototypes(...prototypes) {
-        return this.getModule(Filters.byPrototypeFields(prototypes), false);
+        return this.getModule(Filters.byPrototypeFields(prototypes), {first: false});
     }
 
     /**
@@ -275,7 +275,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByProps(...props) {
-        return this.getModule(Filters.byProps(props), true);
+        return this.getModule(Filters.byProps(props));
     }
 
     /**
@@ -284,7 +284,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByProps(...props) {
-        return this.getModule(Filters.byProps(props), false);
+        return this.getModule(Filters.byProps(props), {first: false});
     }
 
     /**
@@ -293,7 +293,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByString(...strings) {
-        return this.getModule(Filters.byStrings(...strings), true);
+        return this.getModule(Filters.byStrings(...strings));
     }
 
     /**
@@ -302,7 +302,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByString(...strings) {
-        return this.getModule(Filters.byStrings(...strings), false);
+        return this.getModule(Filters.byStrings(...strings), {first: false});
     }
 
     /**

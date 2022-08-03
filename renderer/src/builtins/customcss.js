@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {Settings, DataStore, React, WebpackModules, Events, DOMManager, Strings} from "modules";
+import {Settings, DataStore, React, WebpackModules, Events, DOMManager, Strings, DiscordModules} from "modules";
 import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindows from "../ui/floatingwindows";
 import SettingsTitle from "../ui/settings/title";
@@ -8,7 +8,7 @@ import Utilities from "../modules/utilities";
 const fs = require("fs");
 const electron = require("electron");
 const UserSettings = WebpackModules.getByProps("updateAccount");
-const Dispatcher = WebpackModules.getByProps("dirtyDispatch");
+const Dispatcher = DiscordModules.Dispatcher;
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
