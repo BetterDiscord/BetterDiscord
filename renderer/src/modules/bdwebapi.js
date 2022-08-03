@@ -54,7 +54,8 @@ export default new class BdWebApi {
                     if (Settings.get("settings", "addons", "autoEnable")) Events.on(`${type}-loaded`, enable);
                     resolve(data);
                 });
-                response.on("error", error => {
+                response.on("error", (error) => {
+                    Logger.error("Addon Store", Strings.Addons.downloadError.format({type, error}));
                     Toasts.show(Strings.Addons.downloadError.format({type, error}), {type: "error"});
                 });
             });
@@ -84,7 +85,8 @@ export default new class BdWebApi {
                 });
     
                 res.on("error", (error) => {
-                    Logger.error(`Addon Store", "Failed to get addons: ${error}`);
+                    Logger.error("Addon Store", Strings.Addons.connectError.format({error}));
+                    Toasts.show(Strings.Addons.connectError.format({error}), {type: "error"});
                 });
             });
         });
@@ -115,7 +117,8 @@ export default new class BdWebApi {
                 });
 
                 res.on("error", (error) => {
-                    Logger.error(`Addon Store", "Failed to get addon: ${error}`);
+                    Logger.error("Addon Store", Strings.Addons.connectError.format({error}));
+                    Toasts.show(Strings.Addons.connectError.format({error}), {type: "error"});
                 });
             });
         });

@@ -269,6 +269,7 @@
         "uploadDate": "Uploaded on {{date}}",
         "back": "Back",
         "next": "Next",
+        "connectError": "Failed to connect to Store: {{error}}",
         "downloadError": "Failed to download {{type}}: {{error}}",
         "writeError": "Failed to write {{type}} to disk: {{error}}"
     },
