@@ -30,7 +30,7 @@ export default class StoreCard extends React.Component {
         if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
     }
 
-    preview = event => {
+    preview = (event) => {
         event.preventDefault();
         event.stopPropagation();
 
@@ -42,12 +42,10 @@ export default class StoreCard extends React.Component {
 
     onClick = event => {
         const {onDetailsView} = this.props;
-        if (typeof onDetailsView !== "function") return;
-
-        onDetailsView();
+        if (typeof(onDetailsView) === "function") onDetailsView();
     }
 
-    onButtonClick = async event => {
+    onButtonClick = async (event) => {
         event.stopPropagation();
         event.preventDefault();
 

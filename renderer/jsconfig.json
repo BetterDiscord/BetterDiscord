@@ -3,9 +3,6 @@
       "target": "es2020",
       "allowSyntheticDefaultImports": false,
       "baseUrl": "./",
-      "moduleResolution": "node",
-      "jsx": "react-jsx",
-      "resolveJsonModule": true,
       "paths": {
         "modules": ["./src/modules/modules.js"],
         "builtins": ["./src/builtins/builtins.js"],

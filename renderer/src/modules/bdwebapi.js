@@ -15,7 +15,7 @@ import path from "path";
 import fs from "fs";
 
 const API_CACHE = {plugins: [], themes: [], addon: []};
-const README_CACHE = {plugins: {}, themes: {}};
+// const README_CACHE = {plugins: {}, themes: {}};
 
 export default new class BdWebApi {
     get apiVersion() {return Web.API_VERSION;}

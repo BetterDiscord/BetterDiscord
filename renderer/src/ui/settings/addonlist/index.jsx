@@ -21,7 +21,8 @@ const CONTROLS = {
             {get label() {return Strings.Addons.author;}, value: "author"},
             {get label() {return Strings.Addons.version;}, value: "version"},
             {get label() {return Strings.Addons.added;}, value: "added"},
-            {get label() {return Strings.Addons.modified;}, value: "modified"}
+            {get label() {return Strings.Addons.modified;}, value: "modified"},
+            {get label() {return Strings.Addons.isEnabled;}, value: "isEnabled"}
         ],
         directions: [
             {get label() {return Strings.Sorting.ascending;}, value: true},

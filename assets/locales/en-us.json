@@ -234,6 +234,7 @@
         "added": "Date Added",
         "uploaded": "Date Uploaded",
         "modified": "Date Modified",
+        "isEnabled": "Enabled",
         "search": "Search {{type}}",
         "noResults": "We searched far and wide. Unfortunately, no results were found.",
         "editAddon": "Edit",

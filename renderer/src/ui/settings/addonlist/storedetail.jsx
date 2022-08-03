@@ -15,10 +15,12 @@ export class StoreDetail extends React.Component {
 
         this.scrollerRef = React.createRef();
     }
+    
     componentDidMount() {
         // dirty hack for customizing layers created by pushLayer
         this.scrollerRef.current.parentElement.classList.add("bd-store-details");
     }
+
     render() {
         return <>
             <header class="bd-store-details-title">

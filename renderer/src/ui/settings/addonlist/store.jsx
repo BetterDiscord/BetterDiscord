@@ -1,4 +1,5 @@
 import {React, Strings, Utilities, WebpackModules, DiscordClasses} from "modules";
+import {Web} from "data";
 
 import Next from "../../icons/next";
 import Previous from "../../icons/previous";
@@ -93,11 +94,11 @@ export default class StorePage extends React.Component {
                     {addons[this.state.selectedPage].map(addon => {
                         return <StoreCard
                             {...addon}
-                            thumbnail={BdWebApi.endpoints.thumbnail(addon.thumbnail_url)}
-                            reload={this.props.reload}
-                            confirmAddonDelete={this.props.confirmAddonDelete}
                             deleteAddon={this.props.deleteAddon}
                             installAddon={BdWebApi.installAddon.bind(this)}
+                            thumbnail={Web.ENDPOINTS.thumbnail(addon.thumbnail_url)}
+                            reload={this.props.reload}
+                            confirmAddonDelete={this.props.confirmAddonDelete}
                             isInstalled={this.isInstalled.bind(this)}
                             selectedTag={this.props.state.selectedTag}
                             folder={this.props.folder}
