@@ -94,10 +94,19 @@ export default class BetterDiscord {
 
             // If a previous crash was detected, show a message explaining why BD isn't there
             electron.dialog.showMessageBox({
-                title: "BetterDiscord Crashed",
+                title: "Discord Crashed",
                 type: "warning",
-                message: "BetterDiscord seems to have crashed your Discord client.",
-                detail: "BetterDiscord has automatically disabled itself temporarily. Try removing all your plugins then restarting Discord."
+                message: "Something crashed your Discord Client",
+                detail: "BetterDiscord has automatically disabled itself just in case. To enable it again, restart Discord or click the button below.\n\nThis may have been caused by a plugin. Try moving all of your plugins outside the plugin folder and see if Discord still crashed.",
+                buttons: ["Try Again", "Open Plugins Folder", "Cancel"],
+            }).then((result)=>{
+                if (result.response === 0) {
+                    electron.app.relaunch();
+                    electron.app.exit();
+                }
+                if (result.response === 1) {
+                    electron.shell.openPath(path.join(dataPath, "plugins"));
+                }
             });
             hasCrashed = false;
         });

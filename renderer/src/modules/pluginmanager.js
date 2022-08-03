@@ -13,9 +13,16 @@ import SettingsRenderer from "../ui/settings";
 const path = require("path");
 const vm = require("vm");
 
+const normalizeExports = name => `
+if (module.exports.default) {
+    module.exports = module.exports.default;
+}
+if (typeof(module.exports) !== "function") {
+    module.exports = eval("${name}");
+}`;
+
 export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
-    get moduleExtension() {return ".js";}
     get extension() {return ".plugin.js";}
     get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
     get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
@@ -24,7 +31,6 @@ export default new class PluginManager extends AddonManager {
 
     constructor() {
         super();
-        this.promises = {};
         this.onSwitch = this.onSwitch.bind(this);
         this.observer = new MutationObserver((mutations) => {
             for (let i = 0, mlen = mutations.length; i < mlen; i++) {
@@ -80,13 +86,21 @@ export default new class PluginManager extends AddonManager {
         if (!addon.exports || !addon.name) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin had no exports or @name property", {message: "Plugin had no exports or no @name property. @name property is required for all addons.", stack: ""}, this.prefix);
 
         try {
+            const isValid = typeof(addon.exports) === "function";
+            if (!isValid) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin not a valid format.", {message: "Plugins should be either a function or a class", stack: ""}, this.prefix);
+            
             const PluginClass = addon.exports;
-            const thePlugin = new PluginClass();
+            const meta = Object.assign({}, addon);
+            delete meta.exports;
+            const thePlugin = PluginClass.prototype ? new PluginClass(meta) : addon.exports(meta);
+            if (!thePlugin.start || !thePlugin.stop) return new AddonError(addon.name || addon.filename, addon.filename, "Missing start or stop function.", {message: "Plugins must have both a start and stop function.", stack: ""}, this.prefix);
+
             addon.instance = thePlugin;
             addon.name = thePlugin.getName ? thePlugin.getName() : addon.name;
-            addon.author = thePlugin.getAuthor ? thePlugin.getAuthor() : addon.author || "No author";
-            addon.description = thePlugin.getDescription ? thePlugin.getDescription() : addon.description || "No description";
-            addon.version = thePlugin.getVersion ? thePlugin.getVersion() : addon.version || "No version";
+            addon.author = thePlugin.getAuthor ? thePlugin.getAuthor() : addon.author;
+            addon.description = thePlugin.getDescription ? thePlugin.getDescription() : addon.description;
+            addon.version = thePlugin.getVersion ? thePlugin.getVersion() : addon.version;
+            if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin is missing name, author, description, or version", {message: "Plugin must provide name, author, description, and version.", stack: ""}, this.prefix);
             try {
                 if (typeof(addon.instance.load) == "function") addon.instance.load();
             }
@@ -95,32 +109,28 @@ export default new class PluginManager extends AddonManager {
                 return new AddonError(addon.name, addon.filename, "load() could not be fired.", {message: error.message, stack: error.stack}, this.prefix);
             }
         }
-        catch (error) {return new AddonError(addon.name, addon.filename, "Could not be constructed.", {message: error.message, stack: error.stack}, this.prefix);}
+        catch (error) {
+            return new AddonError(addon.name, addon.filename, "Could not be constructed.", {message: error.message, stack: error.stack}, this.prefix);
+        }
     }
 
-    getFileModification(module, fileContent, meta) {
-        fileContent += `\nif (module.exports.default) {module.exports = module.exports.default;}\nif (!module.exports.prototype || !module.exports.prototype.start) {module.exports = ${meta.exports || meta.name};}`;
-
-        window.global = window;
-        window.module = module;
-        window.__filename = path.basename(module.filename);
-        window.__dirname = this.addonFolder;
-        const wrapped = `(${vm.compileFunction(fileContent, ["exports", "require", "module", "__filename", "__dirname"]).toString()})`;
-        const final = `${wrapped}(window.module.exports, window.require, window.module, window.__filename, window.__dirname)\n//# sourceURL=betterdiscord://plugins/${window.__filename}`;
-
-        const container = document.createElement("script");
-        container.innerHTML = final;
-        container.id = `${meta.id}-script-container`;
-        // container.src = `data:text/javascript;${btoa(final)}`;
-        document.head.append(container);
-
-        meta.exports = module.exports;
-        module.exports = meta;
-        delete window.module;
-        delete window.__filename;
-        delete window.__dirname;
-        container.remove();
-        return "";
+    requireAddon(filename) {
+        const addon = super.requireAddon(filename);
+        try {
+            const module = {filename, exports: {}};
+            // Test if the code is valid gracefully
+            vm.compileFunction(addon.fileContent, ["require", "module", "exports", "__filename", "__dirname"]);
+            addon.fileContent += normalizeExports(addon.exports || addon.name);
+            addon.fileContent += `\n//# sourceURL=betterdiscord://plugins/${addon.filename}`;
+            const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], addon.fileContent); // eslint-disable-line no-new-func
+            wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
+            addon.exports = module.exports;
+            delete addon.fileContent;
+            return addon;
+        }
+        catch (err) {
+            return new AddonError(addon.name || addon.filename, module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
+        }
     }
 
     startAddon(id) {return this.startPlugin(id);}
@@ -168,9 +178,7 @@ export default new class PluginManager extends AddonManager {
     }
 
     setupFunctions() {
-        // electronRemote.getCurrentWebContents().on("did-navigate-in-page", this.onSwitch.bind(this));
         Events.on("navigate", this.onSwitch);
-        // ipc.on(IPCEvents.NAVIGATE, this.onSwitch);
         this.observer.observe(document, {
             childList: true,
             subtree: true

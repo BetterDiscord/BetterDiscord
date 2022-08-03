@@ -22,12 +22,14 @@ export class Filters {
      * @param {module:WebpackModules.Filters~filter} filter - Additional filter
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
      */
-    static byProperties(props, filter = m => m) {
+    static byProps(props, filter = m => m) {
         return module => {
+            if (!module) return false;
+            if (typeof(module) !== "object" && typeof(module) !== "function") return false;
             const component = filter(module);
             if (!component) return false;
             for (let p = 0; p < props.length; p++) {
-                if (component[props[p]] === undefined) return false;
+                if (!(props[p] in component)) return false;
             }
             return true;
         };
@@ -41,11 +43,13 @@ export class Filters {
      */
     static byPrototypeFields(fields, filter = m => m) {
         return module => {
+            if (!module) return false;
+            if (typeof(module) !== "object" && typeof(module) !== "function") return false;
             const component = filter(module);
             if (!component) return false;
             if (!component.prototype) return false;
             for (let f = 0; f < fields.length; f++) {
-                if (component.prototype[fields[f]] === undefined) return false;
+                if (!(fields[f] in component.prototype)) return false;
             }
             return true;
         };
@@ -57,7 +61,7 @@ export class Filters {
      * @param {module:WebpackModules.Filters~filter} filter - Additional filter
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
      */
-    static byCode(search, filter = m => m) {
+    static byRegex(search, filter = m => m) {
         return module => {
             const method = filter(module);
             if (!method) return false;
@@ -73,7 +77,7 @@ export class Filters {
      * @param {...String} search - A RegExp to check on the module
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of strings
      */
-    static byString(...strings) {
+    static byStrings(...strings) {
         return module => {
             let moduleString = "";
             try {moduleString = module.toString([]);}
@@ -137,31 +141,89 @@ export default class WebpackModules {
     /**
      * Finds a module using a filter function.
      * @param {Function} filter A function to use to filter modules
-     * @param {Boolean} first Whether to return only the first matching module
+     * @param {object} [options] Whether to return only the first matching module
+     * @param {Boolean} [options.first=true] Whether to return only the first matching module
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @return {Any}
      */
-    static getModule(filter, first = true) {
-        const wrappedFilter = (m) => {
-            try {return filter(m);}
-            catch (err) {return false;}
+    static getModule(filter, options = {}) {
+        const {first = true, defaultExport = true} = options;
+        const wrappedFilter = (exports, module, moduleId) => {
+            try {
+                return filter(exports, module, moduleId);
+            }
+            catch (err) {
+                Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                return false;
+            }
         };
         const modules = this.getAllModules();
         const rm = [];
-        for (const index in modules) {
+        const indices = Object.keys(modules);
+        for (let i = 0; i < indices.length; i++) {
+            const index = indices[i];
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
             let foundModule = null;
 
             if (!exports) continue;
-            if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = exports.default;
-            if (wrappedFilter(exports)) foundModule = exports;
+            if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
+            if (wrappedFilter(exports, module, index)) foundModule = exports;
             if (!foundModule) continue;
             if (first) return protect(foundModule);
             rm.push(protect(foundModule));
         }
         
         return first || rm.length == 0 ? undefined : rm;
+    }
+
+    /**
+     * Finds multiple modules using multiple filters.
+     * 
+     * @param {...object} queries Whether to return only the first matching module
+     * @param {Function} queries.filter A function to use to filter modules
+     * @param {Boolean} [queries.first=true] Whether to return only the first matching module
+     * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
+     * @return {Any}
+     */
+    static getBulk(...queries) {
+        const modules = this.getAllModules();
+        const returnedModules = Array(queries.length);
+        const indices = Object.keys(modules);
+        for (let i = 0; i < indices.length; i++) {
+            const index = indices[i];
+            if (!modules.hasOwnProperty(index)) continue;
+            const module = modules[index];
+            const {exports} = module;
+            if (!exports) continue;
+
+            for (let q = 0; q < queries.length; q++) {
+                const query = queries[q];
+                const {filter, first = true, defaultExport = true} = query;
+                if (first && returnedModules[q]) continue; // If they only want the first, and we already found it, move on
+                if (!first && !returnedModules[q]) returnedModules[q] = []; // If they want multiple and we haven't setup the subarry, do it now
+
+                const wrappedFilter = (ex, mod, moduleId) => {
+                    try {
+                        return filter(ex, mod, moduleId);
+                    }
+                    catch (err) {
+                        Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                        return false;
+                    }
+                };
+
+                let foundModule = null;
+                if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
+                if (wrappedFilter(exports, module, index)) foundModule = exports;
+                if (!foundModule) continue;
+                if (first) returnedModules[q] = protect(foundModule);
+                else returnedModules[q].push(protect(foundModule));
+            }
+        }
+        
+        return returnedModules;
     }
 
     /**
@@ -186,7 +248,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByRegex(regex, first = true) {
-        return this.getModule(Filters.byCode(regex), first);
+        return this.getModule(Filters.byRegex(regex), first);
     }
 
     /**
@@ -213,7 +275,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByProps(...props) {
-        return this.getModule(Filters.byProperties(props), true);
+        return this.getModule(Filters.byProps(props), true);
     }
 
     /**
@@ -222,7 +284,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByProps(...props) {
-        return this.getModule(Filters.byProperties(props), false);
+        return this.getModule(Filters.byProps(props), false);
     }
 
     /**
@@ -231,7 +293,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByString(...strings) {
-        return this.getModule(Filters.byString(...strings), true);
+        return this.getModule(Filters.byStrings(...strings), true);
     }
 
     /**
@@ -240,15 +302,21 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByString(...strings) {
-        return this.getModule(Filters.byString(...strings), false);
+        return this.getModule(Filters.byStrings(...strings), false);
     }
 
     /**
      * Finds a module that lazily loaded.
      * @param {(m) => boolean} filter A function to use to filter modules.
+     * @param {object} [options] Whether to return only the first matching module
+     * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @returns {Promise<any>}
      */
-    static getLazy(filter) {
+    static getLazy(filter, options = {}) {
+        /** @type {AbortSignal} */
+        const abortSignal = options.signal;
+        const defaultExport = options.defaultExport;
         const fromCache = this.getModule(filter);
         if (fromCache) return Promise.resolve(fromCache);
 
@@ -266,10 +334,14 @@ export default class WebpackModules {
                 if (!defaultMatch) return; 
 
                 cancel();
-                resolve(m.default);
+                resolve(defaultExport ? m.default : defaultExport);
             };
 
             this.addListener(listener);
+            abortSignal?.addEventListener("abort", () => {
+                cancel();
+                resolve();
+            });
         });
     }
 

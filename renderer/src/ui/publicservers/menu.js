@@ -75,7 +75,7 @@ export default class PublicServers extends React.Component {
     }
 
     searchKeyDown(e) {
-        if (this.state.loading || e.which !== 13) return;
+        if (this.state.loading || e.key !== "Enter") return;
         const term = e.target.value;
         if (this.state.tab == "Featured" || this.state.tab == "Popular") this.setState({tab: "All"}, () => this.search(term));
         else this.search(term);

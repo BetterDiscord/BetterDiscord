@@ -1,46 +1,84 @@
-# BetterDiscord [![Language Grade][lgtm-badge]][lgtm-link] ![GitHub Releases][downloads-badge]
+# BetterDiscord [![Language Grade][lgtm-badge]][lgtm-link] [![GitHub Releases][downloads-badge]][downloads-link] [![Discord][discord-badge]][discord-link]
 
-[patreon-badge]: https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3DZerebos%26type%3Dpatrons&style=flat-square
-[patreon-link]: https://patreon.com/Zerebos
-
-[paypal-badge]: https://img.shields.io/badge/Paypal-Donate!-%2300457C.svg?logo=paypal&style=flat-square
-[paypal-link]: https://paypal.me/ZackRauen
-
-[lgtm-badge]: https://img.shields.io/lgtm/grade/javascript/g/BetterDiscord/BetterDiscord.svg?style=flat-square
+[lgtm-badge]: https://img.shields.io/lgtm/grade/javascript/g/BetterDiscord/BetterDiscord.svg?labelColor=0c0d10&style=for-the-badge
 [lgtm-link]: https://lgtm.com/projects/g/BetterDiscord/BetterDiscord/context:javascript
 
-[downloads-badge]: https://img.shields.io/github/downloads/BetterDiscord/BetterDiscord/latest/total?style=flat-square
+[downloads-badge]: https://img.shields.io/github/downloads/BetterDiscord/Installer/total?labelColor=0c0d10&color=3a71c1&style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyLjI1IDM4LjVIMzUuNzVDMzYuNzE2NSAzOC41IDM3LjUgMzkuMjgzNSAzNy41IDQwLjI1QzM3LjUgNDEuMTY4MiAzNi43OTI5IDQxLjkyMTIgMzUuODkzNSA0MS45OTQyTDM1Ljc1IDQySDEyLjI1QzExLjI4MzUgNDIgMTAuNSA0MS4yMTY1IDEwLjUgNDAuMjVDMTAuNSAzOS4zMzE4IDExLjIwNzEgMzguNTc4OCAxMi4xMDY1IDM4LjUwNThMMTIuMjUgMzguNUgzNS43NUgxMi4yNVpNMjMuNjA2NSA2LjI1NThMMjMuNzUgNi4yNUMyNC42NjgyIDYuMjUgMjUuNDIxMiA2Ljk1NzExIDI1LjQ5NDIgNy44NTY0N0wyNS41IDhWMjkuMzMzTDMwLjI5MzEgMjQuNTQwN0MzMC45NzY1IDIzLjg1NzMgMzIuMDg0NiAyMy44NTczIDMyLjc2OCAyNC41NDA3QzMzLjQ1MTQgMjUuMjI0MiAzMy40NTE0IDI2LjMzMjIgMzIuNzY4IDI3LjAxNTZMMjQuOTg5OCAzNC43OTM4QzI0LjMwNjQgMzUuNDc3MiAyMy4xOTg0IDM1LjQ3NzIgMjIuNTE1IDM0Ljc5MzhMMTQuNzM2OCAyNy4wMTU2QzE0LjA1MzQgMjYuMzMyMiAxNC4wNTM0IDI1LjIyNDIgMTQuNzM2OCAyNC41NDA3QzE1LjQyMDIgMjMuODU3MyAxNi41MjgyIDIzLjg1NzMgMTcuMjExNyAyNC41NDA3TDIyIDI5LjMyOVY4QzIyIDcuMDgxODMgMjIuNzA3MSA2LjMyODgxIDIzLjYwNjUgNi4yNTU4TDIzLjc1IDYuMjVMMjMuNjA2NSA2LjI1NThaIiBmaWxsPSIjM2E3MWMxIi8+Cjwvc3ZnPgo=
+[downloads-link]: #auto-installers
 
+[discord-badge]: https://img.shields.io/badge/support%20server-join-green?labelColor=0c0d10&color=7289da&style=for-the-badge&logo=discord&logoColor=7289da
+[discord-link]: https://discord.gg/bnSUxedypU
 
+[patreon-badge]: https://img.shields.io/badge/Patreon-Donate-%2300457C.svg?logo=Patreon&logoColor=ff424d&labelColor=0c0d10&color=ff424d&style=for-the-badge
+[patreon-link]: https://patreon.com/Zerebos
 
-
+[paypal-badge]: https://img.shields.io/badge/Paypal-Donate-%2300457C.svg?logo=Paypal&labelColor=0c0d10&color=002f86&style=for-the-badge
+[paypal-link]: https://paypal.me/ZackRauen
 
 BetterDiscord is a client modification for Discord. This allows you to add plugins and themes to your personal copy of Discord. BetterDiscord also adds a number of other features out of the box.
+
+---
 
 # Installation
 
 ## Auto Installers
 
-### Windows
-Grab the `exe` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe).
+[![Windows Installer][windows-badge]][windows-link] [![Mac Installer][mac-badge]][mac-link] [![Linux Installer][linux-badge]][linux-link]
 
-### macOS/OS X
-Grab the `zip` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip).
+[windows-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe
+[windows-badge]: https://img.shields.io/badge/Windows%20(7+)-Download-3a71c1?logo=Windows&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
-### Linux
-Grab the `AppImage` file from [here](https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage).
+[mac-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Mac.zip
+[mac-badge]: https://img.shields.io/badge/macOS%20(10.10+)-Download-3a71c1?logo=Apple&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
+[linux-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage
+[linux-badge]: https://img.shields.io/badge/Linux-Download-3a71c1?logo=Linux&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
 ## Manual Installation
 
 For normal users, installing via the installers makes the most sense. However when wanting to either develop BetterDiscord, or when the installers do not work, this option can be used.
 
-**Prerequisites**: [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) 12.x+ and the package manager [npm](https://www.npmjs.com/).
+### Prerequisites
+- [Git](https://git-scm.com)
+- [Node.js](https://nodejs.org/en/) with `npm`.
+- Command line of your choice.
 
-1. Clone this repository `git clone https://github.com/BetterDiscord/BetterDiscord.git`
-2. Install dependencies with `npm install`
-3. Build both the Injector and Renderer bundles with `npm run build` this will create a `injector.js`, `preload.js`, and `renderer.js` in the `dist` folder.
-4. Run the inject script to inject the local files into your Discord client (`npm run inject`). Alternately install it to non-stable using `npm run inject canary`.
+### 1: Clone the repository
+```ps
+git clone https://github.com/BetterDiscord/BetterDiscord.git
+```
+### 2: Install dependencies
+```ps
+npm install
+```
+### 3: Run Build Script
+This will create a `injector.js`, `preload.js`, and `renderer.js` in the `dist` folder.
+```ps
+npm run build
+```
+### 4: Inject into your Discord client
+#### Install to Stable
+```ps
+npm run inject
+```
+#### Install to PTB
+```ps
+npm run inject ptb
+```
+#### Install to Canary
+```ps
+npm run inject canary
+```
+
+## Additional Scripts
+
+### Compiling & Distribution
+This will create a `betterdiscord.asar` file in the `dist` folder.
+```ps
+npm run dist
+```
+
+---
 
 # FAQ
 
@@ -53,9 +91,7 @@ BD has some other built-in features such as Emotes from Twitch, FFZ, and BBTV, a
 The easiest way to find plugins and themes is to browse them on [our website: https://betterdiscord.app/](https://betterdiscord.app/). Additionally, in our [support servers](#support-servers) we have channels with lists of <u>official</u> plugins and themes.
 
 ### Support Servers?
-There are two: [The main server](https://discord.gg/bnSUxedypU), and [the backup](https://discord.gg/XqSpb9e3dq).
-
-
+There are two: [The main server][discord-link], and [the backup](https://discord.gg/XqSpb9e3dq).
 
 # Supporters
 These people have all subscribed to the `True Supporter` tier on Patreon to support me.
@@ -93,10 +129,8 @@ These people have all subscribed to the `True Supporter` tier on Patreon to supp
 </tr>
 </table>
 
-
 # Bandagers
 These people have all subscribed to the `Bandager` tier on Patreon to support me.
-
 
 <table>
 <tr>
@@ -178,3 +212,12 @@ These people have either donated or subscribed to the most basic patron tier to 
     </td>
 </tr>
 </table>
+
+# Contributors
+
+For information on contributing to this project, please see [CONTRIBUTING.md](/CONTRIBUTING.md).
+
+[![Contributors][contributors-image]][contributors-link]
+
+[contributors-image]: https://contrib.rocks/image?repo=betterdiscord/betterdiscord
+[contributors-link]: https://github.com/betterdiscord/betterdiscord/graphs/contributors

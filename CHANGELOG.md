@@ -2,6 +2,28 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.5.3
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed Canary crashing immediately
+
+## 1.5.2
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed being unable to inject into settings, thanks @Strencher
+
 ## 1.5.1
 
 ### Added

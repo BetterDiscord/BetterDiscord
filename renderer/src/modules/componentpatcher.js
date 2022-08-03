@@ -13,7 +13,10 @@ const Anchor = WebpackModules.getByDisplayName("Anchor");
 
 const Developers = [
     /* Zerebos#7790 */
-    "249746236008169473"
+    "249746236008169473",
+    
+    /* Strencher#1044 */
+    "415849376598982656"
 ];
 
 const DeveloperBadge = function DeveloperBadge({type, size = 16}) {
@@ -132,7 +135,7 @@ export default new class ComponentPatcher {
     
     patchGuildPills() {
         if (this.guildPillPatch) return;
-        const guildPill = WebpackModules.find(m => m.default.displayName === "AnimatedHalfPill");
+        const guildPill = WebpackModules.find(m => m?.default?.displayName === "AnimatedHalfPill");
         if (!guildPill) return;
         this.guildPillPatch = Patcher.after("ComponentPatcher", guildPill, "default", (_, args, returnValue) => {
             const props = args[0];

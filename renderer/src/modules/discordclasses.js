@@ -7,16 +7,6 @@ const combineClasses = function (...props) {
 };
 
 const DiscordClassModules = Utilities.memoizeObject({
-    get Divider() {
-        const toolbar = WebpackModules.getByProps("divider", "toolbar");
-        const discovery = WebpackModules.getByProps("divider", "emptyGuilds");
-        
-        return {
-            verticalDivider: toolbar.divider,
-            dividerLarge: discovery.divider,
-            divider: "bd-divider"
-        };
-    },
     get Text() {
         return combineClasses(
             ["size20", "size12"],
@@ -30,7 +20,7 @@ const DiscordClassModules = Utilities.memoizeObject({
         );
     },
     get EmptyImage() {return WebpackModules.getByProps("emptyImage", "emptyHeader");},
-    get Modal() {return WebpackModules.getByProps("content", "root", "header");},
+    get Modal() {return WebpackModules.getByProps("content", "root", "header", "close");},
     get Scrollers() {return WebpackModules.getByProps("thin", "scrollerBase", "content");},
     get Margins() {return WebpackModules.getByProps("marginXSmall", "marginBottom8");},
     get Integrations() {return WebpackModules.getByProps("secondaryHeader", "detailsWrapper");},
@@ -48,7 +38,7 @@ const DiscordClasses = new Proxy(DiscordClassModules, {
         
         return new Proxy(list[item], {
             get(obj, prop) {
-                if (!Reflect.has(obj, prop)) return "";
+                if (!(prop in obj)) return "";
 
                 return new ClassName(obj[prop]);
             }

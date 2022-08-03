@@ -129,6 +129,10 @@ export default class Utilities {
         return true;
     }
 
+    static isClass(obj) {
+        return typeof(obj) === "function" && /^\s*class\s+/.test(obj.toString());
+    }
+
     /**
      * Generates an automatically memoizing version of an object.
      * @author Zerebos

@@ -12,7 +12,7 @@ export default function() {
         }
 
         if (request === namespace || request.startsWith(prefix)) {
-            const requested = request.substr(prefix.length);
+            const requested = request.slice(prefix.length);
             if (requested == "bdapi") return BdApi;
         }
 

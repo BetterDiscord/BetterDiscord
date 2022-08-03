@@ -47,5 +47,6 @@
 .bd-divider {
     width: 100%;
     height: 1px;
-    border-top: thin solid hsl(0deg 0% 100% / 6%);
+    border-top: thin solid var(--background-modifier-accent);
+    margin-bottom: 1em;
 }

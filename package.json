@@ -13,12 +13,14 @@
         "inject": "node scripts/inject.js",
         "lint": "eslint --ext .js common/ && npm run lint --prefix injector && npm run lint --prefix renderer",
         "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
-        "dist": "npm run build-prod && node scripts/pack.js"
+        "dist": "npm run build-prod && node scripts/pack.js",
+        "api": "jsdoc -X renderer/src/modules/pluginapi.js > jsdoc-ast.json"
     },
     "devDependencies": {
         "asar": "^3.0.3",
         "eslint": "^7.12.0",
         "eslint-plugin-react": "^7.21.5",
-        "mocha": "^8.2.0"
+        "jsdoc": "^3.6.11",
+        "mocha": "^10.0.0"
     }
 }
