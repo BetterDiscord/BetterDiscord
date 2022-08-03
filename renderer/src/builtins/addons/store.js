@@ -1,3 +1,5 @@
+import {Web} from "data";
+
 import Builtin from "../../structs/builtin";
 import {React, WebpackModules} from "modules";
 import PluginManager from "../../modules/pluginmanager";
@@ -42,11 +44,12 @@ export default new class Store extends Builtin {
             
             if (!matchedProtocols || !matchedProtocols?.length) return embeds;
             
-            return (embeds ?? []).concat(matchedProtocols.map(url => {
+            return (embeds ?? []).concat(matchedProtocols.map((url) => {
                 const parameter = url.pathname.slice(1);
-                const addon = Number.isNaN(Number(parameter)) ? parameter : Number(parameter);
+                const addonId = Number.isNaN(Number(parameter)) ? parameter : Number(parameter);
+                if (!addonId) return null;
 
-                return React.createElement(EmbeddedStoreCard, {addon});
+                return React.createElement(EmbeddedStoreCard, {addonId});
             }));
         });
     }
@@ -91,15 +94,15 @@ export default new class Store extends Builtin {
 
         if (url.hostname === "addon") {
             const parameter = url.pathname.slice(1);
-            const addon = Number.isNaN(Number(parameter)) ? parameter : Number(parameter);
-            if (!addon) return link;
+            const addonId = Number.isNaN(Number(parameter)) ? parameter : Number(parameter);
+            if (!addonId) return link;
 
             link.props.onClick = async (event) => {
-                const data = await BdWebApi.getAddon(addon);
+                const addon = await BdWebApi.getAddon(addonId);
 
-                if (data?.type) {
+                if (addon?.type) {
                     event.preventDefault();
-                    window.open((BdWebApi.pages[data.type] + (typeof(addon) === "number" ? "?id=" : "/") + addon), "_blank");
+                    window.open((Web.PAGES[addon.type] + (typeof(addonId) === "number" ? "?id=" : "/") + addonId), "_blank");
                 }
             }
         }
@@ -118,8 +121,8 @@ class EmbeddedStoreCard extends React.Component {
     }
 
     componentDidMount() {
-        BdWebApi.getAddon(this.props.addon).then(data => {
-            if (data.id) this.setState({addon: data});
+        BdWebApi.getAddon(this.props.addonId).then(data => {
+            if (data?.id) this.setState({addon: data});
         });
     }
 
@@ -138,7 +141,7 @@ class EmbeddedStoreCard extends React.Component {
         return [
             addon ? React.createElement(StoreCard, {
                 ...addon,
-                thumbnail: BdWebApi.endpoints.thumbnail(addon.thumbnail_url),
+                thumbnail: Web.ENDPOINTS.thumbnail(addon.thumbnail_url),
                 folder: manager.addonfolder,
                 installAddon: BdWebApi.installAddon.bind(BdWebApi),
                 reload: addon.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager),

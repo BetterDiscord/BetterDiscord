@@ -5,7 +5,7 @@ import {shell} from "electron";
 
 import Dropdown from "../components/dropdown";
 import SearchBar from "../components/search";
-import Divider from "../divider";
+import Divider from "../../divider";
 import SettingsTitle from "../title";
 import Reload from "../../icons/reload";
 
