@@ -132,6 +132,8 @@ const protect = theModule => {
     return proxy;
 };
 
+const hasThrown = new Set();
+
 export default class WebpackModules {
     static find(filter, first = true) {return this.getModule(filter, {first});}
     static findAll(filter) {return this.getModule(filter, {first: false});}
@@ -153,7 +155,8 @@ export default class WebpackModules {
                 return filter(exports, module, moduleId);
             }
             catch (err) {
-                Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                hasThrown.add(filter);
                 return false;
             }
         };
@@ -209,7 +212,8 @@ export default class WebpackModules {
                         return filter(ex, mod, moduleId);
                     }
                     catch (err) {
-                        Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                        if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getBulk", "Module filter threw an exception.", filter, err);
+                        hasThrown.add(filter);
                         return false;
                     }
                 };
