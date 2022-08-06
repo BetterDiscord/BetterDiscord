@@ -131,7 +131,7 @@ export default class StorePage extends React.Component {
             {this.state.isLoaded && addons.length > 1 && <nav className="bd-page-control">
                 <Button look={Button.Looks.BLANK} className="bd-page-button" onClick={handleSelect(s => s - 1)} disabled={!canGoBackward}>
                     <Previous />
-                    {Strings.Addons.back}
+                    {Strings.Store.back}
                 </Button>
                 <div className={`bd-page-buttons ${DiscordClasses.Scrollers.thin}`}>
                     {addons.length
@@ -148,7 +148,7 @@ export default class StorePage extends React.Component {
                     }
                 </div>
                 <Button look={Button.Looks.BLANK} className="bd-page-button" onClick={handleSelect(s => s + 1)} disabled={!canGoForward}>
-                    {Strings.Addons.next}
+                    {Strings.Store.next}
                     <Next />
                 </Button>
             </nav>}
