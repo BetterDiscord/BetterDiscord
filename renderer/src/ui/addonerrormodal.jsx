@@ -10,7 +10,7 @@ const joinClassNames = (...classNames) => classNames.filter(e => e).join(" ");
 
 class AddonError extends React.Component {
     renderErrorBody(err) {
-        const stack = err.error && err.stack;
+        const stack = err?.error?.stack ?? err.stack;
         if (!stack) return null;
         
         return <div className="bd-addon-error-body">
@@ -22,12 +22,9 @@ class AddonError extends React.Component {
     }
 
     render() {
-        const { err } = this.props;
+        const {err} = this.props;
 
-        return <details
-            key={`${err.type}-${this.props.index}`}
-            className="bd-addon-error"
-        >
+        return <details key={`${err.type}-${this.props.index}`} className="bd-addon-error">
             <summary className="bd-addon-error-header">
                 <div className="bd-addon-error-icon">
                     {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
