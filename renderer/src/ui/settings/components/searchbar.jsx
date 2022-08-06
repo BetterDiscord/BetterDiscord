@@ -13,6 +13,7 @@ export default class SearchBar extends React.Component {
     constructor(props) {
         super(props);
 
+        this.onChange = this.onChange.bind(this);
         this.state = {
             hasContent: !!props.value,
             value: props.value || ""
@@ -28,7 +29,7 @@ export default class SearchBar extends React.Component {
         };
     }
 
-    onChange = ({target: {value}}) => {
+    onChange({target: {value}}) {
         this.setState({value, hasContent: !!value});
         if (typeof(this.props.onChange) === "function") this.props.onChange(value);
     }

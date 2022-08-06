@@ -4,7 +4,7 @@ import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
 import EmptyResults from "../blankslates/noresults";
 import Connection from "../../structs/psconnection";
-import SearchBar from "../settings/components/search";
+import SearchBar from "../settings/components/searchbar";
 import Previous from "../icons/previous";
 import Next from "../icons/next";
 

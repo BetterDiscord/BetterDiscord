@@ -1,12 +1,12 @@
+import {React, WebpackModules, BdWebApi, Strings} from "modules";
 import {Web} from "data";
 
 import Builtin from "../../structs/builtin";
-import {React, WebpackModules} from "modules";
 import PluginManager from "../../modules/pluginmanager";
 import ThemeManager from "../../modules/thememanager";
-import BdWebApi from "../../modules/bdwebapi";
 import StoreCard from "../../ui/settings/addonlist/storecard";
-// import openStoreDetail from "../../ui/settings/addonlist/storedetail";
+import Modals from "../../ui/modals";
+import Toasts from "../../ui/toasts";
 
 import {URL} from "url";
 
@@ -37,7 +37,7 @@ export default new class Store extends Builtin {
         this.instead(MessageAccessories.prototype, "renderEmbeds", (thisObject, methodArguments, renderEmbeds) => {
             const embeds = Reflect.apply(renderEmbeds, thisObject, methodArguments);
             const matchedProtocols = methodArguments[0]?.content.match(PROTOCOL_REGEX)?.map(match => {
-                const url = new URL(match.replace(/\s+/g, ' ').replaceAll(/[<>]+/g, "").trim());
+                const url = new URL(match.replace(/\s+/g, " ").replaceAll(/[<>]+/g, "").trim());
 
                 if (url.hostname === "addon" && url.protocol === BD_PROTOCOL) return url;
             }).filter(m => m != null);
@@ -104,7 +104,7 @@ export default new class Store extends Builtin {
                     event.preventDefault();
                     window.open((Web.PAGES[addon.type] + (typeof(addonId) === "number" ? "?id=" : "/") + addonId), "_blank");
                 }
-            }
+            };
         }
 
         return link;
@@ -125,34 +125,40 @@ class EmbeddedStoreCard extends React.Component {
             if (data?.id) this.setState({addon: data});
         });
     }
-
-    isInstalled = (filename) => {
-        return this.manager.isLoaded(filename);
-    }
-
+    
     get manager() {
         return this.state.addon?.type === "theme" ? ThemeManager : PluginManager;
     }
 
+    async install(id, filename) {
+        await BdWebApi.getAddonContents(id).then(contents => {
+            return this.manager.installAddon(contents, filename);
+        }).catch(err => {
+            Toasts.error(Strings.Store.downloadError.format({type: this.state.addon.type}), err);
+        });
+    }
+
     render() {
         const {addon} = this.state;
-        const {manager} = this;
 
-        return [
-            addon ? React.createElement(StoreCard, {
+        return addon ? React.createElement(StoreCard, {
+            ...addon,
+            key: addon.id,
+            className: "bd-store-card-embedded",
+            thumbnail: Web.ENDPOINTS.thumbnail(addon.thumbnail_url),
+            filename: addon.file_name,
+            releaseDate: new Date(addon.release_date),
+            isInstalled: this.manager.isLoaded(addon.file_name),
+            onInstall: () => Modals.showInstallationModal({
                 ...addon,
                 thumbnail: Web.ENDPOINTS.thumbnail(addon.thumbnail_url),
-                folder: manager.addonfolder,
-                installAddon: BdWebApi.installAddon.bind(BdWebApi),
-                reload: addon.type === "theme" ? ThemeManager.reloadTheme.bind(ThemeManager) : PluginManager.reloadPlugin.bind(PluginManager),
-                deleteAddon: manager.deleteAddon.bind(manager),
-                confirmAddonDelete: manager.confirmAddonDelete.bind(manager),
-                isInstalled: this.isInstalled.bind(this),
-                className: "bd-store-card-embedded",
-                // onDetailsView: () => {
-                //     openStoreDetail(addon);
-                // }
-            }) : null
-        ]
+                filename: addon.file_name,
+                releaseDate: new Date(addon.release_date),
+                onInstall: () => this.install(addon.id, addon.file_name)
+            }),
+            onForceInstall: () => this.install(addon.id, addon.file_name),
+            onDelete: () => this.manager.confirmAddonDelete(addon.file_name),
+            onForceDelete: () => this.manager.deleteAddon(addon.file_name)
+        }) : null;
     }
 }

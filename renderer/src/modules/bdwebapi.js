@@ -1,18 +1,10 @@
 import {Web} from "data";
 
+import Logger from "common/Logger";
 import Utilities from "./utilities";
-import Settings from "./settingsmanager";
-import ThemeManager from "./thememanager";
-import PluginManager from "./pluginmanager";
 import Strings from "./strings";
-import Events from "./emitter";
-import Logger from "common/logger";
-
-import Toasts from "../ui/toasts";
 
 import https from "https";
-import path from "path";
-import fs from "fs";
 
 const API_CACHE = {plugins: [], themes: [], addon: []};
 // const README_CACHE = {plugins: {}, themes: {}};
@@ -26,51 +18,14 @@ export default new class BdWebApi {
     get tags() {return Web.TAGS;}
 
     /**
-     * Fetches an addon by ID and adds writes it to it's respective folder. Enables the addon if the setting is on.
-     * @param {number} id - The ID of the addon to fetch.
-     * @param {string} filename - The name of the file that the addon will be written to.
-     * @param {"theme" | "plugin"} type - The type of the addon (theme or plugin).
-     * @returns {Promise<Object>}
-     */
-    installAddon(id, filename, type) {
-        const manager = type === "theme" ? ThemeManager : PluginManager;
-        const enable = installationId => {
-            const installation = manager.getAddon(installationId);
-
-            if (manager.enableAddon && installation.filename === filename) manager.enableAddon(installation);
-            Events.off(`${type}-loaded`, enable);
-        };
-
-        return new Promise(resolve => {
-            https.get(Web.ENDPOINTS.download(id), response => {
-                const chunks = [];
-                response.on("data", chunk => chunks.push(chunk));
-                response.on("end", () => {
-                    const data = chunks.join("");
-                    fs.writeFileSync(path.resolve(manager.addonFolder, filename), data, error => {
-                        if (error) Toasts.show(Strings.Addons.writeError.format({type, error}), {type: "error"});
-                    });
-                    if (!Settings.get("settings", "addons", "autoReload")) type === "theme" ? ThemeManager.reloadTheme(filename) : PluginManager.reloadPlugin(filename);
-                    if (Settings.get("settings", "addons", "autoEnable")) Events.on(`${type}-loaded`, enable);
-                    resolve(data);
-                });
-                response.on("error", (error) => {
-                    Logger.error("Addon Store", Strings.Addons.downloadError.format({type, error}));
-                    Toasts.show(Strings.Addons.downloadError.format({type, error}), {type: "error"});
-                });
-            });
-        });
-    }
-
-    /**
      * Fetches a list of all addons from the site.
      * @param {"themes" | "plugins"} type - The type of the addon (theme or plugin).
      * @returns {Promise<Array<Object>>}
      */
     getAddons(type) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             if (API_CACHE[type].length) resolve(API_CACHE[type]);
-            https.get(Web.ENDPOINTS.store(type), res => {
+            https.get(Web.ENDPOINTS.store(type), (res) => {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
     
@@ -85,8 +40,8 @@ export default new class BdWebApi {
                 });
     
                 res.on("error", (error) => {
-                    Logger.error("Addon Store", Strings.Addons.connectError.format({error}));
-                    Toasts.show(Strings.Addons.connectError.format({error}), {type: "error"});
+                    Logger.stacktrace("BdWebApi", Strings.Store.connectionError, error);
+                    reject(error);
                 });
             });
         });
@@ -98,11 +53,11 @@ export default new class BdWebApi {
      * @returns {Promise<Object>}
      */ 
     getAddon(addon) {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             const cacheMatch = API_CACHE.addon.find(a => a[typeof addon === "number" ? "id" : "name"] === addon);
             if (cacheMatch) resolve(cacheMatch);
 
-            https.get(Web.ENDPOINTS.addon(addon), res => {
+            https.get(Web.ENDPOINTS.addon(addon), (res) => {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
                 
@@ -117,8 +72,32 @@ export default new class BdWebApi {
                 });
 
                 res.on("error", (error) => {
-                    Logger.error("Addon Store", Strings.Addons.connectError.format({error}));
-                    Toasts.show(Strings.Addons.connectError.format({error}), {type: "error"});
+                    Logger.stacktrace("BdWebApi", Strings.Store.connectionError, error);
+                    reject(error);
+                });
+            });
+        });
+    }
+
+    /**
+     * Fetches and return's an addon's raw text content.
+     * @param {number} id - The ID of the addon to fetch.
+     * @returns {Promise<Object>}
+     */
+    getAddonContents(id) {
+        return new Promise((resolve, reject) => {
+            https.get(Web.ENDPOINTS.download(id), (res) => {
+                const chunks = [];
+                res.on("data", chunk => chunks.push(chunk));
+                
+                res.on("end", () => {
+                    const data = chunks.join("");
+                    resolve(data);
+                });
+
+                res.on("error", (error) => {
+                    Logger.stacktrace("BdWebApi", Strings.Store.connectionError, error);
+                    reject(error);
                 });
             });
         });

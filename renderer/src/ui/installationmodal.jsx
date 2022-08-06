@@ -18,6 +18,7 @@ export default class InstallationModal extends React.Component {
     constructor() {
         super(...arguments);
 
+        this.onKeyDown = this.onKeyDown.bind(this);
         this.state = {
             isInstalling: false
         };
@@ -25,24 +26,23 @@ export default class InstallationModal extends React.Component {
 
     async install(id, filename) {
         this.setState({isInstalling: true});
-        await this.props.installAddon(id, filename, this.props.type);
+        await this.props.onInstall?.(id, filename, this.props.type);
         this.setState({isInstalling: false});
-        if (typeof this.props.onInstall === "function") this.props.onInstall();
         this.props.onClose();
     }
  
-    onKeyDown = event => {
+    onKeyDown(event) {
         const {key} = event;
 
         if (key === "Escape" || key === "Enter" || key === " ") event.stopPropagation();
         if (key === "Escape") this.props.onClose();
         if (key === "Enter" || key === " ") {
-            this.install(this.props.id, this.props.file_name);
+            this.install(this.props.id, this.props.filename);
         }
     }
 
     render() {
-        const {name, id, description, author, release_date, type, version, file_name} = this.props;
+        const {name, id, description, author, releaseDate, type, version, filename} = this.props;
 
         return <ModalRoot {...this.props} onKeyDown={this.onKeyDown} size="small" className="bd-installation-modal">
             <ModalHeader className="bd-installation-header">
@@ -55,7 +55,7 @@ export default class InstallationModal extends React.Component {
             <ModalContent className="bd-installation-content">
                 <h5 className={Utilities.joinClassNames("bd-installation-name", DiscordClasses.Text.size16, DiscordClasses.Text.colorHeaderPrimary)}>{name}</h5>
                 <div className={Utilities.joinClassNames(DiscordClasses.Text.size14, DiscordClasses.Text.colorHeaderSecondary)}>
-                    {Strings.Addons.installConfirmation.format({type})}
+                    {Strings.Store.installConfirmation.format({type})}
                 </div>
                 <ul className="bd-installation-info">
                     <InfoItem icon={<Description aria-label={Strings.Addons.description} />} id="bd-info-description" label={Strings.Addons.description}>
@@ -66,12 +66,12 @@ export default class InstallationModal extends React.Component {
                         {version}
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
-                    <InfoItem icon={<Clock aria-label={Strings.Addons.uploadDate.format({date: new Date(release_date).toLocaleString()})} />} id="bd-info-upload-date" label={Strings.Addons.uploadDate.format({date: new Date(release_date).toLocaleString()})}>
-                        {Strings.Addons.uploadDate.format({date: new Date(release_date).toLocaleString()})}
+                    <InfoItem icon={<Clock aria-label={Strings.Store.uploadDate.format({date: releaseDate.toLocaleString()})} />} id="bd-info-upload-date" label={Strings.Store.uploadDate.format({date: releaseDate.toLocaleString()})}>
+                        {Strings.Store.uploadDate.format({date: releaseDate.toLocaleString()})}
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Github aria-label={Strings.Addons.source} />} id="bd-info-source" label={Strings.Addons.source}>
-                        <Anchor href={Web.ENDPOINTS.githubRedirect(id)} target="_blank" rel="noreferrer noopener">{file_name}</Anchor>
+                        <Anchor href={Web.ENDPOINTS.githubRedirect(id)} target="_blank" rel="noreferrer noopener">{filename}</Anchor>
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Author aria-label={Strings.Addons.author} />} id="bd-info-author" label={Strings.Addons.uploaded}>
@@ -80,7 +80,7 @@ export default class InstallationModal extends React.Component {
                 </ul>
             </ModalContent>
             <ModalFooter>
-                <Button onClick={() => this.install(id, file_name)} color={Button.Colors.GREEN} disabled={this.state.isInstalling}>
+                <Button onClick={() => this.install(id, filename)} color={Button.Colors.GREEN} disabled={this.state.isInstalling}>
                     {this.state.isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : (Strings.Modals.install ?? "Install")}
                 </Button>
             </ModalFooter>

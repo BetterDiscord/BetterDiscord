@@ -259,19 +259,7 @@
         "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
-        "blankSlateMessage": "Download some from the store to get started.",
-        "installConfirmation": "Do you want to add this to your installed {{type}}s?",
-        "new": "New",
-        "likes": "Likes",
-        "downloads": "Downloads",
-        "likesAmount": "{{amount}} likes",
-        "downloadsAmount": "{{amount}} downloads",
-        "uploadDate": "Uploaded on {{date}}",
-        "back": "Back",
-        "next": "Next",
-        "connectError": "Failed to connect to Store: {{error}}",
-        "downloadError": "Failed to download {{type}}: {{error}}",
-        "writeError": "Failed to write {{type}} to disk: {{error}}"
+        "blankSlateMessage": "Download some from the store to get started."
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -280,7 +268,22 @@
         "openNative": "Open in System Editor",
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
-        "editorTitle": "Custom CSS Editor"
+        "editorTitle": "Custom CSS Editor",
+        "writeError": "Failed to write {{type}} to disk."
+    },
+    "Store": {
+        "connectionError": "Failed to connect to Store.",
+        "connectionErrorMessage": "There was an error connecting to the store, it's possible our website/api is down. Would you like to retry?",
+        "downloadError": "Failed to download {{type}}.",
+        "installConfirmation": "Do you want to add this to your installed {{type}}s?",
+        "back": "Back",
+        "next": "Next",
+        "new": "New",
+        "likes": "Likes",
+        "likesAmount": "{{amount}} likes",
+        "downloads": "Downloads",
+        "downloadsAmount": "{{amount}} downloads",
+        "uploadDate": "Uploaded on {{date}}"
     },
     "Emotes": {
         "loading": "Loading emotes in the background do not reload.",
@@ -318,6 +321,7 @@
         "cancel": "Cancel",
         "nevermind": "Nevermind",
         "close": "Close",
+        "retry": "Retry",
         "name": "Name",
         "message": "Message",
         "error": "Error",

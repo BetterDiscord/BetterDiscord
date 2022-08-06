@@ -9,17 +9,23 @@ import NoResults from "../../blankslates/noresults";
 import EmptyImage from "../../blankslates/emptyimage";
 
 export default class InstalledPage extends React.Component {
+    constructor() {
+        super();
+
+        this.update = this.update.bind(this);
+    }
+
     componentDidMount() {
-        Events.on(`${this.props.prefix}-loaded`, this.update);
-        Events.on(`${this.props.prefix}-unloaded`, this.update);
+        Events.on(`${this.props.type}-loaded`, this.update);
+        Events.on(`${this.props.type}-unloaded`, this.update);
     }
 
     componentWillUnmount() {
-        Events.off(`${this.props.prefix}-loaded`, this.update);
-        Events.off(`${this.props.prefix}-unloaded`, this.update);
+        Events.off(`${this.props.type}-loaded`, this.update);
+        Events.off(`${this.props.type}-unloaded`, this.update);
     }
 
-    update = () => {
+    update() {
         this.forceUpdate();
     }
 

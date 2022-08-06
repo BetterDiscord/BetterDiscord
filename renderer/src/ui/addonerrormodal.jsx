@@ -2,6 +2,7 @@ import {React, Strings, WebpackModules, DiscordClasses, Utilities} from "modules
 import Extension from "./icons/extension";
 import ThemeIcon from "./icons/theme";
 import Divider from "./divider";
+import TabBar from "./settings/components/tabbar";
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
 
@@ -104,9 +105,7 @@ export default class AddonErrorModal extends React.Component {
         return <>
             <div className={`bd-error-modal-header ${DiscordClasses.Modal.header} ${DiscordClasses.Modal.separator}`}>
                 <h4 className={`${DiscordClasses.Titles.defaultColor} ${DiscordClasses.Text.size14} ${DiscordClasses.Titles.h4} ${DiscordClasses.Margins.marginBottom8}`}>{Strings.Modals.addonErrors}</h4>
-                <div className="bd-tab-bar">
-                    {tabs.map(tab => <div onClick={() => {this.switchToTab(tab.id);}} className={Utilities.joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
-                </div>
+                <TabBar items={tabs.map(({id, name}) => ({value: id, name}))} value={selectedTab.id} onChange={value => this.switchToTab(value)} />
             </div>
             <div className={`bd-error-modal-content ${DiscordClasses.Modal.content} ${DiscordClasses.Scrollers.thin}`}>
                 <div className="bd-addon-errors">

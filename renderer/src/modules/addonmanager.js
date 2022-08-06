@@ -267,6 +267,22 @@ export default class AddonManager {
         else this.enableAddon(id);
     }
 
+    installAddon(text, filename, shouldToast = true) {
+        const enable = (id) => {
+            const installation = this.getAddon(id);
+            this.enableAddon(installation);
+            Events.off(`${this.prefix}-loaded`, enable);
+        };
+        fs.writeFileSync(path.resolve(this.addonFolder, filename), text, (error) => {
+            if (error) {
+                Logger.stacktrace(this.name, Strings.Addons.writeError.format({type: this.prefix}), error);
+                if (shouldToast) Toasts.error(Strings.Addons.writeError.format({type: this.prefix}));
+            }
+        });
+        if (!Settings.get("settings", "addons", "autoReload")) this.reloadAddon(filename);
+        if (Settings.get("settings", "addons", "autoEnable")) Events.on(`${this.prefix}-loaded`, enable);
+    }
+
     loadNewAddons() {
         const files = fs.readdirSync(this.addonFolder);
         const removed = this.addonList.filter(t => !files.includes(t.filename)).map(c => c.id);

@@ -110,11 +110,11 @@ export default class Modals {
                 className: "bd-image-modal"
             }), React.createElement(ImageModal, Object.assign({
                 className: "bd-image-modal-image",
-                src: src,
+                src,
+                width,
+                height,
                 placeholder: src,
                 original: src,
-                width: width,
-                height: height,
                 onClickUntrusted: link => link.openHref(),
                 renderLinkComponent: () => React.createElement(MaskedLink, props)
             }, props)));

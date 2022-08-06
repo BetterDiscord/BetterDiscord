@@ -7,30 +7,22 @@ import Download from "../../icons/download";
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
 const Button = WebpackModules.getByProps("DropdownSizes");
 
-export default class StoreCard extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isInstalled: props.isInstalled(this.props.file_name)
-        };
-    }
-
-    get monthsAgo() {
-        const current = new Date();
-        const release = new Date(this.props.release_date);
-        let months = (((current.getFullYear() - release.getFullYear()) * 12) - release.getMonth()) + current.getMonth();
-
-        return Math.max(months, 0);
-    }
-
+export default class StoreCard extends React.PureComponent {
     abbreviateStat(n) {
         if (n < 1e3) return n;
         if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
         if (n >= 1e6 && n < 1e9) return +(n / 1e6).toFixed(1) + "M";
     }
 
-    preview = (event) => {
+    monthsAgo(date) {
+        const current = new Date();
+        const release = new Date(date);
+        const months = (((current.getFullYear() - release.getFullYear()) * 12) - release.getMonth()) + current.getMonth();
+
+        return Math.max(months, 0);
+    }
+
+    preview(event) {
         event.preventDefault();
         event.stopPropagation();
 
@@ -40,43 +32,32 @@ export default class StoreCard extends React.Component {
         });
     }
 
-    onClick = event => {
-        const {onDetailsView} = this.props;
-        if (typeof(onDetailsView) === "function") onDetailsView();
-    }
-
-    onButtonClick = async (event) => {
+    async onButtonClick(event) {
         event.stopPropagation();
         event.preventDefault();
 
-        if (event.shiftKey) {
-            if (this.state.isInstalled) {
-                this.props.deleteAddon(this.props.file_name);
-                this.setState({isInstalled: false});
-            } else {
-                await this.props.installAddon(this.props.id, this.props.file_name, this.props.type);
-                this.setState({isInstalled: true});
-            }
-        } else {
-            if (this.state.isInstalled) {
-                this.props.confirmAddonDelete(this.props.file_name, {
-                    onDelete: () => this.setState({isInstalled: false})
-                });
-            } else {
-                Modals.showInstallationModal({...this.props, onInstall: () => {
-                    this.setState({isInstalled: true});
-                }});
-            }
-        }   
+        if (this.props.isInstalled) {
+            if (event.shiftKey) this.props.onForceDelete?.();
+            else this.props.onDelete?.();
+        }
+        else {
+            if (event.shiftKey) this.props.onForceInstall?.();
+            else this.props.onInstall?.();
+        }
     }
 
     render() {
-        const {name, description, author, selectedTag, tags, likes, downloads, release_date, className} = this.props;
+        const {name, description, author, tags, selectedTag, likes, downloads, releaseDate, thumbnail, className} = this.props;
 
-        return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name} onClick={this.onClick}>
+        return <div className={"bd-store-card" + (className ? ` ${className}` : "")} data-addon-name={name}>
             <div className="bd-store-card-header">
                 <div className="bd-store-card-splash">
-                    <img key={this.props.thumbnail} onClick={this.preview} alt={name} src={this.props.thumbnail} />
+                    <img
+                        key={thumbnail}
+                        onClick={this.preview.bind(this)}
+                        alt={name}
+                        src={thumbnail}
+                    />
                 </div>
                 <div className="bd-store-card-icon">
                     <Tooltip color="primary" position="top" text={author.display_name}>
@@ -87,11 +68,11 @@ export default class StoreCard extends React.Component {
                 </div>
             </div>
             <div className="bd-store-card-body">
-                <div class="bd-store-card-title">
+                <div className="bd-store-card-title">
                     <h5>{name}</h5>
-                    {this.monthsAgo <= 3
-                        ? <Tooltip color="primary" position="top" text={Strings.Addons.uploadDate.format({date: new Date(release_date).toLocaleString()})}>
-                            {props => <span {...props} className="bd-store-card-new-badge">{Strings.Addons.new}</span>}
+                    {this.monthsAgo(releaseDate) <= 3
+                        ? <Tooltip color="primary" position="top" text={Strings.Store.uploadDate.format({date: new Date(releaseDate).toLocaleString()})}>
+                            {props => <span {...props} className="bd-store-card-new-badge">{Strings.Store.new}</span>}
                         </Tooltip>
                         : null
                     }
@@ -104,7 +85,7 @@ export default class StoreCard extends React.Component {
                 </div>
                 <div className="bd-store-card-footer">
                     <div className="bd-store-card-stats">
-                        <Tooltip color="primary" position="top" text={Strings.Addons.likesAmount.format({amount: likes})}>
+                        <Tooltip color="primary" position="top" text={Strings.Store.likesAmount.format({amount: likes})}>
                             {props =>
                                 <div {...props} className="bd-store-card-stat">
                                     <Heart />
@@ -112,7 +93,7 @@ export default class StoreCard extends React.Component {
                                 </div>
                             }
                         </Tooltip>
-                        <Tooltip color="primary" position="top" text={Strings.Addons.downloadsAmount.format({amount: downloads})}>
+                        <Tooltip color="primary" position="top" text={Strings.Store.downloadsAmount.format({amount: downloads})}>
                             {props =>
                                 <div {...props} className="bd-store-card-stat">
                                     <Download />
@@ -122,11 +103,11 @@ export default class StoreCard extends React.Component {
                         </Tooltip>
                     </div>
                     <Button
-                        color={this.state.isInstalled ? Button.Colors.RED : Button.Colors.GREEN}
+                        color={this.props.isInstalled ? Button.Colors.RED : Button.Colors.GREEN}
                         size={Button.Sizes.SMALL}
-                        onClick={this.onButtonClick}
+                        onClick={this.onButtonClick.bind(this)}
                     >
-                        {this.state.isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.install}
+                        {this.props.isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.install}
                     </Button>
                 </div>
             </div>

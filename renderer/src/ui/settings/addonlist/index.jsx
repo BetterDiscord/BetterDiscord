@@ -4,7 +4,8 @@ import {Web} from "data";
 import {shell} from "electron";
 
 import Dropdown from "../components/dropdown";
-import SearchBar from "../components/search";
+import SearchBar from "../components/searchbar";
+import TabBar from "../components/tabbar";
 import Divider from "../../divider";
 import SettingsTitle from "../title";
 import Reload from "../../icons/reload";
@@ -36,8 +37,8 @@ const CONTROLS = {
     store: {
         sortOptions: [
             {get label() {return Strings.Addons.name;}, value: "name"},
-            {get label() {return Strings.Addons.likes;}, value: "likes"},
-            {get label() {return Strings.Addons.downloads;}, value: "downloads"},
+            {get label() {return Strings.Store.Likes;}, value: "likes"},
+            {get label() {return Strings.Store.downloads;}, value: "downloads"},
             {get label() {return Strings.Addons.added;}, value: "release_date"}
         ],
         directions: [
@@ -86,11 +87,11 @@ const PAGES = {
 };
 
 export default class AddonList extends React.Component {
-    events = [`${this.props.prefix}-loaded`, `${this.props.prefix}-unloaded`];
-
     constructor(props) {
         super(props);
         
+        this.update = this.update.bind(this);
+        this.events = [`${this.props.type}-loaded`, `${this.props.type}-unloaded`];
         this.state = {
             query: "",
             selectedTag: "all",
@@ -151,7 +152,7 @@ export default class AddonList extends React.Component {
         />;
     }
 
-    update = () => {this.forceUpdate();}
+    update() {this.forceUpdate();}
 
     getControlState(control, defaultValue) {
         const {type} = this.props;
@@ -174,16 +175,6 @@ export default class AddonList extends React.Component {
         if (!controls[type]) controls[type] = {};
         controls[type][control] = value;
         DataStore.setBDData(id, controls);
-    }
-
-    makeTab({label, selected, onSelect = () => {}}) {
-        return <div
-            className={Utilities.joinClassNames("bd-tab-item", {selected})}
-            role="tab"
-            aria-disabled="false"
-            aria-selected={selected}
-            onClick={onSelect}
-        >{label}</div>;
     }
 
     reload() {
@@ -221,16 +212,16 @@ export default class AddonList extends React.Component {
         return <React.Fragment>
             <div className="bd-addon-list-title">
                 {storeEnabled ?
-                    <div className="bd-tab-bar">
-                        {Object.entries(PAGES).map(([id, props]) => {
-                            return this.makeTab({
-                                label: props.label,
-                                selected: this.state.page === id,
-                                onSelect: () => this.setState({page: id})
-                            });
-                        })}
+                    <TabBar
+                        value={this.state.page}
+                        onChange={value => this.setState({ page: value })}
+                        items={Object.entries(PAGES).map(([id, props]) => ({
+                            name: props.label,
+                            value: id
+                        }))}
+                    >
                         {showReloadIcon && <Reload className="bd-reload" onClick={this.reload.bind(this)} />}
-                    </div>
+                    </TabBar>
                     : <SettingsTitle key="title" text={this.props.title} otherChildren={showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />} />
                 }
                 <div className="bd-addon-list-filters">
@@ -295,6 +286,7 @@ export default class AddonList extends React.Component {
                 refreshList={this.props.refreshList}
                 isLoaded={this.props.isLoaded}
                 deleteAddon={this.props.deleteAddon}
+                installAddon={this.props.installAddon}
                 editAddon={this.editAddon}
                 confirmAddonDelete={this.props.confirmAddonDelete}
                 view={this.viewStyle}
