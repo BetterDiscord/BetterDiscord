@@ -1,34 +1,15 @@
-.bd-spinner {
-    width: 32px;
-    height: 32px;
-    position: relative;
+@keyframes bd-spinner-rotate {
+    to {
+        transform: rotate(1turn);
+    }
 }
 
-.bd-cube1,
-.bd-cube2 {
-    background-color: #3E82E5;
-    width: 10px;
-    height: 10px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    animation: bd-sk-cubemove 1.8s infinite ease-in-out;
-}
-
-.bd-cube2 {
-    animation-delay: -0.9s;
-}
-
-@keyframes bd-sk-cubemove {
+@keyframes bd-spinner-wandering-cubes {
     25% {
-        transform: translateX(22px) rotate(-90deg) scale(0.5);
+        transform: translateX(22px) rotate(-90deg) scale(.5);
     }
 
     50% {
-        transform: translateX(22px) translateY(22px) rotate(-179deg);
-    }
-
-    50.1% {
         transform: translateX(22px) translateY(22px) rotate(-180deg);
     }
 
@@ -36,7 +17,191 @@
         transform: translateX(0) translateY(22px) rotate(-270deg) scale(0.5);
     }
 
-    100% {
-        transform: rotate(-360deg);
+    to {
+        transform: rotate(-1turn);
     }
+}
+
+@keyframes bd-spinner-chasing-dots-bounce {
+
+    0%,
+    to {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1);
+    }
+}
+
+@keyframes bd-spinner-pulsing-ellipsis {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(0.8);
+        opacity: 0.3;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes bd-spinner-spinning-circle-dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0
+    }
+
+    50% {
+        stroke-dasharray: 130, 200
+    }
+
+    to {
+        stroke-dasharray: 130, 200;
+        stroke-dashoffset: -124;
+    }
+}
+
+@keyframes bd-spinner-low-motion {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.6
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.bd-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bd-spinner-inner {
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    contain: paint;
+}
+
+.bd-spinner-wandering-cubes .bd-spinner-item {
+    content: "";
+    background-color: var(--brand-experiment-400);
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: bd-spinner-wandering-cubes 1.8s ease-in-out infinite;
+}
+
+.bd-spinner-wandering-cubes .bd-spinner-item:last-of-type {
+    animation-delay: -0.9s;
+}
+
+.bd-spinner-chasing-dots .bd-spinner-inner {
+    animation: bd-spinner-rotate 2s linear infinite;
+}
+
+.bd-spinner-chasing-dots .bd-spinner-item {
+    width: 60%;
+    height: 60%;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));
+    border-radius: 100%;
+    animation: bd-spinner-chasing-dots-bounce 2s ease-in-out infinite;
+}
+
+.bd-spinner-chasing-dots .bd-spinner-item:last-of-type {
+    top: auto;
+    bottom: 0;
+    animation-delay: -1s;
+}
+
+.bd-spinner-pulsing-ellipsis .bd-spinner-inner {
+    height: auto;
+    width: 28px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.bd-spinner-pulsing-ellipsis .bd-spinner-item,
+.bd-spinner-low-motion .bd-spinner-item {
+    width: 6px;
+    height: 6px;
+    margin-right: 2px;
+    border-radius: 3px;
+    display: inline-block;
+    opacity: 0.3;
+}
+
+.bd-spinner-pulsing-ellipsis .bd-spinner-item {
+    animation: bd-spinner-pulsing-ellipsis 1.4s ease-in-out infinite;
+    background-color: hsl(180, calc(var(--saturation-factor, 1) * 7.7%), 97.5%);
+}
+
+.bd-spinner-pulsing-ellipsis .bd-spinner-item:nth-of-type(2) {
+    animation-delay: 0.2s;
+}
+
+.bd-spinner-pulsing-ellipsis .bd-spinner-item:nth-of-type(3) {
+    animation-delay: 0.4s;
+}
+
+.bd-spinner-spinning-circle {
+    transform: rotate(280deg);
+}
+
+.bd-spinner-circular {
+    animation: bd-spinner-rotate 2s linear infinite;
+    height: 100%;
+    width: 100%;
+}
+
+.bd-spinner-circular circle {
+    stroke: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));
+    animation: bd-spinner-spinning-circle-dash 2s ease-in-out infinite;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    fill: none;
+    stroke-width: 6;
+    stroke-miterlimit: 10;
+    stroke-linecap: round;
+}
+
+.bd-spinner-circular circle:first-of-type {
+    animation-delay: 0.23s;
+    stroke: var(--brand-experiment-800, hsl(235, calc(var(--saturation-factor, 1) * 47.5%), 19.4%));
+}
+
+.bd-spinner-circular circle:nth-of-type(2) {
+    opacity: 0.6;
+    animation-delay: 0.15s;
+}
+
+.bd-spinner-low-motion .bd-spinner-item {
+    background-color: var(--interactive-normal);
+    animation: bd-spinner-low-motion 1.4s ease-in-out infinite;
+}
+
+.bd-spinner-low-motion .bd-spinner-item:nth-of-type(2) {
+    animation-delay: 0.2s;
+}
+
+.bd-spinner-low-motion .bd-spinner-item:nth-of-type(3) {
+    animation-delay: 0.4s;
 }

@@ -14,7 +14,7 @@ export default class Modals {
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get ModalComponents() {return WebpackModules.getByProps("ModalRoot");}
     static get ModalClasses() {return WebpackModules.getByProps("modal", "content");}
-    static get MaskedLink() {return WebpackModules.getByDisplayName("MaskedLink");}
+    static get MaskedLink() {return WebpackModules.getModule(m => m?.default?.type?.toString()?.includes('default.MASKED_LINK'));;}
     static get ImageModal() {return WebpackModules.getByDisplayName("ImageModal");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
     static get FlexElements() {return WebpackModules.getByProps("Child", "Align");}
@@ -100,15 +100,14 @@ export default class Modals {
 
     static showImageModal(src, options = {}) {
         const {key = undefined, width = undefined, height = undefined} = options;
-        const ImageModal = this.ImageModal;
-        const MaskedLink = this.MaskedLink;
+        if (!this.ModalActions || !this.ModalComponents || !this.ImageModal || !this.MaskedLink) return Logger.warn("Modals", "showImageModal missing modules");
         const {ModalRoot, ModalSize} = this.ModalComponents;
 
         return this.ModalActions.openModal(props => {
             return React.createElement(ModalRoot, Object.assign({}, props, {
                 size: ModalSize.DYNAMIC,
                 className: "bd-image-modal"
-            }), React.createElement(ImageModal, Object.assign({
+            }), React.createElement(this.ImageModal, Object.assign({
                 className: "bd-image-modal-image",
                 src,
                 width,
@@ -116,7 +115,7 @@ export default class Modals {
                 placeholder: src,
                 original: src,
                 onClickUntrusted: link => link.openHref(),
-                renderLinkComponent: () => React.createElement(MaskedLink, props)
+                renderLinkComponent: () => React.createElement("a", props)
             }, props)));
         }, {modalKey: key});
     }

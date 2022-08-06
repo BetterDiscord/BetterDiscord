@@ -194,7 +194,7 @@
 
 .bd-addon-store .bd-store-card .bd-card-tags span.selected {
     color: #fff;
-    background-color: var(--brand-experiment, #5865f2);
+    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));;
 }
 
 .bd-card-tags span:last-child {
@@ -385,7 +385,7 @@
 
 .bd-page-item.selected {
     color: #fff;
-    background-color: var(--brand-experiment, #5865f2);
+    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));;
 }
 
 /* Tags Bar */
@@ -427,7 +427,7 @@
 
 .theme-dark .bd-store-tags span.selected,
 .theme-light .bd-store-tags span.selected {
-    background-color: var(--brand-experiment, #5865f2);
+    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));;
     color: #fff;
 }
 
@@ -578,7 +578,16 @@
 }
 
 .bd-installation-name {
+    font-size: 16px;
     font-weight: 600;
+    line-height: 20px;
+    color: var(--header-primary);
+}
+
+.bd-installation-subtitle {
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--header-secondary);
 }
 
 .bd-installation-info {
@@ -600,6 +609,10 @@
     word-break: break-word;
 }
 
+.bd-installation-info li a:hover {
+    text-decoration: underline;
+}
+
 .bd-installation-info li .bd-info-icon {
     display: inline-flex;
     flex: 0 0 auto;
@@ -618,7 +631,7 @@
 }
 
 #bd-info-description {
-    --bd-info-icon-color: var(--brand-experiment-360, #949cf7);
+    --bd-info-icon-color: var(--brand-experiment-360, hsl(235, calc(var(--saturation-factor, 1) * 86.1%), 77.5%));
 }
 
 #bd-info-version {

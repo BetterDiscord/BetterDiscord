@@ -2,7 +2,7 @@ import {React, Strings, WebpackModules, DiscordClasses, Utilities} from "modules
 import Extension from "./icons/extension";
 import ThemeIcon from "./icons/theme";
 import Divider from "./divider";
-import TabBar from "./settings/components/tabbar";
+import TabBar from "./tabbar";
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
 

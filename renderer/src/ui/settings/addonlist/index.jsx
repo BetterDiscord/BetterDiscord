@@ -5,7 +5,7 @@ import {shell} from "electron";
 
 import Dropdown from "../components/dropdown";
 import SearchBar from "../components/searchbar";
-import TabBar from "../components/tabbar";
+import TabBar from "../../tabbar";
 import Divider from "../../divider";
 import SettingsTitle from "../title";
 import Reload from "../../icons/reload";
@@ -54,7 +54,7 @@ const CONTROLS = {
 
 const PAGES = {
     installed: {
-        get label() {return Strings.Addons.installed},
+        get label() {return Strings.Addons.installed;},
         component: InstalledPage,
         defaults: {
             sort: "name",
@@ -63,7 +63,7 @@ const PAGES = {
         }
     },
     store: {
-        get label() {return Strings.Addons.store},
+        get label() {return Strings.Addons.store;},
         component: StorePage,
         state: {
             selectedTag: "all"
@@ -91,6 +91,8 @@ export default class AddonList extends React.Component {
         super(props);
         
         this.update = this.update.bind(this);
+        this.reload = this.reload.bind(this);
+        this.editAddon = this.editAddon.bind(this);
         this.events = [`${this.props.type}-loaded`, `${this.props.type}-unloaded`];
         this.state = {
             query: "",
@@ -197,7 +199,7 @@ export default class AddonList extends React.Component {
         this.setState({sortStyle: value});
     }
 
-    editAddon = (id) => this.props.editAddon(id);
+    editAddon(id) {return this.props.editAddon(id);}
 
     openFolder(folder) {
         const open = shell.openItem ?? shell.openPath;
@@ -211,16 +213,16 @@ export default class AddonList extends React.Component {
 
         return <React.Fragment>
             <div className="bd-addon-list-title">
-                {storeEnabled ?
-                    <TabBar
+                {storeEnabled
+                    ? <TabBar
                         value={this.state.page}
-                        onChange={value => this.setState({ page: value })}
+                        onChange={value => this.setState({page: value})}
                         items={Object.entries(PAGES).map(([id, props]) => ({
                             name: props.label,
                             value: id
                         }))}
                     >
-                        {showReloadIcon && <Reload className="bd-reload" onClick={this.reload.bind(this)} />}
+                        {showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />}
                     </TabBar>
                     : <SettingsTitle key="title" text={this.props.title} otherChildren={showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />} />
                 }
@@ -269,7 +271,7 @@ export default class AddonList extends React.Component {
                 <Button
                     size={Button.Sizes.SMALL}
                     onClick={() => this.openFolder(this.props.folder)}
-                >{Strings.Addons.openFolder.format({type: _.upperFirst(this.props.type)})}</Button>
+                >{Strings.Addons.openFolder.format({type: this.props.type})}</Button>
             </div>
             {this.pageControls}
             <Divider className={Utilities.joinClassNames(DiscordClasses.Margins.marginTop20.toString(), DiscordClasses.Margins.marginBottom20.toString())} />

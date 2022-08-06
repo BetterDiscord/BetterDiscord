@@ -70,7 +70,7 @@
 
 /* Sizes */
 
-.bd-searchbar.small input {
+.bd-searchbar.size-small input {
     height: 20px;
     font-size: 14px;
     font-weight: 500;
@@ -78,46 +78,46 @@
     padding: 0 4px;
 }
 
-.bd-searchbar.small .bd-search-icon {
+.bd-searchbar.size-small .bd-search-icon {
     width: 22px;
     height: 22px;
 }
 
-.bd-searchbar.small svg {
+.bd-searchbar.size-small svg {
     width: 16px;
     height: 16px;
 }
 
-.bd-searchbar.medium input {
+.bd-searchbar.size-medium input {
     height: 30px;
     line-height: 32px;
     font-size: 16px;
     padding: 0 8px;
 }
 
-.bd-searchbar.medium .bd-search-icon {
+.bd-searchbar.size-medium .bd-search-icon {
     width: 32px;    
     height: 32px;
 }
 
-.bd-searchbar.medium svg {
+.bd-searchbar.size-medium svg {
     width: 20px;
     height: 20px;
 }
 
-.bd-searchbar.large input {
+.bd-searchbar.size-large input {
     height: 38px;
     line-height: 40px;
     font-size: 20px;
     padding: 0 16px;
 }
 
-.bd-searchbar.large .bd-search-icon {
+.bd-searchbar.size-large .bd-search-icon {
     width: 40px;
     height: 40px;
 }
 
-.bd-searchbar.large svg {
+.bd-searchbar.size-large svg {
     width: 24px;
     height: 24px;
 }

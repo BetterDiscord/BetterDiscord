@@ -1,6 +1,6 @@
 import {Web} from "data";
 
-import Logger from "common/Logger";
+import Logger from "common/logger";
 import Utilities from "./utilities";
 import Strings from "./strings";
 

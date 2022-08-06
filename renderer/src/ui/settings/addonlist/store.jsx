@@ -1,6 +1,7 @@
 import {React, Strings, Utilities, WebpackModules, DiscordClasses, BdWebApi} from "modules";
 import {Web} from "data";
 
+import Spinner from "../../spinner";
 import Next from "../../icons/next";
 import Previous from "../../icons/previous";
 import NoResults from "../../blankslates/noresults";
@@ -9,7 +10,6 @@ import Modals from "../../modals";
 import Toasts from "../../toasts";
 
 const Button = WebpackModules.getByProps("DropdownSizes");
-const Spinner = WebpackModules.getByDisplayName("Spinner");
 
 export default class StorePage extends React.Component {
     constructor(props) {
@@ -34,7 +34,7 @@ export default class StorePage extends React.Component {
                 isLoaded: true,
                 addons: data
             });
-        }).catch((err) => Modals.showConfirmationModal(Strings.Store.connectionError, Strings.Store.connectionErrorMessage, {
+        }).catch(() => Modals.showConfirmationModal(Strings.Store.connectionError, Strings.Store.connectionErrorMessage, {
             cancelText: Strings.Modals.close,
             confirmText: Strings.Modals.retry,
             onConfirm: () => this.connect()
@@ -45,7 +45,7 @@ export default class StorePage extends React.Component {
         await BdWebApi.getAddonContents(id).then(contents => {
             return this.props.installAddon(contents, filename);
         }).catch(err => {
-            Toasts.error(Strings.Store.downloadError.format({ type: this.props.type }), err);
+            Toasts.error(Strings.Store.downloadError.format({type: this.props.type}), err);
         });
     }
 
@@ -70,14 +70,11 @@ export default class StorePage extends React.Component {
             .flat(10)
             .filter(this.filterTags)
             .sort((a, b) => {
-                try {
-                    const first = a[sort];
-                    const second = b[sort];
-                    if (typeof(first) == "string") return first.toLocaleLowerCase().localeCompare(second.toLocaleLowerCase());
-                    if (first > second) return 1;
-                    if (second > first) return -1;
-                }
-                catch {}
+                const first = a[sort];
+                const second = b[sort];
+                if (typeof(first) == "string") return first.toLocaleLowerCase().localeCompare(second.toLocaleLowerCase());
+                if (first > second) return 1;
+                if (second > first) return -1;
                 return 0;
             });
         if (!this.props.ascending) final.reverse();
@@ -125,7 +122,7 @@ export default class StorePage extends React.Component {
                             })}
                             onForceInstall={() => this.install(addon.id, addon.file_name)}
                             onDelete={() => this.props.confirmAddonDelete(addon.file_name)}
-                            onForceDelete={() => manager.deleteAddon(addon.file_name)}
+                            onForceDelete={() => this.props.deleteAddon(addon.file_name)}
                         />;
                     })}
                 </div>
@@ -136,7 +133,7 @@ export default class StorePage extends React.Component {
                     <Previous />
                     {Strings.Addons.back}
                 </Button>
-                <div class={`bd-page-buttons ${DiscordClasses.Scrollers.thin}`}>
+                <div className={`bd-page-buttons ${DiscordClasses.Scrollers.thin}`}>
                     {addons.length
                         ? addons.map((_, index) => <div
                             role="button"

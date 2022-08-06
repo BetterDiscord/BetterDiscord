@@ -1,6 +1,7 @@
-import {DiscordClasses, React, Strings, Utilities, WebpackModules} from "modules";
+import {React, Strings, WebpackModules} from "modules";
 import {Web} from "data";
 
+import Spinner from "./spinner";
 import Support from "./icons/support";
 import Version from "./icons/version";
 import Github from "./icons/github";
@@ -8,9 +9,7 @@ import Author from "./icons/author";
 import Description from "./icons/description";
 import Clock from "./icons/clock";
 
-const Anchor = WebpackModules.getByDisplayName("Anchor");
 const Button = WebpackModules.getByProps("BorderColors");
-const Spinner = WebpackModules.getByDisplayName("Spinner");
 const {TooltipContainer: Tooltip} = WebpackModules.getByProps("TooltipContainer");
 const {ModalRoot, ModalHeader, ModalContent, ModalCloseButton, ModalFooter} = WebpackModules.getByProps("ModalRoot");
 
@@ -53,8 +52,8 @@ export default class InstallationModal extends React.Component {
                 <ModalCloseButton onClick={this.props.onClose} className="bd-installation-close"/>
             </ModalHeader>
             <ModalContent className="bd-installation-content">
-                <h5 className={Utilities.joinClassNames("bd-installation-name", DiscordClasses.Text.size16, DiscordClasses.Text.colorHeaderPrimary)}>{name}</h5>
-                <div className={Utilities.joinClassNames(DiscordClasses.Text.size14, DiscordClasses.Text.colorHeaderSecondary)}>
+                <h5 className="bd-installation-name">{name}</h5>
+                <div className="bd-installation-subtitle">
                     {Strings.Store.installConfirmation.format({type})}
                 </div>
                 <ul className="bd-installation-info">
@@ -71,11 +70,11 @@ export default class InstallationModal extends React.Component {
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Github aria-label={Strings.Addons.source} />} id="bd-info-source" label={Strings.Addons.source}>
-                        <Anchor href={Web.ENDPOINTS.githubRedirect(id)} target="_blank" rel="noreferrer noopener">{filename}</Anchor>
+                        <a href={Web.ENDPOINTS.githubRedirect(id)} target="_blank" rel="noreferrer noopener">{filename}</a>
                     </InfoItem>
                     <div className="bd-info-divider" role="separator"></div>
                     <InfoItem icon={<Author aria-label={Strings.Addons.author} />} id="bd-info-author" label={Strings.Addons.uploaded}>
-                        <Anchor href={`${Web.PAGES.developer}/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</Anchor>
+                        <a href={`${Web.PAGES.developer}/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</a>
                     </InfoItem>
                 </ul>
             </ModalContent>
