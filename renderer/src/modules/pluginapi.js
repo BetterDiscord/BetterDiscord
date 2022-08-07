@@ -519,22 +519,6 @@ BdApi.Themes = new AddonAPI(ThemeManager);
  */
 BdApi.Patcher = {
     /**
-     * This function creates a version of itself that binds all `caller` parameters to your ID.
-     * @param {string} id ID to use for all subsequent calls
-     * @returns {Patcher} An instance of this patcher with all functions bound to your ID
-     */
-    bind(id) {
-        return {
-            patch: BdApi.Patcher.patch.bind(BdApi.Patcher, id),
-            before: BdApi.Patcher.before.bind(BdApi.Patcher, id),
-            instead: BdApi.Patcher.instead.bind(BdApi.Patcher, id),
-            after: BdApi.Patcher.after.bind(BdApi.Patcher, id),
-            getPatchesByCaller: BdApi.Patcher.getPatchesByCaller.bind(BdApi.Patcher, id),
-            unpatchAll: BdApi.Patcher.unpatchAll.bind(BdApi.Patcher, id),
-        };
-    },
-
-    /**
      * This method patches onto another function, allowing your code to run beforehand.
      * Using this, you are also able to modify the incoming arguments before the original method is run.
      * @param {string} caller Name of the caller of the patch function.

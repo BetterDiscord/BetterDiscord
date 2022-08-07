@@ -127,7 +127,7 @@ export default class Modals {
     static showChangelogModal(options = {}) {
         const ModalStack = WebpackModules.getByProps("push", "update", "pop", "popWithKey");
         const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
-        const TextElement = WebpackModules.findByDisplayName("Text");
+        const TextElement = WebpackModules.getByDisplayName("LegacyText") || WebpackModules.getByProps("Colors", "Sizes");
         const FlexChild = WebpackModules.getByProps("Child");
         const Titles = WebpackModules.getByProps("Tags", "default");
         const Changelog = WebpackModules.getModule(m => m.defaultProps && m.defaultProps.selectable == false);

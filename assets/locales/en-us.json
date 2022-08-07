@@ -36,10 +36,6 @@
                     "name": "Show Addon Errors",
                     "note": "Shows a modal with plugin/theme errors"
                 },
-                "autoReload": {
-                    "name": "Automatic Loading",
-                    "note": "Automatically loads, reloads, and unloads plugins and themes"
-                },
                 "editAction": {
                     "name": "Edit Action",
                     "note": "Where plugins & themes appear when editing",

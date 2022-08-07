@@ -36,9 +36,6 @@ export default class AddonManager {
     get addonFolder() {return "";}
     get language() {return "";}
     get prefix() {return "addon";}
-    get collection() {return "settings";}
-    get category() {return "addons";}
-    get id() {return "autoReload";}
     emit(event, ...args) {return Events.emit(`${this.prefix}-${event}`, ...args);}
 
     constructor() {
@@ -49,10 +46,6 @@ export default class AddonManager {
     }
 
     initialize() {
-        Settings.on(this.collection, this.category, this.id, (enabled) => {
-            if (enabled) this.watchAddons();
-            else this.unwatchAddons();
-        });
         return this.loadAllAddons();
     }
 
@@ -312,7 +305,7 @@ export default class AddonManager {
         }
 
         this.saveState();
-        if (Settings.get(this.collection, this.category, this.id)) this.watchAddons();
+        this.watchAddons();
         return errors;
     }
 
