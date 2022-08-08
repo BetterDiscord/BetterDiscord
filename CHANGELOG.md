@@ -2,6 +2,23 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.6.0
+
+### Added
+- Better handling and fallback when the editor fails to load. (Thanks Qb)
+- Now able to sort addons by whether they're enabled. (Thanks TheGreenPig)
+- New `Webpack` API added for plugin developers to take advantage of.
+
+### Removed
+
+### Changed
+- Addon loading no longer uses `require`
+- Addon error modal updated (Thanks Qb)
+- Fixed plugin error display on the modal
+
+### Fixed
+- Fixed dispatcher changes by Discord
+
 ## 1.5.3
 
 ### Added
