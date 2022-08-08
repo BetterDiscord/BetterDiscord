@@ -18,7 +18,6 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "addonErrors", value: true},
-            {type: "switch", id: "autoReload", value: true},
             {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]}
         ]
     },

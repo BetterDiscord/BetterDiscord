@@ -132,7 +132,7 @@ const protect = theModule => {
     return proxy;
 };
 
-const hasThrown = new Set();
+const hasThrown = new WeakSet();
 
 export default class WebpackModules {
     static find(filter, first = true) {return this.getModule(filter, {first});}
