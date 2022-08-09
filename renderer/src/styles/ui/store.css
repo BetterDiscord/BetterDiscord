@@ -194,7 +194,7 @@
 
 .bd-addon-store .bd-store-card .bd-card-tags span.selected {
     color: #fff;
-    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));;
+    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));
 }
 
 .bd-card-tags span:last-child {
@@ -385,7 +385,7 @@
 
 .bd-page-item.selected {
     color: #fff;
-    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));;
+    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));
 }
 
 /* Tags Bar */
@@ -427,7 +427,7 @@
 
 .theme-dark .bd-store-tags span.selected,
 .theme-light .bd-store-tags span.selected {
-    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));;
+    background-color: var(--brand-experiment, hsl(235, calc(var(--saturation-factor, 1) * 85.6%), 64.7%));
     color: #fff;
 }
 
