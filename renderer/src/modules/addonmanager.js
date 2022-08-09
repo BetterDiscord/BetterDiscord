@@ -4,7 +4,6 @@ import Settings from "./settingsmanager";
 import Events from "./emitter";
 import DataStore from "./datastore";
 import AddonError from "../structs/addonerror";
-import MetaError from "../structs/metaerror";
 import Toasts from "../ui/toasts";
 import DiscordModules from "./discordmodules";
 import Strings from "./strings";
@@ -121,21 +120,21 @@ export default class AddonManager {
         Logger.log(this.name, `No longer watching ${this.prefix} addons.`);
     }
 
-    extractMeta(fileContent) {
+    extractMeta(fileContent, filename) {
         const firstLine = fileContent.split("\n")[0];
-        const hasOldMeta = firstLine.includes("//META");
-        if (hasOldMeta) return this.parseOldMeta(fileContent);
+        const hasOldMeta = firstLine.includes("//META") && firstLine.includes("*//");
+        if (hasOldMeta) return this.parseOldMeta(fileContent, filename);
         const hasNewMeta = firstLine.includes("/**");
         if (hasNewMeta) return this.parseNewMeta(fileContent);
-        throw new MetaError(Strings.Addons.metaNotFound);
+        throw new AddonError(filename, filename, Strings.Addons.metaNotFound, {message: "", stack: fileContent}, this.prefix);
     }
 
-    parseOldMeta(fileContent) {
+    parseOldMeta(fileContent, filename) {
         const meta = fileContent.split("\n")[0];
         const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
         const parsed = Utilities.testJSON(metaData);
-        if (!parsed) throw new MetaError(Strings.Addons.metaError);
-        if (!parsed.name) throw new MetaError(Strings.Addons.missingNameData);
+        if (!parsed) throw new AddonError(filename, filename, Strings.Addons.metaError, {message: "", stack: meta}, this.prefix);
+        if (!parsed.name) throw new AddonError(filename, filename, Strings.Addons.missingNameData, {message: "", stack: meta}, this.prefix);
         parsed.format = "json";
         return parsed;
     }
@@ -168,12 +167,12 @@ export default class AddonManager {
         let fileContent = fs.readFileSync(filename, "utf8");
         fileContent = stripBOM(fileContent);
         const stats = fs.statSync(filename);
-        const addon = this.extractMeta(fileContent);
+        const addon = this.extractMeta(fileContent, path.basename(filename));
         if (!addon.author) addon.author = Strings.Addons.unknownAuthor;
         if (!addon.version) addon.version = "???";
         if (!addon.description) addon.description = Strings.Addons.noDescription;
         // if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
-        addon.id = addon.name;
+        addon.id = addon.name || path.basename(filename);
         addon.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
         addon.filename = path.basename(filename);
         addon.added = stats.atimeMs;
@@ -186,9 +185,13 @@ export default class AddonManager {
     // Subclasses should use the return (if not AddonError) and push to this.addonList
     loadAddon(filename, shouldToast = false) {
         if (typeof(filename) === "undefined") return;
-
-        const addon = this.requireAddon(path.resolve(this.addonFolder, filename));
-        if (addon instanceof AddonError) return addon;
+        let addon;
+        try {
+            addon = this.requireAddon(path.resolve(this.addonFolder, filename));
+        }
+        catch (e) {
+            return e;
+        }
         if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
 
         const error = this.initializeAddon(addon);
