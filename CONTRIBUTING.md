@@ -16,6 +16,7 @@ The following is a set of guidelines for contributing to BetterDiscord. These ar
   * [Suggesting Enhancements](#suggesting-enhancements)
   * [Your First Code Contribution](#your-first-code-contribution)
   * [Pull Requests](#pull-requests)
+  * [Translations](#translations)
 
 [Styleguides](#styleguides)
   * [Git Commit Messages](#git-commit-messages)
@@ -125,6 +126,13 @@ Please follow these steps to have your contribution considered by the maintainer
 3. After you submit your pull request, verify that all [status checks](https://help.github.com/articles/about-status-checks/) are passing <details><summary>What if the status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will open an issue to track that problem with our status check suite.</details>
 
 While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
+
+### Translations
+
+BetterDiscord supports a number of languages thanks to translations provided by the community. Translations for the BetterDiscord project should be submitted via [POEditor](https://poeditor.com/join/project?hash=nRljcnV0ET).
+
+* Do not submit translations generated with a translation such as Google Translate, DeepL, or anything of the sorts, 
+* Only submit translations for languages you are at the very least fluent in, better yet if it's your first language.
 
 ## Styleguides
 
