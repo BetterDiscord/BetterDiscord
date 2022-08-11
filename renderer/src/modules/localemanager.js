@@ -6,7 +6,7 @@ import Events from "./emitter";
 const {Dispatcher, UserSettingsStore} = DiscordModules;
 
 export default new class LocaleManager {
-    get discordLocale() {return UserSettingsStore.locale;}
+    get discordLocale() {return UserSettingsStore?.locale ?? this.defaultLocale;}
     get defaultLocale() {return "en-US";}
 
     constructor() {

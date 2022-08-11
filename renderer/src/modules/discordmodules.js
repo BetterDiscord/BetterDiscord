@@ -36,7 +36,7 @@ export default Utilities.memoizeObject({
 
     /* Current User Info, State and Settings */
     get UserInfoStore() {return WebpackModules.getByProps("getToken");},
-    get UserSettingsStore() {return WebpackModules.getByProps("guildPositions");},
+    get UserSettingsStore() {return WebpackModules.getByProps("getAllSettings", "theme");},
     get AccountManager() {return WebpackModules.getByProps("register", "login");},
     get UserSettingsUpdater() {return WebpackModules.getByProps("updateRemoteSettings");},
     get OnlineWatcher() {return WebpackModules.getByProps("isOnline");},
