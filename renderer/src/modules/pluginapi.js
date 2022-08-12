@@ -610,7 +610,7 @@ BdApi.Webpack = {
          * @param {function} filter Additional filter
          * @returns {function} A filter that checks for a regex match
          */
-         byRegex(regex) {return Filters.byRegex(regex);},
+         byRegex(regex, filter) {return Filters.byRegex(regex, filter);},
 
          /**
          * Generates a function that filters by strings.
