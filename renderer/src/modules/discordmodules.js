@@ -36,7 +36,6 @@ export default Utilities.memoizeObject({
 
     /* Current User Info, State and Settings */
     get UserInfoStore() {return WebpackModules.getByProps("getToken");},
-    get UserSettingsStore() {return WebpackModules.getByProps("getAllSettings", "theme");},
     get AccountManager() {return WebpackModules.getByProps("register", "login");},
     get UserSettingsUpdater() {return WebpackModules.getByProps("updateRemoteSettings");},
     get OnlineWatcher() {return WebpackModules.getByProps("isOnline");},
@@ -44,6 +43,8 @@ export default Utilities.memoizeObject({
     get RelationshipStore() {return WebpackModules.getByProps("isBlocked", "getFriendIDs");},
     get RelationshipManager() {return WebpackModules.getByProps("addRelationship");},
     get MentionStore() {return WebpackModules.getByProps("getMentions");},
+    get LocaleStore() {return WebpackModules.getByProps("locale", "addChangeListener");},
+    get ThemeStore() {return WebpackModules.getByProps("theme", "addChangeListener");},
 
     /* User Stores and Utils */
     get UserStore() {return WebpackModules.getByProps("getCurrentUser");},

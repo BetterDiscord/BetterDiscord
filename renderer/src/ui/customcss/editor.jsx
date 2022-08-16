@@ -12,7 +12,7 @@ export default class CodeEditor extends React.Component {
     constructor(props) {
         super(props);
 
-        this.props.theme = DiscordModules.UserSettingsStore && DiscordModules.UserSettingsStore.theme === "light" ? "vs" : "vs-dark";
+        this.props.theme = DiscordModules.ThemeStore && DiscordModules.ThemeStore.theme === "light" ? "vs" : "vs-dark";
 
         this.props.language = this.props.language.toLowerCase().replace(/ /g, "_");
         if (!languages.includes(this.props.language)) this.props.language = CodeEditor.defaultProps.language;
@@ -36,7 +36,7 @@ export default class CodeEditor extends React.Component {
             this.editor = window.monaco.editor.create(document.getElementById(this.props.id), {
                 value: this.props.value,
                 language: this.props.language,
-                theme: DiscordModules.UserSettingsStore.theme == "light" ? "vs" : "vs-dark",
+                theme: DiscordModules.ThemeStore.theme == "light" ? "vs" : "vs-dark",
                 fontSize: Settings.get("settings", "editor", "fontSize"),
                 lineNumbers: Settings.get("settings", "editor", "lineNumbers"),
                 minimap: {enabled: Settings.get("settings", "editor", "minimap")},
@@ -69,19 +69,19 @@ export default class CodeEditor extends React.Component {
             document.getElementById(this.props.id).appendChild(textarea);
         }
 
-        if (DiscordModules.UserSettingsStore) DiscordModules.UserSettingsStore.addChangeListener(this.onThemeChange);
+        if (DiscordModules.ThemeStore) DiscordModules.ThemeStore.addChangeListener(this.onThemeChange);
         window.addEventListener("resize", this.resize);
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.resize);
-        if (DiscordModules.UserSettingsStore) DiscordModules.UserSettingsStore.removeChangeListener(this.onThemeChange);
+        if (DiscordModules.ThemeStore) DiscordModules.ThemeStore.removeChangeListener(this.onThemeChange);
         for (const binding of this.bindings) binding.dispose();
         this.editor.dispose();
     }
 
     onThemeChange() {
-        const newTheme = DiscordModules.UserSettingsStore.theme === "light" ? "vs" : "vs-dark";
+        const newTheme = DiscordModules.ThemeStore.theme === "light" ? "vs" : "vs-dark";
         if (newTheme === this.props.theme) return;
         this.props.theme = newTheme;
         if (window.monaco?.editor) window.monaco.editor.setTheme(this.props.theme);
