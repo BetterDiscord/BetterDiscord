@@ -127,7 +127,7 @@ export default new class PluginManager extends AddonManager {
             return addon;
         }
         catch (err) {
-            return new AddonError(addon.name || addon.filename, module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
+            throw new AddonError(addon.name || addon.filename, module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
         }
     }
 

@@ -324,21 +324,29 @@ export default class WebpackModules {
         const fromCache = this.getModule(filter);
         if (fromCache) return Promise.resolve(fromCache);
 
+        const wrappedFilter = (exports) => {
+            try {
+                return filter(exports);
+            }
+            catch (err) {
+                if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                hasThrown.add(filter);
+                return false;
+            }
+        };
+
         return new Promise((resolve) => {
-            const cancel = () => {this.removeListener(listener);};
-            const listener = function (mod) {
-                const directMatch = filter(mod);
+            const cancel = () => this.removeListener(listener);
+            const listener = function(exports) {
+                if (!exports) return;
+
+                let foundModule = null;
+                if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = defaultExport ? exports.default : exports;
+                if (wrappedFilter(exports)) foundModule = exports;
+                if (!foundModule) return;
                 
-                if (directMatch) {
-                    cancel();
-                    return resolve(directMatch);
-                }
-
-                const defaultMatch = filter(mod.default);
-                if (!defaultMatch) return; 
-
                 cancel();
-                resolve(defaultExport ? mod.default : mod);
+                resolve(protect(foundModule));
             };
 
             this.addListener(listener);
