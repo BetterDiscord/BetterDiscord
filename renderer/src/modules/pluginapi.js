@@ -135,13 +135,13 @@ BdApi.showConfirmationModal = function (title, content, options = {}) {
 };
 
 /**
- * This shows a toast similar to android towards the bottom of the screen.
+ * Shows a toast similar to android towards the bottom of the screen.
  *
  * @param {string} content The string to show in the toast.
  * @param {object} options Options object. Optional parameter.
  * @param {string} [options.type=""] Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
- * @param {boolean} [options.icon=true] Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
- * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
+ * @param {boolean} [options.icon=true] Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: `true`
+ * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: `3000`
  * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the bd setting
  */
 BdApi.showToast = function(content, options = {}) {
@@ -149,7 +149,7 @@ BdApi.showToast = function(content, options = {}) {
 };
 
 /**
- * Show a notice above discord's chat layer.
+ * Shows a notice above Discord's chat layer.
  * 
  * @param {string|Node} content Content of the notice
  * @param {object} options Options for the notice.
@@ -163,10 +163,10 @@ BdApi.showToast = function(content, options = {}) {
 };
 
 /**
- * Finds a webpack module using a filter
+ * Finds a webpack module using a filter.
  * 
  * @deprecated
- * @param {function} filter A filter given the exports, module, and moduleId. Returns true if the module matches.
+ * @param {function} filter A filter given the exports, module, and moduleId. Returns `true` if the module matches.
  * @returns {any} Either the matching module or `undefined`
  */
 BdApi.findModule = function(filter) {
@@ -174,10 +174,10 @@ BdApi.findModule = function(filter) {
 };
 
 /**
- * Finds multple webpack modules using a filter
+ * Finds multiple webpack modules using a filter.
  * 
  * @deprecated
- * @param {function} filter A filter given the exports, module, and moduleId. Returns true if the module matches.
+ * @param {function} filter A filter given the exports, module, and moduleId. Returns `true` if the module matches.
  * @returns {Array} Either an array of matching modules or an empty array
  */
 BdApi.findAllModules = function(filter) {
@@ -185,7 +185,7 @@ BdApi.findAllModules = function(filter) {
 };
 
 /**
- * Finds a webpack module by own properties
+ * Finds a webpack module by own properties.
  * 
  * @deprecated
  * @param {...string} props Any desired properties
@@ -197,7 +197,7 @@ BdApi.findModuleByProps = function(...props) {
 
 
 /**
- * Finds a webpack module by own prototypes
+ * Finds a webpack module by own prototypes.
  * 
  * @deprecated
  * @param {...string} protos Any desired prototype properties
@@ -208,10 +208,10 @@ BdApi.findModuleByPrototypes = function(...protos) {
 };
 
 /**
- * Finds a webpack module by displayName property
+ * Finds a webpack module by `displayName` property.
  * 
  * @deprecated
- * @param {string} name Desired displayName property
+ * @param {string} name Desired `displayName` property
  * @returns {any} Either the matching module or `undefined`
  */
 BdApi.findModuleByDisplayName = function(name) {
@@ -219,7 +219,7 @@ BdApi.findModuleByDisplayName = function(name) {
 };
 
 /**
- * Get the internal react data of a specified node
+ * Gets the internal react data of a specified node.
  * 
  * @param {HTMLElement} node Node to get the react data from
  * @returns {object|undefined} Either the found data or `undefined` 
@@ -268,7 +268,7 @@ BdApi.deleteData = function(pluginName, key) {
 };
 
 /**
- * This function monkey-patches a method on an object. The patching callback may be run before, after or instead of target method.
+ * Monkey-patches a method on an object. The patching callback may be run before, after or instead of target method.
  * 
  *  - Be careful when monkey-patching. Think not only about original functionality of target method and your changes, but also about developers of other plugins, who may also patch this method before or after you. Try to change target method behaviour as little as possible, and avoid changing method signatures.
  *  - Display name of patched method is changed, so you can see if a function has been patched (and how many times) while debugging or in the stack trace. Also, patched methods have property `__monkeyPatched` set to `true`, in case you want to check something programmatically.
@@ -343,7 +343,7 @@ BdApi.testJSON = function(data) {
 };
 
 /**
- * Gets a specific setting's status from BD
+ * Gets a specific setting's status from BD.
  * 
  * @deprecated
  * @param {string} [collection="settings"] Collection ID
@@ -356,7 +356,7 @@ BdApi.isSettingEnabled = function(collection, category, id) {
 };
 
 /**
- * Enable a BetterDiscord setting by ids.
+ * Enables a BetterDiscord setting by ids.
  * 
  * @deprecated
  * @param {string} [collection="settings"] Collection ID
@@ -380,7 +380,7 @@ BdApi.disableSetting = function(collection, category, id) {
 };
 
 /**
- * Toggle a BetterDiscord setting by ids.
+ * Toggles a BetterDiscord setting by ids.
  * 
  * @deprecated
  * @param {string} [collection="settings"] Collection ID
@@ -395,7 +395,7 @@ BdApi.toggleSetting = function(collection, category, id) {
  * Gets some data in BetterDiscord's misc data.
  * 
  * @deprecated
- * @param {string} key Key of the data to load.
+ * @param {string} key Key of the data to load
  * @returns {any} The stored data
  */
 BdApi.getBDData = function(key) {
@@ -636,7 +636,7 @@ BdApi.Webpack = {
 
     /**
      * Finds a module using a filter function.
-     * @param {function} filter A function to use to filter modules. It is given exports, module, and moduleID. Return true to signify match.
+     * @param {function} filter A function to use to filter modules. It is given exports, module, and moduleID. Return `true` to signify match.
      * @param {object} [options] Whether to return only the first matching module
      * @param {Boolean} [options.first=true] Whether to return only the first matching module
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
@@ -661,7 +661,7 @@ BdApi.Webpack = {
 
     /**
      * Finds a module that lazily loaded.
-     * @param {function} filter A function to use to filter modules. It is given exports. Return true to signify match.
+     * @param {function} filter A function to use to filter modules. It is given exports. Return `true` to signify match.
      * @param {object} [options] Whether to return only the first matching module
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
