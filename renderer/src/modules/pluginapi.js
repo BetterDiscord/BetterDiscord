@@ -660,7 +660,7 @@ BdApi.Webpack = {
     getBulk(...queries) {return WebpackModules.getBulk(...queries);},
 
     /**
-     * Finds a module that lazily loaded.
+     * Finds a module that is lazily loaded.
      * @param {function} filter A function to use to filter modules. It is given exports. Return `true` to signify match.
      * @param {object} [options] Whether to return only the first matching module
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
