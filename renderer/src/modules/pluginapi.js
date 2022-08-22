@@ -156,7 +156,7 @@ BdApi.showToast = function(content, options = {}) {
  * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
  * @param {Array<{label: string, onClick: function}>} [options.buttons] Buttons that should be added next to the notice text.
  * @param {number} [options.timeout=10000] Timeout until the notice is closed. Won't fire if it's set to 0;
- * @returns {function}
+ * @returns {function} A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
  */
  BdApi.showNotice = function (content, options = {}) {
     return Notices.show(content, options);
@@ -403,10 +403,10 @@ BdApi.getBDData = function(key) {
 };
 
 /**
- * Gets some data in BetterDiscord's misc data.
+ * Sets some data in BetterDiscord's misc data.
  * 
  * @deprecated
- * @param {string} key Key of the data to load.
+ * @param {string} key Key of the data to store
  * @returns {any} The stored data
  */
 BdApi.setBDData = function(key, data) {
@@ -520,7 +520,7 @@ BdApi.Themes = new AddonAPI(ThemeManager);
 BdApi.Patcher = {
     /**
      * This method patches onto another function, allowing your code to run beforehand.
-     * Using this, you are also able to modify the incoming arguments before the original method is run.
+     * Using this, you are able to modify the incoming arguments before the original method is run.
      * @param {string} caller Name of the caller of the patch function.
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.
      * @param {string} functionName Name of the function to be patched.
@@ -533,7 +533,7 @@ BdApi.Patcher = {
 
     /**
      * This method patches onto another function, allowing your code to run instead.
-     * Using this, you are also able to modify the return value, using the return of your code instead.
+     * Using this, you are able to replace the original completely. You can still call the original manually if needed.
      * @param {string} caller Name of the caller of the patch function.
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.
      * @param {string} functionName Name of the function to be patched.
@@ -545,8 +545,8 @@ BdApi.Patcher = {
     },
 
     /**
-     * This method patches onto another function, allowing your code to run instead.
-     * Using this, you are also able to modify the return value, using the return of your code instead.
+     * This method patches onto another function, allowing your code to run afterwards.
+     * Using this, you are able to modify the return value after the original method is run.
      * @param {string} caller Name of the caller of the patch function.
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.
      * @param {string} functionName Name of the function to be patched.
@@ -620,9 +620,9 @@ BdApi.Webpack = {
          byStrings(...strings) {return Filters.byStrings(strings);},
 
         /**
-         * Generates a function that filters by a set of properties.
+         * Generates a function that filters by the `displayName` property.
          * @param {string} name Name the module should have
-         * @returns {function} A filter that checks for a set of properties
+         * @returns {function} A filter that checks for a `displayName` match
          */
          byDisplayName(name) {return Filters.byDisplayName(name);},
 
