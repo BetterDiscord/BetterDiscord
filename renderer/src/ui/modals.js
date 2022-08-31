@@ -14,7 +14,7 @@ export default class Modals {
     static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get ModalComponents() {return WebpackModules.getByProps("ModalRoot");}
     static get ModalClasses() {return WebpackModules.getByProps("modal", "content");}
-    static get MaskedLink() {return WebpackModules.getModule(m => m?.default?.type?.toString()?.includes('default.MASKED_LINK'));}
+    static get MaskedLink() {return WebpackModules.getModule(m => m?.default?.type?.toString()?.includes('default.MASKED_LINK')).default;}
     static get ImageModal() {return WebpackModules.getByDisplayName("ImageModal");}
     static get AlertModal() {return WebpackModules.getByPrototypes("handleCancel", "handleSubmit", "handleMinorConfirm");}
     static get FlexElements() {return WebpackModules.getByProps("Child", "Align");}
@@ -115,7 +115,7 @@ export default class Modals {
                 placeholder: src,
                 original: src,
                 onClickUntrusted: link => link.openHref(),
-                renderLinkComponent: () => React.createElement("a", props)
+                renderLinkComponent: () => React.createElement(MaskedLink, props)
             }, props)));
         }, {modalKey: key});
     }
