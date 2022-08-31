@@ -1,4 +1,4 @@
-import {React, Strings, Utilities, WebpackModules, DiscordClasses, BdWebApi} from "modules";
+import {React, Strings, Utilities, WebpackModules, DiscordClasses, WebAPI} from "modules";
 import {Web} from "data";
 
 import Spinner from "../../spinner";
@@ -29,7 +29,7 @@ export default class StorePage extends React.Component {
     }
 
     connect() {
-        BdWebApi.getAddons(`${this.props.type}s`).then(data => {
+        WebAPI.getAddons(`${this.props.type}s`).then(data => {
             this.setState({
                 isLoaded: true,
                 addons: data
@@ -42,7 +42,7 @@ export default class StorePage extends React.Component {
     }
 
     async install(id, filename) {
-        await BdWebApi.getAddonContents(id).then(contents => {
+        await WebAPI.getAddonContents(id).then(contents => {
             return this.props.installAddon(contents, filename);
         }).catch(err => {
             Toasts.error(Strings.Store.downloadError.format({type: this.props.type}), err);

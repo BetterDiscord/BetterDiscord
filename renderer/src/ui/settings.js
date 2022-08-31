@@ -54,11 +54,7 @@ export default new class SettingsRenderer {
     }
 
     getAddonPanel(title, addonList, addonState, options = {}) {
-        return React.createElement(AddonList, Object.assign({}, {
-            title,
-            addonList,
-            addonState
-        }, options));
+        return React.createElement(AddonList, Object.assign({}, {title, addonList, addonState}, options));
     }
 
     async patchSections() {

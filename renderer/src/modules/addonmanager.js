@@ -279,7 +279,6 @@ export default class AddonManager {
                 if (shouldToast) Toasts.error(Strings.Addons.writeError.format({type: this.prefix}));
             }
         });
-        if (!Settings.get("settings", "addons", "autoReload")) this.reloadAddon(filename);
         if (Settings.get("settings", "addons", "autoEnable")) Events.on(`${this.prefix}-loaded`, enable);
     }
 
@@ -335,9 +334,7 @@ export default class AddonManager {
 
     deleteAddon(idOrFileOrAddon) {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
-        const deletion = fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
-        if (!Settings.get("settings", "addons", "autoReload")) this.unloadAddon(addon);
-        return deletion;
+        return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
     }
 
     saveAddon(idOrFileOrAddon, content) {

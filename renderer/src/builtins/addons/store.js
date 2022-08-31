@@ -1,4 +1,4 @@
-import {React, WebpackModules, BdWebApi, Strings} from "modules";
+import {React, WebpackModules, WebAPI, Strings} from "modules";
 import {Web} from "data";
 
 import Builtin from "../../structs/builtin";
@@ -98,7 +98,7 @@ export default new class Store extends Builtin {
             if (!addonId) return link;
 
             link.props.onClick = async (event) => {
-                const addon = await BdWebApi.getAddon(addonId);
+                const addon = await WebAPI.getAddon(addonId);
 
                 if (addon?.type) {
                     event.preventDefault();
@@ -121,7 +121,7 @@ class EmbeddedStoreCard extends React.Component {
     }
 
     componentDidMount() {
-        BdWebApi.getAddon(this.props.addonId).then(data => {
+        WebAPI.getAddon(this.props.addonId).then(data => {
             if (data?.id) this.setState({addon: data});
         });
     }
@@ -131,7 +131,7 @@ class EmbeddedStoreCard extends React.Component {
     }
 
     async install(id, filename) {
-        await BdWebApi.getAddonContents(id).then(contents => {
+        await WebAPI.getAddonContents(id).then(contents => {
             return this.manager.installAddon(contents, filename);
         }).catch(err => {
             Toasts.error(Strings.Store.downloadError.format({type: this.state.addon.type}), err);

@@ -9,7 +9,7 @@ import https from "https";
 const API_CACHE = {plugins: [], themes: [], addon: []};
 // const README_CACHE = {plugins: {}, themes: {}};
 
-export default new class BdWebApi {
+export default new class WebAPI {
     get apiVersion() {return Web.API_VERSION;}
     get webHostname() {return Web.WEB_HOSTNAME;}
     get apiBase() {return Web.API_BASE;}
@@ -40,7 +40,7 @@ export default new class BdWebApi {
                 });
     
                 res.on("error", (error) => {
-                    Logger.stacktrace("BdWebApi", Strings.Store.connectionError, error);
+                    Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
                     reject(error);
                 });
             });
@@ -72,7 +72,7 @@ export default new class BdWebApi {
                 });
 
                 res.on("error", (error) => {
-                    Logger.stacktrace("BdWebApi", Strings.Store.connectionError, error);
+                    Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
                     reject(error);
                 });
             });
@@ -96,7 +96,7 @@ export default new class BdWebApi {
                 });
 
                 res.on("error", (error) => {
-                    Logger.stacktrace("BdWebApi", Strings.Store.connectionError, error);
+                    Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
                     reject(error);
                 });
             });
