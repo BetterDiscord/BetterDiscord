@@ -115,7 +115,7 @@ export default class Modals {
                 placeholder: src,
                 original: src,
                 onClickUntrusted: link => link.openHref(),
-                renderLinkComponent: () => React.createElement(MaskedLink, props)
+                renderLinkComponent: props => React.createElement(this.MaskedLink, props)
             }, props)));
         }, {modalKey: key});
     }
@@ -152,7 +152,7 @@ export default class Modals {
     static showChangelogModal(options = {}) {
         const ModalStack = WebpackModules.getByProps("push", "update", "pop", "popWithKey");
         const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
-        const TextElement = WebpackModules.findByDisplayName("Text");
+        const TextElement = WebpackModules.getByDisplayName("LegacyText");
         const FlexChild = WebpackModules.getByProps("Child");
         const Titles = WebpackModules.getByProps("Tags", "default");
         const Changelog = WebpackModules.getModule(m => m.defaultProps && m.defaultProps.selectable == false);

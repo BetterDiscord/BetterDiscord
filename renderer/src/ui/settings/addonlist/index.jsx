@@ -207,7 +207,6 @@ export default class AddonList extends React.Component {
     }
 
     render() {
-        const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
         const storeEnabled = Settings.get("settings", "addons", "store");
         const Page = PAGES[this.currentPage]?.component || (() => null);
 
@@ -222,9 +221,8 @@ export default class AddonList extends React.Component {
                             value: id
                         }))}
                     >
-                        {showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />}
                     </TabBar>
-                    : <SettingsTitle key="title" text={this.props.title} otherChildren={showReloadIcon && <Reload className="bd-reload" onClick={this.reload} />} />
+                    : <SettingsTitle key="title" text={this.props.title} />
                 }
                 <div className="bd-addon-list-filters">
                     <div className="bd-select-wrapper">

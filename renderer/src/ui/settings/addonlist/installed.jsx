@@ -38,7 +38,6 @@ export default class InstalledPage extends React.Component {
         const containerState = this.props.state;
         const {addonList, addonState, onChange, reload} = this.props;
 
-        const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
         let sortedAddons = addonList.sort((a, b) => {
             const sortByEnabled = this.props.sort === "isEnabled";
             const first = sortByEnabled ? addonState[a.id] : a[this.props.sort];
@@ -69,7 +68,6 @@ export default class InstalledPage extends React.Component {
                     type={this.props.type}
                     editAddon={this.props.editAddon.bind(this, addon.id)}
                     confirmAddonDelete={this.props.confirmAddonDelete.bind(this, addon)}
-                    showReloadIcon={showReloadIcon}
                     key={addon.id}
                     enabled={addonState[addon.id]}
                     addon={addon}

@@ -125,7 +125,6 @@ export default class AddonCard extends React.Component {
 
         return <div className="bd-controls">
                     {this.props.hasSettings && this.makeControlButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, this.showSettings, {disabled: !this.props.enabled})}
-                    {this.props.showReloadIcon && this.makeControlButton(Strings.Addons.reload, <ReloadIcon size={"20px"} />, this.reload)}
                     {this.props.editAddon && this.makeControlButton(Strings.Addons.editAddon, <EditIcon size={"20px"} />, this.props.editAddon)}
                     {this.props.confirmAddonDelete && this.makeControlButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, this.props.confirmAddonDelete, {danger: true})}
                 </div>;
