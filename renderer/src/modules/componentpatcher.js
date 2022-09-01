@@ -148,29 +148,45 @@ export default new class ComponentPatcher {
 
     patchMessageHeader() {
         if (this.messageHeaderPatch) return;
-        const MessageTimestamp = WebpackModules.getModule(m => m?.default?.toString().indexOf("showTimestampOnHover") > -1);
-        this.messageHeaderPatch = Patcher.after("ComponentPatcher", MessageTimestamp, "default", (_, [{message}], returnValue) => {
-            const userId = Utilities.getNestedProp(message, "author.id");
-            if (Developers.indexOf(userId) < 0) return;
-            const children = Utilities.getNestedProp(returnValue, "props.children.1.props.children");
-            if (!Array.isArray(children)) return;
+        // const MessageTimestamp = WebpackModules.getModule(m => m?.default?.toString().indexOf("showTimestampOnHover") > -1);
+        // this.messageHeaderPatch = Patcher.after("ComponentPatcher", MessageTimestamp, "default", (_, [{message}], returnValue) => {
+        //     const userId = Utilities.getNestedProp(message, "author.id");
+        //     if (Developers.indexOf(userId) < 0) return;
+        //     if (!returnValue?.type) return;
+        //     const orig = returnValue.type;
+        //     returnValue.type = function() {
+        //         const retVal = Reflect.apply(orig, this, arguments);
 
-            children.splice(2, 0, 
-                React.createElement(DeveloperBadge, {
-                    type: "chat"
-                })
-            );
-        });
+        //         const children = Utilities.getNestedProp(retVal, "props.children.1.props.children");
+        //         if (!Array.isArray(children)) return;
+    
+        //         children.splice(3, 0, 
+        //             React.createElement(DeveloperBadge, {
+        //                 type: "chat"
+        //             })
+        //         );
+
+        //         return retVal;
+        //     };
+
+        // });
     }
 
-    patchMemberList() {
+    async patchMemberList() {
         if (this.memberListPatch) return;
-        const MemberListItem = WebpackModules.findByDisplayName("MemberListItem");
+        const memo = WebpackModules.find(m => m?.type?.toString().includes("useGlobalHasAvatarDecorations"));
+        if (!memo?.type) return;
+        const MemberListItem = await new Promise(resolve => {
+            const cancelFindListItem = Patcher.after("ComponentPatcher", memo, "type", (_, props, returnValue) => {
+                cancelFindListItem();
+                resolve(returnValue?.type);
+            });
+        });
         if (!MemberListItem?.prototype?.renderDecorators) return;
         this.memberListPatch = Patcher.after("ComponentPatcher", MemberListItem.prototype, "renderDecorators", (thisObject, args, returnValue) => {
             const user = Utilities.getNestedProp(thisObject, "props.user");
             const children = Utilities.getNestedProp(returnValue, "props.children");
-            if (!children || Developers.indexOf(user.id) < 0) return;
+            if (!children || Developers.indexOf(user?.id) < 0) return;
             if (!Array.isArray(children)) return;
             children.push(
                React.createElement(DeveloperBadge, {
@@ -182,19 +198,21 @@ export default new class ComponentPatcher {
 
     patchProfile() {
         if (this.profilePatch) return;
-        const UserProfileBadgeList = WebpackModules.getModule(m => m?.default?.displayName === "UserProfileBadgeList");
-        this.profilePatch = Patcher.after("ComponentPatcher", UserProfileBadgeList, "default", (_, [{user}], res) => {
-            if (Developers.indexOf(user?.id) < 0) return;
-            const children = Utilities.getNestedProp(res, "props.children");
-            if (!Array.isArray(children)) return;
+        const UserProfileBadgeLists = WebpackModules.getModule(m => m?.default?.displayName === "UserProfileBadgeList", {first: false});
+        for (const UserProfileBadgeList of UserProfileBadgeLists) {
+            this.profilePatch = Patcher.after("ComponentPatcher", UserProfileBadgeList, "default", (_, [{user}], res) => {
+                if (Developers.indexOf(user?.id) < 0) return;
+                const children = Utilities.getNestedProp(res, "props.children");
+                if (!Array.isArray(children)) return;
 
-            children.unshift(
-                React.createElement(DeveloperBadge, {
-                    type: "profile",
-                    size: 18
-                })
-            );
-        });
+                children.unshift(
+                    React.createElement(DeveloperBadge, {
+                        type: "profile",
+                        size: 18
+                    })
+                );
+            });
+        }
     }
 
 };

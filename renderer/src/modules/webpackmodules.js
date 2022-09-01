@@ -132,6 +132,8 @@ const protect = theModule => {
     return proxy;
 };
 
+const hasThrown = new WeakSet();
+
 export default class WebpackModules {
     static find(filter, first = true) {return this.getModule(filter, {first});}
     static findAll(filter) {return this.getModule(filter, {first: false});}
@@ -140,8 +142,8 @@ export default class WebpackModules {
 
     /**
      * Finds a module using a filter function.
-     * @param {Function} filter A function to use to filter modules
-     * @param {object} [options] Whether to return only the first matching module
+     * @param {function} filter A function to use to filter modules
+     * @param {object} [options] Set of options to customize the search
      * @param {Boolean} [options.first=true] Whether to return only the first matching module
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @return {Any}
@@ -153,7 +155,8 @@ export default class WebpackModules {
                 return filter(exports, module, moduleId);
             }
             catch (err) {
-                Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                hasThrown.add(filter);
                 return false;
             }
         };
@@ -209,7 +212,8 @@ export default class WebpackModules {
                         return filter(ex, mod, moduleId);
                     }
                     catch (err) {
-                        Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                        if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getBulk", "Module filter threw an exception.", filter, err);
+                        hasThrown.add(filter);
                         return false;
                     }
                 };
@@ -308,7 +312,7 @@ export default class WebpackModules {
     /**
      * Finds a module that lazily loaded.
      * @param {(m) => boolean} filter A function to use to filter modules.
-     * @param {object} [options] Whether to return only the first matching module
+     * @param {object} [options] Set of options to customize the search
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @returns {Promise<any>}
@@ -316,25 +320,33 @@ export default class WebpackModules {
     static getLazy(filter, options = {}) {
         /** @type {AbortSignal} */
         const abortSignal = options.signal;
-        const defaultExport = options.defaultExport;
+        const defaultExport = options.defaultExport ?? true;
         const fromCache = this.getModule(filter);
         if (fromCache) return Promise.resolve(fromCache);
 
+        const wrappedFilter = (exports) => {
+            try {
+                return filter(exports);
+            }
+            catch (err) {
+                if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+                hasThrown.add(filter);
+                return false;
+            }
+        };
+
         return new Promise((resolve) => {
-            const cancel = () => {this.removeListener(listener);};
-            const listener = function (m) {
-                const directMatch = filter(m);
+            const cancel = () => this.removeListener(listener);
+            const listener = function(exports) {
+                if (!exports) return;
+
+                let foundModule = null;
+                if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = defaultExport ? exports.default : exports;
+                if (wrappedFilter(exports)) foundModule = exports;
+                if (!foundModule) return;
                 
-                if (directMatch) {
-                    cancel();
-                    return resolve(directMatch);
-                }
-
-                const defaultMatch = filter(m.default);
-                if (!defaultMatch) return; 
-
                 cancel();
-                resolve(defaultExport ? m.default : defaultExport);
+                resolve(protect(foundModule));
             };
 
             this.addListener(listener);

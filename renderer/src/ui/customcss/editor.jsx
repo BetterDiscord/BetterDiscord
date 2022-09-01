@@ -3,6 +3,7 @@ import {React, WebpackModules, DiscordModules, Settings} from "modules";
 import Checkbox from "./checkbox";
 
 const Tooltip = WebpackModules.getByDisplayName("Tooltip");
+const ThemeStore = DiscordModules.ThemeStore;
 
 const languages = ["abap", "abc", "actionscript", "ada", "apache_conf", "asciidoc", "assembly_x86", "autohotkey", "batchfile", "bro", "c_cpp", "c9search", "cirru", "clojure", "cobol", "coffee", "coldfusion", "csharp", "csound_document", "csound_orchestra", "csound_score", "css", "curly", "d", "dart", "diff", "dockerfile", "dot", "drools", "dummy", "dummysyntax", "eiffel", "ejs", "elixir", "elm", "erlang", "forth", "fortran", "ftl", "gcode", "gherkin", "gitignore", "glsl", "gobstones", "golang", "graphqlschema", "groovy", "haml", "handlebars", "haskell", "haskell_cabal", "haxe", "hjson", "html", "html_elixir", "html_ruby", "ini", "io", "jack", "jade", "java", "javascript", "json", "jsoniq", "jsp", "jssm", "jsx", "julia", "kotlin", "latex", "less", "liquid", "lisp", "livescript", "logiql", "lsl", "lua", "luapage", "lucene", "makefile", "markdown", "mask", "matlab", "maze", "mel", "mushcode", "mysql", "nix", "nsis", "objectivec", "ocaml", "pascal", "perl", "pgsql", "php", "pig", "powershell", "praat", "prolog", "properties", "protobuf", "python", "r", "razor", "rdoc", "red", "rhtml", "rst", "ruby", "rust", "sass", "scad", "scala", "scheme", "scss", "sh", "sjs", "smarty", "snippets", "soy_template", "space", "sql", "sqlserver", "stylus", "svg", "swift", "tcl", "tex", "text", "textile", "toml", "tsx", "twig", "typescript", "vala", "vbscript", "velocity", "verilog", "vhdl", "wollok", "xml", "xquery", "yaml", "django"];
 
@@ -12,7 +13,7 @@ export default class CodeEditor extends React.Component {
     constructor(props) {
         super(props);
 
-        this.props.theme = DiscordModules.UserSettingsStore && DiscordModules.UserSettingsStore.theme === "light" ? "vs" : "vs-dark";
+        this.props.theme = ThemeStore?.theme === "light" ? "vs" : "vs-dark";
 
         this.props.language = this.props.language.toLowerCase().replace(/ /g, "_");
         if (!languages.includes(this.props.language)) this.props.language = CodeEditor.defaultProps.language;
@@ -36,7 +37,7 @@ export default class CodeEditor extends React.Component {
             this.editor = window.monaco.editor.create(document.getElementById(this.props.id), {
                 value: this.props.value,
                 language: this.props.language,
-                theme: DiscordModules.UserSettingsStore.theme == "light" ? "vs" : "vs-dark",
+                theme: ThemeStore?.theme == "light" ? "vs" : "vs-dark",
                 fontSize: Settings.get("settings", "editor", "fontSize"),
                 lineNumbers: Settings.get("settings", "editor", "lineNumbers"),
                 minimap: {enabled: Settings.get("settings", "editor", "minimap")},
@@ -69,19 +70,19 @@ export default class CodeEditor extends React.Component {
             document.getElementById(this.props.id).appendChild(textarea);
         }
 
-        if (DiscordModules.UserSettingsStore) DiscordModules.UserSettingsStore.addChangeListener(this.onThemeChange);
+        ThemeStore?.addChangeListener?.(this.onThemeChange);
         window.addEventListener("resize", this.resize);
     }
 
     componentWillUnmount() {
         window.removeEventListener("resize", this.resize);
-        if (DiscordModules.UserSettingsStore) DiscordModules.UserSettingsStore.removeChangeListener(this.onThemeChange);
+        ThemeStore?.removeChangeListener?.(this.onThemeChange);
         for (const binding of this.bindings) binding.dispose();
         this.editor.dispose();
     }
 
     onThemeChange() {
-        const newTheme = DiscordModules.UserSettingsStore.theme === "light" ? "vs" : "vs-dark";
+        const newTheme = ThemeStore?.theme === "light" ? "vs" : "vs-dark";
         if (newTheme === this.props.theme) return;
         this.props.theme = newTheme;
         if (window.monaco?.editor) window.monaco.editor.setTheme(this.props.theme);

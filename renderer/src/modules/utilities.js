@@ -1,42 +1,10 @@
 import {Config} from "data";
 import Logger from "common/logger";
-import DOM from "./domtools";
-import ClassName from "../structs/classname";
 
 export default class Utilities {
 
     static repoUrl(path) {
         return `https://cdn.staticaly.com/gh/BetterDiscord/BetterDiscord/${Config.hash}/${path}`;
-    }
-
-    /**
-     * Parses a string of HTML and returns the results. If the second parameter is true,
-     * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
-     * This is extremely useful if you have a list of elements at the top level, they can then be appended all at once to another node.
-     *
-     * If the second parameter is false, then the return value will be the list of parsed
-     * nodes and there were multiple top level nodes, otherwise the single node is returned.
-     * @param {string} html - HTML to be parsed
-     * @param {boolean} [fragment=false] - Whether or not the return should be the raw `DocumentFragment`
-     * @returns {(DocumentFragment|NodeList|HTMLElement)} - The result of HTML parsing
-     */
-    static parseHTML(html, fragment = false) {
-        const template = document.createElement("template");
-        template.innerHTML = html;
-        const node = template.content.cloneNode(true);
-        if (fragment) return node;
-        return node.childNodes.length > 1 ? node.childNodes : node.childNodes[0];
-    }
-
-    static getTextArea() {
-        return DOM.query(".channelTextArea-1LDbYG textarea");
-    }
-
-    static insertText(textarea, text) {
-        textarea.focus();
-        textarea.selectionStart = 0;
-        textarea.selectionEnd = textarea.value.length;
-        document.execCommand("insertText", false, text);
     }
 
     static escape(s) {
@@ -162,25 +130,6 @@ export default class Utilities {
         }});
 
         return proxy;
-    }
-
-    /**
-     * Protects prototypes from external assignment.
-     * 
-     * Needs some work before full usage
-     * @param {Class} Component - component with prototype to protect
-     */
-    static protectPrototype(Component) {
-        const descriptors = Object.getOwnPropertyDescriptors(Component.prototype);
-        for (const name in descriptors) {
-            const descriptor = descriptors[name];
-            descriptor.configurable = false;
-            descriptor.enumerable = false;
-            if (Object.prototype.hasOwnProperty.call(descriptor, "get")) descriptor.set = () => Logger.warn("protectPrototype", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");
-            if (Object.prototype.hasOwnProperty.call(descriptor, "value") && typeof(descriptor.value) === "function") descriptor.value.bind(Component.prototype);
-            if (Object.prototype.hasOwnProperty.call(descriptor, "writable")) descriptor.writable = false;
-        }
-        Object.defineProperties(Component.prototype, descriptors);
     }
 
     /**
