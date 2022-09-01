@@ -1,5 +1,6 @@
 import {Config} from "data";
 import Logger from "common/logger";
+import ClassName from "../structs/classname";
 
 export default class Utilities {
 
