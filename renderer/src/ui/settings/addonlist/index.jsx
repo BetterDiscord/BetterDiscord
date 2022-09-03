@@ -8,7 +8,6 @@ import SearchBar from "../components/searchbar";
 import TabBar from "../../tabbar";
 import Divider from "../../divider";
 import SettingsTitle from "../title";
-import Reload from "../../icons/reload";
 
 import StorePage from "./store";
 import InstalledPage from "./installed";

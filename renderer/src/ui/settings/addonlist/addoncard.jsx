@@ -1,7 +1,6 @@
 import Logger from "common/logger";
 import {React, Strings, WebpackModules, DiscordModules} from "modules";
 import SimpleMarkdown from "../../../structs/markdown";
-import ReloadIcon from "../../icons/reload";
 import EditIcon from "../../icons/edit";
 import DeleteIcon from "../../icons/delete";
 import CogIcon from "../../icons/cog";

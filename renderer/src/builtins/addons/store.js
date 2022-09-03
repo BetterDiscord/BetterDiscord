@@ -131,11 +131,13 @@ class EmbeddedStoreCard extends React.Component {
     }
 
     async install(id, filename) {
-        await WebAPI.getAddonContents(id).then(contents => {
-            return this.manager.installAddon(contents, filename);
-        }).catch(err => {
-            Toasts.error(Strings.Store.downloadError.format({type: this.state.addon.type}), err);
-        });
+        try {
+            const contents = await WebAPI.getAddonContents(id);
+            this.props.installAddon(contents, filename);
+        }
+        catch (error) {
+            Toasts.error(Strings.Store.downloadError.format({type: this.props.type}));
+        }
     }
 
     render() {

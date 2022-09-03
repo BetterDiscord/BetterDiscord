@@ -25,7 +25,7 @@ export default class Spinner extends React.Component {
         const {className, type = Type.WANDERING_CUBES, ...props} = this.props;
 
         return <div className={Utilities.joinClassNames("bd-spinner", `bd-spinner-${type}`, className)} {...props}>
-            <span class="bd-spinner-inner">
+            <span className="bd-spinner-inner">
                 {this.renderItems(type)}
             </span>
         </div>;

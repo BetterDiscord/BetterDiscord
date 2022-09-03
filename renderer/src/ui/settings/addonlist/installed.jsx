@@ -1,5 +1,5 @@
 import Logger from "common/logger";
-import {React, Settings, Strings, Events} from "modules";
+import {React, Strings, Events} from "modules";
 import {Web} from "data";
 
 import AddonCard from "./addoncard";
@@ -95,6 +95,6 @@ const originalRender = InstalledPage.prototype.render;
 Object.defineProperty(InstalledPage.prototype, "render", {
     enumerable: false,
     configurable: false,
-    set: function() {Logger.warn("AddonList", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");},
+    set: function() {Logger.warn("AddonList", "Addon guideline for plugins #3 https://docs.betterdiscord.app/plugins/introduction/guidelines/#scope");},
     get: () => originalRender
 });

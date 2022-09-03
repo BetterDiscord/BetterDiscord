@@ -28,25 +28,33 @@ export default class StorePage extends React.Component {
         this.connect();
     }
 
-    connect() {
-        WebAPI.getAddons(`${this.props.type}s`).then(data => {
+    async connect() {
+        try {
+            const data = await WebAPI.getAddons(`${this.props.type}s`);
             this.setState({
                 isLoaded: true,
                 addons: data
             });
-        }).catch(() => Modals.showConfirmationModal(Strings.Store.connectionError, Strings.Store.connectionErrorMessage, {
-            cancelText: Strings.Modals.close,
-            confirmText: Strings.Modals.retry,
-            onConfirm: () => this.connect()
-        }));
+        }
+        catch (error) {
+            console.log("error");
+
+            Modals.showConfirmationModal(Strings.Store.connectionError, Strings.Store.connectionErrorMessage, {
+                cancelText: Strings.Modals.close,
+                confirmText: Strings.Modals.retry,
+                onConfirm: () => this.connect()
+            });
+        }
     }
 
     async install(id, filename) {
-        await WebAPI.getAddonContents(id).then(contents => {
-            return this.props.installAddon(contents, filename);
-        }).catch(err => {
-            Toasts.error(Strings.Store.downloadError.format({type: this.props.type}), err);
-        });
+        try {
+            const contents = await WebAPI.getAddonContents(id);
+            this.props.installAddon(contents, filename);
+        }
+        catch (error) {
+            Toasts.error(Strings.Store.downloadError.format({type: this.props.type}), error);
+        }
     }
 
     matchAddon(addon, query) {

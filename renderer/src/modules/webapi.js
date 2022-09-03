@@ -25,7 +25,7 @@ export default new class WebAPI {
     getAddons(type) {
         return new Promise((resolve, reject) => {
             if (API_CACHE[type].length) resolve(API_CACHE[type]);
-            https.get(Web.ENDPOINTS.store(type), (res) => {
+            const request = https.get(Web.ENDPOINTS.store(type), (res) => {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
     
@@ -44,6 +44,11 @@ export default new class WebAPI {
                     reject(error);
                 });
             });
+
+            request.on("error", (error) => {
+                Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
+                reject(error);
+            });
         });
     }
 
@@ -57,7 +62,7 @@ export default new class WebAPI {
             const cacheMatch = API_CACHE.addon.find(a => a[typeof addon === "number" ? "id" : "name"] === addon);
             if (cacheMatch) resolve(cacheMatch);
 
-            https.get(Web.ENDPOINTS.addon(addon), (res) => {
+            const request = https.get(Web.ENDPOINTS.addon(addon), (res) => {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
                 
@@ -76,6 +81,11 @@ export default new class WebAPI {
                     reject(error);
                 });
             });
+
+            request.on("error", (error) => {
+                Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
+                reject(error);
+            });
         });
     }
 
@@ -86,7 +96,7 @@ export default new class WebAPI {
      */
     getAddonContents(id) {
         return new Promise((resolve, reject) => {
-            https.get(Web.ENDPOINTS.download(id), (res) => {
+            const request = https.get(Web.ENDPOINTS.download(id), (res) => {
                 const chunks = [];
                 res.on("data", chunk => chunks.push(chunk));
                 
@@ -99,6 +109,11 @@ export default new class WebAPI {
                     Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
                     reject(error);
                 });
+            });
+
+            request.on("error", (error) => {
+                Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
+                reject(error);
             });
         });
     }
