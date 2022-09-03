@@ -115,7 +115,7 @@ export default class Modals {
                 placeholder: src,
                 original: src,
                 onClickUntrusted: link => link.openHref(),
-                renderLinkComponent: () => React.createElement(this.MaskedLink, props)
+                renderLinkComponent: linkProps => React.createElement(this.MaskedLink, linkProps)
             }, props)));
         }, {modalKey: key});
     }

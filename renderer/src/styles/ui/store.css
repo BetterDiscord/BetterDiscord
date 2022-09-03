@@ -312,19 +312,21 @@
 /* Pagination */
 .bd-page-control,
 .bd-page-buttons {
-    max-width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
 .bd-page-control {
-    padding: 4px 0;
+    justify-content: center;
+    max-width: 475px;
     bottom: 0;
+    padding: 4px 0;
+    margin: 0 auto;
     margin-top: 16px;
 }
 
 .bd-page-buttons {
+    max-width: 100%;
     flex-grow: 0;
     width: auto;
     overflow: auto;

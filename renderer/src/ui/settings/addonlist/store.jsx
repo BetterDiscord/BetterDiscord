@@ -53,7 +53,7 @@ export default class StorePage extends React.Component {
             this.props.installAddon(contents, filename);
         }
         catch (error) {
-            Toasts.error(Strings.Store.downloadError.format({type: this.props.type}), error);
+            Toasts.error(Strings.Store.downloadError.format({type: this.props.type}));
         }
     }
 
@@ -145,7 +145,8 @@ export default class StorePage extends React.Component {
                     {addons.length
                         ? addons.map((_, index) => <div
                             role="button"
-                            aria-current="page"
+                            aria-label={`Page ${index + 1}`}
+                            aria-current={index === this.state.selectedPage ? "page" : undefined}
                             tabIndex="0"
                             className={Utilities.joinClassNames("bd-page-item bd-page-button", {selected: index === this.state.selectedPage})}
                             onClick={handleSelect(() => index)}
