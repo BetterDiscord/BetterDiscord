@@ -34,9 +34,6 @@ export default new class ComponentPatcher {
 
     initialize() {
         Utilities.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
-        Utilities.suppressErrors(this.patchGuildPills.bind(this), "BD Guild Pills Patch")();
-        Utilities.suppressErrors(this.patchGuildListItems.bind(this), "BD Guild List Items Patch")();
-        Utilities.suppressErrors(this.patchMessageHeader.bind(this), "BD Message Header Patch")();
         Utilities.suppressErrors(this.patchMemberList.bind(this), "BD Member List Patch")();
         Utilities.suppressErrors(this.patchProfile.bind(this), "BD Profile Badges Patch")();
     }
@@ -74,102 +71,6 @@ export default new class ComponentPatcher {
                 return returnVal;
             };
         });
-    }
-    
-    patchGuildListItems() {
-        if (this.guildListItemsPatch) return;
-        const ListNavigators = WebpackModules.getByProps("ListNavigatorProvider");
-        const GuildComponent = WebpackModules.find(m => m.type && m.type.toString().includes("guildNode") && m.type.toString().includes("treeitem"));
-        if (!GuildComponent || typeof(GuildComponent.type) !== "function") return this.warn("Failed to get Guild component.");
-        if (!ListNavigators || typeof(ListNavigators.ListNavigatorProvider) !== "function") return this.warn("Failed to get ListNavigatorProvider component.");
-
-        this.guildListItemsPatch = Patcher.after("ComponentPatcher", GuildComponent, "type", (_, [props], returnValue) => {
-            if (!returnValue || !returnValue.props) return;
-            
-            try {
-                returnValue.props.className += " bd-guild";
-                if (props.unread) returnValue.props.className += " bd-unread";
-                if (props.selected) returnValue.props.className += " bd-selected";
-                if (props.mediaState.audio) returnValue.props.className += " bd-audio";
-                if (props.mediaState.video) returnValue.props.className += " bd-video";
-                if (props.badge) returnValue.props.className += " bd-badge";
-                if (props.animatable) returnValue.props.className += " bd-animatable";
-                if (props.unavailable) returnValue.props.className += " bd-unavailable";
-                if (props.mediaState.screenshare) returnValue.props.className += " bd-screenshare";
-                if (props.mediaState.liveStage) returnValue.props.className += " bd-live-stage";
-                if (props.muted) returnValue.props.className += " bd-muted";
-            }
-            catch (err) {
-                Logger.error("ComponentPatcher:Guilds", `Error inside BDGuild:`, err);
-                this.guildListItemsPatch();
-            }
-        });
-
-        const {useState} = DiscordModules.React;
-        function useForceUpdate() {
-            const [, setValue] = useState(false);
-            return () => setValue(v => !v); // update the state to force render
-        }
-
-        let hasForced = false;
-        this.cancelForceUpdate = Patcher.after("ComponentPatcher", ListNavigators, "ListNavigatorProvider", (_, __, returnValue) => {
-            if (returnValue.props.value.id !== "guildsnav") return;
-
-            const originalParent = Utilities.findInTree(returnValue, m => m?.props?.className, {walkable: ["children", "props"]});
-            if (!originalParent) return;
-            const original = originalParent.type;
-            originalParent.type = e => {
-                const forceUpdate = useForceUpdate();
-                if (!hasForced) {
-                    hasForced = true;
-                    setTimeout(() => {
-                        forceUpdate();
-                        this.cancelForceUpdate();
-                    }, 1);
-                }
-
-                return Reflect.apply(original, null, [e]);
-            };
-        });
-    }
-    
-    patchGuildPills() {
-        if (this.guildPillPatch) return;
-        const guildPill = WebpackModules.find(m => m?.default?.displayName === "AnimatedHalfPill");
-        if (!guildPill) return;
-        this.guildPillPatch = Patcher.after("ComponentPatcher", guildPill, "default", (_, args, returnValue) => {
-            const props = args[0];
-            if (props.unread) returnValue.props.className += " bd-unread";
-            if (props.selected) returnValue.props.className += " bd-selected";
-            if (props.hovered) returnValue.props.className += " bd-hovered";
-            return returnValue;
-        });
-    }
-
-    patchMessageHeader() {
-        if (this.messageHeaderPatch) return;
-        // const MessageTimestamp = WebpackModules.getModule(m => m?.default?.toString().indexOf("showTimestampOnHover") > -1);
-        // this.messageHeaderPatch = Patcher.after("ComponentPatcher", MessageTimestamp, "default", (_, [{message}], returnValue) => {
-        //     const userId = Utilities.getNestedProp(message, "author.id");
-        //     if (Developers.indexOf(userId) < 0) return;
-        //     if (!returnValue?.type) return;
-        //     const orig = returnValue.type;
-        //     returnValue.type = function() {
-        //         const retVal = Reflect.apply(orig, this, arguments);
-
-        //         const children = Utilities.getNestedProp(retVal, "props.children.1.props.children");
-        //         if (!Array.isArray(children)) return;
-    
-        //         children.splice(3, 0, 
-        //             React.createElement(DeveloperBadge, {
-        //                 type: "chat"
-        //             })
-        //         );
-
-        //         return retVal;
-        //     };
-
-        // });
     }
 
     async patchMemberList() {
