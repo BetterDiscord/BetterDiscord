@@ -1,3 +1,4 @@
+import require from "./polyfill"; // eslint-disable-line no-unused-vars
 import secure from "./secure";
 import patchModuleLoad from "./moduleloader";
 import LoadingIcon from "./loadingicon";
@@ -8,6 +9,7 @@ import BdApi from "./modules/pluginapi";
 secure();
 patchModuleLoad();
 window.BdApi = BdApi;
+window.global = window;
 
 // Add loading icon at the bottom right
 LoadingIcon.show();

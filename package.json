@@ -11,17 +11,17 @@
         "build-preload": "pnpm --filter preload build",
         "pack-emotes": "node scripts/emotes.js",
         "inject": "node scripts/inject.js",
-        "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint",
+        "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint-js",
         "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
         "dist": "pnpm run build-prod && node scripts/pack.js",
         "api": "jsdoc -X renderer/src/modules/pluginapi.js > jsdoc-ast.json"
     },
     "devDependencies": {
-        "asar": "^3.0.3",
-        "eslint": "^7.12.0",
-        "eslint-plugin-react": "^7.21.5",
+        "asar": "^3.2.0",
+        "eslint": "^8.23.0",
+        "eslint-plugin-react": "^7.31.6",
         "mocha": "^10.0.0",
-        "webpack": "^5.73.0",
+        "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0"
     },
     "engines": {
