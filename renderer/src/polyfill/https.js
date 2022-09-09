@@ -16,7 +16,7 @@ export function get(url, options = {}, callback) {
 
     Remote.https.get(url, options, (error, res, body) => {
         if (error) return emitter.emit("error", error);
-        emitter.emit("data", new Buffer(Buffer.from(body,"binary")));
+        emitter.emit("data", new Buffer(Buffer.from(body, "binary")));
         emitter.emit("end", res);
     });
 
