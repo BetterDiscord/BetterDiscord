@@ -10,8 +10,8 @@
             "general": {
                 "name": "Основные",
                 "emotes": {
-                    "name": "",
-                    "note": ""
+                    "name": "Система эмодзи",
+                    "note": "Включает систему эмодзи BD"
                 },
                 "publicServers": {
                     "name": "Публичные сервера",
@@ -140,36 +140,36 @@
             }
         },
         "emotes": {
-            "name": "",
+            "name": "Эмодзи",
             "general": {
                 "name": "Основные",
                 "download": {
-                    "name": "",
-                    "note": ""
+                    "name": "Скачивание эмодзи",
+                    "note": "Авто-скачивание эмодзи если они устарели"
                 },
                 "emoteMenu": {
-                    "name": "",
-                    "note": ""
+                    "name": "Эмодзи меню",
+                    "note": "Показывать в меню эмодзи BD любимые эмодзи Twitch/Favourite"
                 },
                 "hideEmojiMenu": {
-                    "name": "",
-                    "note": ""
+                    "name": "Скрыть меню эмодзи",
+                    "note": "Скрыть меню эмодзи Discord пока используешь эмодзи BD"
                 },
                 "autoCaps": {
                     "name": "",
                     "note": ""
                 },
                 "modifiers": {
-                    "name": "",
-                    "note": ""
+                    "name": "Показать модификаторы эмодзи",
+                    "note": "Включить модификаторы эмодзи (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
                 },
                 "animateOnHover": {
                     "name": "Анимировать при наведении",
-                    "note": ""
+                    "note": "Анимировать только если вы навели на эмодзи"
                 }
             },
             "categories": {
-                "name": "",
+                "name": "Категорий",
                 "twitchglobal": {
                     "name": "",
                     "note": ""
@@ -240,12 +240,12 @@
         "editorTitle": "Редактор быстрого CSS"
     },
     "Emotes": {
-        "loading": "",
-        "loaded": "",
-        "clearEmotes": "",
+        "loading": "Загрузка эмодзи.",
+        "loaded": "Эмодзи загружены!",
+        "clearEmotes": "Очистить эмодзи",
         "favoriteAction": "Избранное!",
-        "downloadFailed": "",
-        "failureMessage": ""
+        "downloadFailed": "Не удалось скачать эмодзи.",
+        "failureMessage": "BetterDiscord не смог загрузить эмодзи, пожалуйста, проверьте ваше интернет-соединение и брандмауэр."
     },
     "PublicServers": {
         "button": "public",
