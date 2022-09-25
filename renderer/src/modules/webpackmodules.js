@@ -113,24 +113,6 @@ export class Filters {
     }
 }
 
-const protect = theModule => {
-    if (theModule.remove && theModule.set && theModule.clear && theModule.get && !theModule.sort) return null;
-    if (!theModule.getToken && !theModule.getEmail && !theModule.showToken) return theModule;
-    const proxy = new Proxy(theModule, {
-        getOwnPropertyDescriptor: function(obj, prop) {
-            if (prop === "getToken" || prop === "getEmail" || prop === "showToken") return undefined;
-            return Object.getOwnPropertyDescriptor(obj, prop);
-        },
-        get: function(obj, func) {
-            if (func == "getToken") return () => "mfa.XCnbKzo0CLIqdJzBnL0D8PfDruqkJNHjwHXtr39UU3F8hHx43jojISyi5jdjO52e9_e9MjmafZFFpc-seOMa";
-            if (func == "getEmail") return () => "puppet11112@gmail.com";
-            if (func == "showToken") return () => true;
-            // if (func == "__proto__") return proxy;
-            return obj[func];
-        }
-    });
-    return proxy;
-};
 
 const hasThrown = new WeakSet();
 
@@ -152,6 +134,10 @@ export default class WebpackModules {
         const {first = true, defaultExport = true} = options;
         const wrappedFilter = (exports, module, moduleId) => {
             try {
+                if (exports?.default?.remove && exports?.default?.set && exports?.default?.clear && exports?.default?.get && !exports?.default?.sort) return false;
+                if (exports.remove && exports.set && exports.clear && exports.get && !exports.sort) return false;
+                if (exports?.default?.getToken || exports?.default?.getEmail || exports?.default?.showToken) return false;
+                if (exports.getToken || exports.getEmail || exports.showToken) return false;
                 return filter(exports, module, moduleId);
             }
             catch (err) {
@@ -174,8 +160,8 @@ export default class WebpackModules {
             if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
             if (wrappedFilter(exports, module, index)) foundModule = exports;
             if (!foundModule) continue;
-            if (first) return protect(foundModule);
-            rm.push(protect(foundModule));
+            if (first) return foundModule;
+            rm.push(foundModule);
         }
         
         return first || rm.length == 0 ? undefined : rm;

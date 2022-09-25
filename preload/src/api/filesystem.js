@@ -40,6 +40,10 @@ export function rename(oldPath, newPath) {
     return fs.renameSync(oldPath, newPath);
 }
 
+export function unlinkSync(fileToDelete) {
+    return fs.unlinkSync(fileToDelete);
+}
+
 export function createWriteStream(path, options) {
     return cloneObject(fs.createWriteStream(path, options));
 }

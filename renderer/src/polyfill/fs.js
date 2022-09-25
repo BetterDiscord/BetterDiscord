@@ -143,6 +143,9 @@ export const createWriteStream = (path, options) => {
     return Remote.filesystem.createWriteStream(path, options);
 };
 
+export const unlinkSync = (path) => Remote.filesystem.unlinkSync(path);
+export const unlink = (path) => Remote.filesystem.unlinkSync(path);
+
 export default {
     readFile,
     exists,
@@ -160,6 +163,8 @@ export default {
     renameSync,
     rmdir,
     rmdirSync,
+    unlink,
+    unlinkSync,
     watch,
     writeFile,
     writeFileSync,
