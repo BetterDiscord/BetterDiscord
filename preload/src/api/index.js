@@ -33,7 +33,7 @@ Module._load = (load => (req, parent, isMain) => {
 // console.log(require("request"));
 
 export * as filesystem from "./filesystem";
-export * as https from "./https";
+export {default as https} from "./https";
 export * as electron from "./electron";
 export * as crypto from "./crypto";
 

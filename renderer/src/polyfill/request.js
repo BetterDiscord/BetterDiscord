@@ -32,16 +32,28 @@ function validOptions(url, callback) {
     return typeof url === "string" && typeof callback === "function";
 }
 
+function fixBuffer(options, callback) {
+    return (error, res, body) => {
+        if ("Content-Type" in Object(options.headers) && props.headers["Content-Type"] !== "text/plain") {
+            body = Buffer.from(body);
+        } else {
+            body = Buffer.from(body).toString();
+        }
+
+        callback(error, res, body);
+    };
+}
+
 export default function request() {
     const {url, options = {}, callback} = parseArguments.apply(this, arguments);
 
     if (!validOptions(url, callback)) return null;
 
     if ("method" in options && methods.indexOf(options.method.toLowerCase()) >= 0) {
-        return Remote.https[options.method](url, options, callback);
+        return Remote.https[options.method](url, options, fixBuffer(options, callback));
     }
 
-    return Remote.https.default(url, options, callback);
+    return Remote.https.request(url, options, fixBuffer(options, callback));
 }
 
 Object.assign(request, Object.fromEntries(
@@ -50,6 +62,6 @@ Object.assign(request, Object.fromEntries(
 
         if (!validOptions(url, callback)) return null;
 
-        return Remote.https[aliases[method] || method](url, options, callback);
+        return Remote.https[aliases[method] || method](url, options, fixBuffer(options, callback));
     }])
 ));
