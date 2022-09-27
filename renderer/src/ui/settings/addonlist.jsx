@@ -1,9 +1,8 @@
 import Logger from "common/logger";
-import {React, Settings, Strings, Events, WebpackModules, DataStore} from "modules";
+import {React, Strings, Events, WebpackModules, DataStore} from "modules";
 
 import Modals from "../modals";
 import SettingsTitle from "./title";
-import ReloadIcon from "../icons/reload";
 import AddonCard from "./addoncard";
 import Dropdown from "./components/dropdown";
 import Search from "./components/search";
@@ -14,7 +13,7 @@ import GridIcon from "../icons/grid";
 import NoResults from "../blankslates/noresults";
 import EmptyImage from "../blankslates/emptyimage";
 
-const Tooltip = WebpackModules.getByDisplayName("Tooltip");
+const Tooltip = WebpackModules.getByPrototypes("renderTooltip");
 
 export default class AddonList extends React.Component {
 
@@ -125,7 +124,6 @@ export default class AddonList extends React.Component {
 
     render() {
         const {title, folder, addonList, addonState, onChange, reload} = this.props;
-        const showReloadIcon = !Settings.get("settings", "addons", "autoReload");
         const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: this.openFolder} : null;
         let sortedAddons = addonList.sort((a, b) => {
             const sortByEnabled = this.state.sort === "isEnabled";
@@ -152,7 +150,7 @@ export default class AddonList extends React.Component {
         const renderedCards = sortedAddons.map(addon => {
             const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
-            return <ErrorBoundary><AddonCard type={this.props.type} editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} showReloadIcon={showReloadIcon} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
+            return <ErrorBoundary><AddonCard type={this.props.type} editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
         });
 
         const hasAddonsInstalled = this.props.addonList.length !== 0;
@@ -160,7 +158,7 @@ export default class AddonList extends React.Component {
         const hasResults = sortedAddons.length !== 0;
 
         return [
-            <SettingsTitle key="title" text={title} button={button} otherChildren={showReloadIcon && <ReloadIcon className="bd-reload" onClick={this.reload.bind(this)} />} />,
+            <SettingsTitle key="title" text={title} button={button} />,
             <div className={"bd-controls bd-addon-controls"}>
                 <Search onChange={this.search} placeholder={`${Strings.Addons.search.format({type: this.props.title})}...`} />
                 <div className="bd-controls-advanced">

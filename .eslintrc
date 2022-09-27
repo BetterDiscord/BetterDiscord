@@ -1,7 +1,8 @@
 {
     "extends": "eslint:recommended",
     "env": {
-        "node": true
+        "node": true,
+        "es2020": true
     },
     "parserOptions": {
         "ecmaVersion": 2022,
@@ -82,15 +83,7 @@
         "yoda": "error"
     },
     "globals": {
-        "Proxy": "readonly",
-        "Set": "readonly",
-        "WeakMap": "readonly",
-        "WeakSet": "readonly",
-        "Map": "readonly",
-        "Promise": "readonly",
-        "Reflect": "readonly",
         "DiscordNative": "readonly",
-        "__non_webpack_require__": "readonly",
-        "Symbol": "readonly"
+        "__non_webpack_require__": "readonly"
     }
 }

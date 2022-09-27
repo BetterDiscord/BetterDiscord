@@ -1,4 +1,4 @@
-import {React, WebpackModules, Strings} from "modules";
+import {React, WebpackModules, Strings, DiscordModules} from "modules";
 import Modals from "../modals";
 import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
@@ -8,9 +8,26 @@ import Search from "../settings/components/search";
 import Previous from "../icons/previous";
 import Next from "../icons/next";
 
-const SettingsView = WebpackModules.getByDisplayName("SettingsView");
+const SettingsView = WebpackModules.getByPrototypes("renderSidebar");
 const GuildActions = WebpackModules.getByProps("transitionToGuildSync");
-const LayerManager = WebpackModules.getByProps("popLayer");
+const LayerManager = {
+    pushLayer(component) {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_PUSH",
+        component
+      });
+    },
+    popLayer() {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_POP"
+      });
+    },
+    popAllLayers() {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_POP_ALL"
+      });
+    }
+  };
 
 const EMPTY_RESULTS = {
     servers: [],

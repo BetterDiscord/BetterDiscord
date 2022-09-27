@@ -1,5 +1,5 @@
 {
-    "name": "betterdiscord-renderer",
+    "name": "@betterdiscord/renderer",
     "description": "Renderer portion of the BetterDiscord application.",
     "private": true,
     "main": "src/index.js",
@@ -24,16 +24,13 @@
         "babel-plugin-module-resolver": "^4.1.0",
         "circular-dependency-plugin": "^5.2.2",
         "css-loader": "^6.5.1",
-        "eslint": "^8.8.0",
-        "eslint-plugin-react": "^7.28.0",
         "postcss": "^8.4.5",
         "postcss-cli": "^9.1.0",
         "postcss-csso": "^6.0.0",
         "postcss-easy-import": "^4.0.0",
         "postcss-loader": "^6.2.1",
         "stylelint": "^14.3.0",
-        "stylelint-config-standard": "^24.0.0",
-        "webpack": "^5.67.0",
-        "webpack-cli": "^4.9.2"
+        "webpack": "^5.73.0",
+        "stylelint-config-standard": "^24.0.0"
     }
 }

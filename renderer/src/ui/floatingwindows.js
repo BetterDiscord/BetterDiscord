@@ -3,14 +3,14 @@ import FloatingWindowContainer from "./floating/container";
 
 /* eslint-disable new-cap */
 
-const LayerProviders = WebpackModules.getByProps("AppReferencePositionLayer");
+const AppLayerProvider = WebpackModules.getByDisplayName("AppLayerProvider");
 
 export default class FloatingWindows {
     static initialize() {
         const containerRef = React.createRef();
         const container = <FloatingWindowContainer ref={containerRef} />;
-        const wrapped = LayerProviders
-                        ? React.createElement(LayerProviders.AppLayerProvider().props.layerContext.Provider, {value: [document.querySelector("#app-mount > .layerContainer-yqaFcK")]}, container) // eslint-disable-line new-cap
+        const wrapped = AppLayerProvider
+                        ? React.createElement(AppLayerProvider().props.layerContext.Provider, {value: [document.querySelector("#app-mount > .layerContainer-2v_Sit")]}, container) // eslint-disable-line new-cap
                         : container;
         const div = DOM.createElement(`<div id="floating-windows-layer">`);
         DOMManager.bdBody.append(div);

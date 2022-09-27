@@ -16,10 +16,7 @@ export default new class LocaleManager {
 
     initialize() {
         this.setLocale(this.discordLocale);
-        Dispatcher.subscribe("USER_SETTINGS_UPDATE", ({settings}) => {
-            const newLocale = settings.locale;
-            if (newLocale && newLocale != this.locale) this.setLocale(newLocale);
-        });
+        Dispatcher.subscribe("USER_SETTINGS_UPDATE", (newLocale) => this.setLocale(newLocale));
     }
 
     setLocale(newLocale) {

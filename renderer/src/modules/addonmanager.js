@@ -68,7 +68,9 @@ export default class AddonManager {
         if (this.watcher) return Logger.err(this.name, `Already watching ${this.prefix} addons.`);
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
         this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
+            // console.log("watcher", eventType, filename, !eventType || !filename, !filename.endsWith(this.extension));
             if (!eventType || !filename) return;
+            // console.log(eventType, filename)
 
             const absolutePath = path.resolve(this.addonFolder, filename);
             if (!filename.endsWith(this.extension)) {
@@ -93,10 +95,11 @@ export default class AddonManager {
                     Logger.err(this.name, `Could not rename file: ${filename} ${newFilename}`, error);
                 }
             }
-            
+            // console.log("watcher", "before promise");
             await new Promise(r => setTimeout(r, 100));
             try {
                 const stats = fs.statSync(absolutePath);
+                // console.log("watcher", stats);
                 if (!stats.isFile()) return;
                 if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
                 if (typeof(stats.mtime.getTime()) !== "number") return;
@@ -106,7 +109,10 @@ export default class AddonManager {
                 if (eventType == "change") this.reloadAddon(filename, true);
             }
             catch (err) {
-                if (err.code !== "ENOENT") return;
+                // window.watcherError = err;
+                // console.log("watcher", err);
+                // console.dir(err);
+                if (err.code !== "ENOENT" && !err?.message.startsWith("ENOENT")) return;
                 delete this.timeCache[filename];
                 this.unloadAddon(filename, true);
             }
@@ -207,6 +213,7 @@ export default class AddonManager {
 
     unloadAddon(idOrFileOrAddon, shouldToast = true, isReload = false) {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        // console.log("watcher", "unloadAddon", idOrFileOrAddon, addon);
         if (!addon) return false;
         if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
 
@@ -314,6 +321,7 @@ export default class AddonManager {
 
     deleteAddon(idOrFileOrAddon) {
         const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        // console.log(path.resolve(this.addonFolder, addon.filename), fs.unlinkSync)
         return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
     }
 

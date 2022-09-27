@@ -1,20 +1,23 @@
 // fixed, improved, added, progress
 export default {
-    description: "Discord is _still_ making a lot of internal changes!",
+    description: "BetterDiscord is alive! At least... _sorta_.",
     changes: [
         {
-            title: "Changes",
+            title: "Known Issues",
             type: "improved",
             items: [
-                "Plugin startup errors should be more descriptive for developers.",
+                "**Many many plugins are either completely broken or missing functionality.** Please refer to the respective developers for ETAs.",
+                "The Twitch Emote system is completely broken, and there is no ETA on being fixed.",
+                "The Public Servers module is also broken with no ETA for a fix.",
             ]
         },
         {
-            title: "Fixes",
+            title: "Important News!",
             type: "fixed",
             items: [
-                "Fixed an issue where custom css crashed Discord.",
-                "Fixed an issue where `waitForModule` returned a boolean instead of a module.",
+                "Due to recent and upcoming changes, BetterDiscord is going to go through a rewrite.",
+                "There is no ETA or timeline for this rewrite.",
+                "We will continue to try and __maintain__ this version of BetterDiscord without adding new features."
             ]
         }
     ]

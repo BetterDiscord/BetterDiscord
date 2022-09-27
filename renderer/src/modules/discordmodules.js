@@ -47,7 +47,7 @@ export default Utilities.memoizeObject({
     get MentionStore() {return WebpackModules.getByProps("getMentions");},
 
     /* User Stores and Utils */
-    get UserStore() {return WebpackModules.getByProps("getCurrentUser");},
+    get UserStore() {return WebpackModules.getByProps("getCurrentUser", "getUser");},
     get UserStatusStore() {return WebpackModules.getByProps("getStatus", "getState");},
     get UserTypingStore() {return WebpackModules.getByProps("isTyping");},
     get UserActivityStore() {return WebpackModules.getByProps("getActivity");},
@@ -133,14 +133,14 @@ export default Utilities.memoizeObject({
 
     /* Electron & Other Internals with Utils*/
     get ElectronModule() {return WebpackModules.getByProps("setBadge");},
-    get Dispatcher() {return WebpackModules.getByProps("dispatch", "subscribe");},
+    get Dispatcher() {return WebpackModules.getByProps("dispatch", "subscribe", "register");},
     get PathUtils() {return WebpackModules.getByProps("hasBasename");},
     get NotificationModule() {return WebpackModules.getByProps("showNotification");},
     get RouterModule() {return WebpackModules.getByProps("Router");},
     get APIModule() {return WebpackModules.getByProps("getAPIBaseURL");},
     get AnalyticEvents() {return WebpackModules.getByProps("AnalyticEventConfigs");},
     get KeyGenerator() {return WebpackModules.getByRegex(/"binary"/);},
-    get Buffers() {return WebpackModules.getByProps("Buffer", "kMaxLength");},
+    get Buffers() {return WebpackModules.getByProps("INSPECT_MAX_BYTES", "kMaxLength");},
     get DeviceStore() {return WebpackModules.getByProps("getDevices");},
     get SoftwareInfo() {return WebpackModules.getByProps("os");},
     get CurrentContext() {return WebpackModules.getByProps("setTagsContext");},

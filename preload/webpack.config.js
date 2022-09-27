@@ -7,7 +7,7 @@ module.exports = (env, argv) => ({
   devtool: argv.mode === "production" ? undefined : "eval-source-map",
   entry: "./src/index.js",
   output: {
-    filename: "injector.js",
+    filename: "preload.js",
     path: path.resolve(__dirname, "..", "dist")
   },
   externals: {
@@ -19,7 +19,9 @@ module.exports = (env, argv) => ({
     rimraf: `require("rimraf")`,
     yauzl: `require("yauzl")`,
     mkdirp: `require("mkdirp")`,
-    module: `require("module")`
+    module: `require("module")`,
+    os: `require("os")`,
+    net: `require("net")`
   },
   resolve: {
     extensions: [".js"],

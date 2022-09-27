@@ -1,8 +1,42 @@
 import Builtin from "../../structs/builtin";
-import {DiscordModules, WebpackModules, Strings, DOM} from "modules";
+import {DiscordModules, WebpackModules, Strings, DOM, React} from "modules";
 import PublicServersMenu from "../../ui/publicservers/menu";
+import Globe from "../../ui/icons/globe";
 
-const LayerStack = WebpackModules.getByProps("pushLayer");
+const LayerManager = {
+    pushLayer(component) {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_PUSH",
+        component
+      });
+    },
+    popLayer() {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_POP"
+      });
+    },
+    popAllLayers() {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_POP_ALL"
+      });
+    }
+  };
+
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {hasError: false};
+    }
+
+    componentDidCatch() {
+      this.setState({hasError: true});
+    }
+
+    render() {
+      if (this.state.hasError) return null;  
+      return this.props.children; 
+    }
+}
 
 export default new class PublicServers extends Builtin {
     get name() {return "PublicServers";}
@@ -10,17 +44,37 @@ export default new class PublicServers extends Builtin {
     get id() {return "publicServers";}
 
     enabled() {
-        this._appendButton();
-        const ListNavigators = WebpackModules.getByProps("ListNavigatorProvider");
-        this.after(ListNavigators, "ListNavigatorProvider", (_, __, returnValue) => {
-            if (returnValue.props.value.id !== "guildsnav") return;
-            this._appendButton();
-        });
+        // let target = null;
+        // WebpackModules.getModule((_, m) => {
+        //     if (m.exports?.toString().includes("privateChannelIds")) {
+        //         target = m.exports;
+        //     }
+        // });
+        // if (!target || !target.Z) return;
+        // const PrivateChannelListComponents = WebpackModules.getByProps("LinkButton");
+        // this.after(target, "Z", (_, __, returnValue) => {
+        //     const destination = returnValue?.props?.children?.props?.children;
+        //     if (!destination || !Array.isArray(destination)) return;
+        //     if (destination.find(b => b?.props?.children?.props?.id === "public-server-button")) return;
+            
+            // destination.push(
+            //     React.createElement(ErrorBoundary, null,
+            //         React.createElement(PrivateChannelListComponents.LinkButton,
+            //             {
+            //                 id: "public-server-button",
+            //                 onClick: () => this.openPublicServers(),
+            //                 text: "Public Servers",
+            //                 icon: () => React.createElement(Globe, {color: "currentColor"})
+            //             }
+            //         )
+            //     )
+            // );
+        // });
     }
 
     disabled() {
-        this.unpatchAll();
-        DOM.query("#bd-pub-li").remove();
+        // this.unpatchAll();
+        // DOM.query("#bd-pub-li").remove();
     }
 
     async _appendButton() {
@@ -36,7 +90,7 @@ export default new class PublicServers extends Builtin {
     }
 
     openPublicServers() {
-        LayerStack.pushLayer(() => DiscordModules.React.createElement(PublicServersMenu, {close: LayerStack.popLayer}));
+        LayerManager.pushLayer(() => DiscordModules.React.createElement(PublicServersMenu, {close: LayerManager.popLayer}));
     }
 
     get button() {

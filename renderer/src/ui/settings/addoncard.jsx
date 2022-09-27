@@ -1,7 +1,6 @@
 import Logger from "common/logger";
 import {React, Strings, WebpackModules, DiscordModules} from "modules";
 import SimpleMarkdown from "../../structs/markdown";
-import ReloadIcon from "../icons/reload";
 import EditIcon from "../icons/edit";
 import DeleteIcon from "../icons/delete";
 import CogIcon from "../icons/cog";
@@ -25,8 +24,25 @@ const LinkIcons = {
     patreon: PatreonIcon
 };
 
-const Tooltip = WebpackModules.getByDisplayName("Tooltip");
-const LayerStack = WebpackModules.getByProps("popLayer");
+const Tooltip = WebpackModules.getByPrototypes("renderTooltip");
+const LayerManager = {
+    pushLayer(component) {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_PUSH",
+        component
+      });
+    },
+    popLayer() {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_POP"
+      });
+    },
+    popAllLayers() {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_POP_ALL"
+      });
+    }
+  };
 const UserStore = WebpackModules.getByProps("getCurrentUser");
 const ChannelStore = WebpackModules.getByProps("getDMFromUserId");
 const PrivateChannelActions = WebpackModules.getByProps("openPrivateChannel");
@@ -41,7 +57,6 @@ export default class AddonCard extends React.Component {
         this.panelRef = React.createRef();
 
         this.onChange = this.onChange.bind(this);
-        this.reload = this.reload.bind(this);
         this.showSettings = this.showSettings.bind(this);
         this.messageAuthor = this.messageAuthor.bind(this);
     }
@@ -58,12 +73,6 @@ export default class AddonCard extends React.Component {
         }
     }
 
-    reload() {
-        if (!this.props.reload) return;
-        this.props.addon = this.props.reload(this.props.addon.id);
-        this.forceUpdate();
-    }
-
     getString(value) {return typeof value == "string" ? value : value.toString();}
 
     onChange() {
@@ -74,7 +83,7 @@ export default class AddonCard extends React.Component {
 
     messageAuthor() {
         if (!this.props.addon.authorId) return;
-        if (LayerStack) LayerStack.popLayer();
+        if (LayerManager) LayerManager.popLayer();
         if (!UserStore || !ChannelActions || !ChannelStore || !PrivateChannelActions) return;
         const selfId = UserStore.getCurrentUser().id;
         if (selfId == this.props.addon.authorId) return;
@@ -114,7 +123,7 @@ export default class AddonCard extends React.Component {
                 let code = url;
                 const tester = /\.gg\/(.*)$/;
                 if (tester.test(code)) code = code.match(tester)[1];
-                DiscordModules.LayerStack.popLayer();
+                LayerManager.popLayer();
                 DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel(code);
             };
         }
@@ -124,7 +133,6 @@ export default class AddonCard extends React.Component {
     get controls() { // {this.props.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-addon-settings" disabled={!this.props.enabled}>{Strings.Addons.addonSettings}</button>}
         return <div className="bd-controls">
                     {this.props.hasSettings && this.makeControlButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, this.showSettings, {disabled: !this.props.enabled})}
-                    {this.props.showReloadIcon && this.makeControlButton(Strings.Addons.reload, <ReloadIcon size={"20px"} />, this.reload)}
                     {this.props.editAddon && this.makeControlButton(Strings.Addons.editAddon, <EditIcon size={"20px"} />, this.props.editAddon)}
                     {this.props.deleteAddon && this.makeControlButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, this.props.deleteAddon, {danger: true})}
                 </div>;

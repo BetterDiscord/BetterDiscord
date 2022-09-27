@@ -1,26 +1,31 @@
 {
     "name": "betterdiscord",
-    "version": "1.6.3",
+    "version": "1.7.0",
     "description": "Enhances Discord by adding functionality and themes.",
     "main": "src/index.js",
     "scripts": {
-        "install": "cd injector && npm install && cd ../renderer && npm install",
-        "build": "npm run build-injector && npm run build-renderer",
-        "build-prod": "npm run build-prod --prefix injector && npm run build-prod --prefix renderer",
-        "build-injector": "npm run build --prefix injector",
-        "build-renderer": "npm run build --prefix renderer",
+        "build": "pnpm run build-injector && pnpm run build-preload && pnpm run build-renderer",
+        "build-prod": "pnpm --filter injector build-prod && pnpm --filter preload build-prod && pnpm --filter renderer build-prod",
+        "build-injector": "pnpm --filter injector build",
+        "build-renderer": "pnpm --filter renderer build",
+        "build-preload": "pnpm --filter preload build",
         "pack-emotes": "node scripts/emotes.js",
         "inject": "node scripts/inject.js",
-        "lint": "eslint --ext .js common/ && npm run lint --prefix injector && npm run lint --prefix renderer",
+        "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint-js",
         "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
-        "dist": "npm run build-prod && node scripts/pack.js",
+        "dist": "pnpm run build-prod && node scripts/pack.js",
         "api": "jsdoc -X renderer/src/modules/pluginapi.js > jsdoc-ast.json"
     },
     "devDependencies": {
-        "asar": "^3.0.3",
-        "eslint": "^7.12.0",
-        "eslint-plugin-react": "^7.21.5",
-        "jsdoc": "^3.6.11",
-        "mocha": "^10.0.0"
+        "asar": "^3.2.0",
+        "eslint": "^8.23.0",
+        "eslint-plugin-react": "^7.31.6",
+        "mocha": "^10.0.0",
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0"
+    },
+    "engines": {
+        "node": ">=14",
+        "pnpm": ">=7"
     }
 }
