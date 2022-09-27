@@ -3,6 +3,7 @@ import LocaleManager from "./localemanager";
 
 import Logger from "common/logger";
 import {Config, Changelog} from "data";
+import WebpackModules from "./webpackmodules";
 import DOMManager from "./dommanager";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
@@ -18,7 +19,6 @@ import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
 import Editor from "./editor";
-import {WebpackModules} from "modules";
 
 export default new class Core {
     async startup() {
@@ -48,6 +48,7 @@ export default new class Core {
 
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
+        // SettingsRenderer.patchSections();
 
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
@@ -68,6 +69,7 @@ export default new class Core {
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
+
         this.polyfillWebpack();
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
@@ -86,9 +88,18 @@ export default new class Core {
 
         const previousVersion = DataStore.getBDData("version");
         if (Config.version > previousVersion) {
-            Modals.showChangelogModal(Changelog);
+            // Modals.showChangelogModal(Changelog);
+            const md = [Changelog.description];
+            for (const type of Changelog.changes) {
+                md.push(`**${type.title}**`);
+                for (const entry of type.items) {
+                    md.push(` - ${entry}`);
+                }
+            }
+            Modals.showConfirmationModal(`BetterDiscord v${Config.version}`, md, {cancelText: ""});
             DataStore.setBDData("version", Config.version);
         }
+        // SettingsRenderer.patchSections();
     }
 
     polyfillWebpack() {

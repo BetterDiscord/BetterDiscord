@@ -8,8 +8,8 @@ import BDLogo from "../ui/icons/bdlogo";
 import Logger from "common/logger";
 
 const React = DiscordModules.React;
-const Tooltip = WebpackModules.getByDisplayName("Tooltip");
-const Anchor = WebpackModules.getByDisplayName("Anchor");
+const Tooltip = WebpackModules.getByPrototypes("renderTooltip");
+const Anchor = WebpackModules.getByProps("Link");
 
 const Developers = [
     /* Zerebos#7790 */
@@ -21,7 +21,7 @@ const Developers = [
 
 const DeveloperBadge = function DeveloperBadge({type, size = 16}) {
     return React.createElement(Tooltip, {color: "primary", position: "top", text: "BetterDiscord Developer"},
-        props => React.createElement(Anchor, Object.assign({className: `bd-${type}-badge`, href: "https://github.com/BetterDiscord/BetterDiscord", title: "BetterDiscord", target: "_blank"}, props),
+        props => React.createElement(Anchor.Link, Object.assign({className: `bd-${type}-badge`, href: "https://github.com/BetterDiscord/BetterDiscord", title: "BetterDiscord", target: "_blank"}, props),
             React.createElement(BDLogo, {size, className: "bd-logo"})
         )
     );
@@ -33,14 +33,14 @@ export default new class ComponentPatcher {
     debug(...message) {return Logger.debug("ComponentPatcher", ...message);}
 
     initialize() {
-        Utilities.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
-        Utilities.suppressErrors(this.patchMemberList.bind(this), "BD Member List Patch")();
-        Utilities.suppressErrors(this.patchProfile.bind(this), "BD Profile Badges Patch")();
+        // Utilities.suppressErrors(this.patchSocial.bind(this), "BD Social Patch")();
+        // Utilities.suppressErrors(this.patchMemberList.bind(this), "BD Member List Patch")();
+        // Utilities.suppressErrors(this.patchProfile.bind(this), "BD Profile Badges Patch")();
     }
 
     patchSocial() {
         if (this.socialPatch) return;
-        const TabBar = WebpackModules.getByDisplayName("TabBar");
+        const TabBar = WebpackModules.getByProps("Types", "Looks", "Header");
         if (!TabBar) return;
         this.socialPatch = Patcher.after("ComponentPatcher", TabBar.prototype, "render", (thisObject, args, returnValue) => {
             const children = returnValue.props.children;
@@ -99,7 +99,7 @@ export default new class ComponentPatcher {
 
     patchProfile() {
         if (this.profilePatch) return;
-        const UserProfileBadgeLists = WebpackModules.getModule(m => m?.default?.displayName === "UserProfileBadgeList", {first: false});
+        const UserProfileBadgeLists = WebpackModules.getModule(m => m?.toString()?.includes("PROFILE_USER_BADGES"), {first: false});
         for (const UserProfileBadgeList of UserProfileBadgeLists) {
             this.profilePatch = Patcher.after("ComponentPatcher", UserProfileBadgeList, "default", (_, [{user}], res) => {
                 if (Developers.indexOf(user?.id) < 0) return;

@@ -34,9 +34,10 @@ function validOptions(url, callback) {
 
 function fixBuffer(options, callback) {
     return (error, res, body) => {
-        if ("Content-Type" in Object(options.headers) && props.headers["Content-Type"] !== "text/plain") {
+        if ("Content-Type" in Object(options.headers) && options.headers["Content-Type"] !== "text/plain") {
             body = Buffer.from(body);
-        } else {
+        }
+        else {
             body = Buffer.from(body).toString();
         }
 

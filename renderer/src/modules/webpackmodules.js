@@ -146,6 +146,7 @@ export default class WebpackModules {
                 return false;
             }
         };
+
         const modules = this.getAllModules();
         const rm = [];
         const indices = Object.keys(modules);
@@ -154,14 +155,42 @@ export default class WebpackModules {
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
+            if (exports === window) continue;
             let foundModule = null;
 
-            if (!exports) continue;
-            if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
-            if (wrappedFilter(exports, module, index)) foundModule = exports;
-            if (!foundModule) continue;
-            if (first) return foundModule;
-            rm.push(foundModule);
+            if (typeof(exports) === "object") {
+                const wrappers = Object.getOwnPropertyDescriptors(exports);
+                const getters = Object.keys(wrappers).filter(k => wrappers[k].get);
+                if (getters.length) {
+                    for (const getter of getters) {
+                        const wrappedExport = exports[getter];
+                        if (!wrappedExport) continue;
+                        if (wrappedExport.__esModule && wrappedExport.default && wrappedFilter(wrappedExport.default, module, index)) foundModule = defaultExport ? wrappedExport.default : wrappedExport;
+                        if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
+                        if (!foundModule) continue;
+                        if (first) return foundModule;
+                        rm.push(foundModule);
+                    }
+                }
+                else {
+                    if (!exports) continue;
+                    if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
+                    if (wrappedFilter(exports, module, index)) foundModule = exports;
+                    if (!foundModule) continue;
+                    if (first) return foundModule;
+                    rm.push(foundModule);
+                }
+            }
+            else {
+                if (!exports) continue;
+                if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
+                if (wrappedFilter(exports, module, index)) foundModule = exports;
+                if (!foundModule) continue;
+                if (first) return foundModule;
+                rm.push(foundModule);
+            }
+
+
         }
         
         return first || rm.length == 0 ? undefined : rm;
@@ -205,11 +234,36 @@ export default class WebpackModules {
                 };
 
                 let foundModule = null;
-                if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
-                if (wrappedFilter(exports, module, index)) foundModule = exports;
-                if (!foundModule) continue;
-                if (first) returnedModules[q] = protect(foundModule);
-                else returnedModules[q].push(protect(foundModule));
+                if (typeof(exports) === "object") {
+                    const wrappers = Object.getOwnPropertyDescriptors(exports);
+                    const getters = Object.keys(wrappers).filter(k => wrappers[k].get);
+                    if (getters.length) {
+                        for (const getter of getters) {
+                            const wrappedExport = exports[getter];
+                            if (!wrappedExport) continue;
+                            if (wrappedExport.__esModule && wrappedExport.default && wrappedFilter(wrappedExport.default, module, index)) foundModule = defaultExport ? wrappedExport.default : wrappedExport;
+                            if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
+                            if (!foundModule) continue;
+                            if (first) returnedModules[q] = foundModule;
+                            else returnedModules[q].push(foundModule);
+                        }
+                    }
+                    else {
+                        if (!exports) continue;
+                        if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
+                        if (wrappedFilter(exports, module, index)) foundModule = exports;
+                        if (!foundModule) continue;
+                        if (first) returnedModules[q] = foundModule;
+                        else returnedModules[q].push(foundModule);
+                    }
+                }
+                else {
+                    if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
+                    if (wrappedFilter(exports, module, index)) foundModule = exports;
+                    if (!foundModule) continue;
+                    if (first) returnedModules[q] = foundModule;
+                    else returnedModules[q].push(foundModule);
+                }
             }
         }
         
@@ -327,12 +381,30 @@ export default class WebpackModules {
                 if (!exports) return;
 
                 let foundModule = null;
-                if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = defaultExport ? exports.default : exports;
-                if (wrappedFilter(exports)) foundModule = exports;
-                if (!foundModule) return;
+                if (typeof(exports) === "object") {
+                    const wrappers = Object.getOwnPropertyDescriptors(exports);
+                    const getters = Object.keys(wrappers).filter(k => wrappers[k].get);
+                    if (getters.length) {
+                        for (const getter of getters) {
+                            const wrappedExport = exports[getter];
+                            if (!wrappedExport) continue;
+                            if (wrappedExport.__esModule && wrappedExport.default && wrappedFilter(wrappedExport.default)) foundModule = defaultExport ? wrappedExport.default : wrappedExport;
+                            if (wrappedFilter(wrappedExport)) foundModule = wrappedExport;
+                        }
+                    }
+                    else {
+                        if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = defaultExport ? exports.default : exports;
+                        if (wrappedFilter(exports)) foundModule = exports;
+                    }
+                }
+                else {
+                    if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = defaultExport ? exports.default : exports;
+                    if (wrappedFilter(exports)) foundModule = exports;
+                }
                 
+                if (!foundModule) return;
                 cancel();
-                resolve(protect(foundModule));
+                resolve(foundModule);
             };
 
             this.addListener(listener);
