@@ -1,0 +1,9 @@
+{
+    "name": "@betterdiscord/preload",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.ts",
+    "dependencies": {
+        "@betterdiscord/common": "workspace:*"
+    }
+}
