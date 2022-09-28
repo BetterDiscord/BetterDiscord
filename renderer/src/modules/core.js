@@ -3,17 +3,14 @@ import LocaleManager from "./localemanager";
 
 import Logger from "common/logger";
 import {Config, Changelog} from "data";
-import WebpackModules from "./webpackmodules";
 import DOMManager from "./dommanager";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import * as Builtins from "builtins";
 import Modals from "../ui/modals";
-import ReactComponents from "./reactcomponents";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
-import ComponentPatcher from "./componentpatcher";
 import Strings from "./strings";
 import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
@@ -39,28 +36,17 @@ export default new class Core {
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
 
-        Logger.log("Startup", "Performing incompatibility checks");
-        if (window.ED) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "EnhancedDiscord"}));
-        if (window.WebSocket && window.WebSocket.name && window.WebSocket.name.includes("Patched")) return Modals.alert(Strings.Startup.notSupported, Strings.Startup.incompatibleApp.format({app: "Powercord"}));
-
         Logger.log("Startup", "Getting update information");
         this.checkForUpdate();
 
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
-        // SettingsRenderer.patchSections();
 
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
-
-        Logger.log("Startup", "Initializing ReactComponents");
-        ReactComponents.initialize();
-
-        Logger.log("Startup", "Initializing ComponentPatcher");
-        ComponentPatcher.initialize();
 
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
@@ -70,7 +56,6 @@ export default new class Core {
             Builtins[module].initialize();
         }
 
-        this.polyfillWebpack();
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
         const pluginErrors = PluginManager.initialize();
@@ -88,7 +73,6 @@ export default new class Core {
 
         const previousVersion = DataStore.getBDData("version");
         if (Config.version > previousVersion) {
-            // Modals.showChangelogModal(Changelog);
             const md = [Changelog.description];
             for (const type of Changelog.changes) {
                 md.push(`**${type.title}**`);
@@ -99,19 +83,6 @@ export default new class Core {
             Modals.showConfirmationModal(`BetterDiscord v${Config.version}`, md, {cancelText: ""});
             DataStore.setBDData("version", Config.version);
         }
-        // SettingsRenderer.patchSections();
-    }
-
-    polyfillWebpack() {
-        if (typeof(webpackJsonp) !== "undefined") return;
-
-        window.webpackJsonp = [];
-        window.webpackJsonp.length = 10000; // In case plugins are waiting for that.
-        window.webpackJsonp.flat = () => window.webpackJsonp;
-        // eslint-disable-next-line no-empty-pattern
-        window.webpackJsonp.push = ([[], module, [[id]]]) => {
-            return module[id]({}, {}, WebpackModules.require);
-        };
     }
 
     waitForConnection() {

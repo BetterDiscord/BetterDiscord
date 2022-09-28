@@ -617,7 +617,7 @@ BdApi.Webpack = {
          * @param {...String} strings A list of strings
          * @returns {function} A filter that checks for a set of strings
          */
-         byStrings(...strings) {return Filters.byStrings(strings);},
+         byStrings(...strings) {return Filters.byStrings(...strings);},
 
         /**
          * Generates a function that filters by the `displayName` property.
@@ -631,13 +631,13 @@ BdApi.Webpack = {
          * @param {...function} filters A list of filters
          * @returns {function} Combinatory filter of all arguments
          */
-         combine(...filters) {return Filters.combine(filters);},
+         combine(...filters) {return Filters.combine(...filters);},
     },
 
     /**
      * Finds a module using a filter function.
      * @param {function} filter A function to use to filter modules. It is given exports, module, and moduleID. Return `true` to signify match.
-     * @param {object} [options] Whether to return only the first matching module
+     * @param {object} [options] Options object to configure the search
      * @param {Boolean} [options.first=true] Whether to return only the first matching module
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @return {any}
@@ -651,7 +651,7 @@ BdApi.Webpack = {
     /**
      * Finds multiple modules using multiple filters.
      * 
-     * @param {...object} queries Whether to return only the first matching module
+     * @param {...object} queries Object representing the query
      * @param {Function} queries.filter A function to use to filter modules
      * @param {Boolean} [queries.first=true] Whether to return only the first matching module
      * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
@@ -662,7 +662,7 @@ BdApi.Webpack = {
     /**
      * Finds a module that is lazily loaded.
      * @param {function} filter A function to use to filter modules. It is given exports. Return `true` to signify match.
-     * @param {object} [options] Whether to return only the first matching module
+     * @param {object} [options] Options object to configure the listener
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @returns {Promise<any>}

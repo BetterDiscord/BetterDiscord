@@ -12,7 +12,6 @@ export {default as Settings} from "./settingsmanager";
 export {default as DOMManager} from "./dommanager";
 export {default as DOM} from "./domtools";
 export {default as Patcher} from "./patcher";
-export {default as ReactComponents} from "./reactcomponents";
 export {default as LocaleManager} from "./localemanager";
 export {default as Strings} from "./strings";
 export {default as IPC} from "./ipc";
