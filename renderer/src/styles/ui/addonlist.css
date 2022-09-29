@@ -63,6 +63,10 @@
     fill: var(--header-primary);
 }
 
+.disabled .bd-addon-header .bd-icon {
+    fill: red;
+}
+
 .bd-title,
 .bd-name,
 .bd-meta {
@@ -104,6 +108,33 @@
 .bd-description-wrap {
     flex: 1;
     padding: 8px 16px 0 16px;
+}
+
+.bd-description-wrap .banner {
+    padding: 5px;
+    border-left: 5px solid gray;
+    background: #26191E;
+    color: #C13A3A;
+    border-radius: 5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.banner.banner-danger {
+    border-left-color: #C13A3A;
+    background: #26191E;
+    color: #C13A3A;
+}
+
+.banner .bd-icon {
+    fill: red;
+    margin-right: 5px;
+    height: 16px !important;
+}
+
+.banner-danger .bd-icon {
+    fill: red;
 }
 
 .bd-addon-list .bd-description {

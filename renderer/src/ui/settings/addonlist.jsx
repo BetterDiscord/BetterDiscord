@@ -150,7 +150,7 @@ export default class AddonList extends React.Component {
         const renderedCards = sortedAddons.map(addon => {
             const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
-            return <ErrorBoundary><AddonCard type={this.props.type} editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
+            return <ErrorBoundary><AddonCard disabled={addon.partial} type={this.props.type} editAddon={this.editAddon.bind(this, addon.id)} deleteAddon={this.deleteAddon.bind(this, addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
         });
 
         const hasAddonsInstalled = this.props.addonList.length !== 0;

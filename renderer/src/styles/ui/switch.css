@@ -108,3 +108,7 @@
     opacity: 0.5;
     filter: grayscale(1);
 }
+
+.bd-switch-disabled input {
+    cursor: not-allowed;
+}

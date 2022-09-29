@@ -16,6 +16,7 @@ import IPC from "./ipc";
 import LoadingIcon from "../loadingicon";
 import Styles from "../styles/index.css";
 import Editor from "./editor";
+import AddonUpdater from "./addonupdater";
 
 export default new class Core {
     async startup() {
@@ -63,6 +64,9 @@ export default new class Core {
         Logger.log("Startup", "Loading Themes");
         // const themeErrors = [];
         const themeErrors = ThemeManager.initialize();
+
+        Logger.log("Startup", "Initializing AddonUpdater");
+        AddonUpdater.initialize();
 
         Logger.log("Startup", "Removing Loading Icon");
         LoadingIcon.hide();
