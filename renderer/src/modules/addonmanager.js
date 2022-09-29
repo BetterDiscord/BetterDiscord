@@ -185,6 +185,8 @@ export default class AddonManager {
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
+        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
+        this.addonList.push(addon);
         return addon;
     }
 
@@ -196,14 +198,22 @@ export default class AddonManager {
             addon = this.requireAddon(path.resolve(this.addonFolder, filename));
         }
         catch (e) {
+            const partialAddon = this.addonList.find(c => c.filename == filename);
+            if (partialAddon) {
+                partialAddon.partial = true;
+                this.state[partialAddon.id] = false;
+            }
             return e;
         }
-        if (this.addonList.find(c => c.id == addon.id)) return new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
+        
 
         const error = this.initializeAddon(addon);
-        if (error) return error;
+        if (error) {
+            this.state[addon.id] = false;
+            addon.partial = true;
+            return error;
+        }
 
-        this.addonList.push(addon);
         if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
         this.emit("loaded", addon.id);
         
@@ -248,7 +258,7 @@ export default class AddonManager {
 
     enableAddon(idOrAddon) {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
+        if (!addon || addon.partial) return;
         if (this.state[addon.id]) return;
         this.state[addon.id] = true;
         this.startAddon(addon);
@@ -257,7 +267,7 @@ export default class AddonManager {
 
     disableAddon(idOrAddon) {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
-        if (!addon) return;
+        if (!addon || addon.partial) return;
         if (!this.state[addon.id]) return;
         this.state[addon.id] = false;
         this.stopAddon(addon);

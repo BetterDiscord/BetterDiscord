@@ -12,6 +12,7 @@ import WebIcon from "../icons/globe";
 import PatreonIcon from "../icons/patreon";
 import SupportIcon from "../icons/support";
 import ExtIcon from "../icons/extension";
+import ErrorIcon from "../icons/error";
 import ThemeIcon from "../icons/theme";
 import Modals from "../modals";
 import Toasts from "../toasts";
@@ -174,9 +175,12 @@ export default class AddonCard extends React.Component {
                     <div className="bd-addon-header">
                             {this.props.type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
                             <div className="bd-title">{this.buildTitle(name, version, {name: author, id: this.props.addon.authorId, link: this.props.addon.authorLink})}</div>
-                            <Switch checked={this.props.enabled} onChange={this.onChange} />
+                            <Switch disabled={this.props.disabled} checked={this.props.enabled} onChange={this.onChange} />
                     </div>
-                    <div className="bd-description-wrap"><div className="bd-description">{SimpleMarkdown.parseToReact(description)}</div></div>
+                    <div className="bd-description-wrap">
+                        {this.props.disabled && <div className="banner banner-danger"><ErrorIcon className="bd-icon" />{`An error was encountered while trying to load this ${this.props.type}.`}</div>}
+                        <div className="bd-description">{SimpleMarkdown.parseToReact(description)}</div>
+                    </div>
                     {this.footer}
                 </div>;
     }

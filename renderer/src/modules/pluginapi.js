@@ -155,7 +155,7 @@ BdApi.showToast = function(content, options = {}) {
  * @param {object} options Options for the notice.
  * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
  * @param {Array<{label: string, onClick: function}>} [options.buttons] Buttons that should be added next to the notice text.
- * @param {number} [options.timeout=10000] Timeout until the notice is closed. Won't fire if it's set to 0;
+ * @param {number} [options.timeout=0] Timeout until the notice is closed. Won't fire if it's set to 0;
  * @returns {function} A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
  */
  BdApi.showNotice = function (content, options = {}) {
