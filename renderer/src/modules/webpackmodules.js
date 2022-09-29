@@ -170,6 +170,7 @@ export default class WebpackModules {
                         if (!foundModule) continue;
                         if (first) return foundModule;
                         rm.push(foundModule);
+                        foundModule = null;
                     }
                 }
                 else {
