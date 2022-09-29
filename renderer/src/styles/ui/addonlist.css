@@ -112,9 +112,10 @@
 
 .bd-description-wrap .banner {
     padding: 5px;
-    border-left: 5px solid gray;
+    border: 2px solid gray;
     background: #26191E;
-    color: #C13A3A;
+    color: #ffffff;
+    font-weight: 700px;
     border-radius: 5px;
     font-size: 16px;
     display: flex;
@@ -122,19 +123,18 @@
 }
 
 .banner.banner-danger {
-    border-left-color: #C13A3A;
-    background: #26191E;
-    color: #C13A3A;
+    border-color: #F04747;
+    background: #473C41;
 }
 
 .banner .bd-icon {
-    fill: red;
+    fill: #ffffff;
     margin-right: 5px;
     height: 16px !important;
 }
 
 .banner-danger .bd-icon {
-    fill: red;
+    fill: #F04747;
 }
 
 .bd-addon-list .bd-description {

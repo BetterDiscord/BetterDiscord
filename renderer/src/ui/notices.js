@@ -1,7 +1,8 @@
-import {WebpackModules} from "modules";
+import {Utilities, WebpackModules} from "modules";
 
 export default class Notices {
-    static get baseClass() {return this.__baseClass || (this.__baseClass = WebpackModules.getByProps("container", "base")?.base);}
+    static get baseClass() {return this.__baseClass ??= WebpackModules.getByProps("container", "base")?.base;}
+    static get errorPageClass() {return this.__errorPageClass ??= WebpackModules.getByProps("errorPage")?.errorPage;}
 
     /** Shorthand for `type = "info"` for {@link module:Notices.show} */
     static info(content, options = {}) {return this.show(content, Object.assign({}, options, {type: "info"}));}
@@ -32,7 +33,7 @@ export default class Notices {
      * @param {object} options Options for the notice.
      * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
      * @param {Array<{label: string, onClick: (immediately?: boolean = false) => void}>} [options.buttons] Buttons that should be added next to the notice text.
-     * @param {number} [options.timeout=10000] Timeout until the toast is closed. Won't fire if it's set to 0;
+     * @param {number} [options.timeout=0] Timeout until the toast is closed. Won't fire if it's set to 0;
      * @returns {(immediately?: boolean = false) => void}
      */
     static show(content, options = {}) {
@@ -82,6 +83,14 @@ export default class Notices {
             id: "bd-notices"
         });
         container.prepend(noticeContainer);
+
+        Utilities.onRemoved(container, async () => {
+            if (!this.errorPageClass) return;
+
+            const element = await new Promise(res => Utilities.onAdded(`.${this.errorPageClass}`, res));
+
+            element.prepend(noticeContainer);
+        });
 
         return true;
     }
