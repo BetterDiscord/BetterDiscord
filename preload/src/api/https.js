@@ -1,21 +1,25 @@
 import * as https from "https";
 
 const methods = ["get", "put", "post", "delete"];
+const redirectCodes = new Set([301, 302, 307, 308]);
 const headersToClone = ["statusCode", "statusMessage", "url", "headers", "method", "aborted", "complete", "rawHeaders", "end"];
 
-const request = function (url, options, callback) {
-    let responseObject = undefined;
-    let pipe = undefined;
-    
+const makeRequest = (url, options, callback, setReq) => {
     const req = https.request(url, Object.assign({method: "GET"}, options), res => {
+        if (redirectCodes.has(res.statusCode) && res.headers.location) {
+            const final = new URL(res.headers.location);
+
+            for (const [key, value] of new URL(url).searchParams.entries()) {
+                final.searchParams.set(key, value);
+            }
+
+            return makeRequest(final.toString(), options, callback, setReq);
+        }
+
         const chunks = [];
         let error = null;
 
-        responseObject = res;
-
-        if (pipe) {
-            res.pipe(pipe);
-        }
+        setReq(res, req);
 
         res.addListener("error", err => {error = err;});
 
@@ -30,11 +34,25 @@ const request = function (url, options, callback) {
             req.end();
         });
     });
-
     req.end();
+}
+
+const request = function (url, options, callback) {
+    let responseObject = undefined;
+    let reqObject = null;
+    let pipe = null;
+    
+    makeRequest(url, options, callback, (req, res) => {
+        reqObject = req;
+        responseObject = res;
+
+        if (pipe) {
+            res.pipe(pipe);
+        }
+    });
 
     return {
-        end() {req.end();},
+        end() {reqObject?.end();},
         pipe(fsStream) {
             if (!responseObject) {
                 pipe = fsStream;
