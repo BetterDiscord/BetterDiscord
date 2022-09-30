@@ -640,11 +640,14 @@ BdApi.Webpack = {
      * @param {object} [options] Options object to configure the search
      * @param {Boolean} [options.first=true] Whether to return only the first matching module
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchGetters=true] Whether to execute the filter on webpack export getters.
      * @return {any}
      */
     getModule(filter, options = {}) {
         if (("first" in options) && typeof(options.first) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.first", options.first, "boolean expected.");
         if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (("searchGetters" in options) && typeof(options.searchGetters) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchGetters", options.searchGetters, "boolean expected.");
+
         return WebpackModules.getModule(filter, options);
     },
 
@@ -655,6 +658,7 @@ BdApi.Webpack = {
      * @param {Function} queries.filter A function to use to filter modules
      * @param {Boolean} [queries.first=true] Whether to return only the first matching module
      * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [queries.searchGetters=true] Whether to execute the filter on webpack export getters.
      * @return {any}
      */
     getBulk(...queries) {return WebpackModules.getBulk(...queries);},
@@ -665,11 +669,14 @@ BdApi.Webpack = {
      * @param {object} [options] Options object to configure the listener
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchGetters=true] Whether to execute the filter on webpack export getters.
      * @returns {Promise<any>}
      */
     waitForModule(filter, options = {}) {
         if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
         if (("signal" in options) && !(options.signal instanceof AbortSignal)) return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.signal", options.signal, "AbortSignal expected.");
+        if (("searchGetters" in options) && typeof(options.searchGetters) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchGetters", options.searchGetters, "boolean expected.");
+
         return WebpackModules.getLazy(filter, options);
     },
 };
