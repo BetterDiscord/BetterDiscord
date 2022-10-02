@@ -14,6 +14,7 @@ import Logger from "common/logger";
 import Patcher from "./patcher";
 import Emotes from "../builtins/emotes/emotes";
 import ipc from "./ipc";
+import Tooltip from "../ui/tooltip";
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
@@ -160,6 +161,22 @@ BdApi.showToast = function(content, options = {}) {
  */
  BdApi.showNotice = function (content, options = {}) {
     return Notices.show(content, options);
+};
+
+/**
+ * Creates a tooltip to automatically show on hover.
+ *
+ * @param {HTMLElement} node - DOM node to monitor and show the tooltip on
+ * @param {string|HTMLElement} content - string to show in the tooltip
+ * @param {object} options - additional options for the tooltip
+ * @param {"primary"|"info"|"success"|"warn"|"danger"} [options.style="primary"] - correlates to the discord styling/colors
+ * @param {"top"|"right"|"bottom"|"left"} [options.side="top"] - can be any of top, right, bottom, left
+ * @param {boolean} [options.preventFlip=false] - prevents moving the tooltip to the opposite side if it is too big or goes offscreen
+ * @param {boolean} [options.disabled=false] - whether the tooltip should be disabled from showing on hover
+ * @returns new Tooltip
+ */
+ BdApi.createTooltip = function(node, content, options = {}) {
+    return Tooltip.create(node, content, options);
 };
 
 /**

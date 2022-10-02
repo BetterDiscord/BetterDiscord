@@ -39,8 +39,32 @@
  
 export default class DOMTools {
 
+    /** Document/window width */
+    static get screenWidth() {return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);}
+
+    /** Document/window height */
+    static get screenHeight() {return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);}
+
     static escapeID(id) {
         return id.replace(/^[^a-z]+|[^\w-]+/gi, "-");
+    }
+
+    // https://javascript.info/js-animation
+    static animate({timing = _ => _, update, duration}) {
+        const start = performance.now();
+        
+        requestAnimationFrame(function animate(time) {
+            // timeFraction goes from 0 to 1
+            let timeFraction = (time - start) / duration;
+            if (timeFraction > 1) timeFraction = 1;
+        
+            // calculate the current animation state
+            const progress = timing(timeFraction);
+        
+            update(progress); // draw it
+        
+            if (timeFraction < 1) requestAnimationFrame(animate);
+        });
     }
 
     /**
@@ -87,27 +111,6 @@ export default class DOMTools {
         const element = document.getElementById(id);
         if (element) element.remove();
     }
-    
-    // https://javascript.info/js-animation
-    static animate({timing = _ => _, update, duration}) {
-        const start = performance.now();
-      
-        requestAnimationFrame(function animate(time) {
-          // timeFraction goes from 0 to 1
-          let timeFraction = (time - start) / duration;
-          if (timeFraction > 1) timeFraction = 1;
-      
-          // calculate the current animation state
-          const progress = timing(timeFraction);
-      
-          update(progress); // draw it
-      
-          if (timeFraction < 1) {
-            requestAnimationFrame(animate);
-          }
-      
-        });
-      }
 
     /**
      * This is my shit version of not having to use `$` from jQuery. Meaning
