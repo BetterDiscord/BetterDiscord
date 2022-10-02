@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 import Builtin from "../../structs/builtin";
 import DataStore from "../../modules/datastore";
-import Utilities from "../../modules/utilities";
 
 
 const timestamp = () => new Date().toISOString().replace("T", " ").replace("Z", "");
@@ -16,6 +15,11 @@ const getCircularReplacer = () => {
         }
         return value;
     };
+};
+
+const occurrences = (source, substring) => {
+    const regex = new RegExp(substring, "g");
+    return (source.match(regex) || []).length;
 };
 
 export default new class DebugLogs extends Builtin {
@@ -45,7 +49,7 @@ export default new class DebugLogs extends Builtin {
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
             if (typeof(arg) === "string") {
-                const styleCount = Utilities.occurrences(arg, "%c");
+                const styleCount = occurrences(arg, "%c");
                 sanitized.push(arg.replace(/%c/g, ""));
                 if (styleCount > 0) i += styleCount;
             }

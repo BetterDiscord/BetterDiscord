@@ -1,4 +1,4 @@
-import {React, DOM} from "modules";
+import {React} from "modules";
 
 import FloatingWindow from "./window";
 
@@ -10,7 +10,7 @@ class FloatingWindowContainer extends React.Component {
     }
 
     get minY() {
-        const appContainer = DOM.query(`#app-mount > div[class*="app-"]`);
+        const appContainer = document.querySelector(`#app-mount > div[class*="app-"]`);
         if (appContainer) return appContainer.offsetTop;
         return 0;
     }

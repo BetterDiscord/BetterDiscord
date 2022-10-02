@@ -1,5 +1,5 @@
 import Logger from "common/logger";
-import {DOM} from "modules";
+import {DOMManager} from "modules";
 
 
 const toPx = function(value) {
@@ -34,8 +34,8 @@ export default class Tooltip {
         if (!sides.includes(this.side)) return Logger.err("Tooltip", `Side ${this.side} does not exist.`);
         if (!styles.includes(this.style)) return Logger.err("Tooltip", `Style ${this.style} does not exist.`);
  
-        this.element = DOM.createElement(`<div class="bd-layer">`);
-        this.tooltipElement = DOM.createElement(`<div class="bd-tooltip"><div class="bd-tooltip-pointer"></div><div class="bd-tooltip-content"></div></div>`);
+        this.element = DOMManager.parseHTML(`<div class="bd-layer">`);
+        this.tooltipElement = DOMManager.parseHTML(`<div class="bd-tooltip"><div class="bd-tooltip-pointer"></div><div class="bd-tooltip-content"></div></div>`);
         this.tooltipElement.classList.add(`bd-tooltip-${this.style}`);
 
         this.labelElement = this.tooltipElement.childNodes[1];
@@ -62,11 +62,11 @@ export default class Tooltip {
     /** Boolean representing if the tooltip will fit on screen above the element */
     get canShowAbove() {return this.node.getBoundingClientRect().top - this.element.offsetHeight >= 0;}
     /** Boolean representing if the tooltip will fit on screen below the element */
-    get canShowBelow() {return this.node.getBoundingClientRect().top + this.node.offsetHeight + this.element.offsetHeight <= DOM.screenHeight;}
+    get canShowBelow() {return this.node.getBoundingClientRect().top + this.node.offsetHeight + this.element.offsetHeight <= DOMManager.screenHeight;}
     /** Boolean representing if the tooltip will fit on screen to the left of the element */
     get canShowLeft() {return this.node.getBoundingClientRect().left - this.element.offsetWidth >= 0;}
     /** Boolean representing if the tooltip will fit on screen to the right of the element */
-    get canShowRight() {return this.node.getBoundingClientRect().left + this.node.offsetWidth + this.element.offsetWidth <= DOM.screenWidth;}
+    get canShowRight() {return this.node.getBoundingClientRect().left + this.node.offsetWidth + this.element.offsetWidth <= DOMManager.screenWidth;}
  
     /** Hides the tooltip. Automatically called on mouseleave. */
     hide() {

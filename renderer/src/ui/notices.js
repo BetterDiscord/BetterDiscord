@@ -1,4 +1,4 @@
-import {Utilities, WebpackModules} from "modules";
+import {WebpackModules, DOMManager} from "modules";
 
 export default class Notices {
     static get baseClass() {return this.__baseClass ??= WebpackModules.getByProps("container", "base")?.base;}
@@ -84,10 +84,10 @@ export default class Notices {
         });
         container.prepend(noticeContainer);
 
-        Utilities.onRemoved(container, async () => {
+        DOMManager.onRemoved(container, async () => {
             if (!this.errorPageClass) return;
 
-            const element = await new Promise(res => Utilities.onAdded(`.${this.errorPageClass}`, res));
+            const element = await new Promise(res => DOMManager.onAdded(`.${this.errorPageClass}`, res));
 
             element.prepend(noticeContainer);
         });

@@ -1,5 +1,5 @@
 import Builtin from "../../structs/builtin";
-import {DiscordModules, WebpackModules, Strings, DOM, React} from "modules";
+import {DiscordModules, WebpackModules, Strings, DOMManager, React} from "modules";
 import PublicServersMenu from "../../ui/publicservers/menu";
 import Globe from "../../ui/icons/globe";
 
@@ -80,13 +80,13 @@ export default new class PublicServers extends Builtin {
     async _appendButton() {
         await new Promise(r => setTimeout(r, 1000));
         
-        const existing = DOM.query("#bd-pub-li");
+        const existing = document.querySelector("#bd-pub-li");
         if (existing) return;
 
-        const guilds = DOM.query(`.${DiscordModules.GuildClasses.guilds} .${DiscordModules.GuildClasses.listItem}`);
+        const guilds = document.querySelector(`.${DiscordModules.GuildClasses.guilds} .${DiscordModules.GuildClasses.listItem}`);
         if (!guilds) return;
 
-        DOM.after(guilds, this.button);
+        guilds.parentNode.insertBefore(this.button, guilds.nextSibling);
     }
 
     openPublicServers() {
@@ -94,8 +94,8 @@ export default new class PublicServers extends Builtin {
     }
 
     get button() {
-        const btn = DOM.createElement(`<div id="bd-pub-li" class="${DiscordModules.GuildClasses.listItem}">`);
-        const label = DOM.createElement(`<div id="bd-pub-button" class="${DiscordModules.GuildClasses.wrapper + " " + DiscordModules.GuildClasses.circleIconButton}">${Strings.PublicServers.button}</div>`);
+        const btn = DOMManager.parseHTML(`<div id="bd-pub-li" class="${DiscordModules.GuildClasses.listItem}">`);
+        const label = DOMManager.parseHTML(`<div id="bd-pub-button" class="${DiscordModules.GuildClasses.wrapper + " " + DiscordModules.GuildClasses.circleIconButton}">${Strings.PublicServers.button}</div>`);
         label.addEventListener("click", () => {this.openPublicServers();});
         btn.append(label);
         return btn;

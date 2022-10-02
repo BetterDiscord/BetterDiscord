@@ -1,6 +1,6 @@
 import {Config} from "data";
 import Logger from "common/logger";
-import {WebpackModules, React, Settings, Strings, DOM, DiscordModules} from "modules";
+import {WebpackModules, React, Settings, Strings, DOMManager, DiscordModules} from "modules";
 import FormattableString from "../structs/string";
 import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
@@ -28,7 +28,7 @@ export default class Modals {
     static get Buttons() {return WebpackModules.getByProps("BorderColors");}
 
     static default(title, content) {
-        const modal = DOM.createElement(`<div class="bd-modal-wrapper theme-dark">
+        const modal = DOMManager.parseHTML(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">
                     <div class="bd-modal-inner inner-1JeGVc">

@@ -14,7 +14,7 @@
         "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint-js",
         "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
         "dist": "pnpm run build-prod && node scripts/pack.js",
-        "api": "jsdoc -X renderer/src/modules/pluginapi.js > jsdoc-ast.json"
+        "api": "jsdoc -X -r renderer/src/modules/api/ > jsdoc-ast.json"
     },
     "devDependencies": {
         "asar": "^3.2.0",

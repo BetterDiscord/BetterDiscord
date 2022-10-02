@@ -1,4 +1,3 @@
-import Utilities from "./utilities";
 import Logger from "common/logger";
 import Settings from "./settingsmanager";
 import Events from "./emitter";
@@ -138,9 +137,14 @@ export default class AddonManager {
     parseOldMeta(fileContent, filename) {
         const meta = fileContent.split("\n")[0];
         const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
-        const parsed = Utilities.testJSON(metaData);
-        if (!parsed) throw new AddonError(filename, filename, Strings.Addons.metaError, {message: "", stack: meta}, this.prefix);
-        if (!parsed.name) throw new AddonError(filename, filename, Strings.Addons.missingNameData, {message: "", stack: meta}, this.prefix);
+        let parsed = null;
+        try {
+            parsed = JSON.parse(metaData);
+        }
+        catch (err) {
+            throw new AddonError(filename, filename, Strings.Addons.metaError, err, this.prefix);
+        }
+        if (!parsed || !parsed.name) throw new AddonError(filename, filename, Strings.Addons.missingNameData, {message: "", stack: meta}, this.prefix);
         parsed.format = "json";
         return parsed;
     }
