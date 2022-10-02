@@ -12,7 +12,7 @@ const buildInfoFile = path.resolve(appPath, "..", "build_info.json");
 // Locate data path to find transparency settings
 let dataPath = "";
 if (process.platform === "win32" || process.platform === "darwin") dataPath = path.join(electron.app.getPath("userData"), "..");
-else dataPath = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config"); // This will help with snap packages eventually
+else dataPath = process.env.XDG_CONFIG_HOME || path.join(process.env.HOME, ".config"); // This will help with snap packages eventually
 dataPath = path.join(dataPath, "BetterDiscord") + "/";
 
 let hasCrashed = false;
