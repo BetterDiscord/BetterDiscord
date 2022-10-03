@@ -83,7 +83,7 @@ export default new class SettingsRenderer {
                     element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.state[collection.id], Settings.onSettingChange.bind(Settings, collection.id), collection.button ? collection.button : null)
                 });
             }
-            for (const panel of Settings.panels.sort((a,b) => a.order > b.order)) {
+            for (const panel of Settings.panels.sort((a,b) => a.order > b.order ? 1 : -1)) {
                 if (panel.clickListener) panel.onClick = (event) => panel.clickListener(thisObject, event, returnValue);
                 if (!panel.className) panel.className = `bd-${panel.id}-tab`;
                 if (typeof(panel.label) !== "string") panel.label = panel.label.toString();

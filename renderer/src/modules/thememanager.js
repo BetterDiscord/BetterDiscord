@@ -21,17 +21,20 @@ export default new class ThemeManager extends AddonManager {
 
     initialize() {
         const errors = super.initialize();
-        Settings.registerPanel("themes", Strings.Panels.themes, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
-            type: this.prefix,
-            folder: this.addonFolder,
-            onChange: this.toggleTheme.bind(this),
-            reload: this.reloadTheme.bind(this),
-            refreshList: this.updateThemeList.bind(this),
-            saveAddon: this.saveAddon.bind(this),
-            editAddon: this.editAddon.bind(this),
-            deleteAddon: this.deleteAddon.bind(this),
-            prefix: this.prefix
-        })});
+        Settings.registerPanel("themes", Strings.Panels.themes, {
+            order: 4,
+            element: () => SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
+                type: this.prefix,
+                folder: this.addonFolder,
+                onChange: this.toggleTheme.bind(this),
+                reload: this.reloadTheme.bind(this),
+                refreshList: this.updateThemeList.bind(this),
+                saveAddon: this.saveAddon.bind(this),
+                editAddon: this.editAddon.bind(this),
+                deleteAddon: this.deleteAddon.bind(this),
+                prefix: this.prefix
+            })
+        });
         return errors;
     }
 
