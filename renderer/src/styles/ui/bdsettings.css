@@ -139,6 +139,10 @@
     font-weight: 400;
 }
 
+.bd-setting-item:not(.inline) .bd-setting-note {
+    margin-bottom: 10px;
+}
+
 .bd-setting-divider {
     width: 100%;
     height: 1px;
