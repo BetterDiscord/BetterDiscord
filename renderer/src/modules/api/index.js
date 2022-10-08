@@ -11,6 +11,7 @@ import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
 import * as Legacy from "./legacy";
+import ContextMenu from "./contextmenu";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -18,6 +19,7 @@ const ThemeAPI = new AddonAPI(ThemeManager);
 const PatcherAPI = new Patcher();
 const DataAPI = new Data();
 const DOMAPI = new DOM();
+const ContextMenuAPI = new ContextMenu();
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
@@ -39,6 +41,7 @@ export default class BdApi {
         this.Patcher = new Patcher(pluginName);
         this.Data = new Data(pluginName);
         this.DOM = new DOM(pluginName);
+        this.ContextMenu = new ContextMenu();
 
         bounded.set(pluginName, this);
     }
@@ -108,6 +111,12 @@ BdApi.Utils = Utils;
  * @type DOM
  */
 BdApi.DOM = DOMAPI;
+
+/**
+ * An instance of {@link ContextMenu} for interacting with context menus
+ * @type ContextMenu
+ */
+BdApi.ContextMenu = ContextMenuAPI;
 
 Object.freeze(BdApi);
 Object.freeze(BdApi.prototype);
