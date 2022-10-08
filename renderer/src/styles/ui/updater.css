@@ -1,0 +1,23 @@
+.bd-filled-checkmark {
+    background: #43B581;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+}
+
+.bd-empty-updates {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--header-primary);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.bd-empty-updates svg {
+  fill: #43B581;
+  margin-bottom: 20px;
+}

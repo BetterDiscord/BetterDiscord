@@ -14,10 +14,11 @@ class DOM {
     /** Document/window height */
     get screenHeight() {return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);}
 
+    #callerName = "";
+
     constructor(callerName) {
         if (!callerName) return;
-        this.addStyle = this.addStyle.bind(this, callerName);
-        this.removeStyle = this.removeStyle.bind(this, callerName);
+        this.#callerName = callerName;
     }
 
     /**
@@ -27,9 +28,13 @@ class DOM {
      * @param {string} css CSS to apply to the document
      */
     addStyle(id, css) {
-        if (arguments.length === 3) {
+        if (this.#callerName && arguments.length === 2) {
             id = arguments[1];
             css = arguments[2];
+        }
+        else if (this.#callerName) {
+            css = id;
+            id = this.#callerName;
         }
 
         DOMManager.injectStyle(id, css);
@@ -41,7 +46,13 @@ class DOM {
      * @param {string} id ID uses for the style element
      */
     removeStyle(id) {
-        if (arguments.length === 2) id = arguments[1];
+        if (this.#callerName && arguments.length === 1) {
+            id = arguments[1];
+        }
+        else if (this.#callerName) {
+            id = this.#callerName;
+        }
+        
         DOMManager.removeStyle(id);
     }
 
@@ -97,5 +108,5 @@ class DOM {
 }
 
 Object.freeze(DOM);
-
+Object.freeze(DOM.prototype);
 export default DOM;

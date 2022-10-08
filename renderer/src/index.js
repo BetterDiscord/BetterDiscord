@@ -6,7 +6,11 @@ import BdApi from "./modules/api/index";
 
 // Perform some setup
 secure();
-window.BdApi = BdApi;
+Object.defineProperty(window, "BdApi", {
+    value: BdApi,
+    writable: false,
+    configurable: false
+});
 window.global = window;
 
 // Add loading icon at the bottom right

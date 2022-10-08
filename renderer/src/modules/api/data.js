@@ -8,11 +8,11 @@ import DataStore from "../datastore";
  */
 class Data {
 
+    #callerName = "";
+
     constructor(callerName) {
         if (!callerName) return;
-        this.save = this.save.bind(this, callerName);
-        this.load = this.load.bind(this, callerName);
-        this.delete = this.delete.bind(this, callerName);
+        this.#callerName = callerName;
     }
 
     /**
@@ -24,6 +24,11 @@ class Data {
      * @returns 
      */
     save(pluginName, key, data) {
+        if (this.#callerName) {
+            data = key;
+            key = pluginName;
+            pluginName = this.#callerName;
+        }
         return DataStore.setPluginData(pluginName, key, data);
     }
 
@@ -34,8 +39,12 @@ class Data {
      * @param {string} key Which piece of data to load
      * @returns {any} The stored data
      */
-    load(pluginName, key, data) {
-        return DataStore.setPluginData(pluginName, key, data);
+    load(pluginName, key) {
+        if (this.#callerName) {
+            key = pluginName;
+            pluginName = this.#callerName;
+        }
+        return DataStore.getPluginData(pluginName, key);
     }
 
     /**
@@ -44,12 +53,16 @@ class Data {
      * @param {string} pluginName Name of the plugin deleting data
      * @param {string} key Which piece of data to delete
      */
-    delete(pluginName, key, data) {
-        return DataStore.setPluginData(pluginName, key, data);
+    delete(pluginName, key) {
+        if (this.#callerName) {
+            key = pluginName;
+            pluginName = this.#callerName;
+        }
+        return DataStore.deletePluginData(pluginName, key);
     }
 
 }
 
 Object.freeze(Data);
-
+Object.freeze(Data.prototype);
 export default Data;

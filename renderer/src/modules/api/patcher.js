@@ -10,13 +10,10 @@ import {default as MainPatcher} from "../patcher";
  */
 class Patcher {
 
+    #callerName = "";
     constructor(callerName) {
         if (!callerName) return;
-        this.before = this.before.bind(this, callerName);
-        this.instead = this.instead.bind(this, callerName);
-        this.after = this.after.bind(this, callerName);
-        this.getPatchesByCaller = this.getPatchesByCaller.bind(this, callerName);
-        this.unpatchAll = this.unpatchAll.bind(this, callerName);
+        this.#callerName = callerName;
     }
 
     /**
@@ -29,6 +26,12 @@ class Patcher {
      * @returns {function} Function that cancels the original patch.
      */
     before(caller, moduleToPatch, functionName, callback) {
+        if (this.#callerName) {
+            callback = functionName;
+            functionName = moduleToPatch;
+            moduleToPatch = caller;
+            caller = this.#callerName;
+        }
         return MainPatcher.pushChildPatch(caller, moduleToPatch, functionName, callback, {type: "before"});
     }
 
@@ -42,6 +45,12 @@ class Patcher {
      * @returns {function} Function that cancels the original patch.
      */
     instead(caller, moduleToPatch, functionName, callback) {
+        if (this.#callerName) {
+            callback = functionName;
+            functionName = moduleToPatch;
+            moduleToPatch = caller;
+            caller = this.#callerName;
+        }
         return MainPatcher.pushChildPatch(caller, moduleToPatch, functionName, callback, {type: "instead"});
     }
 
@@ -55,6 +64,12 @@ class Patcher {
      * @returns {function} Function that cancels the original patch.
      */
     after(caller, moduleToPatch, functionName, callback) {
+        if (this.#callerName) {
+            callback = functionName;
+            functionName = moduleToPatch;
+            moduleToPatch = caller;
+            caller = this.#callerName;
+        }
         return MainPatcher.pushChildPatch(caller, moduleToPatch, functionName, callback, {type: "after"});
     }
 
@@ -64,6 +79,7 @@ class Patcher {
      * @returns {Array<function>} Array of all the patch objects.
      */
     getPatchesByCaller(caller) {
+        if (this.#callerName) caller = this.#callerName;
         if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of getPatchesByCaller must be a string representing the caller");
         return MainPatcher.getPatchesByCaller(caller);
     }
@@ -73,11 +89,12 @@ class Patcher {
      * @param {string} caller ID of the original patches
      */
     unpatchAll(caller) {
+        if (this.#callerName) caller = this.#callerName;
         if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of unpatchAll must be a string representing the caller");
         MainPatcher.unpatchAll(caller);
     }
 }
 
 Object.freeze(Patcher);
-
+Object.freeze(Patcher.prototype);
 export default Patcher;
