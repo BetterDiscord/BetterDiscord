@@ -52,6 +52,8 @@ export default new class Core {
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
 
+        Modals.initialize();
+
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
             Builtins[module].initialize();

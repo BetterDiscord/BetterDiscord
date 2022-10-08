@@ -1,6 +1,6 @@
 import {Config} from "data";
 import Logger from "common/logger";
-import {WebpackModules, React, Settings, Strings, DOMManager, DiscordModules} from "modules";
+import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordModules} from "modules";
 import FormattableString from "../structs/string";
 import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
@@ -11,23 +11,38 @@ export default class Modals {
     static get shouldShowAddonErrors() {return Settings.get("settings", "addons", "addonErrors");}
 
     static get ModalActions() {
-        return {
+        return this._ModalActions ??= {
             openModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer")),
             closeModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback()"))
         };
     }
-    static get ModalStack() {return WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
-    static get ModalComponents() {return WebpackModules.getByProps("Header", "Footer");}
-    static get ModalRoot() {return WebpackModules.getModule(m => m?.toString().includes("ENTERING"));}
-    static get ModalClasses() {return WebpackModules.getByProps("modal", "content");}
-    static get FlexElements() {return WebpackModules.getByProps("Child", "Align");}
-    static get FormTitle() {return WebpackModules.getByProps("Tags", "Sizes");}
-    static get TextElement() {return WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors);}
-    static get ConfirmationModal() {return WebpackModules.getModule(m => m?.toString()?.includes("confirmText"));}
-    static get Markdown() {return WebpackModules.find(m => m?.prototype?.render && m.rules);}
-    static get Buttons() {return WebpackModules.getByProps("BorderColors");}
+    static get ModalStack() {return this._ModalStack ??= WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
+    static get ModalComponents() {return this._ModalComponents ??= WebpackModules.getByProps("Header", "Footer");}
+    static get ModalRoot() {return this._ModalRoot ??= WebpackModules.getModule(m => m?.toString().includes("ENTERING"));}
+    static get ModalClasses() {return this._ModalClasses ??= WebpackModules.getByProps("modal", "content");}
+    static get FlexElements() {return this._FlexElements ??= WebpackModules.getByProps("Child", "Align");}
+    static get FormTitle() {return this._FormTitle ??= WebpackModules.getByProps("Tags", "Sizes");}
+    static get TextElement() {return this._TextElement ??= WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors);}
+    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString()?.includes(".confirmButtonColor"));}
+    static get Markdown() {return this._Markdown ??= WebpackModules.find(m => m?.prototype?.render && m.rules);}
+    static get Buttons() {return this._Buttons ??= WebpackModules.getByProps("BorderColors");}
+    static get ModalQueue() {return this._ModalQueue ??= [];}
+    
+    static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
-    static default(title, content) {
+    static async initialize() {
+        const names = ["ModalActions", "Markdown", "ModalRoot", "ModalComponents", "Buttons", "TextElement", "FlexElements"];
+
+        for (const name of names) {
+            const value = this[name];
+
+            if (!value) {
+                Logger.warn("Modals", `Missing ${name} module!`);
+            }
+        }
+    }
+
+    static default(title, content, buttons = []) {
         const modal = DOMManager.parseHTML(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">
@@ -37,26 +52,77 @@ export default class Modals {
                         </div>
                         <div class="bd-modal-body">
                             <div class="scroller-wrap fade">
-                                <div class="scroller">
-                                    ${content}
-                                </div>
+                                <div class="scroller"></div>
                             </div>
                         </div>
-                        <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp">
-                            <button type="button" class="bd-button">${Strings.Modals.okay}</button>
-                        </div>
+                        <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp"></div>
                     </div>
                 </div>
             </div>`);
-        modal.querySelector(".footer button").addEventListener("click", () => {
+        
+        const handleClose = () => {
             modal.classList.add("closing");
-            setTimeout(() => {modal.remove();}, 300);
-        });
-        modal.querySelector(".bd-backdrop").addEventListener("click", () => {
-            modal.classList.add("closing");
-            setTimeout(() => {modal.remove();}, 300);
-        });
-        document.querySelector("#app-mount").append(modal);
+            setTimeout(() => {
+                modal.remove();
+                
+                const next = this.ModalQueue.shift();
+                if (!next) return;
+
+                next();
+            }, 300);
+        };
+
+        if (!buttons.length) {
+            buttons.push({
+                label: Strings.Modals.okay,
+                action: handleClose
+            });
+        }
+
+        const buttonContainer = modal.querySelector(".footer");
+        for (const button of buttons) {
+            const buttonEl = Object.assign(document.createElement("button"), {
+                onclick: (e) => {
+                    try {button.action(e);} catch (error) {console.error(error);}
+
+                    handleClose();
+                },
+                type: "button",
+                className: "bd-button"
+            });
+
+            if (button.danger) buttonEl.classList.add("bd-button-danger")
+
+            buttonEl.append(button.label);
+            buttonContainer.appendChild(buttonEl);
+        }
+
+        if (Array.isArray(content) ? content.every(el => React.isValidElement(el)) : React.isValidElement(content)) {
+            const container = modal.querySelector(".scroller");
+
+            try {
+                ReactDOM.render(content, container);
+            } catch (error) {
+                container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`));
+            }
+
+            DOMManager.onRemoved(container, () => {
+                ReactDOM.unmountComponentAtNode(container);
+            });
+        } else {
+            modal.querySelector(".scroller").append(content);
+        }
+        
+        modal.querySelector(".footer button").addEventListener("click", handleClose);
+        modal.querySelector(".bd-backdrop").addEventListener("click", handleClose);
+        
+        const handleOpen = () => document.getElementById("app-mount").append(modal);
+
+        if (this.hasModalOpen) {
+            this.ModalQueue.push(handleOpen);
+        } else {
+            handleOpen();
+        }
     }
 
     static alert(title, content) {
@@ -80,25 +146,41 @@ export default class Modals {
         const Markdown = this.Markdown;
         const ConfirmationModal = this.ConfirmationModal;
         const ModalActions = this.ModalActions;
+
         if (content instanceof FormattableString) content = content.toString();
-        if (!this.ModalActions || !this.ConfirmationModal || !this.Markdown) return this.default(title, content);
 
         const emptyFunction = () => {};
         const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
 
+        if (!this.ModalActions || !this.ConfirmationModal || !this.Markdown) return this.default(title, content, [
+            confirmText && {label: confirmText, action: onConfirm},
+            cancelText && {label: cancelText, action: onCancel, danger}
+        ].filter(Boolean));
+
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? React.createElement(Markdown, null, c) : c);
 
-        return ModalActions.openModal(props => {
-            return React.createElement(ConfirmationModal, Object.assign({
+        let modalKey = ModalActions.openModal(props => {
+            return React.createElement(ErrorBoundary, {
+                onError: () => {
+                    setTimeout(() => {
+                        ModalActions.closeModal(modalKey);
+                        this.default(title, content, [
+                            confirmText && {label: confirmText, action: onConfirm},
+                            cancelText && {label: cancelText, action: onCancel, danger}
+                        ].filter(Boolean));
+                    });
+                }
+            }, React.createElement(ConfirmationModal, Object.assign({
                 header: title,
                 confirmButtonColor: danger ? this.Buttons.Colors.RED : this.Buttons.Colors.BRAND,
                 confirmText: confirmText,
                 cancelText: cancelText,
                 onConfirm: onConfirm,
                 onCancel: onCancel
-            }, props), content);
+            }, props), React.createElement(ErrorBoundary, {}, content)));
         }, {modalKey: key});
+        return modalKey;
     }
 
     static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
@@ -110,7 +192,7 @@ export default class Modals {
         }
 
         this.addonErrorsRef = React.createRef();
-        this.ModalActions.openModal(props => React.createElement(this.ModalRoot, Object.assign(props, {
+        this.ModalActions.openModal(props => React.createElement(ErrorBoundary, null, React.createElement(this.ModalRoot, Object.assign(props, {
             size: "medium",
             className: "bd-error-modal",
             children: [
@@ -127,7 +209,7 @@ export default class Modals {
                     className: "bd-button"
                 }, Strings.Modals.okay))
             ]
-        })));
+        }))));
     }
 
     static showChangelogModal(options = {}) {
@@ -179,14 +261,14 @@ export default class Modals {
         const originalRoot = OriginalModalClasses.root;
         if (originalRoot) OriginalModalClasses.root = `${originalRoot} bd-changelog-modal`;
         const key = ModalActions.openModal(props => {
-            return React.createElement(Changelog, Object.assign({
+            return React.createElement(ErrorBoundary, null, React.createElement(Changelog, Object.assign({
                 className: `bd-changelog ${ChangelogClasses.container}`,
                 selectable: true,
                 onScroll: _ => _,
                 onClose: _ => _,
                 renderHeader: renderHeader,
                 renderFooter: renderFooter,
-            }, props), changelogItems);
+            }, props), changelogItems));
         });
 
         const closeModal = ModalActions.closeModal;
@@ -241,7 +323,7 @@ export default class Modals {
         };
 
         return this.ModalActions.openModal(props => {
-            return React.createElement(modal, props);
+            return React.createElement(ErrorBoundary, null, React.createElement(modal, props));
         });
     }
 }

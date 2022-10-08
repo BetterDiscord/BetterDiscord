@@ -1,0 +1,73 @@
+.bd-modal-wrapper {
+    position: absolute;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+}
+
+.bd-backdrop {
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0, .6);
+    position: absolute;
+}
+
+.bd-modal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 33%;
+}
+
+.bd-modal-inner {
+    background: var(--background-primary);
+    border-radius: 4px;
+    overflow: hidden;
+    animation: bd-modal-open ease-out;
+    animation-duration: 300ms;
+}
+
+.bd-modal-wrapper.closing .bd-modal-inner {
+    animation: bd-modal-close ease-in;
+    animation-duration: 300ms;
+}
+
+.bd-modal .footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px;
+    background: var(--background-secondary);
+}
+
+.bd-modal-body {
+    padding: 20px 15px;
+    padding-top: 0;
+}
+
+.bd-modal .header {
+    padding: 15px;
+}
+
+.bd-modal .title {
+    font-size: 22px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.bd-modal-body {
+    color: #fff;
+}
+
+.bd-modal .footer .bd-button {
+    min-width: 80px;
+    height: 38px;
+}
+
+@keyframes bd-modal-close {
+    to {transform: scale(0.7);}
+}
+
+@keyframes bd-modal-open {
+    from {transform: scale(0.7);}
+}
