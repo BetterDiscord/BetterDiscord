@@ -79,9 +79,11 @@ export class Filters {
      */
     static byStrings(...strings) {
         return module => {
+            if (!module?.toString || typeof(module?.toString) !== "function") return; // Not stringable
             let moduleString = "";
-            try {moduleString = module.toString([]);}
-            catch (err) {moduleString = module.toString();}
+            try {moduleString = module?.toString([]);}
+            catch (err) {moduleString = module?.toString();}
+            if (!moduleString) return false; // Could not create string
             for (const s of strings) {
                 if (!moduleString.includes(s)) return false;
             }
@@ -133,7 +135,6 @@ const wrapFilter = filter => (exports, module, moduleId) => {
 
 export default class WebpackModules {
 
-    static times = [];
     static find(filter, first = true) {return this.getModule(filter, {first});}
     static findAll(filter) {return this.getModule(filter, {first: false});}
     static findByUniqueProperties(props, first = true) {return first ? this.getByProps(...props) : this.getAllByProps(...props);}
@@ -149,56 +150,48 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getModule(filter, options = {}) {
-        const start = Date.now();
-        try {
-            const {first = true, defaultExport = true, searchExports = false} = options;
-            const wrappedFilter = wrapFilter(filter);
+        const {first = true, defaultExport = true, searchExports = false} = options;
+        const wrappedFilter = wrapFilter(filter);
 
-            const modules = this.getAllModules();
-            const rm = [];
-            const indices = Object.keys(modules);
-            for (let i = 0; i < indices.length; i++) {
-                const index = indices[i];
-                if (!modules.hasOwnProperty(index)) continue;
-                const module = modules[index];
-                const {exports} = module;
-                if (!exports || exports === window) continue;
-                
-                if (typeof(exports) === "object" && searchExports) {
-                    for (const key in exports) {
-                        let foundModule = null;
-                        const wrappedExport = exports[key];
-                        if (!wrappedExport) continue;
-                        if (wrappedExport.Z && wrappedFilter(wrappedExport.Z, module, index)) foundModule = defaultExport ? wrappedExport.Z : wrappedExport;
-                        if (wrappedExport.ZP && wrappedFilter(wrappedExport.ZP, module, index)) foundModule = defaultExport ? wrappedExport.ZP : wrappedExport;
-                        if (wrappedExport.__esModule && wrappedExport.default && wrappedFilter(wrappedExport.default, module, index)) foundModule = defaultExport ? wrappedExport.default : wrappedExport;
-                        if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
-                        if (!foundModule) continue;
-                        if (first) return foundModule;
-                        rm.push(foundModule);
-                    }
-                }
-                else {
+        const modules = this.getAllModules();
+        const rm = [];
+        const indices = Object.keys(modules);
+        for (let i = 0; i < indices.length; i++) {
+            const index = indices[i];
+            if (!modules.hasOwnProperty(index)) continue;
+            const module = modules[index];
+            const {exports} = module;
+            if (!exports || exports === window) continue;
+            
+            if (typeof(exports) === "object" && searchExports) {
+                for (const key in exports) {
                     let foundModule = null;
-                    if (exports.Z && wrappedFilter(exports.Z, module, index)) foundModule = defaultExport ? exports.Z : exports;
-                    if (exports.ZP && wrappedFilter(exports.ZP, module, index)) foundModule = defaultExport ? exports.ZP : exports;
-                    if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
-                    if (wrappedFilter(exports, module, index)) foundModule = exports;
+                    const wrappedExport = exports[key];
+                    if (!wrappedExport) continue;
+                    if (wrappedExport.Z && wrappedFilter(wrappedExport.Z, module, index)) foundModule = defaultExport ? wrappedExport.Z : wrappedExport;
+                    if (wrappedExport.ZP && wrappedFilter(wrappedExport.ZP, module, index)) foundModule = defaultExport ? wrappedExport.ZP : wrappedExport;
+                    if (wrappedExport.__esModule && wrappedExport.default && wrappedFilter(wrappedExport.default, module, index)) foundModule = defaultExport ? wrappedExport.default : wrappedExport;
+                    if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
                     if (!foundModule) continue;
                     if (first) return foundModule;
                     rm.push(foundModule);
                 }
-
-
             }
-            
-            return first || rm.length == 0 ? undefined : rm;
+            else {
+                let foundModule = null;
+                if (exports.Z && wrappedFilter(exports.Z, module, index)) foundModule = defaultExport ? exports.Z : exports;
+                if (exports.ZP && wrappedFilter(exports.ZP, module, index)) foundModule = defaultExport ? exports.ZP : exports;
+                if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
+                if (wrappedFilter(exports, module, index)) foundModule = exports;
+                if (!foundModule) continue;
+                if (first) return foundModule;
+                rm.push(foundModule);
+            }
+
+
         }
-        finally {
-            const diff = Date.now() - start;
-            this.times.push(diff);
-            Logger.info("WebpackModules", new Error(`Search took ${(diff).toFixed(0)}ms`));
-        }
+        
+        return first || rm.length == 0 ? undefined : rm;
     }
 
     /**
@@ -498,4 +491,3 @@ export default class WebpackModules {
 }
 
 WebpackModules.initialize();
-window.debugwm = WebpackModules;

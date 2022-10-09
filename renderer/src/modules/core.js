@@ -79,14 +79,7 @@ export default new class Core {
 
         const previousVersion = DataStore.getBDData("version");
         if (Config.version > previousVersion) {
-            const md = [Changelog.description];
-            for (const type of Changelog.changes) {
-                md.push(`**${type.title}**`);
-                for (const entry of type.items) {
-                    md.push(` - ${entry}`);
-                }
-            }
-            Modals.showConfirmationModal(`BetterDiscord v${Config.version}`, md, {cancelText: ""});
+            Modals.showChangelogModal(Changelog);
             DataStore.setBDData("version", Config.version);
         }
     }

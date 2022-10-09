@@ -9,7 +9,7 @@ const InviteActions = WebpackModules.getByProps("acceptInvite");
 
 const betterDiscordServer = {
     name: "BetterDiscord",
-    members: 55000,
+    members: 110000,
     categories: ["community", "programming", "support"],
     description: "Official BetterDiscord server for plugins, themes, support, etc",
     identifier: "86004744966914048",

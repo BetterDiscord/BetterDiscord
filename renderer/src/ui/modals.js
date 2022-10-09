@@ -12,20 +12,20 @@ export default class Modals {
 
     static get ModalActions() {
         return this._ModalActions ??= {
-            openModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer")),
-            closeModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback()"))
+            openModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer"), {searchExports: true}),
+            closeModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback()"), {searchExports: true})
         };
     }
     static get ModalStack() {return this._ModalStack ??= WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get ModalComponents() {return this._ModalComponents ??= WebpackModules.getByProps("Header", "Footer");}
-    static get ModalRoot() {return this._ModalRoot ??= WebpackModules.getModule(m => m?.toString().includes("ENTERING"));}
+    static get ModalRoot() {return this._ModalRoot ??= WebpackModules.getModule(m => m?.toString?.()?.includes("ENTERING"), {searchExports: true});}
     static get ModalClasses() {return this._ModalClasses ??= WebpackModules.getByProps("modal", "content");}
     static get FlexElements() {return this._FlexElements ??= WebpackModules.getByProps("Child", "Align");}
     static get FormTitle() {return this._FormTitle ??= WebpackModules.getByProps("Tags", "Sizes");}
     static get TextElement() {return this._TextElement ??= WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors);}
-    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString()?.includes(".confirmButtonColor"));}
+    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"));}
     static get Markdown() {return this._Markdown ??= WebpackModules.find(m => m?.prototype?.render && m.rules);}
-    static get Buttons() {return this._Buttons ??= WebpackModules.getByProps("BorderColors");}
+    static get Buttons() {return this._Buttons ??= WebpackModules.getModule(m => m.BorderColors, {searchExports: true});}
     static get ModalQueue() {return this._ModalQueue ??= [];}
     
     static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
@@ -212,7 +212,18 @@ export default class Modals {
         }))));
     }
 
-    static showChangelogModal(options = {}) {
+    static showChangelogModal(changelog) {
+        const md = [changelog.description];
+        for (const type of changelog.changes) {
+            md.push(`**${type.title}**`);
+            for (const entry of type.items) {
+                md.push(` - ${entry}`);
+            }
+        }
+        Modals.showConfirmationModal(`BetterDiscord v${Config.version}`, md, {cancelText: ""});
+    }
+
+    static BROKEN_showChangelogModal(options = {}) {
         const ModalStack = WebpackModules.getByProps("push", "update", "pop", "popWithKey");
         const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
         const TextElement = WebpackModules.getByDisplayName("LegacyText");

@@ -44,36 +44,32 @@ export default new class PublicServers extends Builtin {
     get id() {return "publicServers";}
 
     enabled() {
-        // let target = null;
-        // WebpackModules.getModule((_, m) => {
-        //     if (m.exports?.toString().includes("privateChannelIds")) {
-        //         target = m.exports;
-        //     }
-        // });
-        // if (!target || !target.Z) return;
-        // const PrivateChannelListComponents = WebpackModules.getByProps("LinkButton");
-        // this.after(target, "Z", (_, __, returnValue) => {
-        //     const destination = returnValue?.props?.children?.props?.children;
-        //     if (!destination || !Array.isArray(destination)) return;
-        //     if (destination.find(b => b?.props?.children?.props?.id === "public-server-button")) return;
+        const PrivateChannelList = WebpackModules.getModule(m => m?.toString().includes("privateChannelIds"), {defaultExport: false});
+        if (!PrivateChannelList || !PrivateChannelList.Z) return this.warn("Could not find PrivateChannelList", PrivateChannelList);
+        const PrivateChannelButton = WebpackModules.getModule(m => m?.prototype?.render?.toString().includes("linkButton"), {searchExports: true});
+        if (!PrivateChannelButton) return this.warn("Could not find PrivateChannelButton", PrivateChannelButton);
+        this.after(PrivateChannelList, "Z", (_, __, returnValue) => {
+            const destination = returnValue?.props?.children?.props?.children;
+            if (!destination || !Array.isArray(destination)) return;
+            if (destination.find(b => b?.props?.children?.props?.id === "public-server-button")) return;
             
-            // destination.push(
-            //     React.createElement(ErrorBoundary, null,
-            //         React.createElement(PrivateChannelListComponents.LinkButton,
-            //             {
-            //                 id: "public-server-button",
-            //                 onClick: () => this.openPublicServers(),
-            //                 text: "Public Servers",
-            //                 icon: () => React.createElement(Globe, {color: "currentColor"})
-            //             }
-            //         )
-            //     )
-            // );
-        // });
+            destination.push(
+                React.createElement(ErrorBoundary, null,
+                    React.createElement(PrivateChannelButton,
+                        {
+                            id: "public-server-button",
+                            onClick: () => this.openPublicServers(),
+                            text: "Public Servers",
+                            icon: () => React.createElement(Globe, {color: "currentColor"})
+                        }
+                    )
+                )
+            );
+        });
     }
 
     disabled() {
-        // this.unpatchAll();
+        this.unpatchAll();
         // DOM.query("#bd-pub-li").remove();
     }
 
