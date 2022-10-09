@@ -68,6 +68,7 @@ const Webpack = {
      * @param {object} [options] Whether to return only the first matching module
      * @param {Boolean} [options.first=true] Whether to return only the first matching module
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters.
      * @return {any}
      */
     getModule(filter, options = {}) {
@@ -84,6 +85,7 @@ const Webpack = {
      * @param {Function} queries.filter A function to use to filter modules
      * @param {Boolean} [queries.first=true] Whether to return only the first matching module
      * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [queries.searchExports=false] Whether to execute the filter on webpack export getters.
      * @return {any}
      */
     getBulk(...queries) {return WebpackModules.getBulk(...queries);},
@@ -95,6 +97,7 @@ const Webpack = {
      * @param {object} [options] Whether to return only the first matching module
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters.
      * @returns {Promise<any>}
      */
     waitForModule(filter, options = {}) {

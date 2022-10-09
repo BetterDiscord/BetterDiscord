@@ -41,7 +41,6 @@ export default class BdApi {
         this.Patcher = new Patcher(pluginName);
         this.Data = new Data(pluginName);
         this.DOM = new DOM(pluginName);
-        this.ContextMenu = new ContextMenu();
 
         bounded.set(pluginName, this);
     }
@@ -53,6 +52,7 @@ export default class BdApi {
     get Utils() {return Utils;}
     get UI() {return UI;}
     get ReactUtils() {return ReactUtils;}
+    get ContextMenu() {return ContextMenuAPI;}
 }
 
 // Add legacy functions
