@@ -168,9 +168,6 @@ export default class WebpackModules {
                     let foundModule = null;
                     const wrappedExport = exports[key];
                     if (!wrappedExport) continue;
-                    if (wrappedExport.Z && wrappedFilter(wrappedExport.Z, module, index)) foundModule = defaultExport ? wrappedExport.Z : wrappedExport;
-                    if (wrappedExport.ZP && wrappedFilter(wrappedExport.ZP, module, index)) foundModule = defaultExport ? wrappedExport.ZP : wrappedExport;
-                    if (wrappedExport.__esModule && wrappedExport.default && wrappedFilter(wrappedExport.default, module, index)) foundModule = defaultExport ? wrappedExport.default : wrappedExport;
                     if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
                     if (!foundModule) continue;
                     if (first) return foundModule;
@@ -228,9 +225,6 @@ export default class WebpackModules {
                         let foundModule = null;
                         const wrappedExport = exports[key];
                         if (!wrappedExport) continue;
-                        if (wrappedExport.Z && wrappedFilter(wrappedExport.Z, module, index)) foundModule = defaultExport ? wrappedExport.Z : wrappedExport;
-                        if (wrappedExport.ZP && wrappedFilter(wrappedExport.ZP, module, index)) foundModule = defaultExport ? wrappedExport.ZP : wrappedExport;
-                        if (wrappedExport.__esModule && wrappedExport.default && wrappedFilter(wrappedExport.default, module, index)) foundModule = defaultExport ? wrappedExport.default : wrappedExport;
                         if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
                         if (!foundModule) continue;
                         if (first) returnedModules[q] = foundModule;
@@ -343,7 +337,7 @@ export default class WebpackModules {
      */
     static getLazy(filter, options = {}) {
         const {signal: abortSignal, defaultExport = true, searchExports = false} = options;
-        const fromCache = this.getModule(filter);
+        const fromCache = this.getModule(filter, {defaultExport, searchExports});
         if (fromCache) return Promise.resolve(fromCache);
 
         const wrappedFilter = wrapFilter(filter);
@@ -359,9 +353,6 @@ export default class WebpackModules {
                         foundModule = null;
                         const wrappedExport = exports[key];
                         if (!wrappedExport) continue;
-                        if (wrappedExport.Z && wrappedFilter(wrappedExport.Z)) foundModule = defaultExport ? wrappedExport.Z : wrappedExport;
-                        if (wrappedExport.ZP && wrappedFilter(wrappedExport.ZP)) foundModule = defaultExport ? wrappedExport.ZP : wrappedExport;
-                        if (wrappedExport.__esModule && wrappedExport.default && wrappedFilter(wrappedExport.default)) foundModule = defaultExport ? wrappedExport.default : wrappedExport;
                         if (wrappedFilter(wrappedExport)) foundModule = wrappedExport;
                     }
                 }
