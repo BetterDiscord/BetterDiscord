@@ -1,5 +1,5 @@
 import Builtin from "../../structs/builtin";
-import {DiscordModules, WebpackModules, Strings, DOMManager, React} from "modules";
+import {DiscordModules, WebpackModules, Strings, DOMManager, React, ReactDOM} from "modules";
 import PublicServersMenu from "../../ui/publicservers/menu";
 import Globe from "../../ui/icons/globe";
 
@@ -48,16 +48,17 @@ export default new class PublicServers extends Builtin {
         if (!PrivateChannelList || !PrivateChannelList.Z) return this.warn("Could not find PrivateChannelList", PrivateChannelList);
         const PrivateChannelButton = WebpackModules.getModule(m => m?.prototype?.render?.toString().includes("linkButton"), {searchExports: true});
         if (!PrivateChannelButton) return this.warn("Could not find PrivateChannelButton", PrivateChannelButton);
+
         this.after(PrivateChannelList, "Z", (_, __, returnValue) => {
             const destination = returnValue?.props?.children?.props?.children;
             if (!destination || !Array.isArray(destination)) return;
-            if (destination.find(b => b?.props?.children?.props?.id === "public-server-button")) return;
+            if (destination.find(b => b?.props?.children?.props?.id === "public-servers-button")) return; // If it exists, don't try to add again
             
             destination.push(
                 React.createElement(ErrorBoundary, null,
                     React.createElement(PrivateChannelButton,
                         {
-                            id: "public-server-button",
+                            id: "public-servers-button",
                             onClick: () => this.openPublicServers(),
                             text: "Public Servers",
                             icon: () => React.createElement(Globe, {color: "currentColor"})
@@ -66,6 +67,42 @@ export default new class PublicServers extends Builtin {
                 )
             );
         });
+
+        /**
+         * On being first enabled, we have no way of forceUpdating the list,
+         * so clone and modify an existing button and add it to the end
+         * of the button list.
+         */
+        const header = document.querySelector(`[class*="privateChannelsHeaderContainer-"]`);
+        if (!header) return; // No known element
+        const oldButton = header.previousElementSibling;
+        if (!oldButton.className.includes("channel-")) return; // Not what we expected to be there
+
+        // Clone existing button and set click handler
+        const newButton = oldButton.cloneNode(true);
+        newButton.addEventListener("click", (event) => {
+            event.stopImmediatePropagation();
+            event.stopPropagation();
+            event.preventDefault();
+            this.openPublicServers();
+        });
+
+        // Remove existing route and id
+        const aSlot = newButton.querySelector("a");
+        aSlot.href = "";
+        aSlot.dataset.listItemId = "public-servers";
+
+        // Render our icon in the avatar slot
+        const avatarSlot = newButton.querySelector(`[class*="avatar-"]`);
+        avatarSlot.replaceChildren();
+        ReactDOM.render(React.createElement(Globe, {color: "currentColor"}), avatarSlot);
+
+        // Replace the existing name
+        const nameSlot = newButton.querySelector(`[class*="name-"]`);
+        nameSlot.textContent = "Public Servers";
+
+        // Insert before the header, end of the list
+        header.parentNode.insertBefore(newButton, header);
     }
 
     disabled() {

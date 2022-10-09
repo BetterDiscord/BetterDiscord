@@ -74,7 +74,7 @@ const Webpack = {
     getModule(filter, options = {}) {
         if (("first" in options) && typeof(options.first) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.first", options.first, "boolean expected.");
         if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
-        if (("searchGetters" in options) && typeof(options.searchGetters) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchGetters", options.searchGetters, "boolean expected.");
+        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
         return WebpackModules.getModule(filter, options);
     },
 
@@ -103,7 +103,7 @@ const Webpack = {
     waitForModule(filter, options = {}) {
         if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
         if (("signal" in options) && !(options.signal instanceof AbortSignal)) return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.signal", options.signal, "AbortSignal expected.");
-        if (("searchGetters" in options) && typeof(options.searchGetters) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchGetters", options.searchGetters, "boolean expected.");
+        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
         return WebpackModules.getLazy(filter, options);
     },
 };

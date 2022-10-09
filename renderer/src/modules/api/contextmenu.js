@@ -15,7 +15,7 @@ const MenuComponents = (() => {
     };
 
     let ContextMenuIndex = null;
-    const ContextMenuModule = WebpackModules.getModule((m, _, id) => Object.values(m).some(v => v?.FLEXIBLE) && (ContextMenuIndex = id), {searchGetters: false});
+    const ContextMenuModule = WebpackModules.getModule((m, _, id) => Object.values(m).some(v => v?.FLEXIBLE) && (ContextMenuIndex = id), {searchExports: false});
     const rawMatches = WebpackModules.require.m[ContextMenuIndex].toString().matchAll(/if\(\w+\.type===\w+\.(\w+)\).+?type:"(.+?)"/g);
     
     out.Menu = Object.values(ContextMenuModule).find(v => v.toString().includes(".isUsingKeyboardNavigation"));
@@ -30,7 +30,7 @@ const MenuComponents = (() => {
 const ContextMenuActions = (() => {
     const out = {};
 
-    const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(m => typeof m === "function" && m.toString().includes("CONTEXT_MENU_CLOSE")), {searchGetters: false});
+    const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(m => typeof m === "function" && m.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
 
     for (const key of Object.keys(ActionsModule)) {
         if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
@@ -50,7 +50,7 @@ class MenuPatcher {
 
     static initialize() {
         const {module, key} = (() => {
-            const module = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchGetters: false});
+            const module = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
             const key = Object.keys(module).find(key => module[key].length === 3);
 
             return {module, key};

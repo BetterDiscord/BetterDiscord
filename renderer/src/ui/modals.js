@@ -1,6 +1,6 @@
 import {Config} from "data";
 import Logger from "common/logger";
-import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordModules} from "modules";
+import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordModules, DiscordClasses} from "modules";
 import FormattableString from "../structs/string";
 import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
@@ -212,26 +212,16 @@ export default class Modals {
         }))));
     }
 
-    static showChangelogModal(changelog) {
-        const md = [changelog.description];
-        for (const type of changelog.changes) {
-            md.push(`**${type.title}**`);
-            for (const entry of type.items) {
-                md.push(` - ${entry}`);
-            }
-        }
-        Modals.showConfirmationModal(`BetterDiscord v${Config.version}`, md, {cancelText: ""});
-    }
-
-    static BROKEN_showChangelogModal(options = {}) {
-        const ModalStack = WebpackModules.getByProps("push", "update", "pop", "popWithKey");
+    static showChangelogModal(options = {}) {
+        const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen", "root");
+        const ChangelogModalClasses = WebpackModules.getModule(m => m.modal && m.maxModalWidth);
         const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
-        const TextElement = WebpackModules.getByDisplayName("LegacyText");
-        const FlexChild = WebpackModules.getByProps("Child");
-        const Titles = WebpackModules.getByProps("Tags", "default");
-        const Changelog = WebpackModules.getModule(m => m.defaultProps && m.defaultProps.selectable == false);
+        const TextElement = this.TextElement;
+        const FlexChild = this.FlexElements;
+        const Titles = this.FormTitle;
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
-        if (!Changelog || !ModalStack || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
+
+        if (!OriginalModalClasses || !ChangelogModalClasses || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
 
         const {image = "https://i.imgur.com/wuh5yMK.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.version}`, footer} = options;
         const ce = React.createElement;
@@ -247,47 +237,38 @@ export default class Modals {
             changelogItems.push(list);
         }
         const renderHeader = function() {
-            return ce(FlexChild.Child, {grow: 1, shrink: 1},
-                ce(Titles.default, {tag: Titles.Tags.H4}, title),
-                ce(TextElement, {size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD, className: ChangelogClasses.date}, subtitle)
+            return ce(FlexChild, {className: OriginalModalClasses.header, grow: 0, shrink: 0, direction: FlexChild.Direction.VERTICAL},
+                ce(Titles, {tag: Titles.Tags.H1, size: TextElement.Sizes.SIZE_20}, title),
+                ce(TextElement, {size: TextElement.Sizes.SIZE_12, color: TextElement.Colors.STANDARD, className: ChangelogClasses.date}, subtitle)
             );
         };
 
         const renderFooter = () => {
-            const Anchor = WebpackModules.getModule(m => m.displayName == "Anchor");
             const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
             const joinSupportServer = (click) => {
                 click.preventDefault();
                 click.stopPropagation();
-                ModalStack.pop();
                 DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel("0Tmfo5ZbORCRqbAd");
             };
-            const supportLink = Anchor ? ce(Anchor, {onClick: joinSupportServer}, "Join our Discord Server.") : ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
-            const defaultFooter = ce(TextElement, {size: TextElement.Sizes.SMALL, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
-            return ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter);
+            const supportLink = ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
+            const defaultFooter = ce(TextElement, {size: TextElement.Sizes.SIZE_12, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
+            return ce(FlexChild, {className: OriginalModalClasses.footer + " " + OriginalModalClasses.footerSeparator},
+                ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter)
+            );
         };
 
-        const ModalActions = this.ModalActions;
-        const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen", "root");
-        const originalRoot = OriginalModalClasses.root;
-        if (originalRoot) OriginalModalClasses.root = `${originalRoot} bd-changelog-modal`;
-        const key = ModalActions.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(Changelog, Object.assign({
-                className: `bd-changelog ${ChangelogClasses.container}`,
+        const body = ce("div", {
+            className: `${OriginalModalClasses.content} ${ChangelogClasses.container} ${ChangelogModalClasses.content} ${DiscordClasses.Scrollers.thin}`
+        }, changelogItems);
+
+        const key = this.ModalActions.openModal(props => {
+            return React.createElement(ErrorBoundary, null, React.createElement(this.ModalRoot, Object.assign({
+                className: `bd-changelog-modal ${OriginalModalClasses.root} ${OriginalModalClasses.small} ${ChangelogModalClasses.modal}`,
                 selectable: true,
                 onScroll: _ => _,
                 onClose: _ => _,
-                renderHeader: renderHeader,
-                renderFooter: renderFooter,
-            }, props), changelogItems));
+            }, props), renderHeader(), body, renderFooter()));
         });
-
-        const closeModal = ModalActions.closeModal;
-        ModalActions.closeModal = function(k) {
-            Reflect.apply(closeModal, this, arguments);
-            setTimeout(() => {if (originalRoot && k === key) OriginalModalClasses.root = originalRoot;}, 1000);
-            ModalActions.closeModal = closeModal;
-        };
         return key;
     }
 

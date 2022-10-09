@@ -206,6 +206,7 @@ export default class AddonManager {
             if (partialAddon) {
                 partialAddon.partial = true;
                 this.state[partialAddon.id] = false;
+                this.emit("loaded", partialAddon.id);
             }
             return e;
         }
@@ -215,6 +216,7 @@ export default class AddonManager {
         if (error) {
             this.state[addon.id] = false;
             addon.partial = true;
+            this.emit("loaded", addon.id);
             return error;
         }
 
