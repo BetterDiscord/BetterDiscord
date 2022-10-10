@@ -13,7 +13,7 @@ import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
 import Strings from "./strings";
 import IPC from "./ipc";
-import LoadingIcon from "../loadingicon";
+import LoadingInterface from "../loading";
 import Styles from "../styles/index.css";
 import Editor from "./editor";
 import AddonUpdater from "./addonupdater";
@@ -32,58 +32,58 @@ export default new class Core {
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
-        await LoadingIcon.setInitStatus(1/15*100, "Injecting BD Styles");
+        await LoadingInterface.setInitStatus(1/15*100, "Injecting BD Styles");
         
         Logger.log("Startup", "Initializing DataStore");
         DataStore.initialize();
-        await LoadingIcon.setInitStatus(2/15*100, "Initializing DataStore");
+        await LoadingInterface.setInitStatus(2/15*100, "Initializing DataStore");
         
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
-        await LoadingIcon.setInitStatus(3/15*100, "Initializing LocaleManager");
+        await LoadingInterface.setInitStatus(3/15*100, "Initializing LocaleManager");
         
         Logger.log("Startup", "Getting update information");
         this.checkForUpdate();
-        await LoadingIcon.setInitStatus(4/15*100, "Getting update information");
+        await LoadingInterface.setInitStatus(4/15*100, "Getting update information");
         
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
-        await LoadingIcon.setInitStatus(5/15*100, "Initializing Settings");
+        await LoadingInterface.setInitStatus(5/15*100, "Initializing Settings");
         
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
-        await LoadingIcon.setInitStatus(6/15*100, "Initializing DOMManager");
+        await LoadingInterface.setInitStatus(6/15*100, "Initializing DOMManager");
         
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
-        await LoadingIcon.setInitStatus(7/15*100, "Waiting for connection...");
+        await LoadingInterface.setInitStatus(7/15*100, "Waiting for connection...");
         
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
-        await LoadingIcon.setInitStatus(8/15*100, "Initializing Editor");
+        await LoadingInterface.setInitStatus(8/15*100, "Initializing Editor");
         
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
-        await LoadingIcon.setInitStatus(9/15*100, "Initializing Builtins");
+        await LoadingInterface.setInitStatus(9/15*100, "Initializing Builtins");
         
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
         const pluginErrors = PluginManager.initialize();
-        await LoadingIcon.setInitStatus(10/15*100);
+        await LoadingInterface.setInitStatus(10/15*100, "Loading Plugins");
         
         Logger.log("Startup", "Loading Themes");
         // const themeErrors = [];
         const themeErrors = ThemeManager.initialize();
-        await LoadingIcon.setInitStatus(11/15*100);
+        await LoadingInterface.setInitStatus(11/15*100, "Loading Themes");
         
         Logger.log("Startup", "Initializing AddonUpdater");
         AddonUpdater.initialize();
-        await LoadingIcon.setInitStatus(12/15*100);
+        await LoadingInterface.setInitStatus(12/15*100, "Initializing AddonUpdater");
         
-        Logger.log("Startup", "Removing Loading Icon");
-        LoadingIcon.hide();
+        Logger.log("Startup", "Removing Loading Interface");
+        LoadingInterface.hide();
         
         // Show loading errors
         Logger.log("Startup", "Collecting Startup Errors");

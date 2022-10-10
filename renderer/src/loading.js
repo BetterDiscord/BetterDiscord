@@ -54,7 +54,6 @@ loadingProgress.appendChild(loadingProgressBar);
 loadingProgress.id = "bd-loading-progress";
 
 export default class {
-
     static setInitStatus(percent, status = "") {
         return new Promise(
             rs => {

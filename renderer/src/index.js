@@ -1,6 +1,6 @@
 import require from "./polyfill"; // eslint-disable-line no-unused-vars
 import secure from "./secure";
-import LoadingIcon from "./loadingicon";
+import LoadingInterface from "./loading";
 import BetterDiscord from "./modules/core";
 import BdApi from "./modules/pluginapi";
 
@@ -10,5 +10,5 @@ window.BdApi = BdApi;
 window.global = window;
 
 // Add loading icon at the bottom right
-LoadingIcon.show();
+LoadingInterface.show();
 BetterDiscord.startup();
