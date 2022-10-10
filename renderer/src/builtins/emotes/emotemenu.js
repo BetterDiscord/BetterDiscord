@@ -20,7 +20,7 @@ export default new class EmoteMenu extends Builtin {
 
     enabled() {
         this.after(EmojiPicker, "type", (_, __, returnValue) => {
-            const originalChildren = Utilities.getNestedProp(returnValue, "props.children.props.children");
+            const originalChildren = returnValue?.props?.children?.props?.children;
             if (!originalChildren || originalChildren.__patched) return;
 
             const activePicker = useExpressionPickerStore((state) => state.activeView);
@@ -30,8 +30,8 @@ export default new class EmoteMenu extends Builtin {
 
                 // Attach a try {} catch {} because this might crash the user.
                 try {
-                    const head = Utilities.findInReactTree(childrenReturn, (e) => e?.role === "tablist")?.children;
-                    const body = Utilities.findInReactTree(childrenReturn, (e) => e?.[0]?.type === "nav");
+                    const head = Utilities.findInTree(childrenReturn, (e) => e?.role === "tablist", {walkable: ["props", "children", "return", "stateNode"]})?.children;
+                    const body = Utilities.findInTree(childrenReturn, (e) => e?.[0]?.type === "nav", {walkable: ["props", "children", "return", "stateNode"]});
                     if (!head || !body) return childrenReturn;
 
                     const isActive = activePicker == "bd-emotes";

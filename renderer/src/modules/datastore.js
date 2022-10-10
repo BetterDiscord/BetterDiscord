@@ -1,5 +1,4 @@
 import {Config} from "data";
-import Utilities from "./utilities";
 import Logger from "common/logger";
 const fs = require("fs");
 const path = require("path");
@@ -130,7 +129,8 @@ export default new class DataStore {
     getLocale(locale) {
         const file = path.resolve(this.localeFolder, `${locale}.json`);
         if (!fs.existsSync(file)) return null;
-        return Utilities.testJSON(fs.readFileSync(file).toString());
+        try {return JSON.parse(fs.readFileSync(file).toString());}
+        catch {return false;}
     }
 
     saveLocale(locale, strings) {

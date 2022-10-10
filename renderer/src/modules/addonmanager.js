@@ -1,4 +1,3 @@
-import Utilities from "./utilities";
 import Logger from "common/logger";
 import Settings from "./settingsmanager";
 import Events from "./emitter";
@@ -138,9 +137,14 @@ export default class AddonManager {
     parseOldMeta(fileContent, filename) {
         const meta = fileContent.split("\n")[0];
         const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
-        const parsed = Utilities.testJSON(metaData);
-        if (!parsed) throw new AddonError(filename, filename, Strings.Addons.metaError, {message: "", stack: meta}, this.prefix);
-        if (!parsed.name) throw new AddonError(filename, filename, Strings.Addons.missingNameData, {message: "", stack: meta}, this.prefix);
+        let parsed = null;
+        try {
+            parsed = JSON.parse(metaData);
+        }
+        catch (err) {
+            throw new AddonError(filename, filename, Strings.Addons.metaError, err, this.prefix);
+        }
+        if (!parsed || !parsed.name) throw new AddonError(filename, filename, Strings.Addons.missingNameData, {message: "", stack: meta}, this.prefix);
         parsed.format = "json";
         return parsed;
     }
@@ -202,6 +206,7 @@ export default class AddonManager {
             if (partialAddon) {
                 partialAddon.partial = true;
                 this.state[partialAddon.id] = false;
+                this.emit("loaded", partialAddon);
             }
             return e;
         }
@@ -211,11 +216,12 @@ export default class AddonManager {
         if (error) {
             this.state[addon.id] = false;
             addon.partial = true;
+            this.emit("loaded", addon);
             return error;
         }
 
         if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
-        this.emit("loaded", addon.id);
+        this.emit("loaded", addon);
         
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
@@ -228,7 +234,7 @@ export default class AddonManager {
         if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
 
         this.addonList.splice(this.addonList.indexOf(addon), 1);
-        this.emit("unloaded", addon.id);
+        this.emit("unloaded", addon);
         if (shouldToast) Toasts.success(`${addon.name} was unloaded.`);
         return true;
     }

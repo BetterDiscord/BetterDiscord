@@ -76,6 +76,20 @@ export const rmdirSync = function (path, options) {
     Remote.filesystem.deleteDirectory(path, options);
 };
 
+export const rm = function (path, options, callback) {
+    try {
+        const result = Remote.filesystem.rm(path, options);
+        callback(null, result);
+    }
+    catch (error) {
+        callback(error, null);
+    }
+};
+
+export const rmSync = function (path, options) {
+    Remote.filesystem.rmSync(path, options);
+};
+
 export const exists = function (path, options, callback) {
     try {
         const result = Remote.filesystem.exists(path, options);
@@ -161,6 +175,8 @@ export default {
     realpathSync,
     rename,
     renameSync,
+    rm,
+    rmSync,
     rmdir,
     rmdirSync,
     unlink,

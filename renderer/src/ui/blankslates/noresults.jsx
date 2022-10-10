@@ -6,7 +6,7 @@ export default class NoResults extends React.Component {
         return <div className={"bd-empty-results" + (this.props.className ? ` ${this.props.className}` : "")}>
                     <MagnifyingGlass />
                     <div className="bd-empty-results-text">
-                        {DiscordModules.Strings.SEARCH_NO_RESULTS || ""}
+                        {this.props.text || DiscordModules.Strings.SEARCH_NO_RESULTS || ""}
                     </div>
                 </div>;
     }

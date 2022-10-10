@@ -70,5 +70,31 @@ export default [
             {type: "switch", id: "inspectElement", value: false, enableWith: "devTools"},
             {type: "switch", id: "devToolsWarning", value: false, enableWith: "devTools"},
         ]
-    }
+    },
+    // {
+    //     type: "category",
+    //     id: "debug",
+    //     name: "Debug",
+    //     collapsible: true,
+    //     shown: true,
+    //     settings: [
+    //         {name: "Text test", note: "Just testing it", type: "text", id: "texttest", value: ""},
+    //         {name: "Slider test", note: "Just testing it", type: "slider", id: "slidertest", value: 30, min: 20, max: 50, step: 10},
+    //         {
+    //             name: "Radio test",
+    //             note: "Just testing it",
+    //             type: "radio",
+    //             id: "radiotest",
+    //             value: "test",
+    //             options: [
+    //                 {name: "First", value: 30, description: "little hint"},
+    //                 {name: "IDK", value: "test", description: "who cares"},
+    //                 {name: "Something", value: 666, description: "something else"},
+    //                 {name: "Last", value: "last", description: "nothing more to add"}
+    //             ]
+    //         },
+    //         {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
+    //         {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},
+    //     ]
+    // }
 ];

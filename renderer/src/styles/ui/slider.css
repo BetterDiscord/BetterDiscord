@@ -1,0 +1,42 @@
+.bd-slider-wrap {
+    display: flex;
+    color: var(--text-normal);
+    align-items: center;
+  }
+  
+  .bd-slider-label {
+    background: var(--brand-experiment);
+    font-weight: 700;
+    padding: 5px;
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+  
+  .bd-slider-input {
+    /* -webkit-appearance: none;  */
+    height: 8px;
+    border-radius: 4px;
+    appearance: none;
+    min-width: 350px;
+    border-radius: 5px;   
+    background: hsl(217,calc(var(--saturation-factor, 1)*7.6%),33.5%);
+    outline: none;
+    transition: opacity .2s;
+    background-image: linear-gradient(var(--brand-experiment), var(--brand-experiment));
+    background-size: 70% 100%;
+    background-repeat: no-repeat;
+  }
+  
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .bd-slider-input::-webkit-slider-thumb {
+    appearance: none;
+    width: 10px;
+    height: 24px;
+    top: 50%;
+    border-radius: 3px;
+    background-color: hsl(0,calc(var(--saturation-factor, 1)*0%),100%);
+    border: 1px solid hsl(210,calc(var(--saturation-factor, 1)*2.9%),86.7%);
+    -webkit-box-shadow: 0 3px 1px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.05),0 2px 2px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.1),0 3px 3px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.05);
+    box-shadow: 0 3px 1px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.05),0 2px 2px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.1),0 3px 3px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.05);
+    cursor: ew-resize;
+  }

@@ -2,14 +2,14 @@ import Logger from "common/logger";
 import {WebpackModules, IPC} from "modules";
 
 const SortedGuildStore = WebpackModules.getByProps("getSortedGuilds");
-const AvatarDefaults = WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");
+const AvatarDefaults = WebpackModules.getByProps("DEFAULT_AVATARS");
 const InviteActions = WebpackModules.getByProps("acceptInvite");
 
 // const BrowserWindow = require("electron").remote.BrowserWindow;
 
 const betterDiscordServer = {
     name: "BetterDiscord",
-    members: 55000,
+    members: 110000,
     categories: ["community", "programming", "support"],
     description: "Official BetterDiscord server for plugins, themes, support, etc",
     identifier: "86004744966914048",
