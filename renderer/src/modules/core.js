@@ -27,54 +27,68 @@ export default new class Core {
         Config.userData = process.env.DISCORD_USER_DATA;
         Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
 
+        /**loading steps count*/
+
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
-
+        await LoadingIcon.setInitStatus(1/15*100, "Injecting BD Styles");
+        
         Logger.log("Startup", "Initializing DataStore");
         DataStore.initialize();
-
+        await LoadingIcon.setInitStatus(2/15*100, "Initializing DataStore");
+        
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
-
+        await LoadingIcon.setInitStatus(3/15*100, "Initializing LocaleManager");
+        
         Logger.log("Startup", "Getting update information");
         this.checkForUpdate();
-
+        await LoadingIcon.setInitStatus(4/15*100, "Getting update information");
+        
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
-
+        await LoadingIcon.setInitStatus(5/15*100, "Initializing Settings");
+        
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
-
+        await LoadingIcon.setInitStatus(6/15*100, "Initializing DOMManager");
+        
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
-
+        await LoadingIcon.setInitStatus(7/15*100, "Waiting for connection...");
+        
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
-
+        await LoadingIcon.setInitStatus(8/15*100, "Initializing Editor");
+        
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
-
+        await LoadingIcon.setInitStatus(9/15*100, "Initializing Builtins");
+        
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
         const pluginErrors = PluginManager.initialize();
-
+        await LoadingIcon.setInitStatus(10/15*100);
+        
         Logger.log("Startup", "Loading Themes");
         // const themeErrors = [];
         const themeErrors = ThemeManager.initialize();
-
+        await LoadingIcon.setInitStatus(11/15*100);
+        
         Logger.log("Startup", "Initializing AddonUpdater");
         AddonUpdater.initialize();
-
+        await LoadingIcon.setInitStatus(12/15*100);
+        
         Logger.log("Startup", "Removing Loading Icon");
         LoadingIcon.hide();
-
+        
         // Show loading errors
         Logger.log("Startup", "Collecting Startup Errors");
         Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
-
+        
         const previousVersion = DataStore.getBDData("version");
         if (Config.version > previousVersion) {
             const md = [Changelog.description];
