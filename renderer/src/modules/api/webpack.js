@@ -6,7 +6,6 @@ import WebpackModules, {Filters} from "../webpackmodules";
  * This is extremely useful for interacting with the internals of Discord.
  * @type Webpack
  * @summary {@link Webpack} is a utility class for getting internal webpack modules.
- * @memberof BdApi
  * @name Webpack
  */
 const Webpack = {
@@ -47,9 +46,9 @@ const Webpack = {
         byStrings(...strings) {return Filters.byStrings(...strings);},
 
         /**
-         * Generates a function that filters by a set of properties.
+         * Generates a function that filters by the `displayName` property.
          * @param {string} name Name the module should have
-         * @returns {function} A filter that checks for a set of properties
+         * @returns {function} A filter that checks for a `displayName` match
          */
         byDisplayName(name) {return Filters.byDisplayName(name);},
 
@@ -64,11 +63,11 @@ const Webpack = {
     /**
      * Finds a module using a filter function.
      * @memberof Webpack
-     * @param {function} filter A function to use to filter modules. It is given exports, module, and moduleID. Return true to signify match.
-     * @param {object} [options] Whether to return only the first matching module
+     * @param {function} filter A function to use to filter modules. It is given exports, module, and moduleID. Return `true` to signify match.
+     * @param {object} [options] Options to configure the search
      * @param {Boolean} [options.first=true] Whether to return only the first matching module
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
-     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters.
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
      * @return {any}
      */
     getModule(filter, options = {}) {
@@ -81,23 +80,23 @@ const Webpack = {
     /**
      * Finds multiple modules using multiple filters.
      * @memberof Webpack
-     * @param {...object} queries Whether to return only the first matching module
+     * @param {...object} queries Object representing the query to perform
      * @param {Function} queries.filter A function to use to filter modules
      * @param {Boolean} [queries.first=true] Whether to return only the first matching module
      * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
-     * @param {Boolean} [queries.searchExports=false] Whether to execute the filter on webpack export getters.
+     * @param {Boolean} [queries.searchExports=false] Whether to execute the filter on webpack exports
      * @return {any}
      */
     getBulk(...queries) {return WebpackModules.getBulk(...queries);},
 
     /**
-     * Finds a module that lazily loaded.
+     * Finds a module that is lazily loaded.
      * @memberof Webpack
-     * @param {function} filter A function to use to filter modules. It is given exports. Return true to signify match.
-     * @param {object} [options] Whether to return only the first matching module
+     * @param {function} filter A function to use to filter modules. It is given exports. Return `true` to signify match.
+     * @param {object} [options] Options for configuring the listener
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
-     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters.
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
      * @returns {Promise<any>}
      */
     waitForModule(filter, options = {}) {

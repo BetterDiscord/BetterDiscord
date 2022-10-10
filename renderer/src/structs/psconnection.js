@@ -2,7 +2,7 @@ import Logger from "common/logger";
 import {WebpackModules, IPC} from "modules";
 
 const SortedGuildStore = WebpackModules.getByProps("getSortedGuilds");
-const AvatarDefaults = WebpackModules.getByProps("getUserAvatarURL", "DEFAULT_AVATARS");
+const AvatarDefaults = WebpackModules.getByProps("DEFAULT_AVATARS");
 const InviteActions = WebpackModules.getByProps("acceptInvite");
 
 // const BrowserWindow = require("electron").remote.BrowserWindow;

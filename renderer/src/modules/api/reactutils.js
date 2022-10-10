@@ -6,7 +6,6 @@ import DiscordModules from "../discordmodules";
  * This is extremely useful for interacting with the internals of the UI.
  * @type ReactUtils
  * @summary {@link ReactUtils} is a utility class for interacting with React internals.
- * @memberof BdApi
  * @name ReactUtils
  */
 const ReactUtils = {
@@ -14,7 +13,7 @@ const ReactUtils = {
     get rootInstance() {return document.getElementById("app-mount")?._reactRootContainer?._internalRoot?.current;},
 
     /**
-     * Get the internal react data of a specified node
+     * Gets the internal react data of a specified node
      * 
      * @param {HTMLElement} node Node to get the react data from
      * @returns {object|undefined} Either the found data or `undefined` 
@@ -25,9 +24,9 @@ const ReactUtils = {
     },
 
     /**
-      * Grabs a value from the react internal instance. Allows you to grab
-      * long depth values safely without accessing no longer valid properties.
-      * @param {(HTMLElement|jQuery)} node - node to obtain react instance of
+      * Attempts to find the "owner" node to the current node. This is generally 
+      * a node with a stateNode--a class component.
+      * @param {HTMLElement} node - node to obtain react instance of
       * @param {object} options - options for the search
       * @param {array} [options.include] - list of items to include from the search
       * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] - list of items to exclude from the search

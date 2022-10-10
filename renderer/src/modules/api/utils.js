@@ -1,11 +1,9 @@
 import Utilities from "../utilities";
 
 /**
- * `Utils` is a utility class for interacting with React internals. Instance is accessible through the {@link BdApi}.
- * This is extremely useful for interacting with the internals of the UI.
+ * `Utils` is a utility containing commonly reused functions. Instance is accessible through the {@link BdApi}.
  * @type Utils
  * @summary {@link Utils} is a utility class for interacting with React internals.
- * @memberof BdApi
  * @name Utils
  */
 const Utils = {

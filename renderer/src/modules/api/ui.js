@@ -9,7 +9,6 @@ import ipc from "../ipc";
  * This is extremely useful for interacting with the internals of Discord.
  * @type UI
  * @summary {@link UI} is a utility class for getting internal webpack modules.
- * @memberof BdApi
  * @name UI
  */
 const UI = {
@@ -33,7 +32,7 @@ const UI = {
      * @param {"top"|"right"|"bottom"|"left"} [options.side="top"] - can be any of top, right, bottom, left
      * @param {boolean} [options.preventFlip=false] - prevents moving the tooltip to the opposite side if it is too big or goes offscreen
      * @param {boolean} [options.disabled=false] - whether the tooltip should be disabled from showing on hover
-     * @returns new Tooltip
+     * @returns {Tooltip} the tooltip that was generated
      */
     createTooltip(node, content, options = {}) {
         return Tooltip.create(node, content, options);
@@ -61,8 +60,8 @@ const UI = {
      * @param {string} content The string to show in the toast.
      * @param {object} options Options object. Optional parameter.
      * @param {string} [options.type=""] Changes the type of the toast stylistically and semantically. Choices: "", "info", "success", "danger"/"error", "warning"/"warn". Default: ""
-     * @param {boolean} [options.icon=true] Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: true
-     * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: 3000
+     * @param {boolean} [options.icon=true] Determines whether the icon should show corresponding to the type. A toast without type will always have no icon. Default: `true`
+     * @param {number} [options.timeout=3000] Adjusts the time (in ms) the toast should be shown for before disappearing automatically. Default: `3000`
      * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the bd setting
      */
     showToast(content, options = {}) {
@@ -70,7 +69,7 @@ const UI = {
     },
 
     /**
-     * Show a notice above discord's chat layer.
+     * Shows a notice above Discord's chat layer.
      * 
      * @param {string|Node} content Content of the notice
      * @param {object} options Options for the notice.
@@ -84,7 +83,7 @@ const UI = {
     },
 
     /**
-     * Gives access to the [Electron Dialog](https://www.electronjs.org/docs/latest/api/dialog/) api.
+     * Gives access to the [Electron Dialog](https://www.electronjs.org/docs/latest/api/dialog/) api. 
      * Returns a `Promise` that resolves to an `object` that has a `boolean` cancelled and a `filePath` string for saving and a `filePaths` string array for opening.
      * 
      * @param {object} options Options object to configure the dialog.

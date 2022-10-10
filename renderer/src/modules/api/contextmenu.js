@@ -35,7 +35,8 @@ const ContextMenuActions = (() => {
     for (const key of Object.keys(ActionsModule)) {
         if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
             out.closeContextMenu = ActionsModule[key];
-        } else if (ActionsModule[key].toString().includes("renderLazy")) {
+        }
+        else if (ActionsModule[key].toString().includes("renderLazy")) {
             out.openContextMenu = ActionsModule[key];
         }
     }
@@ -66,7 +67,8 @@ class MenuPatcher {
 
                     if (res?.props.navId) {
                         MenuPatcher.runPatches(res.props.navId, res, props);
-                    } else if (typeof res?.type === "function") {
+                    }
+                    else if (typeof res?.type === "function") {
                         MenuPatcher.patchRecursive(res, "type");
                     }
 
@@ -87,8 +89,9 @@ class MenuPatcher {
                 if (!res) return res;
 
                 if (res.props?.navId) {
-                    MenuPatcher.runPatches(res.props.navId, res, arguments[0])
-                } else {
+                    MenuPatcher.runPatches(res.props.navId, res, arguments[0]);
+                }
+                else {
                     const layer = res.props.children ? res.props.children : res;
 
                     if (typeof layer?.type == "function") {
@@ -115,7 +118,8 @@ class MenuPatcher {
         for (const patch of this.patches[id]) {
             try {
                 patch(res, props);
-            } catch (error) {
+            }
+            catch (error) {
                 Logger.error("ContextMenu~runPatches", `Could not run ${id} patch for`, patch, error);
             }
         }
@@ -131,13 +135,33 @@ class MenuPatcher {
     }
 }
 
+/**
+ * `ContextMenu` is a module to help patch and create context menus. Instance is accessible through the {@link BdApi}.
+ * @type ContextMenu
+ * @summary {@link ContextMenu} is a utility class for interacting with React internals.
+ * @name ContextMenu
+ */
 class ContextMenu {
+
+    /**
+     * Allows you to patch a given context menu. Acts as a wrapper around the `Patcher`.
+     * 
+     * @param {string} navId Discord's internal navId used to identify context menus
+     * @param {function} callback callback function that accepts the react render tree
+     * @returns {function} a function that automatically unpatches
+     */
     patch(navId, callback) {
         MenuPatcher.patch(navId, callback);
 
         return () => MenuPatcher.unpatch(navId, callback);
     }
 
+    /**
+     * Allows you to remove the patch added to a given context menu.
+     * 
+     * @param {string} navId the original navId from patching
+     * @param {function} callback the original callback from patching
+     */
     unpatch(navId, callback) {
         MenuPatcher.unpatch(navId, callback);
     }
@@ -258,6 +282,7 @@ class ContextMenu {
     }
 
     /**
+     * Function that allows you to open an entire context menu. Recommended to build the menu with this module.
      * 
      * @param {MouseEvent} event - The context menu event. This can be emulated, requires target, and all X, Y locations.
      * @param {function} menuComponent - Component to render. This can be any react component or output of {@link ContextMenu.buildMenu}

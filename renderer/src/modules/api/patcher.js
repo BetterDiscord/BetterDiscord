@@ -17,7 +17,7 @@ class Patcher {
     }
 
     /**
-     * This method patches onto another function, allowing your code to run beforehand.
+     * This method patches onto another function, allowing your code to run beforehand. 
      * Using this, you are also able to modify the incoming arguments before the original method is run.
      * @param {string} caller Name of the caller of the patch function.
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.
@@ -36,7 +36,7 @@ class Patcher {
     }
 
     /**
-     * This method patches onto another function, allowing your code to run instead.
+     * This method patches onto another function, allowing your code to run instead. 
      * Using this, you are also able to modify the return value, using the return of your code instead.
      * @param {string} caller Name of the caller of the patch function.
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.
@@ -55,7 +55,7 @@ class Patcher {
     }
 
     /**
-     * This method patches onto another function, allowing your code to run instead.
+     * This method patches onto another function, allowing your code to run instead. 
      * Using this, you are also able to modify the return value, using the return of your code instead.
      * @param {string} caller Name of the caller of the patch function.
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.

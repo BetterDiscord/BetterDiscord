@@ -21,7 +21,6 @@ class Data {
      * @param {string} pluginName Name of the plugin saving data
      * @param {string} key Which piece of data to store
      * @param {any} data The data to be saved
-     * @returns 
      */
     save(pluginName, key, data) {
         if (this.#callerName) {

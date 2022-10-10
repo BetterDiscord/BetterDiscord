@@ -8,10 +8,16 @@ import DOMManager from "../dommanager";
  */
 class DOM {
 
-    /** Document/window width */
+    /**
+     * Current width of the user's screen.
+     * @type {number}
+     */
     get screenWidth() {return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);}
 
-    /** Document/window height */
+    /**
+     * Current height of the user's screen.
+     * @type {number}
+     */
     get screenHeight() {return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);}
 
     #callerName = "";
@@ -67,17 +73,19 @@ class DOM {
     }
 
     /**
+     * Utility to help smoothly animate using JavaScript
      * 
      * @param {function} update render function indicating the style should be updates
      * @param {number} duration duration in ms to animate for
      * @param {object} [options] option to customize the animation
-     * @returns 
      */
     animate(update, duration, options = {}) {
         return DOMManager.animate({update, duration, timing: options.timing});
     }
 
     /**
+     * Utility function to make creating DOM elements easier. Acts similarly 
+     * to `React.createElement`
      * 
      * @param {string} tag HTML tag name to create
      * @param {object} [options] options object to customize the element
