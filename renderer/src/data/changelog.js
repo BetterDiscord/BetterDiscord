@@ -1,23 +1,31 @@
 // fixed, improved, added, progress
 export default {
-    description: "BetterDiscord is alive! At least... _sorta_.",
+    description: "Big improvements have been made!",
     changes: [
         {
-            title: "Known Issues",
+            title: "What's New?",
             type: "improved",
             items: [
-                "**Many many plugins are either completely broken or missing functionality.** Please refer to the respective developers for ETAs.",
-                "The Twitch Emote system is completely broken, and there is no ETA on being fixed.",
-                "The Public Servers module is also broken with no ETA for a fix.",
+                "BetterDiscord now has a built-in update system to help update broken plugins and themes.",
+                "New API options for plugin developers.",
+                "`Patcher` now works with the configurable getters.",
+                "A new tooltip component for use in plugins.",
+                "The plugin API now includes context menu capabilties.",
+                "Public servers button has found a new home on your Discord homepage above the DM list."
             ]
         },
         {
-            title: "Important News!",
+            title: "Bug Fixes",
             type: "fixed",
             items: [
-                "Due to recent and upcoming changes, BetterDiscord is going to go through a rewrite.",
-                "There is no ETA or timeline for this rewrite.",
-                "We will continue to try and __maintain__ this version of BetterDiscord without adding new features."
+                "Fixed many issues regarding memory leaks and out-of-memory errors!",
+                "Fixed a major issue where webpack searches would iterate by default.",
+                "Fixed an issue with `byStrings` and `combine` filters in the API.",
+                "Fixed an issue where searching for multiple modules could yield the same module multiple times.",
+                "Fixed an issue where misnamed addon files could prevent startup.",
+                "Fixed an issue where the `request` module would not follow redirects.",
+                "Fixed an issue where certain modals could crash the client.",
+                "Fixed an issue where toasts would not show on the crash screen."
             ]
         }
     ]

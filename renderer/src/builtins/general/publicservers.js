@@ -100,6 +100,7 @@ export default new class PublicServers extends Builtin {
         const avatarSlot = newButton.querySelector(`[class*="avatar-"]`);
         avatarSlot.replaceChildren();
         ReactDOM.render(React.createElement(Globe, {color: "currentColor"}), avatarSlot);
+        DOMManager.onRemoved(avatarSlot, () => ReactDOM.unmountComponentAtNode(avatarSlot));
 
         // Replace the existing name
         const nameSlot = newButton.querySelector(`[class*="name-"]`);
