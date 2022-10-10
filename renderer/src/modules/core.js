@@ -39,7 +39,7 @@ export default new class Core {
         
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
-				await LoadingInterface.setInitStatus(3/15*100, "Initializing LocaleManager");
+		await LoadingInterface.setInitStatus(3/15*100, "Initializing LocaleManager");
         
         Logger.log("Startup", "Getting update information");
         this.checkForUpdate();
@@ -62,7 +62,7 @@ export default new class Core {
         await LoadingInterface.setInitStatus(8/15*100, "Initializing Editor");
 				
         Logger.log("Startup", "Initializing Builtins");
-				Modals.initialize();
+	    Modals.initialize();
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
