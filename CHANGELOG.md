@@ -2,6 +2,46 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.8.0
+
+### Added
+- Proper updater system with UI.
+- Tooltip component for plugins.
+- Highly expanded plugin API.
+
+### Removed
+
+### Changed
+- Reverted how internal webpack module searches are performed.
+- New options for webpack searches.
+
+### Fixed
+- Fixed many issues regarding memory leaks and out-of-memory errors!
+- Fixed a major issue where webpack searches would iterate by default.
+- Fixed an issue with `byStrings` and `combine` filters in the API.
+- Fixed an issue where searching for multiple modules could yield the same module multiple times.
+- Fixed an issue where misnamed addon files could prevent startup.
+- Fixed an issue where the `request` module would not follow redirects.
+- Fixed an issue where certain modals could crash the client.
+- Fixed an issue where toasts would not show on the crash screen.
+
+## 1.7.0
+
+### Added
+- Polyfill for certain node modules.
+
+### Removed
+- Proxy protection for certain modules.
+
+### Changed
+- Changed how internal webpack module searches are performed.
+- New location for public servers button.
+- Switch to pnpm with workspaces.
+- Improved startup errors.
+
+### Fixed
+- Fixed several issues for Discord's internal changes.
+
 ## 1.6.3
 
 ### Added

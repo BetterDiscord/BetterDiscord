@@ -44,6 +44,14 @@ export function renameSync(oldPath, newPath) {
     return fs.renameSync(oldPath, newPath);
 }
 
+export function rm(pathToFile) {
+    return fs.rmSync(pathToFile);
+}
+
+export function rmSync(pathToFile) {
+    return fs.rmSync(pathToFile);
+}
+
 export function unlinkSync(fileToDelete) {
     return fs.unlinkSync(fileToDelete);
 }

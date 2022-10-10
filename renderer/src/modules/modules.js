@@ -10,7 +10,6 @@ export {default as DataStore} from "./datastore";
 export {default as Events} from "./emitter";
 export {default as Settings} from "./settingsmanager";
 export {default as DOMManager} from "./dommanager";
-export {default as DOM} from "./domtools";
 export {default as Patcher} from "./patcher";
 export {default as LocaleManager} from "./localemanager";
 export {default as Strings} from "./strings";

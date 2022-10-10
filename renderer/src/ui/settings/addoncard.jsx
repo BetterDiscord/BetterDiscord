@@ -171,7 +171,7 @@ export default class AddonCard extends React.Component {
         const description = this.getString(addon.description);
         const version = this.getString(addon.version);
 
-        return <div id={`${addon.id}-card`} className="bd-addon-card settings-closed">
+        return <div id={`${addon.id}-card`} className={"bd-addon-card" + (this.props.disabled ? " bd-addon-card-disabled" : "")}>
                     <div className="bd-addon-header">
                             {this.props.type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
                             <div className="bd-title">{this.buildTitle(name, version, {name: author, id: this.props.addon.authorId, link: this.props.addon.authorLink})}</div>

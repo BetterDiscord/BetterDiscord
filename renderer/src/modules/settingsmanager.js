@@ -111,11 +111,16 @@ export default new class SettingsManager {
             for (const setting in this.state[id][category]) {
                 if (previousState[category][setting] == undefined) continue;
                 const settingObj = this.getSetting(id, category, setting);
-                if (settingObj.type == "switch") this.state[id][category][setting] = previousState[category][setting];
-                if (settingObj.type == "number") this.state[id][category][setting] = previousState[category][setting];
-                if (settingObj.type == "dropdown") {
-                    const exists = settingObj.options.some(o => o.value == previousState[category][setting]);
-                    if (exists) this.state[id][category][setting] = previousState[category][setting];
+                switch (settingObj.type) {
+                    case "radio":
+                    case "dropdown": {
+                        const exists = settingObj.options.some(o => o.value == previousState[category][setting]);
+                        if (exists) this.state[id][category][setting] = previousState[category][setting];
+                        break;
+                    }
+                    default: {
+                        this.state[id][category][setting] = previousState[category][setting];
+                    }
                 }
             }
         }
