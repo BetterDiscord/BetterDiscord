@@ -206,7 +206,7 @@ export default class AddonManager {
             if (partialAddon) {
                 partialAddon.partial = true;
                 this.state[partialAddon.id] = false;
-                this.emit("loaded", partialAddon.id);
+                this.emit("loaded", partialAddon);
             }
             return e;
         }
@@ -216,12 +216,12 @@ export default class AddonManager {
         if (error) {
             this.state[addon.id] = false;
             addon.partial = true;
-            this.emit("loaded", addon.id);
+            this.emit("loaded", addon);
             return error;
         }
 
         if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
-        this.emit("loaded", addon.id);
+        this.emit("loaded", addon);
         
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
@@ -234,7 +234,7 @@ export default class AddonManager {
         if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
 
         this.addonList.splice(this.addonList.indexOf(addon), 1);
-        this.emit("unloaded", addon.id);
+        this.emit("unloaded", addon);
         if (shouldToast) Toasts.success(`${addon.name} was unloaded.`);
         return true;
     }

@@ -92,6 +92,10 @@ export default new class PublicServers extends Builtin {
         aSlot.href = "";
         aSlot.dataset.listItemId = "public-servers";
 
+        // Remove any badges
+        const badge = newButton.querySelector(`[class*="premiumTrial"]`);
+        badge?.remove?.();
+
         // Render our icon in the avatar slot
         const avatarSlot = newButton.querySelector(`[class*="avatar-"]`);
         avatarSlot.replaceChildren();

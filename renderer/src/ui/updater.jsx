@@ -1,5 +1,5 @@
 import {Config} from "data";
-import {React} from "modules";
+import {React, Events} from "modules";
 import Drawer from "./settings/drawer";
 import SettingItem from "./settings/components/item";
 import SettingsTitle from "./settings/title";
@@ -56,6 +56,26 @@ export default class UpdaterPanel extends React.Component {
         this.checkForUpdates = this.checkForUpdates.bind(this);
         this.updateAddon = this.updateAddon.bind(this);
         this.updateAllAddons = this.updateAllAddons.bind(this);
+        this.update = this.update.bind(this);
+    }
+
+    update() {
+        this.checkAddons("plugins");
+        this.checkAddons("themes");
+    }
+
+    componentDidMount() {
+        Events.on(`plugin-loaded`, this.update);
+        Events.on(`plugin-unloaded`, this.update);
+        Events.on(`theme-loaded`, this.update);
+        Events.on(`theme-unloaded`, this.update);
+    }
+
+    componentWillUnmount() {
+        Events.off(`plugin-loaded`, this.update);
+        Events.off(`plugin-unloaded`, this.update);
+        Events.off(`theme-loaded`, this.update);
+        Events.off(`theme-unloaded`, this.update);
     }
 
     async checkForUpdates() {

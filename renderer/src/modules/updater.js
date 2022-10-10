@@ -5,6 +5,7 @@ import path from "path";
 
 import Logger from "common/logger";
 
+import Events from "./emitter";
 import IPC from "./ipc";
 import Strings from "./strings";
 import DataStore from "./datastore";
@@ -25,7 +26,7 @@ const React = DiscordModules.React;
 const UserSettingsWindow = WebpackModules.getByProps("updateAccount");
 
 const base = "https://api.betterdiscord.app/v2/store/";
-const route = r => `${base}${r}`;
+const route = r => `${base}${r}s`;
 const redirect = addonId => `https://betterdiscord.app/gh-redirect?id=${addonId}`;
 
 const getJSON = url => {
@@ -137,7 +138,7 @@ export class CoreUpdater {
 class AddonUpdater {
 
     constructor(type) {
-        this.manager = type === "plugins" ? PluginManager : ThemeManager;
+        this.manager = type === "plugin" ? PluginManager : ThemeManager;
         this.type = type;
         this.cache = {};
         this.pending = [];
@@ -146,6 +147,14 @@ class AddonUpdater {
     async initialize() {
         await this.updateCache();
         this.checkAll();
+        Events.on(`${this.type}-loaded`, addon => {
+            this.checkForUpdate(addon.filename, addon.version);
+        });
+
+        Events.on(`${this.type}-unloaded`, addon => {
+            const index = this.pending.indexOf(addon.filename);
+            if (index >= 0) this.pending.splice(index, 1);
+        });
     }
 
     async updateCache() {
@@ -190,7 +199,7 @@ class AddonUpdater {
 
     showUpdateNotice() {
         if (!this.pending.length) return;
-        const close = Notices.info(`BetterDiscord has found updates for ${this.pending.length} of your ${this.type}!`, {
+        const close = Notices.info(`BetterDiscord has found updates for ${this.pending.length} of your ${this.type}s!`, {
             buttons: [{
                 label: "More Info",
                 onClick: () => {
@@ -202,5 +211,5 @@ class AddonUpdater {
     }
 }
 
-export const PluginUpdater = new AddonUpdater("plugins");
-export const ThemeUpdater = new AddonUpdater("themes");
+export const PluginUpdater = new AddonUpdater("plugin");
+export const ThemeUpdater = new AddonUpdater("theme");
