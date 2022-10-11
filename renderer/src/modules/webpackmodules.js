@@ -161,7 +161,7 @@ export default class WebpackModules {
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
-            if (!exports || exports === window) continue;
+            if (!exports || exports === window || exports === document.documentElement) continue;
             
             if (typeof(exports) === "object" && searchExports) {
                 for (const key in exports) {
@@ -210,7 +210,7 @@ export default class WebpackModules {
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
-            if (!exports) continue;
+            if (!exports || exports === window || exports === document.documentElement) continue;
 
             for (let q = 0; q < queries.length; q++) {
                 const query = queries[q];
@@ -345,7 +345,7 @@ export default class WebpackModules {
         return new Promise((resolve) => {
             const cancel = () => this.removeListener(listener);
             const listener = function(exports) {
-                if (!exports) return;
+                if (!exports || exports === window || exports === document.documentElement) return;
 
                 let foundModule = null;
                 if (typeof(exports) === "object" && searchExports) {
