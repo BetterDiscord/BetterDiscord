@@ -15,7 +15,7 @@ import IPC from "./ipc";
 import LoadingInterface from "../loading";
 import Styles from "../styles/index.css";
 import Editor from "./editor";
-import {PluginUpdater, ThemeUpdater, CoreUpdater} from "./updater";
+import Updater, {CoreUpdater} from "./updater";
 
 export default new class Core {
     async startup() {
@@ -41,10 +41,6 @@ export default new class Core {
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
 		await LoadingInterface.setInitStatus(3/stepsCount*100, "Initializing LocaleManager");
-        
-        Logger.log("Startup", "Getting update information");
-        CoreUpdater.checkForUpdate()
-        await LoadingInterface.setInitStatus(4/stepsCount*100, "Getting update information");
 				
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
@@ -79,13 +75,13 @@ export default new class Core {
         const themeErrors = ThemeManager.initialize();
         await LoadingInterface.setInitStatus(11/stepsCount*100, "Loading Themes");
         
-        Logger.log("Startup", "Initializing PluginUpdater");
-        PluginUpdater.initialize();
-        await LoadingInterface.setInitStatus(12/stepsCount*100, "Initializing ThemeUpdater");
-
-        Logger.log("Startup", "Initializing ThemeUpdater");
-        ThemeUpdater.initialize();
-        await LoadingInterface.setInitStatus(13/stepsCount*100, "Initializing ThemeUpdater");
+        Logger.log("Startup", "Initializing Updater");
+        Updater.initialize();
+        await LoadingInterface.setInitStatus(12/stepsCount*100, "Initializing Updater");
+        
+        Logger.log("Startup", "Getting update information");
+        CoreUpdater.checkForUpdate()
+        await LoadingInterface.setInitStatus(4/stepsCount*100, "Getting update information");
         
         Logger.log("Startup", "Removing Loading Interface");
         LoadingInterface.hide();
