@@ -106,9 +106,9 @@ export default class Patcher {
             revert: () => { // Calling revert will destroy any patches added to the same module after this
                 if (patch.getter) {
                     Object.defineProperty(patch.module, functionName, {
+                        ...Object.getOwnPropertyDescriptor(patch.module, functionName),
                         get: () => patch.originalFunction,
-                        configurable: true,
-                        enumerable: true
+                        set: undefined
                     });
                 } else {
                     patch.module[patch.functionName] = patch.originalFunction;
@@ -125,13 +125,14 @@ export default class Patcher {
 
         const descriptor = Object.getOwnPropertyDescriptor(module, functionName);
 
-        if (descriptor.get) {
+        if (descriptor?.get) {
             patch.getter = true;
             Object.defineProperty(module, functionName, {
-                get: () => patch.proxyFunction,
-                set: value => (patch.originalFunction = value),
                 configurable: true,
-                enumerable: true
+                enumerable: true,
+                ...descriptor,
+                get: () => patch.proxyFunction,
+                set: value => (patch.originalFunction = value)
             });
         } else {
             patch.getter = false;
@@ -242,7 +243,9 @@ export default class Patcher {
         if (!module) return null;
         if (!module[functionName] && forcePatch) module[functionName] = function() {};
         if (!(module[functionName] instanceof Function)) return null;
-        if (!Object.getOwnPropertyDescriptor(module, functionName)?.configurable) {
+
+        const descriptor = Object.getOwnPropertyDescriptor(module, functionName);
+        if (descriptor && !descriptor?.configurable) {
             Logger.err("Patcher", `Cannot patch ${functionName} of Module, property is readonly.`);
             return null;
         }
