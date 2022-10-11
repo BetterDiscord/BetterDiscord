@@ -104,17 +104,57 @@ export default class Patcher {
             originalFunction: module[functionName],
             proxyFunction: null,
             revert: () => { // Calling revert will destroy any patches added to the same module after this
-                patch.module[patch.functionName] = patch.originalFunction;
+                if (patch.getter) {
+                    Object.defineProperty(patch.module, functionName, {
+                        get: () => patch.originalFunction,
+                        configurable: true,
+                        enumerable: true
+                    });
+                } else {
+                    patch.module[patch.functionName] = patch.originalFunction;
+                }
+
                 patch.proxyFunction = null;
                 patch.children = [];
             },
             counter: 0,
             children: []
         };
-        patch.proxyFunction = module[functionName] = this.makeOverride(patch);
-        Object.assign(module[functionName], patch.originalFunction);
-        module[functionName].__originalFunction = patch.originalFunction;
-        module[functionName].toString = () => patch.originalFunction.toString();
+
+        patch.proxyFunction = this.makeOverride(patch);
+
+        const descriptor = Object.getOwnPropertyDescriptor(module, functionName);
+
+        if (descriptor.get) {
+            patch.getter = true;
+            Object.defineProperty(module, functionName, {
+                get: () => patch.proxyFunction,
+                set: value => (patch.originalFunction = value),
+                configurable: true,
+                enumerable: true
+            });
+        } else {
+            patch.getter = false;
+            module[functionName] = patch.proxyFunction;
+        }
+
+        const descriptors = Object.assign({}, Object.getOwnPropertyDescriptors(patch.originalFunction), {
+            __originalFunction: {
+                get: () => patch.originalFunction,
+                configurable: true,
+                enumerable: true,
+                writeable: true
+            },
+            toString: {
+                value: () => patch.originalFunction.toString(),
+                configurable: true,
+                enumerable: true,
+                writeable: true
+            }
+        });
+
+        Object.defineProperties(patch.proxyFunction, descriptors);
+
         this.patches.push(patch);
         return patch;
     }
@@ -202,6 +242,10 @@ export default class Patcher {
         if (!module) return null;
         if (!module[functionName] && forcePatch) module[functionName] = function() {};
         if (!(module[functionName] instanceof Function)) return null;
+        if (!Object.getOwnPropertyDescriptor(module, functionName)?.configurable) {
+            Logger.err("Patcher", `Cannot patch ${functionName} of Module, property is readonly.`);
+            return null;
+        }
 
         if (typeof moduleToPatch === "string") options.displayName = moduleToPatch;
         const displayName = options.displayName || module.displayName || module.name || module.constructor.displayName || module.constructor.name;

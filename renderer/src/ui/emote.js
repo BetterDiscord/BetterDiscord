@@ -1,6 +1,6 @@
 import {Settings, React, WebpackModules, Events, Strings} from "modules";
 
-const TooltipWrapper = WebpackModules.getByDisplayName("Tooltip");
+const TooltipWrapper = WebpackModules.getByPrototypes("renderTooltip");
 
 export default class BDEmote extends React.Component {
     constructor(props) {

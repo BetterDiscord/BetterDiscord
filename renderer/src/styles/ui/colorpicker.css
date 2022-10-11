@@ -1,0 +1,65 @@
+.bd-color-picker-container {
+    display: flex;
+}
+
+.bd-color-picker-controls {
+    padding-left: 1px;
+    padding-top: 2px;
+    display: flex;
+}
+
+.bd-color-picker-default {
+    cursor: pointer;
+    width: 72px;
+    height: 54px;
+    border-radius: 4px;
+    margin-right: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.bd-color-picker-custom {
+    position: relative;
+    display: inline-table;
+}
+
+.bd-color-picker-custom svg {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.bd-color-picker {
+    outline: none;
+    width: 70px;
+    border: none;
+    height: 54px;
+    margin-top: 1px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.bd-color-picker::-webkit-color-swatch {
+    border: none;
+}
+
+.bd-color-picker-swatch {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    margin-left: 5px !important;
+    max-width: 340px;
+}
+
+.bd-color-picker-swatch-item {
+    cursor: pointer;
+    border-radius: 4px;
+    width: 23px;
+    height: 23px;
+    margin: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

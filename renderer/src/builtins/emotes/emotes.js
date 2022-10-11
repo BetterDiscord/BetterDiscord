@@ -1,7 +1,7 @@
 import Builtin from "../../structs/builtin";
 
 import {EmoteConfig, Config} from "data";
-import {Utilities, WebpackModules, DataStore, DiscordModules, Events, Settings, Strings} from "modules";
+import {WebpackModules, DataStore, DiscordModules, Events, Settings, Strings} from "modules";
 import BDEmote from "../../ui/emote";
 import Modals from "../../ui/modals";
 import Toasts from "../../ui/toasts";
@@ -22,6 +22,10 @@ const Emotes = {
     TwitchSubscriber: {},
     BTTV: {},
     FrankerFaceZ: {}
+};
+
+const escape = (s) => {
+    return s.replace(/[-/\\^$*+?.()|[\]{}]/g, "\\$&");
 };
 
 const blocklist = [];
@@ -53,7 +57,7 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
     getUrl(category, name) {return EmoteURLs[category].format({id: Emotes[category][name]});}
 
     getCategory(category) {return Emotes[category];}
-    getRemoteFile(category) {return Utilities.repoUrl(`assets/emotes/${category.toLowerCase()}.json`);}
+    getRemoteFile(category) {return `https://cdn.staticaly.com/gh/BetterDiscord/BetterDiscord/${Config.hash}/assets/emotes/${category.toLowerCase()}.json`;}
 
     initialize() {
         super.initialize();
@@ -154,7 +158,7 @@ const modifiers = ["flip", "spin", "pulse", "spin2", "spin3", "1spin", "2spin", 
                         }
 
                         if (!Emotes[current][emoteName]) continue;
-                        const results = nodes[n].match(new RegExp(`([\\s]|^)${Utilities.escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
+                        const results = nodes[n].match(new RegExp(`([\\s]|^)${escape(emoteModifier ? emoteName + ":" + emoteModifier : emoteName)}([\\s]|$)`));
                         if (!results) continue;
                         const pre = nodes[n].substring(0, results.index + results[1].length);
                         const post = nodes[n].substring(results.index + results[0].length - results[2].length);

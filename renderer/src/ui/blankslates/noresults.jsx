@@ -6,7 +6,7 @@ export default class NoResults extends React.Component {
         return <div className={"bd-empty-results" + (this.props.className ? ` ${this.props.className}` : "")}>
                     <MagnifyingGlass />
                     <div className="bd-empty-results-text">
-                        {Strings.Addons.noResults || ""}
+                        {this.props.text || Strings.Addons.noResults || ""}
                     </div>
                 </div>;
     }

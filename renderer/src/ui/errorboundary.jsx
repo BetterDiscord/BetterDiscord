@@ -7,8 +7,9 @@ export default class ErrorBoundary extends React.Component {
       this.state = {hasError: false};
     }
 
-    componentDidCatch() {
+    componentDidCatch(error) {
       this.setState({hasError: true});
+      if (typeof this.props.onError === "function") this.props.onError(error);
     }
 
     render() {

@@ -42,19 +42,24 @@ export default new class PluginManager extends AddonManager {
     initialize() {
         const errors = super.initialize();
         this.setupFunctions();
-        Settings.registerPanel("plugins", Strings.Panels.plugins, {element: () => SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
-            type: this.prefix,
-            folder: this.addonFolder,
-            onChange: this.togglePlugin.bind(this),
-            reload: this.reloadPlugin.bind(this),
-            refreshList: this.updatePluginList.bind(this),
-            saveAddon: this.saveAddon.bind(this),
-            editAddon: this.editAddon.bind(this),
-            deleteAddon: this.deleteAddon.bind(this),
-            confirmAddonDelete: this.confirmAddonDelete.bind(this),
-            isLoaded: this.isLoaded.bind(this),
-            installAddon: this.installAddon.bind(this)
-        })});
+
+        Settings.registerPanel("plugins", Strings.Panels.plugins, {
+            order: 3,
+            element: () => SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
+                type: this.prefix,
+                folder: this.addonFolder,
+                onChange: this.togglePlugin.bind(this),
+                reload: this.reloadPlugin.bind(this),
+                refreshList: this.updatePluginList.bind(this),
+                saveAddon: this.saveAddon.bind(this),
+                editAddon: this.editAddon.bind(this),
+                deleteAddon: this.deleteAddon.bind(this),
+                confirmAddonDelete: this.confirmAddonDelete.bind(this),
+                isLoaded: this.isLoaded.bind(this),
+                installAddon: this.installAddon.bind(this)
+            })
+        });
+        
         return errors;
     }
 
@@ -119,7 +124,7 @@ export default new class PluginManager extends AddonManager {
         try {
             const module = {filename, exports: {}};
             // Test if the code is valid gracefully
-            vm.compileFunction(addon.fileContent, ["require", "module", "exports", "__filename", "__dirname"]);
+            vm.compileFunction(addon.fileContent, ["require", "module", "exports", "__filename", "__dirname"], {filename: path.basename(filename)});
             addon.fileContent += normalizeExports(addon.exports || addon.name);
             addon.fileContent += `\n//# sourceURL=betterdiscord://plugins/${addon.filename}`;
             const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], addon.fileContent); // eslint-disable-line no-new-func
@@ -189,7 +194,7 @@ export default new class PluginManager extends AddonManager {
         for (let i = 0; i < this.addonList.length; i++) {
             const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
-            if (typeof(plugin.onSwitch) === "function") {
+            if (typeof(plugin?.onSwitch) === "function") {
                 try {plugin.onSwitch();}
                 catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err);}
             }
@@ -200,7 +205,7 @@ export default new class PluginManager extends AddonManager {
         for (let i = 0; i < this.addonList.length; i++) {
             const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
-            if (typeof plugin.observer === "function") {
+            if (typeof plugin?.observer === "function") {
                 try {plugin.observer(mutation);}
                 catch (err) {Logger.stacktrace(this.name, `Unable to fire observer for ${this.addonList[i].name} v${this.addonList[i].version}`, err);}
             }

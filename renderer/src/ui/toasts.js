@@ -64,7 +64,7 @@ export default class Toasts {
         const form = container ? container.querySelector("form") : null;
         const left = container ? container.getBoundingClientRect().left : 310;
         const right = memberlist ? memberlist.getBoundingClientRect().left : 0;
-        const width = right ? right - container.getBoundingClientRect().left : container.offsetWidth;
+        const width = right ? right - container.getBoundingClientRect().left : (container?.offsetWidth ?? document.body.offsetWidth / 2);
         const bottom = form ? form.offsetHeight : 80;
         const toastWrapper = document.createElement("div");
         toastWrapper.classList.add("bd-toasts");

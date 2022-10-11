@@ -1,20 +1,31 @@
 // fixed, improved, added, progress
 export default {
-    description: "Discord is _still_ making a lot of internal changes!",
+    description: "Big improvements have been made!",
     changes: [
         {
-            title: "Changes",
+            title: "What's New?",
             type: "improved",
             items: [
-                "Plugin startup errors should be more descriptive for developers.",
+                "BetterDiscord now has a built-in update system to help update broken plugins and themes.",
+                "New API options for plugin developers.",
+                "`Patcher` now works with the configurable getters.",
+                "A new tooltip component for use in plugins.",
+                "The plugin API now includes context menu capabilties.",
+                "Public servers button has found a new home on your Discord homepage above the DM list."
             ]
         },
         {
-            title: "Fixes",
+            title: "Bug Fixes",
             type: "fixed",
             items: [
-                "Fixed an issue where custom css crashed Discord.",
-                "Fixed an issue where `waitForModule` returned a boolean instead of a module.",
+                "Fixed many issues regarding memory leaks and out-of-memory errors!",
+                "Fixed a major issue where webpack searches would iterate by default.",
+                "Fixed an issue with `byStrings` and `combine` filters in the API.",
+                "Fixed an issue where searching for multiple modules could yield the same module multiple times.",
+                "Fixed an issue where misnamed addon files could prevent startup.",
+                "Fixed an issue where the `request` module would not follow redirects.",
+                "Fixed an issue where certain modals could crash the client.",
+                "Fixed an issue where toasts would not show on the crash screen."
             ]
         }
     ]

@@ -4,7 +4,7 @@ import HistoryIcon from "../icons/history";
 import Modals from "../modals";
 
 const SidebarComponents = WebpackModules.getModule(m => m.Header && m.Separator && m.Item);
-const Tooltip = WebpackModules.getByDisplayName("Tooltip");
+const Tooltip = WebpackModules.getByPrototypes("renderTooltip");
 
 export default class SettingsTitle extends React.Component {
     render() {

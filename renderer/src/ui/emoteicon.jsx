@@ -2,9 +2,9 @@ import {React, WebpackModules} from "modules";
 import EmoteModule from "../builtins/emotes/emotes";
 
 const ContextMenuActions = WebpackModules.getByProps("openContextMenu");
-const {MenuItem, MenuGroup} = WebpackModules.find(m => m.MenuRadioItem && !m.default);
-const ContextMenu = WebpackModules.getByProps("default", "MenuStyle").default;
-const {ComponentDispatch} = WebpackModules.getByProps("ComponentDispatch");
+const {MenuItem, MenuGroup} = WebpackModules.find(m => m.MenuRadioItem && !m.default) ?? {MenuItem: () => null, MenuGroup: () => null};
+const ContextMenu = WebpackModules.getByProps("default", "MenuStyle")?.default;
+const {ComponentDispatch} = WebpackModules.getByProps("ComponentDispatch") ?? {ComponentDispatch: () => null};
 
 export default class EmoteIcon extends React.Component {
     render() {

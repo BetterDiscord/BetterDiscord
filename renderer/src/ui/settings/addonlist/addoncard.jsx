@@ -1,20 +1,21 @@
 import Logger from "common/logger";
 import {React, Strings, WebpackModules, DiscordModules} from "modules";
-import SimpleMarkdown from "../../../structs/markdown";
-import EditIcon from "../../icons/edit";
-import DeleteIcon from "../../icons/delete";
-import CogIcon from "../../icons/cog";
-import Switch from "../components/switch";
+import SimpleMarkdown from "../../structs/markdown";
+import EditIcon from "../icons/edit";
+import DeleteIcon from "../icons/delete";
+import CogIcon from "../icons/cog";
+import Switch from "./components/switch";
 
-import GitHubIcon from "../../icons/github";
-import MoneyIcon from "../../icons/dollarsign";
-import WebIcon from "../../icons/globe";
-import PatreonIcon from "../../icons/patreon";
-import SupportIcon from "../../icons/support";
-import ExtIcon from "../../icons/extension";
-import ThemeIcon from "../../icons/theme";
-import Modals from "../../modals";
-import Toasts from "../../toasts";
+import GitHubIcon from "../icons/github";
+import MoneyIcon from "../icons/dollarsign";
+import WebIcon from "../icons/globe";
+import PatreonIcon from "../icons/patreon";
+import SupportIcon from "../icons/support";
+import ExtIcon from "../icons/extension";
+import ErrorIcon from "../icons/error";
+import ThemeIcon from "../icons/theme";
+import Modals from "../modals";
+import Toasts from "../toasts";
 
 const LinkIcons = {
     website: WebIcon,
@@ -24,8 +25,25 @@ const LinkIcons = {
     patreon: PatreonIcon
 };
 
-const Tooltip = WebpackModules.getByDisplayName("Tooltip");
-const LayerStack = WebpackModules.getByProps("popLayer");
+const Tooltip = WebpackModules.getByPrototypes("renderTooltip");
+const LayerManager = {
+    pushLayer(component) {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_PUSH",
+        component
+      });
+    },
+    popLayer() {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_POP"
+      });
+    },
+    popAllLayers() {
+      DiscordModules.Dispatcher.dispatch({
+        type: "LAYER_POP_ALL"
+      });
+    }
+  };
 const UserStore = WebpackModules.getByProps("getCurrentUser");
 const ChannelStore = WebpackModules.getByProps("getDMFromUserId");
 const PrivateChannelActions = WebpackModules.getByProps("openPrivateChannel");
@@ -40,7 +58,6 @@ export default class AddonCard extends React.Component {
         this.panelRef = React.createRef();
 
         this.onChange = this.onChange.bind(this);
-        this.reload = this.reload.bind(this);
         this.showSettings = this.showSettings.bind(this);
         this.messageAuthor = this.messageAuthor.bind(this);
     }
@@ -57,12 +74,6 @@ export default class AddonCard extends React.Component {
         }
     }
 
-    reload() {
-        if (!this.props.reload) return;
-        this.props.addon = this.props.reload(this.props.addon.id);
-        this.forceUpdate();
-    }
-
     getString(value) {return typeof value == "string" ? value : value.toString();}
 
     onChange() {
@@ -73,7 +84,7 @@ export default class AddonCard extends React.Component {
 
     messageAuthor() {
         if (!this.props.addon.authorId) return;
-        if (LayerStack) LayerStack.popLayer();
+        if (LayerManager) LayerManager.popLayer();
         if (!UserStore || !ChannelActions || !ChannelStore || !PrivateChannelActions) return;
         const selfId = UserStore.getCurrentUser().id;
         if (selfId == this.props.addon.authorId) return;
@@ -113,7 +124,7 @@ export default class AddonCard extends React.Component {
                 let code = url;
                 const tester = /\.gg\/(.*)$/;
                 if (tester.test(code)) code = code.match(tester)[1];
-                DiscordModules.LayerStack.popLayer();
+                LayerManager.popLayer();
                 DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel(code);
             };
         }
@@ -161,13 +172,16 @@ export default class AddonCard extends React.Component {
         const description = this.getString(addon.description);
         const version = this.getString(addon.version);
 
-        return <div id={`${addon.id}-card`} className="bd-addon-card settings-closed">
+        return <div id={`${addon.id}-card`} className={"bd-addon-card" + (this.props.disabled ? " bd-addon-card-disabled" : "")}>
                     <div className="bd-addon-header">
                             {this.props.type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
                             <div className="bd-title">{this.buildTitle(name, version, {name: author, id: this.props.addon.authorId, link: this.props.addon.authorLink})}</div>
-                            <Switch checked={this.props.enabled} onChange={this.onChange} />
+                            <Switch disabled={this.props.disabled} checked={this.props.enabled} onChange={this.onChange} />
                     </div>
-                    <div className="bd-description-wrap"><div className="bd-description">{SimpleMarkdown.parseToReact(description)}</div></div>
+                    <div className="bd-description-wrap">
+                        {this.props.disabled && <div className="banner banner-danger"><ErrorIcon className="bd-icon" />{`An error was encountered while trying to load this ${this.props.type}.`}</div>}
+                        <div className="bd-description">{SimpleMarkdown.parseToReact(description)}</div>
+                    </div>
                     {this.footer}
                 </div>;
     }

@@ -84,6 +84,10 @@
     color: var(--header-primary);
 }
 
+.disabled .bd-addon-header .bd-icon {
+    fill: red;
+}
+
 .bd-title,
 .bd-name,
 .bd-meta {
@@ -125,6 +129,33 @@
 .bd-description-wrap {
     flex: 1;
     padding: 8px 16px 0 16px;
+}
+
+.bd-description-wrap .banner {
+    padding: 5px;
+    border: 2px solid gray;
+    background: #26191E;
+    color: #ffffff;
+    font-weight: 700px;
+    border-radius: 5px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.banner.banner-danger {
+    border-color: #F04747;
+    background: #473C41;
+}
+
+.banner .bd-icon {
+    fill: #ffffff;
+    margin-right: 5px;
+    height: 16px !important;
+}
+
+.banner-danger .bd-icon {
+    fill: #F04747;
 }
 
 .bd-addon-list .bd-description {

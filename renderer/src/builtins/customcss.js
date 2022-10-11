@@ -39,7 +39,7 @@ export default new class CustomCSS extends Builtin {
                 if (this.isDetached) return;
                 if (this.nativeOpen) return this.openNative();
                 else if (this.startDetached) return this.openDetached(this.savedCss);
-                const settingsView = Utilities.findInRenderTree(thisObject._reactInternals, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
+                const settingsView = Utilities.findInTree(thisObject._reactInternals, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
                 if (settingsView && settingsView.onSetSection) settingsView.onSetSection(this.id);
             }
         });

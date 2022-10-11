@@ -1,0 +1,104 @@
+.bd-layer {
+    position: absolute;
+}
+
+.bd-tooltip {
+    position: relative;
+    border-radius: 5px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    max-width: 190px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+    z-index: 1002;
+    will-change: opacity, transform;
+    box-shadow: var(--elevation-high);
+    color: var(--header-primary);
+}
+
+.bd-tooltip-content {
+    padding: 8px 12px;
+    overflow: hidden;
+    }
+
+.bd-tooltip-pointer {
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+}
+
+.bd-tooltip-primary {
+    background-color: var(--background-floating);
+    color: var(--text-normal);
+}
+
+.bd-tooltip-primary .bd-tooltip-pointer {
+    border-top-color: var(--background-floating);
+}
+
+.bd-tooltip-info {
+    background-color: #4A90E2;
+}
+
+.bd-tooltip-info .bd-tooltip-pointer {
+    border-top-color: #4A90E2;
+}
+
+.bd-tooltip-success {
+    background-color: #43B581;
+}
+
+.bd-tooltip-success .bd-tooltip-pointer {
+    border-top-color: #43B581;
+}
+
+.bd-tooltip-danger {
+    background-color: #F04747;
+}
+
+.bd-tooltip-danger .bd-tooltip-pointer {
+    border-top-color: #F04747;
+}
+
+.bd-tooltip-warn {
+    background-color: #FFA600;
+}
+
+.bd-tooltip-warn .bd-tooltip-pointer {
+    border-top-color: #FFA600;
+}
+
+.bd-tooltip-top .bd-tooltip-pointer {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+}
+
+.bd-tooltip-bottom .bd-tooltip-pointer {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    transform: rotate(180deg);
+}
+
+.bd-tooltip-right .bd-tooltip-pointer {
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    margin-top: -5px;
+    border-left-width: 5px;
+    transform: rotate(90deg);
+}
+
+.bd-tooltip-left .bd-tooltip-pointer {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    margin-top: -5px;
+    border-left-width: 5px;
+    transform: rotate(270deg);
+}

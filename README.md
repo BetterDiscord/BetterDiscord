@@ -40,7 +40,7 @@ For normal users, installing via the installers makes the most sense. However wh
 
 ### Prerequisites
 - [Git](https://git-scm.com)
-- [Node.js](https://nodejs.org/en/) with `npm`.
+- [Node.js](https://nodejs.org/en/) with [pnpm](https://pnpm.io/).
 - Command line of your choice.
 
 ### 1: Clone the repository
@@ -49,25 +49,25 @@ git clone https://github.com/BetterDiscord/BetterDiscord.git
 ```
 ### 2: Install dependencies
 ```ps
-npm install
+pnpm recursive install
 ```
 ### 3: Run Build Script
 This will create a `injector.js`, `preload.js`, and `renderer.js` in the `dist` folder.
 ```ps
-npm run build
+pnpm run build
 ```
 ### 4: Inject into your Discord client
 #### Install to Stable
 ```ps
-npm run inject
+pnpm run inject
 ```
 #### Install to PTB
 ```ps
-npm run inject ptb
+pnpm run inject ptb
 ```
 #### Install to Canary
 ```ps
-npm run inject canary
+pnpm run inject canary
 ```
 
 ## Additional Scripts
@@ -75,7 +75,7 @@ npm run inject canary
 ### Compiling & Distribution
 This will create a `betterdiscord.asar` file in the `dist` folder.
 ```ps
-npm run dist
+pnpm run dist
 ```
 
 ---

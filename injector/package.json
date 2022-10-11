@@ -1,5 +1,5 @@
 {
-    "name": "betterdiscord-injector",
+    "name": "@betterdiscord/injector",
     "version": "0.6.2",
     "description": "BetterDiscord injector module",
     "main": "src/index.js",
@@ -11,10 +11,6 @@
         "lint": "eslint --ext .js src/"
     },
     "devDependencies": {
-        "circular-dependency-plugin": "^5.2.2",
-        "copy-webpack-plugin": "^8.0.0",
-        "eslint": "^7.21.0",
-        "webpack": "^5.24.2",
-        "webpack-cli": "^4.5.0"
+        "webpack": "^5.73.0"
     }
 }

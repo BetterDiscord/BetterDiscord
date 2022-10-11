@@ -1,0 +1,16 @@
+{
+    "name": "@betterdiscord/preload",
+    "version": "0.0.1",
+    "description": "BetterDiscord preload module",
+    "main": "src/index.js",
+    "private": true,
+    "scripts": {
+        "build": "webpack --progress --color",
+        "watch": "webpack --progress --color --watch",
+        "build-prod": "webpack --stats minimal --mode production",
+        "lint": "eslint --ext .js src/"
+    },
+    "devDependencies": {
+        "webpack": "^5.73.0"
+    }
+}

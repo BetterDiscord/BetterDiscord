@@ -1,5 +1,5 @@
 import {React, WebpackModules} from "modules";
-const {ScrollerAuto: Scroller} = WebpackModules.getByProps("ScrollerAuto");
+const {ScrollerAuto: Scroller} = WebpackModules.getByProps("ScrollerAuto") ?? {ScrollerAuto: () => null};
 export default class EmoteMenuCard extends React.Component {
     render() {
         return <div className={`bd-emote-menu`}>
