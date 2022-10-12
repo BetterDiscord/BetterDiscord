@@ -133,25 +133,26 @@
 
 .bd-description-wrap .banner {
     padding: 5px;
-    border: 2px solid gray;
+    border: 1px solid gray;
     background: #26191E;
     color: #ffffff;
-    font-weight: 700px;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
     display: flex;
     align-items: center;
 }
 
 .banner.banner-danger {
-    border-color: #F04747;
-    background: #473C41;
+    border-color: var(--info-danger-foreground, #F04747);
+    background: var(--info-danger-background, #473C41);
+    color: var(--info-danger-text, #ffffff);
 }
 
 .banner .bd-icon {
     fill: #ffffff;
     margin-right: 5px;
-    height: 16px !important;
+    height: 24px;
 }
 
 .banner-danger .bd-icon {
@@ -248,18 +249,6 @@
 .bd-addon-modal-settings {
     /* padding: 16px; */
     padding: 0 16px 16px 16px;
-}
-
-.bd-addon-modal-footer .bd-button {
-    background-color: #3e82e5;
-}
-
-.bd-addon-modal-footer .bd-button:hover {
-    background-color: rgb(56, 117, 206);
-}
-
-.bd-addon-modal-footer .bd-button:active {
-    background-color: rgb(50, 104, 183);
 }
 
 .bd-addon-views {

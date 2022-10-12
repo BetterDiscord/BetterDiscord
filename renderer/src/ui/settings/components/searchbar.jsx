@@ -30,11 +30,11 @@ export default class SearchBar extends React.Component {
     render() {
         const {className, size = Sizes.SMALL, placeholder, disabled = false} = this.props;
 
-        return <div className={Utilities.joinClassNames("bd-searchbar", className, {disabled}, `size-${size}`)}>
+        return <div className={Utilities.className("bd-searchbar", className, {disabled}, `size-${size}`)}>
             <input onKeyDown={this.props.onKeyDown} onChange={this.onChange} disabled={disabled} type="text" placeholder={placeholder} maxLength="50" value={this.state.value} />
-            <div onClick={() => this.onChange({target: {value: ""}})} className={Utilities.joinClassNames("bd-search-icon", {clickable: this.state.hasContent})} tabIndex="-1" role="button">
-                <Close className={Utilities.joinClassNames("bd-search-close", {visible: this.state.hasContent})}/>
-                <Search className={Utilities.joinClassNames({visible: !this.state.hasContent})} />
+            <div onClick={() => this.onChange({target: {value: ""}})} className={Utilities.className("bd-search-icon", {clickable: this.state.hasContent})} tabIndex="-1" role="button">
+                <Close className={Utilities.className("bd-search-close", {visible: this.state.hasContent})}/>
+                <Search className={Utilities.className({visible: !this.state.hasContent})} />
             </div>
         </div>;
     }

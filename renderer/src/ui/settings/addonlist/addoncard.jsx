@@ -1,21 +1,21 @@
 import Logger from "common/logger";
 import {React, Strings, WebpackModules, DiscordModules} from "modules";
-import SimpleMarkdown from "../../structs/markdown";
-import EditIcon from "../icons/edit";
-import DeleteIcon from "../icons/delete";
-import CogIcon from "../icons/cog";
-import Switch from "./components/switch";
+import SimpleMarkdown from "../../../structs/markdown";
+import Modals from "../../modals";
+import Toasts from "../../toasts";
+import Switch from "../components/switch";
 
-import GitHubIcon from "../icons/github";
-import MoneyIcon from "../icons/dollarsign";
-import WebIcon from "../icons/globe";
-import PatreonIcon from "../icons/patreon";
-import SupportIcon from "../icons/support";
-import ExtIcon from "../icons/extension";
-import ErrorIcon from "../icons/error";
-import ThemeIcon from "../icons/theme";
-import Modals from "../modals";
-import Toasts from "../toasts";
+import GitHubIcon from "../../icons/github";
+import MoneyIcon from "../../icons/dollarsign";
+import WebIcon from "../../icons/globe";
+import PatreonIcon from "../../icons/patreon";
+import SupportIcon from "../../icons/support";
+import ExtIcon from "../../icons/extension";
+import ErrorIcon from "../../icons/error";
+import ThemeIcon from "../../icons/theme";
+import EditIcon from "../../icons/edit";
+import DeleteIcon from "../../icons/delete";
+import CogIcon from "../../icons/cog";
 
 const LinkIcons = {
     website: WebIcon,

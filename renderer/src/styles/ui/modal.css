@@ -59,11 +59,6 @@
     color: #fff;
 }
 
-.bd-modal .footer .bd-button {
-    min-width: 80px;
-    height: 38px;
-}
-
 @keyframes bd-modal-close {
     to {transform: scale(0.7);}
 }

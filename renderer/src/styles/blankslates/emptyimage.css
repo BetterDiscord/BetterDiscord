@@ -13,8 +13,3 @@
     color: var(--header-secondary);
     margin-bottom: 8px;
 }
-
-.bd-empty-image-container .bd-button {
-    margin-top: 10px;
-    padding: 10px 16px;
-}

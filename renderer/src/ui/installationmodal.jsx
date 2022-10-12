@@ -2,6 +2,8 @@ import {React, Strings, WebpackModules} from "modules";
 import {Web} from "data";
 
 import Spinner from "./spinner";
+import Tooltip from "./tooltip";
+
 import Support from "./icons/support";
 import Version from "./icons/version";
 import Github from "./icons/github";
@@ -9,14 +11,14 @@ import Author from "./icons/author";
 import Description from "./icons/description";
 import Clock from "./icons/clock";
 
-const Button = WebpackModules.getByProps("BorderColors");
-const {TooltipContainer: Tooltip} = WebpackModules.getByProps("TooltipContainer");
-const {ModalRoot, ModalHeader, ModalContent, ModalCloseButton, ModalFooter} = WebpackModules.getByProps("ModalRoot");
+const {Header, Content, CloseButton, Footer} = WebpackModules.getByProps("Header", "Footer");
+const ModalRoot = WebpackModules.getModule(m => m?.toString?.()?.includes("ENTERING"), {searchExports: true});
 
 export default class InstallationModal extends React.Component {
     constructor() {
         super(...arguments);
 
+        this.authorRef = React.createRef();
         this.onKeyDown = this.onKeyDown.bind(this);
         this.state = {
             isInstalling: false
@@ -40,18 +42,22 @@ export default class InstallationModal extends React.Component {
         }
     }
 
+    componentDidMount() {
+        Tooltip.create(this.authorRef.current, this.props.author.display_name);
+    }
+
     render() {
         const {name, id, description, author, releaseDate, type, version, filename} = this.props;
 
         return <ModalRoot {...this.props} onKeyDown={this.onKeyDown} size="small" className="bd-installation-modal">
-            <ModalHeader className="bd-installation-header">
+            <Header className="bd-installation-header">
                 <img className="bd-installation-thumbnail" src={this.props.thumbnail} alt={`${name} thumbnail`}/>
-                <Tooltip className="bd-installation-icon" color="primary" position="top" text={author.display_name}>
+                <div ref={this.authorRef} className="bd-installation-icon">
                     <img alt={author.display_name} src={`https://github.com/${author.github_name}.png?size=44`} />
-                </Tooltip>
-                <ModalCloseButton onClick={this.props.onClose} className="bd-installation-close"/>
-            </ModalHeader>
-            <ModalContent className="bd-installation-content">
+                </div>
+                <CloseButton onClick={this.props.onClose} className="bd-installation-close"/>
+            </Header>
+            <Content className="bd-installation-content">
                 <h5 className="bd-installation-name">{name}</h5>
                 <div className="bd-installation-subtitle">
                     {Strings.Store.installConfirmation.format({type})}
@@ -77,24 +83,32 @@ export default class InstallationModal extends React.Component {
                         <a href={`${Web.PAGES.developer}/${author.display_name}`} target="_blank" rel="noreferrer noopener">{author.display_name}</a>
                     </InfoItem>
                 </ul>
-            </ModalContent>
-            <ModalFooter>
-                <Button onClick={() => this.install(id, filename)} color={Button.Colors.GREEN} disabled={this.state.isInstalling}>
+            </Content>
+            <Footer className="bd-modal-footer">
+                <button className="bd-button size-medium bd-button-success" onClick={() => this.install(id, filename)} disabled={this.state.isInstalling}>
                     {this.state.isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : (Strings.Modals.install ?? "Install")}
-                </Button>
-            </ModalFooter>
+                </button>
+            </Footer>
         </ModalRoot>;
     }
 }
 
 class InfoItem extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.iconRef = React.createRef();
+    }
+
+    componentDidMount() {
+        new Tooltip(this.iconRef.current, this.props.label);
+    }
+
     render() {
         return <li id={this.props.id}>
-            <Tooltip className="bd-info-icon" color="primary" position="top" text={this.props.label}>
-                {
-                    this.props.icon ? this.props.icon : <Support />
-                }
-            </Tooltip>
+            <div ref={this.iconRef} className="bd-info-icon">
+                {this.props.icon ? this.props.icon : <Support />}
+            </div>
             <span>
                 {this.props.children}
             </span>

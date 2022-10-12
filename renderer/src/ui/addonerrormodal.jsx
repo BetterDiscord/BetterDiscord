@@ -30,7 +30,7 @@ class AddonError extends React.Component {
     render() {
         const {err} = this.props;
         
-        return <div key={`${err.type}-${this.props.index}`} className={Utilities.joinClassNames("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
+        return <div key={`${err.type}-${this.props.index}`} className={Utilities.className("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
             <div className="bd-addon-error-header" onClick={() => {this.toggle();}} >
                 <div className="bd-addon-error-icon">
                     {err.type == "plugin" ? <Extension /> : <ThemeIcon />}

@@ -1,4 +1,4 @@
-import {React, Settings, Strings, Events, WebpackModules, Utilities, DataStore, DiscordClasses} from "modules";
+import {React, Settings, Strings, Events, Utilities, DataStore, DiscordClasses} from "modules";
 import {Web} from "data";
 
 import {shell} from "electron";
@@ -11,8 +11,6 @@ import SettingsTitle from "../title";
 
 import StorePage from "./store";
 import InstalledPage from "./installed";
-
-const Button = WebpackModules.getByProps("BorderColors");
 
 const CONTROLS = {
     installed: {
@@ -72,7 +70,7 @@ const PAGES = {
                 {Web.TAGS[type].map(tag => {
                     return <span
                         onClick={() => setState({selectedTag: tag})}
-                        className={Utilities.joinClassNames({selected: state.selectedTag === tag})}
+                        className={Utilities.className({selected: state.selectedTag === tag})}
                     >{tag}</span>;
                 })}
             </div>
@@ -265,13 +263,13 @@ export default class AddonList extends React.Component {
                     value={this.state.query}
                     placeholder={Strings.Addons.search.format({type: this.props.title})}
                 />
-                <Button
-                    size={Button.Sizes.SMALL}
+                <button
+                    className="bd-button size-small"
                     onClick={() => this.openFolder(this.props.folder)}
-                >{Strings.Addons.openFolder.format({type: this.props.type})}</Button>
+                >{Strings.Addons.openFolder.format({type: this.props.type})}</button>
             </div>
             {this.pageControls}
-            <Divider className={Utilities.joinClassNames(DiscordClasses.Margins.marginTop20.toString(), DiscordClasses.Margins.marginBottom20.toString())} />
+            <Divider className={Utilities.className(DiscordClasses.Margins.marginTop20.toString(), DiscordClasses.Margins.marginBottom20.toString())} />
             <Page
                 key={`${this.props.type}-${this.currentPage}`}
                 state={Object.assign({}, PAGES[this.currentPage].state, this.state)}

@@ -6,7 +6,6 @@ import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 import InstallationModal from "./installationmodal";
 
-
 export default class Modals {
 
     static get shouldShowAddonErrors() {return Settings.get("settings", "addons", "addonErrors");}
@@ -89,7 +88,7 @@ export default class Modals {
                     handleClose();
                 },
                 type: "button",
-                className: "bd-button"
+                className: "bd-button size-medium"
             });
 
             if (button.danger) buttonEl.classList.add("bd-button-danger")
@@ -321,9 +320,9 @@ export default class Modals {
     }
 
     static showInstallationModal(options = {}) {
-        this.ModalActions.openModal(props => React.createElement(InstallationModal, {
+        this.ModalActions.openModal(props => React.createElement(ErrorBoundary, null, React.createElement(InstallationModal, {
             ...props,
             ...options
-        }));
+        })));
     }
 }

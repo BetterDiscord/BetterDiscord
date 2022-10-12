@@ -6,8 +6,6 @@ export {default as PublicServers} from "./general/publicservers";
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
 export {default as MediaKeys} from "./general/mediakeys";
 
-export {default as Store} from "./addons/store";
-
 // export {default as EmoteModule} from "./emotes/emotes";
 // export {default as EmoteMenu} from "./emotes/emotemenu";
 // export {default as EmoteAutocaps} from "./emotes/emoteautocaps";

@@ -49,7 +49,7 @@ export default class TabBar extends React.Component {
                     role="tab"
                     key={item.value}
                     tabIndex={((item.value === selected.value) && !item.disabled) ? "0" : "-1"}
-                    className={Utilities.joinClassNames("bd-tab-item", {selected: item.value === selected.value}, {disabled: item.disabled})}
+                    className={Utilities.className("bd-tab-item", {selected: item.value === selected.value}, {disabled: item.disabled})}
                     onClick={() => this.onChange(item)}
                     onKeyDown={this.onKeyDown}
                     aria-disabled={item.disabled}

@@ -243,7 +243,7 @@
     height: 16px;
     padding: 0 4px;
     margin-left: 6px;
-    background-color: hsl(359, calc(var(--saturation-factor, 1) * 82.6%), 59.4%);
+    background-color: var(--status-danger);
     color: #fff;
     text-align: center;
     font-size: 12px;
@@ -337,21 +337,17 @@
     font-weight: 600;
     box-sizing: border-box;
     justify-content: center;
-    height: 28px;
+    height: 38px;
     min-width: 28px;
     padding: 0 8px;
     margin: 4px;
+    border-radius: 3px;
     color: var(--header-primary);
     background-color: transparent;
     flex: 0 0 auto;
     display: flex;
     align-items: center;
     width: min-content;
-}
-
-.bd-page-button .flexChild-3PzYmX {
-    display: flex;
-    align-items: center;
 }
 
 .bd-page-button svg {
@@ -365,16 +361,20 @@
     background-color: var(--background-secondary-alt);
 }
 
-.bd-page-button:first-child {
-    padding-right: 12px;
+.bd-page-button:focus-visible {
+    box-shadow: 0 0 0 4px var(--focus-primary);
 }
 
-.bd-page-button:last-child {
-    padding-left: 12px;
+.bd-page-button:not(.bd-page-item):first-child {
+    padding-right: 12px;
 }
 
 .bd-page-button:first-child svg {
     margin-right: 4px;
+}
+
+.bd-page-button:not(.bd-page-item):last-child {
+    padding-left: 12px;
 }
 
 .bd-page-button:last-child svg {
@@ -383,6 +383,7 @@
 
 .bd-page-item {
     border-radius: 14px;
+    height: 28px;
 }
 
 .bd-page-item.selected {
@@ -507,6 +508,10 @@
     background-color: var(--background-secondary);
     border-radius: 8px;
     margin-top: 16px;
+}
+
+.bd-installation-info *:focus-visible {
+    box-shadow: 0 0 0 4px var(--focus-primary);
 }
 
 .bd-installation-info li {

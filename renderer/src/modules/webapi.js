@@ -4,7 +4,7 @@ import Logger from "common/logger";
 import Utilities from "./utilities";
 import Strings from "./strings";
 
-import https from "https";
+import request from "request";
 
 const API_CACHE = {plugins: [], themes: [], addon: []};
 // const README_CACHE = {plugins: {}, themes: {}};
@@ -17,6 +17,15 @@ export default new class WebAPI {
     get pages() {return Web.PAGES;}
     get tags() {return Web.TAGS;}
 
+    testJSON(data) {
+        try {
+            return JSON.parse(data);
+        }
+        catch (err) {
+            return false;
+        }
+    }
+
     /**
      * Fetches a list of all addons from the site.
      * @param {"themes" | "plugins"} type - The type of the addon (theme or plugin).
@@ -25,29 +34,17 @@ export default new class WebAPI {
     getAddons(type) {
         return new Promise((resolve, reject) => {
             if (API_CACHE[type].length) resolve(API_CACHE[type]);
-            const request = https.get(Web.ENDPOINTS.store(type), (res) => {
-                const chunks = [];
-                res.on("data", chunk => chunks.push(chunk));
-    
-                res.on("end", () => {
-                    const json = Utilities.testJSON(chunks.join(""));
-    
-                    if (!Array.isArray(json)) return res.emit("error");
-    
-                    API_CACHE[type] = Utilities.splitArray(json, 30);
-    
-                    resolve(Utilities.splitArray(json, 30));
-                });
-    
-                res.on("error", (error) => {
+            request(Web.ENDPOINTS.store(type), (error, _, body) => {
+                if (error) {
                     Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
                     reject(error);
-                });
-            });
+                }
 
-            request.on("error", (error) => {
-                Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
-                reject(error);
+                const json = this.testJSON(body);
+
+                API_CACHE[type] = Utilities.splitArray(json, 30);
+
+                resolve(Utilities.splitArray(json, 30));
             });
         });
     }
@@ -62,29 +59,17 @@ export default new class WebAPI {
             const cacheMatch = API_CACHE.addon.find(a => a[typeof addon === "number" ? "id" : "name"] === addon);
             if (cacheMatch) resolve(cacheMatch);
 
-            const request = https.get(Web.ENDPOINTS.addon(addon), (res) => {
-                const chunks = [];
-                res.on("data", chunk => chunks.push(chunk));
-                
-                res.on("end", () => {
-                    const json = Utilities.testJSON(chunks.join(""));
-
-                    if (!json) return res.emit("error");
-
-                    API_CACHE.addon.push(json);
-
-                    resolve(json);
-                });
-
-                res.on("error", (error) => {
+            request(Web.ENDPOINTS.addon(addon), (error, _, body) => {
+                if (error) {
                     Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
                     reject(error);
-                });
-            });
+                }
 
-            request.on("error", (error) => {
-                Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
-                reject(error);
+                const json = this.testJSON(body);
+
+                API_CACHE.addon.push(json);
+
+                resolve(json);
             });
         });
     }
@@ -96,24 +81,16 @@ export default new class WebAPI {
      */
     getAddonContents(id) {
         return new Promise((resolve, reject) => {
-            const request = https.get(Web.ENDPOINTS.download(id), (res) => {
-                const chunks = [];
-                res.on("data", chunk => chunks.push(chunk));
-                
-                res.on("end", () => {
-                    const data = chunks.join("");
-                    resolve(data);
-                });
+            const cacheMatch = API_CACHE.addon.find(addon => addon.id === id);
+            if (cacheMatch) resolve(cacheMatch);
 
-                res.on("error", (error) => {
+            request(Web.ENDPOINTS.download(id), (error, _, body) => {
+                if (error) {
                     Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
                     reject(error);
-                });
-            });
+                }
 
-            request.on("error", (error) => {
-                Logger.stacktrace("WebAPI", Strings.Store.connectionError, error);
-                reject(error);
+                resolve(body);
             });
         });
     }

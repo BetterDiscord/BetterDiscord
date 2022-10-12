@@ -1,4 +1,4 @@
-import {React, Strings, Utilities, WebpackModules, DiscordClasses, WebAPI} from "modules";
+import {React, Strings, Utilities, DiscordClasses, WebAPI} from "modules";
 import {Web} from "data";
 
 import Spinner from "../../spinner";
@@ -8,8 +8,6 @@ import NoResults from "../../blankslates/noresults";
 import StoreCard from "./storecard";
 import Modals from "../../modals";
 import Toasts from "../../toasts";
-
-const Button = WebpackModules.getByProps("DropdownSizes");
 
 export default class StorePage extends React.Component {
     constructor(props) {
@@ -37,8 +35,6 @@ export default class StorePage extends React.Component {
             });
         }
         catch (error) {
-            console.log("error");
-
             Modals.showConfirmationModal(Strings.Store.connectionError, Strings.Store.connectionErrorMessage, {
                 cancelText: Strings.Modals.close,
                 confirmText: Strings.Modals.retry,
@@ -109,7 +105,7 @@ export default class StorePage extends React.Component {
         return <div className="bd-addon-store">
             {!this.state.isLoaded && <Spinner className="bd-store-spinner" type={Spinner.Type.SPINNING_CIRCLE}/>}
             {(this.state.isLoaded && addons?.length && addons[this.state.selectedPage]) 
-                ? <div className={Utilities.joinClassNames("bd-store-addons", this.props.view + "-view")}>
+                ? <div className={Utilities.className("bd-store-addons", this.props.view + "-view")}>
                     {addons[this.state.selectedPage].map(addon => {
                         const thumbnail = Web.ENDPOINTS.thumbnail(addon.thumbnail_url);
 
@@ -137,10 +133,10 @@ export default class StorePage extends React.Component {
                 : this.state.isLoaded && <NoResults />
             }
             {this.state.isLoaded && addons.length > 1 && <nav className="bd-page-control">
-                <Button look={Button.Looks.BLANK} className="bd-page-button" onClick={handleSelect(s => s - 1)} disabled={!canGoBackward}>
+                <button className="bd-page-button" onClick={handleSelect(s => s - 1)} disabled={!canGoBackward}>
                     <Previous />
                     {Strings.Store.back}
-                </Button>
+                </button>
                 <div className={`bd-page-buttons ${DiscordClasses.Scrollers.thin}`}>
                     {addons.length
                         ? addons.map((_, index) => <div
@@ -148,7 +144,7 @@ export default class StorePage extends React.Component {
                             aria-label={`Page ${index + 1}`}
                             aria-current={index === this.state.selectedPage ? "page" : undefined}
                             tabIndex="0"
-                            className={Utilities.joinClassNames("bd-page-item bd-page-button", {selected: index === this.state.selectedPage})}
+                            className={Utilities.className("bd-page-item bd-page-button", {selected: index === this.state.selectedPage})}
                             onClick={handleSelect(() => index)}
                         >
                             <span>{index + 1}</span>
@@ -156,10 +152,10 @@ export default class StorePage extends React.Component {
                         : null
                     }
                 </div>
-                <Button look={Button.Looks.BLANK} className="bd-page-button" onClick={handleSelect(s => s + 1)} disabled={!canGoForward}>
+                <button className="bd-page-button" onClick={handleSelect(s => s + 1)} disabled={!canGoForward}>
                     {Strings.Store.next}
                     <Next />
-                </Button>
+                </button>
             </nav>}
         </div>;
     }

@@ -1,7 +1,5 @@
 import {React} from "modules";
 import Drawer from "./drawer";
-import Title from "./title";
-import Divider from "../divider";
 import Switch from "./components/switch";
 import Dropdown from "./components/dropdown";
 import Number from "./components/number";
@@ -11,7 +9,6 @@ import Slider from "./components/slider";
 import Radio from "./components/radio";
 import Keybind from "./components/keybind";
 import Color from "./components/color";
-
 
 export default class Group extends React.Component {
     constructor(props) {

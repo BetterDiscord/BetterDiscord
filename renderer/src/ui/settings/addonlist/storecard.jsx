@@ -1,13 +1,19 @@
-import {React, Strings, Utilities, WebpackModules} from "modules";
+import {React, Strings, Utilities} from "modules";
 
-import Modals from "../../modals";
 import Heart from "../../icons/heart";
 import Download from "../../icons/download";
-
-const Tooltip = WebpackModules.getByDisplayName("Tooltip");
-const Button = WebpackModules.getByProps("DropdownSizes");
+import Tooltip from "../../tooltip";
 
 export default class StoreCard extends React.PureComponent {
+    constructor(props) {
+        super(props);
+
+        this.authorRef = React.createRef();
+        this.newBadgeRef = React.createRef();
+        this.likesRef = React.createRef();
+        this.downloadsRef = React.createRef();
+    }
+    
     abbreviateStat(n) {
         if (n < 1e3) return n;
         if (n >= 1e3 && n < 1e6) return +(n / 1e3).toFixed(1) + "K";
@@ -20,16 +26,6 @@ export default class StoreCard extends React.PureComponent {
         const months = (((current.getFullYear() - release.getFullYear()) * 12) - release.getMonth()) + current.getMonth();
 
         return Math.max(months, 0);
-    }
-
-    preview(event) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        Modals.showImageModal(this.props.thumbnail, {
-            width: Utilities.getNestedProp(event, "target.naturalWidth"), 
-            height: Utilities.getNestedProp(event, "target.naturalHeight")
-        });
     }
 
     async onButtonClick(event) {
@@ -46,6 +42,15 @@ export default class StoreCard extends React.PureComponent {
         }
     }
 
+    componentDidMount() {
+        if (this.newBadgeRef?.current) {
+            Tooltip.create(this.newBadgeRef.current, Strings.Store.uploadDate.format({date: new Date(this.props.releaseDate).toLocaleString()}));
+        }
+        Tooltip.create(this.authorRef.current, this.props.author.display_name);
+        Tooltip.create(this.likesRef.current, Strings.Store.likesAmount.format({amount: this.props.likes}));
+        Tooltip.create(this.downloadsRef.current, Strings.Store.likesAmount.format({amount: this.props.downloads}));
+    }
+
     render() {
         const {name, description, author, tags, selectedTag, likes, downloads, releaseDate, thumbnail, className} = this.props;
 
@@ -54,61 +59,40 @@ export default class StoreCard extends React.PureComponent {
                 <div className="bd-store-card-splash">
                     <img
                         key={thumbnail}
-                        onClick={this.preview.bind(this)}
                         alt={name}
                         src={thumbnail}
                     />
                 </div>
                 <div className="bd-store-card-icon">
-                    <Tooltip color="primary" position="top" text={author.display_name}>
-                        {props =>
-                            <img {...props} alt={author.display_name} src={`https://github.com/${author.github_name}.png?size=44`} />
-                        }
-                    </Tooltip>
+                    <img ref={this.authorRef} alt={author.display_name} src={`https://github.com/${author.github_name}.png?size=44`} />
                 </div>
             </div>
             <div className="bd-store-card-body">
                 <div className="bd-store-card-title">
                     <h5>{name}</h5>
-                    {this.monthsAgo(releaseDate) <= 3
-                        ? <Tooltip color="primary" position="top" text={Strings.Store.uploadDate.format({date: new Date(releaseDate).toLocaleString()})}>
-                            {props => <span {...props} className="bd-store-card-new-badge">{Strings.Store.new}</span>}
-                        </Tooltip>
-                        : null
-                    }
+                    {this.monthsAgo(releaseDate) <= 3 && <span ref={this.newBadgeRef} className="bd-store-card-new-badge">{Strings.Store.new}</span>}
                 </div>
                 <p>{description}</p>
                 <div className="bd-card-tags">
-                    {
-                        tags.map(tag => <span className={Utilities.joinClassNames({selected: tag === selectedTag})}>{tag}</span>)
-                    }
+                    {tags.map(tag => <span className={Utilities.className({selected: tag === selectedTag})}>{tag}</span>)}
                 </div>
                 <div className="bd-store-card-footer">
                     <div className="bd-store-card-stats">
-                        <Tooltip color="primary" position="top" text={Strings.Store.likesAmount.format({amount: likes})}>
-                            {props =>
-                                <div {...props} className="bd-store-card-stat">
-                                    <Heart />
-                                    <span>{this.abbreviateStat(likes)}</span>
-                                </div>
-                            }
-                        </Tooltip>
-                        <Tooltip color="primary" position="top" text={Strings.Store.downloadsAmount.format({amount: downloads})}>
-                            {props =>
-                                <div {...props} className="bd-store-card-stat">
-                                    <Download />
-                                    <span>{this.abbreviateStat(downloads)}</span>
-                                </div>
-                            }
-                        </Tooltip>
+                        <div ref={this.likesRef} className="bd-store-card-stat">
+                            <Heart />
+                            <span>{this.abbreviateStat(likes)}</span>
+                        </div>
+                        <div ref={this.downloadsRef} className="bd-store-card-stat">
+                            <Download />
+                            <span>{this.abbreviateStat(downloads)}</span>
+                        </div>
                     </div>
-                    <Button
-                        color={this.props.isInstalled ? Button.Colors.RED : Button.Colors.GREEN}
-                        size={Button.Sizes.SMALL}
+                    <button
+                        className={Utilities.className("bd-button", "size-small", (this.props.isInstalled ? "bd-button-danger" : "bd-button-success"))}
                         onClick={this.onButtonClick.bind(this)}
                     >
                         {this.props.isInstalled ? Strings.Addons.deleteAddon : Strings.Addons.install}
-                    </Button>
+                    </button>
                 </div>
             </div>
         </div>;

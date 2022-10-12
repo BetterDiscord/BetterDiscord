@@ -56,7 +56,8 @@ export default new class PluginManager extends AddonManager {
                 deleteAddon: this.deleteAddon.bind(this),
                 confirmAddonDelete: this.confirmAddonDelete.bind(this),
                 isLoaded: this.isLoaded.bind(this),
-                installAddon: this.installAddon.bind(this)
+                installAddon: this.installAddon.bind(this),
+                prefix: this.prefix
             })
         });
         

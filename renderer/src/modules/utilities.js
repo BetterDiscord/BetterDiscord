@@ -1,6 +1,21 @@
 import Logger from "common/logger";
 
 export default class Utilities {
+    static splitArray(array, max) {
+        const newArray = [];
+        for (const child of array) {
+            let lastIndex = newArray.length ? newArray.length - 1 : 0;
+            if (!newArray[lastIndex]) {newArray.push([]);}
+            else if (newArray[lastIndex].length >= max) {
+                lastIndex++;
+                newArray.push([]);
+            }
+            newArray[lastIndex].push(child);
+        }
+
+        return newArray;
+    }
+
     /**
      * Generates an automatically memoizing version of an object.
      * @author Zerebos

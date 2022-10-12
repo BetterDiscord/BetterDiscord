@@ -68,6 +68,7 @@ export default class InstalledPage extends React.Component {
                     type={this.props.type}
                     editAddon={this.props.editAddon.bind(this, addon.id)}
                     confirmAddonDelete={this.props.confirmAddonDelete.bind(this, addon)}
+                    disabled={addon.partial}
                     key={addon.id}
                     enabled={addonState[addon.id]}
                     addon={addon}
