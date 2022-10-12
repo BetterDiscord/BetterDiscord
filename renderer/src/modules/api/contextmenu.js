@@ -83,6 +83,7 @@ class MenuPatcher {
 
         const proxyFunction = this.subPatches.get(target[method]) ?? (() => {
             const originalFunction = target[method];
+            const depth = ++iteration;
             function patch() {
                 const res = originalFunction.apply(this, arguments);
 
@@ -95,7 +96,7 @@ class MenuPatcher {
                     const layer = res.props.children ? res.props.children : res;
 
                     if (typeof layer?.type == "function") {
-                        MenuPatcher.patchRecursive(layer, "type", ++iteration);
+                        MenuPatcher.patchRecursive(layer, "type", depth);
                     }
                 }
 
