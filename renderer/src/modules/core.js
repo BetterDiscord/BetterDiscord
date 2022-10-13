@@ -31,60 +31,60 @@ export default new class Core {
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
-        DOMManager.injectStyle("bd-stylesheet", Styles.toString());
         await LoadingInterface.setInitStatus(1/stepsCount*100, "Injecting BD Styles");
+        DOMManager.injectStyle("bd-stylesheet", Styles.toString());
         
         Logger.log("Startup", "Initializing DataStore");
+        await LoadingInterface.setInitStatus(2/stepsCount*100, "Initializing DataStore...");
         DataStore.initialize();
-        await LoadingInterface.setInitStatus(2/stepsCount*100, "Initializing DataStore");
         
         Logger.log("Startup", "Initializing LocaleManager");
+		await LoadingInterface.setInitStatus(3/stepsCount*100, "Initializing LocaleManager...");
         LocaleManager.initialize();
-		await LoadingInterface.setInitStatus(3/stepsCount*100, "Initializing LocaleManager");
 				
         Logger.log("Startup", "Initializing Settings");
+        await LoadingInterface.setInitStatus(5/stepsCount*100, "Initializing Settings...");
         Settings.initialize();
-        await LoadingInterface.setInitStatus(5/stepsCount*100, "Initializing Settings");
         
         Logger.log("Startup", "Initializing DOMManager");
+        await LoadingInterface.setInitStatus(6/stepsCount*100, "Initializing DOMManager...");
         DOMManager.initialize();
-        await LoadingInterface.setInitStatus(6/stepsCount*100, "Initializing DOMManager");
         
         Logger.log("Startup", "Waiting for connection...");
-        await this.waitForConnection();
         await LoadingInterface.setInitStatus(7/stepsCount*100, "Waiting for connection...");
+        await this.waitForConnection();
         
         Logger.log("Startup", "Initializing Editor");
+        await LoadingInterface.setInitStatus(8/stepsCount*100, "Initializing Editor...");
         await Editor.initialize();
-        await LoadingInterface.setInitStatus(8/stepsCount*100, "Initializing Editor");
 				
         Logger.log("Startup", "Initializing Builtins");
+        await LoadingInterface.setInitStatus(9/stepsCount*100, "Initializing Builtins...");
 	    Modals.initialize();
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
-        await LoadingInterface.setInitStatus(9/stepsCount*100, "Initializing Builtins");
         
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
+        await LoadingInterface.setInitStatus(10/stepsCount*100, "Loading Plugins...");
         const pluginErrors = PluginManager.initialize();
-        await LoadingInterface.setInitStatus(10/stepsCount*100, "Loading Plugins");
         
         Logger.log("Startup", "Loading Themes");
         // const themeErrors = [];
+        await LoadingInterface.setInitStatus(11/stepsCount*100, "Loading Themes...");
         const themeErrors = ThemeManager.initialize();
-        await LoadingInterface.setInitStatus(11/stepsCount*100, "Loading Themes");
         
         Logger.log("Startup", "Initializing Updater");
+        await LoadingInterface.setInitStatus(12/stepsCount*100, "Initializing Updater...");
         Updater.initialize();
-        await LoadingInterface.setInitStatus(12/stepsCount*100, "Initializing Updater");
         
         Logger.log("Startup", "Getting update information");
+        await LoadingInterface.setInitStatus(13/stepsCount*100, "Getting update information...");
         CoreUpdater.checkForUpdate()
-        await LoadingInterface.setInitStatus(13/stepsCount*100, "Getting update information");
         
         Logger.log("Startup", "Removing Loading Interface");
-        await LoadingInterface.setInitStatus(100, "Done");
+        await LoadingInterface.setInitStatus(100, "Done", true);
         LoadingInterface.hide();
 				
         // Show loading errors

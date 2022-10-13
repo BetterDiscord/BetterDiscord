@@ -1,13 +1,16 @@
-/**The maximum number of status labels in the list at load time.*/
-const maxLabels = 4;
+/**Determines where the extra starts.*/
+const extraLabels = 6;
 const css = `/* BEGIN V2 LOADER */
 /* =============== */
 
 #bd-loading {
+  z-index: 2147483647;
   position: absolute;
-  right: 5px;
-  bottom: 5px;
+  right: 0;
+  bottom: 0;
   transition: 1s;
+  width: 100%;
+  height: 100%;
 }
 
 .theme-dark #bd-loading-icon {
@@ -20,7 +23,6 @@ const css = `/* BEGIN V2 LOADER */
   position: fixed;
   bottom: 10px;
   right: 5px;
-  z-index: 2147483646;
   display: block;
   width: 20px;
   height: 20px;
@@ -31,7 +33,6 @@ const css = `/* BEGIN V2 LOADER */
   position: fixed;
   bottom: 5px;
   right: 5px;
-  z-index: 2147483647;
   width: 20px;
   height: 3px;
   background-color: var(--header-primary);
@@ -47,7 +48,6 @@ const css = `/* BEGIN V2 LOADER */
   position: absolute;
   bottom: 7px;
   right: 30px;
-  z-index: 2147483645;
 }
 .bd-loading-status-container {
   white-space: nowrap;
@@ -56,12 +56,12 @@ const css = `/* BEGIN V2 LOADER */
   color: var(--header-primary);
   transition: 0.2s;
 }
-${
+${// reduce labels opacity
     (()=>{
         /**if `maxLabels == 4`: `'2', '3', 'n+4'`*/
-        let opacityReduceNth = new Array(maxLabels - 1).fill('temp').map((_, i) => (i == maxLabels - 2 ? 'n+' : '') + (i + 2).toString())
+        let opacityReduceNth = new Array(extraLabels - 1).fill('temp').map((_, i) => (i == extraLabels - 2 ? 'n+' : '') + (i + 2).toString());
 
-        return opacityReduceNth.map((nth, i) => `.bd-loading-status-container:nth-last-child(${nth}) { opacity: ${1 - (i + 1) * (1 / maxLabels)}; }`).join('\n')
+        return opacityReduceNth.map((nth, i) => `.bd-loading-status-container:nth-last-child(${nth}) { opacity: ${1 - (i + 1) * (1 / extraLabels)}; }`).join('\n');
     })()
 }
 
@@ -103,7 +103,7 @@ export default class {
      * Sets the value of the progress bar, adds status to the list about status.
      * @param {*} percent Doesn't change the progress if not a number.
      * @param {string} status Doesn't add the label if not a string.
-     * @param {boolean} clear Previous labels will be deleted before adding a new one (`status`).
+     * @param {boolean} clear Previous labels will be deleted before adding a new one `status`.
      * @returns 
      */
     static setInitStatus(percent = null, status = "", clear = false) {
@@ -123,8 +123,8 @@ export default class {
                     StatusContainer.innerHTML = status;
                     StatusListContainer.append(StatusContainer);
 
-                    if (StatusListContainer.childElementCount > 3) {
-                        let Needless = StatusListContainer.querySelectorAll("#bd-loading-status-list > :nth-last-child(n+4)");
+                    if (StatusListContainer.childElementCount > extraLabels - 1) {
+                        let Needless = StatusListContainer.querySelectorAll(`#bd-loading-status-list > :nth-last-child(n+${extraLabels})`);
                         Needless.forEach(n => setTimeout(() => n?.remove?.(), 200));
                     }
                 };
