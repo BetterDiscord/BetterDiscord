@@ -81,7 +81,7 @@ export default new class Core {
         
         Logger.log("Startup", "Getting update information");
         CoreUpdater.checkForUpdate()
-        await LoadingInterface.setInitStatus(4/stepsCount*100, "Getting update information");
+        await LoadingInterface.setInitStatus(13/stepsCount*100, "Getting update information");
         
         Logger.log("Startup", "Removing Loading Interface");
         LoadingInterface.hide();
