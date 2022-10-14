@@ -89,8 +89,8 @@ class MenuPatcher {
 
                 if (!res) return res;
 
-                if (res.props?.navId) {
-                    MenuPatcher.runPatches(res.props.navId, res, arguments[0]);
+                if (res.props?.navId ?? res.props?.children?.props?.navId) {
+                    MenuPatcher.runPatches(res.props.navId ?? res.props?.children?.props?.navId, res, arguments[0]);
                 }
                 else {
                     const layer = res.props.children ? res.props.children : res;
@@ -135,6 +135,7 @@ class MenuPatcher {
         this.patches[id]?.delete(callback);
     }
 }
+
 
 /**
  * `ContextMenu` is a module to help patch and create context menus. Instance is accessible through the {@link BdApi}.
@@ -212,6 +213,17 @@ class ContextMenu {
         if (props.danger) props.color = "colorDanger";
         if (props.onClick && !props.action) props.action = props.onClick;
         props.extended = true;
+
+        // This is done to make sure the UI actually displays the on/off correctly
+        if (type === "toggle") {
+            const [active, doToggle] = React.useState(props.checked || false);
+            const originalAction = props.action;
+            props.checked = active;
+            props.action = function(ev) {
+                originalAction(ev);
+                doToggle(!active);
+            };
+        }
         
         return React.createElement(Component, props);
     }

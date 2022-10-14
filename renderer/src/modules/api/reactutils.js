@@ -47,7 +47,7 @@ const ReactUtils = {
             return (name !== null && !!(nameFilter.includes(name) ^ excluding));
         }
         
-        let curr = ReactUtils.getReactInstance(node);
+        let curr = ReactUtils.getInternalInstance(node);
         for (curr = curr && curr.return; !Utilities.isNil(curr); curr = curr.return) {
             if (Utilities.isNil(curr)) continue;
             const owner = curr.stateNode;
