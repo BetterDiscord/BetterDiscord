@@ -220,7 +220,7 @@ export default class AddonManager {
             return error;
         }
 
-        if (shouldToast) Toasts.success(`${addon.name} v${addon.version} was loaded.`);
+        if (shouldToast) Toasts.success(Strings.Addons.wasUnloaded.format({name: addon.name, version: addon.version}));
         this.emit("loaded", addon);
         
         if (!this.state[addon.id]) return this.state[addon.id] = false;
@@ -235,7 +235,7 @@ export default class AddonManager {
 
         this.addonList.splice(this.addonList.indexOf(addon), 1);
         this.emit("unloaded", addon);
-        if (shouldToast) Toasts.success(`${addon.name} was unloaded.`);
+        if (shouldToast) Toasts.success(Strings.Addons.wasUnloaded.format({name: addon.name}));
         return true;
     }
 

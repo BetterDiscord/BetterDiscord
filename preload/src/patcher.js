@@ -1,5 +1,7 @@
 import {webFrame} from "electron";
 
+/* global window:false */
+
 export default function () {
     const patcher = function () {
         const chunkName = "webpackChunkdiscord_app";
@@ -7,21 +9,24 @@ export default function () {
             const value = target[prop];
             Object.defineProperty(target, prop, {
                 get() {return value;},
-                set(value) {
+                set(newValue) {
                     Object.defineProperty(target, prop, {
-                        value,
+                        value: newValue,
                         configurable: true,
                         enumerable: true,
                         writable: true
                     });
 
                     try {
-                        effect(value);
-                    } catch (error) {
+                        effect(newValue);
+                    }
+                    catch (error) {
+                        // eslint-disable-next-line no-console
                         console.error(error);
                     }
 
-                    return value;
+                    // eslint-disable-next-line no-setter-return
+                    return newValue;
                 },
                 configurable: true
             });
@@ -41,7 +46,7 @@ export default function () {
                                     configurable: true
                                 });
                             }
-                        }
+                        };
                     }]);
         
                     instance.pop();

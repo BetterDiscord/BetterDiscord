@@ -1,5 +1,6 @@
 {
     "Panels": {
+        "updates": "Updates",
         "plugins": "Plugins",
         "themes": "Themes",
         "customcss": "Custom CSS"
@@ -237,6 +238,7 @@
         "metaNotFound": "META was not found.",
         "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
+        "wasLoaded": "{{name}} v{{version}} was loaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
         "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder."
     },
@@ -258,7 +260,7 @@
         "failureMessage": "BetterDiscord failed to download emotes, please check your internet connection and firewall."
     },
     "PublicServers": {
-        "button": "public",
+        "button": "Public Servers",
         "join": "Join",
         "joining": "Joining",
         "joined": "Joined",
@@ -295,6 +297,9 @@
         "additionalInfo": "Additional Info",
         "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     },
+    "Notices": {
+        "moreInfo": "More Info"
+    },
     "ReactDevTools": {
         "notFound": "Extension Not Found",
         "notFoundDetails": "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
@@ -305,17 +310,21 @@
         "ascending": "Ascending",
         "descending": "Descending"
     },
-    "Startup": {
-        "notSupported": "Not Supported",
-        "incompatibleApp": "BetterDiscord does not work with {{app}}. Please uninstall one of them.",
-        "updateNow": "Update Now",
-        "maybeLater": "Maybe Later",
-        "updateAvailable": "Update Available",
-        "updateInfo": "There is an update available for BetterDiscord's Injector ({{version}}).\n\nYou can either update and restart now, or later.",
-        "updateFailed": "Could Not Update",
-        "manualUpdate": "Unable to update automatically, please download the installer and reinstall normally.\n\n[Download Installer](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "jQuery Failed To Load",
-        "jqueryFailedDetails": "jQuery could not be loaded, and some plugins may not work properly. Proceed at your own risk."
+    "Updater": {
+        "updateFailed": "Update Failed!",
+        "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
+        "updateSuccessful": "Update Successful!",
+        "updateAvailable": "BetterDiscord has a new update (v{{version}})",
+        "addonUpdatesAvailable": "BetterDiscord has found updates for {{count}} of your {{.type}}s!",
+        "addonUpdated": "{{name}} has been updated to version {{version}}!",
+        "checking": "Checking for updates!",
+        "finishedChecking": "Finished checking for updates!",
+        "checkForUpdates": "Check For Updates!",
+        "updateAll": "Update All!",
+        "noUpdatesAvailable": "No updates available.",
+        "versionAvailable": "Version {{version}} now available!",
+        "upToDateBlankslate": "All of your {{type}} seem to be up to date!",
+        "updateButton": "Update!"
     },
     "WindowPrefs": {
         "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",

@@ -110,7 +110,8 @@ export default class Patcher {
                         get: () => patch.originalFunction,
                         set: undefined
                     });
-                } else {
+                }
+                else {
                     patch.module[patch.functionName] = patch.originalFunction;
                 }
 
@@ -132,9 +133,11 @@ export default class Patcher {
                 enumerable: true,
                 ...descriptor,
                 get: () => patch.proxyFunction,
+                // eslint-disable-next-line no-setter-return
                 set: value => (patch.originalFunction = value)
             });
-        } else {
+        }
+        else {
             patch.getter = false;
             module[functionName] = patch.proxyFunction;
         }
@@ -172,7 +175,7 @@ export default class Patcher {
      *
      * @callback module:Patcher~patchCallback
      * @param {object} thisObject - `this` in the context of the original function.
-     * @param {arguments} arguments - The original arguments of the original function.
+     * @param {args} args - The original arguments of the original function.
      * @param {(function|*)} extraValue - For `instead` patches, this is the original function from the module. For `after` patches, this is the return value of the function.
      * @return {*} Makes sense only when using an `instead` or `after` patch. If something other than `undefined` is returned, the returned value replaces the value of `returnValue`. If used for `before` the return value is ignored.
      */

@@ -83,7 +83,12 @@ export default class Modals {
         for (const button of buttons) {
             const buttonEl = Object.assign(document.createElement("button"), {
                 onclick: (e) => {
-                    try {button.action(e);} catch (error) {console.error(error);}
+                    try {
+                        button.action(e);
+                    }
+                    catch (error) {
+                        Logger.stacktrace("Modals", "Could not fire button listener", error);
+                    }
 
                     handleClose();
                 },
@@ -91,7 +96,7 @@ export default class Modals {
                 className: "bd-button"
             });
 
-            if (button.danger) buttonEl.classList.add("bd-button-danger")
+            if (button.danger) buttonEl.classList.add("bd-button-danger");
 
             buttonEl.append(button.label);
             buttonContainer.appendChild(buttonEl);
@@ -102,14 +107,16 @@ export default class Modals {
 
             try {
                 ReactDOM.render(content, container);
-            } catch (error) {
+            }
+            catch (error) {
                 container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`));
             }
 
             DOMManager.onRemoved(container, () => {
                 ReactDOM.unmountComponentAtNode(container);
             });
-        } else {
+        }
+        else {
             modal.querySelector(".scroller").append(content);
         }
         
@@ -120,7 +127,8 @@ export default class Modals {
 
         if (this.hasModalOpen) {
             this.ModalQueue.push(handleOpen);
-        } else {
+        }
+        else {
             handleOpen();
         }
     }
@@ -152,15 +160,17 @@ export default class Modals {
         const emptyFunction = () => {};
         const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
 
-        if (!this.ModalActions || !this.ConfirmationModal || !this.Markdown) return this.default(title, content, [
-            confirmText && {label: confirmText, action: onConfirm},
-            cancelText && {label: cancelText, action: onCancel, danger}
-        ].filter(Boolean));
+        if (!this.ModalActions || !this.ConfirmationModal || !this.Markdown) {
+            return this.default(title, content, [
+                confirmText && {label: confirmText, action: onConfirm},
+                cancelText && {label: cancelText, action: onCancel, danger}
+            ].filter(Boolean));
+        }
 
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? React.createElement(Markdown, null, c) : c);
 
-        let modalKey = ModalActions.openModal(props => {
+        const modalKey = ModalActions.openModal(props => {
             return React.createElement(ErrorBoundary, {
                 onError: () => {
                     setTimeout(() => {

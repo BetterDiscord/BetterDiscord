@@ -30,7 +30,7 @@ const MenuComponents = (() => {
 const ContextMenuActions = (() => {
     const out = {};
 
-    const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(m => typeof m === "function" && m.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
+    const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
 
     for (const key of Object.keys(ActionsModule)) {
         if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
@@ -51,10 +51,10 @@ class MenuPatcher {
 
     static initialize() {
         const {module, key} = (() => {
-            const module = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
-            const key = Object.keys(module).find(key => module[key].length === 3);
+            const foundModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
+            const foundKey = Object.keys(foundModule).find(k => foundModule[k].length === 3);
 
-            return {module, key};
+            return {module: foundModule, key: foundKey};
         })();
 
         Patcher.before("ContextMenuPatcher", module, key, (_, methodArguments) => {

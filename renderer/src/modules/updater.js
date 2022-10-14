@@ -46,7 +46,7 @@ const reducer = (acc, addon) => {
 
 export default class Updater {
     static initialize() {
-        Settings.registerPanel("updates", "Updates", {
+        Settings.registerPanel("updates", Strings.Panels.updates, {
             order: 1,
             element: () => {
                 return React.createElement(UpdaterPanel, {
@@ -90,9 +90,9 @@ export class CoreUpdater {
         this.remoteVersion = remoteVersion;
         if (!this.hasUpdate || !showNotice) return;
 
-        const close = Notices.info(`BetterDiscord has a new update (v${remoteVersion})`, {
+        const close = Notices.info(Strings.Updater.updateAvailable.format({version: remoteVersion}), {
             buttons: [{
-                label: "More Info",
+                label: Strings.Notices.moreInfo,
                 onClick: () => {
                     close();
                     UserSettingsWindow?.open?.("updates");
@@ -118,7 +118,7 @@ export class CoreUpdater {
             this.hasUpdate = false;
             Config.version = this.remoteVersion;
 
-            Modals.showConfirmationModal("Update Successful!", "BetterDiscord updated successfully. Discord needs to restart in order for it to take effect. Do you want to do this now?", {
+            Modals.showConfirmationModal(Strings.Updater.updateSuccessful, Strings.Modals.restartPrompt, {
                 confirmText: Strings.Modals.restartNow,
                 cancelText: Strings.Modals.restartLater,
                 danger: true,
@@ -127,7 +127,7 @@ export class CoreUpdater {
         }
         catch (err) {
             Logger.stacktrace("Updater", "Failed to update", err);
-            Modals.showConfirmationModal("Update Failed", "BetterDiscord failed to update. Please download the latest version of the installer from GitHub (https://github.com/BetterDiscord/Installer/releases/latest) and reinstall.", {
+            Modals.showConfirmationModal(Strings.Updater.updateFailed, Strings.Updater.updateFailedMessage, {
                 cancelText: null
             });
         }
@@ -191,7 +191,7 @@ class AddonUpdater {
 
             const file = path.join(path.resolve(this.manager.addonFolder), filename);
             fileSystem.writeFile(file, body.toString(), () => {
-                Toasts.success(`${info.name} has been updated to version ${info.version}!`);
+                Toasts.success(Strings.Updater.addonUpdated.format({name: info.name, version: info.version}));
                 this.pending.splice(this.pending.indexOf(filename), 1);
             });
         });
@@ -199,9 +199,9 @@ class AddonUpdater {
 
     showUpdateNotice() {
         if (!this.pending.length) return;
-        const close = Notices.info(`BetterDiscord has found updates for ${this.pending.length} of your ${this.type}s!`, {
+        const close = Notices.info(Strings.Updater.addonUpdatesAvailable.format({count: this.pending.length, type: this.type}), {
             buttons: [{
-                label: "More Info",
+                label: Strings.Notices.moreInfo,
                 onClick: () => {
                     close();
                     UserSettingsWindow?.open?.("updates");
