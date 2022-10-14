@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Tillägg",
         "themes": "Teman",
-        "customcss": "Egen CSS"
+        "customcss": "Egen CSS",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -24,21 +25,25 @@
                 "showToasts": {
                     "name": "Visa Toasts",
                     "note": "Visar en liten notification för viktig information"
+                },
+                "mediaKeys": {
+                    "name": "",
+                    "note": ""
                 }
             },
-            "appearance": {
-                "name": "Utseende",
-                "twentyFourHour": {
-                    "name": "24-Timmars Tidsstämpel",
-                    "note": "Visar 24-timmars tidsstämplar istället för AM/PM"
+            "window": {
+                "removeMinimumSize": {
+                    "name": "",
+                    "note": ""
                 },
-                "minimalMode": {
-                    "name": "Minimalt Läge",
-                    "note": "Gömmer och förminskar komponenter"
+                "name": "Fönsterinställningar",
+                "transparency": {
+                    "name": "Aktivera Genomskinlighet",
+                    "note": "Gör att huvudfönstret blir genomskinligt (kräver omstart)"
                 },
-                "coloredText": {
-                    "name": "Färgad Text",
-                    "note": "Gör att text får samma färg som rollfärgen"
+                "frame": {
+                    "name": "Fönsterram",
+                    "note": "Lägger till operativsystemets standard fönsterram runt huvudfönstret"
                 }
             },
             "addons": {
@@ -47,13 +52,13 @@
                     "name": "Visa tilläggsfel",
                     "note": "Visar en modal med tillägg- och temafel"
                 },
-                "autoScroll": {
-                    "name": "Skrolla till inställningar Scroll To Settings",
-                    "note": "Skrollar automatisks till ett tilläggs inställningar när knappen är tryckt (endast om inställningarna är utanför vy)"
-                },
-                "autoReload": {
-                    "name": "Automatisk Laddning",
-                    "note": "Laddar automatisk in, om och ur tillägg och teman"
+                "editAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "detached": "",
+                        "system": ""
+                    }
                 }
             },
             "customcss": {
@@ -73,28 +78,74 @@
                 "nativeOpen": {
                     "name": "Öppna I Standardredigerare",
                     "note": "Öppnar CSS filen i operativsystemets standardredigerare när \"Egen CSS\"-fliken klickas"
+                },
+                "openAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "settings": "",
+                        "detached": "",
+                        "system": ""
+                    }
                 }
             },
             "developer": {
                 "name": "Utvecklarinställningar",
-                "developerMode": {
-                    "name": "Utvecklarläge",
-                    "note": "Gör det möjligt att aktivera avlusare med F8"
+                "debuggerHotkey": {
+                    "name": "",
+                    "note": ""
                 },
-                "copySelector": {
-                    "name": "Kopiera Selektor",
-                    "note": "Lägger till valet \"Kopiera Selektor\" i kontext menyn när utvecklarläge är aktiverat"
+                "reactDevTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "inspectElement": {
+                    "name": "",
+                    "note": ""
+                },
+                "devToolsWarning": {
+                    "name": "",
+                    "note": ""
+                },
+                "debugLogs": {
+                    "name": "",
+                    "note": ""
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
                 }
             },
-            "window": {
-                "name": "Fönsterinställningar",
-                "transparency": {
-                    "name": "Aktivera Genomskinlighet",
-                    "note": "Gör att huvudfönstret blir genomskinligt (kräver omstart)"
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
                 },
-                "frame": {
-                    "name": "Fönsterram",
-                    "note": "Lägger till operativsystemets standard fönsterram runt huvudfönstret"
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -129,13 +180,17 @@
             },
             "categories": {
                 "name": "Kategorier",
-                "twitch": {
-                    "name": "Twitch",
-                    "note": "Visa Twitch global & prenumerant emotes"
+                "twitchglobal": {
+                    "name": "",
+                    "note": ""
                 },
-                "ffz": {
-                    "name": "FrankerFaceZ",
-                    "note": "Visa emotes från FFZ"
+                "twitchsubscriber": {
+                    "name": "",
+                    "note": ""
+                },
+                "frankerfacez": {
+                    "name": "",
+                    "note": ""
                 },
                 "bttv": {
                     "name": "BetterTTV",
@@ -144,11 +199,48 @@
             }
         }
     },
-    "Emotes": {
-        "downloading": "Laddar ner emotes i backgrunden, ladda inte om",
-        "downloaded": "Alla emotes laddades ner utan problem.",
-        "clearEmotes": "Rensa Emote Data",
-        "favoriteAction": "Favorit!"
+    "Addons": {
+        "title": "",
+        "byline": "",
+        "openFolder": "",
+        "reload": "",
+        "addonSettings": "",
+        "website": "",
+        "source": "",
+        "invite": "",
+        "donate": "",
+        "patreon": "",
+        "name": "",
+        "author": "",
+        "version": "",
+        "added": "",
+        "modified": "",
+        "search": "",
+        "editAddon": "",
+        "deleteAddon": "",
+        "confirmDelete": "",
+        "confirmationText": "",
+        "enabled": "",
+        "disabled": "",
+        "couldNotEnable": "",
+        "couldNotDisable": "",
+        "couldNotStart": "",
+        "couldNotStop": "",
+        "settingsError": "",
+        "methodError": "",
+        "unknownAuthor": "",
+        "noDescription": "",
+        "alreadyExists": "",
+        "alreadWatching": "",
+        "metaError": "",
+        "missingNameData": "",
+        "metaNotFound": "",
+        "compileError": "",
+        "wasUnloaded": "",
+        "blankSlateHeader": "",
+        "blankSlateMessage": "",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",
@@ -159,6 +251,14 @@
         "settings": "Inställningar för redigerare",
         "editorTitle": "Egen CSS Redigerare"
     },
+    "Emotes": {
+        "loading": "",
+        "loaded": "",
+        "clearEmotes": "Rensa Emote Data",
+        "favoriteAction": "Favorit!",
+        "downloadFailed": "",
+        "failureMessage": ""
+    },
     "PublicServers": {
         "button": "Publik",
         "join": "Gå med",
@@ -167,21 +267,67 @@
         "loading": "Laddar",
         "loadMore": "ladda mer",
         "notConnected": "Ingen anslutning till DiscordServers.com!",
+        "connectionRequired": "",
+        "connectionError": "",
+        "connectionErrorMessage": "",
+        "pagination": "",
         "search": "Sök",
         "connect": "Anslut",
         "reconnect": "Återanslut",
         "categories": "Kategorier",
+        "keywords": "",
         "connection": "Ansluten som: {{username}}#{{discriminator}}",
         "results": "Visar {{start}}-{{end}} av {{total}} resultat i {{category}}",
         "query": "för {{query}}"
     },
     "Modals": {
-        "confirmClose": "Är du säker?",
+        "confirmAction": "",
         "okay": "Okej",
+        "done": "",
         "cancel": "Avbryt",
+        "nevermind": "",
+        "close": "",
         "name": "Namn",
         "message": "Meddelande",
         "error": "Fel",
-        "addonErrors": "Tilläggsfel"
+        "addonErrors": "Tilläggsfel",
+        "restartRequired": "",
+        "restartNow": "",
+        "restartLater": "",
+        "additionalInfo": "",
+        "restartPrompt": ""
+    },
+    "ReactDevTools": {
+        "notFound": "",
+        "notFoundDetails": ""
+    },
+    "Sorting": {
+        "sortBy": "",
+        "order": "",
+        "ascending": "",
+        "descending": ""
+    },
+    "WindowPrefs": {
+        "enabledInfo": "",
+        "disabledInfo": ""
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
