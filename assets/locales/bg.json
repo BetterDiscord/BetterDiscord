@@ -1,1 +1,333 @@
-{}
+{
+    "Panels": {
+        "plugins": "",
+        "themes": "",
+        "customcss": "",
+        "updates": ""
+    },
+    "Collections": {
+        "settings": {
+            "name": "",
+            "general": {
+                "name": "",
+                "emotes": {
+                    "name": "",
+                    "note": ""
+                },
+                "publicServers": {
+                    "name": "",
+                    "note": ""
+                },
+                "voiceDisconnect": {
+                    "name": "",
+                    "note": ""
+                },
+                "showToasts": {
+                    "name": "",
+                    "note": ""
+                },
+                "mediaKeys": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "name": "",
+                "transparency": {
+                    "name": "",
+                    "note": ""
+                },
+                "frame": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "addons": {
+                "name": "",
+                "addonErrors": {
+                    "name": "",
+                    "note": ""
+                },
+                "editAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "detached": "",
+                        "system": ""
+                    }
+                }
+            },
+            "customcss": {
+                "name": "",
+                "customcss": {
+                    "name": "",
+                    "note": ""
+                },
+                "liveUpdate": {
+                    "name": "",
+                    "note": ""
+                },
+                "startDetached": {
+                    "name": "",
+                    "note": ""
+                },
+                "nativeOpen": {
+                    "name": "",
+                    "note": ""
+                },
+                "openAction": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "settings": "",
+                        "detached": "",
+                        "system": ""
+                    }
+                }
+            },
+            "developer": {
+                "name": "",
+                "debuggerHotkey": {
+                    "name": "",
+                    "note": ""
+                },
+                "reactDevTools": {
+                    "name": "",
+                    "note": ""
+                },
+                "inspectElement": {
+                    "name": "",
+                    "note": ""
+                },
+                "devToolsWarning": {
+                    "name": "",
+                    "note": ""
+                },
+                "debugLogs": {
+                    "name": "",
+                    "note": ""
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
+                }
+            }
+        },
+        "emotes": {
+            "name": "",
+            "general": {
+                "name": "",
+                "download": {
+                    "name": "",
+                    "note": ""
+                },
+                "emoteMenu": {
+                    "name": "",
+                    "note": ""
+                },
+                "hideEmojiMenu": {
+                    "name": "",
+                    "note": ""
+                },
+                "autoCaps": {
+                    "name": "",
+                    "note": ""
+                },
+                "modifiers": {
+                    "name": "",
+                    "note": ""
+                },
+                "animateOnHover": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "categories": {
+                "name": "",
+                "twitchglobal": {
+                    "name": "",
+                    "note": ""
+                },
+                "twitchsubscriber": {
+                    "name": "",
+                    "note": ""
+                },
+                "frankerfacez": {
+                    "name": "",
+                    "note": ""
+                },
+                "bttv": {
+                    "name": "",
+                    "note": ""
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "",
+        "byline": "",
+        "openFolder": "",
+        "reload": "",
+        "addonSettings": "",
+        "website": "",
+        "source": "",
+        "invite": "",
+        "donate": "",
+        "patreon": "",
+        "name": "",
+        "author": "",
+        "version": "",
+        "added": "",
+        "modified": "",
+        "search": "",
+        "editAddon": "",
+        "deleteAddon": "",
+        "confirmDelete": "",
+        "confirmationText": "",
+        "enabled": "",
+        "disabled": "",
+        "couldNotEnable": "",
+        "couldNotDisable": "",
+        "couldNotStart": "",
+        "couldNotStop": "",
+        "settingsError": "",
+        "methodError": "",
+        "unknownAuthor": "",
+        "noDescription": "",
+        "alreadyExists": "",
+        "alreadWatching": "",
+        "metaError": "",
+        "missingNameData": "",
+        "metaNotFound": "",
+        "compileError": "",
+        "wasUnloaded": "",
+        "blankSlateHeader": "",
+        "blankSlateMessage": "",
+        "isEnabled": "",
+        "wasLoaded": ""
+    },
+    "CustomCSS": {
+        "confirmationText": "",
+        "update": "",
+        "save": "",
+        "openNative": "",
+        "openDetached": "",
+        "settings": "",
+        "editorTitle": ""
+    },
+    "Emotes": {
+        "loading": "",
+        "loaded": "",
+        "clearEmotes": "",
+        "favoriteAction": "",
+        "downloadFailed": "",
+        "failureMessage": ""
+    },
+    "PublicServers": {
+        "button": "",
+        "join": "",
+        "joining": "",
+        "joined": "",
+        "loading": "",
+        "loadMore": "",
+        "notConnected": "",
+        "connectionRequired": "",
+        "connectionError": "",
+        "connectionErrorMessage": "",
+        "pagination": "",
+        "search": "",
+        "connect": "",
+        "reconnect": "",
+        "categories": "",
+        "keywords": "",
+        "connection": "",
+        "results": "",
+        "query": ""
+    },
+    "Modals": {
+        "confirmAction": "",
+        "okay": "",
+        "done": "",
+        "cancel": "",
+        "nevermind": "",
+        "close": "",
+        "name": "",
+        "message": "",
+        "error": "",
+        "addonErrors": "",
+        "restartRequired": "",
+        "restartNow": "",
+        "restartLater": "",
+        "additionalInfo": "",
+        "restartPrompt": ""
+    },
+    "ReactDevTools": {
+        "notFound": "",
+        "notFoundDetails": ""
+    },
+    "Sorting": {
+        "sortBy": "",
+        "order": "",
+        "ascending": "",
+        "descending": ""
+    },
+    "WindowPrefs": {
+        "enabledInfo": "",
+        "disabledInfo": ""
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
+    }
+}
