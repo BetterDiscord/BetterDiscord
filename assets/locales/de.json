@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Plugins",
         "themes": "Themes",
-        "customcss": "Custom-CSS"
+        "customcss": "Custom-CSS",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "Verhindert, dass Discord deine Medien-Tasten nach dem Abspielen eines Videos beansprucht"
                 }
             },
-            "appearance": {
-                "name": "Erscheinungsbild",
-                "minimalMode": {
-                    "name": "Minimaler Modus",
-                    "note": "Versteckt und verkleinert zahlreiche Elemente"
-                },
-                "twentyFourHour": {
-                    "name": "24-Stunden Zeitstempel",
-                    "note": "Erzwingt die Anzeige von Uhrzeiten im 24-Stunden Format"
-                },
-                "coloredText": {
-                    "name": "Farbiger Text",
-                    "note": "Färbt Text entsprechend der Rollenfarbe"
-                },
-                "hideGIFButton": {
-                    "name": "GIF-Knopf verstecken",
-                    "note": "Entfernt den Knopf für die GIF-Auswahl aus der Nachrichteneingabe"
-                },
-                "hideGiftButton": {
-                    "name": "Geschenk-Knopf verstecken",
-                    "note": "Entfernt den Knopf für Nitro-Geschenke aus der Nachrichteneingabe"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Freie Fenstergröße",
@@ -73,10 +51,6 @@
                 "addonErrors": {
                     "name": "Fehlernachricht für Erweiterungen anzeigen",
                     "note": "Zeigt ein Informationsfenster bei Ladefehlern von Erweiterungen an"
-                },
-                "autoReload": {
-                    "name": "Automatisches Laden",
-                    "note": "Lädt und entlädt Plugins und Themes automatisch"
                 },
                 "editAction": {
                     "name": "Bearbeitungsaktion",
@@ -110,7 +84,7 @@
                     "note": "Wo soll Custom-CSS standardmäßig geöffnet werden",
                     "options": {
                         "settings": "in den Einstellungen",
-                        "detached": "im losgelöstem Fenster",
+                        "detached": "in losgelöstem Fenster",
                         "system": "im Standard-Texteditor"
                     }
                 }
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "Debugger Logs",
                     "note": "Speichert alle Ausgaben aus der Konsole in die \\\"debug.log\\\" Datei im BetterDiscord Verzeichnis"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "Konnte nicht kompiliert werden.",
         "wasUnloaded": "{{name}} wurde entladen.",
         "blankSlateHeader": "Du besitzt keine {{type}}s!",
-        "blankSlateMessage": "Lade dir welche von [this website]({{link}}) herunter und füge sie deinem {{type}} Ordner hinzu."
+        "blankSlateMessage": "Lade dir welche von [this website]({{link}}) herunter und füge sie deinem {{type}} Ordner hinzu.",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",
@@ -283,7 +295,7 @@
         "restartNow": "Jetzt neustarten",
         "restartLater": "Später neustarten",
         "additionalInfo": "Zusätzliche Informationen",
-        "restartPrompt": "Damit die Veränderungen wirksam werden, muss Discord neu gestartet werden. Möchtest du jetzt neustarten?"
+        "restartPrompt": "Die Einstellung wurde gespeichert. Um sie anzuwenden, ist ein Neustart von Discord erforderlich."
     },
     "ReactDevTools": {
         "notFound": "Erweiterung nicht gefunden",
@@ -295,20 +307,27 @@
         "ascending": "Aufsteigend",
         "descending": "Absteigend"
     },
-    "Startup": {
-        "notSupported": "Nicht unterstützt",
-        "incompatibleApp": "BetterDiscord ist nicht mit {{app}} kompatibel. Bitte entferne entweder BetterDiscord oder {{app}}.",
-        "updateNow": "Jetzt aktualisieren",
-        "maybeLater": "Später",
-        "updateAvailable": "Update verfügbar",
-        "updateInfo": "Ein Update für BetterDiscords Injector ({{version}}) ist verfügbar.\n\nDu kannst entweder jetzt oder später aktualisieren und neustarten.",
-        "updateFailed": "Konnte nicht aktualisiert werden",
-        "manualUpdate": "Bei der automatischen Aktualisierung ist ein Fehler aufgetreten. Bitte lade das Installationsprogramm herunter und installiere BetterDiscord erneut.\n\n[Installationsprogramm herunterladen](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "jQuery konnte nicht geladen werden",
-        "jqueryFailedDetails": "jQuery konnte nicht geladen werden, wodurch einige Plugins gegebenenfalls nicht richtig funktionieren."
-    },
     "WindowPrefs": {
-        "enabledInfo": "Um diese Funktion zu verwenden, benötigst du ein Theme mit transparentem Hintergrund. Auf Windows funktioniert das Einrasten für maximierte Fenster ggf. nicht mehr.\n\nUm die Änderungen zu übernehmen muss Discord neugestartet werden. Möchtest du jetzt neustarten?",
-        "disabledInfo": "Um die Änderungen zu übernehmen muss Discord neugestartet werden. Möchtest du jetzt neustarten?"
+        "enabledInfo": "Diese Option benötigt ein Theme mit transparentem Hintergrund um richtig zu funktionieren. Weiters kann dadurch unter Windows das Andocken des Fensters am Bildschirmrand beeinträchtigt sein.\n\nUm die Änderungen zu übernehmen muss Discord neugestartet werden. Möchtest du jetzt neustarten?",
+        "disabledInfo": "Die Einstellung wurde gespeichert. Um sie anzuwenden, ist ein Neustart von Discord erforderlich."
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
