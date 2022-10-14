@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "plugin-uri",
         "themes": "temă",
-        "customcss": "CSS personalizat"
+        "customcss": "CSS personalizat",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "Previn-o Discord din a fura tastele media după redarea unui videoclip."
                 }
             },
-            "appearance": {
-                "name": "Aspect",
-                "minimalMode": {
-                    "name": "Mod Minimal",
-                    "note": "Ascunde elemente și redu"
-                },
-                "twentyFourHour": {
-                    "name": "Format de 24 de ore",
-                    "note": "Convertește formatul de 12 ore in cel de 24 de ore"
-                },
-                "coloredText": {
-                    "name": "Text colorat",
-                    "note": "Culoarea textului unui mesaj este aceeași cu culoarea rolului"
-                },
-                "hideGIFButton": {
-                    "name": "Ascunde butonul GIF",
-                    "note": "Ascunde butonul pentru mediul de GIF-uri in zona text"
-                },
-                "hideGiftButton": {
-                    "name": "Ascunde butonul de cadouri",
-                    "note": "Ascunde butonul de cadouri din zona de text"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Elimină mărimea minimă",
@@ -73,10 +51,6 @@
                 "addonErrors": {
                     "name": "Arată erorile adăugirilor",
                     "note": "Afișează un modal cu erorile plugin-urilor/temelor"
-                },
-                "autoReload": {
-                    "name": "Incărcare automată",
-                    "note": "Încarcă, reîncarcă si dezactivează plugin-urile si temele in mod automat"
                 },
                 "editAction": {
                     "name": "Modifică acțiunea",
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "Debug Logs",
                     "note": "Transferă tot din consolă in fișierul debug.log din folderul BetterDiscord"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "Nu s-a putut incărca.",
         "wasUnloaded": "{{name}} a fost dezactivat.",
         "blankSlateHeader": "Nu ai nici un {{type}}!",
-        "blankSlateMessage": "Descarcă câteva din [acest website]({{link}}) și adaugă-le in folder-ul tău {{type}}."
+        "blankSlateMessage": "Descarcă câteva din [acest website]({{link}}) și adaugă-le in folder-ul tău {{type}}.",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "Ai modificări nesalvate in CSS-ul personalizat. Închiderea acestei ferestre va duce la anularea schimbărilor.",
@@ -295,20 +307,27 @@
         "ascending": "Crescător",
         "descending": "Descrescător"
     },
-    "Startup": {
-        "notSupported": "Nesuportat",
-        "incompatibleApp": "BetterDiscord nu poate funcționa in tandem cu {{app}}. Te rugăm să dezinstalezi una dintre ele.",
-        "updateNow": "Actualizează acum",
-        "maybeLater": "Poate mai târziu",
-        "updateAvailable": "Actualizare Disponibilă",
-        "updateInfo": "Există o versiune mai nouă a BetterDiscord ({{version}}).\n\nPoți să actualizezi acum BD, sau mai incolo.",
-        "updateFailed": "Nu s-a putut actualiza",
-        "manualUpdate": "Nu am putut realiza actualizarea automată, te rugăm să descarci installer-ul și să reinstalezi in mod normal.\n\n[Descarcă installer-ul](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "jQuery nu a putut fi incărcat",
-        "jqueryFailedDetails": "jQuery nu poate fi încărcat, iar câteva plugin-uri posibil să nu meargă cum trebuie. Continuă pe propria răspundere."
-    },
     "WindowPrefs": {
         "enabledInfo": "Această opțiune necesită o temă transparentă pentru a funcționa normal. \nPe Windows ar putea putea să strice maximizarea.\nPentru ca aceste efecte să intre în vigoare, Discord trebuie să repornească. Dorești să il repornești acum ?",
         "disabledInfo": "Pentru ca aceste setări să intre în efect, Discord trebuie să repornească. Dorești să îl repornești acum ?"
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
