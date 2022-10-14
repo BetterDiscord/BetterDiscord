@@ -1,4 +1,4 @@
-import {React, DiscordModules} from "modules";
+import {React, Strings} from "modules";
 import MagnifyingGlass from "../icons/magnifyingglass";
 
 export default class NoResults extends React.Component {
@@ -6,7 +6,7 @@ export default class NoResults extends React.Component {
         return <div className={"bd-empty-results" + (this.props.className ? ` ${this.props.className}` : "")}>
                     <MagnifyingGlass />
                     <div className="bd-empty-results-text">
-                        {this.props.text || DiscordModules.Strings.SEARCH_NO_RESULTS || ""}
+                        {this.props.text || Strings.Addons.noResults || ""}
                     </div>
                 </div>;
     }

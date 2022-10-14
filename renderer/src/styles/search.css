@@ -1,27 +1,123 @@
-.bd-search-wrapper {
-    padding: 3px;
-    border-radius: 3px;
-    outline: none;
-    border: 0;
+/* Searchbars */
+
+.bd-searchbar {
+    padding: 1px;
+    border-radius: 4px;
     background-color: var(--background-tertiary);
     color: var(--text-muted);
     display: flex;
-    align-items: center;
 }
 
-.bd-search {
-    padding: 2px 3px;
+.bd-searchbar.disabled input,
+.bd-searchbar.disabled .bd-search-icon {
+    opacity: .3;
+    cursor: not-allowed;
+}
+
+.bd-searchbar input {
     background: none;
-    border: 0;
-    color: var(--text-normal);
+    border: none;
+    resize: none;
     flex: 1;
+    min-width: 48px;
+    margin: 1px;
+    -webkit-appearance: none;
+    color: var(--text-normal);
 }
 
-.bd-search::-webkit-input-placeholder {
+.bd-searchbar input::-webkit-input-placeholder {
     color: var(--text-muted);
 }
 
-.bd-search-wrapper > svg {
-    margin-right: 2px;
-    fill: var(--interactive-normal);
+.bd-search-icon svg {
+    position: absolute;
+    box-sizing: border-box;
+    opacity: 0;
+    width: 20px;
+    height: 20px;
+    z-index: 2;
+    transition: transform 0.1s ease-out;
+    transform: rotate(90deg);
+}
+
+.bd-search-icon svg.visible {
+    transform: rotate(0);
+    opacity: 1;
+}
+
+.bd-search-icon {
+    color: var(--text-muted);
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: text;
+}
+
+.bd-search-icon.clickable {
+    cursor: pointer;
+    color: var(--interactive-normal);
+}
+
+.bd-search-icon.clickable:hover {
+    color: var(--interactive-hover);
+}
+
+.bd-search-icon.clickable:active {
+    color: var(--interactive-active);
+}
+
+/* Sizes */
+
+.bd-searchbar.size-small input {
+    height: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    padding: 0 4px;
+}
+
+.bd-searchbar.size-small .bd-search-icon {
+    width: 22px;
+    height: 22px;
+}
+
+.bd-searchbar.size-small svg {
+    width: 16px;
+    height: 16px;
+}
+
+.bd-searchbar.size-medium input {
+    height: 30px;
+    line-height: 32px;
+    font-size: 16px;
+    padding: 0 8px;
+}
+
+.bd-searchbar.size-medium .bd-search-icon {
+    width: 32px;    
+    height: 32px;
+}
+
+.bd-searchbar.size-medium svg {
+    width: 20px;
+    height: 20px;
+}
+
+.bd-searchbar.size-large input {
+    height: 38px;
+    line-height: 40px;
+    font-size: 20px;
+    padding: 0 16px;
+}
+
+.bd-searchbar.size-large .bd-search-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.bd-searchbar.size-large svg {
+    width: 24px;
+    height: 24px;
 }

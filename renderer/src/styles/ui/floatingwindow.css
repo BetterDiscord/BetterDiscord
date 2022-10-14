@@ -74,11 +74,6 @@
     color: var(--interactive-normal);
 }
 
-.floating-window-buttons .button svg,
-.floating-window-buttons .button .fill {
-    fill: currentColor;
-}
-
 .floating-window-buttons .maximize-button:hover {
     background: var(--background-modifier-hover);
 }

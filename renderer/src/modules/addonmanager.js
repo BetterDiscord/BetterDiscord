@@ -8,6 +8,7 @@ import DiscordModules from "./discordmodules";
 import Strings from "./strings";
 import AddonEditor from "../ui/misc/addoneditor";
 import FloatingWindows from "../ui/floatingwindows";
+import Modals from "../ui/modals";
 
 const React = DiscordModules.React;
 
@@ -27,7 +28,7 @@ const stripBOM = function(fileContent) {
 };
 
 export default class AddonManager {
-
+    
     get name() {return "";}
     get extension() {return "";}
     get duplicatePattern() {return /./;}
@@ -262,8 +263,8 @@ export default class AddonManager {
         return this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
     }
 
-    enableAddon(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+    enableAddon(idOrFileOrAddon) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.getAddon(idOrFileOrAddon) : idOrFileOrAddon;
         if (!addon || addon.partial) return;
         if (this.state[addon.id]) return;
         this.state[addon.id] = true;
@@ -271,8 +272,8 @@ export default class AddonManager {
         this.saveState();
     }
 
-    disableAddon(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+    disableAddon(idOrFileOrAddon) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.getAddon(idOrFileOrAddon) : idOrFileOrAddon;
         if (!addon || addon.partial) return;
         if (!this.state[addon.id]) return;
         this.state[addon.id] = false;
@@ -283,6 +284,21 @@ export default class AddonManager {
     toggleAddon(id) {
         if (this.state[id]) this.disableAddon(id);
         else this.enableAddon(id);
+    }
+
+    installAddon(text, filename, shouldToast = true) {
+        const enable = (id) => {
+            const installation = this.getAddon(id);
+            this.enableAddon(installation);
+            Events.off(`${this.prefix}-loaded`, enable);
+        };
+        fs.writeFileSync(path.resolve(this.addonFolder, filename), text, (error) => {
+            if (error) {
+                Logger.stacktrace(this.name, Strings.Addons.writeError.format({type: this.prefix}), error);
+                if (shouldToast) Toasts.error(Strings.Addons.writeError.format({type: this.prefix}));
+            }
+        });
+        if (Settings.get("settings", "addons", "autoEnable")) Events.on(`${this.prefix}-loaded`, enable);
     }
 
     loadNewAddons() {
@@ -352,6 +368,19 @@ export default class AddonManager {
         if (typeof(system) == "undefined") system = Settings.get("settings", "addons", "editAction") == "system";
         if (system) return openItem(`${fullPath}`);
         return this.openDetached(addon);
+    }
+
+    confirmAddonDelete(idOrFileOrAddon, options = {}) {
+        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+
+        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
+            danger: true,
+            confirmText: Strings.Addons.deleteAddon,
+            onConfirm: () => {
+                if (typeof(options.onDelete) === "function") options.onDelete();
+                this.deleteAddon(addon);
+            }
+        });
     }
 
     openDetached(addon) {

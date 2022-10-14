@@ -1,11 +1,10 @@
-import {React, Strings, WebpackModules, DiscordClasses} from "modules";
+import {React, Strings, WebpackModules, DiscordClasses, Utilities} from "modules";
 import Extension from "./icons/extension";
 import ThemeIcon from "./icons/theme";
 import Divider from "./divider";
+import TabBar from "./tabbar";
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
-
-const joinClassNames = (...classNames) => classNames.filter(e => e).join(" ");
 
 class AddonError extends React.Component {
     constructor(props) {
@@ -29,8 +28,9 @@ class AddonError extends React.Component {
         </div>;
     }
     render() {
-        const err = this.props.err;
-        return <div key={`${err.type}-${this.props.index}`} className={joinClassNames("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
+        const {err} = this.props;
+        
+        return <div key={`${err.type}-${this.props.index}`} className={Utilities.className("bd-addon-error", (this.state.expanded) ? "expanded" : "collapsed")}>
             <div className="bd-addon-error-header" onClick={() => {this.toggle();}} >
                 <div className="bd-addon-error-icon">
                     {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
@@ -105,9 +105,7 @@ export default class AddonErrorModal extends React.Component {
         return <>
             <div className={`bd-error-modal-header ${DiscordClasses.Modal.header} ${DiscordClasses.Modal.separator}`}>
                 <h4 className={`${DiscordClasses.Titles.defaultColor} ${DiscordClasses.Text.size14} ${DiscordClasses.Titles.h4} ${DiscordClasses.Margins.marginBottom8}`}>{Strings.Modals.addonErrors}</h4>
-                <div className="bd-tab-bar">
-                    {tabs.map(tab => <div onClick={() => {this.switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
-                </div>
+                <TabBar items={tabs.map(({id, name}) => ({value: id, name}))} value={selectedTab.id} onChange={value => this.switchToTab(value)} />
             </div>
             <div className={`bd-error-modal-content ${DiscordClasses.Modal.content} ${DiscordClasses.Scrollers.thin}`}>
                 <div className="bd-addon-errors">

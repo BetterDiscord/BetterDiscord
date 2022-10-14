@@ -16,3 +16,4 @@ export {default as Strings} from "./strings";
 export {default as IPC} from "./ipc";
 export {default as Logger} from "common/logger";
 export {default as DiscordClasses} from "./discordclasses";
+export {default as WebAPI} from "./webapi";

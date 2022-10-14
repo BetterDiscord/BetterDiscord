@@ -1,9 +1,13 @@
 .bd-tab-bar {
     display: flex;
     flex-direction: row;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 
 .bd-tab-item {
+    border: none;
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -18,6 +22,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    background-color: transparent;
     color: var(--interactive-normal);
     flex-shrink: 0;
     font-weight: 500;
@@ -25,7 +30,7 @@
     line-height: 20px;
 }
 
-.bd-tab-item:last-child {
+.bd-tab-item:last-of-type {
     margin: 0;
 }
 
@@ -45,4 +50,14 @@
 
 .bd-tab-item:active {
     background-color: var(--background-modifier-active);
+}
+
+.bd-tab-item.disabled {
+    cursor: default;
+    background-color: transparent;
+    color: var(--interactive-muted);
+}
+
+.bd-tab-item:focus-visible {
+    box-shadow: 0 0 0 4px var(--focus-primary);
 }

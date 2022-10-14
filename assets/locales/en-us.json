@@ -33,6 +33,14 @@
             },
             "addons": {
                 "name": "Addon Manager",
+                "store": {
+                    "name": "Addon Store",
+                    "note": "Enables the Store, allowing you to download themes and plugins remotely."
+                },
+                "autoEnable": {
+                    "name": "Enable Addons on Install",
+                    "note": "Automatically enables addons when they are installed via the store."
+                },
                 "addonErrors": {
                     "name": "Show Addon Errors",
                     "note": "Shows a modal with plugin/theme errors"
@@ -200,6 +208,12 @@
         }
     },
     "Addons": {
+        "installed": "Installed",
+        "install": "Install",
+        "store": "Store",
+        "view": "View",
+        "list": "List",
+        "grid": "Grid",
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "by {{author}}",
         "openFolder": "Open {{type}} Folder",
@@ -213,10 +227,13 @@
         "name": "Name",
         "author": "Author",
         "version": "Version",
+        "description": "Description",
         "added": "Date Added",
+        "uploaded": "Date Uploaded",
         "modified": "Date Modified",
         "isEnabled": "Enabled",
         "search": "Search {{type}}",
+        "noResults": "We searched far and wide. Unfortunately, no results were found.",
         "editAddon": "Edit",
         "deleteAddon": "Delete",
         "confirmDelete": "Are you sure you want to delete {{name}}?",
@@ -240,7 +257,7 @@
         "wasUnloaded": "{{name}} was unloaded.",
         "wasLoaded": "{{name}} v{{version}} was loaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
-        "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder."
+        "blankSlateMessage": "Download some from the store to get started."
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -249,7 +266,22 @@
         "openNative": "Open in System Editor",
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
-        "editorTitle": "Custom CSS Editor"
+        "editorTitle": "Custom CSS Editor",
+        "writeError": "Failed to write {{type}} to disk."
+    },
+    "Store": {
+        "connectionError": "Failed to connect to Store.",
+        "connectionErrorMessage": "There was an error connecting to the store, it's possible our website/api is down. Would you like to retry?",
+        "downloadError": "Failed to download {{type}}.",
+        "installConfirmation": "Do you want to add this to your installed {{type}}s?",
+        "back": "Back",
+        "next": "Next",
+        "new": "New",
+        "likes": "Likes",
+        "likesAmount": "{{amount}} likes",
+        "downloads": "Downloads",
+        "downloadsAmount": "{{amount}} downloads",
+        "uploadDate": "Uploaded on {{date}}"
     },
     "Emotes": {
         "loading": "Loading emotes in the background do not reload.",
@@ -287,6 +319,7 @@
         "cancel": "Cancel",
         "nevermind": "Nevermind",
         "close": "Close",
+        "retry": "Retry",
         "name": "Name",
         "message": "Message",
         "error": "Error",

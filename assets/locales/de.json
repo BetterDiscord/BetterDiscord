@@ -228,7 +228,7 @@
         "compileError": "Konnte nicht kompiliert werden.",
         "wasUnloaded": "{{name}} wurde entladen.",
         "blankSlateHeader": "Du besitzt keine {{type}}s!",
-        "blankSlateMessage": "Lade dir welche von [this website]({{link}}) herunter und füge sie deinem {{type}} Ordner hinzu."
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "Du hast ungespeicherte Änderungen im Custom-CSS. Durch das Schließen dieses Fensters verlierst du alle Änderungen.",

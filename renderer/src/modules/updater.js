@@ -1,6 +1,6 @@
 import request from "request";
 import fileSystem from "fs";
-import {Config} from "data";
+import {Config, Web} from "data";
 import path from "path";
 
 import Logger from "common/logger";
@@ -21,13 +21,9 @@ import UpdaterPanel from "../ui/updater";
 import DiscordModules from "./discordmodules";
 
 const React = DiscordModules.React;
-
-
 const UserSettingsWindow = WebpackModules.getByProps("updateAccount");
 
-const base = "https://api.betterdiscord.app/v2/store/";
-const route = r => `${base}${r}s`;
-const redirect = addonId => `https://betterdiscord.app/gh-redirect?id=${addonId}`;
+const route = r => `${Web.API_BASE}/${r}s`;
 
 const getJSON = url => {
     return new Promise(resolve => {
@@ -183,7 +179,7 @@ class AddonUpdater {
  
     async updateAddon(filename) {
         const info = this.cache[filename];
-        request(redirect(info.id), (error, _, body) => {
+        request(Web.ENDPOINTS.githubRedirect(info.id), (error, _, body) => {
             if (error) {
                 Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
                 return;

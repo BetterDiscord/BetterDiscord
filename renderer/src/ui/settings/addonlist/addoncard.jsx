@@ -1,21 +1,21 @@
 import Logger from "common/logger";
 import {React, Strings, WebpackModules, DiscordModules} from "modules";
-import SimpleMarkdown from "../../structs/markdown";
-import EditIcon from "../icons/edit";
-import DeleteIcon from "../icons/delete";
-import CogIcon from "../icons/cog";
-import Switch from "./components/switch";
+import SimpleMarkdown from "../../../structs/markdown";
+import Modals from "../../modals";
+import Toasts from "../../toasts";
+import Switch from "../components/switch";
 
-import GitHubIcon from "../icons/github";
-import MoneyIcon from "../icons/dollarsign";
-import WebIcon from "../icons/globe";
-import PatreonIcon from "../icons/patreon";
-import SupportIcon from "../icons/support";
-import ExtIcon from "../icons/extension";
-import ErrorIcon from "../icons/error";
-import ThemeIcon from "../icons/theme";
-import Modals from "../modals";
-import Toasts from "../toasts";
+import GitHubIcon from "../../icons/github";
+import MoneyIcon from "../../icons/dollarsign";
+import WebIcon from "../../icons/globe";
+import PatreonIcon from "../../icons/patreon";
+import SupportIcon from "../../icons/support";
+import ExtIcon from "../../icons/extension";
+import ErrorIcon from "../../icons/error";
+import ThemeIcon from "../../icons/theme";
+import EditIcon from "../../icons/edit";
+import DeleteIcon from "../../icons/delete";
+import CogIcon from "../../icons/cog";
 
 const LinkIcons = {
     website: WebIcon,
@@ -132,10 +132,11 @@ export default class AddonCard extends React.Component {
     }
 
     get controls() { // {this.props.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-addon-settings" disabled={!this.props.enabled}>{Strings.Addons.addonSettings}</button>}
+
         return <div className="bd-controls">
                     {this.props.hasSettings && this.makeControlButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, this.showSettings, {disabled: !this.props.enabled})}
                     {this.props.editAddon && this.makeControlButton(Strings.Addons.editAddon, <EditIcon size={"20px"} />, this.props.editAddon)}
-                    {this.props.deleteAddon && this.makeControlButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, this.props.deleteAddon, {danger: true})}
+                    {this.props.confirmAddonDelete && this.makeControlButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, this.props.confirmAddonDelete, {danger: true})}
                 </div>;
     }
 

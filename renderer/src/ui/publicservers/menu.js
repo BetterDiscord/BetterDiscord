@@ -4,7 +4,7 @@ import SettingsTitle from "../settings/title";
 import ServerCard from "./card";
 import EmptyResults from "../blankslates/noresults";
 import Connection from "../../structs/psconnection";
-import Search from "../settings/components/search";
+import SearchBar from "../settings/components/searchbar";
 import Previous from "../icons/previous";
 import Next from "../icons/next";
 
@@ -155,7 +155,7 @@ export default class PublicServers extends React.Component {
     }
 
     get searchBox() {
-        return <Search onKeyDown={this.searchKeyDown} className="bd-server-search" placeholder={`${Strings.PublicServers.search}...`} value={this.state.query} />;
+        return <SearchBar onKeyDown={this.searchKeyDown} className="bd-server-search" placeholder={`${Strings.PublicServers.search}...`} value={this.state.query} />;
     }
 
     get title() {

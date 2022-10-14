@@ -2,12 +2,8 @@ import {React} from "modules";
 
 export default class CloseButton extends React.Component {
     render() {
-        const size = this.props.size || "18px";
-        return <svg viewBox="0 0 12 12" style={{width: size, height: size}}>
-            <g className="background" fill="none" fillRule="evenodd">
-                <path d="M0 0h12v12H0" />
-                <path className="fill" fill="#dcddde" d="M9.5 3.205L8.795 2.5 6 5.295 3.205 2.5l-.705.705L5.295 6 2.5 8.795l.705.705L6 6.705 8.795 9.5l.705-.705L6.705 6" />
-            </g>
+        return <svg {...this.props} width={this.props.size || "24"} height={this.props.size || "24"} viewBox="0 0 24 24">
+            <path fill="currentColor" d="M18.4 4L12 10.4L5.6 4L4 5.6L10.4 12L4 18.4L5.6 20L12 13.6L18.4 20L20 18.4L13.6 12L20 5.6L18.4 4Z"></path>
         </svg>;
     }
 }

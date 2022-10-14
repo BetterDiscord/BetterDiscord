@@ -32,6 +32,9 @@ export default new class ThemeManager extends AddonManager {
                 saveAddon: this.saveAddon.bind(this),
                 editAddon: this.editAddon.bind(this),
                 deleteAddon: this.deleteAddon.bind(this),
+                confirmAddonDelete: this.confirmAddonDelete.bind(this),
+                isLoaded: this.isLoaded.bind(this),
+                installAddon: this.installAddon.bind(this),
                 prefix: this.prefix
             })
         });
@@ -42,8 +45,8 @@ export default new class ThemeManager extends AddonManager {
     updateThemeList() {return this.updateList();}
     loadAllThemes() {return this.loadAllAddons();}
 
-    enableTheme(idOrAddon) {return this.enableAddon(idOrAddon);}
-    disableTheme(idOrAddon) {return this.disableAddon(idOrAddon);}
+    enableTheme(idOrFileAddon) {return this.enableAddon(idOrFileAddon);}
+    disableTheme(idOrFileAddon) {return this.disableAddon(idOrFileAddon);}
     toggleTheme(id) {return this.toggleAddon(id);}
 
     unloadTheme(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}

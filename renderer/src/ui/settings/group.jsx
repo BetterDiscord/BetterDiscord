@@ -10,7 +10,6 @@ import Radio from "./components/radio";
 import Keybind from "./components/keybind";
 import Color from "./components/color";
 
-
 export default class Group extends React.Component {
     constructor(props) {
         super(props);

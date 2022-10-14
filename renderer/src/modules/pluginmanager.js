@@ -42,6 +42,7 @@ export default new class PluginManager extends AddonManager {
     initialize() {
         const errors = super.initialize();
         this.setupFunctions();
+
         Settings.registerPanel("plugins", Strings.Panels.plugins, {
             order: 3,
             element: () => SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
@@ -53,9 +54,13 @@ export default new class PluginManager extends AddonManager {
                 saveAddon: this.saveAddon.bind(this),
                 editAddon: this.editAddon.bind(this),
                 deleteAddon: this.deleteAddon.bind(this),
+                confirmAddonDelete: this.confirmAddonDelete.bind(this),
+                isLoaded: this.isLoaded.bind(this),
+                installAddon: this.installAddon.bind(this),
                 prefix: this.prefix
             })
         });
+        
         return errors;
     }
 
@@ -63,8 +68,8 @@ export default new class PluginManager extends AddonManager {
     updatePluginList() {return this.updateList();}
     loadAllPlugins() {return this.loadAllAddons();}
 
-    enablePlugin(idOrAddon) {return this.enableAddon(idOrAddon);}
-    disablePlugin(idOrAddon) {return this.disableAddon(idOrAddon);}
+    enablePlugin(idOrFileAddon) {return this.enableAddon(idOrFileAddon);}
+    disablePlugin(idOrFileAddon) {return this.disableAddon(idOrFileAddon);}
     togglePlugin(id) {return this.toggleAddon(id);}
 
     unloadPlugin(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}

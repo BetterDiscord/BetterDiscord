@@ -228,7 +228,7 @@
         "compileError": "Nu s-a putut incărca.",
         "wasUnloaded": "{{name}} a fost dezactivat.",
         "blankSlateHeader": "Nu ai nici un {{type}}!",
-        "blankSlateMessage": "Descarcă câteva din [acest website]({{link}}) și adaugă-le in folder-ul tău {{type}}."
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "Ai modificări nesalvate in CSS-ul personalizat. Închiderea acestei ferestre va duce la anularea schimbărilor.",

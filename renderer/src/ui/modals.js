@@ -4,7 +4,7 @@ import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordM
 import FormattableString from "../structs/string";
 import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
-
+import InstallationModal from "./installationmodal";
 
 export default class Modals {
 
@@ -93,7 +93,7 @@ export default class Modals {
                     handleClose();
                 },
                 type: "button",
-                className: "bd-button"
+                className: "bd-button size-medium"
             });
 
             if (button.danger) buttonEl.classList.add("bd-button-danger");
@@ -327,5 +327,12 @@ export default class Modals {
         return this.ModalActions.openModal(props => {
             return React.createElement(ErrorBoundary, null, React.createElement(modal, props));
         });
+    }
+
+    static showInstallationModal(options = {}) {
+        this.ModalActions.openModal(props => React.createElement(ErrorBoundary, null, React.createElement(InstallationModal, {
+            ...props,
+            ...options
+        })));
     }
 }

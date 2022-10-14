@@ -1,7 +1,7 @@
 import {React, Strings} from "modules";
 
 import Screen from "../../structs/screen";
-import CloseButton from "../icons/close";
+import CloseIcon from "../icons/close";
 import MaximizeIcon from "../icons/fullscreen";
 import Modals from "../modals";
 
@@ -108,10 +108,10 @@ export default class FloatingWindow extends React.Component {
                         <span className="title">{this.props.title}</span>
                         <div className="floating-window-buttons">
                             <div className="button maximize-button" onClick={this.maximize}>
-                                <MaximizeIcon size="18px" />
+                                <MaximizeIcon size={16} />
                             </div>
                             <div className="button close-button" onClick={this.close}>
-                                <CloseButton />
+                                <CloseIcon size={14} />
                             </div>
                         </div>
                     </div>

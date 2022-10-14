@@ -228,7 +228,7 @@
         "compileError": "Não foi possível compilar.",
         "wasUnloaded": "{{name}} foi descarregado.",
         "blankSlateHeader": "Não tem nenhum {{type}}!",
-        "blankSlateMessage": "Pega um pouco deste [this website]({{link}}) e adiciona eles à tua pasta {{type}}."
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "Tem alterações não guardadas no CSS Personalizado. Se fechar esta janela irá perder essas alterações.",

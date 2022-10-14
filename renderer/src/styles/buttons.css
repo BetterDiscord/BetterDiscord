@@ -3,8 +3,9 @@
     justify-content: center;
     align-items: center;
     background-color: #3E82E5;
-    color: #FFFFFF;
+    color: hsl(0, calc(var(--saturation-factor, 1) * 0%), 100%);
     border-radius: 3px;
+    width: auto;
     padding: 4px 8px;
     transition: background-color 0.17s ease, color 0.17s ease, opacity 250ms ease;
 }
@@ -18,15 +19,15 @@
 }
 
 .bd-button.bd-button-success {
-    background-color: #43B581;
+    background-color: var(--button-positive-background, #43B581);
 }
 
 .bd-button.bd-button-success:hover {
-    background-color: #3CA374;
+    background-color: var(--button-positive-background-hover, #3CA374);
 }
 
 .bd-button.bd-button-success:active {
-    background-color: #369167;
+    background-color: var(--button-positive-background-active, #369167);
 }
 
 .bd-button.bd-button-warning {
@@ -42,15 +43,15 @@
 }
 
 .bd-button.bd-button-danger {
-    background-color: #F04747;
+    background-color: var(--button-danger-background, #F04747);
 }
 
 .bd-button.bd-button-danger:hover {
-    background-color: #D84040;
+    background-color: var(--button-danger-background-hover, #D84040);
 }
 
 .bd-button.bd-button-danger:active {
-    background-color: #C03939;
+    background-color: var(--button-danger-background-active, #C03939);
 }
 
 .bd-button-disabled {
@@ -59,4 +60,29 @@
 
 .bd-button-disabled:hover {
     cursor: not-allowed;
+}
+
+.bd-button.size-small {
+    height: 32px;
+    min-width: 60px;
+    min-height: 32px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    padding: 2px 16px;
+}
+
+.bd-button.size-medium {
+    width: 96px;
+    height: 38px;
+    min-width: 96px;
+    min-height: 38px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    padding: 2px 16px;
+}
+
+.bd-button:focus-visible {
+    box-shadow: 0 0 0 4px var(--focus-primary);
 }

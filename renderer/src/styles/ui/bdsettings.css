@@ -29,9 +29,9 @@
     margin-left: 10px;
 }
 
-.bd-select-wrapper label {
+/* .bd-select-wrapper label {
     margin-right: 5px;
-}
+} */
 
 .bd-select {
     position: relative;
@@ -58,6 +58,7 @@
     background: none;
     border: none;
     padding: 0;
+    margin-bottom: -3px;
 }
 
 .bd-select-value {
@@ -65,7 +66,7 @@
 }
 
 .bd-select-arrow {
-    margin-left: 10px;
+    margin-left: 5px;
     fill: var(--interactive-normal);
 }
 
@@ -81,7 +82,7 @@
     border-top: 0;
     margin-top: -1px;
     margin-left: -1px;
-    z-index: 2;
+    z-index: 3;
     top: 100%;
 }
 
@@ -165,7 +166,7 @@
 }
 
 .bd-settings-title {
-    color: #FFFFFF;
+    color: var(--header-primary);
     font-weight: 600;
     cursor: default;
     flex: 1;

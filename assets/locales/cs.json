@@ -228,7 +228,7 @@
         "compileError": "Nepodařilo se zkompilovat.",
         "wasUnloaded": "Doplněk {{name}} byl odnačten.",
         "blankSlateHeader": "Nemáš žádné/žádný {{type}}!",
-        "blankSlateMessage": "Najdi si nějaké na [tomto webu]({{link}}) a přidej je do své {{type}} složky."
+        "blankSlateMessage": ""
     },
     "CustomCSS": {
         "confirmationText": "Máš neuložené změny ve vlastním CSS. Zavřením tohoto okna je všechny ztratíš.",

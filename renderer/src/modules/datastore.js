@@ -117,8 +117,8 @@ export default new class DataStore {
         return path.resolve(this.dataFolder, `misc.json`);
     }
 
-    getBDData(key) {
-        return this.data.misc[key] || "";
+    getBDData(key, defaultValue = "") {
+        return this.data.misc[key] ?? defaultValue;
     }
 
     setBDData(key, value) {
