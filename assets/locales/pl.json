@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Wtyczki",
         "themes": "Motywy",
-        "customcss": "Niestandardowy CSS"
+        "customcss": "Niestandardowy CSS",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "Zapobiega korzystaniu z klawiszy multimedialnych przez Discorda podczas odtwarzania filmów."
                 }
             },
-            "appearance": {
-                "name": "Wygląd",
-                "minimalMode": {
-                    "name": "Tryb kompaktowy",
-                    "note": "Zmniejsza lub ukrywa niektóre elementy interfejsu"
-                },
-                "twentyFourHour": {
-                    "name": "24-godzinne znaczniki czasu",
-                    "note": "Zmienia 12-godzinne znaczniki czasu na format 24-godzinny"
-                },
-                "coloredText": {
-                    "name": "Kolorowy tekst",
-                    "note": "Zmienia kolor wiadomości na kolor głównej roli użytkownika"
-                },
-                "hideGIFButton": {
-                    "name": "Ukryj przycisk z GIF-ami",
-                    "note": "Ukrywa przycisk z menu GIF-ów w polu tekstowym"
-                },
-                "hideGiftButton": {
-                    "name": "Ukryj przycisk do podarowywania Nitro",
-                    "note": "Ukrywa przycisk do podarowywania Nitro w polu tekstowym"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Usuń limit minimalnego rozmiaru okna",
@@ -73,10 +51,6 @@
                 "addonErrors": {
                     "name": "Wyświetlaj błędy dodatków",
                     "note": "Wyświetla okno z błędami wtyczek i motywów"
-                },
-                "autoReload": {
-                    "name": "Automatyczne załadowywanie",
-                    "note": "Automatycznie ładuje, przeładowuje i odładowuje wtyczki oraz motywy"
                 },
                 "editAction": {
                     "name": "Edytor dodatków",
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "Dziennik zdarzeń",
                     "note": "Przekierowuje informacje z konsoli do pliku debug.log w folderze BetterDiscorda"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "Błąd kompilacji.",
         "wasUnloaded": "Dodatek {{name}} został odładowany.",
         "blankSlateHeader": "Wygląda na to, że nic tu nie ma!",
-        "blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu."
+        "blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu.",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okienka spowoduje utratę danych.",
@@ -295,20 +307,27 @@
         "ascending": "Rosnąca",
         "descending": "Malejąca"
     },
-    "Startup": {
-        "notSupported": "Brak wsparcia",
-        "incompatibleApp": "BetterDiscord nie jest kompatybilny z {{app}}. Odinstaluj jedną z tych aplikacji.",
-        "updateNow": "Zaktualizuj teraz",
-        "maybeLater": "Może później",
-        "updateAvailable": "Dostępna jest aktualizacja",
-        "updateInfo": "Dostępna jest aktualizacja injectora BetterDiscorda ({{version}}).\n\nZaktualizuj go teraz lub później.",
-        "updateFailed": "Aktualizacja nie powiodła się",
-        "manualUpdate": "Nie udało się zaktualizować BetterDiscorda automatycznie. Pobierz instalator i zainstaluj BD ponownie.\n\n[Pobierz instalator](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "Ładowanie jQuery nie powiodło się",
-        "jqueryFailedDetails": "Nie udało się załadować jQuery i niektóre wtyczki mogą nie działać poprawnie. Kontynuuj na własne ryzyko."
-    },
     "WindowPrefs": {
         "enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?",
         "disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
