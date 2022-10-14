@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Pluginy",
         "themes": "Témata",
-        "customcss": "Vlastní CSS"
+        "customcss": "Vlastní CSS",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "Zabrání Discordu přivlastnění kláves médií při přehrávání videa."
                 }
             },
-            "appearance": {
-                "name": "Vzhled",
-                "minimalMode": {
-                    "name": "Minimalistický režim",
-                    "note": "Skryje prvky a zmenší velikost prvků"
-                },
-                "twentyFourHour": {
-                    "name": "24-hodinová časová razítka",
-                    "note": "Převede 12-hodinová razítka na 24-hodinový formát"
-                },
-                "coloredText": {
-                    "name": "Barevný text",
-                    "note": "Udělá barvu textu stejnou jako barvu role"
-                },
-                "hideGIFButton": {
-                    "name": "Skrýt tlačítko GIF",
-                    "note": "Skryje tlačítko pro výběr GIFů v textové oblasti"
-                },
-                "hideGiftButton": {
-                    "name": "Skrýt tlačítko dárku",
-                    "note": "Skryje tlačítko darování Nitra v textové oblasti"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Odebrat minimální velikost",
@@ -73,10 +51,6 @@
                 "addonErrors": {
                     "name": "Zobrazit chyby doplňků",
                     "note": "Zobrazí okno s chybami pluginů/témat"
-                },
-                "autoReload": {
-                    "name": "Automatické načítání",
-                    "note": "Automaticky načte, znovu načte a odnačte pluginy a témata"
                 },
                 "editAction": {
                     "name": "Upravit akci",
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "Ladicí protokoly",
                     "note": "Vypíše vše z konzole do souboru debug.log ve složce BetterDiscordu"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "Nepodařilo se zkompilovat.",
         "wasUnloaded": "Doplněk {{name}} byl odnačten.",
         "blankSlateHeader": "Nemáš žádné/žádný {{type}}!",
-        "blankSlateMessage": "Najdi si nějaké na [tomto webu]({{link}}) a přidej je do své {{type}} složky."
+        "blankSlateMessage": "Najdi si nějaké na [tomto webu]({{link}}) a přidej je do své {{type}} složky.",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "Máš neuložené změny ve vlastním CSS. Zavřením tohoto okna je všechny ztratíš.",
@@ -240,7 +252,7 @@
         "editorTitle": "Okno vlastního CSS"
     },
     "Emotes": {
-        "loading": "Načítání emotů v pozadí - neobnovuj.",
+        "loading": "Načítání emotů na pozadí - neobnovuj.",
         "loaded": "Všechny emoty byly úspěšně načteny.",
         "clearEmotes": "Vyčistit data emotů",
         "favoriteAction": "Oblíbené!",
@@ -295,20 +307,27 @@
         "ascending": "Vzestupně",
         "descending": "Sestupně"
     },
-    "Startup": {
-        "notSupported": "Nepodporováno",
-        "incompatibleApp": "BetterDiscord nefunguje s {{app}}. Odinstaluj prosím jednu z nich.",
-        "updateNow": "Aktualizovat",
-        "maybeLater": "Možná později",
-        "updateAvailable": "Dostupná aktualizace",
-        "updateInfo": "Je dostupná nová aktualizace BetterDiscord Injectoru ({{version}}).\n\nMůžeš aktualizovat a restartovat buď teď, nebo později.",
-        "updateFailed": "Aktualizace selhala",
-        "manualUpdate": "Nepodařilo se automaticky nainstalovat aktualizaci, stáhni si prosím instalátor a normálně přeinstaluj aplikaci.\n\n[Stáhnout instalátor](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "Nepodařilo se načíst jQuery",
-        "jqueryFailedDetails": "Nepodařilo se načíst jQuery, některé pluginy nemusí fungovat správně. Pokračuj na vlastní nebezpečí."
-    },
     "WindowPrefs": {
         "enabledInfo": "Tato možnost vyžaduje průhledné téma, aby fungovala správně. Na Windows to může rozbít Areo přichytávání a maximalizování.\n\nAby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?",
         "disabledInfo": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
