@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "插件",
         "themes": "主题",
-        "customcss": "自定义样式"
+        "customcss": "自定义样式",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "防止 Discord 在播放视频时劫持媒体控制键"
                 }
             },
-            "appearance": {
-                "name": "外观",
-                "minimalMode": {
-                    "name": "最小化模式",
-                    "note": "隐藏及缩小部分元素"
-                },
-                "twentyFourHour": {
-                    "name": "24小时制时间",
-                    "note": "将12小时制时间转换为24小时制时间"
-                },
-                "coloredText": {
-                    "name": "彩色文字",
-                    "note": "将消息颜色与发送者的角色颜色同步"
-                },
-                "hideGIFButton": {
-                    "name": "隐藏 GIF 按钮",
-                    "note": "隐藏输入框右侧的 GIF 选择器"
-                },
-                "hideGiftButton": {
-                    "name": "隐藏礼物按钮",
-                    "note": "隐藏输入框右侧的 Nitro 礼物按钮"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "移除最小化限制",
@@ -73,10 +51,6 @@
                 "addonErrors": {
                     "name": "显示插件错误",
                     "note": "在插件/主题发生错误时显示弹窗"
-                },
-                "autoReload": {
-                    "name": "自动加载",
-                    "note": "自动加载、重载及卸载插件和主题"
                 },
                 "editAction": {
                     "name": "编辑器",
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "调试日志",
                     "note": "输出控制台中的所有信息到 BetterDiscord 文件夹下的 debug.log 文件"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "无法编译。",
         "wasUnloaded": "已卸载{{name}}。",
         "blankSlateHeader": "你还添加任何{{type}}！",
-        "blankSlateMessage": "你可以在[此网站]({{link}})中获取，并将其添加到你的{{type}}文件夹中。"
+        "blankSlateMessage": "你可以在[此网站]({{link}})中获取，并将其添加到你的{{type}}文件夹中。",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "你还有未保存的更改，关闭此窗口将失去所有对自定义样式所做的更改。",
@@ -295,20 +307,27 @@
         "ascending": "正序",
         "descending": "倒序"
     },
-    "Startup": {
-        "notSupported": "不支持的",
-        "incompatibleApp": "BetterDiscord 无法与 {{app}} 共同工作，要么留它要么留我。",
-        "updateNow": "立即更新",
-        "maybeLater": "下次吧",
-        "updateAvailable": "更新已可用",
-        "updateInfo": "BetterDiscord 的 Injector v{{version}} 有可用的更新。\n\n你可以立即更新并重启，或者稍后再更新。",
-        "updateFailed": "无法更新",
-        "manualUpdate": "无法自动更新，请下载安装器并重新进行安装。\n\n[下载安装器](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "无法加载 jQuery",
-        "jqueryFailedDetails": "无法加载 jQuery，部分插件可能无法正常工作。继续使用需要你自担风险。"
-    },
     "WindowPrefs": {
         "enabledInfo": "此选项需要透明主题才能正常工作。在 Windows 上，这可能会破坏 AERO 的捕捉和最大化。\n\n该变更需要重启以生效。您要立即进行重启吗？",
         "disabledInfo": "Discord 需要重新启动以应用最新变更。立刻进行重启吗？"
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
