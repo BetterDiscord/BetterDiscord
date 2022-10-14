@@ -1,9 +1,9 @@
 {
     "Panels": {
-        "updates": "Updates",
         "plugins": "Plugins",
         "themes": "Themes",
-        "customcss": "Custom CSS"
+        "customcss": "Custom CSS",
+        "updates": "Updates"
     },
     "Collections": {
         "settings": {
@@ -29,6 +29,21 @@
                 "mediaKeys": {
                     "name": "Disable Media Keys",
                     "note": "Prevents Discord from hijacking your media keys after playing a video."
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Remove Minimum Size",
+                    "note": "Removes Discord's forced minimum window size of 940x500"
+                },
+                "name": "Window Preferences",
+                "transparency": {
+                    "name": "Enable Transparency",
+                    "note": "Enables the main window to be see-through (requires restart)"
+                },
+                "frame": {
+                    "name": "Window Frame",
+                    "note": "Adds the native os window frame to the main window"
                 }
             },
             "addons": {
@@ -74,6 +89,33 @@
                     }
                 }
             },
+            "developer": {
+                "name": "Developer Settings",
+                "debuggerHotkey": {
+                    "name": "Debugger Hotkey",
+                    "note": "Allows activating debugger when pressing F8 with DevTools open"
+                },
+                "reactDevTools": {
+                    "name": "React Developer Tools",
+                    "note": "Injects your local installation of React Developer Tools into Discord"
+                },
+                "inspectElement": {
+                    "name": "Inspect Element Hotkey",
+                    "note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
+                },
+                "devToolsWarning": {
+                    "name": "Stop DevTools Warning",
+                    "note": "Stops Discord from printing out their \"Hold Up!\" message"
+                },
+                "debugLogs": {
+                    "name": "Debug Logs",
+                    "note": "Outputs everything from the console into the debug.log file in the BetterDiscord folder"
+                },
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "Enables toggling DevTools with ctrl+shift+i"
+                }
+            },
             "editor": {
                 "name": "Editor Preferences",
                 "lineNumbers": {
@@ -104,48 +146,6 @@
                         "none": "Never",
                         "selection": "Selection"
                     }
-                }
-            },
-            "developer": {
-                "name": "Developer Settings",
-                "devTools": {
-                    "name": "DevTools",
-                    "note": "Enables toggling DevTools with ctrl+shift+i"
-                },
-                "debuggerHotkey": {
-                    "name": "Debugger Hotkey",
-                    "note": "Allows activating debugger when pressing F8 with DevTools open"
-                },
-                "reactDevTools": {
-                    "name": "React Developer Tools",
-                    "note": "Injects your local installation of React Developer Tools into Discord"
-                },
-                "inspectElement": {
-                    "name": "Inspect Element Hotkey",
-                    "note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
-                },
-                "devToolsWarning": {
-                    "name": "Stop DevTools Warning",
-                    "note": "Stops Discord from printing out their \"Hold Up!\" message"
-                },
-                "debugLogs": {
-                    "name": "Debug Logs",
-                    "note": "Outputs everything from the console into the debug.log file in the BetterDiscord folder"
-                }
-            },
-            "window": {
-                "name": "Window Preferences",
-                "transparency": {
-                    "name": "Enable Transparency",
-                    "note": "Enables the main window to be see-through (requires restart)"
-                },
-                "frame": {
-                    "name": "Window Frame",
-                    "note": "Adds the native os window frame to the main window"
-                },
-                "removeMinimumSize": {
-                    "name": "Remove Minimum Size",
-                    "note": "Removes Discord's forced minimum window size of 940x500"
                 }
             }
         },
@@ -215,7 +215,6 @@
         "version": "Version",
         "added": "Date Added",
         "modified": "Date Modified",
-        "isEnabled": "Enabled",
         "search": "Search {{type}}",
         "editAddon": "Edit",
         "deleteAddon": "Delete",
@@ -238,9 +237,10 @@
         "metaNotFound": "META was not found.",
         "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
-        "wasLoaded": "{{name}} v{{version}} was loaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
-        "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder."
+        "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
+        "isEnabled": "Enabled",
+        "wasLoaded": "{{name}} v{{version}} was loaded."
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -297,9 +297,6 @@
         "additionalInfo": "Additional Info",
         "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     },
-    "Notices": {
-        "moreInfo": "More Info"
-    },
     "ReactDevTools": {
         "notFound": "Extension Not Found",
         "notFoundDetails": "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
@@ -310,12 +307,19 @@
         "ascending": "Ascending",
         "descending": "Descending"
     },
+    "WindowPrefs": {
+        "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
+        "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
+    },
+    "Notices": {
+        "moreInfo": "More Info"
+    },
     "Updater": {
         "updateFailed": "Update Failed!",
         "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
         "updateSuccessful": "Update Successful!",
         "updateAvailable": "BetterDiscord has a new update (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord has found updates for {{count}} of your {{.type}}s!",
+        "addonUpdatesAvailable": "BetterDiscord has found updates for {{count}} of your {{type}}s!",
         "addonUpdated": "{{name}} has been updated to version {{version}}!",
         "checking": "Checking for updates!",
         "finishedChecking": "Finished checking for updates!",
@@ -325,9 +329,5 @@
         "versionAvailable": "Version {{version}} now available!",
         "upToDateBlankslate": "All of your {{type}} seem to be up to date!",
         "updateButton": "Update!"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
-        "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     }
 }
