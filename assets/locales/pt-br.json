@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Plugins",
         "themes": "Temas",
-        "customcss": "CSS Personalizado"
+        "customcss": "CSS Personalizado",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "Previne que o discord roube suas teclas de media depois de dar play em um vídeo"
                 }
             },
-            "appearance": {
-                "name": "Aparência",
-                "minimalMode": {
-                    "name": "Modo Mínimo",
-                    "note": "Esconde alguns elementos e reduz o tamanho de outros"
-                },
-                "twentyFourHour": {
-                    "name": "Relógio de 24 Horas",
-                    "note": "Converte o formato de 12 horas para o de 24 horas"
-                },
-                "coloredText": {
-                    "name": "Texto Colorido",
-                    "note": "Faz com que a cor do texto seja a mesma do cargo"
-                },
-                "hideGIFButton": {
-                    "name": "Esconder o Botão de GIF",
-                    "note": "Esconde o botão do selecionador de GIFs na caixa de texto"
-                },
-                "hideGiftButton": {
-                    "name": "Esconder o Botão de Presente",
-                    "note": "Esconde o botão de enviar nitro na caixa de texto"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Remover Tamanho Mínimo",
@@ -73,10 +51,6 @@
                 "addonErrors": {
                     "name": "Mostrar erros dos Addons",
                     "note": "Mostra um modal com os erros do plugin/tema"
-                },
-                "autoReload": {
-                    "name": "Carregamento Automático",
-                    "note": "Automaticamente carrega, recarrega e descarrega plugins e temas"
                 },
                 "editAction": {
                     "name": "Ação de Edição",
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "Registro de Depuração",
                     "note": "Salva todas os logs do console no arquivo debug.log dentro da pasta do BetterDiscord"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "Não foi possível compilar.",
         "wasUnloaded": "{{name}} foi descarregado.",
         "blankSlateHeader": "Você não tem nenhum {{type}}!",
-        "blankSlateMessage": "Baixe alguns [desse website]({{link}}) e os adicione na sua pasta de {{type}}s."
+        "blankSlateMessage": "Baixe alguns [desse website]({{link}}) e os adicione na sua pasta de {{type}}s.",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "Você tem mudanças ainda não salvas no seu CSS Personalizado. Fechar essa janela fará você perder todas elas.",
@@ -295,20 +307,27 @@
         "ascending": "Ascendente",
         "descending": "Descendente"
     },
-    "Startup": {
-        "notSupported": "Não Suportado",
-        "incompatibleApp": "BetterDiscord não funciona com {{app}}. Por favor desinstale um deles.",
-        "updateNow": "Atualizar Agora",
-        "maybeLater": "Talvez Mais Tarde",
-        "updateAvailable": "Atualização Disponível",
-        "updateInfo": "Tem uma atualização disponível para o injetor do BetterDiscord ({{version}}).\n\nVocê pode atualizar e reiniciar agora ou mais tarde se preferir.",
-        "updateFailed": "Não Foi Possível Atualizar",
-        "manualUpdate": "Não foi possível atualizar automaticamente, por favor baixe o instalador e reinstale normalmente.\n\n[Baixar Instalador](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "jQuery não carregou",
-        "jqueryFailedDetails": "jQuery não pôde ser carregado, e alguns plugins podem não funcionar corretamente. Prossiga por sua conta e risco."
-    },
     "WindowPrefs": {
         "enabledInfo": "Essa opção necessita de um tema transparente para funcionar corretamente. No Windows isso pode quebrar o aero snapping e a maximização.\n\nO discord precisa ser reiniciado para as mudanças terem efeito. Você deseja reiniciar agora?",
         "disabledInfo": "O discord precisa ser reiniciado para as mudanças terem efeito. Você deseja reiniciar agora?"
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
