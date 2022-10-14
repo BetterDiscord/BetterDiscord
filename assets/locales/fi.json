@@ -1,1 +1,333 @@
-{}
+{
+    "Panels": {
+        "plugins": "Lisäosat",
+        "themes": "Teemat",
+        "customcss": "Mukautettu CSS",
+        "updates": ""
+    },
+    "Collections": {
+        "settings": {
+            "name": "Asetukset",
+            "general": {
+                "name": "Yleinen",
+                "emotes": {
+                    "name": "Hymiö-järjestelmä",
+                    "note": "Ottaa käyttöön BD:n hymiö-järjestelmän."
+                },
+                "publicServers": {
+                    "name": "Julkiset Palvelimet",
+                    "note": "Näytä julkisten palvelimien nappi"
+                },
+                "voiceDisconnect": {
+                    "name": "Katkaise puhelu",
+                    "note": "Katkaise puhelu, kun suljet Discordin"
+                },
+                "showToasts": {
+                    "name": "Näytä Paahtoleivät",
+                    "note": "Näyttää pienen ilmoituksen tärkeistä tiedoista"
+                },
+                "mediaKeys": {
+                    "name": "Poista medianäppäimet käytöstä",
+                    "note": "Estää Discordia kaappaamasta medianäppäimiäsi videon toistamisen jälkeen."
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Poista vähimmäiskoko",
+                    "note": "Poistaa Discordin pakotetun vähimmäisikkunakoon 940x500"
+                },
+                "name": "Ikkuna-asetukset",
+                "transparency": {
+                    "name": "Ota läpinäkyvyys käyttöön",
+                    "note": "Mahdollistaa pääikkunan läpinäkyvyyden (vaatii uudelleenkäynnistyksen)"
+                },
+                "frame": {
+                    "name": "Ikkunakehys",
+                    "note": "Lisää alkuperäisen käyttöjärjestelmän ikkunakehyksen pääikkunaan"
+                }
+            },
+            "addons": {
+                "name": "Lisäosien hallinta",
+                "addonErrors": {
+                    "name": "Näytä lisäosien viat",
+                    "note": "Näyttää modaalin, jossa on laajennus/teemavirheitä"
+                },
+                "editAction": {
+                    "name": "Muokkaa toimintaa",
+                    "note": "Missä lisäosat & teema näkyy, kun muokkaat niitä",
+                    "options": {
+                        "detached": "Irrotettu ikkuna",
+                        "system": "Järjestelmän muokkaaja"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "Mukautettu CSS",
+                "customcss": {
+                    "name": "Mukautettu CSS",
+                    "note": "Ottaa käyttöön Mukautetun CSS välilehden"
+                },
+                "liveUpdate": {
+                    "name": "Live-päivitys",
+                    "note": "Päivttää css, kun kirjoitat"
+                },
+                "startDetached": {
+                    "name": "Aloita irroitetusti",
+                    "note": "Mukautetun CSS-välilehden napsauttaminen avaa muokkaajan erilliseen ikkunaan"
+                },
+                "nativeOpen": {
+                    "name": "Avaa alkuperäisessä muokkaajassa",
+                    "note": "Mukautetun CSS-välilehden napsauttaminen avaa mukautetun css alkuperäisessä muokkaajassa"
+                },
+                "openAction": {
+                    "name": "Muokkaajan sijainti",
+                    "note": "Missä mukautettu CSS:n pitäisi avautua normaalisti",
+                    "options": {
+                        "settings": "Asetuksien valikko",
+                        "detached": "Irrotettu ikkuna",
+                        "system": "Järjestelmän muokkaaja"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Kehittäjän asetukset",
+                "debuggerHotkey": {
+                    "name": "Virheenkorjaajan pikanäppäin",
+                    "note": "Mahdollistaa virheenkorjauksen aktivoinnin, kun painetaan F8 DevToolsin ollessa auki"
+                },
+                "reactDevTools": {
+                    "name": "React-kehitystyökalut",
+                    "note": "Lisää paikallisen React Developer Tools -asennuksesi Discordiin"
+                },
+                "inspectElement": {
+                    "name": "Tarkista-elementin pikanäppäin",
+                    "note": "Ottaa käyttöön tarkastuselementin pikanäppäimen (ctrl + shift + c), joka on yleinen useimmissa selaimissa"
+                },
+                "devToolsWarning": {
+                    "name": "Lopeta DevTools-varoitus",
+                    "note": "Pysäyttää Discordin tulostamasta heidän \"Hold Up!\" viestin"
+                },
+                "debugLogs": {
+                    "name": "Virheenkorjauksen logit",
+                    "note": "Tulostaa kaiken konsolista BetterDiscord-kansion debug.log-tiedostoon"
+                },
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "Mahdollistaa DevToolsin kytkemisen näppäinyhdistelmällä ctrl+shift+i"
+                }
+            },
+            "editor": {
+                "name": "Muokkaajan asetukset",
+                "lineNumbers": {
+                    "name": "Rivien numerot",
+                    "note": "Mahdollistaa rivinumeroiden näyttämisen muokkaajan sivulla"
+                },
+                "fontSize": {
+                    "name": "Fontin koko",
+                    "note": "Muokkaajassa käytettävän fontin koko (pt)."
+                },
+                "minimap": {
+                    "name": "Minikartta",
+                    "note": "Mahdollistaa koodin minikartan näyttämisen muokkaajan sivulla"
+                },
+                "hover": {
+                    "name": "Viitetyökaluvinkit",
+                    "note": "Mahdollistaa viitetyökaluvihjeiden näyttämisen, kun sääntöjä ja valitsimia siirretään"
+                },
+                "quickSuggestions": {
+                    "name": "Pikaehdotuksia",
+                    "note": "Ottaa käyttöön automaattisen täydennyksen ehdotukset kirjoittaessasi"
+                },
+                "renderWhitespace": {
+                    "name": "Näytä välilyönti",
+                    "note": "Milloin muokkaajan tulee näyttää välilyönnit",
+                    "options": {
+                        "all": "Aina",
+                        "none": "Ei ikinä",
+                        "selection": "Valinta"
+                    }
+                }
+            }
+        },
+        "emotes": {
+            "name": "Hymiöt",
+            "general": {
+                "name": "Yleinen",
+                "download": {
+                    "name": "Lataa hymiöitä",
+                    "note": "Lataa hymiöit aina, kun ne ovat vanhentuneita"
+                },
+                "emoteMenu": {
+                    "name": "Hymiövalikko",
+                    "note": "Näytä Twitch/Suosikkihymiöt hymiövalikossa"
+                },
+                "hideEmojiMenu": {
+                    "name": "Piilota hymiövalikko",
+                    "note": "Piilottaa Discordin emoji-menun, kun käytetään hymiövalikkoa"
+                },
+                "autoCaps": {
+                    "name": "Emoten automaattinen isojen kirjainten käyttö",
+                    "note": "Laita isolla kirjaimella hymiökomennot automaattisesti"
+                },
+                "modifiers": {
+                    "name": "Näytä hymiö-muokkaimet",
+                    "note": "Ota käyttöön hymiömodit (käännä, spin, pulssi, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animoi leijuminen",
+                    "note": "Animoi vain hymiön muokkaukset viemällä kursori sen kohdalle"
+                }
+            },
+            "categories": {
+                "name": "Kategoriat",
+                "twitchglobal": {
+                    "name": "Twitchin Yleiset",
+                    "note": "Näytä Twitchin yleiset hymiöt"
+                },
+                "twitchsubscriber": {
+                    "name": "Twitch-tilaajat",
+                    "note": "Näytä Twitch-tilauksen hymiöt"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "Näytä hymiöt FFZ:sta"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Näytä hymiöt BTTV:stä"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "",
+        "byline": "",
+        "openFolder": "Avaa {{type}} kansio",
+        "reload": "Lataa uudelleen",
+        "addonSettings": "Asetukset",
+        "website": "Nettisivu",
+        "source": "Lähde",
+        "invite": "Tuki-palvelin",
+        "donate": "Lahjoita",
+        "patreon": "Patreon",
+        "name": "Nimi",
+        "author": "Luoja",
+        "version": "Versio",
+        "added": "lisäyspäivämäärä",
+        "modified": "Muutospäivämäärä",
+        "search": "Etsi {{type}}",
+        "editAddon": "Muokkaa",
+        "deleteAddon": "Poista",
+        "confirmDelete": "Haluatko varmasti poistaa {{name}}?",
+        "confirmationText": "Sinulla on tallentamattomia muutoksia kohteeseen {{name}}. Tämän ikkunan sulkeminen menettää kaikki muutokset.",
+        "enabled": "\n{{name}} on otettu käyttöön.",
+        "disabled": "\n{{name}} on poistettu käytöstä.",
+        "couldNotEnable": "{{name}} ei voitu ottaa käyttöön.",
+        "couldNotDisable": "{{name}} ei voitu poistaa käytöstä.",
+        "couldNotStart": "{{name}} ei voitu käynnistää.",
+        "couldNotStop": "{{name}} ei voitu pysäyttää.",
+        "settingsError": "Käyttäjän {{name}} asetuksia ei voitu avata",
+        "methodError": "{{method}} ei voitu laukaista.",
+        "unknownAuthor": "Tuntematon tekijä",
+        "noDescription": "Kuvausta ei ole annettu.",
+        "alreadyExists": "On jo olemassa {{type}} , jonka nimi on {{type}}",
+        "alreadWatching": "Katsot jo lisäosia.",
+        "metaError": "META:a ei voitu jäsentää.",
+        "missingNameData": "META:lta puuttuu nimitiedot.",
+        "metaNotFound": "META:a ei löytynyt.",
+        "compileError": "Ei voitu koota. Katso lisätietoja konsolista.",
+        "wasUnloaded": "{{name}} purettiin.",
+        "blankSlateHeader": "Sinulla ei ole yhtään {{type}}!",
+        "blankSlateMessage": "Nappaa joitain [tältä verkkosivustolta]({{link}}) ja lisää ne kansioon {{type}}.",
+        "isEnabled": "Otettu käyttöön",
+        "wasLoaded": ""
+    },
+    "CustomCSS": {
+        "confirmationText": "Muokatussa CSS:ssä on tallentamattomia muutoksia. Tämän ikkunan sulkeminen menettää kaikki muutokset.",
+        "update": "Päivitä",
+        "save": "Tallenna",
+        "openNative": "Avaa järjestelmän muokkaajassa",
+        "openDetached": "Irrota ikkuna",
+        "settings": "Muokkaajan asetukset",
+        "editorTitle": "Mukautettu CSS-muokkaaja"
+    },
+    "Emotes": {
+        "loading": "Hymiöiden lataaminen taustalla ei lataudu uudelleen.",
+        "loaded": "Kaikki hymiöt on ladattu onnistuneesti.",
+        "clearEmotes": "Tyhjennä hymiö-tiedot",
+        "favoriteAction": "Suosikki!",
+        "downloadFailed": "Lataus epäonnistui",
+        "failureMessage": "BetterDiscord ei pystynyt lataamaan hymiöitä. Tarkista Internet-yhteytesi ja palomuurisi."
+    },
+    "PublicServers": {
+        "button": "julkinen",
+        "join": "Liity",
+        "joining": "Liitytään",
+        "joined": "Liitytty",
+        "loading": "Ladataan",
+        "loadMore": "Ladataan lisää",
+        "notConnected": "Et ole yhdistetty",
+        "connectionRequired": "Sinun on yhdistettävä tilisi, jotta voit liittyä palvelimiin.",
+        "connectionError": "Yhteysvika",
+        "connectionErrorMessage": "Yhteyden muodostamisessa DiscordServers.comiin tapahtui virhe. On mahdollista, että heidän verkkosivustonsa/api on poissa käytöstä. Yritä uudelleen myöhemmin.",
+        "pagination": "Sivu {{sivu}} / {{count}}",
+        "search": "Etsi",
+        "connect": "Yhdistä",
+        "reconnect": "Yhdistä uudelleen",
+        "categories": "Kategoriat",
+        "keywords": "Avainsanat",
+        "connection": "Yhdistetty nimellä: {{username}}#{{discrinator}}",
+        "results": "Näytetään {{start}}-{{end}} / {{total}} tulosta luokassa {{category}}",
+        "query": "haulle {{kysely}}"
+    },
+    "Modals": {
+        "confirmAction": "Oletko varma?",
+        "okay": "Okei",
+        "done": "Valmis",
+        "cancel": "Peruuta",
+        "nevermind": "Unohda koko juttu",
+        "close": "Sulje",
+        "name": "Nimi",
+        "message": "Viesti",
+        "error": "Vika",
+        "addonErrors": "Lisäosan viat",
+        "restartRequired": "Uudelleenkäynnistys vaaditaan",
+        "restartNow": "Uudelleen käynnistä nyt",
+        "restartLater": "Käynnistä uudelleen nyt",
+        "additionalInfo": "Lisätietoja",
+        "restartPrompt": "Jotta se tulisi voimaan, Discord on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?"
+    },
+    "ReactDevTools": {
+        "notFound": "Laajennusta Ei Löydy",
+        "notFoundDetails": "React Developer Tools -laajennusta ei löydy tietokoneeltasi. Asenna laajennus paikalliseen Chrome-asennukseesi."
+    },
+    "Sorting": {
+        "sortBy": "Järjestä",
+        "order": "Järjestys",
+        "ascending": "Nouseva",
+        "descending": "Laskeva"
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Tämä vaihtoehto vaatii läpinäkyvän teeman toimiakseen kunnolla. Windowsissa tämä voi katkaista aerosnapsauksen ja maksimoimisen.\n\nJotta Discord tulisi voimaan, se on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?",
+        "disabledInfo": "Jotta se tulisi voimaan, Discord on käynnistettävä uudelleen. Haluatko käynnistää uudelleen nyt?"
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
+    }
+}
