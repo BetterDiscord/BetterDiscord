@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "प्लग-इन",
         "themes": "विषयों",
-        "customcss": "कस्टम सीएसएस"
+        "customcss": "कस्टम सीएसएस",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "वीडियो चलाने के बाद डिस्कॉर्ड को अपनी मीडिया कुंजियों को हाईजैक करने से रोकें।"
                 }
             },
-            "appearance": {
-                "name": "दिखावट",
-                "minimalMode": {
-                    "name": "न्यूनतम मोड",
-                    "note": "तत्वों को छुपाएं और तत्वों के आकार को कम करें"
-                },
-                "twentyFourHour": {
-                    "name": "24 घंटे का टाइमस्टैम्प",
-                    "note": "12-घंटे के टाइमस्टैम्प को 24-घंटे के प्रारूप में बदलें"
-                },
-                "coloredText": {
-                    "name": "रंगीन पाठ",
-                    "note": "टेक्स्ट रंग को भूमिका रंग के समान बनाएं"
-                },
-                "hideGIFButton": {
-                    "name": "जीआईएफ बटन छुपाएं",
-                    "note": "टेक्स्ट क्षेत्र में GIF पिकर बटन छुपाता है"
-                },
-                "hideGiftButton": {
-                    "name": "जीआईएफ बटन छुपाएं",
-                    "note": "टेक्स्ट क्षेत्र में नाइट्रो उपहार बटन छुपाता है"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "न्यूनतम आकार निकालें",
@@ -73,10 +51,6 @@
                 "addonErrors": {
                     "name": "एडऑन त्रुटि दिखाएं",
                     "note": "प्लगइन/थीम त्रुटियों के साथ एक मोडल दिखाता है"
-                },
-                "autoReload": {
-                    "name": "स्वचालित लोड हो रहा है",
-                    "note": "प्लगइन्स और थीम को स्वचालित रूप से लोड, पुनः लोड और अनलोड करता है"
                 },
                 "editAction": {
                     "name": "क्रिया संपादित करें",
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "",
                     "note": ""
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "",
         "wasUnloaded": "",
         "blankSlateHeader": "",
-        "blankSlateMessage": ""
+        "blankSlateMessage": "",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "",
@@ -295,20 +307,27 @@
         "ascending": "",
         "descending": ""
     },
-    "Startup": {
-        "notSupported": "",
-        "incompatibleApp": "",
-        "updateNow": "",
-        "maybeLater": "",
-        "updateAvailable": "",
-        "updateInfo": "",
-        "updateFailed": "",
-        "manualUpdate": "",
-        "jqueryFailed": "",
-        "jqueryFailedDetails": ""
-    },
     "WindowPrefs": {
         "enabledInfo": "",
         "disabledInfo": ""
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
