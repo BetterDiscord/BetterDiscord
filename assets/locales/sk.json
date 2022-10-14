@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Pluginy",
         "themes": "Témy",
-        "customcss": "Custom CSS"
+        "customcss": "Custom CSS",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "Zabráni Discordu prevziať kontrolu nad média tlačidlami po prehratí videa."
                 }
             },
-            "appearance": {
-                "name": "Vzhľad",
-                "minimalMode": {
-                    "name": "Minimálny režim",
-                    "note": "Skryť elementy a zmenšiť veľkosť elementov"
-                },
-                "twentyFourHour": {
-                    "name": "24-Hodinové časové značky",
-                    "note": "Konvertuje 12-hod. časové značky na 24-hod. formát"
-                },
-                "coloredText": {
-                    "name": "Farebný text",
-                    "note": "Zafarbí text každej správy podľa farby role"
-                },
-                "hideGIFButton": {
-                    "name": "Skryť GIF Tlačidlo",
-                    "note": "Skryje tlačidlo na výber GIF-u v textovom poli"
-                },
-                "hideGiftButton": {
-                    "name": "Skryť tlačidlo \"Darovať\"",
-                    "note": "Skryje tlačidlo na darovanie Nitra"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Zrušiť minimálnu velkosť",
@@ -73,10 +51,6 @@
                 "addonErrors": {
                     "name": "Zobraziť chyby doplnkov",
                     "note": "Zobrazí panel s chybou pluginu alebo témy"
-                },
-                "autoReload": {
-                    "name": "Automatické načítanie",
-                    "note": "Automaticky načítava a obnovuje pluginy a témy"
                 },
                 "editAction": {
                     "name": "Úprava akcie",
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "Výpis ladenia",
                     "note": "Zapíše všetko z konzole do súboru debug.log v BetterDiscord zložke"
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "Nepodarilo sa zostaviť.",
         "wasUnloaded": "{{name}} bol odpojený.",
         "blankSlateHeader": "Nenachádza sa žiadny/žiadna {{type}}!",
-        "blankSlateMessage": "Nájdi nejaké na [tejto stránke]({{link}}) a pridaj ich do zložky pre {{type}}."
+        "blankSlateMessage": "Nájdi nejaké na [tejto stránke]({{link}}) a pridaj ich do zložky pre {{type}}.",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "Máte neuložené zmeny pre Custom CSS. Zatvorením tohto okna stratíte všetky zmeny.",
@@ -295,20 +307,27 @@
         "ascending": "Vzostupne",
         "descending": "Zostupne"
     },
-    "Startup": {
-        "notSupported": "Nie je podporované",
-        "incompatibleApp": "BetterDiscord nefunguje s {{app}}. Prosím odinštalujte jednu z nich.",
-        "updateNow": "Aktualizovať teraz",
-        "maybeLater": "Možno neskôr",
-        "updateAvailable": "Aktualizácia dostupná",
-        "updateInfo": "K dispozícii je aktualizácia injektora pre BetterDiscord ({{version}}).\n\nMôžete ju aktualizovať a reštartovať teraz alebo neskôr.",
-        "updateFailed": "Nebolo možné aktualizovať",
-        "manualUpdate": "Nie je možné automaticky aktualizovať. Stiahnite si inštalátor a pre-inštalujte BetterDiscord normálne.\n\n[Stiahnuť Inštalátor](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "Nepodarilo sa načítať jQuery",
-        "jqueryFailedDetails": "Nepodarilo sa načítať jQuery a niektoré doplnky nemusia fungovať správne. Postupujte na svoje vlastné riziko."
-    },
     "WindowPrefs": {
         "enabledInfo": "Táto možnosť si vyžaduje priehľadnú tému, aby správne fungovala. V systéme Windows to môže spôsobiť prerušenie a maximalizáciu vášho aero.\n\nNa to, aby sa prejavila účinnosť, je potrebné reštartovať Discord. Chcete reštartovať teraz?",
         "disabledInfo": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
