@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Plug-ins",
         "themes": "Thema's",
-        "customcss": "Aangepaste CSS"
+        "customcss": "Aangepaste CSS",
+        "updates": ""
     },
     "Collections": {
         "settings": {
@@ -30,29 +31,6 @@
                     "note": "Voorkomt dat Discord uw mediatoetsen kaapt na het afspelen van een video."
                 }
             },
-            "appearance": {
-                "name": "Uiterlijk",
-                "minimalMode": {
-                    "name": "Minimale modus",
-                    "note": "Verberg elementen en verklein de elementen"
-                },
-                "twentyFourHour": {
-                    "name": "24",
-                    "note": "24-uurs tijdstempels"
-                },
-                "coloredText": {
-                    "name": "Gekleurde Tekst",
-                    "note": "Tekstkleur hetzelfde maken als rolkleur"
-                },
-                "hideGIFButton": {
-                    "name": "Verberg GIF knop.",
-                    "note": "Verbergt de GIF-kiezerknop in het tekstgebied"
-                },
-                "hideGiftButton": {
-                    "name": "Cadeauknop verbergen",
-                    "note": "Verbergt de Nitro Gift-knop in het tekstgebied"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "",
@@ -71,10 +49,6 @@
             "addons": {
                 "name": "",
                 "addonErrors": {
-                    "name": "",
-                    "note": ""
-                },
-                "autoReload": {
                     "name": "",
                     "note": ""
                 },
@@ -136,6 +110,42 @@
                 "debugLogs": {
                     "name": "",
                     "note": ""
+                },
+                "devTools": {
+                    "name": "",
+                    "note": ""
+                }
+            },
+            "editor": {
+                "name": "",
+                "lineNumbers": {
+                    "name": "",
+                    "note": ""
+                },
+                "fontSize": {
+                    "name": "",
+                    "note": ""
+                },
+                "minimap": {
+                    "name": "",
+                    "note": ""
+                },
+                "hover": {
+                    "name": "",
+                    "note": ""
+                },
+                "quickSuggestions": {
+                    "name": "",
+                    "note": ""
+                },
+                "renderWhitespace": {
+                    "name": "",
+                    "note": "",
+                    "options": {
+                        "all": "",
+                        "none": "",
+                        "selection": ""
+                    }
                 }
             }
         },
@@ -228,7 +238,9 @@
         "compileError": "",
         "wasUnloaded": "",
         "blankSlateHeader": "",
-        "blankSlateMessage": ""
+        "blankSlateMessage": "",
+        "isEnabled": "",
+        "wasLoaded": ""
     },
     "CustomCSS": {
         "confirmationText": "",
@@ -295,20 +307,27 @@
         "ascending": "",
         "descending": ""
     },
-    "Startup": {
-        "notSupported": "Niet ondersteund",
-        "incompatibleApp": "",
-        "updateNow": "",
-        "maybeLater": "Misschien later ",
-        "updateAvailable": "Er is een update mogelijk",
-        "updateInfo": "",
-        "updateFailed": "",
-        "manualUpdate": "",
-        "jqueryFailed": "",
-        "jqueryFailedDetails": ""
-    },
     "WindowPrefs": {
         "enabledInfo": "",
         "disabledInfo": ""
+    },
+    "Notices": {
+        "moreInfo": ""
+    },
+    "Updater": {
+        "updateFailed": "",
+        "updateFailedMessage": "",
+        "updateSuccessful": "",
+        "updateAvailable": "",
+        "addonUpdatesAvailable": "",
+        "addonUpdated": "",
+        "checking": "",
+        "finishedChecking": "",
+        "checkForUpdates": "",
+        "updateAll": "",
+        "noUpdatesAvailable": "",
+        "versionAvailable": "",
+        "upToDateBlankslate": "",
+        "updateButton": ""
     }
 }
