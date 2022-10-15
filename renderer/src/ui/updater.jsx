@@ -1,5 +1,5 @@
 import {Config} from "data";
-import {React, Events} from "modules";
+import {React, Events, Strings} from "modules";
 import Drawer from "./settings/drawer";
 import SettingItem from "./settings/components/item";
 import SettingsTitle from "./settings/title";
@@ -10,9 +10,9 @@ import Checkmark from "./icons/check";
 class CoreUpdaterPanel extends React.Component {
     render() {
         return <Drawer name="BetterDiscord" collapsible={true}>
-            <SettingItem name={`Core v${Config.version}`} note={this.props.hasUpdate ? `Version ${this.props.remoteVersion} now available!` : "No updates available."} inline={true} id={"core-updater"}>
+            <SettingItem name={`Core v${Config.version}`} note={this.props.hasUpdate ? Strings.Updater.versionAvailable.format({version: this.props.remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
                 {!this.props.hasUpdate && <div className="bd-filled-checkmark"><Checkmark /></div>}
-                {this.props.hasUpdate && <button className="bd-button">Update!</button>}
+                {this.props.hasUpdate && <button className="bd-button" onClick={this.props.update}>{Strings.Updater.updateButton}</button>}
             </SettingItem>
         </Drawer>;
     }
@@ -22,7 +22,7 @@ class NoUpdates extends React.Component {
     render() {
         return <div className="bd-empty-updates">
             <Checkmark size="48px" />
-            {`All of your ${this.props.type} seem to be up to date!`}
+            {Strings.Updater.upToDateBlankslate.format({type: this.props.type})}
         </div>;
     }
 }
@@ -30,13 +30,13 @@ class NoUpdates extends React.Component {
 class AddonUpdaterPanel extends React.Component {
     render() {
         const filenames = this.props.pending;
-        return <Drawer name={this.props.type} collapsible={true} button={filenames.length ? {title: "Update All!", onClick: () => this.props.updateAll(this.props.type)} : null}>
+        return <Drawer name={Strings.Panels[this.props.type]} collapsible={true} button={filenames.length ? {title: Strings.Updater.updateAll, onClick: () => this.props.updateAll(this.props.type)} : null}>
             {!filenames.length && <NoUpdates type={this.props.type} />}
             {filenames.map(f => {
                 const info = this.props.updater.cache[f];
                 const addon = this.props.updater.manager.addonList.find(a => a.filename === f);
-                return <SettingItem name={`${addon.name} v${addon.version}`} note={`Version ${info.version} now available!`} inline={true} id={addon.name}>
-                        <button className="bd-button" onClick={() => this.props.update(this.props.type, f)}>Update!</button>
+                return <SettingItem name={`${addon.name} v${addon.version}`} note={Strings.Updater.versionAvailable.format({version: info.version})} inline={true} id={addon.name}>
+                        <button className="bd-button" onClick={() => this.props.update(this.props.type, f)}>{Strings.Updater.updateButton}</button>
                     </SettingItem>;
         })}
         </Drawer>;
@@ -55,6 +55,7 @@ export default class UpdaterPanel extends React.Component {
 
         this.checkForUpdates = this.checkForUpdates.bind(this);
         this.updateAddon = this.updateAddon.bind(this);
+        this.updateCore = this.updateCore.bind(this);
         this.updateAllAddons = this.updateAllAddons.bind(this);
         this.update = this.update.bind(this);
     }
@@ -79,11 +80,11 @@ export default class UpdaterPanel extends React.Component {
     }
 
     async checkForUpdates() {
-        Toasts.info("Checking for updates!");
+        Toasts.info(Strings.Updater.checking);
         await this.checkCoreUpdate();
         await this.checkAddons("plugins");
         await this.checkAddons("themes");
-        Toasts.info("Finished checking for updates!");
+        Toasts.info(Strings.Updater.finishedChecking);
     }
 
     async checkCoreUpdate() {
@@ -120,8 +121,8 @@ export default class UpdaterPanel extends React.Component {
 
     render() {
         return [
-            <SettingsTitle text="Updates" button={{title: "Check For Updates!", onClick: this.checkForUpdates}} />,
-            <CoreUpdaterPanel remoteVersion={this.props.coreUpdater.remoteVersion} hasUpdate={this.state.hasCoreUpdate} />,
+            <SettingsTitle text={Strings.Panels.updates} button={{title: Strings.Updater.checkForUpdates, onClick: this.checkForUpdates}} />,
+            <CoreUpdaterPanel remoteVersion={this.props.coreUpdater.remoteVersion} hasUpdate={this.state.hasCoreUpdate} update={this.updateCore} />,
             <AddonUpdaterPanel type="plugins" pending={this.state.plugins} update={this.updateAddon} updateAll={this.updateAllAddons} updater={this.props.pluginUpdater} />,
             <AddonUpdaterPanel type="themes" pending={this.state.themes} update={this.updateAddon} updateAll={this.updateAllAddons} updater={this.props.themeUpdater} />,
         ];

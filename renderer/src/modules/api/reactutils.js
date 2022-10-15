@@ -1,4 +1,3 @@
-import Utilities from "../utilities";
 import DiscordModules from "../discordmodules";
 
 /**
@@ -47,11 +46,11 @@ const ReactUtils = {
             return (name !== null && !!(nameFilter.includes(name) ^ excluding));
         }
         
-        let curr = ReactUtils.getReactInstance(node);
-        for (curr = curr && curr.return; !Utilities.isNil(curr); curr = curr.return) {
-            if (Utilities.isNil(curr)) continue;
+        let curr = ReactUtils.getInternalInstance(node);
+        for (curr = curr && curr.return; curr !== null; curr = curr.return) {
+            if (curr === null) continue;
             const owner = curr.stateNode;
-            if (!Utilities.isNil(owner) && !(owner instanceof HTMLElement) && classFilter(curr) && filter(owner)) return owner;
+            if (owner !== null && !(owner instanceof HTMLElement) && classFilter(curr) && filter(owner)) return owner;
         }
         
         return null;

@@ -26,34 +26,11 @@
                     "note": "Visar en liten notification för viktig information"
                 }
             },
-            "appearance": {
-                "name": "Utseende",
-                "twentyFourHour": {
-                    "name": "24-Timmars Tidsstämpel",
-                    "note": "Visar 24-timmars tidsstämplar istället för AM/PM"
-                },
-                "minimalMode": {
-                    "name": "Minimalt Läge",
-                    "note": "Gömmer och förminskar komponenter"
-                },
-                "coloredText": {
-                    "name": "Färgad Text",
-                    "note": "Gör att text får samma färg som rollfärgen"
-                }
-            },
             "addons": {
                 "name": "Tilläggshanterare",
                 "addonErrors": {
                     "name": "Visa tilläggsfel",
                     "note": "Visar en modal med tillägg- och temafel"
-                },
-                "autoScroll": {
-                    "name": "Skrolla till inställningar Scroll To Settings",
-                    "note": "Skrollar automatisks till ett tilläggs inställningar när knappen är tryckt (endast om inställningarna är utanför vy)"
-                },
-                "autoReload": {
-                    "name": "Automatisk Laddning",
-                    "note": "Laddar automatisk in, om och ur tillägg och teman"
                 }
             },
             "customcss": {
@@ -76,15 +53,7 @@
                 }
             },
             "developer": {
-                "name": "Utvecklarinställningar",
-                "developerMode": {
-                    "name": "Utvecklarläge",
-                    "note": "Gör det möjligt att aktivera avlusare med F8"
-                },
-                "copySelector": {
-                    "name": "Kopiera Selektor",
-                    "note": "Lägger till valet \"Kopiera Selektor\" i kontext menyn när utvecklarläge är aktiverat"
-                }
+                "name": "Utvecklarinställningar"
             },
             "window": {
                 "name": "Fönsterinställningar",
@@ -129,26 +98,12 @@
             },
             "categories": {
                 "name": "Kategorier",
-                "twitch": {
-                    "name": "Twitch",
-                    "note": "Visa Twitch global & prenumerant emotes"
-                },
-                "ffz": {
-                    "name": "FrankerFaceZ",
-                    "note": "Visa emotes från FFZ"
-                },
                 "bttv": {
                     "name": "BetterTTV",
                     "note": "Visa emotes från BTTV"
                 }
             }
         }
-    },
-    "Emotes": {
-        "downloading": "Laddar ner emotes i backgrunden, ladda inte om",
-        "downloaded": "Alla emotes laddades ner utan problem.",
-        "clearEmotes": "Rensa Emote Data",
-        "favoriteAction": "Favorit!"
     },
     "CustomCSS": {
         "confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",
@@ -158,6 +113,10 @@
         "openDetached": "Koppla Loss Fönster",
         "settings": "Inställningar för redigerare",
         "editorTitle": "Egen CSS Redigerare"
+    },
+    "Emotes": {
+        "clearEmotes": "Rensa Emote Data",
+        "favoriteAction": "Favorit!"
     },
     "PublicServers": {
         "button": "Publik",
@@ -176,7 +135,6 @@
         "query": "för {{query}}"
     },
     "Modals": {
-        "confirmClose": "Är du säker?",
         "okay": "Okej",
         "cancel": "Avbryt",
         "name": "Namn",

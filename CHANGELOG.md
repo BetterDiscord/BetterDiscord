@@ -2,6 +2,24 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.8.1
+
+### Added
+- A script to automatically grab the new translations from POEditor
+- Several new translations
+
+### Removed
+
+### Changed
+- Moved some hardcoded strings to be part of the translation system
+- Several updated translations
+
+### Fixed
+- Fixed context menu patcher not patching consistently
+- Fixed context menu toggle item UI not updating
+- Fixed an issue with the bound API checking the wrong arguments
+- Fixed `getOwnerInstance` calling the wrong functions internally
+
 ## 1.8.0
 
 ### Added

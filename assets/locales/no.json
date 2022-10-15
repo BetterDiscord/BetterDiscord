@@ -1,7 +1,5 @@
 {
     "Panels": {
-        "plugins": "",
-        "themes": "",
         "customcss": "Tilpasset CSS"
     },
     "Collections": {
@@ -10,132 +8,19 @@
             "general": {
                 "name": "Generell",
                 "emotes": {
-                    "name": "Emote-system",
-                    "note": ""
+                    "name": "Emote-system"
                 },
                 "publicServers": {
-                    "name": "Offentlige Servere",
-                    "note": ""
-                },
-                "voiceDisconnect": {
-                    "name": "",
-                    "note": ""
+                    "name": "Offentlige Servere"
                 },
                 "showToasts": {
-                    "name": "Vis Toasts",
-                    "note": ""
-                },
-                "mediaKeys": {
-                    "name": "",
-                    "note": ""
-                }
-            },
-            "appearance": {
-                "name": "Utseende",
-                "minimalMode": {
-                    "name": "Minimalistisk Modus",
-                    "note": ""
-                },
-                "twentyFourHour": {
-                    "name": "24-Timers Tidsstempler",
-                    "note": ""
-                },
-                "coloredText": {
-                    "name": "Farget Tekst",
-                    "note": ""
-                },
-                "hideGIFButton": {
-                    "name": "",
-                    "note": ""
-                },
-                "hideGiftButton": {
-                    "name": "",
-                    "note": ""
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "",
-                    "note": ""
-                },
-                "name": "",
-                "transparency": {
-                    "name": "",
-                    "note": ""
-                },
-                "frame": {
-                    "name": "",
-                    "note": ""
-                }
-            },
-            "addons": {
-                "name": "",
-                "addonErrors": {
-                    "name": "",
-                    "note": ""
-                },
-                "autoReload": {
-                    "name": "",
-                    "note": ""
-                },
-                "editAction": {
-                    "name": "",
-                    "note": "",
-                    "options": {
-                        "detached": "",
-                        "system": ""
-                    }
+                    "name": "Vis Toasts"
                 }
             },
             "customcss": {
                 "name": "Tilpasset CSS",
                 "customcss": {
-                    "name": "Tilpasset CSS",
-                    "note": ""
-                },
-                "liveUpdate": {
-                    "name": "",
-                    "note": ""
-                },
-                "startDetached": {
-                    "name": "",
-                    "note": ""
-                },
-                "nativeOpen": {
-                    "name": "",
-                    "note": ""
-                },
-                "openAction": {
-                    "name": "",
-                    "note": "",
-                    "options": {
-                        "settings": "",
-                        "detached": "",
-                        "system": ""
-                    }
-                }
-            },
-            "developer": {
-                "name": "",
-                "debuggerHotkey": {
-                    "name": "",
-                    "note": ""
-                },
-                "reactDevTools": {
-                    "name": "",
-                    "note": ""
-                },
-                "inspectElement": {
-                    "name": "",
-                    "note": ""
-                },
-                "devToolsWarning": {
-                    "name": "",
-                    "note": ""
-                },
-                "debugLogs": {
-                    "name": "",
-                    "note": ""
+                    "name": "Tilpasset CSS"
                 }
             }
         },
@@ -144,171 +29,52 @@
             "general": {
                 "name": "Generell",
                 "download": {
-                    "name": "Last ned Emotes",
-                    "note": ""
-                },
-                "emoteMenu": {
-                    "name": "",
-                    "note": ""
-                },
-                "hideEmojiMenu": {
-                    "name": "",
-                    "note": ""
-                },
-                "autoCaps": {
-                    "name": "",
-                    "note": ""
-                },
-                "modifiers": {
-                    "name": "",
-                    "note": ""
-                },
-                "animateOnHover": {
-                    "name": "",
-                    "note": ""
+                    "name": "Last ned Emotes"
                 }
             },
             "categories": {
                 "name": "Kategorier",
-                "twitchglobal": {
-                    "name": "",
-                    "note": ""
-                },
-                "twitchsubscriber": {
-                    "name": "",
-                    "note": ""
-                },
                 "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": ""
+                    "name": "FrankerFaceZ"
                 },
                 "bttv": {
-                    "name": "BetterTTV",
-                    "note": ""
+                    "name": "BetterTTV"
                 }
             }
         }
     },
     "Addons": {
-        "title": "",
-        "byline": "",
-        "openFolder": "",
-        "reload": "",
         "addonSettings": "Innstillinger",
         "website": "Nettsted",
-        "source": "",
-        "invite": "",
         "donate": "Donere",
         "patreon": "Patreon",
         "name": "Navn",
         "author": "Forfatter",
         "version": "Versjon",
-        "added": "",
-        "modified": "",
-        "search": "",
         "editAddon": "Redigere",
-        "deleteAddon": "Slett",
-        "confirmDelete": "",
-        "confirmationText": "",
-        "enabled": "",
-        "disabled": "",
-        "couldNotEnable": "",
-        "couldNotDisable": "",
-        "couldNotStart": "",
-        "couldNotStop": "",
-        "settingsError": "",
-        "methodError": "",
-        "unknownAuthor": "",
-        "noDescription": "",
-        "alreadyExists": "",
-        "alreadWatching": "",
-        "metaError": "",
-        "missingNameData": "",
-        "metaNotFound": "",
-        "compileError": "",
-        "wasUnloaded": "",
-        "blankSlateHeader": "",
-        "blankSlateMessage": ""
+        "deleteAddon": "Slett"
     },
     "CustomCSS": {
-        "confirmationText": "",
         "update": "Oppdater",
-        "save": "Lagre",
-        "openNative": "",
-        "openDetached": "",
-        "settings": "",
-        "editorTitle": ""
+        "save": "Lagre"
     },
     "Emotes": {
-        "loading": "",
-        "loaded": "",
-        "clearEmotes": "",
-        "favoriteAction": "Favoritt!",
-        "downloadFailed": "",
-        "failureMessage": ""
+        "favoriteAction": "Favoritt!"
     },
     "PublicServers": {
         "button": "offentlig",
-        "join": "",
-        "joining": "",
-        "joined": "",
-        "loading": "",
-        "loadMore": "",
-        "notConnected": "",
-        "connectionRequired": "",
-        "connectionError": "",
-        "connectionErrorMessage": "",
-        "pagination": "",
-        "search": "Søk",
-        "connect": "",
-        "reconnect": "",
-        "categories": "",
-        "keywords": "",
-        "connection": "",
-        "results": "",
-        "query": ""
+        "search": "Søk"
     },
     "Modals": {
         "confirmAction": "Er Du Sikker?",
         "okay": "Okay",
-        "done": "",
-        "cancel": "",
-        "nevermind": "",
-        "close": "",
-        "name": "",
-        "message": "",
-        "error": "",
-        "addonErrors": "",
-        "restartRequired": "",
         "restartNow": "Start på nytt nå",
-        "restartLater": "Start på nytt senere",
-        "additionalInfo": "",
-        "restartPrompt": ""
-    },
-    "ReactDevTools": {
-        "notFound": "",
-        "notFoundDetails": ""
+        "restartLater": "Start på nytt senere"
     },
     "Sorting": {
-        "sortBy": "Sorter etter",
-        "order": "",
-        "ascending": "",
-        "descending": ""
-    },
-    "Startup": {
-        "notSupported": "Ikke Støttet",
-        "incompatibleApp": "BetterDiscord fungerer ikke med {{app}}. Avinstaller en av dem. ",
-        "updateNow": "Oppdater Nå",
-        "maybeLater": "Kanskje Senere",
-        "updateAvailable": "Oppdatering Tilgjengelig",
-        "updateInfo": "Det er en oppdatering tilgjengelig for BetterDiscords injektor ({{version}})\n\nDu kan enten oppdatere å starte på nytt nå, eller senere.",
-        "updateFailed": "Kunne Ikke Oppdatere",
-        "manualUpdate": "",
-        "jqueryFailed": "",
-        "jqueryFailedDetails": ""
+        "sortBy": "Sorter etter"
     },
     "WindowPrefs": {
-        "enabledInfo": "",
         "disabledInfo": "For å kunne tre i kraft må Discord startes på nytt. Vil du starte på nytt nå?"
     }
 }

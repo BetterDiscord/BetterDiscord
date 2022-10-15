@@ -60,7 +60,7 @@ export default new class PublicServers extends Builtin {
                         {
                             id: "public-servers-button",
                             onClick: () => this.openPublicServers(),
-                            text: "Public Servers",
+                            text: Strings.PublicServers.button,
                             icon: () => React.createElement(Globe, {color: "currentColor"})
                         }
                     )
@@ -93,8 +93,10 @@ export default new class PublicServers extends Builtin {
         aSlot.dataset.listItemId = "public-servers";
 
         // Remove any badges
-        const badge = newButton.querySelector(`[class*="premiumTrial"]`);
-        badge?.remove?.();
+        const premiumBadge = newButton.querySelector(`[class*="premiumTrial"]`);
+        premiumBadge?.remove?.();
+        const numberBadge = newButton.querySelector(`[class*="numberBadge-"]`);
+        numberBadge?.remove?.();
 
         // Render our icon in the avatar slot
         const avatarSlot = newButton.querySelector(`[class*="avatar-"]`);
@@ -104,15 +106,18 @@ export default new class PublicServers extends Builtin {
 
         // Replace the existing name
         const nameSlot = newButton.querySelector(`[class*="name-"]`);
-        nameSlot.textContent = "Public Servers";
+        nameSlot.textContent = Strings.PublicServers.button;
 
         // Insert before the header, end of the list
         header.parentNode.insertBefore(newButton, header);
+
+        this.button = newButton;
     }
 
     disabled() {
         this.unpatchAll();
-        // DOM.query("#bd-pub-li").remove();
+        this.button?.remove?.();
+        document.querySelector("#public-servers-button")?.parentElement?.parentElement?.remove?.();
     }
 
     async _appendButton() {
@@ -129,13 +134,5 @@ export default new class PublicServers extends Builtin {
 
     openPublicServers() {
         LayerManager.pushLayer(() => DiscordModules.React.createElement(PublicServersMenu, {close: LayerManager.popLayer}));
-    }
-
-    get button() {
-        const btn = DOMManager.parseHTML(`<div id="bd-pub-li" class="${DiscordModules.GuildClasses.listItem}">`);
-        const label = DOMManager.parseHTML(`<div id="bd-pub-button" class="${DiscordModules.GuildClasses.wrapper + " " + DiscordModules.GuildClasses.circleIconButton}">${Strings.PublicServers.button}</div>`);
-        label.addEventListener("click", () => {this.openPublicServers();});
-        btn.append(label);
-        return btn;
     }
 };

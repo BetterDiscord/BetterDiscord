@@ -35,10 +35,10 @@ const makeRequest = (url, options, callback, setReq) => {
         });
     });
     req.end();
-}
+};
 
 const request = function (url, options, callback) {
-    let responseObject = undefined;
+    let responseObject = null;
     let reqObject = null;
     let pipe = null;
     
@@ -56,7 +56,8 @@ const request = function (url, options, callback) {
         pipe(fsStream) {
             if (!responseObject) {
                 pipe = fsStream;
-            } else {
+            }
+            else {
                 responseObject.pipe(fsStream);
             }
         }

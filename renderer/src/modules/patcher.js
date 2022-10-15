@@ -106,11 +106,12 @@ export default class Patcher {
             revert: () => { // Calling revert will destroy any patches added to the same module after this
                 if (patch.getter) {
                     Object.defineProperty(patch.module, functionName, {
+                        ...Object.getOwnPropertyDescriptor(patch.module, functionName),
                         get: () => patch.originalFunction,
-                        configurable: true,
-                        enumerable: true
+                        set: undefined
                     });
-                } else {
+                }
+                else {
                     patch.module[patch.functionName] = patch.originalFunction;
                 }
 
@@ -125,15 +126,18 @@ export default class Patcher {
 
         const descriptor = Object.getOwnPropertyDescriptor(module, functionName);
 
-        if (descriptor.get) {
+        if (descriptor?.get) {
             patch.getter = true;
             Object.defineProperty(module, functionName, {
-                get: () => patch.proxyFunction,
-                set: value => (patch.originalFunction = value),
                 configurable: true,
-                enumerable: true
+                enumerable: true,
+                ...descriptor,
+                get: () => patch.proxyFunction,
+                // eslint-disable-next-line no-setter-return
+                set: value => (patch.originalFunction = value)
             });
-        } else {
+        }
+        else {
             patch.getter = false;
             module[functionName] = patch.proxyFunction;
         }
@@ -171,7 +175,7 @@ export default class Patcher {
      *
      * @callback module:Patcher~patchCallback
      * @param {object} thisObject - `this` in the context of the original function.
-     * @param {arguments} arguments - The original arguments of the original function.
+     * @param {args} args - The original arguments of the original function.
      * @param {(function|*)} extraValue - For `instead` patches, this is the original function from the module. For `after` patches, this is the return value of the function.
      * @return {*} Makes sense only when using an `instead` or `after` patch. If something other than `undefined` is returned, the returned value replaces the value of `returnValue`. If used for `before` the return value is ignored.
      */
@@ -242,7 +246,9 @@ export default class Patcher {
         if (!module) return null;
         if (!module[functionName] && forcePatch) module[functionName] = function() {};
         if (!(module[functionName] instanceof Function)) return null;
-        if (!Object.getOwnPropertyDescriptor(module, functionName)?.configurable) {
+
+        const descriptor = Object.getOwnPropertyDescriptor(module, functionName);
+        if (descriptor && !descriptor?.configurable) {
             Logger.err("Patcher", `Cannot patch ${functionName} of Module, property is readonly.`);
             return null;
         }

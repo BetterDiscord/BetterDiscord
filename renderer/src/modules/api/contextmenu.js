@@ -30,7 +30,7 @@ const MenuComponents = (() => {
 const ContextMenuActions = (() => {
     const out = {};
 
-    const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(m => typeof m === "function" && m.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
+    const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
 
     for (const key of Object.keys(ActionsModule)) {
         if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
@@ -51,10 +51,10 @@ class MenuPatcher {
 
     static initialize() {
         const {module, key} = (() => {
-            const module = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
-            const key = Object.keys(module).find(key => module[key].length === 3);
+            const foundModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
+            const foundKey = Object.keys(foundModule).find(k => foundModule[k].length === 3);
 
-            return {module, key};
+            return {module: foundModule, key: foundKey};
         })();
 
         Patcher.before("ContextMenuPatcher", module, key, (_, methodArguments) => {
@@ -83,19 +83,20 @@ class MenuPatcher {
 
         const proxyFunction = this.subPatches.get(target[method]) ?? (() => {
             const originalFunction = target[method];
+            const depth = ++iteration;
             function patch() {
                 const res = originalFunction.apply(this, arguments);
 
                 if (!res) return res;
 
-                if (res.props?.navId) {
-                    MenuPatcher.runPatches(res.props.navId, res, arguments[0]);
+                if (res.props?.navId ?? res.props?.children?.props?.navId) {
+                    MenuPatcher.runPatches(res.props.navId ?? res.props?.children?.props?.navId, res, arguments[0]);
                 }
                 else {
                     const layer = res.props.children ? res.props.children : res;
 
                     if (typeof layer?.type == "function") {
-                        MenuPatcher.patchRecursive(layer, "type", ++iteration);
+                        MenuPatcher.patchRecursive(layer, "type", depth);
                     }
                 }
 
@@ -134,6 +135,7 @@ class MenuPatcher {
         this.patches[id]?.delete(callback);
     }
 }
+
 
 /**
  * `ContextMenu` is a module to help patch and create context menus. Instance is accessible through the {@link BdApi}.
@@ -211,6 +213,17 @@ class ContextMenu {
         if (props.danger) props.color = "colorDanger";
         if (props.onClick && !props.action) props.action = props.onClick;
         props.extended = true;
+
+        // This is done to make sure the UI actually displays the on/off correctly
+        if (type === "toggle") {
+            const [active, doToggle] = React.useState(props.checked || false);
+            const originalAction = props.action;
+            props.checked = active;
+            props.action = function(ev) {
+                originalAction(ev);
+                doToggle(!active);
+            };
+        }
         
         return React.createElement(Component, props);
     }

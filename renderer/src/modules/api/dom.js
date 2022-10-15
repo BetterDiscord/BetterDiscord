@@ -35,8 +35,8 @@ class DOM {
      */
     addStyle(id, css) {
         if (this.#callerName && arguments.length === 2) {
-            id = arguments[1];
-            css = arguments[2];
+            id = arguments[0];
+            css = arguments[1];
         }
         else if (this.#callerName) {
             css = id;
@@ -53,7 +53,7 @@ class DOM {
      */
     removeStyle(id) {
         if (this.#callerName && arguments.length === 1) {
-            id = arguments[1];
+            id = arguments[0];
         }
         else if (this.#callerName) {
             id = this.#callerName;

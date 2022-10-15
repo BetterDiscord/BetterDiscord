@@ -107,11 +107,11 @@ export default new class PluginManager extends AddonManager {
             }
             catch (error) {
                 this.state[addon.id] = false;
-                return new AddonError(addon.name, addon.filename, "load() could not be fired.", {message: error.message, stack: error.stack}, this.prefix);
+                return new AddonError(addon.name, addon.filename, Strings.Addons.methodError.format({method: "load()"}), {message: error.message, stack: error.stack}, this.prefix);
             }
         }
         catch (error) {
-            return new AddonError(addon.name, addon.filename, "Could not be constructed.", {message: error.message, stack: error.stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, Strings.Addons.methodError.format({method: "Plugin constructor()"}), {message: error.message, stack: error.stack}, this.prefix);
         }
     }
 
@@ -130,7 +130,7 @@ export default new class PluginManager extends AddonManager {
             return addon;
         }
         catch (err) {
-            throw new AddonError(addon.name || addon.filename, module.filename, "Plugin could not be compiled", {message: err.message, stack: err.stack}, this.prefix);
+            throw new AddonError(addon.name || addon.filename, module.filename, Strings.Addons.compileError, {message: err.message, stack: err.stack}, this.prefix);
         }
     }
 
