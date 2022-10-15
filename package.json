@@ -14,10 +14,12 @@
         "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint-js",
         "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
         "dist": "pnpm run build-prod && node scripts/pack.js",
-        "api": "jsdoc -X -r renderer/src/modules/api/ > jsdoc-ast.json"
+        "api": "jsdoc -X -r renderer/src/modules/api/ > jsdoc-ast.json",
+        "translations": "node -r dotenv/config scripts/translations.js"
     },
     "devDependencies": {
         "asar": "^3.2.0",
+        "dotenv": "^16.0.3",
         "eslint": "^8.23.0",
         "eslint-plugin-react": "^7.31.6",
         "mocha": "^10.0.0",

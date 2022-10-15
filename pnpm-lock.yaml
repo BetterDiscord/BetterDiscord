@@ -5,6 +5,7 @@ importers:
   .:
     specifiers:
       asar: ^3.2.0
+      dotenv: ^16.0.3
       eslint: ^8.23.0
       eslint-plugin-react: ^7.31.6
       mocha: ^10.0.0
@@ -12,6 +13,7 @@ importers:
       webpack-cli: ^4.10.0
     devDependencies:
       asar: 3.2.0
+      dotenv: 16.0.3
       eslint: 8.23.0
       eslint-plugin-react: 7.31.6_eslint@8.23.0
       mocha: 10.0.0
@@ -2230,6 +2232,11 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       esutils: 2.0.3
+    dev: true
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: true
 
   /electron-to-chromium/1.4.185:
