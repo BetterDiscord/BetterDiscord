@@ -1,80 +1,333 @@
 {
     "Panels": {
-        "customcss": "Tilpasset CSS"
+        "plugins": "Plugins",
+        "themes": "Themes",
+        "customcss": "Custom CSS",
+        "updates": "Oppdateringer"
     },
     "Collections": {
         "settings": {
-            "name": "Innstillinger",
+            "name": "Instillinger",
             "general": {
-                "name": "Generell",
+                "name": "General",
                 "emotes": {
-                    "name": "Emote-system"
+                    "name": "Emot system",
+                    "note": "Aktiverer BDs emotesystem"
                 },
                 "publicServers": {
-                    "name": "Offentlige Servere"
+                    "name": "Offentlige servere",
+                    "note": "Vis offentlige server knappen"
+                },
+                "voiceDisconnect": {
+                    "name": "Voice Disconnect",
+                    "note": "Koble fra voice serveren når du lukker Discord"
                 },
                 "showToasts": {
-                    "name": "Vis Toasts"
+                    "name": "Show Toasts",
+                    "note": "Viser et lite varsel for viktig informasjon"
+                },
+                "mediaKeys": {
+                    "name": "Deaktiver media taster",
+                    "note": "Forhindrer Discord fra å kapre mediastene dine etter å ha spilt en video."
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Fjern minimumsstørrelse",
+                    "note": "Fjerner Discords tvangs minimum vindusstørrelse på 940x500"
+                },
+                "name": "Vinduspreferanser",
+                "transparency": {
+                    "name": "Enable Gjennomsiktighet",
+                    "note": "Gjør det mulig for hovedvinduet å se gjennom (krever omstart)"
+                },
+                "frame": {
+                    "name": "Vinduskarm",
+                    "note": "Legger den naturlige OS -vindusrammen til hovedvinduet"
+                }
+            },
+            "addons": {
+                "name": "Addon Manager",
+                "addonErrors": {
+                    "name": "Vis addon -feil",
+                    "note": "Viser en modal med plugin/temafeil"
+                },
+                "editAction": {
+                    "name": "Rediger Handling",
+                    "note": "Hvor plugins og temaer vises når du redigerer",
+                    "options": {
+                        "detached": "Frittliggende vindu",
+                        "system": "Systemredaktør"
+                    }
                 }
             },
             "customcss": {
-                "name": "Tilpasset CSS",
+                "name": "Custom CSS",
                 "customcss": {
-                    "name": "Tilpasset CSS"
+                    "name": "Custom CSS",
+                    "note": "Aktiverer den tilpassede CSS -fanen"
+                },
+                "liveUpdate": {
+                    "name": "Live oppdatering",
+                    "note": "Oppdaterer CSS mens du skriver"
+                },
+                "startDetached": {
+                    "name": "Start løsrevet",
+                    "note": "Å klikke på den tilpassede CSS -fanen åpner redigereren i et eget vindu"
+                },
+                "nativeOpen": {
+                    "name": "Åpne i Native Editor",
+                    "note": "Å klikke på den tilpassede CSS -fanen åpner din tilpassede CSS i din native Redaktør"
+                },
+                "openAction": {
+                    "name": "Redaktørplassering",
+                    "note": "Hvor tilpasset CSS skal åpne som standard",
+                    "options": {
+                        "settings": "Innstillingsmenyen",
+                        "detached": "Frittliggende vindu",
+                        "system": "Systemredaktør"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Utviklerinnstillinger",
+                "debuggerHotkey": {
+                    "name": "Debugger Hurtigtast",
+                    "note": "Lar aktivere feilsøking når du trykker på F8 med DevTools åpne"
+                },
+                "reactDevTools": {
+                    "name": "React Developer Tools",
+                    "note": "Injiserer din lokale installasjon av React Developer Tools i Discord"
+                },
+                "inspectElement": {
+                    "name": "Inspiser Elementets Hurtigtast",
+                    "note": "Aktiverer Inspect Element -hurtigtasten (Ctrl + Shift + C) som er vanlig i de fleste nettlesere"
+                },
+                "devToolsWarning": {
+                    "name": "Stopp Devtols Advarsel",
+                    "note": "Stopper uenighet fra å skrive ut sin \"hold opp!\" Meldingen"
+                },
+                "debugLogs": {
+                    "name": "Debug Logs",
+                    "note": "Utgir alt fra konsollen til Debug.log -filen i BetterDiscord -mappen"
+                },
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "Muliggjør å bytte DevTools med Ctrl+Shift+I"
+                }
+            },
+            "editor": {
+                "name": "Redaktørpreferanser",
+                "lineNumbers": {
+                    "name": "Linjetall",
+                    "note": "Muliggjør å vise linjenumre på siden av redaktøren"
+                },
+                "fontSize": {
+                    "name": "Skriftstørrelse",
+                    "note": "Størrelse på skriften (PT) som skal brukes i redaktøren"
+                },
+                "minimap": {
+                    "name": "Minimap",
+                    "note": "Muliggjør å vise koden minimap på siden av redaktøren"
+                },
+                "hover": {
+                    "name": "Referanseverktøytips",
+                    "note": "Aktiverer å vise referanseverktøytipsene når du svever over regler og utvalgere"
+                },
+                "quickSuggestions": {
+                    "name": "Raske Forslag",
+                    "note": "Muliggjør å vise de autofullføringsforslagene mens du skriver"
+                },
+                "renderWhitespace": {
+                    "name": "Vis Hvitrom",
+                    "note": "Når Hvitrom skal vises av redaktøren",
+                    "options": {
+                        "all": "Alltid",
+                        "none": "Aldri",
+                        "selection": "Utvalg"
+                    }
                 }
             }
         },
         "emotes": {
-            "name": "Emotes",
+            "name": "Emote",
             "general": {
                 "name": "Generell",
                 "download": {
-                    "name": "Last ned Emotes"
+                    "name": "Last ned Emote",
+                    "note": "Last ned Emote når de er utdaterte"
+                },
+                "emoteMenu": {
+                    "name": "Emote Meny",
+                    "note": "Vis Twitch/Favorite emote i Emote -menyen"
+                },
+                "hideEmojiMenu": {
+                    "name": "Gjem Emoji Meny",
+                    "note": "Skjuler Discords emoji meny når du bruker Emote menyen"
+                },
+                "autoCaps": {
+                    "name": "Emote Autokapitalisering",
+                    "note": "Autokapitaliser emote kommandoer"
+                },
+                "modifiers": {
+                    "name": "Vis emotemodifiserere",
+                    "note": "Aktiver emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animer på svevet",
+                    "note": "Bare animer emotemodifisererne på sveve"
                 }
             },
             "categories": {
                 "name": "Kategorier",
+                "twitchglobal": {
+                    "name": "Twitch Globals",
+                    "note": "Vis Twitch Global Emotes"
+                },
+                "twitchsubscriber": {
+                    "name": "Twitch Abonnenter",
+                    "note": "Vis Twitch Abonnent emoter"
+                },
                 "frankerfacez": {
-                    "name": "FrankerFaceZ"
+                    "name": "FrankerFaceZ",
+                    "note": "Vis emotes fra FFZ"
                 },
                 "bttv": {
-                    "name": "BetterTTV"
+                    "name": "BetterTTV",
+                    "note": "Vis emotes fra BTTV"
                 }
             }
         }
     },
     "Addons": {
-        "addonSettings": "Innstillinger",
-        "website": "Nettsted",
-        "donate": "Donere",
+        "title": "{{name}} v{{version}} av {{author}}",
+        "byline": "av {{author}}",
+        "openFolder": "Open {{type}} Mappe",
+        "reload": "Last på nytt",
+        "addonSettings": "Instillinger",
+        "website": "Nettside",
+        "source": "Kilde",
+        "invite": "Støtteserver",
+        "donate": "Doner",
         "patreon": "Patreon",
         "name": "Navn",
         "author": "Forfatter",
         "version": "Versjon",
-        "editAddon": "Redigere",
-        "deleteAddon": "Slett"
+        "added": "Dato lagt til",
+        "modified": "Dato endret",
+        "search": "Søk {{type}}",
+        "editAddon": "Rediger",
+        "deleteAddon": "Slett",
+        "confirmDelete": "Er du sikker på at du vil slette {{name}}?",
+        "confirmationText": "Du har ikke-lagrede endringer i {{name}}. Å lukke dette vinduet vil du miste alle endringene.",
+        "enabled": "{{name}} har blitt aktivert.",
+        "disabled": "{{name}} har blitt deaktivert.",
+        "couldNotEnable": "{{name}} Kunne ikke være aktivert.",
+        "couldNotDisable": "{{name}} kunne ikke deaktiveres.",
+        "couldNotStart": "{{name}} kunne ikke startes.",
+        "couldNotStop": "{{name}} kunne ikke stoppes.",
+        "settingsError": "Kunne ikke åpne innstillinger for {{name}}",
+        "methodError": "{{method}} Kunne ikke få sparken.",
+        "unknownAuthor": "Ukjent Forfatter",
+        "noDescription": "Beskrivelse ikke gitt.",
+        "alreadyExists": "Det er allerede en {{type}} med navn {{name}}",
+        "alreadWatching": "Ser allerede på addons.",
+        "metaError": "Meta kunne ikke analyseres.",
+        "missingNameData": "Meta manglende navnedata.",
+        "metaNotFound": "Meta ble ikke funnet.",
+        "compileError": "Kunne ikke kompileres. Se konsoll for detaljer.",
+        "wasUnloaded": "{{name}} ble lastet ut.",
+        "blankSlateHeader": "Du har ingen {{type}}s!",
+        "blankSlateMessage": "Ta tak i noen fra [dette nettstedet] ({{link}}) og legg dem til {{type}} mappen.",
+        "isEnabled": "Aktivert",
+        "wasLoaded": "{{name}} v{{version}} ble lastet."
     },
     "CustomCSS": {
+        "confirmationText": "Du har ikke-lagrede endringer i din tilpassede CSS. Å lukke dette vinduet vil du miste alle endringene.",
         "update": "Oppdater",
-        "save": "Lagre"
+        "save": "Lagre",
+        "openNative": "Åpne i Systemredaktør",
+        "openDetached": "Løsne vinduet",
+        "settings": "Redaktørinnstillinger",
+        "editorTitle": "Tilpasset CSS redaktør"
     },
     "Emotes": {
-        "favoriteAction": "Favoritt!"
+        "loading": "Laster emotes i bakgrunnen ikke last inn på nytt.",
+        "loaded": "Alle emotes ble lastet inn korrekt.",
+        "clearEmotes": "Fjern Emote data",
+        "favoriteAction": "Favoritt!",
+        "downloadFailed": "Nedlasting mislyktes",
+        "failureMessage": "BetterDiscord klarte ikke å laste ned emotes, vennligst sjekk internettforbindelsen og brannmuren."
     },
     "PublicServers": {
-        "button": "offentlig",
-        "search": "Søk"
+        "button": "Offentlige servere",
+        "join": "Bli med",
+        "joining": "Blir med",
+        "joined": "Ble med",
+        "loading": "Laster",
+        "loadMore": "Last mer",
+        "notConnected": "Ikke Tilkoblet",
+        "connectionRequired": "Du må koble kontoen din for å bli med på servere.",
+        "connectionError": "Tilkoblingsfeil",
+        "connectionErrorMessage": "Det var en feil når du koblet til DiscordServer.com, det er mulig at nettstedet/API -en er nede. Prøv igjen senere.",
+        "pagination": "Side {{page}} av {{count}}",
+        "search": "Søk",
+        "connect": "Koble til",
+        "reconnect": "Koble til igjen",
+        "categories": "Kategorier",
+        "keywords": "Nøkkelord",
+        "connection": "Tilkoblet som: {{username}}#{{discriminator}}",
+        "results": "Viser {{start}}-{{end}} av {{total}} resulterer i {{category}}",
+        "query": "for {{query}}"
     },
     "Modals": {
-        "confirmAction": "Er Du Sikker?",
+        "confirmAction": "Er du sikker?",
         "okay": "Okay",
+        "done": "Ferdig",
+        "cancel": "Avbryt",
+        "nevermind": "Glem det",
+        "close": "Lukk",
+        "name": "Navn",
+        "message": "Melding",
+        "error": "Feil",
+        "addonErrors": "Addon Feil",
+        "restartRequired": "Omstart påkrevd",
         "restartNow": "Start på nytt nå",
-        "restartLater": "Start på nytt senere"
+        "restartLater": "Starte på nytt senere",
+        "additionalInfo": "Tilleggsinformasjon",
+        "restartPrompt": "For å tre i kraft, må Discord starte på nytt. Vil du starte på nytt nå?"
+    },
+    "ReactDevTools": {
+        "notFound": "Utvidelse Ikke Funnet",
+        "notFoundDetails": "Kan ikke finne utvidelse av React Developer Tools på PC -en. Vennligst installer utvidelsen på din lokale Chrome installasjon."
     },
     "Sorting": {
-        "sortBy": "Sorter etter"
+        "sortBy": "Sorter etter",
+        "order": "Rekkefølge",
+        "ascending": "Stigende",
+        "descending": "Synkende"
     },
     "WindowPrefs": {
-        "disabledInfo": "For å kunne tre i kraft må Discord startes på nytt. Vil du starte på nytt nå?"
+        "enabledInfo": "Dette alternativet krever et gjennomsiktig tema for å fungere ordentlig. På Windows kan dette bryte aero snappingen og maksimere. \n\nni ordre om å tre i kraft, uenighet må startes på nytt. Vil du starte på nytt nå?",
+        "disabledInfo": "For å tre i kraft, må Discord starte på nytt. Vil du starte på nytt nå?"
+    },
+    "Notices": {
+        "moreInfo": "Mer informasjon"
+    },
+    "Updater": {
+        "updateFailed": "Oppdatering mislyktes!",
+        "updateFailedMessage": "BetterDiscord klarte ikke å oppdatere. Vennligst last ned den nyeste versjonen av installasjonsprogrammet fra vår hjemmeside (https://betterdiscord.app/) og installer.",
+        "updateSuccessful": "Oppdatering vellykket!",
+        "updateAvailable": "BetterDiscord har en ny oppdatering (v{{version}})",
+        "addonUpdatesAvailable": "BetterDiscord har funnet oppdateringer for {{count}} av din {{type}}s!",
+        "addonUpdated": "{{name}} er oppdatert til versjon {{version}}!",
+        "checking": "Ser etter oppdateringer!",
+        "finishedChecking": "Ferdig med å sjekke for oppdateringer!",
+        "checkForUpdates": "Se etter oppdateringer!",
+        "updateAll": "Oppdater alt!",
+        "noUpdatesAvailable": "Ingen oppdateringer tilgjengelig.",
+        "versionAvailable": "Versjon {{version}} nå tilgjengelig!",
+        "upToDateBlankslate": "Alle dine {{type}} ser ut til å være oppdatert!",
+        "updateButton": "Oppdater!"
     }
 }
