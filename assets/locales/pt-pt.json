@@ -30,29 +30,6 @@
                     "note": "Previne o Discord de dar hijack as chaves Mídia depois de ver um video."
                 }
             },
-            "appearance": {
-                "name": "Aparência",
-                "minimalMode": {
-                    "name": "Modo mínimo",
-                    "note": "Esconde e reduz o tamanho dos elementos"
-                },
-                "twentyFourHour": {
-                    "name": "Marca de tempo 24 horas",
-                    "note": "Converte a marca de tempo 12 horas para o formato 24 horas"
-                },
-                "coloredText": {
-                    "name": "Texto colorido",
-                    "note": "Coloca o texto colorido da mesma cor do cargo"
-                },
-                "hideGIFButton": {
-                    "name": "Esconde o botão GIF",
-                    "note": "Esconde o botão GIF picker na área de texto"
-                },
-                "hideGiftButton": {
-                    "name": "Esconde o botão de Presentes",
-                    "note": "Esconde o botão de Presentes Nitro na área de texto"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Remove o tamanho mínimo",
@@ -73,10 +50,6 @@
                 "addonErrors": {
                     "name": "Mostra os erros das extensões",
                     "note": "Mostra uma janela com os erros dos plugins/temas"
-                },
-                "autoReload": {
-                    "name": "Carregar automáticamente",
-                    "note": "Carrega, recarrega e descarrega automáticamente plugins e temas"
                 },
                 "editAction": {
                     "name": "Editar ação",
@@ -294,18 +267,6 @@
         "order": "Ordenar",
         "ascending": "Ascendente",
         "descending": "Descendente"
-    },
-    "Startup": {
-        "notSupported": "Não Suportado",
-        "incompatibleApp": "BetterDiscord não funciona com {{app}}. Por favor desinstale uma delas.",
-        "updateNow": "Atualizar Agora",
-        "maybeLater": "Talvez mais Tarde",
-        "updateAvailable": "Atualização Disponível",
-        "updateInfo": "Existe uma atualização disponível para o Injector BetterDiscord ({{version}}).\n\nPode atualizar e reiniciar agora ou mais tarde.",
-        "updateFailed": "Não foi possível atualizar",
-        "manualUpdate": "Não foi possível atualizar automáticamente, por favor transfira e reinstale normalmente.\n\n[Download Installer](https://github.com/rauenzi/BetterDiscordApp/releases/latest)",
-        "jqueryFailed": "Não foi possível carregar jQuery",
-        "jqueryFailedDetails": "Não foi possível carregar jQuery, e alguns plugins podem não funcionar normalmente. Prossiga por sua conta e risco."
     },
     "WindowPrefs": {
         "enabledInfo": "Esta opção requer um tema transparente para funcionar corretamente. No Windows, isso pode interromper o ajuste e a maximização do aero.\n\nPara ter efeito, o Discord precisa ser reiniciado. Quer reiniciar agora?",

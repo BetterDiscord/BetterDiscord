@@ -30,29 +30,6 @@
                     "note": "Evita que Discord se apropie de tus teclas multimedia después de reproducir un vídeo"
                 }
             },
-            "appearance": {
-                "name": "Apariencia",
-                "minimalMode": {
-                    "name": "Modo Mínimo",
-                    "note": "Ocultar elementos y reducir su tamaño"
-                },
-                "twentyFourHour": {
-                    "name": "Horas en Formato 24 Horas",
-                    "note": "Convierte las marcas de tiempo de los mensajes de formato 12 horas a 24 horas"
-                },
-                "coloredText": {
-                    "name": "Texto Coloreado",
-                    "note": "Hace que el color de los mensajes sea el mismo que el de los roles"
-                },
-                "hideGIFButton": {
-                    "name": "Ocultar Botón de GIFs",
-                    "note": "Oculta el botón de selección de GIF de la entrada de texto"
-                },
-                "hideGiftButton": {
-                    "name": "Ocultar Botón de Regalar",
-                    "note": "Oculta el botón de regalar nitro de la entrada de texto"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Eliminar Tamaño Mínimo",
@@ -73,10 +50,6 @@
                 "addonErrors": {
                     "name": "Mostrar Errores de Complementos",
                     "note": "Muestra una ventana con los errores de plugin/temas"
-                },
-                "autoReload": {
-                    "name": "Carga Automática",
-                    "note": "Carga, recarga y descarga automáticamente plugins y temas"
                 },
                 "editAction": {
                     "name": "Acción al Editar",
@@ -294,18 +267,6 @@
         "order": "Orden",
         "ascending": "Ascendente",
         "descending": "Descendente"
-    },
-    "Startup": {
-        "notSupported": "No Compatible",
-        "incompatibleApp": "BetterDiscord no funciona con {{app}}. Por favor, desinstale uno de ellos.",
-        "updateNow": "Actualizar ahora",
-        "maybeLater": "Quizás más tarde",
-        "updateAvailable": "Actualización Disponible",
-        "updateInfo": "Hay una actualización disponible para el Inyector de BetterDiscord ({{version}}).\n\nPuedes actualizar y reiniciar ahora, o más tarde.",
-        "updateFailed": "No se pudo actualizar",
-        "manualUpdate": "No se pudo actualizar automáticamente, por favor descargue el instalador y reinstale normalmente.\n\n[Descargar Instalador](https://github.com/BetterDiscord/Installer/releases/latest)",
-        "jqueryFailed": "jQuery no se pudo cargar",
-        "jqueryFailedDetails": "jQuery no se ha podido cargar y algunos plugins podrían no funcionar correctamente. Proceda bajo su propio riesgo."
     },
     "WindowPrefs": {
         "enabledInfo": "Esta opción requiere un tema transparente para que funcione correctamente. En Windows esto podría hacer que el ajuste automático de la ventana (Aero Snap) y la maximización dejen de funcionar.\n\nPara que surta efecto, es necesario reiniciar Discord. ¿Quieres reiniciar ahora?",

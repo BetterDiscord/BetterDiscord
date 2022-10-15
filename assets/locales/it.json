@@ -30,42 +30,14 @@
                     "note": "Impedisce a Discord di prendere il controllo dei tasti multimediali dopo la riproduzione di un video."
                 }
             },
-            "appearance": {
-                "name": "Apparenze",
-                "minimalMode": {
-                    "name": "Modalità Minimale",
-                    "note": "Nascondi elementi e riducine la grandezza"
-                },
-                "twentyFourHour": {
-                    "name": "Formato orario 24 ore",
-                    "note": "Converte il formato orario di 12 ore in 24 ore"
-                },
-                "coloredText": {
-                    "name": "Testo Colorato",
-                    "note": "Colora il testo allo stesso modo del ruolo"
-                },
-                "hideGIFButton": {
-                    "name": "Nascondi il pulsante GIF",
-                    "note": "Nasconde il pulsante GIF nell'area di testo"
-                },
-                "hideGiftButton": {
-                    "name": "Nascondi il pulsante \"Regala Nitro\"",
-                    "note": "Nasconde il pulsante per regalare Nitro nell'area di testo"
-                }
-            },
             "window": {
                 "removeMinimumSize": {
                     "name": "Rimuovi la grandezza minima",
                     "note": "Rimuove la grandezza minima forzata di 940x500 di Discord"
                 },
-                "name": "",
+                "name": "Preferenze finestra",
                 "transparency": {
-                    "name": "",
-                    "note": ""
-                },
-                "frame": {
-                    "name": "",
-                    "note": ""
+                    "name": "Abilita trasparenza"
                 }
             },
             "addons": {
@@ -73,10 +45,6 @@
                 "addonErrors": {
                     "name": "Mostra gli errori degli Add-ons",
                     "note": "Mostra un modale con errori dei plug-ins e temi"
-                },
-                "autoReload": {
-                    "name": "Caricamento Automatico",
-                    "note": "Attiva, aggiorna, e disattiva automaticamente plugins e temi quando spenti o accesi"
                 },
                 "editAction": {
                     "name": "Modifica Azione",
@@ -91,224 +59,213 @@
                 "name": "CSS personalizzato",
                 "customcss": {
                     "name": "CSS personalizzato",
-                    "note": "Abilita la scheda di CSS personalizzato"
+                    "note": "Abilita la scheda per il CSS personalizzato"
                 },
                 "liveUpdate": {
                     "name": "Aggiornamento automatico",
                     "note": "Aggiorna l'aspetto della finestra mentre modifichi il codice CSS"
                 },
                 "startDetached": {
-                    "name": "Inizia una finestra a parte",
-                    "note": "Cliccare la scheda di CSS personalizzato apre l'editor in una finestra a parte"
+                    "name": "Apri in una finestra separata",
+                    "note": "Cliccare la scheda per il CSS personalizzato apre l'editor in una finestra separata"
                 },
                 "nativeOpen": {
                     "name": "Apri nell'editor nativo",
                     "note": "Cliccare la scheda di CSS personalizzato apre il CSS nel tuo editor nativo"
                 },
                 "openAction": {
-                    "name": "Locazione dell'editor",
-                    "note": "Dove il CSS personalizzato dovrebbe aprirsi di default",
+                    "name": "Posizione dell'editor",
+                    "note": "Dove verrà aperta di default la finestra per il CSS personalizzato",
                     "options": {
-                        "settings": "Impostazioni",
-                        "detached": "staccato",
-                        "system": "sistema"
+                        "settings": "Menu Impostazioni",
+                        "detached": "Finestra separata",
+                        "system": "Editor predefinito"
                     }
                 }
             },
             "developer": {
-                "name": "",
+                "name": "Impostazioni sviluppatore",
                 "debuggerHotkey": {
-                    "name": "",
-                    "note": ""
+                    "name": "Scorciatoia debugger",
+                    "note": "Permette di attivare il debugger quando viene premuto F8 con DevTools aperto"
                 },
                 "reactDevTools": {
-                    "name": "",
-                    "note": ""
+                    "name": "React Developer Tools",
+                    "note": "Inietta la tua installazione locale di React Developer Tools all'interno di Discord"
                 },
                 "inspectElement": {
-                    "name": "",
-                    "note": ""
+                    "name": "Scorciatoia Ispeziona Elemento",
+                    "note": "Abilita la scorciatoia Ispeziona Elemento (ctrl + shift + c) che è comune nella maggioranza dei browser"
                 },
                 "devToolsWarning": {
-                    "name": "",
-                    "note": ""
+                    "name": "Ferma i warning DevTools",
+                    "note": "Impedisci a Discord di mostrare il suo messaggio \"Attenzione!\""
                 },
                 "debugLogs": {
-                    "name": "",
-                    "note": ""
+                    "name": "Log di debug",
+                    "note": "Manda tutto l'output della console all'interno del file debug.log nella cartella BetterDiscord"
+                },
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "Abilita l'attivazione del DevTools tramite ctrl+shift+i"
+                }
+            },
+            "editor": {
+                "name": "Preferenze Editor",
+                "lineNumbers": {
+                    "name": "Numeri di riga",
+                    "note": "Abilita la visualizzazione dei numeri delle righe al lato dell'editor"
+                },
+                "fontSize": {
+                    "name": "Dimensione font",
+                    "note": "Dimensione del font (pt) da usare nell'editor"
+                },
+                "minimap": {
+                    "name": "Mini mappa",
+                    "note": "Abilita la visualizzazione di una mini mappa del codice al lato dell'editor"
+                },
+                "quickSuggestions": {
+                    "name": "Consigli veloci"
+                },
+                "renderWhitespace": {
+                    "name": "Mostra caratteri whitespace",
+                    "options": {
+                        "all": "Sempre",
+                        "none": "Mai",
+                        "selection": "Selezione"
+                    }
                 }
             }
         },
         "emotes": {
-            "name": "",
+            "name": "Emote",
             "general": {
-                "name": "",
+                "name": "Generale",
                 "download": {
-                    "name": "",
-                    "note": ""
+                    "name": "Scarica Emote",
+                    "note": "Scarica Emote ogni volta che viene trovata una nuova versione"
                 },
                 "emoteMenu": {
-                    "name": "",
-                    "note": ""
-                },
-                "hideEmojiMenu": {
-                    "name": "",
-                    "note": ""
-                },
-                "autoCaps": {
-                    "name": "",
-                    "note": ""
-                },
-                "modifiers": {
-                    "name": "",
-                    "note": ""
-                },
-                "animateOnHover": {
-                    "name": "",
-                    "note": ""
+                    "name": "Menu Emote"
                 }
             },
             "categories": {
-                "name": "",
-                "twitchglobal": {
-                    "name": "",
-                    "note": ""
-                },
+                "name": "Categorie",
                 "twitchsubscriber": {
-                    "name": "",
-                    "note": ""
-                },
-                "frankerfacez": {
-                    "name": "",
-                    "note": ""
-                },
-                "bttv": {
-                    "name": "",
-                    "note": ""
+                    "name": "Iscritti Twitch"
                 }
             }
         }
     },
     "Addons": {
-        "title": "titolo",
-        "byline": "byline",
-        "openFolder": "openFolder",
-        "reload": "ricaricare",
-        "addonSettings": "addonSettings",
-        "website": "sito web",
-        "source": "fonte",
-        "invite": "invita",
-        "donate": "donare",
-        "patreon": "patreon",
-        "name": "",
-        "author": "autore",
-        "version": "versione",
-        "added": "aggiunto",
-        "modified": "modificato",
-        "search": "cerca",
-        "editAddon": "editAddon",
-        "deleteAddon": "deleteAddon",
-        "confirmDelete": "confirmDelete",
-        "confirmationText": "confirmationText",
-        "enabled": "abilitato",
-        "disabled": "disattivato",
-        "couldNotEnable": "couldNotEnable",
-        "couldNotDisable": "couldNotDisable",
-        "couldNotStart": "couldNotStart",
-        "couldNotStop": "couldNotStop",
-        "settingsError": "settingsError",
-        "methodError": "methodError",
-        "unknownAuthor": "unknownAuthor",
-        "noDescription": "noDescription",
-        "alreadyExists": "alreadyExists",
-        "alreadWatching": "alreadWatching",
-        "metaError": "metaErrore",
-        "missingNameData": "missingNameData",
-        "metaNotFound": "metaNotFound",
-        "compileError": "compileError",
-        "wasUnloaded": "wasUnloaded",
-        "blankSlateHeader": "blankSlateHeader",
-        "blankSlateMessage": "blankSlateMessage"
+        "title": "{{name}} v{{version}} di {{author}}",
+        "byline": "di {{author}}",
+        "openFolder": "Apri cartella {{type}}",
+        "reload": "Ricarica",
+        "addonSettings": "Impostazioni",
+        "website": "Sito Web",
+        "source": "Fonte",
+        "invite": "Supporta il server",
+        "donate": "Dona",
+        "patreon": "Patreon",
+        "name": "Nome",
+        "author": "Autore",
+        "version": "Versione",
+        "added": "Data di aggiunta",
+        "modified": "Data di modifica",
+        "search": "Cerca {{type}}",
+        "editAddon": "Modifica",
+        "deleteAddon": "Elimina",
+        "confirmDelete": "Sei sicuro di voler cancellare {{name}}?",
+        "confirmationText": "Hai delle modifiche non salvate su {{name}}. Chiudendo questa finestra perderai quelle modifiche.",
+        "enabled": "{{name}} è stato abilitato.",
+        "disabled": "{{name}} è stato disabilitato.",
+        "couldNotEnable": "Non è stato possibile abilitare {{name}}.",
+        "couldNotDisable": "Non è stato possibile disabilitare {{name}}.",
+        "couldNotStart": "Non è stato possibile far partire {{name}}.",
+        "couldNotStop": "Non è stato possibile fermare {{name}}.",
+        "settingsError": "Non è stato possibile aprire le impostazioni per {{name}}",
+        "methodError": "Non è stato possibile lanciare {{method}}.",
+        "unknownAuthor": "Autore sconosciuto",
+        "noDescription": "Nessuna descrizione.",
+        "alreadyExists": "Esiste già un {{type}} con nome {{name}}",
+        "alreadWatching": "Stai già vedendo gli addon.",
+        "metaError": "Non è stato possibile analizzare META.",
+        "missingNameData": "Nome dato mancante META.",
+        "metaNotFound": "META non trovato.",
+        "compileError": "Non è stato possibile compilare. Vedi la console per i dettagli.",
+        "wasUnloaded": "{{name}} è stato scaricato.",
+        "blankSlateHeader": "Non hai nessun {{type}}!",
+        "blankSlateMessage": "Scaricali [dal sito]({{link}}) e aggiungili alla cartella {{type}}.",
+        "isEnabled": "Abilitato"
     },
     "CustomCSS": {
-        "confirmationText": "confirmationText",
-        "update": "aggiornamento",
-        "save": "salva",
-        "openNative": "openNative",
-        "openDetached": "openDetached",
-        "settings": "impostazioni",
-        "editorTitle": "editorTitle"
+        "confirmationText": "Hai delle modifiche non salvate sul tuo CSS Personalizzato. Chiudendo questa finestra perderai tutte quelle modifiche.",
+        "update": "Aggiorna",
+        "save": "Salva",
+        "openNative": "Apri nell'editor predefinito",
+        "openDetached": "Apri in una finestra separata",
+        "settings": "Impostazioni editor",
+        "editorTitle": "Editor per il CSS personalizzato"
     },
     "Emotes": {
-        "loading": "caricamento",
-        "loaded": "caricato",
-        "clearEmotes": "clearEmotes",
-        "favoriteAction": "favoriteAction",
-        "downloadFailed": "downloadFailed",
-        "failureMessage": "failureMessage"
+        "loading": "Sto caricando le emote in background. Non ricaricare.",
+        "loaded": "Tutte le emote sono state caricate correttamente.",
+        "clearEmotes": "Cancella i dati delle Emote",
+        "favoriteAction": "Preferito!",
+        "downloadFailed": "Download fallito",
+        "failureMessage": "BetterDiscord non è riuscito a scaricare le emote, controlla la tua connessione internet e il firerwall."
     },
     "PublicServers": {
-        "button": "pulsante",
-        "join": "unisciti a",
-        "joining": "unirsi a",
-        "joined": "ha aderito a",
-        "loading": "caricamento",
-        "loadMore": "loadMore",
-        "notConnected": "notConnected",
-        "connectionRequired": "connectionRequired",
-        "connectionError": "connectionError",
-        "connectionErrorMessage": "connectionErrorMessage",
-        "pagination": "paginazione",
-        "search": "cerca",
-        "connect": "collegare",
-        "reconnect": "ricollegare",
-        "categories": "categorie",
-        "keywords": "parole chiave",
-        "connection": "collegamento",
-        "results": "risultati",
-        "query": "interrogare"
+        "button": "pubblico",
+        "join": "Unisciti",
+        "joining": "Ti stai unendo",
+        "joined": "Ti sei unito",
+        "loading": "Caricamento in corso",
+        "loadMore": "Carica di più",
+        "notConnected": "Non connesso",
+        "connectionRequired": "Devi connettere il tuo account per poter unirti ai server.",
+        "connectionError": "Errore di connessione",
+        "connectionErrorMessage": "C'è stato un errore di connessione verso DiscordServers.com, è possibile che il loro sito web/API siano non raggiungibili. Riprova più tardi.",
+        "pagination": "Pagina {{page}} di {{count}}",
+        "search": "Cerca",
+        "connect": "Connettiti",
+        "reconnect": "Riconnettiti",
+        "categories": "Categorie",
+        "keywords": "Parole chiave",
+        "connection": "Connesso come: {{username}}#{{discriminator}}",
+        "results": "Mostrando {{start}}-{{end}} di {{total}} risultati in {{category}}",
+        "query": "per {{query}}"
     },
     "Modals": {
-        "confirmAction": "confirmAction",
-        "okay": "ok",
-        "done": "fatto",
-        "cancel": "cancellare",
-        "nevermind": "non importa",
-        "close": "chiudere",
-        "name": "",
-        "message": "messaggio",
-        "error": "errore",
-        "addonErrors": "addonErrors",
-        "restartRequired": "restartRequired",
-        "restartNow": "restartNow",
-        "restartLater": "restartLater",
-        "additionalInfo": "additionalInfo",
-        "restartPrompt": "restartPrompt"
+        "confirmAction": "Sei sicuro?",
+        "okay": "Ok",
+        "done": "Fatto",
+        "cancel": "Annulla",
+        "nevermind": "Non importa",
+        "close": "Chiudi",
+        "name": "Nome",
+        "message": "Messaggio",
+        "error": "Errore",
+        "addonErrors": "Errori Addon",
+        "restartRequired": "Riavvio richiesto",
+        "restartNow": "Riavvia ora",
+        "restartLater": "Riavvia più tardi",
+        "additionalInfo": "Più informazioni",
+        "restartPrompt": "Per avere effetto, Discord ha bisogno di essere riavviato. Desideri riavviare ora?"
     },
     "ReactDevTools": {
-        "notFound": "notFound",
-        "notFoundDetails": "notFoundDetails"
+        "notFound": "Estensione non trovata",
+        "notFoundDetails": "Impossibile trovare l'estensione React Developer Tools sul tuo PC. Per favore installa l'estensione sulla tua installazione locale di Chrome."
     },
     "Sorting": {
-        "sortBy": "sortBy",
-        "order": "ordine",
-        "ascending": "ascendente",
-        "descending": "discendente"
-    },
-    "Startup": {
-        "notSupported": "notSupported",
-        "incompatibleApp": "incompatibileApp",
-        "updateNow": "updateNow",
-        "maybeLater": "maybeLater",
-        "updateAvailable": "updateAvailable",
-        "updateInfo": "updateInfo",
-        "updateFailed": "updateFailed",
-        "manualUpdate": "manualUpdate",
-        "jqueryFailed": "jqueryFailed",
-        "jqueryFailedDetails": "jqueryFailedDetails"
+        "sortBy": "Ordina per",
+        "order": "Ordina",
+        "ascending": "Ascendente",
+        "descending": "Discendente"
     },
     "WindowPrefs": {
-        "enabledInfo": "enabledInfo",
-        "disabledInfo": "disabledInfo"
+        "enabledInfo": "Questa opzione richiede un tema trasparente per funzionare correttamente. Su Windows questo potrebbe rompere l'attacco Aero e l'ingrandimento delle finestre.\n\nPer avere effetto, Discord deve essere riavviato. Vuoi riavviarlo ora?",
+        "disabledInfo": "Per avere effetto, Discord deve essere riavviato. Vuoi riavviarlo ora?"
     }
 }
