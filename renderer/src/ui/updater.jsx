@@ -12,7 +12,7 @@ class CoreUpdaterPanel extends React.Component {
         return <Drawer name="BetterDiscord" collapsible={true}>
             <SettingItem name={`Core v${Config.version}`} note={this.props.hasUpdate ? Strings.Updater.versionAvailable.format({version: this.props.remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
                 {!this.props.hasUpdate && <div className="bd-filled-checkmark"><Checkmark /></div>}
-                {this.props.hasUpdate && <button className="bd-button">{Strings.Updater.updateButton}</button>}
+                {this.props.hasUpdate && <button className="bd-button" onClick={this.props.update}>{Strings.Updater.updateButton}</button>}
             </SettingItem>
         </Drawer>;
     }
@@ -55,6 +55,7 @@ export default class UpdaterPanel extends React.Component {
 
         this.checkForUpdates = this.checkForUpdates.bind(this);
         this.updateAddon = this.updateAddon.bind(this);
+        this.updateCore = this.updateCore.bind(this);
         this.updateAllAddons = this.updateAllAddons.bind(this);
         this.update = this.update.bind(this);
     }
@@ -121,7 +122,7 @@ export default class UpdaterPanel extends React.Component {
     render() {
         return [
             <SettingsTitle text={Strings.Panels.updates} button={{title: Strings.Updater.checkForUpdates, onClick: this.checkForUpdates}} />,
-            <CoreUpdaterPanel remoteVersion={this.props.coreUpdater.remoteVersion} hasUpdate={this.state.hasCoreUpdate} />,
+            <CoreUpdaterPanel remoteVersion={this.props.coreUpdater.remoteVersion} hasUpdate={this.state.hasCoreUpdate} update={this.updateCore} />,
             <AddonUpdaterPanel type="plugins" pending={this.state.plugins} update={this.updateAddon} updateAll={this.updateAllAddons} updater={this.props.pluginUpdater} />,
             <AddonUpdaterPanel type="themes" pending={this.state.themes} update={this.updateAddon} updateAll={this.updateAllAddons} updater={this.props.themeUpdater} />,
         ];

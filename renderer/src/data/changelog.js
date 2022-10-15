@@ -21,7 +21,8 @@ export default {
             items: [
                 "Fixed a few issues with our context menu api.",
                 "Fixed an issue in our API that could lead to styles not being removed correctly.",
-                "Fixed an issue where `getOwnerInstance` would cause an error."
+                "Fixed an issue where `getOwnerInstance` would cause an error.",
+                "Fixed an issue with the core updater not updating on click."
             ]
         }
     ]
