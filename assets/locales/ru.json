@@ -3,7 +3,7 @@
         "plugins": "Плагины",
         "themes": "Темы",
         "customcss": "Быстрый CSS",
-        "updates": ""
+        "updates": "Обновления"
     },
     "Collections": {
         "settings": {
@@ -49,7 +49,7 @@
             "addons": {
                 "name": "Менеджер дополнений",
                 "addonErrors": {
-                    "name": "Скрыть ошибки расширений",
+                    "name": "Показывать ошибки расширений",
                     "note": "Скрывает модальные окна с ошибками плагина/темы"
                 },
                 "editAction": {
@@ -93,7 +93,7 @@
                 "name": "Настройки разработчика",
                 "debuggerHotkey": {
                     "name": "Горячая кнопка отладчика",
-                    "note": "Активирует отладку при нажатии F8"
+                    "note": "Активирует отладку при нажатии F8 при открытым меню разработчика"
                 },
                 "reactDevTools": {
                     "name": "Инструменты React разработчика",
@@ -112,39 +112,39 @@
                     "note": "Записывает весь вывод из консоли в файл debug.log в папке BetterDiscord"
                 },
                 "devTools": {
-                    "name": "",
-                    "note": ""
+                    "name": "Меню разработчика",
+                    "note": "Включает возможность открыть меню разработчика при нажатии ctrl+shift+i"
                 }
             },
             "editor": {
-                "name": "",
+                "name": "Редактор настроек",
                 "lineNumbers": {
-                    "name": "",
-                    "note": ""
+                    "name": "Номер строк",
+                    "note": "Включить показатель строк в стороне редактора"
                 },
                 "fontSize": {
-                    "name": "",
-                    "note": ""
+                    "name": "Размер шрифта",
+                    "note": "Размер шрифта (в пикселях) в редакторе"
                 },
                 "minimap": {
-                    "name": "",
-                    "note": ""
+                    "name": "Мини карта",
+                    "note": "Включает показ кода в мини карте в стороне редактора"
                 },
                 "hover": {
-                    "name": "",
-                    "note": ""
+                    "name": "Справочные подсказки",
+                    "note": "Включает показ справочных подсказок при наведении мыши над правилами и переключателями"
                 },
                 "quickSuggestions": {
-                    "name": "",
-                    "note": ""
+                    "name": "Предложения",
+                    "note": "Включает видимость авто-заполнения предложений при печати"
                 },
                 "renderWhitespace": {
-                    "name": "",
-                    "note": "",
+                    "name": "Показывать пробелы",
+                    "note": "Когда пробел должен быть показан редактором",
                     "options": {
-                        "all": "",
-                        "none": "",
-                        "selection": ""
+                        "all": "Всегда",
+                        "none": "Никогда",
+                        "selection": "Выбор"
                     }
                 }
             }
@@ -162,7 +162,7 @@
                     "note": "Показать Twitch/избранные в меню смайликов"
                 },
                 "hideEmojiMenu": {
-                    "name": "Скрыть кнопку эмодзи",
+                    "name": "Скрывать кнопку эмодзи",
                     "note": "Скрывает меню эмодзи Discord, когда используется смайлики"
                 },
                 "autoCaps": {
@@ -235,12 +235,12 @@
         "metaError": "Не удалось проанализировать метаданные.",
         "missingNameData": "В метаданных отсутствуют данные об имени.",
         "metaNotFound": "Метаданные не найдены.",
-        "compileError": "Не удалось скомпилировать.",
+        "compileError": "Не удалось скомпилировать. Посмотрите в консоле для дополнительной информации.",
         "wasUnloaded": "{{name}} был выгружен.",
         "blankSlateHeader": "У вас нету {{type}}",
         "blankSlateMessage": "Возьмите что-то с [этого сайта]({{link}}) и добавьте их в свою папку {{type}}.",
-        "isEnabled": "",
-        "wasLoaded": ""
+        "isEnabled": "Включено",
+        "wasLoaded": "{{name}} v{{version}} был загружен."
     },
     "CustomCSS": {
         "confirmationText": "У вас есть не сохраненные изменения в быстром CSS.  При закрытии этого окна все изменения будут потеряны.",
@@ -260,7 +260,7 @@
         "failureMessage": "BetterDiscord'у не удалось загрузить смайлики, проверьте подключение к интернету и брандмауэр."
     },
     "PublicServers": {
-        "button": "public",
+        "button": "Публичные сервера",
         "join": "Присоединился",
         "joining": "Присоединение",
         "joined": "Присоединился",
@@ -295,7 +295,7 @@
         "restartNow": "Перезагрузить сейчас",
         "restartLater": "Перезагрузить позже",
         "additionalInfo": "Дополнительная информация",
-        "restartPrompt": "Чтобы изменения вступили в силу, необходимо перезапустить Discord.  Вы хотите перезапустить сейчас?"
+        "restartPrompt": "Чтобы изменения вступили в силу, необходимо перезапустить Discord. Перезапустить сейчас?"
     },
     "ReactDevTools": {
         "notFound": "Расширение не найдено",
@@ -312,22 +312,22 @@
         "disabledInfo": "Чтобы изменения вступили в силу, необходимо перезапустить Discord.  Вы хотите перезапустить сейчас?"
     },
     "Notices": {
-        "moreInfo": ""
+        "moreInfo": "Дополнительная информация"
     },
     "Updater": {
-        "updateFailed": "",
-        "updateFailedMessage": "",
-        "updateSuccessful": "",
-        "updateAvailable": "",
-        "addonUpdatesAvailable": "",
-        "addonUpdated": "",
-        "checking": "",
-        "finishedChecking": "",
-        "checkForUpdates": "",
-        "updateAll": "",
-        "noUpdatesAvailable": "",
-        "versionAvailable": "",
-        "upToDateBlankslate": "",
-        "updateButton": ""
+        "updateFailed": "Ошибка обновления",
+        "updateFailedMessage": "Не удалось обновить BetterDiscord. Пожалуйста скачайте последнюю версию загрузчика с нашего сайта (https://betterdiscord.app/) и переустановите программу.",
+        "updateSuccessful": "Обновление успешно!",
+        "updateAvailable": "BetterDiscord имеет обновление (v{{version}})",
+        "addonUpdatesAvailable": "BetterDiscord нашел обновления для {{count}} ваших {{type}}!",
+        "addonUpdated": "{{name}} был обновлен до версии {{version}}",
+        "checking": "Проверить обновления!",
+        "finishedChecking": "Проверка обновлений завершена!",
+        "checkForUpdates": "Проверить обновления!",
+        "updateAll": "Обновить всё!",
+        "noUpdatesAvailable": "Нету доступных обновлений.",
+        "versionAvailable": "Версия {{version}} доступна!",
+        "upToDateBlankslate": "Все {{type}} обновлены.",
+        "updateButton": "Обновить!"
     }
 }
