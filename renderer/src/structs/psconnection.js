@@ -99,7 +99,7 @@ export default new class PublicServersConnection {
     }
 
     async join(id, native = false) {
-        if (native) return InviteActions.acceptInvite(id);
+        if (native) return InviteActions.acceptInvite({inviteKey: id});
         try {
             await fetch(`${this.joinEndPoint}/${id}`,{
                 method: "GET",

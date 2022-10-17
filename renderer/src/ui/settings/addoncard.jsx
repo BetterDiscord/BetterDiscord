@@ -125,7 +125,7 @@ export default class AddonCard extends React.Component {
                 const tester = /\.gg\/(.*)$/;
                 if (tester.test(code)) code = code.match(tester)[1];
                 LayerManager.popLayer();
-                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel(code);
+                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
             };
         }
         return this.makeButton(Strings.Addons[which], link);

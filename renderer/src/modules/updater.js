@@ -106,7 +106,7 @@ export class CoreUpdater {
             const asar = this.apiData.assets.find(a => a.name === "betterdiscord.asar");
 
             const buff = await new Promise((resolve, reject) =>
-                request(asar.url, {encoding: null, headers: {"User-Agent": "BetterDiscord Updater", "Accept": "application/octet-stream"}}, (err, resp, body) => {
+                request(asar.url, {headers: {"Content-Type": "application/octet-stream", "User-Agent": "BetterDiscord Updater", "Accept": "application/octet-stream"}}, (err, resp, body) => {
                 if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
                 return resolve(body);
             }));
