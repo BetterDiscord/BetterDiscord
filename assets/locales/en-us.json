@@ -101,7 +101,7 @@
                 },
                 "inspectElement": {
                     "name": "Inspect Element Hotkey",
-                    "note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
+                    "note": "Enables the inspect element hotkey (Ctrl + Shift + C) that is common in most browsers"
                 },
                 "devToolsWarning": {
                     "name": "Stop DevTools Warning",
@@ -113,7 +113,7 @@
                 },
                 "devTools": {
                     "name": "DevTools",
-                    "note": "Enables toggling DevTools with ctrl+shift+i"
+                    "note": "Enables toggling DevTools with Ctrl + Shift + i (or Cmd + Option + i for MacOS)"
                 }
             },
             "editor": {
@@ -252,7 +252,7 @@
         "editorTitle": "Custom CSS Editor"
     },
     "Emotes": {
-        "loading": "Loading emotes in the background do not reload.",
+        "loading": "Loading emotes in the background, do not reload.",
         "loaded": "All emotes successfully loaded.",
         "clearEmotes": "Clear Emote Data",
         "favoriteAction": "Favorite!",
@@ -308,7 +308,7 @@
         "descending": "Descending"
     },
     "WindowPrefs": {
-        "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
+        "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows, this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
         "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     },
     "Notices": {
