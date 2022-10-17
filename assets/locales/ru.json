@@ -325,7 +325,7 @@
         "finishedChecking": "Проверка обновлений завершена!",
         "checkForUpdates": "Проверить обновления!",
         "updateAll": "Обновить всё!",
-        "noUpdatesAvailable": "Нету доступных обновлений.",
+        "noUpdatesAvailable": "Нет доступных обновлений.",
         "versionAvailable": "Версия {{version}} доступна!",
         "upToDateBlankslate": "Все {{type}} обновлены.",
         "updateButton": "Обновить!"
