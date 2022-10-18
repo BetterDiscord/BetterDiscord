@@ -239,6 +239,42 @@
     color: #FFFFFF;
 }
 
+.bd-server-verified-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+    margin-left: -2px;
+    color: #43B581;
+}
+
+.bd-server-verified-badge {
+    width: 100%;
+    height: 100%;
+}
+
+.bd-server-verified {
+    position: absolute;
+    top: -.05px;
+    left: .05px;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.bd-server-verified-icon {
+    width: 100%;
+    height: 100%;
+    color: #FFFFFF;
+}
+
 .bd-pagination {
     display: flex;
     justify-content: space-between;
