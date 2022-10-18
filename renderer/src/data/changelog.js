@@ -1,28 +1,16 @@
 // fixed, improved, added, progress
 export default {
-    description: "Several new translations have been added thanks to our wonderful volunteers!",
+    description: "Just some smaller fixes while we work on some big things in the background.",
     changes: [
-        {
-            title: "New or Updated Translations",
-            type: "improved",
-            items: [
-                "Finnish",
-                "Hungarian",
-                "Italian",
-                "Japanese",
-                "Korean",
-                "Russian",
-                "Ukrainian"
-            ]
-        },
         {
             title: "Bug Fixes",
             type: "fixed",
             items: [
-                "Fixed a few issues with our context menu api.",
-                "Fixed an issue in our API that could lead to styles not being removed correctly.",
-                "Fixed an issue where `getOwnerInstance` would cause an error.",
-                "Fixed an issue with the core updater not updating on click."
+                "Fixed _even more_ issues with the built-in updater.",
+                "Fixed not being able to click support server links in plugin/theme pages.",
+                "Fixed some issues with not being able to join public servers.",
+                "Fixed plugin settings not being able to be displayed.",
+                "Fixed changelog modal not being able to be displayed."
             ]
         }
     ]

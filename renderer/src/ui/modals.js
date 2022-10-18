@@ -21,7 +21,6 @@ export default class Modals {
     static get ModalRoot() {return this._ModalRoot ??= WebpackModules.getModule(m => m?.toString?.()?.includes("ENTERING"), {searchExports: true});}
     static get ModalClasses() {return this._ModalClasses ??= WebpackModules.getByProps("modal", "content");}
     static get FlexElements() {return this._FlexElements ??= WebpackModules.getByProps("Child", "Align");}
-    static get FormTitle() {return this._FormTitle ??= WebpackModules.getByProps("Tags", "Sizes");}
     static get TextElement() {return this._TextElement ??= WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors);}
     static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"));}
     static get Markdown() {return this._Markdown ??= WebpackModules.find(m => m?.prototype?.render && m.rules);}
@@ -228,10 +227,9 @@ export default class Modals {
         const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
         const TextElement = this.TextElement;
         const FlexChild = this.FlexElements;
-        const Titles = this.FormTitle;
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
 
-        if (!OriginalModalClasses || !ChangelogModalClasses || !ChangelogClasses || !TextElement || !FlexChild || !Titles || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
+        if (!OriginalModalClasses || !ChangelogModalClasses || !ChangelogClasses || !TextElement || !FlexChild || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
 
         const {image = "https://i.imgur.com/wuh5yMK.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.version}`, footer} = options;
         const ce = React.createElement;
@@ -248,7 +246,7 @@ export default class Modals {
         }
         const renderHeader = function() {
             return ce(FlexChild, {className: OriginalModalClasses.header, grow: 0, shrink: 0, direction: FlexChild.Direction.VERTICAL},
-                ce(Titles, {tag: Titles.Tags.H1, size: TextElement.Sizes.SIZE_20}, title),
+                ce(TextElement, {tag: "h1", size: TextElement.Sizes.SIZE_20, strong: true}, title),
                 ce(TextElement, {size: TextElement.Sizes.SIZE_12, color: TextElement.Colors.STANDARD, className: ChangelogClasses.date}, subtitle)
             );
         };
@@ -258,7 +256,7 @@ export default class Modals {
             const joinSupportServer = (click) => {
                 click.preventDefault();
                 click.stopPropagation();
-                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel("0Tmfo5ZbORCRqbAd");
+                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel({inviteKey: "0Tmfo5ZbORCRqbAd"});
             };
             const supportLink = ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
             const defaultFooter = ce(TextElement, {size: TextElement.Sizes.SIZE_12, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
@@ -313,7 +311,7 @@ export default class Modals {
         const modal = props => {
             return React.createElement(ErrorBoundary, {}, React.createElement(this.ModalRoot, Object.assign({size: mc.Sizes.MEDIUM, className: "bd-addon-modal" + " " + mc.Sizes.MEDIUM}, props),
                 React.createElement(mc.Header, {separator: false, className: "bd-addon-modal-header"},
-                    React.createElement(this.FormTitle, {tag: "h4"}, `${name} Settings`)
+                    React.createElement(this.TextElement, {tag: "h1", size: this.TextElement.Sizes.SIZE_20, strong: true}, `${name} Settings`)
                 ),
                 React.createElement(mc.Content, {className: "bd-addon-modal-settings"},
                     React.createElement(ErrorBoundary, {}, child)
