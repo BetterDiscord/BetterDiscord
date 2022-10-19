@@ -221,7 +221,7 @@
         "failureMessage": "Nie udało się pobrać emoji, sprawdź swoje połączenie z internetem lub zaporę ogniową."
     },
     "PublicServers": {
-        "button": "serwery",
+        "button": "Serwery",
         "join": "Dołącz",
         "joining": "Dołączanie",
         "joined": "Dołączono",
