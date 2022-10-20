@@ -28,7 +28,7 @@ The following is a set of guidelines for contributing to BetterDiscord. These ar
 
 ## Code of Conduct
 
-See our [Code of Conduct](./CODE_OF_CONDUCT.md) page for details.
+See our [Code of Conduct](https://github.com/BetterDiscord/BetterDiscord/blob/main/CODE_OF_CONDUCT.md) page for details.
 
 ## What should I know before I get started?
 
@@ -54,7 +54,7 @@ This is the main payload of BetterDiscord. This is what gets executed in the ren
 
 This section guides you through submitting a bug report for BetterDiscord. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
 
-Before creating bug reports, please check [this list](#before-submitting-a-bug-report) as you might find out that you don't need to create one. When you are creating a bug report, please [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](https://github.com/BetterDiscord/BetterDiscord/blob/master/.github/ISSUE_TEMPLATE/bug-report.md), the information it asks for helps us resolve issues faster.
+Before creating bug reports, please check [this list](#before-submitting-a-bug-report) as you might find out that you don't need to create one. When you are creating a bug report, please [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/BUG-REPORT.yml), the information it asks for helps us resolve issues faster.
 
 > **Note:** If you find a **Closed** issue that seems like it is the same thing that you're experiencing, open a new issue and include a link to the original issue in the body of your new one.
 
@@ -66,7 +66,7 @@ Before creating bug reports, please check [this list](#before-submitting-a-bug-r
 
 #### How Do I Submit A (Good) Bug Report?
 
-Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined this is a new bug using the steps from above, create an issue and provide the following information by filling in [the template](https://github.com/BetterDiscord/BetterDiscord/blob/master/.github/ISSUE_TEMPLATE/bug-report.md).
+Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined this is a new bug using the steps from above, create an issue and provide the following information by filling in [the template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/BUG-REPORT.yml).
 
 Explain the problem and include additional details to help maintainers reproduce the problem:
 
@@ -95,7 +95,7 @@ Include details about your configuration and environment:
 
 This section guides you through submitting an enhancement suggestion for BetterDiscord, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
 
-Before creating enhancement suggestions, please check [this list](#before-submitting-an-enhancement-suggestion) as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). Fill in [the template](https://github.com/BetterDiscord/BetterDiscord/blob/master/.github/ISSUE_TEMPLATE/feature_request.md), including the steps that you imagine you would take if the feature you're requesting existed.
+Before creating enhancement suggestions, please check [this list](#before-submitting-an-enhancement-suggestion) as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). Fill in [the template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/FEATURE-REQUEST.yml), including the steps that you imagine you would take if the feature you're requesting existed.
 
 #### Before Submitting An Enhancement Suggestion
 
@@ -119,7 +119,7 @@ Unsure where to begin contributing? You can start by looking through `help-wante
 
 #### Local development
 
-BetterDiscord and the injector can be developed locally. First, clone the repo and run `npm install && npm run build-all` and locate the `dist` folder. Next you'll need to setup the injector to use your local files. In order to do this, you'll need to locate your local injector installation. Relative to your `Discord.exe` it would be in `./resources/app`. Modify the `./resources/app/betterdiscord/config.json` file and set `localPath` to the **absolute** path of your `dist` folder from  before. Then for this to take effect, you'll need to fully restart Discord. Any future modifications to the remote app (`dist` folder) will be picked up on Discord reload.
+BetterDiscord can be developed and tested locally. First, clone the repo and run `pnpm install && pnpm build` this will generate a `dist` folder with compiled files. Next you'll need to inject your local setup to your desired release channel. There is a script in the repository to do this automatically for most cases. Just run `pnpm inject <channel>` where `<channel>` is the release channel--any of: stable, canary, ptb. Then for this to take effect, you'll need to fully restart Discord. Any future modifications to the renderer portion will be picked up on Discord reload. Preload and injector changes will require restarts.
 
 ### Pull Requests
 
@@ -151,7 +151,7 @@ BetterDiscord supports a number of languages thanks to translations provided by 
 
 ### JavaScript Styleguide
 
-All JavaScript must adhere to the [ESLint rules](https://github.com/BetterDiscord/BetterDiscord/blob/master/.eslintrc) of the repo.
+All JavaScript must adhere to the [ESLint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/.eslintrc) of the repo.
 
 Some other style related points not covered by ESLint:
 
@@ -191,9 +191,9 @@ import {deepclone, isEmpty} from "./utilties"; // Avoid this
 
 ### CSS Styleguide
 
-All CSS must adhere to the [Stylelint rules](https://github.com/BetterDiscord/BetterDiscord/blob/stable/.stylelintrc) of the repo.
+All CSS must adhere to the [Stylelint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/renderer/.stylelintrc) of the repo.
 
-Some other style related points not covered by ESLint:
+Some other style related points not covered by StyleLint:
 
 * Use verbose class names where applicable
 * Keep css files modular
