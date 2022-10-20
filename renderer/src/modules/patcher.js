@@ -1,11 +1,6 @@
 /**
  * Patcher that can patch other functions allowing you to run code before, after or
  * instead of the original function. Can also alter arguments and return values.
- *
- * This is from Zerebos' library {@link https://github.com/rauenzi/BDPluginLibrary}
- *
- * @module Patcher
- * @version 0.0.2
  */
 
 import Logger from "common/logger";
