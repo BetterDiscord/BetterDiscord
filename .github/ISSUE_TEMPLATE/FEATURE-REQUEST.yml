@@ -1,0 +1,27 @@
+name: Feature Request
+description: Suggest an idea for this project!
+title: "[Feature]"
+labels: [enhancement]
+body:
+- type: checkboxes
+  attributes:
+    label: Before Requesting
+    description: "I have double checked and agree with the following:"
+    options:
+    - label: I found no existing issue matching my feature request
+      required: true
+- type: textarea
+  attributes:
+    label: Describe the feature you'd like!
+    description: A clear and concise description of what you want to see in BetterDiscord.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Anything else?
+    description: |
+      Links? References? Anything that will give us more context about the feature you are requesting!
+
+      Tip: You can attach images by clicking this area to highlight it and then dragging files in.
+  validations:
+    required: false
