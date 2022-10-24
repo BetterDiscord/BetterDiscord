@@ -165,7 +165,7 @@
 }
 
 .bd-settings-title {
-    color: #FFFFFF;
+    color: var(--header-primary, );
     font-weight: 600;
     cursor: default;
     flex: 1;
