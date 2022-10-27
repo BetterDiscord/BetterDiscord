@@ -9,7 +9,6 @@ import Modals from "../../ui/modals";
 import Settings from "../settingsmanager";
 import Logger from "common/logger";
 import Patcher from "../patcher";
-import Emotes from "../../builtins/emotes/emotes";
 import ipc from "../ipc";
 
 /** 
@@ -40,18 +39,7 @@ const settings = Settings.collections;
  * @deprecated
  * @memberof BdApi
  */
-const emotes = new Proxy(Emotes.Emotes, {
-    get(obj, category) {
-        if (category === "blocklist") return Emotes.blocklist;
-        const group = Emotes.Emotes[category];
-        if (!group) return undefined;
-        return new Proxy(group, {
-            get(cat, emote) {return group[emote];},
-            set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");}
-        });
-    },
-    set() {Logger.warn("BdApi.emotes", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");}
-});
+const emotes = {};
 
 /** 
  * A reference string for BD's version.
