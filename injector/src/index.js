@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 import {app} from "electron";
 import Module from "module";
@@ -37,7 +38,9 @@ Object.defineProperty(global, "appSettings", {
 
 // Use Discord's info to run the app
 if (process.platform == "win32" || process.platform == "darwin") {
-    const basePath = path.join(app.getAppPath(), "..", "app.asar");
+    const appAsar = path.join(app.getAppPath(), "..", "app.asar");
+    const discordAsar = path.join(app.getAppPath(), "..", "discord.asar");
+    const basePath = fs.existsSync(discordAsar) ? discordAsar : appAsar;
     const pkg = __non_webpack_require__(path.join(basePath, "package.json"));
     app.setAppPath(basePath);
     app.name = pkg.name;
