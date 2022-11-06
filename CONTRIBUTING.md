@@ -46,7 +46,7 @@ Preload is the preload script for Discord's main `BrowserWindow` object. This se
 
 #### Renderer Application
 
-This is the main payload of BetterDiscord. This is what gets executed in the renderer context by the [injector](#injector). This portion is where most of the user interaction and development will be. This module is responsible for loading plugins and themes, as well as handling settings, emotes and more. The renderer and its code live in the `renderer` folder.
+This is the main payload of BetterDiscord. This is what gets executed in the renderer context by the [injector](#injector). This portion is where most of the user interaction and development will be. This module is responsible for loading plugins and themes, as well as handling settings, and more. The renderer and its code live in the `renderer` folder.
 
 ## How Can I Contribute?
 
