@@ -14,17 +14,49 @@
     align-items: center;
 }
 
-#bd-editor-controls button:hover {
+#bd-editor-controls .checkbox-wrapper {
+    border: 1px solid var(--interactive-normal);
+    margin: 0 5px 0 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#bd-editor-controls button:hover,
+#bd-editor-controls .checkbox-wrapper:hover {
     background: var(--background-modifier-hover);
     color: var(--interactive-hover);
 }
 
-#bd-editor-controls button:active {
+#bd-editor-controls button:active,
+#bd-editor-controls .checkbox-wrapper:active {
     background: var(--background-modifier-active);
 }
 
 #bd-editor-controls button svg {
     fill: currentColor;
+}
+
+#bd-editor-controls .checkbox {
+    position: absolute;
+    opacity: 0;
+    margin: 0;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+#bd-editor-controls .checkbox-wrapper:not(.checked) svg {
+    opacity: 0;
+}
+
+#bd-editor-controls .checkbox-wrapper.checked {
+    background-color: #3E82E5;
+    border-color: #3875CE;
 }
 
 #bd-editor-controls {
@@ -53,16 +85,6 @@
 .controls-section {
     display: flex;
     align-items: center;
-}
-
-.controls-section .checkbox-inner {
-    width: 14px;
-    height: 14px;
-}
-
-.controls-section .checkbox-inner .checkbox:checked + span::after {
-    left: 2px;
-    top: -2px;
 }
 
 .controls-section .checkbox-label {

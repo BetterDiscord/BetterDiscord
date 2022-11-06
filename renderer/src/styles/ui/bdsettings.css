@@ -233,5 +233,6 @@
 }
 
 .checkbox-item .checkbox-label {
+    margin: auto;
     margin-right: 8px;
 }

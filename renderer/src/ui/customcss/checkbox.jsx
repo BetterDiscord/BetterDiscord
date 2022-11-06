@@ -1,5 +1,7 @@
 import {React} from "modules";
 
+import Checkmark from "../icons/check";
+
 export default class Checkbox extends React.Component {
     constructor(props) {
         super(props);
@@ -9,13 +11,10 @@ export default class Checkbox extends React.Component {
 
     render() {
         return <div className="checkbox-item">
-            <div className="checkbox-label label-JWQiNe da-label">{this.props.text}</div>
-            <div className="checkbox-wrapper checkbox-3kaeSU da-checkbox checkbox-3EVISJ da-checkbox" onClick={this.onClick}>
-                <div className="checkbox-inner checkboxInner-3yjcPe da-checkboxInner">
-                    <input className="checkbox checkboxElement-1qV33p da-checkboxElement" checked={this.state.checked} type="checkbox" />
-                    <span></span>
-                </div>
-                <span></span>
+            <div className="checkbox-label">{this.props.text}</div>
+            <div className={"checkbox-wrapper" + (this.state.checked ? " checked" : "")} onClick={this.onClick}>
+                <input className="checkbox" checked={this.state.checked} type="checkbox" />
+                <Checkmark size="18px" />
             </div>
         </div>;
     }
