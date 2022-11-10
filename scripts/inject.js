@@ -69,4 +69,27 @@ else {
 
 console.log("    ✅ Wrote index.js");
 console.log("");
+
+const asarPath = path.join(discordPath, "app.asar");
+const modifiedPath = path.join(discordPath, "discord.asar");
+
+if (!fs.existsSync(modifiedPath)) {
+    console.log("Renaming app.asar -> discord.asar");
+    console.log("");
+
+    if (!fs.existsSync(asarPath)) {
+        console.log("    ❌ Unable to rename app.asar -> discord.asar, discord installation appears to be corrupt.");
+        process.exit(0);
+    }
+
+    try {
+        fs.renameSync(asarPath, modifiedPath);
+        console.log("    ✅ Successfully renamed app.asar -> discord.asar");
+        console.log("");
+    } catch (error) {
+        console.log("    ❌ Failed to rename app.asar -> discord.asar:", error);
+        process.exit(0);
+    }
+}
+
 console.log(`Injection successful, please restart ${release}.`);
