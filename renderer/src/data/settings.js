@@ -4,7 +4,6 @@ export default [
         id: "general",
         collapsible: true,
         settings: [
-            {type: "switch", id: "emotes", value: true, disabled: true},
             {type: "switch", id: "publicServers", value: true},
             {type: "switch", id: "voiceDisconnect", value: false},
             {type: "switch", id: "showToasts", value: true},

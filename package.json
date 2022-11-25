@@ -9,7 +9,6 @@
         "build-injector": "pnpm --filter injector build",
         "build-renderer": "pnpm --filter renderer build",
         "build-preload": "pnpm --filter preload build",
-        "pack-emotes": "node scripts/emotes.js",
         "inject": "node scripts/inject.js",
         "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint-js",
         "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",

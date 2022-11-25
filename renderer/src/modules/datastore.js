@@ -60,11 +60,8 @@ export default new class DataStore {
         const setChannelData = (channel, key, value, ext = "json") => fs.writeFileSync(path.resolve(this.baseFolder, channel, `${key}.${ext}`), JSON.stringify(value, null, 4));
         const channels = ["stable", "canary", "ptb"];
         let customcss = "";
-        let favoriteEmotes = {};
         try {customcss = oldData.bdcustomcss ? atob(oldData.bdcustomcss) : "";}
         catch (e) {Logger.stacktrace("DataStore:convertOldData", "Error decoding custom css", e);}
-        try {favoriteEmotes = oldData.bdfavemotes ? JSON.parse(atob(oldData.bdfavemotes)) : {};}
-        catch (e) {Logger.stacktrace("DataStore:convertOldData", "Error decoding favorite emotes", e);}
         for (const channel of channels) {
             if (!fs.existsSync(path.resolve(this.baseFolder, channel))) fs.mkdirSync(path.resolve(this.baseFolder, channel));
             const channelData = oldData.settings[channel];
@@ -77,16 +74,9 @@ export default new class DataStore {
                 developer: {debuggerHotkey: oldSettings["bda-gs-8"], reactDevTools: oldSettings.reactDevTools}
             };
 
-            const newEmotes = {
-                general: {download: oldSettings["fork-es-3"], emoteMenu: oldSettings["bda-es-0"], hideEmojiMenu: !oldSettings["bda-es-9"], modifiers: oldSettings["bda-es-8"], animateOnHover: oldSettings["fork-es-2"]},
-                categories: {twitchglobal: oldSettings["bda-es-7"], twitchsubscriber: oldSettings["bda-es-7"], frankerfacez: oldSettings["bda-es-1"], bttv: oldSettings["bda-es-2"]}
-            };
-
             setChannelData(channel, "settings", newSettings); // settingsCookie
-            setChannelData(channel, "emotes", newEmotes); // emotes (from settingsCookie)
             setChannelData(channel, "plugins", channelData.plugins || {}); // pluginCookie
             setChannelData(channel, "themes", channelData.themes || {}); // themeCookie
-            setChannelData(channel, "misc", {favoriteEmotes}); // favorite emotes
             fs.writeFileSync(path.resolve(this.baseFolder, channel, "custom.css"), customcss); // customcss
         }
 
