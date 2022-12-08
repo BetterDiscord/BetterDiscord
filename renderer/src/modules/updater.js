@@ -176,7 +176,7 @@ class AddonUpdater {
         if (this.pending.includes(filename)) return;
         const info = this.cache[path.basename(filename)];
         if (!info) return;
-        const hasUpdate = info.version > currentVersion;
+        const hasUpdate = info.version != currentVersion;
         if (!hasUpdate) return;
         this.pending.push(filename);
     }
