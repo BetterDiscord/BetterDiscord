@@ -16,7 +16,7 @@ const discordPath = (function() {
         if (!fs.existsSync(basedir)) throw new Error(`Cannot find directory for ${release}`);
         const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];
         // To account for discord_desktop_core-1 or any other number
-        const coreWrap = fs.readdirSync(basedir, version, "modules").filter(e => e.indexOf("discord_desktop_core") === 0).sort().reverse()[0];
+        const coreWrap = fs.readdirSync(path.join(basedir, version, "modules")).filter(e => e.indexOf("discord_desktop_core") === 0).sort().reverse()[0];
         resourcePath = path.join(basedir, version, "modules", coreWrap, "discord_desktop_core");
     }
     else {
