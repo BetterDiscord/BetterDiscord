@@ -15,7 +15,9 @@ const discordPath = (function() {
         const basedir = path.join(process.env.LOCALAPPDATA, release.replace(/ /g, ""));
         if (!fs.existsSync(basedir)) throw new Error(`Cannot find directory for ${release}`);
         const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];
-        resourcePath = path.join(basedir, version, "modules", "discord_desktop_core-1", "discord_desktop_core");
+        // To account for discord_desktop_core-1 or any other number
+        const coreWrap = fs.readdirSync(basedir, version, "modules").filter(e => e.indexOf("discord_desktop_core") === 0).sort().reverse()[0];
+        resourcePath = path.join(basedir, version, "modules", coreWrap, "discord_desktop_core");
     }
     else {
         const userData = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config");
