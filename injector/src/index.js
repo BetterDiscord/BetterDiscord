@@ -1,4 +1,6 @@
 import {app} from "electron";
+import path from "path";
+import fs from "fs";
 
 import ipc from "./modules/ipc";
 import BrowserWindow from "./modules/browserwindow";
@@ -20,17 +22,29 @@ if (!process.argv.includes("--vanilla")) {
 }
 
 // Enable DevTools on Stable.
-let fakeAppSettings;
-Object.defineProperty(global, "appSettings", {
-    get() {
-        return fakeAppSettings;
-    },
-    set(value) {
-        if (!value.hasOwnProperty("settings")) value.settings = {};
-        value.settings.DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING = true;
-        fakeAppSettings = value;
-    },
-});
+try {
+    let fakeAppSettings;
+    Object.defineProperty(global, "appSettings", {
+        get() {
+            return fakeAppSettings;
+        },
+        set(value) {
+            if (!value.hasOwnProperty("settings")) value.settings = {};
+            value.settings.DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING = true;
+            fakeAppSettings = value;
+        },
+    });
+}
+catch (_) {
+    // Detect old install and delete it
+    const appPath = app.getAppPath(); // Should point to app or app.asar
+    const oldInstall = path.resolve(appPath, "..", "app");
+    if (fs.existsSync(oldInstall)) {
+        fs.rmdirSync(oldInstall, {recursive: true});
+        app.quit();
+        app.relaunch();
+    }
+}
 
 // Needs to run this after Discord but before ready()
 if (!process.argv.includes("--vanilla")) {
