@@ -3,6 +3,8 @@ import Patcher from "../patcher";
 import Logger from "common/logger";
 import {React} from "../modules";
 
+let startupComplete = false;
+
 const MenuComponents = (() => {
     const out = {};
     const componentMap = {
@@ -15,13 +17,24 @@ const MenuComponents = (() => {
     };
 
     let ContextMenuIndex = null;
-    const ContextMenuModule = WebpackModules.getModule((m, _, id) => Object.values(m).some(v => v?.FLEXIBLE) && (ContextMenuIndex = id), {searchExports: false});
-    const rawMatches = WebpackModules.require.m[ContextMenuIndex].toString().matchAll(/if\(\w+\.type===\w+\.(\w+)\).+?type:"(.+?)"/g);
-    
-    out.Menu = Object.values(ContextMenuModule).find(v => v.toString().includes(".isUsingKeyboardNavigation"));
+    try {
+        const ContextMenuModule = WebpackModules.getModule((m, _, id) => Object.values(m).some(v => v?.toString().includes("navId:")) && (ContextMenuIndex = id), {searchExports: false});
+        const rawMatches = WebpackModules.require.m[ContextMenuIndex].toString().matchAll(/if\(\w+\.type===\w+\.(\w+)\).+?type:"(.+?)"/g);
+        
+        out.Menu = Object.values(ContextMenuModule).find(v => v.toString().includes(".isUsingKeyboardNavigation"));
 
-    for (const [, identifier, type] of rawMatches) {
-        out[componentMap[type]] = ContextMenuModule[identifier];
+        for (const [, identifier, type] of rawMatches) {
+            out[componentMap[type]] = ContextMenuModule[identifier];
+        }
+
+        startupComplete = true;
+    } catch (error) {
+        startupComplete = false;
+        Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error);
+
+        Object.assign(out, Object.fromEntries(
+            Object.values(componentMap).map(k => [k, () => null])
+        ));
     }
 
     return out;
@@ -30,15 +43,27 @@ const MenuComponents = (() => {
 const ContextMenuActions = (() => {
     const out = {};
 
-    const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
+    try {
+        const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
 
-    for (const key of Object.keys(ActionsModule)) {
-        if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
-            out.closeContextMenu = ActionsModule[key];
+        for (const key of Object.keys(ActionsModule)) {
+            if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
+                out.closeContextMenu = ActionsModule[key];
+            }
+            else if (ActionsModule[key].toString().includes("renderLazy")) {
+                out.openContextMenu = ActionsModule[key];
+            }
         }
-        else if (ActionsModule[key].toString().includes("renderLazy")) {
-            out.openContextMenu = ActionsModule[key];
-        }
+
+        startupComplete = true;
+    } catch (error) {
+        startupComplete = false;
+        Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error);
+        
+        Object.assign(out, {
+            closeContextMenu: () => {},
+            openContextMenu: () => {}
+        });
     }
 
     return out;
@@ -50,6 +75,8 @@ class MenuPatcher {
     static subPatches = new WeakMap();
 
     static initialize() {
+        if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successfully, aborting initialization.");
+
         const {module, key} = (() => {
             const foundModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
             const foundKey = Object.keys(foundModule).find(k => foundModule[k].length === 3);
@@ -320,6 +347,11 @@ class ContextMenu {
 Object.assign(ContextMenu.prototype, MenuComponents);
 Object.freeze(ContextMenu);
 Object.freeze(ContextMenu.prototype);
-MenuPatcher.initialize();
+
+try {
+    MenuPatcher.initialize();
+} catch (error) {
+    Logger.error("ContextMenu~Patcher", "Fatal error:", error);
+}
 
 export default ContextMenu;
