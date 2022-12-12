@@ -2,6 +2,15 @@ import {app} from "electron";
 import path from "path";
 import fs from "fs";
 
+// Detect old install and delete it
+const appPath = app.getAppPath(); // Should point to app or app.asar
+const oldInstall = path.resolve(appPath, "..", "app");
+if (fs.existsSync(oldInstall)) {
+    fs.rmdirSync(oldInstall, {recursive: true});
+    app.quit();
+    app.relaunch();
+}
+
 import ipc from "./modules/ipc";
 import BrowserWindow from "./modules/browserwindow";
 import CSP from "./modules/csp";
@@ -18,7 +27,12 @@ if (!process.argv.includes("--vanilla")) {
 
 
     // Remove CSP immediately on linux since they install to discord_desktop_core still
-    CSP.remove();
+    try {
+        CSP.remove();
+    }
+    catch (_) {
+        // Remove when everyone is moved to core
+    }
 }
 
 // Enable DevTools on Stable.
@@ -36,14 +50,7 @@ try {
     });
 }
 catch (_) {
-    // Detect old install and delete it
-    const appPath = app.getAppPath(); // Should point to app or app.asar
-    const oldInstall = path.resolve(appPath, "..", "app");
-    if (fs.existsSync(oldInstall)) {
-        fs.rmdirSync(oldInstall, {recursive: true});
-        app.quit();
-        app.relaunch();
-    }
+    // Remove when everyone is moved to core
 }
 
 // Needs to run this after Discord but before ready()

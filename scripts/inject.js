@@ -20,7 +20,8 @@ const discordPath = (function() {
         resourcePath = path.join(basedir, version, "modules", coreWrap, "discord_desktop_core");
     }
     else {
-        const userData = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config");
+        let userData = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config");
+        if (process.platform === "darwin") userData = path.join(process.env.HOME, "Library", "Application Support");
         const basedir = path.join(userData, release.toLowerCase().replace(" ", ""));
         if (!fs.existsSync(basedir)) return "";
         const version = fs.readdirSync(basedir).filter(f => fs.lstatSync(path.join(basedir, f)).isDirectory() && f.split(".").length > 1).sort().reverse()[0];
