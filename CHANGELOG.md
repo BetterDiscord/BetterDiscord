@@ -2,6 +2,37 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.8.3
+
+### Added
+- Checking for old installs and deleting them
+
+### Removed
+- All references to Emotes, this will become a separate plugin
+
+### Changed
+- Moved to the more permissive Apache 2.0 license
+- Now check for discord.asar for electron17+
+- Handle setting module exports internally rather than maintaining getter references
+
+### Fixed
+- Fixed `inject` for electron17+
+- Updater checking `>` which does not work for open versions
+- Fixed a startup bug with the context menu api
+
+## 1.8.2
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed modals not working
+- Fixed downloading binary files
+- Fixed public server invites
+
 ## 1.8.1
 
 ### Added

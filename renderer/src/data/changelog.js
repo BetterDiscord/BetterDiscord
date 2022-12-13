@@ -3,14 +3,20 @@ export default {
     description: "Just some smaller fixes while we work on some big things in the background.",
     changes: [
         {
+            title: "What's New?",
+            type: "",
+            items: [
+                "Twitch emotes are no longer a part of BetterDiscord, we are opting to move them to a plugin. Stay tuned for when that will be completed!",
+                "We changed the way patching is handled internally hoping it'll help with memory leaks.",
+                "Everything should be working again for Canary and PTB with the latest updates!",
+            ]
+        },
+        {
             title: "Bug Fixes",
             type: "fixed",
             items: [
-                "Fixed _even more_ issues with the built-in updater.",
-                "Fixed not being able to click support server links in plugin/theme pages.",
-                "Fixed some issues with not being able to join public servers.",
-                "Fixed plugin settings not being able to be displayed.",
-                "Fixed changelog modal not being able to be displayed."
+                "Fixed the way the update compares version numbers.",
+                "Fixed the startup bug."
             ]
         }
     ]
