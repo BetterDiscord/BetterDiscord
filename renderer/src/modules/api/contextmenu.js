@@ -16,18 +16,18 @@ const MenuComponents = (() => {
         customitem: "Item"
     };
 
-    let ContextMenuIndex = null;
     try {
-        const ContextMenuModule = WebpackModules.getModule((m, _, id) => Object.values(m).some(v => v?.toString().includes("navId:")) && (ContextMenuIndex = id), {searchExports: false});
-        const rawMatches = WebpackModules.require.m[ContextMenuIndex].toString().matchAll(/if\(\w+\.type===\w+\.(\w+)\).+?type:"(.+?)"/g);
-        
+        let contextMenuId = Object.keys(WebpackModules.require.m).find(e => WebpackModules.require.m[e]?.toString().includes("menuitemcheckbox"));
+        const ContextMenuModule = WebpackModules.getModule((m, t, id) => id === contextMenuId);
+        const rawMatches = WebpackModules.require.m[contextMenuId].toString().matchAll(/if\(\w+\.type===\w+\.(\w+)\).+?type:"(.+?)"/g);
+
         out.Menu = Object.values(ContextMenuModule).find(v => v.toString().includes(".isUsingKeyboardNavigation"));
 
         for (const [, identifier, type] of rawMatches) {
             out[componentMap[type]] = ContextMenuModule[identifier];
         }
 
-        startupComplete = true;
+        startupComplete = Object.values(componentMap).every(k => out[k]) && !!out.Menu;
     } catch (error) {
         startupComplete = false;
         Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error);
@@ -55,7 +55,7 @@ const ContextMenuActions = (() => {
             }
         }
 
-        startupComplete = true;
+        startupComplete = typeof(out.closeContextMenu) === "function" && typeof(out.openContextMenu) === "function";
     } catch (error) {
         startupComplete = false;
         Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error);
