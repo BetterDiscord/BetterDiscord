@@ -1,5 +1,3 @@
-/**Determines where the extra starts.*/
-const extraLabels = 6;
 const css = `/* BEGIN V2 LOADER */
 /* =============== */
 
@@ -21,7 +19,7 @@ const css = `/* BEGIN V2 LOADER */
 }
 #bd-loading-icon {
   position: fixed;
-  bottom: 10px;
+  bottom: 15px;
   right: 5px;
   display: block;
   width: 20px;
@@ -31,7 +29,7 @@ const css = `/* BEGIN V2 LOADER */
 }
 #bd-loading-progress {
   position: fixed;
-  bottom: 5px;
+  bottom: 10px;
   right: 5px;
   width: 20px;
   height: 3px;
@@ -43,26 +41,43 @@ const css = `/* BEGIN V2 LOADER */
   width: 0%;
   height: 100%;
 }
+#bd-loading-subprogress {
+  display: none;
+  position: fixed;
+  bottom: 6px;
+  right: 5px;
+  width: 20px;
+  height: 1px;
+  background-color: var(--header-primary);
+  overflow: hidden;
+}
+#bd-loading-subprogress-bar {
+  background-color: #3E82E5;
+  width: 0%;
+  height: 100%;
+}
 
 #bd-loading-status-list {
   position: absolute;
-  bottom: 7px;
+  bottom: 16px;
   right: 30px;
 }
-.bd-loading-status-container {
+#bd-loading-substatus {
+  position: absolute;
+  bottom: 3px;
+  right: 30px;
+  white-space: nowrap;
+  text-align: right;
+  color: var(--header-primary);
+  font-size: 12px;
+}
+
+.bd-loading-status {
   white-space: nowrap;
   text-align: right;
   font-weight: 600;
   color: var(--header-primary);
   transition: 0.2s;
-}
-${// reduce labels opacity
-    (()=>{
-        /**if `maxLabels == 4`: `'2', '3', 'n+4'`*/
-        let opacityReduceNth = new Array(extraLabels - 1).fill('temp').map((_, i) => (i == extraLabels - 2 ? 'n+' : '') + (i + 2).toString());
-
-        return opacityReduceNth.map((nth, i) => `.bd-loading-status-container:nth-last-child(${nth}) { opacity: ${1 - (i + 1) * (1 / extraLabels)}; }`).join('\n');
-    })()
 }
 
 @keyframes bd-loading-animation {
@@ -86,62 +101,84 @@ const Progress = document.createElement("div");
 Progress.appendChild(ProgressBar);
 Progress.id = "bd-loading-progress";
 
+const SubProgressBar = document.createElement("div");
+SubProgressBar.id = "bd-loading-subprogress-bar";
+const SubProgress = document.createElement("div");
+SubProgress.appendChild(SubProgressBar);
+SubProgress.id = "bd-loading-subprogress";
+
 const StatusListContainer = document.createElement("div");
 StatusListContainer.id = "bd-loading-status-list";
 
+const SubStatusContainer = document.createElement("div");
+SubStatusContainer.id = "bd-loading-substatus";
 
 const Container = document.createElement("div");
 Container.id = "bd-loading";
 Container.appendChild(IconStyle);
 Container.appendChild(Icon);
 Container.appendChild(Progress);
+Container.appendChild(SubProgress);
 Container.appendChild(StatusListContainer);
+Container.appendChild(SubStatusContainer);
 
 export default class {
 
     /**
      * Sets the value of the progress bar, adds status to the list about status.
      * @param {object} options Object
-     * @param {*} [options.progress] Doesn't change the progress if not a number.
-     * @param {boolean} [options.hiddenProgress] The progress bar will be hidden if is true.
+     * @param {*} [options.progress] 0-100. Doesn't change the progress if not a number.
+     * @param {*} [options.subprogress] 0-100. Doesn't change the progress if not a number.
      * @param {*} [options.status] Doesn't add the label if not a string.
-     * @param {boolean} [options.clear] Previous labels will be deleted before adding a new one `status`.
+     * @param {*} [options.substatus] Doesn't add the label if not a string.
      */
     static setInitStatus(options = {}) {
         if(typeof options != 'object' || Array.isArray(options)) {
             options = {};
         }
-        const {progress, status, clear, hiddenProgress} = options;
+        const {progress, subprogress, status, substatus} = options;
         return new Promise(
             rs => {
-                if(hiddenProgress) {
-                    ProgressBar.style.display = "none";
-                } else {
-                    ProgressBar.style.display = "block";
-                };
                 if(Number.isFinite(progress)) {
                     if (progress > 100) progress = 100;
                     if (progress < 0) progress = 0;
                     ProgressBar.style.width = progress + "%";
                 };
-                if(clear) {
-                    StatusListContainer.innerHTML = "";
+                if(Number.isFinite(subprogress)) {
+                    if (subprogress > 100) subprogress = 100;
+                    if (subprogress < 0) subprogress = 0;
+                    SubProgressBar.style.width = subprogress + "%";
                 };
                 if (typeof status == "string") {
                     let StatusContainer = document.createElement("div");
-                    StatusContainer.className = "bd-loading-status-container";
+                    StatusContainer.className = "bd-loading-status";
                     StatusContainer.innerHTML = status;
+                    StatusListContainer.innerHTML = "";
                     StatusListContainer.append(StatusContainer);
-
-                    if (StatusListContainer.childElementCount > extraLabels - 1) {
-                        let Needless = StatusListContainer.querySelectorAll(`#bd-loading-status-list > :nth-last-child(n+${extraLabels})`);
-                        Needless.forEach(n => setTimeout(() => n?.remove?.(), 200));
-                    }
+                };
+                if (typeof substatus == "string") {
+                    SubStatusContainer.innerText = substatus;
                 };
                 // 60 fps, rendering wait
                 setTimeout(rs, 1000/60);
             }
         )
+    }
+
+    static showProgress() {
+        Progress.style.display = "block";
+    }
+
+    static hideProgress() {
+        Progress.style.display = "none";
+    }
+
+    static showSubProgress() {
+        SubProgress.style.display = "block";
+    }
+
+    static hideSubProgress() {
+        SubProgress.style.display = "none";
     }
 
     static show() {
