@@ -101,21 +101,31 @@ export default class {
 
     /**
      * Sets the value of the progress bar, adds status to the list about status.
-     * @param {*} percent Doesn't change the progress if not a number.
-     * @param {string} status Doesn't add the label if not a string.
-     * @param {boolean} clear Previous labels will be deleted before adding a new one `status`.
-     * @returns 
+     * @param {object} options Object
+     * @param {*} [options.progress] Doesn't change the progress if not a number.
+     * @param {boolean} [options.hiddenProgress] The progress bar will be hidden if is true.
+     * @param {*} [options.status] Doesn't add the label if not a string.
+     * @param {boolean} [options.clear] Previous labels will be deleted before adding a new one `status`.
      */
-    static setInitStatus(percent = null, status = "", clear = false) {
+    static setInitStatus(options = {}) {
+        if(typeof options != 'object' || Array.isArray(options)) {
+            options = {};
+        }
+        const {progress, status, clear, hiddenProgress} = options;
         return new Promise(
             rs => {
-                if(isFinite(percent)) {
-                    if (percent > 100) percent = 100;
-                    if (percent < 0) percent = 0;
-                    ProgressBar.style.width = percent + "%";
+                if(hiddenProgress) {
+                    ProgressBar.style.display = "none";
+                } else {
+                    ProgressBar.style.display = "block";
+                };
+                if(Number.isFinite(progress)) {
+                    if (progress > 100) progress = 100;
+                    if (progress < 0) progress = 0;
+                    ProgressBar.style.width = progress + "%";
                 };
                 if(clear) {
-                   StatusListContainer.innerHTML = "";
+                    StatusListContainer.innerHTML = "";
                 };
                 if (typeof status == "string") {
                     let StatusContainer = document.createElement("div");
