@@ -2,6 +2,17 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.8.4
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed more bugs with context menu api
+
 ## 1.8.3
 
 ### Added
