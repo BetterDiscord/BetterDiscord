@@ -46,16 +46,6 @@ export default class BetterDiscord {
         if (!fs.existsSync(path.join(dataPath, "themes"))) fs.mkdirSync(path.join(dataPath, "themes"));
     }
 
-    static async ensureWebpackModules(browserWindow) {
-        await browserWindow.webContents.executeJavaScript(`new Promise(resolve => {
-            const check = function() {
-                if (window.webpackJsonp && window.webpackJsonp.flat().flat().length >= 7000) return resolve();
-                setTimeout(check, 100);
-            };
-            check();
-        });`);
-    }
-
     static async injectRenderer(browserWindow) {
         const location = path.join(__dirname, "renderer.js");
         if (!fs.existsSync(location)) return; // TODO: cut a fatal log
