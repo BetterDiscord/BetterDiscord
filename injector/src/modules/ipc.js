@@ -128,17 +128,23 @@ const registerPreload = (event, path) => {
 
 export default class IPCMain {
     static registerEvents() {
-        ipc.on(IPCEvents.GET_PATH, getPath);
-        ipc.on(IPCEvents.RELAUNCH, relaunch);
-        ipc.on(IPCEvents.OPEN_DEVTOOLS, openDevTools);
-        ipc.on(IPCEvents.CLOSE_DEVTOOLS, closeDevTools);
-        ipc.on(IPCEvents.TOGGLE_DEVTOOLS, toggleDevTools);
-        ipc.on(IPCEvents.INSPECT_ELEMENT, inspectElement);
-        ipc.on(IPCEvents.MINIMUM_SIZE, setMinimumSize);
-        ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
-        ipc.on(IPCEvents.REGISTER_PRELOAD, registerPreload);
-        ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
-        ipc.handle(IPCEvents.OPEN_DIALOG, openDialog);
-        ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
+        try {
+            ipc.on(IPCEvents.GET_PATH, getPath);
+            ipc.on(IPCEvents.RELAUNCH, relaunch);
+            ipc.on(IPCEvents.OPEN_DEVTOOLS, openDevTools);
+            ipc.on(IPCEvents.CLOSE_DEVTOOLS, closeDevTools);
+            ipc.on(IPCEvents.TOGGLE_DEVTOOLS, toggleDevTools);
+            ipc.on(IPCEvents.INSPECT_ELEMENT, inspectElement);
+            ipc.on(IPCEvents.MINIMUM_SIZE, setMinimumSize);
+            ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
+            ipc.on(IPCEvents.REGISTER_PRELOAD, registerPreload);
+            ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
+            ipc.handle(IPCEvents.OPEN_DIALOG, openDialog);
+            ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
+        }
+        catch (err) {
+            // eslint-disable-next-line no-console
+            console.error(err);
+        }
     }
 }

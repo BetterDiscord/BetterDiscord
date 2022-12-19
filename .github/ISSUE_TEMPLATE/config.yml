@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: BetterDiscord Support Server
+    url: https://betterdiscord.app/invite
+    about: The best place to get immediate support.
+  - name: Troubleshooting Guide
+    url: https://docs.betterdiscord.app/users/getting-started/troubleshooting
+    about: The user troubleshooting guide from the documentation.
