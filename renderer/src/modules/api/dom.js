@@ -78,6 +78,7 @@ class DOM {
      * @param {function} update Render function indicating the style should be updated.
      * @param {number} duration Duration in ms to animate for.
      * @param {object} [options] Options to customize the animation.
+     * @param {function} [options.timing] Optional function calculating progress based on current time fraction. Linear by default.
      */
     animate(update, duration, options = {}) {
         return DOMManager.animate({update, duration, timing: options.timing});
