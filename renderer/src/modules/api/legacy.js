@@ -120,6 +120,7 @@ function alert(title, content) {
  * @param {string} [options.cancelText=Cancel] Text for the cancel button.
  * @param {callable} [options.onConfirm=NOOP] Callback to occur when clicking the submit button.
  * @param {callable} [options.onCancel=NOOP] Callback to occur when clicking the cancel button.
+ * @returns {string} The key used for this modal.
  * @memberof BdApi
  */
 function showConfirmationModal(title, content, options = {}) {

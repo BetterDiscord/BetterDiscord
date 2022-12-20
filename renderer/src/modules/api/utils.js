@@ -51,6 +51,7 @@ const Utils = {
     /**
      * Takes a string of HTML and escapes it using the browser's own escaping mechanism.
      * @param {String} html - HTML to be escaped.
+     * @return {string} Escaped HTML string.
      */
     escapeHTML(html) {
         return Utilities.escapeHTML(html);

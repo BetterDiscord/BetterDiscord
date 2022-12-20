@@ -94,7 +94,7 @@ class DOM {
      * @param {string} [options.id] ID to set for the element.
      * @param {HTMLElement} [options.target] Target element to automatically append to.
      * @param {HTMLElement} [child] Child node to add.
-     * @returns HTMLElement
+     * @returns {HTMLElement} The created HTML element.
      */
     createElement(tag, options = {}, child = null) {
         return DOMManager.createElement(tag, options, child);

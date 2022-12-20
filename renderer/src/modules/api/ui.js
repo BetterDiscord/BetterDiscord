@@ -49,6 +49,7 @@ const UI = {
      * @param {string} [options.cancelText=Cancel] Text for the cancel button.
      * @param {callable} [options.onConfirm=NOOP] Callback to occur when clicking the submit button.
      * @param {callable} [options.onCancel=NOOP] Callback to occur when clicking the cancel button.
+     * @returns {string} The key used for this modal.
      */
     showConfirmationModal(title, content, options = {}) {
         return Modals.showConfirmationModal(title, content, options);
@@ -76,7 +77,7 @@ const UI = {
      * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
      * @param {Array<{label: string, onClick: function}>} [options.buttons] Buttons that should be added next to the notice text.
      * @param {number} [options.timeout=10000] Timeout until the notice is closed. Will not fire when set to `0`.
-     * @returns {function}
+     * @returns {function} A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
      */
     showNotice(content, options = {}) {
         return Notices.show(content, options);
