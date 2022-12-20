@@ -332,7 +332,6 @@ class ContextMenu {
      * @param {string} [config.position="right"] - Default position for the menu, options: "left", "right".
      * @param {string} [config.align="top"] - Default alignment for the menu, options: "bottom", "top".
      * @param {function} [config.onClose] - Function to run when the menu is closed.
-     * @param {boolean} [config.noBlurEvent=false] - No clue.
      */
     open(event, menuComponent, config) {
         return ContextMenuActions.openContextMenu(event, function(e) {
