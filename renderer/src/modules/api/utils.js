@@ -64,7 +64,8 @@ const Utils = {
      * When given an object they keys are added as the classnames if the value is truthy.
      * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
      * 
-     * @param {...Any} argument - anything that should be used to add classnames.
+     * @param {...Any} argument - Anything that should be used to add classnames.
+     * @returns {string} Joined classname.
      */
     className() {
         return Utilities.className(...arguments);
