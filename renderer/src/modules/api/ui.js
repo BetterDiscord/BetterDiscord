@@ -5,10 +5,9 @@ import Tooltip from "../../ui/tooltip";
 import ipc from "../ipc";
 
 /**
- * `UI` is a utility class for getting internal webpack modules. Instance is accessible through the {@link BdApi}.
- * This is extremely useful for interacting with the internals of Discord.
+ * `UI` is a utility class for creating user interfaces. Instance is accessible through the {@link BdApi}.
  * @type UI
- * @summary {@link UI} is a utility class for getting internal webpack modules.
+ * @summary {@link UI} is a utility class for creating user interfaces.
  * @name UI
  */
 const UI = {
