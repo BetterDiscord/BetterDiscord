@@ -37,12 +37,13 @@ const Utils = {
     /**
      * Returns a function, that, as long as it continues to be invoked, will not
      * be triggered. The function will be called after it stops being called for
-     * N milliseconds.
+     * `delay` milliseconds. It is called at the end of the sequence (trailing edge).
      * 
      * Adapted from the version by David Walsh (https://davidwalsh.name/javascript-debounce-function)
      * 
-     * @param {function} executor 
-     * @param {number} delay 
+     * @param {function} executor The function to be debounced.
+     * @param {number} delay Number of ms to delay calls.
+     * @return {function} A debounced version of the function.
      */
     debounce(executor, delay) {
         return Utilities.debounce(executor, delay);
