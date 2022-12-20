@@ -9,10 +9,11 @@ import Utilities from "../utilities";
 const Utils = {
     /**
      * Finds a value, subobject, or array from a tree that matches a specific filter. This is a DFS.
-     * @param {object} tree Tree that should be walked
-     * @param {callable} searchFilter Filter to check against each object and subobject
-     * @param {object} options Additional options to customize the search
-     * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. Null value indicates all keys are walkable
+     * 
+     * @param {object} tree Tree that should be walked.
+     * @param {callable} searchFilter Filter to check against each object and subobject.
+     * @param {object} options Additional options to customize the search.
+     * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. Null value indicates all keys are walkable.
      * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search, most helpful when `walkable = null`.
      */
     findInTree(tree, searchFilter, options = {}) {
@@ -24,9 +25,10 @@ const Utils = {
      * of `extenders` have priority, that is to say if one sets a key to be a primitive,
      * it will be overwritten with the next one with the same key. If it is an object,
      * and the keys match, the object is extended. This happens recursively.
-     * @param {object} extendee - Object to be extended
-     * @param {...object} extenders - Objects to extend with
-     * @returns {object} - A reference to `extendee`
+     * 
+     * @param {object} extendee - Object to be extended.
+     * @param {...object} extenders - Objects to extend with.
+     * @returns {object} - A reference to `extendee`.
      */
     extend(extendee, ...extenders) {
         return Utilities.extend(extendee, ...extenders);
@@ -47,8 +49,8 @@ const Utils = {
     },
 
     /**
-     * Takes a string of html and escapes it using the brower's own escaping mechanism.
-     * @param {String} html - html to be escaped
+     * Takes a string of HTML and escapes it using the browser's own escaping mechanism.
+     * @param {String} html - HTML to be escaped.
      */
     escapeHTML(html) {
         return Utilities.escapeHTML(html);
@@ -59,6 +61,7 @@ const Utils = {
      * When given an array all values from the array are added to the list.
      * When given an object they keys are added as the classnames if the value is truthy.
      * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
+     * 
      * @param {...Any} argument - anything that should be used to add classnames.
      */
     className() {

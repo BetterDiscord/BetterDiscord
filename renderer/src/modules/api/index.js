@@ -113,7 +113,7 @@ BdApi.Utils = Utils;
 BdApi.DOM = DOMAPI;
 
 /**
- * An instance of {@link ContextMenu} for interacting with context menus
+ * An instance of {@link ContextMenu} for interacting with context menus.
  * @type ContextMenu
  */
 BdApi.ContextMenu = ContextMenuAPI;

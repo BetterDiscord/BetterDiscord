@@ -18,9 +18,9 @@ class Data {
     /**
      * Saves JSON-serializable data.
      * 
-     * @param {string} pluginName Name of the plugin saving data
-     * @param {string} key Which piece of data to store
-     * @param {any} data The data to be saved
+     * @param {string} pluginName Name of the plugin saving data.
+     * @param {string} key Which piece of data to store.
+     * @param {any} data The data to be saved.
      */
     save(pluginName, key, data) {
         if (this.#callerName) {
@@ -34,9 +34,9 @@ class Data {
     /**
      * Loads previously stored data.
      * 
-     * @param {string} pluginName Name of the plugin loading data
-     * @param {string} key Which piece of data to load
-     * @returns {any} The stored data
+     * @param {string} pluginName Name of the plugin loading data.
+     * @param {string} key Which piece of data to load.
+     * @returns {any} The stored data.
      */
     load(pluginName, key) {
         if (this.#callerName) {
@@ -47,10 +47,10 @@ class Data {
     }
 
     /**
-     * Deletes a piece of stored data, this is different than saving as null or undefined.
+     * Deletes a piece of stored data. This is different than saving `null` or `undefined`.
      * 
-     * @param {string} pluginName Name of the plugin deleting data
-     * @param {string} key Which piece of data to delete
+     * @param {string} pluginName Name of the plugin deleting data.
+     * @param {string} key Which piece of data to delete.
      */
     delete(pluginName, key) {
         if (this.#callerName) {
