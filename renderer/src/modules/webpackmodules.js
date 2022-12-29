@@ -141,6 +141,25 @@ export default class WebpackModules {
     static findByDisplayName(name) {return this.getByDisplayName(name);}
 
     /**
+     * A Proxy that returns the module source by ID.
+     */
+    static modules = new Proxy({}, {
+        ownKeys() {return Object.keys(WebpackModules.require.m);},
+        getOwnPropertyDescriptor() {
+            return {
+                enumerable: true,
+                configurable: true, // Not actually
+            };
+        },
+        get(_, k) {
+            return WebpackModules.require.m[k];
+        },
+        set() {
+            throw new Error("[WebpackModules~modules] Setting modules is not allowed.");
+        }
+    });
+
+    /**
      * Finds a module using a filter function.
      * @param {function} filter A function to use to filter modules
      * @param {object} [options] Set of options to customize the search
@@ -245,6 +264,24 @@ export default class WebpackModules {
         }
         
         return returnedModules;
+    }
+
+    /**
+     * Searches for a module by value, returns module & matched key. Useful in combination with the Patcher. 
+     * @param {(value: any, index: number, array: any[]) => boolean} filter A function to use to filter the module
+     * @param {object} [options] Set of options to customize the search
+     * @param {any} [options.target=null] Optional module target to look inside.
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters. 
+     * @return {[Any, string]}
+     */
+    static *getMangled(filter, {target = null, ...rest} = {}) {
+        yield target ??= this.getModule(exports =>
+            Object.values(exports).some(filter),
+            rest
+        );
+        
+        yield target && Object.keys(target).find(k => filter(target[k]));
     }
 
     /**

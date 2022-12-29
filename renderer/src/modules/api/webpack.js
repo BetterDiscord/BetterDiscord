@@ -9,6 +9,10 @@ import WebpackModules, {Filters} from "../webpackmodules";
  * @name Webpack
  */
 const Webpack = {
+    /**
+     * A Proxy that returns the module source by ID.
+     */
+    modules: WebpackModules.modules,
 
     /**
      * Series of {@link Filters} to be used for finding webpack modules.
@@ -61,6 +65,22 @@ const Webpack = {
     },
 
     /**
+     * Searches for a module by value, returns module & matched key. Useful in combination with the Patcher. 
+     * @param {(value: any, index: number, array: any[]) => boolean} filter A function to use to filter the module
+     * @param {object} [options] Set of options to customize the search
+     * @param {any} [options.target=null] Optional module target to look inside.
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters. 
+     * @return {[Any, string]}
+     */
+    getMangled(filter, options = {}) {
+        if (("first" in options)) return Logger.error("BdApi.Webpack~getModule", "Unsupported option first.");
+        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
+        return WebpackModules.getMangled(filter, options);
+    },
+
+    /**
      * Finds a module using a filter function.
      * @memberof Webpack
      * @param {function} filter A function to use to filter modules. It is given exports, module, and moduleID. Return `true` to signify match.
@@ -104,6 +124,90 @@ const Webpack = {
         if (("signal" in options) && !(options.signal instanceof AbortSignal)) return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.signal", options.signal, "AbortSignal expected.");
         if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
         return WebpackModules.getLazy(filter, options);
+    },
+
+    /**
+     * Finds all modules matching a filter function.
+     * @param {Function} filter A function to use to filter modules
+     */
+    getModules(filter) {return WebpackModules.getModule(filter, {first: false});},
+
+    /**
+     * Finds a module using its code.
+     * @param {RegEx} regex A regular expression to use to filter modules
+     * @param {object} [options] Options to configure the search
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
+     * @return {Any}
+     */
+    getByRegex(regex, options = {}) {
+        return WebpackModules.getModule(Filters.byRegex(regex), options);
+    },
+
+    /**
+     * Finds akk modules using its code.
+     * @param {RegEx} regex A regular expression to use to filter modules
+     * @param {object} [options] Options to configure the search
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
+     * @return {Any[]}
+     */
+    getAllByRegex(regex, options = {}) {
+        return WebpackModules.getModule(Filters.byRegex(regex), options);
+    },
+
+    /**
+     * Finds a single module using properties on its prototype.
+     * @param {...string} prototypes Properties to use to filter modules
+     * @return {Any}
+     */
+    getByPrototypes(...prototypes) {
+        return WebpackModules.getModule(Filters.byPrototypeFields(prototypes));
+    },
+
+    /**
+     * Finds all modules with a set of properties of its prototype.
+     * @param {...string} prototypes Properties to use to filter modules
+     * @return {Any[]}
+     */
+    getAllByPrototypes(...prototypes) {
+        return WebpackModules.getModule(Filters.byPrototypeFields(prototypes), {first: false});
+    },
+
+    /**
+     * Finds a single module using its own properties.
+     * @param {...string} props Properties to use to filter modules
+     * @return {Any}
+     */
+    getByProps(...props) {
+        return WebpackModules.getModule(Filters.byProps(props));
+    },
+
+    /**
+     * Finds all modules with a set of properties.
+     * @param {...string} props Properties to use to filter modules
+     * @return {Any[]}
+     */
+    getAllByProps(...props) {
+        return WebpackModules.getModule(Filters.byProps(props), {first: false});
+    },
+
+    /**
+     * Finds a single module using a set of strings.
+     * @param {...String} props Strings to use to filter modules
+     * @return {Any}
+     */
+    getByString(...strings) {
+        return WebpackModules.getModule(Filters.byStrings(...strings));
+    },
+
+    /**
+     * Finds all modules with a set of strings.
+     * @param {...String} strings Strings to use to filter modules
+     * @return {Any[]}
+     */
+    getAllByString(...strings) {
+        return WebpackModules.getModule(Filters.byStrings(...strings), {first: false});
     },
 };
 
