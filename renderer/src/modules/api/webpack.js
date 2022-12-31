@@ -145,7 +145,7 @@ const Webpack = {
     },
 
     /**
-     * Finds akk modules using its code.
+     * Finds all modules using its code.
      * @param {RegEx} regex A regular expression to use to filter modules
      * @param {object} [options] Options to configure the search
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
@@ -153,7 +153,7 @@ const Webpack = {
      * @return {Any[]}
      */
     getAllByRegex(regex, options = {}) {
-        return WebpackModules.getModule(Filters.byRegex(regex), options);
+        return WebpackModules.getModule(Filters.byRegex(regex), Object.assign({}, options, {first: true}));
     },
 
     /**
