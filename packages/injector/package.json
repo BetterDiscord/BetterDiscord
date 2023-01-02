@@ -2,8 +2,15 @@
     "name": "@betterdiscord/injector",
     "version": "1.0.0",
     "description": "",
-    "main": "index.ts",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "esbuild src/index.ts --bundle --outfile=dist/index.js"
+    },
     "dependencies": {
         "@betterdiscord/common": "workspace:*"
+    },
+    "devDependencies": {
+        "esbuild": "^0.15.10",
+        "standalone-electron-types": "^1.0.0"
     }
 }
