@@ -287,7 +287,7 @@ const WebpackModules = new class Webpack extends EventEmitter {
                 if (!(all ? foundModule.length : foundModule)) continue;
 
                 if (!all) return process(foundModule, id);
-                result.push(foundModule);
+                result.push(...foundModule);
             }
         }
 
