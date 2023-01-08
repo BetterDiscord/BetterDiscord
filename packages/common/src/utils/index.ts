@@ -5,3 +5,6 @@ export {default as findInTree} from "./findintree";
 export {default as formatString} from "./format";
 export {default as Logger} from "./logger";
 export {default as memoizeObject} from "./memoize";
+export {default as getNestedProp} from "./getnestedprop";
+export {default as predefine} from "./predefine";
+export {default as EventEmitter} from "./emitter";

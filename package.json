@@ -2,7 +2,7 @@
   "name": "betterdiscord",
   "version": "2.0.0",
   "description": "",
-  "main": "./packages/injector/dist/index.js",
+  "main": "./dist/injector.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "pnpm build:injector && pnpm build:preload && pnpm build:preload",

@@ -1,11 +1,7 @@
 import electron from "electron/main";
 import path from "path";
 
-const preloadPath = path.resolve(...<string[]>[
-    __dirname, "..",
-    process.env.DEVELOPMENT && "..",
-    "preload", "dist", "index.js"
-].filter(Boolean));
+const preloadPath = path.resolve(__dirname, "preload.js");
 
 class BrowserWindow extends electron.BrowserWindow {
     __originalPreload: string = "";

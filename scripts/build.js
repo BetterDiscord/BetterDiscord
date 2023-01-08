@@ -9,13 +9,14 @@ const packages = packagesToBuild ? packagesToBuild.split(",") : ["packager", "in
 
 const buildPackage = id => {
     const base = path.resolve(process.cwd(), "packages", id);
+    const out = path.resolve(process.cwd(), "dist", id + ".js");
 
     /**@type {import("esbuild").BuildOptions} */
     const config = {
         entryPoints: [path.resolve(base, "src", "index.ts")],
         bundle: true,
-        external: require("module").builtinModules.concat("electron"),
-        outfile: path.resolve(base, "dist", "index.js"),
+        external: require("module").builtinModules.concat("electron", "original-fs"),
+        outfile: out,
         format: id === "client" ? "iife" : "cjs",
         watch: isDevelopment,
         minify: !isDevelopment,
