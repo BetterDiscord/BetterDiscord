@@ -1,5 +1,0 @@
-path_classifiers:
-  generated:
-    - "dist/*"
-  test:
-    - "tests/*.js"
