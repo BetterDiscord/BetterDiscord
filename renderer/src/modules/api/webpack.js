@@ -1,6 +1,18 @@
 import Logger from "common/logger";
 import WebpackModules, {Filters} from "../webpackmodules";
 
+const getOptions = (args, defaultOptions = {}) => {
+    if (args.length > 1 &&
+        typeof(args[args.length - 1]) === "object" &&
+        !Array.isArray(args[args.length - 1]) &&
+        args[args.length - 1] !== null
+    ) {
+        Object.assign(defaultOptions, args.pop());
+    }
+
+    return defaultOptions;
+};
+
 /**
  * `Webpack` is a utility class for getting internal webpack modules. Instance is accessible through the {@link BdApi}.
  * This is extremely useful for interacting with the internals of Discord.
@@ -162,7 +174,9 @@ const Webpack = {
      * @return {Any}
      */
     getByPrototypes(...prototypes) {
-        return WebpackModules.getModule(Filters.byPrototypeFields(prototypes));
+        const options = getOptions(prototypes);
+
+        return WebpackModules.getModule(Filters.byPrototypeFields(prototypes), options);
     },
 
     /**
@@ -171,7 +185,9 @@ const Webpack = {
      * @return {Any[]}
      */
     getAllByPrototypes(...prototypes) {
-        return WebpackModules.getModule(Filters.byPrototypeFields(prototypes), {first: false});
+        const options = getOptions(prototypes, {first: false});
+
+        return WebpackModules.getModule(Filters.byPrototypeFields(prototypes), options);
     },
 
     /**
@@ -180,7 +196,9 @@ const Webpack = {
      * @return {Any}
      */
     getByProps(...props) {
-        return WebpackModules.getModule(Filters.byProps(props));
+        const options = getOptions(props);
+
+        return this.getModule(Filters.byProps(props), options);
     },
 
     /**
@@ -189,7 +207,9 @@ const Webpack = {
      * @return {Any[]}
      */
     getAllByProps(...props) {
-        return WebpackModules.getModule(Filters.byProps(props), {first: false});
+        const options = getOptions(props, {first: false});
+
+        return WebpackModules.getModule(Filters.byProps(props), options);
     },
 
     /**
@@ -198,7 +218,9 @@ const Webpack = {
      * @return {Any}
      */
     getByString(...strings) {
-        return WebpackModules.getModule(Filters.byStrings(...strings));
+        const options = getOptions(strings);
+
+        return WebpackModules.getModule(Filters.byStrings(...strings), options);
     },
 
     /**
@@ -207,7 +229,9 @@ const Webpack = {
      * @return {Any[]}
      */
     getAllByString(...strings) {
-        return WebpackModules.getModule(Filters.byStrings(...strings), {first: false});
+        const options = getOptions(strings, {first: false});
+
+        return WebpackModules.getModule(Filters.byStrings(...strings), options);
     },
 };
 
