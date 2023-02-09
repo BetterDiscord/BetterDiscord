@@ -237,7 +237,7 @@ class ContextMenu {
             Component = MenuComponents.ControlItem;
         }
         if (!props.id) props.id = `${props.label.replace(/^[^a-z]+|[^\w-]+/gi, "-")}`;
-        if (props.danger) props.color = "colorDanger";
+        if (props.danger) props.color = "danger";
         if (props.onClick && !props.action) props.action = props.onClick;
         props.extended = true;
 
