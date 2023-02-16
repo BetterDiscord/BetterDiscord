@@ -50,3 +50,14 @@
     border-top: thin solid var(--background-modifier-accent);
     margin-bottom: 1em;
 }
+
+.bd-settings-fallback-header {
+    padding: 6px 10px;
+    box-sizing: border-box;
+    color: #96989d;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+}
