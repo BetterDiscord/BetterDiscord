@@ -1,3 +1,3 @@
 import {React} from "modules";
 
-export default ({className}) => <div className={`bd-divider ${className || ""}`}></div>;
+export default ({className, ...rest}) => <hr className={`bd-divider ${className || ""}`} {...rest} />
