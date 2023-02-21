@@ -5,22 +5,14 @@ import Modals from "../modals";
 
 const Tooltip = WebpackModules.getByPrototypes("renderTooltip");
 
-const FallbackHeader = ({children}) => React.createElement("h2", {className: "bd-settings-fallback-header"}, children);
-const Header = React.lazy(async () => {
-    const SidebarComponents = await WebpackModules.getLazy(m => m.Header && m.Separator && m.Item);
-
-    return {
-        __esModule: true,
-        default: SidebarComponents.Header ?? FallbackHeader
-    };
-});
-
 export default class SettingsTitle extends React.Component {
+    renderHeader() {
+        return <h2 className="bd-sidebar-header-label">BetterDiscord</h2>;
+    }
+
     render() {
         return <div className="bd-sidebar-header">
-                    <React.Suspense fallback={<FallbackHeader>BetterDiscord</FallbackHeader>}>
-                        <Header>BetterDiscord</Header>
-                    </React.Suspense>
+                    {this.renderHeader()}
                     <Tooltip color="primary" position="top" text="Changelog">
                         {props =>
                             <div {...props} className="bd-changelog-button" onClick={() => Modals.showChangelogModal(Changelog)}>
