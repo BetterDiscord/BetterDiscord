@@ -196,7 +196,7 @@ class AddonUpdater {
         if (this.pending.includes(filename)) return;
         const info = this.cache[path.basename(filename)];
         if (!info) return;
-        let hasUpdate = info.update > currentVersion;
+        let hasUpdate = info.version > currentVersion;
         if (semverRegex.test(info.version) && relaxedSemverRegex.test(currentVersion)) {
             hasUpdate = semverComparator(currentVersion, info.version);
         }
