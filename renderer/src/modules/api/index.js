@@ -54,6 +54,9 @@ export default class BdApi {
     get UI() {return UI;}
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
+    Components = {
+        get Tooltip() {return DiscordModules.Tooltip;}
+    }
 }
 
 // Add legacy functions
