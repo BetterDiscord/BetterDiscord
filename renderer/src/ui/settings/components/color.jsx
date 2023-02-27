@@ -1,6 +1,4 @@
-import {React, WebpackModules} from "modules";
-
-const TooltipWrapper = WebpackModules.getByPrototypes("renderTooltip");
+import {DiscordModules, React} from "modules";
 
 const Checkmark = React.memo((props) => (
     <svg width="16" height="16" viewBox="0 0 24 24" {...props}>
@@ -73,7 +71,7 @@ export default class Color extends React.Component {
 
         return <div className="bd-color-picker-container">
             <div className="bd-color-picker-controls">
-                <TooltipWrapper text="Default" position="bottom">
+                <DiscordModules.Tooltip text="Default" position="bottom">
                     {props => (
                         <div {...props} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultValue)}} onClick={() => this.onChange({target: {value: defaultValue}})}>
                             {intValue === resolveColor(defaultValue, false)
@@ -82,15 +80,15 @@ export default class Color extends React.Component {
                             }
                         </div>
                     )}
-                </TooltipWrapper>
-                <TooltipWrapper text="Custom Color" position="bottom">
+                </DiscordModules.Tooltip>
+                <DiscordModules.Tooltip text="Custom Color" position="bottom">
                     {props => (
                         <div className="bd-color-picker-custom">
                             <Dropper color={getContrastColor(resolveColor(this.state.value, true))} />
                             <input {...props} style={{backgroundColor: resolveColor(this.state.value)}} type="color" className="bd-color-picker" value={resolveColor(this.state.value)} onChange={this.onChange} />
                         </div>
                     )}
-                </TooltipWrapper>
+                </DiscordModules.Tooltip>
             </div>
             <div className="bd-color-picker-swatch">
                 {

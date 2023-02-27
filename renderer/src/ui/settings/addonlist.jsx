@@ -1,5 +1,5 @@
 import Logger from "common/logger";
-import {React, Strings, Events, WebpackModules, DataStore} from "modules";
+import {React, Strings, Events, DataStore, DiscordModules} from "modules";
 
 import Modals from "../modals";
 import SettingsTitle from "./title";
@@ -12,8 +12,6 @@ import ListIcon from "../icons/list";
 import GridIcon from "../icons/grid";
 import NoResults from "../blankslates/noresults";
 import EmptyImage from "../blankslates/emptyimage";
-
-const Tooltip = WebpackModules.getByPrototypes("renderTooltip");
 
 export default class AddonList extends React.Component {
 
@@ -115,11 +113,11 @@ export default class AddonList extends React.Component {
     }
 
     makeControlButton(title, children, action, selected = false) {
-        return <Tooltip color="primary" position="top" text={title}>
+        return <DiscordModules.Tooltip color="primary" position="top" text={title}>
                     {(props) => {
                         return <button {...props} className={"bd-button bd-view-button" + (selected ? " selected" : "")} onClick={action}>{children}</button>;
                     }}
-                </Tooltip>;
+                </DiscordModules.Tooltip>;
     }
 
     render() {

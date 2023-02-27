@@ -12,6 +12,7 @@ import Utils from "./utils";
 import Webpack from "./webpack";
 import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
+import {DiscordModules} from "modules";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -118,5 +119,10 @@ BdApi.DOM = DOMAPI;
  */
 BdApi.ContextMenu = ContextMenuAPI;
 
+BdApi.Components = {
+    get Tooltip() {return DiscordModules.Tooltip;}
+};
+
 Object.freeze(BdApi);
 Object.freeze(BdApi.prototype);
+Object.freeze(BdApi.Components);
