@@ -3,6 +3,7 @@ import {DiscordModules, React} from "modules";
 import HistoryIcon from "../icons/history";
 import Modals from "../modals";
 
+
 export default class SettingsTitle extends React.Component {
     renderHeader() {
         return <h2 className="bd-sidebar-header-label">BetterDiscord</h2>;
