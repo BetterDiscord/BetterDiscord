@@ -228,7 +228,7 @@ export default class Modals {
     static showChangelogModal(options = {}) {
         const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen", "root");
         const ChangelogModalClasses = WebpackModules.getModule(m => m.modal && m.maxModalWidth);
-        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
+        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved") ?? {maxModalWidth: "490px",video: "video-8B-TdZ",container: "container-3PVapX",image: "image-ZPv20Y",title: "title-2ftWWc",lead: "lead-2VtcIe",added: "added-mQcv9V title-2ftWWc",fixed: "fixed-cTX7Hp title-2ftWWc",improved: "improved-2SJXHz title-2ftWWc",progress: "progress-1DcfFh title-2ftWWc",marginTop: "marginTop-VGmU1T",footer: "footer-1gMODG",socialLink: "socialLink-1qjJIk",premiumBanner: "premiumBanner-FU1Urp",premiumIcon: "premiumIcon-rhwgnW",date: "date-2tmzZM"};
         const TextElement = this.TextElement;
         const FlexChild = this.FlexElements;
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");

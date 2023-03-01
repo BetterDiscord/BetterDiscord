@@ -2,6 +2,21 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.8.5
+
+### Added
+- Ability to use a custom local version of React DevTools
+- Experimental `BdApi.Components` for component access in plugins
+
+### Removed
+
+### Changed
+- Title for settings sidebar now uses a custom component
+
+### Fixed
+- Fixed ModalRoot and ConfirmationModal not being found in webpack
+- Fixed context menus for internal changes
+
 ## 1.8.4
 
 ### Added
