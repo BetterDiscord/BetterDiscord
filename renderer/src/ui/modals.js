@@ -12,8 +12,8 @@ export default class Modals {
 
     static get ModalActions() {
         return this._ModalActions ??= {
-            openModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer"), {searchExports: true}),
-            closeModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback()"), {searchExports: true})
+            openModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer"), {searchExports: true}),
+            closeModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback()"), {searchExports: true})
         };
     }
     static get ModalStack() {return this._ModalStack ??= WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
@@ -22,7 +22,7 @@ export default class Modals {
     static get ModalClasses() {return this._ModalClasses ??= WebpackModules.getByProps("modal", "content");}
     static get FlexElements() {return this._FlexElements ??= WebpackModules.getByProps("Child", "Align");}
     static get TextElement() {return this._TextElement ??= WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors);}
-    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"));}
+    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"), {searchExports: true});}
     static get Markdown() {return this._Markdown ??= WebpackModules.find(m => m?.prototype?.render && m.rules);}
     static get Buttons() {return this._Buttons ??= WebpackModules.getModule(m => m.BorderColors, {searchExports: true});}
     static get ModalQueue() {return this._ModalQueue ??= [];}
@@ -30,10 +30,14 @@ export default class Modals {
     static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
     static async initialize() {
-        const names = ["ModalActions", "Markdown", "ModalRoot", "ModalComponents", "Buttons", "TextElement", "FlexElements"];
+        const names = ["ConfirmationModal", "ModalActions", "Markdown", "ModalRoot", "ModalComponents", "Buttons", "TextElement", "FlexElements"];
 
         for (const name of names) {
-            const value = this[name];
+            let value = this[name];
+
+            if (name === "ModalActions") {
+                value = Object.keys(this.ModalActions).every(k => this.ModalActions[k]);
+            }
 
             if (!value) {
                 Logger.warn("Modals", `Missing ${name} module!`);
