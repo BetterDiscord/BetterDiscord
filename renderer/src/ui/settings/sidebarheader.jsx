@@ -1,9 +1,8 @@
 import {Changelog} from "data";
-import {React, WebpackModules} from "modules";
+import {DiscordModules, React} from "modules";
 import HistoryIcon from "../icons/history";
 import Modals from "../modals";
 
-const Tooltip = WebpackModules.getByPrototypes("renderTooltip");
 
 export default class SettingsTitle extends React.Component {
     renderHeader() {
@@ -13,13 +12,13 @@ export default class SettingsTitle extends React.Component {
     render() {
         return <div className="bd-sidebar-header">
                     {this.renderHeader()}
-                    <Tooltip color="primary" position="top" text="Changelog">
+                    <DiscordModules.Tooltip color="primary" position="top" text="Changelog">
                         {props =>
                             <div {...props} className="bd-changelog-button" onClick={() => Modals.showChangelogModal(Changelog)}>
                                 <HistoryIcon className="bd-icon" size="16px" />
                             </div>
                         }
-                    </Tooltip>
+                    </DiscordModules.Tooltip>
                 </div>;
     }
 }
