@@ -121,6 +121,6 @@ export default class BetterDiscord {
 
 if (BetterDiscord.getSetting("developer", "reactDevTools")) {
     electron.app.whenReady().then(async ()=>{
-        await ReactDevTools.install();
+        await ReactDevTools.install(dataPath);
     });
 }
