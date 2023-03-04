@@ -20,6 +20,8 @@ import Modals from "../ui/modals";
 import UpdaterPanel from "../ui/updater";
 import DiscordModules from "./discordmodules";
 
+import {comparator as semverComparator, regex as semverRegex} from "../structs/semver";
+
 const React = DiscordModules.React;
 
 
@@ -134,24 +136,6 @@ export class CoreUpdater {
     }
 }
 
-const semverRegex = /^[0-9]+\.[0-9]+\.[0-9]+$/;
-
-/**
- * This works on basic semantic versioning e.g. "1.0.0".
- * 
- * @param {string} currentVersion
- * @param {string} content
- * @returns {boolean} whether there is an update
- */
-function semverComparator(currentVersion, remoteVersion) {
-    currentVersion = currentVersion.split(".").map((e) => {return parseInt(e);});
-    remoteVersion = remoteVersion.split(".").map((e) => {return parseInt(e);});
-
-    if (remoteVersion[0] > currentVersion[0]) return true;
-    else if (remoteVersion[0] == currentVersion[0] && remoteVersion[1] > currentVersion[1]) return true;
-    else if (remoteVersion[0] == currentVersion[0] && remoteVersion[1] == currentVersion[1] && remoteVersion[2] > currentVersion[2]) return true;
-    return false;
-}
 
 
 class AddonUpdater {
@@ -195,9 +179,9 @@ class AddonUpdater {
         if (this.pending.includes(filename)) return;
         const info = this.cache[path.basename(filename)];
         if (!info) return;
-        let hasUpdate = info.update > currentVersion;
+        let hasUpdate = info.version > currentVersion;
         if (semverRegex.test(info.version) && semverRegex.test(currentVersion)) {
-            hasUpdate = semverComparator(currentVersion, info.version);
+            hasUpdate = semverComparator(currentVersion, info.version) > 0;
         }
         if (!hasUpdate) return;
         this.pending.push(filename);
