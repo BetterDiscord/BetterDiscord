@@ -13,7 +13,8 @@ export default new class DevToolsListener extends Builtin {
     }
 
     toggleDevTools(e) {
-        if (e.ctrlKey && e.shiftKey && e.key === "I") {
+        const metaKey = process.platform === "darwin" ? e.metaKey : e.ctrlKey;
+        if (metaKey && e.shiftKey && e.key === "I") {
             e.stopPropagation();
             e.preventDefault();
             if (this.get(this.collection, this.category, this.id)) IPC.toggleDevTools();
