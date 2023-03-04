@@ -44,6 +44,10 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.MINIMUM_SIZE, width, height);
     }
 
+    setWindowSize(width, height) {
+        return ipc.send(IPCEvents.WINDOW_SIZE, width, height);
+    }
+
     stopDevtoolsWarning() {
         return ipc.send(IPCEvents.DEVTOOLS_WARNING);
     }
