@@ -7,40 +7,34 @@ import Toasts from "./toasts";
 
 import Checkmark from "./icons/check";
 
-class CoreUpdaterPanel extends React.Component {
-    render() {
-        return <Drawer name="BetterDiscord" collapsible={true}>
-            <SettingItem name={`Core v${Config.version}`} note={this.props.hasUpdate ? Strings.Updater.versionAvailable.format({version: this.props.remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
-                {!this.props.hasUpdate && <div className="bd-filled-checkmark"><Checkmark /></div>}
-                {this.props.hasUpdate && <button className="bd-button" onClick={this.props.update}>{Strings.Updater.updateButton}</button>}
-            </SettingItem>
-        </Drawer>;
-    }
+function CoreUpdaterPanel(props) {
+    return <Drawer name="BetterDiscord" collapsible={true}>
+        <SettingItem name={`Core v${Config.version}`} note={props.hasUpdate ? Strings.Updater.versionAvailable.format({version: props.remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
+            {!props.hasUpdate && <div className="bd-filled-checkmark"><Checkmark /></div>}
+            {props.hasUpdate && <button className="bd-button" onClick={props.update}>{Strings.Updater.updateButton}</button>}
+        </SettingItem>
+    </Drawer>;
 }
 
-class NoUpdates extends React.Component {
-    render() {
-        return <div className="bd-empty-updates">
-            <Checkmark size="48px" />
-            {Strings.Updater.upToDateBlankslate.format({type: this.props.type})}
-        </div>;
-    }
+function NoUpdates(props) {
+    return <div className="bd-empty-updates">
+        <Checkmark size="48px" />
+        {Strings.Updater.upToDateBlankslate.format({type: props.type})}
+    </div>;
 }
 
-class AddonUpdaterPanel extends React.Component {
-    render() {
-        const filenames = this.props.pending;
-        return <Drawer name={Strings.Panels[this.props.type]} collapsible={true} button={filenames.length ? {title: Strings.Updater.updateAll, onClick: () => this.props.updateAll(this.props.type)} : null}>
-            {!filenames.length && <NoUpdates type={this.props.type} />}
-            {filenames.map(f => {
-                const info = this.props.updater.cache[f];
-                const addon = this.props.updater.manager.addonList.find(a => a.filename === f);
-                return <SettingItem name={`${addon.name} v${addon.version}`} note={Strings.Updater.versionAvailable.format({version: info.version})} inline={true} id={addon.name}>
-                        <button className="bd-button" onClick={() => this.props.update(this.props.type, f)}>{Strings.Updater.updateButton}</button>
-                    </SettingItem>;
-        })}
-        </Drawer>;
-    }
+function AddonUpdaterPanel(props) {
+    const filenames = props.pending;
+    return <Drawer name={Strings.Panels[props.type]} collapsible={true} button={filenames.length ? {title: Strings.Updater.updateAll, onClick: () => props.updateAll(props.type)} : null}>
+        {!filenames.length && <NoUpdates type={props.type} />}
+        {filenames.map(f => {
+            const info = props.updater.cache[f];
+            const addon = props.updater.manager.addonList.find(a => a.filename === f);
+            return <SettingItem name={`${addon.name} v${addon.version}`} note={Strings.Updater.versionAvailable.format({version: info.version})} inline={true} id={addon.name}>
+                    <button className="bd-button" onClick={() => props.update(props.type, f)}>{Strings.Updater.updateButton}</button>
+                </SettingItem>;
+    })}
+    </Drawer>;
 }
 
 export default class UpdaterPanel extends React.Component {
