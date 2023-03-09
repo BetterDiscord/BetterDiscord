@@ -1,4 +1,3 @@
-import Logger from "common/logger";
 import {React, Strings, Events, DataStore, DiscordModules} from "modules";
 
 import Modals from "../modals";
