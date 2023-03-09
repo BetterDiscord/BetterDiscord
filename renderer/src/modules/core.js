@@ -8,6 +8,7 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import * as Builtins from "builtins";
 import Modals from "../ui/modals";
+import FloatingWindows from "../ui/floatingwindows";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
 import LoadingIcon from "../loadingicon";
@@ -47,6 +48,7 @@ export default new class Core {
         await Editor.initialize();
 
         Modals.initialize();
+        FloatingWindows.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {

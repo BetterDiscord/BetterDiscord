@@ -5,174 +5,156 @@ import CloseButton from "../icons/close";
 import MaximizeIcon from "../icons/fullscreen";
 import Modals from "../modals";
 
-// const Draggable = WebpackModules.getByDisplayName("Draggable");
-// {
-//     "dragAnywhere": true,
-//     "className": "pictureInPictureWindow-1B5qSe",
-//     "maxX": 1969,
-//     "maxY": this.maxY,
-//     "onDragStart": "ƒ () {}",
-//     "onDrag": "ƒ () {}",
-//     "onDragEnd": "ƒ () {}",
-//     "children": "<div />",
-//     "initialX": 0,
-//     "initialY": 0
-//   }
+const {useState, useCallback, useEffect, useRef, useMemo} = React;
 
-export default class FloatingWindow extends React.Component {
 
-    constructor(props) {
-        super(props);
+function confirmClose(confirmationText) {
+    return new Promise(resolve => {
+        Modals.showConfirmationModal(Strings.Modals.confirmAction, confirmationText, {
+            danger: true,
+            confirmText: Strings.Modals.close,
+            onConfirm: () => {resolve(true);},
+            onCancel: () => {resolve(false);}
+        });
+    });
+}
 
-        this.state = {modalOpen: false};
+export default function FloatingWindow(props) {
+    const [modalOpen, setOpen] = useState(false);
+    const [isDragging, setDragging] = useState(false);
+    const [position, setPosition] = useState({x: props.center ? (Screen.width / 2) - (props.width / 2) : props.left, y: props.center ? (Screen.height / 2) - (props.height / 2) : props.top});
+    const [offset, setOffset] = useState({x: 0, y: 0});
+    const [size, setSize] = useState({width: 0, height: 0});
 
-        this.offX = 0;
-        this.offY = 0;
+    const minX = useMemo(() => props.minX || 0);
+    const maxX = useMemo(() => props.maxX || Screen.width);
+    const minY = useMemo(() => props.minY || 0);
+    const maxY = useMemo(() => props.maxY || Screen.height);
 
-        this.maxX = this.props.maxX || Screen.width;
-        this.maxY = this.props.maxY || Screen.height;
-        this.minX = this.props.minX || 0;
-        this.minY = this.props.minY || 0;
+    const titlebar = useRef(null);
+    const window = useRef(null);
 
-        this.titlebar = React.createRef();
-        this.window = React.createRef();
 
-        this.close = this.close.bind(this);
-        this.maximize = this.maximize.bind(this);
-        this.onDrag = this.onDrag.bind(this);
-        this.onDragStart = this.onDragStart.bind(this);
-        this.onDragStop = this.onDragStop.bind(this);
-        this.onResizeStart = this.onResizeStart.bind(this);
-    }
+    const onResizeStart = useCallback(() => {
+        setSize({width: window.current.offsetWidth, height: window.current.offsetHeight});
+    }, [window]);
 
-    componentDidMount() {
-        this.window.current.addEventListener("mousedown", this.onResizeStart, false);
-        this.titlebar.current.addEventListener("mousedown", this.onDragStart, false);
-        document.addEventListener("mouseup", this.onDragStop, false);
-    }
 
-    onResizeStart() {
-        this.currentWidth = this.window.current.offsetWidth;
-        this.currentHeight = this.window.current.offsetHeight;
-    }
+    const onDrag = useCallback((e) => {
+        if (!isDragging) return;
+        let newTop = (e.clientY - offset.y);
+        if (newTop <= minY) newTop = minY;
+        if (newTop + size.height >= maxY) newTop = maxY - size.height;
 
-    onDragStop() {
-        document.removeEventListener("mousemove", this.onDrag, true);
-        const width = this.window.current.offsetWidth;
-        const height = this.window.current.offsetHeight;
-        if (width != this.currentWidth || height != this.currentHeight) {
-            if (this.props.onResize) this.props.onResize();
-            const left = parseInt(this.window.current.style.left);
-            const top = parseInt(this.window.current.style.top);
-            if (left + width >= this.maxX) this.window.current.style.width = (this.maxX - left) + "px";
-            if (top + height >= this.maxY) this.window.current.style.height = (this.maxY - top) + "px";
+        let newLeft = (e.clientX - offset.x);
+        if (newLeft <= minX) newLeft = minX;
+        if (newLeft + size.width >= maxX) newLeft = maxX - size.width;
+
+        setPosition({x: newLeft, y: newTop});
+    }, [window, offset, size, isDragging]);
+
+
+    const onDragStart = useCallback((e) => {
+        const div = window.current;
+        setOffset({x: e.clientX - parseInt(div.offsetLeft), y: e.clientY - parseInt(div.offsetTop)});
+        setDragging(true);
+    }, [window]);
+
+
+    const onDragStop = useCallback(() => {
+        setDragging(false);
+        const width = window.current.offsetWidth;
+        const height = window.current.offsetHeight;
+        if (width != size.width || height != size.height) {
+            if (props.onResize) props.onResize();
+            const left = parseInt(window.current.style.left);
+            const top = parseInt(window.current.style.top);
+            if (left + width >= maxX) window.current.style.width = (maxX - left) + "px";
+            if (top + height >= maxY) window.current.style.height = (maxY - top) + "px";
         }
-        this.currentWidth = width;
-        this.currentHeight = height;
-    }
 
-    onDragStart(e) {
-        const div = this.window.current;
-        this.offY = e.clientY - parseInt(div.offsetTop);
-        this.offX = e.clientX - parseInt(div.offsetLeft);
-        document.addEventListener("mousemove", this.onDrag, true);
-    }
+        setSize({width, height});
+    }, [window, size, onDrag]);
 
-    onDrag(e) {
-        const div = this.window.current;
-        let newTop = (e.clientY - this.offY);
-        if (newTop <= this.minY) newTop = this.minY;
-        if (newTop + this.currentHeight >= this.maxY) newTop = this.maxY - this.currentHeight;
 
-        let newLeft = (e.clientX - this.offX);
-        if (newLeft <= this.minX) newLeft = this.minX;
-        if (newLeft + this.currentWidth >= this.maxX) newLeft = this.maxX - this.currentWidth;
+    useEffect(() => {
+        window.current.addEventListener("mousedown", onResizeStart, false);
+        titlebar.current.addEventListener("mousedown", onDragStart, false);
+        document.addEventListener("mouseup", onDragStop, false);
+        document.addEventListener("mousemove", onDrag, true);
 
-        div.style.top = newTop + "px";
-        div.style.left = newLeft + "px";
-    }
+        return () => {
+            document.removeEventListener("mouseup", onDragStop, false);
+            document.removeEventListener("mousemove", onDrag, true);
+            window?.current?.removeEventListener("mousedown", onResizeStart, false);
+            titlebar?.current?.removeEventListener("mousedown", onDragStart, false);
+        };
+    }, [titlebar, window, onDragStart, onDragStop, onDrag, onResizeStart]);
 
-    componentWillUnmount() {
-        this.titlebar.current.removeEventListener("mousedown", this.onDragStart, false);
-        document.removeEventListener("mouseup", this.onDragStop, false);
-    }
 
-    render() {
-        const top = this.props.center ? (Screen.height / 2) - (this.props.height / 2) : this.props.top;
-        const left = this.props.center ? (Screen.width / 2) - (this.props.width / 2) : this.props.left;
-        // console.log(top, left);
-        const className = `floating-window${` ${this.props.className}` || ""}${this.props.resizable ? " resizable" : ""}${this.state.modalOpen ? " modal-open" : ""}`;
-        const styles = {height: this.props.height, width: this.props.width, left: left || 0, top: top || 0};
-        return <div id={this.props.id} className={className} ref={this.window} style={styles}>
-                    <div className="floating-window-titlebar" ref={this.titlebar}>
-                        <span className="title">{this.props.title}</span>
-                        <div className="floating-window-buttons">
-                            <div className="button maximize-button" onClick={this.maximize}>
-                                <MaximizeIcon size="18px" />
-                            </div>
-                            <div className="button close-button" onClick={this.close}>
-                                <CloseButton />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="floating-window-content">
-                        {this.props.children}
-                    </div>
-                </div>;
-    }
+    const maximize = useCallback(() => {
+        window.current.style.width = "100%";
+        window.current.style.height = "100%";
+        if (props.onResize) props.onResize();
 
-    maximize() {
-        this.window.current.style.width = "100%";
-        this.window.current.style.height = "100%";
-        if (this.props.onResize) this.props.onResize();
-
-        const width = this.window.current.offsetWidth;
-        const height = this.window.current.offsetHeight;
-        const left = parseInt(this.window.current.style.left);
-        const top = parseInt(this.window.current.style.top);
+        const width = window.current.offsetWidth;
+        const height = window.current.offsetHeight;
+        const left = parseInt(window.current.style.left);
+        const top = parseInt(window.current.style.top);
 
         const right = left + width;
         const bottom = top + height;
 
         // Prevent expanding off the bottom and right and readjust position
-        if (bottom > this.maxY) this.window.current.style.top = (this.maxY - height) + "px";
-        if (right > this.maxX) this.window.current.style.left = (this.maxX - width) + "px";
+        if (bottom > maxY) window.current.style.top = (maxY - height) + "px";
+        if (right > maxX) window.current.style.left = (maxX - width) + "px";
 
-        const newLeft = parseInt(this.window.current.style.left);
-        const newTop = parseInt(this.window.current.style.top);
+        const newLeft = parseInt(window.current.style.left);
+        const newTop = parseInt(window.current.style.top);
 
-        // For small screens it's possible this pushes us off the other direction... we need to readjust size
-        if (newTop < this.minY) {
-            const difference = this.minY - newTop;
-            this.window.current.style.top = this.minY + "px";
-            this.window.current.style.height = (height - difference) + "px";
+        // For small screens it's possible pushes us off the other direction... we need to readjust size
+        if (newTop < minY) {
+            const difference = minY - newTop;
+            window.current.style.top = minY + "px";
+            window.current.style.height = (height - difference) + "px";
         }
-        if (newLeft < this.minX) {
-            const difference = this.minX - newLeft;
-            this.window.current.style.left = this.minX + "px";
-            this.window.current.style.height = (width - difference) + "px";
+        if (newLeft < minX) {
+            const difference = minX - newLeft;
+            window.current.style.left = minX + "px";
+            window.current.style.height = (width - difference) + "px";
         }
-    }
+    }, [window, minX, minY, maxX, maxY]);
 
-    async close() {
+
+    const close = useCallback(async () => {
         let shouldClose = true;
-        const confirmClose = typeof(this.props.confirmClose) == "function" ? this.props.confirmClose() : this.props.confirmClose;
-        if (confirmClose) {
-            this.setState({modalOpen: true});
-            shouldClose = await this.confirmClose();
-            this.setState({modalOpen: false});
+        const didConfirmClose = typeof(props.confirmClose) == "function" ? props.confirmClose() : props.confirmClose;
+        if (didConfirmClose) {
+            setOpen(true);
+            shouldClose = await confirmClose(props.confirmationText);
+            setOpen(false);
         }
-        if (this.props.close && shouldClose) this.props.close();
-    }
+        if (props.close && shouldClose) props.close();
+    }, []);
 
-    confirmClose() {
-        return new Promise(resolve => {
-            Modals.showConfirmationModal(Strings.Modals.confirmAction, this.props.confirmationText, {
-                danger: true,
-                confirmText: Strings.Modals.close,
-                onConfirm: () => {resolve(true);},
-                onCancel: () => {resolve(false);}
-            });
-        });
-    }
+
+
+    const className = `floating-window${` ${props.className}` || ""}${props.resizable ? " resizable" : ""}${modalOpen ? " modal-open" : ""}`;
+    const styles = {height: props.height, width: props.width, left: position.x || 0, top: position.y || 0};
+    return <div id={props.id} className={className} ref={window} style={styles}>
+                <div className="floating-window-titlebar" ref={titlebar}>
+                    <span className="title">{props.title}</span>
+                    <div className="floating-window-buttons">
+                        <div className="button maximize-button" onClick={maximize}>
+                            <MaximizeIcon size="18px" />
+                        </div>
+                        <div className="button close-button" onClick={close}>
+                            <CloseButton />
+                        </div>
+                    </div>
+                </div>
+                <div className="floating-window-content">
+                    {props.children}
+                </div>
+            </div>;
 }
