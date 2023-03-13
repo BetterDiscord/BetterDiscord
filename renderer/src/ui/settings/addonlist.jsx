@@ -79,7 +79,7 @@ function confirmDelete(addon) {
 export default function AddonList({prefix, type, title, folder, addonList, addonState, onChange, reload, editAddon, deleteAddon}) {
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState(getState.bind(null, type, "sort", "name"));
-    const [ascending, setAscending] = useState(getState.bind(null, type, "ascending", "true"));
+    const [ascending, setAscending] = useState(getState.bind(null, type, "ascending", true));
     const [view, setView] = useState(getState.bind(null, type, "view", "list"));
     const [, forceUpdate] = useReducer(x => x + 1, 0);
 

@@ -29,7 +29,8 @@ export default function Select({value: initialValue, options, style, onChange}) 
     }, [open]);
 
 
-    const selected = options.find(o => o.value == value);
+    // ?? options[0] provides a double failsafe
+    const selected = options.find(o => o.value == value) ?? options[0];
     const optionComponents = <div className="bd-select-options">
             {options.map(opt =>
                 <div className={`bd-select-option${selected.value == opt.value ? " selected" : ""}`} onClick={() => change(opt.value)}>{opt.label}</div>
