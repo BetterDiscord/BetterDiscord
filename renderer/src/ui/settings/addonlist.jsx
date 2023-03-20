@@ -81,7 +81,7 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
     const [sort, setSort] = useState(getState.bind(null, type, "sort", "name"));
     const [ascending, setAscending] = useState(getState.bind(null, type, "ascending", true));
     const [view, setView] = useState(getState.bind(null, type, "view", "list"));
-    const [, forceUpdate] = useReducer(x => x + 1, 0);
+    const [forced, forceUpdate] = useReducer(x => x + 1, 0);
 
     useEffect(() => {
         Events.on(`${prefix}-loaded`, forceUpdate);
@@ -150,7 +150,7 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
             return <ErrorBoundary><AddonCard disabled={addon.partial} type={type} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
         });
-    }, [addonList, addonState, onChange, reload, triggerDelete, triggerEdit, type, sort, ascending, query]);
+    }, [addonList, addonState, onChange, reload, triggerDelete, triggerEdit, type, sort, ascending, query, forced]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const hasAddonsInstalled = addonList.length !== 0;
     const isSearching = !!query;

@@ -80,15 +80,15 @@ function buildLink(type, url) {
     return makeButton(Strings.Addons[type], link);
 }
 
-export default function AddonCard({addon, type, disabled, enabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}) {
-    const [isEnabled, setEnabled] = useState(enabled);
+export default function AddonCard({addon, type, disabled, enabled: initialValue, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}) {
+    const [isEnabled, setEnabled] = useState(initialValue);
     const onChange = useCallback(() => {
         setEnabled(!isEnabled);
         if (parentChange) parentChange(addon.id);
     }, [addon.id, parentChange, isEnabled]);
 
     const showSettings = useCallback(() => {
-        if (!hasSettings || !enabled) return;
+        if (!hasSettings || !isEnabled) return;
         const name = getString(addon.name);
         try {
             Modals.showAddonSettingsModal(name, getSettingsPanel());
@@ -97,7 +97,7 @@ export default function AddonCard({addon, type, disabled, enabled, onChange: par
             Toasts.show(Strings.Addons.settingsError.format({name}), {type: "error"});
             Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err);
         }
-    }, [hasSettings, enabled, addon.name, getSettingsPanel]);
+    }, [hasSettings, isEnabled, addon.name, getSettingsPanel]);
 
     const messageAuthor = useCallback(() => {
         if (!addon.authorId) return;
@@ -135,18 +135,18 @@ export default function AddonCard({addon, type, disabled, enabled, onChange: par
         return <div className="bd-footer">
                     <span className="bd-links">{linkComponents}</span> 
                     <div className="bd-controls">
-                        {hasSettings && makeButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, showSettings, {isControl: true, disabled: !enabled})}
+                        {hasSettings && makeButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, showSettings, {isControl: true, disabled: !isEnabled})}
                         {editAddon && makeButton(Strings.Addons.editAddon, <EditIcon size={"20px"} />, editAddon, {isControl: true})}
                         {deleteAddon && makeButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
                     </div>
                 </div>;
-    }, [hasSettings, editAddon, deleteAddon, addon, enabled, showSettings]);
+    }, [hasSettings, editAddon, deleteAddon, addon, isEnabled, showSettings]);
 
     return <div id={`${addon.id}-card`} className={"bd-addon-card" + (disabled ? " bd-addon-card-disabled" : "")}>
                 <div className="bd-addon-header">
                         {type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
                         <div className="bd-title">{title}</div>
-                        <Switch disabled={disabled} checked={enabled} onChange={onChange} />
+                        <Switch disabled={disabled} checked={isEnabled} onChange={onChange} />
                 </div>
                 <div className="bd-description-wrap">
                     {disabled && <div className="banner banner-danger"><ErrorIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}
