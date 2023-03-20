@@ -27,9 +27,9 @@ export default function ServerCard({server, joined, join, navigateTo, defaultAva
         setJoined("joining");
         const didJoin = await join(server.identifier, server.nativeJoin);
         setJoined(didJoin);
-    }, [hasJoined]);
+    }, [hasJoined, join, navigateTo, server.identifier, server.nativeJoin]);
 
-    const defaultIcon = useMemo(() => defaultAvatar(), []);
+    const defaultIcon = useMemo(() => defaultAvatar(), [defaultAvatar]);
     const currentIcon = !server.iconUrl || isError ? defaultIcon : server.iconUrl;
 
     const addedDate = new Date(server.insertDate * 1000); // Convert from unix timestamp

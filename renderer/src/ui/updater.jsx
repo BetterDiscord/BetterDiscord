@@ -9,50 +9,50 @@ import Checkmark from "./icons/check";
 
 const {useState, useCallback, useEffect} = React;
 
-function CoreUpdaterPanel(props) {
+function CoreUpdaterPanel({hasUpdate, remoteVersion, update}) {
     return <Drawer name="BetterDiscord" collapsible={true}>
-        <SettingItem name={`Core v${Config.version}`} note={props.hasUpdate ? Strings.Updater.versionAvailable.format({version: props.remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
-            {!props.hasUpdate && <div className="bd-filled-checkmark"><Checkmark /></div>}
-            {props.hasUpdate && <button className="bd-button" onClick={props.update}>{Strings.Updater.updateButton}</button>}
+        <SettingItem name={`Core v${Config.version}`} note={hasUpdate ? Strings.Updater.versionAvailable.format({version: remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
+            {!hasUpdate && <div className="bd-filled-checkmark"><Checkmark /></div>}
+            {hasUpdate && <button className="bd-button" onClick={update}>{Strings.Updater.updateButton}</button>}
         </SettingItem>
     </Drawer>;
 }
 
-function NoUpdates(props) {
+function NoUpdates({type}) {
     return <div className="bd-empty-updates">
         <Checkmark size="48px" />
-        {Strings.Updater.upToDateBlankslate.format({type: props.type})}
+        {Strings.Updater.upToDateBlankslate.format({type: type})}
     </div>;
 }
 
-function AddonUpdaterPanel(props) {
-    const filenames = props.pending;
-    return <Drawer name={Strings.Panels[props.type]} collapsible={true} button={filenames.length ? {title: Strings.Updater.updateAll, onClick: () => props.updateAll(props.type)} : null}>
-        {!filenames.length && <NoUpdates type={props.type} />}
+function AddonUpdaterPanel({pending, type, updater, update, updateAll}) {
+    const filenames = pending;
+    return <Drawer name={Strings.Panels[type]} collapsible={true} button={filenames.length ? {title: Strings.Updater.updateAll, onClick: () => updateAll(type)} : null}>
+        {!filenames.length && <NoUpdates type={type} />}
         {filenames.map(f => {
-            const info = props.updater.cache[f];
-            const addon = props.updater.manager.addonList.find(a => a.filename === f);
+            const info = updater.cache[f];
+            const addon = updater.manager.addonList.find(a => a.filename === f);
             return <SettingItem name={`${addon.name} v${addon.version}`} note={Strings.Updater.versionAvailable.format({version: info.version})} inline={true} id={addon.name}>
-                    <button className="bd-button" onClick={() => props.update(props.type, f)}>{Strings.Updater.updateButton}</button>
+                    <button className="bd-button" onClick={() => update(type, f)}>{Strings.Updater.updateButton}</button>
                 </SettingItem>;
     })}
     </Drawer>;
 }
 
-export default function UpdaterPanel(props) {
-    const [hasCoreUpdate, setCoreUpdate] = useState(props.coreUpdater.hasUpdate);
-    const [updates, setUpdates] = useState({plugins: props.pluginUpdater.pending.slice(0), themes: props.themeUpdater.pending.slice(0)});
+export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater}) {
+    const [hasCoreUpdate, setCoreUpdate] = useState(coreUpdater.hasUpdate);
+    const [updates, setUpdates] = useState({plugins: pluginUpdater.pending.slice(0), themes: themeUpdater.pending.slice(0)});
 
     const checkAddons = useCallback(async (type) => {
-        const updater = type === "plugins" ? props.pluginUpdater : props.themeUpdater;
+        const updater = type === "plugins" ? pluginUpdater : themeUpdater;
         await updater.checkAll(false);
         setUpdates({...updates, [type]: updater.pending.slice(0)});
-    }, []);
+    }, [updates, pluginUpdater, themeUpdater]);
 
     const update = useCallback(() => {
         checkAddons("plugins");
         checkAddons("themes");
-    }, []);
+    }, [checkAddons]);
 
     useEffect(() => {
         Events.on(`plugin-loaded`, update);
@@ -65,12 +65,12 @@ export default function UpdaterPanel(props) {
             Events.off(`theme-loaded`, update);
             Events.off(`theme-unloaded`, update);
         };
-    }, []);
+    }, [update]);
 
     const checkCoreUpdate = useCallback(async () => {
-        await props.coreUpdater.checkForUpdate(false);
-        setCoreUpdate(props.coreUpdater.hasUpdate);
-    }, []);
+        await coreUpdater.checkForUpdate(false);
+        setCoreUpdate(coreUpdater.hasUpdate);
+    }, [coreUpdater]);
 
     const checkForUpdates = useCallback(async () => {
         Toasts.info(Strings.Updater.checking);
@@ -78,33 +78,33 @@ export default function UpdaterPanel(props) {
         await checkAddons("plugins");
         await checkAddons("themes");
         Toasts.info(Strings.Updater.finishedChecking);
-    });
+    }, [checkAddons, checkCoreUpdate]);
 
     const updateCore = useCallback(async () => {
-        await props.coreUpdater.update();
+        await coreUpdater.update();
         setCoreUpdate(false);
-    }, []);
+    }, [coreUpdater]);
 
     const updateAddon = useCallback(async (type, filename) => {
-        const updater = type === "plugins" ? props.pluginUpdater : props.themeUpdater;
+        const updater = type === "plugins" ? pluginUpdater : themeUpdater;
         await updater.updateAddon(filename);
         setUpdates(prev => {
             prev[type].splice(prev[type].indexOf(filename), 1);
             return prev;
         });
-    }, []);
+    }, [pluginUpdater, themeUpdater]);
 
     const updateAllAddons = useCallback(async (type) => {
         const toUpdate = updates[type].slice(0);
         for (const filename of toUpdate) {
             await updateAddon(type, filename);
         }
-    }, []);
+    }, [updateAddon, updates]);
 
     return [
         <SettingsTitle text={Strings.Panels.updates} button={{title: Strings.Updater.checkForUpdates, onClick: checkForUpdates}} />,
-        <CoreUpdaterPanel remoteVersion={props.coreUpdater.remoteVersion} hasUpdate={hasCoreUpdate} update={updateCore} />,
-        <AddonUpdaterPanel type="plugins" pending={updates.plugins} update={updateAddon} updateAll={updateAllAddons} updater={props.pluginUpdater} />,
-        <AddonUpdaterPanel type="themes" pending={updates.themes} update={updateAddon} updateAll={updateAllAddons} updater={props.themeUpdater} />,
+        <CoreUpdaterPanel remoteVersion={coreUpdater.remoteVersion} hasUpdate={hasCoreUpdate} update={updateCore} />,
+        <AddonUpdaterPanel type="plugins" pending={updates.plugins} update={updateAddon} updateAll={updateAllAddons} updater={pluginUpdater} />,
+        <AddonUpdaterPanel type="themes" pending={updates.themes} update={updateAddon} updateAll={updateAllAddons} updater={themeUpdater} />,
     ];
 }

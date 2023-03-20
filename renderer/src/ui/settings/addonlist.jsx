@@ -90,36 +90,36 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
             Events.off(`${prefix}-loaded`, forceUpdate);
             Events.off(`${prefix}-unloaded`, forceUpdate);
         };
-    }, []);
+    }, [prefix]);
 
     const changeView = useCallback((value) => {
         saveState(type, "view", value);
         setView(value);
-    }, []);
+    }, [type]);
 
-    const listView = useCallback(() => changeView("list"), []);
-    const gridView = useCallback(() => changeView("grid"), []);
+    const listView = useCallback(() => changeView("list"), [changeView]);
+    const gridView = useCallback(() => changeView("grid"), [changeView]);
 
     const changeDirection = useCallback((value) => {
         saveState(type, "ascending", value);
         setAscending(value);
-    }, []);
+    }, [type]);
 
     const changeSort = useCallback((value) => {
         saveState(type, "sort", value);
         setSort(value);
-    }, []);
+    }, [type]);
 
     const search = useCallback((e) => setQuery(e.target.value.toLocaleLowerCase()), []);
-    const triggerEdit = useCallback((id) => editAddon?.(id), []);
+    const triggerEdit = useCallback((id) => editAddon?.(id), [editAddon]);
     const triggerDelete = useCallback(async (id) => {
         const addon = addonList.find(a => a.id == id);
         const shouldDelete = await confirmDelete(addon);
         if (!shouldDelete) return;
         if (deleteAddon) deleteAddon(addon);
-    }, []);
+    }, [addonList, deleteAddon]);
 
-    const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: openFolder} : null;
+    const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: openFolder.bind(null, folder)} : null;
     const renderedCards = useMemo(() => {
         let sorted = addonList.sort((a, b) => {
             const sortByEnabled = sort === "isEnabled";
@@ -150,7 +150,7 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
             return <ErrorBoundary><AddonCard disabled={addon.partial} type={type} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
         });
-    }, [addonList, addonState, sort, ascending, query]);
+    }, [addonList, addonState, onChange, reload, triggerDelete, triggerEdit, type, sort, ascending, query]);
 
     const hasAddonsInstalled = addonList.length !== 0;
     const isSearching = !!query;

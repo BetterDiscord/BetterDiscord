@@ -12,21 +12,21 @@ function minY() {
 }
 
 export default function FloatingWindowContainer() {
-    useEffect(() => {
-        Events.on("open-window", open);
-        return () => Events.off("open-window", open);
-    }, []);
-
     const [windows, setWindows] = useState([]);
     const open = useCallback(window => {
-        setWindows([...windows, window]);
-    }, [windows]);
+        setWindows(wins => [...wins, window]);
+    }, []);
     const close = useCallback(id => {
         setWindows(windows.filter(w => {
             if (w.id === id && w.onClose) w.onClose();
             return w.id !== id;
         }));
     }, [windows]);
+
+    useEffect(() => {
+        Events.on("open-window", open);
+        return () => Events.off("open-window", open);
+    }, [open]);
 
     return windows.map(window =>
         <FloatingWindow {...window} close={() => close(window.id)} minY={minY()} key={window.id}>

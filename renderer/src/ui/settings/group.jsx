@@ -17,7 +17,7 @@ export default function Group({onChange, id, name, button, shown, onDrawerToggle
     const change = useCallback((settingId, value) => {
         if (id) onChange?.(id, settingId, value);
         else onChange?.(settingId, value);
-    }, [id]);
+    }, [id, onChange]);
 
     return <Drawer collapsible={collapsible} name={name} button={button} shown={shown} onDrawerToggle={onDrawerToggle} showDivider={showDivider}>
                 {settings.filter(s => !s.hidden).map((setting) => {

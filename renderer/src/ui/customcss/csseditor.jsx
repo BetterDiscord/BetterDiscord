@@ -25,27 +25,27 @@ export default forwardRef(function CssEditor({css, openNative, update, save, onC
             set value(newValue) {editorRef.current.setValue(newValue);},
             get hasUnsavedChanges() {return hasUnsavedChanges;}
         };
-    }, []);
+    }, [hasUnsavedChanges]);
 
     useEffect(() => {
         Events.on("customcss-updated", updateEditor);
         return () => Events.off("customcss-updated", updateEditor);
-    });
+    }, [updateEditor]);
 
     const toggleLiveUpdate = useCallback((checked) => Settings.set("settings", "customcss", "liveUpdate", checked), []);
-    const updateCss = useCallback((event, newCSS) => update?.(newCSS), []);
-    const popoutNative = useCallback(() => openNative?.(), []);
-    const popout = useCallback((event, currentCSS) => openDetached?.(currentCSS), []);
+    const updateCss = useCallback((event, newCSS) => update?.(newCSS), [update]);
+    const popoutNative = useCallback(() => openNative?.(), [openNative]);
+    const popout = useCallback((event, currentCSS) => openDetached?.(currentCSS), [openDetached]);
 
     const onChange = useCallback((newCSS) => {
         notifyParent?.(newCSS);
         setUnsaved(true);
-    }, []);
+    }, [notifyParent]);
 
     const saveCss = useCallback((event, newCSS) => {
         save?.(newCSS);
         setUnsaved(false);
-    }, []);
+    }, [save]);
     
 
     return <Editor

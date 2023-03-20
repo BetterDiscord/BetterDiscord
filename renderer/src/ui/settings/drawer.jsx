@@ -22,7 +22,7 @@ export default function Drawer({name, collapsible, shown = true, showDivider, ch
             drawer.classList.remove("animating");
         }, timeout);
         
-    }, [collapsed]);
+    }, [collapsed, onDrawerToggle]);
 
 
     const onClick = useCallback((event) => {

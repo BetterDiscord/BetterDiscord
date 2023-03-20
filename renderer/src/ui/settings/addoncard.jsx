@@ -85,7 +85,7 @@ export default function AddonCard({addon, type, disabled, enabled, onChange: par
     const onChange = useCallback(() => {
         setEnabled(!isEnabled);
         if (parentChange) parentChange(addon.id);
-    }, []);
+    }, [addon.id, parentChange, isEnabled]);
 
     const showSettings = useCallback(() => {
         if (!hasSettings || !enabled) return;
@@ -97,7 +97,7 @@ export default function AddonCard({addon, type, disabled, enabled, onChange: par
             Toasts.show(Strings.Addons.settingsError.format({name}), {type: "error"});
             Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err);
         }
-    }, [hasSettings, enabled]);
+    }, [hasSettings, enabled, addon.name, getSettingsPanel]);
 
     const messageAuthor = useCallback(() => {
         if (!addon.authorId) return;
@@ -127,7 +127,7 @@ export default function AddonCard({addon, type, disabled, enabled, onChange: par
                 {authorArray}
             </div>
         ];
-    }, []);
+    }, [addon.name, addon.version, addon.authorLink, addon.authorId, addon.author, messageAuthor]);
 
     const footer = useMemo(() => {
         const links = Object.keys(LinkIcons);
@@ -140,7 +140,7 @@ export default function AddonCard({addon, type, disabled, enabled, onChange: par
                         {deleteAddon && makeButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
                     </div>
                 </div>;
-    }, [hasSettings, editAddon, deleteAddon]);
+    }, [hasSettings, editAddon, deleteAddon, addon, enabled, showSettings]);
 
     return <div id={`${addon.id}-card`} className={"bd-addon-card" + (disabled ? " bd-addon-card-disabled" : "")}>
                 <div className="bd-addon-header">

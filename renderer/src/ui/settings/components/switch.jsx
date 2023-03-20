@@ -8,7 +8,7 @@ export default function Switch({id, checked: initialValue, disabled, onChange}) 
     const change = useCallback(() => {
         onChange?.(!checked);
         setChecked(!checked);
-    }, [checked]);
+    }, [checked, onChange]);
 
     const enabledClass = disabled ? " bd-switch-disabled" : "";
     const checkedClass = checked ? " bd-switch-checked" : "";

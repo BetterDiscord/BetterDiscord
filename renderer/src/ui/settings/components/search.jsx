@@ -9,7 +9,7 @@ export default function Search({onChange, className, onKeyDown, placeholder}) {
     const change = useCallback((e) => {
         onChange?.(e);
         setValue(e.target.value);
-    }, []);
+    }, [onChange]);
 
 
     return <div className={"bd-search-wrapper" + (className ? ` ${className}` : "")}>

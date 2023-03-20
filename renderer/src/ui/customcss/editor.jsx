@@ -34,7 +34,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
 
     const [theme, setTheme] = useState(() => ThemeStore?.theme === "light" ? "vs" : "vs-dark");
     const [editor, setEditor] = useState(null);
-    const [bindings, setBindings] = useState([]);
+    const [, setBindings] = useState([]);
 
     const onThemeChange = useCallback(() => {
         const newTheme = ThemeStore?.theme === "light" ? "vs" : "vs-dark";
@@ -45,7 +45,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
 
     const onChange = useCallback(() => {
         notifyParent?.(editor?.getValue());
-    }, [editor]);
+    }, [editor, notifyParent]);
     const resize = useCallback(() => editor.layout(), [editor]);
     const showSettings = useCallback(() => editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec(editor), [editor]);
 
@@ -56,17 +56,20 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             get value() {return editor.getValue();},
             set value(newValue) {editor.setValue(newValue);}
         };
-    }, [editor]);
+    }, [editor, resize, showSettings]);
 
     useEffect(() => {
-        setBindings([...bindings, editor?.onDidChangeModelContent(onChange)]);
+        setBindings(bins => [...bins, editor?.onDidChangeModelContent(onChange)]);
         return () => {
-            for (const binding of bindings) binding?.dispose();
-            setBindings([]);
+            setBindings(bins => {
+                for (const binding of bins) binding?.dispose();
+                return [];
+            });
         };
-    }, [editor]);
+    }, [editor, onChange]);
 
     useEffect(() => {
+        let toDispose = null;
         if (window.monaco?.editor) {
             const monacoEditor = window.monaco.editor.create(document.getElementById(id), {
                 value: value,
@@ -84,6 +87,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                 renderWhitespace: Settings.get("settings", "editor", "renderWhitespace")
             });
 
+            toDispose = monacoEditor;
             setEditor(monacoEditor);
         }
         else {
@@ -91,28 +95,35 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             const textarea = document.createElement("textarea");
             textarea.className = "bd-fallback-editor";
             textarea.value = value;
-            textarea.onchange = (e) => onChange(e.target.value);
-            textarea.oninput = (e) => onChange(e.target.value);
 
             setEditor({
                 dispose: () => textarea.remove(),
                 getValue: () => textarea.value,
                 setValue: (val) => textarea.value = val,
                 layout: () => {},
+                onDidChangeModelContent: (cb) => {
+                    textarea.onchange = cb;
+                    textarea.oninput = cb;
+                }
             });
 
             document.getElementById(id).appendChild(textarea);
         }
 
+        return () => {
+            toDispose?.dispose?.();
+        };
+    }, [id, language, theme, value]);
+
+    useEffect(() => {
         ThemeStore?.addChangeListener?.(onThemeChange);
         window.addEventListener("resize", resize);
 
         return () => {
             window.removeEventListener("resize", resize);
             ThemeStore?.removeChangeListener?.(onThemeChange);
-            editor?.dispose();
         };
-    }, []);
+    }, [onThemeChange, resize]);
 
 
     if (editor && editor.layout) editor.layout();

@@ -12,7 +12,7 @@ export default function Radio({name, value, options, onChange}) {
         const newValue = options[newIndex].value;
         onChange?.(newValue);
         setIndex(newIndex);
-    }, [index, options]);
+    }, [options, onChange]);
 
     function renderOption(opt, i) {
         const isSelected = index === i;

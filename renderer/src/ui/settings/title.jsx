@@ -11,7 +11,7 @@ export default function SettingsTitle({isGroup, className, button, onClick, text
         event.stopPropagation();
         event.preventDefault();
         button?.onClick?.(event);
-    }, []);
+    }, [button]);
 
 
     const baseClass = isGroup ? groupClass : basicClass;

@@ -26,19 +26,19 @@ export default function Keybind({value: initialValue, onChange, max = 2, clearab
             if (onChange) onChange(state.accum);
             setState({value: state.accum.slice(0), isRecording: false, accum: []});
         }
-    }, [state]);
-
-    const onClick = useCallback((e) => {
-        if (e.target?.className?.includes?.("bd-keybind-clear") || e.target?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return clearKeybind(e);
-        setState({...state, isRecording: !state.isRecording});
-    }, [state]);
+    }, [state, max, onChange]);
 
     const clearKeybind = useCallback((event) => {
         event.stopPropagation();
         event.preventDefault();
         if (onChange) onChange([]);
         setState({...state, value: [], accum: []});
-    }, []);
+    }, [onChange, state]);
+
+    const onClick = useCallback((e) => {
+        if (e.target?.className?.includes?.("bd-keybind-clear") || e.target?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return clearKeybind(e);
+        setState({...state, isRecording: !state.isRecording});
+    }, [state, clearKeybind]);
 
 
     const displayValue = state.isRecording ? "Recording..." : !state.value.length ? "N/A" : state.value.join(" + ");

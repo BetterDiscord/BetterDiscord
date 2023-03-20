@@ -60,7 +60,7 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
     const change = useCallback((e) => {
         onChange?.(resolveColor(e.target.value));
         setValue(e.target.value);
-    }, []);
+    }, [onChange]);
 
     const intValue = resolveColor(value, false);
     return <div className="bd-color-picker-container">

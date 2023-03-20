@@ -9,7 +9,7 @@ export default function Select({value: initialValue, options, style, onChange}) 
     const change = useCallback((val) => {
         onChange?.(val);
         setValue(val);
-    }, []);
+    }, [onChange]);
 
 
     const hideMenu = useCallback(() => {
@@ -26,7 +26,7 @@ export default function Select({value: initialValue, options, style, onChange}) 
         setOpen(next);
         if (!next) return;
         document.addEventListener("click", hideMenu);
-    }, [open]);
+    }, [hideMenu, open]);
 
 
     // ?? options[0] provides a double failsafe

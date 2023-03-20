@@ -5,7 +5,7 @@ import CloseButton from "../icons/close";
 import MaximizeIcon from "../icons/fullscreen";
 import Modals from "../modals";
 
-const {useState, useCallback, useEffect, useRef, useMemo} = React;
+const {useState, useCallback, useEffect, useRef} = React;
 
 
 function confirmClose(confirmationText) {
@@ -19,17 +19,12 @@ function confirmClose(confirmationText) {
     });
 }
 
-export default function FloatingWindow(props) {
+export default function FloatingWindow({id, title, resizable, children, className, center, top: initialTop, left: initialLeft, width: initialWidth, height: initialHeight, minX = 0, minY = 0, maxX = Screen.width, maxY = Screen.height, onResize, close: doClose, confirmClose: doConfirmClose, confirmationText}) {
     const [modalOpen, setOpen] = useState(false);
     const [isDragging, setDragging] = useState(false);
-    const [position, setPosition] = useState({x: props.center ? (Screen.width / 2) - (props.width / 2) : props.left, y: props.center ? (Screen.height / 2) - (props.height / 2) : props.top});
+    const [position, setPosition] = useState({x: center ? (Screen.width / 2) - (initialWidth / 2) : initialLeft, y: center ? (Screen.height / 2) - (initialHeight / 2) : initialTop});
     const [offset, setOffset] = useState({x: 0, y: 0});
     const [size, setSize] = useState({width: 0, height: 0});
-
-    const minX = useMemo(() => props.minX || 0);
-    const maxX = useMemo(() => props.maxX || Screen.width);
-    const minY = useMemo(() => props.minY || 0);
-    const maxY = useMemo(() => props.maxY || Screen.height);
 
     const titlebar = useRef(null);
     const window = useRef(null);
@@ -51,7 +46,7 @@ export default function FloatingWindow(props) {
         if (newLeft + size.width >= maxX) newLeft = maxX - size.width;
 
         setPosition({x: newLeft, y: newTop});
-    }, [window, offset, size, isDragging]);
+    }, [offset, size, isDragging, minX, minY, maxX, maxY]);
 
 
     const onDragStart = useCallback((e) => {
@@ -66,7 +61,7 @@ export default function FloatingWindow(props) {
         const width = window.current.offsetWidth;
         const height = window.current.offsetHeight;
         if (width != size.width || height != size.height) {
-            if (props.onResize) props.onResize();
+            if (onResize) onResize();
             const left = parseInt(window.current.style.left);
             const top = parseInt(window.current.style.top);
             if (left + width >= maxX) window.current.style.width = (maxX - left) + "px";
@@ -74,20 +69,22 @@ export default function FloatingWindow(props) {
         }
 
         setSize({width, height});
-    }, [window, size, onDrag]);
+    }, [window, size, maxX, maxY, onResize]);
 
 
     useEffect(() => {
-        window.current.addEventListener("mousedown", onResizeStart, false);
-        titlebar.current.addEventListener("mousedown", onDragStart, false);
+        const winRef = window.current;
+        const titleRef = titlebar.current;
+        winRef.addEventListener("mousedown", onResizeStart, false);
+        titleRef.addEventListener("mousedown", onDragStart, false);
         document.addEventListener("mouseup", onDragStop, false);
         document.addEventListener("mousemove", onDrag, true);
 
         return () => {
             document.removeEventListener("mouseup", onDragStop, false);
             document.removeEventListener("mousemove", onDrag, true);
-            window?.current?.removeEventListener("mousedown", onResizeStart, false);
-            titlebar?.current?.removeEventListener("mousedown", onDragStart, false);
+            winRef.removeEventListener("mousedown", onResizeStart, false);
+            titleRef.removeEventListener("mousedown", onDragStart, false);
         };
     }, [titlebar, window, onDragStart, onDragStop, onDrag, onResizeStart]);
 
@@ -95,7 +92,7 @@ export default function FloatingWindow(props) {
     const maximize = useCallback(() => {
         window.current.style.width = "100%";
         window.current.style.height = "100%";
-        if (props.onResize) props.onResize();
+        if (onResize) onResize();
 
         const width = window.current.offsetWidth;
         const height = window.current.offsetHeight;
@@ -123,27 +120,27 @@ export default function FloatingWindow(props) {
             window.current.style.left = minX + "px";
             window.current.style.height = (width - difference) + "px";
         }
-    }, [window, minX, minY, maxX, maxY]);
+    }, [window, minX, minY, maxX, maxY, onResize]);
 
 
     const close = useCallback(async () => {
         let shouldClose = true;
-        const didConfirmClose = typeof(props.confirmClose) == "function" ? props.confirmClose() : props.confirmClose;
+        const didConfirmClose = typeof(doConfirmClose) == "function" ? doConfirmClose() : doConfirmClose;
         if (didConfirmClose) {
             setOpen(true);
-            shouldClose = await confirmClose(props.confirmationText);
+            shouldClose = await confirmClose(confirmationText);
             setOpen(false);
         }
-        if (props.close && shouldClose) props.close();
-    }, []);
+        if (doClose && shouldClose) doClose();
+    }, [confirmationText, doClose, doConfirmClose]);
 
 
 
-    const className = `floating-window${` ${props.className}` || ""}${props.resizable ? " resizable" : ""}${modalOpen ? " modal-open" : ""}`;
-    const styles = {height: props.height, width: props.width, left: position.x || 0, top: position.y || 0};
-    return <div id={props.id} className={className} ref={window} style={styles}>
+    const finalClassname = `floating-window${` ${className}` || ""}${resizable ? " resizable" : ""}${modalOpen ? " modal-open" : ""}`;
+    const styles = {height: initialHeight, width: initialWidth, left: position.x || 0, top: position.y || 0};
+    return <div id={id} className={finalClassname} ref={window} style={styles}>
                 <div className="floating-window-titlebar" ref={titlebar}>
-                    <span className="title">{props.title}</span>
+                    <span className="title">{title}</span>
                     <div className="floating-window-buttons">
                         <div className="button maximize-button" onClick={maximize}>
                             <MaximizeIcon size="18px" />
@@ -154,7 +151,7 @@ export default function FloatingWindow(props) {
                     </div>
                 </div>
                 <div className="floating-window-content">
-                    {props.children}
+                    {children}
                 </div>
             </div>;
 }

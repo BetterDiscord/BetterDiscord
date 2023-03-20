@@ -19,14 +19,14 @@ export default forwardRef(function AddonEditor({content, language, save, openNat
             set value(newValue) {editorRef.current.setValue(newValue);},
             get hasUnsavedChanges() {return hasUnsavedChanges;}
         };
-    }, []);
+    }, [hasUnsavedChanges]);
 
-    const popoutNative = useCallback(() => openNative?.(), []);
+    const popoutNative = useCallback(() => openNative?.(), [openNative]);
     const onChange = useCallback(() => setUnsaved(true), []);
     const saveAddon = useCallback((event, newCSS) => {
         save?.(newCSS);
         setUnsaved(false);
-    }, []);
+    }, [save]);
 
     return <Editor
                 ref={editorRef}

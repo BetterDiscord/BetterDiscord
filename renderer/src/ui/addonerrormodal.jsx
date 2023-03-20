@@ -60,7 +60,7 @@ export default function AddonErrorModal({pluginErrors, themeErrors}) {
     }, [pluginErrors, themeErrors]);
 
     const [tabId, setTab] = useState(tabs[0].id);
-    const switchToTab = useCallback((id) => setTab(id), [tabId]);
+    const switchToTab = useCallback((id) => setTab(id), []);
     const selectedTab = tabs.find(e => e.id === tabId);
 
     return <>

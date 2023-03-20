@@ -8,7 +8,7 @@ export default function Number({value: initialValue, min, max, step, onChange}) 
     const change = useCallback((e) => {
         onChange?.(e.target.value);
         setValue(e.target.value);
-    }, []);
+    }, [onChange]);
 
     return <input onChange={change} type="number" className="bd-number-input" min={min} max={max} step={step} value={value} />;
 }
