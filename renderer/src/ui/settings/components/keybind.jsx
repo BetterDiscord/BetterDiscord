@@ -10,8 +10,8 @@ export default function Keybind({value: initialValue, onChange, max = 2, clearab
     const [state, setState] = useState({value: initialValue, isRecording: false, accum: []});
 
     useEffect(() => {
-        window.addEventListener("keydown", keyHandler);
-        return () => window.removeEventListener("keydown", keyHandler);
+        window.addEventListener("keydown", keyHandler, true);
+        return () => window.removeEventListener("keydown", keyHandler, true);
     });
 
     const keyHandler = useCallback((event) => {
@@ -32,7 +32,7 @@ export default function Keybind({value: initialValue, onChange, max = 2, clearab
         event.stopPropagation();
         event.preventDefault();
         if (onChange) onChange([]);
-        setState({...state, value: [], accum: []});
+        setState({...state, isRecording: false, value: [], accum: []});
     }, [onChange, state]);
 
     const onClick = useCallback((e) => {
