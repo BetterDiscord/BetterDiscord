@@ -3,7 +3,6 @@ import Logger from "common/logger";
 const fs = require("fs");
 const path = require("path");
 const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable";
-const discordVersion = window?.DiscordNative?.remoteApp?.getVersion?.() ?? "0.0.309";
 
 // Schema
 // =======================
@@ -44,54 +43,6 @@ export default new class DataStore {
             catch (e) {Logger.stacktrace("DataStore", `Could not load file ${file}`, e);}
             this.data[file.split(".")[0]] = data;
         }
-
-        if (newStorageExists) return;
-
-        try {this.convertOldData();} // Convert old data if it exists (routine checks existence and removes existence)
-        catch (e) {Logger.stacktrace("DataStore", `Could not convert old data.`, e);}
-    }
-
-    convertOldData() {
-        const oldFile = path.join(Config.dataPath, "bdstorage.json");
-        if (!fs.existsSync(oldFile)) return;
-
-        const oldData = __non_webpack_require__(oldFile); // got the data
-        fs.renameSync(oldFile, `${oldFile}.bak`); // rename file after grabbing data to prevent loop
-        const setChannelData = (channel, key, value, ext = "json") => fs.writeFileSync(path.resolve(this.baseFolder, channel, `${key}.${ext}`), JSON.stringify(value, null, 4));
-        const channels = ["stable", "canary", "ptb"];
-        let customcss = "";
-        try {customcss = oldData.bdcustomcss ? atob(oldData.bdcustomcss) : "";}
-        catch (e) {Logger.stacktrace("DataStore:convertOldData", "Error decoding custom css", e);}
-        for (const channel of channels) {
-            if (!fs.existsSync(path.resolve(this.baseFolder, channel))) fs.mkdirSync(path.resolve(this.baseFolder, channel));
-            const channelData = oldData.settings[channel];
-            if (!channelData || !channelData.settings) continue;
-            const oldSettings = channelData.settings;
-            const newSettings = {
-                general: {publicServers: oldSettings["bda-gs-1"], voiceDisconnect: oldSettings["bda-dc-0"], showToasts: oldSettings["fork-ps-2"]},
-                appearance: {twentyFourHour: oldSettings["bda-gs-6"], minimalMode: oldSettings["bda-gs-2"], coloredText: oldSettings["bda-gs-7"]},
-                addons: {addonErrors: oldSettings["fork-ps-1"], autoReload: oldSettings["fork-ps-5"]},
-                developer: {debuggerHotkey: oldSettings["bda-gs-8"], reactDevTools: oldSettings.reactDevTools}
-            };
-
-            setChannelData(channel, "settings", newSettings); // settingsCookie
-            setChannelData(channel, "plugins", channelData.plugins || {}); // pluginCookie
-            setChannelData(channel, "themes", channelData.themes || {}); // themeCookie
-            fs.writeFileSync(path.resolve(this.baseFolder, channel, "custom.css"), customcss); // customcss
-        }
-
-        this.initialize(); // Reinitialize data store with the converted data
-    }
-
-    get injectionPath() {
-        if (this._injectionPath) return this._injectionPath;
-        const base = Config.appPath;
-        const roamingBase = Config.userData;
-        const roamingLocation = path.resolve(roamingBase, discordVersion, "modules", "discord_desktop_core", "injector");
-        const location = path.resolve(base, "..", "app");
-        const realLocation = fs.existsSync(location) ? location : fs.existsSync(roamingLocation) ? roamingLocation : null;
-        if (!realLocation) return this._injectionPath = null;
-        return this._injectionPath = realLocation;
     }
 
     get pluginFolder() {return this._pluginFolder || (this._pluginFolder = path.resolve(Config.dataPath, "plugins"));}
