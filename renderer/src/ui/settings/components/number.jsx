@@ -1,18 +1,14 @@
 import {React} from "modules";
 
-export default class Number extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: this.props.value};
-        this.onChange = this.onChange.bind(this);
-    }
+const {useState, useCallback} = React;
 
-    onChange(e) {
-        this.setState({value: e.target.value});
-        if (this.props.onChange) this.props.onChange(e.target.value);
-    }
 
-    render() {
-        return <input onChange={this.onChange} type="number" className="bd-number-input" min={this.props.min} max={this.props.max} step={this.props.step} value={this.state.value} />;
-    }
+export default function Number({value: initialValue, min, max, step, onChange}) {
+    const [value, setValue] = useState(initialValue);
+    const change = useCallback((e) => {
+        onChange?.(e.target.value);
+        setValue(e.target.value);
+    }, [onChange]);
+
+    return <input onChange={change} type="number" className="bd-number-input" min={min} max={max} step={step} value={value} />;
 }

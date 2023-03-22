@@ -66,10 +66,11 @@ const ReactUtils = {
             constructor(props) {
                 super(props);
                 this.element = element;
+                this.state = {hasError: false};
             }
-    
+            componentDidCatch() {this.setState({hasError: true});}
             componentDidMount() {this.refs.element.appendChild(this.element);}
-            render() {return DiscordModules.React.createElement("div", {className: "react-wrapper", ref: "element"});}
+            render() {return this.state.hasError ? null : DiscordModules.React.createElement("div", {className: "react-wrapper", ref: "element"});}
         };
     }
 
