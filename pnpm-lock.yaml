@@ -44,6 +44,7 @@ importers:
       babel-plugin-module-resolver: ^4.1.0
       circular-dependency-plugin: ^5.2.2
       css-loader: ^6.5.1
+      fflate: ^0.7.4
       postcss: ^8.4.5
       postcss-cli: ^9.1.0
       postcss-csso: ^6.0.0
@@ -52,6 +53,8 @@ importers:
       stylelint: ^14.3.0
       stylelint-config-standard: ^24.0.0
       webpack: ^5.73.0
+    dependencies:
+      fflate: 0.7.4
     devDependencies:
       '@babel/core': 7.18.6
       '@babel/preset-env': 7.18.6_@babel+core@7.18.6
@@ -2543,6 +2546,10 @@ packages:
     dependencies:
       reusify: 1.0.4
     dev: true
+
+  /fflate/0.7.4:
+    resolution: {integrity: sha512-5u2V/CDW15QM1XbbgS+0DfPxVB+jUKhWEKuuFuHncbk3tEEqzmoXL+2KyOFuKGqOnmdIy0/davWF1CkuwtibCw==}
+    dev: false
 
   /file-entry-cache/6.0.1:
     resolution: {integrity: sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==}

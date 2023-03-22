@@ -13,11 +13,12 @@ const path = require("path");
 
 export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}
-    get extension() {return ".theme.css";}
-    get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
+    get extension() {return [".theme.css", ".theme.zip"];}
+    get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.(css|zip)/;}
     get addonFolder() {return path.resolve(Config.dataPath, "themes");}
     get prefix() {return "theme";}
     get language() {return "css";}
+    get langExtension() {return ".css";}
 
     initialize() {
         const errors = super.initialize();

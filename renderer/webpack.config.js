@@ -30,7 +30,8 @@ module.exports = {
       modules$: path.resolve("src", "modules"),
       data$: path.resolve("src", "modules"),
       builtins$: path.resolve("src", "modules"),
-      common: path.resolve(__dirname, "..", "common")
+      common: path.resolve(__dirname, "..", "common"),
+      "fflate": require.resolve("fflate")
     }
   },
   module: {

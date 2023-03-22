@@ -8,6 +8,7 @@ import DiscordModules from "./discordmodules";
 import Strings from "./strings";
 import AddonEditor from "../ui/misc/addoneditor";
 import FloatingWindows from "../ui/floatingwindows";
+import {unzipSync} from "fflate";
 
 const React = DiscordModules.React;
 
@@ -26,14 +27,17 @@ const stripBOM = function(fileContent) {
     return fileContent;
 };
 
+const convertToString = TextDecoder.prototype.decode.bind(new TextDecoder());
+
 export default class AddonManager {
 
     get name() {return "";}
-    get extension() {return "";}
+    get extensions() {return [];}
     get duplicatePattern() {return /./;}
     get addonFolder() {return "";}
     get language() {return "";}
     get prefix() {return "addon";}
+    get langExtension() {return "";}
     emit(event, ...args) {return Events.emit(`${this.prefix}-${event}`, ...args);}
 
     constructor() {
@@ -172,25 +176,75 @@ export default class AddonManager {
         return out;
     }
 
+    assignMeta({meta, filename, fileContent, zip = false} = {}) {
+        const stats = fs.statSync(filename);
+
+        if (!meta.author) meta.author = Strings.Addons.unknownAuthor;
+        if (!meta.version) meta.version = "???";
+        if (!meta.description) meta.description = Strings.Addons.noDescription;
+        meta.id = meta.name || path.basename(filename);
+        meta.slug = path.basename(filename).replace(this.extensions[zip ? 1 : 0], "").replace(/ /g, "-");
+        meta.filename = path.basename(filename);
+        meta.added = stats.atimeMs;
+        meta.modified = stats.mtimeMs;
+        meta.size = stats.size;
+        meta.fileContent = fileContent;
+        meta.zip = zip;
+    }
+
+    requireZipped(filename) {
+        const content = fs.readFileSync(filename, "");
+        const contents = unzipSync(content);
+        const entryFile = `index${this.langExtension}`;
+        if (!contents["config.json"]) throw new AddonError(filename, filename, Strings.Addons.metaNotFound, {message: "", stack: ""}, this.prefix);
+        if (!contents[entryFile]) throw new AddonError(filename, filename, "Zipped addon missing index file.", {message: `Missing ${entryFile} file.`, stack: ""}, this.prefix);
+        const addon = JSON.parse(convertToString(contents["config.json"]));
+
+        this.assignMeta({
+            meta: addon,
+            fileContent: convertToString(contents[entryFile]),
+            zip: true,
+            filename: filename
+        });
+
+        return addon;
+    }
+
     // Subclasses should overload this and modify the addon using the fileContent as needed to "require()"" the file
-    requireAddon(filename) {
+    requireOld(filename) {
         let fileContent = fs.readFileSync(filename, "utf8");
         fileContent = stripBOM(fileContent);
-        const stats = fs.statSync(filename);
         const addon = this.extractMeta(fileContent, path.basename(filename));
-        if (!addon.author) addon.author = Strings.Addons.unknownAuthor;
-        if (!addon.version) addon.version = "???";
-        if (!addon.description) addon.description = Strings.Addons.noDescription;
-        // if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
-        addon.id = addon.name || path.basename(filename);
-        addon.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
-        addon.filename = path.basename(filename);
-        addon.added = stats.atimeMs;
-        addon.modified = stats.mtimeMs;
-        addon.size = stats.size;
-        addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
+
+        this.assignMeta({
+            meta: addon,
+            fileContent: fileContent,
+            filename: filename
+        });
+
+        return addon;
+    }
+
+    requireAddon(filename) {
+        const ext = path.extname(filename);
+        const oldExt = path.extname(this.extensions[0]);
+
+        const addon = (() => {
+            switch (ext) {
+                case ".zip": return this.requireZipped(filename);
+                case oldExt: return this.requireOld(filename);
+                default: {
+                    const name = path.basename(filename);
+                    throw new AddonError(name, filename, "Unsupported file format: " + ext, {stack: "", message: ""}, this.prefix);
+                }
+            }
+        })();
+
+        if (this.addonList.find(c => c.id == addon.id))
+            throw new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
+
         this.addonList.push(addon);
+
         return addon;
     }
 
@@ -201,14 +255,17 @@ export default class AddonManager {
         try {
             addon = this.requireAddon(path.resolve(this.addonFolder, filename));
         }
-        catch (e) {
+        catch (error) {
             const partialAddon = this.addonList.find(c => c.filename == filename);
             if (partialAddon) {
                 partialAddon.partial = true;
                 this.state[partialAddon.id] = false;
                 this.emit("loaded", partialAddon);
             }
-            return e;
+            
+            Logger.stacktrace(this.name, `Unable to compile ${path.basename(filename)}.`, error);
+
+            return error;
         }
         
 
@@ -220,7 +277,7 @@ export default class AddonManager {
             return error;
         }
 
-        if (shouldToast) Toasts.success(Strings.Addons.wasUnloaded.format({name: addon.name, version: addon.version}));
+        if (shouldToast) Toasts.success(Strings.Addons.wasLoaded.format({name: addon.name, version: addon.version}));
         this.emit("loaded", addon);
         
         if (!this.state[addon.id]) return this.state[addon.id] = false;
@@ -309,7 +366,7 @@ export default class AddonManager {
             if (!stats || !stats.isFile()) continue;
             this.timeCache[filename] = stats.mtime.getTime();
 
-            if (!filename.endsWith(this.extension)) {
+            if (!this.extensions.some(ext => filename.endsWith(ext))) {
                 // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
                 const match = filename.match(this.duplicatePattern);
                 if (!match) continue;

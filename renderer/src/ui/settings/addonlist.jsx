@@ -148,7 +148,7 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
         return sorted.map(addon => {
             const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
-            return <ErrorBoundary><AddonCard disabled={addon.partial} type={type} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
+            return <ErrorBoundary><AddonCard disabled={addon.partial} type={type} editAddon={!addon.zip && (() => triggerEdit(addon.id))} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
         });
     }, [addonList, addonState, onChange, reload, triggerDelete, triggerEdit, type, sort, ascending, query, forced]); // eslint-disable-line react-hooks/exhaustive-deps
 

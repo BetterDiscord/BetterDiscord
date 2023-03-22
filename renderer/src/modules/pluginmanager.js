@@ -23,11 +23,12 @@ if (typeof(module.exports) !== "function") {
 
 export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
-    get extension() {return ".plugin.js";}
-    get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
+    get extensions() {return [".plugin.js", ".plugin.zip"];}
+    get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.(js|zip)/;}
     get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
     get prefix() {return "plugin";}
     get language() {return "javascript";}
+    get langExtension() {return ".js";}
 
     constructor() {
         super();
@@ -149,7 +150,7 @@ export default new class PluginManager extends AddonManager {
             this.state[addon.id] = false;
             Toasts.error(Strings.Addons.couldNotStart.format({name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
-            return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "start()"}), {message: err.message, stack: err.stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, Strings.Addons.methodError.format({method: "start()"}), {message: err.message, stack: err.stack}, this.prefix);
         }
         this.emit("started", addon.id);
         Toasts.show(Strings.Addons.enabled.format({name: addon.name, version: addon.version}));
@@ -165,8 +166,8 @@ export default new class PluginManager extends AddonManager {
         catch (err) {
             this.state[addon.id] = false;
             Toasts.error(Strings.Addons.couldNotStop.format({name: addon.name, version: addon.version}));
-            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
-            return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "stop()"}), {message: err.message, stack: err.stack}, this.prefix);
+            Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be stopped.`, err);
+            return new AddonError(addon.name, addon.filename, Strings.Addons.methodError.format({method: "stop()"}), {message: err.message, stack: err.stack}, this.prefix);
         }
         this.emit("stopped", addon.id);
         Toasts.show(Strings.Addons.disabled.format({name: addon.name, version: addon.version}));
