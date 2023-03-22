@@ -1,24 +1,23 @@
 // fixed, improved, added, progress
 export default {
-    description: "Discord changed a lot of things internally once again! Please have patience while plugins and even themes catch up!",
+    description: "The first of the performance updates is here!",
     changes: [
         {
             title: "What's New?",
             type: "improved",
             items: [
-                "Added support for a custom version of React DevTools. (Thanks @Zerthox)",
-                "We are now using a custom header component in settings to prevent future crashes.",
-                "Plugins now have a new experimental API for component access, `BdApi.Components`. Currently only `Tooltip` exists."
+                "**The entire BetterDiscord UI got a rewrite.** Things may _look_ mostly the same, but underneath they were completely redone with speed in mind.",
+                "Better version comparisons when checking for updates! You should no longer end up in update loops.",
+                "After polls on both Discord and Twitter, the __Public Servers module was removed__. For those that liked it, stay tuned for the official plugin!",
+                "For those using the **Remove Minimum Size** option, BetterDiscord will now remember your desired window size!"
             ]
         },
         {
             title: "Bug Fixes",
             type: "fixed",
             items: [
-                "Fixed crashing when opening settings.",
-                "Fixed modals either not opening and/or crashing.",
-                "Fixed context menus not working and/or crashing.",
-                "Fixed coloring for `danger` context menus. (Thanks @samfundev)"
+                "Devtools shortcut now correctly uses `cmd` on Mac.",
+                "Plugin and theme pages now render properly.",
             ]
         }
     ]

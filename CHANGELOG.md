@@ -2,6 +2,24 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.9.0
+
+### Added
+- Remove minimum window size now remembers desired size
+- Basic semver comparison
+
+### Removed
+- Public Servers
+- Old DataStore functions that are no longer used
+
+### Changed
+- All main react components are now functional with hooks
+- Mac now uses cmd instead of ctrl
+
+### Fixed
+- Fixed dropdowns
+- Fixed markdown parser
+
 ## 1.8.5
 
 ### Added
