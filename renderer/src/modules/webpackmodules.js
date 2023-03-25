@@ -168,7 +168,8 @@ export default class WebpackModules {
             
             if (typeof(exports) === "object" && searchExports && exports[Symbol.toStringTag] !== "DOMTokenList") {
                 for (const key in exports) {
-                    let foundModule = null, wrappedExport = null;
+                    let foundModule = null;
+                    let wrappedExport = null;
                     try {wrappedExport = exports[key];} catch {continue;}
 
                     if (!wrappedExport) continue;
