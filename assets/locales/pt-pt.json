@@ -13,10 +13,6 @@
                     "name": "Sistema de Emotes",
                     "note": "Ativa o sistema de emotes do BD"
                 },
-                "publicServers": {
-                    "name": "Servidores Publicos",
-                    "note": "Mostra o botão de servidores publicos"
-                },
                 "voiceDisconnect": {
                     "name": "Disconectar Voz",
                     "note": "Disconectar do servidor de voz quando fechar o discord"
@@ -219,27 +215,6 @@
         "favoriteAction": "Favorito!",
         "downloadFailed": "Transfêrencia falhou",
         "failureMessage": "BetterDiscord falhou a transfêrencia de emotes, por favor verifique a sua conexão à Internet e à Firewall."
-    },
-    "PublicServers": {
-        "button": "público",
-        "join": "Entrar",
-        "joining": "Entrando",
-        "joined": "Entrou",
-        "loading": "A Carregar",
-        "loadMore": "Carregar Mais",
-        "notConnected": "Não Conectado",
-        "connectionRequired": "Tem que estár conectado a sua conta para se entrar nos servidores.",
-        "connectionError": "Erro de conexão",
-        "connectionErrorMessage": "Houve um error ao tentar conectar com os DiscordServers.com, é possível que o website/api esteja em baixo. Por favor tente mais tarde.",
-        "pagination": "Página {{page}} de {{count}}",
-        "search": "Procurar",
-        "connect": "Conectar",
-        "reconnect": "Reconectar",
-        "categories": "Categorias",
-        "keywords": "Palavras-Chave",
-        "connection": "Conectado com: {{username}}#{{discriminator}}",
-        "results": "Mostrar {{start}}-{{end}} do {{total}} resultados na {{category}}",
-        "query": "para {{query}}"
     },
     "Modals": {
         "confirmAction": "Tem a certeza?",

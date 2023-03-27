@@ -14,10 +14,6 @@
                     "name": "Emote System",
                     "note": "Enables BD's emote system"
                 },
-                "publicServers": {
-                    "name": "Public Servers",
-                    "note": "Display public servers button"
-                },
                 "voiceDisconnect": {
                     "name": "Voice Disconnect",
                     "note": "Disconnect from voice server when closing Discord"
@@ -258,27 +254,6 @@
         "favoriteAction": "Favorite!",
         "downloadFailed": "Download Failed",
         "failureMessage": "BetterDiscord failed to download emotes, please check your internet connection and firewall."
-    },
-    "PublicServers": {
-        "button": "Public Servers",
-        "join": "Join",
-        "joining": "Joining",
-        "joined": "Joined",
-        "loading": "Loading",
-        "loadMore": "Load More",
-        "notConnected": "Not Connected",
-        "connectionRequired": "You must connect your account in order to join servers.",
-        "connectionError": "Connection Error",
-        "connectionErrorMessage": "There was an error connecting to DiscordServers.com, it's possible their website/api is down. Please try again later.",
-        "pagination": "Page {{page}} of {{count}}",
-        "search": "Search",
-        "connect": "Connect",
-        "reconnect": "Reconnect",
-        "categories": "Categories",
-        "keywords": "Keywords",
-        "connection": "Connected as: {{username}}#{{discriminator}}",
-        "results": "Showing {{start}}-{{end}} of {{total}} results in {{category}}",
-        "query": "for {{query}}"
     },
     "Modals": {
         "confirmAction": "Are You Sure?",

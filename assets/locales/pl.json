@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Wtyczki",
         "themes": "Motywy",
-        "customcss": "Niestandardowy CSS"
+        "customcss": "Niestandardowy CSS",
+        "updates": "Aktualizacje"
     },
     "Collections": {
         "settings": {
@@ -13,13 +14,9 @@
                     "name": "System emoji",
                     "note": "Aktywuje system emoji BetterDiscorda"
                 },
-                "publicServers": {
-                    "name": "Publiczne serwery",
-                    "note": "Wyświetla przycisk do publicznych serwerów"
-                },
                 "voiceDisconnect": {
                     "name": "Rozłączaj z czatem głosowym",
-                    "note": "Rozłącza z serwerem czatu głosowego przy wyłączaniu Discorda"
+                    "note": "Rozłącza z serwerem czatu głosowego przy wyłączeniu Discorda"
                 },
                 "showToasts": {
                     "name": "Wyświetlaj okienka powiadomień",
@@ -64,7 +61,7 @@
                 "name": "Niestandardowy CSS",
                 "customcss": {
                     "name": "Niestandardowy CSS",
-                    "note": "Wyświetla zakładkę z niestandardoweym kodem CSS"
+                    "note": "Wyświetla zakładkę z edytorem niestandardowego kodu CSS"
                 },
                 "liveUpdate": {
                     "name": "Automatyczny podgląd",
@@ -72,11 +69,11 @@
                 },
                 "startDetached": {
                     "name": "Osobne okno edytora",
-                    "note": "Kliknięcie na zakładkę z niestandardowym kodem CSS uruchomi edytor w osobnym oknie"
+                    "note": "Kliknięcie na zakładkę „Niestandardowy CSS” uruchomi edytor w osobnym oknie"
                 },
                 "nativeOpen": {
                     "name": "Otwórz w edytorze systemowym",
-                    "note": "Kliknięcie na zakładkę z niestandardowym kodem CSS uruchomi plik w edytorze systemowym"
+                    "note": "Kliknięcie na zakładkę „Niestandardowy CSS” uruchomi plik w edytorze systemowym"
                 },
                 "openAction": {
                     "name": "Domyślny edytor",
@@ -92,11 +89,11 @@
                 "name": "Ustawienia dla programistów",
                 "debuggerHotkey": {
                     "name": "Debugger",
-                    "note": "Uruchamia debugger po naciśnięciu F8"
+                    "note": "Uruchamia debugger po naciśnięciu F8 przy otworzonym panelu narzędzi dla programistów"
                 },
                 "reactDevTools": {
                     "name": "React Developer Tools",
-                    "note": "Wprowadza zainstalowane na twoim komputerze rozszerzenie React Developer Tools do Discorda"
+                    "note": "Wprowadza zainstalowane na Twoim komputerze rozszerzenie React Developer Tools do Discorda"
                 },
                 "inspectElement": {
                     "name": "Narzędzie „Zbadaj element”",
@@ -109,6 +106,42 @@
                 "debugLogs": {
                     "name": "Dziennik zdarzeń",
                     "note": "Przekierowuje informacje z konsoli do pliku debug.log w folderze BetterDiscorda"
+                },
+                "devTools": {
+                    "name": "Narzędzia dla programistów",
+                    "note": "Umożliwia wyświetlenie panelu narzędzi dla programistów po użyciu skrótu klawiszowego Ctrl+Shift+I"
+                }
+            },
+            "editor": {
+                "name": "Ustawienia edytora",
+                "lineNumbers": {
+                    "name": "Numery wierszy",
+                    "note": "Wyświetla numery wierszy po lewej stronie edytora"
+                },
+                "fontSize": {
+                    "name": "Rozmiar czcionki",
+                    "note": "Ustawia rozmiar czcionki (pt) w edytorze"
+                },
+                "minimap": {
+                    "name": "Podgląd",
+                    "note": "Wyświetla mały podgląd kodu po prawej stronie edytora"
+                },
+                "hover": {
+                    "name": "Etykiety",
+                    "note": "Wyświetla etykiety z dodatkowymi informacjami po najechaniu na element kodu"
+                },
+                "quickSuggestions": {
+                    "name": "Podpowiadanie składni",
+                    "note": "Włącza automatyczne podpowiadanie składni podczas pisania kodu"
+                },
+                "renderWhitespace": {
+                    "name": "Pokaż białe znaki",
+                    "note": "Określa, kiedy białe znaki będą wyświetlane w edytorze",
+                    "options": {
+                        "all": "Zawsze",
+                        "none": "Nigdy",
+                        "selection": "Przy zaznaczaniu"
+                    }
                 }
             }
         },
@@ -182,14 +215,14 @@
         "editAddon": "Edytuj",
         "deleteAddon": "Usuń",
         "confirmDelete": "Czy na pewno chcesz usunąć {{name}}?",
-        "confirmationText": "Masz niezapisane zmiany w kodzie {{name}}. Zamknięcie tego okna spowoduje utratę danych.",
+        "confirmationText": "Masz niezapisane zmiany w kodzie {{name}}. Zamknięcie tego okna spowoduje odrzucenie wszystkich zmian.",
         "enabled": "Dodatek {{name}} został włączony.",
         "disabled": "Dodatek {{name}} został wyłączony.",
         "couldNotEnable": "Dodatek {{name}} nie może zostać włączony.",
         "couldNotDisable": "Dodatek {{name}} nie może zostać wyłączony.",
-        "couldNotStart": "Dodatek {{name}} nie może zostać włączony.",
-        "couldNotStop": "Dodatek {{name}} nie może zostać wyłączony.",
-        "settingsError": "Nie udało się otworzyć ustawień {{name}}",
+        "couldNotStart": "Dodatek {{name}} nie może zostać uruchomiony.",
+        "couldNotStop": "Dodatek {{name}} nie może zostać zatrzymany.",
+        "settingsError": "Nie udało się otworzyć ustawień dodatku {{name}}",
         "methodError": "Metoda {{method}} nie może zostać wywołana.",
         "unknownAuthor": "Nieznany twórca",
         "noDescription": "Brak opisu.",
@@ -198,13 +231,15 @@
         "metaError": "Nie udało się przetworzyć metadanych.",
         "missingNameData": "Brak nazwy dodatku w metadanych.",
         "metaNotFound": "Nie odnaleziono metadanych.",
-        "compileError": "Błąd kompilacji.",
+        "compileError": "Błąd kompilacji. Sprawdź konsolę, aby dowiedzieć się więcej.",
         "wasUnloaded": "Dodatek {{name}} został odładowany.",
         "blankSlateHeader": "Wygląda na to, że nic tu nie ma!",
-        "blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu."
+        "blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu.",
+        "isEnabled": "Stan",
+        "wasLoaded": "Dodatek {{name}} (wersja {{version}}) został załadowany."
     },
     "CustomCSS": {
-        "confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okienka spowoduje utratę danych.",
+        "confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okienka spowoduje odrzucenie wszystkich zmian.",
         "update": "Zaktualizuj",
         "save": "Zapisz",
         "openNative": "Otwórz w edytorze systemowym",
@@ -218,32 +253,11 @@
         "clearEmotes": "Wyczyść dane emoji",
         "favoriteAction": "Dodaj do ulubionych",
         "downloadFailed": "Pobieranie nie powiodło się",
-        "failureMessage": "Nie udało się pobrać emoji, sprawdź swoje połączenie z internetem lub zaporę ogniową."
-    },
-    "PublicServers": {
-        "button": "serwery",
-        "join": "Dołącz",
-        "joining": "Dołączanie",
-        "joined": "Dołączono",
-        "loading": "Ładowanie",
-        "loadMore": "Załaduj więcej",
-        "notConnected": "Nie połączono",
-        "connectionRequired": "Musisz połączyć swoje konto, by wejść na serwer.",
-        "connectionError": "Błąd połączenia",
-        "connectionErrorMessage": "Wystąpił błąd podczas łączenia z DiscordServers.com (najprawdopodobniej ich strona lub API nie działa). Spróbuj ponownie później.",
-        "pagination": "Strona {{page}} z {{count}}",
-        "search": "Wyszukaj",
-        "connect": "Połącz",
-        "reconnect": "Odnów połączenie",
-        "categories": "Kategorie",
-        "keywords": "Słowa klucze",
-        "connection": "Połączono jako: {{username}}#{{discriminator}}",
-        "results": "Wyświetlanie {{start}}-{{end}} z {{total}} wszystkich wyników w {{category}}",
-        "query": "dla {{query}}"
+        "failureMessage": "Nie udało się pobrać emoji, sprawdź swoje połączenie z internetem oraz zaporę ogniową."
     },
     "Modals": {
         "confirmAction": "Czy na pewno chcesz to zrobić?",
-        "okay": "Zamknij",
+        "okay": "Tak",
         "done": "Potwierdź",
         "cancel": "Anuluj",
         "nevermind": "Anuluj",
@@ -253,14 +267,14 @@
         "error": "Błąd",
         "addonErrors": "Błędy wtyczek",
         "restartRequired": "Wymagane ponowne uruchomienie",
-        "restartNow": "Zrestartuj teraz",
-        "restartLater": "Zrestartuj później",
+        "restartNow": "Uruchom ponownie teraz",
+        "restartLater": "Uruchom ponownie później",
         "additionalInfo": "Dodatkowe informacje",
-        "restartPrompt": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
+        "restartPrompt": "Uruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?"
     },
     "ReactDevTools": {
         "notFound": "Nie znaleziono rozszerzenia",
-        "notFoundDetails": "Nie udało się znaleźć React Developer Tools na twoim urządzeniu. By kontynuuować, zainstaluj to rozszerzenie w swoim Chrome."
+        "notFoundDetails": "Nie udało się znaleźć React Developer Tools na twoim urządzeniu. By kontynuować, zainstaluj to rozszerzenie w swojej przeglądarce Chrome."
     },
     "Sorting": {
         "sortBy": "Sortuj wg",
@@ -269,7 +283,26 @@
         "descending": "Malejąca"
     },
     "WindowPrefs": {
-        "enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?",
+        "enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?",
         "disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
+    },
+    "Notices": {
+        "moreInfo": "Dowiedz się więcej"
+    },
+    "Updater": {
+        "updateFailed": "Aktualizacja nie powiodła się!",
+        "updateFailedMessage": "Nie udało się zaktualizować BetterDiscorda. Pobierz najnowszy instalator z naszej strony (https://betterdiscord.app/) i zainstaluj aplikację ponownie.",
+        "updateSuccessful": "Aktualizacja powiodła się!",
+        "updateAvailable": "Dostępna jest nowa aktualizacja BetterDiscorda (wersja {{version}})",
+        "addonUpdatesAvailable": "Są dostępne nowe aktualizacje dla twoich dodatków ({{count}})!",
+        "addonUpdated": "Dodatek {{name}} został zaktualizowany do wersji {{version}}!",
+        "checking": "Sprawdzanie dostępności aktualizacji!",
+        "finishedChecking": "Zakończono sprawdzanie dostępności aktualizacji!",
+        "checkForUpdates": "Sprawdź dostępność aktualizacji",
+        "updateAll": "Zaktualizuj wszystko",
+        "noUpdatesAvailable": "Brak dostępnych aktualizacji.",
+        "versionAvailable": "Dostępna jest nowa wersja ({{version}})!",
+        "upToDateBlankslate": "Wszystkie dodatki są aktualne!",
+        "updateButton": "Zaktualizuj"
     }
 }

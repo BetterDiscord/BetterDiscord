@@ -10,9 +10,6 @@
                 "emotes": {
                     "name": "Emote-system"
                 },
-                "publicServers": {
-                    "name": "Offentlige Servere"
-                },
                 "showToasts": {
                     "name": "Vis Toasts"
                 }
@@ -60,10 +57,6 @@
     },
     "Emotes": {
         "favoriteAction": "Favoritt!"
-    },
-    "PublicServers": {
-        "button": "offentlig",
-        "search": "Søk"
     },
     "Modals": {
         "confirmAction": "Er Du Sikker?",
