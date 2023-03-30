@@ -17,6 +17,11 @@ export default class SimpleMarkdownExt {
             return original;
         }}});
 
+        for (const type in newRules) {
+            if (!newRules[type].requiredFirstCharacters) continue;
+            newRules[type].requiredFirstCharacters = Object.values(newRules[type].requiredFirstCharacters);
+        }
+
         this._parse = SMD.parserFor(newRules);
         this._renderer = SMD.reactFor(SMD.ruleOutput(newRules, "react"));
     }

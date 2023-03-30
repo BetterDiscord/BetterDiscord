@@ -159,14 +159,19 @@ export default class WebpackModules {
         for (let i = 0; i < indices.length; i++) {
             const index = indices[i];
             if (!modules.hasOwnProperty(index)) continue;
-            const module = modules[index];
+            
+            let module = null;
+            try {module = modules[index]} catch {continue;};
+
             const {exports} = module;
             if (!exports || exports === window || exports === document.documentElement) continue;
             
-            if (typeof(exports) === "object" && searchExports) {
+            if (typeof(exports) === "object" && searchExports && exports[Symbol.toStringTag] !== "DOMTokenList") {
                 for (const key in exports) {
                     let foundModule = null;
-                    const wrappedExport = exports[key];
+                    let wrappedExport = null;
+                    try {wrappedExport = exports[key];} catch {continue;}
+
                     if (!wrappedExport) continue;
                     if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
                     if (!foundModule) continue;

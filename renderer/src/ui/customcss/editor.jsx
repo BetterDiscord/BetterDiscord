@@ -2,41 +2,79 @@ import {React, DiscordModules, Settings} from "modules";
 
 import Checkbox from "./checkbox";
 
+const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
 const ThemeStore = DiscordModules.ThemeStore;
+
 
 const languages = ["abap", "abc", "actionscript", "ada", "apache_conf", "asciidoc", "assembly_x86", "autohotkey", "batchfile", "bro", "c_cpp", "c9search", "cirru", "clojure", "cobol", "coffee", "coldfusion", "csharp", "csound_document", "csound_orchestra", "csound_score", "css", "curly", "d", "dart", "diff", "dockerfile", "dot", "drools", "dummy", "dummysyntax", "eiffel", "ejs", "elixir", "elm", "erlang", "forth", "fortran", "ftl", "gcode", "gherkin", "gitignore", "glsl", "gobstones", "golang", "graphqlschema", "groovy", "haml", "handlebars", "haskell", "haskell_cabal", "haxe", "hjson", "html", "html_elixir", "html_ruby", "ini", "io", "jack", "jade", "java", "javascript", "json", "jsoniq", "jsp", "jssm", "jsx", "julia", "kotlin", "latex", "less", "liquid", "lisp", "livescript", "logiql", "lsl", "lua", "luapage", "lucene", "makefile", "markdown", "mask", "matlab", "maze", "mel", "mushcode", "mysql", "nix", "nsis", "objectivec", "ocaml", "pascal", "perl", "pgsql", "php", "pig", "powershell", "praat", "prolog", "properties", "protobuf", "python", "r", "razor", "rdoc", "red", "rhtml", "rst", "ruby", "rust", "sass", "scad", "scala", "scheme", "scss", "sh", "sjs", "smarty", "snippets", "soy_template", "space", "sql", "sqlserver", "stylus", "svg", "swift", "tcl", "tex", "text", "textile", "toml", "tsx", "twig", "typescript", "vala", "vbscript", "velocity", "verilog", "vhdl", "wollok", "xml", "xquery", "yaml", "django"];
 
-export default class CodeEditor extends React.Component {
-    static get defaultId() {return "bd-editor";}
+function makeButton(button, value) {
+    return <DiscordModules.Tooltip color="primary" position="top" text={button.tooltip}>
+                {props => {
+                    return <button {...props} className="btn btn-primary" onClick={(event) => {button.onClick(event, value?.());}}>{button.label}</button>;
+                }}
+            </DiscordModules.Tooltip>;
+}
 
-    constructor(props) {
-        super(props);
+function makeCheckbox(checkbox) {
+    return <Checkbox text={checkbox.label} onChange={checkbox.onChange} checked={checkbox.checked} />;
+}
 
-        this.props.theme = ThemeStore?.theme === "light" ? "vs" : "vs-dark";
+function buildControl(value, control) {
+    if (control.type == "checkbox") return makeCheckbox(control);
+    return makeButton(control, value);
+}
 
-        this.props.language = this.props.language.toLowerCase().replace(/ /g, "_");
-        if (!languages.includes(this.props.language)) this.props.language = CodeEditor.defaultProps.language;
+export default forwardRef(function CodeEditor({value, language: requestedLang = "css", id = "bd-editor", controls = [], onChange: notifyParent}, ref) {
+    const language = useMemo(() => {
+        const requested = requestedLang.toLowerCase().replace(/ /g, "_");
+        if (!languages.includes(requested)) return "css";
+        return requested;
+    }, [requestedLang]);
 
-        this.bindings = [];
-        this.resize = this.resize.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.onThemeChange = this.onThemeChange.bind(this);
-    }
+    const [theme, setTheme] = useState(() => ThemeStore?.theme === "light" ? "vs" : "vs-dark");
+    const [editor, setEditor] = useState(null);
+    const [, setBindings] = useState([]);
 
-    static get defaultProps() {
+    const onThemeChange = useCallback(() => {
+        const newTheme = ThemeStore?.theme === "light" ? "vs" : "vs-dark";
+        if (newTheme === theme) return;
+        if (window.monaco?.editor) window.monaco.editor.setTheme(newTheme);
+        setTheme(newTheme);
+    }, [theme]);
+
+    const onChange = useCallback(() => {
+        notifyParent?.(editor?.getValue());
+    }, [editor, notifyParent]);
+    const resize = useCallback(() => editor.layout(), [editor]);
+    const showSettings = useCallback(() => editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec(editor), [editor]);
+
+    useImperativeHandle(ref, () => {
         return {
-            controls: [],
-            language: "css",
-            id: this.defaultId
+            resize,
+            showSettings,
+            get value() {return editor.getValue();},
+            set value(newValue) {editor.setValue(newValue);}
         };
-    }
+    }, [editor, resize, showSettings]);
 
-    componentDidMount() {
+    useEffect(() => {
+        setBindings(bins => [...bins, editor?.onDidChangeModelContent(onChange)]);
+        return () => {
+            setBindings(bins => {
+                for (const binding of bins) binding?.dispose();
+                return [];
+            });
+        };
+    }, [editor, onChange]);
+
+    useEffect(() => {
+        let toDispose = null;
         if (window.monaco?.editor) {
-            this.editor = window.monaco.editor.create(document.getElementById(this.props.id), {
-                value: this.props.value,
-                language: this.props.language,
-                theme: ThemeStore?.theme == "light" ? "vs" : "vs-dark",
+            const monacoEditor = window.monaco.editor.create(document.getElementById(id), {
+                value: value,
+                language: language,
+                theme: theme,
                 fontSize: Settings.get("settings", "editor", "fontSize"),
                 lineNumbers: Settings.get("settings", "editor", "lineNumbers"),
                 minimap: {enabled: Settings.get("settings", "editor", "minimap")},
@@ -49,89 +87,61 @@ export default class CodeEditor extends React.Component {
                 renderWhitespace: Settings.get("settings", "editor", "renderWhitespace")
             });
 
-            this.bindings.push(this.editor.onDidChangeModelContent(this.onChange));
+            toDispose = monacoEditor;
+            setEditor(monacoEditor);
         }
         else {
 
             const textarea = document.createElement("textarea");
             textarea.className = "bd-fallback-editor";
-            textarea.value = this.props.value;
-            textarea.onchange = (e) => this.onChange(e.target.value);
-            textarea.oninput = (e) => this.onChange(e.target.value);
+            textarea.value = value;
 
-            this.editor = {
+            setEditor({
                 dispose: () => textarea.remove(),
                 getValue: () => textarea.value,
-                setValue: (value) => textarea.value = value,
+                setValue: (val) => textarea.value = val,
                 layout: () => {},
-            };
+                onDidChangeModelContent: (cb) => {
+                    textarea.onchange = cb;
+                    textarea.oninput = cb;
+                }
+            });
 
-            document.getElementById(this.props.id).appendChild(textarea);
+            document.getElementById(id).appendChild(textarea);
         }
 
-        ThemeStore?.addChangeListener?.(this.onThemeChange);
-        window.addEventListener("resize", this.resize);
-    }
+        return () => {
+            toDispose?.dispose?.();
+        };
+    }, [id, language, theme, value]);
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.resize);
-        ThemeStore?.removeChangeListener?.(this.onThemeChange);
-        for (const binding of this.bindings) binding.dispose();
-        this.editor.dispose();
-    }
+    useEffect(() => {
+        ThemeStore?.addChangeListener?.(onThemeChange);
+        window.addEventListener("resize", resize);
 
-    onThemeChange() {
-        const newTheme = ThemeStore?.theme === "light" ? "vs" : "vs-dark";
-        if (newTheme === this.props.theme) return;
-        this.props.theme = newTheme;
-        if (window.monaco?.editor) window.monaco.editor.setTheme(this.props.theme);
-    }
+        return () => {
+            window.removeEventListener("resize", resize);
+            ThemeStore?.removeChangeListener?.(onThemeChange);
+        };
+    }, [onThemeChange, resize]);
 
-    get value() {return this.editor.getValue();}
-    set value(newValue) {this.editor.setValue(newValue);}
 
-    onChange() {
-        if (this.props.onChange) this.props.onChange(this.value);
-    }
+    if (editor && editor.layout) editor.layout();
 
-    showSettings() {return this.editor.keyBinding.$defaultHandler.commands.showSettingsMenu.exec(this.editor);}
-    resize() {this.editor.layout();}
+    const controlsLeft = controls.filter(c => c.side != "right").map(buildControl.bind(null, () => editor?.getValue()));
+    const controlsRight = controls.filter(c => c.side == "right").map(buildControl.bind(null, () => editor?.getValue()));
 
-    buildControl(control) {
-        if (control.type == "checkbox") return this.makeCheckbox(control);
-        return this.makeButton(control);
-    }
-
-    makeCheckbox(checkbox) {
-        return <Checkbox text={checkbox.label} onChange={checkbox.onChange} checked={checkbox.checked} />;
-    }
-
-    makeButton(button) {
-        return <DiscordModules.Tooltip color="primary" position="top" text={button.tooltip}>
-                    {props => {
-                        return <button {...props} className="btn btn-primary" onClick={(event) => {button.onClick(event, this.value);}}>{button.label}</button>;
-                    }}
-                </DiscordModules.Tooltip>;
-    }
-
-    render() {
-        if (this.editor && this.editor.layout) this.editor.layout();
-
-        const controlsLeft = this.props.controls.filter(c => c.side != "right").map(this.buildControl.bind(this));
-        const controlsRight = this.props.controls.filter(c => c.side == "right").map(this.buildControl.bind(this));
-
-        return <div id="bd-editor-panel" className={this.props.theme}>
-                    <div id="bd-editor-controls">
-                        <div className="controls-section controls-left">
-                            {controlsLeft}
-                        </div>
-                        <div className="controls-section controls-right">
-                            {controlsRight}
-                        </div>
+    return <div id="bd-editor-panel" className={theme}>
+                <div id="bd-editor-controls">
+                    <div className="controls-section controls-left">
+                        {controlsLeft}
                     </div>
-                    <div className="editor-wrapper">
-                        <div id={this.props.id} className={"editor " + this.props.theme}></div>
+                    <div className="controls-section controls-right">
+                        {controlsRight}
                     </div>
-                </div>;
-    }
-}
+                </div>
+                <div className="editor-wrapper">
+                    <div id={id} className={"editor " + theme}></div>
+                </div>
+            </div>;
+});

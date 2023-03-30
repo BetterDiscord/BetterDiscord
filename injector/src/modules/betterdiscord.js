@@ -63,6 +63,7 @@ export default class BetterDiscord {
                     return false;
                 }
             })();
+            //# sourceURL=betterdiscord/renderer.js
         `);
 
     if (!success) return; // TODO: cut a fatal log

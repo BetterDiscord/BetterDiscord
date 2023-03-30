@@ -44,7 +44,7 @@ export default new class PluginManager extends AddonManager {
         this.setupFunctions();
         Settings.registerPanel("plugins", Strings.Panels.plugins, {
             order: 3,
-            element: () => SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
+            element: SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
                 type: this.prefix,
                 folder: this.addonFolder,
                 onChange: this.togglePlugin.bind(this),
