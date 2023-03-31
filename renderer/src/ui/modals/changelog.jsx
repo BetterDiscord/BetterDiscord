@@ -47,7 +47,7 @@ export default function ChangelogModal({transitionState, footer, title, subtitle
             const entry = changes[c];
             const type = "bd-changelog-" + entry.type;
             const margin = c == 0 ? " bd-changelog-first" : "";
-            items.push(<h1 className={`bd-changelog-title ${type}${margin}`}>entry.title</h1>);
+            items.push(<h1 className={`bd-changelog-title ${type}${margin}`}>{entry.title}</h1>);
             if (entry.description) items.push(<p>{SimpleMarkdownExt.parseToReact(entry.description)}</p>);
             const list = <ul>{entry.items.map(i => <li>{SimpleMarkdownExt.parseToReact(i)}</li>)}</ul>;
             items.push(list);

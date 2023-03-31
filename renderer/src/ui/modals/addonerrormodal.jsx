@@ -1,7 +1,14 @@
-import {React, Strings, WebpackModules, DiscordClasses} from "modules";
-import Extension from "./icons/extension";
-import ThemeIcon from "./icons/theme";
-import Divider from "./divider";
+import {React, Strings, WebpackModules} from "modules";
+import Extension from "../icons/extension";
+import ThemeIcon from "../icons/theme";
+import Divider from "../divider";
+import Text from "../base/text";
+import Header from "./header";
+import Content from "./content";
+import Flex from "../base/flex";
+import ModalRoot from "./root";
+import Footer from "./footer";
+import Button from "../base/button";
 
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
@@ -30,12 +37,12 @@ function AddonError({err, index}) {
                 {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
             </div>
             <div className="bd-addon-error-header-inner">
-                <h3 className={`bd-addon-error-file ${DiscordClasses.Text.colorHeaderPrimary} ${DiscordClasses.Integrations.secondaryHeader} ${DiscordClasses.Text.size16}`}>{err.name}</h3>
-                <div className={`bd-addon-error-details ${DiscordClasses.Integrations.detailsWrapper}`}>
-                    <svg className={DiscordClasses.Integrations.detailsIcon} aria-hidden="false" width="16" height="16" viewBox="0 0 12 12">
+                <Text tag="h3" size={Text.Sizes.SIZE_16} color={Text.Colors.HEADER_PRIMARY} strong={true}>{err.name}</Text>
+                <div className="bd-addon-error-details">
+                    <svg className="bd-addon-error-details-icon" aria-hidden="false" width="16" height="16" viewBox="0 0 12 12">
                         <path fill="currentColor" d="M6 1C3.243 1 1 3.244 1 6c0 2.758 2.243 5 5 5s5-2.242 5-5c0-2.756-2.243-5-5-5zm0 2.376a.625.625 0 110 1.25.625.625 0 010-1.25zM7.5 8.5h-3v-1h1V6H5V5h1a.5.5 0 01.5.5v2h1v1z"></path>
                     </svg>
-                    <div className={`${DiscordClasses.Text.colorHeaderSecondary} ${DiscordClasses.Text.size12}`}>{err.message}</div>
+                    <Text color={Text.Colors.HEADER_SECONDARY} size={Text.Sizes.SIZE_12}>{err.message}</Text>
                 </div>
             </div>
             <svg className="bd-addon-error-expander" width="24" height="24" viewBox="0 0 24 24">
@@ -51,7 +58,7 @@ function generateTab(id, errors) {
     return {id, errors, name: Strings.Panels[id]};
 }
 
-export default function AddonErrorModal({pluginErrors, themeErrors}) {
+export default function AddonErrorModal({transitionState, onClose, pluginErrors, themeErrors}) {
     const tabs = useMemo(() => {
         return [
             pluginErrors.length && generateTab("plugins", pluginErrors),
@@ -63,17 +70,22 @@ export default function AddonErrorModal({pluginErrors, themeErrors}) {
     const switchToTab = useCallback((id) => setTab(id), []);
     const selectedTab = tabs.find(e => e.id === tabId);
 
-    return <>
-        <div className={`bd-error-modal-header ${DiscordClasses.Modal.header} ${DiscordClasses.Modal.separator}`}>
-            <h4 className={`${DiscordClasses.Titles.defaultColor} ${DiscordClasses.Text.size14} ${DiscordClasses.Titles.h4} ${DiscordClasses.Margins.marginBottom8}`}>{Strings.Modals.addonErrors}</h4>
-            <div className="bd-tab-bar">
-                {tabs.map(tab => <div onClick={() => {switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
-            </div>
-        </div>
-        <div className={`bd-error-modal-content ${DiscordClasses.Modal.content} ${DiscordClasses.Scrollers.thin}`}>
-            <div className="bd-addon-errors">
-                {selectedTab.errors.map((error, index) => <AddonError index={index} err={error} />)}
-            </div>
-        </div>
-    </>;
+    return <ModalRoot transitionState={transitionState} className="bd-error-modal" size={ModalRoot.Sizes.MEDIUM}>
+            <Header className="bd-error-modal-header">
+                <Flex direction={Flex.Direction.VERTICAL}>
+                    <Text tag="h1" size={Text.Sizes.SIZE_14} color={Text.Colors.HEADER_PRIMARY} strong={true} style={{"text-transform": "uppercase", "margin-bottom": "8px"}}>{Strings.Modals.addonErrors}</Text>
+                    <div className="bd-tab-bar">
+                        {tabs.map(tab => <div onClick={() => {switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
+                    </div>
+                </Flex>
+            </Header>
+            <Content className="bd-error-modal-content">
+                <div className="bd-addon-errors">
+                    {selectedTab.errors.map((error, index) => <AddonError index={index} err={error} />)}
+                </div>
+            </Content>
+            <Footer className="bd-error-modal-footer">
+                <Button onClick={onClose}>{Strings.Modals.okay}</Button>
+            </Footer>
+        </ModalRoot>;
 }

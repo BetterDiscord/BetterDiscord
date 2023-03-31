@@ -2,7 +2,7 @@ import {React, Utilities} from "modules";
 import Flex from "../base/flex";
 
 
-export default function Header({id, className, children}) {
+export default function Footer({id, className, children}) {
     return <Flex
                 id={id}
                 className={Utilities.className("bd-modal-footer", className)}

@@ -2,7 +2,7 @@ import {Config} from "data";
 import Logger from "common/logger";
 import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager} from "modules";
 import FormattableString from "../structs/string";
-import AddonErrorModal from "./addonerrormodal";
+import AddonErrorModal from "./modals/addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 import TextElement from "./base/text";
 import ModalRoot from "./modals/root";
@@ -198,29 +198,15 @@ export default class Modals {
     static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
         if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
-        
-        if (this.addonErrorsRef && this.addonErrorsRef.current) {
-            return this.addonErrorsRef.current.refreshTabs(Array.isArray(pluginErrors) ? pluginErrors : [], Array.isArray(themeErrors) ? themeErrors : []);
-        }
 
-        this.addonErrorsRef = React.createRef();
-        this.ModalActions.openModal(props => React.createElement(ErrorBoundary, null, React.createElement(ModalRoot, Object.assign(props, {
-            size: ModalRoot.Sizes.MEDIUM,
-            className: "bd-error-modal",
-            children: [
-                React.createElement(AddonErrorModal, {
-                    ref: this.addonErrorsRef,
-                    pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
-                    themeErrors: Array.isArray(themeErrors) ? themeErrors : [],
-                    onClose: props.onClose
-                }),
-                React.createElement(ModalFooter, {
-                    className: "bd-error-modal-footer",
-                }, React.createElement(Button, {
-                    onClick: props.onClose
-                }, Strings.Modals.okay))
-            ]
-        }))));
+        const options = {
+            ref: this.addonErrorsRef,
+            pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
+            themeErrors: Array.isArray(themeErrors) ? themeErrors : []
+        };
+        this.ModalActions.openModal(props => {
+            return React.createElement(ErrorBoundary, null, React.createElement(AddonErrorModal, Object.assign(options, props)));
+        });
     }
 
     static showChangelogModal(options = {}) {
@@ -253,7 +239,7 @@ export default class Modals {
                 }
 
                 render() {
-                    if (this.state.hasError) return null;
+                    if (this.state.hasError) return React.createElement(TextElement, {color: TextElement.Colors.STATUS_RED}, Strings.Addons.settingsError);
                     const props = {
                         className: "bd-addon-settings-wrap",
                         ref: this.elementRef
@@ -265,22 +251,16 @@ export default class Modals {
         }
         if (typeof(child) === "function") child = React.createElement(child);
 
-        const modal = props => {
-            return React.createElement(ErrorBoundary, {}, React.createElement(ModalRoot, Object.assign({size: ModalRoot.Sizes.MEDIUM, className: "bd-addon-modal" + " " + ModalRoot.Sizes.MEDIUM}, props),
-                React.createElement(ModalHeader, null,
-                    React.createElement(TextElement, {tag: "h1", size: TextElement.Sizes.SIZE_20, strong: true}, `${name} Settings`)
-                ),
-                React.createElement(ModalContent, null,
-                    React.createElement(ErrorBoundary, {}, child)
-                ),
-                React.createElement(ModalFooter, null,
-                    React.createElement(Button, {onClick: props.onClose}, Strings.Modals.done)
-                )
-            ));
+        const options = {
+            className: "bd-addon-modal",
+            size: ModalRoot.Sizes.MEDIUM,
+            header: `${name} Settings`,
+            cancelText: null,
+            confirmText: Strings.Modals.done
         };
 
         return this.ModalActions.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(modal, props));
+            return React.createElement(ErrorBoundary, null, React.createElement(ConfirmationModal, Object.assign(options, props), child));
         });
     }
 }
