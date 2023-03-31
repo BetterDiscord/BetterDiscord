@@ -1,21 +1,19 @@
 import {Config} from "data";
 import Logger from "common/logger";
-import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordModules} from "modules";
+import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager} from "modules";
 import FormattableString from "../structs/string";
 import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 import TextElement from "./base/text";
 import ModalRoot from "./modals/root";
-import Flex from "./base/flex";
 import ModalHeader from "./modals/header";
 import ModalContent from "./modals/content";
 import ModalFooter from "./modals/footer";
-import CloseButton from "./modals/close";
 
 import ConfirmationModal from "./modals/confirmation";
 import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
-import SimpleMarkdownExt from "../structs/markdown";
+import ChangelogModal from "./modals/changelog";
 
 
 export default class Modals {
@@ -226,49 +224,10 @@ export default class Modals {
     }
 
     static showChangelogModal(options = {}) {
-        const {image = "https://i.imgur.com/wuh5yMK.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.version}`, footer} = options;
-        const ce = React.createElement;
-        const changelogItems = [options.video ? ce("video", {src: options.video, poster: options.poster, controls: true, className: "bd-changelog-poster"}) : ce("img", {src: image, className: "bd-changelog-poster"})];
-        if (description) changelogItems.push(ce("p", null, SimpleMarkdownExt.parseToReact(description)));
-        for (let c = 0; c < changes.length; c++) {
-            const entry = changes[c];
-            const type = "bd-changelog-" + entry.type;
-            const margin = c == 0 ? " bd-changelog-first" : "";
-            changelogItems.push(ce("h1", {className: `bd-changelog-title ${type}${margin}`,}, entry.title));
-            if (entry.description) changelogItems.push(ce("p", null, SimpleMarkdownExt.parseToReact(entry.description)));
-            const list = ce("ul", null, entry.items.map(i => ce("li", null, SimpleMarkdownExt.parseToReact(i))));
-            changelogItems.push(list);
-        }
-        const renderHeader = function(props) {
-            return ce(ModalHeader, {justify: Flex.Justify.BETWEEN},
-                ce(Flex, {direction: Flex.Direction.VERTICAL},
-                    ce(TextElement, {tag: "h1", size: TextElement.Sizes.SIZE_20, strong: true}, title),
-                    ce(TextElement, {size: TextElement.Sizes.SIZE_12, color: TextElement.Colors.HEADER_SECONDARY}, subtitle)
-                ),
-                ce(CloseButton, {onClick: props.onClose})
-            );
-        };
-
-        const renderFooter = () => {
-            const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
-            const joinSupportServer = (click) => {
-                click.preventDefault();
-                click.stopPropagation();
-                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel({inviteKey: "0Tmfo5ZbORCRqbAd"});
-            };
-            const supportLink = ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
-            const defaultFooter = ce(TextElement, {size: TextElement.Sizes.SIZE_12, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
-            return ce(ModalFooter, null, ce(Flex.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter));
-        };
-
-        const body = ce(ModalContent, null, changelogItems);
+        options = Object.assign({image: "https://i.imgur.com/wuh5yMK.png", description: "", changes: [], title: "BetterDiscord", subtitle: `v${Config.version}`}, options);
 
         const key = this.ModalActions.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(ModalRoot, Object.assign({
-                className: `bd-changelog-modal`,
-                size: ModalRoot.Sizes.SMALL,
-                style: ModalRoot.Styles.STANDARD
-            }, props), renderHeader(props), body, renderFooter()));
+            return React.createElement(ErrorBoundary, null, React.createElement(ChangelogModal, Object.assign(options, props)));
         });
         return key;
     }

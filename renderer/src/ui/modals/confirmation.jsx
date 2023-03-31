@@ -6,7 +6,6 @@ import Content from "./content";
 
 import Text from "../base/text";
 import Button from "../base/button";
-import CloseButton from "./close";
 
 const {useRef, useEffect} = React;
 
@@ -21,7 +20,7 @@ export default function ConfirmationModal({transitionState, onClose, header, chi
 
 
     return <Root transitionState={transitionState} size={Root.Sizes.SMALL}>
-        <Header><Text tag="h1" size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY} strong={true}>{header}</Text><CloseButton onClose={onClose} /></Header>
+        <Header><Text tag="h1" size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY} strong={true}>{header}</Text></Header>
         <Content>{children}</Content>
         <Footer>
             {confirmText && <Button
