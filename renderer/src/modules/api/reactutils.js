@@ -14,8 +14,8 @@ const ReactUtils = {
     /**
      * Gets the internal React data of a specified node.
      * 
-     * @param {HTMLElement} node Node to get the internal React data from.
-     * @returns {object|undefined} Either the found data or `undefined` .
+     * @param {HTMLElement} node Node to get the internal React data from
+     * @returns {object|undefined} Either the found data or `undefined` 
      */
     getInternalInstance(node) {
         if (node.__reactFiber$) return node.__reactFiber$;
@@ -26,12 +26,12 @@ const ReactUtils = {
       * Attempts to find the "owner" node to the current node. This is generally 
       * a node with a `stateNode` - a class component.
       * 
-      * @param {HTMLElement} node - Node to obtain React instance of.
-      * @param {object} options - Options for the search.
-      * @param {array} [options.include] - List of items to include in the search.
-      * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] - List of items to exclude from the search.
-      * @param {callable} [options.filter=_=>_] - Filter to check the current instance with (should return a boolean).
-      * @return {(*|null)} The owner instance or `undefined` if not found.
+      * @param {HTMLElement} node Node to obtain React instance of
+      * @param {object} options Options for the search
+      * @param {array} [options.include] List of items to include in the search
+      * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] List of items to exclude from the search.
+      * @param {callable} [options.filter=_=>_] Filter to check the current instance with (should return a boolean)
+      * @return {object|undefined} The owner instance or `undefined` if not found
       */
     getOwnerInstance(node, {include, exclude = ["Popout", "Tooltip", "Scroller", "BackgroundFlash"], filter = _ => _} = {}) {
         if (node === undefined) return undefined;
@@ -59,8 +59,9 @@ const ReactUtils = {
 
     /**
       * Creates an unrendered React component that wraps HTML elements.
-      * @param {HTMLElement} element - Element or array of elements to wrap.
-      * @returns {object} - Unrendered React component.
+      * 
+      * @param {HTMLElement} element Element or array of elements to wrap
+      * @returns {object} Unrendered React component
       */
     wrapElement(element) {
         return class ReactWrapper extends DiscordModules.React.Component {

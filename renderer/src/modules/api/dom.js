@@ -30,8 +30,8 @@ class DOM {
     /**
      * Adds a `<style>` to the document with the given ID.
      * 
-     * @param {string} id ID to use for style element.
-     * @param {string} css CSS to apply to the document.
+     * @param {string} id ID to use for style element
+     * @param {string} css CSS to apply to the document
      */
     addStyle(id, css) {
         if (this.#callerName && arguments.length === 2) {
@@ -49,7 +49,7 @@ class DOM {
     /**
      * Removes a `<style>` from the document corresponding to the given ID.
      * 
-     * @param {string} id ID used for the style element.
+     * @param {string} id ID used for the style element
      */
     removeStyle(id) {
         if (this.#callerName && arguments.length === 1) {
@@ -65,8 +65,8 @@ class DOM {
     /**
      * Adds a listener for when the node is removed from the document body.
      * 
-     * @param {HTMLElement} node Node to be observed.
-     * @param {function} callback Function to run when removed.
+     * @param {HTMLElement} node Node to be observed
+     * @param {function} callback Function to run when removed
      */
     onRemoved(node, callback) {
         return DOMManager.onRemoved(node, callback);
@@ -75,9 +75,9 @@ class DOM {
     /**
      * Utility to help smoothly animate using JavaScript.
      * 
-     * @param {function} update Render function indicating the style should be updated.
-     * @param {number} duration Duration in ms to animate for.
-     * @param {object} [options] Options to customize the animation.
+     * @param {function} update Render function indicating the style should be updated
+     * @param {number} duration Duration in ms to animate for
+     * @param {object} [options] Options to customize the animation
      * @param {function} [options.timing] Optional function calculating progress based on current time fraction. Linear by default.
      */
     animate(update, duration, options = {}) {
@@ -88,13 +88,13 @@ class DOM {
      * Utility function to make creating DOM elements easier. Acts similarly 
      * to `React.createElement`
      * 
-     * @param {string} tag HTML tag name to create.
-     * @param {object} [options] Options object to customize the element.
-     * @param {string} [options.className] Class name to add to the element.
-     * @param {string} [options.id] ID to set for the element.
-     * @param {HTMLElement} [options.target] Target element to automatically append to.
-     * @param {HTMLElement} [child] Child node to add.
-     * @returns {HTMLElement} The created HTML element.
+     * @param {string} tag HTML tag name to create
+     * @param {object} [options] Options object to customize the element
+     * @param {string} [options.className] Class name to add to the element
+     * @param {string} [options.id] ID to set for the element
+     * @param {HTMLElement} [options.target] Target element to automatically append to
+     * @param {HTMLElement} [child] Child node to add
+     * @returns {HTMLElement} The created HTML element
      */
     createElement(tag, options = {}, child = null) {
         return DOMManager.createElement(tag, options, child);
@@ -108,9 +108,9 @@ class DOM {
      * If the second parameter is false, then the return value will be the list of parsed
      * nodes and there were multiple top level nodes, otherwise the single node is returned.
      * 
-     * @param {string} html - HTML to be parsed.
-     * @param {boolean} [fragment=false] - Whether or not the return should be the raw `DocumentFragment`.
-     * @returns {(DocumentFragment|NodeList|HTMLElement)} - The result of HTML parsing.
+     * @param {string} html HTML to be parsed
+     * @param {boolean} [fragment=false] Whether or not the return should be the raw `DocumentFragment`
+     * @returns {(DocumentFragment|NodeList|HTMLElement)} The result of HTML parsing
      */
     parseHTML(html, fragment = false) {
         return DOMManager.parseHTML(html, fragment);

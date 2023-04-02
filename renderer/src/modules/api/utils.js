@@ -10,11 +10,11 @@ const Utils = {
     /**
      * Finds a value, subobject, or array from a tree that matches a specific filter. This is a DFS.
      * 
-     * @param {object} tree Tree that should be walked.
-     * @param {callable} searchFilter Filter to check against each object and subobject.
-     * @param {object} options Additional options to customize the search.
-     * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. Null value indicates all keys are walkable.
-     * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search, most helpful when `walkable = null`.
+     * @param {object} tree Tree that should be walked
+     * @param {callable} searchFilter Filter to check against each object and subobject
+     * @param {object} options Additional options to customize the search
+     * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. `null` indicates all keys are walkable.
+     * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search. Most helpful when `walkable = null`.
      */
     findInTree(tree, searchFilter, options = {}) {
         return Utilities.findInTree(tree, searchFilter, options);
@@ -26,9 +26,9 @@ const Utils = {
      * it will be overwritten with the next one with the same key. If it is an object,
      * and the keys match, the object is extended. This happens recursively.
      * 
-     * @param {object} extendee - Object to be extended.
-     * @param {...object} extenders - Objects to extend with.
-     * @returns {object} - A reference to `extendee`.
+     * @param {object} extendee Object to be extended
+     * @param {...object} extenders Objects to extend with
+     * @returns {object} A reference to `extendee`
      */
     extend(extendee, ...extenders) {
         return Utilities.extend(extendee, ...extenders);
@@ -41,9 +41,9 @@ const Utils = {
      * 
      * Adapted from the version by David Walsh (https://davidwalsh.name/javascript-debounce-function)
      * 
-     * @param {function} executor The function to be debounced.
-     * @param {number} delay Number of ms to delay calls.
-     * @return {function} A debounced version of the function.
+     * @param {function} executor The function to be debounced
+     * @param {number} delay Number of ms to delay calls
+     * @return {function} A debounced version of the function
      */
     debounce(executor, delay) {
         return Utilities.debounce(executor, delay);
@@ -51,8 +51,9 @@ const Utils = {
 
     /**
      * Takes a string of HTML and escapes it using the browser's own escaping mechanism.
-     * @param {String} html - HTML to be escaped.
-     * @return {string} Escaped HTML string.
+     * 
+     * @param {String} html HTML to be escaped
+     * @return {string} Escaped HTML string
      */
     escapeHTML(html) {
         return Utilities.escapeHTML(html);
@@ -64,8 +65,8 @@ const Utils = {
      * When given an object they keys are added as the classnames if the value is truthy.
      * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
      * 
-     * @param {...Any} argument - Anything that should be used to add classnames.
-     * @returns {string} Joined classname.
+     * @param {...Any} argument Anything that should be used to add classnames
+     * @returns {string} Joined classname
      */
     className() {
         return Utilities.className(...arguments);
