@@ -1,6 +1,7 @@
-import {React, WebpackModules} from "modules";
+import {DiscordModules, React} from "modules";
 
-const TooltipWrapper = WebpackModules.getByPrototypes("renderTooltip");
+const {useState, useCallback} = React;
+
 
 const Checkmark = React.memo((props) => (
     <svg width="16" height="16" viewBox="0 0 24 24" {...props}>
@@ -30,7 +31,6 @@ const resolveColor = (color, hex = true) => {
     }
 };
 
-
 const getRGB = (color) => {
     let result = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color);
     if (result) return [parseInt(result[1]), parseInt(result[2]), parseInt(result[3])];
@@ -54,56 +54,47 @@ const getContrastColor = (color) => {
     return (luma(color) >= 165) ? "#000" : "#fff";
 };
 
-export default class Color extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: this.props.value};
-        this.onChange = this.onChange.bind(this);
-    }
 
-    onChange(e) {
-        this.setState({value: e.target.value});
-        if (this.props.onChange) this.props.onChange(resolveColor(e.target.value));
-    }
+export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue}) {
+    const [value, setValue] = useState(initialValue);
+    const change = useCallback((e) => {
+        onChange?.(resolveColor(e.target.value));
+        setValue(e.target.value);
+    }, [onChange]);
 
-    render() {
-        const intValue = resolveColor(this.state.value, false);
-        const {colors = defaultColors, defaultValue} = this.props;
-
-
-        return <div className="bd-color-picker-container">
-            <div className="bd-color-picker-controls">
-                <TooltipWrapper text="Default" position="bottom">
-                    {props => (
-                        <div {...props} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultValue)}} onClick={() => this.onChange({target: {value: defaultValue}})}>
-                            {intValue === resolveColor(defaultValue, false)
-                                ? <Checkmark width="25" height="25" />
-                                : null
-                            }
-                        </div>
-                    )}
-                </TooltipWrapper>
-                <TooltipWrapper text="Custom Color" position="bottom">
-                    {props => (
-                        <div className="bd-color-picker-custom">
-                            <Dropper color={getContrastColor(resolveColor(this.state.value, true))} />
-                            <input {...props} style={{backgroundColor: resolveColor(this.state.value)}} type="color" className="bd-color-picker" value={resolveColor(this.state.value)} onChange={this.onChange} />
-                        </div>
-                    )}
-                </TooltipWrapper>
-            </div>
-            <div className="bd-color-picker-swatch">
-                {
-                    colors.map((int, index) => (
-                        <div key={index} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => this.onChange({target: {value: int}})}>
-                            {intValue === int
-                                ? <Checkmark color={getContrastColor(resolveColor(this.state.value, true))} />
-                                : null
-                            }
-                        </div>
-                    ))
-                }
-            </div>
-        </div>;
-    }
+    const intValue = resolveColor(value, false);
+    return <div className="bd-color-picker-container">
+        <div className="bd-color-picker-controls">
+            <DiscordModules.Tooltip text="Default" position="bottom">
+                {props => (
+                    <div {...props} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultValue)}} onClick={() => change({target: {value: defaultValue}})}>
+                        {intValue === resolveColor(defaultValue, false)
+                            ? <Checkmark width="25" height="25" />
+                            : null
+                        }
+                    </div>
+                )}
+            </DiscordModules.Tooltip>
+            <DiscordModules.Tooltip text="Custom Color" position="bottom">
+                {props => (
+                    <div className="bd-color-picker-custom">
+                        <Dropper color={getContrastColor(resolveColor(value, true))} />
+                        <input {...props} style={{backgroundColor: resolveColor(value)}} type="color" className="bd-color-picker" value={resolveColor(value)} onChange={change} />
+                    </div>
+                )}
+            </DiscordModules.Tooltip>
+        </div>
+        <div className="bd-color-picker-swatch">
+            {
+                colors.map((int, index) => (
+                    <div key={index} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => change({target: {value: int}})}>
+                        {intValue === int
+                            ? <Checkmark color={getContrastColor(resolveColor(value, true))} />
+                            : null
+                        }
+                    </div>
+                ))
+            }
+        </div>
+    </div>;
 }

@@ -4,7 +4,21 @@ import {session} from "electron";
 
 export const REACT_DEVTOOLS_ID = "fmkadmapgofadopljbjfkapdkoienihi";
 
-const findExtension = function() {
+const findLatestVersion = (extensionPath) => {
+    const versions = fs.readdirSync(extensionPath);
+    return path.resolve(extensionPath, versions[versions.length - 1]);
+};
+
+const findExtension = (dataPath) => {
+    // Default to extensions folder in BetterDiscord folder
+    const replacementPath = path.resolve(dataPath, "extensions", REACT_DEVTOOLS_ID);
+    if (fs.existsSync(replacementPath)) {
+        if (fs.existsSync(path.resolve(replacementPath, "manifest.json"))) {
+            return replacementPath;
+        }
+        return findLatestVersion(replacementPath);
+    }
+
     let extensionPath = "";
     // Get path to user data folder
     if (process.platform === "win32") extensionPath = path.resolve(process.env.LOCALAPPDATA, "Google/Chrome/User Data");
@@ -39,8 +53,7 @@ const findExtension = function() {
     
     // Get latest version
     if (fs.existsSync(extensionPath)) {
-        const versions = fs.readdirSync(extensionPath);
-        extensionPath = path.resolve(extensionPath, versions[versions.length - 1]);
+        extensionPath = findLatestVersion(extensionPath);
     }
 
     const isExtensionInstalled = fs.existsSync(extensionPath);
@@ -49,8 +62,8 @@ const findExtension = function() {
 };
 
 export default class ReactDevTools {
-    static async install() {
-        const extPath = findExtension();
+    static async install(dataPath) {
+        const extPath = findExtension(dataPath);
         if (!extPath) return; // TODO: cut a log
 
         try {
@@ -62,8 +75,8 @@ export default class ReactDevTools {
         }
     }
 
-    static async remove() {
-        const extPath = findExtension();
+    static async remove(dataPath) {
+        const extPath = findExtension(dataPath);
         if (!extPath) return; // TODO: cut a log
 
         try {

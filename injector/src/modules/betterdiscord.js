@@ -60,6 +60,7 @@ export default class BetterDiscord {
                     return false;
                 }
             })();
+            //# sourceURL=betterdiscord/renderer.js
         `);
 
         if (!success) return; // TODO: cut a fatal log
@@ -121,6 +122,6 @@ export default class BetterDiscord {
 
 if (BetterDiscord.getSetting("developer", "reactDevTools")) {
     electron.app.whenReady().then(async ()=>{
-        await ReactDevTools.install();
+        await ReactDevTools.install(dataPath);
     });
 }

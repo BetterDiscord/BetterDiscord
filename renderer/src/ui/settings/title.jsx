@@ -1,27 +1,25 @@
 import {React} from "modules";
 
-const className = "bd-settings-title";
-const className2 = "bd-settings-title bd-settings-group-title";
+const {useCallback} = React;
 
-export default class SettingsTitle extends React.Component {
-    constructor(props) {
-        super(props);
-        this.buttonClick = this.buttonClick.bind(this);
-    }
 
-    buttonClick(event) {
+const basicClass = "bd-settings-title";
+const groupClass = "bd-settings-title bd-settings-group-title";
+
+export default function SettingsTitle({isGroup, className, button, onClick, text, otherChildren}) {
+    const click = useCallback((event) => {
         event.stopPropagation();
         event.preventDefault();
-        this.props?.button?.onClick?.(event);
-    }
+        button?.onClick?.(event);
+    }, [button]);
 
-    render() {
-        const baseClass = this.props.isGroup ? className2 : className;
-        const titleClass = this.props.className ? `${baseClass} ${this.props.className}` : baseClass;
-        return <h2 className={titleClass} onClick={() => {this.props.onClick && this.props.onClick();}}>
-                {this.props.text}
-                {this.props.button && <button className="bd-button bd-button-title" onClick={this.buttonClick}>{this.props.button.title}</button>}
-                {this.props.otherChildren}
-                </h2>;
-    }
+
+    const baseClass = isGroup ? groupClass : basicClass;
+    const titleClass = className ? `${baseClass} ${className}` : baseClass;
+    return <h2 className={titleClass} onClick={() => {onClick?.();}}>
+            {text}
+            {button && <button className="bd-button bd-button-title" onClick={click}>{button.title}</button>}
+            {otherChildren}
+            </h2>;
+
 }

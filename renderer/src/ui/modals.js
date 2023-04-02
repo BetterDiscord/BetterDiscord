@@ -12,17 +12,17 @@ export default class Modals {
 
     static get ModalActions() {
         return this._ModalActions ??= {
-            openModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer"), {searchExports: true}),
-            closeModal: WebpackModules.getModule(m => m?.toString().includes("onCloseCallback()"), {searchExports: true})
+            openModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer"), {searchExports: true}),
+            closeModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback()"), {searchExports: true})
         };
     }
     static get ModalStack() {return this._ModalStack ??= WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get ModalComponents() {return this._ModalComponents ??= WebpackModules.getByProps("Header", "Footer");}
-    static get ModalRoot() {return this._ModalRoot ??= WebpackModules.getModule(m => m?.toString?.()?.includes("ENTERING"), {searchExports: true});}
+    static get ModalRoot() {return this._ModalRoot ??= WebpackModules.getModule(m => m?.toString?.()?.includes("ENTERING") && m?.toString?.()?.includes("headerId"), {searchExports: true});}
     static get ModalClasses() {return this._ModalClasses ??= WebpackModules.getByProps("modal", "content");}
     static get FlexElements() {return this._FlexElements ??= WebpackModules.getByProps("Child", "Align");}
     static get TextElement() {return this._TextElement ??= WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors);}
-    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"));}
+    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"), {searchExports: true});}
     static get Markdown() {return this._Markdown ??= WebpackModules.find(m => m?.prototype?.render && m.rules);}
     static get Buttons() {return this._Buttons ??= WebpackModules.getModule(m => m.BorderColors, {searchExports: true});}
     static get ModalQueue() {return this._ModalQueue ??= [];}
@@ -30,10 +30,14 @@ export default class Modals {
     static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
     static async initialize() {
-        const names = ["ModalActions", "Markdown", "ModalRoot", "ModalComponents", "Buttons", "TextElement", "FlexElements"];
+        const names = ["ConfirmationModal", "ModalActions", "Markdown", "ModalRoot", "ModalComponents", "Buttons", "TextElement", "FlexElements"];
 
         for (const name of names) {
-            const value = this[name];
+            let value = this[name];
+
+            if (name === "ModalActions") {
+                value = Object.keys(this.ModalActions).every(k => this.ModalActions[k]);
+            }
 
             if (!value) {
                 Logger.warn("Modals", `Missing ${name} module!`);
@@ -224,7 +228,7 @@ export default class Modals {
     static showChangelogModal(options = {}) {
         const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen", "root");
         const ChangelogModalClasses = WebpackModules.getModule(m => m.modal && m.maxModalWidth);
-        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved");
+        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved") ?? {maxModalWidth: "490px",video: "video-8B-TdZ",container: "container-3PVapX",image: "image-ZPv20Y",title: "title-2ftWWc",lead: "lead-2VtcIe",added: "added-mQcv9V title-2ftWWc",fixed: "fixed-cTX7Hp title-2ftWWc",improved: "improved-2SJXHz title-2ftWWc",progress: "progress-1DcfFh title-2ftWWc",marginTop: "marginTop-VGmU1T",footer: "footer-1gMODG",socialLink: "socialLink-1qjJIk",premiumBanner: "premiumBanner-FU1Urp",premiumIcon: "premiumIcon-rhwgnW",date: "date-2tmzZM"};
         const TextElement = this.TextElement;
         const FlexChild = this.FlexElements;
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
@@ -289,6 +293,11 @@ export default class Modals {
                     super(props);
                     this.elementRef = React.createRef();
                     this.element = panel;
+                    this.state = {hasError: false};
+                }
+
+                componentDidCatch() {
+                    this.setState({hasError: true});
                 }
 
                 componentDidMount() {
@@ -296,6 +305,7 @@ export default class Modals {
                 }
 
                 render() {
+                    if (this.state.hasError) return null;
                     const props = {
                         className: "bd-addon-settings-wrap",
                         ref: this.elementRef
