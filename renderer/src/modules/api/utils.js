@@ -52,7 +52,7 @@ const Utils = {
     /**
      * Takes a string of HTML and escapes it using the browser's own escaping mechanism.
      * 
-     * @param {String} html HTML to be escaped
+     * @param {string} html HTML to be escaped
      * @return {string} Escaped HTML string
      */
     escapeHTML(html) {
@@ -65,7 +65,7 @@ const Utils = {
      * When given an object they keys are added as the classnames if the value is truthy.
      * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
      * 
-     * @param {...Any} argument Anything that should be used to add classnames
+     * @param {...any} argument Anything that should be used to add classnames
      * @returns {string} Joined classname
      */
     className() {
