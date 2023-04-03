@@ -2,7 +2,8 @@
     "Panels": {
         "plugins": "Plug-ins",
         "themes": "Thema's",
-        "customcss": "Aangepaste CSS"
+        "customcss": "Aangepaste CSS",
+        "updates": "Updates"
     },
     "Collections": {
         "settings": {
@@ -10,15 +11,15 @@
             "general": {
                 "name": "Algemeen",
                 "emotes": {
-                    "name": "Emote systeem",
-                    "note": "Schakel het emote-systeem van BD in"
+                    "name": "Emotie systeem",
+                    "note": "Schakel het emotie-systeem van BD in"
                 },
                 "publicServers": {
                     "name": "Openbare servers",
                     "note": "Knop openbare servers weergeven"
                 },
                 "voiceDisconnect": {
-                    "name": "Stem Verbroken",
+                    "name": "Stem Verbreken",
                     "note": "Verbreek de verbinding met de oproep"
                 },
                 "showToasts": {
@@ -29,33 +30,180 @@
                     "name": "Schakel mediatoetsen uit",
                     "note": "Voorkomt dat Discord uw mediatoetsen kaapt na het afspelen van een video."
                 }
+            },
+            "window": {
+                "name": "Window Preferences",
+                "removeMinimumSize": {
+                    "name": "Remove Minimum Size",
+                    "note": "Removes Discord's forced minimum window size of 940x500"
+                },
+                "transparency": {
+                    "name": "Enable Transparency",
+                    "note": "Enables the main window to be see-through (requires restart)"
+                },
+                "frame": {
+                    "name": "Window Frame",
+                    "note": "Adds the native os window frame to the main window"
+                }
+            },
+            "addons": {
+                "name": "Add-on Beheerder",
+                "addonErrors": {
+                    "name": "Vertoon Add-on Fouten",
+                    "note": "Shows a modal with plugin/theme errors"
+                },
+                "editAction": {
+                    "name": "Bewerk Actie",
+                    "note": "Where plugins & themes appear when editing",
+                    "options": {
+                        "detached": "Detached Window",
+                        "system": "System Editor"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "Aangepaste CSS",
+                "customcss": {
+                    "name": "Aangepaste CSS",
+                    "note": "Enables the Custom CSS tab"
+                },
+                "liveUpdate": {
+                    "name": "Live Update",
+                    "note": "Updates the css as you type"
+                },
+                "startDetached": {
+                    "name": "Start Detached",
+                    "note": "Clicking the Custom CSS tab opens the editor in a separate window"
+                },
+                "nativeOpen": {
+                    "name": "Open in Native Editor",
+                    "note": "Clicking the Custom CSS tab opens your custom css in your native editor"
+                },
+                "openAction": {
+                    "name": "Editor Location",
+                    "note": "Where Custom CSS should open by default",
+                    "options": {
+                        "settings": "Settings Menu",
+                        "detached": "Detached Window",
+                        "system": "System Editor"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Ontwikkelaars Opties",
+                "debuggerHotkey": {
+                    "name": "Debugger Hotkey",
+                    "note": "Allows activating debugger when pressing F8 with DevTools open"
+                },
+                "reactDevTools": {
+                    "name": "React Developer Tools",
+                    "note": "Injects your local installation of React Developer Tools into Discord"
+                },
+                "inspectElement": {
+                    "name": "Inspect Element Hotkey",
+                    "note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
+                },
+                "devToolsWarning": {
+                    "name": "Stop DevTools Warning",
+                    "note": "Stops Discord from printing out their \"Hold Up!\" message"
+                },
+                "debugLogs": {
+                    "name": "Debug Logs",
+                    "note": "Outputs everything from the console into the debug.log file in the BetterDiscord folder"
+                },
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "Enables toggling DevTools with ctrl+shift+i"
+                }
+            },
+            "editor": {
+                "name": "Bewerker Voorkeuren",
+                "lineNumbers": {
+                    "name": "Line Numbers",
+                    "note": "Enables showing line numbers on the side of the editor"
+                },
+                "fontSize": {
+                    "name": "Font Size",
+                    "note": "Size of the font (pt) to use in the editor"
+                },
+                "minimap": {
+                    "name": "Minimap",
+                    "note": "Enables showing the code minimap on the side of the editor"
+                },
+                "hover": {
+                    "name": "Reference Tooltips",
+                    "note": "Enables showing the reference tooltips when hovering rules and selectors"
+                },
+                "quickSuggestions": {
+                    "name": "Quick Suggestions",
+                    "note": "Enables showing the autocomplete suggestions as you type"
+                },
+                "renderWhitespace": {
+                    "name": "Show Whitespace",
+                    "note": "When whitespace should be shown by the editor",
+                    "options": {
+                        "all": "Always",
+                        "none": "Never",
+                        "selection": "Selection"
+                    }
+                }
             }
         },
         "emotes": {
+            "name": "Emoties",
             "general": {
                 "name": "Algemeen",
+                "download": {
+                    "name": "Download emoties",
+                    "note": "Download emoties wanneer ze niet bij gewerkt zijn"
+                },
                 "emoteMenu": {
-                    "name": "Emote Menu"
+                    "name": "Emotie Menu",
+                    "note": "Vertoon Twitch/Favorieten emoties in het emoties menu"
                 },
                 "hideEmojiMenu": {
-                    "name": "Verberg emoji-menu"
+                    "name": "Verberg emoji-menu",
+                    "note": "Verberg Discord's emojis menu tijdens het gebruik van emotie menu"
+                },
+                "autoCaps": {
+                    "name": "Emotie Autocapitalization",
+                    "note": "Autocapitalize emote commands"
+                },
+                "modifiers": {
+                    "name": "Vertoon Emotie Bewerkers",
+                    "note": "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Animate On Hover",
+                    "note": "Only animate the emote modifiers on hover"
                 }
             },
             "categories": {
+                "name": "Categorieën",
                 "frankerfacez": {
-                    "name": "FrankerFaceZ"
+                    "name": "FrankerFaceZ",
+                    "note": "Laat emoties zien van FFZ"
                 },
                 "bttv": {
                     "name": "BetterTTV",
-                    "note": "Laat emotes zien van BTTV"
+                    "note": "Laat emoties zien van BTTV"
+                },
+                "twitchglobal": {
+                    "name": "Twitch Globals",
+                    "note": "Show Twitch global emotes"
+                },
+                "twitchsubscriber": {
+                    "name": "Twitch Subscribers",
+                    "note": "Show Twitch subscriber emotes"
                 }
             }
         }
     },
     "Addons": {
+        "title": "{{name}} v{{version}} door {{author}}",
         "byline": "door {{author}}",
         "openFolder": "Open {{type}} folder",
-        "reload": "Herladeen",
+        "reload": "Herladen",
         "addonSettings": "Instellingen",
         "website": "Website",
         "source": "Bronnen",
@@ -70,32 +218,119 @@
         "editAddon": "Bewerken",
         "deleteAddon": "Verwijderen",
         "confirmDelete": "Weet je het zeker dat je {{name}} wilt verwijderen?",
-        "confirmationText": "Je hebt niet-opgeslagen wijzigingen in {{naam}}. Als je dit venster sluit, gaan alle wijzigingen verloren.",
+        "confirmationText": "Je hebt niet-opgeslagen wijzigingen in {{name}}. Als je dit venster sluit, gaan alle wijzigingen verloren.",
         "unknownAuthor": "Onbekende schrijver",
-        "noDescription": "Beschrijving kon niet worden weergegeven"
+        "noDescription": "Beschrijving kon niet worden weergegeven",
+        "search": "Zoek {{type}}",
+        "enabled": "{{name}} is aangezet.",
+        "disabled": "{{name}} is uitgezet.",
+        "couldNotEnable": "{{name}} kon niet worden aangezet.",
+        "couldNotDisable": "{{name}} kon niet worden uitgezet.",
+        "couldNotStart": "{{name}} kon niet gestart worden.",
+        "couldNotStop": "{{name}} kon niet gestopt worden.",
+
+        "settingsError": "Could not open settings for {{name}}",
+        "methodError": "{{method}} could not be fired.",
+        "alreadyExists": "There is already a {{type}} with name {{name}}",
+        "alreadWatching": "Already watching  addons.",
+        "metaError": "META could not be parsed.",
+        "missingNameData": "META missing name data.",
+        "metaNotFound": "META was not found.",
+        "compileError": "Could not be compiled. See console for details.",
+        "wasUnloaded": "{{name}} was unloaded.",
+        "blankSlateHeader": "You don't have any {{type}}s!",
+        "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
+        "isEnabled": "Aangezet",
+        "wasLoaded": "{{name}} v{{version}} was geladen."
+    },
+    "CustomCSS": {
+        "confirmationText": "Je hebt niet-opgeslagen veranderingen gemaakt aan jouw Aangepaste CSS. Het sluiten van dit scherm zorgt ervoor dat je al deze veranderingen kwijt bent.",
+        "update": "Update",
+        "save": "Opslaan",
+        "openNative": "Open in System Editor",
+        "openDetached": "Detach Window",
+        "settings": "Editor Settings",
+        "editorTitle": "Aangepaste CSS Bewerker"
     },
     "Emotes": {
-        "favoriteAction": "Favorieten"
+        "loading": "Loading emotes in the background do not reload.",
+        "loaded": "All emotes successfully loaded.",
+        "clearEmotes": "Clear Emote Data",
+        "favoriteAction": "Favoriet!",
+        "downloadFailed": "Download Failed",
+        "failureMessage": "BetterDiscord failed to download emotes, please check your internet connection and firewall."
     },
     "PublicServers": {
-        "button": "openbaar",
+        "button": "Openbare Servers",
         "loading": "Aan het laden...",
-        "loadMore": "Laad meer...",
-        "notConnected": "Niet verbonden.",
-        "search": "Zoeken",
-        "connect": "Verbindeen",
-        "categories": "Categorieën"
+        "loadMore": "Laad meer",
+        "notConnected": "Niet verbonden",
+        "search": "Zoek",
+        "connect": "Verbind",
+        "categories": "Categorieën",
+
+        "join": "Sluit aan",
+        "joining": "Aansluiten...",
+        "joined": "Aangesloten",
+        "connectionRequired": "Je moet je account koppelen om servers to joinen.",
+        "connectionError": "Verbindingsfout",
+        "connectionErrorMessage": "Er was een fout tijdens het verbinden met DiscordServers.com, het is mogelijk dat hun website/api offline is. Probeer het later opnieuw.",
+        "pagination": "Pagina {{page}} van {{count}}",
+        "reconnect": "Opnieuw verbinden",
+        "keywords": "Trefwoorden",
+        "connection": "Verbonden als: {{username}}#{{discriminator}}",
+        "results": "Showing {{start}}-{{end}} of {{total}} results in {{category}}",
+        "query": "voor {{query}}"
     },
     "Modals": {
         "confirmAction": "Weet je het zeker?",
         "okay": "Oké",
+        "done": "Klaar",
         "cancel": "Annuleren",
-        "close": "Bijna",
+        "close": "Sluit",
         "name": "Naam",
-        "message": "Berich",
-        "error": "Fout!"
+        "message": "Bericht",
+        "error": "Fout",
+
+        "nevermind": "Nevermind",
+        "addonErrors": "Add-on Fouten",
+        "restartRequired": "Een herstart is nodig",
+        "restartNow": "Herstart Nu",
+        "restartLater": "Herstart Later",
+        "additionalInfo": "Extra Info",
+        "restartPrompt": "Om de wijzigingen te laten werken moet Discord worden herstart. Wil je nu herstarten?"
+    },
+    "ReactDevTools": {
+        "notFound": "Extension Niet Gevonden",
+        "notFoundDetails": "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
     },
     "Sorting": {
-        "order": "Volgorde"
+        "order": "Volgorde",
+        "sortBy": "Sorteer Op",
+        "ascending": "Oplopend",
+        "descending": "Aflopend"
+    },
+    "WindowPrefs": {
+        "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nOm de wijziging te laten werken moet Discord worden herstart. Wil je nu herstarten?",
+        "disabledInfo": "Om de wijziging te laten werken moet Discord worden herstart. Wil je nu herstarten?"
+    },
+    "Notices": {
+        "moreInfo": "Meer Info"
+    },
+    "Updater": {
+        "updateFailed": "Update Mislukt!",
+        "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
+        "updateSuccessful": "Update Gelukt!",
+        "updateAvailable": "BetterDiscord heeft een nieuwe update (v{{version}})",
+        "addonUpdatesAvailable": "BetterDiscord heeft updates gevonden voor {{count}} van jouw {{type}}s!",
+        "addonUpdated": "{{name}} is geupdated naar versie {{version}}!",
+        "checking": "Zoekend naar updates!",
+        "finishedChecking": "Klaar met zoeken naar updates!",
+        "checkForUpdates": "Zoek Naar Updates!",
+        "updateAll": "Update Alles!",
+        "noUpdatesAvailable": "Geen updates beschikbaar.",
+        "versionAvailable": "Versie {{version}} is nu beschikbaar!",
+        "upToDateBlankslate": "Al jouw {{type}} lijken up-to-date te zijn!",
+        "updateButton": "Update!"
     }
 }
