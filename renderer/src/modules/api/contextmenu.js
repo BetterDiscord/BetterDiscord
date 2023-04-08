@@ -5,43 +5,18 @@ import {React} from "../modules";
 
 let startupComplete = false;
 
-const MenuComponents = (() => {
-    const out = {};
-    const componentMap = {
-        separator: "Separator",
-        checkbox: "CheckboxItem",
-        radio: "RadioItem",
-        control: "ControlItem",
-        groupstart: "Group",
-        customitem: "Item"
-    };
+const ModulesBundle = WebpackModules.getByProps("MenuItem", "Menu");
+const MenuComponents = {
+    Separator: ModulesBundle?.MenuSeparator,
+    CheckboxItem: ModulesBundle?.MenuCheckboxItem,
+    RadioItem: ModulesBundle?.MenuRadioItem,
+    ControlItem: ModulesBundle?.MenuControlItem,
+    Group: ModulesBundle?.MenuGroup,
+    Item: ModulesBundle?.MenuItem,
+    Menu: ModulesBundle?.Menu,
+};
 
-    // exportKey:()=>identifier
-    const getExportIdentifier = (string, id) => new RegExp(`(\\w+):\\(\\)=>${id}`).exec(string)?.[1];
-
-    try {
-        let contextMenuId = Object.keys(WebpackModules.require.m).find(e => WebpackModules.require.m[e]?.toString().includes("menuitemcheckbox"));
-        const ContextMenuModule = WebpackModules.getModule((m, t, id) => id === contextMenuId);
-        const rawMatches = WebpackModules.require.m[contextMenuId].toString().matchAll(/if\(\w+\.type===(\w+)\)[\s\S]+?type:"(.+?)"/g);
-        const moduleString = WebpackModules.require.m[contextMenuId].toString();
-        out.Menu = Object.values(ContextMenuModule).find(v => v.toString().includes(".isUsingKeyboardNavigation"));
-        
-        for (const [, identifier, type] of rawMatches) {
-            out[componentMap[type]] = ContextMenuModule[getExportIdentifier(moduleString, identifier)];
-        }
-
-        startupComplete = Object.values(componentMap).every(k => out[k]) && !!out.Menu;
-    } catch (error) {
-        startupComplete = false;
-        Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error);
-
-        Object.assign(out, Object.fromEntries(
-            Object.values(componentMap).map(k => [k, () => null])
-        ));
-    }
-
-    return out;
-})();
+startupComplete = Object.values(MenuComponents).every(v => v);
 
 const ContextMenuActions = (() => {
     const out = {};
