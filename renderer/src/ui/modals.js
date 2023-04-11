@@ -1,6 +1,6 @@
 import {Config} from "data";
 import Logger from "common/logger";
-import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager} from "modules";
+import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, Events} from "modules";
 import FormattableString from "../structs/string";
 import AddonErrorModal from "./modals/addonerrormodal";
 import ErrorBoundary from "./errorboundary";
@@ -14,6 +14,7 @@ import ConfirmationModal from "./modals/confirmation";
 import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
 import ChangelogModal from "./modals/changelog";
+import ModalStack, {generateKey} from "./modals/stack";
 
 
 export default class Modals {
@@ -172,7 +173,7 @@ export default class Modals {
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
 
-        const modalKey = ModalActions.openModal(props => {
+        const modalKey = this.openModal(props => {
             return React.createElement(ErrorBoundary, {
                 onError: () => {
                     setTimeout(() => {
@@ -204,7 +205,7 @@ export default class Modals {
             pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
             themeErrors: Array.isArray(themeErrors) ? themeErrors : []
         };
-        this.ModalActions.openModal(props => {
+        this.openModal(props => {
             return React.createElement(ErrorBoundary, null, React.createElement(AddonErrorModal, Object.assign(options, props)));
         });
     }
@@ -212,7 +213,7 @@ export default class Modals {
     static showChangelogModal(options = {}) {
         options = Object.assign({image: "https://i.imgur.com/wuh5yMK.png", description: "", changes: [], title: "BetterDiscord", subtitle: `v${Config.version}`}, options);
 
-        const key = this.ModalActions.openModal(props => {
+        const key = this.openModal(props => {
             return React.createElement(ErrorBoundary, null, React.createElement(ChangelogModal, Object.assign(options, props)));
         });
         return key;
@@ -263,4 +264,23 @@ export default class Modals {
             return React.createElement(ErrorBoundary, null, React.createElement(ConfirmationModal, Object.assign(options, props), child));
         });
     }
+
+
+
+    static makeStack() {
+        const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
+        DOMManager.bdBody.append(div);
+        ReactDOM.render(<ModalStack />, div);
+        this.hasInitialized = true;
+    }
+    
+    static openModal(render, options = {}) {
+        if (!this.hasInitialized) this.makeStack();
+        options.modalKey = generateKey(options.modalKey);
+        Events.emit("open-modal", render, options);
+        return options.modalKey;
+    }
 }
+
+
+Modals.makeStack();
