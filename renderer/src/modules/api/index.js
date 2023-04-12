@@ -12,6 +12,7 @@ import Utils from "./utils";
 import Webpack from "./webpack";
 import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
+import {fetch} from "./fetch";
 import {DiscordModules} from "modules";
 
 const bounded = new Map();
@@ -57,6 +58,7 @@ export default class BdApi {
     Components = {
         get Tooltip() {return DiscordModules.Tooltip;}
     }
+    fetch = fetch; 
 }
 
 // Add legacy functions
@@ -125,6 +127,8 @@ BdApi.ContextMenu = ContextMenuAPI;
 BdApi.Components = {
     get Tooltip() {return DiscordModules.Tooltip;}
 };
+
+BdApi.fetch = fetch;
 
 Object.freeze(BdApi);
 Object.freeze(BdApi.prototype);
