@@ -164,9 +164,9 @@ export default class WebpackModules {
             try {module = modules[index]} catch {continue;};
 
             const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement) continue;
+            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
             
-            if (typeof(exports) === "object" && searchExports && exports[Symbol.toStringTag] !== "DOMTokenList") {
+            if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                 for (const key in exports) {
                     let foundModule = null;
                     let wrappedExport = null;
