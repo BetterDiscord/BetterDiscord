@@ -7,31 +7,51 @@ const whitelist = {
         "https://cdnjs.cloudflare.com" // Used for Monaco
     ],
 
-    // Discord includes nothing we need
-    connect: [
-        "https://api.github.com",
-    ],
-
     // Discord includes unsafe-inline already
     style: [
         "https://*.github.io",
         "https://cdnjs.cloudflare.com", // Used for Monaco
         "https://fonts.googleapis.com",
+        "https://fonts.cdnfonts.com",
+        "https://cdn.statically.io",
+        "https://rawgit.com",
+        "https://raw.githack.com",
+        "https://rsms.me",
+        "https://cdn.jsdelivr.net",
     ],
 
-    // Discord includes the other google font url
+    // Discord includes fonts.gstatic.com
     font: [
         "data:",
         "https://*.github.io",
         "https://cdnjs.cloudflare.com",
         "https://fonts.googleapis.com",
+        "https://raw.githack.com",
+        "https://cdn.jsdelivr.net",
     ],
 
-    // Discord includes several sources already including imgur
+    // Discord includes several sources already including imgur and data:
     img: [
         "https://*.github.io",
         "https://ik.imagekit.io",
         "https://source.unsplash.com",
+        "https://raw.githubusercontent.com",
+        "https://svgur.com",
+        "https://i.ibb.co",
+        "https://rawgit.com",
+        "https://bowmanfox.xyz",
+        "https://paz.pw",
+        "https://adx74.fr",
+        "https://media.tenor.com", // included by discord already
+        "https://upload.wikimedia.org",
+        "https://svgrepo.com",
+        "https://ch3rry.red",
+        "https://teamcofh.com",
+        "https://icon-library.net",
+        "https://images.pexels.com",
+        "https://user-images.githubusercontent.com",
+        "https://emoji.gg",
+        "https://cdn-icons-png.flaticon.com",
     ],
 
     // Discord does not include this normally

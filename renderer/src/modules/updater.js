@@ -76,31 +76,45 @@ export class CoreUpdater {
     }
 
     static async checkForUpdate(showNotice = true) {
-        const resp = await fetch(`https://api.github.com/repos/BetterDiscord/BetterDiscord/releases/latest`,{
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-                "User-Agent": "BetterDiscord Updater"
-            }
-        });
+        try {
+            const buffer = await new Promise((resolve, reject) => {
+                request({
+                    url: "https://api.github.com/repos/BetterDiscord/BetterDiscord/releases/latest",
+                    method: "get",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "User-Agent": "BetterDiscord Updater"
+                    }
+                }, (err, resp, body) => {
+                    if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
+                    return resolve(body);
+                });
+            });
 
-        const data = await resp.json();
-        this.apiData = data;
-        const remoteVersion = data.tag_name.startsWith("v") ? data.tag_name.slice(1) : data.tag_name;
-        this.hasUpdate = remoteVersion > Config.version;
-        this.remoteVersion = remoteVersion;
-        if (!this.hasUpdate || !showNotice) return;
+            const data = JSON.parse(buffer.toString());
+            this.apiData = data;
+            const remoteVersion = data.tag_name.startsWith("v") ? data.tag_name.slice(1) : data.tag_name;
+            this.hasUpdate = remoteVersion > Config.version;
+            this.remoteVersion = remoteVersion;
+            if (!this.hasUpdate || !showNotice) return;
 
-        const close = Notices.info(Strings.Updater.updateAvailable.format({version: remoteVersion}), {
-            buttons: [{
-                label: Strings.Notices.moreInfo,
-                onClick: () => {
-                    close();
-                    UserSettingsWindow?.open?.("updates");
-                }
-            }]
-        });
+            const close = Notices.info(Strings.Updater.updateAvailable.format({version: remoteVersion}), {
+                buttons: [{
+                    label: Strings.Notices.moreInfo,
+                    onClick: () => {
+                        close();
+                        UserSettingsWindow?.open?.("updates");
+                    }
+                }]
+            });
+        }
+        catch (err) {
+            Logger.stacktrace("Updater", "Failed to check update", err);
+            Modals.showConfirmationModal(Strings.Updater.updateFailed, Strings.Updater.updateFailedMessage, {
+                cancelText: null
+            });
+        }
     }
 
     static async update() {
