@@ -12,9 +12,9 @@ const ReactUtils = {
     get rootInstance() {return document.getElementById("app-mount")?._reactRootContainer?._internalRoot?.current;},
 
     /**
-     * Gets the internal react data of a specified node
+     * Gets the internal React data of a specified node.
      * 
-     * @param {HTMLElement} node Node to get the react data from
+     * @param {HTMLElement} node Node to get the internal React data from
      * @returns {object|undefined} Either the found data or `undefined` 
      */
     getInternalInstance(node) {
@@ -24,13 +24,14 @@ const ReactUtils = {
 
     /**
       * Attempts to find the "owner" node to the current node. This is generally 
-      * a node with a stateNode--a class component.
-      * @param {HTMLElement} node - node to obtain react instance of
-      * @param {object} options - options for the search
-      * @param {array} [options.include] - list of items to include from the search
-      * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] - list of items to exclude from the search
-      * @param {callable} [options.filter=_=>_] - filter to check the current instance with (should return a boolean)
-      * @return {(*|null)} the owner instance or undefined if not found.
+      * a node with a `stateNode` - a class component.
+      * 
+      * @param {HTMLElement} node Node to obtain React instance of
+      * @param {object} options Options for the search
+      * @param {array} [options.include] List of items to include in the search
+      * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] List of items to exclude from the search.
+      * @param {callable} [options.filter=_=>_] Filter to check the current instance with (should return a boolean)
+      * @return {object|undefined} The owner instance or `undefined` if not found
       */
     getOwnerInstance(node, {include, exclude = ["Popout", "Tooltip", "Scroller", "BackgroundFlash"], filter = _ => _} = {}) {
         if (node === undefined) return undefined;
@@ -57,9 +58,10 @@ const ReactUtils = {
     },
 
     /**
-      * Creates an unrendered react component that wraps dom elements.
-      * @param {HTMLElement} element - element or array of elements to wrap into a react component
-      * @returns {object} - unrendered react component
+      * Creates an unrendered React component that wraps HTML elements.
+      * 
+      * @param {HTMLElement} element Element or array of elements to wrap
+      * @returns {object} Unrendered React component
       */
     wrapElement(element) {
         return class ReactWrapper extends DiscordModules.React.Component {
