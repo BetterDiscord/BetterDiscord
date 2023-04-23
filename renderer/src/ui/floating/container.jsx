@@ -1,54 +1,36 @@
-import {React} from "modules";
+import {React, Events} from "modules";
 
 import FloatingWindow from "./window";
 
-class FloatingWindowContainer extends React.Component {
+const {useState, useCallback, useEffect} = React;
 
-    constructor(props) {
-        super(props);
-        this.state = {windows: []};
-    }
 
-    get minY() {
-        const appContainer = document.querySelector(`#app-mount > div[class*="app-"]`);
-        if (appContainer) return appContainer.offsetTop;
-        return 0;
-    }
-
-    render() {
-        return this.state.windows.map(window =>
-            <FloatingWindow {...window} close={this.close.bind(this, window.id)} minY={this.minY} key={window.id}>
-                    {window.children}
-            </FloatingWindow>
-        );
-    }
-
-    open(window) {
-        this.setState(state => {
-            state.windows.push(window);
-            return {windows: state.windows};
-        });
-    }
-
-    close(id) {
-        this.setState(state => {
-            return {
-                windows: state.windows.filter(w => {
-                    if (w.id == id && w.onClose) w.onClose();
-                    return w.id != id;
-                })
-            };
-        });
-    }
-
-    static get id() {return "floating-windows";}
-    static get root() {
-        if (this._root) return this._root;
-        const container = document.createElement("div");
-        container.id = this.id;
-        document.body.append(container);
-        return this._root = container;
-    }
+function minY() {
+    const appContainer = document.querySelector(`#app-mount > div[class*="app-"]`);
+    if (appContainer) return appContainer.offsetTop;
+    return 0;
 }
 
-export default FloatingWindowContainer;
+export default function FloatingWindowContainer() {
+    const [windows, setWindows] = useState([]);
+    const open = useCallback(window => {
+        setWindows(wins => [...wins, window]);
+    }, []);
+    const close = useCallback(id => {
+        setWindows(windows.filter(w => {
+            if (w.id === id && w.onClose) w.onClose();
+            return w.id !== id;
+        }));
+    }, [windows]);
+
+    useEffect(() => {
+        Events.on("open-window", open);
+        return () => Events.off("open-window", open);
+    }, [open]);
+
+    return windows.map(window =>
+        <FloatingWindow {...window} close={() => close(window.id)} minY={minY()} key={window.id}>
+                {window.children}
+        </FloatingWindow>
+    );
+}

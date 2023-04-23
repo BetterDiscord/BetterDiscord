@@ -159,14 +159,19 @@ export default class WebpackModules {
         for (let i = 0; i < indices.length; i++) {
             const index = indices[i];
             if (!modules.hasOwnProperty(index)) continue;
-            const module = modules[index];
-            const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement) continue;
             
-            if (typeof(exports) === "object" && searchExports) {
+            let module = null;
+            try {module = modules[index]} catch {continue;};
+
+            const {exports} = module;
+            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
+            
+            if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                 for (const key in exports) {
                     let foundModule = null;
-                    const wrappedExport = exports[key];
+                    let wrappedExport = null;
+                    try {wrappedExport = exports[key];} catch {continue;}
+
                     if (!wrappedExport) continue;
                     if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
                     if (!foundModule) continue;
@@ -210,7 +215,7 @@ export default class WebpackModules {
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement) continue;
+            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
 
             for (let q = 0; q < queries.length; q++) {
                 const query = queries[q];
@@ -220,7 +225,7 @@ export default class WebpackModules {
 
                 const wrappedFilter = wrapFilter(filter);
 
-                if (typeof(exports) === "object" && searchExports) {
+                if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                     for (const key in exports) {
                         let foundModule = null;
                         const wrappedExport = exports[key];
@@ -345,10 +350,10 @@ export default class WebpackModules {
         return new Promise((resolve) => {
             const cancel = () => this.removeListener(listener);
             const listener = function(exports) {
-                if (!exports || exports === window || exports === document.documentElement) return;
+                if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") return;
 
                 let foundModule = null;
-                if (typeof(exports) === "object" && searchExports) {
+                if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                     for (const key in exports) {
                         foundModule = null;
                         const wrappedExport = exports[key];

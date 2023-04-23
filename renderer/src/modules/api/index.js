@@ -12,6 +12,7 @@ import Utils from "./utils";
 import Webpack from "./webpack";
 import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
+import {DiscordModules} from "modules";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -53,6 +54,9 @@ export default class BdApi {
     get UI() {return UI;}
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
+    Components = {
+        get Tooltip() {return DiscordModules.Tooltip;}
+    }
 }
 
 // Add legacy functions
@@ -113,10 +117,15 @@ BdApi.Utils = Utils;
 BdApi.DOM = DOMAPI;
 
 /**
- * An instance of {@link ContextMenu} for interacting with context menus
+ * An instance of {@link ContextMenu} for interacting with context menus.
  * @type ContextMenu
  */
 BdApi.ContextMenu = ContextMenuAPI;
 
+BdApi.Components = {
+    get Tooltip() {return DiscordModules.Tooltip;}
+};
+
 Object.freeze(BdApi);
 Object.freeze(BdApi.prototype);
+Object.freeze(BdApi.Components);

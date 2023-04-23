@@ -40,7 +40,7 @@ const Webpack = {
 
         /**
          * Generates a function that filters by strings.
-         * @param {...String} strings A list of strings
+         * @param {...string} strings A list of strings
          * @returns {function} A filter that checks for a set of strings
          */
         byStrings(...strings) {return Filters.byStrings(...strings);},
@@ -65,9 +65,9 @@ const Webpack = {
      * @memberof Webpack
      * @param {function} filter A function to use to filter modules. It is given exports, module, and moduleID. Return `true` to signify match.
      * @param {object} [options] Options to configure the search
-     * @param {Boolean} [options.first=true] Whether to return only the first matching module
-     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
-     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
+     * @param {boolean} [options.first=true] Whether to return only the first matching module
+     * @param {boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
      * @return {any}
      */
     getModule(filter, options = {}) {
@@ -81,10 +81,10 @@ const Webpack = {
      * Finds multiple modules using multiple filters.
      * @memberof Webpack
      * @param {...object} queries Object representing the query to perform
-     * @param {Function} queries.filter A function to use to filter modules
-     * @param {Boolean} [queries.first=true] Whether to return only the first matching module
-     * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
-     * @param {Boolean} [queries.searchExports=false] Whether to execute the filter on webpack exports
+     * @param {function} queries.filter A function to use to filter modules
+     * @param {boolean} [queries.first=true] Whether to return only the first matching module
+     * @param {boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
+     * @param {boolean} [queries.searchExports=false] Whether to execute the filter on webpack exports
      * @return {any}
      */
     getBulk(...queries) {return WebpackModules.getBulk(...queries);},
@@ -95,8 +95,8 @@ const Webpack = {
      * @param {function} filter A function to use to filter modules. It is given exports. Return `true` to signify match.
      * @param {object} [options] Options for configuring the listener
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
-     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
-     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
+     * @param {boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
      * @returns {Promise<any>}
      */
     waitForModule(filter, options = {}) {

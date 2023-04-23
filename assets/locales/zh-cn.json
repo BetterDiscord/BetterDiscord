@@ -13,10 +13,6 @@
                     "name": "表情系统",
                     "note": "启用 BetterDiscord 表情系统"
                 },
-                "publicServers": {
-                    "name": "公共服务器",
-                    "note": "显示公共服务器按钮"
-                },
                 "voiceDisconnect": {
                     "name": "自动断开语音",
                     "note": "自动在关闭 Discord 时断开语音"
@@ -219,27 +215,6 @@
         "favoriteAction": "爱了！",
         "downloadFailed": "下载失败",
         "failureMessage": "BetterDiscord 无法下载表情，请检查你的网络连接和防火墙。"
-    },
-    "PublicServers": {
-        "button": "公共",
-        "join": "加入",
-        "joining": "加入中",
-        "joined": "已加入",
-        "loading": "加载中",
-        "loadMore": "加载更多",
-        "notConnected": "尚未连接",
-        "connectionRequired": "你必须先连接你的账号才能加入公共服务器",
-        "connectionError": "连接错误",
-        "connectionErrorMessage": "连接到D iscordServers.com 时发生错误，可能是他们的网站/接口暂时不可用。请稍后再试。",
-        "pagination": "共{{count}}页中的第{{page}}页",
-        "search": "搜索",
-        "connect": "连接",
-        "reconnect": "重新连接",
-        "categories": "分类",
-        "keywords": "关键词",
-        "connection": "使用 {{username}}#{{discriminator}} 进行连接",
-        "results": "显示{{category}}分类下的{{total}}个结果，当前正在显示{{start}}-{{end}}个结果",
-        "query": "为了 {{query}}"
     },
     "Modals": {
         "confirmAction": "你确定吗？",

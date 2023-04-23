@@ -47,10 +47,10 @@ class Data {
     }
 
     /**
-     * Deletes a piece of stored data, this is different than saving as null or undefined.
+     * Deletes a piece of stored data. This is different than saving `null` or `undefined`.
      * 
      * @param {string} pluginName Name of the plugin deleting data
-     * @param {string} key Which piece of data to delete
+     * @param {string} key Which piece of data to delete.
      */
     delete(pluginName, key) {
         if (this.#callerName) {

@@ -14,10 +14,6 @@
                     "name": "Emotikon rendszer",
                     "note": "BD emotikon rendszer engedélyezése"
                 },
-                "publicServers": {
-                    "name": "Nyilvános szerverek",
-                    "note": "Nyilvános szerverek gomb megjelenítése"
-                },
                 "voiceDisconnect": {
                     "name": "Hangkapcsolat megszakítása",
                     "note": "Kapcsolat megszakítása a hangkiszolgálóval amikor bezárod a Discordot"
@@ -259,27 +255,6 @@
         "downloadFailed": "Letöltés sikertelen",
         "failureMessage": "A BetterDiscord nem tudta letölteni az emotikonokat, kérjük ellenőrizze az internetkapcsolatát és a tűzfalat."
     },
-    "PublicServers": {
-        "button": "nyilvános",
-        "join": "Csatlakozás",
-        "joining": "Csatlakozás",
-        "joined": "Csatlakozva",
-        "loading": "Betöltés",
-        "loadMore": "Több betöltése",
-        "notConnected": "Sikertelen csatlakozás",
-        "connectionRequired": "A szerverekhez való csatlakozáshoz csatlakoztatnod kell a fiókodat.",
-        "connectionError": "Csatlakozási hiba",
-        "connectionErrorMessage": "Hiba történt a DiscordServers.com-hoz való csatlakozásban, lehetséges, hogy a weboldaluk/api nem elérhető. Kérjük, próbálja meg később.",
-        "pagination": "{{page}} oldal a {{count}} -ból",
-        "search": "Keresés",
-        "connect": "Csatlakozás",
-        "reconnect": "Újracsatlakozás",
-        "categories": "Kategóriák",
-        "keywords": "Kulcsszavak",
-        "connection": "Csatlakoztatva mint: {{username}}#{{discriminator}}",
-        "results": "{{start}}-{{end}} eredmény megjelenítése a {{total}} {{category}} -ból",
-        "query": "a {{query}}"
-    },
     "Modals": {
         "confirmAction": "Biztos vagy benne?",
         "okay": "Oké",
@@ -319,7 +294,7 @@
         "updateFailedMessage": "A BetterDiscord frissítése sikertelen. Kérjük, töltse le a telepítő legújabb verzióját erről a weboldalról: (https://betterdiscord.app/), majd telepítse újra.",
         "updateSuccessful": "Frissítés sikeres!",
         "updateAvailable": "Új frissítés erélhető a BetterDiscordhoz: (v{{version}})",
-        "addonUpdatesAvailable": "A BetterDiscord {{count}}db frissítést talált ebben a témában: {{type}}!",
+        "addonUpdatesAvailable": "A BetterDiscord {{count}} frissítést talált ebben a témában: {{type}}!",
         "addonUpdated": "A {{name}} frissült {{version}} verzióra!",
         "checking": "Frissítések keresése!",
         "finishedChecking": "Frissítések ellenőrzése sikeres!",

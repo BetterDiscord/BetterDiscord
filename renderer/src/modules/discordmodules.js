@@ -6,7 +6,7 @@
  */
 
 import Utilities from "./utilities";
-import WebpackModules from "./webpackmodules";
+import WebpackModules, {Filters} from "./webpackmodules";
 
 export default Utilities.memoizeObject({
     get React() {return WebpackModules.getByProps("createElement", "cloneElement");},
@@ -154,5 +154,12 @@ export default Utilities.memoizeObject({
         return Object.assign({}, guildsWrapper, guilds, pill, listItem);
     },
 
-    get LayerStack() {return WebpackModules.getByProps("pushLayer");}
+    get LayerStack() {return WebpackModules.getByProps("pushLayer");},
+
+    get Tooltip() {
+        // Make fallback component just pass children, so it can at least render that.
+        const fallback = props => props.children?.({}) ?? null;
+
+        return WebpackModules.getModule(Filters.byPrototypeFields(["renderTooltip"]), {searchExports: true}) ?? fallback;
+    }
 });

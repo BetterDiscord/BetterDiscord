@@ -14,10 +14,6 @@
                     "name": "絵文字機能",
                     "note": "BetterDiscordの絵文字機能を有効にします。"
                 },
-                "publicServers": {
-                    "name": "公開サーバー",
-                    "note": "公開サーバーボタンを表示します。"
-                },
                 "voiceDisconnect": {
                     "name": "ボイスチャンネルの切断",
                     "note": "Discordを終了すると自動的にボイスチャンネルから切断されます。"
@@ -80,12 +76,12 @@
                     "note": "カスタムCSSを外部のエディタで起動します"
                 },
                 "openAction": {
-                    "name": "Editor Location",
-                    "note": "Where Custom CSS should open by default",
+                    "name": "エディター",
+                    "note": "カスタムCSSがデフォルトで開かれる場所",
                     "options": {
-                        "settings": "Settings Menu",
-                        "detached": "Detached Window",
-                        "system": "System Editor"
+                        "settings": "設定メニュー",
+                        "detached": "内部エディター",
+                        "system": "システム既定のエディター"
                     }
                 }
             },
@@ -96,16 +92,16 @@
                     "note": "デベロッパーツールを開いた状態でF8キーを押すとデバッガが起動します。"
                 },
                 "reactDevTools": {
-                    "name": "React Developer Tools",
-                    "note": "Injects your local installation of React Developer Tools into Discord"
+                    "name": "React開発者向けツール",
+                    "note": "ローカルにインストールしたReact Developer ToolsをDiscordに挿入します。"
                 },
                 "inspectElement": {
-                    "name": "Inspect Element Hotkey",
-                    "note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
+                    "name": "インスペクト・エレメント・ホットキー",
+                    "note": "ほとんどのブラウザで一般的なinspect要素のホットキー(Ctrl + Shift + C)を有効にします。"
                 },
                 "devToolsWarning": {
-                    "name": "Stop DevTools Warning",
-                    "note": "Stops Discord from printing out their \"Hold Up!\" message"
+                    "name": "DevToolsの警告を停止",
+                    "note": "Discordの \"Hold Up!\"メッセージの表示を停止します。"
                 },
                 "debugLogs": {
                     "name": "デバッグログ",
@@ -181,8 +177,8 @@
             "categories": {
                 "name": "カテゴリ",
                 "twitchglobal": {
-                    "name": "Twitch Globals",
-                    "note": "Show Twitch global emotes"
+                    "name": "Twitchグローバル",
+                    "note": "Twitchのグローバル絵文字を表示する"
                 },
                 "twitchsubscriber": {
                     "name": "Twitchの登録者",
@@ -230,15 +226,15 @@
         "methodError": "{{method}}を起動できませんでした。",
         "unknownAuthor": "作者不明",
         "noDescription": "説明はありません。",
-        "alreadyExists": "There is already a {{type}} with name {{name}}",
-        "alreadWatching": "Already watching  addons.",
-        "metaError": "META could not be parsed.",
-        "missingNameData": "META missing name data.",
-        "metaNotFound": "META was not found.",
+        "alreadyExists": "同じく{{name}}という名前を持つ{{type}}がすでに存在します。",
+        "alreadWatching": "すでにアドオン済み。",
+        "metaError": "METAを解析できませんでした。",
+        "missingNameData": "METAの名前データがありません。",
+        "metaNotFound": "METAが見つかりませんでした。",
         "compileError": "コンパイルできませんでした。詳しくはコンソールをご覧ください。",
-        "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "You don't have any {{type}}s!",
-        "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
+        "wasUnloaded": "{{name}}が解除されました。",
+        "blankSlateHeader": "{{type}}がありません。",
+        "blankSlateMessage": "このサイト({{link}})からいくつか入手して、{{type}}フォルダに追加してください。",
         "isEnabled": "有効",
         "wasLoaded": "{{name}}のv{{version}}が読み込まれました。"
     },
@@ -252,33 +248,12 @@
         "editorTitle": "カスタムCSSエディター"
     },
     "Emotes": {
-        "loading": "Loading emotes in the background do not reload.",
+        "loading": "バックグラウンドで絵文字をロードしても、リロードされないようにします。",
         "loaded": "すべての絵文字の読み込みに成功しました。",
         "clearEmotes": "絵文字データを削除",
-        "favoriteAction": "お気に入り!",
+        "favoriteAction": "お気に入り",
         "downloadFailed": "ダウンロードに失敗",
         "failureMessage": "BetterDiscordは絵文字のダウンロードに失敗しました。インターネット接続とファイアウォールを確認してください。"
-    },
-    "PublicServers": {
-        "button": "公開サーバー",
-        "join": "参加",
-        "joining": "参加中",
-        "joined": "参加済",
-        "loading": "読み込み中",
-        "loadMore": "もっと読み込む",
-        "notConnected": "接続できませんでした。",
-        "connectionRequired": "サーバーに参加するためには、アカウントを接続する必要があります。",
-        "connectionError": "接続エラー",
-        "connectionErrorMessage": "DiscordServers.comへの接続にエラーが発生しました。ウェブサイト又はAPIがダウンしている可能性があります。後でもう一度試してみてください。",
-        "pagination": "Page {{page}} of {{count}}",
-        "search": "検索",
-        "connect": "接続",
-        "reconnect": "再接続",
-        "categories": "カテゴリ",
-        "keywords": "キーワード",
-        "connection": "接続済：{{username}}#{{discriminator}}",
-        "results": "{{category}}カテゴリの{{total}}中、{{start}}-{{end}}を表示しています。",
-        "query": "クエリ：{{query}}"
     },
     "Modals": {
         "confirmAction": "本当によろしいですか？",
@@ -309,7 +284,7 @@
     },
     "WindowPrefs": {
         "enabledInfo": "このオプションが正しく動作するためには、透明なテーマが必要です。Windows では、エアロスナップと最大化が壊れる可能性があります。\n\nこのオプションを有効にするには、Discord を再起動する必要があります。今すぐ再起動しますか？",
-        "disabledInfo": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
+        "disabledInfo": "有効にするためには、Discord���再起動する必要があります。今すぐ再起動しますか？"
     },
     "Notices": {
         "moreInfo": "詳細"
@@ -319,15 +294,15 @@
         "updateFailedMessage": "BetterDiscordのアップデートに失敗しました。ホームページ(https://betterdiscord.app/)から最新版のインストーラーをダウンロードして、再インストールしてください。",
         "updateSuccessful": "アップデートに成功しました！",
         "updateAvailable": "BetterDiscordに新しいアップデート(v{{version}})があります。",
-        "addonUpdatesAvailable": "BetterDiscordは{{.type}}のアップデートを{{count}}個見つけました!",
+        "addonUpdatesAvailable": "BetterDiscordは{{.type}}のアップデートを{{count}}個見つけました！",
         "addonUpdated": "{{name}}がバージョン{{version}}にアップデートされました！",
         "checking": "アップデートを確認",
         "finishedChecking": "アップデートの確認が終了しました！",
-        "checkForUpdates": "アップデートを確認！",
-        "updateAll": "全てアップデート！",
+        "checkForUpdates": "アップデートを確認",
+        "updateAll": "全てアップデート",
         "noUpdatesAvailable": "アップデートはありません。",
         "versionAvailable": "バージョン{{version}}を公開しました。",
         "upToDateBlankslate": "{{type}}は全て最新版です。",
-        "updateButton": "アップデート！"
+        "updateButton": "アップデート"
     }
 }

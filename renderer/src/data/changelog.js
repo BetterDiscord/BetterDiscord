@@ -1,12 +1,19 @@
 // fixed, improved, added, progress
 export default {
-    description: "More features are coming soon!",
+    description: "Hotfix!",
     changes: [
+        // {
+        //     title: "What's New?",
+        //     type: "improved",
+        //     items: [
+        //         "Added SourceURL for the renderer. This makes it easier for developers to identify BD in call stacks.",
+        //     ]
+        // },
         {
             title: "Bug Fixes",
             type: "fixed",
             items: [
-                "Fixed crashing on right click.",
+                "Fixed context menu crashes & api",
             ]
         }
     ]

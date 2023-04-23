@@ -13,10 +13,6 @@
                     "name": "Système D'émojis",
                     "note": "Active le système d'émojis de BD"
                 },
-                "publicServers": {
-                    "name": "Serveurs publics",
-                    "note": "Afficher le bouton des serveurs publics"
-                },
                 "voiceDisconnect": {
                     "name": "Déconnexion vocale",
                     "note": "Déconnexion du serveur vocal lors de la fermeture de Discord"
@@ -219,27 +215,6 @@
         "favoriteAction": "Ajouté aux favoris!",
         "downloadFailed": "Échec Téléchargement",
         "failureMessage": "BetterDiscord n'a pas réussi à télécharger les émotes, veuillez vérifier votre connexion Internet et votre pare-feu."
-    },
-    "PublicServers": {
-        "button": "public",
-        "join": "Rejoindre",
-        "joining": "En train de rejoindre",
-        "joined": "Rejoint",
-        "loading": "Chargement",
-        "loadMore": "Charger plus",
-        "notConnected": "Vous n'êtes pas connecté",
-        "connectionRequired": "Vous devez connecter votre compte afin de rejoindre des serveurs.",
-        "connectionError": "Erreur de Connexion",
-        "connectionErrorMessage": "Une erreur s'est produite lors de la connexion à DiscordServers.com, il est possible que leur site web/api soit en panne. Veuillez réessayer plus tard.",
-        "pagination": "Page {{page}} sur {{count}}",
-        "search": "Rechercher",
-        "connect": "Connecter",
-        "reconnect": "Reconnecter",
-        "categories": "Catégories",
-        "keywords": "Mots Clés",
-        "connection": "Connecté en tant que: {{username}}#{{discriminator}}",
-        "results": "Afficher {{start}}-{{end}} sur les {{total}} résultats dans la catégorie {{category}}",
-        "query": "pour {{query}}"
     },
     "Modals": {
         "confirmAction": "Êtes-vous sûr?",

@@ -13,10 +13,6 @@
                     "name": "Sistemul de emote-uri",
                     "note": "Activează sistemul de emote-uri din cadrul BD"
                 },
-                "publicServers": {
-                    "name": "servere publice",
-                    "note": "Afișează butonul de servere publice"
-                },
                 "voiceDisconnect": {
                     "name": "Deconectare de la voce",
                     "note": "Deconectează-te de la un canal de voce când inchizi Discord-ul"
@@ -219,27 +215,6 @@
         "favoriteAction": "Favorite!",
         "downloadFailed": "Descărcarea a eșuat",
         "failureMessage": "BetterDiscord nu a putut încărca emote-urile, te rugăm să verifici conexiunea la internet si firewall-ul."
-    },
-    "PublicServers": {
-        "button": "public",
-        "join": "Alătură-te",
-        "joining": "În curs de alăturare",
-        "joined": "Alăturat",
-        "loading": "Se încarcă",
-        "loadMore": "Încarcă mai multe",
-        "notConnected": "Deconectat",
-        "connectionRequired": "Trebuie să vă conectați pentru a vă alătura la servere.",
-        "connectionError": "Eroare de conexiune",
-        "connectionErrorMessage": "A apărut o eroare în conectarea la DiscordServers.com, este posibil ca website-ul/API-ul să fie offline. Vă rugăm să încercațti mai târziu.",
-        "pagination": "Pagina {{page}} din {{count}}",
-        "search": "Caută",
-        "connect": "Conectează-te",
-        "reconnect": "Reconectează-te",
-        "categories": "Categorii",
-        "keywords": "Cuvinte cheie",
-        "connection": "Conectat ca: {{username}}#{{discriminator}}",
-        "results": "Arătând {{start}}-{{end}} din {{total}} rezultate in {{category}}",
-        "query": "pentru {{query}}"
     },
     "Modals": {
         "confirmAction": "Ești sigur ?",

@@ -8,6 +8,7 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import * as Builtins from "builtins";
 import Modals from "../ui/modals";
+import FloatingWindows from "../ui/floatingwindows";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
 import Strings from "./strings";
@@ -27,63 +28,67 @@ export default new class Core {
         Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
 
         /**loading steps count*/
-        const stepsCount = 14;
+        const stepsPercent = 14 * 100;
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
-        await LoadingInterface.setInitStatus({ progress: 1 / stepsCount * 100, status: "Injecting BD Styles..." });
+        await LoadingInterface.setInitStatus({ progress: 1 / stepsPercent, status: "Injecting BD Styles..." });
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
 
         Logger.log("Startup", "Initializing DataStore");
-        await LoadingInterface.setInitStatus({ progress: 2 / stepsCount * 100, status: "Initializing DataStore..." });
+        await LoadingInterface.setInitStatus({ progress: 2 / stepsPercent, status: "Initializing DataStore..." });
         DataStore.initialize();
 
         Logger.log("Startup", "Initializing LocaleManager");
-        await LoadingInterface.setInitStatus({ progress: 3 / stepsCount * 100, status: "Initializing LocaleManager..." });
+        await LoadingInterface.setInitStatus({ progress: 3 / stepsPercent, status: "Initializing LocaleManager..." });
         LocaleManager.initialize();
 
         Logger.log("Startup", "Initializing Settings");
-        await LoadingInterface.setInitStatus({ progress: 5 / stepsCount * 100, status: "Initializing Settings..." });
+        await LoadingInterface.setInitStatus({ progress: 4 / stepsPercent, status: "Initializing Settings..." });
         Settings.initialize();
 
         Logger.log("Startup", "Initializing DOMManager");
-        await LoadingInterface.setInitStatus({ progress: 6 / stepsCount * 100, status: "Initializing DOMManager..." });
+        await LoadingInterface.setInitStatus({ progress: 5 / stepsPercent, status: "Initializing DOMManager..." });
         DOMManager.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
-        await LoadingInterface.setInitStatus({ progress: 7 / stepsCount * 100, status: "Waiting for connection..." });
+        await LoadingInterface.setInitStatus({ progress: 6 / stepsPercent, status: "Waiting for connection..." });
         await this.waitForConnection();
 
         Logger.log("Startup", "Initializing Editor");
-        await LoadingInterface.setInitStatus({ progress: 8 / stepsCount * 100, status: "Initializing Editor..." });
+        await LoadingInterface.setInitStatus({ progress: 7 / stepsPercent, status: "Initializing Editor..." });
         await Editor.initialize();
 
         Logger.log("Startup", "Initializing Modals");
-        await LoadingInterface.setInitStatus({ progress: 8 / stepsCount * 100, status: "Initializing Modals..." });
+        await LoadingInterface.setInitStatus({ progress: 8 / stepsPercent, status: "Initializing Modals..." });
         await Modals.initialize();
 
+        Logger.log("Startup", "Initializing Floating windows");
+        await LoadingInterface.setInitStatus({ progress: 9 / stepsPercent, status: "Initializing Floating windows..." });
+        FloatingWindows.initialize();
+
         Logger.log("Startup", "Initializing Builtins");
-        await LoadingInterface.setInitStatus({ progress: 9 / stepsCount * 100, status: "Initializing Builtins..." });
+        await LoadingInterface.setInitStatus({ progress: 10 / stepsPercent, status: "Initializing Builtins..." });
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
 
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
-        await LoadingInterface.setInitStatus({ progress: 10 / stepsCount * 100, status: "Loading Plugins..." });
+        await LoadingInterface.setInitStatus({ progress: 11 / stepsPercent, status: "Loading Plugins..." });
         const pluginErrors = await PluginManager.initialize();
 
         Logger.log("Startup", "Loading Themes");
         // const themeErrors = [];
-        await LoadingInterface.setInitStatus({ progress: 11 / stepsCount * 100, status: "Loading Themes..." });
+        await LoadingInterface.setInitStatus({ progress: 12 / stepsPercent, status: "Loading Themes..." });
         const themeErrors = await ThemeManager.initialize();
 
         Logger.log("Startup", "Initializing Updater");
-        await LoadingInterface.setInitStatus({ progress: 12 / stepsCount * 100, status: "Initializing Updater..." });
+        await LoadingInterface.setInitStatus({ progress: 13 / stepsPercent, status: "Initializing Updater..." });
         Updater.initialize();
 
         Logger.log("Startup", "Removing Loading Interface");
-        await LoadingInterface.setInitStatus({ progress: 100, status: "Done" });
+        await LoadingInterface.setInitStatus({ progress: 14 / stepsPercent, status: "Done" });
         LoadingInterface.hide();
 
         // Show loading errors
