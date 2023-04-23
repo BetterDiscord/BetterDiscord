@@ -305,7 +305,6 @@ export default class AddonManager {
         const files = fs.readdirSync(this.addonFolder);
 
         for (const filename of files) {
-            await LoadingInterface.setInitStatus({ substatus: filename, subprogress: files.indexOf(filename) / files.length * 100 });
             if(files.indexOf(filename) != files.length - 1)
                 LoadingInterface.showSubProgress();
             else
