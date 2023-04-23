@@ -5,7 +5,6 @@ import DataStore from "./datastore";
 import AddonError from "../structs/addonerror";
 import Toasts from "../ui/toasts";
 import DiscordModules from "./discordmodules";
-import LoadingInterface from "../loading";
 import Strings from "./strings";
 import AddonEditor from "../ui/misc/addoneditor";
 import FloatingWindows from "../ui/floatingwindows";
@@ -305,10 +304,6 @@ export default class AddonManager {
         const files = fs.readdirSync(this.addonFolder);
 
         for (const filename of files) {
-            if(files.indexOf(filename) != files.length - 1)
-                LoadingInterface.showSubProgress();
-            else
-                LoadingInterface.hideSubProgress();
             const absolutePath = path.resolve(this.addonFolder, filename);
             const stats = fs.statSync(absolutePath);
             if (!stats || !stats.isFile()) continue;
