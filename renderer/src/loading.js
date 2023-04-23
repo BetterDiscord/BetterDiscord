@@ -125,44 +125,42 @@ Container.appendChild(SubStatusContainer);
 export default class {
 
     /**
-     * Sets the value of the progress bar, adds status to the list about status.
-     * @param {object} options Object
-     * @param {*} [options.progress] 0-100. Doesn't change the progress if not a number.
-     * @param {*} [options.subprogress] 0-100. Doesn't change the progress if not a number.
-     * @param {*} [options.status] Doesn't add the label if not a string.
-     * @param {*} [options.substatus] Doesn't add the label if not a string.
+     * Sets the initial loading status of the application.
+     * @param {Object} [options={}] The options object.
+     * @param {number} [options.progress] The progress of the main loading bar, in percentage.
+     * @param {number} [options.subprogress] The progress of the sub-loading bar, in percentage.
+     * @param {string} [options.status] The status message to display.
+     * @param {string} [options.substatus] The sub-status message to display.
+     * @returns {Promise<void>} A Promise that resolves when the loading status has been updated.
      */
     static setInitStatus(options = {}) {
-        if(typeof options != 'object' || Array.isArray(options)) {
-            options = {};
+      if (typeof options !== "object" || Array.isArray(options)) {
+        options = {};
+      }
+      const { progress, subprogress, status, substatus } = options;
+      return new Promise((resolve) => {
+        if (Number.isFinite(progress)) {
+          if (progress > 100) progress = 100;
+          if (progress < 0) progress = 0;
+          ProgressBar.style.width = progress + "%";
         }
-        const {progress, subprogress, status, substatus} = options;
-        return new Promise(
-            rs => {
-                if(Number.isFinite(progress)) {
-                    if (progress > 100) progress = 100;
-                    if (progress < 0) progress = 0;
-                    ProgressBar.style.width = progress + "%";
-                };
-                if(Number.isFinite(subprogress)) {
-                    if (subprogress > 100) subprogress = 100;
-                    if (subprogress < 0) subprogress = 0;
-                    SubProgressBar.style.width = subprogress + "%";
-                };
-                if (typeof status == "string") {
-                    let StatusContainer = document.createElement("div");
-                    StatusContainer.className = "bd-loading-status";
-                    StatusContainer.innerHTML = status;
-                    StatusListContainer.innerHTML = "";
-                    StatusListContainer.append(StatusContainer);
-                };
-                if (typeof substatus == "string") {
-                    SubStatusContainer.innerText = substatus;
-                };
-                // 60 fps, rendering wait
-                setTimeout(rs, 1000/60);
-            }
-        )
+        if (Number.isFinite(subprogress)) {
+          if (subprogress > 100) subprogress = 100;
+          if (subprogress < 0) subprogress = 0;
+          SubProgressBar.style.width = subprogress + "%";
+        }
+        if (typeof status === "string") {
+          let StatusContainer = document.createElement("div");
+          StatusContainer.className = "bd-loading-status";
+          StatusContainer.innerHTML = status;
+          StatusListContainer.innerHTML = "";
+          StatusListContainer.append(StatusContainer);
+        }
+        if (typeof substatus === "string") {
+          SubStatusContainer.innerText = substatus;
+        }
+        requestAnimationFrame(resolve);
+      });
     }
 
     static showProgress() {
