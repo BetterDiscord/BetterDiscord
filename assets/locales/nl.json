@@ -13,10 +13,6 @@
                     "name": "Emote systeem",
                     "note": "Schakel het emote-systeem van BD in"
                 },
-                "publicServers": {
-                    "name": "Openbare servers",
-                    "note": "Knop openbare servers weergeven"
-                },
                 "voiceDisconnect": {
                     "name": "Stem Verbroken",
                     "note": "Verbreek de verbinding met de oproep"
@@ -76,15 +72,6 @@
     },
     "Emotes": {
         "favoriteAction": "Favorieten"
-    },
-    "PublicServers": {
-        "button": "openbaar",
-        "loading": "Aan het laden...",
-        "loadMore": "Laad meer...",
-        "notConnected": "Niet verbonden.",
-        "search": "Zoeken",
-        "connect": "Verbindeen",
-        "categories": "Categorieën"
     },
     "Modals": {
         "confirmAction": "Weet je het zeker?",

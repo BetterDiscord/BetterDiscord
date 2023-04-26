@@ -5,43 +5,18 @@ import {React} from "../modules";
 
 let startupComplete = false;
 
-const MenuComponents = (() => {
-    const out = {};
-    const componentMap = {
-        separator: "Separator",
-        checkbox: "CheckboxItem",
-        radio: "RadioItem",
-        control: "ControlItem",
-        groupstart: "Group",
-        customitem: "Item"
-    };
+const ModulesBundle = WebpackModules.getByProps("MenuItem", "Menu");
+const MenuComponents = {
+    Separator: ModulesBundle?.MenuSeparator,
+    CheckboxItem: ModulesBundle?.MenuCheckboxItem,
+    RadioItem: ModulesBundle?.MenuRadioItem,
+    ControlItem: ModulesBundle?.MenuControlItem,
+    Group: ModulesBundle?.MenuGroup,
+    Item: ModulesBundle?.MenuItem,
+    Menu: ModulesBundle?.Menu,
+};
 
-    // exportKey:()=>identifier
-    const getExportIdentifier = (string, id) => new RegExp(`(\\w+):\\(\\)=>${id}`).exec(string)?.[1];
-
-    try {
-        let contextMenuId = Object.keys(WebpackModules.require.m).find(e => WebpackModules.require.m[e]?.toString().includes("menuitemcheckbox"));
-        const ContextMenuModule = WebpackModules.getModule((m, t, id) => id === contextMenuId);
-        const rawMatches = WebpackModules.require.m[contextMenuId].toString().matchAll(/if\(\w+\.type===(\w+)\)[\s\S]+?type:"(.+?)"/g);
-        const moduleString = WebpackModules.require.m[contextMenuId].toString();
-        out.Menu = Object.values(ContextMenuModule).find(v => v.toString().includes(".isUsingKeyboardNavigation"));
-        
-        for (const [, identifier, type] of rawMatches) {
-            out[componentMap[type]] = ContextMenuModule[getExportIdentifier(moduleString, identifier)];
-        }
-
-        startupComplete = Object.values(componentMap).every(k => out[k]) && !!out.Menu;
-    } catch (error) {
-        startupComplete = false;
-        Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error);
-
-        Object.assign(out, Object.fromEntries(
-            Object.values(componentMap).map(k => [k, () => null])
-        ));
-    }
-
-    return out;
-})();
+startupComplete = Object.values(MenuComponents).every(v => v);
 
 const ContextMenuActions = (() => {
     const out = {};
@@ -178,9 +153,9 @@ class ContextMenu {
     /**
      * Allows you to patch a given context menu. Acts as a wrapper around the `Patcher`.
      * 
-     * @param {string} navId Discord's internal navId used to identify context menus
-     * @param {function} callback callback function that accepts the react render tree
-     * @returns {function} a function that automatically unpatches
+     * @param {string} navId Discord's internal `navId` used to identify context menus
+     * @param {function} callback Callback function that accepts the React render tree
+     * @returns {function} A function that automatically unpatches
      */
     patch(navId, callback) {
         MenuPatcher.patch(navId, callback);
@@ -191,8 +166,8 @@ class ContextMenu {
     /**
      * Allows you to remove the patch added to a given context menu.
      * 
-     * @param {string} navId the original navId from patching
-     * @param {function} callback the original callback from patching
+     * @param {string} navId The original `navId` from patching
+     * @param {function} callback The original callback from patching
      */
     unpatch(navId, callback) {
         MenuPatcher.unpatch(navId, callback);
@@ -203,9 +178,9 @@ class ContextMenu {
      * match the actual component being built. View those to see what options exist
      * for each, they often have less in common than you might think.
      * 
-     * @param {object} props - props used to build the item
-     * @param {string} [props.type="text"] - type of the item, options: text, submenu, toggle, radio, custom, separator
-     * @returns {object} the created component
+     * @param {object} props Props used to build the item
+     * @param {string} [props.type="text"] Type of the item, options: text, submenu, toggle, radio, custom, separator
+     * @returns {object} The created component
      * 
      * @example
      * // Creates a single menu item that prints "MENU ITEM" on click
@@ -262,8 +237,9 @@ class ContextMenu {
      * Creates the all the items **and groups** of a context menu recursively.
      * There is no hard limit to the number of groups within groups or number
      * of items in a menu.
-     * @param {Array<object>} setup - array of item props used to build items. See {@link ContextMenu.buildItem}
-     * @returns {Array<object>} array of the created component
+     * 
+     * @param {Array<object>} setup Array of item props used to build items. See {@link ContextMenu.buildItem}.
+     * @returns {Array<object>} Array of the created component
      * 
      * @example
      * // Creates a single item group item with a toggle item
@@ -317,8 +293,9 @@ class ContextMenu {
      * Creates the menu *component* including the wrapping `ContextMenu`.
      * Calls {@link ContextMenu.buildMenuChildren} under the covers.
      * Used to call in combination with {@link ContextMenu.open}.
-     * @param {Array<object>} setup - array of item props used to build items. See {@link ContextMenu.buildMenuChildren}
-     * @returns {function} the unique context menu component
+     * 
+     * @param {Array<object>} setup Array of item props used to build items. See {@link ContextMenu.buildMenuChildren}.
+     * @returns {function} The unique context menu component
      */
     buildMenu(setup) {
         return (props) => {return React.createElement(MenuComponents.Menu, props, this.buildMenuChildren(setup));};
@@ -327,13 +304,12 @@ class ContextMenu {
     /**
      * Function that allows you to open an entire context menu. Recommended to build the menu with this module.
      * 
-     * @param {MouseEvent} event - The context menu event. This can be emulated, requires target, and all X, Y locations.
-     * @param {function} menuComponent - Component to render. This can be any react component or output of {@link ContextMenu.buildMenu}
-     * @param {object} config - configuration/props for the context menu
-     * @param {string} [config.position="right"] - default position for the menu, options: "left", "right"
-     * @param {string} [config.align="top"] - default alignment for the menu, options: "bottom", "top"
-     * @param {function} [config.onClose] - function to run when the menu is closed
-     * @param {boolean} [config.noBlurEvent=false] - No clue
+     * @param {MouseEvent} event The context menu event. This can be emulated, requires target, and all X, Y locations.
+     * @param {function} menuComponent Component to render. This can be any React component or output of {@link ContextMenu.buildMenu}.
+     * @param {object} config Configuration/props for the context menu
+     * @param {string} [config.position="right"] Default position for the menu, options: "left", "right"
+     * @param {string} [config.align="top"] Default alignment for the menu, options: "bottom", "top"
+     * @param {function} [config.onClose] Function to run when the menu is closed
      */
     open(event, menuComponent, config) {
         return ContextMenuActions.openContextMenu(event, function(e) {

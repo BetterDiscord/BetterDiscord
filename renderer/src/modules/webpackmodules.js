@@ -164,9 +164,9 @@ export default class WebpackModules {
             try {module = modules[index]} catch {continue;};
 
             const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement) continue;
+            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
             
-            if (typeof(exports) === "object" && searchExports && exports[Symbol.toStringTag] !== "DOMTokenList") {
+            if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                 for (const key in exports) {
                     let foundModule = null;
                     let wrappedExport = null;
@@ -215,7 +215,7 @@ export default class WebpackModules {
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement) continue;
+            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
 
             for (let q = 0; q < queries.length; q++) {
                 const query = queries[q];
@@ -225,7 +225,7 @@ export default class WebpackModules {
 
                 const wrappedFilter = wrapFilter(filter);
 
-                if (typeof(exports) === "object" && searchExports) {
+                if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                     for (const key in exports) {
                         let foundModule = null;
                         const wrappedExport = exports[key];
@@ -350,10 +350,10 @@ export default class WebpackModules {
         return new Promise((resolve) => {
             const cancel = () => this.removeListener(listener);
             const listener = function(exports) {
-                if (!exports || exports === window || exports === document.documentElement) return;
+                if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") return;
 
                 let foundModule = null;
-                if (typeof(exports) === "object" && searchExports) {
+                if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                     for (const key in exports) {
                         foundModule = null;
                         const wrappedExport = exports[key];

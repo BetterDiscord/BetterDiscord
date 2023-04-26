@@ -1,95 +1,92 @@
 {
     "Panels": {
-        "plugins": "附加元件",
+        "plugins": "擴充功能",
         "themes": "佈景主題",
-        "customcss": "客製化樣式"
+        "customcss": "客製化 CSS",
+        "updates": "更新"
     },
     "Collections": {
         "settings": {
-            "name": "設置",
+            "name": "設定",
             "general": {
                 "name": "一般",
                 "emotes": {
-                    "name": "表情系統",
-                    "note": "啟用 BetterDiscord 表情系統"
-                },
-                "publicServers": {
-                    "name": "公共伺服器",
-                    "note": "顯示公共伺服器按鈕"
+                    "name": "表情符號系統",
+                    "note": "啟用 BetterDiscord 的表情符號系統"
                 },
                 "voiceDisconnect": {
-                    "name": "自動斷開語音",
-                    "note": "自動在關閉 Discord 時斷開語音"
+                    "name": "自動中斷語音連線",
+                    "note": "自動在關閉 Discord 時中斷語音連線"
                 },
                 "showToasts": {
                     "name": "顯示彈出提示",
                     "note": "在有重要通知時彈出提示"
                 },
                 "mediaKeys": {
-                    "name": "禁用媒體控制鍵",
+                    "name": "停用媒體控制鍵",
                     "note": "防止 Discord 在播放影片時劫持媒體控制鍵"
                 }
             },
             "window": {
                 "removeMinimumSize": {
                     "name": "移除最小化限制",
-                    "note": "移除 Discord 限制的最小窗口尺寸（940x500）"
+                    "note": "移除 Discord 限制的最小化視窗尺寸（940x500）"
                 },
-                "name": "窗口設置",
+                "name": "視窗設定",
                 "transparency": {
                     "name": "透明化",
-                    "note": "允許主窗口透明（需要重啟以生效）"
+                    "note": "啟用主視窗透明（需要重新啟動以生效）"
                 },
                 "frame": {
-                    "name": "窗口框",
-                    "note": "向主窗口添加原生系統窗口框"
+                    "name": "視窗邊框",
+                    "note": "向主視窗新增原版系統視窗邊框"
                 }
             },
             "addons": {
-                "name": "附加元件管理",
+                "name": "擴充功能管理員",
                 "addonErrors": {
-                    "name": "顯示附加元件錯誤",
-                    "note": "在附加元件/佈景主題發生錯誤時顯示彈窗"
+                    "name": "顯示擴充功能錯誤",
+                    "note": "在擴充功能/佈景主題發生錯誤時顯示彈出視窗"
                 },
                 "editAction": {
                     "name": "編輯器",
-                    "note": "在何處编辑附加元件及佈景主題",
+                    "note": "在何處編輯擴充功能及佈景主題",
                     "options": {
-                        "detached": "獨立窗口",
+                        "detached": "獨立視窗",
                         "system": "系統編輯器"
                     }
                 }
             },
             "customcss": {
-                "name": "客製化樣式",
+                "name": "客製化 CSS",
                 "customcss": {
-                    "name": "客製化樣式",
-                    "note": "啟用客製化樣式選項卡"
+                    "name": "客製化 CSS",
+                    "note": "啟用客製化 CSS 選項標籤"
                 },
                 "liveUpdate": {
-                    "name": "熱更新",
-                    "note": "自動在 CSS 發生變更時重新加載"
+                    "name": "實時更新",
+                    "note": "自動在 CSS 發生變更時重新載入"
                 },
                 "startDetached": {
-                    "name": "在獨立窗口中打開",
-                    "note": "在獨立窗口中編輯客製化樣式"
+                    "name": "在獨立視窗中開啟",
+                    "note": "在獨立視窗中編輯客製化 CSS"
                 },
                 "nativeOpen": {
-                    "name": "在系統編輯器中打開",
-                    "note": "在系統編輯器中編輯客製化樣式"
+                    "name": "在系統編輯器中開啟",
+                    "note": "在系統編輯器中編輯客製化 CSS"
                 },
                 "openAction": {
                     "name": "編輯器",
-                    "note": "在何處編輯客製化樣式",
+                    "note": "在何處編輯客製化 CSS",
                     "options": {
-                        "settings": "設置菜單",
-                        "detached": "獨立窗口",
+                        "settings": "設定選單",
+                        "detached": "獨立視窗",
                         "system": "系統編輯器"
                     }
                 }
             },
             "developer": {
-                "name": "開發人員設置",
+                "name": "開發人員設定",
                 "debuggerHotkey": {
                     "name": "調試器快捷鍵",
                     "note": "按下 F8 時啟動調試器"
@@ -99,42 +96,78 @@
                     "note": "向 Discord 注入 React 開發人員工具"
                 },
                 "inspectElement": {
-                    "name": "元素檢測快捷鍵",
-                    "note": "啟用在大多數瀏覽器中常用的元素檢測快捷鍵（Ctrl + Shift + C）"
+                    "name": "元素檢查快捷鍵",
+                    "note": "啟用在大多數瀏覽器中常用的元素檢查快捷鍵（Ctrl + Shift + C）"
                 },
                 "devToolsWarning": {
-                    "name": "屏蔽開發人員工具警告",
+                    "name": "隱藏開發人員工具警告",
                     "note": "禁止 Discord 輸出「Hold Up!」警告"
                 },
                 "debugLogs": {
-                    "name": "調試日誌",
-                    "note": "輸出控制台中的所有信息到 BetterDiscord 資料夾下的 debug.log 檔案"
+                    "name": "調試記錄檔",
+                    "note": "輸出控制台中的所有資訊到 BetterDiscord 資料夾下的 debug.log"
+                },
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "啟用切換 DevTools（Ctrl+Shift+I）"
+                }
+            },
+            "editor": {
+                "name": "編輯器偏好",
+                "lineNumbers": {
+                    "name": "行數編號",
+                    "note": "啟用在編輯器一側顯示行數"
+                },
+                "fontSize": {
+                    "name": "字型大小",
+                    "note": "在編輯器中使用的字體大小（點）"
+                },
+                "minimap": {
+                    "name": "小地圖",
+                    "note": "啟用在編輯器一側顯示代碼小地圖"
+                },
+                "hover": {
+                    "name": "參考工具提示",
+                    "note": "允許在懸停規則和選擇器時顯示參考工具提示"
+                },
+                "quickSuggestions": {
+                    "name": "快速建議",
+                    "note": "啟用在您輸入時顯示自動完成建議"
+                },
+                "renderWhitespace": {
+                    "name": "顯示空格",
+                    "note": "編輯器何時應顯示空格",
+                    "options": {
+                        "all": "總是",
+                        "none": "永不",
+                        "selection": "選擇"
+                    }
                 }
             }
         },
         "emotes": {
-            "name": "表情",
+            "name": "表情符號",
             "general": {
                 "name": "一般",
                 "download": {
-                    "name": "下載表情",
-                    "note": "自動下載即將過期的表情"
+                    "name": "下載表情符號",
+                    "note": "自動下載即將過期的表情符號"
                 },
                 "emoteMenu": {
-                    "name": "表情菜單",
-                    "note": "在表情菜單中顯示 Twitch/我的最愛 表情"
+                    "name": "表情符號選單",
+                    "note": "在表情符號選單中顯示 Twitch/我的最愛 表情符號"
                 },
                 "hideEmojiMenu": {
-                    "name": "隐藏表情符號菜单",
-                    "note": "在使用表情表情時隐藏 Discord 的表情符號菜單"
+                    "name": "隱藏表情符號選單",
+                    "note": "在使用表情符號時隱藏 Discord 的表情符號選單"
                 },
                 "autoCaps": {
-                    "name": "表情自動大寫",
-                    "note": "自動大寫表情指令"
+                    "name": "表情符號自動大寫",
+                    "note": "自動大寫表情符號指令"
                 },
                 "modifiers": {
                     "name": "顯示表情修飾符",
-                    "note": "啟用表情修飾符（flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap）"
+                    "note": "啟用表情修飾符（flip、spin、pulse、spin2、spin3、1spin、2spin、3spin、tr、bl、br、shake、shake2、shake3、flap）"
                 },
                 "animateOnHover": {
                     "name": "懸停動畫",
@@ -144,8 +177,8 @@
             "categories": {
                 "name": "分類",
                 "twitchglobal": {
-                    "name": "Twitch 全局",
-                    "note": "顯示 Twitch 全局表情"
+                    "name": "Twitch 全域",
+                    "note": "顯示 Twitch 全域表情"
                 },
                 "twitchsubscriber": {
                     "name": "Twitch 訂閱",
@@ -163,14 +196,14 @@
         }
     },
     "Addons": {
-        "title": "{{name}} 版本：{{version}} 作者：{{author}}",
-        "byline": "作者： {{author}}",
-        "openFolder": "開啟{{type}}資料夾",
-        "reload": "重新加載",
-        "addonSettings": "設置",
+        "title": "{{name}} 版本 {{version}} 作者 {{author}}",
+        "byline": "作者 {{author}}",
+        "openFolder": "開啟 {{type}} 資料夾",
+        "reload": "重新載入",
+        "addonSettings": "設定",
         "website": "網站",
-        "source": "源碼",
-        "invite": "支持服務器",
+        "source": "開源代碼",
+        "invite": "支持伺服器",
         "donate": "捐贈",
         "patreon": "Patreon",
         "name": "名稱",
@@ -178,89 +211,70 @@
         "version": "版本",
         "added": "安裝時間",
         "modified": "最後更新時間",
-        "search": "搜索{{type}}",
+        "search": "搜尋 {{type}}",
         "editAddon": "編輯",
         "deleteAddon": "刪除",
-        "confirmDelete": "你真的要刪除{{name}}嗎？",
-        "confirmationText": "你还有未保存的更改，關閉此窗口將失去所有對{{name}}所做的更改。",
-        "enabled": "已啟用{{name}}",
-        "disabled": "已禁用{{name}}",
-        "couldNotEnable": "無法啟用{{name}}。",
-        "couldNotDisable": "無法禁用{{name}}。",
-        "couldNotStart": "無法启动{{name}}。",
-        "couldNotStop": "無法停止{{name}}。",
-        "settingsError": "無法打开{{name}}设置",
-        "methodError": "無法调用{{method}}。",
+        "confirmDelete": "您真的要刪除 {{name}} 嗎？",
+        "confirmationText": "您還有未儲存的更改，關閉此視窗將失去所有對 {{name}} 所做的更改。",
+        "enabled": "已啟用 {{name}}。",
+        "disabled": "已停用 {{name}}。",
+        "couldNotEnable": "無法啟用 {{name}}。",
+        "couldNotDisable": "無法停用 {{name}}。",
+        "couldNotStart": "無法啟動 {{name}}。",
+        "couldNotStop": "無法停止 {{name}}。",
+        "settingsError": "無法開啟設定 {{name}}。",
+        "methodError": "無法調用 {{method}}。",
         "unknownAuthor": "未知的作者",
-        "noDescription": "作者没有留下任何描述",
-        "alreadyExists": "已經存在相同名稱「{{name}}」的{{type}}了",
-        "alreadWatching": "已經在監聽附加元件了",
-        "metaError": "無法解析元數據",
-        "missingNameData": "元數據缺少名稱。",
-        "metaNotFound": "無法找到元數據",
+        "noDescription": "作者没有留下任何描述。",
+        "alreadyExists": "已存在相同名稱 {{name}} 的 {{type}}。",
+        "alreadWatching": "已在監聽擴充功能了。",
+        "metaError": "無法解析元資料。",
+        "missingNameData": "元資料缺少名稱。",
+        "metaNotFound": "無法找到元資料。",
         "compileError": "無法編譯。",
-        "wasUnloaded": "已卸載{{name}}。",
-        "blankSlateHeader": "你还未添加任何{{type}}！",
-        "blankSlateMessage": "你可以在[此网站]({{link}})中獲取，並將其添加到你的{{type}}資料夾中。"
+        "wasUnloaded": "已解除安裝 {{name}}。",
+        "blankSlateHeader": "您還未新增任何 {{type}}！",
+        "blankSlateMessage": "您可以在[此網站]（{{link}}）中獲得，並將其新增到您的 {{type}} 資料夾中。",
+        "isEnabled": "已啟用",
+        "wasLoaded": "已載入 {{name}} 版本 {{version}}。"
     },
     "CustomCSS": {
-        "confirmationText": "你还有未保存的更改，關閉此窗口將失去所有對客製化樣式所做的更改。",
+        "confirmationText": "您還有未儲存的更改，關閉此視窗將失去所有對客製化 CSS 所做的更改。",
         "update": "更新",
-        "save": "保存",
-        "openNative": "在系統編輯器中打開",
-        "openDetached": "在獨立窗口中打開",
-        "settings": "編輯器設置",
-        "editorTitle": "客製化樣式編輯器"
+        "save": "儲存",
+        "openNative": "在系統編輯器中開啟",
+        "openDetached": "在獨立視窗中開啟",
+        "settings": "編輯器設定",
+        "editorTitle": "客製化 CSS 編輯器"
     },
     "Emotes": {
-        "loading": "在後台加載表情時不會重新加載。",
-        "loaded": "所有表情均已成功加載。",
-        "clearEmotes": "清除表情數據",
-        "favoriteAction": "添加到我的最愛",
+        "loading": "在背景載入表情時不會重新載入。",
+        "loaded": "所有表情均已成功載入。",
+        "clearEmotes": "清除表情資料",
+        "favoriteAction": "新增到我的最愛",
         "downloadFailed": "下載失敗",
-        "failureMessage": "BetterDiscord 無法下載表情，請檢查你的網絡連接和防火牆。"
-    },
-    "PublicServers": {
-        "button": "公共",
-        "join": "加入",
-        "joining": "加入中",
-        "joined": "已加入",
-        "loading": "加載中",
-        "loadMore": "加載更多",
-        "notConnected": "尚未連接",
-        "connectionRequired": "你必須先連接你的賬號才能加入公共伺服器",
-        "connectionError": "連接錯誤",
-        "connectionErrorMessage": "連接到 DiscordServers.com 時發生錯誤，可能是他们的網站/接口暫時不可用。請稍後再試。",
-        "pagination": "共{{count}}頁中的第{{page}}頁",
-        "search": "搜索",
-        "connect": "連接",
-        "reconnect": "重新連接",
-        "categories": "分類",
-        "keywords": "關鍵詞",
-        "connection": "使用 {{username}}#{{discriminator}} 進行連接",
-        "results": "線上{{category}}分類下的{{total}}個結果，當前正在線上{{start}}-{{end}}個結果",
-        "query": "為了 {{query}}"
+        "failureMessage": "BetterDiscord 無法下載表情，請檢查您的網絡連線和防火牆。"
     },
     "Modals": {
-        "confirmAction": "你確定嗎？",
+        "confirmAction": "您確定嗎？",
         "okay": "確定",
         "done": "完成",
         "cancel": "取消",
         "nevermind": "別在意",
         "close": "關閉",
         "name": "名稱",
-        "message": "消息",
+        "message": "訊息",
         "error": "錯誤",
-        "addonErrors": "附加元件錯誤",
-        "restartRequired": "需要重啟以生效",
-        "restartNow": "立即重啟",
-        "restartLater": "稍候自行重啟",
-        "additionalInfo": "額外信息",
-        "restartPrompt": "Discord 需要重啟以應用更新。立刻進行重啟嗎？"
+        "addonErrors": "擴充功能錯誤",
+        "restartRequired": "需要重新啟動以生效",
+        "restartNow": "立即重新啟動",
+        "restartLater": "稍後自行重新啟動",
+        "additionalInfo": "額外資訊",
+        "restartPrompt": "Discord 需要重新啟動以套用更新。立刻進行重新啟動嗎？"
     },
     "ReactDevTools": {
         "notFound": "未找到框架",
-        "notFoundDetails": "無法在你的電腦上找到 React 開發者工具擴充套件。請在本地的 Chrome 上安裝該擴充套件。"
+        "notFoundDetails": "無法在您的電腦上找到 React 開發者工具擴充套件。請在本機的 Chrome 上安裝該擴充套件。"
     },
     "Sorting": {
         "sortBy": "排序方式",
@@ -269,7 +283,26 @@
         "descending": "倒序"
     },
     "WindowPrefs": {
-        "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 AERO 的捕捉和最大化。\n\n該變更需要重啟以生效。你要立即進行重啟嗎？",
-        "disabledInfo": "Discord 需要重啟以應用最新變更。立刻進行重啟嗎？"
+        "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 Aero 的捕捉和最大化。\\n\\n該變更需要重新啟動以生效。您要立即進行重新啟動嗎？",
+        "disabledInfo": "Discord 需要重新啟動以套用最新變更。立刻進行重新啟動嗎？"
+    },
+    "Notices": {
+        "moreInfo": "更多資訊"
+    },
+    "Updater": {
+        "updateFailed": "更新失敗！",
+        "updateFailedMessage": "BetterDiscord 更新失敗。請從我們的網站 (https://betterdiscord.app/) 下載最新版本的安裝程式並重新安裝。",
+        "updateSuccessful": "更新成功！",
+        "updateAvailable": "BetterDiscord 已有新的版本（{{version}}）",
+        "addonUpdatesAvailable": "BetterDiscord 已為您 {{type}} 中的 {{count}} 找到更新！",
+        "addonUpdated": "{{name}} 已更新到版本 {{version}}！",
+        "checking": "正在檢查更新！",
+        "finishedChecking": "已完成檢查更新！",
+        "checkForUpdates": "檢查更新！",
+        "updateAll": "全部更新！",
+        "noUpdatesAvailable": "沒有可供使用的更新。",
+        "versionAvailable": "版本 {{version}} 已可供使用！",
+        "upToDateBlankslate": "您所有的 {{type}} 似乎都是最新的！",
+        "updateButton": "更新！"
     }
 }

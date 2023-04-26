@@ -14,13 +14,9 @@
                     "name": "이모트 시스템",
                     "note": "BD의 이모트 시스템을 활성화합니다"
                 },
-                "publicServers": {
-                    "name": "공개 서버",
-                    "note": "공개 서버 버튼을 표시합니다"
-                },
                 "voiceDisconnect": {
                     "name": "음성 연결 끊기",
-                    "note": "Discord를 닫을 때 음성 채널의 연결을 끊습니다"
+                    "note": "디스코드를 닫을 때 음성 채널의 연결을 끊습니다"
                 },
                 "showToasts": {
                     "name": "토스트 메시지 표시",
@@ -28,13 +24,13 @@
                 },
                 "mediaKeys": {
                     "name": "미디어 키 비활성화",
-                    "note": "Discord가 영상을 재생한 후에 미디어 키를 가져가는 것을 방지합니다"
+                    "note": "영상을 재생한 후, 디스코드가 미디어 키를 가로채는 것을 방지합니다"
                 }
             },
             "window": {
                 "removeMinimumSize": {
                     "name": "최소 크기 제거",
-                    "note": "디스코드의 강제 창 최소 크기인 940x500을 제거합니다"
+                    "note": "디스코드의 강제 창 최소 크기 제한 (940x500) 을 제거합니다"
                 },
                 "name": "창 선호",
                 "transparency": {
@@ -96,16 +92,16 @@
                     "note": "F8을 누를 때 디버거를 활성화합니다"
                 },
                 "reactDevTools": {
-                    "name": "반응 개발자 도구",
-                    "note": "반응 개발자 도구를 로컬 설치에 합니다"
+                    "name": "React 개발자 도구",
+                    "note": "로컬 환경에 설치된 React 개발자 도구를 디스코드에 삽입합니다"
                 },
                 "inspectElement": {
                     "name": "요소 선택 단축키",
                     "note": "대부분의 브라우저에서 가장 흔한 요소 선택 단축키를 활성화합니다 (ctrl + shift + c)"
                 },
                 "devToolsWarning": {
-                    "name": "데브툴 경고 멈추기",
-                    "note": "Discord가 \"Hold Up!\" 메시지를 표시하는 것을 멈춥니다"
+                    "name": "DevTools 경고 멈추기",
+                    "note": "디스코드가 \\\"Hold Up!\\\" 메시지를 표시하는 것을 멈춥니다"
                 },
                 "debugLogs": {
                     "name": "디버그 로그",
@@ -163,7 +159,7 @@
                 },
                 "hideEmojiMenu": {
                     "name": "이모트 메뉴 숨기기",
-                    "note": "이모트 메뉴를 사용 중일 때 Discord의 이모지 메뉴를 숨깁니다"
+                    "note": "이모트 메뉴를 사용 중일 때 디스코드의 이모지 메뉴를 숨깁니다"
                 },
                 "autoCaps": {
                     "name": "이모트 자동 대문자",
@@ -222,10 +218,10 @@
         "confirmationText": "{{name}}에 저장되지 않은 수정사항이 있습니다. 이 창을 닫으면 모든 수정이 취소됩니다.",
         "enabled": "{{name}}이 활성화되었습니다",
         "disabled": "{{name}}이 비활성화되었습니다",
-        "couldNotEnable": "{{name}} 활성화에 실패했습니다",
-        "couldNotDisable": "{{name}} 비활성화에 실패했습니다.",
-        "couldNotStart": "{{name}} 시작에 실패했습니다",
-        "couldNotStop": "{{name}} 정지에 실패했습니다",
+        "couldNotEnable": "{{name}}(을)를 활성화하지 못했습니다",
+        "couldNotDisable": "{{name}}(을)를 비활성화하지 못했습니다",
+        "couldNotStart": "{{name}}(을)를 시작하지 못했습니다",
+        "couldNotStop": "{{name}}(을)를 정지하지 못했습니다",
         "settingsError": "{{name}} 의 설정을 열 수 없습니다",
         "methodError": "{{method}}(을)를 실행할 수 없습니다",
         "unknownAuthor": "알 수 없는 제작자",
@@ -259,27 +255,6 @@
         "downloadFailed": "다운로드 실패",
         "failureMessage": "BetterDiscord가 이모트 다운로드에 실패했습니다. 인터넷 상태와 방화벽을 확인해주세요"
     },
-    "PublicServers": {
-        "button": "공개",
-        "join": "참가",
-        "joining": "참가 중",
-        "joined": "참가함",
-        "loading": "로딩 중",
-        "loadMore": "더 불러오기",
-        "notConnected": "연결되지 않음",
-        "connectionRequired": "서버에 참가하기 위해서 계정을 연결해야 합니다",
-        "connectionError": "연결 오류",
-        "connectionErrorMessage": "DiscordServers.com 연결에 오류가 있습니다. 웹사이트/API가 꺼져있을 수 있습니다. 나중에 다시 시도하세요.",
-        "pagination": "{{page}} 페이지 중 {{count}}",
-        "search": "검색",
-        "connect": "연결",
-        "reconnect": "재연결",
-        "categories": "카테고리",
-        "keywords": "키워드",
-        "connection": "{{username}}#{{discriminator}} 연결됨",
-        "results": "{{category}} 의 검색결과에서 {{total}} 중 {{start}}-{{end}} 표시 중",
-        "query": "쿼리: {{query}}"
-    },
     "Modals": {
         "confirmAction": "확실합니까?",
         "okay": "확인",
@@ -295,7 +270,7 @@
         "restartNow": "지금 재시작하기",
         "restartLater": "나중에 재시작하기",
         "additionalInfo": "추가 정보",
-        "restartPrompt": "적용을 위해 Discord가 재시작되어야 합니다. 지금 재시작하시겠습니까?"
+        "restartPrompt": "적용을 위해 디스코드가 재시작되어야 합니다. 지금 재시작하시겠습니까?"
     },
     "ReactDevTools": {
         "notFound": "확장 프로그램을 찾을 수 없음",
@@ -308,8 +283,8 @@
         "descending": "내림차순"
     },
     "WindowPrefs": {
-        "enabledInfo": "이 옵션은 제대로 작동하려면 투명한 테마가 필요합니다. Windows가 애어로 스내핑과 최대화를 고장낼 수 있습니다.\n\n적용을 위해 Discord가 재시작되어야 합니다. 지금 재시작하시겠습니까?",
-        "disabledInfo": "적용을 위해 Discord가 재시작되어야 합니다. 지금 재시작하시겠습니까?"
+        "enabledInfo": "이 옵션은 제대로 작동하려면 투명한 테마가 필요합니다. Windows에서는 에어로 스내핑과 최대화가 고장날 수 있습니다.\n\n적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?",
+        "disabledInfo": "적용을 위해 디스코드를 재시작해야 합니다. 지금 재시작하시겠습니까?"
     },
     "Notices": {
         "moreInfo": "더 많은 정보 보기"
