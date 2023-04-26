@@ -17,6 +17,9 @@ import ThemeIcon from "../icons/theme";
 import Modals from "../modals";
 import Toasts from "../toasts";
 
+const {useState, useCallback, useMemo} = React;
+
+
 const LinkIcons = {
     website: WebIcon,
     source: GitHubIcon,
@@ -27,168 +30,128 @@ const LinkIcons = {
 
 const LayerManager = {
     pushLayer(component) {
-      DiscordModules.Dispatcher.dispatch({
-        type: "LAYER_PUSH",
-        component
-      });
+        DiscordModules.Dispatcher.dispatch({
+            type: "LAYER_PUSH",
+            component
+        });
     },
     popLayer() {
-      DiscordModules.Dispatcher.dispatch({
-        type: "LAYER_POP"
-      });
+        DiscordModules.Dispatcher.dispatch({
+            type: "LAYER_POP"
+        });
     },
     popAllLayers() {
-      DiscordModules.Dispatcher.dispatch({
-        type: "LAYER_POP_ALL"
-      });
+        DiscordModules.Dispatcher.dispatch({
+            type: "LAYER_POP_ALL"
+        });
     }
-  };
+};
+
 const UserStore = WebpackModules.getByProps("getCurrentUser");
 const ChannelStore = WebpackModules.getByProps("getDMFromUserId");
 const PrivateChannelActions = WebpackModules.getByProps("openPrivateChannel");
 const ChannelActions = WebpackModules.getByProps("selectPrivateChannel");
+const getString = value => typeof value == "string" ? value : value.toString();
 
-export default class AddonCard extends React.Component {
+function makeButton(title, children, action, {isControl = false, danger = false, disabled = false} = {}) {
+    const ButtonType = isControl ? "button" : "div";
+    return <DiscordModules.Tooltip color="primary" position="top" text={title}>
+                {(props) => {
+                    return <ButtonType {...props} className={(isControl ? "bd-button bd-addon-button" : "bd-addon-button") + (danger ? " bd-button-danger" : "") + (disabled ? " bd-button-disabled" : "")} onClick={action}>{children}</ButtonType>;
+                }}
+            </DiscordModules.Tooltip>;
+}
 
-    constructor(props) {
-        super(props);
-
-        this.settingsPanel = "";
-        this.panelRef = React.createRef();
-
-        this.onChange = this.onChange.bind(this);
-        this.showSettings = this.showSettings.bind(this);
-        this.messageAuthor = this.messageAuthor.bind(this);
+function buildLink(type, url) {
+    if (!url) return null;
+    const icon = React.createElement(LinkIcons[type]);
+    const link = <a className="bd-link bd-link-website" href={url} target="_blank" rel="noopener noreferrer">{icon}</a>;
+    if (type == "invite") {
+        link.props.onClick = function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            let code = url;
+            const tester = /\.gg\/(.*)$/;
+            if (tester.test(code)) code = code.match(tester)[1];
+            LayerManager.popLayer();
+            DiscordModules.InviteActions?.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
+        };
     }
+    return makeButton(Strings.Addons[type], link);
+}
 
-    showSettings() {
-        if (!this.props.hasSettings || !this.props.enabled) return;
-        const name = this.getString(this.props.addon.name);
+export default function AddonCard({addon, type, disabled, enabled: initialValue, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}) {
+    const [isEnabled, setEnabled] = useState(initialValue);
+    const onChange = useCallback(() => {
+        setEnabled(!isEnabled);
+        if (parentChange) parentChange(addon.id);
+    }, [addon.id, parentChange, isEnabled]);
+
+    const showSettings = useCallback(() => {
+        if (!hasSettings || !isEnabled) return;
+        const name = getString(addon.name);
         try {
-            Modals.showAddonSettingsModal(name, this.props.getSettingsPanel());
+            Modals.showAddonSettingsModal(name, getSettingsPanel());
         }
         catch (err) {
             Toasts.show(Strings.Addons.settingsError.format({name}), {type: "error"});
             Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err);
         }
-    }
+    }, [hasSettings, isEnabled, addon.name, getSettingsPanel]);
 
-    getString(value) {return typeof value == "string" ? value : value.toString();}
-
-    onChange() {
-        this.props.onChange && this.props.onChange(this.props.addon.id);
-        this.props.enabled = !this.props.enabled;
-        this.forceUpdate();
-    }
-
-    messageAuthor() {
-        if (!this.props.addon.authorId) return;
+    const messageAuthor = useCallback(() => {
+        if (!addon.authorId) return;
         if (LayerManager) LayerManager.popLayer();
         if (!UserStore || !ChannelActions || !ChannelStore || !PrivateChannelActions) return;
         const selfId = UserStore.getCurrentUser().id;
-        if (selfId == this.props.addon.authorId) return;
-        const privateChannelId = ChannelStore.getDMFromUserId(this.props.addon.authorId);
+        if (selfId == addon.authorId) return;
+        const privateChannelId = ChannelStore.getDMFromUserId(addon.authorId);
         if (privateChannelId) return ChannelActions.selectPrivateChannel(privateChannelId);
-        PrivateChannelActions.openPrivateChannel(selfId, this.props.addon.authorId);
-    }
+        PrivateChannelActions.openPrivateChannel(selfId, addon.authorId);
+    }, [addon.authorId]);
 
-    buildTitle(name, version, author) {
+
+    const title = useMemo(() => {
         const authorArray = Strings.Addons.byline.split(/({{[A-Za-z]+}})/);
-        const authorComponent = author.link || author.id
-                                ? <a className="bd-link bd-link-website" href={author.link || null} onClick={this.messageAuthor} target="_blank" rel="noopener noreferrer">{author.name}</a>
-                                : <span className="bd-author">{author.name}</span>;
+        const authorComponent = addon.authorLink || addon.authorId
+                                ? <a className="bd-link bd-link-website" href={addon.authorLink || null} onClick={messageAuthor} target="_blank" rel="noopener noreferrer">{getString(addon.author)}</a>
+                                : <span className="bd-author">{getString(addon.author)}</span>;
 
         const authorIndex = authorArray.findIndex(s => s == "{{author}}");
         if (authorIndex) authorArray[authorIndex] = authorComponent;
 
         return [
-            React.createElement("div", {className: "bd-name"}, name),
-            React.createElement("div", {className: "bd-meta"}, 
-                React.createElement("span", {className: "bd-version"}, `v${version}`),
-                ...authorArray
-            )
+            <div className="bd-name">{getString(addon.name)}</div>,
+            <div className="bd-meta">
+                <span className="bd-version">v{getString(addon.version)}</span>
+                {authorArray}
+            </div>
         ];
-            
-    }
+    }, [addon.name, addon.version, addon.authorLink, addon.authorId, addon.author, messageAuthor]);
 
-    buildLink(which) {
-        const url = this.props.addon[which];
-        if (!url) return null;
-        const icon = React.createElement(LinkIcons[which]);
-        const link = <a className="bd-link bd-link-website" href={url} target="_blank" rel="noopener noreferrer">{icon}</a>;
-        if (which == "invite") {
-            link.props.onClick = function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                let code = url;
-                const tester = /\.gg\/(.*)$/;
-                if (tester.test(code)) code = code.match(tester)[1];
-                LayerManager.popLayer();
-                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
-            };
-        }
-        return this.makeButton(Strings.Addons[which], link);
-    }
-
-    get controls() { // {this.props.hasSettings && <button onClick={this.showSettings} className="bd-button bd-button-addon-settings" disabled={!this.props.enabled}>{Strings.Addons.addonSettings}</button>}
-        return <div className="bd-controls">
-                    {this.props.hasSettings && this.makeControlButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, this.showSettings, {disabled: !this.props.enabled})}
-                    {this.props.editAddon && this.makeControlButton(Strings.Addons.editAddon, <EditIcon size={"20px"} />, this.props.editAddon)}
-                    {this.props.deleteAddon && this.makeControlButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, this.props.deleteAddon, {danger: true})}
-                </div>;
-    }
-
-    get footer() {
-        const links = ["website", "source", "invite", "donate", "patreon"];
-        const linkComponents = links.map(this.buildLink.bind(this)).filter(c => c);// linkComponents.map((comp, i) => i < linkComponents.length - 1 ? [comp, " | "] : comp).flat()
+    const footer = useMemo(() => {
+        const links = Object.keys(LinkIcons);
+        const linkComponents = links.map(l => buildLink(l, addon[l])).filter(c => c);
         return <div className="bd-footer">
                     <span className="bd-links">{linkComponents}</span> 
-                    {this.controls}
-                </div>;
-    }
-
-    makeButton(title, children, action) {
-        return <DiscordModules.Tooltip color="primary" position="top" text={title}>
-                    {(props) => {
-                        return <div {...props} className="bd-addon-button" onClick={action}>{children}</div>;
-                    }}
-                </DiscordModules.Tooltip>;
-    }
-
-    makeControlButton(title, children, action, {danger = false, disabled = false} = {}) {
-        return <DiscordModules.Tooltip color="primary" position="top" text={title}>
-                    {(props) => {
-                        return <button {...props} className={"bd-button bd-addon-button" + (danger ? " bd-button-danger" : "") + (disabled ? " bd-button-disabled" : "")} onClick={action}>{children}</button>;
-                    }}
-                </DiscordModules.Tooltip>;
-    }
-
-    render() {
-        const addon = this.props.addon;
-        const name = this.getString(addon.name);
-        const author = this.getString(addon.author);
-        const description = this.getString(addon.description);
-        const version = this.getString(addon.version);
-
-        return <div id={`${addon.id}-card`} className={"bd-addon-card" + (this.props.disabled ? " bd-addon-card-disabled" : "")}>
-                    <div className="bd-addon-header">
-                            {this.props.type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
-                            <div className="bd-title">{this.buildTitle(name, version, {name: author, id: this.props.addon.authorId, link: this.props.addon.authorLink})}</div>
-                            <Switch disabled={this.props.disabled} checked={this.props.enabled} onChange={this.onChange} />
+                    <div className="bd-controls">
+                        {hasSettings && makeButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, showSettings, {isControl: true, disabled: !isEnabled})}
+                        {editAddon && makeButton(Strings.Addons.editAddon, <EditIcon size={"20px"} />, editAddon, {isControl: true})}
+                        {deleteAddon && makeButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
                     </div>
-                    <div className="bd-description-wrap">
-                        {this.props.disabled && <div className="banner banner-danger"><ErrorIcon className="bd-icon" />{`An error was encountered while trying to load this ${this.props.type}.`}</div>}
-                        <div className="bd-description">{SimpleMarkdown.parseToReact(description)}</div>
-                    </div>
-                    {this.footer}
                 </div>;
-    }
+    }, [hasSettings, editAddon, deleteAddon, addon, isEnabled, showSettings]);
+
+    return <div id={`${addon.id}-card`} className={"bd-addon-card" + (disabled ? " bd-addon-card-disabled" : "")}>
+                <div className="bd-addon-header">
+                        {type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
+                        <div className="bd-title">{title}</div>
+                        <Switch disabled={disabled} checked={isEnabled} onChange={onChange} />
+                </div>
+                <div className="bd-description-wrap">
+                    {disabled && <div className="banner banner-danger"><ErrorIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}
+                    <div className="bd-description">{SimpleMarkdown.parseToReact(getString(addon.description))}</div>
+                </div>
+                {footer}
+            </div>;
 }
-
-const originalRender = AddonCard.prototype.render;
-Object.defineProperty(AddonCard.prototype, "render", {
-    enumerable: false,
-    configurable: false,
-    set: function() {Logger.warn("AddonCard", "Addon policy for plugins #5 https://github.com/BetterDiscord/BetterDiscord/wiki/Addon-Policies#plugins");},
-    get: () => originalRender
-});

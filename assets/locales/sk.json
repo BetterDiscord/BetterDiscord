@@ -13,10 +13,6 @@
                     "name": "Emote Systém",
                     "note": "Povoliť BD emote systém"
                 },
-                "publicServers": {
-                    "name": "Verejné servery",
-                    "note": "Zobraziť tlačidlo verejných serverov"
-                },
                 "voiceDisconnect": {
                     "name": "Odpojenie hovoru",
                     "note": "Odpojiť z hovoru pri vypnutí Discordu"
@@ -219,27 +215,6 @@
         "favoriteAction": "Uložiť!",
         "downloadFailed": "Sťahovanie Zlyhalo",
         "failureMessage": "BetterDiscord nedokázal načítať emoty, prosím skontrolujte internetové pripojenie a firewall."
-    },
-    "PublicServers": {
-        "button": "verejné",
-        "join": "Pridať",
-        "joining": "Pridávanie",
-        "joined": "Pridaný",
-        "loading": "Načítavanie",
-        "loadMore": "Načítať Viac",
-        "notConnected": "Nepripojený",
-        "connectionRequired": "Musíte pripojiť svoj účet pre pripojenie sa na servery.",
-        "connectionError": "Chyba spojenia",
-        "connectionErrorMessage": "Pri pripájaní k serveru DiscordServers.com sa vyskytla chyba. Je možné, že ich webové stránky / rozhranie API nefunguje. Skúste neskôr prosím.",
-        "pagination": "Stránka {{page}} z {{count}}",
-        "search": "Hľadať",
-        "connect": "Pripojiť",
-        "reconnect": "Znova pripojiť",
-        "categories": "Kategórie",
-        "keywords": "Kľúčové slová",
-        "connection": "Pripojený ako: {{username}}#{{discriminator}}",
-        "results": "Zobrazených {{start}}-{{end}} z {{total}} výsledkov v {{category}}",
-        "query": "pre {{query}}"
     },
     "Modals": {
         "confirmAction": "Ste si istý?",

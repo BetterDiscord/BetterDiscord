@@ -14,39 +14,39 @@
     get folder() {return this.#manager.addonFolder;}
 
     /**
-     * Determines if a particular adon is enabled.
-     * @param {string} idOrFile Addon id or filename.
+     * Determines if a particular addon is enabled.
+     * @param {string} idOrFile Addon ID or filename
      * @returns {boolean}
      */
     isEnabled(idOrFile) {return this.#manager.isEnabled(idOrFile);}
 
     /**
      * Enables the given addon.
-     * @param {string} idOrFile Addon id or filename.
+     * @param {string} idOrFile Addon ID or filename
      */
     enable(idOrAddon) {return this.#manager.enableAddon(idOrAddon);}
 
     /**
      * Disables the given addon.
-     * @param {string} idOrFile Addon id or filename.
+     * @param {string} idOrFile Addon ID or filename
      */
     disable(idOrAddon) {return this.#manager.disableAddon(idOrAddon);}
 
     /**
      * Toggles if a particular addon is enabled.
-     * @param {string} idOrFile Addon id or filename.
+     * @param {string} idOrFile Addon ID or filename
      */
     toggle(idOrAddon) {return this.#manager.toggleAddon(idOrAddon);}
 
     /**
      * Reloads if a particular addon is enabled.
-     * @param {string} idOrFile Addon id or filename.
+     * @param {string} idOrFile Addon ID or filename
      */
     reload(idOrFileOrAddon) {return this.#manager.reloadAddon(idOrFileOrAddon);}
 
     /**
      * Gets a particular addon.
-     * @param {string} idOrFile Addon id or filename.
+     * @param {string} idOrFile Addon ID or filename
      * @returns {object} Addon instance
      */
     get(idOrFile) {return this.#manager.getAddon(idOrFile);}

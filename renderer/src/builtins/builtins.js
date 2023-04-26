@@ -2,7 +2,6 @@
 
 export {default as CustomCSS} from "./customcss";
 
-export {default as PublicServers} from "./general/publicservers";
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
 export {default as MediaKeys} from "./general/mediakeys";
 

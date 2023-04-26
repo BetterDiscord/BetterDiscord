@@ -14,10 +14,6 @@
                     "name": "Система смайликов",
                     "note": "Включает систему смайликов BD"
                 },
-                "publicServers": {
-                    "name": "Публичные сервера",
-                    "note": "Отображает кнопку публичных серверов"
-                },
                 "voiceDisconnect": {
                     "name": "Отключение голосового чата",
                     "note": "Отключает от голосового чата, когда Discord закрыт"
@@ -258,27 +254,6 @@
         "favoriteAction": "Избранное!",
         "downloadFailed": "Загрузка не удалась",
         "failureMessage": "BetterDiscord'у не удалось загрузить смайлики, проверьте подключение к интернету и брандмауэр."
-    },
-    "PublicServers": {
-        "button": "Публичные сервера",
-        "join": "Присоединился",
-        "joining": "Присоединение",
-        "joined": "Присоединился",
-        "loading": "Загрузка",
-        "loadMore": "Загрузить больше",
-        "notConnected": "Не подключен",
-        "connectionRequired": "Вы должны подключить свою учетную запись, чтобы присоединиться к серверам.",
-        "connectionError": "Ошибка соединения",
-        "connectionErrorMessage": "Произошла ошибка при подключении к DiscordServers.com, возможно, их сайт/api не упали.  Пожалуйста, повторите попытку позже.",
-        "pagination": "Страница {{page}} и {{count}}",
-        "search": "Поиск",
-        "connect": "Подключить",
-        "reconnect": "Переподключиться",
-        "categories": "Категории",
-        "keywords": "Ключевые слова",
-        "connection": "Подключён как: {{username}}#{{discriminator}}",
-        "results": "Показано {{start}}-{{end}} из {{total}} результатов в {{category}}",
-        "query": "для {{query}}"
     },
     "Modals": {
         "confirmAction": "Ты уверен?",

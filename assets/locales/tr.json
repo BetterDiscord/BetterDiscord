@@ -13,10 +13,6 @@
                     "name": "Emoji Sistemi",
                     "note": "BD'nin emoji sistemini etkileştirir"
                 },
-                "publicServers": {
-                    "name": "Herkese-açık Sunucular",
-                    "note": "Herkese-açık Sunucu düğmesini göster"
-                },
                 "voiceDisconnect": {
                     "name": "Ses Kanalından Ayrılma",
                     "note": "Discord'u kapatırken aktif ses kanalından ayrılır"
@@ -219,27 +215,6 @@
         "favoriteAction": "Favori ekle!",
         "downloadFailed": "Yükleme başarısız oldu",
         "failureMessage": "BetterDiscord emojileri yüklemede başarısız oldu, lütfen internet bağlantınızı kontrol ediniz."
-    },
-    "PublicServers": {
-        "button": "Herkese Açık",
-        "join": "Katıl",
-        "joining": "Katılınıyor",
-        "joined": "Katılındı",
-        "loading": "Yükleniyor",
-        "loadMore": "Daha Fazla Yükle",
-        "notConnected": "Bağlı Değil",
-        "connectionRequired": "Sunuculara katılmak için hesabını bağlamalısın.",
-        "connectionError": "Bağlantı Hatası.",
-        "connectionErrorMessage": "DiscordServers.com'a bağlanırken hata oldu, websitelerini kapalı olması mümkün. Lütfen daha sonra tekrar deneyiniz.",
-        "pagination": "{{count}} içerisinden {{page}}. sayfa",
-        "search": "Ara",
-        "connect": "Bağlan",
-        "reconnect": "Geri Bağlan",
-        "categories": "Kategoriler",
-        "keywords": "Anahtar Kelimeler",
-        "connection": "{{username}}#{{discriminator}} olarak bağlanıldı",
-        "results": "{{category}} kategorisinde {{total}} üzerinden {{start}}-{{end}} gösteriliyor",
-        "query": "{{query}} için"
     },
     "Modals": {
         "confirmAction": "Emin Misin?",

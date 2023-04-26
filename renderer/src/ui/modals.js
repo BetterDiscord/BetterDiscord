@@ -293,6 +293,11 @@ export default class Modals {
                     super(props);
                     this.elementRef = React.createRef();
                     this.element = panel;
+                    this.state = {hasError: false};
+                }
+
+                componentDidCatch() {
+                    this.setState({hasError: true});
                 }
 
                 componentDidMount() {
@@ -300,6 +305,7 @@ export default class Modals {
                 }
 
                 render() {
+                    if (this.state.hasError) return null;
                     const props = {
                         className: "bd-addon-settings-wrap",
                         ref: this.elementRef

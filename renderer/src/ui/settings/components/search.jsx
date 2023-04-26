@@ -1,22 +1,20 @@
 import {React} from "modules";
 import SearchIcon from "../../icons/search";
 
-export default class Search extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: this.props.value};
-        this.onChange = this.onChange.bind(this);
-    }
+const {useState, useCallback} = React;
 
-    onChange(e) {
-        this.setState({value: e.target.value});
-        if (this.props.onChange) this.props.onChange(e);
-    }
 
-    render() {
-        return <div className={"bd-search-wrapper" + (this.props.className ? ` ${this.props.className}` : "")}>
-                    <input onChange={this.onChange} onKeyDown={this.props.onKeyDown} type="text" className="bd-search" placeholder={this.props.placeholder} maxLength="50" value={this.state.value} />
-                    <SearchIcon />
-                </div>;
-    }
+export default function Search({onChange, className, onKeyDown, placeholder}) {
+    const [value, setValue] = useState("");
+    const change = useCallback((e) => {
+        onChange?.(e);
+        setValue(e.target.value);
+    }, [onChange]);
+
+
+    return <div className={"bd-search-wrapper" + (className ? ` ${className}` : "")}>
+                <input onChange={change} onKeyDown={onKeyDown} type="text" className="bd-search" placeholder={placeholder} maxLength="50" value={value} />
+                <SearchIcon />
+            </div>;
+
 }

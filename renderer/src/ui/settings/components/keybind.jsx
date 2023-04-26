@@ -3,78 +3,50 @@ import {React} from "modules";
 import Keyboard from "../../icons/keyboard";
 import Close from "../../icons/close";
 
-export default class Keybind extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: this.props.value, isRecording: false};
-        this.onClick = this.onClick.bind(this);
-        this.keyHandler = this.keyHandler.bind(this);
-        this.clearKeybind = this.clearKeybind.bind(this);
-        this.accum = [];
-        this.max = this.props.max ?? 2;
-    }
+const {useState, useCallback, useEffect} = React;
 
-    componentDidMount() {
-        window.addEventListener("keydown", this.keyHandler);
-    }
 
-    componentWillUnmount() {
-        window.removeEventListener("keydown", this.keyHandler);
-    }
+export default function Keybind({value: initialValue, onChange, max = 2, clearable = true}) {
+    const [state, setState] = useState({value: initialValue, isRecording: false, accum: []});
 
-    /**
-     * 
-     * @param {KeyboardEvent} event 
-     */
-    keyHandler(event) {
-        if (!this.state.isRecording) return;
+    useEffect(() => {
+        window.addEventListener("keydown", keyHandler, true);
+        return () => window.removeEventListener("keydown", keyHandler, true);
+    });
+
+    const keyHandler = useCallback((event) => {
+        if (!state.isRecording) return;
         event.stopImmediatePropagation();
         event.stopPropagation();
         event.preventDefault();
-        if (event.repeat || this.accum.includes(event.key)) return;
+        if (event.repeat || state.accum.includes(event.key)) return;
 
-        this.accum.push(event.key);
-        if (this.accum.length == this.max) {
-            if (this.props.onChange) this.props.onChange(this.accum);
-            this.setState({value: this.accum.slice(0), isRecording: false}, () => this.accum.splice(0, this.accum.length));
+        state.accum.push(event.key);
+        if (state.accum.length == max) {
+            if (onChange) onChange(state.accum);
+            setState({value: state.accum.slice(0), isRecording: false, accum: []});
         }
-    }
+    }, [state, max, onChange]);
 
-    /**
-     * 
-     * @param {MouseEvent} e 
-     */
-    onClick(e) {
-        if (e.target?.className?.includes?.("bd-keybind-clear") || e.target?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return this.clearKeybind(e);
-        this.setState({isRecording: !this.state.isRecording});
-    }
-
-    /**
-     * 
-     * @param {MouseEvent} event 
-     */
-    clearKeybind(event) {
+    const clearKeybind = useCallback((event) => {
         event.stopPropagation();
         event.preventDefault();
-        this.accum.splice(0, this.accum.length);
-        if (this.props.onChange) this.props.onChange(this.accum);
-        this.setState({value: this.accum, isRecording: false});
-    }
+        if (onChange) onChange([]);
+        setState({...state, isRecording: false, value: [], accum: []});
+    }, [onChange, state]);
 
-    display() {
-        if (this.state.isRecording) return "Recording...";
-        if (!this.state.value.length) return "N/A";
-        return this.state.value.join(" + ");
-    }
+    const onClick = useCallback((e) => {
+        if (e.target?.className?.includes?.("bd-keybind-clear") || e.target?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return clearKeybind(e);
+        setState({...state, isRecording: !state.isRecording});
+    }, [state, clearKeybind]);
 
-    render() {
-        const {clearable = true} = this.props;
-        return <div className={"bd-keybind-wrap" + (this.state.isRecording ? " recording" : "")} onClick={this.onClick}>
-                <input readOnly={true} type="text" className="bd-keybind-input" value={this.display()} />
-                <div className="bd-keybind-controls">
-                    <button className={"bd-button bd-keybind-record" + (this.state.isRecording ? " bd-button-danger" : "")}><Keyboard size="24px" /></button>
-                    {clearable && <button onClick={this.clearKeybind} className="bd-button bd-keybind-clear"><Close size="24px" /></button>}
-                </div>
-            </div>;
-    }
+
+    const displayValue = state.isRecording ? "Recording..." : !state.value.length ? "N/A" : state.value.join(" + ");
+    return <div className={"bd-keybind-wrap" + (state.isRecording ? " recording" : "")} onClick={onClick}>
+            <input readOnly={true} type="text" className="bd-keybind-input" value={displayValue} />
+            <div className="bd-keybind-controls">
+                <button className={"bd-button bd-keybind-record" + (state.isRecording ? " bd-button-danger" : "")}><Keyboard size="24px" /></button>
+                {clearable && <button onClick={clearKeybind} className="bd-button bd-keybind-clear"><Close size="24px" /></button>}
+            </div>
+        </div>;
 }
