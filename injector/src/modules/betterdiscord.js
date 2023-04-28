@@ -9,7 +9,6 @@ import * as IPCEvents from "common/constants/ipcevents";
 const appPath = electron.app.getAppPath();
 const buildInfoFile = path.resolve(appPath, "..", "build_info.json");
 
-
 // Locate data path to find transparency settings
 let dataPath = "";
 if (process.argv.filter((arg) => arg.startsWith("--bd-data-dir")).length > 0)
@@ -37,7 +36,8 @@ export default class BetterDiscord {
       const settingsFile = path.resolve(dataPath, "data", buildInfo.releaseChannel, "settings.json");
       this._settings = __non_webpack_require__(settingsFile) ?? {};
       return this._settings[category]?.[key];
-    } catch (_) {
+    } 
+    catch (_) {
       this._settings = {};
       return this._settings[category]?.[key];
     }
@@ -70,10 +70,12 @@ export default class BetterDiscord {
   }
 
   static setup(browserWindow) {
+
     // Setup some useful vars to avoid blocking IPC calls
     try {
       process.env.DISCORD_RELEASE_CHANNEL = __non_webpack_require__(buildInfoFile).releaseChannel;
-    } catch (e) {
+    } 
+    catch (e) {
       process.env.DISCORD_RELEASE_CHANNEL = "stable";
     }
     process.env.DISCORD_PRELOAD = browserWindow.__originalPreload;
@@ -86,16 +88,13 @@ export default class BetterDiscord {
       if (!hasCrashed) return this.injectRenderer(browserWindow);
 
       // If a previous crash was detected, show a message explaining why BD isn't there
-      electron.dialog
-        .showMessageBox({
+      electron.dialog.showMessageBox({
           title: "Discord Crashed",
           type: "warning",
           message: "Something crashed your Discord Client",
-          detail:
-            "BetterDiscord has automatically disabled itself just in case. To enable it again, restart Discord or click the button below.\n\nThis may have been caused by a plugin. Try moving all of your plugins outside the plugin folder and see if Discord still crashed.",
+          detail: "BetterDiscord has automatically disabled itself just in case. To enable it again, restart Discord or click the button below.\n\nThis may have been caused by a plugin. Try moving all of your plugins outside the plugin folder and see if Discord still crashed.",
           buttons: ["Try Again", "Open Plugins Folder", "Cancel"],
-        })
-        .then((result) => {
+        }).then((result)=>{
           if (result.response === 0) {
             electron.app.relaunch();
             electron.app.exit();
@@ -120,16 +119,12 @@ export default class BetterDiscord {
   static disableMediaKeys() {
     if (!BetterDiscord.getSetting("general", "mediaKeys")) return;
     const originalDisable = electron.app.commandLine.getSwitchValue("disable-features") || "";
-    electron.app.commandLine.appendSwitch(
-      "disable-features",
-      `${originalDisable ? "," : ""
-      }HardwareMediaKeyHandling,MediaSessionService`
-    );
-  }
+        electron.app.commandLine.appendSwitch("disable-features", `${originalDisable ? "," : ""}HardwareMediaKeyHandling,MediaSessionService`);
+      }
 }
 
 if (BetterDiscord.getSetting("developer", "reactDevTools")) {
-  electron.app.whenReady().then(async () => {
+  electron.app.whenReady().then(async ()=>{
     await ReactDevTools.install(dataPath);
   });
 }
