@@ -99,7 +99,11 @@ export class Filters {
      */
     static byDisplayName(name) {
         return module => {
-            return module && module.displayName === name;
+            if (!module) return false;
+            if (typeof(module) !== "object" && typeof(module) !== "function") return false;
+            if (module.displayName === name) return true;
+            if (typeof module.getName === "function") return module.getName() === name;
+            return false;
         };
     }
 
@@ -159,13 +163,13 @@ export default class WebpackModules {
         for (let i = 0; i < indices.length; i++) {
             const index = indices[i];
             if (!modules.hasOwnProperty(index)) continue;
-            
+
             let module = null;
             try {module = modules[index]} catch {continue;};
 
             const {exports} = module;
             if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
-            
+
             if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                 for (const key in exports) {
                     let foundModule = null;
@@ -192,13 +196,13 @@ export default class WebpackModules {
 
 
         }
-        
+
         return first || rm.length == 0 ? undefined : rm;
     }
 
     /**
      * Finds multiple modules using multiple filters.
-     * 
+     *
      * @param {...object} queries Whether to return only the first matching module
      * @param {Function} queries.filter A function to use to filter modules
      * @param {Boolean} [queries.first=true] Whether to return only the first matching module
@@ -248,7 +252,7 @@ export default class WebpackModules {
                 }
             }
         }
-        
+
         return returnedModules;
     }
 
@@ -368,7 +372,7 @@ export default class WebpackModules {
                     if (wrappedFilter(exports)) foundModule = exports;
 
                 }
-                
+
                 if (!foundModule) return;
                 cancel();
                 resolve(foundModule);
@@ -395,7 +399,7 @@ export default class WebpackModules {
             }, [[id]]]);
         }
         else if (typeof(window[this.chunkName]) !== "undefined") {
-            window[this.chunkName].push([[id], 
+            window[this.chunkName].push([[id],
                 {},
                 __internal_require__ => __discord_webpack_require__ = __internal_require__
             ]);
@@ -420,7 +424,7 @@ export default class WebpackModules {
     static initialize() {
         this.handlePush = this.handlePush.bind(this);
         this.listeners = new Set();
-        
+
         this.__ORIGINAL_PUSH__ = window[this.chunkName].push;
         Object.defineProperty(window[this.chunkName], "push", {
             configurable: true,
@@ -435,7 +439,7 @@ export default class WebpackModules {
                 });
             }
         });
-    }    
+    }
 
     /**
      * Adds a listener for when discord loaded a chunk. Useful for subscribing to lazy loaded modules.
