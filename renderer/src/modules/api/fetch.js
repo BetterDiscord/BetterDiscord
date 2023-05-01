@@ -1,5 +1,7 @@
 import Remote from "../../polyfill/remote";
 
+const methods = new Set(["GET" | "PUT" | "POST" | "DELETE"]);
+
 class FetchResponse extends Response {
     constructor(options) {
         super(options.content, {
@@ -30,14 +32,34 @@ const convertSignal = signal => {
     };
 };
 
-export function fetch(url, options = {}) {
+/**
+ * @typedef {Object} FetchOptions
+ * @property {"GET" | "PUT" | "POST" | "DELETE"} [method] - Request method.
+ * @property {Record<string, string>} [headers] - Request headers.
+ * @property {"manual" | "follow"} [redirect] - Whether to follow redirects.
+ * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
+ * @property {AbortSignal} [signal] - Signal to abruptly cancel the request
+ * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable. 
+ */
+
+/**
+ * @param {string} url
+ * @param {FetchOptions} options
+ * @returns {Promise<FetchResponse>}
+ */
+export default function fetch(url, options = {}) {
     return new Promise((resolve, reject) => {
-        const ctx = Remote.nativeFetch(url, {
-            ...(options.headers && {headers: options.headers instanceof Headers ? Object.fromEntries(options.headers.entries()) : options.headers}),
-            ...(options.body && {body: options.body}),
-            ...(options.method && {method: options.method}),
-            ...(options.signal && {signal: convertSignal(options.signal)})
-        });
+        const data = {};
+
+        if (typeof options.headers === "object") {
+            data.headers = options.headers instanceof Headers ? Object.fromEntries(options.headers.entries()) : options.headers;
+        }
+
+        if (typeof options.body === "string" || options.body instanceof Uint8Array) data.body = options.body;
+        if (typeof options.method === "string" && methods.has(options.method)) data.method = options.method;
+        if (options.signal instanceof AbortSignal) data.signal = convertSignal(options.signal);
+
+        const ctx = Remote.nativeFetch(url, data);
 
         ctx.onError(error => {
             reject(error);

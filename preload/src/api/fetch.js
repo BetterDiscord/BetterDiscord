@@ -1,8 +1,23 @@
 import * as https from "https";
 import * as http from "http";
 
+const MAX_DEFAULT_REDIRECTS = 20;
 const redirectCodes = new Set([301, 302, 307, 308]);
 
+/**
+ * @typedef {Object} FetchOptions
+ * @property {"GET" | "PUT" | "POST" | "DELETE"} [method] - Request method.
+ * @property {Record<string, string>} [headers] - Request headers.
+ * @property {"manual" | "follow"} [redirect] - Whether to follow redirects.
+ * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
+ * @property {AbortSignal} [signal] - Signal to abruptly cancel the request
+ * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable. 
+ */
+
+/**
+ * @param {string} url
+ * @param {FetchOptions} options
+ */
 export function nativeFetch(url, options) {
     let state = "PENDING";
     const data = {content: [], headers: null, statusCode: null, url: url, statusText: "", redirected: false};
@@ -10,7 +25,7 @@ export function nativeFetch(url, options) {
     const errors = new Set();
 
     /** * @param {URL} url */
-    const execute = (url, options, redirect = false) => {
+    const execute = (url, options, redirectCount = 0) => {
         const Module = url.protocol === "http" ? http : https;
         
         const req = Module.request(url.href, {
@@ -18,13 +33,31 @@ export function nativeFetch(url, options) {
             method: options.method ?? "GET"
         }, res => {
             if (redirectCodes.has(res.statusCode) && res.headers.location && options.redirect !== "manual") {
-                const final = new URL(res.headers.location);
+                redirectCount++;
+
+                if (redirectCount >= (options.maxRedirects ?? MAX_DEFAULT_REDIRECTS)) {
+                    state = "ABORTED";
+                    const error = new Error(`Maximum amount of redirects reached (${options.maxRedirects ?? MAX_DEFAULT_REDIRECTS})`);
+                    errors.forEach(e => e(error));
+                    
+                    return;
+                }
+
+                let final;
+                try {
+                    final = new URL(res.headers.location);
+                }
+                catch (error) {
+                    state = "ABORTED";
+                    errors.forEach(e => e(error));
+                    return;
+                }
 
                 for (const [key, value] of new URL(url).searchParams.entries()) {
                     final.searchParams.set(key, value);
                 }
 
-                return execute(final, options, true);
+                return execute(final, options, redirectCount);
             }
 
             res.on("data", chunk => data.content.push(chunk));
@@ -34,7 +67,7 @@ export function nativeFetch(url, options) {
                 data.statusCode = res.statusCode;
                 data.url = url.toString();
                 data.statusText = res.statusMessage;
-                data.redirected = redirect;
+                data.redirected = redirectCount > 0;
                 state = "DONE";
 
                 listeners.forEach(listener => listener());
@@ -50,10 +83,12 @@ export function nativeFetch(url, options) {
             catch (error) {
                 state = "ABORTED";
                 errors.forEach(e => e(error));
-            } finally {
+            }
+            finally {
                 req.end();
             }
-        } else {
+        }
+        else {
             req.end();
         }
 
@@ -65,7 +100,14 @@ export function nativeFetch(url, options) {
         }
     };
 
-    execute(new URL(url), options);
+    try {
+        const parsed = new URL(url);
+        execute(parsed, options);
+    }
+    catch (error) {
+        state = "ABORTED";
+        errors.forEach(e => e(error));
+    }
 
     return {
         onComplete(listener) {

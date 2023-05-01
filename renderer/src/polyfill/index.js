@@ -7,6 +7,12 @@ import * as https from "./https";
 import Buffer from "./buffer";
 import crypto from "./crypto";
 import Remote from "./remote";
+import Logger from "common/logger";
+
+const deprecated = new Map([
+    ["request", "Use BdApi.Net.fetch instead."],
+    ["https", "Use BdApi.Net.fetch instead."],
+]);
 
 const originalFs = Object.assign({}, fs);
 originalFs.writeFileSync = (path, data, options) => fs.writeFileSync(path, data, Object.assign({}, options, {originalFs: true}));
@@ -14,6 +20,10 @@ originalFs.writeFile = (path, data, options) => fs.writeFile(path, data, Object.
 
 export const createRequire = function (path) {
     return mod => {
+        if (deprecated.has(mod)) {
+            Logger.warn("Remote~Require", `The "${mod}" module is marked as deprecated. ${deprecated.get(mod)}`);
+        }
+
         switch (mod) {
             case "request": return request;
             case "https": return https;
