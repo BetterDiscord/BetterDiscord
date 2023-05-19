@@ -1,4 +1,5 @@
-import Builtin from "../../structs/builtin";
+import Builtin from "@structs/builtin";
+
 import DiscordModules from "@modules/discordmodules";
 
 export default new class VoiceDisconnect extends Builtin {

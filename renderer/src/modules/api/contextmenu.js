@@ -1,7 +1,8 @@
-import WebpackModules from "../webpackmodules";
-import Patcher from "../patcher";
+import WebpackModules from "@modules/webpackmodules";
+import Patcher from "@modules/patcher";
 import Logger from "@common/logger";
-import {React} from "../modules";
+import React from "@modules/react";
+
 
 let startupComplete = false;
 

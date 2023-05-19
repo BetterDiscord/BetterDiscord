@@ -1,6 +1,7 @@
-import Builtin from "../../structs/builtin";
-import IPC from "../../modules/ipc";
-import DataStore from "../../modules/datastore";
+import Builtin from "@structs/builtin";
+
+import IPC from "@modules/ipc";
+import DataStore from "@modules/datastore";
 
 const DISCORD_MIN_HEIGHT = 500;
 const DISCORD_MIN_WIDTH = 940;

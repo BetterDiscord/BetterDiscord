@@ -3,7 +3,7 @@
  * @module WebpackModules
  * @version 0.0.2
  */
-import Logger from "../../../common/logger";
+import Logger from "@common/logger";
 
 /**
  * Checks if a given module matches a set of parameters.

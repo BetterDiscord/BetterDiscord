@@ -3,10 +3,11 @@ import ReactDOM from "@modules/reactdom";
 import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
 import WebpackModules from "@modules/webpackmodules";
+
 import FloatingWindowContainer from "./floating/container";
 
-/* eslint-disable new-cap */
 
+/* eslint-disable new-cap */
 const AppLayerProvider = WebpackModules.getByDisplayName("AppLayerProvider");
 
 let hasInitialized = false;

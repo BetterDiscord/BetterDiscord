@@ -4,6 +4,7 @@ import Settings from "@modules/settingsmanager";
 import WebpackModules from "@modules/webpackmodules";
 import DOMManager from "@modules/dommanager";
 
+
 export default class Toasts {
 
     static get ChannelsClass() {return WebpackModules.getByProps("sidebar", "hasNotice").sidebar.split(" ")[0];}

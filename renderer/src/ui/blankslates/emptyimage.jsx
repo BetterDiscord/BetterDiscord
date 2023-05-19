@@ -1,6 +1,8 @@
+import SimpleMarkdown from "@structs/markdown";
+
 import React from "@modules/react";
 import DiscordClasses from "@modules/discordclasses";
-import SimpleMarkdown from "../../structs/markdown";
+
 
 export default function EmptyImage(props) {
     return <div className={`bd-empty-image-container ${DiscordClasses.EmptyImage.emptyContainer}` + (props.className ? ` ${props.className}` : "")}>

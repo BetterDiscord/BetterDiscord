@@ -1,8 +1,9 @@
 import {ipcRenderer as ipc} from "electron";
 
+import * as IPCEvents from "@common/constants/ipcevents";
+
 import Events from "./emitter";
 
-import * as IPCEvents from "@common/constants/ipcevents";
 
 export default new class IPCRenderer {
 

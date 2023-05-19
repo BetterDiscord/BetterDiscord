@@ -8,6 +8,7 @@
 import Utilities from "./utilities";
 import WebpackModules, {Filters} from "./webpackmodules";
 
+
 export default Utilities.memoizeObject({
     get React() {return WebpackModules.getByProps("createElement", "cloneElement");},
     get ReactDOM() {return WebpackModules.getByProps("render", "findDOMNode");},

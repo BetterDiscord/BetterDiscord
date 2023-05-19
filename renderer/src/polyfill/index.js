@@ -1,12 +1,14 @@
+import EventEmitter from "@common/events";
+
 import Module from "./module";
 import * as vm from "./vm";
 import * as fs from "./fs";
 import request from "./request";
-import EventEmitter from "@common/events";
 import * as https from "./https";
 import Buffer from "./buffer";
 import crypto from "./crypto";
 import Remote from "./remote";
+
 
 const originalFs = Object.assign({}, fs);
 originalFs.writeFileSync = (path, data, options) => fs.writeFileSync(path, data, Object.assign({}, options, {originalFs: true}));

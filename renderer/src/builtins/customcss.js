@@ -1,4 +1,8 @@
-import Builtin from "../structs/builtin";
+import fs from "fs";
+import electron from "electron";
+
+import Builtin from "@structs/builtin";
+
 import Settings from "@modules/settingsmanager";
 import DataStore from "@modules/datastore";
 import React from "@modules/react";
@@ -7,13 +11,13 @@ import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
 import Strings from "@modules/strings";
 import DiscordModules from "@modules/discordmodules";
-import CSSEditor from "../ui/customcss/csseditor";
-import FloatingWindows from "../ui/floatingwindows";
-import SettingsTitle from "../ui/settings/title";
-import Utilities from "../modules/utilities";
+import Utilities from "@modules/utilities";
 
-const fs = require("fs");
-const electron = require("electron");
+import CSSEditor from "@ui/customcss/csseditor";
+import FloatingWindows from "@ui/floatingwindows";
+import SettingsTitle from "@ui/settings/title";
+
+
 const UserSettings = WebpackModules.getByProps("updateAccount");
 const Dispatcher = DiscordModules.Dispatcher;
 

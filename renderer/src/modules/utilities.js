@@ -1,5 +1,6 @@
 import Logger from "@common/logger";
 
+
 export default class Utilities {
     /**
      * Generates an automatically memoizing version of an object.

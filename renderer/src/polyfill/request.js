@@ -1,5 +1,6 @@
 import Remote from "./remote";
 
+
 const methods = ["get", "put", "post", "delete", "head"];
 const aliases = {del: "delete"};
 

@@ -1,8 +1,10 @@
-import Modals from "../../ui/modals";
-import Toasts from "../../ui/toasts";
-import Notices from "../../ui/notices";
-import Tooltip from "../../ui/tooltip";
-import ipc from "../ipc";
+import ipc from "@modules/ipc";
+
+import Modals from "@ui/modals";
+import Toasts from "@ui/toasts";
+import Notices from "@ui/notices";
+import Tooltip from "@ui/tooltip";
+
 
 /**
  * `UI` is a utility class for creating user interfaces. Instance is accessible through the {@link BdApi}.

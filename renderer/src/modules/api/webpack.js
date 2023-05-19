@@ -1,5 +1,7 @@
 import Logger from "@common/logger";
-import WebpackModules, {Filters} from "../webpackmodules";
+
+import WebpackModules, {Filters} from "@modules/webpackmodules";
+
 
 /**
  * `Webpack` is a utility class for getting internal webpack modules. Instance is accessible through the {@link BdApi}.

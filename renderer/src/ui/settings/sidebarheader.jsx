@@ -1,8 +1,11 @@
-import {Changelog} from "data";
+import Changelog from "@data/changelog";
+
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
-import HistoryIcon from "../icons/history";
-import Modals from "../modals";
+
+import HistoryIcon from "@ui/icons/history";
+
+import Modals from "@ui/modals";
 
 
 export default function SettingsTitle() {

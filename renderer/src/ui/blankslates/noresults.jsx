@@ -1,6 +1,8 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
-import MagnifyingGlass from "../icons/magnifyingglass";
+
+import MagnifyingGlass from "@ui/icons/magnifyingglass";
+
 
 export default function NoResults(props) {
     return <div className={"bd-empty-results" + (props.className ? ` ${props.className}` : "")}>

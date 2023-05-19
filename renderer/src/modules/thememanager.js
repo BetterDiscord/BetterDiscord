@@ -1,15 +1,18 @@
-import {Config} from "data";
+import path from "path";
+
+import Config from "@data/config";
+
+import AddonError from "@structs/addonerror";
+
 import AddonManager from "./addonmanager";
-import AddonError from "../structs/addonerror";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
 import Strings from "./strings";
 
-import Toasts from "../ui/toasts";
-import Modals from "../ui/modals";
-import SettingsRenderer from "../ui/settings";
+import Toasts from "@ui/toasts";
+import Modals from "@ui/modals";
+import SettingsRenderer from "@ui/settings";
 
-const path = require("path");
 
 export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}

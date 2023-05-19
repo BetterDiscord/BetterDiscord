@@ -4,10 +4,15 @@
       "allowSyntheticDefaultImports": false,
       "baseUrl": "./",
       "paths": {
-        "builtins": ["./src/builtins/builtins.js"],
-        "data": ["./src/data/data.js"],
+        "@assets/*": ["../assets/*"],
+        "@common/*": ["../common/*"],
+        "@builtins/*": ["./src/builtins/*"],
+        "@data/*": ["./src/data/*"],
         "@modules/*": ["./src/modules/*"],
-        "@common/*": ["../common/*"]
+        "@polyfill/*": ["./src/polyfill/*"],
+        "@structs/*": ["./src/structs/*"],
+        "@styles/*": ["./src/styles/*"],
+        "@ui/*": ["./src/ui/*"]
       }
     },
     "exclude": ["node_modules"]

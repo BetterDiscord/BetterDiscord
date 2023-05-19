@@ -1,5 +1,6 @@
 import React from "@modules/react";
 
+
 export default function SettingItem({id, name, note, inline, children}) {
     return <div className={"bd-setting-item" + (inline ? " inline" : "")}>
                 <div className={"bd-setting-header"}>

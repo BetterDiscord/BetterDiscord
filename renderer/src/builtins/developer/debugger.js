@@ -1,4 +1,4 @@
-import Builtin from "../../structs/builtin";
+import Builtin from "@structs/builtin";
 
 export default new class DeveloperMode extends Builtin {
     get name() {return "Debugger";}

@@ -1,4 +1,7 @@
-import {Config} from "data";
+import Config from "@data/config";
+
+import FormattableString from "@structs/string";
+
 import Logger from "@common/logger";
 import React from "@modules/react";
 import ReactDOM from "@modules/reactdom";
@@ -8,7 +11,7 @@ import DiscordModules from "@modules/discordmodules";
 import WebpackModules from "@modules/webpackmodules";
 import DiscordClasses from "@modules/discordclasses";
 import DOMManager from "@modules/dommanager";
-import FormattableString from "../structs/string";
+
 import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 
