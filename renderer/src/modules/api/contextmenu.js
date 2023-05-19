@@ -1,6 +1,6 @@
 import WebpackModules from "../webpackmodules";
 import Patcher from "../patcher";
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import {React} from "../modules";
 
 let startupComplete = false;

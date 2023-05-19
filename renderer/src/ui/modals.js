@@ -1,5 +1,5 @@
 import {Config} from "data";
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordModules, DiscordClasses} from "modules";
 import FormattableString from "../structs/string";
 import AddonErrorModal from "./addonerrormodal";

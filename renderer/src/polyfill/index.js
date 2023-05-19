@@ -2,7 +2,7 @@ import Module from "./module";
 import * as vm from "./vm";
 import * as fs from "./fs";
 import request from "./request";
-import EventEmitter from "common/events";
+import EventEmitter from "@common/events";
 import * as https from "./https";
 import Buffer from "./buffer";
 import crypto from "./crypto";

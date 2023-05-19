@@ -7,7 +7,7 @@ import Toasts from "../../ui/toasts";
 import Notices from "../../ui/notices";
 import Modals from "../../ui/modals";
 import Settings from "../settingsmanager";
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import Patcher from "../patcher";
 import ipc from "../ipc";
 

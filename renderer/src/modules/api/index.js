@@ -1,6 +1,6 @@
 import PluginManager from "../pluginmanager";
 import ThemeManager from "../thememanager";
-import Logger from "common/logger";
+import Logger from "@common/logger";
 
 import AddonAPI from "./addonapi";
 import Data from "./data";

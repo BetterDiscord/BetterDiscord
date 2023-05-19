@@ -3,7 +3,7 @@ import fileSystem from "fs";
 import {Config} from "data";
 import path from "path";
 
-import Logger from "common/logger";
+import Logger from "@common/logger";
 
 import Events from "./emitter";
 import IPC from "./ipc";

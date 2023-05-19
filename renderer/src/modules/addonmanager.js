@@ -1,4 +1,4 @@
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import Settings from "./settingsmanager";
 import Events from "./emitter";
 import DataStore from "./datastore";

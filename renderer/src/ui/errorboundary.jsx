@@ -1,4 +1,4 @@
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import {React, IPC} from "modules";
 
 export default class ErrorBoundary extends React.Component {

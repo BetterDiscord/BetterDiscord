@@ -14,5 +14,5 @@ export {default as Patcher} from "./patcher";
 export {default as LocaleManager} from "./localemanager";
 export {default as Strings} from "./strings";
 export {default as IPC} from "./ipc";
-export {default as Logger} from "common/logger";
+export {default as Logger} from "@common/logger";
 export {default as DiscordClasses} from "./discordclasses";

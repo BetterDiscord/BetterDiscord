@@ -1,4 +1,4 @@
-import EventEmitter from "common/events";
+import EventEmitter from "@common/events";
 import Remote from "./remote";
 
 export function get(url, options = {}, callback) {

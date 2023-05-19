@@ -1,5 +1,5 @@
 import {SettingsConfig} from "data";
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import DataStore from "./datastore";
 import Events from "./emitter";
 import DiscordModules from "./discordmodules";

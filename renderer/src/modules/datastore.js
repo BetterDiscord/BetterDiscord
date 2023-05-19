@@ -1,5 +1,5 @@
 import {Config} from "data";
-import Logger from "common/logger";
+import Logger from "@common/logger";
 const fs = require("fs");
 const path = require("path");
 const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable";

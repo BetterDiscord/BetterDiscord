@@ -1,22 +1,24 @@
-{
-    "presets": [
+const path = require("path");
+
+module.exports = {
+    presets: [
         "@babel/react",
         ["@babel/env",
         {
-            "targets": {
-                "node": "14.16.0",
-                "chrome": "91"
+            targets: {
+                node: "14.16.0",
+                chrome: "91"
             }
         }]
     ],
-    "plugins": [[
+    plugins: [[
         "module-resolver",
         {
-            "alias": {
+            alias: {
                 "builtins": "./src/builtins/builtins.js",
                 "data": "./src/data/data.js",
                 "modules": "./src/modules/modules.js",
-                "common": "../common"
+                "@common": path.join(__dirname, "..", "common"),
             }
         }
     ]]

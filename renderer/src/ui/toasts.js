@@ -1,4 +1,4 @@
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import {WebpackModules, Settings, DOMManager} from "modules";
 
 export default class Toasts {

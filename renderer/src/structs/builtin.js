@@ -1,4 +1,4 @@
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import Events from "../modules/emitter";
 import Settings from "../modules/settingsmanager";
 import Patcher from "../modules/patcher";

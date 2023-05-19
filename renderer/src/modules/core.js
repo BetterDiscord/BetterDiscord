@@ -1,6 +1,6 @@
 import LocaleManager from "./localemanager";
 
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import {Config, Changelog} from "data";
 import DOMManager from "./dommanager";
 import PluginManager from "./pluginmanager";

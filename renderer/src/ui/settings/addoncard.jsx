@@ -1,4 +1,4 @@
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import {React, Strings, WebpackModules, DiscordModules} from "modules";
 import SimpleMarkdown from "../../structs/markdown";
 import EditIcon from "../icons/edit";

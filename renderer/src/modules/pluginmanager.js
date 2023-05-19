@@ -1,5 +1,5 @@
 import {Config} from "data";
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import AddonManager from "./addonmanager";
 import AddonError from "../structs/addonerror";
 import Settings from "./settingsmanager";

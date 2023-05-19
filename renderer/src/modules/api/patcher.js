@@ -1,4 +1,4 @@
-import Logger from "common/logger";
+import Logger from "@common/logger";
 import {default as MainPatcher} from "../patcher";
 
 /**
