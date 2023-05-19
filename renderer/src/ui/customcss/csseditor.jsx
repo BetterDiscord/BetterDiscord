@@ -1,4 +1,7 @@
-import {React, Settings, Events, Strings} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import Events from "@modules/emitter";
+import Settings from "@modules/settingsmanager";
 
 import Editor from "./editor";
 import Refresh from "../icons/reload";

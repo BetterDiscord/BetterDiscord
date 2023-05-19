@@ -1,4 +1,5 @@
-import {React, DiscordModules} from "modules";
+import React from "@modules/react";
+import DiscordModules from "@modules/discordmodules";
 import MagnifyingGlass from "../icons/magnifyingglass";
 
 export default function NoResults(props) {

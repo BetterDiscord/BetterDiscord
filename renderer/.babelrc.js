@@ -17,7 +17,7 @@ module.exports = {
             alias: {
                 "builtins": "./src/builtins/builtins.js",
                 "data": "./src/data/data.js",
-                "modules": "./src/modules/modules.js",
+                "@modules": path.join(__dirname, "src", "modules"),
                 "@common": path.join(__dirname, "..", "common"),
             }
         }

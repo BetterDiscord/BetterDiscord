@@ -1,4 +1,5 @@
-import {React, Strings} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
 
 import Screen from "../../structs/screen";
 import CloseButton from "../icons/close";

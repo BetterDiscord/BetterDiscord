@@ -1,4 +1,4 @@
-import {React} from "modules";
+import React from "@modules/react";
 
 import Keyboard from "../../icons/keyboard";
 import Close from "../../icons/close";

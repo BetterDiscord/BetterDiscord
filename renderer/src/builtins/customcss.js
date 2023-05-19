@@ -1,5 +1,12 @@
 import Builtin from "../structs/builtin";
-import {Settings, DataStore, React, WebpackModules, Events, DOMManager, Strings, DiscordModules} from "modules";
+import Settings from "@modules/settingsmanager";
+import DataStore from "@modules/datastore";
+import React from "@modules/react";
+import WebpackModules from "@modules/webpackmodules";
+import Events from "@modules/emitter";
+import DOMManager from "@modules/dommanager";
+import Strings from "@modules/strings";
+import DiscordModules from "@modules/discordmodules";
 import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindows from "../ui/floatingwindows";
 import SettingsTitle from "../ui/settings/title";

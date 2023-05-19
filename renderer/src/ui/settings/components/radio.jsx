@@ -1,4 +1,4 @@
-import {React} from "modules";
+import React from "@modules/react";
 
 import RadioIcon from "../../icons/radio";
 

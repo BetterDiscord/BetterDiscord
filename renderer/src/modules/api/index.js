@@ -12,7 +12,7 @@ import Utils from "./utils";
 import Webpack from "./webpack";
 import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
-import {DiscordModules} from "modules";
+import DiscordModules from "@modules/discordmodules";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);

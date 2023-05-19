@@ -1,5 +1,6 @@
 import {Changelog} from "data";
-import {DiscordModules, React} from "modules";
+import React from "@modules/react";
+import DiscordModules from "@modules/discordmodules";
 import HistoryIcon from "../icons/history";
 import Modals from "../modals";
 

@@ -1,4 +1,8 @@
-import {React, Strings, Events, DataStore, DiscordModules} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import Events from "@modules/emitter";
+import DataStore from "@modules/datastore";
+import DiscordModules from "@modules/discordmodules";
 
 import Modals from "../modals";
 import SettingsTitle from "./title";

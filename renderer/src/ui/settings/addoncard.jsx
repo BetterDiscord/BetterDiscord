@@ -1,5 +1,8 @@
 import Logger from "@common/logger";
-import {React, Strings, WebpackModules, DiscordModules} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import WebpackModules from "@modules/webpackmodules";
+import DiscordModules from "@modules/discordmodules";
 import SimpleMarkdown from "../../structs/markdown";
 import EditIcon from "../icons/edit";
 import DeleteIcon from "../icons/delete";

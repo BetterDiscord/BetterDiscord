@@ -1,4 +1,5 @@
-import {React, DiscordClasses} from "modules";
+import React from "@modules/react";
+import DiscordClasses from "@modules/discordclasses";
 import SimpleMarkdown from "../../structs/markdown";
 
 export default function EmptyImage(props) {

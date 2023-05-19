@@ -1,6 +1,8 @@
 import Builtin from "../../structs/builtin";
 import Modals from "../../ui/modals";
-import {Strings, IPC} from "modules";
+
+import Strings from "@modules/strings";
+import IPC from "@modules/ipc";
 
 export default new class ReactDevTools extends Builtin {
     get name() {return "ReactDevTools";}

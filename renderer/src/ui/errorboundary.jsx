@@ -1,5 +1,6 @@
 import Logger from "@common/logger";
-import {React, IPC} from "modules";
+import React from "@modules/react";
+import IPC from "@modules/ipc";
 
 export default class ErrorBoundary extends React.Component {
     constructor(props) {

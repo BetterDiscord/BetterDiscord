@@ -1,4 +1,8 @@
-import {React, Strings, WebpackModules, DiscordClasses} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import DiscordClasses from "@modules/discordclasses";
+import WebpackModules from "@modules/webpackmodules";
+
 import Extension from "./icons/extension";
 import ThemeIcon from "./icons/theme";
 import Divider from "./divider";
