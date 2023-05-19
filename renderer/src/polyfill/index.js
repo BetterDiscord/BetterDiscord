@@ -1,10 +1,10 @@
 import EventEmitter from "@common/events";
 
 import Module from "./module";
-import * as vm from "./vm";
-import * as fs from "./fs";
+import vm from "./vm";
+import fs from "./fs";
 import request from "./request";
-import * as https from "./https";
+import https from "./https";
 import Buffer from "./buffer";
 import crypto from "./crypto";
 import Remote from "./remote";

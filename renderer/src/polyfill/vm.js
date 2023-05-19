@@ -8,3 +8,5 @@ export const compileFunction = function(code, params = [], options = {}) {
     syntaxError.stack = returned.stack;
     throw syntaxError;
 };
+
+export default {compileFunction};

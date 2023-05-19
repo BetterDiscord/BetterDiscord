@@ -179,6 +179,8 @@ export default {
     rmSync,
     rmdir,
     rmdirSync,
+    stat,
+    statSync,
     unlink,
     unlinkSync,
     watch,

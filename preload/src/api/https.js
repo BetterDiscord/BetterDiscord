@@ -1,6 +1,6 @@
 import * as https from "https";
 
-const methods = ["get", "put", "post", "delete"];
+const methods = ["get", "put", "post", "delete", "head"];
 const redirectCodes = new Set([301, 302, 307, 308]);
 const headersToClone = ["statusCode", "statusMessage", "url", "headers", "method", "aborted", "complete", "rawHeaders", "end"];
 
