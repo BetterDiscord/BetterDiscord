@@ -34,6 +34,11 @@ const makeRequest = (url, options, callback, setReq) => {
             req.end();
         });
     });
+    
+    if (options.body) {
+        req.write(options.body)
+    }
+    
     req.end();
 };
 
