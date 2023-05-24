@@ -33,11 +33,16 @@ const Webpack = {
      */
     Filters: {
         /**
+         * @deprecated
+         */
+        byProps(...props) {return Filters.byKeys(props);},
+
+        /**
          * Generates a function that filters by a set of properties.
-         * @param {...string} props List of property names
+         * @param {...string} keys List of property names
          * @returns {function} A filter that checks for a set of properties
          */
-        byProps(...props) {return Filters.byProps(props);},
+        byKeys(...keys) {return Filters.byKeys(keys);},
 
         /**
          * Generates a function that filters by a set of properties on the object's prototype.
@@ -85,11 +90,11 @@ const Webpack = {
      * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters. 
      * @return {[Any, string]}
      */
-    getMangled(filter, options = {}) {
-        if (("first" in options)) return Logger.error("BdApi.Webpack~getModule", "Unsupported option first.");
-        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
-        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
-        return WebpackModules.getMangled(filter, options);
+    getWithKey(filter, options = {}) {
+        if (("first" in options)) return Logger.error("BdApi.Webpack~getWithKey", "Unsupported option first.");
+        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getWithKey", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getWithKey", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
+        return WebpackModules.getWithKey(filter, options);
     },
 
     /**
@@ -102,12 +107,17 @@ const Webpack = {
      * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
      * @return {any}
      */
-    getModule(filter, options = {}) {
-        if (("first" in options) && typeof(options.first) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.first", options.first, "boolean expected.");
-        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
-        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
+    get(filter, options = {}) {
+        if (("first" in options) && typeof(options.first) !== "boolean") return Logger.error("BdApi.Webpack~get", "Unsupported type used for options.first", options.first, "boolean expected.");
+        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~get", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~get", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
         return WebpackModules.getModule(filter, options);
     },
+
+    /**
+     * @deprecated
+     */
+    getModule() {return this.get.apply(this, arguments);},
 
     /**
      * Finds multiple modules using multiple filters.
@@ -134,7 +144,7 @@ const Webpack = {
     waitForModule(filter, options = {}) {
         if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
         if (("signal" in options) && !(options.signal instanceof AbortSignal)) return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.signal", options.signal, "AbortSignal expected.");
-        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
+        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~waitForModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
         return WebpackModules.getLazy(filter, options);
     },
 
@@ -184,7 +194,7 @@ const Webpack = {
      * @param {...string} prototypes Properties to use to filter modules
      * @return {Any[]}
      */
-    getAllByPrototypes(...prototypes) {
+    getAllByPrototypeFields(...prototypes) {
         const options = getOptions(prototypes, {first: false});
 
         return WebpackModules.getModule(Filters.byPrototypeFields(prototypes), options);
@@ -195,10 +205,10 @@ const Webpack = {
      * @param {...string} props Properties to use to filter modules
      * @return {Any}
      */
-    getByProps(...props) {
+    getByKeys(...props) {
         const options = getOptions(props);
 
-        return this.getModule(Filters.byProps(props), options);
+        return WebpackModules.getModule(Filters.byKeys(props), options);
     },
 
     /**
@@ -206,10 +216,10 @@ const Webpack = {
      * @param {...string} props Properties to use to filter modules
      * @return {Any[]}
      */
-    getAllByProps(...props) {
+    getAllByKeys(...props) {
         const options = getOptions(props, {first: false});
 
-        return WebpackModules.getModule(Filters.byProps(props), options);
+        return WebpackModules.getModule(Filters.byKeys(props), options);
     },
 
     /**

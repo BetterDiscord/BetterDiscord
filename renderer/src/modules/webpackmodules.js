@@ -22,7 +22,7 @@ export class Filters {
      * @param {module:WebpackModules.Filters~filter} filter - Additional filter
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
      */
-    static byProps(props, filter = m => m) {
+    static byKeys(props, filter = m => m) {
         return module => {
             if (!module) return false;
             if (typeof(module) !== "object" && typeof(module) !== "function") return false;
@@ -275,7 +275,7 @@ export default class WebpackModules {
      * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters. 
      * @return {[Any, string]}
      */
-    static *getMangled(filter, {target = null, ...rest} = {}) {
+    static *getWithKey(filter, {target = null, ...rest} = {}) {
         yield target ??= this.getModule(exports =>
             Object.values(exports).some(filter),
             rest
@@ -333,7 +333,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByProps(...props) {
-        return this.getModule(Filters.byProps(props));
+        return this.getModule(Filters.byKeys(props));
     }
 
     /**
@@ -342,7 +342,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByProps(...props) {
-        return this.getModule(Filters.byProps(props), {first: false});
+        return this.getModule(Filters.byKeys(props), {first: false});
     }
 
     /**
