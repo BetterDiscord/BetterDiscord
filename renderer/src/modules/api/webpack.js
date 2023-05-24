@@ -45,11 +45,16 @@ const Webpack = {
         byKeys(...keys) {return Filters.byKeys(keys);},
 
         /**
+         * @deprecated
+         */
+        byPrototypeFields(...props) {return Filters.byPrototypeKeys(props);},
+
+        /**
          * Generates a function that filters by a set of properties on the object's prototype.
          * @param {...string} props List of property names
          * @returns {function} A filter that checks for a set of properties on the object's prototype.
          */
-        byPrototypeFields(...props) {return Filters.byPrototypeFields(props);},
+        byPrototypeKeys(...props) {return Filters.byPrototypeKeys(props);},
 
         /**
          * Generates a function that filters by a regex.
@@ -115,9 +120,15 @@ const Webpack = {
     },
 
     /**
+     * Finds all modules matching a filter function.
+     * @param {Function} filter A function to use to filter modules
+     */
+    getAll(filter) {return WebpackModules.getModule(filter, {first: false});},
+
+    /**
      * @deprecated
      */
-    getModule() {return this.get.apply(this, arguments);},
+    getModule() {return Webpack.get(...arguments);},
 
     /**
      * Finds multiple modules using multiple filters.
@@ -149,12 +160,6 @@ const Webpack = {
     },
 
     /**
-     * Finds all modules matching a filter function.
-     * @param {Function} filter A function to use to filter modules
-     */
-    getModules(filter) {return WebpackModules.getModule(filter, {first: false});},
-
-    /**
      * Finds a module using its code.
      * @param {RegEx} regex A regular expression to use to filter modules
      * @param {object} [options] Options to configure the search
@@ -183,10 +188,10 @@ const Webpack = {
      * @param {...string} prototypes Properties to use to filter modules
      * @return {Any}
      */
-    getByPrototypes(...prototypes) {
+    getByPrototypeKeys(...prototypes) {
         const options = getOptions(prototypes);
 
-        return WebpackModules.getModule(Filters.byPrototypeFields(prototypes), options);
+        return WebpackModules.getModule(Filters.byPrototypeKeys(prototypes), options);
     },
 
     /**
@@ -194,10 +199,10 @@ const Webpack = {
      * @param {...string} prototypes Properties to use to filter modules
      * @return {Any[]}
      */
-    getAllByPrototypeFields(...prototypes) {
+    getAllByPrototypeKeys(...prototypes) {
         const options = getOptions(prototypes, {first: false});
 
-        return WebpackModules.getModule(Filters.byPrototypeFields(prototypes), options);
+        return WebpackModules.getModule(Filters.byPrototypeKeys(prototypes), options);
     },
 
     /**

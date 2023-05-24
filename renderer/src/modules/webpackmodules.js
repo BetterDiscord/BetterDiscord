@@ -41,7 +41,7 @@ export class Filters {
      * @param {module:WebpackModules.Filters~filter} filter - Additional filter
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties on the object's prototype
      */
-    static byPrototypeFields(fields, filter = m => m) {
+    static byPrototypeKeys(fields, filter = m => m) {
         return module => {
             if (!module) return false;
             if (typeof(module) !== "object" && typeof(module) !== "function") return false;
@@ -315,7 +315,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByPrototypes(...prototypes) {
-        return this.getModule(Filters.byPrototypeFields(prototypes));
+        return this.getModule(Filters.byPrototypeKeys(prototypes));
     }
 
     /**
@@ -324,7 +324,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByPrototypes(...prototypes) {
-        return this.getModule(Filters.byPrototypeFields(prototypes), {first: false});
+        return this.getModule(Filters.byPrototypeKeys(prototypes), {first: false});
     }
 
     /**

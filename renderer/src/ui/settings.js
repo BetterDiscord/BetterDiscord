@@ -62,7 +62,7 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        const UserSettings = await WebpackModules.getLazy(Filters.byPrototypeFields(["getPredicateSections"]));
+        const UserSettings = await WebpackModules.getLazy(Filters.byPrototypeKeys(["getPredicateSections"]));
         
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject, args, returnValue) => {
             let location = returnValue.findIndex(s => s.section.toLowerCase() == "changelog") - 1;
