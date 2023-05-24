@@ -220,7 +220,7 @@ export default class AddonManager {
             return error;
         }
 
-        if (shouldToast) Toasts.success(Strings.Addons.wasUnloaded.format({name: addon.name, version: addon.version}));
+        if (shouldToast) Toasts.success(Strings.Addons.wasLoaded.format({name: addon.name, version: addon.version}));
         this.emit("loaded", addon);
         
         if (!this.state[addon.id]) return this.state[addon.id] = false;
