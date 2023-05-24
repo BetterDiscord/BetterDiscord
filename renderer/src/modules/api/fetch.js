@@ -1,6 +1,6 @@
 import Remote from "../../polyfill/remote";
 
-const methods = new Set(["GET" | "PUT" | "POST" | "DELETE"]);
+const methods = new Set(["GET", "PUT", "POST", "DELETE"]);
 
 class FetchResponse extends Response {
     constructor(options) {
