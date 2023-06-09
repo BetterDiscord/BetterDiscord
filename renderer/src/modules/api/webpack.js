@@ -79,6 +79,13 @@ const Webpack = {
         byDisplayName(name) {return Filters.byDisplayName(name);},
 
         /**
+         * Generates a function that filters by a specific internal Store name.
+         * @param {string} name Name the store should have
+         * @returns {function} A filter that checks for a Store name match
+         */
+        byStoreName(name) {return Filters.byStoreName(name);},
+
+        /**
          * Generates a combined function from a list of filters.
          * @param {...function} filters A list of filters
          * @returns {function} Combinatory filter of all arguments
@@ -112,23 +119,26 @@ const Webpack = {
      * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
      * @return {any}
      */
-    get(filter, options = {}) {
+    getModule(filter, options = {}) {
         if (("first" in options) && typeof(options.first) !== "boolean") return Logger.error("BdApi.Webpack~get", "Unsupported type used for options.first", options.first, "boolean expected.");
-        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~get", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
-        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~get", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
+        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
         return WebpackModules.getModule(filter, options);
     },
 
     /**
      * Finds all modules matching a filter function.
      * @param {Function} filter A function to use to filter modules
+     * @param {object} [options] Options to configure the search
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack exports
+     * @return {any[]}
      */
-    getAll(filter) {return WebpackModules.getModule(filter, {first: false});},
-
-    /**
-     * @deprecated
-     */
-    getModule() {return Webpack.get(...arguments);},
+    getModules(filter, options = {}) {
+        if (("defaultExport" in options) && typeof(options.defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getModules", "Unsupported type used for options.defaultExport", options.defaultExport, "boolean expected.");
+        if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModules", "Unsupported type used for options.searchExports", options.searchExports, "boolean expected.");
+        return WebpackModules.getModule(filter, Object.assign(options, {first: false}));
+    },
 
     /**
      * Finds multiple modules using multiple filters.
@@ -232,7 +242,7 @@ const Webpack = {
      * @param {...String} props Strings to use to filter modules
      * @return {Any}
      */
-    getByString(...strings) {
+    getByStrings(...strings) {
         const options = getOptions(strings);
 
         return WebpackModules.getModule(Filters.byStrings(...strings), options);
@@ -243,11 +253,18 @@ const Webpack = {
      * @param {...String} strings Strings to use to filter modules
      * @return {Any[]}
      */
-    getAllByString(...strings) {
+    getAllByStrings(...strings) {
         const options = getOptions(strings, {first: false});
 
         return WebpackModules.getModule(Filters.byStrings(...strings), options);
     },
+
+    /**
+     * Finds an internal Store module using the name.
+     * @param {String} name Name of the store to find (usually includes "Store")
+     * @return {Any}
+     */
+    getStore(name) {return WebpackModules.getModule(Filters.byStoreName(name));},
 };
 
 Object.freeze(Webpack);

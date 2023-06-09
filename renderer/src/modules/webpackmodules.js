@@ -94,12 +94,22 @@ export class Filters {
     /**
      * Generates a {@link module:WebpackModules.Filters~filter} that filters by a set of properties.
      * @param {string} name - Name the module should have
-     * @param {module:WebpackModules.Filters~filter} filter - Additional filter
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
      */
     static byDisplayName(name) {
         return module => {
             return module && module.displayName === name;
+        };
+    }
+
+    /**
+     * Generates a {@link module:WebpackModules.Filters~filter} that filters by a set of properties.
+     * @param {string} name - Name the store should have (usually includes the word Store)
+     * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
+     */
+    static byStoreName(name) {
+        return module => {
+            return module?._dispatchToken && module?.getName?.() === name;
         };
     }
 
