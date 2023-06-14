@@ -56,7 +56,7 @@ class MenuPatcher {
         if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successfully, aborting initialization.");
 
         const {module, key} = (() => {
-            const foundModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
+            const foundModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes(`type:"CONTEXT_MENU_CLOSE"`)), {searchExports: false});
             const foundKey = Object.keys(foundModule).find(k => foundModule[k].length === 3);
 
             return {module: foundModule, key: foundKey};
