@@ -1,6 +1,8 @@
-import {React} from "modules";
+import React from "@modules/react";
+
 import Title from "./title";
-import Divider from "../divider";
+
+import Divider from "@ui/divider";
 
 const {useState, useCallback, useRef} = React;
 

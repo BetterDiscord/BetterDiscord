@@ -1,11 +1,15 @@
-import {Config} from "data";
-import {React, Events, Strings} from "modules";
+import Config from "@data/config";
+
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import Events from "@modules/emitter";
+
 import Drawer from "./settings/drawer";
 import SettingItem from "./settings/components/item";
 import SettingsTitle from "./settings/title";
 import Toasts from "./toasts";
 
-import Checkmark from "./icons/check";
+import Checkmark from "@ui/icons/check";
 
 const {useState, useCallback, useEffect} = React;
 

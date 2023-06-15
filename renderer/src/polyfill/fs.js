@@ -1,5 +1,5 @@
-
 import Remote from "./remote";
+
 
 export const readFileSync = function (path, options = "utf8") {
     return Remote.filesystem.readFile(path, options);
@@ -179,6 +179,8 @@ export default {
     rmSync,
     rmdir,
     rmdirSync,
+    stat,
+    statSync,
     unlink,
     unlinkSync,
     watch,

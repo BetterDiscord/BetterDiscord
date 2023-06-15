@@ -1,5 +1,8 @@
-import {React, WebpackModules} from "modules";
-import SimpleMarkdown from "../../structs/markdown";
+import SimpleMarkdown from "@structs/markdown";
+
+import React from "@modules/react";
+import WebpackModules from "@modules/webpackmodules";
+
 
 const EmptyImageClasses = WebpackModules.getByProps("emptyImage", "emptyHeader") ?? {emptyContainer: "emptyContainer-poti7J", emptyImage: "emptyImage-2pCD2j", emptyHeader: "emptyHeader-2cxTFP"};
 

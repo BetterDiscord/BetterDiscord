@@ -1,4 +1,4 @@
-import WebpackModules from "../modules/webpackmodules";
+import WebpackModules from "@modules/webpackmodules";
 
 Object.defineProperty(window, "Buffer", {
     get() {return Buffer.getBuffer().Buffer;},

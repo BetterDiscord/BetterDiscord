@@ -1,4 +1,4 @@
-import {React} from "modules";
+import React from "@modules/react";
 
 export default function List(props) {
     const size = props.size || "20px";

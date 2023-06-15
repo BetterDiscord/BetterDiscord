@@ -3,9 +3,11 @@
  * instead of the original function. Can also alter arguments and return values.
  */
 
- import Logger from "common/logger";
+ import Logger from "@common/logger";
+
  import DiscordModules from "./discordmodules";
  import WebpackModules from "./webpackmodules";
+ 
  
  export default class Patcher {
  

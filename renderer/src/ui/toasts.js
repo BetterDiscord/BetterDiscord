@@ -1,5 +1,9 @@
-import Logger from "common/logger";
-import {WebpackModules, Settings, DOMManager} from "modules";
+import Logger from "@common/logger";
+
+import Settings from "@modules/settingsmanager";
+import WebpackModules from "@modules/webpackmodules";
+import DOMManager from "@modules/dommanager";
+
 
 export default class Toasts {
 

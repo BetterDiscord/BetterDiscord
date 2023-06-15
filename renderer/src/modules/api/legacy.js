@@ -1,15 +1,18 @@
-import {Config} from "data";
-import WebpackModules from "../webpackmodules";
-import DiscordModules from "../discordmodules";
-import DataStore from "../datastore";
-import DOMManager from "../dommanager";
-import Toasts from "../../ui/toasts";
-import Notices from "../../ui/notices";
-import Modals from "../../ui/modals";
-import Settings from "../settingsmanager";
-import Logger from "common/logger";
-import Patcher from "../patcher";
-import ipc from "../ipc";
+import Logger from "@common/logger";
+
+import Config from "@data/config";
+
+import WebpackModules from "@modules/webpackmodules";
+import DiscordModules from "@modules/discordmodules";
+import DataStore from "@modules/datastore";
+import DOMManager from "@modules/dommanager";
+import Settings from "@modules/settingsmanager";
+import Patcher from "@modules/patcher";
+import ipc from "@modules/ipc";
+
+import Toasts from "@ui/toasts";
+import Notices from "@ui/notices";
+import Modals from "@ui/modals";
 
 /** 
  * The React module being used inside Discord.

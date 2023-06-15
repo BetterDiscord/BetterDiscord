@@ -8,6 +8,7 @@
 import Utilities from "./utilities";
 import WebpackModules, {Filters} from "./webpackmodules";
 
+
 export default Utilities.memoizeObject({
     get React() {return WebpackModules.getByProps("createElement", "cloneElement");},
     get ReactDOM() {return WebpackModules.getByProps("render", "findDOMNode");},
@@ -22,6 +23,6 @@ export default Utilities.memoizeObject({
         // Make fallback component just pass children, so it can at least render that.
         const fallback = props => props.children?.({}) ?? null;
 
-        return WebpackModules.getModule(Filters.byPrototypeFields(["renderTooltip"]), {searchExports: true}) ?? fallback;
+        return WebpackModules.getModule(Filters.byPrototypeKeys(["renderTooltip"]), {searchExports: true}) ?? fallback;
     }
 });

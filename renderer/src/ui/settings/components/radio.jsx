@@ -1,6 +1,6 @@
-import {React} from "modules";
+import React from "@modules/react";
 
-import RadioIcon from "../../icons/radio";
+import RadioIcon from "@ui/icons/radio";
 
 const {useState, useCallback} = React;
 

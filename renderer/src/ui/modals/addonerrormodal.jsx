@@ -1,20 +1,26 @@
-import {React, Strings, WebpackModules} from "modules";
-import Extension from "../icons/extension";
-import ThemeIcon from "../icons/theme";
-import Divider from "../divider";
-import Text from "../base/text";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import WebpackModules from "@modules/webpackmodules";
+
+import Text from "@ui/base/text";
+import Button from "@ui/base/button";
+import Flex from "@ui/base/flex";
+
+import Extension from "@ui/icons/extension";
+import ThemeIcon from "@ui/icons/theme";
+
+import Divider from "@ui/divider";
+
 import Header from "./header";
 import Content from "./content";
-import Flex from "../base/flex";
 import ModalRoot from "./root";
 import Footer from "./footer";
-import Button from "../base/button";
-
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
 const {useState, useCallback, useMemo} = React;
 
 const joinClassNames = (...classNames) => classNames.filter(e => e).join(" ");
+
 
 function AddonError({err, index}) {
     const [expanded, setExpanded] = useState(false);

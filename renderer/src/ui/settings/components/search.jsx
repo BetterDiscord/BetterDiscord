@@ -1,5 +1,5 @@
-import {React} from "modules";
-import SearchIcon from "../../icons/search";
+import React from "@modules/react";
+import SearchIcon from "@ui/icons/search";
 
 const {useState, useCallback} = React;
 

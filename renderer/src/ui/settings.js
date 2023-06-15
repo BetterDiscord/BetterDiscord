@@ -1,10 +1,15 @@
-import {React, WebpackModules, Patcher, Utilities, Settings, Events, DataStore} from "modules";
+import React from "@modules/react";
+import Utilities from "@modules/utilities";
+import Events from "@modules/emitter";
+import Settings from "@modules/settingsmanager";
+import DataStore from "@modules/datastore";
+import WebpackModules, {Filters} from "@modules/webpackmodules";
+import Patcher from "@modules/patcher";
 
 import AddonList from "./settings/addonlist";
 import SettingsGroup from "./settings/group";
 import SettingsTitle from "./settings/title";
 import Header from "./settings/sidebarheader";
-import {Filters} from "../modules/webpackmodules";
 
 export default new class SettingsRenderer {
 
@@ -62,7 +67,7 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        const UserSettings = await WebpackModules.getLazy(Filters.byPrototypeFields(["getPredicateSections"]));
+        const UserSettings = await WebpackModules.getLazy(Filters.byPrototypeKeys(["getPredicateSections"]));
         
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject, args, returnValue) => {
             let location = returnValue.findIndex(s => s.section.toLowerCase() == "changelog") - 1;

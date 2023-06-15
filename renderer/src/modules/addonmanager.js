@@ -1,19 +1,22 @@
-import Logger from "common/logger";
+import path from "path";
+import fs from "fs";
+import {shell} from "electron";
+
+import Logger from "@common/logger";
+
+import AddonError from "@structs/addonerror";
+
 import Settings from "./settingsmanager";
 import Events from "./emitter";
 import DataStore from "./datastore";
-import AddonError from "../structs/addonerror";
-import Toasts from "../ui/toasts";
-import DiscordModules from "./discordmodules";
+import React from "./react";
 import Strings from "./strings";
-import AddonEditor from "../ui/misc/addoneditor";
-import FloatingWindows from "../ui/floatingwindows";
 
-const React = DiscordModules.React;
+import AddonEditor from "@ui/misc/addoneditor";
+import FloatingWindows from "@ui/floatingwindows";
+import Toasts from "@ui/toasts";
 
-const path = require("path");
-const fs = require("fs");
-const shell = require("electron").shell;
+
 const openItem = shell.openItem || shell.openPath;
 
 const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
