@@ -3,6 +3,7 @@ export {default as https} from "./https";
 export * as electron from "./electron";
 export * as crypto from "./crypto";
 export * as vm from "./vm";
+export * from "./fetch";
 
 // We can expose that without any issues.
 export * as path from "path";
