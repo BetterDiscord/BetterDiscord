@@ -34,7 +34,15 @@ const makeRequest = (url, options, callback, setReq) => {
             req.end();
         });
     });
-    req.end();
+
+    if (options.formData) {
+        // Make sure to close the socket.
+        try {req.write(options.formData);}
+        finally {req.end();}
+    } else {
+        req.end();
+    }
+
 };
 
 const request = function (url, options, callback) {
