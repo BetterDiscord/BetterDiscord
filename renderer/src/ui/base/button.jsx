@@ -1,4 +1,5 @@
-import {React, Utilities} from "modules";
+import React from "@modules/react";
+import Utilities from "@modules/utilities";
 
 // S.Looks = y;
 // S.Colors = I;

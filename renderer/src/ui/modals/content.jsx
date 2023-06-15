@@ -1,4 +1,5 @@
-import {React, Utilities} from "modules";
+import React from "@modules/react";
+import Utilities from "@modules/utilities";
 
 
 export default function Content({id, className, children, scroller = true}) {

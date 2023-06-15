@@ -1,4 +1,7 @@
-import {React, Events, WebpackModules} from "modules";
+import React from "@modules/react";
+import Events from "@modules/emitter";
+import WebpackModules from "@modules/webpackmodules";
+
 import Backdrop from "./backdrop";
 
 const {Fragment, useState, useCallback, useEffect} = React;

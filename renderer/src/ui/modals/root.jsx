@@ -1,4 +1,6 @@
-import {React, Utilities, WebpackModules} from "modules";
+import React from "@modules/react";
+import Utilities from "@modules/utilities";
+import WebpackModules from "@modules/webpackmodules";
 
 const Spring = WebpackModules.getByProps("useSpring", "animated");
 const Anims = WebpackModules.getByProps("Easing");

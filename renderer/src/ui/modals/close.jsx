@@ -1,4 +1,5 @@
-import {React} from "modules";
+import React from "@modules/react";
+
 import Button from "../base/button";
 import Close from "../icons/close";
 

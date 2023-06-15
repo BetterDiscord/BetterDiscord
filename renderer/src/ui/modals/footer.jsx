@@ -1,4 +1,6 @@
-import {React, Utilities} from "modules";
+import React from "@modules/react";
+import Utilities from "@modules/utilities";
+
 import Flex from "../base/flex";
 
 

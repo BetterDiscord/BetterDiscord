@@ -7,9 +7,9 @@ import React from "@modules/react";
 import ReactDOM from "@modules/reactdom";
 import Strings from "@modules/strings";
 import Settings from "@modules/settingsmanager";
+import Events from "@modules/emitter";
 import DiscordModules from "@modules/discordmodules";
 import WebpackModules from "@modules/webpackmodules";
-import DiscordClasses from "@modules/discordclasses";
 import DOMManager from "@modules/dommanager";
 
 import AddonErrorModal from "./modals/addonerrormodal";

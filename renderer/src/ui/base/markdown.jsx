@@ -1,4 +1,6 @@
-import {React, WebpackModules, DiscordModules} from "modules";
+import React from "@modules/react";
+import WebpackModules from "@modules/webpackmodules";
+import DiscordModules from "@modules/discordmodules";
 
 
 const DiscordMarkdown = WebpackModules.find(m => m?.prototype?.render && m.rules);

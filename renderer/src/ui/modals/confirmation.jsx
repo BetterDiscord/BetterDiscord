@@ -1,4 +1,6 @@
-import {React, Strings} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+
 import Root from "./root";
 import Header from "./header";
 import Footer from "./footer";

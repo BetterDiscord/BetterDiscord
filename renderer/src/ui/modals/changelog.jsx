@@ -1,4 +1,7 @@
-import {React, DiscordModules, WebpackModules} from "modules";
+import React from "@modules/react";
+import WebpackModules from "@modules/webpackmodules";
+import DiscordModules from "@modules/discordmodules";
+
 import Root from "./root";
 import Header from "./header";
 import Footer from "./footer";
@@ -8,7 +11,7 @@ import Flex from "../base/flex";
 import Text from "../base/text";
 import CloseButton from "./close";
 
-import SimpleMarkdownExt from "../../structs/markdown";
+import SimpleMarkdownExt from "@structs/markdown";
 
 const {useMemo} = React;
 
