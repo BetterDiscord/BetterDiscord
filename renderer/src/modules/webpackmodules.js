@@ -22,7 +22,7 @@ export class Filters {
      * @param {module:WebpackModules.Filters~filter} filter - Additional filter
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
      */
-    static byProps(props, filter = m => m) {
+    static byKeys(props, filter = m => m) {
         return module => {
             if (!module) return false;
             if (typeof(module) !== "object" && typeof(module) !== "function") return false;
@@ -41,7 +41,7 @@ export class Filters {
      * @param {module:WebpackModules.Filters~filter} filter - Additional filter
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties on the object's prototype
      */
-    static byPrototypeFields(fields, filter = m => m) {
+    static byPrototypeKeys(fields, filter = m => m) {
         return module => {
             if (!module) return false;
             if (typeof(module) !== "object" && typeof(module) !== "function") return false;
@@ -94,12 +94,22 @@ export class Filters {
     /**
      * Generates a {@link module:WebpackModules.Filters~filter} that filters by a set of properties.
      * @param {string} name - Name the module should have
-     * @param {module:WebpackModules.Filters~filter} filter - Additional filter
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
      */
     static byDisplayName(name) {
         return module => {
             return module && module.displayName === name;
+        };
+    }
+
+    /**
+     * Generates a {@link module:WebpackModules.Filters~filter} that filters by a set of properties.
+     * @param {string} name - Name the store should have (usually includes the word Store)
+     * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of properties
+     */
+    static byStoreName(name) {
+        return module => {
+            return module?._dispatchToken && module?.getName?.() === name;
         };
     }
 
@@ -139,6 +149,25 @@ export default class WebpackModules {
     static findAll(filter) {return this.getModule(filter, {first: false});}
     static findByUniqueProperties(props, first = true) {return first ? this.getByProps(...props) : this.getAllByProps(...props);}
     static findByDisplayName(name) {return this.getByDisplayName(name);}
+
+    /**
+     * A Proxy that returns the module source by ID.
+     */
+    static modules = new Proxy({}, {
+        ownKeys() {return Object.keys(WebpackModules.require.m);},
+        getOwnPropertyDescriptor() {
+            return {
+                enumerable: true,
+                configurable: true, // Not actually
+            };
+        },
+        get(_, k) {
+            return WebpackModules.require.m[k];
+        },
+        set() {
+            throw new Error("[WebpackModules~modules] Setting modules is not allowed.");
+        }
+    });
 
     /**
      * Finds a module using a filter function.
@@ -253,6 +282,24 @@ export default class WebpackModules {
     }
 
     /**
+     * Searches for a module by value, returns module & matched key. Useful in combination with the Patcher. 
+     * @param {(value: any, index: number, array: any[]) => boolean} filter A function to use to filter the module
+     * @param {object} [options] Set of options to customize the search
+     * @param {any} [options.target=null] Optional module target to look inside.
+     * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters. 
+     * @return {[Any, string]}
+     */
+    static *getWithKey(filter, {target = null, ...rest} = {}) {
+        yield target ??= this.getModule(exports =>
+            Object.values(exports).some(filter),
+            rest
+        );
+        
+        yield target && Object.keys(target).find(k => filter(target[k]));
+    }
+
+    /**
      * Finds all modules matching a filter function.
      * @param {Function} filter A function to use to filter modules
      */
@@ -283,7 +330,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByPrototypes(...prototypes) {
-        return this.getModule(Filters.byPrototypeFields(prototypes));
+        return this.getModule(Filters.byPrototypeKeys(prototypes));
     }
 
     /**
@@ -292,7 +339,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByPrototypes(...prototypes) {
-        return this.getModule(Filters.byPrototypeFields(prototypes), {first: false});
+        return this.getModule(Filters.byPrototypeKeys(prototypes), {first: false});
     }
 
     /**
@@ -301,7 +348,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getByProps(...props) {
-        return this.getModule(Filters.byProps(props));
+        return this.getModule(Filters.byKeys(props));
     }
 
     /**
@@ -310,7 +357,7 @@ export default class WebpackModules {
      * @return {Any}
      */
     static getAllByProps(...props) {
-        return this.getModule(Filters.byProps(props), {first: false});
+        return this.getModule(Filters.byKeys(props), {first: false});
     }
 
     /**
