@@ -162,3 +162,52 @@
     overflow: hidden scroll;
     padding-right: 8px;
 }
+
+.bd-modal-backdrop {
+    position: fixed;
+    top: 0;
+    right: var(--devtools-sidebar-width,0);
+    bottom: 0;
+    left: 0;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    pointer-events: all;
+}
+
+#bd-modal-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: var(--devtools-sidebar-width,0);
+    bottom: 0;
+    background: none!important;
+    pointer-events: none;
+    z-index: 1002;
+}
+
+.bd-modal-layer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.bd-modal-layer {
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-height: 0;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
