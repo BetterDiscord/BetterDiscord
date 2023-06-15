@@ -160,6 +160,6 @@ export default Utilities.memoizeObject({
         // Make fallback component just pass children, so it can at least render that.
         const fallback = props => props.children?.({}) ?? null;
 
-        return WebpackModules.getModule(Filters.byPrototypeFields(["renderTooltip"]), {searchExports: true}) ?? fallback;
+        return WebpackModules.getModule(Filters.byPrototypeKeys(["renderTooltip"]), {searchExports: true}) ?? fallback;
     }
 });
