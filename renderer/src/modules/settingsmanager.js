@@ -1,9 +1,12 @@
-import {SettingsConfig} from "data";
-import Logger from "common/logger";
+import Logger from "@common/logger";
+
+import SettingsConfig from "@data/settings";
+
 import DataStore from "./datastore";
 import Events from "./emitter";
 import DiscordModules from "./discordmodules";
 import Strings from "./strings";
+
 
 export default new class SettingsManager {
 

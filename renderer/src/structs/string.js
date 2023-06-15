@@ -1,4 +1,5 @@
-import Utilities from "../modules/utilities";
+import Utilities from "@modules/utilities";
+
 
 const LINK = /\[(.+?)]/;
 

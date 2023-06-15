@@ -1,17 +1,21 @@
-import {Config} from "data";
-import Logger from "common/logger";
+import path from "path";
+import vm from "vm";
+
+import Logger from "@common/logger";
+
+import Config from "@data/config";
+
+import AddonError from "@structs/addonerror";
+
 import AddonManager from "./addonmanager";
-import AddonError from "../structs/addonerror";
 import Settings from "./settingsmanager";
 import Strings from "./strings";
 import Events from "./emitter";
 
-import Toasts from "../ui/toasts";
-import Modals from "../ui/modals";
-import SettingsRenderer from "../ui/settings";
+import Toasts from "@ui/toasts";
+import Modals from "@ui/modals";
+import SettingsRenderer from "@ui/settings";
 
-const path = require("path");
-const vm = require("vm");
 
 const normalizeExports = name => `
 if (module.exports.default) {

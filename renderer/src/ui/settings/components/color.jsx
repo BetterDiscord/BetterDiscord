@@ -1,4 +1,5 @@
-import {DiscordModules, React} from "modules";
+import React from "@modules/react";
+import DiscordModules from "@modules/discordmodules";
 
 const {useState, useCallback} = React;
 

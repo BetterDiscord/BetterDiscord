@@ -1,4 +1,4 @@
-import {React} from "modules";
+import React from "@modules/react";
 
 export default function BDLogo(props) {
     return <svg className={"bd-logo " + props.className} height="100%" width={props.size || "16px"} viewBox="0 0 2000 2000">

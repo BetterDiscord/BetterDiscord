@@ -1,13 +1,18 @@
-import {React, Strings, WebpackModules, DiscordClasses} from "modules";
-import Extension from "./icons/extension";
-import ThemeIcon from "./icons/theme";
-import Divider from "./divider";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import DiscordClasses from "@modules/discordclasses";
+import WebpackModules from "@modules/webpackmodules";
 
+import Extension from "@ui/icons/extension";
+import ThemeIcon from "@ui/icons/theme";
+
+import Divider from "@ui/divider";
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
 const {useState, useCallback, useMemo} = React;
 
 const joinClassNames = (...classNames) => classNames.filter(e => e).join(" ");
+
 
 function AddonError({err, index}) {
     const [expanded, setExpanded] = useState(false);

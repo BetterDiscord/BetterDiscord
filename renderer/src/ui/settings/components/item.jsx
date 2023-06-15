@@ -1,4 +1,5 @@
-import {React} from "modules";
+import React from "@modules/react";
+
 
 export default function SettingItem({id, name, note, inline, children}) {
     return <div className={"bd-setting-item" + (inline ? " inline" : "")}>

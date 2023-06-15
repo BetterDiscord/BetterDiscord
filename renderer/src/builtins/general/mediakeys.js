@@ -1,6 +1,10 @@
-import Builtin from "../../structs/builtin";
-import Modals from "../../ui/modals";
-import {Strings, IPC} from "modules";
+import Builtin from "@structs/builtin";
+
+import Strings from "@modules/strings";
+import IPC from "@modules/ipc";
+
+import Modals from "@ui/modals";
+
 
 export default new class MediaKeys extends Builtin {
     get name() {return "DisableMediaKeys";}

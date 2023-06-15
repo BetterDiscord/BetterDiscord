@@ -1,28 +1,27 @@
 import request from "request";
 import fileSystem from "fs";
-import {Config} from "data";
 import path from "path";
 
-import Logger from "common/logger";
+import Logger from "@common/logger";
+
+import Config from "@data/config";
+
+import {comparator as semverComparator, regex as semverRegex} from "@structs/semver";
 
 import Events from "./emitter";
 import IPC from "./ipc";
 import Strings from "./strings";
 import DataStore from "./datastore";
+import React from "./react";
 import Settings from "./settingsmanager";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import WebpackModules from "./webpackmodules";
 
-import Toasts from "../ui/toasts";
-import Notices from "../ui/notices";
-import Modals from "../ui/modals";
-import UpdaterPanel from "../ui/updater";
-import DiscordModules from "./discordmodules";
-
-import {comparator as semverComparator, regex as semverRegex} from "../structs/semver";
-
-const React = DiscordModules.React;
+import Toasts from "@ui/toasts";
+import Notices from "@ui/notices";
+import Modals from "@ui/modals";
+import UpdaterPanel from "@ui/updater";
 
 
 const UserSettingsWindow = WebpackModules.getByProps("updateAccount");

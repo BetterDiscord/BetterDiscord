@@ -1,4 +1,5 @@
-import Logger from "common/logger";
+import Logger from "@common/logger";
+
 
 export default class Utilities {
     /**

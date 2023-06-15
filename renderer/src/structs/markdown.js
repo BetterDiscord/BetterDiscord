@@ -1,4 +1,6 @@
-import {DiscordModules, Utilities} from "modules";
+import DiscordModules from "@modules/discordmodules";
+import Utilities from "@modules/utilities";
+
 
 export default class SimpleMarkdownExt {
     static parseToReact(str) {
