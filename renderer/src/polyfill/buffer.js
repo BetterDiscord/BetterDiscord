@@ -1,9 +1,12 @@
+import Events from "../modules/emitter";
 import WebpackModules from "../modules/webpackmodules";
 
-Object.defineProperty(window, "Buffer", {
-    get() {return Buffer.getBuffer().Buffer;},
-    configurable: true,
-    enumerable: false
+Events.addListener("CLIENT_READY", () => {
+    Object.defineProperty(window, "Buffer", {
+        get() {return Buffer.getBuffer().Buffer;},
+        configurable: true,
+        enumerable: false
+    });
 });
 
 export default class Buffer {

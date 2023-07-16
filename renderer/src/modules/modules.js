@@ -1,13 +1,25 @@
+import DiscordModules from "./discordmodules";
+import Events from "./emitter";
+
 export {default as WebpackModules} from "./webpackmodules";
 
-import DiscordModules from "./discordmodules";
-export const React = DiscordModules.React;
-export const ReactDOM = DiscordModules.ReactDOM;
-export {DiscordModules};
+// import DiscordModules from "./discordmodules";
+const makeProxy = name => new Proxy({}, {
+    get(_, key) {
+        return DiscordModules[name][key];
+    },
+    set(_, key, value) {
+        return DiscordModules[name][key] = value;
+    }
+})
+
+export const React = makeProxy("React");
+export const ReactDOM = makeProxy("ReactDOM");
+
+export {Events, DiscordModules};
 
 export {default as Utilities} from "./utilities";
 export {default as DataStore} from "./datastore";
-export {default as Events} from "./emitter";
 export {default as Settings} from "./settingsmanager";
 export {default as DOMManager} from "./dommanager";
 export {default as Patcher} from "./patcher";

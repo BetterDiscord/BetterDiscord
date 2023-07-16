@@ -198,9 +198,11 @@ export default class DOMManager {
     }
 }
 
-DOMManager.createElement("bd-head", {target: document.head});
-DOMManager.createElement("bd-body", {target: document.body});
-DOMManager.createElement("bd-scripts", {target: DOMManager.bdHead});
-DOMManager.createElement("bd-styles", {target: DOMManager.bdHead});
-DOMManager.createElement("bd-themes", {target: DOMManager.bdHead});
-DOMManager.createElement("style", {id: "customcss", target: DOMManager.bdHead});
+document.addEventListener("DOMContentLoaded", () => {
+    DOMManager.createElement("bd-head", {target: document.head});
+    DOMManager.createElement("bd-body", {target: document.body});
+    DOMManager.createElement("bd-scripts", {target: DOMManager.bdHead});
+    DOMManager.createElement("bd-styles", {target: DOMManager.bdHead});
+    DOMManager.createElement("bd-themes", {target: DOMManager.bdHead});
+    DOMManager.createElement("style", {id: "customcss", target: DOMManager.bdHead});
+}, {once: true});

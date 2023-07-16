@@ -47,6 +47,7 @@ export default class BetterDiscord {
     }
 
     static async injectRenderer(browserWindow) {
+        return;
         const location = path.join(__dirname, "renderer.js");
         if (!fs.existsSync(location)) return; // TODO: cut a fatal log
         const content = fs.readFileSync(location).toString();
@@ -81,7 +82,7 @@ export default class BetterDiscord {
         process.env.BETTERDISCORD_DATA_PATH = dataPath;
 
         // When DOM is available, pass the renderer over the wall
-        browserWindow.webContents.on("dom-ready", () => {
+        /*browserWindow.webContents.on*/(/*"ready-to-show",*/ () => {
             if (!hasCrashed) return this.injectRenderer(browserWindow);
 
             // If a previous crash was detected, show a message explaining why BD isn't there
@@ -101,7 +102,7 @@ export default class BetterDiscord {
                 }
             });
             hasCrashed = false;
-        });
+        })();
 
         // This is used to alert renderer code to onSwitch events
         browserWindow.webContents.on("did-navigate-in-page", () => {

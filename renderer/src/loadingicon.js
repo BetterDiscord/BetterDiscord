@@ -34,8 +34,10 @@ loadingIcon.title = "BetterDiscord is loading...";
 
 export default class {
     static show() {
+      window.addEventListener("DOMContentLoaded", () => {
         document.body.appendChild(iconStyle);
-        document.body.appendChild(loadingIcon);
+        document.body.appendChild(loadingIcon); 
+      }, {once: true});
     }
 
     static hide() {

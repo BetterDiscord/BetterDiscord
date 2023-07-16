@@ -1,10 +1,10 @@
 import {Config} from "data";
 import Logger from "common/logger";
-import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordModules, DiscordClasses} from "modules";
+import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordModules, DiscordClasses, Utilities} from "modules";
 import FormattableString from "../structs/string";
-import AddonErrorModal from "./addonerrormodal";
-import ErrorBoundary from "./errorboundary";
 
+const AddonErrorModal = Utilities.makeLazy(() => import("./addonerrormodal"));
+const ErrorBoundary = Utilities.makeLazy(() => import("./errorboundary"));
 
 export default class Modals {
 

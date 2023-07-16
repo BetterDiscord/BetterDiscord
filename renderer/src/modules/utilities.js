@@ -1,4 +1,5 @@
 import Logger from "common/logger";
+import DiscordModules from "./discordmodules";
 
 export default class Utilities {
     /**
@@ -214,5 +215,35 @@ export default class Utilities {
         }
 
         return classes.join(" ");
+    }
+
+    static makeLazy(component, fallback = "Loading...") {
+        let cache = null;
+
+        const comp = props => {
+            cache ??= DiscordModules.React.lazy(component);
+
+            return DiscordModules.React.createElement(DiscordModules.React.Suspense, {
+                fallback,
+            }, DiscordModules.React.createElement(cache, props));
+        };
+
+        comp.displayName = "LazyComponent";
+
+        return comp;
+    }
+
+    static makeModuleLazy(getter) {
+        let cache = null;
+
+        return () => {
+            cache ??= getter();
+
+            if (typeof cache === "undefined") {
+                Logger.warn("Utilities~makeModuleLazy", "The following module getter resulted in undefined.", getter);
+            }
+
+            return cache;
+        }
     }
 }

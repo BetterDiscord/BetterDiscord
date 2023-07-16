@@ -1,5 +1,7 @@
 import Logger from "common/logger";
-import {React, IPC} from "modules";
+import {DiscordModules, IPC} from "modules";
+
+const React = DiscordModules.React;
 
 export default class ErrorBoundary extends React.Component {
     constructor(props) {

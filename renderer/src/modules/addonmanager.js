@@ -6,10 +6,9 @@ import AddonError from "../structs/addonerror";
 import Toasts from "../ui/toasts";
 import DiscordModules from "./discordmodules";
 import Strings from "./strings";
-import AddonEditor from "../ui/misc/addoneditor";
 import FloatingWindows from "../ui/floatingwindows";
-
-const React = DiscordModules.React;
+import Utilities from "./utilities";
+import Notices from "../ui/notices";
 
 const path = require("path");
 const fs = require("fs");
@@ -26,6 +25,10 @@ const stripBOM = function(fileContent) {
     return fileContent;
 };
 
+const AddonEditor = Utilities.makeLazy(() => import("../ui/misc/addoneditor"));
+
+let needsReload = false;
+
 export default class AddonManager {
 
     get name() {return "";}
@@ -41,10 +44,24 @@ export default class AddonManager {
         this.addonList = [];
         this.state = {};
         this.windows = new Set();
+        this.delayedAddons = [];
     }
 
     initialize() {
-        return this.loadAllAddons();
+        const partial = this.loadAllAddons();
+
+        Events.addListener("LOAD_DELAYED_ADDONS", () => {
+            if (typeof this.onClientReady === "function") {
+                this.onClientReady();
+            }
+
+            partial.push(
+                ...this.delayedAddons.map(this.finalizeAddon.bind(this))
+                    .filter(Boolean)
+            );
+        });
+
+        return partial;
     }
 
     // Subclasses should overload this and modify the addon object as needed to fully load it
@@ -68,6 +85,24 @@ export default class AddonManager {
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
         this.watcher = fs.watch(this.addonFolder, {persistent: false}, async (eventType, filename) => {
             // console.log("watcher", eventType, filename, !eventType || !filename, !filename.endsWith(this.extension));
+            const isEarly = this.addonList.some(addon => addon.filename === filename && addon["run-at"] === "client-start");
+
+            if (isEarly) {
+                if (needsReload) return;
+
+                needsReload = true;
+
+                Notices.show("One or more addons require a reload", {
+                    type: "error",
+                    buttons: [
+                        {label: "Reload Now", onClick() {location.reload();} },
+                        {label: "Ignore", onClick() {} }
+                    ]
+                });
+
+                return;
+            }
+
             if (!eventType || !filename) return;
             // console.log(eventType, filename)
 
@@ -211,7 +246,12 @@ export default class AddonManager {
             return e;
         }
         
+        // if (!this.delayedAddons.includes(addon)) {
+        //     return this.finalizeAddon(addon, shouldToast);
+        // }
+    }
 
+    finalizeAddon(addon, shouldToast) {
         const error = this.initializeAddon(addon);
         if (error) {
             this.state[addon.id] = false;
@@ -361,8 +401,8 @@ export default class AddonManager {
         if (this.windows.has(fullPath)) return;
         this.windows.add(fullPath);
 
-        const editorRef = React.createRef();
-        const editor = React.createElement(AddonEditor, {
+        const editorRef = DiscordModules.React.createRef();
+        const editor = DiscordModules.React.createElement(AddonEditor, {
             id: "bd-floating-editor-" + addon.id,
             ref: editorRef,
             content: content,

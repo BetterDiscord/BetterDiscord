@@ -1,10 +1,10 @@
-import {React, Strings} from "modules";
+import {DiscordModules, Strings} from "modules";
 
 import Editor from "../customcss/editor";
 import Save from "../icons/save";
 import Edit from "../icons/edit";
 
-const {useState, useCallback, forwardRef, useImperativeHandle, useRef} = React;
+const {useState, useCallback, forwardRef, useImperativeHandle, useRef} = DiscordModules.React;
 
 
 export default forwardRef(function AddonEditor({content, language, save, openNative, id = "bd-addon-editor"}, ref) {

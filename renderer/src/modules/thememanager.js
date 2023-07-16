@@ -20,7 +20,6 @@ export default new class ThemeManager extends AddonManager {
     get language() {return "css";}
 
     initialize() {
-        const errors = super.initialize();
         Settings.registerPanel("themes", Strings.Panels.themes, {
             order: 4,
             element: SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
@@ -35,7 +34,8 @@ export default new class ThemeManager extends AddonManager {
                 prefix: this.prefix
             })
         });
-        return errors;
+
+        return super.initialize();
     }
 
     /* Aliases */

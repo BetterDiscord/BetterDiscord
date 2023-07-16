@@ -33,6 +33,7 @@ export default function () {
         };
         
         if (!Reflect.has(window, chunkName)) {
+            return;
             predefine(window, chunkName, instance => {
                 predefine(instance, "push", () => {
                     instance.push([[Symbol()], {}, require => {

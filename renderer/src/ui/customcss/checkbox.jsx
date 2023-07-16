@@ -2,7 +2,6 @@ import {React} from "modules";
 
 const {useState, useCallback} = React;
 
-
 export default function Checkbox({checked: initialState, text, onChange: notifyParent}) {
     const [checked, setChecked] = useState(initialState);
     const onClick = useCallback(() => {

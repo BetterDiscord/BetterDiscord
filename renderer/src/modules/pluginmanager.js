@@ -39,8 +39,7 @@ export default new class PluginManager extends AddonManager {
         });
     }
 
-    initialize() {
-        const errors = super.initialize();
+    onClientReady() {
         this.setupFunctions();
         Settings.registerPanel("plugins", Strings.Panels.plugins, {
             order: 3,
@@ -56,7 +55,6 @@ export default new class PluginManager extends AddonManager {
                 prefix: this.prefix
             })
         });
-        return errors;
     }
 
     /* Aliases */
@@ -117,21 +115,37 @@ export default new class PluginManager extends AddonManager {
 
     requireAddon(filename) {
         const addon = super.requireAddon(filename);
+
+        if (addon["run-at"] !== "client-start") {
+            this.delayedAddons.push(addon);
+
+            return addon;
+        }
+
+        this.finalizeAddon(addon);
+
+        return addon;
+    }
+
+    finalizeAddon(addon) {
+        if (!addon) debugger;
         try {
-            const module = {filename, exports: {}};
+            const module = {filename: addon.filename, exports: {}};
             // Test if the code is valid gracefully
-            vm.compileFunction(addon.fileContent, ["require", "module", "exports", "__filename", "__dirname"], {filename: path.basename(filename)});
+            vm.compileFunction(addon.fileContent, ["require", "module", "exports", "__filename", "__dirname"], {filename: path.basename(addon.filename)});
             addon.fileContent += normalizeExports(addon.exports || addon.name);
             addon.fileContent += `\n//# sourceURL=betterdiscord://plugins/${addon.filename}`;
             const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], addon.fileContent); // eslint-disable-line no-new-func
             wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
             addon.exports = module.exports;
             delete addon.fileContent;
-            return addon;
         }
         catch (err) {
+            Logger.error("PluginManager", "Could not compile addon.", err, {addon});
             throw new AddonError(addon.name || addon.filename, module.filename, Strings.Addons.compileError, {message: err.message, stack: err.stack}, this.prefix);
         }
+
+        return super.finalizeAddon(addon);
     }
 
     startAddon(id) {return this.startPlugin(id);}

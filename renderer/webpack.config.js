@@ -4,9 +4,10 @@ const CircularDependencyPlugin = require("circular-dependency-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const basePkg = require("../package.json");
 
+/**@type {import("webpack").Configuration} */
 module.exports = {
   mode: "development",
-  target: "node",
+  target: "web",
   devtool: false,
   entry: "./src/index.js",
   output: {
@@ -14,6 +15,7 @@ module.exports = {
     path: path.resolve(__dirname, "..", "dist")
   },
   externals: {
+    "vm": `require("vm")`,
     "electron": `require("electron")`,
     "fs": `require("fs")`,
     "original-fs": `require("original-fs")`,
@@ -53,6 +55,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env.__VERSION__": JSON.stringify(basePkg.version)
+    }),
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
     })
   ],
   optimization: {

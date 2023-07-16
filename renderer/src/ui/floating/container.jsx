@@ -1,4 +1,4 @@
-import {React, Events} from "modules";
+import {Events, React} from "modules";
 
 import FloatingWindow from "./window";
 

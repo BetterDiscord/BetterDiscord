@@ -1,5 +1,6 @@
 import Logger from "common/logger";
 import {default as MainPatcher} from "../patcher";
+import {Patcher as WebpackPatcher} from "../webpackmodules";
 
 /**
  * `Patcher` is a utility class for modifying existing functions. Instance is accessible through the {@link BdApi}.
@@ -97,6 +98,16 @@ class Patcher {
         if (this.#callerName) caller = this.#callerName;
         if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of unpatchAll must be a string representing the caller");
         MainPatcher.unpatchAll(caller);
+    }
+
+    patchSource(patch) {
+        const required = ["test", "regex", "replace"];
+        let missing;
+        if ((missing = required.filter(p => typeof patch[p] === "undefined")).length) {
+            return Logger.error("BdApi.Patcher", `Parameter 0 of patchSource is missing the following properties: ${missing.join(", ")}`);
+        }
+
+        return WebpackPatcher.addPatch(patch);
     }
 }
 

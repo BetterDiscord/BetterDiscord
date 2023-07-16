@@ -10,20 +10,21 @@ import Settings from "../settingsmanager";
 import Logger from "common/logger";
 import Patcher from "../patcher";
 import ipc from "../ipc";
+import {React, ReactDOM} from "modules";
 
 /** 
  * The React module being used inside Discord.
  * @type React
  * @memberof BdApi
  */
-const React = DiscordModules.React;
+// const React = DiscordModules.React;
 
 /** 
  * The ReactDOM module being used inside Discord.
  * @type ReactDOM
  * @memberof BdApi
  */
-const ReactDOM = DiscordModules.ReactDOM;
+// const ReactDOM = DiscordModules.ReactDOM;
 
 /** 
  * A reference object to get BD's settings.

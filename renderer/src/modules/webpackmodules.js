@@ -3,7 +3,35 @@
  * @module WebpackModules
  * @version 0.0.2
  */
+import Events from "./emitter";
 import Logger from "../../../common/logger";
+
+const predefine = function (target, prop, effect) {
+    const value = target[prop];
+    Object.defineProperty(target, prop, {
+        get() {return value;},
+        set(newValue) {
+            Object.defineProperty(target, prop, {
+                value: newValue,
+                configurable: true,
+                enumerable: true,
+                writable: true
+            });
+
+            try {
+                effect(newValue);
+            }
+            catch (error) {
+                // eslint-disable-next-line no-console
+                console.error(error);
+            }
+
+            // eslint-disable-next-line no-setter-return
+            return newValue;
+        },
+        configurable: true
+    });
+};
 
 /**
  * Checks if a given module matches a set of parameters.
@@ -143,7 +171,72 @@ const wrapFilter = filter => (exports, module, moduleId) => {
     }
 };
 
+export class Patcher {
+    static patches = [];
+    static patchesCount = new Map;
+
+    static initialize() {
+        window.$$bd_string_patches = {};
+    }
+
+    static findPatches(moduleSource) {
+        return this.patches.filter(patch => (patch.once ? !patch._ran : true) && patch.test.test(moduleSource));
+    }
+
+    static constructModule(moduleId, moduleSource) {
+        return (
+            "{" +
+            `const count = ${this.patchesCount.get(moduleId)};\n` +
+            `const id = "${moduleId}";\n` +
+            "const capture = function (variable) {\n" +
+            "   return window.$$bd_string_patches[id]?.[variable];\n" +
+            "};\n" +
+            moduleSource +
+            "}\n" +
+            `//# sourceURL=${moduleId}.patched.js`
+        );
+    }
+
+    static patchModule(moduleId, moduleSource) {
+        const patches = this.findPatches(moduleSource);
+
+        if (!patches.length) return {code: moduleSource, count: 0};
+
+        window.$$bd_string_patches[moduleId] = {};
+        this.patchesCount.set(moduleId, 0);
+
+        for (const patch of patches) {
+            if (!patch.regex.test(moduleSource)) {
+                Logger.warn("WebpackModules~Patcher", `The following patch`, patch, "didn't have any affect.");
+                continue;
+            }
+
+            if (patch.once) patch._ran = true;
+
+            moduleSource = moduleSource.replace(patch.regex, patch.replace);
+
+            if (patch.variables) {
+                for (const key in patch.variables) {
+                    Object.defineProperty(window.$$bd_string_patches, key, Object.getOwnPropertyDescriptor(patch.variables, key));
+                }
+            }
+
+            this.patchesCount.set(moduleId, this.patchesCount.get(moduleId) + 1);
+        }
+
+        return {
+            code: this.constructModule(moduleId, moduleSource),
+            count: this.patchesCount.get(moduleId)
+        };
+    }
+
+    static addPatch(patch) {
+        return this.patches.push(patch);
+    }
+}
+
 export default class WebpackModules {
+    static ready = false;
 
     static find(filter, first = true) {return this.getModule(filter, {first});}
     static findAll(filter) {return this.getModule(filter, {first: false});}
@@ -458,7 +551,7 @@ export default class WebpackModules {
      * @return {Array}
      */
     static getAllModules() {
-        return this.require.c;
+        return this.ready ? this.require.c : {};
     }
 
     // Webpack Chunk Observing
@@ -467,20 +560,48 @@ export default class WebpackModules {
     static initialize() {
         this.handlePush = this.handlePush.bind(this);
         this.listeners = new Set();
-        
-        this.__ORIGINAL_PUSH__ = window[this.chunkName].push;
-        Object.defineProperty(window[this.chunkName], "push", {
-            configurable: true,
-            get: () => this.handlePush,
-            set: (newPush) => {
-                this.__ORIGINAL_PUSH__ = newPush;
 
-                Object.defineProperty(window[this.chunkName], "push", {
-                    value: this.handlePush,
-                    configurable: true,
-                    writable: true
-                });
-            }
+        Patcher.initialize();
+
+        predefine(window, this.chunkName, webpack => {
+            
+            predefine(webpack, "push", originalPush => {
+                this.__ORIGINAL_PUSH__ = originalPush;
+
+                webpack.push([[Symbol()], {}, require => {
+                    require.d = (target, exports) => {
+                        for (const key in exports) {
+                            if (!Reflect.has(exports, key) || target[key]) continue;
+    
+                            Object.defineProperty(target, key, {
+                                get: () => exports[key](),
+                                set: v => {exports[key] = () => v;},
+                                enumerable: true,
+                                configurable: true
+                            });
+                        }
+                    };
+                }]);
+
+                webpack.pop();
+                webpack.push = this.handlePush;
+            });
+
+            const fn = exports => {
+                if (!exports?.Z?.addInterceptor) return;
+
+                this.removeListener(fn);
+
+                const cb = () => {
+                    exports.Z.unsubscribe("CONNECTION_OPEN", cb);
+                    this.ready = true;
+                    Events.dispatch("CLIENT_READY");
+                };
+
+                exports.Z.subscribe("CONNECTION_OPEN", cb);
+            };
+
+            this.addListener(fn);
         });
     }    
 
@@ -505,7 +626,19 @@ export default class WebpackModules {
         const [, modules] = chunk;
 
         for (const moduleId in modules) {
-            const originalModule = modules[moduleId];
+
+            const moduleSource = Patcher.patchModule(moduleId, modules[moduleId].toString());
+            let originalModule = modules[moduleId];
+
+            if (moduleSource.count) try {
+                const res = window.eval(moduleSource.code);
+
+                if (typeof res === "function") {
+                    originalModule = res;
+                }
+            } catch (err) {
+                Logger.error("WebpackModules~Patcher", `Couldn't patch module ${moduleId}:`, err);
+            }
 
             modules[moduleId] = (module, exports, require) => {
                 try {

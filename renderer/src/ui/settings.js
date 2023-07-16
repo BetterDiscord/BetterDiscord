@@ -1,10 +1,11 @@
 import {React, WebpackModules, Patcher, Utilities, Settings, Events, DataStore} from "modules";
-
-import AddonList from "./settings/addonlist";
-import SettingsGroup from "./settings/group";
-import SettingsTitle from "./settings/title";
-import Header from "./settings/sidebarheader";
 import {Filters} from "../modules/webpackmodules";
+
+const AddonList = Utilities.makeLazy(() => import("./settings/addonlist"));
+const SettingsGroup = Utilities.makeLazy(() => import("./settings/group"));
+const SettingsTitle = Utilities.makeLazy(() => import("./settings/title"));
+const Header = Utilities.makeLazy(() => import("./settings/sidebarheader"));
+
 
 export default new class SettingsRenderer {
 

@@ -7,12 +7,10 @@ import Data from "./data";
 import DOM from "./dom";
 import Patcher from "./patcher";
 import ReactUtils from "./reactutils";
-import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
 import * as Legacy from "./legacy";
-import ContextMenu from "./contextmenu";
-import {DiscordModules} from "modules";
+import {DiscordModules, Events} from "modules";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -20,7 +18,7 @@ const ThemeAPI = new AddonAPI(ThemeManager);
 const PatcherAPI = new Patcher();
 const DataAPI = new Data();
 const DOMAPI = new DOM();
-const ContextMenuAPI = new ContextMenu();
+// const ContextMenuAPI = new ContextMenu();
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
@@ -51,9 +49,9 @@ export default class BdApi {
     get Themes() {return ThemeAPI;}
     get Webpack() {return Webpack;}
     get Utils() {return Utils;}
-    get UI() {return UI;}
+    get UI() {return BdApi.UI;}
     get ReactUtils() {return ReactUtils;}
-    get ContextMenu() {return ContextMenuAPI;}
+    get ContextMenu() {return BdApi.ContextMenuAPI;}
     Components = {
         get Tooltip() {return DiscordModules.Tooltip;}
     }
@@ -90,13 +88,13 @@ BdApi.Webpack = Webpack;
  * An instance of {@link Data} to manage data.
  * @type Data
  */
- BdApi.Data = DataAPI;
+BdApi.Data = DataAPI;
 
 /**
  * An instance of {@link UI} to create interfaces.
  * @type UI
  */
-BdApi.UI = UI;
+// BdApi.UI = UI;
 
 /**
  * An instance of {@link ReactUtils} to work with React.
@@ -120,12 +118,22 @@ BdApi.DOM = DOMAPI;
  * An instance of {@link ContextMenu} for interacting with context menus.
  * @type ContextMenu
  */
-BdApi.ContextMenu = ContextMenuAPI;
+// BdApi.ContextMenu = ContextMenuAPI;
 
 BdApi.Components = {
     get Tooltip() {return DiscordModules.Tooltip;}
 };
 
-Object.freeze(BdApi);
+Events.addListener("CLIENT_READY", async () => {
+    const [UI, ContextMenu] = await Promise.all([
+        import("./ui"),
+        import("./contextmenu")
+    ].map(e => e.then(e => e.default)));
+
+    BdApi.UI = UI;
+    BdApi.ContextMenu = new ContextMenu;
+});
+
+// Object.freeze(BdApi);
 Object.freeze(BdApi.prototype);
 Object.freeze(BdApi.Components);

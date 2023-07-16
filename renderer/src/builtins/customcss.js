@@ -1,5 +1,5 @@
 import Builtin from "../structs/builtin";
-import {Settings, DataStore, React, WebpackModules, Events, DOMManager, Strings, DiscordModules} from "modules";
+import {React, Settings, DataStore, WebpackModules, Events, DOMManager, Strings, DiscordModules} from "modules";
 import CSSEditor from "../ui/customcss/csseditor";
 import FloatingWindows from "../ui/floatingwindows";
 import SettingsTitle from "../ui/settings/title";
@@ -27,7 +27,7 @@ export default new class CustomCSS extends Builtin {
     async enabled() {
         Settings.registerPanel(this.id, Strings.Panels.customcss, {
             order: 2,
-            element: () => [<SettingsTitle text={Strings.CustomCSS.editorTitle} />, React.createElement(CSSEditor, {
+            element: () => [<SettingsTitle text={Strings.CustomCSS.editorTitle} />, DiscordModules.React.createElement(CSSEditor, {
                 css: this.savedCss,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
@@ -115,8 +115,8 @@ export default new class CustomCSS extends Builtin {
     }
 
     openDetached(currentCSS) {
-        const editorRef = React.createRef();
-        const editor = React.createElement(CSSEditor, {
+        const editorRef = DiscordModules.React.createRef();
+        const editor = DiscordModules.React.createElement(CSSEditor, {
             id: "bd-floating-editor",
             ref: editorRef,
             css: currentCSS,
