@@ -48,7 +48,7 @@
      }
  
      static makeOverride(patch) {
-         return function () {
+         return function BDPatcher() {
              let returnValue;
              if (!patch.children || !patch.children.length) return patch.originalFunction.apply(this, arguments);
              for (const superPatch of patch.children.filter(c => c.type === "before")) {
