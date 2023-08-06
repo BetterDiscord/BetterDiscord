@@ -26,11 +26,12 @@ export function nativeFetch(url, options) {
 
     /** * @param {URL} url */
     const execute = (url, options, redirectCount = 0) => {
-        const Module = url.protocol === "http" ? http : https;
+        const Module = url.protocol === "http:" ? http : https;
         
         const req = Module.request(url.href, {
             headers: options.headers ?? {},
-            method: options.method ?? "GET"
+            method: options.method ?? "GET",
+            timeout: options.timeout ?? 3000
         }, res => {
             if (redirectCodes.has(res.statusCode) && res.headers.location && options.redirect !== "manual") {
                 redirectCount++;
@@ -78,8 +79,18 @@ export function nativeFetch(url, options) {
             });
         });
 
+        req.on("timeout", () => {
+            const error = new Error("Request timed out");
+            req.destroy(error);
+        });
+
+        req.on("error", error => {
+            state = "ABORTED";
+            errors.forEach(e => e(error));
+        });
+
         if (options.body) {
-            try {req.write(options.body)}
+            try {req.write(options.body);}
             catch (error) {
                 state = "ABORTED";
                 errors.forEach(e => e(error));
@@ -100,14 +111,20 @@ export function nativeFetch(url, options) {
         }
     };
 
-    try {
-        const parsed = new URL(url);
-        execute(parsed, options);
+    /**
+     * Obviously parsing a URL may throw an error, but this is
+     * actually intended here. The caller should handle this
+     * gracefully.
+     * 
+     * Reasoning: at this point the caller does not have a
+     * reference to the object below so they have no way of
+     * listening to the error through onError.
+     */
+    const parsed = new URL(url);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+        throw new Error(`Unsupported protocol: ${parsed.protocol}`);
     }
-    catch (error) {
-        state = "ABORTED";
-        errors.forEach(e => e(error));
-    }
+    execute(parsed, options);
 
     return {
         onComplete(listener) {

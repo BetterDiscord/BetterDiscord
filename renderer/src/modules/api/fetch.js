@@ -59,7 +59,13 @@ export default function fetch(url, options = {}) {
         if (typeof options.method === "string" && methods.has(options.method)) data.method = options.method;
         if (options.signal instanceof AbortSignal) data.signal = convertSignal(options.signal);
 
-        const ctx = Remote.nativeFetch(url, data);
+        let ctx;
+        try {
+            ctx = Remote.nativeFetch(url, data);
+        }
+        catch (error) {
+            return reject(error);
+        }
 
         ctx.onError(error => {
             reject(error);
@@ -77,7 +83,8 @@ export default function fetch(url, options = {}) {
                 });
 
                 resolve(req);
-            } catch (error) {
+            }
+            catch (error) {
                 reject(error);
             }
         });
