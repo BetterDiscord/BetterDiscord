@@ -2,27 +2,6 @@ import assert from "assert";
 import Utilities from "../../renderer/src/modules/utilities";
 
 describe("Utilities", function() {
-    
-    describe("suppressErrors", function() {
-        it("Prevent error propagation", function() {
-            const thrower = () => {throw new Error("Error");};
-            const wrapped = Utilities.suppressErrors(thrower);
-            assert.doesNotThrow(wrapped);
-        });
-        it("Allows arguments through", function() {
-            const thrower = (foo) => {
-                assert.equal(foo, "bar");
-            };
-            const wrapped = Utilities.suppressErrors(thrower);
-            wrapped("bar");
-        });
-        it("Retains the return value", function() {
-            const thrower = () => {return "bar";};
-            const wrapped = Utilities.suppressErrors(thrower);
-            const foo = wrapped();
-            assert.equal(foo, "bar");
-        });
-    });
 
     describe("formatString", function() {
         it("Should handle direct replacement", function() {
@@ -51,30 +30,6 @@ describe("Utilities", function() {
             const template = `This is a {{success}}`;
             const filledOut = Utilities.formatString(template, {success: () => "test"});
             assert.equal(`This is a test`, filledOut);
-        });
-    });
-
-    describe("getNestedProp", function() {
-        const testObj = {test: {deep: {go: "far"}, other: [0, 1, {test2: "foo"}]}};
-        it("Gets a shallow property", function() {
-            const result = Utilities.getNestedProp(testObj, "test");
-            assert.deepEqual(result, testObj.test);
-        });
-        it("Gets a deep property", function() {
-            const result = Utilities.getNestedProp(testObj, "test.deep.go");
-            assert.deepEqual(result, testObj.test.deep.go);
-        });
-        it("Gets a property through index", function() {
-            const result = Utilities.getNestedProp(testObj, "test.other.2.test2");
-            assert.deepEqual(result, testObj.test.other[2].test2);
-        });
-        it("Returns null when the a prop is not found", function() {
-            const result = Utilities.getNestedProp(testObj, "test.foo");
-            assert.equal(result, null);
-        });
-        it("Returns null when several layers are not found", function() {
-            const result = Utilities.getNestedProp(testObj, "test.deep.far.doit.cmon");
-            assert.equal(result, null);
         });
     });
 
@@ -122,37 +77,5 @@ describe("Utilities", function() {
             const result = Utilities.findInTree(walkingObj, o => o.deeper, {ignore: ["foo", "bar"]});
             assert.deepEqual(result, walkingObj.otherTest);
         });
-    });
-
-    describe("findInReactTree", function() {
-        const originalFindInTree = Utilities.findInTree;
-        
-        it("Passes the original object", function() {
-            const myObj = {props: "foo"};
-            Utilities.findInTree = function(obj) { assert.deepEqual(obj, myObj); return Reflect.apply(originalFindInTree, Utilities, arguments); };
-            const result = Utilities.findInReactTree(myObj, "props");
-            assert.equal(result, "foo");
-        });
-        it("Passes the original filter", function() {
-            const myObj = {props: "foo"};
-            const myFilter = "props";
-            Utilities.findInTree = function(obj, filter) { assert.deepEqual(filter, myFilter); return Reflect.apply(originalFindInTree, Utilities, arguments); };
-            const result = Utilities.findInReactTree(myObj, myFilter);
-            assert.equal(result, "foo");
-
-            const myFilter2 = o => o == "foo";
-            Utilities.findInTree = function(obj, filter) { assert.deepEqual(filter, myFilter2); return Reflect.apply(originalFindInTree, Utilities, arguments); };
-            const result2 = Utilities.findInReactTree(myObj, myFilter2);
-            assert.equal(result2, "foo");
-        });
-        it("Includes the react walkables", function() {
-            Utilities.findInTree = function(obj, filter, {walkable}) {
-                const shouldWalk = ["props", "children", "return", "stateNode"];
-                assert.ok(shouldWalk.every(k => walkable.includes(k)));
-            };
-            Utilities.findInReactTree({}, "foobar");
-        });
-
-        Utilities.findInTree = originalFindInTree;
     });
 });

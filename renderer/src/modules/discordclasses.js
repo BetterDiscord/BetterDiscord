@@ -1,6 +1,8 @@
+import ClassName from "@structs/classname";
+
 import Utilities from "./utilities";
-import ClassName from "../structs/classname";
 import WebpackModules from "./webpackmodules";
+
 
 const combineClasses = function (...props) {
     return Object.assign({}, ...props.map(prop => WebpackModules.getByProps(...prop)));

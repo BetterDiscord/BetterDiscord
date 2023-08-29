@@ -1,7 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-import Builtin from "../../structs/builtin";
-import DataStore from "../../modules/datastore";
+import fs from "fs";
+import path from "path";
+
+import Builtin from "@structs/builtin";
+import DataStore from "@modules/datastore";
 
 
 const timestamp = () => new Date().toISOString().replace("T", " ").replace("Z", "");

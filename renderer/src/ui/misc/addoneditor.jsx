@@ -1,8 +1,10 @@
-import {React, Strings} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
 
-import Editor from "../customcss/editor";
-import Save from "../icons/save";
-import Edit from "../icons/edit";
+import Editor from "@ui/customcss/editor";
+
+import Save from "@ui/icons/save";
+import Edit from "@ui/icons/edit";
 
 const {useState, useCallback, forwardRef, useImperativeHandle, useRef} = React;
 

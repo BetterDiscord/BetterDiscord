@@ -1,6 +1,6 @@
-import Builtin from "../../structs/builtin";
-import WebpackModules from "../../modules/webpackmodules";
-// import IPC from "../../modules/ipc";
+import Builtin from "@structs/builtin";
+
+import WebpackModules from "@modules/webpackmodules";
 
 export default new class StopDevToolsWarning extends Builtin {
     get name() {return "StopDevToolsWarning";}

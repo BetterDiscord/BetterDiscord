@@ -1,5 +1,7 @@
-import Logger from "common/logger";
-import WebpackModules, {Filters} from "../webpackmodules";
+import Logger from "@common/logger";
+
+import WebpackModules, {Filters} from "@modules/webpackmodules";
+
 
 const getOptions = (args, defaultOptions = {}) => {
     if (args.length > 1 &&

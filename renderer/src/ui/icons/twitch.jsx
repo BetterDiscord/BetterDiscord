@@ -1,4 +1,4 @@
-import {React} from "modules";
+import React from "@modules/react";
 
 export default function Twitch(props) {
     const size = props.size || "18px";

@@ -1,7 +1,11 @@
-import {Config} from "data";
-import Logger from "common/logger";
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+
+import Logger from "@common/logger";
+
+import Config from "@data/config";
+
+
 const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable";
 
 // Schema

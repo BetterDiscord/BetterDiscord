@@ -1,4 +1,5 @@
-import DiscordModules from "../discordmodules";
+import DiscordModules from "@modules//discordmodules";
+
 
 /**
  * `ReactUtils` is a utility class for interacting with React internals. Instance is accessible through the {@link BdApi}.

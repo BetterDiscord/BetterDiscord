@@ -1,4 +1,5 @@
-import Utilities from "../utilities";
+import Utilities from "@modules/utilities";
+
 
 /**
  * `Utils` is a utility containing commonly reused functions. Instance is accessible through the {@link BdApi}.

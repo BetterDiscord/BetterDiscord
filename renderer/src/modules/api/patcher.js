@@ -1,5 +1,7 @@
-import Logger from "common/logger";
-import {default as MainPatcher} from "../patcher";
+import Logger from "@common/logger";
+
+import {default as MainPatcher} from "@modules/patcher";
+
 
 /**
  * `Patcher` is a utility class for modifying existing functions. Instance is accessible through the {@link BdApi}.

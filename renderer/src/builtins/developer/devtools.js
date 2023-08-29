@@ -1,5 +1,6 @@
-import Builtin from "../../structs/builtin";
-import IPC from "../../modules/ipc";
+import Builtin from "@structs/builtin";
+
+import IPC from "@modules/ipc";
 
 export default new class DevToolsListener extends Builtin {
     get name() {return "DevTools";}

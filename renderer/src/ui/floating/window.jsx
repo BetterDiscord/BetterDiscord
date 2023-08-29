@@ -1,9 +1,12 @@
-import {React, Strings} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
 
-import Screen from "../../structs/screen";
-import CloseButton from "../icons/close";
-import MaximizeIcon from "../icons/fullscreen";
-import Modals from "../modals";
+import Screen from "@structs/screen";
+
+import CloseButton from "@ui/icons/close";
+import MaximizeIcon from "@ui/icons/fullscreen";
+
+import Modals from "@ui/modals";
 
 const {useState, useCallback, useEffect, useRef} = React;
 

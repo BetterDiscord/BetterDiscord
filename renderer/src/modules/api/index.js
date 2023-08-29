@@ -1,6 +1,8 @@
-import PluginManager from "../pluginmanager";
-import ThemeManager from "../thememanager";
-import Logger from "common/logger";
+import Logger from "@common/logger";
+
+import PluginManager from "@modules/pluginmanager";
+import ThemeManager from "@modules/thememanager";
+import DiscordModules from "@modules/discordmodules";
 
 import AddonAPI from "./addonapi";
 import Data from "./data";
@@ -12,7 +14,7 @@ import Utils from "./utils";
 import Webpack from "./webpack";
 import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
-import {DiscordModules} from "modules";
+import fetch from "./fetch";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -57,6 +59,7 @@ export default class BdApi {
     Components = {
         get Tooltip() {return DiscordModules.Tooltip;}
     }
+    Net = {fetch}; 
 }
 
 // Add legacy functions
@@ -126,6 +129,9 @@ BdApi.Components = {
     get Tooltip() {return DiscordModules.Tooltip;}
 };
 
+BdApi.Net = {fetch};
+
 Object.freeze(BdApi);
+Object.freeze(BdApi.Net);
 Object.freeze(BdApi.prototype);
 Object.freeze(BdApi.Components);

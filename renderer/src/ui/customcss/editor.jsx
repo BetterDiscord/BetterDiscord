@@ -1,4 +1,6 @@
-import {React, DiscordModules, Settings} from "modules";
+import React from "@modules/react";
+import DiscordModules from "@modules/discordmodules";
+import Settings from "@modules/settingsmanager";
 
 import Checkbox from "./checkbox";
 
