@@ -1,5 +1,3 @@
-import ipc from "./ipc";
-
 export default class DOMManager {
 
     /** Document/window width */
@@ -71,10 +69,10 @@ export default class DOMManager {
         if (exists) exists.remove();
     }
 
-    static async injectStyle(id, css) {
+    static injectStyle(id, css) {
         id = this.escapeID(id);
         const style = this.getElement(`#${id}`, this.bdStyles) || this.createElement("style", {id});
-        style.textContent = await this.insertCSSCustoms(css);
+        style.textContent = css;
         this.bdStyles.append(style);
     }
 
@@ -100,15 +98,15 @@ export default class DOMManager {
         if (exists) exists.remove();
     }
 
-    static async injectTheme(id, css) {
+    static injectTheme(id, css) {
         id = this.escapeID(id);
         const style = this.getElement(`#${id}`, this.bdThemes) || this.createElement("style", {id});
-        style.textContent = await this.insertCSSCustoms(css);
+        style.textContent = css;
         this.bdThemes.append(style);
     }
 
-    static async updateCustomCSS(css) {
-        this.bdCustomCSS.textContent = await this.insertCSSCustoms(css);
+    static updateCustomCSS(css) {
+        this.bdCustomCSS.textContent = css;
     }
 
     static removeScript(id) {
@@ -126,18 +124,6 @@ export default class DOMManager {
             script.onerror = reject;
             this.bdScripts.append(script);
         });
-    }
-
-    static async insertCSSCustoms(string) {
-        const customValues = {
-            "-bd-accent-color": `#${await ipc.getSystemAccentColor()}`,
-        };
-
-        for (const [key, value] of Object.entries(customValues)) {
-            string = string.replaceAll(key, value);
-        }
-
-        return string;
     }
 
     // https://javascript.info/js-animation

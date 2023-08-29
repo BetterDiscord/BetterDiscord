@@ -15,6 +15,7 @@ import Settings from "./settingsmanager";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
 
+import IPC from "./ipc";
 import Editor from "./editor";
 import Updater from "./updater";
 
@@ -86,6 +87,8 @@ export default new class Core {
             Modals.showChangelogModal(Changelog);
             DataStore.setBDData("version", Config.version);
         }
+        
+        DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: ${await IPC.getSystemAccentColor()}}`);
     }
 
     waitForConnection() {
