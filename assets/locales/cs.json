@@ -10,10 +10,6 @@
             "name": "Nastavení",
             "general": {
                 "name": "Obecné",
-                "emotes": {
-                    "name": "Systém emotů",
-                    "note": "Povolí systém emotů BD"
-                },
                 "voiceDisconnect": {
                     "name": "Odpojení z hlas. kanálu",
                     "note": "Odpojit z hlasového kanálu při zavření Discordu"
@@ -144,55 +140,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "Emoty",
-            "general": {
-                "name": "Obecné",
-                "download": {
-                    "name": "Stáhnout emoty",
-                    "note": "Stáhne emoty vždy, kdy jsou zastaralé"
-                },
-                "emoteMenu": {
-                    "name": "Menu emotů",
-                    "note": "Zobrazit Twitch/oblíbené emoty v menu emotů"
-                },
-                "hideEmojiMenu": {
-                    "name": "Skrýt menu smajlíků",
-                    "note": "Skryje menu smajlíků Discordu při používání menu emotů"
-                },
-                "autoCaps": {
-                    "name": "Automatická kapitalizace emotů",
-                    "note": "Automatická kapitalizace emote příkazů"
-                },
-                "modifiers": {
-                    "name": "Zobrazit modifikátory emotů",
-                    "note": "Povolit modifikátory emotů (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animovat při přejetí",
-                    "note": "Animovat modifikátory emotů pouze při přejetí myší"
-                }
-            },
-            "categories": {
-                "name": "Kategorie",
-                "twitchglobal": {
-                    "name": "Globální Twitch",
-                    "note": "Zobrazí globální Twitch emoty"
-                },
-                "twitchsubscriber": {
-                    "name": "Odběratelé Twitch",
-                    "note": "Zobrazí odběratelské Twitch emoty"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Zobrazí emoty od FFZ"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Zobrazí emoty od BTTV"
-                }
-            }
         }
     },
     "Addons": {
@@ -246,14 +193,6 @@
         "openDetached": "Oddělit okno",
         "settings": "Nastavení editoru",
         "editorTitle": "Okno vlastního CSS"
-    },
-    "Emotes": {
-        "loading": "Načítání emotů na pozadí - neobnovuj.",
-        "loaded": "Všechny emoty byly úspěšně načteny.",
-        "clearEmotes": "Vyčistit data emotů",
-        "favoriteAction": "Oblíbené!",
-        "downloadFailed": "Stahování selhalo",
-        "failureMessage": "BetterDiscordu se nepodařilo stáhnout emoty, zkontroluj prosím své internetové připojení a firewall."
     },
     "Modals": {
         "confirmAction": "Opravdu?",

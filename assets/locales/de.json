@@ -9,10 +9,6 @@
             "name": "Einstellungen",
             "general": {
                 "name": "Allgemein",
-                "emotes": {
-                    "name": "Emotesystem",
-                    "note": "Aktiviert das BD-Emotesystem"
-                },
                 "voiceDisconnect": {
                     "name": "Verbindung zum Sprachchat trennen",
                     "note": "Trennt beim Schließen von Discord die Verbindung zum Sprachchat"
@@ -107,55 +103,6 @@
                     "note": "Speichert alle Ausgaben aus der Konsole in die \\\"debug.log\\\" Datei im BetterDiscord Verzeichnis"
                 }
             }
-        },
-        "emotes": {
-            "name": "Emotes",
-            "general": {
-                "name": "Allgemein",
-                "download": {
-                    "name": "Emotes herunterladen",
-                    "note": "Lade Emotes herunter, wenn sie nicht mehr aktuell sind"
-                },
-                "emoteMenu": {
-                    "name": "Emote-Menü",
-                    "note": "Twitch- und favorisierte Emotes im Emote-Menü anzeigen"
-                },
-                "hideEmojiMenu": {
-                    "name": "Emoji-Menü verstecken",
-                    "note": "Versteckt Discords Emoji-Menü bei der Nutzung des Emote-Menüs"
-                },
-                "autoCaps": {
-                    "name": "Automatische Großschreibung von Emotes",
-                    "note": "Emote-Befehle werden automatisch großgeschrieben"
-                },
-                "modifiers": {
-                    "name": "Emote-Modifikatoren anzeigen",
-                    "note": "Aktiviert Emote-Modifikatoren (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Beim Hovern animieren",
-                    "note": "Animiert Emote-Modifikatoren nur beim Hovern über dem Emote"
-                }
-            },
-            "categories": {
-                "name": "Kategorien",
-                "twitchglobal": {
-                    "name": "Twitch Global",
-                    "note": "Twitch-Global-Emotes anzeigen"
-                },
-                "twitchsubscriber": {
-                    "name": "Twitch Subscribers",
-                    "note": "Twitch-Subscriber-Emotes anzeigen"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "FFZ-Emotes anzeigen"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "BTTV-Emotes anzeigen"
-                }
-            }
         }
     },
     "Addons": {
@@ -207,14 +154,6 @@
         "openDetached": "Fenster trennen",
         "settings": "Editor-Einstellungen",
         "editorTitle": "Custom-CSS-Editor"
-    },
-    "Emotes": {
-        "loading": "Lade alle Emotes im Hintergrund.",
-        "loaded": "Alle Emotes erfolgreich geladen.",
-        "clearEmotes": "Emote-Daten löschen",
-        "favoriteAction": "Favorisieren!",
-        "downloadFailed": "Download fehlgeschlagen",
-        "failureMessage": "BetterDiscord konnte die Emotes nicht herunterladen, bitte überprüfe deine Internetverbindung und Firewall."
     },
     "Modals": {
         "confirmAction": "Bist du dir sicher?",

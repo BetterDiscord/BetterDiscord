@@ -9,10 +9,6 @@
             "name": "Ayarlar",
             "general": {
                 "name": "Genel",
-                "emotes": {
-                    "name": "Emoji Sistemi",
-                    "note": "BD'nin emoji sistemini etkileştirir"
-                },
                 "voiceDisconnect": {
                     "name": "Ses Kanalından Ayrılma",
                     "note": "Discord'u kapatırken aktif ses kanalından ayrılır"
@@ -107,55 +103,6 @@
                     "note": "Konsoldaki herşeyi BetterDiscord klasöründeki debug.log dosyasına kaydeder"
                 }
             }
-        },
-        "emotes": {
-            "name": "Emojiler",
-            "general": {
-                "name": "Genel",
-                "download": {
-                    "name": "Emoji Indir",
-                    "note": "Eski olduklarında emojileri indir"
-                },
-                "emoteMenu": {
-                    "name": "Emoji Menüsü",
-                    "note": "Twitch/Favori emojileri emoji menüsünde göster"
-                },
-                "hideEmojiMenu": {
-                    "name": "Emoji Menüsünü Gizle",
-                    "note": "Emoji Menüsünü kullanırken Discord'ün emoji menüsünü gizler"
-                },
-                "autoCaps": {
-                    "name": "Emoji Kapitalizasyonu",
-                    "note": "Otomatik olarak emoji komutlarını kapitalize et"
-                },
-                "modifiers": {
-                    "name": "Emoji Değiştiricilerini Göster",
-                    "note": "Emoji modlarını etkinleştir  (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Üzerindeyken Oynat",
-                    "note": "Sadece fare emoji üzerindeyken oynat"
-                }
-            },
-            "categories": {
-                "name": "Kategoriler",
-                "twitchglobal": {
-                    "name": "Twitch Globaller",
-                    "note": "Twitch Global emojilerini göster"
-                },
-                "twitchsubscriber": {
-                    "name": "Twitch Aboneleri",
-                    "note": "Twitch Abone emojilerini göster"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "FFZ emojilerini göster"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "BTTV emojilerini göster"
-                }
-            }
         }
     },
     "Addons": {
@@ -207,14 +154,6 @@
         "openDetached": "Pencereyi Ayır",
         "settings": "Editör Ayarları",
         "editorTitle": "Özel CSS Editörü"
-    },
-    "Emotes": {
-        "loading": "Arkaplanda emojiler yükleniyor yeniden başlatmayınız.",
-        "loaded": "Bütün emojiler yüklendi.",
-        "clearEmotes": "Emoji Verilerini Sil",
-        "favoriteAction": "Favori ekle!",
-        "downloadFailed": "Yükleme başarısız oldu",
-        "failureMessage": "BetterDiscord emojileri yüklemede başarısız oldu, lütfen internet bağlantınızı kontrol ediniz."
     },
     "Modals": {
         "confirmAction": "Emin Misin?",

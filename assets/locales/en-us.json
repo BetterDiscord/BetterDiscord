@@ -10,10 +10,6 @@
             "name": "Settings",
             "general": {
                 "name": "General",
-                "emotes": {
-                    "name": "Emote System",
-                    "note": "Enables BD's emote system"
-                },
                 "voiceDisconnect": {
                     "name": "Voice Disconnect",
                     "note": "Disconnect from voice server when closing Discord"
@@ -144,55 +140,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "Emotes",
-            "general": {
-                "name": "General",
-                "download": {
-                    "name": "Download Emotes",
-                    "note": "Download emotes whenever they are out of date"
-                },
-                "emoteMenu": {
-                    "name": "Emote Menu",
-                    "note": "Show Twitch/Favourite emotes in emote menu"
-                },
-                "hideEmojiMenu": {
-                    "name": "Hide Emoji Menu",
-                    "note": "Hides Discord's emoji menu when using emote menu"
-                },
-                "autoCaps": {
-                    "name": "Emote Autocapitalization",
-                    "note": "Autocapitalize emote commands"
-                },
-                "modifiers": {
-                    "name": "Show Emote Modifiers",
-                    "note": "Enable emote mods (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animate On Hover",
-                    "note": "Only animate the emote modifiers on hover"
-                }
-            },
-            "categories": {
-                "name": "Categories",
-                "twitchglobal": {
-                    "name": "Twitch Globals",
-                    "note": "Show Twitch global emotes"
-                },
-                "twitchsubscriber": {
-                    "name": "Twitch Subscribers",
-                    "note": "Show Twitch subscriber emotes"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Show emotes from FFZ"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Show emotes from BTTV"
-                }
-            }
         }
     },
     "Addons": {
@@ -247,14 +194,6 @@
         "settings": "Editor Settings",
         "editorTitle": "Custom CSS Editor"
     },
-    "Emotes": {
-        "loading": "Loading emotes in the background do not reload.",
-        "loaded": "All emotes successfully loaded.",
-        "clearEmotes": "Clear Emote Data",
-        "favoriteAction": "Favorite!",
-        "downloadFailed": "Download Failed",
-        "failureMessage": "BetterDiscord failed to download emotes, please check your internet connection and firewall."
-    },
     "Modals": {
         "confirmAction": "Are You Sure?",
         "okay": "Okay",
@@ -270,7 +209,8 @@
         "restartNow": "Restart Now",
         "restartLater": "Restart Later",
         "additionalInfo": "Additional Info",
-        "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
+        "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?",
+        "changelog": "Changelog"
     },
     "ReactDevTools": {
         "notFound": "Extension Not Found",

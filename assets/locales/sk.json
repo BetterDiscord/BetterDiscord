@@ -9,10 +9,6 @@
             "name": "Nastavenia",
             "general": {
                 "name": "Základné",
-                "emotes": {
-                    "name": "Emote Systém",
-                    "note": "Povoliť BD emote systém"
-                },
                 "voiceDisconnect": {
                     "name": "Odpojenie hovoru",
                     "note": "Odpojiť z hovoru pri vypnutí Discordu"
@@ -107,55 +103,6 @@
                     "note": "Zapíše všetko z konzole do súboru debug.log v BetterDiscord zložke"
                 }
             }
-        },
-        "emotes": {
-            "name": "Emoty",
-            "general": {
-                "name": "Všeobecné",
-                "download": {
-                    "name": "Stiahnuť Emoty",
-                    "note": "Stiahnuť Emoty ak sú zastaralé"
-                },
-                "emoteMenu": {
-                    "name": "Emote Menu",
-                    "note": "Zobraziť Twtich/Obľúbené emoty v emote menu"
-                },
-                "hideEmojiMenu": {
-                    "name": "Skryť Emoji Menu",
-                    "note": "Skryje Discord Emoji menu pri používaní emote menu"
-                },
-                "autoCaps": {
-                    "name": "Automatická kapitalizácia Emote",
-                    "note": "Automaticky kapitalizuje emote commandy"
-                },
-                "modifiers": {
-                    "name": "Zobraziť Emote Modifikátory",
-                    "note": "Povoliť emote modifikátory (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animovať pri umiestnení kurzora",
-                    "note": "Animovať emote modifikátory iba pri umiestnení kurzora"
-                }
-            },
-            "categories": {
-                "name": "Kategórie",
-                "twitchglobal": {
-                    "name": "Twtich globálne",
-                    "note": "Zobraziť globálne Twitch emoty"
-                },
-                "twitchsubscriber": {
-                    "name": "Twitch predplatitelia",
-                    "note": "Zobraziť predplatiteľské Twitch emoty"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Zobraziť FFZ emoty"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Zobraziť BTTV emoty"
-                }
-            }
         }
     },
     "Addons": {
@@ -207,14 +154,6 @@
         "openDetached": "Oddeliť Okno",
         "settings": "Nastavenia Editora",
         "editorTitle": "Custom CSS Editor"
-    },
-    "Emotes": {
-        "loading": "Načítavanie emotov v pozadí, nerefreshujte.",
-        "loaded": "Všetky emoty úspešne načítané.",
-        "clearEmotes": "Vyčistiť emote dáta",
-        "favoriteAction": "Uložiť!",
-        "downloadFailed": "Sťahovanie Zlyhalo",
-        "failureMessage": "BetterDiscord nedokázal načítať emoty, prosím skontrolujte internetové pripojenie a firewall."
     },
     "Modals": {
         "confirmAction": "Ste si istý?",

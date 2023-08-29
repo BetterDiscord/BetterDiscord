@@ -10,10 +10,6 @@
             "name": "設定",
             "general": {
                 "name": "全般",
-                "emotes": {
-                    "name": "絵文字機能",
-                    "note": "BetterDiscordの絵文字機能を有効にします。"
-                },
                 "voiceDisconnect": {
                     "name": "ボイスチャンネルの切断",
                     "note": "Discordを終了すると自動的にボイスチャンネルから切断されます。"
@@ -144,55 +140,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "絵文字",
-            "general": {
-                "name": "全般",
-                "download": {
-                    "name": "絵文字をダウンロード",
-                    "note": "絵文字が古くなった時にいつでもダウンロードできます。"
-                },
-                "emoteMenu": {
-                    "name": "絵文字メニュー",
-                    "note": "絵文字メニューにTwitchやお気に入りの絵文字を表示します。"
-                },
-                "hideEmojiMenu": {
-                    "name": "絵文字メニューを非表示",
-                    "note": "絵文字メニューを使用する際にDiscord標準の絵文字メニューを非表示にします。"
-                },
-                "autoCaps": {
-                    "name": "絵文字の自動変換",
-                    "note": "絵文字入力を自動で大文字化します。"
-                },
-                "modifiers": {
-                    "name": "BetterDiscord絵文字を表示",
-                    "note": "BetterDiscordの絵文字を有効化します(flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)。"
-                },
-                "animateOnHover": {
-                    "name": "ホバー時の動作",
-                    "note": "ホバー時にアニメ絵文字を動かします。"
-                }
-            },
-            "categories": {
-                "name": "カテゴリ",
-                "twitchglobal": {
-                    "name": "Twitchグローバル",
-                    "note": "Twitchのグローバル絵文字を表示する"
-                },
-                "twitchsubscriber": {
-                    "name": "Twitchの登録者",
-                    "note": "Twitch登録者の絵文字を表示します。"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "FFZの絵文字を表示します。"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "BTTVの絵文字を表示します。"
-                }
-            }
         }
     },
     "Addons": {
@@ -247,14 +194,6 @@
         "settings": "エディター設定",
         "editorTitle": "カスタムCSSエディター"
     },
-    "Emotes": {
-        "loading": "バックグラウンドで絵文字をロードしても、リロードされないようにします。",
-        "loaded": "すべての絵文字の読み込みに成功しました。",
-        "clearEmotes": "絵文字データを削除",
-        "favoriteAction": "お気に入り",
-        "downloadFailed": "ダウンロードに失敗",
-        "failureMessage": "BetterDiscordは絵文字のダウンロードに失敗しました。インターネット接続とファイアウォールを確認してください。"
-    },
     "Modals": {
         "confirmAction": "本当によろしいですか？",
         "okay": "はい",
@@ -284,7 +223,7 @@
     },
     "WindowPrefs": {
         "enabledInfo": "このオプションが正しく動作するためには、透明なテーマが必要です。Windows では、エアロスナップと最大化が壊れる可能性があります。\n\nこのオプションを有効にするには、Discord を再起動する必要があります。今すぐ再起動しますか？",
-        "disabledInfo": "有効にするためには、Discord���再起動する必要があります。今すぐ再起動しますか？"
+        "disabledInfo": "有効にするためには、Discordを再起動する必要があります。今すぐ再起動しますか？"
     },
     "Notices": {
         "moreInfo": "詳細"
