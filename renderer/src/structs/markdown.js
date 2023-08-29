@@ -3,9 +3,9 @@ import Utilities from "@modules/utilities";
 
 
 export default class SimpleMarkdownExt {
-    static parseToReact(str) {
+    static parseToReact(str, inline = true) {
         if (!this._parser) this._initialize();
-        return this._renderer(this._parse(str, {inline: true}));
+        return this._renderer(this._parse(str, {inline}));
     }
 
     static _initialize() {

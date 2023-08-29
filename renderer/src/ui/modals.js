@@ -7,18 +7,30 @@ import React from "@modules/react";
 import ReactDOM from "@modules/reactdom";
 import Strings from "@modules/strings";
 import Settings from "@modules/settingsmanager";
+import Events from "@modules/emitter";
 import DiscordModules from "@modules/discordmodules";
 import WebpackModules from "@modules/webpackmodules";
-import DiscordClasses from "@modules/discordclasses";
 import DOMManager from "@modules/dommanager";
 
-import AddonErrorModal from "./addonerrormodal";
+import AddonErrorModal from "./modals/addonerrormodal";
 import ErrorBoundary from "./errorboundary";
+import TextElement from "./base/text";
+import ModalRoot from "./modals/root";
+import ModalHeader from "./modals/header";
+import ModalContent from "./modals/content";
+import ModalFooter from "./modals/footer";
+
+import ConfirmationModal from "./modals/confirmation";
+import Button from "./base/button";
+import CustomMarkdown from "./base/markdown";
+import ChangelogModal from "./modals/changelog";
+import ModalStack, {generateKey} from "./modals/stack";
 
 
 export default class Modals {
 
     static get shouldShowAddonErrors() {return Settings.get("settings", "addons", "addonErrors");}
+    static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
     static get ModalActions() {
         return this._ModalActions ??= {
@@ -26,21 +38,11 @@ export default class Modals {
             closeModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback()"), {searchExports: true})
         };
     }
-    static get ModalStack() {return this._ModalStack ??= WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
-    static get ModalComponents() {return this._ModalComponents ??= WebpackModules.getByProps("Header", "Footer");}
-    static get ModalRoot() {return this._ModalRoot ??= WebpackModules.getModule(m => m?.toString?.()?.includes("ENTERING") && m?.toString?.()?.includes("headerId"), {searchExports: true});}
-    static get ModalClasses() {return this._ModalClasses ??= WebpackModules.getByProps("modal", "content");}
-    static get FlexElements() {return this._FlexElements ??= WebpackModules.getByProps("Child", "Align");}
-    static get TextElement() {return this._TextElement ??= WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors);}
-    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"), {searchExports: true});}
-    static get Markdown() {return this._Markdown ??= WebpackModules.find(m => m?.prototype?.render && m.rules);}
-    static get Buttons() {return this._Buttons ??= WebpackModules.getModule(m => m.BorderColors, {searchExports: true});}
+
     static get ModalQueue() {return this._ModalQueue ??= [];}
-    
-    static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
     static async initialize() {
-        const names = ["ConfirmationModal", "ModalActions", "Markdown", "ModalRoot", "ModalComponents", "Buttons", "TextElement", "FlexElements"];
+        const names = ["ModalActions"];
 
         for (const name of names) {
             let value = this[name];
@@ -164,8 +166,6 @@ export default class Modals {
      * @returns {string} - the key used for this modal
      */
     static showConfirmationModal(title, content, options = {}) {
-        const Markdown = this.Markdown;
-        const ConfirmationModal = this.ConfirmationModal;
         const ModalActions = this.ModalActions;
 
         if (content instanceof FormattableString) content = content.toString();
@@ -173,7 +173,7 @@ export default class Modals {
         const emptyFunction = () => {};
         const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
 
-        if (!this.ModalActions || !this.ConfirmationModal || !this.Markdown) {
+        if (!this.ModalActions) {
             return this.default(title, content, [
                 confirmText && {label: confirmText, action: onConfirm},
                 cancelText && {label: cancelText, action: onCancel, danger}
@@ -181,9 +181,9 @@ export default class Modals {
         }
 
         if (!Array.isArray(content)) content = [content];
-        content = content.map(c => typeof(c) === "string" ? React.createElement(Markdown, null, c) : c);
+        content = content.map(c => typeof(c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
 
-        const modalKey = ModalActions.openModal(props => {
+        const modalKey = this.openModal(props => {
             return React.createElement(ErrorBoundary, {
                 onError: () => {
                     setTimeout(() => {
@@ -196,7 +196,7 @@ export default class Modals {
                 }
             }, React.createElement(ConfirmationModal, Object.assign({
                 header: title,
-                confirmButtonColor: danger ? this.Buttons.Colors.RED : this.Buttons.Colors.BRAND,
+                danger: danger,
                 confirmText: confirmText,
                 cancelText: cancelText,
                 onConfirm: onConfirm,
@@ -209,87 +209,22 @@ export default class Modals {
     static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
         if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
-        
-        if (this.addonErrorsRef && this.addonErrorsRef.current) {
-            return this.addonErrorsRef.current.refreshTabs(Array.isArray(pluginErrors) ? pluginErrors : [], Array.isArray(themeErrors) ? themeErrors : []);
-        }
 
-        this.addonErrorsRef = React.createRef();
-        this.ModalActions.openModal(props => React.createElement(ErrorBoundary, null, React.createElement(this.ModalRoot, Object.assign(props, {
-            size: "medium",
-            className: "bd-error-modal",
-            children: [
-                React.createElement(AddonErrorModal, {
-                    ref: this.addonErrorsRef,
-                    pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
-                    themeErrors: Array.isArray(themeErrors) ? themeErrors : [],
-                    onClose: props.onClose
-                }),
-                React.createElement(this.ModalComponents.Footer, {
-                    className: "bd-error-modal-footer",
-                }, React.createElement(this.Buttons, {
-                    onClick: props.onClose,
-                    className: "bd-button"
-                }, Strings.Modals.okay))
-            ]
-        }))));
+        const options = {
+            ref: this.addonErrorsRef,
+            pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
+            themeErrors: Array.isArray(themeErrors) ? themeErrors : []
+        };
+        this.openModal(props => {
+            return React.createElement(ErrorBoundary, null, React.createElement(AddonErrorModal, Object.assign(options, props)));
+        });
     }
 
     static showChangelogModal(options = {}) {
-        const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen", "root");
-        const ChangelogModalClasses = WebpackModules.getModule(m => m.modal && m.maxModalWidth);
-        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved") ?? {maxModalWidth: "490px",video: "video-8B-TdZ",container: "container-3PVapX",image: "image-ZPv20Y",title: "title-2ftWWc",lead: "lead-2VtcIe",added: "added-mQcv9V title-2ftWWc",fixed: "fixed-cTX7Hp title-2ftWWc",improved: "improved-2SJXHz title-2ftWWc",progress: "progress-1DcfFh title-2ftWWc",marginTop: "marginTop-VGmU1T",footer: "footer-1gMODG",socialLink: "socialLink-1qjJIk",premiumBanner: "premiumBanner-FU1Urp",premiumIcon: "premiumIcon-rhwgnW",date: "date-2tmzZM"};
-        const TextElement = this.TextElement;
-        const FlexChild = this.FlexElements;
-        const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
+        options = Object.assign({image: "https://i.imgur.com/wuh5yMK.png", description: "", changes: [], title: "BetterDiscord", subtitle: `v${Config.version}`}, options);
 
-        if (!OriginalModalClasses || !ChangelogModalClasses || !ChangelogClasses || !TextElement || !FlexChild || !MarkdownParser) return Logger.warn("Modals", "showChangelogModal missing modules");
-
-        const {image = "https://i.imgur.com/wuh5yMK.png", description = "", changes = [], title = "BetterDiscord", subtitle = `v${Config.version}`, footer} = options;
-        const ce = React.createElement;
-        const changelogItems = [options.video ? ce("video", {src: options.video, poster: options.poster, controls: true, className: ChangelogClasses.video}) : ce("img", {src: image})];
-        if (description) changelogItems.push(ce("p", null, MarkdownParser.parse(description)));
-        for (let c = 0; c < changes.length; c++) {
-            const entry = changes[c];
-            const type = ChangelogClasses[entry.type] ? ChangelogClasses[entry.type] : ChangelogClasses.added;
-            const margin = c == 0 ? ChangelogClasses.marginTop : "";
-            changelogItems.push(ce("h1", {className: `${type} ${margin}`,}, entry.title));
-            if (entry.description) changelogItems.push(ce("p", null, MarkdownParser.parse(entry.description)));
-            const list = ce("ul", null, entry.items.map(i => ce("li", null, MarkdownParser.parse(i))));
-            changelogItems.push(list);
-        }
-        const renderHeader = function() {
-            return ce(FlexChild, {className: OriginalModalClasses.header, grow: 0, shrink: 0, direction: FlexChild.Direction.VERTICAL},
-                ce(TextElement, {tag: "h1", size: TextElement.Sizes.SIZE_20, strong: true}, title),
-                ce(TextElement, {size: TextElement.Sizes.SIZE_12, color: TextElement.Colors.STANDARD, className: ChangelogClasses.date}, subtitle)
-            );
-        };
-
-        const renderFooter = () => {
-            const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
-            const joinSupportServer = (click) => {
-                click.preventDefault();
-                click.stopPropagation();
-                DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel({inviteKey: "0Tmfo5ZbORCRqbAd"});
-            };
-            const supportLink = ce("a", {className: `${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`, onClick: joinSupportServer}, "Join our Discord Server.");
-            const defaultFooter = ce(TextElement, {size: TextElement.Sizes.SIZE_12, color: TextElement.Colors.STANDARD}, "Need support? ", supportLink);
-            return ce(FlexChild, {className: OriginalModalClasses.footer + " " + OriginalModalClasses.footerSeparator},
-                ce(FlexChild.Child, {grow: 1, shrink: 1}, footer ? footer : defaultFooter)
-            );
-        };
-
-        const body = ce("div", {
-            className: `${OriginalModalClasses.content} ${ChangelogClasses.container} ${ChangelogModalClasses.content} ${DiscordClasses.Scrollers.thin}`
-        }, changelogItems);
-
-        const key = this.ModalActions.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(this.ModalRoot, Object.assign({
-                className: `bd-changelog-modal ${OriginalModalClasses.root} ${OriginalModalClasses.small} ${ChangelogModalClasses.modal}`,
-                selectable: true,
-                onScroll: _ => _,
-                onClose: _ => _,
-            }, props), renderHeader(), body, renderFooter()));
+        const key = this.openModal(props => {
+            return React.createElement(ErrorBoundary, null, React.createElement(ChangelogModal, Object.assign(options, props)));
         });
         return key;
     }
@@ -315,7 +250,7 @@ export default class Modals {
                 }
 
                 render() {
-                    if (this.state.hasError) return null;
+                    if (this.state.hasError) return React.createElement(TextElement, {color: TextElement.Colors.STATUS_RED}, Strings.Addons.settingsError);
                     const props = {
                         className: "bd-addon-settings-wrap",
                         ref: this.elementRef
@@ -327,23 +262,35 @@ export default class Modals {
         }
         if (typeof(child) === "function") child = React.createElement(child);
 
-        const mc = this.ModalComponents;
-        const modal = props => {
-            return React.createElement(ErrorBoundary, {}, React.createElement(this.ModalRoot, Object.assign({size: mc.Sizes.MEDIUM, className: "bd-addon-modal" + " " + mc.Sizes.MEDIUM}, props),
-                React.createElement(mc.Header, {separator: false, className: "bd-addon-modal-header"},
-                    React.createElement(this.TextElement, {tag: "h1", size: this.TextElement.Sizes.SIZE_20, strong: true}, `${name} Settings`)
-                ),
-                React.createElement(mc.Content, {className: "bd-addon-modal-settings"},
-                    React.createElement(ErrorBoundary, {}, child)
-                ),
-                React.createElement(mc.Footer, {className: "bd-addon-modal-footer"},
-                    React.createElement(this.Buttons, {onClick: props.onClose, className: "bd-button"}, Strings.Modals.done)
-                )
-            ));
+        const options = {
+            className: "bd-addon-modal",
+            size: ModalRoot.Sizes.MEDIUM,
+            header: `${name} Settings`,
+            cancelText: null,
+            confirmText: Strings.Modals.done
         };
 
         return this.ModalActions.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(modal, props));
+            return React.createElement(ErrorBoundary, null, React.createElement(ConfirmationModal, Object.assign(options, props), child));
         });
     }
+
+
+
+    static makeStack() {
+        const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
+        DOMManager.bdBody.append(div);
+        ReactDOM.render(<ModalStack />, div);
+        this.hasInitialized = true;
+    }
+    
+    static openModal(render, options = {}) {
+        if (!this.hasInitialized) this.makeStack();
+        options.modalKey = generateKey(options.modalKey);
+        Events.emit("open-modal", render, options);
+        return options.modalKey;
+    }
 }
+
+
+Modals.makeStack();
