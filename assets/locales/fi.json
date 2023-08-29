@@ -10,10 +10,6 @@
             "name": "Asetukset",
             "general": {
                 "name": "Yleinen",
-                "emotes": {
-                    "name": "Hymiö-järjestelmä",
-                    "note": "Ottaa käyttöön BD:n hymiö-järjestelmän."
-                },
                 "voiceDisconnect": {
                     "name": "Katkaise puhelu",
                     "note": "Katkaise puhelu, kun suljet Discordin"
@@ -144,55 +140,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "Hymiöt",
-            "general": {
-                "name": "Yleinen",
-                "download": {
-                    "name": "Lataa hymiöitä",
-                    "note": "Lataa hymiöit aina, kun ne ovat vanhentuneita"
-                },
-                "emoteMenu": {
-                    "name": "Hymiövalikko",
-                    "note": "Näytä Twitch/Suosikkihymiöt hymiövalikossa"
-                },
-                "hideEmojiMenu": {
-                    "name": "Piilota hymiövalikko",
-                    "note": "Piilottaa Discordin emoji-menun, kun käytetään hymiövalikkoa"
-                },
-                "autoCaps": {
-                    "name": "Emoten automaattinen isojen kirjainten käyttö",
-                    "note": "Laita isolla kirjaimella hymiökomennot automaattisesti"
-                },
-                "modifiers": {
-                    "name": "Näytä hymiö-muokkaimet",
-                    "note": "Ota käyttöön hymiömodit (käännä, spin, pulssi, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animoi leijuminen",
-                    "note": "Animoi vain hymiön muokkaukset viemällä kursori sen kohdalle"
-                }
-            },
-            "categories": {
-                "name": "Kategoriat",
-                "twitchglobal": {
-                    "name": "Twitchin Yleiset",
-                    "note": "Näytä Twitchin yleiset hymiöt"
-                },
-                "twitchsubscriber": {
-                    "name": "Twitch-tilaajat",
-                    "note": "Näytä Twitch-tilauksen hymiöt"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Näytä hymiöt FFZ:sta"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Näytä hymiöt BTTV:stä"
-                }
-            }
         }
     },
     "Addons": {
@@ -244,14 +191,6 @@
         "openDetached": "Irrota ikkuna",
         "settings": "Muokkaajan asetukset",
         "editorTitle": "Mukautettu CSS-muokkaaja"
-    },
-    "Emotes": {
-        "loading": "Hymiöiden lataaminen taustalla ei lataudu uudelleen.",
-        "loaded": "Kaikki hymiöt on ladattu onnistuneesti.",
-        "clearEmotes": "Tyhjennä hymiö-tiedot",
-        "favoriteAction": "Suosikki!",
-        "downloadFailed": "Lataus epäonnistui",
-        "failureMessage": "BetterDiscord ei pystynyt lataamaan hymiöitä. Tarkista Internet-yhteytesi ja palomuurisi."
     },
     "Modals": {
         "confirmAction": "Oletko varma?",

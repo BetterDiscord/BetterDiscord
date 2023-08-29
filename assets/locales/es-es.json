@@ -9,10 +9,6 @@
             "name": "Ajustes",
             "general": {
                 "name": "General",
-                "emotes": {
-                    "name": "Sistema de Emoticonos",
-                    "note": "Activa el sistema de emoticonos de BD"
-                },
                 "voiceDisconnect": {
                     "name": "Desconexión de Voz",
                     "note": "Desconectarse del servidor de voz al cerrar Discord"
@@ -107,55 +103,6 @@
                     "note": "Envía todo lo que aparece en la consola a un archivo llamado debug.log en la carpeta de BetterDiscord"
                 }
             }
-        },
-        "emotes": {
-            "name": "Emoticonos",
-            "general": {
-                "name": "General",
-                "download": {
-                    "name": "Descargar Emoticonos",
-                    "note": "Descargar los emoticonos siempre que estén desactualizados"
-                },
-                "emoteMenu": {
-                    "name": "Menú de Emoticonos",
-                    "note": "Mostrar los emoticonos de Twitch y favoritos en el menú de emoticonos"
-                },
-                "hideEmojiMenu": {
-                    "name": "Ocultar Menú de Emoticonos",
-                    "note": "Oculta el menú de emojis de Discord cuando se utiliza el menú de emoticonos"
-                },
-                "autoCaps": {
-                    "name": "Autocapitalización de Emoticonos",
-                    "note": "Autocapitalizar los comandos de emoticonos"
-                },
-                "modifiers": {
-                    "name": "Mostrar Modificadores de Emoticonos",
-                    "note": "Activar los modificadores de emoticonos (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animar al Pasar el Ratón",
-                    "note": "Solo animar los modificadores de emoticonos al pasar el ratón por encima de ellos"
-                }
-            },
-            "categories": {
-                "name": "Categorías",
-                "twitchglobal": {
-                    "name": "Globales de Twitch",
-                    "note": "Mostrar los emoticonos globales de Twitch"
-                },
-                "twitchsubscriber": {
-                    "name": "Suscriptores de Twitch",
-                    "note": "Mostrar emoticonos de suscriptores de Twitch"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Mostrar los emoticonos de FrankerFaceZ"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Mostrar los emoticonos de BetterTTV"
-                }
-            }
         }
     },
     "Addons": {
@@ -207,14 +154,6 @@
         "openDetached": "Mostrar en Ventana Independiente",
         "settings": "Ajustes del Editor",
         "editorTitle": "Editor de CSS Personalizado"
-    },
-    "Emotes": {
-        "loading": "Cargando emoticonos en segundo plano, no recargues.",
-        "loaded": "Todos los emoticonos han sido cargados satisfactoriamente.",
-        "clearEmotes": "Borrar los Datos de los Emoticonos",
-        "favoriteAction": "¡Favoritos!",
-        "downloadFailed": "Descarga Fallida",
-        "failureMessage": "BetterDiscord no ha podido descargar los emoticonos, por favor, comprueba tu conexión a internet y tu cortafuegos."
     },
     "Modals": {
         "confirmAction": "¿Estás seguro?",

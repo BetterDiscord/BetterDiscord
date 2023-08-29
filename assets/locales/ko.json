@@ -10,10 +10,6 @@
             "name": "설정",
             "general": {
                 "name": "일반",
-                "emotes": {
-                    "name": "이모트 시스템",
-                    "note": "BD의 이모트 시스템을 활성화합니다"
-                },
                 "voiceDisconnect": {
                     "name": "음성 연결 끊기",
                     "note": "디스코드를 닫을 때 음성 채널의 연결을 끊습니다"
@@ -144,55 +140,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "이모트",
-            "general": {
-                "name": "일반",
-                "download": {
-                    "name": "이모트 다운로드",
-                    "note": "최신이 아닌 이모트를 다운로드합니다"
-                },
-                "emoteMenu": {
-                    "name": "이모트 메뉴",
-                    "note": "이모트 메뉴에 트위치/즐겨찾기 이모트를 표시합니다"
-                },
-                "hideEmojiMenu": {
-                    "name": "이모트 메뉴 숨기기",
-                    "note": "이모트 메뉴를 사용 중일 때 디스코드의 이모지 메뉴를 숨깁니다"
-                },
-                "autoCaps": {
-                    "name": "이모트 자동 대문자",
-                    "note": "이모트 명령어에 자동 대문자를 사용합니다"
-                },
-                "modifiers": {
-                    "name": "이모트 수정기 표시",
-                    "note": "이모트 모드를 활성화합니다 (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "마우스 커서를 올렸을 때 애니메이션 표시",
-                    "note": "마우스 커서를 올린 이모트의 애니메이션만 표시합니다"
-                }
-            },
-            "categories": {
-                "name": "카테고리",
-                "twitchglobal": {
-                    "name": "트위치 글로벌",
-                    "note": "트위치 글로벌 이모트를 표시합니다"
-                },
-                "twitchsubscriber": {
-                    "name": "트위치 구독",
-                    "note": "트위치 구독 이모트를 표시합니다"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "FFZ 이모트를 표시합니다"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "BTTV 이모트를 표시합니다"
-                }
-            }
         }
     },
     "Addons": {
@@ -246,14 +193,6 @@
         "openDetached": "분리된 창에서 열기",
         "settings": "편집기 설정",
         "editorTitle": "사용자  CSS 편집기"
-    },
-    "Emotes": {
-        "loading": "백그라운드에서 로딩된 이모트는 리로드하지 않습니다",
-        "loaded": "모든 이모트가 로드되었습니다",
-        "clearEmotes": "이모트 데이터 지우기",
-        "favoriteAction": "즐겨찾기",
-        "downloadFailed": "다운로드 실패",
-        "failureMessage": "BetterDiscord가 이모트 다운로드에 실패했습니다. 인터넷 상태와 방화벽을 확인해주세요"
     },
     "Modals": {
         "confirmAction": "확실합니까?",

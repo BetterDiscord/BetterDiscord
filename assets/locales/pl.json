@@ -10,10 +10,6 @@
             "name": "Ustawienia",
             "general": {
                 "name": "Ogólne",
-                "emotes": {
-                    "name": "System emoji",
-                    "note": "Aktywuje system emoji BetterDiscorda"
-                },
                 "voiceDisconnect": {
                     "name": "Rozłączaj z czatem głosowym",
                     "note": "Rozłącza z serwerem czatu głosowego przy wyłączeniu Discorda"
@@ -144,55 +140,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "Emoji",
-            "general": {
-                "name": "Ogólne",
-                "download": {
-                    "name": "Pobieraj emoji",
-                    "note": "Pobiera emoji, gdy jest dostępna aktualizacja"
-                },
-                "emoteMenu": {
-                    "name": "Menu emoji",
-                    "note": "Wyświetla ulubione emoji oraz emoji z Twitcha w oddzielnym menu"
-                },
-                "hideEmojiMenu": {
-                    "name": "Ukryj menu emoji",
-                    "note": "Ukrywa menu z emoji Discorda"
-                },
-                "autoCaps": {
-                    "name": "Automatyczna zmiana wielkości liter w emoji",
-                    "note": "Automatycznie zmienia wielkość liter przy wprowadzaniu emoji"
-                },
-                "modifiers": {
-                    "name": "Pokazuj modyfikacje emoji",
-                    "note": "Wyświetla modyfikacje emoji (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animacje po najechaniu",
-                    "note": "Wyświetla animacje wyłącznie przy najechaniu na zmodyfikowane emoji"
-                }
-            },
-            "categories": {
-                "name": "Kategorie",
-                "twitchglobal": {
-                    "name": "Globalne emoji Twitcha",
-                    "note": "Wyświetla globalne emoji Twitcha"
-                },
-                "twitchsubscriber": {
-                    "name": "Emoji dla subskrybentów Twitcha",
-                    "note": "Wyświetla emoji dla subskrybentów Twitcha"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Wyświetla emoji z FrankerFaceZ"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Wyświetla emoji z BetterTTV"
-                }
-            }
         }
     },
     "Addons": {
@@ -246,14 +193,6 @@
         "openDetached": "Otwórz w osobnym oknie",
         "settings": "Ustawienia edytora",
         "editorTitle": "Edytor niestandardowego kodu CSS"
-    },
-    "Emotes": {
-        "loading": "Ładowanie emoji w tle, nie odświeżaj Discorda.",
-        "loaded": "Wszystkie emoji zostały załadowane poprawnie.",
-        "clearEmotes": "Wyczyść dane emoji",
-        "favoriteAction": "Dodaj do ulubionych",
-        "downloadFailed": "Pobieranie nie powiodło się",
-        "failureMessage": "Nie udało się pobrać emoji, sprawdź swoje połączenie z internetem oraz zaporę ogniową."
     },
     "Modals": {
         "confirmAction": "Czy na pewno chcesz to zrobić?",

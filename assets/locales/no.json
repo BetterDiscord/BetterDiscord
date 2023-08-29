@@ -7,9 +7,6 @@
             "name": "Innstillinger",
             "general": {
                 "name": "Generell",
-                "emotes": {
-                    "name": "Emote-system"
-                },
                 "showToasts": {
                     "name": "Vis Toasts"
                 }
@@ -18,24 +15,6 @@
                 "name": "Tilpasset CSS",
                 "customcss": {
                     "name": "Tilpasset CSS"
-                }
-            }
-        },
-        "emotes": {
-            "name": "Emotes",
-            "general": {
-                "name": "Generell",
-                "download": {
-                    "name": "Last ned Emotes"
-                }
-            },
-            "categories": {
-                "name": "Kategorier",
-                "frankerfacez": {
-                    "name": "FrankerFaceZ"
-                },
-                "bttv": {
-                    "name": "BetterTTV"
                 }
             }
         }
@@ -54,9 +33,6 @@
     "CustomCSS": {
         "update": "Oppdater",
         "save": "Lagre"
-    },
-    "Emotes": {
-        "favoriteAction": "Favoritt!"
     },
     "Modals": {
         "confirmAction": "Er Du Sikker?",

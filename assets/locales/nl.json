@@ -9,10 +9,6 @@
             "name": "Instellingen",
             "general": {
                 "name": "Algemeen",
-                "emotes": {
-                    "name": "Emote systeem",
-                    "note": "Schakel het emote-systeem van BD in"
-                },
                 "voiceDisconnect": {
                     "name": "Stem Verbroken",
                     "note": "Verbreek de verbinding met de oproep"
@@ -24,26 +20,6 @@
                 "mediaKeys": {
                     "name": "Schakel mediatoetsen uit",
                     "note": "Voorkomt dat Discord uw mediatoetsen kaapt na het afspelen van een video."
-                }
-            }
-        },
-        "emotes": {
-            "general": {
-                "name": "Algemeen",
-                "emoteMenu": {
-                    "name": "Emote Menu"
-                },
-                "hideEmojiMenu": {
-                    "name": "Verberg emoji-menu"
-                }
-            },
-            "categories": {
-                "frankerfacez": {
-                    "name": "FrankerFaceZ"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Laat emotes zien van BTTV"
                 }
             }
         }
@@ -69,9 +45,6 @@
         "confirmationText": "Je hebt niet-opgeslagen wijzigingen in {{naam}}. Als je dit venster sluit, gaan alle wijzigingen verloren.",
         "unknownAuthor": "Onbekende schrijver",
         "noDescription": "Beschrijving kon niet worden weergegeven"
-    },
-    "Emotes": {
-        "favoriteAction": "Favorieten"
     },
     "Modals": {
         "confirmAction": "Weet je het zeker?",

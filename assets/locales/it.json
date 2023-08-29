@@ -9,10 +9,6 @@
             "name": "Impostazioni",
             "general": {
                 "name": "Generale",
-                "emotes": {
-                    "name": "Sistema di Emotes",
-                    "note": "Abilita il sistema di Emotes di BD"
-                },
                 "voiceDisconnect": {
                     "name": "Esci dalla chat vocale",
                     "note": "Esci automaticamente dalla chat vocale quando chiudi Discord"
@@ -132,25 +128,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "Emote",
-            "general": {
-                "name": "Generale",
-                "download": {
-                    "name": "Scarica Emote",
-                    "note": "Scarica Emote ogni volta che viene trovata una nuova versione"
-                },
-                "emoteMenu": {
-                    "name": "Menu Emote"
-                }
-            },
-            "categories": {
-                "name": "Categorie",
-                "twitchsubscriber": {
-                    "name": "Iscritti Twitch"
-                }
-            }
         }
     },
     "Addons": {
@@ -203,14 +180,6 @@
         "openDetached": "Apri in una finestra separata",
         "settings": "Impostazioni editor",
         "editorTitle": "Editor per il CSS personalizzato"
-    },
-    "Emotes": {
-        "loading": "Sto caricando le emote in background. Non ricaricare.",
-        "loaded": "Tutte le emote sono state caricate correttamente.",
-        "clearEmotes": "Cancella i dati delle Emote",
-        "favoriteAction": "Preferito!",
-        "downloadFailed": "Download fallito",
-        "failureMessage": "BetterDiscord non è riuscito a scaricare le emote, controlla la tua connessione internet e il firerwall."
     },
     "Modals": {
         "confirmAction": "Sei sicuro?",

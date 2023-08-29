@@ -10,10 +10,6 @@
             "name": "設定",
             "general": {
                 "name": "一般",
-                "emotes": {
-                    "name": "表情符號系統",
-                    "note": "啟用 BetterDiscord 的表情符號系統"
-                },
                 "voiceDisconnect": {
                     "name": "自動中斷語音連線",
                     "note": "自動在關閉 Discord 時中斷語音連線"
@@ -144,55 +140,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "表情符號",
-            "general": {
-                "name": "一般",
-                "download": {
-                    "name": "下載表情符號",
-                    "note": "自動下載即將過期的表情符號"
-                },
-                "emoteMenu": {
-                    "name": "表情符號選單",
-                    "note": "在表情符號選單中顯示 Twitch/我的最愛 表情符號"
-                },
-                "hideEmojiMenu": {
-                    "name": "隱藏表情符號選單",
-                    "note": "在使用表情符號時隱藏 Discord 的表情符號選單"
-                },
-                "autoCaps": {
-                    "name": "表情符號自動大寫",
-                    "note": "自動大寫表情符號指令"
-                },
-                "modifiers": {
-                    "name": "顯示表情修飾符",
-                    "note": "啟用表情修飾符（flip、spin、pulse、spin2、spin3、1spin、2spin、3spin、tr、bl、br、shake、shake2、shake3、flap）"
-                },
-                "animateOnHover": {
-                    "name": "懸停動畫",
-                    "note": "僅在懸停時播放表情修飾符動畫"
-                }
-            },
-            "categories": {
-                "name": "分類",
-                "twitchglobal": {
-                    "name": "Twitch 全域",
-                    "note": "顯示 Twitch 全域表情"
-                },
-                "twitchsubscriber": {
-                    "name": "Twitch 訂閱",
-                    "note": "顯示 Twitch 訂閱者表情"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "顯示來自 FFZ 的表情"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "顯示來自 BTTV 的表情"
-                }
-            }
         }
     },
     "Addons": {
@@ -246,14 +193,6 @@
         "openDetached": "在獨立視窗中開啟",
         "settings": "編輯器設定",
         "editorTitle": "客製化 CSS 編輯器"
-    },
-    "Emotes": {
-        "loading": "在背景載入表情時不會重新載入。",
-        "loaded": "所有表情均已成功載入。",
-        "clearEmotes": "清除表情資料",
-        "favoriteAction": "新增到我的最愛",
-        "downloadFailed": "下載失敗",
-        "failureMessage": "BetterDiscord 無法下載表情，請檢查您的網絡連線和防火牆。"
     },
     "Modals": {
         "confirmAction": "您確定嗎？",
