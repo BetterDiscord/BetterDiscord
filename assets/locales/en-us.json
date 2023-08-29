@@ -158,6 +158,9 @@
         "version": "Version",
         "added": "Date Added",
         "modified": "Date Modified",
+        "isEnabled": "Enabled",
+        "listView": "List View",
+        "gridView": "Grid View",
         "search": "Search {{type}}",
         "editAddon": "Edit",
         "deleteAddon": "Delete",
@@ -182,7 +185,6 @@
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
         "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
-        "isEnabled": "Enabled",
         "wasLoaded": "{{name}} v{{version}} was loaded."
     },
     "CustomCSS": {
