@@ -21,7 +21,7 @@ import EmptyImage from "@ui/blankslates/emptyimage";
 const {useState, useCallback, useEffect, useReducer, useMemo} = React;
 
 
-const SORT_OPTIONS = [
+const buildSortOptions = () => [
     {label: Strings.Addons.name, value: "name"},
     {label: Strings.Addons.author, value: "author"},
     {label: Strings.Addons.version, value: "version"},
@@ -30,7 +30,7 @@ const SORT_OPTIONS = [
     {label: Strings.Addons.isEnabled, value: "isEnabled"}
 ];
 
-const DIRECTIONS = [
+const buildDirectionOptions = () => [
     {label: Strings.Sorting.ascending, value: true},
     {label: Strings.Sorting.descending, value: false}
 ];
@@ -171,16 +171,16 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
                 <div className="bd-addon-dropdowns">
                     <div className="bd-select-wrapper">
                         <label className="bd-label">{Strings.Sorting.sortBy}:</label>
-                        <Dropdown options={SORT_OPTIONS} value={sort} onChange={changeSort} style="transparent" />
+                        <Dropdown options={buildSortOptions()} value={sort} onChange={changeSort} style="transparent" />
                     </div>
                     <div className="bd-select-wrapper">
                         <label className="bd-label">{Strings.Sorting.order}:</label>
-                        <Dropdown options={DIRECTIONS} value={ascending} onChange={changeDirection} style="transparent" />
+                        <Dropdown options={buildDirectionOptions()} value={ascending} onChange={changeDirection} style="transparent" />
                     </div>
                 </div>
                 <div className="bd-addon-views">
-                    {makeControlButton("List View", <ListIcon />, listView, view === "list")}
-                    {makeControlButton("Grid View", <GridIcon />, gridView, view === "grid")}
+                    {makeControlButton(Strings.Addons.listView, <ListIcon />, listView, view === "list")}
+                    {makeControlButton(Strings.Addons.gridView, <GridIcon />, gridView, view === "grid")}
                 </div>
             </div>
         </div>,
