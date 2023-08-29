@@ -1,4 +1,4 @@
-import {ipcMain as ipc, BrowserWindow, app, dialog} from "electron";
+import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences} from "electron";
 
 import * as IPCEvents from "common/constants/ipcevents";
 
@@ -84,6 +84,10 @@ const setWindowSize = (event, width, height) => {
     window.setSize(width, height);
 };
 
+const getAccentColor = () => {
+    return systemPreferences.getAccentColor() || "#000000";
+};
+
 const stopDevtoolsWarning = event => event.sender.removeAllListeners("devtools-opened");
 
 const openDialog = (event, options = {}) => {
@@ -144,6 +148,7 @@ export default class IPCMain {
             ipc.on(IPCEvents.WINDOW_SIZE, setWindowSize);
             ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
             ipc.on(IPCEvents.REGISTER_PRELOAD, registerPreload);
+            ipc.handle(IPCEvents.GET_ACCENT_COLOR, getAccentColor);
             ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
             ipc.handle(IPCEvents.OPEN_DIALOG, openDialog);
             ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
