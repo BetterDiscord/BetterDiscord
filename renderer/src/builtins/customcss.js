@@ -134,7 +134,7 @@ export default new class CustomCSS extends Builtin {
             save: this.saveCSS.bind(this),
             update: this.insertCSS.bind(this),
             openNative: this.openNative.bind(this),
-            onChange: this.onChange.bind(this)
+            onChange: Utilities.debounce(this.onChange.bind(this), 500)
         });
 
         FloatingWindows.open({

@@ -3,7 +3,9 @@ import DiscordModules from "@modules/discordmodules";
 import Settings from "@modules/settingsmanager";
 
 import Button from "../base/button";
-import Checkbox from "./checkbox";
+import Flex from "../base/flex";
+import Switch from "../settings/components/switch";
+import Text from "@ui/base/text";
 
 const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
 const ThemeStore = DiscordModules.ThemeStore;
@@ -18,13 +20,16 @@ function makeButton(button, value) {
                 }}
             </DiscordModules.Tooltip>;
 }
-
-function makeCheckbox(checkbox) {
-    return <Checkbox text={checkbox.label} onChange={checkbox.onChange} checked={checkbox.checked} />;
+// <Switch disabled={disabled} checked={isEnabled} onChange={onChange} />
+function makeSwitch(control) {
+    return <Flex align={Flex.Align.CENTER} style={{gap: "10px"}}>
+                <Text>{control.label}</Text>
+                <Switch onChange={control.onChange} checked={control.checked} />
+            </Flex>;
 }
 
 function buildControl(value, control) {
-    if (control.type == "checkbox") return makeCheckbox(control);
+    if (control.type == "boolean") return makeSwitch(control);
     return makeButton(control, value);
 }
 

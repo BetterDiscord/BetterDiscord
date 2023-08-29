@@ -55,19 +55,8 @@
     align-items: center;
 }
 
-.controls-section .checkbox-inner {
-    width: 14px;
-    height: 14px;
-}
-
-.controls-section .checkbox-inner .checkbox:checked + span::after {
-    left: 2px;
-    top: -2px;
-}
-
-.controls-section .checkbox-label {
-    font-size: 14px;
-    font-weight: 500;
+.controls-section.controls-right {
+    gap: 15px;
 }
 
 .monaco-editor:not(.rename-box),
