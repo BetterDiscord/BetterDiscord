@@ -85,7 +85,8 @@ const setWindowSize = (event, width, height) => {
 };
 
 const getAccentColor = () => {
-    return systemPreferences.getAccentColor() || "#000000";
+    // intentionally left blank so that fallback colors will be used
+    return systemPreferences.getAccentColor() || "";
 };
 
 const stopDevtoolsWarning = event => event.sender.removeAllListeners("devtools-opened");
