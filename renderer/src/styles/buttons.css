@@ -96,6 +96,9 @@
 .bd-button .bd-button-content {
     --button--underline-color: transparent;
     background-image: linear-gradient(0deg, transparent, transparent 1px, var(--button--underline-color) 0, var(--button--underline-color) 2px, transparent 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .bd-button:disabled .bd-button-content {
@@ -176,7 +179,7 @@
     background: transparent;
     color: currentColor;
     border: 0;
-    padding: 0;
+    /* padding: 0; */
     margin: 0
 }
 

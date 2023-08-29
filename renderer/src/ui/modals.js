@@ -8,7 +8,7 @@ import ReactDOM from "@modules/reactdom";
 import Strings from "@modules/strings";
 import Settings from "@modules/settingsmanager";
 import Events from "@modules/emitter";
-import DiscordModules from "@modules/discordmodules";
+// import DiscordModules from "@modules/discordmodules";
 import WebpackModules from "@modules/webpackmodules";
 import DOMManager from "@modules/dommanager";
 
@@ -16,12 +16,12 @@ import AddonErrorModal from "./modals/addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 import TextElement from "./base/text";
 import ModalRoot from "./modals/root";
-import ModalHeader from "./modals/header";
-import ModalContent from "./modals/content";
-import ModalFooter from "./modals/footer";
+// import ModalHeader from "./modals/header";
+// import ModalContent from "./modals/content";
+// import ModalFooter from "./modals/footer";
 
 import ConfirmationModal from "./modals/confirmation";
-import Button from "./base/button";
+// import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
 import ChangelogModal from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
@@ -270,7 +270,7 @@ export default class Modals {
             confirmText: Strings.Modals.done
         };
 
-        return this.ModalActions.openModal(props => {
+        return this.openModal(props => {
             return React.createElement(ErrorBoundary, null, React.createElement(ConfirmationModal, Object.assign(options, props), child));
         });
     }
@@ -285,6 +285,7 @@ export default class Modals {
     }
     
     static openModal(render, options = {}) {
+        if (typeof(this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
         if (!this.hasInitialized) this.makeStack();
         options.modalKey = generateKey(options.modalKey);
         Events.emit("open-modal", render, options);

@@ -2,6 +2,7 @@ import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import Settings from "@modules/settingsmanager";
 
+import Button from "../base/button";
 import Checkbox from "./checkbox";
 
 const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
@@ -13,7 +14,7 @@ const languages = ["abap", "abc", "actionscript", "ada", "apache_conf", "asciido
 function makeButton(button, value) {
     return <DiscordModules.Tooltip color="primary" position="top" text={button.tooltip}>
                 {props => {
-                    return <button {...props} className="btn btn-primary" onClick={(event) => {button.onClick(event, value?.());}}>{button.label}</button>;
+                    return <Button {...props} size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={(event) => {button.onClick(event, value?.());}}>{button.label}</Button>;
                 }}
             </DiscordModules.Tooltip>;
 }

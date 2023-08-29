@@ -4,6 +4,7 @@ import React from "@modules/react";
 import Strings from "@modules/strings";
 import Events from "@modules/emitter";
 
+import Button from "./base/button";
 import Drawer from "./settings/drawer";
 import SettingItem from "./settings/components/item";
 import SettingsTitle from "./settings/title";
@@ -17,7 +18,7 @@ function CoreUpdaterPanel({hasUpdate, remoteVersion, update}) {
     return <Drawer name="BetterDiscord" collapsible={true}>
         <SettingItem name={`Core v${Config.version}`} note={hasUpdate ? Strings.Updater.versionAvailable.format({version: remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
             {!hasUpdate && <div className="bd-filled-checkmark"><Checkmark /></div>}
-            {hasUpdate && <button className="bd-button" onClick={update}>{Strings.Updater.updateButton}</button>}
+            {hasUpdate && <Button size={Button.Sizes.SMALL} onClick={update}>{Strings.Updater.updateButton}</Button>}
         </SettingItem>
     </Drawer>;
 }
@@ -37,7 +38,7 @@ function AddonUpdaterPanel({pending, type, updater, update, updateAll}) {
             const info = updater.cache[f];
             const addon = updater.manager.addonList.find(a => a.filename === f);
             return <SettingItem name={`${addon.name} v${addon.version}`} note={Strings.Updater.versionAvailable.format({version: info.version})} inline={true} id={addon.name}>
-                    <button className="bd-button" onClick={() => update(type, f)}>{Strings.Updater.updateButton}</button>
+                    <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{Strings.Updater.updateButton}</Button>
                 </SettingItem>;
     })}
     </Drawer>;

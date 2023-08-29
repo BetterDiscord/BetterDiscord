@@ -35,9 +35,15 @@
     top: 3px;
     display: flex;
     align-items: center;
+    gap: 5px;
+}
+
+.bd-keybind-controls .bd-keybind-record {
+    padding: 4px 8px;
 }
 
 .bd-keybind-clear {
+    margin-left: 5px;
     background: none!important;
     opacity: 0.5;
     padding-right: 4px!important;
