@@ -56,6 +56,9 @@
      * @returns {Array<object>} Array of all addon instances
      */
     getAll() {return this.#manager.addonList.map(a => this.#manager.getAddon(a.id));}
+
+    hasChangelog(idOrAddon) {return this.#manager.hasChangelog(idOrAddon);}
+    showChangelog(idOrAddon) {return this.#manager.showChangelog(idOrAddon);}
 }
 
 Object.freeze(AddonAPI);

@@ -15,12 +15,14 @@ import Strings from "./strings";
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
+import Modals from "@ui/modals";
 
 
 const openItem = shell.openItem || shell.openPath;
 
 const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
+const typeRegex = /{([A-Za-z\\.]+)}\s?(.*)$/;
 
 const stripBOM = function(fileContent) {
     if (fileContent.charCodeAt(0) === 0xFEFF) {
@@ -130,29 +132,56 @@ export default class AddonManager {
 
     extractMeta(fileContent, filename) {
         const firstLine = fileContent.split("\n")[0];
-        const hasOldMeta = firstLine.includes("//META") && firstLine.includes("*//");
-        if (hasOldMeta) return this.parseOldMeta(fileContent, filename);
-        const hasNewMeta = firstLine.includes("/**");
-        if (hasNewMeta) return this.parseNewMeta(fileContent);
-        throw new AddonError(filename, filename, Strings.Addons.metaNotFound, {message: "", stack: fileContent}, this.prefix);
+        const hasMetaComment = firstLine.includes("/**");
+        if (!hasMetaComment) throw new AddonError(filename, filename, Strings.Addons.metaNotFound, {message: "", stack: fileContent}, this.prefix);
+        const metaInfo = this.parseJSDoc(fileContent);
+        
+        /**
+         * Okay we have a meta JSDoc, let's validate it
+         * and do some extra parsing for advanced options
+         */
+
+        if (!metaInfo.author || typeof(metaInfo.author) !== "string") metaInfo.author = Strings.Addons.unknownAuthor;
+        if (!metaInfo.version || typeof(metaInfo.version) !== "string") metaInfo.version = "???";
+        if (!metaInfo.description || typeof(metaInfo.description) !== "string") metaInfo.description = Strings.Addons.noDescription;
+
+        if (metaInfo.changelog && !Array.isArray(metaInfo.changelog)) metaInfo.changelog = [metaInfo.changelog];
+        if (metaInfo.changelog && metaInfo.changelog.length) {
+            const changelog = {changes: []};
+            for (const c of metaInfo.changelog) {
+                if (!c.startsWith("{")) {
+                    changelog.blurb = c;
+                    continue;
+                }
+                const match = c.match(typeRegex);
+                if (!match || match.length !== 3) continue;
+                const typeSplit = match[1].split(".");
+                const type = typeSplit[0];
+                const subtype = typeSplit[1];
+                const value = match[2];
+                if (["fixed", "added", "improved", "progress"].includes(type)) {
+                    let existing = changelog.changes.find(t => t.type === type);
+                    if (!existing) {
+                        existing = {type: type, title: type.charAt(0).toUpperCase() + type.slice(1), blurb: "", items: []};
+                        changelog.changes.push(existing);
+                    }
+
+                    if (subtype === "item") existing.items.push(value);
+                    else if (subtype) existing[subtype] = value;
+                    else existing.blurb = value;
+                }
+                else {
+                    changelog[type] = value;
+                }
+            }
+            // return changelog;
+            metaInfo.changelog = changelog;
+        }
+
+        return metaInfo;
     }
 
-    parseOldMeta(fileContent, filename) {
-        const meta = fileContent.split("\n")[0];
-        const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
-        let parsed = null;
-        try {
-            parsed = JSON.parse(metaData);
-        }
-        catch (err) {
-            throw new AddonError(filename, filename, Strings.Addons.metaError, err, this.prefix);
-        }
-        if (!parsed || !parsed.name) throw new AddonError(filename, filename, Strings.Addons.missingNameData, {message: "", stack: meta}, this.prefix);
-        parsed.format = "json";
-        return parsed;
-    }
-
-    parseNewMeta(fileContent) {
+    parseJSDoc(fileContent) {
         const block = fileContent.split("/**", 2)[1].split("*/", 1)[0];
         const out = {};
         let field = "";
@@ -160,8 +189,15 @@ export default class AddonManager {
         for (const line of block.split(splitRegex)) {
             if (line.length === 0) continue;
             if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
-                out[field] = accum.trim();
-                const l = line.indexOf(" ");
+                if (!out[field]) {
+                    out[field] = accum.trim();
+                }
+                else {
+                    if (!Array.isArray(out[field])) out[field] = [out[field]];
+                    out[field].push(accum.trim());
+                }
+                let l = line.indexOf(" ");
+                if (l < 0) l = line.length;
                 field = line.substring(1, l);
                 accum = line.substring(l + 1);
             }
@@ -169,7 +205,13 @@ export default class AddonManager {
                 accum += " " + line.replace("\\n", "\n").replace(escapedAtRegex, "@");
             }
         }
-        out[field] = accum.trim();
+        if (!out[field]) {
+            out[field] = accum.trim();
+        }
+        else {
+            if (!Array.isArray(out[field])) out[field] = [out[field]];
+            out[field].push(accum.trim());
+        }
         delete out[""];
         out.format = "jsdoc";
         return out;
@@ -181,9 +223,7 @@ export default class AddonManager {
         fileContent = stripBOM(fileContent);
         const stats = fs.statSync(filename);
         const addon = this.extractMeta(fileContent, path.basename(filename));
-        if (!addon.author) addon.author = Strings.Addons.unknownAuthor;
-        if (!addon.version) addon.version = "???";
-        if (!addon.description) addon.description = Strings.Addons.noDescription;
+
         // if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
         addon.id = addon.name || path.basename(filename);
         addon.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
@@ -247,6 +287,23 @@ export default class AddonManager {
         const didUnload = this.unloadAddon(addon, shouldToast, true);
         if (addon && !didUnload) return didUnload;
         return this.loadAddon(addon ? addon.filename : idOrFileOrAddon, shouldToast);
+    }
+
+    hasChangelog(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        if (!addon) return false;
+        return !!addon.changelog;
+    }
+
+    showChangelog(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        if (!this.hasChangelog(addon)) return;
+        Modals.showChangelogModal({
+            ...addon.changelog,
+            title: addon.name,
+            subtitle: `v${addon.version}`,
+            footer: addon.changelog.footer ?? false
+        });
     }
 
     isLoaded(idOrFile) {

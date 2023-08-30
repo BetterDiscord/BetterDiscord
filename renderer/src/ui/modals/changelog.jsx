@@ -27,7 +27,7 @@ const supportLink = <a className={`${AnchorClasses.anchor} ${AnchorClasses.ancho
 const defaultFooter = <Text>Need support? {supportLink}</Text>;
 
 
-export default function ChangelogModal({transitionState, footer, title, subtitle, onClose, video, poster, image, description, changes}) {
+export default function ChangelogModal({transitionState, footer, title, subtitle, onClose, video, poster, banner, blurb, changes}) {
 
     const ChangelogHeader = useMemo(() => <Header justify={Flex.Justify.BETWEEN}>
         <Flex direction={Flex.Direction.VERTICAL}>
@@ -37,26 +37,34 @@ export default function ChangelogModal({transitionState, footer, title, subtitle
         <CloseButton onClick={onClose} />
     </Header>, [title, subtitle, onClose]);
 
-    const ChangelogFooter = useMemo(() => <Footer>
-        <Flex.Child grow="1" shrink="1">
-            {footer ? footer : defaultFooter}
-        </Flex.Child>
-    </Footer>, [footer]);
+    const ChangelogFooter = useMemo(() => {
+        if (footer === false) return null;
+
+        let toRender = defaultFooter;
+        if (typeof(footer) === "string") toRender = <Text>{SimpleMarkdownExt.parseToReact(footer)}</Text>;
+        else if (footer) toRender = footer;
+
+        return <Footer>
+            <Flex.Child grow="1" shrink="1">
+                {toRender}
+            </Flex.Child>
+        </Footer>;
+    }, [footer]);
 
     const changelogItems = useMemo(() => {
-        const items = [video ? <video src={video} poster={poster} controls={true} className="bd-changelog-poster" /> : <img src={image} className="bd-changelog-poster" />];
-        if (description) items.push(<p>{SimpleMarkdownExt.parseToReact(description)}</p>);
+        const items = [video ? <video src={video} poster={poster} controls={true} className="bd-changelog-poster" /> : banner ? <img src={banner} className="bd-changelog-poster" /> : null];
+        if (blurb) items.push(<p>{SimpleMarkdownExt.parseToReact(blurb, false)}</p>);
         for (let c = 0; c < changes.length; c++) {
             const entry = changes[c];
             const type = "bd-changelog-" + entry.type;
             const margin = c == 0 ? " bd-changelog-first" : "";
             items.push(<h1 className={`bd-changelog-title ${type}${margin}`}>{entry.title}</h1>);
-            if (entry.description) items.push(<p>{SimpleMarkdownExt.parseToReact(entry.description)}</p>);
+            if (entry.blurb) items.push(<p>{SimpleMarkdownExt.parseToReact(entry.blurb)}</p>);
             const list = <ul>{entry.items.map(i => <li>{SimpleMarkdownExt.parseToReact(i)}</li>)}</ul>;
             items.push(list);
         }
         return items;
-    }, [description, video, image, poster, changes]);
+    }, [blurb, video, banner, poster, changes]);
 
     return <Root className="bd-changelog-modal" transitionState={transitionState} size={Root.Sizes.SMALL} style={Root.Styles.STANDARD}>
         {ChangelogHeader}
