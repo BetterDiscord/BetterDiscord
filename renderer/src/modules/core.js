@@ -15,6 +15,7 @@ import Settings from "./settingsmanager";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
 
+import IPC from "./ipc";
 import Editor from "./editor";
 import Updater from "./updater";
 
@@ -32,6 +33,8 @@ export default new class Core {
         Config.appPath = process.env.DISCORD_APP_PATH;
         Config.userData = process.env.DISCORD_USER_DATA;
         Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
+
+        IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: ${value};}`));
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
