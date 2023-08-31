@@ -8,11 +8,15 @@ import AddonManager from "./addonmanager";
 import Settings from "./settingsmanager";
 import DOMManager from "./dommanager";
 import Strings from "./strings";
+import DataStore from "./datastore";
+import Utilities from "./utilities";
 
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 import SettingsRenderer from "@ui/settings";
 
+
+const varRegex = /^(checkbox|text|color|select|number|range)\s+([A-Za-z0-9-_]+)\s+"([^"]+)"\s+(.*)$/;
 
 export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}
@@ -64,10 +68,54 @@ export default new class ThemeManager extends AddonManager {
         if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
     }
 
+    extractMeta(fileContent, filename) {
+        const metaInfo = super.extractMeta(fileContent, filename);
+        if (!metaInfo.var) return metaInfo;
+
+        if (!Array.isArray(metaInfo.var)) metaInfo.var = [metaInfo.var];
+
+        const variables = [];
+        for (const v of metaInfo.var) {
+            const match = v.match(varRegex);
+            if (!match || match.length !== 5) continue;
+            const type = match[1];
+            const variable = match[2];
+            const name = match[3];
+            const value = match[4];
+            if (type === "checkbox") variables.push({type: "switch", id: variable, name: name, value: parseInt(value) === 1});
+            if (type === "text") variables.push({type: "text", id: variable, name: name, value: value});
+            if (type === "color") variables.push({type: "color", id: variable, name: name, value: value, defaultValue: value});
+            
+            if (type === "number" || type === "range") {
+                // [default, min, max, step, units]
+                const parsed = JSON.parse(value);
+                variables.push({type: type === "number" ? type : "slider", id: variable, name: name, value: parsed[0], min: parsed[1], max: parsed[2], step: parsed[3]});
+            }
+            if (type === "select") {
+                const parsed = JSON.parse(value);
+                let selected, options;
+                if (Array.isArray(parsed)) {
+                    selected = parsed.find(o => o.endsWith("*")).replace("*", "");
+                    options = parsed.map(o => ({label: o.replace("*", ""), value: o.replace("*", "")}));
+                }
+                else {
+                    selected = Object.keys(parsed).find(k => k.endsWith("*"));
+                    selected = parsed[selected];
+                    options = Object.entries(parsed).map(a => ({label: a[0].replace("*", ""), value: a[1]}));
+                }
+                variables.push({type: "dropdown", id: variable, name: name, options: options, value: selected || options[0].value});
+            }
+        }
+        metaInfo.var = variables;
+
+        return metaInfo;
+    }
+
     requireAddon(filename) {
         const addon = super.requireAddon(filename);
         addon.css = addon.fileContent;
         delete addon.fileContent;
+        this.loadThemeSettings(addon);
         if (addon.format == "json") addon.css = addon.css.split("\n").slice(1).join("\n");
         return addon;
     }
@@ -79,6 +127,7 @@ export default new class ThemeManager extends AddonManager {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         DOMManager.injectTheme(addon.slug + "-theme-container", addon.css);
+        DOMManager.injectTheme(addon.slug + "-theme-settings", this.buildCSSVars(addon));
         Toasts.show(Strings.Addons.enabled.format({name: addon.name, version: addon.version}));
     }
 
@@ -86,6 +135,50 @@ export default new class ThemeManager extends AddonManager {
         const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         DOMManager.removeTheme(addon.slug + "-theme-container");
+        DOMManager.removeTheme(addon.slug + "-theme-settings");
         Toasts.show(Strings.Addons.disabled.format({name: addon.name, version: addon.version}));
+    }
+
+    getThemeSettingsPanel(themeId, vars) {
+        return SettingsRenderer.getSettingsGroup(vars, Utilities.debounce((id, value) => this.updateThemeSettings(themeId, id, value), 100));
+    }
+
+    loadThemeSettings(addon) {
+        const all = DataStore.getData("theme_settings") || {};
+        const stored = all?.[addon.id];
+        if (!stored) return;
+        for (const v of addon.var) {
+            if (v.id in stored) v.value = stored[v.id];
+        }
+    }
+
+    updateThemeSettings(themeId, id, value) {
+        const addon = this.addonList.find(p => p.id == themeId);
+        const varToUpdate = addon.var.find(v => v.id === id);
+        varToUpdate.value = value;
+        DOMManager.injectTheme(addon.slug + "-theme-settings", this.buildCSSVars(addon));
+        this.saveThemeSettings(themeId);
+    }
+
+    saveThemeSettings(themeId) {
+        const all = DataStore.getData("theme_settings") || {};
+        const addon = this.addonList.find(p => p.id == themeId);
+        const data = {};
+        for (const v of addon.var) {
+            data[v.id] = v.value;
+        }
+        all[themeId] = data;
+        DataStore.setData("theme_settings", all);
+    }
+
+    buildCSSVars(idOrAddon) {
+        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        const lines = [`:root {`];
+        for (const v of addon.var) {
+            const value = typeof(v.value) === "boolean" ? v.value ? 1 : 0 : v.value;
+            lines.push(`    --${v.id}: ${value};`);
+        }
+        lines.push(`}`);
+        return lines.join("\n");
     }
 };
