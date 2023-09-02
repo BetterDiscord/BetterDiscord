@@ -7,7 +7,7 @@ export default function SettingItem({id, name, note, inline, children}) {
                     <label htmlFor={id} className={"bd-setting-title"}>{name}</label>
                     {inline && children}
                 </div>
-                <div className={"bd-setting-note"}>{note}</div>
+                {note && <div className={"bd-setting-note"}>{note}</div>}
                 {!inline && children}
                 <div className={"bd-setting-divider"} />
             </div>;

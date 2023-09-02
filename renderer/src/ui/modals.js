@@ -40,10 +40,6 @@ export default class Modals {
     }
 
     static get ModalQueue() {return this._ModalQueue ??= [];}
-    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"), {searchExports: true}) ?? ConfirmationModal;}
-    static get ModalRoot() {return this._ModalRoot ??= WebpackModules.getModule(m => m?.toString?.()?.includes("ENTERING") && m?.toString?.()?.includes("headerId"), {searchExports: true}) ?? ModalRoot;}
-    static get ModalComponents() {return this._ModalComponents ??= WebpackModules.getByProps("Header", "Footer");}
-    static get Buttons() {return this._Buttons ??= WebpackModules.getModule(m => m.BorderColors, {searchExports: true});}
 
     static async initialize() {
         const names = ["ModalActions"];
@@ -198,10 +194,9 @@ export default class Modals {
                         ].filter(Boolean));
                     });
                 }
-            }, React.createElement(this.ConfirmationModal, Object.assign({
+            }, React.createElement(ConfirmationModal, Object.assign({
                 header: title,
-                danger: danger ? this.Buttons.Colors.RED : this.Buttons.Colors.BRAND,
-                confirmButtonColor: danger ? this.Buttons.Colors.RED : this.Buttons.Colors.BRAND,
+                danger: danger,
                 confirmText: confirmText,
                 cancelText: cancelText,
                 onConfirm: onConfirm,
@@ -268,16 +263,15 @@ export default class Modals {
         if (typeof(child) === "function") child = React.createElement(child);
 
         const options = {
-            className: "bd-addon-modal " + this.ModalComponents.Sizes.MEDIUM ?? this.ModalRoot.Sizes.MEDIUM,
-            size: this.ModalComponents.Sizes.MEDIUM ?? this.ModalRoot.Sizes.MEDIUM,
+            className: "bd-addon-modal",
+            size: ModalRoot.Sizes.MEDIUM,
             header: `${name} Settings`,
             cancelText: null,
-            confirmText: Strings.Modals.done,
-            confirmButtonColor: this.Buttons.Colors.BRAND
+            confirmText: Strings.Modals.done
         };
 
         return this.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(this.ConfirmationModal, Object.assign(options, props), child));
+            return React.createElement(ErrorBoundary, null, React.createElement(ConfirmationModal, Object.assign(options, props), child));
         });
     }
 
