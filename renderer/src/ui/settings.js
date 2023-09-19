@@ -58,6 +58,15 @@ export default new class SettingsRenderer {
         })];
     }
 
+    getSettingsGroup(settings, onChange) {
+        return () => React.createElement(SettingsGroup, {
+            onChange: onChange,
+            shown: true,
+            collapsible: false,
+            settings: settings
+        });
+    }
+
     getAddonPanel(title, addonList, addonState, options = {}) {
         return () => React.createElement(AddonList, Object.assign({}, {
             title: title,
