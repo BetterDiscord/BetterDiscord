@@ -149,7 +149,7 @@ export default new class ThemeManager extends AddonManager {
     loadThemeSettings(addon) {
         const all = DataStore.getData("theme_settings") || {};
         const stored = all?.[addon.id];
-        if (!stored) return;
+        if (!stored || !addon.var || !Array.isArray(addon.var)) return;
         for (const v of addon.var) {
             if (v.id in stored) v.value = stored[v.id];
         }
