@@ -19,6 +19,8 @@ export const Styles = Object.freeze({
 });
 
 
+const FocusLock = WebpackModules.getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true}) ?? React.Fragment;
+
 export default function ModalRoot({className, transitionState, children, size = Sizes.DYNAMIC, style = Styles.CUSTOM}) {
     const visible = transitionState == 0 || transitionState == 1; // 300 ms
     // const visible = transitionState;
@@ -36,7 +38,9 @@ export default function ModalRoot({className, transitionState, children, size = 
                 className={Utilities.className("bd-modal-root", size, className, style)}
                 style={springStyles}
             >
+        <FocusLock disableTrack={true}>
         {children}
+        </FocusLock>
     </Spring.animated.div>;
     // const [visible, setVisible] = React.useState(true);
 
