@@ -1,10 +1,11 @@
 import Remote from "../../polyfill/remote";
 
 const methods = new Set(["GET", "PUT", "POST", "DELETE"]);
+const bodylessStatusCodes = new Set([101, 204, 205, 304]);
 
 class FetchResponse extends Response {
     constructor(options) {
-        super(options.content, {
+        super(bodylessStatusCodes.has(options.status) ? null : options.content, {
             headers: new Headers(options.headers),
             method: options.method ?? "GET",
             body: options.content,
@@ -40,6 +41,7 @@ const convertSignal = signal => {
  * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
  * @property {AbortSignal} [signal] - Signal to abruptly cancel the request
  * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable. 
+ * @property {number} [timeout] - Request timeout time.
  */
 
 /**
@@ -58,7 +60,7 @@ export default function fetch(url, options = {}) {
         if (typeof options.body === "string" || options.body instanceof Uint8Array) data.body = options.body;
         if (typeof options.method === "string" && methods.has(options.method)) data.method = options.method;
         if (options.signal instanceof AbortSignal) data.signal = convertSignal(options.signal);
-
+        if (typeof options.timeout === 'number') data.timeout = options.timeout;
         let ctx;
         try {
             ctx = Remote.nativeFetch(url, data);
