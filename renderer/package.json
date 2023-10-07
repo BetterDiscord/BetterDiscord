@@ -24,7 +24,7 @@
         "babel-plugin-module-resolver": "^4.1.0",
         "circular-dependency-plugin": "^5.2.2",
         "css-loader": "^6.5.1",
-        "postcss": "^8.4.5",
+        "postcss": "^8.4.31",
         "postcss-cli": "^9.1.0",
         "postcss-csso": "^6.0.0",
         "postcss-easy-import": "^4.0.0",
