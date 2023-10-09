@@ -1,7 +1,8 @@
-import WebpackModules from "../webpackmodules";
-import Patcher from "../patcher";
-import Logger from "common/logger";
-import {React} from "../modules";
+import WebpackModules from "@modules/webpackmodules";
+import Patcher from "@modules/patcher";
+import Logger from "@common/logger";
+import React from "@modules/react";
+
 
 let startupComplete = false;
 
@@ -22,7 +23,7 @@ const ContextMenuActions = (() => {
     const out = {};
 
     try {
-        const ActionsModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
+        const ActionsModule = WebpackModules.getModule((mod, target, id) => WebpackModules.require.m[id]?.toString().includes(`type:"CONTEXT_MENU_OPEN"`), {searchExports: false});
 
         for (const key of Object.keys(ActionsModule)) {
             if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
@@ -56,7 +57,7 @@ class MenuPatcher {
         if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successfully, aborting initialization.");
 
         const {module, key} = (() => {
-            const foundModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes("CONTEXT_MENU_CLOSE")), {searchExports: false});
+            const foundModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes(`type:"CONTEXT_MENU_CLOSE"`)), {searchExports: false});
             const foundKey = Object.keys(foundModule).find(k => foundModule[k].length === 3);
 
             return {module: foundModule, key: foundKey};

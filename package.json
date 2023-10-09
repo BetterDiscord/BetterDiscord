@@ -1,6 +1,6 @@
 {
     "name": "betterdiscord",
-    "version": "1.9.2",
+    "version": "1.9.3",
     "description": "Enhances Discord by adding functionality and themes.",
     "main": "src/index.js",
     "scripts": {
@@ -17,6 +17,9 @@
         "translations": "node -r dotenv/config scripts/translations.js"
     },
     "devDependencies": {
+        "@babel/core": "^7.16.12",
+        "@babel/preset-env": "^7.16.11",
+        "@babel/register": "^7.16.9",
         "asar": "^3.2.0",
         "dotenv": "^16.0.3",
         "eslint": "^8.23.0",

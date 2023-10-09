@@ -1,4 +1,5 @@
-import Logger from "../../../common/logger";
+import Logger from "@common/logger";
+
 import DOMManager from "./dommanager";
 
 export default new class Editor {

@@ -1,10 +1,14 @@
-import {React, Settings, Events, Strings} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import Events from "@modules/emitter";
+import Settings from "@modules/settingsmanager";
 
 import Editor from "./editor";
-import Refresh from "../icons/reload";
-import Save from "../icons/save";
-import Edit from "../icons/edit";
-import Detach from "../icons/detach";
+
+import Refresh from "@ui/icons/reload";
+import Save from "@ui/icons/save";
+import Edit from "@ui/icons/edit";
+import Detach from "@ui/icons/detach";
 
 const {useState, useCallback, useEffect, forwardRef, useImperativeHandle, useRef} = React;
 

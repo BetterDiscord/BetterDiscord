@@ -1,5 +1,5 @@
-import Logger from "common/logger";
-import {DOMManager} from "modules";
+import Logger from "@common/logger";
+import DOMManager from "@modules/dommanager";
 
 
 const toPx = function(value) {

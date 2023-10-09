@@ -1,7 +1,17 @@
-import {Config} from "data";
-import Logger from "common/logger";
-import {WebpackModules, React, ReactDOM, Settings, Strings, DOMManager, DiscordModules, DiscordClasses} from "modules";
-import FormattableString from "../structs/string";
+import Config from "@data/config";
+
+import FormattableString from "@structs/string";
+
+import Logger from "@common/logger";
+import React from "@modules/react";
+import ReactDOM from "@modules/reactdom";
+import Strings from "@modules/strings";
+import Settings from "@modules/settingsmanager";
+import DiscordModules from "@modules/discordmodules";
+import WebpackModules from "@modules/webpackmodules";
+import DiscordClasses from "@modules/discordclasses";
+import DOMManager from "@modules/dommanager";
+
 import AddonErrorModal from "./addonerrormodal";
 import ErrorBoundary from "./errorboundary";
 

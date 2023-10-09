@@ -1,18 +1,25 @@
-import {React, Strings, Events, DataStore, DiscordModules} from "modules";
+import React from "@modules/react";
+import Strings from "@modules/strings";
+import Events from "@modules/emitter";
+import DataStore from "@modules/datastore";
+import DiscordModules from "@modules/discordmodules";
 
-import Modals from "../modals";
 import SettingsTitle from "./title";
 import AddonCard from "./addoncard";
 import Dropdown from "./components/dropdown";
 import Search from "./components/search";
-import ErrorBoundary from "../errorboundary";
 
-import ListIcon from "../icons/list";
-import GridIcon from "../icons/grid";
-import NoResults from "../blankslates/noresults";
-import EmptyImage from "../blankslates/emptyimage";
+import Modals from "@ui/modals";
+import ErrorBoundary from "@ui/errorboundary";
+
+import ListIcon from "@ui/icons/list";
+import GridIcon from "@ui/icons/grid";
+
+import NoResults from "@ui/blankslates/noresults";
+import EmptyImage from "@ui/blankslates/emptyimage";
 
 const {useState, useCallback, useEffect, useReducer, useMemo} = React;
+
 
 const SORT_OPTIONS = [
     {label: Strings.Addons.name, value: "name"},

@@ -1,4 +1,5 @@
-import {React} from "modules";
+import React from "@modules/react";
+
 import Drawer from "./drawer";
 import Switch from "./components/switch";
 import Dropdown from "./components/dropdown";

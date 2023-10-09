@@ -1,7 +1,7 @@
-import {React} from "modules";
+import React from "@modules/react";
 
-import Keyboard from "../../icons/keyboard";
-import Close from "../../icons/close";
+import Keyboard from "@ui/icons/keyboard";
+import Close from "@ui/icons/close";
 
 const {useState, useCallback, useEffect} = React;
 

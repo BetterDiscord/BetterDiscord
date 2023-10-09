@@ -1,8 +1,9 @@
 import {ipcRenderer as ipc} from "electron";
 
+import * as IPCEvents from "@common/constants/ipcevents";
+
 import Events from "./emitter";
 
-import * as IPCEvents from "common/constants/ipcevents";
 
 export default new class IPCRenderer {
 
@@ -54,5 +55,9 @@ export default new class IPCRenderer {
 
     openDialog(options) {
         return ipc.invoke(IPCEvents.OPEN_DIALOG, options);
+    }
+
+    getSystemAccentColor() {
+        return ipc.invoke(IPCEvents.GET_ACCENT_COLOR);
     }
 };

@@ -1,5 +1,6 @@
-import {React} from "modules";
-import Arrow from "../../icons/downarrow";
+import React from "@modules/react";
+
+import Arrow from "@ui/icons/downarrow";
 
 const {useState, useCallback} = React;
 

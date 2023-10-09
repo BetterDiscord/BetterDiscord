@@ -1,5 +1,7 @@
+import FormattableString from "@structs/string";
+
 import LocaleManager from "./localemanager";
-import FormattableString from "../structs/string";
+
 
 export default new Proxy(LocaleManager.strings, {
     get: function(strings, category) {

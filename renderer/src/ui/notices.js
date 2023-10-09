@@ -1,4 +1,6 @@
-import {WebpackModules, DOMManager} from "modules";
+import WebpackModules from "@modules/webpackmodules";
+import DOMManager from "@modules/dommanager";
+
 
 export default class Notices {
     static get baseClass() {return this.__baseClass ??= WebpackModules.getByProps("container", "base")?.base;}
