@@ -1,192 +1,128 @@
-const css = `/* BEGIN V2 LOADER */
-/* =============== */
+import {version} from "@modules/api/legacy";
+import DOMManager from "@modules/dommanager";
+import LoadingStyles from "@styles/loading.css";
 
-#bd-loading {
-  z-index: 2147483647;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  transition: 1s;
-  width: 100%;
-  height: 100%;
+/** Don't forget to call {@link show} method. */
+class ElementManager {
+
+  /** @type {HTMLDivElement} */
+  #elementContainer;
+  /** @type {HTMLDivElement} */
+  #element;
+
+  /**
+   * @param {HTMLDivElement} element
+   * @param {HTMLDivElement} container
+   */
+  constructor(element, container) {
+    this.#element = element;
+    this.#elementContainer = container;
+  }
+
+  show() {
+    this.#elementContainer.appendChild(this.#element);
+  }
+
+  hide() {
+    this.#element.remove();
+  }
 }
 
-.theme-dark #bd-loading-icon {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjAwMCAyMDAwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAyMDAwIDIwMDAiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxnPjxwYXRoIGZpbGw9IiMzRTgyRTUiIGQ9Ik0xNDAyLjIsNjMxLjdjLTkuNy0zNTMuNC0yODYuMi00OTYtNjQyLjYtNDk2SDY4LjR2NzE0LjFsNDQyLDM5OFY0OTAuN2gyNTdjMjc0LjUsMCwyNzQuNSwzNDQuOSwwLDM0NC45SDU5Ny42djMyOS41aDE2OS44YzI3NC41LDAsMjc0LjUsMzQ0LjgsMCwzNDQuOGgtNjk5djM1NC45aDY5MS4yYzM1Ni4zLDAsNjMyLjgtMTQyLjYsNjQyLjYtNDk2YzAtMTYyLjYtNDQuNS0yODQuMS0xMjIuOS0zNjguNkMxMzU3LjcsOTE1LjgsMTQwMi4yLDc5NC4zLDE0MDIuMiw2MzEuN3oiLz48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNMTI2Mi41LDEzNS4yTDEyNjIuNSwxMzUuMmwtNzYuOCwwYzI2LjYsMTMuMyw1MS43LDI4LjEsNzUsNDQuM2M3MC43LDQ5LjEsMTI2LjEsMTExLjUsMTY0LjYsMTg1LjNjMzkuOSw3Ni42LDYxLjUsMTY1LjYsNjQuMywyNjQuNmwwLDEuMnYxLjJjMCwxNDEuMSwwLDU5Ni4xLDAsNzM3LjF2MS4ybDAsMS4yYy0yLjcsOTktMjQuMywxODgtNjQuMywyNjQuNmMtMzguNSw3My44LTkzLjgsMTM2LjItMTY0LjYsMTg1LjNjLTIyLjYsMTUuNy00Ni45LDMwLjEtNzIuNiw0My4xaDcyLjVjMzQ2LjIsMS45LDY3MS0xNzEuMiw2NzEtNTY3LjlWNzE2LjdDMTkzMy41LDMxMi4yLDE2MDguNywxMzUuMiwxMjYyLjUsMTM1LjJ6Ii8+PC9nPjwvc3ZnPg==);
-}
-.theme-light #bd-loading-icon {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjAwMCAyMDAwIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAyMDAwIDIwMDAiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxnPjxwYXRoIGZpbGw9IiMzRTgyRTUiIGQ9Ik0xNDAyLjIsNjMxLjdjLTkuNy0zNTMuNC0yODYuMi00OTYtNjQyLjYtNDk2SDY4LjR2NzE0LjFsNDQyLDM5OFY0OTAuN2gyNTdjMjc0LjUsMCwyNzQuNSwzNDQuOSwwLDM0NC45SDU5Ny42djMyOS41aDE2OS44YzI3NC41LDAsMjc0LjUsMzQ0LjgsMCwzNDQuOGgtNjk5djM1NC45aDY5MS4yYzM1Ni4zLDAsNjMyLjgtMTQyLjYsNjQyLjYtNDk2YzAtMTYyLjYtNDQuNS0yODQuMS0xMjIuOS0zNjguNkMxMzU3LjcsOTE1LjgsMTQwMi4yLDc5NC4zLDE0MDIuMiw2MzEuN3oiLz48cGF0aCBmaWxsPSIjMDAwMDAwIiBkPSJNMTI2Mi41LDEzNS4yTDEyNjIuNSwxMzUuMmwtNzYuOCwwYzI2LjYsMTMuMyw1MS43LDI4LjEsNzUsNDQuM2M3MC43LDQ5LjEsMTI2LjEsMTExLjUsMTY0LjYsMTg1LjNjMzkuOSw3Ni42LDYxLjUsMTY1LjYsNjQuMywyNjQuNmwwLDEuMnYxLjJjMCwxNDEuMSwwLDU5Ni4xLDAsNzM3LjF2MS4ybDAsMS4yYy0yLjcsOTktMjQuMywxODgtNjQuMywyNjQuNmMtMzguNSw3My44LTkzLjgsMTM2LjItMTY0LjYsMTg1LjNjLTIyLjYsMTUuNy00Ni45LDMwLjEtNzIuNiw0My4xaDcyLjVjMzQ2LjIsMS45LDY3MS0xNzEuMiw2NzEtNTY3LjlWNzE2LjdDMTkzMy41LDMxMi4yLDE2MDguNywxMzUuMiwxMjYyLjUsMTM1LjJ6Ii8+PC9nPjwvc3ZnPg==);
-}
-#bd-loading-icon {
-  position: fixed;
-  bottom: 15px;
-  right: 5px;
-  display: block;
-  width: 20px;
-  height: 20px;
-  background-size: 100% 100%;
-  animation: bd-loading-animation 1.5s ease-in-out infinite;
-}
-#bd-loading-progress {
-  position: fixed;
-  bottom: 10px;
-  right: 5px;
-  width: 20px;
-  height: 3px;
-  background-color: var(--header-primary);
-  overflow: hidden;
-}
-#bd-loading-progress-bar {
-  background-color: #3E82E5;
-  width: 0%;
-  height: 100%;
-}
-#bd-loading-subprogress {
-  display: none;
-  position: fixed;
-  bottom: 6px;
-  right: 5px;
-  width: 20px;
-  height: 1px;
-  background-color: var(--header-primary);
-  overflow: hidden;
-}
-#bd-loading-subprogress-bar {
-  background-color: #3E82E5;
-  width: 0%;
-  height: 100%;
+/** Don't forget to call {@link show} method. */
+class ElementValueManager extends ElementManager {
+
+  /** @type {(value: unknown, element: HTMLDivElement) => void} */
+  #changer;
+
+  /**
+   * @param {HTMLDivElement} element
+   * @param {HTMLDivElement} container
+   * @param {(value: unknown, element: HTMLDivElement) => void} changer
+   */
+  constructor(element, container, changer) {
+    super(element, container);
+    this.#changer = changer;
+  }
+
+  set(value) {
+    this.#changer(value);
+  }
 }
 
-#bd-loading-status-list {
-  position: absolute;
-  bottom: 16px;
-  right: 30px;
+/** Element manager with all loading info elemets. Now we have note and status block with progress bar and status label. Don't forget to call {@link show} and {@link hide} methods. */
+class LoadingManager {
+
+  /** @type {HTMLElement} */
+  #elementContainer;
+  /** @type {HTMLDivElement} */
+  #element;
+
+  note;
+  status;
+
+  constructor() {
+    const layout = DOMManager.createElement("div", {className: "bd-loaderv3"});
+    const container = DOMManager.createElement("div", {className: "bd-loading-container", target: layout});
+
+    const leftside = DOMManager.createElement("div", {className: "bd-loading-left-side", target: container});
+    DOMManager.createElement("div", {className: "bd-loading-icon", target: leftside});
+    DOMManager.createElement("div", {className: "bd-loading-icon-note", target: leftside}, "v" + version);
+
+    const rightside = DOMManager.createElement("div", {className: "bd-loading-right-side", target: container});
+
+    this.#elementContainer = document.body;
+    this.#element = layout;
+    this.status = new LoadingStatusManager(rightside);
+  }
+
+  async show() {
+    this.#element.style.pointerEvents = "none";
+    DOMManager.injectStyle("bd-loading", LoadingStyles.toString());
+    this.#elementContainer.appendChild(this.#element);
+    await this.#element.animate([{opacity: 0}, {opacity: 1}], {duration: 500}).finished;
+    this.#element.style.pointerEvents = "";
+  }
+
+  async hide() {
+    this.#element.style.pointerEvents = "none";
+    await this.#element.animate([{opacity: 1}, {opacity: 0}], {duration: 500}).finished;
+    this.#element.remove();
+    DOMManager.removeStyle("bd-loading");
+  }
+
 }
-#bd-loading-substatus {
-  position: absolute;
-  bottom: 3px;
-  right: 30px;
-  white-space: nowrap;
-  text-align: right;
-  color: var(--header-primary);
-  font-size: 12px;
+
+/** Status element manager with progress elements, e.g.: progress bar and status label. Don't forget to call {@link show} method. */
+class LoadingStatusManager extends ElementManager {
+
+  /** @type {HTMLDivElement} */
+  #elementContainer;
+  /** @type {HTMLDivElement} */
+  #element;
+  /** @type {HTMLDivElement} */
+  #elementProgress;
+  /** @type {HTMLDivElement} */
+  #elementProgressBar;
+  /** @type {HTMLDivElement} */
+  #elementStatus;
+
+  label;
+  progress;
+
+  /** @param {HTMLDivElement} container */
+  constructor(container) {
+    const element = DOMManager.createElement("div", {className: "bd-loading-item"});
+    super(element, container);
+    this.#elementContainer = container;
+    this.#element = element;
+    this.#elementProgress = DOMManager.createElement("div", {className: "bd-loading-progress", target: this.#element});
+    this.#elementProgressBar = DOMManager.createElement("div", {className: "bd-loading-progress-bar", target: this.#elementProgress});
+    this.#elementStatus = DOMManager.createElement("div", {className: "bd-loading-status", target: this.#element});
+    this.label = new ElementValueManager(this.#elementStatus, this.#elementContainer, (value) => this.#elementStatus.innerText = value);
+    this.progress = new ElementValueManager(this.#elementProgress, this.#elementContainer, (value) => this.#elementProgressBar.style.width = Math.min(Math.max(0, value), 100) + "%");
+  }
+
 }
 
-.bd-loading-status {
-  white-space: nowrap;
-  text-align: right;
-  font-weight: 600;
-  color: var(--header-primary);
-  transition: 0.2s;
-}
-
-@keyframes bd-loading-animation {
-  0% { opacity: 0.05; }
-  50% { opacity: 0.6; }
-  100% { opacity: 0.05; }
-}
-/* =============== */
-/*  END V2 LOADER  */`;
-
-const IconStyle = document.createElement("style");
-IconStyle.textContent = css;
-
-const Icon = document.createElement("div");
-Icon.id = "bd-loading-icon";
-Icon.className = "bd-loaderv2";
-
-const ProgressBar = document.createElement("div");
-ProgressBar.id = "bd-loading-progress-bar";
-const Progress = document.createElement("div");
-Progress.appendChild(ProgressBar);
-Progress.id = "bd-loading-progress";
-
-const SubProgressBar = document.createElement("div");
-SubProgressBar.id = "bd-loading-subprogress-bar";
-const SubProgress = document.createElement("div");
-SubProgress.appendChild(SubProgressBar);
-SubProgress.id = "bd-loading-subprogress";
-
-const StatusListContainer = document.createElement("div");
-StatusListContainer.id = "bd-loading-status-list";
-
-const SubStatusContainer = document.createElement("div");
-SubStatusContainer.id = "bd-loading-substatus";
-
-const Container = document.createElement("div");
-Container.id = "bd-loading";
-Container.appendChild(IconStyle);
-Container.appendChild(Icon);
-Container.appendChild(Progress);
-Container.appendChild(SubProgress);
-Container.appendChild(StatusListContainer);
-Container.appendChild(SubStatusContainer);
-
-export default class {
-
-    /**
-     * Sets the initial loading status of the application.
-     * @param {Object} [options={}] The options object.
-     * @param {number} [options.progress] The progress of the main loading bar, in percentage.
-     * @param {number} [options.subprogress] The progress of the sub-loading bar, in percentage.
-     * @param {string} [options.status] The status message to display.
-     * @param {string} [options.substatus] The sub-status message to display.
-     * @returns {Promise<void>} A Promise that resolves when the loading status has been updated.
-     */
-    static setInitStatus(options = {}) {
-      if (typeof options !== "object" || Array.isArray(options)) {
-        options = {};
-      }
-      const { progress, subprogress, status, substatus } = options;
-      return new Promise((resolve) => {
-        if (Number.isFinite(progress)) {
-          if (progress > 100) progress = 100;
-          if (progress < 0) progress = 0;
-          ProgressBar.style.width = progress + "%";
-        }
-        if (Number.isFinite(subprogress)) {
-          if (subprogress > 100) subprogress = 100;
-          if (subprogress < 0) subprogress = 0;
-          SubProgressBar.style.width = subprogress + "%";
-        }
-        if (typeof status === "string") {
-          let StatusContainer = document.createElement("div");
-          StatusContainer.className = "bd-loading-status";
-          StatusContainer.innerHTML = status;
-          StatusListContainer.innerHTML = "";
-          StatusListContainer.append(StatusContainer);
-        }
-        if (typeof substatus === "string") {
-          SubStatusContainer.innerText = substatus;
-        }
-        requestAnimationFrame(resolve);
-      });
-    }
-
-    static showProgress() {
-        Progress.style.display = "block";
-    }
-
-    static hideProgress() {
-        Progress.style.display = "none";
-    }
-
-    static showSubProgress() {
-        SubProgress.style.display = "block";
-    }
-
-    static hideSubProgress() {
-        SubProgress.style.display = "none";
-    }
-
-    static show() {
-        document.body.appendChild(Container);
-    }
-
-    static hide() {
-        if (Container) {
-          Container.style.opacity = 0;
-          setTimeout(() => Container.remove(), 1000);
-        };
-    }
-}
+const Loading = new LoadingManager();
+export default Loading;

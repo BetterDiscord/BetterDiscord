@@ -14,7 +14,7 @@ import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
 
 import IPC from "./ipc";
-import LoadingInterface from "../loading";
+import Loading from "../loading";
 import Editor from "./editor";
 import Updater from "./updater";
 
@@ -33,75 +33,85 @@ export default new class Core {
         Config.userData = process.env.DISCORD_USER_DATA;
         Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
 
-        /** loading steps count */
-        const stepsPercent = (step) => step / 14 * 100;
+        Loading.show();
+        Loading.status.show();
+
+        let stepsCounter = 0;
+        const stepsMax = 14;
+        const increasePercent = () => stepsCounter++ / (stepsMax - 1) * 100;
 
         IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: ${value};}`));
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(1) });
+        Loading.status.progress.set(increasePercent());
+        Loading.status.label.set("Initialization...");
         DOMManager.injectStyle("bd-stylesheet", Styles.toString());
 
         Logger.log("Startup", "Initializing DataStore");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(2) });
+        Loading.status.progress.set(increasePercent());
         DataStore.initialize();
 
         Logger.log("Startup", "Initializing LocaleManager");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(3) });
+        Loading.status.progress.set(increasePercent());
         LocaleManager.initialize();
 
         Logger.log("Startup", "Initializing Settings");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(4) });
+        Loading.status.progress.set(increasePercent());
         Settings.initialize();
 
         Logger.log("Startup", "Initializing DOMManager");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(5) });
+        Loading.status.progress.set(increasePercent());
         DOMManager.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(6) });
+        Loading.status.progress.set(increasePercent());
         await this.waitForConnection();
 
         Logger.log("Startup", "Initializing Editor");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(7) });
+        Loading.status.progress.set(increasePercent());
         await Editor.initialize();
 
         Logger.log("Startup", "Initializing Modals");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(8) });
+        Loading.status.progress.set(increasePercent());
         await Modals.initialize();
 
         Logger.log("Startup", "Initializing Floating windows");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(9) });
+        Loading.status.progress.set(increasePercent());
         FloatingWindows.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(10) });
+        Loading.status.progress.set(increasePercent());
         for (const module in Builtins) {
             Builtins[module].initialize();
         }
 
         Logger.log("Startup", "Loading Plugins");
         // const pluginErrors = [];
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(11) });
+        Loading.status.progress.set(increasePercent());
+        Loading.status.label.set("Loading plugins...");
         const pluginErrors = await PluginManager.initialize();
 
         Logger.log("Startup", "Loading Themes");
         // const themeErrors = [];
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(12) });
+        Loading.status.progress.set(increasePercent());
+        Loading.status.label.set("Loading themes...");
         const themeErrors = await ThemeManager.initialize();
 
         Logger.log("Startup", "Initializing Updater");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(13) });
+        Loading.status.progress.set(increasePercent());
+        Loading.status.label.set("Getting things ready...");
         Updater.initialize();
 
         Logger.log("Startup", "Removing Loading Interface");
-        await LoadingInterface.setInitStatus({ progress: stepsPercent(14) });
-        LoadingInterface.hide();
+        Loading.status.progress.set(increasePercent());
+
+        Loading.status.label.set("Done");
+        Loading.hide();
 
         // Show loading errors
         Logger.log("Startup", "Collecting Startup Errors");
-        Modals.showAddonErrors({ plugins: pluginErrors, themes: themeErrors });
+        Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
 
         const previousVersion = DataStore.getBDData("version");
         if (Config.version !== previousVersion) {
