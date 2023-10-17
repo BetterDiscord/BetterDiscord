@@ -1,1 +1,308 @@
-{}
+{
+    "Panels": {
+        "plugins": "Bổ trợ",
+        "themes": "Chủ đề",
+        "customcss": "Tuỳ chỉnh CSS",
+        "updates": "Cập nhật"
+    },
+    "Collections": {
+        "settings": {
+            "name": "Cài đặt",
+            "general": {
+                "name": "Chung",
+                "emotes": {
+                    "name": "Hệ thống Biểu tượng cảm xúc",
+                    "note": "Kích hoạt hệ thống biểu tượng cảm xúc của BD"
+                },
+                "voiceDisconnect": {
+                    "name": "Tắt âm",
+                    "note": "Tắt âm khỏi máy chủ khi đóng Discord"
+                },
+                "showToasts": {
+                    "name": "Hộp thoại Thông báo",
+                    "note": "Hiển thị hộp thoại thông báo nhỏ cho thông tin quan trọng"
+                },
+                "mediaKeys": {
+                    "name": "Vô hiệu hoá Phím Phương tiện",
+                    "note": "Ngăn Discord chiếm quyền kiểm soát các phím phương tiện sau khi phát video"
+                }
+            },
+            "window": {
+                "removeMinimumSize": {
+                    "name": "Loại bỏ Kích thước Tối thiểu",
+                    "note": "Loại bỏ kích thước tối thiểu của cửa sổ Discord (940x500)"
+                },
+                "name": "Tuỳ chỉnh Cửa sổ",
+                "transparency": {
+                    "name": "Kích hoạt Chế độ Trong suốt",
+                    "note": "Cho phép cửa sổ chính ở chế độ trong suốt (yêu cầu khỏi động lại)"
+                },
+                "frame": {
+                    "name": "Khung Cửa sổ",
+                    "note": "Thêm khung cửa sổ của hệ điều hành gốc vào cửa sổ chính"
+                }
+            },
+            "addons": {
+                "name": "Quản lý tiện ích",
+                "addonErrors": {
+                    "name": "Hiển thị Lỗi Tiện ích",
+                    "note": "Hiển thị hộp thoại lỗi bổ trợ/chủ đề"
+                },
+                "editAction": {
+                    "name": "Chỉnh sửa Hành động",
+                    "note": "Nơi xuất hiện các bổ trợ và chủ đề khi chỉnh sửa",
+                    "options": {
+                        "detached": "Trong Cửa sổ Riêng",
+                        "system": "Trong Trình chỉnh sửa Hệ thống"
+                    }
+                }
+            },
+            "customcss": {
+                "name": "Tuỳ chỉnh CSS",
+                "customcss": {
+                    "name": "Tuỳ chỉnh CSS",
+                    "note": "Bật tab tuỳ chỉnh CSS"
+                },
+                "liveUpdate": {
+                    "name": "Chỉnh sửa Trực tiếp",
+                    "note": "Cập nhật css ngay lập tức khi bạn nhập vào trình chỉnh sửa"
+                },
+                "startDetached": {
+                    "name": "Cửa sổ Riêng",
+                    "note": "Click vào tab tuỳ chỉnh CSS sẽ mở trình chỉnh sửa trong một cửa sổ riêng"
+                },
+                "nativeOpen": {
+                    "name": "Mở trong Trình chỉnh sửa gốc",
+                    "note": "Click vào tab tuỳ chỉnh CSS sẽ mở trình chỉnh sửa trong trình chỉnh sửa của bạn"
+                },
+                "openAction": {
+                    "name": "Vị trí Trình chỉnh sửa",
+                    "note": "Nơi tuỳ chỉnh CSS sẽ mở theo mặc định",
+                    "options": {
+                        "settings": "Trong Menu Cài đặt",
+                        "detached": "Trong Cửa sổ Riêng",
+                        "system": "Trong Trình chỉnh sửa Hệ thống"
+                    }
+                }
+            },
+            "developer": {
+                "name": "Cài đặt dành cho Nhà phát triển",
+                "debuggerHotkey": {
+                    "name": "Phím tắt Trình gỡ lỗi",
+                    "note": "Cho phép kích hoạt trình gỡ lỗi khi nhấn F8 trong khi mở DevTools"
+                },
+                "reactDevTools": {
+                    "name": "Công cụ cho Nhà phát triển React",
+                    "note": "Nhúng bản cài đặt cục bộ Công cụ Nhà phát triển React của bạn vào Discord"
+                },
+                "inspectElement": {
+                    "name": "Phím tắt Kiểm tra Phần tử",
+                    "note": "Bật phím tắt kiểm tra phần tử (ctrl + shift + c) tương tự trong hầu hết trình duyệt"
+                },
+                "devToolsWarning": {
+                    "name": "Ngăn Cảnh báo DevTools",
+                    "note": "Ngăn Discord hiển thị cảnh báo \"Chờ Đã!\" của họ"
+                },
+                "debugLogs": {
+                    "name": "Nhật ký Gỡ lỗi",
+                    "note": "Xuất mọi thứ từ bảng điều khiển vào tệp debug.log trong thư mục BetterDiscord"
+                },
+                "devTools": {
+                    "name": "DevTools",
+                    "note": "Cho phép mở DevTools bằng ctrl+shift+i"
+                }
+            },
+            "editor": {
+                "name": "Tuỳ chỉnh Trình chỉnh sửa",
+                "lineNumbers": {
+                    "name": "Số dòng",
+                    "note": "Cho phép hiển thị số dòng ở bên cạnh trình chỉnh sửa"
+                },
+                "fontSize": {
+                    "name": "Kích thước Phông chữ",
+                    "note": "Kích thước phông chữ (pt) dùng trong trình chỉnh sửa"
+                },
+                "minimap": {
+                    "name": "Minimap",
+                    "note": "Cho phép hiển thị Minimap bên cạnh trình chỉnh sửa"
+                },
+                "hover": {
+                    "name": "Chú thích Nổi",
+                    "note": "Cho phép hiển thị chú thích nổi khi di chuột"
+                },
+                "quickSuggestions": {
+                    "name": "Đề xuất Nhanh",
+                    "note": "Cho phép hiển thị các đề xuất tự động hoàn thành khi bạn nhập vào hộp thoại"
+                },
+                "renderWhitespace": {
+                    "name": "Hiển thị Khoảng trắng",
+                    "note": "Hiển thị khoảng trắng trong trình chỉnh sửa",
+                    "options": {
+                        "all": "Luôn luôn",
+                        "none": "Không bao giờ",
+                        "selection": "Vùng chọn"
+                    }
+                }
+            }
+        },
+        "emotes": {
+            "name": "Biểu tượng cảm xúc",
+            "general": {
+                "name": "Chung",
+                "download": {
+                    "name": "Tải xuống biểu tượng cảm xúc",
+                    "note": "Tải xuống biểu tượng cảm xúc bất cứ khi nào chúng hết hạn"
+                },
+                "emoteMenu": {
+                    "name": "Menu Biểu tượng cảm xúc",
+                    "note": "Hiển thị biểu tượng cảm xúc Twitch/Yêu thích trong menu biểu tượng cảm xúc"
+                },
+                "hideEmojiMenu": {
+                    "name": "Ẩn Menu Emoji",
+                    "note": "Ẩn menu emoji của Discord khi mở menu emoji"
+                },
+                "autoCaps": {
+                    "name": "Viết hoa Biểu tượng cảm xúc",
+                    "note": "Tự động viết hoa biểu tượng cảm xúc"
+                },
+                "modifiers": {
+                    "name": "Hiển thị Công cụ Sửa đổi Biểu tượng cảm xúc",
+                    "note": "Kích hoạt các mod biểu tượng cảm xúc (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
+                },
+                "animateOnHover": {
+                    "name": "Hoạt ảnh khi di chuột",
+                    "note": "Chỉ hiển thị hoạt ảnh cho công cụ sửa đổi biểu tượng cảm xúc khi di chuột"
+                }
+            },
+            "categories": {
+                "name": "Danh mục",
+                "twitchglobal": {
+                    "name": "Twitch Globals",
+                    "note": "Hiển thị biểu tượng cảm xúc toàn cầu của Twitch"
+                },
+                "twitchsubscriber": {
+                    "name": "Twitch Subscribers",
+                    "note": "Hiển thị biểu tượng cảm xúc người đăng ký của Twitch"
+                },
+                "frankerfacez": {
+                    "name": "FrankerFaceZ",
+                    "note": "Hiển thị biểu tượng cảm xúc từ FFZ"
+                },
+                "bttv": {
+                    "name": "BetterTTV",
+                    "note": "Hiển thị biểu tượng cảm xúc từ BTTV"
+                }
+            }
+        }
+    },
+    "Addons": {
+        "title": "{{name}} v{{version}} bởi {{author}}",
+        "byline": "bởi {{author}}",
+        "openFolder": "Mở thư mục {{type}}",
+        "reload": "Tải lại",
+        "addonSettings": "Cài đặt",
+        "website": "Trang web",
+        "source": "Nguồn",
+        "invite": "Ủng hộ Máy chủ",
+        "donate": "Quyên góp",
+        "patreon": "Patreon",
+        "name": "Tên",
+        "author": "Tác giả",
+        "version": "Phiên bản",
+        "added": "Ngày thêm",
+        "modified": "Ngày sửa đổi",
+        "search": "Tìm kiếm {{type}}",
+        "editAddon": "Chỉnh sửa",
+        "deleteAddon": "Xoá",
+        "confirmDelete": "Bạn có chắc là muốn xoá {{name}} chứ?",
+        "confirmationText": "Bạn chưa lưu các thay đổi của {{name}}. Đóng cửa sổ này sẽ mất tất cả thay đổi.",
+        "enabled": "{{name}} đã được kích hoạt.",
+        "disabled": "{{name}} đã bị vô hiệu hoá.",
+        "couldNotEnable": "{{name}} không thể được kích hoạt.",
+        "couldNotDisable": "{{name}} không thể bị vô hiệu hoá.",
+        "couldNotStart": "{{name}} không thể khởi động được.",
+        "couldNotStop": "{{name}} không thể bị tắt hoặc vô hiệu hoá.",
+        "settingsError": "Không thể mở cài đặt cho {{name}}",
+        "methodError": "{{method}} không thể bị tắt.",
+        "unknownAuthor": "Tác giả Không xác định",
+        "noDescription": "Mô tả chưa được cung cấp.",
+        "alreadyExists": "Đã có một {{type}} có tên là {{name}}",
+        "alreadWatching": "Đã theo dõi các tiện tích.",
+        "metaError": "META không thể phân tích được cú pháp.",
+        "missingNameData": "META bị thiếu tên dữ liệu.",
+        "metaNotFound": "Không tìm thấy META.",
+        "compileError": "Không thể biên dịch. Xem bảng điều khiển để biết thêm chi tiết.",
+        "wasUnloaded": "{{name}} đã được dỡ xuống.",
+        "blankSlateHeader": "Bạn không có bất kỳ {{type}} nào!",
+        "blankSlateMessage": "Lấy một số từ [trang web này]({{link}}) và thêm vào thư mục {{type}} của bạn.",
+        "isEnabled": "Đã được kích hoạt",
+        "wasLoaded": "{{name}} v{{version}} đã được nạp."
+    },
+    "CustomCSS": {
+        "confirmationText": "Bạn chưa lưu các thay đổi tuỳ chỉnh CSS. Đóng cửa sổ này sẽ mất tất cả thay đổi.",
+        "update": "Cập nhật",
+        "save": "Lưu",
+        "openNative": "Mở trong Trình chỉnh sửa Hệ thống",
+        "openDetached": "Mở trong Cửa sổ Mới",
+        "settings": "Cài đặt Trình chỉnh sửa",
+        "editorTitle": "Trình chỉnh sửa Tuỳ chỉnh CSS"
+    },
+    "Emotes": {
+        "loading": "Tải biểu tượng cảm xúc ở chế độ nền và không tải lại.",
+        "loaded": "Tất cả biểu tượng cảm xúc đã được tải xong.",
+        "clearEmotes": "Xoá Dữ liệu Biểu tượng cảm xúc",
+        "favoriteAction": "Yêu thích!",
+        "downloadFailed": "Tải xuống Thất bại!",
+        "failureMessage": "BetterDiscord tải xuống biểu tượng cảm xúc thất bại, vui lòng kiểm tra kết nối internet và tường lửa của bạn."
+    },
+    "Modals": {
+        "confirmAction": "Bạn chắc chứ?",
+        "okay": "OK",
+        "done": "Xong",
+        "cancel": "Huỷ",
+        "nevermind": "Không bận tâm",
+        "close": "Đóng",
+        "name": "Tên",
+        "message": "Tin nhắn",
+        "error": "Lỗi",
+        "addonErrors": "Lỗi Tiện ích",
+        "restartRequired": "Yêu cầu Khỏi động lại",
+        "restartNow": "Khởi động lại ngay",
+        "restartLater": "Khởi động lại sau",
+        "additionalInfo": "Thông tin Bổ sung",
+        "restartPrompt": "Để có hiệu lực, Discord cần được khởi động lại. Bạn có muốn khởi động lại ngay không?"
+    },
+    "ReactDevTools": {
+        "notFound": "Không tìm thấy Tiện ích mở rộng",
+        "notFoundDetails": "Không thể tìm thấy tiện ích mở rộng Công cụ Nhà phát triển React trên PC của bạn. Vui lòng cài đặt tiện ích mở rộng trên bản đặt Chrome cục bộ của bạn."
+    },
+    "Sorting": {
+        "sortBy": "Sắp xếp theo",
+        "order": "Thứ tự mặc định",
+        "ascending": "Thứ tự tăng dần",
+        "descending": "Thứ tự giảm dần"
+    },
+    "WindowPrefs": {
+        "enabledInfo": "Tuỳ chọn này yêu cầu một chủ đề trong suốt để hoạt động bình thường. Trên Windows, tuỳ chọn có thể phá hỏng tính năng sắp xếp và thu phóng cửa sổ.\n\nĐể có hiệu lực, Discord cần được khởi động lại. Bạn có muốn khởi động lại ngay không?",
+        "disabledInfo": "Để có hiệu lực, Discord cần được khởi động lại. Bạn có muốn khởi động lại ngay không?"
+    },
+    "Notices": {
+        "moreInfo": "Thông tin thêm"
+    },
+    "Updater": {
+        "updateFailed": "Cập nhật Thất bại!",
+        "updateFailedMessage": "BetterDiscord không thể cập nhật. Vui lòng tải xuống trình cài đặt mới nhất từ trang web của chúng tôi (https://betterdiscord.app/) và cài đặt lại.",
+        "updateSuccessful": "Cập nhật Thành công!",
+        "updateAvailable": "BetterDiscord có bản cập nhật mới (v{{version}})",
+        "addonUpdatesAvailable": "BetterDiscord đã tìm thấy bản cập nhật cho {{count}} {{type}} của bạn!",
+        "addonUpdated": "{{name}} đã được cập nhật lên phiên bản {{version}}!",
+        "checking": "Đang kiểm tra cập nhật!",
+        "finishedChecking": "Đã hoàn tất kiểm tra cập nhật!",
+        "checkForUpdates": "Kiểm tra cập nhật!",
+        "updateAll": "Cập nhật Tất cả!",
+        "noUpdatesAvailable": "Không có bản cập nhật nào khả dụng.",
+        "versionAvailable": "Phiên bản {{version}} hiện đã khả dụng!",
+        "upToDateBlankslate": "Tất cả {{type}} của bạn dường như đã được cập nhật!",
+        "updateButton": "Cập nhật!"
+    }
+}
