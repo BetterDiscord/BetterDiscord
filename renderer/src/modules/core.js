@@ -40,7 +40,7 @@ export default new class Core {
         const stepsMax = 14;
         const increasePercent = () => stepsCounter++ / (stepsMax - 1) * 100;
 
-        IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: ${value};}`));
+        IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");

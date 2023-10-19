@@ -6,19 +6,17 @@ export default {
             title: "What's New?",
             type: "improved",
             items: [
-                "Updated translations for many languages! Thank you to our many contributors!",
-                "New shorthand API methods for developers available under `BdApi.Webpack`. Documentation should be updated soon!",
-                "Also a new `Filter` has been added for internal stores. This includes the `getStore` shorthand!"
+                "There's a new css variable themes can make use of called `--os-accent-color` which is the accent color used by the user's operating system. (Thanks @axolotl)",
+                "`BdApi.Net.fetch` now has an optional `timeout` parameter to help avoid long requests."
             ]
         },
         {
             title: "Bug Fixes",
             type: "fixed",
             items: [
-                "Fixed header color in light mode. (Thanks @Fede)",
-                "Fixed window size retention for users of remove minimum size option. (Thanks @Neodymium)",
-                "Fixed a toast saying an addon was loaded when it was unloaded. (Thanks @benji78)",
-                "Fixed context menu patching API for plugins. (Thanks @Strencher)"
+                "Adds a temporary `Buffer` polyfill and deprecates the usage of `Buffer`.",
+                "Fixes not being able to use `http` for `BdApi.Net.fetch`.",
+                "Bad URLs and other early errors in `BdApi.Net.fetch` now handled better."
             ]
         }
     ]

@@ -2,6 +2,38 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.9.4
+
+### Added
+- New css variable `--os-accent-color`
+- Temporary `Buffer` polyfill
+
+### Removed
+
+### Changed
+- `BdApi.Net.fetch` now has an optional `timeout` parameter
+
+### Fixed
+- Fixes not being able to use `http` for `BdApi.Net.fetch`.
+- Bad URLs and other early errors in `BdApi.Net.fetch` now handled better.
+
+## 1.9.3
+
+### Added
+- Multiple shorthand functions under `BdApi.Webpack`
+- New `getStore` filter
+
+### Removed
+
+### Changed
+- Updated translations
+
+### Fixed
+- Fixed header color in light mode.
+- Fixed window size retention for users of remove minimum size option.
+- Fixed a toast saying an addon was loaded when it was unloaded.
+- Fixed context menu patching API for plugins.
+
 ## 1.9.2
 
 ### Added
