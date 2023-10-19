@@ -36,78 +36,82 @@ export default new class Core {
         Loading.show();
         Loading.status.show();
 
-        let stepsCounter = 0;
-        const stepsMax = 14;
-        const increasePercent = () => stepsCounter++ / (stepsMax - 1) * 100;
-
         IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
 
-        // Load css early
-        Logger.log("Startup", "Injecting BD Styles");
-        Loading.status.progress.set(increasePercent());
-        Loading.status.label.set("Initialization...");
-        DOMManager.injectStyle("bd-stylesheet", Styles.toString());
+        let pluginErrors, themeErrors;
 
-        Logger.log("Startup", "Initializing DataStore");
-        Loading.status.progress.set(increasePercent());
-        DataStore.initialize();
+        const clusters = [
+            async () => {
+                Logger.log("Startup", "Injecting BD Styles");
+                Loading.status.label.set("Initialization...");
+                DOMManager.injectStyle("bd-stylesheet", Styles.toString());
+            },
+            async () => {
+                Logger.log("Startup", "Initializing DataStore");
+                DataStore.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Initializing LocaleManager");
+                LocaleManager.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Initializing Settings");
+                Settings.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Initializing DOMManager");
+                DOMManager.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Waiting for connection...");
+                await this.waitForConnection();
+            },
+            async () => {
+                Logger.log("Startup", "Initializing Editor");
+                await Editor.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Initializing Modals");
+                await Modals.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Initializing Floating windows");
+                FloatingWindows.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Initializing Builtins");
+                for (const module in Builtins) {
+                    Builtins[module].initialize();
+                }
+            },
+            async () => {
+                Logger.log("Startup", "Loading Plugins");
+                // const pluginErrors = [];
+                Loading.status.label.set("Loading plugins...");
+                pluginErrors = await PluginManager.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Loading Themes");
+                // const themeErrors = [];
+                Loading.status.label.set("Loading themes...");
+                themeErrors = await ThemeManager.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Initializing Updater");
+                Loading.status.label.set("Getting things ready...");
+                Updater.initialize();
+            },
+            async () => {
+                Logger.log("Startup", "Removing Loading Interface");
+                Loading.status.label.set("Done");
+                Loading.hide();
+            }
+        ];
 
-        Logger.log("Startup", "Initializing LocaleManager");
-        Loading.status.progress.set(increasePercent());
-        LocaleManager.initialize();
-
-        Logger.log("Startup", "Initializing Settings");
-        Loading.status.progress.set(increasePercent());
-        Settings.initialize();
-
-        Logger.log("Startup", "Initializing DOMManager");
-        Loading.status.progress.set(increasePercent());
-        DOMManager.initialize();
-
-        Logger.log("Startup", "Waiting for connection...");
-        Loading.status.progress.set(increasePercent());
-        await this.waitForConnection();
-
-        Logger.log("Startup", "Initializing Editor");
-        Loading.status.progress.set(increasePercent());
-        await Editor.initialize();
-
-        Logger.log("Startup", "Initializing Modals");
-        Loading.status.progress.set(increasePercent());
-        await Modals.initialize();
-
-        Logger.log("Startup", "Initializing Floating windows");
-        Loading.status.progress.set(increasePercent());
-        FloatingWindows.initialize();
-
-        Logger.log("Startup", "Initializing Builtins");
-        Loading.status.progress.set(increasePercent());
-        for (const module in Builtins) {
-            Builtins[module].initialize();
+        for (let clusterIndex = 0; clusterIndex < clusters.length; clusterIndex++) {
+            Loading.status.progress.set(clusterIndex / (clusters.length - 1) * 100);
+            await clusters[clusterIndex]();
         }
-
-        Logger.log("Startup", "Loading Plugins");
-        // const pluginErrors = [];
-        Loading.status.progress.set(increasePercent());
-        Loading.status.label.set("Loading plugins...");
-        const pluginErrors = await PluginManager.initialize();
-
-        Logger.log("Startup", "Loading Themes");
-        // const themeErrors = [];
-        Loading.status.progress.set(increasePercent());
-        Loading.status.label.set("Loading themes...");
-        const themeErrors = await ThemeManager.initialize();
-
-        Logger.log("Startup", "Initializing Updater");
-        Loading.status.progress.set(increasePercent());
-        Loading.status.label.set("Getting things ready...");
-        Updater.initialize();
-
-        Logger.log("Startup", "Removing Loading Interface");
-        Loading.status.progress.set(increasePercent());
-
-        Loading.status.label.set("Done");
-        Loading.hide();
 
         // Show loading errors
         Logger.log("Startup", "Collecting Startup Errors");
