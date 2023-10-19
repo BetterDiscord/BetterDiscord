@@ -85,13 +85,6 @@
     max-height: 100%;
 }
 
-.bd-modal-root > div[role="dialog"] {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    overflow: hidden;
-}
-
 .bd-close-button {
     height: 26px;
     padding: 4px;

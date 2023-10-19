@@ -34,14 +34,14 @@ export default function ModalRoot({className, transitionState, children, size = 
         }
     });
 
-    return <Spring.animated.div
+    return <FocusLock disableTrack={true}>
+        <Spring.animated.div
                 className={Utilities.className("bd-modal-root", size, className, style)}
                 style={springStyles}
             >
-        <FocusLock disableTrack={true}>
         {children}
-        </FocusLock>
-    </Spring.animated.div>;
+    </Spring.animated.div>
+    </FocusLock>;
     // const [visible, setVisible] = React.useState(true);
 
     // const visible = transitionState < 2;
