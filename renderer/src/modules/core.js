@@ -34,7 +34,7 @@ export default new class Core {
         Config.userData = process.env.DISCORD_USER_DATA;
         Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
 
-        IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: ${value};}`));
+        IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
 
         // Load css early
         Logger.log("Startup", "Injecting BD Styles");
