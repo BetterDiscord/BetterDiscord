@@ -1,22 +1,21 @@
 // fixed, improved, added, progress
 export default {
-    description: "This update has a few important bugfixes but it also contains some important QOL updates for plugin developers!",
+    description: "This update is just a hotfix for the recent Discord update!",
     changes: [
         {
-            title: "What's New?",
+            title: "What's Fixed?",
             type: "improved",
             items: [
-                "There's a new css variable themes can make use of called `--os-accent-color` which is the accent color used by the user's operating system. (Thanks @axolotl)",
-                "`BdApi.Net.fetch` now has an optional `timeout` parameter to help avoid long requests."
+                "Patching webpack modules is now fixed for plugins.",
+                "Themes are placed later in the DOM than Discord's CSS giving them priority.",
+                "BetterDiscord's modals should all be working."
             ]
         },
         {
-            title: "Bug Fixes",
+            title: "What's not fixed?",
             type: "fixed",
             items: [
-                "Adds a temporary `Buffer` polyfill and deprecates the usage of `Buffer`.",
-                "Fixes not being able to use `http` for `BdApi.Net.fetch`.",
-                "Bad URLs and other early errors in `BdApi.Net.fetch` now handled better."
+                "Individual plugins and themes will still need to make their own updates.",
             ]
         }
     ]
