@@ -198,7 +198,7 @@ export default class DOMManager {
     }
 }
 
-DOMManager.createElement("bd-head", {target: document.head});
+DOMManager.createElement("bd-head", {target: document.body});
 DOMManager.createElement("bd-body", {target: document.body});
 DOMManager.createElement("bd-scripts", {target: DOMManager.bdHead});
 DOMManager.createElement("bd-styles", {target: DOMManager.bdHead});

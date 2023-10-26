@@ -21,10 +21,7 @@ export default class Modals {
     static get shouldShowAddonErrors() {return Settings.get("settings", "addons", "addonErrors");}
 
     static get ModalActions() {
-        return this._ModalActions ??= {
-            openModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer"), {searchExports: true}),
-            closeModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback()"), {searchExports: true})
-        };
+        return this._ModalActions ??= WebpackModules.getByProps("openModal", "closeModal");
     }
     static get ModalStack() {return this._ModalStack ??= WebpackModules.getByProps("push", "update", "pop", "popWithKey");}
     static get ModalComponents() {return this._ModalComponents ??= WebpackModules.getByProps("Header", "Footer");}
@@ -32,7 +29,7 @@ export default class Modals {
     static get ModalClasses() {return this._ModalClasses ??= WebpackModules.getByProps("modal", "content");}
     static get FlexElements() {return this._FlexElements ??= WebpackModules.getByProps("Child", "Align");}
     static get TextElement() {return this._TextElement ??= WebpackModules.getModule(m => m?.Sizes?.SIZE_32 && m.Colors);}
-    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getModule(m => m?.toString?.()?.includes(".confirmButtonColor"), {searchExports: true});}
+    static get ConfirmationModal() {return this._ConfirmationModal ??= WebpackModules.getByProps("ConfirmModal").ConfirmModal;}
     static get Markdown() {return this._Markdown ??= WebpackModules.find(m => m?.prototype?.render && m.rules);}
     static get Buttons() {return this._Buttons ??= WebpackModules.getModule(m => m.BorderColors, {searchExports: true});}
     static get ModalQueue() {return this._ModalQueue ??= [];}
@@ -237,8 +234,8 @@ export default class Modals {
 
     static showChangelogModal(options = {}) {
         const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen", "root");
-        const ChangelogModalClasses = WebpackModules.getModule(m => m.modal && m.maxModalWidth);
-        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved") ?? {maxModalWidth: "490px",video: "video-8B-TdZ",container: "container-3PVapX",image: "image-ZPv20Y",title: "title-2ftWWc",lead: "lead-2VtcIe",added: "added-mQcv9V title-2ftWWc",fixed: "fixed-cTX7Hp title-2ftWWc",improved: "improved-2SJXHz title-2ftWWc",progress: "progress-1DcfFh title-2ftWWc",marginTop: "marginTop-VGmU1T",footer: "footer-1gMODG",socialLink: "socialLink-1qjJIk",premiumBanner: "premiumBanner-FU1Urp",premiumIcon: "premiumIcon-rhwgnW",date: "date-2tmzZM"};
+        const ChangelogModalClasses = WebpackModules.getModule(m => typeof(m) === "object" && Object.keys(m).length === 2 && m.modal && m.content);
+        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved") ?? {added: "added__838d6", container: "container__2475a", date: "date__6a5c1", fixed: "fixed_f67fc0", footer: "footer__33610", image: "image__58d6f", improved: "improved_fd72d9", lead: "lead__5fdb1", marginTop: "marginTop__0baf0", premiumBanner: "premiumBanner_d2ce99", premiumIcon: "premiumIcon_a78bd4", progress: "progress__8e0f4", socialLink: "socialLink__64e09", title: "title__19dfe", video: "video__4de58"};
         const TextElement = this.TextElement;
         const FlexChild = this.FlexElements;
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
