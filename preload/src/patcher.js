@@ -34,24 +34,20 @@ export default function () {
         
         if (!Reflect.has(window, chunkName)) {
             predefine(window, chunkName, instance => {
-                predefine(instance, "push", () => {
-                    instance.push([[Symbol()], {}, require => {
-                        require.d = (target, exports) => {
-                            for (const key in exports) {
-                                if (!Reflect.has(exports, key) || target[key]) continue;
-        
-                                Object.defineProperty(target, key, {
-                                    get: () => exports[key](),
-                                    set: v => {exports[key] = () => v;},
-                                    enumerable: true,
-                                    configurable: true
-                                });
-                            }
-                        };
-                    }]);
-        
-                    instance.pop();
-                });
+                instance.push([[Symbol()], {}, require => {
+                    require.d = (target, exports) => {
+                        for (const key in exports) {
+                            if (!Reflect.has(exports, key) || target[key]) continue;
+    
+                            Object.defineProperty(target, key, {
+                                get: () => exports[key](),
+                                set: v => {exports[key] = () => v;},
+                                enumerable: true,
+                                configurable: true
+                            });
+                        }
+                    };
+                }]);
             });
         }
     };
