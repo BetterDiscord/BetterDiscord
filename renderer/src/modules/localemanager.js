@@ -16,20 +16,20 @@ export default new class LocaleManager {
     }
 
     initialize() {
-        this.setLocale(this.discordLocale);
-        LocaleStore?.addChangeListener((newLocale) => this.setLocale(newLocale));
+        this.setLocale();
+        LocaleStore?.addChangeListener(() => this.setLocale());
     }
 
-    setLocale(newLocale) {
+    setLocale() {
         let newStrings;
-        if (newLocale != this.defaultLocale) {
-            newStrings = Locales[newLocale];
+        if (this.discordLocale != this.defaultLocale) {
+            newStrings = Locales[this.discordLocale];
             if (!newStrings) return this.setLocale(this.defaultLocale);
         }
         else {
             newStrings = Locales[this.defaultLocale];
         }
-        this.locale = newLocale;
+        this.locale = this.discordLocale;
         Utilities.extendTruthy(this.strings, newStrings);
         Events.emit("strings-updated");
     }
