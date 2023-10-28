@@ -37,14 +37,20 @@ export default function () {
                 instance.push([[Symbol()], {}, require => {
                     require.d = (target, exports) => {
                         for (const key in exports) {
-                            if (!Reflect.has(exports, key) || target[key]) continue;
-    
-                            Object.defineProperty(target, key, {
-                                get: () => exports[key](),
-                                set: v => {exports[key] = () => v;},
-                                enumerable: true,
-                                configurable: true
-                            });
+                            if (!Reflect.has(exports, key)) continue;
+
+                            try {
+                                Object.defineProperty(target, key, {
+                                    get: () => exports[key](),
+                                    set: v => {exports[key] = () => v;},
+                                    enumerable: true,
+                                    configurable: true
+                                });
+                            }
+                            catch (error) {
+                                // eslint-disable-next-line no-console
+                                console.error(error);
+                            }
                         }
                     };
                 }]);
