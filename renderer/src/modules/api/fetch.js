@@ -1,6 +1,7 @@
 import Remote from "../../polyfill/remote";
 
-const methods = new Set(["GET", "PUT", "POST", "DELETE", "PATCH"]);
+const redirects = new Set(["manual", "follow"]);
+const methods = new Set(["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS", "HEAD", "CONNECT", "TRACE"]);
 const bodylessStatusCodes = new Set([101, 204, 205, 304]);
 
 class FetchResponse extends Response {
@@ -35,7 +36,7 @@ const convertSignal = signal => {
 
 /**
  * @typedef {Object} FetchOptions
- * @property {"GET" | "PUT" | "POST" | "DELETE" | "PATCH"} [method] - Request method.
+ * @property {"GET" | "PUT" | "POST" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE"} [method] - Request method.
  * @property {Record<string, string>} [headers] - Request headers.
  * @property {"manual" | "follow"} [redirect] - Whether to follow redirects.
  * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
@@ -57,10 +58,14 @@ export default function fetch(url, options = {}) {
             data.headers = options.headers instanceof Headers ? Object.fromEntries(options.headers.entries()) : options.headers;
         }
 
+        if (typeof options.redirect === "string" && redirects.has(options.redirect)) data.redirect = options.redirect;
         if (typeof options.body === "string" || options.body instanceof Uint8Array) data.body = options.body;
         if (typeof options.method === "string" && methods.has(options.method)) data.method = options.method;
+        if (typeof options.maxRedirects === "number") data.maxRedirects = options.maxRedirects;
+        if (typeof options.timeout === "number") data.timeout = options.timeout;
+
         if (options.signal instanceof AbortSignal) data.signal = convertSignal(options.signal);
-        if (typeof options.timeout === 'number') data.timeout = options.timeout;
+
         let ctx;
         try {
             ctx = Remote.nativeFetch(url, data);

@@ -6,7 +6,7 @@ const redirectCodes = new Set([301, 302, 307, 308]);
 
 /**
  * @typedef {Object} FetchOptions
- * @property {"GET" | "PUT" | "POST" | "DELETE" | "PATCH"} [method] - Request method.
+ * @property {"GET" | "PUT" | "POST" | "DELETE" | "PATCH" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE"} [method] - Request method.
  * @property {Record<string, string>} [headers] - Request headers.
  * @property {"manual" | "follow"} [redirect] - Whether to follow redirects.
  * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
