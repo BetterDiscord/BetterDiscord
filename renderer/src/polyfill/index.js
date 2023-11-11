@@ -5,7 +5,7 @@ import vm from "./vm";
 import fs from "./fs";
 import request from "./request";
 import https from "./https";
-import Buffer from "./buffer";
+import buffer from "./buffer";
 import crypto from "./crypto";
 import Remote from "./remote";
 import Logger from "common/logger";
@@ -37,7 +37,7 @@ export const createRequire = function (path) {
             case "process": return window.process;
             case "vm": return vm;
             case "module": return Module;
-            case "buffer": return Buffer.getBuffer();
+            case "buffer": return buffer;
             case "crypto": return crypto;
     
             default:

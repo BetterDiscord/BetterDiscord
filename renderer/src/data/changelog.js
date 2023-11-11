@@ -1,24 +1,21 @@
 // fixed, improved, added, progress
 export default {
-    description: "This update has a few important bugfixes but it also contains some important QOL updates for plugin developers!",
+    description: "This update is just a hotfix for the recent Discord update!",
     changes: [
         {
-            title: "What's New?",
+            title: "What's Fixed?",
             type: "improved",
             items: [
-                "Updated translations for many languages! Thank you to our many contributors!",
-                "New shorthand API methods for developers available under `BdApi.Webpack`. Documentation should be updated soon!",
-                "Also a new `Filter` has been added for internal stores. This includes the `getStore` shorthand!"
+                "Patching webpack modules is now fixed for plugins.",
+                "Themes are placed later in the DOM than Discord's CSS giving them priority.",
+                "BetterDiscord's modals should all be working."
             ]
         },
         {
-            title: "Bug Fixes",
+            title: "What's not fixed?",
             type: "fixed",
             items: [
-                "Fixed header color in light mode. (Thanks @Fede)",
-                "Fixed window size retention for users of remove minimum size option. (Thanks @Neodymium)",
-                "Fixed a toast saying an addon was loaded when it was unloaded. (Thanks @benji78)",
-                "Fixed context menu patching API for plugins. (Thanks @Strencher)"
+                "Individual plugins and themes will still need to make their own updates.",
             ]
         }
     ]

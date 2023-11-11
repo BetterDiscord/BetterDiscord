@@ -1,17 +1,13 @@
-import WebpackModules from "@modules/webpackmodules";
+import Logger from "@common/logger";
+
 
 Object.defineProperty(window, "Buffer", {
-    get() {return Buffer.getBuffer().Buffer;},
+    get() {
+        Logger.warn("Deprecated", `Usage of the Buffer global is deprecated. Consider using web standards such as Uint8Array and TextDecoder/TextEncoder.`);
+        return Buffer;
+    },
     configurable: true,
     enumerable: false
 });
 
-export default class Buffer {
-    static getBuffer() {
-        if (this.cached) return this.cached;
-
-        this.cached = WebpackModules.getByProps("INSPECT_MAX_BYTES");
-
-        return this.cached;
-    }
-}
+export default Buffer;

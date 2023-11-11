@@ -33,12 +33,8 @@ export default class Modals {
     static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
     static get ModalActions() {
-        return this._ModalActions ??= {
-            openModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer"), {searchExports: true}),
-            closeModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback()"), {searchExports: true})
-        };
+        return this._ModalActions ??= WebpackModules.getByProps("openModal", "closeModal");
     }
-
     static get ModalQueue() {return this._ModalQueue ??= [];}
 
     static async initialize() {

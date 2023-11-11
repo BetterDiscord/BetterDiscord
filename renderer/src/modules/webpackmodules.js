@@ -190,7 +190,7 @@ export default class WebpackModules {
             if (!modules.hasOwnProperty(index)) continue;
             
             let module = null;
-            try {module = modules[index]} catch {continue;};
+            try {module = modules[index];} catch {continue;}
 
             const {exports} = module;
             if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
