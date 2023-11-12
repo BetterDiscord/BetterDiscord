@@ -185,7 +185,10 @@
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
         "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
-        "wasLoaded": "{{name}} v{{version}} was loaded."
+        "isEnabled": "Enabled",
+        "wasLoaded": "{{name}} v{{version}} was loaded.",
+        "listView": "List View",
+        "gridView": "Grid View"
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
