@@ -235,7 +235,7 @@ export default class Modals {
     static showChangelogModal(options = {}) {
         const OriginalModalClasses = WebpackModules.getByProps("hideOnFullscreen", "root");
         const ChangelogModalClasses = WebpackModules.getModule(m => typeof(m) === "object" && Object.keys(m).length === 2 && m.modal && m.content);
-        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved") ?? {added: "added__838d6", container: "container__2475a", date: "date__6a5c1", fixed: "fixed_f67fc0", footer: "footer__33610", image: "image__58d6f", improved: "improved_fd72d9", lead: "lead__5fdb1", marginTop: "marginTop__0baf0", premiumBanner: "premiumBanner_d2ce99", premiumIcon: "premiumIcon_a78bd4", progress: "progress__8e0f4", socialLink: "socialLink__64e09", title: "title__19dfe", video: "video__4de58"};
+        const ChangelogClasses = WebpackModules.getByProps("fixed", "improved") ?? {added: "added_dc4118 title_cb085d", container: "container_bd6694", date: "date__21306", fixed: "fixed__61d41 title_cb085d", footer: "footer__55d42", image: "image__988dc", improved: "improved_df526b title_cb085d", lead: "lead__8e4f4", marginTop: "marginTop__89620", premiumBanner: "premiumBanner__6597f", premiumIcon: "premiumIcon__9fe69", progress: "progress_be0b9b title_cb085d", socialLink: "socialLink_f11d71", title: "title_cb085d", video: "video__562f3"};
         const TextElement = this.TextElement;
         const FlexChild = this.FlexElements;
         const MarkdownParser = WebpackModules.getByProps("defaultRules", "parse");
