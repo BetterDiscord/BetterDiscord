@@ -1,36 +1,36 @@
 {
-    "name": "betterdiscord",
-    "version": "1.9.7",
-    "description": "Enhances Discord by adding functionality and themes.",
-    "main": "src/index.js",
-    "scripts": {
-        "build": "pnpm run build-injector && pnpm run build-preload && pnpm run build-renderer",
-        "build-prod": "pnpm --filter injector build-prod && pnpm --filter preload build-prod && pnpm --filter renderer build-prod",
-        "build-injector": "pnpm --filter injector build",
-        "build-renderer": "pnpm --filter renderer build",
-        "build-preload": "pnpm --filter preload build",
-        "inject": "node scripts/inject.js",
-        "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint-js",
-        "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
-        "dist": "pnpm run build-prod && node scripts/pack.js",
-        "api": "jsdoc -X -r renderer/src/modules/api/ > jsdoc-ast.json",
-        "translations": "node -r dotenv/config scripts/translations.js"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.16.12",
-        "@babel/preset-env": "^7.16.11",
-        "@babel/register": "^7.16.9",
-        "asar": "^3.2.0",
-        "dotenv": "^16.0.3",
-        "eslint": "^8.23.0",
-        "eslint-plugin-react": "^7.31.6",
-        "eslint-plugin-react-hooks": "^4.6.0",
-        "mocha": "^10.0.0",
-        "webpack": "^5.74.0",
-        "webpack-cli": "^4.10.0"
-    },
-    "engines": {
-        "node": ">=14",
-        "pnpm": ">=7"
-    }
+  "name": "betterdiscord",
+  "version": "1.9.7",
+  "description": "Enhances Discord by adding functionality and themes.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "pnpm run build-injector && pnpm run build-preload && pnpm run build-renderer",
+    "build-prod": "pnpm --filter injector build-prod && pnpm --filter preload build-prod && pnpm --filter renderer build-prod",
+    "build-injector": "pnpm --filter injector build",
+    "build-renderer": "pnpm --filter renderer build",
+    "build-preload": "pnpm --filter preload build",
+    "inject": "node scripts/inject.js",
+    "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint-js",
+    "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
+    "dist": "pnpm run build-prod && node scripts/pack.js",
+    "api": "jsdoc -X -r renderer/src/modules/api/ > jsdoc-ast.json",
+    "translations": "node -r dotenv/config scripts/translations.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.12",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/register": "^7.16.9",
+    "asar": "^3.2.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.23.0",
+    "eslint-plugin-react": "^7.31.6",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "mocha": "^10.0.0",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=8"
+  }
 }
