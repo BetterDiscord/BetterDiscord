@@ -2,62 +2,71 @@ name: BetterDiscord CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [18, 20] # Current LTS versions
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      
-    - name: Install Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16
-        
-    - uses: pnpm/action-setup@v2
-      name: Install pnpm
-      id: pnpm-install
-      with:
-        version: 7
-        run_install: false
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Get pnpm store directory
-      id: pnpm-cache
-      shell: bash
-      run: |
-        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - name: Install Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
 
-    - uses: actions/cache@v3
-      name: Setup pnpm cache
-      with:
-        path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-store-
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
 
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
-      
-#    - name: Lint
-#      run: pnpm lint
-      
-#    - name: Run tests
-#      run: pnpm test
-      
-    - name: Build asar
-      run: pnpm dist
-      
-    - uses: actions/upload-artifact@v3
-      name: Upload artifact
-#      if: ${{ github.ref == 'refs/heads/main' }} # Only create artifacts when pushed to main
-      with:
-        name: betterdiscord.asar
-        path: dist/betterdiscord.asar
-        retention-days: 30
-        if-no-files-found: error
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-frozen-lockfile
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Ensure build compiles on Node.js ${{ matrix.node-version }} LTS
+        run: pnpm dist
+
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }} # Only build when pushed to main
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-frozen-lockfile
+
+      - name: Build asar
+        run: pnpm dist
+
+      - uses: actions/upload-artifact@v3
+        name: Upload artifact
+        with:
+          name: betterdiscord.asar
+          path: dist/betterdiscord.asar
+          retention-days: 30
+          if-no-files-found: error
