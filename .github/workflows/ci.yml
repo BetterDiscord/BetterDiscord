@@ -40,6 +40,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }} # Only build when pushed to main
+    needs: test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
