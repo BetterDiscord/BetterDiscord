@@ -17,10 +17,17 @@ class BrowserWindow extends electron.BrowserWindow {
         }
 
         // Only affect frame if it is *explicitly* set
-        // const shouldHaveFrame = BetterDiscord.getSetting("window", "frame");
-        // if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
+        const shouldHaveFrame = BetterDiscord.getSetting("window", "frame");
+        if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
 
         super(options);
+
+        if (typeof(shouldHaveFrame) === "boolean" && shouldHaveFrame) {
+            this.webContents.insertCSS(`div[class*="titleBar_"] {
+                display: none !important;
+            }`);
+        }
+
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
     }
