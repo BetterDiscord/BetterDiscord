@@ -52,8 +52,8 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "transparency", value: false},
-            {type: "switch", id: "removeMinimumSize", value: false},
-            {type: "switch", id: "frame", value: false, hidden: true}
+            {type: "switch", id: "frame", value: false},
+            {type: "switch", id: "removeMinimumSize", value: false}
         ]
     },
     {
