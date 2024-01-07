@@ -13,10 +13,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       
     - name: Install Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 16
         
@@ -53,7 +53,7 @@ jobs:
     - name: Build asar
       run: pnpm dist
       
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       name: Upload artifact
 #      if: ${{ github.ref == 'refs/heads/main' }} # Only create artifacts when pushed to main
       with:
