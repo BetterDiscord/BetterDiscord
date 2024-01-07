@@ -64,7 +64,7 @@ export default Utilities.memoizeObject({
     /* Invite Store and Utils */
     get InviteStore() {return WebpackModules.getByProps("getInvites");},
     get InviteResolver() {return WebpackModules.getByProps("findInvite");},
-    get InviteActions() {return WebpackModules.getByProps("acceptInvite");},
+    get InviteActions() {return WebpackModules.getByProps("createInvite");},
 
     /* Discord Objects & Utils */
     get DiscordConstants() {return WebpackModules.getByProps("Permissions", "ActivityTypes", "StatusTypes");},
