@@ -23,7 +23,7 @@ class BrowserWindow extends electron.BrowserWindow {
         super(options);
 
         if (typeof(shouldHaveFrame) === "boolean" && shouldHaveFrame) {
-            this.webContents.insertCSS(`div[class*="titleBar_"] {
+            this.webContents.insertCSS(`div[class^="titleBar_"], div[class*=" titleBar_"] {
                 display: none !important;
             }`);
         }
