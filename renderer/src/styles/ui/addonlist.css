@@ -212,7 +212,7 @@
     flex-wrap: wrap;
 }
 
-.bd-addon-controls .bd-search {
+.bd-settings-title .bd-search {
     font-size: 13px;
     margin: 0;
     width: 200px;
@@ -261,33 +261,41 @@
     margin-left: 10px;
 }
 
-.bd-addon-views .bd-view-button {
+.bd-addon-controls .bd-button {
     background-color: transparent;
     padding: 3px 4px;
 }
 
-.bd-addon-views .bd-view-button svg {
+.bd-addon-controls .bd-button svg {
     fill: var(--interactive-normal);
 }
 
-.bd-addon-views .bd-view-button.selected svg {
+.bd-addon-controls .bd-button.selected svg {
     fill: #FFFFFF;
 }
 
-.bd-addon-views .bd-view-button:hover {
+.bd-addon-controls .bd-button:hover {
     background-color: var(--background-modifier-selected);
 }
 
-.bd-addon-views .bd-view-button:active {
+.bd-addon-controls .bd-button:active {
     background-color: var(--background-modifier-accent);
 }
 
-.bd-addon-views .bd-view-button.selected {
+.bd-addon-controls .bd-button.selected {
     background-color: #3E82E5;
 }
 
-.bd-addon-views .bd-view-button + .bd-view-button {
+.bd-addon-controls .bd-button + .bd-button {
     margin-left: 5px;
+}
+
+.bd-controls-basic .bd-button:active svg {
+    fill: #FFFFFF;
+}
+
+.bd-controls-basic .bd-button:active {
+    background-color: #3E82E5;
 }
 
 .bd-addon-list .bd-footer .bd-links,

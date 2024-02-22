@@ -15,6 +15,9 @@ import ErrorBoundary from "@ui/errorboundary";
 
 import ListIcon from "@ui/icons/list";
 import GridIcon from "@ui/icons/grid";
+import FolderIcon from "@ui/icons/folder";
+import CheckIcon from "@ui/icons/check";
+import CloseIcon from "@ui/icons/close";
 
 import NoResults from "@ui/blankslates/noresults";
 import EmptyImage from "@ui/blankslates/emptyimage";
@@ -46,6 +49,12 @@ function blankslate(type, onClick) {
     return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type})} message={message}>
         <button className="bd-button" onClick={onClick}>{Strings.Addons.openFolder.format({type})}</button>
     </EmptyImage>;
+}
+
+function makeBasicButton(title, children, action) {
+    return <DiscordModules.Tooltip color="primary" position="top" text={title}>
+                {(props) => <button {...props} className="bd-button" onClick={action}>{children}</button>}
+            </DiscordModules.Tooltip>;
 }
 
 function makeControlButton(title, children, action, selected = false) {
@@ -81,8 +90,28 @@ function confirmDelete(addon) {
     });
 }
 
+/**
+ * @param {function} action 
+ * @param {string} type
+ * @returns 
+ */
+function confirmEnable(action, type) {
+    /**
+     * @param {MouseEvent} event
+     */
+    return function(event) {
+        if (event.shiftKey) return action();
+        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.enableAllWarning.format({type: type.toLocaleLowerCase()}), {
+            confirmText: Strings.Modals.okay,
+            cancelText: Strings.Modals.cancel,
+            danger: true,
+            onConfirm: action,
+        });
+    };
+}
 
-export default function AddonList({prefix, type, title, folder, addonList, addonState, onChange, reload, editAddon, deleteAddon}) {
+
+export default function AddonList({prefix, type, title, folder, addonList, addonState, onChange, reload, editAddon, deleteAddon, enableAll, disableAll}) {
     const [query, setQuery] = useState("");
     const [sort, setSort] = useState(getState.bind(null, type, "sort", "name"));
     const [ascending, setAscending] = useState(getState.bind(null, type, "ascending", true));
@@ -125,7 +154,6 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
         if (deleteAddon) deleteAddon(addon);
     }, [addonList, deleteAddon]);
 
-    const button = folder ? {title: Strings.Addons.openFolder.format({type: title}), onClick: openFolder.bind(null, folder)} : null;
     const renderedCards = useMemo(() => {
         let sorted = addonList.sort((a, b) => {
             const sortByEnabled = sort === "isEnabled";
@@ -154,18 +182,25 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
         return sorted.map(addon => {
             const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
-            return <ErrorBoundary><AddonCard disabled={addon.partial} type={type} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
+            return <ErrorBoundary><AddonCard disabled={addon.partial} type={type} prefix={prefix} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} enabled={addonState[addon.id]} addon={addon} onChange={onChange} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} /></ErrorBoundary>;
         });
-    }, [addonList, addonState, onChange, reload, triggerDelete, triggerEdit, type, sort, ascending, query, forced]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [addonList, addonState, onChange, reload, triggerDelete, triggerEdit, type, prefix, sort, ascending, query, forced]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const hasAddonsInstalled = addonList.length !== 0;
     const isSearching = !!query;
     const hasResults = renderedCards.length !== 0;
 
     return [
-        <SettingsTitle key="title" text={title} button={button} />,
+        <SettingsTitle key="title" text={isSearching ? `${title} - ${Strings.Addons.results.format({count: `${renderedCards.length}`})}` : title}>
+            <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: `${renderedCards.length} ${title}`})}...`} />
+        </SettingsTitle>,
         <div className={"bd-controls bd-addon-controls"}>
-            <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: title})}...`} />
+            {/* <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: title})}...`} /> */}
+            <div className="bd-controls-basic">
+                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <FolderIcon />, openFolder.bind(null, folder))}
+                {makeBasicButton(Strings.Addons.enableAll, <CheckIcon size="20px" />, confirmEnable(enableAll, title))}
+                {makeBasicButton(Strings.Addons.disableAll, <CloseIcon size="20px" />, disableAll)}
+            </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">
                     <div className="bd-select-wrapper">

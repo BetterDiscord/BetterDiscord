@@ -3,6 +3,7 @@ import path from "path";
 
 import Builtin from "@structs/builtin";
 import DataStore from "@modules/datastore";
+import Strings from "@modules/strings";
 
 import Modals from "@ui/modals";
 

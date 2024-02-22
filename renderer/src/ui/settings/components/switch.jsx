@@ -3,17 +3,18 @@ import React from "@modules/react";
 const {useState, useCallback} = React;
 
 
-export default function Switch({id, checked: initialValue, disabled, onChange}) {
+export default function Switch({id, checked: initialValue, disabled, onChange, internalState = true}) {
     const [checked, setChecked] = useState(initialValue);
     const change = useCallback(() => {
         onChange?.(!checked);
         setChecked(!checked);
     }, [checked, onChange]);
 
+    const isChecked = internalState ? checked : initialValue;
     const enabledClass = disabled ? " bd-switch-disabled" : "";
-    const checkedClass = checked ? " bd-switch-checked" : "";
+    const checkedClass = isChecked ? " bd-switch-checked" : "";
     return <div className={`bd-switch` + enabledClass + checkedClass}>
-        <input id={id} type="checkbox" disabled={disabled} checked={checked} onChange={change} />
+        <input id={id} type="checkbox" disabled={disabled} checked={isChecked} onChange={change} />
         <div className="bd-switch-body">
             <svg className="bd-switch-slider" viewBox="0 0 28 20" preserveAspectRatio="xMinYMid meet">
             <rect className="bd-switch-handle" fill="white" x="4" y="0" height="20" width="20" rx="10"></rect>
