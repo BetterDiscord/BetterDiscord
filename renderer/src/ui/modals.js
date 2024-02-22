@@ -182,7 +182,6 @@ export default class Modals {
         content = content.map(c => typeof(c) === "string" ? React.createElement(Markdown, null, c) : c);
 
         const modalKey = ModalActions.openModal(props => {
-            console.log(props);
             return React.createElement(ErrorBoundary, {
                 onError: () => {
                     setTimeout(() => {
@@ -200,7 +199,9 @@ export default class Modals {
                 cancelText: cancelText,
                 onConfirm: onConfirm,
                 onCancel: onCancel,
-                onCloseCallback: () => {if (props?.transitionState === 1) onClose?.()}
+                onCloseCallback: () => {
+                    if (props?.transitionState === 1) onClose?.();
+                }
             }, props), React.createElement(ErrorBoundary, {}, content)));
         }, {modalKey: key});
         return modalKey;
