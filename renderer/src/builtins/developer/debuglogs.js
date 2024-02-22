@@ -4,6 +4,8 @@ import path from "path";
 import Builtin from "@structs/builtin";
 import DataStore from "@modules/datastore";
 
+import Modals from "@ui/modals";
+
 
 const timestamp = () => new Date().toISOString().replace("T", " ").replace("Z", "");
 const levels = ["log", "info", "warn", "error", "debug"];
@@ -28,8 +30,9 @@ export default new class DebugLogs extends Builtin {
     get category() {return "developer";}
     get id() {return "debugLogs";}
 
-    enabled() {
+    async enabled() {
         this.logFile = path.join(DataStore.dataFolder, "debug.log");
+        await this.checkFilesize();
         this.stream = fs.createWriteStream(this.logFile, {flags: "a"});
         this.stream.write(`\n\n================= Starting Debug Log (${timestamp()}) =================\n`);
         for (const level of levels) {
@@ -61,5 +64,23 @@ export default new class DebugLogs extends Builtin {
             if (typeof(arg) === "function" || typeof(arg) === "boolean" || typeof(arg) === "number") sanitized.push(arg.toString());
         }
         return sanitized.join(" ");
+    }
+
+    async checkFilesize() {
+        try {
+            const stats = fs.statSync(this.logFile);
+            const mb = stats.size / (1024 * 1024);
+            if (mb < 100) return; // Under 100MB, all good
+            return new Promise(resolve => Modals.showConfirmationModal(Strings.Modals.additionalInfo, Strings.Modals.debuglog, {
+                confirmText: Strings.Modals.okay,
+                cancelText: Strings.Modals.cancel,
+                danger: true,
+                onConfirm: () => fs.rmSync(this.logFile),
+                onClose: resolve
+            }));
+        }
+        catch (e) {
+            this.error(e);
+        }
     }
 };

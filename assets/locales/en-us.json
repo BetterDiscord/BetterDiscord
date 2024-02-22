@@ -212,7 +212,8 @@
         "restartLater": "Restart Later",
         "additionalInfo": "Additional Info",
         "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?",
-        "changelog": "Changelog"
+        "changelog": "Changelog",
+        "debuglog": "Your debug log file has exceeded 100MB, would you like to clear the log?"
     },
     "ReactDevTools": {
         "notFound": "Extension Not Found",
