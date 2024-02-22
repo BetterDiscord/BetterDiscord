@@ -80,13 +80,13 @@ export default function fetch(url, options = {}) {
 
         ctx.onComplete(() => {
             try {
-                const data = ctx.readData();
+                const resultData = ctx.readData();
 
                 const req = new FetchResponse({
                     method: options.method ?? "GET",
-                    status: data.statusCode,
+                    status: resultData.statusCode,
                     ...options,
-                    ...data
+                    ...resultData
                 });
 
                 resolve(req);

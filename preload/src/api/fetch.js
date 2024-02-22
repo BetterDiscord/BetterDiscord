@@ -16,12 +16,12 @@ const redirectCodes = new Set([301, 302, 307, 308]);
  */
 
 /**
- * @param {string} url
- * @param {FetchOptions} options
+ * @param {string} requestedUrl
+ * @param {FetchOptions} fetchOptions
  */
-export function nativeFetch(url, options) {
+export function nativeFetch(requestedUrl, fetchOptions) {
     let state = "PENDING";
-    const data = {content: [], headers: null, statusCode: null, url: url, statusText: "", redirected: false};
+    const data = {content: [], headers: null, statusCode: null, url: requestedUrl, statusText: "", redirected: false};
     const listeners = new Set();
     const errors = new Set();
 
@@ -121,11 +121,11 @@ export function nativeFetch(url, options) {
      * reference to the object below so they have no way of
      * listening to the error through onError.
      */
-    const parsed = new URL(url);
+    const parsed = new URL(requestedUrl);
     if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
         throw new Error(`Unsupported protocol: ${parsed.protocol}`);
     }
-    execute(parsed, options);
+    execute(parsed, fetchOptions);
 
     return {
         onComplete(listener) {

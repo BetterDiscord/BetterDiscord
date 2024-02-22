@@ -58,7 +58,7 @@ export default class BdApi {
     get ContextMenu() {return ContextMenuAPI;}
     Components = {
         get Tooltip() {return DiscordModules.Tooltip;}
-    }
+    };
     Net = {fetch}; 
 }
 
