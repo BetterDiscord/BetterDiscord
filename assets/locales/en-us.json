@@ -21,6 +21,10 @@
                 "mediaKeys": {
                     "name": "Disable Media Keys",
                     "note": "Prevents Discord from hijacking your media keys after playing a video."
+                },
+                "bdContextMenu": {
+                    "name": "Settings Context Menu",
+                    "note": "Adds a BetterDiscord subsection to the settings context menu."
                 }
             },
             "window": {
