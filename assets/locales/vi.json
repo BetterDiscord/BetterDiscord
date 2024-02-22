@@ -1,6 +1,6 @@
 {
     "Panels": {
-        "plugins": "Tiện Ích",
+        "plugins": "Tiện ích",
         "themes": "Chủ đề",
         "customcss": "CSS Tùy Chỉnh",
         "updates": "Cập nhật"
@@ -11,8 +11,8 @@
             "general": {
                 "name": "Chung",
                 "voiceDisconnect": {
-                    "name": "Ngắt Kết Nối Voice",
-                    "note": "Ngắt kết nối kênh voice khi đóng Discord"
+                    "name": "Ngắt Kết Nối Kênh Đàm Thoại",
+                    "note": "Ngắt kết nối kênh đàm thoại khi đóng Discord"
                 },
                 "showToasts": {
                     "name": "HIển Thị Thông Báo",
@@ -49,7 +49,7 @@
                     "note": "Nơi trình chỉnh sửa tiện ích và chủ đề hiển thị khi sửa",
                     "options": {
                         "detached": "Cửa Sổ Tách Rời",
-                        "system": "Trình Chỉnh Sửa Của Hệ Thống"
+                        "system": "Trình Chỉnh Sửa"
                     }
                 }
             },
@@ -93,7 +93,7 @@
                 },
                 "inspectElement": {
                     "name": "Phím tắt Kiểm tra Thành Phần",
-                    "note": "Kích hoạt phím tắt Kiểm tra Thành Phần (Ctrl + Shift + C) mà thường thấy ở những trình duyệt"
+                    "note": "Kích hoạt phím tắt Kiểm tra Thành Phần (Ctrl + Shift + C) tương tự như trong hầu hết trình duyệt"
                 },
                 "devToolsWarning": {
                     "name": "Tắt Cảnh Báo DevTools",
@@ -105,7 +105,7 @@
                 },
                 "devTools": {
                     "name": "DevTools",
-                    "note": "Kích hoạt DevTools bằng tổ hợp Ctrl + Shift + I"
+                    "note": "Kích hoạt DevTools bằng tổ hợp Ctrl + Shift + i"
                 }
             },
             "editor": {
@@ -115,8 +115,8 @@
                     "note": "Hiển thị số dòng ở cạnh của trình chỉnh sửa"
                 },
                 "fontSize": {
-                    "name": "Kích Cỡ Chữ",
-                    "note": "Kích cỡ chữ (pt) được sử dụng trong trình chỉnh sửa"
+                    "name": "Kích Thước Phông Chữ",
+                    "note": "Kích thước phông chữ (pt) được sử dụng trong trình chỉnh sửa"
                 },
                 "minimap": {
                     "name": "Minimap",
@@ -131,12 +131,12 @@
                     "note": "Hiển thị những đề xuất tự hoàn thành khi bạn gõ"
                 },
                 "renderWhitespace": {
-                    "name": "Hiển Thị Khoảng Cách Trắng",
-                    "note": "Khi nào khoảng cách trắng sẽ được hiển thị trong trình chỉnh sửa",
+                    "name": "Hiển Thị Khoảng Trắng",
+                    "note": "Khi nào khoảng trắng sẽ được hiển thị trong trình chỉnh sửa",
                     "options": {
                         "all": "Luôn luôn",
                         "none": "Không bao giờ",
-                        "selection": "Lựa chọn"
+                        "selection": "Tùy chọn"
                     }
                 }
             }
@@ -145,7 +145,7 @@
     "Addons": {
         "title": "{{name}} v{{version}} bởi {{author}}",
         "byline": "bởi {{author}}",
-        "openFolder": "Mở Thư Mục {{type}}",
+        "openFolder": "Mở thư mục {{type}}",
         "reload": "Tải lại",
         "addonSettings": "Cài đặt",
         "website": "Trang web",
@@ -157,7 +157,7 @@
         "author": "Tác giả",
         "version": "Phiên bản",
         "added": "Ngày thêm",
-        "modified": "Ngày chỉnh sửa",
+        "modified": "Ngày sửa đổi",
         "search": "Tìm kiếm {{type}}",
         "editAddon": "Chỉnh sửa",
         "deleteAddon": "Xóa",
@@ -167,23 +167,23 @@
         "disabled": "{{name}} đã được vô hiệu hóa.",
         "couldNotEnable": "{{name}} không thể được kích hoạt.",
         "couldNotDisable": "{{name}} không thể được vô hiệu hóa.",
-        "couldNotStart": "{{name}} không thể được bắt đầu.",
-        "couldNotStop": "{{name}} không thể được dừng lại.",
+        "couldNotStart": "{{name}} không thể bắt đầu.",
+        "couldNotStop": "{{name}} không thể dừng lại.",
         "settingsError": "Không thể mở cài đặt cho {{name}}",
         "methodError": "{{method}} không thể được kích hoạt.",
         "unknownAuthor": "Tác giả không xác định",
         "noDescription": "Không có miêu tả.",
         "alreadyExists": "Đã có {{type}} với tên {{name}} rồi!",
         "alreadWatching": "Đã đang xem tiện ích.",
-        "metaError": "META không thể được phân tích.",
-        "missingNameData": "META đang thiếu tên dữ liệu.",
+        "metaError": "Không thể phân tích META.",
+        "missingNameData": "Thiếu dữ liệu tên META.",
         "metaNotFound": "Không thể tìm thấy META.",
         "compileError": "Không thể biên dịch. Vui lòng kiểm tra Console để biết thêm chi tiết.",
-        "wasUnloaded": "{{name}} đã được tắt.",
+        "wasUnloaded": "{{name}} đã được gỡ.",
         "blankSlateHeader": "Bạn không có {{type}}!",
         "blankSlateMessage": "Lấy một số ở [trang web]({{link}}) và thêm vào thư mục {{type}}.",
         "isEnabled": "Đã kích hoạt",
-        "wasLoaded": "{{name}} v{{version}} đã được bật.",
+        "wasLoaded": "{{name}} v{{version}} đã được thêm.",
         "listView": "Dạng Danh Sách",
         "gridView": "Dạng Ô"
     },
@@ -191,7 +191,7 @@
         "confirmationText": "Bạn có những thay đổi chưa lưu cho CSS Tùy Chỉnh của bạn. Đóng cửa sổ này sẽ xóa hết những thay đổi của bạn.",
         "update": "Cập nhật",
         "save": "Lưu",
-        "openNative": "Ở trong Trình Chỉnh Sửa",
+        "openNative": "Mở trong Trình Chỉnh Sửa",
         "openDetached": "Cửa Sổ Riêng",
         "settings": "Cài đặt Trình Chỉnh Sửa",
         "editorTitle": "Trình Chỉnh Sửa CSS Tùy Chỉnh"
@@ -225,7 +225,7 @@
         "descending": "Dưới lên trên"
     },
     "WindowPrefs": {
-        "enabledInfo": "Lựa chọn này cần phải có chủ đề trong suốt để có thể hoạt động đúng cách. Ở Windows tính năng Aero Snapping và toàn cửa sổ có thể không hoạt động.\n\nĐể có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?",
+        "enabledInfo": "Lựa chọn này cần phải có một chủ đề trong suốt để có thể hoạt động đúng cách. Trên Windows, tính năng sắp xếp và thu phóng cửa số (Aero Snapping) và toàn cửa sổ có thể không hoạt động.\n\nĐể có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?",
         "disabledInfo": "Để có hiệu lực, Discord cần phải được khởi động lại. Bạn có muốn khởi động lại ngay bây giờ?"
     },
     "Notices": {
@@ -233,7 +233,7 @@
     },
     "Updater": {
         "updateFailed": "Cập Nhật Thất Bại!",
-        "updateFailedMessage": "BetterDiscord không thể cập nhật. Vui lòng tải trình cài đặt mới nhất ở trang web (https://betterdiscord.app/) và cài đặt lại.",
+        "updateFailedMessage": "Không thể cập nhật BetterDiscord. Vui lòng tải trình cài đặt mới nhất ở trang web (https://betterdiscord.app/) và cài đặt lại.",
         "updateSuccessful": "Cập Nhật Thành Công!",
         "updateAvailable": "BetterDiscord có cập nhật mới (v{{version}})",
         "addonUpdatesAvailable": "BetterDiscord đã phát hiện {{count}} cho {{type}} của bạn!",
@@ -244,7 +244,7 @@
         "updateAll": "Cập Nhật Mọi Thứ!",
         "noUpdatesAvailable": "Không có cập nhật mới.",
         "versionAvailable": "Phiên bản {{version}} đã có sẵn!",
-        "upToDateBlankslate": "Tất cả những {{type}} của bạn đều ở phiên bản mới nhất!",
+        "upToDateBlankslate": "Tất cả {{type}} của bạn đều ở phiên bản mới nhất!",
         "updateButton": "Cập nhật!"
     }
 }

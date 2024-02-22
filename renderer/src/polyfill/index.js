@@ -22,6 +22,12 @@ originalFs.writeFile = (path, data, options) => fs.writeFile(path, data, Object.
 
 export const createRequire = function (path) {
     return mod => {
+        // Ignore relative require attempts because Discord
+        // erroneously does this a lot apparently which
+        // causes us to do filesystem accesses in our default
+        // switch statement mainly used for absolute paths
+        if (typeof(mod) === "string" && mod.startsWith("./")) return;
+
         if (deprecated.has(mod)) {
             Logger.warn("Remote~Require", `The "${mod}" module is marked as deprecated. ${deprecated.get(mod)}`);
         }
