@@ -1,4 +1,5 @@
 import React from "@modules/react";
+import Close from "@ui/icons/close";
 import SearchIcon from "@ui/icons/search";
 
 const {useState, useEffect, useCallback, useRef} = React;
@@ -19,9 +20,15 @@ export default function Search({onChange, className, onKeyDown, placeholder}) {
         setValue(e.target.value);
     }, [onChange]);
 
+    const reset = useCallback(() => {
+        onChange?.({target: {value: ""}});
+        setValue("");
+    }, [onChange]);
+
     return <div className={"bd-search-wrapper" + (className ? ` ${className}` : "")}>
                 <input onChange={change} onKeyDown={onKeyDown} type="text" className="bd-search" placeholder={placeholder} maxLength="50" value={value} ref={input}/>
-                <SearchIcon />
+                {!value && <SearchIcon />}
+                {value && <button className="bd-button" onClick={reset}><Close size="16px" /></button>}
             </div>;
 
 }
