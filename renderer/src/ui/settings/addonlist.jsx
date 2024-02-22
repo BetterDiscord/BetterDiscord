@@ -3,6 +3,7 @@ import Strings from "@modules/strings";
 import Events from "@modules/emitter";
 import DataStore from "@modules/datastore";
 import DiscordModules from "@modules/discordmodules";
+import ipc from "@modules/ipc";
 
 import SettingsTitle from "./title";
 import AddonCard from "./addoncard";
@@ -37,9 +38,7 @@ const buildDirectionOptions = () => [
 
 
 function openFolder(folder) {
-    const shell = require("electron").shell;
-    const open = shell.openItem || shell.openPath;
-    open(folder);
+    ipc.openPath(folder);
 }
 
 function blankslate(type, onClick) {

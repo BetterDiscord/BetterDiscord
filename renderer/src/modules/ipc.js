@@ -60,4 +60,8 @@ export default new class IPCRenderer {
     getSystemAccentColor() {
         return ipc.invoke(IPCEvents.GET_ACCENT_COLOR);
     }
+
+    openPath(path) {
+        return ipc.send(IPCEvents.OPEN_PATH, path);
+    }
 };

@@ -11,13 +11,14 @@ import Events from "./emitter";
 import DataStore from "./datastore";
 import React from "./react";
 import Strings from "./strings";
+import ipc from "./ipc";
 
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
 
 
-const openItem = shell.openItem || shell.openPath;
+const openItem = ipc.openPath;
 
 const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;

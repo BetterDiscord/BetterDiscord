@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import electron from "electron";
+import {spawn} from "child_process";
 
 import ReactDevTools from "./reactdevtools";
 import * as IPCEvents from "common/constants/ipcevents";
@@ -97,7 +98,8 @@ export default class BetterDiscord {
                     electron.app.exit();
                 }
                 if (result.response === 1) {
-                    electron.shell.openPath(path.join(dataPath, "plugins"));
+                    if (process.platform === "win32") spawn("explorer.exe", [path.join(dataPath, "plugins")]);
+                    else electron.shell.openPath(path.join(dataPath, "plugins"));
                 }
             });
             hasCrashed = false;
