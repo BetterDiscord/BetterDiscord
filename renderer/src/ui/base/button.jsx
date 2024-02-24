@@ -51,7 +51,8 @@ export default function Button({
     look = Looks.FILLED,
     color = Colors.BRAND,
     size = Sizes.MEDIUM,
-    grow = true
+    grow = true,
+    ...others
 }) {
     
     const handleClick = useCallback(event => {
@@ -60,7 +61,7 @@ export default function Button({
         onClick?.(event);
     }, [onClick]);
     
-    return <button className={
+    return <button {...others} className={
         Utilities.className(
             "bd-button",
             className,

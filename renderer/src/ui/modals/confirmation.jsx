@@ -9,17 +9,20 @@ import Content from "./content";
 import Text from "../base/text";
 import Button from "../base/button";
 
-const {useRef, useEffect} = React;
+const {useRef, useEffect, useLayoutEffect} = React;
 
 
-export default function ConfirmationModal({transitionState, onClose, className, size = Root.Sizes.SMALL, header, children, danger = false, onCancel = () => {}, onConfirm = () => {}, cancelText = Strings.Modals.cancel, confirmText = Strings.Modals.okay}) {
+export default function ConfirmationModal({transitionState, onClose, onCloseCallback, className, size = Root.Sizes.SMALL, header, children, danger = false, onCancel = () => {}, onConfirm = () => {}, cancelText = Strings.Modals.cancel, confirmText = Strings.Modals.okay}) {
     
+    const buttonRef = useRef(null);
+
     useEffect(() => {
         setTimeout(() => buttonRef?.current?.focus?.(), 0);
     }, []);
 
-    const buttonRef = useRef(null);
-
+    useLayoutEffect(() => {
+        onCloseCallback?.();
+    }, [onCloseCallback]);
 
     return <Root transitionState={transitionState} size={size} className={className}>
         <Header>

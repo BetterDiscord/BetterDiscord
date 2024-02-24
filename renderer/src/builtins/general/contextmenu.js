@@ -32,10 +32,10 @@ export default new class BDContextMenu extends Builtin {
 
     callback(retVal) {
         const items = Settings.collections.map(c => this.buildCollectionMenu(c));
-        items.push({label: Strings.panels.updates, action: () => {this.openCategory("updates");}});
-        if (Settings.get("settings", "customcss", "customcss")) items.push({label: Strings.panels.customcss, action: () => {this.openCategory("customcss");}});
-        items.push(this.buildAddonMenu(Strings.panels.plugins, pluginManager));
-        items.push(this.buildAddonMenu(Strings.panels.themes, themeManager));
+        items.push({label: Strings.Panels.updates, action: () => {this.openCategory("updates");}});
+        if (Settings.get("settings", "customcss", "customcss")) items.push({label: Strings.Panels.customcss, action: () => {this.openCategory("customcss");}});
+        items.push(this.buildAddonMenu(Strings.Panels.plugins, pluginManager));
+        items.push(this.buildAddonMenu(Strings.Panels.themes, themeManager));
         retVal?.props?.children?.props?.children?.[0].push(ContextMenu.buildItem({type: "separator"}));
         retVal?.props?.children?.props?.children?.[0].push(ContextMenu.buildItem({type: "submenu", label: "BetterDiscord", items: items}));
     }

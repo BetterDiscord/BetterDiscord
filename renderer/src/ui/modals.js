@@ -199,7 +199,7 @@ export default class Modals {
                 onConfirm: onConfirm,
                 onCancel: onCancel,
                 onCloseCallback: () => {
-                    if (props?.transitionState === 1) onClose?.();
+                    if (props?.transitionState === 2) onClose?.();
                 }
             }, props), React.createElement(ErrorBoundary, {}, content)));
         }, {modalKey: key});

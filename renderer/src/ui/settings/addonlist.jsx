@@ -54,7 +54,7 @@ function blankslate(type, onClick) {
 
 function makeBasicButton(title, children, action) {
     return <DiscordModules.Tooltip color="primary" position="top" text={title}>
-                {(props) => <button {...props} className="bd-button" onClick={action}>{children}</button>}
+                {(props) => <Button {...props} size={Button.Sizes.NONE} look={Button.Looks.BLANK} className="bd-button" onClick={action}>{children}</Button>}
             </DiscordModules.Tooltip>;
 }
 

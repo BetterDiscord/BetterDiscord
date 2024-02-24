@@ -21,6 +21,7 @@
 
 .bd-sidebar-header .bd-changelog-button {
     height: 16px;
+    padding: 0;
 }
 
 .bd-sidebar-header .bd-icon {
@@ -28,6 +29,6 @@
     fill: var(--interactive-normal);
 }
 
-.bd-sidebar-header .bd-icon:hover {
+.bd-sidebar-header .bd-changelog-button:hover .bd-icon {
     fill: var(--interactive-hover);
 }

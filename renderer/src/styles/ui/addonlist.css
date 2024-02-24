@@ -17,6 +17,7 @@
 }
 
 .bd-controls,
+.bd-controls-basic,
 .bd-controls-advanced {
     display: flex;
 }
