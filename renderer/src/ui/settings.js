@@ -1,15 +1,55 @@
 import React from "@modules/react";
+import Strings from "@modules/strings";
 import Utilities from "@modules/utilities";
 import Events from "@modules/emitter";
 import Settings from "@modules/settingsmanager";
 import DataStore from "@modules/datastore";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
 import Patcher from "@modules/patcher";
+import DiscordModules from "@modules/discordmodules";
 
-import AddonList from "./settings/addonlist";
-import SettingsGroup from "./settings/group";
-import SettingsTitle from "./settings/title";
-import Header from "./settings/sidebarheader";
+import ReactUtils from "@modules/api/reactutils";
+
+import Button from "@ui/base/button";
+import Modals from "@ui/modals";
+
+import AddonList from "@ui/settings/addonlist";
+import SettingsGroup from "@ui/settings/group";
+import SettingsTitle from "@ui/settings/title";
+import Header from "@ui/settings/sidebarheader";
+
+import Restore from "./icons/restore";
+// import SettingsPanel from "./settings/panel";
+
+
+function makeResetButton(collectionId, refresh) {
+    const action = confirmReset(() => {
+        Settings.resetCollection(collectionId);
+        refresh?.();
+    });
+    return <DiscordModules.Tooltip color="primary" position="top" text={Strings.Settings.resetSettings}>
+                {(props) =>
+                    <Button {...props} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} onClick={action}>
+                        <Restore />
+                    </Button>
+                }
+            </DiscordModules.Tooltip>;
+}
+
+/**
+ * @param {function} action
+ * @returns 
+ */
+function confirmReset(action) {
+    return () => {
+        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Settings.resetSettingsWarning, {
+            confirmText: Strings.Modals.okay,
+            cancelText: Strings.Modals.cancel,
+            danger: true,
+            onConfirm: action,
+        });
+    };
+}
 
 export default new class SettingsRenderer {
 
@@ -34,22 +74,32 @@ export default new class SettingsRenderer {
 
     onChange(onChange) {
         return (collection, category, id) => {
-            const before = Settings.collections.length + Settings.panels.length;
             onChange(collection, category, id);
-            const after = Settings.collections.length + Settings.panels.length;
-            if (before != after) setTimeout(this.forceUpdate.bind(this), 50);
+
+            // Delay until after switch animation
+            // TODO: lift settings state to SettingsPanel
+            // to prevent the need for this.
+            setTimeout(this.forceUpdate.bind(this), 250);
         };
     }
 
-    buildSettingsPanel(id, title, config, state, onChange, button = null) {
+    buildSettingsPanel(id, title, config, state, onChange) {
         config.forEach(section => {
             section.settings.forEach(item => item.value = state[section.id][item.id]);
         });
-        return this.getSettingsPanel(id, title, config, this.onChange(onChange), button);
+        return this.getSettingsPanel(id, title, config, this.onChange(onChange));
     }
 
-    getSettingsPanel(id, title, groups, onChange, button = null) {
-        return [React.createElement(SettingsTitle, {text: title, button: button}), groups.map(section => {
+    getSettingsPanel(id, title, groups, onChange) {
+        // return <SettingsPanel
+        //             id={id}
+        //             title={title}
+        //             groups={groups}
+        //             onChange={onChange}
+        //             onDrawerToggle={(...args) => this.onDrawerToggle(...args)}
+        //             getDrawerState={(...args) => this.getDrawerState(...args)}
+        //         />;
+        return [React.createElement(SettingsTitle, {text: title}, makeResetButton(id, this.forceUpdate.bind(this))), groups.map(section => {
             return React.createElement(SettingsGroup, Object.assign({}, section, {
                 onChange: onChange,
                 onDrawerToggle: state => this.onDrawerToggle(id, section.id, state),
@@ -85,7 +135,7 @@ export default new class SettingsRenderer {
                     section: collection.name,
                     label: collection.name.toString(),
                     className: `bd-${collection.id}-tab`,
-                    element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.state[collection.id], Settings.onSettingChange.bind(Settings, collection.id), collection.button ? collection.button : null)
+                    element: () => this.buildSettingsPanel(collection.id, collection.name, collection.settings, Settings.state[collection.id], Settings.onSettingChange.bind(Settings, collection.id))
                 });
             }
             for (const panel of Settings.panels.sort((a,b) => a.order > b.order ? 1 : -1)) {
@@ -101,7 +151,7 @@ export default new class SettingsRenderer {
         const viewClass = WebpackModules.getByProps("standardSidebarView")?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
-        const stateNode = Utilities.findInTree(node?.__reactFiber$, m => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
+        const stateNode = Utilities.findInTree(ReactUtils.getInternalInstance(node), m => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
         if (stateNode) stateNode.forceUpdate();
     }
 };

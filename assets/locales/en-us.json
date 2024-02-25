@@ -257,6 +257,8 @@
         "updateButton": "Update!"
     },
     "Settings": {
-        "customColor": "Custom Color"
+        "customColor": "Custom Color",
+        "resetSettings": "Reset Settings",
+        "resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone."
     }
 }

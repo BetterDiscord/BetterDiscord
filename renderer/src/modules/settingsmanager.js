@@ -73,12 +73,16 @@ export default new class SettingsManager {
         if (!this.state[collection.id]) this.state[collection.id] = {};
         for (let cc = 0; cc < categories.length; cc++) {
             const category = categories[cc];
-            if (category.type != "category") {if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = category.value;}
+            if (category.type != "category") {
+                if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = category.value;
+                category.defaultValue = category.value;
+            }
             else {
                 if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = {};
                 for (let s = 0; s < category.settings.length; s++) {
                     const setting = category.settings[s];
                     if (!this.state[collection.id][category.id].hasOwnProperty(setting.id)) this.state[collection.id][category.id][setting.id] = setting.value;
+                    setting.defaultValue = setting.value;
                     if (setting.hasOwnProperty("disabled")) continue;
                     if (!setting.enableWith && !setting.disableWith) continue;
                     const pathString = setting.enableWith || setting.disableWith;
@@ -129,6 +133,28 @@ export default new class SettingsManager {
         }
 
         this.saveCollection(id); // in case new things were added
+    }
+
+    resetCollection(id) {
+        const collection = this.collections.find(c => c.id == id);
+        if (!collection) return;
+        const categories = collection.settings;
+        for (let cc = 0; cc < categories.length; cc++) {
+            const category = categories[cc];
+            if (category.type != "category") {
+                // console.log("cat", collection.id, category.id, this.get(collection.id, category.id), category.value);
+                if (this.get(collection.id, category.id) == category.defaultValue) continue;
+                this.set(collection.id, category.id, category.defaultValue);
+            }
+            else {
+                for (let s = 0; s < category.settings.length; s++) {
+                    const setting = category.settings[s];
+                    // console.log("setting", collection.id, category.id, setting.id, this.get(collection.id, category.id, setting.id), setting.defaultValue);
+                    if (this.get(collection.id, category.id, setting.id) == setting.defaultValue) continue;
+                    this.set(collection.id, category.id, setting.id, setting.defaultValue);
+                }
+            }
+        }
     }
 
     onSettingChange(collection, category, id, value) {
