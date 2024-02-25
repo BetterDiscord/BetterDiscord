@@ -87,7 +87,7 @@ export class CoreUpdater {
         const data = await resp.json();
         this.apiData = data;
         const remoteVersion = data.tag_name.startsWith("v") ? data.tag_name.slice(1) : data.tag_name;
-        this.hasUpdate = remoteVersion > Config.version;
+        this.hasUpdate = semverComparator(Config.version, remoteVersion) > 0;
         this.remoteVersion = remoteVersion;
         if (!this.hasUpdate || !showNotice) return;
 
