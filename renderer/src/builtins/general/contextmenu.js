@@ -8,12 +8,11 @@ import ContextMenuPatcher from "@modules/api/contextmenu";
 import pluginManager from "@modules/pluginmanager";
 import themeManager from "@modules/thememanager";
 import Utilities from "@modules/utilities";
+import React from "@modules/react";
 
 
 const ContextMenu = new ContextMenuPatcher();
 const UserSettingsWindow = Webpack.getByProps("open", "updateAccount");
-
-const SEPARATOR_ITEM = ContextMenu.buildItem({type: "separator"});
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
@@ -23,16 +22,6 @@ export default new class BDContextMenu extends Builtin {
     constructor() {
         super(...arguments);
         this.callback = this.callback.bind(this);
-
-        this.UPDATES_ITEM = {
-            label: Strings.Panels.updates,
-            action: () => this.openCategory("updates")
-        };
-
-        this.CUSTOM_CSS_ITEM = {
-            label: Strings.Panels.customcss,
-            action: () => this.openCategory("customcss")
-        };
     }
 
     enabled() {
@@ -47,22 +36,34 @@ export default new class BDContextMenu extends Builtin {
         const target = Utilities.findInTree(retVal, b => Array.isArray(b) && b.some(e => e?.key?.toLowerCase() === "my_account"), {walkable: ["props", "children"]});
         if (!target) return;
 
+        // Prevent conflict with plugin until its eradicated
+        if (target.some(e => e.props.label.toLowerCase() === "betterdiscord")) return;
+
         // BetterDiscord Settings
         const items = Settings.collections.map(c => this.buildCollectionMenu(c));
 
         // Updater
-        items.push(this.UPDATES_ITEM);
+        items.push({
+            label: Strings.Panels.updates,
+            action: () => this.openCategory("updates")
+        });
 
         // Custom CSS
-        if (Settings.get("settings", "customcss", "customcss")) items.push(this.CUSTOM_CSS_ITEM);
+        if (Settings.get("settings", "customcss", "customcss")) {
+            items.push({
+                label: Strings.Panels.customcss,
+                action: () => this.openCategory("customcss")
+            });
+        }
 
         // Plugins & Themes
         items.push(this.buildAddonMenu(Strings.Panels.plugins, pluginManager));
         items.push(this.buildAddonMenu(Strings.Panels.themes, themeManager));
 
         // Parent SubMenu
-        target.push(SEPARATOR_ITEM);
-        target.push(ContextMenu.buildItem({type: "submenu", label: "BetterDiscord", items: items}));
+        const bdSubMenu = ContextMenu.buildItem({type: "submenu", label: "BetterDiscord", items: items});
+        const bdGroup = React.createElement(ContextMenu.Group, null, [bdSubMenu]);
+        target.push(bdGroup);
     }
 
     buildCollectionMenu(collection) {
