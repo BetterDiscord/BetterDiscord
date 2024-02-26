@@ -16,22 +16,22 @@
         "test-prod": "npm run test -- --reporter min"
     },
     "devDependencies": {
-        "@babel/core": "^7.16.12",
-        "@babel/preset-env": "^7.16.11",
-        "@babel/preset-react": "^7.16.7",
-        "@babel/register": "^7.16.9",
-        "babel-loader": "^8.2.3",
+        "@babel/core": "^7.23.9",
+        "@babel/preset-env": "^7.23.9",
+        "@babel/preset-react": "^7.23.3",
+        "@babel/register": "^7.23.7",
+        "babel-loader": "^8.3.0",
         "babel-plugin-module-resolver": "^4.1.0",
         "circular-dependency-plugin": "^5.2.2",
-        "css-loader": "^6.5.1",
-        "postcss": "^8.4.5",
+        "css-loader": "^6.10.0",
+        "postcss": "^8.4.35",
         "postcss-cli": "^9.1.0",
-        "postcss-csso": "^6.0.0",
+        "postcss-csso": "^6.0.1",
         "postcss-easy-import": "^4.0.0",
         "postcss-loader": "^6.2.1",
-        "stylelint": "^14.3.0",
+        "stylelint": "^14.16.1",
         "stylelint-config-standard": "^24.0.0",
-        "webpack": "^5.73.0"
+        "webpack": "^5.90.3"
     },
     "dependencies": {
         "buffer": "^6.0.3"
