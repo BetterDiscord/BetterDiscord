@@ -19,14 +19,18 @@ export const Styles = Object.freeze({
 });
 
 
+const AccessibilityContext = WebpackModules.getModule(m => m?._currentValue?.reducedMotion, {searchExports: true});
 const FocusLock = WebpackModules.getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true}) ?? React.Fragment;
 
 export default function ModalRoot({className, transitionState, children, size = Sizes.DYNAMIC, style = Styles.CUSTOM}) {
     const visible = transitionState == 0 || transitionState == 1; // 300 ms
-    // const visible = transitionState;
+    
+    const preferences = React.useContext(AccessibilityContext ?? {});
+    const reducedMotion = preferences?.reducedMotion?.enabled ?? document.documentElement?.classList.contains("reduce-motion");
+    
     const springStyles = Spring.useSpring({
         opacity: visible ? 1 : 0,
-        transform: visible ? "scale(1)" : "scale(0.7)",
+        transform: visible || reducedMotion ? "scale(1)" : "scale(0.7)",
         config: {
             duration: visible ? 300 : 100,
             easing: visible ? Anims.Easing.inOut(Anims.Easing.back()) : Anims.Easing.quad,
