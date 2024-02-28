@@ -21,13 +21,6 @@ class BrowserWindow extends electron.BrowserWindow {
         if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
 
         super(options);
-
-        if (typeof(shouldHaveFrame) === "boolean" && shouldHaveFrame) {
-            this.webContents.insertCSS(`div[class^="titleBar_"], div[class*=" titleBar_"] {
-                display: none !important;
-            }`);
-        }
-
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
     }
