@@ -23,6 +23,27 @@ class BrowserWindow extends electron.BrowserWindow {
         super(options);
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
+
+        if (typeof(shouldHaveFrame) === "boolean" && shouldHaveFrame) {
+            // Override the window open handler to force new windows (such as pop-outs) to have frames
+            this.webContents.on("did-finish-load", () => {
+                const originalWindowOpenHandler = this.webContents._windowOpenHandler;
+
+                this.webContents.setWindowOpenHandler((details) => {
+                    const originalResponse = originalWindowOpenHandler(details);
+                    originalResponse.overrideBrowserWindowOptions.frame = true;
+                    return originalResponse;
+                });
+            });
+
+            // Remove the title bar and menu from new windows
+            this.webContents.on("did-create-window", (window) => {
+                window.removeMenu();
+                window.webContents.insertCSS(`div[class^="titleBar_"], div[class*=" titleBar_"] {
+                    display: none !important;
+                }`);
+            });
+        }
     }
 }
 
