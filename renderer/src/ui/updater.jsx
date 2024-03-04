@@ -12,6 +12,7 @@ import SettingsTitle from "@ui/settings/title";
 import Toasts from "@ui/toasts";
 
 import Checkmark from "@ui/icons/check";
+import Download from "@ui/icons/download";
 import Reload from "@ui/icons/reload";
 import Sync from "@ui/icons/sync";
 
@@ -40,7 +41,7 @@ function CoreUpdaterPanel({hasUpdate, remoteVersion, update}) {
     return <Drawer name="BetterDiscord" collapsible={true}>
         <SettingItem name={`Core v${Config.version}`} note={hasUpdate ? Strings.Updater.versionAvailable.format({version: remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
             {!hasUpdate && <div className="bd-filled-checkmark"><Checkmark size="18px" /></div>}
-            {hasUpdate && makeButton(Strings.Updater.updateButton, <Reload />, update)}
+            {hasUpdate && makeButton(Strings.Updater.updateButton, <Download />, update, {className: "no-animation"})}
         </SettingItem>
     </Drawer>;
 }

@@ -35,6 +35,10 @@
   animation: 500ms linear infinite bd-update-spin;
 }
 
+.bd-button.bd-button-icon.no-animate {
+  animation: none !important;
+}
+
 .bd-settings-group-title .bd-button-icon {
   margin-left: 3px;
   margin-right: -8px;
