@@ -2,6 +2,93 @@
 
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
+## 1.10.0
+
+### Added
+- Enable/disable all buttons for both AddonLists
+- BDContextMenu has been integrated
+- Ability to reset to default settings of any collection
+- Several design components like Flex, Button, Text, and all Modal components
+- Added a backup modal stack and backdrop in case we lose Discord's again
+- Added a wanring for large debug logs
+- `onClose` for modal APIs
+- New debug information in user settings
+
+### Removed
+- Several unused "known modules"
+- `DiscordClasses` module since it was seldom used
+- `ClassName` and similar constructs
+- Legacy emote assets
+
+### Changed
+- Search bars now auto focus
+- Opening folder on Windows now occur in the foreground
+- Search fields are now clearable
+- AddonList pages now show totals and results of searches
+- Custom CSS live update is now debounced and using a proper switch not a checkbox
+- ConfirmationModal and ChangelogModal are now using custom components
+- Updater panel now uses icons rather than text buttons
+- AddonList panels have been rearranged to accomodate the new buttons
+- The anonymous BD patch function is now named `BDPatcher`
+- Modal APIs now use internal ConfirmationModal component
+- Markdown areas now consistenly allow for embedded links
+- Lazy loaded modules are returned to the original source
+
+### Fixed
+- Fixed grabbing the wrong module for accepting invites
+- Fixed more strings that were not translatable
+
+## 1.9.8
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Removed `ipc.sendTo` for electron 28
+- Fixed core updater not using the semver comparator
+
+## 1.9.7
+
+### Added
+- Support for Spanish (LATAM) locale
+
+### Removed
+
+### Changed
+- Updated translations
+- Ignore relative requires (This is because when favoriting a GIF and other UI actions, Discord repeatedly attempts to load relative requires on accident causing our code to make tons of FS requests causing lag.)
+
+### Fixed
+- Fixed locale not falling back to English properly
+
+## 1.9.6
+
+### Added
+- All HTTP request options for bd-fetch
+
+### Removed
+
+### Changed
+- Updated translations
+
+### Fixed
+- Fixed race conditions for notices
+- Fixed options not being sent to fetch
+
+## 1.9.5
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+- Fixed the webpack patch for the new loader
+
 ## 1.9.4
 
 ### Added
