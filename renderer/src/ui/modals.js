@@ -33,7 +33,7 @@ export default class Modals {
     static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
     static get ModalActions() {
-        return this._ModalActions ??= WebpackModules.getByProps("openModal", "closeModal");
+        return this._ModalActions ??= WebpackModules.getByProps("openModal", "closeModal", "updateModal");
     }
     static get ModalQueue() {return this._ModalQueue ??= [];}
 

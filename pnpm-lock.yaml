@@ -38,6 +38,9 @@ importers:
       mocha:
         specifier: ^10.3.0
         version: 10.3.0
+      terser-webpack-plugin:
+        specifier: ^5.3.10
+        version: 5.3.10(webpack@5.90.3)
       webpack:
         specifier: ^5.90.3
         version: 5.90.3(webpack-cli@4.10.0)
