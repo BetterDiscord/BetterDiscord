@@ -1,3 +1,5 @@
+import Config from "@data/config";
+
 import React from "@modules/react";
 import Strings from "@modules/strings";
 import Utilities from "@modules/utilities";
@@ -7,6 +9,8 @@ import DataStore from "@modules/datastore";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
 import Patcher from "@modules/patcher";
 import DiscordModules from "@modules/discordmodules";
+import PluginManager from "@modules/pluginmanager";
+import ThemeManager from "@modules/thememanager";
 
 import ReactUtils from "@modules/api/reactutils";
 
@@ -19,6 +23,7 @@ import SettingsTitle from "@ui/settings/title";
 import Header from "@ui/settings/sidebarheader";
 
 import Restore from "./icons/restore";
+import Text from "./base/text";
 // import SettingsPanel from "./settings/panel";
 
 
@@ -51,10 +56,32 @@ function confirmReset(action) {
     };
 }
 
+function getDebugInfo(discordInfo, pluginsEnabled, themesEnabled) {
+    const lines = ["```md", `## Discord Info\n${discordInfo}\n`];
+    lines.push(`## BetterDiscord`);
+    lines.push(`stable ${Config.version}\n`);
+    lines.push(`### Plugins (${pluginsEnabled} Enabled):\n${PluginManager.addonList.map(a => `- ${a.name}${PluginManager.isEnabled(a.id) ? " (Enabled)" : ""}`).join("\n")}\n`);
+    lines.push(`### Themes (${themesEnabled} Enabled):\n${ThemeManager.addonList.map(a => `- ${a.name}${ThemeManager.isEnabled(a.id) ? " (Enabled)" : ""}`).join("\n")}`);
+    lines.push("```");
+    return lines.join("\n");
+}
+
+/**
+ * 
+ * @param {string} type plugin or theme
+ * @returns {{total: number, enabled: number}}
+ */
+function getAddonCount(type) {
+    if (type === "theme") return {total: ThemeManager.addonList.length, enabled: ThemeManager.addonList.filter(p => ThemeManager.isEnabled(p.id)).length};
+    if (type === "plugin") return {total: PluginManager.addonList.length, enabled: PluginManager.addonList.filter(p => PluginManager.isEnabled(p.id)).length};
+    return {total: 0, enabled: 0};
+}
+
 export default new class SettingsRenderer {
 
     constructor() {
         this.patchSections();
+        this.patchVersionInformation();
         Events.on("strings-updated", this.forceUpdate);
     }
 
@@ -144,6 +171,54 @@ export default new class SettingsRenderer {
                 if (typeof(panel.label) !== "string") panel.label = panel.label.toString();
                 insert(panel);
             }
+        });
+    }
+
+    async patchVersionInformation() {
+        const versionDisplayModule = await WebpackModules.getLazy(Filters.byStrings("RELEASE_CHANNEL", "COPY_VERSION"), {defaultExport: false});
+        if (!versionDisplayModule?.default) return; 
+
+        Patcher.after("SettingsManager", versionDisplayModule, "default", (_, __, reactTree) => {
+            const currentCopy = reactTree?.props?.copyValue;
+            const target = reactTree?.props?.children?.props?.children;
+
+            // Do some sanity checking to make sure this is both the right component
+            // and that it's in the format we expect
+            if (!Array.isArray(target) || !currentCopy) return;
+
+            
+            const [pluginCount, setPluginCount] = React.useState(getAddonCount("plugin"));
+            const [themeCount, setThemeCount] = React.useState(getAddonCount("theme"));
+
+            React.useEffect(() => {
+                const hooks = [setPluginCount, setThemeCount];
+                const handlers = {};
+                const types = ["plugin", "theme"];
+                const events = ["enabled", "disabled", "loaded", "unloaded"];
+
+                // Set handlers and add event listeners
+                for (let t = 0; t < types.length; t++) {
+                    handlers[types[t]] = () => hooks[t](getAddonCount(types[t]));
+                    for (let e = 0; e < events.length; e++) {
+                        Events.on(`${types[t]}-${events[e]}`, handlers[types[t]]);
+                    }
+                }
+                return () => {
+                    // Remove event listeners
+                    for (let t = 0; t < types.length; t++) {
+                        for (let e = 0; e < events.length; e++) {
+                            Events.off(`${types[t]}-${events[e]}`, handlers[types[t]]);
+                        }
+                    }
+                };
+            }, []);
+
+
+            Object.assign(reactTree.props, {get copyValue() {return getDebugInfo(currentCopy, pluginCount.enabled, themeCount.enabled);}});
+
+            target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>BetterDiscord {Config.version}</Text>);
+            target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>{Strings.Panels.plugins} {pluginCount.total} ({pluginCount.enabled} {Strings.Addons.isEnabled})</Text>);
+            target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>{Strings.Panels.themes} {themeCount.total} ({themeCount.enabled} {Strings.Addons.isEnabled})</Text>);
         });
     }
 
