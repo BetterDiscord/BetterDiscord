@@ -1,5 +1,6 @@
 import React from "@modules/react";
 
+import Button from "../../base/button";
 import Keyboard from "@ui/icons/keyboard";
 import Close from "@ui/icons/close";
 
@@ -45,8 +46,8 @@ export default function Keybind({value: initialValue, onChange, max = 2, clearab
     return <div className={"bd-keybind-wrap" + (state.isRecording ? " recording" : "")} onClick={onClick}>
             <input readOnly={true} type="text" className="bd-keybind-input" value={displayValue} />
             <div className="bd-keybind-controls">
-                <button className={"bd-button bd-keybind-record" + (state.isRecording ? " bd-button-danger" : "")}><Keyboard size="24px" /></button>
-                {clearable && <button onClick={clearKeybind} className="bd-button bd-keybind-clear"><Close size="24px" /></button>}
+                <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={state.isRecording ? Button.Colors.RED : Button.Colors.BRAND} className="bd-keybind-record" onClick={onClick}><Keyboard size="24px" /></Button>
+                {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clearKeybind} className="bd-keybind-clear"><Close size="24px" /></Button>}
             </div>
         </div>;
 }

@@ -162,7 +162,14 @@
         "version": "Version",
         "added": "Date Added",
         "modified": "Date Modified",
+        "isEnabled": "Enabled",
+        "listView": "List View",
+        "gridView": "Grid View",
+        "enableAll": "Enable All",
+        "disableAll": "Disable All",
+        "enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
         "search": "Search {{type}}",
+        "results": "{{count}} Results",
         "editAddon": "Edit",
         "deleteAddon": "Delete",
         "confirmDelete": "Are you sure you want to delete {{name}}?",
@@ -186,14 +193,7 @@
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
         "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
-        "isEnabled": "Enabled",
-        "wasLoaded": "{{name}} v{{version}} was loaded.",
-        "listView": "List View",
-        "gridView": "Grid View",
-        "enableAll": "Enable All",
-        "disableAll": "Disable All",
-        "results": "{{count}} Results",
-        "enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)"
+        "wasLoaded": "{{name}} v{{version}} was loaded."
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -255,5 +255,14 @@
         "versionAvailable": "Version {{version}} now available!",
         "upToDateBlankslate": "All of your {{type}} seem to be up to date!",
         "updateButton": "Update!"
+    },
+    "Settings": {
+        "customColor": "Custom Color",
+        "resetSettings": "Reset Settings",
+        "resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone."
+    },
+    "Socials": {
+        "twitter": "Follow Us!",
+        "github": "Star Us!"
     }
 }

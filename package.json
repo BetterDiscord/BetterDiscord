@@ -1,6 +1,6 @@
 {
     "name": "betterdiscord",
-    "version": "1.9.7",
+    "version": "1.10.0",
     "description": "Enhances Discord by adding functionality and themes.",
     "main": "src/index.js",
     "scripts": {
@@ -17,20 +17,26 @@
         "translations": "node -r dotenv/config scripts/translations.js"
     },
     "devDependencies": {
-        "@babel/core": "^7.16.12",
-        "@babel/preset-env": "^7.16.11",
-        "@babel/register": "^7.16.9",
-        "asar": "^3.2.0",
-        "dotenv": "^16.0.3",
-        "eslint": "^8.23.0",
-        "eslint-plugin-react": "^7.31.6",
+        "@babel/core": "^7.23.9",
+        "@babel/preset-env": "^7.23.9",
+        "@babel/register": "^7.23.7",
+        "@electron/asar": "^3.2.0",
+        "dotenv": "^16.4.5",
+        "eslint": "^8.57.0",
+        "eslint-plugin-react": "^7.33.2",
         "eslint-plugin-react-hooks": "^4.6.0",
-        "mocha": "^10.0.0",
-        "webpack": "^5.74.0",
+        "mocha": "^10.3.0",
+        "terser-webpack-plugin": "^5.3.10",
+        "webpack": "^5.90.3",
         "webpack-cli": "^4.10.0"
     },
     "engines": {
         "node": ">=14",
         "pnpm": ">=7"
+    },
+    "pnpm": {
+        "overrides": {
+            "json5@<1.0.2": ">=1.0.2"
+        }
     }
 }

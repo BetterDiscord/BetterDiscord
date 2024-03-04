@@ -66,7 +66,7 @@ function makeButton(title, children, action, {isControl = false, danger = false,
     const ButtonType = isControl ? "button" : "div";
     return <DiscordModules.Tooltip color="primary" position="top" text={title}>
                 {(props) => {
-                    return <ButtonType {...props} className={(isControl ? "bd-button bd-addon-button" : "bd-addon-button") + (danger ? " bd-button-danger" : "") + (disabled ? " bd-button-disabled" : "")} onClick={action}>{children}</ButtonType>;
+                    return <ButtonType {...props} className={(isControl ? "bd-button bd-button-filled bd-addon-button" : "bd-addon-button") + (danger ? " bd-button-color-red" : isControl ? " bd-button-color-brand" : "") + (disabled ? " bd-button-disabled" : "")} onClick={action} disabled={disabled}>{children}</ButtonType>;
                 }}
             </DiscordModules.Tooltip>;
 }

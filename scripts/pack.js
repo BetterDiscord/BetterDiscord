@@ -1,5 +1,5 @@
 const path = require("path");
-const asar = require("asar");
+const asar = require("@electron/asar");
 
 const doSanityChecks = require("./validate");
 const buildPackage = require("./package");

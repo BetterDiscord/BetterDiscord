@@ -1,5 +1,7 @@
 import React from "@modules/react";
 
+import Button from "../base/button";
+
 const {useCallback} = React;
 
 
@@ -18,7 +20,7 @@ export default function SettingsTitle({isGroup, className, button, onClick, text
     const titleClass = className ? `${baseClass} ${className}` : baseClass;
     return <h2 className={titleClass} onClick={() => {onClick?.();}}>
             {text}
-            {button && <button className="bd-button bd-button-title" onClick={click}>{button.title}</button>}
+            {button && <Button className="bd-button-title" onClick={click} size={Button.Sizes.NONE}>{button.title}</Button>}
             {children}
             </h2>;
 

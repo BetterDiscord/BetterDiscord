@@ -5,6 +5,7 @@ import DataStore from "@modules/datastore";
 import DiscordModules from "@modules/discordmodules";
 import ipc from "@modules/ipc";
 
+import Button from "../base/button";
 import SettingsTitle from "./title";
 import AddonCard from "./addoncard";
 import Dropdown from "./components/dropdown";
@@ -47,20 +48,20 @@ function openFolder(folder) {
 function blankslate(type, onClick) {
     const message = Strings.Addons.blankSlateMessage.format({link: `https://betterdiscord.app/${type}s`, type}).toString();
     return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type})} message={message}>
-        <button className="bd-button" onClick={onClick}>{Strings.Addons.openFolder.format({type})}</button>
+        <Button size={Button.Sizes.LARGE} onClick={onClick}>{Strings.Addons.openFolder.format({type})}</Button>
     </EmptyImage>;
 }
 
 function makeBasicButton(title, children, action) {
     return <DiscordModules.Tooltip color="primary" position="top" text={title}>
-                {(props) => <button {...props} className="bd-button" onClick={action}>{children}</button>}
+                {(props) => <Button {...props} size={Button.Sizes.NONE} look={Button.Looks.BLANK} className="bd-button" onClick={action}>{children}</Button>}
             </DiscordModules.Tooltip>;
 }
 
 function makeControlButton(title, children, action, selected = false) {
     return <DiscordModules.Tooltip color="primary" position="top" text={title}>
                 {(props) => {
-                    return <button {...props} className={"bd-button bd-view-button" + (selected ? " selected" : "")} onClick={action}>{children}</button>;
+                    return <Button {...props} size={Button.Sizes.NONE} look={Button.Looks.BLANK} className={"bd-button bd-view-button" + (selected ? " selected" : "")} onClick={action}>{children}</Button>;
                 }}
             </DiscordModules.Tooltip>;
 }

@@ -2,7 +2,10 @@ import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import Settings from "@modules/settingsmanager";
 
-import Checkbox from "./checkbox";
+import Button from "../base/button";
+import Flex from "../base/flex";
+import Switch from "../settings/components/switch";
+import Text from "@ui/base/text";
 
 const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
 const ThemeStore = DiscordModules.ThemeStore;
@@ -13,17 +16,20 @@ const languages = ["abap", "abc", "actionscript", "ada", "apache_conf", "asciido
 function makeButton(button, value) {
     return <DiscordModules.Tooltip color="primary" position="top" text={button.tooltip}>
                 {props => {
-                    return <button {...props} className="btn btn-primary" onClick={(event) => {button.onClick(event, value?.());}}>{button.label}</button>;
+                    return <Button {...props} size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={(event) => {button.onClick(event, value?.());}}>{button.label}</Button>;
                 }}
             </DiscordModules.Tooltip>;
 }
-
-function makeCheckbox(checkbox) {
-    return <Checkbox text={checkbox.label} onChange={checkbox.onChange} checked={checkbox.checked} />;
+// <Switch disabled={disabled} checked={isEnabled} onChange={onChange} />
+function makeSwitch(control) {
+    return <Flex align={Flex.Align.CENTER} style={{gap: "10px"}}>
+                <Text>{control.label}</Text>
+                <Switch onChange={control.onChange} checked={control.checked} />
+            </Flex>;
 }
 
 function buildControl(value, control) {
-    if (control.type == "checkbox") return makeCheckbox(control);
+    if (control.type == "boolean") return makeSwitch(control);
     return makeButton(control, value);
 }
 

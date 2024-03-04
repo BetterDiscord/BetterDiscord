@@ -69,6 +69,8 @@ export default new class DebugLogs extends Builtin {
 
     async checkFilesize() {
         try {
+            // Not been created yet, no need to check filesize
+            if (!fs.existsSync(this.logFile)) return;
             const stats = fs.statSync(this.logFile);
             const mb = stats.size / (1024 * 1024);
             if (mb < 100) return; // Under 100MB, all good

@@ -1,6 +1,6 @@
 <div align="center">
 
-[![BetterDiscord Logo](https://media.discordapp.net/attachments/341062370627682315/1053477174566465567/logo_large_ish.png)](https://betterdiscord.app/)
+<a href="https://betterdiscord.app"><img src="https://betterdiscord.app/resources/branding/logo_large.svg" alt="BetterDiscord Logo" style="width: 70%"/></a>
 
 [![CI Status][build-badge]][build-link] [![GitHub Releases][downloads-badge]][downloads-link] [![Discord][discord-badge]][discord-link] [![Website][website-badge]][website-link] [![Docs][docs-badge]][docs-link]
 

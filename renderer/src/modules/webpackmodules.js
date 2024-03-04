@@ -524,7 +524,7 @@ export default class WebpackModules {
                 catch (error) {
                     Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
                 }
-                finally{
+                finally {
                 	require.m[moduleId] = originalModule;
                 }
             };

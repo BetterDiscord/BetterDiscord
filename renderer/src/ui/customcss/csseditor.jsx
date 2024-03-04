@@ -61,7 +61,7 @@ export default forwardRef(function CssEditor({css, openNative, update, save, onC
                     {label: <Refresh size="18px" />, tooltip: Strings.CustomCSS.update, onClick: updateCss},
                     {label: <Save size="18px" />, tooltip: Strings.CustomCSS.save, onClick: saveCss},
                     {label: <Edit size="18px" />, tooltip: Strings.CustomCSS.openNative, onClick: popoutNative},
-                    {label: Strings.Collections.settings.customcss.liveUpdate.name, type: "checkbox", onChange: toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"},
+                    {label: Strings.Collections.settings.customcss.liveUpdate.name, type: "boolean", onChange: toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"},
                     openDetached && {label: <Detach size="18px" />, tooltip: Strings.CustomCSS.openDetached, onClick: popout, side: "right"}
                 ].filter(c => c)}
                 value={css}
