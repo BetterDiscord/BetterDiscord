@@ -260,5 +260,9 @@
         "customColor": "Custom Color",
         "resetSettings": "Reset Settings",
         "resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone."
+    },
+    "Socials": {
+        "twitter": "Follow Us!",
+        "github": "Star Us!"
     }
 }
