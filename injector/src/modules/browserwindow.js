@@ -31,7 +31,10 @@ class BrowserWindow extends electron.BrowserWindow {
 
                 this.webContents.setWindowOpenHandler((details) => {
                     const originalResponse = originalWindowOpenHandler(details);
-                    originalResponse.overrideBrowserWindowOptions.frame = true;
+                    // Only set the frame option if it's a pop-out
+                    if (details.frameName === "DISCORD_CHANNEL_CALL_POPOUT") {
+                        originalResponse.overrideBrowserWindowOptions.frame = true;
+                    }
                     return originalResponse;
                 });
             });
