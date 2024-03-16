@@ -49,6 +49,13 @@ export default new class Core {
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
 
+        Logger.log("Startup", "Injecting Setting-dependent BD Styles");
+        if (Settings.get("settings", "window", "frame", false)) {
+            DOMManager.injectStyle("bd-frame", `div[class^="titleBar_"], div[class*=" titleBar_"] {
+                display: none !important;
+            }`);
+        }
+
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 

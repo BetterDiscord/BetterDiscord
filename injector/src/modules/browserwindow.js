@@ -17,12 +17,36 @@ class BrowserWindow extends electron.BrowserWindow {
         }
 
         // Only affect frame if it is *explicitly* set
-        // const shouldHaveFrame = BetterDiscord.getSetting("window", "frame");
-        // if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
+        const shouldHaveFrame = BetterDiscord.getSetting("window", "frame");
+        if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
 
         super(options);
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
+
+        if (typeof(shouldHaveFrame) === "boolean" && shouldHaveFrame) {
+            // Override the window open handler to force new windows (such as pop-outs) to have frames
+            this.webContents.on("did-finish-load", () => {
+                const originalWindowOpenHandler = this.webContents._windowOpenHandler;
+
+                this.webContents.setWindowOpenHandler((details) => {
+                    const originalResponse = originalWindowOpenHandler(details);
+                    // Only set the frame option if it's a pop-out
+                    if (details.frameName === "DISCORD_CHANNEL_CALL_POPOUT") {
+                        originalResponse.overrideBrowserWindowOptions.frame = true;
+                    }
+                    return originalResponse;
+                });
+            });
+
+            // Remove the title bar and menu from new windows
+            this.webContents.on("did-create-window", (window) => {
+                window.removeMenu();
+                window.webContents.insertCSS(`div[class^="titleBar_"], div[class*=" titleBar_"] {
+                    display: none !important;
+                }`);
+            });
+        }
     }
 }
 
