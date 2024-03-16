@@ -237,7 +237,7 @@
 }
 
 .bd-addon-modal {
-    min-height: unset;
+    min-height: 0;
 }
 
 .bd-addon-modal-settings {
