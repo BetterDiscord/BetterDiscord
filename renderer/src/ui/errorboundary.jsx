@@ -15,7 +15,7 @@ export default class ErrorBoundary extends React.Component {
     }
 
     render() {
-      if (this.state.hasError) return <div onClick={() => IPC.openDevTools()} className="react-error">There was an unexpected Error. Click to open console for more details.</div>;  
+      if (this.state.hasError && !this.props.hideError) return <div onClick={() => IPC.openDevTools()} className="react-error">There was an unexpected Error. Click to open console for more details.</div>;  
       return this.props.children; 
     }
 }

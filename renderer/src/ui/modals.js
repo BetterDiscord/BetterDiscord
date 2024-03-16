@@ -280,7 +280,7 @@ export default class Modals {
     static makeStack() {
         const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
         DOMManager.bdBody.append(div);
-        ReactDOM.render(<ModalStack />, div);
+        ReactDOM.render(<ErrorBoundary hideError={true}><ModalStack /></ErrorBoundary>, div);
         this.hasInitialized = true;
     }
     
