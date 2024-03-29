@@ -11,6 +11,6 @@
         "lint": "eslint --ext .js src/"
     },
     "devDependencies": {
-        "webpack": "^5.90.3"
+        "webpack": "^5.91.0"
     }
 }
