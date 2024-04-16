@@ -19,7 +19,8 @@ module.exports = (env, argv) => ({
     rimraf: `require("rimraf")`,
     yauzl: `require("yauzl")`,
     mkdirp: `require("mkdirp")`,
-    module: `require("module")`
+    module: `require("module")`,
+    child_process: `require("child_process")`,
   },
   resolve: {
     extensions: [".js"],

@@ -4,11 +4,10 @@ import WebpackModules, {Filters} from "@modules/webpackmodules";
 
 
 const getOptions = (args, defaultOptions = {}) => {
-    if (args.length > 1 &&
-        typeof(args[args.length - 1]) === "object" &&
-        !Array.isArray(args[args.length - 1]) &&
-        args[args.length - 1] !== null
-    ) {
+    if (args.length > 1
+        && typeof(args[args.length - 1]) === "object" // eslint-disable-line operator-linebreak
+        && !Array.isArray(args[args.length - 1]) // eslint-disable-line operator-linebreak
+        && args[args.length - 1] !== null) { // eslint-disable-line operator-linebreak
         Object.assign(defaultOptions, args.pop());
     }
 

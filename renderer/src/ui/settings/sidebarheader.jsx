@@ -2,20 +2,22 @@ import Changelog from "@data/changelog";
 
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
+import Strings from "@modules/strings";
 
 import HistoryIcon from "@ui/icons/history";
 
 import Modals from "@ui/modals";
+import Button from "@ui/base/button";
 
 
 export default function SettingsTitle() {
     return <div className="bd-sidebar-header">
                 <h2 className="bd-sidebar-header-label">BetterDiscord</h2>
-                <DiscordModules.Tooltip color="primary" position="top" text="Changelog">
+                <DiscordModules.Tooltip color="primary" position="top" text={Strings.Modals.changelog}>
                     {props =>
-                        <div {...props} className="bd-changelog-button" onClick={() => Modals.showChangelogModal(Changelog)}>
+                        <Button {...props} className="bd-changelog-button" look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} size={Button.Sizes.NONE} onClick={() => Modals.showChangelogModal(Changelog)}>
                             <HistoryIcon className="bd-icon" size="16px" />
-                        </div>
+                        </Button>
                     }
                 </DiscordModules.Tooltip>
             </div>;

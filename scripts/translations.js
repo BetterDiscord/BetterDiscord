@@ -52,6 +52,7 @@ const editorMap = {
     "ru": "ru.json",         // Russian
     "sk": "sk.json",         // Slovak
     "es": "es-es.json",      // Spanish (Spain)
+    "es-419": "es-419.json", // Spanish (LATAM)
     "sv": "sv-se.json",      // Swedish
     "tr": "tr.json",         // Turkish
     "bg": "bg.json",         // Bulgarian

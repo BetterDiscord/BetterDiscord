@@ -79,3 +79,15 @@
     background: var(--background-secondary);
     border: 1px solid var(--background-tertiary);
 }
+
+.bd-addon-error-details {
+    display: flex;
+    flex-grow: 0;
+    justify-content: flex-start;
+    margin-top: 4px;
+}
+
+.bd-addon-error-details-icon {
+    margin-right: 4px;
+    color: var(--interactive-normal);
+}

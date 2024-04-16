@@ -9,10 +9,6 @@
             "name": "setări",
             "general": {
                 "name": "general",
-                "emotes": {
-                    "name": "Sistemul de emote-uri",
-                    "note": "Activează sistemul de emote-uri din cadrul BD"
-                },
                 "voiceDisconnect": {
                     "name": "Deconectare de la voce",
                     "note": "Deconectează-te de la un canal de voce când inchizi Discord-ul"
@@ -107,55 +103,6 @@
                     "note": "Transferă tot din consolă in fișierul debug.log din folderul BetterDiscord"
                 }
             }
-        },
-        "emotes": {
-            "name": "Emoji-uri",
-            "general": {
-                "name": "general",
-                "download": {
-                    "name": "Descarcă emoji-urile",
-                    "note": "Descarcă emoji-urile oricănd nu mai sunt actualizate la zi"
-                },
-                "emoteMenu": {
-                    "name": "Meniu emoji",
-                    "note": "Arată emote-urile Twitch/Favorite în meniu"
-                },
-                "hideEmojiMenu": {
-                    "name": "Ascunde meniul de emoji-uri",
-                    "note": "Ascunde meniul de emoji-uri al Discord-ului atunci când folosiți meniul de emote-uri"
-                },
-                "autoCaps": {
-                    "name": "Scriere cu majusculă a emote-urilor",
-                    "note": "Scrie in mod automat cu majusculă comenzile pentru emote-uri"
-                },
-                "modifiers": {
-                    "name": "Arată modificările emote-urilor",
-                    "note": "Activează mod-urile pentru emote-uri (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animează la atingere",
-                    "note": "Animează emote-urile doar când treci cu cursorul peste ele"
-                }
-            },
-            "categories": {
-                "name": "Categorii",
-                "twitchglobal": {
-                    "name": "Twitch Globals",
-                    "note": "Arată emote-urile globale Twitch"
-                },
-                "twitchsubscriber": {
-                    "name": "Abonări Twitch",
-                    "note": "Arată emote-urile"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Arată emote-urile de la FFZ"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Arată emote-urile de la BTTV"
-                }
-            }
         }
     },
     "Addons": {
@@ -207,14 +154,6 @@
         "openDetached": "Detașează fereastra",
         "settings": "Setările editor-ului",
         "editorTitle": "Editor de CSS personalizat"
-    },
-    "Emotes": {
-        "loading": "Emote-urile care se incarcă pe fundal nu se reîncarcă.",
-        "loaded": "Toate emote-urile s-au încărcat cu succes.",
-        "clearEmotes": "Curăță datele legate de emote-uri",
-        "favoriteAction": "Favorite!",
-        "downloadFailed": "Descărcarea a eșuat",
-        "failureMessage": "BetterDiscord nu a putut încărca emote-urile, te rugăm să verifici conexiunea la internet si firewall-ul."
     },
     "Modals": {
         "confirmAction": "Ești sigur ?",

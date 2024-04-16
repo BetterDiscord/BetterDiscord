@@ -25,3 +25,17 @@
     margin-right: 2px;
     fill: var(--interactive-normal);
 }
+
+.bd-search-wrapper > .bd-button {
+    margin-right: 2px;
+    background: none;
+    padding: 0;
+}
+
+.bd-search-wrapper > .bd-button > svg .fill {
+    fill: var(--interactive-normal);
+}
+
+.bd-search-wrapper > .bd-button:hover > svg .fill {
+    fill: var(--interactive-hover);
+}

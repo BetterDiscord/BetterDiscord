@@ -1,6 +1,5 @@
 import path from "path";
 import fs from "fs";
-import {shell} from "electron";
 
 import Logger from "@common/logger";
 
@@ -11,13 +10,16 @@ import Events from "./emitter";
 import DataStore from "./datastore";
 import React from "./react";
 import Strings from "./strings";
+import ipc from "./ipc";
 
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
 
 
-const openItem = shell.openItem || shell.openPath;
+// const SWITCH_ANIMATION_TIME = 250;
+
+const openItem = ipc.openPath;
 
 const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
@@ -270,8 +272,21 @@ export default class AddonManager {
         if (!addon || addon.partial) return;
         if (this.state[addon.id]) return;
         this.state[addon.id] = true;
-        this.startAddon(addon);
-        this.saveState();
+        this.emit("enabled", addon);
+        // setTimeout(() => {
+            this.startAddon(addon);
+            this.saveState();
+        // }, SWITCH_ANIMATION_TIME);
+    }
+
+    enableAllAddons() {
+        const originalSetting = Settings.get("settings", "general", "showToasts", false);
+        Settings.set("settings", "general", "showToasts", false);
+        for (let a = 0; a < this.addonList.length; a++) {
+            this.enableAddon(this.addonList[a]);
+        }
+        Settings.set("settings", "general", "showToasts", originalSetting);
+        this.emit("batch");
     }
 
     disableAddon(idOrAddon) {
@@ -279,8 +294,21 @@ export default class AddonManager {
         if (!addon || addon.partial) return;
         if (!this.state[addon.id]) return;
         this.state[addon.id] = false;
-        this.stopAddon(addon);
-        this.saveState();
+        this.emit("disabled", addon);
+        // setTimeout(() => {
+            this.stopAddon(addon);
+            this.saveState();
+        // }, SWITCH_ANIMATION_TIME);
+    }
+
+    disableAllAddons() {
+        const originalSetting = Settings.get("settings", "general", "showToasts", false);
+        Settings.set("settings", "general", "showToasts", false);
+        for (let a = 0; a < this.addonList.length; a++) {
+            this.disableAddon(this.addonList[a]);
+        }
+        Settings.set("settings", "general", "showToasts", originalSetting);
+        this.emit("batch");
     }
 
     toggleAddon(id) {

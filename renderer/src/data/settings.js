@@ -6,7 +6,8 @@ export default [
         settings: [
             {type: "switch", id: "voiceDisconnect", value: false},
             {type: "switch", id: "showToasts", value: true},
-            {type: "switch", id: "mediaKeys", value: false}
+            {type: "switch", id: "mediaKeys", value: false},
+            {type: "switch", id: "bdContextMenu", value: true}
         ]
     },
     {

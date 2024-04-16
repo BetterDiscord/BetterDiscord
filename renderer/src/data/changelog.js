@@ -1,22 +1,15 @@
 // fixed, improved, added, progress
 export default {
-    description: "This update is just a hotfix for the recent Discord update!",
+    video: "https://www.youtube.com/embed/evyvq9eQTqA?si=opmzjGjUArT4VLrj&vq=hd720p&hd=1&rel=0&showinfo=0&mute=1&loop=1&autohide=1",
+    description: "This is just a quick fix for those using Discord Canary & PTB, and of course a pre-emptive fix for when they move these changes to Stable.",
     changes: [
         {
-            title: "What's Fixed?",
-            type: "improved",
-            items: [
-                "Patching webpack modules is now fixed for plugins.",
-                "Themes are placed later in the DOM than Discord's CSS giving them priority.",
-                "BetterDiscord's modals should all be working."
-            ]
-        },
-        {
-            title: "What's not fixed?",
+            title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "Individual plugins and themes will still need to make their own updates.",
+                "Fixed modal transition component being grabbed incorrectly.",
+                "Fixed custom modal stack not having an `ErrorBoundary` which caused any small issue to bubble up and prevent BetterDiscord startup."
             ]
-        }
+        },
     ]
 };

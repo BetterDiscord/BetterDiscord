@@ -10,10 +10,6 @@
             "name": "Beállítások",
             "general": {
                 "name": "Általános",
-                "emotes": {
-                    "name": "Emotikon rendszer",
-                    "note": "BD emotikon rendszer engedélyezése"
-                },
                 "voiceDisconnect": {
                     "name": "Hangkapcsolat megszakítása",
                     "note": "Kapcsolat megszakítása a hangkiszolgálóval amikor bezárod a Discordot"
@@ -144,55 +140,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "Emotikonok",
-            "general": {
-                "name": "Általános",
-                "download": {
-                    "name": "Emotikonok letöltése",
-                    "note": "Emotikonok letöltése, ha elavultak"
-                },
-                "emoteMenu": {
-                    "name": "Emotikon menü",
-                    "note": "Twitch/kedvenc emotikonok megjelenítése az emotikonok menüjében"
-                },
-                "hideEmojiMenu": {
-                    "name": "Emotikon menü elrejtése",
-                    "note": "Elrejti a Discord emotikon menüjét az emotikon menü használatakor"
-                },
-                "autoCaps": {
-                    "name": "Emotikon autokapitalizáció",
-                    "note": "Emotikon-parancsok automatikus nagybetűsítése"
-                },
-                "modifiers": {
-                    "name": "Emotikon módosítások megjelenítése",
-                    "note": "Emotikon módosítások engedélyezése (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animáció lebegtetéskor",
-                    "note": "Csak lebegéskor animálja az emotikon módosításokat"
-                }
-            },
-            "categories": {
-                "name": "Kategóriák",
-                "twitchglobal": {
-                    "name": "Twitch globális",
-                    "note": "Globális Twitch emotikonok megjelenítése"
-                },
-                "twitchsubscriber": {
-                    "name": "Twitch előfizetők",
-                    "note": "Twitch előfizetői emotikonok megjelenítése"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Emotikonok megjelenítése az FFZ-ből"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Emotikonok megjelenítése a BTTV-ből"
-                }
-            }
         }
     },
     "Addons": {
@@ -246,14 +193,6 @@
         "openDetached": "Különálló ablak",
         "settings": "Szerkesztő beállítások",
         "editorTitle": "Egyéni CSS szerkesztő"
-    },
-    "Emotes": {
-        "loading": "Az emotikonok betöltése a háttérben.",
-        "loaded": "Minden emotikon sikeresen betöltött.",
-        "clearEmotes": "Emotikon adatok törlése",
-        "favoriteAction": "Kedvenc!",
-        "downloadFailed": "Letöltés sikertelen",
-        "failureMessage": "A BetterDiscord nem tudta letölteni az emotikonokat, kérjük ellenőrizze az internetkapcsolatát és a tűzfalat."
     },
     "Modals": {
         "confirmAction": "Biztos vagy benne?",

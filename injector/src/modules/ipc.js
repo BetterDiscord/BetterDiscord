@@ -1,4 +1,5 @@
-import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences} from "electron";
+import {spawn} from "child_process";
+import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell} from "electron";
 
 import * as IPCEvents from "common/constants/ipcevents";
 
@@ -30,6 +31,11 @@ const getPath = (event, pathReq) => {
     }
 
     event.returnValue = returnPath;
+};
+
+const openPath = (event, path) => {
+    if (process.platform === "win32") spawn("explorer.exe", [path]);
+    else shell.openPath(path);
 };
 
 const relaunch = () => {
@@ -140,6 +146,7 @@ export default class IPCMain {
     static registerEvents() {
         try {
             ipc.on(IPCEvents.GET_PATH, getPath);
+            ipc.on(IPCEvents.OPEN_PATH, openPath);
             ipc.on(IPCEvents.RELAUNCH, relaunch);
             ipc.on(IPCEvents.OPEN_DEVTOOLS, openDevTools);
             ipc.on(IPCEvents.CLOSE_DEVTOOLS, closeDevTools);

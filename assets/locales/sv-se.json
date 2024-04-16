@@ -10,10 +10,6 @@
             "name": "Inställningar",
             "general": {
                 "name": "Allmänt",
-                "emotes": {
-                    "name": "Emotessystem",
-                    "note": "Aktiverar BDs emotessystem"
-                },
                 "voiceDisconnect": {
                     "name": "Lämna röstsamtal",
                     "note": "Lämna röstsamtal när Discord stängs ner"
@@ -104,43 +100,6 @@
                     }
                 }
             }
-        },
-        "emotes": {
-            "name": "Emotes",
-            "general": {
-                "name": "Generellt",
-                "download": {
-                    "name": "Ladda Ner Emotes",
-                    "note": "Ladda ner emotes en gång i veckan för att hålla sig uppdaterad"
-                },
-                "emoteMenu": {
-                    "name": "Emote Meny",
-                    "note": "Visa Twitch/Favorit emotes i emote meny"
-                },
-                "hideEmojiMenu": {
-                    "name": "Gömmer Emoji Meny",
-                    "note": "Gömmer Discord's emoji meny när emote meny är aktiverad"
-                },
-                "autoCaps": {
-                    "name": "Automatiskt Stor Bokstav I Emotes",
-                    "note": "Gör automatiskt stor bokstav i emote kommandon"
-                },
-                "modifiers": {
-                    "name": "Visa Emote Modifierare",
-                    "note": "Aktivera emote modifierare (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animera När Musen Hålls Över",
-                    "note": "Animera endast emote midiferare när musen hålls över emoten"
-                }
-            },
-            "categories": {
-                "name": "Kategorier",
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Visa emotes från BTTV"
-                }
-            }
         }
     },
     "Addons": {
@@ -172,7 +131,10 @@
         "settingsError": "Kunde inte öppna inställningarna för {{namn}}",
         "unknownAuthor": "Okänd upphovsman",
         "noDescription": "Beskrivning saknas.",
-        "isEnabled": "Aktiverad"
+        "compileError": "Kunde inte kompileras. Se konsolen för mer information.",
+        "isEnabled": "Aktiverad",
+        "listView": "Listvy",
+        "gridView": "Rutnätsvy"
     },
     "CustomCSS": {
         "confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",
@@ -182,10 +144,6 @@
         "openDetached": "Koppla Loss Fönster",
         "settings": "Inställningar för redigerare",
         "editorTitle": "Egen CSS-redigerare"
-    },
-    "Emotes": {
-        "clearEmotes": "Rensa Emote Data",
-        "favoriteAction": "Favorit!"
     },
     "Modals": {
         "confirmAction": "Är du säker?",

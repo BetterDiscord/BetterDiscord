@@ -9,10 +9,6 @@
             "name": "Definições",
             "general": {
                 "name": "Geral",
-                "emotes": {
-                    "name": "Sistema de Emotes",
-                    "note": "Ativa o sistema de emotes do BD"
-                },
                 "voiceDisconnect": {
                     "name": "Disconectar Voz",
                     "note": "Disconectar do servidor de voz quando fechar o discord"
@@ -107,55 +103,6 @@
                     "note": "Saída de tudo da consola para o ficheiro debug.log na pasta BetterDiscord"
                 }
             }
-        },
-        "emotes": {
-            "name": "Emotes",
-            "general": {
-                "name": "Geral",
-                "download": {
-                    "name": "Transferir Emotes",
-                    "note": "Transferir Emotes mesmo estando indisponiveis"
-                },
-                "emoteMenu": {
-                    "name": "Menu de Emotes",
-                    "note": "Mostra os emotes Twitch/Favoritos no menu de emotes"
-                },
-                "hideEmojiMenu": {
-                    "name": "Esconde o Emoji Menu",
-                    "note": "Esconde o menu de emojis do Discord quando se usa o menu de emotes"
-                },
-                "autoCaps": {
-                    "name": "Emote Autocapitalização",
-                    "note": "Autocapitaliza o comando de emotes"
-                },
-                "modifiers": {
-                    "name": "Mostra as modificações de emotes",
-                    "note": "Ativa a modificação de emotes (flip, spin, pulse, spin2, spin3, 1spin, 2spin, 3spin, tr, bl, br, shake, shake2, shake3, flap)"
-                },
-                "animateOnHover": {
-                    "name": "Animar ao pairar",
-                    "note": "Anima os modificadores de emote apenas ao passar o cursor"
-                }
-            },
-            "categories": {
-                "name": "Categorias",
-                "twitchglobal": {
-                    "name": "Twitch Globals",
-                    "note": "Mostra os emotes da Twitch global"
-                },
-                "twitchsubscriber": {
-                    "name": "Subscrições Twitch",
-                    "note": "Mostra os emotes de subscrição da Twitch"
-                },
-                "frankerfacez": {
-                    "name": "FrankerFaceZ",
-                    "note": "Mostra os emotes da FFZ"
-                },
-                "bttv": {
-                    "name": "BetterTTV",
-                    "note": "Mostra os emotes da"
-                }
-            }
         }
     },
     "Addons": {
@@ -207,14 +154,6 @@
         "openDetached": "Separar Janela",
         "settings": "Definições de Editor",
         "editorTitle": "Editor de CSS Personalizado"
-    },
-    "Emotes": {
-        "loading": "Carregar emotes em segundo plano não carregam.",
-        "loaded": "Todos os emotes foram carregados com sucesso.",
-        "clearEmotes": "Limpar dados de Emotes",
-        "favoriteAction": "Favorito!",
-        "downloadFailed": "Transfêrencia falhou",
-        "failureMessage": "BetterDiscord falhou a transfêrencia de emotes, por favor verifique a sua conexão à Internet e à Firewall."
     },
     "Modals": {
         "confirmAction": "Tem a certeza?",
