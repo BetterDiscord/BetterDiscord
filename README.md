@@ -33,7 +33,10 @@ BetterDiscord is a client modification for Discord with endless flexibility and 
 
 Download the installer for your operating system below. You can check [this page](https://docs.betterdiscord.app/users/getting-started/installation) for a more detailed guide.
 
-[![Windows Installer][windows-badge]][windows-link] [![Mac Installer][mac-badge]][mac-link] [![Linux Installer][linux-badge]][linux-link]
+[![Windows Installer][windows-badge]][windows-link]
+[![Mac Installer][mac-badge]][mac-link]
+[![Linux Installer][linux-badge]][linux-link]
+[![CLI Installer][cli-badge]][cli-link]
 
 [windows-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Windows.exe
 [windows-badge]: https://img.shields.io/badge/Windows%20(7+)-3a71c1?logo=Windows&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
@@ -44,6 +47,8 @@ Download the installer for your operating system below. You can check [this page
 [linux-link]: https://github.com/BetterDiscord/Installer/releases/latest/download/BetterDiscord-Linux.AppImage
 [linux-badge]: https://img.shields.io/badge/Linux-3a71c1?logo=Linux&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
+[cli-link]: (https://www.npmjs.com/package/@betterdiscord/cli)
+[cli-badge]: https://img.shields.io/badge/CLI-3a71c1?logo=npm&logoColor=3a71c1&labelColor=0c0d10&color=3a71c1&style=for-the-badge
 
 
 # Manual Installation
