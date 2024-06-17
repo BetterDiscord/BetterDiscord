@@ -7,7 +7,7 @@ import Backdrop from "./backdrop";
 const {Fragment, useState, useCallback, useEffect} = React;
 
 
-const Transitions = WebpackModules.getModule(m => m?.defaultProps?.transitionAppear || m?.TransitionGroup?.defaultProps);
+const Transitions = WebpackModules.getModule(m => m.performEnter?.childFactory === null, {searchExports: true});
 const TransitionGroup = Transitions.TransitionGroup ?? Transitions;
 
 class ModalLayer extends React.Component {
