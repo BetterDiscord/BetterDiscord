@@ -50,44 +50,56 @@
      }
  
      static makeOverride(patch) {
-         return function BDPatcher() {
-             let returnValue;
-             if (!patch.children || !patch.children.length) return patch.originalFunction.apply(this, arguments);
-             for (const superPatch of patch.children.filter(c => c.type === "before")) {
-                 try {
-                     superPatch.callback(this, arguments);
-                 }
-                 catch (err) {
-                     Logger.err("Patcher", `Could not fire before callback of ${patch.functionName} for ${superPatch.caller}`, err);
-                 }
-             }
- 
-             const insteads = patch.children.filter(c => c.type === "instead");
-             if (!insteads.length) {returnValue = patch.originalFunction.apply(this, arguments);}
-             else {
-                 for (const insteadPatch of insteads) {
-                     try {
-                         const tempReturn = insteadPatch.callback(this, arguments, patch.originalFunction.bind(this));
-                         if (typeof(tempReturn) !== "undefined") returnValue = tempReturn;
-                     }
-                     catch (err) {
-                         Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
-                     }
-                 }
-             }
- 
-             for (const slavePatch of patch.children.filter(c => c.type === "after")) {
-                 try {
-                     const tempReturn = slavePatch.callback(this, arguments, returnValue);
-                     if (typeof(tempReturn) !== "undefined") returnValue = tempReturn;
-                 }
-                 catch (err) {
-                     Logger.err("Patcher", `Could not fire after callback of ${patch.functionName} for ${slavePatch.caller}`, err);
-                 }
-             }
-             return returnValue;
-         };
-     }
+        const logError = (type, caller, err) => {
+            Logger.err("Patcher", `Could not fire ${type} callback of ${patch.functionName} for ${caller}`, err);
+        };
+    
+        const applyPatch = (context, args, callback, originalFunction) => {
+            try {
+                const result = callback(context, args, originalFunction);
+                return typeof result !== "undefined" ? result : undefined;
+            } catch (err) {
+                logError(callback.type, callback.caller, err);
+                return undefined;
+            }
+        };
+    
+        return function BDPatcher() {
+            let returnValue;
+    
+            if (!patch.children || !patch.children.length) {
+                return patch.originalFunction.apply(this, arguments);
+            }
+    
+            const beforePatches = [];
+            const insteadPatches = [];
+            const afterPatches = [];
+    
+            patch.children.forEach(child => {
+                if (child.type === "before") beforePatches.push(child);
+                else if (child.type === "instead") insteadPatches.push(child);
+                else if (child.type === "after") afterPatches.push(child);
+            });
+    
+            beforePatches.forEach(patch => applyPatch(this, arguments, patch.callback));
+    
+            if (!insteadPatches.length) {
+                returnValue = patch.originalFunction.apply(this, arguments);
+            } else {
+                insteadPatches.forEach(patch => {
+                    const result = applyPatch(this, arguments, patch.callback, patch.originalFunction.bind(this));
+                    if (result !== undefined) returnValue = result;
+                });
+            }
+    
+            afterPatches.forEach(patch => {
+                const result = applyPatch(this, arguments, patch.callback, () => returnValue);
+                if (result !== undefined) returnValue = result;
+            });
+    
+            return returnValue;
+        };
+     }    
  
      static rePatch(patch) {
          patch.proxyFunction = patch.module[patch.functionName] = this.makeOverride(patch);
