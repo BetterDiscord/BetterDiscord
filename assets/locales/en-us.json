@@ -39,7 +39,7 @@
                 },
                 "frame": {
                     "name": "Window Frame",
-                    "note": "Adds the native os window frame to the main window"
+                    "note": "Adds the native OS window frame to the main window (requires restart)"
                 }
             },
             "addons": {
@@ -235,6 +235,10 @@
     },
     "WindowPrefs": {
         "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
+        "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
+    },
+    "NativeFrame": {
+        "enabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?",
         "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
     },
     "Notices": {
