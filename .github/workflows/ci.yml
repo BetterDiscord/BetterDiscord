@@ -43,6 +43,4 @@ jobs:
         with:
           if-no-files-found: error
           retention-days: 30
-          path: |
-            dist/*.js
-            dist/betterdiscord.asar
+          path: dist/betterdiscord.asar
