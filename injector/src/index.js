@@ -58,3 +58,54 @@ if (!process.argv.includes("--vanilla")) {
     const BetterDiscord = require("./modules/betterdiscord").default;
     BetterDiscord.disableMediaKeys();
 }
+
+function isNewer($new, old) {
+    const newParts = $new.slice(4).split(".").map(Number);
+    const oldParts = old.slice(4).split(".").map(Number);
+
+    for (let i = 0; i < oldParts.length; i++) {
+        if (newParts[i] > oldParts[i]) return true;
+        if (newParts[i] < oldParts[i]) return false;
+    }
+    return false;
+}
+
+app.on("before-quit", () => {
+    if (process.platform !== "win32") return;
+    const updateLog = path.join(app.getPath("appData"), "BetterDiscord", "data", "update.log");
+    try {
+        const currentAppPath = path.dirname(process.execPath);
+        const currentVersion = path.basename(currentAppPath);
+        const discordPath = path.join(currentAppPath, "..");
+
+        fs.appendFileSync(updateLog, `Checking for update from version ${currentVersion}...\n`);
+
+        const latestVersion = fs.readdirSync(discordPath).reduce((prev, curr) => {
+            return (curr.startsWith("app-") && isNewer(curr, prev))
+                ? curr
+                : prev;
+        }, currentVersion);
+
+        fs.appendFileSync(updateLog, `Found version ${latestVersion}\n`);
+
+        if (latestVersion === currentVersion) return fs.appendFileSync(updateLog, "Versions are equal no need to update.\n\n\n");
+
+        fs.appendFileSync(updateLog, `Trying to automatically reinject from version ${currentVersion} to version ${latestVersion}\n`);
+
+        const modules = path.join(discordPath, latestVersion, "modules");
+        const coreWrap = fs.readdirSync(modules).filter(e => e.indexOf("discord_desktop_core") === 0).sort().reverse()[0];
+        const corePath = path.join(modules, coreWrap, "discord_desktop_core");
+
+        const bdAsar = path.join(app.getPath("appData"), "BetterDiscord", "data", "betterdiscord.asar");
+        const indexJs = path.join(corePath, "index.js");
+
+        if (fs.existsSync(indexJs)) fs.unlinkSync(indexJs);
+        fs.writeFileSync(indexJs, `require("${bdAsar.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}");\nmodule.exports = require("./core.asar");`);
+
+        fs.appendFileSync(updateLog, "Automatic reinjection successful\n\n\n");
+    }
+    catch (e) {
+        console.log(e);
+        fs.appendFileSync(updateLog, e.toString() + "\n\n\n");
+    }
+});
