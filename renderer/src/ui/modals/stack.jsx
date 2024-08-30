@@ -71,6 +71,6 @@ export default function ModalStack() {
 
     return <TransitionGroup component={Fragment}>
             <Backdrop isVisible={!!modals.length} onClick={() => removeModal(modals[modals.length - 1].modalKey)} />
-            {modals.length && <ModalLayer key={modals[modals.length - 1].modalKey} {...modals[modals.length - 1]} onClose={() => removeModal(modals[modals.length - 1].modalKey)} />}
+            {!!modals.length && <ModalLayer key={modals[modals.length - 1].modalKey} {...modals[modals.length - 1]} onClose={() => removeModal(modals[modals.length - 1].modalKey)} />}
         </TransitionGroup>;
 }
