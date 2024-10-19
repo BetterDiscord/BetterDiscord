@@ -176,17 +176,16 @@ export default new class SettingsRenderer {
 
     async patchVersionInformation() {
         const versionDisplayModule = await WebpackModules.getLazy(Filters.byStrings("RELEASE_CHANNEL", "COPY_VERSION"), {defaultExport: false});
-        if (!versionDisplayModule?.default) return; 
+        if (!versionDisplayModule?.Z) return; 
 
-        Patcher.after("SettingsManager", versionDisplayModule, "default", (_, __, reactTree) => {
+        Patcher.after("SettingsManager", versionDisplayModule, "Z", (_, __, reactTree) => {
             const currentCopy = reactTree?.props?.copyValue;
-            const target = reactTree?.props?.children?.props?.children;
+            const renderer = reactTree?.props?.children;
 
             // Do some sanity checking to make sure this is both the right component
             // and that it's in the format we expect
-            if (!Array.isArray(target) || !currentCopy) return;
+            if (typeof(renderer) !== "function" || !currentCopy) return;
 
-            
             const [pluginCount, setPluginCount] = React.useState(getAddonCount("plugin"));
             const [themeCount, setThemeCount] = React.useState(getAddonCount("theme"));
 
@@ -213,12 +212,24 @@ export default new class SettingsRenderer {
                 };
             }, []);
 
-
             Object.assign(reactTree.props, {get copyValue() {return getDebugInfo(currentCopy, pluginCount.enabled, themeCount.enabled);}});
 
-            target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>BetterDiscord {Config.version}</Text>);
-            target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>{Strings.Panels.plugins} {pluginCount.total} ({pluginCount.enabled} {Strings.Addons.isEnabled})</Text>);
-            target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>{Strings.Panels.themes} {themeCount.total} ({themeCount.enabled} {Strings.Addons.isEnabled})</Text>);
+            if (renderer.__patched) return;
+            reactTree.props.children = function DebugInfo(...props) {
+                const returnTree = renderer(...props);
+                const target = returnTree?.props?.children?.props?.children;
+
+                // Do some sanity checking to make sure this is both the right component
+                // and that it's in the format we expect
+                if (!Array.isArray(target) && returnTree?.props?.role === "button") return returnTree;
+
+                target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>BetterDiscord {Config.version}</Text>);
+                target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>{Strings.Panels.plugins} {pluginCount.total} ({pluginCount.enabled} {Strings.Addons.isEnabled})</Text>);
+                target.push(<Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>{Strings.Panels.themes} {themeCount.total} ({themeCount.enabled} {Strings.Addons.isEnabled})</Text>);
+
+                return returnTree;
+            };
+            renderer.__patched = true;
         });
     }
 

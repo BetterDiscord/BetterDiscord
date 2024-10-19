@@ -1,6 +1,6 @@
 {
     "name": "betterdiscord",
-    "version": "1.10.1",
+    "version": "1.10.2",
     "description": "Enhances Discord by adding functionality and themes.",
     "main": "src/index.js",
     "scripts": {
@@ -36,7 +36,10 @@
     },
     "pnpm": {
         "overrides": {
-            "json5@<1.0.2": ">=1.0.2"
+            "json5@<1.0.2": ">=1.0.2",
+            "braces@<3.0.3": ">=3.0.3",
+            "webpack@<5.94.0": ">=5.94.0",
+            "micromatch@<4.0.8": ">=4.0.8"
         }
     }
 }
