@@ -11,7 +11,7 @@ export default class DOMManager {
     static get bdScripts() {return this.getElement("bd-scripts");}
     static get bdStyles() {return this.getElement("bd-styles");}
     static get bdThemes() {return this.getElement("bd-themes");}
-    static get bdCustomCSS() {return this.getElement("#customcss");}
+    static get bdCustomCSS() {return this.getElement("#bd-customcss");}
     static get bdTooltips() {return this.getElement("bd-tooltips") || this.createElement("bd-tooltips").appendTo(this.bdBody);}
     static get bdModals() {return this.getElement("bd-modals") || this.createElement("bd-modals").appendTo(this.bdBody);}
     static get bdToasts() {return this.getElement("bd-toasts") || this.createElement("bd-toasts").appendTo(this.bdBody);}
@@ -203,4 +203,4 @@ DOMManager.createElement("bd-body", {target: document.body});
 DOMManager.createElement("bd-scripts", {target: DOMManager.bdHead});
 DOMManager.createElement("bd-styles", {target: DOMManager.bdHead});
 DOMManager.createElement("bd-themes", {target: DOMManager.bdHead});
-DOMManager.createElement("style", {id: "customcss", target: DOMManager.bdHead});
+DOMManager.createElement("style", {id: "bd-customcss", target: DOMManager.bdHead});
