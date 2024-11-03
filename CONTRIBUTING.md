@@ -211,8 +211,8 @@ This section lists the labels we use to help us track and manage issues. Please 
 
 | Label name | Description | View All |
 | --- | --- | --- |
-| `awaiting response` | Waiting for a response from the user, issues with this tag are prone to pruning. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/bug) |
-| `bug` | Issue related to a bug report, may or may not be yet confirmed. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/awaiting%20response) |
+| `awaiting response` | Waiting for a response from the user, issues with this tag are prone to pruning. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/awaiting%20response) |
+| `bug` | Issue related to a bug report, may or may not be yet confirmed. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/bug) |
 | `can't fix` | Issues which are invalid or are a limitation of something else like Electron. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/can%27t%20fix) |
 | `can't reproduce` | Reported bugs that could not be confirmed, help welcome. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/can%27t%20reproduce) |
 | `confirmed` | Confirmed bugs to be actively worked. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/confirmed) |
