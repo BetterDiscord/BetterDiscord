@@ -25,6 +25,10 @@
                 "bdContextMenu": {
                     "name": "Settings Context Menu",
                     "note": "Adds a BetterDiscord subsection to the settings context menu."
+                },
+                "bdAddonStore": {
+                    "name": "Addon Store",
+                    "note": "Adds the BetterDiscord Addon Store."
                 }
             },
             "window": {
@@ -163,6 +167,10 @@
         "added": "Date Added",
         "modified": "Date Modified",
         "isEnabled": "Enabled",
+        "popularity": "Popularity",
+        "isInstalled": "Installed",
+        "downloads": "Downloads",
+        "likes": "Likes",
         "listView": "List View",
         "gridView": "Grid View",
         "enableAll": "Enable All",
@@ -172,6 +180,7 @@
         "results": "{{count}} Results",
         "editAddon": "Edit",
         "deleteAddon": "Delete",
+        "downloadAddon": "Download",
         "confirmDelete": "Are you sure you want to delete {{name}}?",
         "confirmationText": "You have unsaved changes to {{name}}. Closing this window will lose all those changes.",
         "enabled": "{{name}} has been enabled.",
@@ -193,7 +202,15 @@
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
         "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
-        "wasLoaded": "{{name}} v{{version}} was loaded."
+        "wasLoaded": "{{name}} v{{version}} was loaded.",
+        "failedToDownload": "Failed to download {{type}} {{name}}",
+        "successfullyDownload": "Successfully downloaded {{type}} {{name}}",
+        "failedToFetch": "Unable to get addons",
+        "new": "New",
+        "recentlyUpdated": "Recently Updated",
+        "downloadCount": "{{downloads}} Downloads",
+        "likeCount": "{{likes}} Likes",
+        "tags": "Tags"
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
