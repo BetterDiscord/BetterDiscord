@@ -1,8 +1,3 @@
-import path from "path";
-import fs from "fs";
-
-import Logger from "@common/logger";
-
 import PluginManager from "@modules/pluginmanager";
 import React from "@modules/react";
 import Strings from "@modules/strings";
@@ -16,32 +11,11 @@ import Delete from "@ui/icons/delete";
 import Download from "@ui/icons/download";
 import GitHub from "@ui/icons/github";
 import Support from "@ui/icons/support";
-import Modals from "@ui/modals";
-import request from "request";
-import Toasts from "@ui/toasts";
 import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import {TagContext} from "./page";
 
 const {useCallback, useMemo, useState, useEffect, useContext} = React;
-
-/**
- * 
- * @param {import("@modules/addonstore").RawAddon} addon 
- * @returns {string}
- */
-const redirect = (addon) => `https://betterdiscord.app/gh-redirect?id=${addon.id}`;
-
-function confirmDelete(addon) {
-    return new Promise(resolve => {
-        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
-            danger: true,
-            confirmText: Strings.Addons.deleteAddon,
-            onConfirm: () => {resolve(true);},
-            onCancel: () => {resolve(false);}
-        });
-    });
-}
 
 function formatNumberWithSuffix(value) {
     if (value === 0) return "0";
@@ -67,50 +41,15 @@ export default function AddonCard({addon, isEmbed}) {
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
-    const triggerDelete = useCallback(async (event) => {
-        const foundAddon = manager.addonList.find(a => a.filename == addon.file_name);
+    const triggerDelete = useCallback(async (event) => AddonStore.attemptToDelete(addon, event.shiftKey), [addon]);
 
-        if (!foundAddon) return;
-
-        if (!event.shiftKey) {
-            const shouldDelete = await confirmDelete(foundAddon);
-            if (!shouldDelete) return;
-        }
-
-        if (manager.deleteAddon) manager.deleteAddon(foundAddon);
-    }, [addon, manager]);
-
-    const installAddon = useCallback(() => {
-        const foundAddon = manager.addonList.find(a => a.id == addon.id);
-
-        if (foundAddon) return;
-
+    const installAddon = useCallback(async () => {
         setDisabled(true);
+        
+        await AddonStore.attemptToDownload(addon);
 
-        request(redirect(addon), (error, _, body) => {            
-            try {
-                if (error) {
-                    Logger.stacktrace("AddonStore", `Failed to fetch addon '${addon.file_name}':`, error);
-    
-                    Toasts.show(Strings.Addons.failedToDownload.format({type: addon.type, name: addon.name}), {
-                        type: "danger"
-                    });
-    
-                    return;
-                }                
-                
-                Toasts.show(Strings.Addons.successfullyDownload.format({type: addon.type, name: addon.name}), {
-                    type: "success"
-                });
-    
-    
-                fs.writeFile(path.join(manager.addonFolder, addon.file_name), body);
-            }
-            finally {
-                setDisabled(false);
-            }
-        });
-    }, [addon, manager]);
+        setDisabled(false);
+    }, [addon]);
 
     // Maybe show the guild invite confirm modal?
     const acceptInvite = useCallback(() => {
@@ -129,13 +68,9 @@ export default function AddonCard({addon, isEmbed}) {
         DiscordModules.InviteActions?.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
     }, [addon]);
 
-    const openSourceCode = useCallback(() => {
-        window.open(redirect(addon), "_blank", "noopener,noreferrer");
-    }, [addon]);
-    
-    const openAddonPage = useCallback(() => {
-        window.open(`https://betterdiscord.app/${addon.type}?id=${addon.id}`, "_blank", "noopener,noreferrer");
-    }, [addon]);
+    const openSourceCode = useCallback(() => AddonStore.openRawCode(addon), [addon]);
+    const openAddonPage = useCallback(() => AddonStore.openAddonPage(addon), [addon]);
+    const openAddonPreview = useCallback(() => AddonStore.openAddonPreview(addon), [addon]);
 
     useEffect(() => {
         setInstalled(() => manager.isLoaded(addon.file_name));
@@ -152,7 +87,6 @@ export default function AddonCard({addon, isEmbed}) {
     }, [manager, addon]);
 
     const badge = useMemo(() => {
-        if (AddonStore.isRecentlyUpdated(addon.id)) return Strings.Addons.recentlyUpdated;
         if (AddonStore.isUnknown(addon.id)) return Strings.Addons.new;
     }, [addon]);
 
@@ -175,6 +109,7 @@ export default function AddonCard({addon, isEmbed}) {
                     <img 
                         src={`https://betterdiscord.app${addon.thumbnail_url || "/resources/ui/content_thumbnail.svg"}`}
                         onError={(event) => {
+                            // Fallback to blank thumbnail
                             event.currentTarget.src = "https://betterdiscord.app/resources/ui/content_thumbnail.svg";
                         }}
                         loading="lazy"
@@ -212,14 +147,20 @@ export default function AddonCard({addon, isEmbed}) {
                                         overflow="visible"
                                         mask="url(#svg-mask-squircle)"
                                     >
-                                        <img 
-                                            loading="lazy"
-                                            className="bd-addon-store-card-author-img"
-                                            src={`https://cdn.discordapp.com/avatars/${addon.author.discord_snowflake}/${addon.author.discord_avatar_hash}.webp?size=80`}
-                                            onError={(event) => {
-                                                event.currentTarget.src = `https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`;
-                                            }}
-                                        />
+                                        <DiscordModules.Tooltip text={addon.author.discord_name}>
+                                            {(props) => (
+                                                <img 
+                                                    loading="lazy"
+                                                    className="bd-addon-store-card-author-img"
+                                                    src={`https://cdn.discordapp.com/avatars/${addon.author.discord_snowflake}/${addon.author.discord_avatar_hash}.webp?size=80`}
+                                                    onError={(event) => {
+                                                        // Fallback to github for when discord PFP is out of date
+                                                        event.currentTarget.src = `https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`;
+                                                    }}
+                                                    {...props}
+                                                />
+                                            )}
+                                        </DiscordModules.Tooltip>
                                     </foreignObject>
                                 </svg>
                             </div>
@@ -278,21 +219,20 @@ export default function AddonCard({addon, isEmbed}) {
                             </Button>
                         )}
                     </DiscordModules.Tooltip>
-                    {/* 
-                        addon api v2 has no way to allow us to preview addons, 
-                        as the dont provide the raw git url 
-
-                        Maybe fetch the redirect to get the original URL, and convert that? 
-                    */}
-                    {/* <Button
-                        size={Button.Sizes.ICON} 
-                        look={Button.Looks.BLANK}
-                        onClick={() => {
-                            // TODO: open preview
-                        }}
-                    >
-                        <GitHub size={24} />
-                    </Button> */}
+                    {addon.type === "theme" && (
+                        <DiscordModules.Tooltip text={Strings.Addons.source}>
+                            {(props) => (
+                                <Button
+                                    {...props}
+                                    size={Button.Sizes.ICON} 
+                                    look={Button.Looks.BLANK}
+                                    onClick={openAddonPreview}
+                                >
+                                    <GitHub size={24} />
+                                </Button>
+                            )}
+                        </DiscordModules.Tooltip>
+                    )}
                     {(addon.guild || addon.author.guild) && (
                         <DiscordModules.Tooltip text={Strings.Addons.invite}>
                             {(props) => (
@@ -314,7 +254,7 @@ export default function AddonCard({addon, isEmbed}) {
                                 <Button
                                     {...props}
                                     size={Button.Sizes.ICON}
-                                    color={Button.Colors.BRAND}
+                                    color={Button.Colors.RED}
                                     onClick={triggerDelete}
                                 >
                                     <Delete size={24} />

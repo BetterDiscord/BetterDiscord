@@ -44,7 +44,7 @@ const buildSortOptions = () => [
     {label: Strings.Addons.name, value: "name"},
     {label: Strings.Addons.author, value: "author"},
     {label: Strings.Addons.version, value: "version"},
-    {label: Strings.Addons.modified, value: "updated"},
+    {label: Strings.Addons.releaseDate, value: "releaseDate"},
     {label: Strings.Addons.isInstalled, value: "isInstalled"},
     {label: Strings.Addons.likes, value: "likes"},
     {label: Strings.Addons.downloads, value: "downloads"}
@@ -55,56 +55,59 @@ const buildDirectionOptions = () => [
     {label: Strings.Sorting.descending, value: false}
 ];
 
-const getTags = (type) => type === "plugin" ? [
-    "fun",
-    "roles",
-    "activity",
-    "status",
-    "game",
-    "edit",
-    "library",
-    "notifications",
-    "emotes",
-    "channels",
-    "shortcut",
-    "enhancement",
-    "servers",
-    "chat",
-    "security",
-    "organization",
-    "friends",
-    "members",
-    "utility",
-    "developers",
-    "search",
-    "text",
-    "voice"
-] : [
-    "flat",
-    "transparent",
-    "layout",
-    "customizable",
-    "fiction",
-    "nature",
-    "space",
-    "dark",
-    "light",
-    "game",
-    "anime",
-    "red",
-    "orange",
-    "green",
-    "purple",
-    "black",
-    "other",
-    "high-contrast",
-    "white",
-    "aqua",
-    "animated",
-    "yellow",
-    "blue",
-    "abstract"
-];
+const allTags = {
+    plugin: [
+        "fun",
+        "roles",
+        "activity",
+        "status",
+        "game",
+        "edit",
+        "library",
+        "notifications",
+        "emotes",
+        "channels",
+        "shortcut",
+        "enhancement",
+        "servers",
+        "chat",
+        "security",
+        "organization",
+        "friends",
+        "members",
+        "utility",
+        "developers",
+        "search",
+        "text",
+        "voice"
+    ],
+    theme: [
+        "flat",
+        "transparent",
+        "layout",
+        "customizable",
+        "fiction",
+        "nature",
+        "space",
+        "dark",
+        "light",
+        "game",
+        "anime",
+        "red",
+        "orange",
+        "green",
+        "purple",
+        "black",
+        "other",
+        "high-contrast",
+        "white",
+        "aqua",
+        "animated",
+        "yellow",
+        "blue",
+        "abstract"
+    ]
+};
 
 const {Spinner} = WebpackModules.getByProps("Spinner", "Tooltip");
 
@@ -117,7 +120,7 @@ export const TagContext = createContext();
 export default function AddonStorePage({type}) {
     AddonStore.initializeIfNeeded();
 
-    const [ tags, setTags ] = useState(() => getTags(type).map((tag) => ({
+    const [ tags, setTags ] = useState(() => allTags[type].map((tag) => ({
         selected: false,
         value: tag,
         label: tag
@@ -204,7 +207,7 @@ export default function AddonStorePage({type}) {
             else if (sort === "version") {
               comparison = a.version.localeCompare(b.version);
             } 
-            else if (sort === "updated") {
+            else if (sort === "releaseDate") {
               comparison = new Date(b.release_date) - new Date(a.release_date);
             } 
             else if (sort === "isInstalled") {

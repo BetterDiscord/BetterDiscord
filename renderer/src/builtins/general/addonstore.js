@@ -39,16 +39,23 @@ export default new class AddonStoreBuiltin extends Builtin {
 
                 for (let key = 0; key < matches.length; key++) {
                     const {match, id} = matches[key];
+                    // How to use labeled statements?
+                    // So i can just continue the matches one
+                    let shouldAdd = true;
 
                     for (let embedIndex = 0; embedIndex < res.length; embedIndex++) {
                         const embed = embeds[embedIndex]?.props?.children?.props?.embed;
 
                         if (embed?.url === match) {
-                            delete embeds[embedIndex];
+                            shouldAdd = false;
+                            embeds[embedIndex] = React.createElement(LazyAddonCard, {id: id, key: key});
+                            break;
                         }
                     }
 
-                    embeds.push(React.createElement(LazyAddonCard, {id: id, key: key}));
+                    if (shouldAdd) {
+                        embeds.push(React.createElement(LazyAddonCard, {id: id, key: key}));
+                    }
                 }
 
                 embeds.length = MAX_EMBEDS;

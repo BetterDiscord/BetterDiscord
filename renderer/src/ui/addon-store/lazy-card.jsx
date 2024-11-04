@@ -33,13 +33,11 @@ export default function LazyAddonCard({id}) {
         );
     }
 
-
-
     return (
         <TagContext.Provider
             value={[
                 (tag) => tags[tag] === true,
-                (tag, state) => setTags((tags) => ({...tags, [tag]: state ?? !tags[tag]}))
+                (tag, state) => setTags(($tags) => ({...$tags, [tag]: state ?? !$tags[tag]}))
             ]}
         >
             <AddonCard addon={addon} isEmbed />

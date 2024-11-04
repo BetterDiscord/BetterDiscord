@@ -168,6 +168,7 @@
         "modified": "Date Modified",
         "isEnabled": "Enabled",
         "popularity": "Popularity",
+        "releaseDate": "Release Date",
         "isInstalled": "Installed",
         "downloads": "Downloads",
         "likes": "Likes",
@@ -207,7 +208,6 @@
         "successfullyDownload": "Successfully downloaded {{type}} {{name}}",
         "failedToFetch": "Unable to get addons",
         "new": "New",
-        "recentlyUpdated": "Recently Updated",
         "downloadCount": "{{downloads}} Downloads",
         "likeCount": "{{likes}} Likes",
         "tags": "Tags"

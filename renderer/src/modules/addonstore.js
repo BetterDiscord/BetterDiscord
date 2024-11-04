@@ -1,10 +1,16 @@
 import request from "request";
+import path from "path";
+import fs from "fs";
 
 import Logger from "@common/logger";
 import Toasts from "@ui/toasts";
 
 import DataStore from "./datastore";
 import Strings from "./strings";
+import fetch from "./api/fetch";
+import PluginManager from "./pluginmanager";
+import ThemeManager from "./thememanager";
+import Modals from "@ui/modals";
 
 const apiURL = "https://api.betterdiscord.app/v2/store/addons";
 
@@ -52,6 +58,19 @@ const apiURL = "https://api.betterdiscord.app/v2/store/addons";
 const ADDON_REGEX_SOURCE = "(?:https?:\\/\\/betterdiscord\\.app\\/(?:theme|plugin)|(?:betterdiscord|bd|bdapp):\\/\\/(?:theme|plugin)s?)(?:\\/|\\?id=)(\\S+)";
 const ADDON_REGEX = new RegExp(`(?:<${ADDON_REGEX_SOURCE}>|${ADDON_REGEX_SOURCE})`, "gi");
 
+const EXTRACT_GIT_INFO = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
+
+function showConfirmDelete(addon) {
+    return new Promise(resolve => {
+        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
+            danger: true,
+            confirmText: Strings.Addons.deleteAddon,
+            onConfirm: () => {resolve(true);},
+            onCancel: () => {resolve(false);}
+        });
+    });
+}
+
 export default new class AddonStore {
     constructor() {
         /**
@@ -66,6 +85,8 @@ export default new class AddonStore {
          * @type {Set<() => void>}
          */
         this._subscribers = new Set();
+
+        window.AddonStore = this;
     }
 
     get knownAddons() {
@@ -160,26 +181,6 @@ export default new class AddonStore {
         this.knownAddons.push(id);
         DataStore.setBDData("known-addons", this.knownAddons);
     }
-
-    /**
-     * Shows if they have been updated in the last week
-     * @param {number} id
-     * @returns {boolean} 
-     */
-    isRecentlyUpdated(id) {
-        const addon = this.getAddon(id);
-
-        if (!addon) return false;
-
-        const currentDate = new Date();
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(currentDate.getDate() - 7);
-
-        const releaseDate = new Date(addon.release_date);
-      
-        // Check if the release date is within the last week
-        return releaseDate >= oneWeekAgo && releaseDate <= currentDate;
-    }
     
     /**
      * Get current state of the store
@@ -235,5 +236,123 @@ export default new class AddonStore {
         }
 
         return matches;
+    }
+
+    /**
+     * Get the github redirect for a addon
+     * @param {RawAddon | number} addonOrId 
+     * @returns {string}
+     */
+    redirect = (addonOrId) => `https://betterdiscord.app/gh-redirect?id=${typeof addonOrId === "number" ? addonOrId : addonOrId.id}`;
+
+    /**
+     * Opens a preview for the theme
+     * @param {RawAddon} addon 
+     */
+    async openAddonPreview(addon) {
+        if (addon.type === "plugin") {
+            throw new Error("Addon is a plugin!");
+        }
+
+        const response = await fetch(this.redirect(addon), {method: "HEAD"});
+
+        if (!response.ok) {
+            throw new Error("Unable to get github url!");
+        }
+
+        const match = response.url.match(EXTRACT_GIT_INFO);
+      
+        if (!match) {
+          throw new Error("Invalid GitHub raw URL format.");
+        }
+      
+        const [, user, repo, commit, filePath] = match;
+        const jsdelivrUrl = `https://cdn.jsdelivr.net/gh/${user}/${repo}@${commit}/${filePath}`;
+        
+        const previewURL = `https://discord-preview.vercel.app/?file=${encodeURIComponent(jsdelivrUrl)}`;
+
+        window.open(previewURL, "_blank", "noopener,noreferrer");
+    }
+    /**
+     * Opens the bd's site page for the addon
+     * @param {RawAddon} addon 
+     */
+    openAddonPage(addon) {
+        window.open(`https://betterdiscord.app/${addon.type}?id=${addon.id}`, "_blank", "noopener,noreferrer");
+    }
+    /**
+     * Opens the raw code page
+     * @param {RawAddon} addon 
+     */
+    openRawCode(addon) {
+        window.open(this.redirect(addon), "_blank", "noopener,noreferrer");
+    }
+
+    /**
+     * Get the file content of a request
+     * @param {number} id 
+     * @returns {Promise<string>}
+     */
+    fetchAddonContents(id) {
+        return new Promise((resolve, reject) => {
+            request(this.redirect(id), (err, headers, body) => {
+                if (err || headers.statusCode >= 300 || headers.statusCode < 200) {
+                    reject(new Error("Fetch was not ok"));
+                    return;
+                }                
+
+                resolve(body);
+            });
+        });
+    }
+
+    /**
+     * Attempt to download addon
+     * @param {RawAddon} addon 
+     */
+    async attemptToDownload(addon) {
+        const manager = addon.type === "plugin" ? PluginManager : ThemeManager;
+
+        const foundAddon = manager.addonList.find(a => a.id == addon.id);
+
+        if (foundAddon) return;
+
+        try {
+            const body = await this.fetchAddonContents(addon.id);
+    
+            Toasts.show(Strings.Addons.successfullyDownload.format({type: addon.type, name: addon.name}), {
+                type: "success"
+            });
+    
+    
+            fs.writeFileSync(path.join(manager.addonFolder, addon.file_name), body);
+        } 
+        catch (error) {
+            Logger.stacktrace("AddonStore", `Failed to fetch addon '${addon.file_name}':`, error);
+
+            Toasts.show(Strings.Addons.failedToDownload.format({type: addon.type, name: addon.name}), {
+                type: "danger"
+            });
+        }
+    }
+
+    /**
+     * Attempt to delete addon
+     * @param {RawAddon} addon 
+     * @param {boolean} shouldSkipConfirm Should confirm the deletion of the addon
+     */
+    async attemptToDelete(addon, shouldSkipConfirm = false) {
+        const manager = addon.type === "plugin" ? PluginManager : ThemeManager;
+
+        const foundAddon = manager.addonList.find(a => a.filename == addon.file_name);
+
+        if (!foundAddon) return;
+
+        if (!shouldSkipConfirm) {
+            const shouldDelete = await showConfirmDelete(foundAddon);
+            if (!shouldDelete) return;
+        }
+
+        if (manager.deleteAddon) manager.deleteAddon(foundAddon);
     }
 };
