@@ -12,20 +12,26 @@ const {Spinner} = WebpackModules.getByProps("Spinner", "Tooltip");
 export default function LazyAddonCard({id}) {
     AddonStore.initializeIfNeeded();
 
-    const [ addon, setAddon ] = useState(() => AddonStore.getAddon(id));
+    const [addon, setAddon] = useState(() => AddonStore.getAddon(id));
+    const [loading, setLoading] = useState(() => AddonStore.loading);
     const [tags, setTags] = useState({});
     
     useEffect(() => {
         setAddon(AddonStore.getAddon(id));
+        setLoading(AddonStore.loading);
 
         const listener = () => {      
             setAddon(AddonStore.getAddon(id));
+            setLoading(AddonStore.loading);
         };
 
         return AddonStore.addChangeListener(listener);
     }, [id]);
 
     if (!addon) {
+        // 404 don't show
+        if (!loading) return;
+
         return (
             <div className="bd-addon-store-card-embed bd-addon-store-card-loading">
                 <Spinner type={Spinner.Type.SPINNING_CIRCLE} />

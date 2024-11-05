@@ -29,6 +29,10 @@
                 "bdAddonStore": {
                     "name": "Addon Store",
                     "note": "Adds the BetterDiscord Addon Store."
+                },
+                "alwaysEnable": {
+                    "name": "Always Enable",
+                    "note": "By default enables addons downloaded via the addon store."
                 }
             },
             "window": {
@@ -168,7 +172,6 @@
         "modified": "Date Modified",
         "isEnabled": "Enabled",
         "popularity": "Popularity",
-        "releaseDate": "Release Date",
         "isInstalled": "Installed",
         "downloads": "Downloads",
         "likes": "Likes",
@@ -210,7 +213,8 @@
         "new": "New",
         "downloadCount": "{{downloads}} Downloads",
         "likeCount": "{{likes}} Likes",
-        "tags": "Tags"
+        "tags": "Tags",
+        "preview": "Preview"
     },
     "CustomCSS": {
         "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
@@ -238,7 +242,8 @@
         "additionalInfo": "Additional Info",
         "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?",
         "changelog": "Changelog",
-        "debuglog": "Your debug log file has exceeded 100MB, would you like to clear the log?"
+        "debuglog": "Your debug log file has exceeded 100MB, would you like to clear the log?",
+        "automaticallyEnable": "Automatically Enable"
     },
     "ReactDevTools": {
         "notFound": "Extension Not Found",

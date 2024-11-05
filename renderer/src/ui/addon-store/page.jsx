@@ -16,7 +16,7 @@ import Dropdown from "@ui/settings/components/dropdown";
 import DataStore from "@modules/datastore";
 import MultiSelect from "./multiselect";
 import NoResults from "@ui/blankslates/noresults";
-import WebpackModules from "@modules/webpackmodules";
+import Spinner from "@ui/spinner";
 
 const {useState, useEffect, useMemo, useCallback, createContext} = React;
 
@@ -44,7 +44,7 @@ const buildSortOptions = () => [
     {label: Strings.Addons.name, value: "name"},
     {label: Strings.Addons.author, value: "author"},
     {label: Strings.Addons.version, value: "version"},
-    {label: Strings.Addons.releaseDate, value: "releaseDate"},
+    {label: Strings.Addons.modified, value: "modified"},
     {label: Strings.Addons.isInstalled, value: "isInstalled"},
     {label: Strings.Addons.likes, value: "likes"},
     {label: Strings.Addons.downloads, value: "downloads"}
@@ -109,8 +109,6 @@ const allTags = {
     ]
 };
 
-const {Spinner} = WebpackModules.getByProps("Spinner", "Tooltip");
-
 export const TagContext = createContext();
 
 /**
@@ -170,7 +168,7 @@ export default function AddonStorePage({type}) {
 
         return addons.filter((addon) => {
             if (addon.type !== type) return false;
-            if (!(addon.name.toLowerCase().includes($query) || addon.author.discord_name.toLowerCase().includes($query) || addon.author.github_name.toLowerCase().includes($query) || addon.description.toLowerCase().includes($query))) return false;
+            if (!(addon.name.toLowerCase().includes($query) || addon.author.display_name.toLowerCase().includes($query) || addon.description.toLowerCase().includes($query))) return false;
 
             return $tags.every((tag) => addon.tags.includes(tag.value));
         });
@@ -202,12 +200,12 @@ export default function AddonStorePage({type}) {
               comparison = a.name.localeCompare(b.name);
             } 
             else if (sort === "author") {
-              comparison = a.author.discord_name.localeCompare(b.author.discord_name);
+              comparison = a.author.display_name.localeCompare(b.author.display_name);
             } 
             else if (sort === "version") {
               comparison = a.version.localeCompare(b.version);
             } 
-            else if (sort === "releaseDate") {
+            else if (sort === "modified") {
               comparison = new Date(b.release_date) - new Date(a.release_date);
             } 
             else if (sort === "isInstalled") {
@@ -255,8 +253,8 @@ export default function AddonStorePage({type}) {
         </SettingsTitle>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Globe />, () => ipc.openPath(manager))}
-                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager))}
+                {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(`https://betterdiscord.app/${manager.prefix}s`))}
+                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder))}
             </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">

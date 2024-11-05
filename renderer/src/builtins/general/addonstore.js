@@ -8,6 +8,7 @@ import React from "@modules/react";
 import LazyAddonCard from "@ui/addon-store/lazy-card";
 import AddonStorePage from "@ui/addon-store/page";
 
+const SimpleMarkdownWrapper = WebpackModules.getByProps("parse", "defaultRules");
 let MessageComponent;
 
 const MAX_EMBEDS = 4;
@@ -16,10 +17,8 @@ export default new class AddonStoreBuiltin extends Builtin {
     get name() {return "AddonStore";}
     get category() {return "general";}
     get id() {return "bdAddonStore";}
- 
-    async enabled() {
-        MessageComponent ??= await WebpackModules.getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
 
+    async enabled() {
         Settings.registerPanel("theme-store", Strings.Panels.themes, {
             order: 5,
             element: () => React.createElement(AddonStorePage, {type: "theme"})
@@ -29,10 +28,78 @@ export default new class AddonStoreBuiltin extends Builtin {
             element: () => React.createElement(AddonStorePage, {type: "plugin"})
         });
 
+        this.patchEmbeds();
+        this.patchMarkdown();
+    }
+
+    patchMarkdown() {
+        SimpleMarkdownWrapper.defaultRules[this.id] = {
+            order: 5,
+            /**
+             * @param {text} text 
+             * @param {Record<string, any>} state 
+             */
+            match(text, state) {
+                if (!state.allowLinks) return;
+                return AddonStore.isAddonLink(text);
+            },
+            /**
+             * @param {RegExpExecArray} exec 
+             * @param {Function} parse 
+             * @param {Record<string, any>} state 
+             */
+            parse(exec) {
+                return {
+                    type: this.id,
+                    content: [{
+                        type: "text",
+                        content: exec[0].slice(1, -1)
+                    }],
+                    exec
+                };
+            },
+            /**
+             * 
+             * @param {{ content: any, exec: RegExpExecArray }} node 
+             * @param {Function} parse 
+             * @param {Record<string, any>} state 
+             */
+            react(node, parse, state) {
+                const addon = AddonStore.getAddon(node.exec[2]);
+                const href = node.exec[0].slice(1, -1);
+
+                return React.createElement("a", {
+                    key: state.key,
+                    className: "bd-link",
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                    href,
+                    // User hopefully shouldn't see it without it loaded
+                    title: `${addon?.name || decodeURIComponent(node.exec[2])}\n\n(${href})`,
+                    onClick(event) {
+                        event.preventDefault();
+
+                        if (addon) {
+                            AddonStore.openAddonPage(addon);
+                        }
+                    }
+                }, parse(node.content, state));
+            }
+        };
+
+        SimpleMarkdownWrapper.parse = SimpleMarkdownWrapper.reactParserFor(SimpleMarkdownWrapper.defaultRules);
+    }
+ 
+    async patchEmbeds() {
+        MessageComponent ??= await WebpackModules.getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
+
         this.after(MessageComponent.prototype, "renderEmbeds", (_, [ message ], res) => {
             res ??= [];
             
             const matches = AddonStore.extractAddonLinks(message.content, MAX_EMBEDS);
+            
+            // Go throught and either replace a prexisting embed
+            // or add a new one
 
             if (matches.length) {
                 const embeds = [ ...res ];                

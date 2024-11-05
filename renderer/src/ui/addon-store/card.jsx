@@ -14,6 +14,7 @@ import Support from "@ui/icons/support";
 import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import {TagContext} from "./page";
+import Eye from "@ui/icons/eye";
 
 const {useCallback, useMemo, useState, useEffect, useContext} = React;
 
@@ -43,31 +44,16 @@ export default function AddonCard({addon, isEmbed}) {
 
     const triggerDelete = useCallback(async (event) => AddonStore.attemptToDelete(addon, event.shiftKey), [addon]);
 
-    const installAddon = useCallback(async () => {
+    const installAddon = useCallback(async (event) => {
         setDisabled(true);
         
-        await AddonStore.attemptToDownload(addon);
+        await AddonStore.attemptToDownload(addon, event.shiftKey);
 
         setDisabled(false);
     }, [addon]);
 
     // Maybe show the guild invite confirm modal?
-    const acceptInvite = useCallback(() => {
-        const guild = addon.guild || addon.author.guild;
-
-        if (!guild) return;
-
-        let code = guild.invite_link;
-        const tester = /\.gg\/(.*)$/;
-        if (tester.test(code)) code = code.match(tester)[1];
-        
-        DiscordModules.Dispatcher.dispatch({
-            type: "LAYER_POP"
-        });
-
-        DiscordModules.InviteActions?.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
-    }, [addon]);
-
+    const acceptInvite = useCallback(() => AddonStore.attemptToJoinGuild(addon), [addon]);
     const openSourceCode = useCallback(() => AddonStore.openRawCode(addon), [addon]);
     const openAddonPage = useCallback(() => AddonStore.openAddonPage(addon), [addon]);
     const openAddonPreview = useCallback(() => AddonStore.openAddonPreview(addon), [addon]);
@@ -147,16 +133,12 @@ export default function AddonCard({addon, isEmbed}) {
                                         overflow="visible"
                                         mask="url(#svg-mask-squircle)"
                                     >
-                                        <DiscordModules.Tooltip text={addon.author.discord_name}>
+                                        <DiscordModules.Tooltip text={addon.author.display_name}>
                                             {(props) => (
                                                 <img 
                                                     loading="lazy"
                                                     className="bd-addon-store-card-author-img"
-                                                    src={`https://cdn.discordapp.com/avatars/${addon.author.discord_snowflake}/${addon.author.discord_avatar_hash}.webp?size=80`}
-                                                    onError={(event) => {
-                                                        // Fallback to github for when discord PFP is out of date
-                                                        event.currentTarget.src = `https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`;
-                                                    }}
+                                                    src={`https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`}
                                                     {...props}
                                                 />
                                             )}
@@ -195,7 +177,7 @@ export default function AddonCard({addon, isEmbed}) {
                     </div>
                 </div>
                 <div className="bd-addon-store-card-actions">
-                    <DiscordModules.Tooltip text={Strings.Addons.source}>
+                    <DiscordModules.Tooltip text={Strings.Addons.website}>
                         {(props) => (
                             <Button
                                 {...props}
@@ -220,7 +202,7 @@ export default function AddonCard({addon, isEmbed}) {
                         )}
                     </DiscordModules.Tooltip>
                     {addon.type === "theme" && (
-                        <DiscordModules.Tooltip text={Strings.Addons.source}>
+                        <DiscordModules.Tooltip text={Strings.Addons.preview}>
                             {(props) => (
                                 <Button
                                     {...props}
@@ -228,7 +210,7 @@ export default function AddonCard({addon, isEmbed}) {
                                     look={Button.Looks.BLANK}
                                     onClick={openAddonPreview}
                                 >
-                                    <GitHub size={24} />
+                                    <Eye size={24} />
                                 </Button>
                             )}
                         </DiscordModules.Tooltip>
@@ -249,7 +231,7 @@ export default function AddonCard({addon, isEmbed}) {
                     )}
                     <div className="bd-addon-store-card-spacer" />
                     {isInstalled ? (
-                        <DiscordModules.Tooltip text={Strings.Addons.deleteAddon}>
+                        <DiscordModules.Tooltip text={Strings.Addons.deleteAddon} key="delete">
                             {(props) => (
                                 <Button
                                     {...props}
@@ -262,7 +244,7 @@ export default function AddonCard({addon, isEmbed}) {
                             )}
                         </DiscordModules.Tooltip>
                     ) : (
-                        <DiscordModules.Tooltip text={Strings.Addons.downloadAddon}>
+                        <DiscordModules.Tooltip text={Strings.Addons.downloadAddon} key="download">
                             {(props) => (
                                 <Button
                                     {...props}

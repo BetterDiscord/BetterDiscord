@@ -1,0 +1,145 @@
+.bd-install-modal-guild {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 10px;
+    background: var(--background-secondary);
+    border-radius: 3px;
+}
+
+.bd-install-modal-guild-top {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+}
+
+.bd-install-modal-guild-img {
+    border-radius: 3px;
+}
+
+.bd-install-modal-guild-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.bd-install-modal-guild-info > :first-child {
+    font-size: 16px;
+    color: var(--header-secondary);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+}
+.bd-install-modal-guild-info > :last-child {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+}
+
+.bd-install-modal-header {
+    margin: 0 20px;
+    color: var(--header-primary);
+    font-family: var(--font-primary);
+    font-size: 16px;
+    line-height: 1.25;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+.bd-install-modal-items {
+    margin: 20px;
+    background: var(--background-secondary);
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.bd-install-modal-items > .bd-install-modal-item:not(:last-child) {
+    border-bottom: 1px solid var(--border-faint);
+}
+
+.bd-install-modal-item {
+    padding: 12px;
+    color: var(--text-normal);
+    gap: 12px;
+}
+.bd-install-modal-item-leading {
+    max-width: 24px;
+    min-width: 24px;
+    display: flex;
+}
+.bd-install-modal-item-trailing {
+    display: flex;
+}
+.bd-install-modal-item-content {
+    width: 100%;
+}
+
+.bd-install-modal-clickable {
+    cursor: pointer;
+    border-radius: 3px;
+    background-color: transparent;
+    transition: background-color ease 100ms;
+}
+.bd-install-modal-clickable:hover {
+    color: var(--interactive-hover);
+    background: var(--bg-overlay-hover, var(--background-modifier-hover));
+}
+
+.bd-install-modal-checkbox {
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+
+.bd-install-modal-author-svg {
+    contain: paint;
+}
+.bd-install-modal-author-img {
+    width: 100%;
+    height: 100%;
+}
+.bd-install-modal-splash {
+    height: 197px;
+    position: relative;
+    display: block;
+    overflow: visible;
+    margin-bottom: 32px;
+}
+.bd-install-modal-preview {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.bd-install-modal-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.bd-install-modal-author {
+    position: absolute;
+    bottom: -21px;
+    left: 12px;
+}
+.bd-install-modal-author-mask {
+    padding: 4px;
+    background-color: var(--background-primary);
+}
+
+/* .bd-addon-store-modal .bd-close-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: var(--background-modifier-accent);
+} */

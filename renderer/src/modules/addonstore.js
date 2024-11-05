@@ -4,13 +4,17 @@ import fs from "fs";
 
 import Logger from "@common/logger";
 import Toasts from "@ui/toasts";
-
 import DataStore from "./datastore";
 import Strings from "./strings";
 import fetch from "./api/fetch";
+import React from "./react";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import Modals from "@ui/modals";
+import DownloadModal from "@ui/addon-store/download-modal";
+import DiscordModules from "./discordmodules";
+import Settings from "@modules/settingsmanager";
+
 
 const apiURL = "https://api.betterdiscord.app/v2/store/addons";
 
@@ -54,9 +58,10 @@ const apiURL = "https://api.betterdiscord.app/v2/store/addons";
  */
 
 // Make it so we can detect links that have <> around them
-// So we can ignore them
-const ADDON_REGEX_SOURCE = "(?:https?:\\/\\/betterdiscord\\.app\\/(?:theme|plugin)|(?:betterdiscord|bd|bdapp):\\/\\/(?:theme|plugin)s?)(?:\\/|\\?id=)(\\S+)";
+const ADDON_REGEX_SOURCE = "(?:https?:\\/\\/betterdiscord\\.app\\/(?:theme|plugin)|betterdiscord:\\/\\/(?:theme|plugin|addon)s?)(?:\\/|\\?id=)(\\S+)";
 const ADDON_REGEX = new RegExp(`(?:<${ADDON_REGEX_SOURCE}>|${ADDON_REGEX_SOURCE})`, "gi");
+
+const ADDON_REGEX_SINGLE = /^<betterdiscord:\/\/(theme|plugin|addon)s?\/(\S+)>/;
 
 const EXTRACT_GIT_INFO = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
 
@@ -87,6 +92,9 @@ export default new class AddonStore {
         this._subscribers = new Set();
 
         window.AddonStore = this;
+
+        /** @type {NodeJS.Timeout | null} */
+        this._internvalId = null;
     }
 
     get knownAddons() {
@@ -101,6 +109,8 @@ export default new class AddonStore {
 
     requestAddons() {
         Logger.debug("AddonStore", "Requesting addons");
+
+        clearInterval(this._internvalId);
 
         this.loading = true;
         this.ok = false;
@@ -130,9 +140,19 @@ export default new class AddonStore {
                 if (this.knownAddons === null) {
                     DataStore.setBDData("known-addons", [...this.knownAddons]);
                 }
+                // else {
+                //     let unknownCount = 0;
+                //     for (const addon of this.addonList) {
+                //         if (this.isUnknown(addon.id)) unknownCount++;
+                //     }
+
+                //     Toasts.info(`${unknownCount} new addons`);
+                // }
             } 
             finally {
                 this._emitChange();
+
+                this._internvalId = setTimeout(() => {}, 60 * 60 * 1000);
             }
         });
     }
@@ -221,11 +241,12 @@ export default new class AddonStore {
         /** @type {RegExpExecArray} */
         let exec;
         while ((exec = ADDON_REGEX.exec(text))) {
-            // Ignore all links circled with <>
-            if (exec[0][0] === "<") continue;
+            // if https://betterdiscord.app/type/id not <https://betterdiscord.app/type/id>
+            // if <betterdiscord://addon/id> not betterdiscord://addon/id
+            if (!(exec[0][0] === "h" || exec[0][1] === "b")) continue;
 
             matches.push({
-                id: exec[2],
+                id: exec[1] || exec[2],
                 match: exec[0],
                 index: exec.index
             });
@@ -236,6 +257,15 @@ export default new class AddonStore {
         }
 
         return matches;
+    }
+
+    /**
+     * For markdown
+     * @param {string} string 
+     * @returns {RegExpExecArray}
+     */
+    isAddonLink(string) {
+        return ADDON_REGEX_SINGLE.exec(string);
     }
 
     /**
@@ -289,6 +319,34 @@ export default new class AddonStore {
     }
 
     /**
+     * Opens the raw code page
+     * @param {RawAddon} addon 
+     */
+    openAuthorPage(addon) {
+        window.open(`https://betterdiscord.app/developer/${encodeURIComponent(addon.author.display_name)}`, "_blank", "noopener,noreferrer");
+    }
+
+    /**
+     * Attempts to join guild
+     * @param {RawAddon} addon 
+     */
+    attemptToJoinGuild(addon) {
+        const guild = addon.guild || addon.author.guild;
+
+        if (!guild) return;
+
+        let code = guild.invite_link;
+        const tester = /\.gg\/(.*)$/;
+        if (tester.test(code)) code = code.match(tester)[1];
+        
+        DiscordModules.Dispatcher.dispatch({
+            type: "LAYER_POP"
+        });
+
+        DiscordModules.InviteActions?.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
+    }
+
+    /**
      * Get the file content of a request
      * @param {number} id 
      * @returns {Promise<string>}
@@ -306,34 +364,64 @@ export default new class AddonStore {
         });
     }
 
+    /** @type {boolean} */
+    get shouldAlwaysEnable() {return Settings.get("settings", "general", "alwaysEnable");}
+
     /**
      * Attempt to download addon
      * @param {RawAddon} addon 
      */
-    async attemptToDownload(addon) {
+    async attemptToDownload(addon, shouldSkipConfirm = false) {
         const manager = addon.type === "plugin" ? PluginManager : ThemeManager;
 
-        const foundAddon = manager.addonList.find(a => a.id == addon.id);
+        if (manager.isLoaded(addon.file_name)) return;
 
-        if (foundAddon) return;
+        const install = async (shouldEnable) => {
+            try {
+                // If should enable, tell the manager that it is before hand
+                if (shouldEnable) {
+                    manager.state[path.basename(addon.name)] = true;
+                }
 
-        try {
-            const body = await this.fetchAddonContents(addon.id);
+                const body = await this.fetchAddonContents(addon.id);
+        
+                Toasts.show(Strings.Addons.successfullyDownload.format({type: addon.type, name: addon.name}), {
+                    type: "success"
+                });
+        
+        
+                fs.writeFileSync(path.join(manager.addonFolder, addon.file_name), body);
+            } 
+            catch (error) {
+                Logger.stacktrace("AddonStore", `Failed to fetch addon '${addon.file_name}':`, error);
     
-            Toasts.show(Strings.Addons.successfullyDownload.format({type: addon.type, name: addon.name}), {
-                type: "success"
+                Toasts.show(Strings.Addons.failedToDownload.format({type: addon.type, name: addon.name}), {
+                    type: "danger"
+                });
+            }
+        };
+
+        if (shouldSkipConfirm) return install(this.shouldAlwaysEnable);
+        
+        return new Promise((resolve) => {
+            let fromInstall = false;
+
+            Modals.ModalActions.openModal((props) => React.createElement(DownloadModal, {
+                ...props, 
+                addon, 
+                install: (shouldEnable) => {
+                    fromInstall = true;
+                    return install(shouldEnable).then(() => {
+                        props.onClose();
+                        resolve();
+                    });
+                }
+            }), {
+                onCloseCallback() {                    
+                    if (!fromInstall) resolve();
+                }
             });
-    
-    
-            fs.writeFileSync(path.join(manager.addonFolder, addon.file_name), body);
-        } 
-        catch (error) {
-            Logger.stacktrace("AddonStore", `Failed to fetch addon '${addon.file_name}':`, error);
-
-            Toasts.show(Strings.Addons.failedToDownload.format({type: addon.type, name: addon.name}), {
-                type: "danger"
-            });
-        }
+        });
     }
 
     /**

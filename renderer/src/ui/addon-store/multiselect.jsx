@@ -20,10 +20,13 @@ export default function MultiSelect({options, style, onChange, label}) {
         event.preventDefault();
         event.stopPropagation();
 
-        const next = !open;
-        setOpen(next);
-        if (!next) return;
-        document.addEventListener("click", hideMenu);
+        if (!open) {
+            setOpen(true);
+            document.addEventListener("click", hideMenu);
+            return;
+        }
+        
+        setOpen(event.shiftKey);
     }, [hideMenu, open]);
 
     return (
