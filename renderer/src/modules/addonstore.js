@@ -11,10 +11,9 @@ import React from "./react";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 import Modals from "@ui/modals";
-import DownloadModal from "@ui/addon-store/download-modal";
+import InstallModal from "@ui/modals/installmodal";
 import DiscordModules from "./discordmodules";
 import Settings from "@modules/settingsmanager";
-
 
 const apiURL = "https://api.betterdiscord.app/v2/store/addons";
 
@@ -385,7 +384,7 @@ export default new class AddonStore {
 
                 const body = await this.fetchAddonContents(addon.id);
         
-                Toasts.show(Strings.Addons.successfullyDownload.format({type: addon.type, name: addon.name}), {
+                Toasts.show(Strings.Addons.successfullyDownload.format({name: addon.name}), {
                     type: "success"
                 });
         
@@ -406,15 +405,14 @@ export default new class AddonStore {
         return new Promise((resolve) => {
             let fromInstall = false;
 
-            Modals.ModalActions.openModal((props) => React.createElement(DownloadModal, {
+            Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
                 ...props, 
                 addon, 
-                install: (shouldEnable) => {
+                install: async (shouldEnable) => {
                     fromInstall = true;
-                    return install(shouldEnable).then(() => {
-                        props.onClose();
-                        resolve();
-                    });
+                    await install(shouldEnable);
+                    props.onClose();
+                    resolve();
                 }
             }), {
                 onCloseCallback() {                    
@@ -427,7 +425,7 @@ export default new class AddonStore {
     /**
      * Attempt to delete addon
      * @param {RawAddon} addon 
-     * @param {boolean} shouldSkipConfirm Should confirm the deletion of the addon
+     * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
      */
     async attemptToDelete(addon, shouldSkipConfirm = false) {
         const manager = addon.type === "plugin" ? PluginManager : ThemeManager;

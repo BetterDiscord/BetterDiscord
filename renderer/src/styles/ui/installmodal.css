@@ -1,58 +1,9 @@
 .bd-install-modal-guild {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    gap: 10px;
-    background: var(--background-secondary);
     border-radius: 3px;
-}
-
-.bd-install-modal-guild-top {
-    display: flex;
-    flex-direction: row;
-    gap: 12px;
-}
-
-.bd-install-modal-guild-img {
-    border-radius: 3px;
-}
-
-.bd-install-modal-guild-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.bd-install-modal-guild-info > :first-child {
-    font-size: 16px;
-    color: var(--header-secondary);
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 100%;
-    text-overflow: ellipsis;
-}
-.bd-install-modal-guild-info > :last-child {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 100%;
-    text-overflow: ellipsis;
 }
 
 .bd-install-modal-header {
     margin: 0 20px;
-    color: var(--header-primary);
-    font-family: var(--font-primary);
-    font-size: 16px;
-    line-height: 1.25;
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
 }
 
 .bd-install-modal-items {
@@ -93,12 +44,6 @@
     color: var(--interactive-hover);
     background: var(--bg-overlay-hover, var(--background-modifier-hover));
 }
-
-.bd-install-modal-checkbox {
-    cursor: pointer;
-    color: var(--text-secondary);
-}
-
 
 .bd-install-modal-author-svg {
     contain: paint;

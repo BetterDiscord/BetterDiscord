@@ -14,7 +14,7 @@ import Globe from "@ui/icons/globe";
 import Search from "@ui/settings/components/search";
 import Dropdown from "@ui/settings/components/dropdown";
 import DataStore from "@modules/datastore";
-import MultiSelect from "./multiselect";
+import MultiSelect from "../settings/components/multiselect";
 import NoResults from "@ui/blankslates/noresults";
 import Spinner from "@ui/spinner";
 

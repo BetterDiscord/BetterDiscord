@@ -1,4 +1,3 @@
-
 .bd-addon-store-card {
     display: flex;
     flex-direction: column;
@@ -128,6 +127,7 @@
     font-size: 16px;
     line-height: 1.25;
     font-weight: 600;
+    gap: 4px;
 }
 .bd-addon-store-card-description {
     color: var(--header-secondary);
@@ -209,8 +209,8 @@ button.bd-addon-store-card-button {
 }
 
 .bd-addon-store {
-    display: flex;
-    flex-flow: wrap;
+    display: grid;
+    grid-template-columns: auto auto;
     gap: 20px;
     margin-top: 10px;
 }
@@ -218,6 +218,7 @@ button.bd-addon-store-card-button {
 .bd-addon-store .bd-addon-store-center {
     margin-left: auto;
     margin-right: auto;
+    width: 200%;
 }
 
 .bd-addon-store-card-loading {

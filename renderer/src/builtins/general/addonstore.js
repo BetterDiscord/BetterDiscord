@@ -5,10 +5,12 @@ import Strings from "@modules/strings";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
 import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
-import LazyAddonCard from "@ui/addon-store/lazy-card";
+import AddonEmbed from "@ui/addon-store/embed";
 import AddonStorePage from "@ui/addon-store/page";
+import ReactUtils from "@modules/api/reactutils";
 
 const SimpleMarkdownWrapper = WebpackModules.getByProps("parse", "defaultRules");
+
 let MessageComponent;
 
 const MAX_EMBEDS = 4;
@@ -32,6 +34,16 @@ export default new class AddonStoreBuiltin extends Builtin {
         this.patchMarkdown();
     }
 
+    forceUpdateChat() {
+        for (const element of document.querySelectorAll("[id^=chat-messages-]")) {
+            const instance = ReactUtils.getInternalInstance(element);
+            if (typeof instance?.child?.memoizedProps?.onMouseMove === "function") {
+                instance.child.memoizedProps.onMouseMove();
+            }
+        }
+    }
+
+    // TODO: Patch slate to add markdown support for the betterdiscord:// protocol 
     patchMarkdown() {
         SimpleMarkdownWrapper.defaultRules[this.id] = {
             order: 5,
@@ -115,13 +127,13 @@ export default new class AddonStoreBuiltin extends Builtin {
 
                         if (embed?.url === match) {
                             shouldAdd = false;
-                            embeds[embedIndex] = React.createElement(LazyAddonCard, {id: id, key: key});
+                            embeds[embedIndex] = React.createElement(AddonEmbed, {id: id, key: key});
                             break;
                         }
                     }
 
                     if (shouldAdd) {
-                        embeds.push(React.createElement(LazyAddonCard, {id: id, key: key}));
+                        embeds.push(React.createElement(AddonEmbed, {id: id, key: key}));
                     }
                 }
 
@@ -132,12 +144,18 @@ export default new class AddonStoreBuiltin extends Builtin {
 
             return res;
         });
+
+        this.forceUpdateChat();
     }
 
     disabled() {
         Settings.removePanel("theme-store");
         Settings.removePanel("plugin-store");
 
+        delete SimpleMarkdownWrapper.defaultRules[this.id];
+        SimpleMarkdownWrapper.parse = SimpleMarkdownWrapper.reactParserFor(SimpleMarkdownWrapper.defaultRules);
+
         this.unpatchAll();
+        this.forceUpdateChat();
     }
 };

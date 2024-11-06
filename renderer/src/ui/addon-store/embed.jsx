@@ -1,15 +1,13 @@
 import React from "@modules/react";
 import AddonStore from "@modules/addonstore";
-import WebpackModules from "@modules/webpackmodules";
 
 import AddonCard from "./card";
 import {TagContext} from "./page";
+import Spinner from "@ui/spinner";
 
 const {useState, useEffect} = React;
 
-const {Spinner} = WebpackModules.getByProps("Spinner", "Tooltip");
-
-export default function LazyAddonCard({id}) {
+export default function AddonEmbed({id}) {
     AddonStore.initializeIfNeeded();
 
     const [addon, setAddon] = useState(() => AddonStore.getAddon(id));

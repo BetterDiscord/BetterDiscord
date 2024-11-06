@@ -5,9 +5,8 @@ import Arrow from "@ui/icons/downarrow";
 const {useState, useCallback} = React;
 
 /**
- * 
+ * Difference from '@ui/settings/dropdown' is that this allows multiple addons, and the state is handled in the parent
  * @param {{ options: { selected: boolean, value: any, label: string }[], style?: "transparent", onChange: (value: any, selected: boolean) => void, label: JSX.Element | string }} param0 
- * @returns 
  */
 export default function MultiSelect({options, style, onChange, label}) {
     const hideMenu = useCallback(() => {

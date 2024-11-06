@@ -3,8 +3,10 @@ import DiscordModules from "@modules/discordmodules";
 import LocaleManager from "@modules/localemanager";
 import React from "@modules/react";
 import Strings from "@modules/strings";
+
 import Button from "@ui/base/button";
 import Flex from "@ui/base/flex";
+import Text from "@ui/base/text";
 import Clock from "@ui/icons/clock";
 import GitHub from "@ui/icons/github";
 import Info from "@ui/icons/info";
@@ -13,11 +15,12 @@ import Tag from "@ui/icons/tag";
 import User from "@ui/icons/user";
 import Footer from "@ui/modals/footer";
 import ModalRoot from "@ui/modals/root";
+import CheckBox from "@ui/settings/components/checkbox";
 import Spinner from "@ui/spinner";
 
 const {useCallback, useState} = React;
 
-function Item({leading, content, trailing, action}) {
+function ModalItem({leading, content, trailing, action}) {
     return (
         <Flex onClick={action} className={`bd-install-modal-item${typeof action === "function" ? " bd-install-modal-clickable" : ""}`} align={Flex.Align.CENTER}>
             {leading && <div className="bd-install-modal-item-leading">{leading}</div>}
@@ -47,10 +50,9 @@ export default function DownloadModal({addon, transitionState, install}) {
 
     const [isInstalling, setInstalling] = useState(false);
 
-    const doInstall = useCallback(async () => {
+    const doInstall = useCallback(() => {
         setInstalling(true);
-        await install(shouldEnable);
-        setInstalling(false);
+        install(shouldEnable);
     }, [install, shouldEnable]);
 
     return (
@@ -116,48 +118,44 @@ export default function DownloadModal({addon, transitionState, install}) {
                 </div>
                 {/* <CloseButton onClick={onClose} /> */}
             </div>
-            <div className="bd-install-modal-header">{addon.name}</div>
+            <div className="bd-install-modal-header"><Text size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY}>{addon.name}</Text></div>
             <div className="bd-install-modal-items">
-                <Item 
+                <ModalItem 
                     leading={<Info size={24} />}
-                    content={<span>{addon.description}</span>}
+                    content={addon.description}
                 />
-                <Item 
+                <ModalItem 
                     leading={<Tag size={24} />}
-                    content={<span>{addon.version}</span>}
+                    content={addon.version}
                 />
-                <Item 
+                <ModalItem 
                     leading={<Clock size={24} />}
-                    content={<span>{new Date(addon.release_date).toLocaleString(LocaleManager.discordLocale)}</span>}
+                    content={new Date(addon.release_date).toLocaleString(LocaleManager.discordLocale)}
                 />
-                <Item 
+                <ModalItem 
                     leading={<GitHub size={24} />}
-                    content={<span>{addon.file_name}</span>}
+                    content={addon.file_name}
                     action={openSourceCode}
                 />
-                <Item 
+                <ModalItem 
                     leading={<User size={24} />}
-                    content={<span>{addon.author.display_name}</span>}
+                    content={addon.author.display_name}
                     action={openAuthorPage}
                 />
                 {guild && (
-                    <Item 
+                    <ModalItem 
                         leading={<Support size={24} />}
                         content={(
-                            <div className="bd-install-modal-guild-info">
-                                <div className="bd-install-modal-guild-name">
-                                    {guild.name}
-                                </div>
-                                <div className="bd-install-modal-guild-paragraph">
-                                    {Strings.Addons.invite}
-                                </div>
-                            </div>
+                            <Flex direction={Flex.Direction.VERTICAL}>
+                                <Text>{guild.name}</Text>
+                                <Text size={Text.Sizes.SIZE_12} color={Text.Colors.MUTED}>{Strings.Addons.invite}</Text>
+                            </Flex>
                         )}
                         trailing={(
                             <img 
                                 src={`https://cdn.discordapp.com/icons/${guild.snowflake}/${guild.avatar_hash}.webp?size=96`}
                                 alt={guild.id}
-                                className="bd-install-modal-guild-img"
+                                className="bd-install-modal-guild"
                                 width={32}
                                 height={32}
                             />
@@ -170,10 +168,11 @@ export default function DownloadModal({addon, transitionState, install}) {
                 <Button onClick={doInstall} disabled={isInstalling}>
                     {isInstalling ? <Spinner type="pulsingEllipsis" /> : Strings.Addons.downloadAddon}
                 </Button>
-                <div className="bd-install-modal-checkbox" onClick={() => setShouldEnable((v) => !v)}>
-                    <input type="checkbox" checked={shouldEnable} onChange={(event) => setShouldEnable(event.currentTarget.checked)} />
-                    <span>{Strings.Modals.automaticallyEnable}</span>
-                </div>
+                <CheckBox 
+                    value={shouldEnable} 
+                    onChange={setShouldEnable} 
+                    label={<Text>{Strings.Modals.automaticallyEnable}</Text>} 
+                />
             </Footer>
         </ModalRoot>
     );

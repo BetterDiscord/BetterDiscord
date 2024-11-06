@@ -15,30 +15,33 @@ import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import {TagContext} from "./page";
 import Eye from "@ui/icons/eye";
+// import Extension from "@ui/icons/extension";
+// import Theme from "@ui/icons/theme";
 
 const {useCallback, useMemo, useState, useEffect, useContext} = React;
 
 function formatNumberWithSuffix(value) {
     if (value === 0) return "0";
   
-    const suffixes = ["", "k", "M", "B", "T"]; // Define suffixes for thousands, millions, etc.
-    const index = Math.floor(Math.log10(Math.abs(value)) / 3); // Determine the index for the suffix
-    const divisor = Math.pow(10, index * 3); // Calculate the divisor (1000, 1,000,000, etc.)
-    const formattedValue = (value / divisor).toFixed(0); // Format the number
+    const suffixes = ["", "k", "M", "B", "T"]; 
+    const index = Math.floor(Math.log10(Math.abs(value)) / 3);
+    const divisor = Math.pow(10, index * 3);
+
+    let formattedValue = (value / divisor).toFixed(1);
+    if (formattedValue.endsWith(".0")) formattedValue = formattedValue.slice(0, -2);
   
     return `${formattedValue}${suffixes[index]}`; // Concatenate the formatted number with the suffix
-  }
+}
 
 /**
  * 
  * @param {{ addon: import("@modules/addonstore").RawAddon }} param0 
- * @returns 
  */
 export default function AddonCard({addon, isEmbed}) {
     /** @type {typeof ThemeManager | typeof PluginManager} */
     const manager = useMemo(() => addon.type === "plugin" ? PluginManager : ThemeManager, [addon]);
-    const [ isInstalled, setInstalled ] = useState(() => manager.isLoaded(addon.file_name));
-    const [ disabled, setDisabled ] = useState(false);
+    const [isInstalled, setInstalled] = useState(() => manager.isLoaded(addon.file_name));
+    const [disabled, setDisabled] = useState(false);
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
@@ -154,7 +157,10 @@ export default function AddonCard({addon, isEmbed}) {
                 )}
             </div>
             <div className="bd-addon-store-card-body">
-                <div className="bd-addon-store-card-name">{addon.name}</div>
+                <div className="bd-addon-store-card-name">
+                    {/* {addon.type === "plugin" ? <Extension size={16.5} /> : <Theme size={22} />} */}
+                    <span>{addon.name}</span>
+                </div>
                 <div className="bd-addon-store-card-description">{addon.description}</div>
                 <div className="bd-addon-store-card-tags">
                     {addon.tags.map((tag) => (

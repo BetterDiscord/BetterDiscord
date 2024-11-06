@@ -208,7 +208,7 @@
         "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
         "wasLoaded": "{{name}} v{{version}} was loaded.",
         "failedToDownload": "Failed to download {{type}} {{name}}",
-        "successfullyDownload": "Successfully downloaded {{type}} {{name}}",
+        "successfullyDownload": "Successfully downloaded {{name}}",
         "failedToFetch": "Unable to get addons",
         "new": "New",
         "downloadCount": "{{downloads}} Downloads",
