@@ -61,29 +61,19 @@ import AddonStore from "@modules/addonstore";
 
     /**
      * Attempt to download a plugin
-     * @param {string} idOrFile Addon ID or filename
+     * @param {string} idOrName Addon ID or name
      * @returns {Promise<void>} A empty promise that resolves when the addon is installed or when the modal is closed
      */
-    download(idOrFile) {
-        return new Promise((resolve, reject) => {
-            AddonStore.initializeIfNeeded();
-    
-            let undo = () => {};
-            const listener = () => {
-                undo();
-    
-                const addon = AddonStore.getAddon(idOrFile);
-                if (!addon) return reject(new Error("Unknown addon!"));
-    
+    download(idOrName) {
+        return new Promise((resolve, reject) => {  
+            AddonStore.requestAddon(idOrName).then((addon) => {
                 if (addon.type === this.#manager.prefix) {
                     AddonStore.attemptToDownload(addon, false).then(resolve, reject);
                     return;
                 }
-                reject(new Error(`Addon is not type '${this.#manager.prefix}'!`));
-            };
-    
-            if (AddonStore.addonList.length === 0) undo = AddonStore.addChangeListener(listener);
-            else listener();
+                
+                reject(new Error(`${addon.name} is not type ${this.#manager.prefix}`));
+            }, reject); 
         });
     }
 }

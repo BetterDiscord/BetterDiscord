@@ -22,8 +22,7 @@ import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
-import Web from "./web";
-
+import Web from "@data/web";
 
 const UserSettingsWindow = WebpackModules.getByProps("updateAccount");
 
@@ -158,7 +157,7 @@ class AddonUpdater {
 
     async updateCache() {
         this.cache = {};
-        const addonData = await getJSON(Web.api.store[this.type]);
+        const addonData = await getJSON(Web.store[this.type]);
         addonData.reduce(reducer, this.cache);
     }
 

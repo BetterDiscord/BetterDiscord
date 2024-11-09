@@ -6,7 +6,7 @@ import React from "@modules/react";
 import AddonEmbed from "@ui/addon-store/embed";
 import ReactUtils from "@modules/api/reactutils";
 import ErrorBoundary from "@ui/errorboundary";
-import Web from "@modules/web";
+import Web from "@data/web";
 import Utilities from "@modules/utilities";
 
 const SimpleMarkdownWrapper = WebpackModules.getByProps("parse", "defaultRules");
@@ -106,11 +106,12 @@ export default new class AddonStoreBuiltin extends Builtin {
             res ??= [];
 
             if (Web.isReleaseChannel(message.channel_id)) {
-                const name = message.embeds[0]?.author?.name;
+                const id = message.embeds[0]?.author?.url?.match(/\d+$/)?.[0];
+                const name = message.embeds[0]?.author?.name;                
 
-                if (!name) return res;
+                if (id || name) return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{name, id, original: res}));
 
-                return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{name}));
+                return res;
             }
             
             const matches = AddonStore.extractAddonLinks(message.content, MAX_EMBEDS);
@@ -127,19 +128,17 @@ export default new class AddonStoreBuiltin extends Builtin {
                     // So i can just continue the matches one
                     let shouldAdd = embeds.length < MAX_EMBEDS;
 
-                    const addonEmbed = React.createElement(ErrorBoundary, {key}, React.createElement(AddonEmbed, {id}));
-
                     for (let embedIndex = 0; embedIndex < res.length; embedIndex++) {
                         const embed = embeds[embedIndex]?.props?.children?.props?.embed;
 
                         if (embed?.url === match) {
                             shouldAdd = false;
-                            embeds[embedIndex] = addonEmbed;
+                            embeds[embedIndex] = React.createElement(ErrorBoundary, {key}, React.createElement(AddonEmbed, {id, original: embeds[embedIndex]}));
                             break;
                         }
                     }
 
-                    if (shouldAdd) embeds.push(addonEmbed);
+                    if (shouldAdd) embeds.push(React.createElement(ErrorBoundary, {key}, React.createElement(AddonEmbed, {id})));
                 }
 
                 return embeds;

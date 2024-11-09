@@ -7,16 +7,21 @@ import Spinner from "@ui/spinner";
 
 const {useState, useEffect, useCallback} = React;
 
-export default function AddonEmbed({id, name}) {
-    AddonStore.initializeIfNeeded();
+export default function AddonEmbed({id, name, original}) {
+    if (typeof id !== "string") AddonStore.initializeIfNeeded();    
 
     const getAddon = useCallback(() => name ? AddonStore.getAddonViaEmbedName(name) : AddonStore.getAddon(id), [id, name]);
 
     const [addon, setAddon] = useState(() => getAddon());
-    const [loading, setLoading] = useState(() => AddonStore.loading);
+    const [loading, setLoading] = useState(() => typeof name === "string" ? AddonStore.loading : true);
     const [tags, setTags] = useState({});
     
     useEffect(() => {
+        if (typeof id === "string") {
+            AddonStore.requestAddon(decodeURIComponent(id)).then(setAddon, () => setLoading(false));
+            return;
+        }
+
         setAddon(getAddon());
         setLoading(AddonStore.loading);
 
@@ -26,11 +31,11 @@ export default function AddonEmbed({id, name}) {
         };
 
         return AddonStore.addChangeListener(listener);
-    }, [getAddon]);
+    }, [getAddon, id]);
 
     if (!addon) {
         // 404 don't show
-        if (!loading) return;
+        if (!loading) return original;
 
         return (
             <div className="bd-addon-store-card-embed bd-addon-store-card-loading">

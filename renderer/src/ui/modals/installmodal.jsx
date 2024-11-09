@@ -4,7 +4,7 @@ import LocaleManager from "@modules/localemanager";
 import React from "@modules/react";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
-import Web from "@modules/web";
+import Web from "@data/web";
 
 import Button from "@ui/base/button";
 import Flex from "@ui/base/flex";

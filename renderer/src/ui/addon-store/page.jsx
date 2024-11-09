@@ -18,7 +18,7 @@ import MultiSelect from "../settings/components/multiselect";
 import NoResults from "@ui/blankslates/noresults";
 import Spinner from "@ui/spinner";
 import ErrorBoundary from "@ui/errorboundary";
-import Web from "@modules/web";
+import Web from "@data/web";
 
 const {useState, useEffect, useMemo, useCallback, createContext} = React;
 
@@ -57,60 +57,6 @@ const buildDirectionOptions = () => [
     {label: Strings.Sorting.descending, value: false}
 ];
 
-const allTags = {
-    plugin: [
-        "fun",
-        "roles",
-        "activity",
-        "status",
-        "game",
-        "edit",
-        "library",
-        "notifications",
-        "emotes",
-        "channels",
-        "shortcut",
-        "enhancement",
-        "servers",
-        "chat",
-        "security",
-        "organization",
-        "friends",
-        "members",
-        "utility",
-        "developers",
-        "search",
-        "text",
-        "voice"
-    ],
-    theme: [
-        "flat",
-        "transparent",
-        "layout",
-        "customizable",
-        "fiction",
-        "nature",
-        "space",
-        "dark",
-        "light",
-        "game",
-        "anime",
-        "red",
-        "orange",
-        "green",
-        "purple",
-        "black",
-        "other",
-        "high-contrast",
-        "white",
-        "aqua",
-        "animated",
-        "yellow",
-        "blue",
-        "abstract"
-    ]
-};
-
 export const TagContext = createContext();
 
 /**
@@ -120,7 +66,7 @@ export const TagContext = createContext();
 export default function AddonStorePage({type, title, closeStore}) {
     AddonStore.initializeIfNeeded();
 
-    const [ tags, setTags ] = useState(() => allTags[type].map((tag) => ({
+    const [ tags, setTags ] = useState(() => Web.store.tags[type].map((tag) => ({
         selected: false,
         value: tag,
         label: tag
@@ -223,7 +169,6 @@ export default function AddonStorePage({type, title, closeStore}) {
             return ascending ? comparison : -comparison; // Adjust for ascending/descending
         });
         
-        /** @type {{ props: { addon: import("@modules/addonstore").RawAddon } }} */
         const cards = $addons.map((addon) => (
             <ErrorBoundary key={addon.id}><AddonCard addon={addon} /></ErrorBoundary>
         ));

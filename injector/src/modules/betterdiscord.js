@@ -113,6 +113,29 @@ export default class BetterDiscord {
         browserWindow.webContents.on("render-process-gone", () => {
             hasCrashed = true;
         });
+
+        // Add the ability to click links in console
+        browserWindow.webContents.on("devtools-open-url", (event, url) => {
+            if (/https?:\/\//.test(url)) {
+                event.preventDefault();
+        
+                electron.shell.openExternal(url, { });
+            }
+        });
+
+        // 32.x.x doesnt apply devtools theme, this is a attempt to fix it
+        browserWindow.webContents.on("devtools-opened", () => {
+            if (!/^32\.\d+.\d+$/.test(process.versions.electron)) return;
+            if (electron.nativeTheme.themeSource === "light") return;
+          
+            const {themeSource} = electron.nativeTheme;
+          
+            electron.nativeTheme.themeSource = "light";
+          
+            setTimeout(() => {
+              electron.nativeTheme.themeSource = themeSource;
+            }, 50);
+        });
     }
 
     static disableMediaKeys() {

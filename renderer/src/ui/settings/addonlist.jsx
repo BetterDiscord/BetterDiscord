@@ -24,7 +24,7 @@ import NoResults from "@ui/blankslates/noresults";
 import EmptyImage from "@ui/blankslates/emptyimage";
 import AddonStorePage from "@ui/addon-store/page";
 import Globe from "@ui/icons/globe";
-import Web from "@modules/web";
+import Web from "@data/web";
 
 const {useState, useCallback, useEffect, useReducer, useMemo} = React;
 
@@ -196,7 +196,8 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
     const hasResults = renderedCards.length !== 0;
 
     if (showStore) {        
-        return <AddonStorePage type={type} title={title} closeStore={setShowStore.bind(null, false)} />;
+        // Add passed props and a way to close the store
+        return <AddonStorePage {...arguments[0]} closeStore={setShowStore.bind(null, false)} />;
     }
 
     return [

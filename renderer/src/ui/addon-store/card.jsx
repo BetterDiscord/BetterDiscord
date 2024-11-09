@@ -15,7 +15,7 @@ import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import {TagContext} from "./page";
 import Eye from "@ui/icons/eye";
-import Web from "@modules/web";
+import Web from "@data/web";
 // import Extension from "@ui/icons/extension";
 // import Theme from "@ui/icons/theme";
 
@@ -35,8 +35,7 @@ function formatNumberWithSuffix(value) {
 }
 
 /**
- * 
- * @param {{ addon: import("@modules/addonstore").RawAddon, isEmbed?: boolean }} param0 
+ * @param {{ addon: import("@modules/addonstore").RawAddon, isEmbed?: boolean }} props 
  */
 export default function AddonCard({addon, isEmbed}) {
     /** @type {typeof ThemeManager | typeof PluginManager} */

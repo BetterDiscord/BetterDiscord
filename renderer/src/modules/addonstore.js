@@ -14,7 +14,7 @@ import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
 import DiscordModules from "./discordmodules";
 import Settings from "@modules/settingsmanager";
-import Web from "./web";
+import Web from "@data/web";
 
 /**
  * @typedef {{
@@ -81,6 +81,8 @@ export default new class AddonStore {
 
         this.ok = false;
         this.loading = false;
+        /** @type {null | any} */
+        this.error = null;
 
         /** @type {Set<() => void>} */
         this._subscribers = new Set();
@@ -107,17 +109,18 @@ export default new class AddonStore {
         clearInterval(this._internvalId);
 
         this.loading = true;
-
         this.ok = false;
+        this.error = null;
 
         this._emitChange();
 
-        request(Web.api.store.addons, (error, _, body) => {
+        request(Web.store.addons, (error, _, body) => {
             try {
                 this.addonList.length = 0;
     
                 this.loading = false;
                 this.ok = !error;
+                this.error = error;
     
                 if (error) {
                     Logger.stacktrace("AddonStore", "Failed to fetch addons api:", error);
@@ -125,13 +128,14 @@ export default new class AddonStore {
                     Toasts.show(Strings.Addons.failedToFetch, {
                         type: "danger"
                     });
+
+                    this.error = error;
     
                     return;
                 }
     
                 this.addonList.push(...JSON.parse(body));
                 
-    
                 if (this.knownAddons === null) {
                     DataStore.setBDData("known-addons", [...this.knownAddons]);
                 }
@@ -160,6 +164,32 @@ export default new class AddonStore {
         this.requestAddons();
     }
 
+    singleAddonCache = {};
+    /**
+     * @param {number} id 
+     * @returns {Promise<RawAddon>}
+     */
+    requestAddon(id) {
+        const cache = this.getAddon(id);
+        if (cache) return Promise.resolve(cache);
+
+        return this.singleAddonCache[id] ??= new Promise((resolve, reject) => {
+            request(Web.store.addon(id), (error, _, body) => {
+                const data = JSON.parse(body);
+
+                if (error || data.status === 404) {
+                    reject(error || data.title);
+                    return;
+                }
+
+                this.singleAddonCache[data.name] = this.singleAddonCache[id];
+                this.singleAddonCache[data.id] = this.singleAddonCache[id];
+
+                resolve(data);
+            });
+        });
+    }
+
     /**
      * Gets a addon via id or name
      * @param {number|string} id 
@@ -176,7 +206,7 @@ export default new class AddonStore {
      * @param {string} name 
      */
     getAddonViaEmbedName(name) {
-        return this.addonList.find((addon) => `${addon.name} - ${addon.author.display_name}` === name);
+        return this.addonList.find((addon) => name.startsWith(`${addon.name} - `));
     }
 
     getUnknownAddons() {
@@ -201,17 +231,6 @@ export default new class AddonStore {
         this.knownAddons.push(id);
         DataStore.setBDData("known-addons", this.knownAddons);
     }
-    
-    /**
-     * Get current state of the store
-     */
-    getState() {
-        return {
-            ok: this.ok,
-            loading: this.loading,
-            addons: this.addonList
-        };
-    }
 
     /**
      * Listen for when the addon store changes
@@ -224,7 +243,6 @@ export default new class AddonStore {
         return () => this._subscribers.delete(listener);
     }
 
-    
     /**
      * Extract all bd addon links
      * @param {string} text
