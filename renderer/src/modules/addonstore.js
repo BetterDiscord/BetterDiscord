@@ -14,8 +14,7 @@ import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
 import DiscordModules from "./discordmodules";
 import Settings from "@modules/settingsmanager";
-
-const apiURL = "https://api.betterdiscord.app/v2/store/addons";
+import Web from "./web";
 
 /**
  * @typedef {{
@@ -77,17 +76,13 @@ function showConfirmDelete(addon) {
 
 export default new class AddonStore {
     constructor() {
-        /**
-         * @type {RawAddon[]}
-         */
+        /** @type {RawAddon[]} */
         this.addonList = [];
 
         this.ok = false;
         this.loading = false;
 
-        /**
-         * @type {Set<() => void>}
-         */
+        /** @type {Set<() => void>} */
         this._subscribers = new Set();
 
         window.AddonStore = this;
@@ -112,11 +107,12 @@ export default new class AddonStore {
         clearInterval(this._internvalId);
 
         this.loading = true;
+
         this.ok = false;
 
         this._emitChange();
 
-        request(apiURL, (error, _, body) => {
+        request(Web.api.store.addons, (error, _, body) => {
             try {
                 this.addonList.length = 0;
     
@@ -164,9 +160,6 @@ export default new class AddonStore {
         this.requestAddons();
     }
 
-    getAddons() {
-        return this.addonList;
-    }
     /**
      * Gets a addon via id or name
      * @param {number|string} id 
@@ -175,7 +168,15 @@ export default new class AddonStore {
     getAddon(id) {
         const decoded = decodeURIComponent(id.toString()).toLowerCase();
 
-        return this.addonList.find((addon) => addon.id.toString() === id || addon.name.toLowerCase() === decoded);
+        return this.addonList.find((addon) => addon.id.toString() === decoded || addon.name.toLowerCase() === decoded || addon.file_name.toLowerCase() === decoded);
+    }
+
+    /**
+     * Gets a addon via the release channels embed name
+     * @param {string} name 
+     */
+    getAddonViaEmbedName(name) {
+        return this.addonList.find((addon) => `${addon.name} - ${addon.author.display_name}` === name);
     }
 
     getUnknownAddons() {
@@ -263,16 +264,9 @@ export default new class AddonStore {
      * @param {string} string 
      * @returns {RegExpExecArray}
      */
-    isAddonLink(string) {
+    execAddonLink(string) {
         return ADDON_REGEX_SINGLE.exec(string);
     }
-
-    /**
-     * Get the github redirect for a addon
-     * @param {RawAddon | number} addonOrId 
-     * @returns {string}
-     */
-    redirect = (addonOrId) => `https://betterdiscord.app/gh-redirect?id=${typeof addonOrId === "number" ? addonOrId : addonOrId.id}`;
 
     /**
      * Opens a preview for the theme
@@ -283,7 +277,7 @@ export default new class AddonStore {
             throw new Error("Addon is a plugin!");
         }
 
-        const response = await fetch(this.redirect(addon), {method: "HEAD"});
+        const response = await fetch(Web.redirects.github(addon.id), {method: "HEAD"});
 
         if (!response.ok) {
             throw new Error("Unable to get github url!");
@@ -307,14 +301,14 @@ export default new class AddonStore {
      * @param {RawAddon} addon 
      */
     openAddonPage(addon) {
-        window.open(`https://betterdiscord.app/${addon.type}?id=${addon.id}`, "_blank", "noopener,noreferrer");
+        window.open(Web.redirects[addon.type](addon.id), "_blank", "noopener,noreferrer");
     }
     /**
      * Opens the raw code page
      * @param {RawAddon} addon 
      */
     openRawCode(addon) {
-        window.open(this.redirect(addon), "_blank", "noopener,noreferrer");
+        window.open(Web.redirects.github(addon.id), "_blank", "noopener,noreferrer");
     }
 
     /**
@@ -322,7 +316,7 @@ export default new class AddonStore {
      * @param {RawAddon} addon 
      */
     openAuthorPage(addon) {
-        window.open(`https://betterdiscord.app/developer/${encodeURIComponent(addon.author.display_name)}`, "_blank", "noopener,noreferrer");
+        window.open(Web.pages.developer(addon.author.display_name), "_blank", "noopener,noreferrer");
     }
 
     /**
@@ -346,27 +340,6 @@ export default new class AddonStore {
     }
 
     /**
-     * Get the file content of a request
-     * @param {number} id 
-     * @returns {Promise<string>}
-     */
-    fetchAddonContents(id) {
-        return new Promise((resolve, reject) => {
-            request(this.redirect(id), (err, headers, body) => {
-                if (err || headers.statusCode >= 300 || headers.statusCode < 200) {
-                    reject(new Error("Fetch was not ok"));
-                    return;
-                }                
-
-                resolve(body);
-            });
-        });
-    }
-
-    /** @type {boolean} */
-    get shouldAlwaysEnable() {return Settings.get("settings", "general", "alwaysEnable");}
-
-    /**
      * Attempt to download addon
      * @param {RawAddon} addon 
      */
@@ -375,32 +348,36 @@ export default new class AddonStore {
 
         if (manager.isLoaded(addon.file_name)) return;
 
-        const install = async (shouldEnable) => {
-            try {
+        const install = (shouldEnable) => new Promise((resolve) => {
+            request(Web.redirects.download(addon.id), (error, headers, body) => {
+                if (error || headers.statusCode >= 300 || headers.statusCode < 200) {
+                    Logger.stacktrace("AddonStore", `Failed to fetch addon '${addon.file_name}':`, error);
+        
+                    Toasts.show(Strings.Addons.failedToDownload.format({type: addon.type, name: addon.name}), {
+                        type: "danger"
+                    });
+
+                    resolve();
+
+                    return;
+                }
+
                 // If should enable, tell the manager that it is before hand
                 if (shouldEnable) {
                     manager.state[path.basename(addon.name)] = true;
                 }
-
-                const body = await this.fetchAddonContents(addon.id);
         
                 Toasts.show(Strings.Addons.successfullyDownload.format({name: addon.name}), {
                     type: "success"
                 });
         
-        
                 fs.writeFileSync(path.join(manager.addonFolder, addon.file_name), body);
-            } 
-            catch (error) {
-                Logger.stacktrace("AddonStore", `Failed to fetch addon '${addon.file_name}':`, error);
-    
-                Toasts.show(Strings.Addons.failedToDownload.format({type: addon.type, name: addon.name}), {
-                    type: "danger"
-                });
-            }
-        };
 
-        if (shouldSkipConfirm) return install(this.shouldAlwaysEnable);
+                resolve();
+            });
+        });
+
+        if (shouldSkipConfirm) return install(Settings.get("settings", "general", "alwaysEnable"));
         
         return new Promise((resolve) => {
             let fromInstall = false;

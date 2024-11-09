@@ -158,6 +158,7 @@
         "title": "{{name}} v{{version}} by {{author}}",
         "byline": "by {{author}}",
         "openFolder": "Open {{type}} Folder",
+        "openStore": "Open {{type}} Store",
         "reload": "Reload",
         "addonSettings": "Settings",
         "website": "Website",

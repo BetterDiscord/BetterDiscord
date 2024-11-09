@@ -17,6 +17,8 @@ import DataStore from "@modules/datastore";
 import MultiSelect from "../settings/components/multiselect";
 import NoResults from "@ui/blankslates/noresults";
 import Spinner from "@ui/spinner";
+import ErrorBoundary from "@ui/errorboundary";
+import Web from "@modules/web";
 
 const {useState, useEffect, useMemo, useCallback, createContext} = React;
 
@@ -113,9 +115,9 @@ export const TagContext = createContext();
 
 /**
  * 
- * @param {{type:"plugins"|"themes"}} param0 
+ * @param {{type: "plugins"|"themes", title: string, closeStore(): void}} param0 
  */
-export default function AddonStorePage({type}) {
+export default function AddonStorePage({type, title, closeStore}) {
     AddonStore.initializeIfNeeded();
 
     const [ tags, setTags ] = useState(() => allTags[type].map((tag) => ({
@@ -127,7 +129,7 @@ export default function AddonStorePage({type}) {
     /**
      * @type {[ import("@modules/addonstore").RawAddon[], (addons: import("@modules/addonstore").RawAddon[]) => void ]}
      */
-    const [ addons, setAddons ] = useState(() => [...AddonStore.getAddons()]);
+    const [ addons, setAddons ] = useState(() => [...AddonStore.addonList]);
     const [ query, setQuery ] = useState("");
 
     const search = useCallback((event) => {
@@ -149,10 +151,10 @@ export default function AddonStorePage({type}) {
 
 
     useEffect(() => {
-        setAddons([...AddonStore.getAddons()]);
+        setAddons([...AddonStore.addonList]);
 
         const listener = () => {
-            setAddons([...AddonStore.getAddons()]);
+            setAddons([...AddonStore.addonList]);
         };
 
         return AddonStore.addChangeListener(listener);
@@ -223,13 +225,11 @@ export default function AddonStorePage({type}) {
         
         /** @type {{ props: { addon: import("@modules/addonstore").RawAddon } }} */
         const cards = $addons.map((addon) => (
-            <AddonCard addon={addon} key={addon.id} />
+            <ErrorBoundary key={addon.id}><AddonCard addon={addon} /></ErrorBoundary>
         ));
 
         return cards;
     }, [addons, filtered, ascending, sort]);
-
-    const title = useMemo(() => Strings.Panels[type + "s"], [type]);
 
     /** @type {typeof ThemeManager | typeof PluginManager} */
     const manager = useMemo(() => type === "plugin" ? PluginManager : ThemeManager, [type]);
@@ -253,7 +253,8 @@ export default function AddonStorePage({type}) {
         </SettingsTitle>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(`https://betterdiscord.app/${manager.prefix}s`))}
+                {makeBasicButton(Strings.Addons.website, <Globe />, closeStore)}
+                {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[manager.prefix]()))}
                 {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder))}
             </div>
             <div className="bd-controls-advanced">

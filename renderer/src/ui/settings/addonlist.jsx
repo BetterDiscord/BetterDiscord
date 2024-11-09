@@ -22,6 +22,9 @@ import CloseIcon from "@ui/icons/close";
 
 import NoResults from "@ui/blankslates/noresults";
 import EmptyImage from "@ui/blankslates/emptyimage";
+import AddonStorePage from "@ui/addon-store/page";
+import Globe from "@ui/icons/globe";
+import Web from "@modules/web";
 
 const {useState, useCallback, useEffect, useReducer, useMemo} = React;
 
@@ -46,7 +49,7 @@ function openFolder(folder) {
 }
 
 function blankslate(type, onClick) {
-    const message = Strings.Addons.blankSlateMessage.format({link: `https://betterdiscord.app/${type}s`, type}).toString();
+    const message = Strings.Addons.blankSlateMessage.format({link: Web.pages[type](), type}).toString();
     return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type})} message={message}>
         <Button size={Button.Sizes.LARGE} onClick={onClick}>{Strings.Addons.openFolder.format({type})}</Button>
     </EmptyImage>;
@@ -118,6 +121,7 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
     const [ascending, setAscending] = useState(getState.bind(null, type, "ascending", true));
     const [view, setView] = useState(getState.bind(null, type, "view", "list"));
     const [forced, forceUpdate] = useReducer(x => x + 1, 0);
+    const [showStore, setShowStore] = useState(() => addonList.length === 0);
 
     useEffect(() => {
         Events.on(`${prefix}-loaded`, forceUpdate);
@@ -191,6 +195,10 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
     const isSearching = !!query;
     const hasResults = renderedCards.length !== 0;
 
+    if (showStore) {        
+        return <AddonStorePage type={type} title={title} closeStore={setShowStore.bind(null, false)} />;
+    }
+
     return [
         <SettingsTitle key="title" text={isSearching ? `${title} - ${Strings.Addons.results.format({count: `${renderedCards.length}`})}` : title}>
             <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: `${renderedCards.length} ${title}`})}...`} />
@@ -198,6 +206,7 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
         <div className={"bd-controls bd-addon-controls"}>
             {/* <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: title})}...`} /> */}
             <div className="bd-controls-basic">
+                {makeBasicButton(Strings.Addons.openStore.format({type: title}), <Globe />, setShowStore.bind(null, true))}
                 {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <FolderIcon />, openFolder.bind(null, folder))}
                 {makeBasicButton(Strings.Addons.enableAll, <CheckIcon size="20px" />, confirmEnable(enableAll, title))}
                 {makeBasicButton(Strings.Addons.disableAll, <CloseIcon size="20px" />, disableAll)}

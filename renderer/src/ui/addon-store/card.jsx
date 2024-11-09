@@ -15,6 +15,7 @@ import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import {TagContext} from "./page";
 import Eye from "@ui/icons/eye";
+import Web from "@modules/web";
 // import Extension from "@ui/icons/extension";
 // import Theme from "@ui/icons/theme";
 
@@ -35,7 +36,7 @@ function formatNumberWithSuffix(value) {
 
 /**
  * 
- * @param {{ addon: import("@modules/addonstore").RawAddon }} param0 
+ * @param {{ addon: import("@modules/addonstore").RawAddon, isEmbed?: boolean }} param0 
  */
 export default function AddonCard({addon, isEmbed}) {
     /** @type {typeof ThemeManager | typeof PluginManager} */
@@ -75,7 +76,7 @@ export default function AddonCard({addon, isEmbed}) {
         };
     }, [manager, addon]);
 
-    const badge = useMemo(() => {
+    const badgeText = useMemo(() => {
         if (AddonStore.isUnknown(addon.id)) return Strings.Addons.new;
     }, [addon]);
 
@@ -96,10 +97,10 @@ export default function AddonCard({addon, isEmbed}) {
             <div className="bd-addon-store-card-splash">
                 <div className="bd-addon-store-card-preview">
                     <img 
-                        src={`https://betterdiscord.app${addon.thumbnail_url || "/resources/ui/content_thumbnail.svg"}`}
+                        src={Web.resources.thumbnail(addon.thumbnail_url)}
                         onError={(event) => {
                             // Fallback to blank thumbnail
-                            event.currentTarget.src = "https://betterdiscord.app/resources/ui/content_thumbnail.svg";
+                            event.currentTarget.src = Web.resources.thumbnail();
                         }}
                         loading="lazy"
                         className="bd-addon-store-card-preview-img"
@@ -152,8 +153,8 @@ export default function AddonCard({addon, isEmbed}) {
                         </foreignObject>
                     </svg>
                 </div>
-                {badge && (
-                    <div className="bd-addon-store-card-badge">{badge}</div>
+                {badgeText && (
+                    <div className="bd-addon-store-card-badge">{badgeText}</div>
                 )}
             </div>
             <div className="bd-addon-store-card-body">

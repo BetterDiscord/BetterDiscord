@@ -2,7 +2,9 @@ import AddonStore from "@modules/addonstore";
 import DiscordModules from "@modules/discordmodules";
 import LocaleManager from "@modules/localemanager";
 import React from "@modules/react";
+import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
+import Web from "@modules/web";
 
 import Button from "@ui/base/button";
 import Flex from "@ui/base/flex";
@@ -42,7 +44,7 @@ function ModalItem({leading, content, trailing, action}) {
  */
 export default function DownloadModal({addon, transitionState, install}) {
     const guild = addon.guild || addon.author.guild;
-    const [shouldEnable, setShouldEnable] = useState(() => AddonStore.shouldAlwaysEnable);
+    const [shouldEnable, setShouldEnable] = useState(() => Settings.get("settings", "general", "alwaysEnable"));
 
     const openAuthorPage = useCallback(() => AddonStore.openAuthorPage(addon), [addon]);
     const attemptJoinGuild = useCallback(() => AddonStore.attemptToJoinGuild(addon), [addon]);
@@ -60,10 +62,10 @@ export default function DownloadModal({addon, transitionState, install}) {
             <div className="bd-install-modal-splash">
                 <div className="bd-install-modal-preview">
                     <img 
-                        src={`https://betterdiscord.app${addon.thumbnail_url || "/resources/ui/content_thumbnail.svg"}`}
+                        src={Web.resources.thumbnail(addon.thumbnail_url)}
                         onError={(event) => {
                             // Fallback to blank thumbnail
-                            event.currentTarget.src = "https://betterdiscord.app/resources/ui/content_thumbnail.svg";
+                            event.currentTarget.src = Web.resources.thumbnail();
                         }}
                         loading="lazy"
                         className="bd-install-modal-preview-img"

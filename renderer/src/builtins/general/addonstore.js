@@ -1,19 +1,19 @@
 import Builtin from "@structs/builtin";
 
-import Settings from "@modules/settingsmanager";
-import Strings from "@modules/strings";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
 import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
 import AddonEmbed from "@ui/addon-store/embed";
-import AddonStorePage from "@ui/addon-store/page";
 import ReactUtils from "@modules/api/reactutils";
+import ErrorBoundary from "@ui/errorboundary";
+import Web from "@modules/web";
+import Utilities from "@modules/utilities";
 
 const SimpleMarkdownWrapper = WebpackModules.getByProps("parse", "defaultRules");
 
-let MessageComponent;
+let MessageAccessories;
 
-const MAX_EMBEDS = 4;
+const MAX_EMBEDS = 10;
 
 export default new class AddonStoreBuiltin extends Builtin {
     get name() {return "AddonStore";}
@@ -21,24 +21,21 @@ export default new class AddonStoreBuiltin extends Builtin {
     get id() {return "bdAddonStore";}
 
     async enabled() {
-        Settings.registerPanel("theme-store", Strings.Panels.themes, {
-            order: 5,
-            element: () => React.createElement(AddonStorePage, {type: "theme"})
-        });
-        Settings.registerPanel("plugin-store", Strings.Panels.plugins, {
-            order: 6,
-            element: () => React.createElement(AddonStorePage, {type: "plugin"})
-        });
-
         this.patchEmbeds();
         this.patchMarkdown();
     }
 
+    /** The patches are slightly late sometimes, so this will upate chat */
     forceUpdateChat() {
         for (const element of document.querySelectorAll("[id^=chat-messages-]")) {
             const instance = ReactUtils.getInternalInstance(element);
-            if (typeof instance?.child?.memoizedProps?.onMouseMove === "function") {
-                instance.child.memoizedProps.onMouseMove();
+
+            const child = Utilities.findInTree(instance, ($child) => typeof $child?.memoizedProps?.onMouseMove === "function", {
+                walkable: [ "child" ]
+            });
+
+            if (typeof child?.memoizedProps?.onMouseMove === "function") {
+                child.memoizedProps.onMouseMove();
             }
         }
     }
@@ -53,7 +50,7 @@ export default new class AddonStoreBuiltin extends Builtin {
              */
             match(text, state) {
                 if (!state.allowLinks) return;
-                return AddonStore.isAddonLink(text);
+                return AddonStore.execAddonLink(text);
             },
             /**
              * @param {RegExpExecArray} exec 
@@ -103,10 +100,18 @@ export default new class AddonStoreBuiltin extends Builtin {
     }
  
     async patchEmbeds() {
-        MessageComponent ??= await WebpackModules.getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
+        MessageAccessories ??= await WebpackModules.getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
 
-        this.after(MessageComponent.prototype, "renderEmbeds", (_, [ message ], res) => {
+        this.after(MessageAccessories.prototype, "renderEmbeds", (_, [ message ], res) => {
             res ??= [];
+
+            if (Web.isReleaseChannel(message.channel_id)) {
+                const name = message.embeds[0]?.author?.name;
+
+                if (!name) return res;
+
+                return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{name}));
+            }
             
             const matches = AddonStore.extractAddonLinks(message.content, MAX_EMBEDS);
             
@@ -114,30 +119,28 @@ export default new class AddonStoreBuiltin extends Builtin {
             // or add a new one
 
             if (matches.length) {
-                const embeds = [ ...res ];                
+                const embeds = [ ...res ];
 
                 for (let key = 0; key < matches.length; key++) {
                     const {match, id} = matches[key];
                     // How to use labeled statements?
                     // So i can just continue the matches one
-                    let shouldAdd = true;
+                    let shouldAdd = embeds.length < MAX_EMBEDS;
+
+                    const addonEmbed = React.createElement(ErrorBoundary, {key}, React.createElement(AddonEmbed, {id}));
 
                     for (let embedIndex = 0; embedIndex < res.length; embedIndex++) {
                         const embed = embeds[embedIndex]?.props?.children?.props?.embed;
 
                         if (embed?.url === match) {
                             shouldAdd = false;
-                            embeds[embedIndex] = React.createElement(AddonEmbed, {id: id, key: key});
+                            embeds[embedIndex] = addonEmbed;
                             break;
                         }
                     }
 
-                    if (shouldAdd) {
-                        embeds.push(React.createElement(AddonEmbed, {id: id, key: key}));
-                    }
+                    if (shouldAdd) embeds.push(addonEmbed);
                 }
-
-                embeds.length = MAX_EMBEDS;
 
                 return embeds;
             }
@@ -149,9 +152,6 @@ export default new class AddonStoreBuiltin extends Builtin {
     }
 
     disabled() {
-        Settings.removePanel("theme-store");
-        Settings.removePanel("plugin-store");
-
         delete SimpleMarkdownWrapper.defaultRules[this.id];
         SimpleMarkdownWrapper.parse = SimpleMarkdownWrapper.reactParserFor(SimpleMarkdownWrapper.defaultRules);
 

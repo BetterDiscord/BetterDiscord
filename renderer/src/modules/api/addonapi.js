@@ -1,3 +1,5 @@
+import AddonStore from "@modules/addonstore";
+
 /**
  * `AddonAPI` is a utility class for working with plugins and themes. Instances are accessible through the {@link BdApi}.
  * @name AddonAPI
@@ -56,6 +58,34 @@
      * @returns {Array<object>} Array of all addon instances
      */
     getAll() {return this.#manager.addonList.map(a => this.#manager.getAddon(a.id));}
+
+    /**
+     * Attempt to download a plugin
+     * @param {string} idOrFile Addon ID or filename
+     * @returns {Promise<void>} A empty promise that resolves when the addon is installed or when the modal is closed
+     */
+    download(idOrFile) {
+        return new Promise((resolve, reject) => {
+            AddonStore.initializeIfNeeded();
+    
+            let undo = () => {};
+            const listener = () => {
+                undo();
+    
+                const addon = AddonStore.getAddon(idOrFile);
+                if (!addon) return reject(new Error("Unknown addon!"));
+    
+                if (addon.type === this.#manager.prefix) {
+                    AddonStore.attemptToDownload(addon, false).then(resolve, reject);
+                    return;
+                }
+                reject(new Error(`Addon is not type '${this.#manager.prefix}'!`));
+            };
+    
+            if (AddonStore.addonList.length === 0) undo = AddonStore.addChangeListener(listener);
+            else listener();
+        });
+    }
 }
 
 Object.freeze(AddonAPI);
