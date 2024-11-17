@@ -68,7 +68,7 @@ import AddonStore from "@modules/addonstore";
         return new Promise((resolve, reject) => {  
             AddonStore.requestAddon(idOrName).then((addon) => {
                 if (addon.type === this.#manager.prefix) {
-                    AddonStore.attemptToDownload(addon, false).then(resolve, reject);
+                    addon.download(false).then(resolve, reject);
                     return;
                 }
                 

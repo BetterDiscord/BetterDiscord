@@ -1,7 +1,8 @@
 import WebpackModules from "@modules/webpackmodules";
 import React from "@modules/react";
+import ErrorBoundary from "./errorboundary";
 
-const {Spinner: WebpackSpinner} = WebpackModules.getByProps("Spinner", "Tooltip");
+const {Spinner: WebpackSpinner} = WebpackModules.getByProps("Spinner", "Tooltip") || {};
 
 /**
  * @typedef {typeof SpinnerType} SpinnerType
@@ -16,10 +17,10 @@ const {Spinner: WebpackSpinner} = WebpackModules.getByProps("Spinner", "Tooltip"
  *    itemClassName?: string, 
  *    "aria-label"?: string
  * }} props 
- * @returns 
+ * @returns {JSX.Element}
  */
 function Spinner(props) {
-  return React.createElement(WebpackSpinner, props);
+  return React.createElement(ErrorBoundary, null, React.createElement(WebpackSpinner, props));
 }
 
 export const SpinnerType = Spinner.Type = Object.freeze({

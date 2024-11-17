@@ -55,12 +55,6 @@ import Web from "@data/web";
  * }} RawAddonGuild
  */
 
-// Make it so we can detect links that have <> around them
-const ADDON_REGEX_SOURCE = "(?:https?:\\/\\/betterdiscord\\.app\\/(?:theme|plugin)|betterdiscord:\\/\\/(?:theme|plugin|addon)s?)(?:\\/|\\?id=)(\\S+)";
-const ADDON_REGEX = new RegExp(`(?:<${ADDON_REGEX_SOURCE}>|${ADDON_REGEX_SOURCE})`, "gi");
-
-const ADDON_REGEX_SINGLE = /^<betterdiscord:\/\/(theme|plugin|addon)s?\/(\S+)>/;
-
 const EXTRACT_GIT_INFO = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
 
 function showConfirmDelete(addon) {
@@ -74,228 +68,78 @@ function showConfirmDelete(addon) {
     });
 }
 
-export default new class AddonStore {
-    constructor() {
-        /** @type {RawAddon[]} */
-        this.addonList = [];
+/** @typedef {Addon} Addon */
 
-        this.ok = false;
-        this.loading = false;
-        /** @type {null | any} */
-        this.error = null;
+class Addon {
+    /** @type {Record<string, Addon>} */
+    static cache = {};
 
-        /** @type {Set<() => void>} */
-        this._subscribers = new Set();
+    /** @param {RawAddon} addon  */
+    constructor(addon) {
+        if (typeof Addon.cache[addon.id] === "object") {
+            const cached = Addon.cache[addon.id];
 
-        window.AddonStore = this;
+            cached.downloads = Math.max(cached.downloads.downloads, addon.downloads);
 
-        /** @type {NodeJS.Timeout | null} */
-        this._internvalId = null;
-    }
-
-    get knownAddons() {
-        return DataStore.getBDData("known-addons") || null;
-    }
-
-    _emitChange() {
-        for (const subscriber of this._subscribers) {
-            subscriber();
+            return cached;
         }
+
+        this.id = addon.id;
+        this.name = addon.name;
+
+        this.releaseDate = new Date(addon.release_date);
+        
+        this.type = addon.type;
+        
+        this.thumbnail = Web.resources.thumbnail(addon.thumbnail_url);
+        this.avatar = `https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`;
+        this.author = addon.author.discord_name;
+        
+        this.guild = addon.guild || addon.author.guild || null;
+        
+        this.manager = addon.type === "plugin" ? PluginManager : ThemeManager;
+        
+        this.description = addon.description;
+        
+        this.tags = addon.tags;
+        
+        this.downloads = addon.downloads;
+        this.likes = addon.likes;
+        
+        this.version = addon.version;
+
+        this.filename = addon.file_name;
+        
+        Addon.cache[addon.id] = this;
     }
 
-    requestAddons() {
-        Logger.debug("AddonStore", "Requesting addons");
-
-        clearInterval(this._internvalId);
-
-        this.loading = true;
-        this.ok = false;
-        this.error = null;
-
-        this._emitChange();
-
-        request(Web.store.addons, (error, _, body) => {
-            try {
-                this.addonList.length = 0;
-    
-                this.loading = false;
-                this.ok = !error;
-                this.error = error;
-    
-                if (error) {
-                    Logger.stacktrace("AddonStore", "Failed to fetch addons api:", error);
-    
-                    Toasts.show(Strings.Addons.failedToFetch, {
-                        type: "danger"
-                    });
-
-                    this.error = error;
-    
-                    return;
-                }
-    
-                this.addonList.push(...JSON.parse(body));
-                
-                if (this.knownAddons === null) {
-                    DataStore.setBDData("known-addons", [...this.knownAddons]);
-                }
-                // else {
-                //     let unknownCount = 0;
-                //     for (const addon of this.addonList) {
-                //         if (this.isUnknown(addon.id)) unknownCount++;
-                //     }
-
-                //     Toasts.info(`${unknownCount} new addons`);
-                // }
-            } 
-            finally {
-                this._emitChange();
-
-                this._internvalId = setTimeout(() => {}, 60 * 60 * 1000);
-            }
-        });
-    }
-
-    #initialized = false;
-    initializeIfNeeded() {
-        if (this.#initialized) return;
-        this.#initialized = true;
-
-        this.requestAddons();
-    }
-
-    singleAddonCache = {};
-    /**
-     * @param {number} id 
-     * @returns {Promise<RawAddon>}
-     */
-    requestAddon(id) {
-        const cache = this.getAddon(id);
-        if (cache) return Promise.resolve(cache);
-
-        return this.singleAddonCache[id] ??= new Promise((resolve, reject) => {
-            request(Web.store.addon(id), (error, _, body) => {
-                const data = JSON.parse(body);
-
-                if (error || data.status === 404) {
-                    reject(error || data.title);
-                    return;
-                }
-
-                this.singleAddonCache[data.name] = this.singleAddonCache[id];
-                this.singleAddonCache[data.id] = this.singleAddonCache[id];
-
-                resolve(data);
-            });
-        });
-    }
-
-    /**
-     * Gets a addon via id or name
-     * @param {number|string} id 
-     * @returns {RawAddon | undefined}
-     */
-    getAddon(id) {
-        const decoded = decodeURIComponent(id.toString()).toLowerCase();
-
-        return this.addonList.find((addon) => addon.id.toString() === decoded || addon.name.toLowerCase() === decoded || addon.file_name.toLowerCase() === decoded);
-    }
-
-    /**
-     * Gets a addon via the release channels embed name
-     * @param {string} name 
-     */
-    getAddonViaEmbedName(name) {
-        return this.addonList.find((addon) => name.startsWith(`${addon.name} - `));
-    }
-
-    getUnknownAddons() {
-        if (!this.knownAddons) return [];
-        return this.addonList.filter((addon) => !this.knownAddons.includes(addon.id));
-    }
     /**
      * To prompt new addons
-     * @param {number} id
      * @returns {boolean} 
      */
-    isUnknown(id) {
-        if (!this.knownAddons) return false;
-        return !this.knownAddons.includes(id);
+    isUnknown() {
+        const data = DataStore.getBDData(`known-${this.type}s`);
+
+        if (!data) return false;
+        return !data.includes(this.id);
     }
-    /**
-     * @param {number} id
-     */
-    markAsKnown(id) {
-        if (this.knownAddons.includes(id)) return;
+    /** To hide the badge */
+    markAsKnown() {
+        if (!DataStore.getBDData(`has-requested-${this.type}s`)) return;
 
-        this.knownAddons.push(id);
-        DataStore.setBDData("known-addons", this.knownAddons);
-    }
+        const data = DataStore.getBDData(`known-${this.type}s`) || [];
 
-    /**
-     * Listen for when the addon store changes
-     * @param {() => void} listener 
-     * @returns {() => boolean}
-     */
-    addChangeListener(listener) {
-        this._subscribers.add(listener);
-
-        return () => this._subscribers.delete(listener);
+        data.push(this.id);
+        DataStore.setBDData(`known-${this.type}s`, data);
     }
 
-    /**
-     * Extract all bd addon links
-     * @param {string} text
-     * @param {number} max
-     * @return {{ id: string, match: string, index: number }[]} 
-     */
-    extractAddonLinks(text, max = Infinity) {
-        ADDON_REGEX.lastIndex = 0;
-        
-        const matches = [];
-
-        if (max <= 0) return matches;
-
-        /** @type {RegExpExecArray} */
-        let exec;
-        while ((exec = ADDON_REGEX.exec(text))) {
-            // if https://betterdiscord.app/type/id not <https://betterdiscord.app/type/id>
-            // if <betterdiscord://addon/id> not betterdiscord://addon/id
-            if (!(exec[0][0] === "h" || exec[0][1] === "b")) continue;
-
-            matches.push({
-                id: exec[1] || exec[2],
-                match: exec[0],
-                index: exec.index
-            });
-
-            if (matches.length >= max) {
-                break;
-            }
-        }
-
-        return matches;
-    }
-
-    /**
-     * For markdown
-     * @param {string} string 
-     * @returns {RegExpExecArray}
-     */
-    execAddonLink(string) {
-        return ADDON_REGEX_SINGLE.exec(string);
-    }
-
-    /**
-     * Opens a preview for the theme
-     * @param {RawAddon} addon 
-     */
-    async openAddonPreview(addon) {
-        if (addon.type === "plugin") {
+    /** Opens the Theme preview site */
+    async openPreview() {
+        if (this.type === "plugin") {
             throw new Error("Addon is a plugin!");
         }
 
-        const response = await fetch(Web.redirects.github(addon.id), {method: "HEAD"});
+        const response = await fetch(Web.redirects.github(this.id), {method: "HEAD"});
 
         if (!response.ok) {
             throw new Error("Unable to get github url!");
@@ -314,39 +158,27 @@ export default new class AddonStore {
 
         window.open(previewURL, "_blank", "noopener,noreferrer");
     }
-    /**
-     * Opens the bd's site page for the addon
-     * @param {RawAddon} addon 
-     */
-    openAddonPage(addon) {
-        window.open(Web.redirects[addon.type](addon.id), "_blank", "noopener,noreferrer");
-    }
-    /**
-     * Opens the raw code page
-     * @param {RawAddon} addon 
-     */
-    openRawCode(addon) {
-        window.open(Web.redirects.github(addon.id), "_blank", "noopener,noreferrer");
+
+    /** Opens the bd's site page for the addon */
+    openAddonPage() {
+        window.open(Web.redirects[this.type](this.id), "_blank", "noopener,noreferrer");
     }
 
-    /**
-     * Opens the raw code page
-     * @param {RawAddon} addon 
-     */
-    openAuthorPage(addon) {
-        window.open(Web.pages.developer(addon.author.display_name), "_blank", "noopener,noreferrer");
+    /** Opens the raw code page */
+    openRawCode() {
+        window.open(Web.redirects.github(this.id), "_blank", "noopener,noreferrer");
     }
 
-    /**
-     * Attempts to join guild
-     * @param {RawAddon} addon 
-     */
-    attemptToJoinGuild(addon) {
-        const guild = addon.guild || addon.author.guild;
+    /** Opens the raw code page */
+    openAuthorPage() {
+        window.open(Web.pages.developer(this.author), "_blank", "noopener,noreferrer");
+    }
 
-        if (!guild) return;
+    /** Attempts to join guild */
+    joinGuild() {
+        if (!this.guild) return;
 
-        let code = guild.invite_link;
+        let code = this.guild.invite_link;
         const tester = /\.gg\/(.*)$/;
         if (tester.test(code)) code = code.match(tester)[1];
         
@@ -359,19 +191,18 @@ export default new class AddonStore {
 
     /**
      * Attempt to download addon
-     * @param {RawAddon} addon 
+     * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
+     * @returns {Promise<void>}
      */
-    async attemptToDownload(addon, shouldSkipConfirm = false) {
-        const manager = addon.type === "plugin" ? PluginManager : ThemeManager;
-
-        if (manager.isLoaded(addon.file_name)) return;
+    async download(shouldSkipConfirm = false) {
+        if (this.isInstalled()) return;
 
         const install = (shouldEnable) => new Promise((resolve) => {
-            request(Web.redirects.download(addon.id), (error, headers, body) => {
+            request(Web.redirects.download(this.id), (error, headers, body) => {
                 if (error || headers.statusCode >= 300 || headers.statusCode < 200) {
-                    Logger.stacktrace("AddonStore", `Failed to fetch addon '${addon.file_name}':`, error);
+                    Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error);
         
-                    Toasts.show(Strings.Addons.failedToDownload.format({type: addon.type, name: addon.name}), {
+                    Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
                         type: "danger"
                     });
 
@@ -380,52 +211,58 @@ export default new class AddonStore {
                     return;
                 }
 
+                // Update download count if downloaded
+                this.downloads++;
+
                 // If should enable, tell the manager that it is before hand
                 if (shouldEnable) {
-                    manager.state[path.basename(addon.name)] = true;
+                    this.manager.state[this.name] = true;
                 }
         
-                Toasts.show(Strings.Addons.successfullyDownload.format({name: addon.name}), {
+                Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
                     type: "success"
                 });
         
-                fs.writeFileSync(path.join(manager.addonFolder, addon.file_name), body);
+                fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), body);
 
                 resolve();
             });
         });
-
-        if (shouldSkipConfirm) return install(Settings.get("settings", "general", "alwaysEnable"));
         
-        return new Promise((resolve) => {
-            let fromInstall = false;
+        return this._download ??= new Promise((resolve) => {
+            if (shouldSkipConfirm) return install(Settings.get("settings", "general", "alwaysEnable")).then(() => resolve());
 
-            Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
+            let installing = false;
+
+            const key = Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
                 ...props, 
-                addon, 
+                addon: this, 
                 install: async (shouldEnable) => {
-                    fromInstall = true;
+                    installing = true;
                     await install(shouldEnable);
                     props.onClose();
-                    resolve();
                 }
             }), {
-                onCloseCallback() {                    
-                    if (!fromInstall) resolve();
-                }
+                onCloseCallback: () => {
+                    resolve();
+                    this._download = null;
+                },
+                onCloseRequest() {
+                    // If installing make it so the modal cannot close until install is finished
+                    if (installing) return;
+                    Modals.ModalActions.closeModal(key);
+                },
+                // backdropStyle: "BLUR"
             });
         });
     }
 
     /**
      * Attempt to delete addon
-     * @param {RawAddon} addon 
      * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
      */
-    async attemptToDelete(addon, shouldSkipConfirm = false) {
-        const manager = addon.type === "plugin" ? PluginManager : ThemeManager;
-
-        const foundAddon = manager.addonList.find(a => a.filename == addon.file_name);
+    async delete(shouldSkipConfirm = false) {
+        const foundAddon = this.manager.addonList.find(a => a.filename == this.filename);
 
         if (!foundAddon) return;
 
@@ -434,6 +271,148 @@ export default new class AddonStore {
             if (!shouldDelete) return;
         }
 
-        if (manager.deleteAddon) manager.deleteAddon(foundAddon);
+        if (this.manager.deleteAddon) this.manager.deleteAddon(foundAddon);
+    }
+
+    isInstalled() {
+        return this.manager.isLoaded(this.filename);
+    }
+}
+
+const addonStore = new class AddonStore {
+    constructor() {
+        /** @type {Addon[]} */
+        this.plugins = [];
+        /** @type {Addon[]} */
+        this.themes = [];
+
+        this.ok = false;
+        this.loading = false;
+        /** @type {null | any} */
+        this.error = null;
+
+        /** @type {Set<() => void>} */
+        this._subscribers = new Set();
+
+        /** @type {NodeJS.Timeout | null} */
+        this._internvalId = null;
+
+        window.AddonStore = this;
+    }
+
+    _emitChange() {
+        for (const subscriber of this._subscribers) {
+            subscriber();
+        }
+    }
+
+    /**
+     * @param {"theme" | "plugin"} type 
+     * @returns {Addon[]}
+     */
+    getAddonsOfType(type) {
+        return this[`${type}s`].concat();
+    }
+
+    /** @param {"plugins" | "themes"} type  */
+    requestAddons(type) {
+        Logger.debug("AddonStore", `Requesting all ${type}`);
+
+        clearInterval(this._internvalId);
+
+        request(Web.store[type], (error, _, body) => {
+            try {
+                this[type].length = 0;
+    
+                if (error) {
+                    Logger.stacktrace("AddonStore", `Failed to fetch ${type} api:`, error);
+    
+                    Toasts.show(Strings.Addons.failedToFetch, {
+                        type: "danger"
+                    });
+    
+                    return;
+                }
+    
+                this[type].push(...JSON.parse(body).map((addon) => new Addon(addon)));
+                
+                if (!DataStore.getBDData(`has-requested-${type}`)) {
+                    DataStore.setBDData(`has-requested-${type}`, true);
+                    DataStore.setBDData(`known-${type}`, this[type].map(m => m.id));
+                }
+            } 
+            finally {
+                this._emitChange();
+
+                this._internvalId = setTimeout(() => {}, 60 * 60 * 1000);
+            }
+        });
+    }
+
+    #initialized = {};
+    /** @param {"plugins"|"themes"} type  */
+    initializeIfNeeded(type) {
+        if (this.#initialized[type]) return;
+        this.#initialized[type] = true;
+
+        this.requestAddons(type);
+    }
+
+    singleAddonCache = {};
+    /**
+     * @param {number|string} idOrName 
+     * @returns {Promise<Addon>}
+     */
+    requestAddon(idOrName) {
+        const cache = this.getAddon(idOrName);
+        if (cache) return Promise.resolve(cache);
+
+        return this.singleAddonCache[idOrName] ??= new Promise((resolve, reject) => {
+            request(Web.store.addon(idOrName), (error, _, body) => {
+                const data = JSON.parse(body);
+
+                if (error || data.status === 404) {
+                    reject(error || data.title);
+                    return;
+                }
+
+                this.singleAddonCache[data.name] = this.singleAddonCache[idOrName];
+                this.singleAddonCache[data.id] = this.singleAddonCache[idOrName];
+
+                resolve(new Addon(data));
+            });
+        });
+    }
+
+    /**
+     * Gets a addon via id or name
+     * @param {number|string} id 
+     * @returns {Addon | null}
+     */
+    getAddon(id) {
+        const decoded = decodeURIComponent(id.toString()).toLowerCase();
+
+        for (const key in Addon.cache) {
+            if (Object.prototype.hasOwnProperty.call(Addon.cache, key)) {
+                const addon = Addon.cache[key];
+                
+                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded || addon.filename.toLowerCase() === decoded) return addon;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Listen for when the addon store changes
+     * @param {() => void} listener 
+     * @returns {() => boolean}
+     */
+    addChangeListener(listener) {
+        this._subscribers.add(listener);
+
+        return () => this._subscribers.delete(listener);
     }
 };
+
+export default addonStore;

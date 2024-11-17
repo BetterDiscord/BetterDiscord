@@ -15,6 +15,44 @@ let MessageAccessories;
 
 const MAX_EMBEDS = 10;
 
+// Make it so we can detect links that have <> around them
+const ADDON_REGEX_SOURCE = "(?:https?:\\/\\/betterdiscord\\.app\\/(?:theme|plugin)|betterdiscord:\\/\\/(?:theme|plugin|addon)s?)(?:\\/|\\?id=)(\\S+)";
+const ADDON_REGEX = new RegExp(`(?:<${ADDON_REGEX_SOURCE}>|${ADDON_REGEX_SOURCE})`, "gi");
+
+/**
+ * Extract all bd addon links
+ * @param {string} text
+ * @param {number} max
+ * @return {{ id: string, match: string, index: number }[]} 
+ */
+function extractAddonLinks(text, max = Infinity) {
+    ADDON_REGEX.lastIndex = 0;
+    
+    const matches = [];
+
+    if (max <= 0) return matches;
+
+    /** @type {RegExpExecArray} */
+    let exec;
+    while ((exec = ADDON_REGEX.exec(text))) {
+        // if https://betterdiscord.app/type/id not <https://betterdiscord.app/type/id>
+        // if <betterdiscord://addon/id> not betterdiscord://addon/id
+        if (!(exec[0][0] === "h" || exec[0][1] === "b")) continue;
+
+        matches.push({
+            id: exec[1] || exec[2],
+            match: exec[0],
+            index: exec.index
+        });
+
+        if (matches.length >= max) {
+            break;
+        }
+    }
+
+    return matches;
+}
+
 export default new class AddonStoreBuiltin extends Builtin {
     get name() {return "AddonStore";}
     get category() {return "general";}
@@ -50,7 +88,7 @@ export default new class AddonStoreBuiltin extends Builtin {
              */
             match(text, state) {
                 if (!state.allowLinks) return;
-                return AddonStore.execAddonLink(text);
+                return /^<betterdiscord:\/\/(theme|plugin|addon)s?\/(\S+)>/.exec(text);
             },
             /**
              * @param {RegExpExecArray} exec 
@@ -88,9 +126,7 @@ export default new class AddonStoreBuiltin extends Builtin {
                     onClick(event) {
                         event.preventDefault();
 
-                        if (addon) {
-                            AddonStore.openAddonPage(addon);
-                        }
+                        if (addon) addon.openAddonPage();
                     }
                 }, parse(node.content, state));
             }
@@ -106,15 +142,14 @@ export default new class AddonStoreBuiltin extends Builtin {
             res ??= [];
 
             if (Web.isReleaseChannel(message.channel_id)) {
-                const id = message.embeds[0]?.author?.url?.match(/\d+$/)?.[0];
-                const name = message.embeds[0]?.author?.name;                
+                const id = message.embeds[0].rawDescription?.split?.("\n")?.at?.(-1)?.match?.(/\?id=(\d+)/);
 
-                if (id || name) return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{name, id, original: res}));
+                if (id) return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{id: id[1], original: res}));
 
                 return res;
             }
             
-            const matches = AddonStore.extractAddonLinks(message.content, MAX_EMBEDS);
+            const matches = extractAddonLinks(message.content, MAX_EMBEDS);
             
             // Go throught and either replace a prexisting embed
             // or add a new one

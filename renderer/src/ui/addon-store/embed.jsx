@@ -7,13 +7,11 @@ import Spinner from "@ui/spinner";
 
 const {useState, useEffect, useCallback} = React;
 
-export default function AddonEmbed({id, name, original}) {
-    if (typeof id !== "string") AddonStore.initializeIfNeeded();    
-
-    const getAddon = useCallback(() => name ? AddonStore.getAddonViaEmbedName(name) : AddonStore.getAddon(id), [id, name]);
+export default function AddonEmbed({id, original}) {
+    const getAddon = useCallback(() => AddonStore.getAddon(id), [id]);
 
     const [addon, setAddon] = useState(() => getAddon());
-    const [loading, setLoading] = useState(() => typeof name === "string" ? AddonStore.loading : true);
+    const [loading, setLoading] = useState(() => true);
     const [tags, setTags] = useState({});
     
     useEffect(() => {

@@ -159,6 +159,7 @@
         "byline": "by {{author}}",
         "openFolder": "Open {{type}} Folder",
         "openStore": "Open {{type}} Store",
+        "viewInstalled": "View Installed {{type}}",
         "reload": "Reload",
         "addonSettings": "Settings",
         "website": "Website",

@@ -21,7 +21,7 @@ const apiJoin = (...paths) => {
 };
 /**
  * @param {string} type 
- * @returns {(name: string) => string}
+ * @returns {(name?: string) => string}
  */
 const makePage = (type) => (name) => join(`${type}${name ? `/${encodeURIComponent(name)}` : "s"}`);
 
@@ -70,8 +70,8 @@ export default new class Web {
         addons: apiJoin("/store/addons"),
         themes: apiJoin("/store/themes"),
         plugins: apiJoin("/store/plugins"),
-        /** @param {number|string} id Id or Name of a addon */
-        addon: (id) => apiJoin(`/store/${encodeURIComponent(id)}`),
+        /** @param {number|string} idOrName Id or Name of a addon */
+        addon: (idOrName) => apiJoin(`/store/${encodeURIComponent(idOrName)}`),
 
         tags: {
             plugin: [

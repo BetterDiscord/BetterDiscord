@@ -1,4 +1,3 @@
-import AddonStore from "@modules/addonstore";
 import DiscordModules from "@modules/discordmodules";
 import LocaleManager from "@modules/localemanager";
 import React from "@modules/react";
@@ -33,22 +32,19 @@ function ModalItem({leading, content, trailing, action}) {
 }
 
 /**
- * 
  * @param {{ 
- *    addon: import("@modules/addonstore").RawAddon, 
+ *    addon: import("@modules/addonstore").Addon, 
  *    transitionState: number, 
  *    onClose(): void, 
  *    install(shouldEnable: boolean): Promise<void>
- * }} param0 
- * @returns 
+ * }} props 
  */
-export default function DownloadModal({addon, transitionState, install}) {
-    const guild = addon.guild || addon.author.guild;
+export default function InstallModal({addon, transitionState, install}) {
     const [shouldEnable, setShouldEnable] = useState(() => Settings.get("settings", "general", "alwaysEnable"));
 
-    const openAuthorPage = useCallback(() => AddonStore.openAuthorPage(addon), [addon]);
-    const attemptJoinGuild = useCallback(() => AddonStore.attemptToJoinGuild(addon), [addon]);
-    const openSourceCode = useCallback(() => AddonStore.openRawCode(addon), [addon]);
+    const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
+    const attemptJoinGuild = useCallback(() => addon.joinGuild(), [addon]);
+    const openSourceCode = useCallback(() => addon.openRawCode(), [addon]);
 
     const [isInstalling, setInstalling] = useState(false);
 
@@ -62,7 +58,7 @@ export default function DownloadModal({addon, transitionState, install}) {
             <div className="bd-install-modal-splash">
                 <div className="bd-install-modal-preview">
                     <img 
-                        src={Web.resources.thumbnail(addon.thumbnail_url)}
+                        src={addon.thumbnail}
                         onError={(event) => {
                             // Fallback to blank thumbnail
                             event.currentTarget.src = Web.resources.thumbnail();
@@ -102,12 +98,12 @@ export default function DownloadModal({addon, transitionState, install}) {
                                         overflow="visible"
                                         mask="url(#svg-mask-squircle)"
                                     >
-                                        <DiscordModules.Tooltip text={addon.author.display_name}>
+                                        <DiscordModules.Tooltip text={addon.author}>
                                             {(props) => (
                                                 <img 
                                                     loading="lazy"
                                                     className="bd-install-modal-author-img"
-                                                    src={`https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`}
+                                                    src={addon.avatar}
                                                     {...props}
                                                 />
                                             )}
@@ -132,31 +128,31 @@ export default function DownloadModal({addon, transitionState, install}) {
                 />
                 <ModalItem 
                     leading={<Clock size={24} />}
-                    content={new Date(addon.release_date).toLocaleString(LocaleManager.discordLocale)}
+                    content={addon.releaseDate.toLocaleString(LocaleManager.discordLocale)}
                 />
                 <ModalItem 
                     leading={<GitHub size={24} />}
-                    content={addon.file_name}
+                    content={addon.filename}
                     action={openSourceCode}
                 />
                 <ModalItem 
                     leading={<User size={24} />}
-                    content={addon.author.display_name}
+                    content={addon.author}
                     action={openAuthorPage}
                 />
-                {guild && (
+                {addon.guild && (
                     <ModalItem 
                         leading={<Support size={24} />}
                         content={(
                             <Flex direction={Flex.Direction.VERTICAL}>
-                                <Text>{guild.name}</Text>
+                                <Text>{addon.guild.name}</Text>
                                 <Text size={Text.Sizes.SIZE_12} color={Text.Colors.MUTED}>{Strings.Addons.invite}</Text>
                             </Flex>
                         )}
                         trailing={(
                             <img 
-                                src={`https://cdn.discordapp.com/icons/${guild.snowflake}/${guild.avatar_hash}.webp?size=96`}
-                                alt={guild.id}
+                                src={`https://cdn.discordapp.com/icons/${addon.guild.snowflake}/${addon.guild.avatar_hash}.webp?size=96`}
+                                alt={addon.guild.id}
                                 className="bd-install-modal-guild"
                                 width={32}
                                 height={32}

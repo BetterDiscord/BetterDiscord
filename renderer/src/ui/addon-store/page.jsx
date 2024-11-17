@@ -60,11 +60,10 @@ const buildDirectionOptions = () => [
 export const TagContext = createContext();
 
 /**
- * 
- * @param {{type: "plugins"|"themes", title: string, closeStore(): void}} param0 
+ * @param {{type: "plugin"|"theme", title: string, closeStore(): void}} param0 
  */
 export default function AddonStorePage({type, title, closeStore}) {
-    AddonStore.initializeIfNeeded();
+    AddonStore.initializeIfNeeded(`${type}s`);
 
     const [ tags, setTags ] = useState(() => Web.store.tags[type].map((tag) => ({
         selected: false,
@@ -73,9 +72,9 @@ export default function AddonStorePage({type, title, closeStore}) {
     })));
 
     /**
-     * @type {[ import("@modules/addonstore").RawAddon[], (addons: import("@modules/addonstore").RawAddon[]) => void ]}
+     * @type {[ import("@modules/addonstore").Addon[], (addons: import("@modules/addonstore").Addon[]) => void ]}
      */
-    const [ addons, setAddons ] = useState(() => [...AddonStore.addonList]);
+    const [ addons, setAddons ] = useState(() => AddonStore.getAddonsOfType(type));
     const [ query, setQuery ] = useState("");
 
     const search = useCallback((event) => {
@@ -97,17 +96,17 @@ export default function AddonStorePage({type, title, closeStore}) {
 
 
     useEffect(() => {
-        setAddons([...AddonStore.addonList]);
+        setAddons(AddonStore.getAddonsOfType(type));
 
-        const listener = () => {
-            setAddons([...AddonStore.addonList]);
+        const listener = () => {            
+            setAddons(AddonStore.getAddonsOfType(type));
         };
 
         return AddonStore.addChangeListener(listener);
-    }, []);
+    }, [type]);
 
     /**
-     * @type {import("@modules/addonstore").RawAddon[]}
+     * @type {import("@modules/addonstore").Addon[]}
      */
     const filtered = useMemo(() => {
         const $query = query.toLowerCase();
@@ -116,7 +115,7 @@ export default function AddonStorePage({type, title, closeStore}) {
 
         return addons.filter((addon) => {
             if (addon.type !== type) return false;
-            if (!(addon.name.toLowerCase().includes($query) || addon.author.display_name.toLowerCase().includes($query) || addon.description.toLowerCase().includes($query))) return false;
+            if (!(addon.name.toLowerCase().includes($query) || addon.author.toLowerCase().includes($query) || addon.description.toLowerCase().includes($query))) return false;
 
             return $tags.every((tag) => addon.tags.includes(tag.value));
         });
@@ -148,16 +147,16 @@ export default function AddonStorePage({type, title, closeStore}) {
               comparison = a.name.localeCompare(b.name);
             } 
             else if (sort === "author") {
-              comparison = a.author.display_name.localeCompare(b.author.display_name);
+              comparison = a.author.localeCompare(b.author);
             } 
             else if (sort === "version") {
               comparison = a.version.localeCompare(b.version);
             } 
             else if (sort === "modified") {
-              comparison = new Date(b.release_date) - new Date(a.release_date);
+              comparison = b.releaseDate - a.releaseDate;
             } 
             else if (sort === "isInstalled") {
-              comparison = (a.isInstalled === b.isInstalled) ? 0 : (a.isInstalled ? -1 : 1);
+              comparison = (a.isInstalled() === b.isInstalled()) ? 0 : (a.isInstalled() ? -1 : 1);
             }
             else if (sort === "likes") {
                 comparison = b.likes - a.likes;
@@ -190,7 +189,6 @@ export default function AddonStorePage({type, title, closeStore}) {
             ];
         });
     }, []);
-    
 
     return [
         <SettingsTitle text={title} key="title">
@@ -198,7 +196,7 @@ export default function AddonStorePage({type, title, closeStore}) {
         </SettingsTitle>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.website, <Globe />, closeStore)}
+                {makeBasicButton(Strings.Addons.viewInstalled.format({type: title}), <Globe />, closeStore)}
                 {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[manager.prefix]()))}
                 {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder))}
             </div>

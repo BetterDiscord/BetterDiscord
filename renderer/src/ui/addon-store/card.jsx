@@ -1,10 +1,7 @@
-import PluginManager from "@modules/pluginmanager";
 import React from "@modules/react";
 import Strings from "@modules/strings";
-import ThemeManager from "@modules/thememanager";
 import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";
-import AddonStore from "@modules/addonstore";
 
 import Button from "@ui/base/button";
 import Delete from "@ui/icons/delete";
@@ -35,48 +32,49 @@ function formatNumberWithSuffix(value) {
 }
 
 /**
- * @param {{ addon: import("@modules/addonstore").RawAddon, isEmbed?: boolean }} props 
+ * @param {{ addon: import("@modules/addonstore").Addon, isEmbed?: boolean }} props 
  */
 export default function AddonCard({addon, isEmbed}) {
-    /** @type {typeof ThemeManager | typeof PluginManager} */
-    const manager = useMemo(() => addon.type === "plugin" ? PluginManager : ThemeManager, [addon]);
-    const [isInstalled, setInstalled] = useState(() => manager.isLoaded(addon.file_name));
+    const [isInstalled, setInstalled] = useState(() => addon.isInstalled());
     const [disabled, setDisabled] = useState(false);
+    const [downloadCount, setDownloads] = useState(addon.downloads);
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
-    const triggerDelete = useCallback(async (event) => AddonStore.attemptToDelete(addon, event.shiftKey), [addon]);
+    const triggerDelete = useCallback((event) => addon.delete(event.shiftKey), [addon]);
 
     const installAddon = useCallback(async (event) => {
         setDisabled(true);
         
-        await AddonStore.attemptToDownload(addon, event.shiftKey);
+        await addon.download(event.shiftKey);
+
+        setDownloads(addon.downloads);
 
         setDisabled(false);
     }, [addon]);
 
     // Maybe show the guild invite confirm modal?
-    const acceptInvite = useCallback(() => AddonStore.attemptToJoinGuild(addon), [addon]);
-    const openSourceCode = useCallback(() => AddonStore.openRawCode(addon), [addon]);
-    const openAddonPage = useCallback(() => AddonStore.openAddonPage(addon), [addon]);
-    const openAddonPreview = useCallback(() => AddonStore.openAddonPreview(addon), [addon]);
+    const acceptInvite = useCallback(() => addon.joinGuild(), [addon]);
+    const openSourceCode = useCallback(() => addon.openRawCode(), [addon]);
+    const openAddonPage = useCallback(() => addon.openAddonPage(), [addon]);
+    const openAddonPreview = useCallback(() => addon.openAddonPreview(), [addon]);
 
     useEffect(() => {
-        setInstalled(() => manager.isLoaded(addon.file_name));
+        setInstalled(addon.isInstalled());
 
-        const listener = () => setInstalled(() => manager.isLoaded(addon.file_name));
+        const listener = () => setInstalled(addon.isInstalled());
         
-        Events.on(`${manager.prefix}-loaded`, listener);
-        Events.on(`${manager.prefix}-unloaded`, listener);
+        Events.on(`${addon.manager.prefix}-loaded`, listener);
+        Events.on(`${addon.manager.prefix}-unloaded`, listener);
         
         return () => {
-            Events.off(`${manager.prefix}-loaded`, listener);
-            Events.off(`${manager.prefix}-unloaded`, listener);
+            Events.off(`${addon.manager.prefix}-loaded`, listener);
+            Events.off(`${addon.manager.prefix}-unloaded`, listener);
         };
-    }, [manager, addon]);
+    }, [addon]);
 
     const badgeText = useMemo(() => {
-        if (AddonStore.isUnknown(addon.id)) return Strings.Addons.new;
+        if (addon.isUnknown()) return Strings.Addons.new;
     }, [addon]);
 
     const className = useMemo(() => Utilities.className({ 
@@ -84,19 +82,19 @@ export default function AddonCard({addon, isEmbed}) {
         "bd-addon-store-card-embed": isEmbed 
     }), [ isEmbed ]);
 
-    const markAsSeen = useCallback(() => AddonStore.markAsKnown(addon.id), [addon]);
+    const markAsSeen = useCallback(() => addon.markAsKnown(), [addon]);
 
     const {downloads, likes} = useMemo(() => ({
-        downloads: Strings.Addons.downloadCount.format({downloads: formatNumberWithSuffix(addon.downloads)}),
+        downloads: Strings.Addons.downloadCount.format({downloads: formatNumberWithSuffix(downloadCount)}),
         likes: Strings.Addons.likeCount.format({likes: formatNumberWithSuffix(addon.likes)}),
-    }), [addon]);
+    }), [addon, downloadCount]);
 
     return (
         <div className={className} onMouseEnter={markAsSeen}>
             <div className="bd-addon-store-card-splash">
                 <div className="bd-addon-store-card-preview">
                     <img 
-                        src={Web.resources.thumbnail(addon.thumbnail_url)}
+                        src={addon.thumbnail}
                         onError={(event) => {
                             // Fallback to blank thumbnail
                             event.currentTarget.src = Web.resources.thumbnail();
@@ -136,12 +134,12 @@ export default function AddonCard({addon, isEmbed}) {
                                         overflow="visible"
                                         mask="url(#svg-mask-squircle)"
                                     >
-                                        <DiscordModules.Tooltip text={addon.author.display_name}>
+                                        <DiscordModules.Tooltip text={addon.author}>
                                             {(props) => (
                                                 <img 
                                                     loading="lazy"
                                                     className="bd-addon-store-card-author-img"
-                                                    src={`https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`}
+                                                    src={addon.avatar}
                                                     {...props}
                                                 />
                                             )}
