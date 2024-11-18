@@ -10,13 +10,14 @@ import GitHub from "@ui/icons/github";
 import Support from "@ui/icons/support";
 import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
-import {TagContext} from "./page";
 import Eye from "@ui/icons/eye";
 import Web from "@data/web";
 // import Extension from "@ui/icons/extension";
 // import Theme from "@ui/icons/theme";
 
-const {useCallback, useMemo, useState, useEffect, useContext} = React;
+const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
+
+export const TagContext = createContext();
 
 function formatNumberWithSuffix(value) {
     if (value === 0) return "0";
@@ -57,7 +58,8 @@ export default function AddonCard({addon, isEmbed}) {
     const acceptInvite = useCallback(() => addon.joinGuild(), [addon]);
     const openSourceCode = useCallback(() => addon.openRawCode(), [addon]);
     const openAddonPage = useCallback(() => addon.openAddonPage(), [addon]);
-    const openAddonPreview = useCallback(() => addon.openAddonPreview(), [addon]);
+    const openAddonPreview = useCallback(() => addon.openPreview(), [addon]);
+    const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
 
     useEffect(() => {
         setInstalled(addon.isInstalled());
@@ -141,6 +143,7 @@ export default function AddonCard({addon, isEmbed}) {
                                                     className="bd-addon-store-card-author-img"
                                                     src={addon.avatar}
                                                     {...props}
+                                                    onClick={openAuthorPage}
                                                 />
                                             )}
                                         </DiscordModules.Tooltip>

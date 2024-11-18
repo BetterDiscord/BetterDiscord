@@ -1,45 +1,25 @@
 import React from "@modules/react";
 import AddonStore from "@modules/addonstore";
 import Strings from "@modules/strings";
-import Discordmodules from "@modules/discordmodules";
 import ipc from "@modules/ipc";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
 
-import Button from "@ui/base/button";
 import Folder from "@ui/icons/folder";
-import AddonCard from "./card";
+import AddonCard, {TagContext} from "../addon-store/card";
 import SettingsTitle from "@ui/settings/title";
 import Globe from "@ui/icons/globe";
 import Search from "@ui/settings/components/search";
 import Dropdown from "@ui/settings/components/dropdown";
-import DataStore from "@modules/datastore";
-import MultiSelect from "../settings/components/multiselect";
+import MultiSelect from "./components/multiselect";
 import NoResults from "@ui/blankslates/noresults";
 import Spinner from "@ui/spinner";
 import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
+import {buildDirectionOptions, makeBasicButton, getState, saveState} from "./addonshared";
+import Paginator from "@ui/misc/paginator";
 
-const {useState, useEffect, useMemo, useCallback, createContext} = React;
-
-function makeBasicButton(title, children, action) {
-    return <Discordmodules.Tooltip color="primary" position="top" text={title}>
-        {(props) => <Button {...props} size={Button.Sizes.NONE} look={Button.Looks.BLANK} className="bd-button" onClick={action}>{children}</Button>}
-    </Discordmodules.Tooltip>;
-}
-
-function getState(type, control, defaultValue) {
-    const addonlistControls = DataStore.getBDData("addonlistControls") || {};
-    if (!addonlistControls[type]) return defaultValue;
-    if (!addonlistControls[type].hasOwnProperty(control)) return defaultValue;
-    return addonlistControls[type][control];
-}
-function saveState(type, control, value) {
-    const addonlistControls = DataStore.getBDData("addonlistControls") || {};
-    if (!addonlistControls[type]) addonlistControls[type] = {};
-    addonlistControls[type][control] = value;
-    DataStore.setBDData("addonlistControls", addonlistControls);
-}
+const {useState, useEffect, useMemo, useCallback} = React;
 
 const buildSortOptions = () => [
     {label: Strings.Addons.popularity, value: "popularity"},
@@ -52,18 +32,42 @@ const buildSortOptions = () => [
     {label: Strings.Addons.downloads, value: "downloads"}
 ];
 
-const buildDirectionOptions = () => [
-    {label: Strings.Sorting.ascending, value: true},
-    {label: Strings.Sorting.descending, value: false}
-];
+const MAX_AMOUNT_OF_CARDS = 30;
 
-export const TagContext = createContext();
+function Cards({content, refToScroller, page, setPage}) {
+    const cards = useMemo(() => content.slice(page * MAX_AMOUNT_OF_CARDS, (page + 1) * MAX_AMOUNT_OF_CARDS), [content, page]);
+
+    return (
+        <div className="bd-addon-wrapper">
+            <div className="bd-addon-store">
+                {cards}
+            </div>
+            <Paginator 
+                currentPage={page}
+                length={content.length}
+                pageSize={MAX_AMOUNT_OF_CARDS}
+                maxVisible={9}
+                onPageChange={($page) => {                    
+                    setPage($page);
+                    
+                    /** @type {HTMLDivElement} */
+                    const node = refToScroller?.current?.getScrollerNode();
+                    if (!node) return;                    
+
+                    node.scrollTo({top: 0, behavior: "smooth"});
+                }}
+            />
+        </div>
+    );
+}
 
 /**
- * @param {{type: "plugin"|"theme", title: string, closeStore(): void}} param0 
+ * @param {{type: "plugin"|"theme", title: string, toggleStore(): void, refToScroller: any}} param0 
  */
-export default function AddonStorePage({type, title, closeStore}) {
-    AddonStore.initializeIfNeeded(`${type}s`);
+export default function AddonStorePage({type, title, toggleStore, refToScroller}) {    
+    AddonStore.initializeIfNeeded(type);
+
+    const [page, setPage] = useState(0);
 
     const [ tags, setTags ] = useState(() => Web.store.tags[type].map((tag) => ({
         selected: false,
@@ -79,6 +83,7 @@ export default function AddonStorePage({type, title, closeStore}) {
 
     const search = useCallback((event) => {
         setQuery(event.target.value.toLocaleLowerCase());
+        setPage(0);
     }, []);
 
     const [sort, setSort] = useState(() => getState(`${type}-store`, "sort", "popularity"));
@@ -93,7 +98,6 @@ export default function AddonStorePage({type, title, closeStore}) {
         saveState(`${type}-store`, "sort", value);
         setSort(value);
     }, [type]);
-
 
     useEffect(() => {
         setAddons(AddonStore.getAddonsOfType(type));
@@ -172,13 +176,17 @@ export default function AddonStorePage({type, title, closeStore}) {
             <ErrorBoundary key={addon.id}><AddonCard addon={addon} /></ErrorBoundary>
         ));
 
-        return cards;
-    }, [addons, filtered, ascending, sort]);
+        return (
+            <Cards content={cards} refToScroller={refToScroller} setPage={setPage} page={page} />
+        );
+    }, [addons, filtered, ascending, sort, setPage, page, refToScroller]);
 
     /** @type {typeof ThemeManager | typeof PluginManager} */
     const manager = useMemo(() => type === "plugin" ? PluginManager : ThemeManager, [type]);
 
     const toggleTag = useCallback((tag, value) => {
+        setPage(0);
+
         setTags(($tags) => {
             const index = $tags.findIndex(t => t.value === tag);
 
@@ -196,9 +204,9 @@ export default function AddonStorePage({type, title, closeStore}) {
         </SettingsTitle>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.viewInstalled.format({type: title}), <Globe />, closeStore)}
-                {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[manager.prefix]()))}
-                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder))}
+                {makeBasicButton(Strings.Addons.viewInstalled.format({type: title}), <Globe />, () => toggleStore(), "installed")}
+                {/* {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
+                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder), "folder")}
             </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">
@@ -225,15 +233,11 @@ export default function AddonStorePage({type, title, closeStore}) {
                 </div> */}
             </div>
         </div>,
-        <div key="content" className="bd-addon-store">
-            <TagContext.Provider 
-                value={[ 
-                    (tag) => tags.find(t => t.value === tag).selected, 
-                    toggleTag 
-                ]}
-            >
-                {content}
-            </TagContext.Provider>
-        </div>
+        <TagContext.Provider 
+            value={[ 
+                (tag) => tags.find(t => t.value === tag).selected, 
+                toggleTag 
+            ]}
+        >{content}</TagContext.Provider>
     ];
 }

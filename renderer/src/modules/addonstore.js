@@ -79,7 +79,8 @@ class Addon {
         if (typeof Addon.cache[addon.id] === "object") {
             const cached = Addon.cache[addon.id];
 
-            cached.downloads = Math.max(cached.downloads.downloads, addon.downloads);
+            cached.downloads = Math.max(cached.downloads, addon.downloads);
+            cached.likes = Math.max(cached.likes, addon.likes);
 
             return cached;
         }
@@ -286,16 +287,8 @@ const addonStore = new class AddonStore {
         /** @type {Addon[]} */
         this.themes = [];
 
-        this.ok = false;
-        this.loading = false;
-        /** @type {null | any} */
-        this.error = null;
-
         /** @type {Set<() => void>} */
         this._subscribers = new Set();
-
-        /** @type {NodeJS.Timeout | null} */
-        this._internvalId = null;
 
         window.AddonStore = this;
     }
@@ -317,8 +310,6 @@ const addonStore = new class AddonStore {
     /** @param {"plugins" | "themes"} type  */
     requestAddons(type) {
         Logger.debug("AddonStore", `Requesting all ${type}`);
-
-        clearInterval(this._internvalId);
 
         request(Web.store[type], (error, _, body) => {
             try {
@@ -343,8 +334,6 @@ const addonStore = new class AddonStore {
             } 
             finally {
                 this._emitChange();
-
-                this._internvalId = setTimeout(() => {}, 60 * 60 * 1000);
             }
         });
     }
@@ -355,7 +344,7 @@ const addonStore = new class AddonStore {
         if (this.#initialized[type]) return;
         this.#initialized[type] = true;
 
-        this.requestAddons(type);
+        this.requestAddons(`${type}s`);
     }
 
     singleAddonCache = {};
@@ -396,7 +385,7 @@ const addonStore = new class AddonStore {
             if (Object.prototype.hasOwnProperty.call(Addon.cache, key)) {
                 const addon = Addon.cache[key];
                 
-                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded || addon.filename.toLowerCase() === decoded) return addon;
+                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded) return addon;
             }
         }
 

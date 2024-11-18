@@ -1,6 +1,6 @@
 const BETTERDISCORD_SITE = "https://betterdiscord.app";
 const BETTERDISCORD_API = "https://api.betterdiscord.app";
-const API_VERSION = 2;
+const API_VERSION = "latest";
 
 /**
  * @param  {...string[]} paths 
@@ -17,13 +17,13 @@ const join = (...paths) => {
 const apiJoin = (...paths) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
 
-    return `${BETTERDISCORD_API}/v${API_VERSION}/${path}`;
+    return `${BETTERDISCORD_API}/${API_VERSION}/${path}`;
 };
 /**
  * @param {string} type 
  * @returns {(name?: string) => string}
  */
-const makePage = (type) => (name) => join(`${type}${name ? `/${encodeURIComponent(name)}` : "s"}`);
+const makePage = (type) => (name) => join(`${type}/${encodeURIComponent(name)}`);
 
 /**
  * @param {string} type 
@@ -56,8 +56,11 @@ export default new class Web {
         plugin: makeRedirects("/plugin")
     };
     pages = {
+        themes: join("/themes"),
         theme: makePage("/theme"),
+        plugins: join("/plugins"),
         plugin: makePage("/plugin"),
+        developers: join("/developers"),
         developer: makePage("/developer")
     };
     resources = {

@@ -1,8 +1,7 @@
 import React from "@modules/react";
 import AddonStore from "@modules/addonstore";
 
-import AddonCard from "./card";
-import {TagContext} from "./page";
+import AddonCard, {TagContext} from "./card";
 import Spinner from "@ui/spinner";
 
 const {useState, useEffect, useCallback} = React;

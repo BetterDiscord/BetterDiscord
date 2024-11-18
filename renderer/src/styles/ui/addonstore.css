@@ -212,7 +212,7 @@ button.bd-addon-store-card-button {
     display: grid;
     grid-template-columns: auto auto;
     gap: 20px;
-    margin-top: 10px;
+    margin: 10px 0;
 }
 
 .bd-addon-store .bd-addon-store-center {

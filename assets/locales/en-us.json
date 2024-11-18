@@ -288,5 +288,9 @@
     "Socials": {
         "twitter": "Follow Us!",
         "github": "Star Us!"
+    },
+    "Paginator": {
+        "back": "Back",
+        "next": "Next"
     }
 }
