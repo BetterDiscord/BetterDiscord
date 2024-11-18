@@ -1,5 +1,29 @@
 .bd-install-modal-guild {
-    border-radius: 3px;
+    --guild-size: 32px;
+
+    border-radius: 6px;
+    width: var(--guild-size);
+    height: var(--guild-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-primary);
+    transition: background-color .15s ease-out, color .15s ease-out;
+    overflow: hidden;
+    position: relative;
+    font-weight: 500;
+    line-height: 1.2em;
+    white-space: nowrap;
+}
+
+.bd-install-modal-guild img {
+    width: var(--guild-size);
+    height: var(--guild-size);
+}
+
+.bd-install-modal-item:hover .bd-install-modal-guild {
+    color: var(--white);
+    background-color: var(--bg-brand);
 }
 
 .bd-install-modal-header {
@@ -71,6 +95,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 3px 3px 0 0;
 }
 .bd-install-modal-author {
     position: absolute;

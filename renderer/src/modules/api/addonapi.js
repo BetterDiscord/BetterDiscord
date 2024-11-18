@@ -60,11 +60,11 @@ import AddonStore from "@modules/addonstore";
     getAll() {return this.#manager.addonList.map(a => this.#manager.getAddon(a.id));}
 
     /**
-     * Attempt to download a plugin
+     * Attempt to download a plugin, user confirmation is needed
      * @param {string} idOrName Addon ID or name
      * @returns {Promise<void>} A empty promise that resolves when the addon is installed or when the modal is closed
      */
-    download(idOrName) {
+    requestDownload(idOrName) {
         return new Promise((resolve, reject) => {  
             AddonStore.requestAddon(idOrName).then((addon) => {
                 if (addon.type === this.#manager.prefix) {

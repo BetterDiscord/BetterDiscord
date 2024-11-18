@@ -204,7 +204,7 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
         </SettingsTitle>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.viewInstalled.format({type: title}), <Globe />, () => toggleStore(), "installed")}
+                {makeBasicButton(Strings.Addons.viewInstalled.format({type: title}), <Globe size={20} />, () => toggleStore(), "installed")}
                 {/* {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
                 {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder), "folder")}
             </div>

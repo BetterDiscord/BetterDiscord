@@ -19,7 +19,7 @@ import ModalRoot from "@ui/modals/root";
 import CheckBox from "@ui/settings/components/checkbox";
 import Spinner from "@ui/spinner";
 
-const {useCallback, useState} = React;
+const {useLayoutEffect, useCallback, useState, useRef} = React;
 
 function ModalItem({leading, content, trailing, action}) {
     return (
@@ -28,6 +28,68 @@ function ModalItem({leading, content, trailing, action}) {
             {content && <div className="bd-install-modal-item-content">{content}</div>}
             {trailing && <div className="bd-install-modal-item-trailing">{trailing}</div>}
         </Flex>
+    );
+}
+
+/**
+ * Get the guild acronym
+ * @param {string} name 
+ */
+function acronym(name) {
+    if (name == null) return "";
+    return name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");
+}
+
+/**
+ * A implemention of discords guild icon with a mixture of lazy loading
+ * @param {{guild: import("@modules/addonstore").Guild}} props 
+ */
+function GuildIcon({guild}) {
+    const [state, setState] = useState(() => guild.hash?.trim() ? 0 : 2);
+    /** @type {{ current: HTMLDivElement | null }} */
+    const ref = useRef();
+
+    // Lazy image effect
+    useLayoutEffect(() => {
+        if (!guild.hash?.trim()) return;
+
+        let img = new Image();
+
+        const onLoad = () => {
+            try {
+                ref.current.append(img);
+                setState(1);
+            }
+            finally {
+                removeListeners();
+            }
+        };
+        const onError = () => {
+            setState(2);
+            removeListeners();
+            // Allow garbage collecting
+            img = null;
+        };
+
+        const removeListeners = () => {
+            if (!img) return;
+
+            img.removeEventListener("load", onLoad);
+            img.removeEventListener("error", onError);
+        };
+
+        img.addEventListener("load", onLoad);
+        img.addEventListener("error", onError);
+
+        img.src = guild.url;
+
+        return removeListeners;
+    }, [guild]);
+    
+    return (
+        <div className="bd-install-modal-guild" ref={ref}>
+            {state === 0 ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : state === 1 ? null : acronym(guild.name)}
+        </div>
     );
 }
 
@@ -149,15 +211,7 @@ export default function InstallModal({addon, transitionState, install}) {
                                 <Text size={Text.Sizes.SIZE_12} color={Text.Colors.MUTED}>{Strings.Addons.invite}</Text>
                             </Flex>
                         )}
-                        trailing={(
-                            <img 
-                                src={`https://cdn.discordapp.com/icons/${addon.guild.snowflake}/${addon.guild.avatar_hash}.webp?size=96`}
-                                alt={addon.guild.id}
-                                className="bd-install-modal-guild"
-                                width={32}
-                                height={32}
-                            />
-                        )}
+                        trailing={<GuildIcon guild={addon.guild} />}
                         action={attemptJoinGuild}
                     />
                 )}

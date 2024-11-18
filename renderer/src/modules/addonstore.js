@@ -69,6 +69,49 @@ function showConfirmDelete(addon) {
 }
 
 /** @typedef {Addon} Addon */
+/** @typedef {Guild} Guild */
+
+/**
+ * Get the guild acronym
+ * @param {string} name 
+ */
+function acronym(name) {
+    if (name == null) return "";
+    return name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");
+}
+
+class Guild {
+    /** @type {Record<string, Guild>} */
+    static cache = {};
+
+    /** @param {RawAddonGuild} guild  */
+    constructor(guild) {
+        if (typeof Guild.cache[guild.id] === "object") {
+            const cached = Guild.cache[guild.id];
+
+            cached.name = guild.name;
+            cached.invite = guild.invite_link;
+            cached.hash = guild.avatar_hash;
+
+            return cached;
+        }
+
+        this.name = guild.name;
+        this.id = guild.snowflake;
+
+        this.invite = guild.invite_link;
+
+        this.hash = guild.avatar_hash?.trim?.();
+    }
+
+    get url() {
+        let filename = `${this.hash}.webp`;
+        if (filename.startsWith("a_")) filename = `${this.hash}.gif`;
+        
+        return `https://cdn.discordapp.com/icons/${this.id}/${filename}?size=96`;
+    }
+    get acronym() {return acronym(this.name);}
+}
 
 class Addon {
     /** @type {Record<string, Addon>} */
@@ -81,6 +124,8 @@ class Addon {
 
             cached.downloads = Math.max(cached.downloads, addon.downloads);
             cached.likes = Math.max(cached.likes, addon.likes);
+
+            cached.guild = new Guild(addon.guild);
 
             return cached;
         }
@@ -96,7 +141,9 @@ class Addon {
         this.avatar = `https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`;
         this.author = addon.author.discord_name;
         
-        this.guild = addon.guild || addon.author.guild || null;
+        const guild = addon.guild || addon.author.guild;
+        /** @type {Guild | null} */
+        this.guild = guild ? new Guild(guild) : null;
         
         this.manager = addon.type === "plugin" ? PluginManager : ThemeManager;
         
@@ -179,7 +226,7 @@ class Addon {
     joinGuild() {
         if (!this.guild) return;
 
-        let code = this.guild.invite_link;
+        let code = this.guild.invite;
         const tester = /\.gg\/(.*)$/;
         if (tester.test(code)) code = code.match(tester)[1];
         
@@ -198,7 +245,7 @@ class Addon {
     async download(shouldSkipConfirm = false) {
         if (this.isInstalled()) return;
 
-        const install = (shouldEnable) => new Promise((resolve) => {
+        const install = (shouldEnable) => new Promise((resolve, reject) => {
             request(Web.redirects.download(this.id), (error, headers, body) => {
                 if (error || headers.statusCode >= 300 || headers.statusCode < 200) {
                     Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error);
@@ -207,7 +254,7 @@ class Addon {
                         type: "danger"
                     });
 
-                    resolve();
+                    reject(error || new Error("Failed to fetch addon!"));
 
                     return;
                 }
@@ -231,7 +278,7 @@ class Addon {
         });
         
         return this._download ??= new Promise((resolve) => {
-            if (shouldSkipConfirm) return install(Settings.get("settings", "general", "alwaysEnable")).then(() => resolve());
+            if (shouldSkipConfirm) return install(Settings.get("settings", "general", "alwaysEnable")).finally(() => resolve());
 
             let installing = false;
 
@@ -240,8 +287,7 @@ class Addon {
                 addon: this, 
                 install: async (shouldEnable) => {
                     installing = true;
-                    await install(shouldEnable);
-                    props.onClose();
+                    install(shouldEnable).finally(() => props.onClose());
                 }
             }), {
                 onCloseCallback: () => {
