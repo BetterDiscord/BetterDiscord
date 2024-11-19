@@ -25,14 +25,21 @@
                 "bdContextMenu": {
                     "name": "Settings Context Menu",
                     "note": "Adds a BetterDiscord subsection to the settings context menu."
-                },
+                }
+            },
+            "store": {
+                "name": "Addon Store",
                 "bdAddonStore": {
-                    "name": "Addon Store",
-                    "note": "Adds the BetterDiscord Addon Store."
+                    "name": "Enable Addon Store",
+                    "note": "Enables the BetterDiscord Addon Store."
                 },
                 "alwaysEnable": {
                     "name": "Always Enable",
                     "note": "By default enables addons downloaded via the addon store."
+                },
+                "addonEmbeds": {
+                    "name": "Addon Embeds",
+                    "note": "Embeds the store addon cards into chat."
                 }
             },
             "window": {

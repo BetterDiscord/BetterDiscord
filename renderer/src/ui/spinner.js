@@ -9,7 +9,6 @@ const {Spinner: WebpackSpinner} = WebpackModules.getByProps("Spinner", "Tooltip"
  */
 
 /**
- * 
  * @param {{
  *    type?: SpinnerType[keyof SpinnerType], 
  *    animated?: boolean, 

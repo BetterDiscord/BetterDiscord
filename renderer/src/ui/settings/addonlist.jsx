@@ -24,6 +24,7 @@ import EmptyImage from "@ui/blankslates/emptyimage";
 import Web from "@data/web";
 import Store from "@ui/icons/store";
 import {buildDirectionOptions, makeBasicButton, getState, saveState} from "./addonshared";
+import Settings from "@modules/settingsmanager";
 
 const {useState, useCallback, useEffect, useReducer, useMemo} = React;
 
@@ -175,7 +176,7 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
         <div className={"bd-controls bd-addon-controls"}>
             {/* <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: title})}...`} /> */}
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.openStore.format({type: title}), <Store />, () => toggleStore(), "store")}
+                {Settings.get("settings", "store", "bdAddonStore") && makeBasicButton(Strings.Addons.openStore.format({type: title}), <Store />, () => toggleStore(), "store")}
                 {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <FolderIcon />, openFolder.bind(null, folder), "folder")}
                 {makeBasicButton(Strings.Addons.enableAll, <CheckIcon size="20px" />, confirmEnable(enableAll, title), "enable-all")}
                 {makeBasicButton(Strings.Addons.disableAll, <CloseIcon size="20px" />, disableAll, "disable-all")}

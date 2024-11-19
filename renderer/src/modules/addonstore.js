@@ -69,13 +69,12 @@ function showConfirmDelete(addon) {
 /** @typedef {Addon} Addon */
 /** @typedef {Guild} Guild */
 
-
 class Guild {
     /** @type {Record<string, Guild>} */
     static cache = {};
 
     /** @param {RawAddonGuild} guild  */
-    constructor(guild) {
+    constructor(guild) {        
         if (typeof Guild.cache[guild.id] === "object") {
             const cached = Guild.cache[guild.id];
 
@@ -115,7 +114,9 @@ class Addon {
             cached.downloads = Math.max(cached.downloads, addon.downloads);
             cached.likes = Math.max(cached.likes, addon.likes);
 
-            cached.guild = new Guild(addon.guild);
+            const guild = addon.guild || addon.author.guild;
+            /** @type {Guild | null} */
+            cached.guild = guild ? new Guild(guild) : null;
 
             cached._addon = addon;
 
@@ -150,6 +151,7 @@ class Addon {
 
         this.filename = addon.file_name;
 
+        /** @private */
         this._addon = addon;
         
         Addon.cache[addon.id] = this;
@@ -262,7 +264,7 @@ class Addon {
         });
         
         return this._download ??= new Promise((resolve) => {
-            if (shouldSkipConfirm) return install(Settings.get("settings", "general", "alwaysEnable")).finally(() => resolve());
+            if (shouldSkipConfirm) return install(Settings.get("settings", "store", "alwaysEnable")).finally(() => resolve());
 
             let installing = false;
 
@@ -311,83 +313,176 @@ class Addon {
     }
 }
 
-const addonStore = new class AddonStore {
-    constructor() {
-        /** @type {Addon[]} */
-        this.plugins = [];
-        /** @type {Addon[]} */
-        this.themes = [];
-
-        /** @type {Set<() => void>} */
-        this._subscribers = new Set();
-
-        window.AddonStore = this;
+class Store {
+    /** @param {"plugin" | "theme"} type  */
+    constructor(type) {
+        this.type = type;
     }
 
+    /** 
+     * @type {Addon[]}
+     * @readonly
+     * @private 
+     */
+    addons = [];
+    getAddons() {return this.addons.concat();}
+
+    /** @readonly */
+    type;
+
+    /** @type {Error | null} */
+    error = null;
+    loading = false;
+
+    /**
+     * Listener for when the user is offline and tries to fetch the addons 
+     * @private
+     */
+    _onLineListener = () => {
+        window.removeEventListener("online", this._onLineListener);
+        this.requestAddons();
+    };
+
+    requestAddons() {
+        Logger.debug("AddonStore", `Requesting all ${this.type}`);
+
+        this.loading = true;
+        this.addons.length = 0;
+
+        clearTimeout(this._setTimeout);
+        this._setTimeout = null;
+
+        this._emitChange();
+
+        request(Web.store[this.type + "s"], (error, _, body) => {
+            try {
+                this.error = null;
+                this.loading = false;
+
+                if (error) {
+                    Logger.stacktrace("AddonStore", `Failed to fetch ${this.type}`, error);
+    
+                    Toasts.show(Strings.Addons.failedToFetch, {
+                        type: "danger"
+                    });
+
+                    this.error = error instanceof Error ? error : new Error(String(error));
+    
+                    return;
+                }
+    
+                this.addons.push(...JSON.parse(body).map((addon) => new Addon(addon)));
+                
+                if (!DataStore.getBDData(`has-requested-${this.type}`)) {
+                    DataStore.setBDData(`has-requested-${this.type}`, true);
+                    DataStore.setBDData(`known-${this.type}`, this.addons.map(m => m.id));
+                }
+            } 
+            finally {
+                this._emitChange();
+
+                let minutes = 60;
+
+                if (this.error) {
+                    minutes = 5;
+
+                    // If the user is not online, just wait until the user is online
+                    if (this.error.message.startsWith("getaddrinfo ENOTFOUND") && !window.navigator.onLine) {
+                        Logger.debug("AddonStore", "User is offline waiting for connection...");
+
+                        window.removeEventListener("online", this._onLineListener);
+                        window.addEventListener("online", this._onLineListener);
+
+                        // eslint-disable-next-line no-unsafe-finally
+                        return;
+                    }
+                }
+
+                this._setTimeout = setTimeout(() => this.requestAddons(), minutes * 60 * 1000);
+            }
+        });
+    }
+
+    /** @private */
+    _setTimeout = null;
+
+    /** @private */
+    _initialized = false;
+    /** Wrapper for {@link requestAddons} to allow it to be called only once, used in the UI */
+    initialize() {
+        if (this._initialized) return;
+        this._initialized = true;
+        
+        this.requestAddons();
+    }
+
+    // Listener stuff
+    /** @private */
+    _subscribers = new Set();
+    /** @private */
     _emitChange() {
         for (const subscriber of this._subscribers) {
             subscriber();
         }
     }
 
-    /**
-     * @param {"theme" | "plugin"} type 
-     * @returns {Addon[]}
+    /** 
+     * get important data from the store to use in the ui
+     * @private Not need anywhere except for react
      */
-    getAddonsOfType(type) {
-        return this[`${type}s`].concat();
+    getState() {
+        return {
+            error: this.error,
+            addons: this.getAddons(),
+            loading: this.loading
+        };
     }
+    /** 
+     * A react hook for {@link getState}
+     * @returns {ReturnType<typeof this["getState"]>}
+     */
+    useState() {
+        this.initialize();
 
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const [state, setState] = React.useState(() => this.getState());
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        React.useEffect(() => {
+            setState(this.getState());
+
+            const callback = () => setState(this.getState());
+
+            this._subscribers.add(callback);
+            return () => this._subscribers.delete(callback);
+        }, []);
+
+        return state;
+    }
+}
+
+const ThemeStore = new Store("theme");
+const PluginStore = new Store("plugin");
+
+const addonStore = new class AddonStore {
     /** @param {"plugins" | "themes"} type  */
-    requestAddons(type) {
-        Logger.debug("AddonStore", `Requesting all ${type}`);
-
-        request(Web.store[type], (error, _, body) => {
-            try {
-                this[type].length = 0;
-    
-                if (error) {
-                    Logger.stacktrace("AddonStore", `Failed to fetch ${type} api:`, error);
-    
-                    Toasts.show(Strings.Addons.failedToFetch, {
-                        type: "danger"
-                    });
-    
-                    return;
-                }
-    
-                this[type].push(...JSON.parse(body).map((addon) => new Addon(addon)));
-                
-                if (!DataStore.getBDData(`has-requested-${type}`)) {
-                    DataStore.setBDData(`has-requested-${type}`, true);
-                    DataStore.setBDData(`known-${type}`, this[type].map(m => m.id));
-                }
-            } 
-            finally {
-                this._emitChange();
-            }
-        });
+    getStore(type) {
+        if (type === "plugin") return PluginStore;
+        return ThemeStore;
     }
 
-    #initialized = {};
-    /** @param {"plugins"|"themes"} type  */
-    initializeIfNeeded(type) {
-        if (this.#initialized[type]) return;
-        this.#initialized[type] = true;
-
-        this.requestAddons(`${type}s`);
-    }
-
-    singleAddonCache = {};
+    /** @private */
+    _singleAddonCache = {};
     /**
+     * Used for the embeds and download api
      * @param {number|string} idOrName 
      * @returns {Promise<Addon>}
      */
     requestAddon(idOrName) {
         const cache = this.getAddon(idOrName);
-        if (cache) return Promise.resolve(cache);
+        if (typeof cache === "object") return Promise.resolve(cache);
 
-        return this.singleAddonCache[idOrName] ??= new Promise((resolve, reject) => {
+        return this._singleAddonCache[idOrName] ??= new Promise((resolve, reject) => {
             request(Web.store.addon(idOrName), (error, _, body) => {
                 const data = JSON.parse(body);
 
@@ -396,8 +491,8 @@ const addonStore = new class AddonStore {
                     return;
                 }
 
-                this.singleAddonCache[data.name] = this.singleAddonCache[idOrName];
-                this.singleAddonCache[data.id] = this.singleAddonCache[idOrName];
+                this._singleAddonCache[data.name] = this._singleAddonCache[idOrName];
+                this._singleAddonCache[data.id] = this._singleAddonCache[idOrName];
 
                 resolve(new Addon(data));
             });
@@ -421,17 +516,6 @@ const addonStore = new class AddonStore {
         }
 
         return null;
-    }
-
-    /**
-     * Listen for when the addon store changes
-     * @param {() => void} listener 
-     * @returns {() => boolean}
-     */
-    addChangeListener(listener) {
-        this._subscribers.add(listener);
-
-        return () => this._subscribers.delete(listener);
     }
 };
 

@@ -94,7 +94,7 @@ function GuildIcon({guild}) {
  * }} props 
  */
 export default function InstallModal({addon, transitionState, install, onClose}) {
-    const [shouldEnable, setShouldEnable] = useState(() => Settings.get("settings", "general", "alwaysEnable"));
+    const [shouldEnable, setShouldEnable] = useState(() => Settings.get("settings", "store", "alwaysEnable"));
 
     const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
     const attemptJoinGuild = useCallback(() => addon.joinGuild(), [addon]);

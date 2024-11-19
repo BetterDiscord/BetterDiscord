@@ -7,9 +7,7 @@ export default [
             {type: "switch", id: "voiceDisconnect", value: false},
             {type: "switch", id: "showToasts", value: true},
             {type: "switch", id: "mediaKeys", value: false},
-            {type: "switch", id: "bdContextMenu", value: true},
-            {type: "switch", id: "bdAddonStore", value: true},
-            {type: "switch", id: "alwaysEnable", value: false}
+            {type: "switch", id: "bdContextMenu", value: true}
         ]
     },
     {
@@ -20,6 +18,17 @@ export default [
         settings: [
             {type: "switch", id: "addonErrors", value: true},
             {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]}
+        ]
+    },
+    {
+        type: "category",
+        id: "store",
+        collapsible: true,
+        shown: false,
+        settings: [
+            {type: "switch", id: "bdAddonStore", value: true},
+            {type: "switch", id: "alwaysEnable", value: false},
+            {type: "switch", id: "addonEmbeds", value: true}
         ]
     },
     {

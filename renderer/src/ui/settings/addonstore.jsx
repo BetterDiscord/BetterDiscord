@@ -18,8 +18,10 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 import {buildDirectionOptions, makeBasicButton, getState, saveState} from "./addonshared";
 import Paginator from "@ui/misc/paginator";
+import Info from "@ui/icons/info";
+import ReloadIcon from "@ui/icons/reload";
 
-const {useState, useEffect, useMemo, useCallback} = React;
+const {useState, useMemo, useCallback} = React;
 
 const buildSortOptions = () => [
     {label: Strings.Addons.popularity, value: "popularity"},
@@ -38,7 +40,7 @@ function Cards({content, refToScroller, page, setPage}) {
     const cards = useMemo(() => content.slice(page * MAX_AMOUNT_OF_CARDS, (page + 1) * MAX_AMOUNT_OF_CARDS), [content, page]);
 
     return (
-        <div className="bd-addon-wrapper">
+        <div className="bd-addon-store-wrapper">
             <div className="bd-addon-store">
                 {cards}
             </div>
@@ -52,7 +54,7 @@ function Cards({content, refToScroller, page, setPage}) {
                     
                     /** @type {HTMLDivElement} */
                     const node = refToScroller?.current?.getScrollerNode();
-                    if (!node) return;                    
+                    if (!node) return;
 
                     node.scrollTo({top: 0, behavior: "smooth"});
                 }}
@@ -64,22 +66,18 @@ function Cards({content, refToScroller, page, setPage}) {
 /**
  * @param {{type: "plugin"|"theme", title: string, toggleStore(): void, refToScroller: any}} param0 
  */
-export default function AddonStorePage({type, title, toggleStore, refToScroller}) {    
-    AddonStore.initializeIfNeeded(type);
+export default function AddonStorePage({type, title, toggleStore, refToScroller}) {
+    const {error, addons, loading} = AddonStore.getStore(type).useState();
 
     const [page, setPage] = useState(0);
 
-    const [ tags, setTags ] = useState(() => Web.store.tags[type].map((tag) => ({
+    const [tags, setTags] = useState(() => Web.store.tags[type].map((tag) => ({
         selected: false,
         value: tag,
         label: tag
     })));
 
-    /**
-     * @type {[ import("@modules/addonstore").Addon[], (addons: import("@modules/addonstore").Addon[]) => void ]}
-     */
-    const [ addons, setAddons ] = useState(() => AddonStore.getAddonsOfType(type));
-    const [ query, setQuery ] = useState("");
+    const [query, setQuery] = useState("");
 
     const search = useCallback((event) => {
         setQuery(event.target.value.toLocaleLowerCase());
@@ -99,16 +97,6 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
         setSort(value);
     }, [type]);
 
-    useEffect(() => {
-        setAddons(AddonStore.getAddonsOfType(type));
-
-        const listener = () => {            
-            setAddons(AddonStore.getAddonsOfType(type));
-        };
-
-        return AddonStore.addChangeListener(listener);
-    }, [type]);
-
     /**
      * @type {import("@modules/addonstore").Addon[]}
      */
@@ -126,7 +114,7 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
     }, [type, addons, query, tags]);
 
     const content = useMemo(() => {
-        if (!addons.length) {            
+        if (loading) {            
             return (
                 <div className="bd-addon-store-center">
                     <Spinner type={Spinner.Type.WANDERING_CUBES} />
@@ -176,10 +164,8 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
             <ErrorBoundary key={addon.id}><AddonCard addon={addon} /></ErrorBoundary>
         ));
 
-        return (
-            <Cards content={cards} refToScroller={refToScroller} setPage={setPage} page={page} />
-        );
-    }, [addons, filtered, ascending, sort, setPage, page, refToScroller]);
+        return <Cards content={cards} refToScroller={refToScroller} setPage={setPage} page={page} />;
+    }, [filtered, ascending, sort, setPage, page, refToScroller, loading]);
 
     /** @type {typeof ThemeManager | typeof PluginManager} */
     const manager = useMemo(() => type === "plugin" ? PluginManager : ThemeManager, [type]);
@@ -207,6 +193,7 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
                 {makeBasicButton(Strings.Addons.viewInstalled.format({type: title}), <Globe size={20} />, () => toggleStore(), "installed")}
                 {/* {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
                 {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder), "folder")}
+                {makeBasicButton(Strings.Addons.reload, <ReloadIcon size={20} />, () => loading ? {} : AddonStore.getStore(type).requestAddons(), "reload")}
             </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">
@@ -233,6 +220,15 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
                 </div> */}
             </div>
         </div>,
+        error && (
+            <div className="bd-addon-store-warning">
+                <Info size={24} />
+                <div>
+                    <div>{Strings.Addons.failedToFetch}</div>
+                    <div>{error.message}</div>
+                </div>
+            </div>
+        ),
         <TagContext.Provider 
             value={[ 
                 (tag) => tags.find(t => t.value === tag).selected, 

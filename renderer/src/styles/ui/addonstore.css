@@ -148,9 +148,9 @@
     display: flex;
     flex-wrap: wrap;
     user-select: none;
+    gap: 4px;
 }
 .bd-addon-store-card-tag {
-    margin-right: 4px;
     color: var(--interactive-normal);
     background: var(--background-tertiary);
     border: 1px solid var(--background-secondary);
@@ -210,16 +210,22 @@ button.bd-addon-store-card-button {
 
 .bd-addon-store {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin: 10px 0;
 }
 
-.bd-addon-store .bd-addon-store-center {
-    margin-left: auto;
-    margin-right: auto;
-    width: 200%;
-}
+.bd-addon-store-warning {
+    background: var(--info-warning-background);
+    border: 1px solid var(--info-warning-foreground);
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--info-warning-text);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 10px;
+  }
 
 .bd-addon-store-card-loading {
     padding: 4px;
@@ -232,4 +238,7 @@ button.bd-addon-store-card-button {
 
 img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="https://betterdiscord.app/resources/ui/content_thumbnail.svg"] {
     object-fit: contain;
+}
+.bd-addon-store-card:last-child:nth-child(odd):not(.bd-addon-store-card-embed) {
+    margin-left: calc(50% + 10px);
 }

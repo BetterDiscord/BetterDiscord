@@ -12,8 +12,6 @@ import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import Eye from "@ui/icons/eye";
 import Web from "@data/web";
-// import Extension from "@ui/icons/extension";
-// import Theme from "@ui/icons/theme";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 
@@ -79,11 +77,6 @@ export default function AddonCard({addon, isEmbed}) {
         if (addon.isUnknown()) return Strings.Addons.new;
     }, [addon]);
 
-    const className = useMemo(() => Utilities.className({ 
-        "bd-addon-store-card": true, 
-        "bd-addon-store-card-embed": isEmbed 
-    }), [ isEmbed ]);
-
     const markAsSeen = useCallback(() => addon.markAsKnown(), [addon]);
 
     const {downloads, likes} = useMemo(() => ({
@@ -92,7 +85,13 @@ export default function AddonCard({addon, isEmbed}) {
     }), [addon, downloadCount]);
 
     return (
-        <div className={className} onMouseEnter={markAsSeen}>
+        <div 
+            className={Utilities.className({ 
+                "bd-addon-store-card": true, 
+                "bd-addon-store-card-embed": isEmbed 
+            })} 
+            onMouseEnter={markAsSeen}
+        >
             <div className="bd-addon-store-card-splash">
                 <div className="bd-addon-store-card-preview">
                     <img 
@@ -159,7 +158,6 @@ export default function AddonCard({addon, isEmbed}) {
             </div>
             <div className="bd-addon-store-card-body">
                 <div className="bd-addon-store-card-name">
-                    {/* {addon.type === "plugin" ? <Extension size={16.5} /> : <Theme size={22} />} */}
                     <span>{addon.name}</span>
                 </div>
                 <div className="bd-addon-store-card-description">{addon.description}</div>
@@ -222,7 +220,7 @@ export default function AddonCard({addon, isEmbed}) {
                             )}
                         </DiscordModules.Tooltip>
                     )}
-                    {(addon.guild || addon.author.guild) && (
+                    {addon.guild && (
                         <DiscordModules.Tooltip text={Strings.Addons.invite}>
                             {(props) => (
                                 <Button
@@ -237,6 +235,33 @@ export default function AddonCard({addon, isEmbed}) {
                         </DiscordModules.Tooltip>
                     )}
                     <div className="bd-addon-store-card-spacer" />
+                    {/* <Switch checked={addon.manager.isEnabled(addon.filename)} onChange={() => addon.manager.toggleAddon(addon.name)} disabled={!isInstalled} />
+                    <DiscordModules.Tooltip key={1} text={isInstalled ? Strings.Addons.isInstalled : Strings.Addons.downloadAddon}>
+                        {(props) => (
+                            <Button
+                                {...props}
+                                size={Button.Sizes.ICON}
+                                color={isInstalled ? Button.Colors.GREEN : Button.Colors.BRAND}
+                                onClick={isInstalled ? () => {} : installAddon}
+                                disabled={disabled}
+                            >
+                                <Download size={24} />
+                            </Button>
+                        )}
+                    </DiscordModules.Tooltip>
+                    <DiscordModules.Tooltip text={Strings.Addons.downloadAddon} key="download2">
+                        {(props) => (
+                            <Button
+                                {...props}
+                                size={Button.Sizes.ICON}
+                                color={Button.Colors.BRAND}
+                                onClick={installAddon}
+                                disabled={isInstalled || disabled}
+                            >
+                                <Download size={24} />
+                            </Button>
+                        )}
+                    </DiscordModules.Tooltip> */}
                     {isInstalled ? (
                         <DiscordModules.Tooltip text={Strings.Addons.deleteAddon} key="delete">
                             {(props) => (

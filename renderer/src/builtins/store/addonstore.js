@@ -8,6 +8,7 @@ import ReactUtils from "@modules/api/reactutils";
 import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 import Utilities from "@modules/utilities";
+import Settings from "@modules/settingsmanager";
 
 const SimpleMarkdownWrapper = WebpackModules.getByProps("parse", "defaultRules");
 
@@ -54,8 +55,14 @@ function extractAddonLinks(text, max = Infinity) {
 }
 
 export default new class AddonStoreBuiltin extends Builtin {
+    constructor() {
+        super();
+
+        Settings.on(this.collection, this.category, "addonEmbeds", () => this.forceUpdateChat());
+    }
+
     get name() {return "AddonStore";}
-    get category() {return "general";}
+    get category() {return "store";}
     get id() {return "bdAddonStore";}
 
     async enabled() {
@@ -65,15 +72,21 @@ export default new class AddonStoreBuiltin extends Builtin {
 
     /** The patches are slightly late sometimes, so this will upate chat */
     forceUpdateChat() {
-        for (const element of document.querySelectorAll("[id^=chat-messages-]")) {
-            const instance = ReactUtils.getInternalInstance(element);
+        for (const message of document.querySelectorAll("[id^=chat-messages-]")) {
+            const instance = ReactUtils.getInternalInstance(message);
 
-            const child = Utilities.findInTree(instance, ($child) => typeof $child?.memoizedProps?.onMouseMove === "function", {
+            const child = Utilities.findInTree(instance, ($child) => typeof $child?.memoizedProps?.onMouseLeave === "function", {
                 walkable: [ "child" ]
             });
 
-            if (typeof child?.memoizedProps?.onMouseMove === "function") {
+            if (typeof child !== "undefined") {
+                child.memoizedProps.onMouseLeave();
                 child.memoizedProps.onMouseMove();
+            }
+            
+            // Update forward messages
+            for (const forward of message.querySelectorAll(`[id^="message-accessories-"] [id^="message-accessories-"]`)) {
+                ReactUtils.getOwnerInstance(forward).forceUpdate();
             }
         }
     }
@@ -86,7 +99,7 @@ export default new class AddonStoreBuiltin extends Builtin {
              * @param {text} text 
              * @param {Record<string, any>} state 
              */
-            match(text, state) {
+            match: (text, state) => {
                 if (!state.allowLinks) return;
                 return /^<betterdiscord:\/\/(theme|plugin|addon)s?\/(\S+)>/.exec(text);
             },
@@ -95,7 +108,7 @@ export default new class AddonStoreBuiltin extends Builtin {
              * @param {Function} parse 
              * @param {Record<string, any>} state 
              */
-            parse(exec) {
+            parse: (exec) => {
                 return {
                     type: this.id,
                     content: [{
@@ -106,13 +119,11 @@ export default new class AddonStoreBuiltin extends Builtin {
                 };
             },
             /**
-             * 
              * @param {{ content: any, exec: RegExpExecArray }} node 
              * @param {Function} parse 
              * @param {Record<string, any>} state 
              */
-            react(node, parse, state) {
-                const addon = AddonStore.getAddon(node.exec[2]);
+            react: (node, parse, state) => {
                 const href = node.exec[0].slice(1, -1);
 
                 return React.createElement("a", {
@@ -121,12 +132,11 @@ export default new class AddonStoreBuiltin extends Builtin {
                     target: "_blank",
                     rel: "noopener noreferrer",
                     href,
-                    // User hopefully shouldn't see it without it loaded
-                    title: `${addon?.name || decodeURIComponent(node.exec[2])}\n\n(${href})`,
+                    title: href,
                     onClick(event) {
                         event.preventDefault();
 
-                        if (addon) addon.openAddonPage();
+                        AddonStore.requestAddon(node.exec[2]).then(addon => addon.download(false));
                     }
                 }, parse(node.content, state));
             }
@@ -139,9 +149,13 @@ export default new class AddonStoreBuiltin extends Builtin {
         MessageAccessories ??= await WebpackModules.getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
 
         this.after(MessageAccessories.prototype, "renderEmbeds", (_, [ message ], res) => {
+            if (!Settings.get("settings", "store", "addonEmbeds")) {
+                return res;
+            }
+
             res ??= [];
 
-            if (Web.isReleaseChannel(message.channel_id)) {
+            if (Web.isReleaseChannel(message.channel_id) || (message.messageReference?.type === 1 && Web.isReleaseChannel(message.messageReference.channel_id) && !message.messageSnapshots.length)) {
                 const id = message.embeds[0].rawDescription?.split?.("\n")?.at?.(-1)?.match?.(/\?id=(\d+)/);
 
                 if (id) return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{id: id[1], original: res}));
