@@ -1,5 +1,4 @@
-const BETTERDISCORD_SITE = "https://betterdiscord.app";
-const BETTERDISCORD_API = "https://api.betterdiscord.app";
+const HOSTNAME = "betterdiscord.app";
 const API_VERSION = "latest";
 
 /**
@@ -8,7 +7,7 @@ const API_VERSION = "latest";
 const join = (...paths) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
 
-    return `${BETTERDISCORD_SITE}/${path}`;
+    return `https://${HOSTNAME}/${path}`;
 };
 
 /**
@@ -17,7 +16,7 @@ const join = (...paths) => {
 const apiJoin = (...paths) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
 
-    return `${BETTERDISCORD_API}/${API_VERSION}/${path}`;
+    return `https://api.${HOSTNAME}/${API_VERSION}/${path}`;
 };
 /**
  * @param {string} type 
@@ -44,9 +43,26 @@ const addonReleaseChannels = [
 // Theres 2 empty/missing thumbnails, the one the site uses and a empty store one
 const EMPTY_USE_STORE = true;
 
+const RAW_GIT_URL = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
+
 export default new class Web {
+    /** @param {string} channelId  */
     isReleaseChannel(channelId) {
         return addonReleaseChannels.includes(channelId);
+    }
+
+    /** @param {string} rawGitURL  */
+    previewURL(rawGitURL) {
+        const match = rawGitURL.match(RAW_GIT_URL);
+
+        if (!match) {
+            throw new Error("Enable to parse url!");
+        }
+
+        const [, user, repo, commit, filePath] = match;
+        const jsdelivr = `https://cdn.jsdelivr.net/gh/${user}/${repo}@${commit}/${filePath}`;
+        
+        return `https://discord-preview.vercel.app/?file=${encodeURIComponent(jsdelivr)}`;
     }
     
     redirects = {

@@ -4,6 +4,7 @@ import React from "@modules/react";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
 import Web from "@data/web";
+import Events from "@modules/emitter";
 
 import Button from "@ui/base/button";
 import Flex from "@ui/base/flex";
@@ -31,17 +32,8 @@ function ModalItem({leading, content, trailing, action}) {
     );
 }
 
-/**
- * Get the guild acronym
- * @param {string} name 
- */
-function acronym(name) {
-    if (name == null) return "";
-    return name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");
-}
 
 /**
- * A implemention of discords guild icon with a mixture of lazy loading
  * @param {{guild: import("@modules/addonstore").Guild}} props 
  */
 function GuildIcon({guild}) {
@@ -88,7 +80,7 @@ function GuildIcon({guild}) {
     
     return (
         <div className="bd-install-modal-guild" ref={ref}>
-            {state === 0 ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : state === 1 ? null : acronym(guild.name)}
+            {state === 0 ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : state === 1 ? null : guild.acronym}
         </div>
     );
 }
@@ -101,7 +93,7 @@ function GuildIcon({guild}) {
  *    install(shouldEnable: boolean): Promise<void>
  * }} props 
  */
-export default function InstallModal({addon, transitionState, install}) {
+export default function InstallModal({addon, transitionState, install, onClose}) {
     const [shouldEnable, setShouldEnable] = useState(() => Settings.get("settings", "general", "alwaysEnable"));
 
     const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
@@ -114,6 +106,19 @@ export default function InstallModal({addon, transitionState, install}) {
         setInstalling(true);
         install(shouldEnable);
     }, [install, shouldEnable]);
+
+    useLayoutEffect(() => {
+        if (addon.isInstalled()) return onClose();
+
+        const listener = () => {
+            if (addon.isInstalled()) onClose();
+        };
+
+        Events.on(`${addon.type}-loaded`, listener);
+        return () => {
+            Events.off(`${addon.type}-loaded`, listener);
+        };
+    }, [addon, onClose]);
 
     return (
         <ModalRoot transitionState={transitionState} size={ModalRoot.Sizes.SMALL} className="bd-addon-store-modal">
@@ -176,7 +181,6 @@ export default function InstallModal({addon, transitionState, install}) {
                         </foreignObject>
                     </svg>
                 </div>
-                {/* <CloseButton onClick={onClose} /> */}
             </div>
             <div className="bd-install-modal-header"><Text size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY}>{addon.name}</Text></div>
             <div className="bd-install-modal-items">

@@ -55,8 +55,6 @@ import Web from "@data/web";
  * }} RawAddonGuild
  */
 
-const EXTRACT_GIT_INFO = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
-
 function showConfirmDelete(addon) {
     return new Promise(resolve => {
         Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
@@ -71,14 +69,6 @@ function showConfirmDelete(addon) {
 /** @typedef {Addon} Addon */
 /** @typedef {Guild} Guild */
 
-/**
- * Get the guild acronym
- * @param {string} name 
- */
-function acronym(name) {
-    if (name == null) return "";
-    return name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");
-}
 
 class Guild {
     /** @type {Record<string, Guild>} */
@@ -110,7 +100,7 @@ class Guild {
         
         return `https://cdn.discordapp.com/icons/${this.id}/${filename}?size=96`;
     }
-    get acronym() {return acronym(this.name);}
+    get acronym() {return this.name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");}
 }
 
 class Addon {
@@ -127,6 +117,8 @@ class Addon {
 
             cached.guild = new Guild(addon.guild);
 
+            cached._addon = addon;
+
             return cached;
         }
 
@@ -139,7 +131,7 @@ class Addon {
         
         this.thumbnail = Web.resources.thumbnail(addon.thumbnail_url);
         this.avatar = `https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`;
-        this.author = addon.author.discord_name;
+        this.author = addon.author.display_name;
         
         const guild = addon.guild || addon.author.guild;
         /** @type {Guild | null} */
@@ -157,6 +149,8 @@ class Addon {
         this.version = addon.version;
 
         this.filename = addon.file_name;
+
+        this._addon = addon;
         
         Addon.cache[addon.id] = this;
     }
@@ -192,19 +186,8 @@ class Addon {
         if (!response.ok) {
             throw new Error("Unable to get github url!");
         }
-
-        const match = response.url.match(EXTRACT_GIT_INFO);
       
-        if (!match) {
-          throw new Error("Invalid GitHub raw URL format.");
-        }
-      
-        const [, user, repo, commit, filePath] = match;
-        const jsdelivrUrl = `https://cdn.jsdelivr.net/gh/${user}/${repo}@${commit}/${filePath}`;
-        
-        const previewURL = `https://discord-preview.vercel.app/?file=${encodeURIComponent(jsdelivrUrl)}`;
-
-        window.open(previewURL, "_blank", "noopener,noreferrer");
+        window.open(Web.previewURL(response.url), "_blank", "noopener,noreferrer");
     }
 
     /** Opens the bd's site page for the addon */
@@ -239,6 +222,7 @@ class Addon {
 
     /**
      * Attempt to download addon
+     * Shows a confirmation modal (unless skipped) then installs the addon
      * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
      * @returns {Promise<void>}
      */
@@ -285,15 +269,16 @@ class Addon {
             const key = Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
                 ...props, 
                 addon: this, 
-                install: async (shouldEnable) => {
+                install: (shouldEnable) => {
                     installing = true;
-                    install(shouldEnable).finally(() => props.onClose());
+                    install(shouldEnable);
                 }
             }), {
                 onCloseCallback: () => {
                     resolve();
                     this._download = null;
                 },
+                // Override the on close request to make it only close when not installing
                 onCloseRequest() {
                     // If installing make it so the modal cannot close until install is finished
                     if (installing) return;

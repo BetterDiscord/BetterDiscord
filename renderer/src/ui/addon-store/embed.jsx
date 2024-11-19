@@ -4,31 +4,16 @@ import AddonStore from "@modules/addonstore";
 import AddonCard, {TagContext} from "./card";
 import Spinner from "@ui/spinner";
 
-const {useState, useEffect, useCallback} = React;
+const {useState, useEffect} = React;
 
 export default function AddonEmbed({id, original}) {
-    const getAddon = useCallback(() => AddonStore.getAddon(id), [id]);
-
-    const [addon, setAddon] = useState(() => getAddon());
+    const [addon, setAddon] = useState(() => AddonStore.getAddon(id));
     const [loading, setLoading] = useState(() => true);
     const [tags, setTags] = useState({});
     
     useEffect(() => {
-        if (typeof id === "string") {
-            AddonStore.requestAddon(decodeURIComponent(id)).then(setAddon, () => setLoading(false));
-            return;
-        }
-
-        setAddon(getAddon());
-        setLoading(AddonStore.loading);
-
-        const listener = () => {      
-            setAddon(getAddon);
-            setLoading(AddonStore.loading);
-        };
-
-        return AddonStore.addChangeListener(listener);
-    }, [getAddon, id]);
+        AddonStore.requestAddon(decodeURIComponent(id)).then(setAddon, () => setLoading(false));
+    }, [id]);
 
     if (!addon) {
         // 404 don't show

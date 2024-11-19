@@ -65,7 +65,7 @@ import AddonStore from "@modules/addonstore";
      * @returns {Promise<void>} A empty promise that resolves when the addon is installed or when the modal is closed
      */
     requestDownload(idOrName) {
-        return new Promise((resolve, reject) => {  
+        return new Promise((resolve, reject) => {
             AddonStore.requestAddon(idOrName).then((addon) => {
                 if (addon.type === this.#manager.prefix) {
                     addon.download(false).then(resolve, reject);
