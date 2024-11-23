@@ -166,6 +166,8 @@
         "byline": "by {{author}}",
         "openFolder": "Open {{type}} Folder",
         "openStore": "Open {{type}} Store",
+        "storeMessage": "Browse and install official community {{type}}",
+        "store": "Store",
         "viewInstalled": "View Installed {{type}}",
         "reload": "Reload",
         "addonSettings": "Settings",

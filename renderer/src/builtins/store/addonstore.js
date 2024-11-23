@@ -3,7 +3,7 @@ import Builtin from "@structs/builtin";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
 import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
-import AddonEmbed from "@ui/addon-store/embed";
+import AddonEmbed from "@ui/misc/storeembed";
 import ReactUtils from "@modules/api/reactutils";
 import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
@@ -154,9 +154,12 @@ export default new class AddonStoreBuiltin extends Builtin {
             }
 
             res ??= [];
-
-            if (Web.isReleaseChannel(message.channel_id) || (message.messageReference?.type === 1 && Web.isReleaseChannel(message.messageReference.channel_id) && !message.messageSnapshots.length)) {
+            
+            let type = Web.getReleaseChannelType(message.channel_id);
+            if (type || (message.messageReference?.type === 1 && (type = Web.getReleaseChannelType(message.messageReference.channel_id)) && !message.messageSnapshots.length)) {
                 const id = message.embeds[0].rawDescription?.split?.("\n")?.at?.(-1)?.match?.(/\?id=(\d+)/);
+
+                AddonStore.getStore(type).initialize();
 
                 if (id) return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{id: id[1], original: res}));
 

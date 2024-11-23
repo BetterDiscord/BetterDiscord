@@ -4,15 +4,15 @@ import fs from "fs";
 
 import Logger from "@common/logger";
 import Toasts from "@ui/toasts";
-import DataStore from "./datastore";
-import Strings from "./strings";
-import fetch from "./api/fetch";
-import React from "./react";
-import PluginManager from "./pluginmanager";
-import ThemeManager from "./thememanager";
+import DataStore from "@modules/datastore";
+import Strings from "@modules/strings";
+import fetch from "@modules/api/fetch";
+import React from "@modules/react";
+import PluginManager from "@modules/pluginmanager";
+import ThemeManager from "@modules/thememanager";
 import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
-import DiscordModules from "./discordmodules";
+import DiscordModules from "@modules/discordmodules";
 import Settings from "@modules/settingsmanager";
 import Web from "@data/web";
 
@@ -232,35 +232,48 @@ class Addon {
         if (this.isInstalled()) return;
 
         const install = (shouldEnable) => new Promise((resolve, reject) => {
-            request(Web.redirects.download(this.id), (error, headers, body) => {
-                if (error || headers.statusCode >= 300 || headers.statusCode < 200) {
-                    Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error);
-        
-                    Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
-                        type: "danger"
+            // Sometimes there is a weird issue where the download endpoint returns a 302
+            // But nothing indiciating a true redirect, so it will fallback to using the github redirect
+            const createCallback = (isWrapper) => {
+                return (error, req, body) => {
+                    if (error || req.statusCode >= 300 || req.statusCode < 200) {
+                        Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}' trying again:`, error || req);
+
+                        if (isWrapper && req.statusCode === 302) {
+                            request(Web.redirects.github(this.id), createCallback(false));
+                            return;
+                        }
+                        
+                        Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error || req);
+            
+                        Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
+                            type: "danger"
+                        });
+
+                        reject(error || new Error(`Failed to fetch addon with status ${req.statusCode}!`));
+
+                        return;
+                    }
+
+                    // Update download count if downloaded
+                    this.downloads++;
+    
+                    // If should enable, tell the manager that it is before hand
+                    if (shouldEnable) {
+                        this.manager.state[this.name] = true;
+                    }
+            
+                    Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
+                        type: "success"
                     });
+            
+                    fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), body);
+    
+                    resolve();
+                };
+            };
 
-                    reject(error || new Error("Failed to fetch addon!"));
-
-                    return;
-                }
-
-                // Update download count if downloaded
-                this.downloads++;
-
-                // If should enable, tell the manager that it is before hand
-                if (shouldEnable) {
-                    this.manager.state[this.name] = true;
-                }
-        
-                Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
-                    type: "success"
-                });
-        
-                fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), body);
-
-                resolve();
-            });
+            request(Web.redirects.download(this.id), createCallback(true));
         });
         
         return this._download ??= new Promise((resolve) => {
@@ -273,7 +286,7 @@ class Addon {
                 addon: this, 
                 install: (shouldEnable) => {
                     installing = true;
-                    install(shouldEnable);
+                    return install(shouldEnable);
                 }
             }), {
                 onCloseCallback: () => {
@@ -344,7 +357,7 @@ class Store {
     };
 
     requestAddons() {
-        Logger.debug("AddonStore", `Requesting all ${this.type}`);
+        Logger.debug("AddonStore", `Requesting all ${this.type}s`);
 
         this.loading = true;
         this.addons.length = 0;
@@ -465,7 +478,8 @@ const ThemeStore = new Store("theme");
 const PluginStore = new Store("plugin");
 
 const addonStore = new class AddonStore {
-    /** @param {"plugins" | "themes"} type  */
+    constructor() {window.AddonStore = this;}
+    /** @param {"plugin" | "theme"} type  */
     getStore(type) {
         if (type === "plugin") return PluginStore;
         return ThemeStore;
@@ -478,13 +492,14 @@ const addonStore = new class AddonStore {
      * @param {number|string} idOrName 
      * @returns {Promise<Addon>}
      */
-    requestAddon(idOrName) {
+    requestAddon(idOrName) {        
         const cache = this.getAddon(idOrName);
         if (typeof cache === "object") return Promise.resolve(cache);
 
         return this._singleAddonCache[idOrName] ??= new Promise((resolve, reject) => {
             request(Web.store.addon(idOrName), (error, _, body) => {
                 const data = JSON.parse(body);
+                
 
                 if (error || data.status === 404) {
                     reject(error || data.title);
@@ -514,8 +529,6 @@ const addonStore = new class AddonStore {
                 if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded) return addon;
             }
         }
-
-        return null;
     }
 };
 

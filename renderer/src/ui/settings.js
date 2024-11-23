@@ -174,7 +174,7 @@ export default new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await WebpackModules.getLazy(Filters.byStrings("RELEASE_CHANNEL", "COPY_VERSION"), {defaultExport: false});
+        const versionDisplayModule = await WebpackModules.getLazy(Filters.byStrings("RELEASE_CHANNEL", "Build Override:"), {defaultExport: false});
         if (!versionDisplayModule?.Z) return; 
 
         Patcher.after("SettingsManager", versionDisplayModule, "Z", (_, __, reactTree) => {

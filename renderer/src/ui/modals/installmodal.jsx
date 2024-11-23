@@ -104,8 +104,8 @@ export default function InstallModal({addon, transitionState, install, onClose})
 
     const doInstall = useCallback(() => {
         setInstalling(true);
-        install(shouldEnable);
-    }, [install, shouldEnable]);
+        install(shouldEnable).catch(() => onClose());
+    }, [install, shouldEnable, onClose]);
 
     useLayoutEffect(() => {
         if (addon.isInstalled()) return onClose();
@@ -115,9 +115,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
         };
 
         Events.on(`${addon.type}-loaded`, listener);
-        return () => {
-            Events.off(`${addon.type}-loaded`, listener);
-        };
+        return () => Events.off(`${addon.type}-loaded`, listener);
     }, [addon, onClose]);
 
     return (

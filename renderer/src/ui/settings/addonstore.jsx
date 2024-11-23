@@ -6,20 +6,18 @@ import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
 
 import Folder from "@ui/icons/folder";
-import AddonCard, {TagContext} from "../addon-store/card";
-import SettingsTitle from "@ui/settings/title";
-import Globe from "@ui/icons/globe";
+import AddonCard, {TagContext} from "@ui/settings/storecard";
 import Search from "@ui/settings/components/search";
 import Dropdown from "@ui/settings/components/dropdown";
-import MultiSelect from "./components/multiselect";
 import NoResults from "@ui/blankslates/noresults";
 import Spinner from "@ui/spinner";
 import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
-import {buildDirectionOptions, makeBasicButton, getState, saveState} from "./addonshared";
+import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader} from "./addonshared";
 import Paginator from "@ui/misc/paginator";
 import Info from "@ui/icons/info";
 import ReloadIcon from "@ui/icons/reload";
+import Arrow from "@ui/icons/downarrow";
 
 const {useState, useMemo, useCallback} = React;
 
@@ -36,7 +34,7 @@ const buildSortOptions = () => [
 
 const MAX_AMOUNT_OF_CARDS = 30;
 
-function Cards({content, refToScroller, page, setPage}) {
+function StoreContent({content, refToScroller, page, setPage}) {
     const cards = useMemo(() => content.slice(page * MAX_AMOUNT_OF_CARDS, (page + 1) * MAX_AMOUNT_OF_CARDS), [content, page]);
 
     return (
@@ -63,19 +61,75 @@ function Cards({content, refToScroller, page, setPage}) {
     );
 }
 
+function TagDropdown({type, selected, onChange}) {
+    const hideMenu = useCallback(() => {
+        setOpen(false);
+        document.removeEventListener("click", hideMenu);
+    }, []);
+
+    const [open, setOpen] = useState(false);
+    const showMenu = useCallback((event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (!open) {
+            setOpen(true);
+            document.addEventListener("click", hideMenu);
+            return;
+        }
+        
+        setOpen(event.shiftKey);
+    }, [hideMenu, open]);
+
+    const tags = useMemo(() => Web.store.tags[type], [type]);
+
+    const selectedTags = useMemo(() => Object.entries(selected).filter(([, value]) => value).map(([ key ]) => key), [selected]);
+
+    return (
+        <div className={`bd-select bd-select-transparent${open ? " menu-open" : ""}`} onClick={showMenu}>
+            <div className="bd-select-value">{selectedTags.length}/{tags.length}</div>
+            <Arrow className="bd-select-arrow" />
+            {open && (
+                <div className="bd-select-options">
+                    {tags.map((tag, index) => {
+                        const isSelected = selectedTags.includes(tag);
+                        return (
+                            <div 
+                                className={`bd-select-option${isSelected ? " selected" : ""}`} 
+                                onClick={() => onChange(tag)}
+                                key={index}
+                            >
+                                <input type="checkbox" checked={isSelected} />
+                                {tag}
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
+    );
+}
+
 /**
- * @param {{type: "plugin"|"theme", title: string, toggleStore(): void, refToScroller: any}} param0 
+ * @param {{type: "plugin"|"theme", title: string, refToScroller: any}} param0 
  */
-export default function AddonStorePage({type, title, toggleStore, refToScroller}) {
+export default function AddonStorePage({type, title, refToScroller}) {
     const {error, addons, loading} = AddonStore.getStore(type).useState();
 
     const [page, setPage] = useState(0);
 
-    const [tags, setTags] = useState(() => Web.store.tags[type].map((tag) => ({
-        selected: false,
-        value: tag,
-        label: tag
-    })));
+    /** @type {[ tags: Record<string, boolean>, setTags: (value: ((tags: Record<string, boolean>) => Record<string, boolean>) | Record<string, boolean>) => void ]} */
+    const [tags, setTags] = useState({});
+
+    /** @type {(tag: string, value?: boolean) => void} */
+    const toggleTag = useCallback((tag, value) => {
+        setPage(0);        
+
+        setTags(($tags) => ({
+            ...$tags,
+            [tag]: value ?? !$tags[tag]
+        }));
+    }, []);    
 
     const [query, setQuery] = useState("");
 
@@ -103,13 +157,11 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
     const filtered = useMemo(() => {
         const $query = query.toLowerCase();
 
-        const $tags = tags.filter(tag => tag.selected);        
-
         return addons.filter((addon) => {
             if (addon.type !== type) return false;
             if (!(addon.name.toLowerCase().includes($query) || addon.author.toLowerCase().includes($query) || addon.description.toLowerCase().includes($query))) return false;
 
-            return $tags.every((tag) => addon.tags.includes(tag.value));
+            return Object.entries(tags).every(([tag, value]) => value ? addon.tags.includes(tag) : true);
         });
     }, [type, addons, query, tags]);
 
@@ -132,30 +184,26 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
         const $addons = filtered.concat().sort((a, b) => {
             let comparison = 0;
 
-            if (sort === "popularity") {
-              comparison = (b.downloads * 0.7 + b.likes * 0.3) - (a.downloads * 0.7 + a.likes * 0.3);
-            } 
-            else if (sort === "name") {
-              comparison = a.name.localeCompare(b.name);
-            } 
-            else if (sort === "author") {
-              comparison = a.author.localeCompare(b.author);
-            } 
-            else if (sort === "version") {
-              comparison = a.version.localeCompare(b.version);
-            } 
-            else if (sort === "modified") {
-              comparison = b.releaseDate - a.releaseDate;
-            } 
-            else if (sort === "isInstalled") {
-              comparison = (a.isInstalled() === b.isInstalled()) ? 0 : (a.isInstalled() ? -1 : 1);
+            switch (sort) {
+                case "name":
+                case "author":
+                case "version":
+                    comparison = a[sort].localeCompare(b[sort]);
+                    break;
+                case "modified":
+                case "likes":
+                case "downloads":
+                    comparison = b[sort] - a[sort];
+                    break;
+                case "isInstalled":
+                    comparison = (a.isInstalled() === b.isInstalled()) ? 0 : (a.isInstalled() ? -1 : 1);
+                    break;
+                case "popularity":
+                    comparison = (b.downloads * 0.7 + b.likes * 0.3) - (a.downloads * 0.7 + a.likes * 0.3);
+                    break;
             }
-            else if (sort === "likes") {
-                comparison = b.likes - a.likes;
-            }
-            else if (sort === "downloads") {
-                comparison = b.downloads - a.downloads;
-            }
+
+            if (comparison === 0) comparison = a.name.localeCompare(b.name);
         
             return ascending ? comparison : -comparison; // Adjust for ascending/descending
         });
@@ -164,33 +212,18 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
             <ErrorBoundary key={addon.id}><AddonCard addon={addon} /></ErrorBoundary>
         ));
 
-        return <Cards content={cards} refToScroller={refToScroller} setPage={setPage} page={page} />;
+        return <StoreContent content={cards} refToScroller={refToScroller} setPage={setPage} page={page} />;
     }, [filtered, ascending, sort, setPage, page, refToScroller, loading]);
 
     /** @type {typeof ThemeManager | typeof PluginManager} */
     const manager = useMemo(() => type === "plugin" ? PluginManager : ThemeManager, [type]);
 
-    const toggleTag = useCallback((tag, value) => {
-        setPage(0);
-
-        setTags(($tags) => {
-            const index = $tags.findIndex(t => t.value === tag);
-
-            return [
-                ...$tags.slice(0, index),
-                {...$tags[index], selected: value ?? !$tags[index].selected},
-                ...$tags.slice(index + 1)
-            ];
-        });
-    }, []);
-
     return [
-        <SettingsTitle text={title} key="title">
+        <AddonHeader key="title" count={filtered.length} searching={query.length !== 0}>
             <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: `${filtered.length} ${title}`})}...`} />
-        </SettingsTitle>,
+        </AddonHeader>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.viewInstalled.format({type: title}), <Globe size={20} />, () => toggleStore(), "installed")}
                 {/* {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
                 {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder), "folder")}
                 {makeBasicButton(Strings.Addons.reload, <ReloadIcon size={20} />, () => loading ? {} : AddonStore.getStore(type).requestAddons(), "reload")}
@@ -199,10 +232,10 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
                 <div className="bd-addon-dropdowns">
                     <div className="bd-select-wrapper">
                         <label className="bd-label">{Strings.Addons.tags}:</label>
-                        <MultiSelect 
-                            options={tags} 
+                        <TagDropdown 
+                            type={type}
+                            selected={tags} 
                             onChange={toggleTag} 
-                            style="transparent"
                         />
                     </div>
                     <div className="bd-select-wrapper">
@@ -220,7 +253,7 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
                 </div> */}
             </div>
         </div>,
-        error && (
+        (!loading && error) && (
             <div className="bd-addon-store-warning">
                 <Info size={24} />
                 <div>
@@ -231,7 +264,7 @@ export default function AddonStorePage({type, title, toggleStore, refToScroller}
         ),
         <TagContext.Provider 
             value={[ 
-                (tag) => tags.find(t => t.value === tag).selected, 
+                (tag) => !!tags[tag], 
                 toggleTag 
             ]}
         >{content}</TagContext.Provider>

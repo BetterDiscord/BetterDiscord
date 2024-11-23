@@ -1,17 +1,18 @@
+import Web from "@data/web";
+
 import React from "@modules/react";
 import Strings from "@modules/strings";
 import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";
 
 import Button from "@ui/base/button";
-import Delete from "@ui/icons/delete";
+// import Delete from "@ui/icons/delete";
 import Download from "@ui/icons/download";
 import GitHub from "@ui/icons/github";
 import Support from "@ui/icons/support";
 import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import Eye from "@ui/icons/eye";
-import Web from "@data/web";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 
@@ -27,7 +28,7 @@ function formatNumberWithSuffix(value) {
     let formattedValue = (value / divisor).toFixed(1);
     if (formattedValue.endsWith(".0")) formattedValue = formattedValue.slice(0, -2);
   
-    return `${formattedValue}${suffixes[index]}`; // Concatenate the formatted number with the suffix
+    return `${formattedValue}${suffixes[index]}`;
 }
 
 /**
@@ -40,7 +41,7 @@ export default function AddonCard({addon, isEmbed}) {
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
-    const triggerDelete = useCallback((event) => addon.delete(event.shiftKey), [addon]);
+    // const triggerDelete = useCallback((event) => addon.delete(event.shiftKey), [addon]);
 
     const installAddon = useCallback(async (event) => {
         setDisabled(true);
@@ -248,7 +249,7 @@ export default function AddonCard({addon, isEmbed}) {
                                 <Download size={24} />
                             </Button>
                         )}
-                    </DiscordModules.Tooltip>
+                    </DiscordModules.Tooltip> */}
                     <DiscordModules.Tooltip text={Strings.Addons.downloadAddon} key="download2">
                         {(props) => (
                             <Button
@@ -261,8 +262,8 @@ export default function AddonCard({addon, isEmbed}) {
                                 <Download size={24} />
                             </Button>
                         )}
-                    </DiscordModules.Tooltip> */}
-                    {isInstalled ? (
+                    </DiscordModules.Tooltip>
+                    {/* {isInstalled ? (
                         <DiscordModules.Tooltip text={Strings.Addons.deleteAddon} key="delete">
                             {(props) => (
                                 <Button
@@ -289,7 +290,7 @@ export default function AddonCard({addon, isEmbed}) {
                                 </Button>
                             )}
                         </DiscordModules.Tooltip>
-                    )}
+                    )} */}
                 </div>
             </div>
         </div>

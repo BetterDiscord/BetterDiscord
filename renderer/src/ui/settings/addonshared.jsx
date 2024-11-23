@@ -4,6 +4,8 @@ import Discordmodules from "@modules/discordmodules";
 
 import Button from "@ui/base/button";
 import DataStore from "@modules/datastore";
+import SettingsTitle from "@ui/settings/title";
+import Caret from "@ui/icons/caret";
 
 export const buildDirectionOptions = () => [
   {label: Strings.Sorting.ascending, value: true},
@@ -27,4 +29,38 @@ export function saveState(type, control, value) {
     if (!addonlistControls[type]) addonlistControls[type] = {};
     addonlistControls[type][control] = value;
     DataStore.setBDData("addonlistControls", addonlistControls);
+}
+
+export const addonContext = React.createContext();
+
+/**
+ * @param {{ children: any, count: number, searching: boolean}} param0 
+ */
+export function AddonHeader({children, count, searching}) {
+    /** @type {{ title: any, toggleStore(): void, showingStore: boolean }} */
+    const {title, toggleStore, showingStore} = React.useContext(addonContext);
+
+    const exitStore = React.useCallback(() => {
+        if (!showingStore) return;
+        toggleStore();
+    }, [showingStore, toggleStore]);
+
+    return (
+        <SettingsTitle 
+            text={(
+                <div className="bd-addon-title" data-showing-store={showingStore}>
+                    <span onClick={exitStore}>{title}</span>
+                    {showingStore && (
+                        <>
+                            <Caret size={24} />
+                            <span>{Strings.Addons.store}</span>
+                        </>
+                    )}
+                    {searching && <span> - {Strings.Addons.results.format({count: String(count)})}</span>}
+                </div>
+            )}
+        >
+            {children}
+        </SettingsTitle>
+    );
 }

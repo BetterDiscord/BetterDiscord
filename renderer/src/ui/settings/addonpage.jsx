@@ -2,6 +2,8 @@ import React from "@modules/react";
 import AddonStorePage from "./addonstore";
 import AddonList from "./addonlist";
 import Settings from "@modules/settingsmanager";
+import {addonContext} from "./addonshared";
+// import addonStore from "@modules/addonstore";
 
 const {useState, useCallback} = React;
 
@@ -11,6 +13,15 @@ export default function AddonPage(props) {
 
     const toggleStore = useCallback(() => setShowStore(v => !v), []);
 
-    if (showStore) return <AddonStorePage {...props} toggleStore={setShowStore} />;
-    return <AddonList {...props} toggleStore={toggleStore} />;
+    // addonStore.getStore(props.prefix).initialize();
+
+    return (
+        <addonContext.Provider value={{toggleStore, showingStore: showStore, ...props}}>
+            {showStore ? (
+                <AddonStorePage {...props} />
+            ) : (
+                <AddonList {...props} />
+            )}
+        </addonContext.Provider>
+    );
 }

@@ -1,5 +1,5 @@
 const HOSTNAME = "betterdiscord.app";
-const API_VERSION = "latest";
+const API_VERSION = "v2";
 
 /**
  * @param  {...string[]} paths 
@@ -20,7 +20,7 @@ const apiJoin = (...paths) => {
 };
 /**
  * @param {string} type 
- * @returns {(name?: string) => string}
+ * @returns {(name: string) => string}
  */
 const makePage = (type) => (name) => join(`${type}/${encodeURIComponent(name)}`);
 
@@ -31,14 +31,16 @@ const makePage = (type) => (name) => join(`${type}/${encodeURIComponent(name)}`)
 const makeRedirects = (type) => (id) => join(`${type}?id=${id}`);
 
 // First id is betterdiscord and second is betterdiscord 2
-const addonReleaseChannels = [
-    // Themes
-    "813903993524715522",
-    "781600198002081803",
-    // Plugins
-    "813903954991120385",
-    "781600250858700870"
-];
+const releaseChannels = {
+    theme: [
+        "813903993524715522",
+        "781600198002081803",
+    ],
+    plugin: [
+        "813903954991120385",
+        "781600250858700870"
+    ]
+};
 
 // Theres 2 empty/missing thumbnails, the one the site uses and a empty store one
 const EMPTY_USE_STORE = true;
@@ -46,9 +48,14 @@ const EMPTY_USE_STORE = true;
 const RAW_GIT_URL = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
 
 export default new class Web {
-    /** @param {string} channelId  */
-    isReleaseChannel(channelId) {
-        return addonReleaseChannels.includes(channelId);
+    /**
+     * This will allow preloading of the addon channels
+     * @param {string} channelId 
+     * @returns {"plugin" | "theme" | undefined}
+     */
+    getReleaseChannelType(channelId) {
+        if (releaseChannels.plugin.includes(channelId)) return "plugin";
+        if (releaseChannels.theme.includes(channelId)) return "theme";
     }
 
     /** @param {string} rawGitURL  */

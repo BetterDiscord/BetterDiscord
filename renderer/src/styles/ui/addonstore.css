@@ -242,3 +242,18 @@ img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="
 .bd-addon-store-card:last-child:nth-child(odd):not(.bd-addon-store-card-embed) {
     margin-left: calc(50% + 10px);
 }
+
+.bd-addon-title {
+    display: flex;
+    align-items: center;
+}
+.bd-addon-title[data-showing-store="true"] > span:first-child {
+    cursor: pointer;
+}
+.bd-addon-title[data-showing-store="true"] > span:first-child:hover {
+    background: var(--background-modifier-hover);
+}
+.bd-addon-title > span {
+    padding: 2px 4px;
+    border-radius: 3px;
+}
