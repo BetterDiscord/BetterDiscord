@@ -4,6 +4,7 @@ import Utilities from "@modules/utilities";
 
 export default class SimpleMarkdownExt {
     static parseToReact(str, inline = true) {
+        // return DiscordModules.SimpleMarkdown.markdownToReact(str);
         if (!this._parser) this._initialize();
         return this._renderer(this._parse(str, {inline}));
     }
