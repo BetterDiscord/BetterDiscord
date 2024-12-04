@@ -11,26 +11,22 @@ export default new class LocaleManager {
     get defaultLocale() {return "en-US";}
 
     constructor() {
-        this.locale = "";
         this.strings = Utilities.extend({}, Locales[this.defaultLocale]);
     }
 
     initialize() {
-        this.setLocale(this.discordLocale);
-        LocaleStore?.addChangeListener((newLocale) => this.setLocale(newLocale));
+        this.setLocale();
+        LocaleStore?.addChangeListener(() => this.setLocale());
     }
 
-    setLocale(newLocale) {
-        let newStrings;
-        if (newLocale != this.defaultLocale) {
-            newStrings = Locales[newLocale];
-            if (!newStrings) return this.setLocale(this.defaultLocale);
-        }
-        else {
-            newStrings = Locales[this.defaultLocale];
-        }
-        this.locale = newLocale;
-        Utilities.extendTruthy(this.strings, newStrings);
+    setLocale() {
+        // Reset to the default locale in case a language is incomplete
+        Utilities.extend(this.strings, Locales[this.defaultLocale]);
+
+        // Get the strings of the new language and extend if a translation exists
+        const newStrings = Locales[this.discordLocale];
+        if (newStrings) Utilities.extendTruthy(this.strings, newStrings);
+
         Events.emit("strings-updated");
     }
 };

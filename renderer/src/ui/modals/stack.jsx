@@ -7,8 +7,8 @@ import Backdrop from "./backdrop";
 const {Fragment, useState, useCallback, useEffect} = React;
 
 
-const Transitions = WebpackModules.getModule(m => m?.defaultProps?.transitionAppear);
-// const Transitions = WebpackModules.getByProps("TransitionGroup").TransitionGroup;
+const [Transitions, TransitionKey] = WebpackModules.getWithKey(m => m?.defaultProps?.transitionAppear);
+const TransitionGroup = Transitions && TransitionKey ? Transitions[TransitionKey] : function() {};
 
 class ModalLayer extends React.Component {
     constructor(props) {
@@ -69,8 +69,8 @@ export default function ModalStack() {
         };
     }, [addModal]);
 
-    return <Transitions component={Fragment}>
+    return <TransitionGroup component={Fragment}>
             <Backdrop isVisible={!!modals.length} onClick={() => removeModal(modals[modals.length - 1].modalKey)} />
-            {modals.length && <ModalLayer key={modals[modals.length - 1].modalKey} {...modals[modals.length - 1]} onClose={() => removeModal(modals[modals.length - 1].modalKey)} />}
-        </Transitions>;
+            {!!modals.length && <ModalLayer key={modals[modals.length - 1].modalKey} {...modals[modals.length - 1]} onClose={() => removeModal(modals[modals.length - 1].modalKey)} />}
+        </TransitionGroup>;
 }

@@ -25,8 +25,8 @@
             },
             "window": {
                 "removeMinimumSize": {
-                    "name": "移除最小化限制",
-                    "note": "移除 Discord 限制的最小化視窗尺寸（940x500）"
+                    "name": "移除最小視窗尺寸限制",
+                    "note": "移除 Discord 限制的最小視窗尺寸（940x500）"
                 },
                 "name": "視窗設定",
                 "transparency": {
@@ -84,8 +84,8 @@
             "developer": {
                 "name": "開發人員設定",
                 "debuggerHotkey": {
-                    "name": "調試器快捷鍵",
-                    "note": "按下 F8 時啟動調試器"
+                    "name": "偵錯工具快捷鍵",
+                    "note": "允許在打開開發人員工具的情況下按下 F8 啟動偵錯工具"
                 },
                 "reactDevTools": {
                     "name": "React 開發人員工具",
@@ -100,7 +100,7 @@
                     "note": "禁止 Discord 輸出「Hold Up!」警告"
                 },
                 "debugLogs": {
-                    "name": "調試記錄檔",
+                    "name": "偵錯記錄檔",
                     "note": "輸出控制台中的所有資訊到 BetterDiscord 資料夾下的 debug.log"
                 },
                 "devTools": {
@@ -120,11 +120,11 @@
                 },
                 "minimap": {
                     "name": "小地圖",
-                    "note": "啟用在編輯器一側顯示代碼小地圖"
+                    "note": "啟用在編輯器一側顯示程式碼小地圖"
                 },
                 "hover": {
                     "name": "參考工具提示",
-                    "note": "允許在懸停規則和選擇器時顯示參考工具提示"
+                    "note": "允許在懸停於規則和選擇器時顯示參考工具提示"
                 },
                 "quickSuggestions": {
                     "name": "快速建議",
@@ -149,8 +149,8 @@
         "reload": "重新載入",
         "addonSettings": "設定",
         "website": "網站",
-        "source": "開源代碼",
-        "invite": "支持伺服器",
+        "source": "原始碼",
+        "invite": "技術支援伺服器",
         "donate": "捐贈",
         "patreon": "Patreon",
         "name": "名稱",
@@ -174,16 +174,18 @@
         "unknownAuthor": "未知的作者",
         "noDescription": "作者没有留下任何描述。",
         "alreadyExists": "已存在相同名稱 {{name}} 的 {{type}}。",
-        "alreadWatching": "已在監聽擴充功能了。",
+        "alreadWatching": "已在監視擴充功能了。",
         "metaError": "無法解析元資料。",
         "missingNameData": "元資料缺少名稱。",
         "metaNotFound": "無法找到元資料。",
-        "compileError": "無法編譯。",
+        "compileError": "無法編譯。詳細資訊請見控制台。",
         "wasUnloaded": "已解除安裝 {{name}}。",
         "blankSlateHeader": "您還未新增任何 {{type}}！",
-        "blankSlateMessage": "您可以在[此網站]（{{link}}）中獲得，並將其新增到您的 {{type}} 資料夾中。",
+        "blankSlateMessage": "您可以在[此網站]({{link}})中取得，並將其新增到您的 {{type}} 資料夾中。",
         "isEnabled": "已啟用",
-        "wasLoaded": "已載入 {{name}} 版本 {{version}}。"
+        "wasLoaded": "已載入 {{name}} 版本 {{version}}。",
+        "listView": "清單檢視",
+        "gridView": "方格檢視"
     },
     "CustomCSS": {
         "confirmationText": "您還有未儲存的更改，關閉此視窗將失去所有對客製化 CSS 所做的更改。",
@@ -209,10 +211,11 @@
         "restartNow": "立即重新啟動",
         "restartLater": "稍後自行重新啟動",
         "additionalInfo": "額外資訊",
-        "restartPrompt": "Discord 需要重新啟動以套用更新。立刻進行重新啟動嗎？"
+        "restartPrompt": "Discord 需要重新啟動以套用更新。立刻進行重新啟動嗎？",
+        "changelog": "更新日誌"
     },
     "ReactDevTools": {
-        "notFound": "未找到框架",
+        "notFound": "未找到擴充套件",
         "notFoundDetails": "無法在您的電腦上找到 React 開發者工具擴充套件。請在本機的 Chrome 上安裝該擴充套件。"
     },
     "Sorting": {
@@ -222,7 +225,7 @@
         "descending": "倒序"
     },
     "WindowPrefs": {
-        "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 Aero 的捕捉和最大化。\\n\\n該變更需要重新啟動以生效。您要立即進行重新啟動嗎？",
+        "enabledInfo": "此選項需要透明佈景主題才能正常工作。在 Windows 上，這可能會破壞 Aero Snap和最大化。\n\n該變更需要重新啟動以生效。您要立即進行重新啟動嗎？",
         "disabledInfo": "Discord 需要重新啟動以套用最新變更。立刻進行重新啟動嗎？"
     },
     "Notices": {
@@ -232,7 +235,7 @@
         "updateFailed": "更新失敗！",
         "updateFailedMessage": "BetterDiscord 更新失敗。請從我們的網站 (https://betterdiscord.app/) 下載最新版本的安裝程式並重新安裝。",
         "updateSuccessful": "更新成功！",
-        "updateAvailable": "BetterDiscord 已有新的版本（{{version}}）",
+        "updateAvailable": "BetterDiscord 已有新的版本 ({{version}})",
         "addonUpdatesAvailable": "BetterDiscord 已為您 {{type}} 中的 {{count}} 找到更新！",
         "addonUpdated": "{{name}} 已更新到版本 {{version}}！",
         "checking": "正在檢查更新！",

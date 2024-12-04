@@ -5,7 +5,7 @@ import vm from "./vm";
 import fs from "./fs";
 import request from "./request";
 import https from "./https";
-import Buffer from "./buffer";
+import buffer from "./buffer";
 import crypto from "./crypto";
 import Remote from "./remote";
 import Logger from "common/logger";
@@ -22,6 +22,12 @@ originalFs.writeFile = (path, data, options) => fs.writeFile(path, data, Object.
 
 export const createRequire = function (path) {
     return mod => {
+        // Ignore relative require attempts because Discord
+        // erroneously does this a lot apparently which
+        // causes us to do filesystem accesses in our default
+        // switch statement mainly used for absolute paths
+        if (typeof(mod) === "string" && mod.startsWith("./")) return;
+
         if (deprecated.has(mod)) {
             Logger.warn("Remote~Require", `The "${mod}" module is marked as deprecated. ${deprecated.get(mod)}`);
         }
@@ -37,7 +43,7 @@ export const createRequire = function (path) {
             case "process": return window.process;
             case "vm": return vm;
             case "module": return Module;
-            case "buffer": return Buffer.getBuffer();
+            case "buffer": return buffer;
             case "crypto": return crypto;
     
             default:

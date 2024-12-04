@@ -131,7 +131,10 @@
         "settingsError": "Kunde inte öppna inställningarna för {{namn}}",
         "unknownAuthor": "Okänd upphovsman",
         "noDescription": "Beskrivning saknas.",
-        "isEnabled": "Aktiverad"
+        "compileError": "Kunde inte kompileras. Se konsolen för mer information.",
+        "isEnabled": "Aktiverad",
+        "listView": "Listvy",
+        "gridView": "Rutnätsvy"
     },
     "CustomCSS": {
         "confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",

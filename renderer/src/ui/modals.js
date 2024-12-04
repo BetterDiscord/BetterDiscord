@@ -33,12 +33,8 @@ export default class Modals {
     static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
     static get ModalActions() {
-        return this._ModalActions ??= {
-            openModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback") && m?.toString().includes("Layer"), {searchExports: true}),
-            closeModal: WebpackModules.getModule(m => typeof m === "function" && m?.toString().includes("onCloseCallback()"), {searchExports: true})
-        };
+        return this._ModalActions ??= WebpackModules.getByProps("openModal", "closeModal", "updateModal");
     }
-
     static get ModalQueue() {return this._ModalQueue ??= [];}
 
     static async initialize() {
@@ -162,6 +158,7 @@ export default class Modals {
      * @param {string} [options.cancelText=Cancel] - text for the cancel button
      * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
      * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
+     * @param {callable} [options.onClose=NOOP] - callback to occur when exiting the modal
      * @param {string} [options.key] - key used to identify the modal. If not provided, one is generated and returned
      * @returns {string} - the key used for this modal
      */
@@ -171,7 +168,7 @@ export default class Modals {
         if (content instanceof FormattableString) content = content.toString();
 
         const emptyFunction = () => {};
-        const {onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
+        const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
 
         if (!this.ModalActions) {
             return this.default(title, content, [
@@ -200,7 +197,10 @@ export default class Modals {
                 confirmText: confirmText,
                 cancelText: cancelText,
                 onConfirm: onConfirm,
-                onCancel: onCancel
+                onCancel: onCancel,
+                onCloseCallback: () => {
+                    if (props?.transitionState === 2) onClose?.();
+                }
             }, props), React.createElement(ErrorBoundary, {}, content)));
         }, {modalKey: key});
         return modalKey;
@@ -280,7 +280,7 @@ export default class Modals {
     static makeStack() {
         const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
         DOMManager.bdBody.append(div);
-        ReactDOM.render(<ModalStack />, div);
+        ReactDOM.render(<ErrorBoundary hideError={true}><ModalStack /></ErrorBoundary>, div);
         this.hasInitialized = true;
     }
     

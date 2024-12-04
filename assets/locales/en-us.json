@@ -21,6 +21,10 @@
                 "mediaKeys": {
                     "name": "Disable Media Keys",
                     "note": "Prevents Discord from hijacking your media keys after playing a video."
+                },
+                "bdContextMenu": {
+                    "name": "Settings Context Menu",
+                    "note": "Adds a BetterDiscord subsection to the settings context menu."
                 }
             },
             "window": {
@@ -161,7 +165,11 @@
         "isEnabled": "Enabled",
         "listView": "List View",
         "gridView": "Grid View",
+        "enableAll": "Enable All",
+        "disableAll": "Disable All",
+        "enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
         "search": "Search {{type}}",
+        "results": "{{count}} Results",
         "editAddon": "Edit",
         "deleteAddon": "Delete",
         "confirmDelete": "Are you sure you want to delete {{name}}?",
@@ -212,7 +220,8 @@
         "restartLater": "Restart Later",
         "additionalInfo": "Additional Info",
         "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?",
-        "changelog": "Changelog"
+        "changelog": "Changelog",
+        "debuglog": "Your debug log file has exceeded 100MB, would you like to clear the log?"
     },
     "ReactDevTools": {
         "notFound": "Extension Not Found",
@@ -246,5 +255,14 @@
         "versionAvailable": "Version {{version}} now available!",
         "upToDateBlankslate": "All of your {{type}} seem to be up to date!",
         "updateButton": "Update!"
+    },
+    "Settings": {
+        "customColor": "Custom Color",
+        "resetSettings": "Reset Settings",
+        "resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone."
+    },
+    "Socials": {
+        "twitter": "Follow Us!",
+        "github": "Star Us!"
     }
 }

@@ -1,20 +1,14 @@
 // fixed, improved, added, progress
 export default {
-    description: "Hotfix!",
+    video: "https://www.youtube.com/embed/evyvq9eQTqA?si=opmzjGjUArT4VLrj&vq=hd720p&hd=1&rel=0&showinfo=0&mute=1&loop=1&autohide=1",
+    description: "A hotfix to get things going again. Plugins and Themes will take time to update.",
     changes: [
-        // {
-        //     title: "What's New?",
-        //     type: "improved",
-        //     items: [
-        //         "Added SourceURL for the renderer. This makes it easier for developers to identify BD in call stacks.",
-        //     ]
-        // },
         {
-            title: "Bug Fixes",
+            title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "Fixed context menu crashes & api",
+                "Fixed transition group module search that prevented startup."
             ]
-        }
+        },
     ]
 };

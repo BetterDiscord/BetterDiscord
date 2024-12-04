@@ -1,5 +1,6 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
+import Strings from "@modules/strings";
 
 const {useState, useCallback} = React;
 
@@ -76,7 +77,7 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
                     </div>
                 )}
             </DiscordModules.Tooltip>
-            <DiscordModules.Tooltip text="Custom Color" position="bottom">
+            <DiscordModules.Tooltip text={Strings.Settings.customColor} position="bottom">
                 {props => (
                     <div className="bd-color-picker-custom">
                         <Dropper color={getContrastColor(resolveColor(value, true))} />

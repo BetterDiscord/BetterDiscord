@@ -56,4 +56,12 @@ export default new class IPCRenderer {
     openDialog(options) {
         return ipc.invoke(IPCEvents.OPEN_DIALOG, options);
     }
+
+    getSystemAccentColor() {
+        return ipc.invoke(IPCEvents.GET_ACCENT_COLOR);
+    }
+
+    openPath(path) {
+        return ipc.send(IPCEvents.OPEN_PATH, path);
+    }
 };
