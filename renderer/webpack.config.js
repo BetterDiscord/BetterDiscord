@@ -6,7 +6,7 @@ const basePkg = require("../package.json");
 
 module.exports = {
   mode: "development",
-  target: "node",
+  target: "electron-renderer",
   devtool: false,
   entry: "./src/index.js",
   output: {
@@ -31,7 +31,10 @@ module.exports = {
       data$: path.resolve("src", "modules"),
       builtins$: path.resolve("src", "modules"),
       common: path.resolve(__dirname, "..", "common")
-    }
+    },
+    fallback: {
+      buffer: require.resolve("buffer/"),
+    },
   },
   module: {
     rules: [
@@ -53,7 +56,10 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       "process.env.__VERSION__": JSON.stringify(basePkg.version)
-    })
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: [require.resolve("buffer/"), "Buffer"],
+    }),
   ],
   optimization: {
     minimizer: [

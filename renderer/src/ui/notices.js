@@ -3,7 +3,7 @@ import DOMManager from "@modules/dommanager";
 
 
 export default class Notices {
-    static get baseClass() {return this.__baseClass ??= WebpackModules.getByProps("container", "base")?.base;}
+    static get baseClass() {return this.__baseClass ??= WebpackModules.getByProps("container", "base", "sidebar")?.base;}
     static get errorPageClass() {return this.__errorPageClass ??= WebpackModules.getByProps("errorPage")?.errorPage;}
 
     /** Shorthand for `type = "info"` for {@link module:Notices.show} */

@@ -50,6 +50,7 @@ const UI = {
      * @param {string} [options.cancelText=Cancel] Text for the cancel button
      * @param {callable} [options.onConfirm=NOOP] Callback to occur when clicking the submit button
      * @param {callable} [options.onCancel=NOOP] Callback to occur when clicking the cancel button
+     * @param {callable} [options.onClose=NOOP] Callback to occur when exiting the modal
      * @returns {string} The key used for this modal.
      */
     showConfirmationModal(title, content, options = {}) {

@@ -21,6 +21,7 @@ module.exports = {
     "ru": require("./ru.json"),         // Russian
     "sk": require("./sk.json"),         // Slovak
     "es-ES": require("./es-es.json"),   // Spanish (Spain)
+    "es-419": require("./es-419.json"), // Spanish (LATAM)
     "sv-SE": require("./sv-se.json"),   // Swedish
     "tr": require("./tr.json"),         // Turkish
     "bg": require("./bg.json"),         // Bulgarian

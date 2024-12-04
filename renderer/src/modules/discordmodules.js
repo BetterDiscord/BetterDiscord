@@ -15,7 +15,7 @@ export default Utilities.memoizeObject({
     get ChannelActions() {return WebpackModules.getByProps("selectChannel");},
     get LocaleStore() {return WebpackModules.getByProps("locale", "initialize");},
     get UserStore() {return WebpackModules.getByProps("getCurrentUser", "getUser");},
-    get InviteActions() {return WebpackModules.getByProps("acceptInvite");},
+    get InviteActions() {return WebpackModules.getByProps("createInvite");},
     get SimpleMarkdown() {return WebpackModules.getByProps("parseBlock", "parseInline", "defaultOutput");},
     get Strings() {return WebpackModules.getByProps("Messages").Messages;},
     get Dispatcher() {return WebpackModules.getByProps("dispatch", "subscribe", "register");},

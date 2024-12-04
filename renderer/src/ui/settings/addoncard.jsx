@@ -3,6 +3,7 @@ import Logger from "@common/logger";
 import SimpleMarkdown from "@structs/markdown";
 
 import React from "@modules/react";
+import Events from "@modules/emitter";
 import Strings from "@modules/strings";
 import WebpackModules from "@modules/webpackmodules";
 import DiscordModules from "@modules/discordmodules";
@@ -25,7 +26,7 @@ import ExtIcon from "@ui/icons/extension";
 import ErrorIcon from "@ui/icons/error";
 import ThemeIcon from "@ui/icons/theme";
 
-const {useState, useCallback, useMemo} = React;
+const {useState, useCallback, useMemo, useEffect} = React;
 
 
 const LinkIcons = {
@@ -88,12 +89,27 @@ function buildLink(type, url) {
     return makeButton(Strings.Addons[type], link);
 }
 
-export default function AddonCard({addon, type, disabled, enabled: initialValue, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}) {
+export default function AddonCard({addon, prefix, type, disabled, enabled: initialValue, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}) {
     const [isEnabled, setEnabled] = useState(initialValue);
+
+    useEffect(() => {
+        const onEnabled = updated => {
+            if (addon.id === updated.id) setEnabled(true);
+        };
+        const onDisabled = updated => {
+            if (addon.id === updated.id) setEnabled(false);
+        };
+        Events.on(`${prefix}-enabled`, onEnabled);
+        Events.on(`${prefix}-disabled`, onDisabled);
+        return () => {
+            Events.off(`${prefix}-enabled`, onEnabled);
+            Events.off(`${prefix}-disabled`, onDisabled);
+        };
+    }, [prefix, addon]);
+
     const onChange = useCallback(() => {
-        setEnabled(!isEnabled);
         if (parentChange) parentChange(addon.id);
-    }, [addon.id, parentChange, isEnabled]);
+    }, [addon.id, parentChange]);
 
     const showSettings = useCallback(() => {
         if (!hasSettings || !isEnabled) return;
@@ -154,7 +170,7 @@ export default function AddonCard({addon, type, disabled, enabled: initialValue,
                 <div className="bd-addon-header">
                         {type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
                         <div className="bd-title">{title}</div>
-                        <Switch disabled={disabled} checked={isEnabled} onChange={onChange} />
+                        <Switch internalState={false} disabled={disabled} checked={isEnabled} onChange={onChange} />
                 </div>
                 <div className="bd-description-wrap">
                     {disabled && <div className="banner banner-danger"><ErrorIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}

@@ -35,7 +35,8 @@ const ContextMenuActions = (() => {
         }
 
         startupComplete &&= typeof(out.closeContextMenu) === "function" && typeof(out.openContextMenu) === "function";
-    } catch (error) {
+    }
+    catch (error) {
         startupComplete = false;
         Logger.stacktrace("ContextMenu~Components", "Fatal startup error:", error);
         
@@ -222,6 +223,7 @@ class ContextMenu {
 
         // This is done to make sure the UI actually displays the on/off correctly
         if (type === "toggle") {
+            // eslint-disable-next-line react-hooks/rules-of-hooks
             const [active, doToggle] = React.useState(props.checked || false);
             const originalAction = props.action;
             props.checked = active;
@@ -330,7 +332,8 @@ Object.freeze(ContextMenu.prototype);
 
 try {
     MenuPatcher.initialize();
-} catch (error) {
+}
+catch (error) {
     Logger.error("ContextMenu~Patcher", "Fatal error:", error);
 }
 

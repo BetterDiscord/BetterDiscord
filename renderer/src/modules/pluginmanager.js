@@ -57,6 +57,8 @@ export default new class PluginManager extends AddonManager {
                 saveAddon: this.saveAddon.bind(this),
                 editAddon: this.editAddon.bind(this),
                 deleteAddon: this.deleteAddon.bind(this),
+                enableAll: this.enableAllAddons.bind(this),
+                disableAll: this.disableAllAddons.bind(this),
                 prefix: this.prefix
             })
         });
@@ -151,6 +153,7 @@ export default new class PluginManager extends AddonManager {
         }
         catch (err) {
             this.state[addon.id] = false;
+            this.emit("disabled", addon);
             Toasts.error(Strings.Addons.couldNotStart.format({name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
             return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "start()"}), {message: err.message, stack: err.stack}, this.prefix);
