@@ -1,0 +1,10 @@
+{
+    "name": "@betterdiscord/i18n",
+    "private": true,
+    "scripts": {
+        "test": "echo hello"
+    },
+    "exports": {
+        ".": "./src/index.js"
+    }
+}

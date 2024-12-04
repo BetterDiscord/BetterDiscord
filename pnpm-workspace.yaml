@@ -2,3 +2,4 @@ packages:
   - "injector/"
   - "preload/"
   - "renderer/"
+  - "packages/*"
