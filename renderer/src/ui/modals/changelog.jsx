@@ -78,9 +78,13 @@ export default function ChangelogModal({transitionState, footer, title, subtitle
     </Footer>, [footer]);
 
     const changelogItems = useMemo(() => {
-        const items = [video ? <Video src={video} poster={poster} /> : <img src={banner} className="bd-changelog-poster" />];
+        const items = [];
+        if (video) items.push(<Video src={video} poster={poster} />);
+        else if (banner) items.push(<img src={banner} className="bd-changelog-poster" />);
+
         if (blurb) items.push(<p>{SimpleMarkdownExt.parseToReact(blurb)}</p>);
-        for (let c = 0; c < changes.length; c++) {
+
+        for (let c = 0; c < changes?.length; c++) {
             const entry = changes[c];
             const type = "bd-changelog-" + entry.type;
             const margin = c == 0 ? " bd-changelog-first" : "";
@@ -95,6 +99,6 @@ export default function ChangelogModal({transitionState, footer, title, subtitle
     return <Root className="bd-changelog-modal" transitionState={transitionState} size={Root.Sizes.MEDIUM} style={Root.Styles.STANDARD}>
         {ChangelogHeader}
         <Content>{changelogItems}</Content>
-        {ChangelogFooter}
+        {(footer || title === "BetterDiscord") && ChangelogFooter}
     </Root>;
 }

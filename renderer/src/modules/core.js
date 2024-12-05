@@ -86,13 +86,7 @@ export default new class Core {
 
         const previousVersion = DataStore.getBDData("version");
         if (Config.version !== previousVersion) {
-            Modals.showChangelogModal(Object.assign({
-                banner: "https://i.imgur.com/wuh5yMK.png",
-                blurb: "",
-                changes: [],
-                title: "BetterDiscord",
-                subtitle: `v${Config.version}`
-            }, Changelog));
+            Modals.showChangelogModal(Changelog);
             DataStore.setBDData("version", Config.version);
         }
     }
