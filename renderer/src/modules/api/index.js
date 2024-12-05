@@ -16,6 +16,17 @@ import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
 
+import ColorInput from "@ui/settings/components/color";
+import DropdownInput from "@ui/settings/components/dropdown";
+import SettingItem from "@ui/settings/components/item";
+import KeybindInput from "@ui/settings/components/keybind";
+import NumberInput from "@ui/settings/components/number";
+import RadioInput from "@ui/settings/components/radio";
+import SearchInput from "@ui/settings/components/search";
+import SliderInput from "@ui/settings/components/slider";
+import SwitchInput from "@ui/settings/components/switch";
+import TextInput from "@ui/settings/components/textbox";
+
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
 const ThemeAPI = new AddonAPI(ThemeManager);
@@ -57,7 +68,17 @@ export default class BdApi {
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     Components = {
-        get Tooltip() {return DiscordModules.Tooltip;}
+        get Tooltip() {return DiscordModules.Tooltip;},
+        get ColorInput() {return ColorInput;},
+        get DropdownInput() {return DropdownInput;},
+        get SettingItem() {return SettingItem;},
+        get KeybindInput() {return KeybindInput;},
+        get NumberInput() {return NumberInput;},
+        get RadioInput() {return RadioInput;},
+        get SearchInput() {return SearchInput;},
+        get SliderInput() {return SliderInput;},
+        get SwitchInput() {return SwitchInput;},
+        get TextInput() {return TextInput;},
     };
     Net = {fetch}; 
 }

@@ -1,5 +1,3 @@
-import Config from "@data/config";
-
 import FormattableString from "@structs/string";
 
 import Logger from "@common/logger";
@@ -221,8 +219,6 @@ export default class Modals {
     }
 
     static showChangelogModal(options = {}) {
-        options = Object.assign({image: "https://i.imgur.com/wuh5yMK.png", description: "", changes: [], title: "BetterDiscord", subtitle: `v${Config.version}`}, options);
-
         const key = this.openModal(props => {
             return React.createElement(ErrorBoundary, null, React.createElement(ChangelogModal, Object.assign(options, props)));
         });

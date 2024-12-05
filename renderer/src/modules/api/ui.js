@@ -58,6 +58,34 @@ const UI = {
     },
 
     /**
+     * Shows a changelog modal in a similar style to Discord's. Customizable with images, videos, colored sections and supports markdown.
+     * 
+     * The changes option is a array of objects that have this typing:
+     * ```ts
+     * interface Changes {
+     *     title: string;
+     *     type: "fixed" | "added" | "progress" | "changed";
+     *     items: Array<string>;
+     *     blurb?: string;
+     * }
+     * ```
+     * 
+     * @param {object} options Information to display in the modal
+     * @param {string} options.title Title to show in the modal header
+     * @param {string} options.subtitle Title to show below the main header
+     * @param {string} [options.blurb] Text to show in the body of the modal before the list of changes
+     * @param {string} [options.banner] URL to an image to display as the banner of the modal
+     * @param {string} [options.video] Youtube link or url of a video file to use as the banner
+     * @param {string} [options.poster] URL to use for the video freeze-frame poster
+     * @param {string|ReactElement|Array<string|ReactElement>} [options.footer] What to show in the modal footer
+     * @param {Array<object>} [options.changes] List of changes to show (see description for details)
+     * @returns {string} The key used for this modal.
+     */
+    showChangelogModal(options) {
+        return Modals.showChangelogModal(options);
+    },
+
+    /**
      * This shows a toast similar to android towards the bottom of the screen.
      *
      * @param {string} content The string to show in the toast
