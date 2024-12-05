@@ -4,6 +4,8 @@ import Modals from "@ui/modals";
 import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Tooltip from "@ui/tooltip";
+import Group, {buildSetting} from "@ui/settings/group";
+import React from "@modules/react";
 
 
 /**
@@ -137,6 +139,64 @@ const UI = {
         if (data.error) throw new Error(data.error);
 
         return data;
+    },
+
+    /**
+     * Creates a single setting wrapped in a setting item that has a name and note.
+     * The shape of the object should match the props of the component you want to render, check the
+     * `BdApi.Components` section for details. Shown below are ones common to all setting types.
+     * @param {object} setting 
+     * @param {string} setting.id Identifier to used for callbacks
+     * @param {string} setting.name Visual name to display
+     * @param {string} setting.note Visual description to display
+     * @param {any} setting.value Current value of the setting
+     * @param {CallableFunction} [setting.onChange] Callback when the value changes (only argument is new value)
+     * @param {boolean} [setting.disabled] Whether this setting is disabled
+
+     * @returns A SettingItem with a an input as the child
+     */
+    buildSetting(setting) {
+        return buildSetting(setting);
+    },
+
+    /**
+     * Creates a settings panel (react element) based on json-like data.
+     * 
+     * The `settings` array here is an array of the same settings types described in `buildSetting` above.
+     * However, this API allows one additional setting "type" called `group`. This has the same properties
+     * as the React Component found under the `Components` API.
+     * 
+     * `onChange` will always be given 3 arguments: group id, setting id, and setting value. In the case
+     * that you have settings on the "root" of the panel, the group id is `null`.
+     * 
+     * `onDrawerToggle` is given 2 arguments: group id, and the current shown state. You can use this to
+     * save drawer states.
+     * 
+     * `getDrawerState` is given 2 arguments: group id, and the default shown state. You can use this to
+     * recall a saved drawer state.
+     * 
+     * @param {object} props 
+     * @param {Array<object>} props.settings Array of settings to show
+     * @param {CallableFunction} props.onChange Function called on every change
+     * @param {CallableFunction} [props.onDrawerToggle] Optionally used to save drawer states
+     * @param {CallableFunction} [props.getDrawerState] Optionially used to recall drawer states
+     * @returns React element usable for a settings panel
+     */
+    buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}) {
+        if (!settings?.length) throw new Error("No settings provided!");
+        if (typeof(onChange) !== "function") throw new Error("No change listener provided!");
+        return React.createElement(React.Fragment, null, settings.map(setting => {
+            if (setting.type === "group") {
+                const shownByDefault = setting.hasOwnProperty("shown") ? setting.shown : true;
+                const groupProps = Object.assign({}, setting, {
+                    onChange,
+                    onDrawerToggle: state => onDrawerToggle?.(setting.id, state),
+                    shown: getDrawerState?.(setting.id, shownByDefault) ?? shownByDefault
+                });
+                return React.createElement(Group, groupProps);
+            }
+            return buildSetting(Object.assign({}, setting, {onChange: value => onChange(null, setting.id, value)}));
+        }));
     }
 
 };

@@ -26,6 +26,7 @@ import SearchInput from "@ui/settings/components/search";
 import SliderInput from "@ui/settings/components/slider";
 import SwitchInput from "@ui/settings/components/switch";
 import TextInput from "@ui/settings/components/textbox";
+import SettingGroup from "@ui/settings/group";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -79,6 +80,7 @@ export default class BdApi {
         get SliderInput() {return SliderInput;},
         get SwitchInput() {return SwitchInput;},
         get TextInput() {return TextInput;},
+        get SettingGroup() {return SettingGroup;}
     };
     Net = {fetch}; 
 }
