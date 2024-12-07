@@ -170,7 +170,7 @@ export default function AddonCard({addon, prefix, type, disabled, enabled: initi
                 <div className="bd-addon-header">
                         {type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
                         <div className="bd-title">{title}</div>
-                        <Switch internalState={false} disabled={disabled} checked={isEnabled} onChange={onChange} />
+                        <Switch internalState={false} disabled={disabled} value={isEnabled} onChange={onChange} />
                 </div>
                 <div className="bd-description-wrap">
                     {disabled && <div className="banner banner-danger"><ErrorIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}

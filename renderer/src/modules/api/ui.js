@@ -146,13 +146,15 @@ const UI = {
      * The shape of the object should match the props of the component you want to render, check the
      * `BdApi.Components` section for details. Shown below are ones common to all setting types.
      * @param {object} setting 
+     * @param {string} setting.type One of: dropdown, number, switch, text, slider, radio, keybind, color, custom
      * @param {string} setting.id Identifier to used for callbacks
      * @param {string} setting.name Visual name to display
      * @param {string} setting.note Visual description to display
      * @param {any} setting.value Current value of the setting
+     * @param {ReactElement} [setting.children] Only used for "custom" type
      * @param {CallableFunction} [setting.onChange] Callback when the value changes (only argument is new value)
-     * @param {boolean} [setting.disabled] Whether this setting is disabled
-
+     * @param {boolean} [setting.disabled=false] Whether this setting is disabled
+     * @param {boolean} [setting.inline=true] Whether the input should render inline with the name (this is false by default only for radio type)
      * @returns A SettingItem with a an input as the child
      */
     buildSetting(setting) {
