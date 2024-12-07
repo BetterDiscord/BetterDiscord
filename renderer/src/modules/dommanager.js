@@ -34,14 +34,45 @@ export default class DOMManager {
         return baseElement.querySelector(e);
     }
 
-    static createElement(tag, options = {}, child = null) {
-        const {className, id, target} = options;
-        const element = document.createElement(tag);
-        if (className) element.className = className;
-        if (id) element.id = id;
-        if (child) element.append(child);
-        if (target) this.getElement(target).append(element);
+    /**
+     * Utility function to make creating DOM elements easier. 
+     * Has backward compatibility with previous createElement implementation.
+     * 
+     * @param {string} type HTML tag name to create
+     * @param {object} [options={}] Options object to customize the element
+     * @param {string} [options.className] Class name to add to the element
+     * @param {string} [options.id] ID to set for the element
+     * @param {string|HTMLElement} [options.target] Target element or selector to append to
+     * @param {(Node|string|(Node|string)[])[]} children Child node to add
+     * @returns {HTMLElement} The created HTML element
+    */
+    static createElement(type, options = {}, ...children) {
+        const element = document.createElement(type);
+    
+        Object.assign(element, options);
+    
+        element.append(...children.flat());
+    
+        if (options.target) {
+            (typeof options.target === "string" ? document.querySelector(options.target) : options.target)?.append(element);
+        }
+    
         return element;
+    }  
+        
+    /**
+     * Create multiple DOM elements
+     * 
+     * @param {[ type: string, options?: { id?: string, className?: string, target?: string | Element }, ...children: Array<string | Node> ][]} nodes - Configuration arrays for elements to create
+     * @returns {HTMLElement[]}
+     */
+    static createElements(...nodes) {
+        const elements = nodes.map(node => {
+            const [type, options = {}, ...children] = node;
+            return DOMManager.createElement(type, options, ...children);
+        });
+
+        return elements;
     }
 
     /**
