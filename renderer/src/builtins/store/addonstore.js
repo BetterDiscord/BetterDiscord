@@ -17,7 +17,7 @@ let MessageAccessories;
 const MAX_EMBEDS = 10;
 
 // Make it so we can detect links that have <> around them
-const ADDON_REGEX_SOURCE = "(?:https?:\\/\\/betterdiscord\\.app\\/(?:theme|plugin)|betterdiscord:\\/\\/(?:theme|plugin|addon)s?)(?:\\/|\\?id=)(\\S+)";
+const ADDON_REGEX_SOURCE = "(?:https?:\\/\\/betterdiscord\\.app\\/(?:theme|plugin)|betterdiscord:\\/\\/(?:(?:theme|plugin|addon)s?)|store)(?:\\/|\\?id=)(\\S+)";
 const ADDON_REGEX = new RegExp(`(?:<${ADDON_REGEX_SOURCE}>|${ADDON_REGEX_SOURCE})`, "gi");
 
 /**
@@ -101,7 +101,7 @@ export default new class AddonStoreBuiltin extends Builtin {
              */
             match: (text, state) => {
                 if (!state.allowLinks) return;
-                return /^<betterdiscord:\/\/(theme|plugin|addon)s?\/(\S+)>/.exec(text);
+                return /^<betterdiscord:\/\/(?:(theme|plugin|addon)s?|store)\/(\S+)>/i.exec(text);
             },
             /**
              * @param {RegExpExecArray} exec 
@@ -156,7 +156,10 @@ export default new class AddonStoreBuiltin extends Builtin {
             res ??= [];
             
             let type = Web.getReleaseChannelType(message.channel_id);
-            if (type || (message.messageReference?.type === 1 && (type = Web.getReleaseChannelType(message.messageReference.channel_id)) && !message.messageSnapshots.length)) {
+            // Allow for forwarded messages
+            if (!type && message.messageReference?.type === 1 && !message.messageSnapshots.length) type = Web.getReleaseChannelType(message.messageReference.channel_id);
+
+            if (type) {
                 const id = message.embeds[0].rawDescription?.split?.("\n")?.at?.(-1)?.match?.(/\?id=(\d+)/);
 
                 AddonStore.getStore(type).initialize();

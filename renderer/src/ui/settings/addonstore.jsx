@@ -185,7 +185,6 @@ export default function AddonStorePage({type, title, refToScroller}) {
             let comparison = 0;
 
             switch (sort) {
-                case "name":
                 case "author":
                 case "version":
                     comparison = a[sort].localeCompare(b[sort]);

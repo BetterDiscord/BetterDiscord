@@ -47,9 +47,10 @@
 .bd-addon-store-card-actions {
     display: flex;
     gap: 8px;
+    align-items: center;
 }
 .bd-addon-store-card-spacer {
-    width: 100%;
+    flex: 1 1 auto;
 }
 .bd-addon-store-card-downloads,
 .bd-addon-store-card-likes {
@@ -131,9 +132,8 @@
 }
 .bd-addon-store-card-description {
     color: var(--header-secondary);
-    flex: 1 1 auto;
     overflow: hidden;
-    margin: 4px 0 16px;
+    margin: 4px 0 8px;
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
@@ -144,7 +144,7 @@
     user-select: text;
 }
 .bd-addon-store-card-tags {
-    margin-bottom: 8px;
+    margin-bottom: 16px;
     display: flex;
     flex-wrap: wrap;
     user-select: none;
@@ -211,7 +211,7 @@ button.bd-addon-store-card-button {
 .bd-addon-store {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: clamp(8px, 2vw, 20px);
     margin: 10px 0;
 }
 
@@ -256,4 +256,18 @@ img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="
 .bd-addon-title > span {
     padding: 2px 4px;
     border-radius: 3px;
+}
+
+.bd-flower-star {
+    color: var(--green-360);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.bd-flower-star-checkmark {
+    color: var(--white-500);
+    position: absolute;
 }

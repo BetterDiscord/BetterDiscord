@@ -26,6 +26,7 @@ import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader
 import Settings from "@modules/settingsmanager";
 import Text from "@ui/base/text";
 import Caret from "@ui/icons/caret";
+import AddonStore from "@modules/addonstore";
 
 const {useState, useCallback, useEffect, useReducer, useMemo} = React;
 
@@ -90,13 +91,18 @@ function confirmEnable(action, type) {
     };
 }
 
-function StoreCard() {
-    const {title, toggleStore} = React.useContext(addonContext);
+function StoreCard() {    
+    const {title, toggleStore, type} = React.useContext(addonContext);
     
     if (!Settings.get("settings", "store", "bdAddonStore")) return;
 
     return (
-        <div className="bd-store-card" onClick={toggleStore}>
+        <div 
+            className="bd-store-card" 
+            onClick={toggleStore} 
+            // Start preloading the store
+            onMouseOver={() => AddonStore.getStore(type).initialize()}
+        >
             <div className="bd-store-card-icon">
                 <Store size={24} />
             </div>

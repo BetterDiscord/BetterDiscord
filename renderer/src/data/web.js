@@ -88,7 +88,7 @@ export default new class Web {
     };
     resources = {
         EMPTY_THUMBNAIL: EMPTY_USE_STORE ? "/resources/store/missing.svg" : "/resources/ui/content_thumbnail.svg",
-        /** @param {?string} thumbnail */
+        /** @param {string} thumbnail */
         thumbnail: (thumbnail) => join(thumbnail || this.resources.EMPTY_THUMBNAIL)
     };
 

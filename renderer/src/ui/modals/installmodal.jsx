@@ -19,6 +19,7 @@ import Footer from "@ui/modals/footer";
 import ModalRoot from "@ui/modals/root";
 import CheckBox from "@ui/settings/components/checkbox";
 import Spinner from "@ui/spinner";
+import { FlowerStar } from "@ui/settings/addonshared";
 
 const {useLayoutEffect, useCallback, useState, useRef} = React;
 
@@ -180,7 +181,10 @@ export default function InstallModal({addon, transitionState, install, onClose})
                     </svg>
                 </div>
             </div>
-            <div className="bd-install-modal-header"><Text size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY}>{addon.name}</Text></div>
+            <div className="bd-install-modal-header">
+                <FlowerStar size={20} />
+                <Text size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY}>{addon.name}</Text>
+            </div>
             <div className="bd-install-modal-items">
                 <ModalItem 
                     leading={<Info size={24} />}

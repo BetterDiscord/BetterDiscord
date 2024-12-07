@@ -139,6 +139,7 @@ class Addon {
         this.guild = guild ? new Guild(guild) : null;
         
         this.manager = addon.type === "plugin" ? PluginManager : ThemeManager;
+        this.updater = addon.type === "plugin" ? require("./updater").PluginUpdater : require("./updater").ThemeUpdater;
         
         this.description = addon.description;
         
@@ -162,19 +163,21 @@ class Addon {
      * @returns {boolean} 
      */
     isUnknown() {
-        const data = DataStore.getBDData(`known-${this.type}s`);
+        const data = DataStore.getBDData("known-addons");
 
         if (!data) return false;
-        return !data.includes(this.id);
+        return !data[this.filename];
     }
     /** To hide the badge */
     markAsKnown() {
-        if (!DataStore.getBDData(`has-requested-${this.type}s`)) return;
+        const data = DataStore.getBDData("known-addons");
 
-        const data = DataStore.getBDData(`known-${this.type}s`) || [];
+        if (!data) return;
 
-        data.push(this.id);
-        DataStore.setBDData(`known-${this.type}s`, data);
+        if (data[this.filename]) return;
+
+        data[this.filename] = true;
+        DataStore.setBDData("known-addons", data);
     }
 
     /** Opens the Theme preview site */
@@ -254,9 +257,6 @@ class Addon {
 
                         return;
                     }
-
-                    // Update download count if downloaded
-                    this.downloads++;
     
                     // If should enable, tell the manager that it is before hand
                     if (shouldEnable) {
@@ -324,6 +324,14 @@ class Addon {
     isInstalled() {
         return this.manager.isLoaded(this.filename);
     }
+
+    hasUpdate() {
+        if (!this.manager.isLoaded(this.filename)) return false;
+
+        this.updater.checkForUpdate(this.filename, this.manager.getAddon(this.filename).version);
+
+        return this.updater.pending.includes(this.filename);
+    }
 }
 
 class Store {
@@ -385,10 +393,16 @@ class Store {
                 }
     
                 this.addons.push(...JSON.parse(body).map((addon) => new Addon(addon)));
-                
-                if (!DataStore.getBDData(`has-requested-${this.type}`)) {
-                    DataStore.setBDData(`has-requested-${this.type}`, true);
-                    DataStore.setBDData(`known-${this.type}`, this.addons.map(m => m.id));
+
+                const data = DataStore.getBDData("known-addons");
+                if (data) {
+                    for (const addon of this.addons) {
+                        if (addon.filename in data) continue;
+
+                        data[addon.filename] = false;
+                    }
+
+                    DataStore.setBDData("known-addons", data);
                 }
             } 
             finally {
@@ -478,7 +492,18 @@ const ThemeStore = new Store("theme");
 const PluginStore = new Store("plugin");
 
 const addonStore = new class AddonStore {
-    constructor() {window.AddonStore = this;}
+    constructor() {
+        if (!DataStore.getBDData("known-addons")) {
+            request(Web.store.addons, (err, req, body) => {
+                if (err) return;
+
+                const addons = JSON.parse(body);                
+
+                DataStore.setBDData("known-addons", Object.fromEntries(addons.map(m => [ m.file_name, true ])));
+            });
+        }
+    }
+
     /** @param {"plugin" | "theme"} type  */
     getStore(type) {
         if (type === "plugin") return PluginStore;
@@ -529,6 +554,15 @@ const addonStore = new class AddonStore {
                 if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded) return addon;
             }
         }
+    }
+
+    /**
+     * @param {string} filename
+     */
+    isOfficial(filename) {
+        const data = DataStore.getBDData("known-addons");
+
+        return data && filename in data;
     }
 };
 

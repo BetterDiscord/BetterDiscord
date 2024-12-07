@@ -5,8 +5,7 @@ export default class Utilities {
     /**
      * Generates an automatically memoizing version of an object.
      * @author Zerebos
-     * @param {Object} object - object to memoize
-     * @returns {Proxy} the proxy to the object that memoizes properties
+     * @type {<T extends Object>(object: T) => T}
      */
     static memoizeObject(object) {
         const proxy = new Proxy(object, {

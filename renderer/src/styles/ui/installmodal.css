@@ -28,6 +28,9 @@
 
 .bd-install-modal-header {
     margin: 0 20px;
+    align-items: center;
+    gap: 8px;
+    display: flex;
 }
 
 .bd-install-modal-items {

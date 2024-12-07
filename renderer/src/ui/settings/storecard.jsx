@@ -6,13 +6,12 @@ import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";
 
 import Button from "@ui/base/button";
-// import Delete from "@ui/icons/delete";
-import Download from "@ui/icons/download";
 import GitHub from "@ui/icons/github";
 import Support from "@ui/icons/support";
 import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import Eye from "@ui/icons/eye";
+import {FlowerStar} from "./addonshared";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 
@@ -37,18 +36,15 @@ function formatNumberWithSuffix(value) {
 export default function AddonCard({addon, isEmbed}) {
     const [isInstalled, setInstalled] = useState(() => addon.isInstalled());
     const [disabled, setDisabled] = useState(false);
-    const [downloadCount, setDownloads] = useState(addon.downloads);
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
-    // const triggerDelete = useCallback((event) => addon.delete(event.shiftKey), [addon]);
+    const triggerDelete = useCallback((event) => addon.delete(event.shiftKey), [addon]);
 
     const installAddon = useCallback(async (event) => {
         setDisabled(true);
         
         await addon.download(event.shiftKey);
-
-        setDownloads(addon.downloads);
 
         setDisabled(false);
     }, [addon]);
@@ -61,9 +57,11 @@ export default function AddonCard({addon, isEmbed}) {
     const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
 
     useEffect(() => {
-        setInstalled(addon.isInstalled());
+        const listener = () => {
+            setInstalled(addon.isInstalled());
+        };
 
-        const listener = () => setInstalled(addon.isInstalled());
+        listener();
         
         Events.on(`${addon.manager.prefix}-loaded`, listener);
         Events.on(`${addon.manager.prefix}-unloaded`, listener);
@@ -74,16 +72,18 @@ export default function AddonCard({addon, isEmbed}) {
         };
     }, [addon]);
 
-    const badgeText = useMemo(() => {
+    const badge = useMemo(() => {
         if (addon.isUnknown()) return Strings.Addons.new;
     }, [addon]);
 
     const markAsSeen = useCallback(() => addon.markAsKnown(), [addon]);
 
     const {downloads, likes} = useMemo(() => ({
-        downloads: Strings.Addons.downloadCount.format({downloads: formatNumberWithSuffix(downloadCount)}),
+        downloads: Strings.Addons.downloadCount.format({downloads: formatNumberWithSuffix(addon.downloads)}),
         likes: Strings.Addons.likeCount.format({likes: formatNumberWithSuffix(addon.likes)}),
-    }), [addon, downloadCount]);
+    }), [addon]);
+
+    const [ uninstallHovering, setUninstallHovering ] = useState(false);
 
     return (
         <div 
@@ -153,12 +153,13 @@ export default function AddonCard({addon, isEmbed}) {
                         </foreignObject>
                     </svg>
                 </div>
-                {badgeText && (
-                    <div className="bd-addon-store-card-badge">{badgeText}</div>
+                {badge && (
+                    <div className="bd-addon-store-card-badge">{badge}</div>
                 )}
             </div>
             <div className="bd-addon-store-card-body">
                 <div className="bd-addon-store-card-name">
+                    <FlowerStar />
                     <span>{addon.name}</span>
                 </div>
                 <div className="bd-addon-store-card-description">{addon.description}</div>
@@ -172,6 +173,7 @@ export default function AddonCard({addon, isEmbed}) {
                         </span>
                     ))}
                 </div>
+                <div className="bd-addon-store-card-spacer" />
                 <div className="bd-addon-store-card-info">
                     <div className="bd-addon-store-card-likes">
                         <div className="bd-addon-store-card-dot" />
@@ -191,7 +193,7 @@ export default function AddonCard({addon, isEmbed}) {
                                 look={Button.Looks.BLANK}
                                 onClick={openAddonPage}
                             >
-                                <Globe size={24} />
+                                <Globe size={18} />
                             </Button>
                         )}
                     </DiscordModules.Tooltip>
@@ -203,7 +205,7 @@ export default function AddonCard({addon, isEmbed}) {
                                 look={Button.Looks.BLANK}
                                 onClick={openSourceCode}
                             >
-                                <GitHub size={24} />
+                                <GitHub size={18} />
                             </Button>
                         )}
                     </DiscordModules.Tooltip>
@@ -216,7 +218,7 @@ export default function AddonCard({addon, isEmbed}) {
                                     look={Button.Looks.BLANK}
                                     onClick={openAddonPreview}
                                 >
-                                    <Eye size={24} />
+                                    <Eye size={18} />
                                 </Button>
                             )}
                         </DiscordModules.Tooltip>
@@ -230,67 +232,29 @@ export default function AddonCard({addon, isEmbed}) {
                                     look={Button.Looks.BLANK}
                                     onClick={acceptInvite}
                                 >
-                                    <Support size={24} />
+                                    <Support size={18} />
                                 </Button>
                             )}
                         </DiscordModules.Tooltip>
                     )}
                     <div className="bd-addon-store-card-spacer" />
-                    {/* <Switch checked={addon.manager.isEnabled(addon.filename)} onChange={() => addon.manager.toggleAddon(addon.name)} disabled={!isInstalled} />
-                    <DiscordModules.Tooltip key={1} text={isInstalled ? Strings.Addons.isInstalled : Strings.Addons.downloadAddon}>
-                        {(props) => (
-                            <Button
-                                {...props}
-                                size={Button.Sizes.ICON}
-                                color={isInstalled ? Button.Colors.GREEN : Button.Colors.BRAND}
-                                onClick={isInstalled ? () => {} : installAddon}
-                                disabled={disabled}
-                            >
-                                <Download size={24} />
-                            </Button>
-                        )}
-                    </DiscordModules.Tooltip> */}
-                    <DiscordModules.Tooltip text={Strings.Addons.downloadAddon} key="download2">
-                        {(props) => (
-                            <Button
-                                {...props}
-                                size={Button.Sizes.ICON}
-                                color={Button.Colors.BRAND}
-                                onClick={installAddon}
-                                disabled={isInstalled || disabled}
-                            >
-                                <Download size={24} />
-                            </Button>
-                        )}
-                    </DiscordModules.Tooltip>
-                    {/* {isInstalled ? (
-                        <DiscordModules.Tooltip text={Strings.Addons.deleteAddon} key="delete">
-                            {(props) => (
-                                <Button
-                                    {...props}
-                                    size={Button.Sizes.ICON}
-                                    color={Button.Colors.RED}
-                                    onClick={triggerDelete}
-                                >
-                                    <Delete size={24} />
-                                </Button>
-                            )}
-                        </DiscordModules.Tooltip>
+                    {!isInstalled ? (
+                        <Button
+                            onClick={installAddon}
+                            disabled={disabled}
+                        >
+                            {"Install"}
+                        </Button>
                     ) : (
-                        <DiscordModules.Tooltip text={Strings.Addons.downloadAddon} key="download">
-                            {(props) => (
-                                <Button
-                                    {...props}
-                                    size={Button.Sizes.ICON}
-                                    color={Button.Colors.BRAND}
-                                    onClick={installAddon}
-                                    disabled={disabled}
-                                >
-                                    <Download size={24} />
-                                </Button>
-                            )}
-                        </DiscordModules.Tooltip>
-                    )} */}
+                        <Button
+                            color={uninstallHovering ? Button.Colors.RED : Button.Colors.TRANSPARENT}
+                            onClick={triggerDelete}
+                            onMouseEnter={() => setUninstallHovering(true)}
+                            onMouseLeave={() => setUninstallHovering(false)}
+                        >
+                            {uninstallHovering ? "Uninstall" : "Installed"}
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>

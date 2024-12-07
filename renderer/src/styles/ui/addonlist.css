@@ -89,6 +89,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: inline-flex;
+    gap: 4px;
 }
 
 .bd-name::after,

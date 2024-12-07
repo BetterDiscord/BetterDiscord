@@ -142,7 +142,7 @@ class AddonUpdater {
         this.pending = [];
     }
 
-    async initialize() {
+    async initialize() {    
         await this.updateCache();
         this.checkAll();
         Events.on(`${this.type}-loaded`, addon => {
@@ -157,7 +157,7 @@ class AddonUpdater {
 
     async updateCache() {
         this.cache = {};
-        const addonData = await getJSON(Web.store[this.type]);
+        const addonData = await getJSON(Web.store[this.type + "s"]);        
         addonData.reduce(reducer, this.cache);
     }
 
@@ -170,7 +170,7 @@ class AddonUpdater {
         if (showNotice) this.showUpdateNotice();
     }
  
-    checkForUpdate(filename, currentVersion) {
+    checkForUpdate(filename, currentVersion) {        
         if (this.pending.includes(filename)) return;
         const info = this.cache[path.basename(filename)];
         if (!info) return;
