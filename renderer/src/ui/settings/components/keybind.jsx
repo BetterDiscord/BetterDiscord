@@ -39,8 +39,11 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
         event.stopPropagation();
         event.preventDefault();
 
-        if (event.key === state.accum[0]) setState({value: state.accum.slice(0), isRecording: false, accum: []});
-    }, [state]);
+        if (event.key === state.accum[0]) {
+            onChange?.(state.accum);
+            setState({value: state.accum.slice(0), isRecording: false, accum: []});
+        }
+    }, [state, onChange]);
 
     const clearKeybind = useCallback((event) => {
         event.stopPropagation();
