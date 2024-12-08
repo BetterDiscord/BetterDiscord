@@ -1,0 +1,62 @@
+.bd-file-input-wrap {
+    position: relative;
+}
+
+.bd-file-input {
+    color: var(--text-normal);
+    background-color: var(--input-background);
+    min-width: 250px;
+    width: 100%;
+    font-size: 16px;
+    border-radius: 3px;
+    padding: 10px;
+    height: 40px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: none;
+}
+  
+.bd-file-input::-webkit-file-upload-button {
+    color: white;
+    background: #3E82E5;
+    outline: 0;
+    border: 0;
+    padding: 12px 16px!important;
+    margin-top: -10px;
+    margin-left: -10px;
+    margin-right: 10px;
+    bottom: 0;
+    border-radius: 3px 0 0 3px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    user-select: none;
+}
+
+.bd-file-input-wrap .bd-file-input-clear {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    opacity: 0.5;
+}
+
+.bd-file-input-wrap .bd-file-input-clear:hover {
+    background: none;
+    opacity: 1;
+}
+
+.bd-file-input-wrap .bd-file-input-clear svg {
+    width: 18px !important;
+    height: 18px !important;
+}
+
+.bd-file-input-wrap.bd-file-input-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bd-file-input-wrap.bd-file-input-disabled .bd-file-input,
+.bd-file-input-wrap.bd-file-input-disabled .bd-file-input-clear {
+    pointer-events: none;
+}
