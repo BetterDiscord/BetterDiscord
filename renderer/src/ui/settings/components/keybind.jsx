@@ -7,15 +7,19 @@ import Close from "@ui/icons/close";
 const {useState, useCallback, useEffect} = React;
 
 
-export default function Keybind({value: initialValue, onChange, max = 2, clearable = true, disabled}) {
+export default function Keybind({value: initialValue, onChange, max = 4, clearable = true, disabled}) {
     const [state, setState] = useState({value: initialValue, isRecording: false, accum: []});
 
     useEffect(() => {
-        window.addEventListener("keydown", keyHandler, true);
-        return () => window.removeEventListener("keydown", keyHandler, true);
+        window.addEventListener("keydown", keyDownHandler, true);
+        window.addEventListener("keyup", keyUpHandler, true);
+        return () => {
+            window.removeEventListener("keydown", keyDownHandler, true);
+            window.removeEventListener("keyup", keyUpHandler, true);
+        };
     });
 
-    const keyHandler = useCallback((event) => {
+    const keyDownHandler = useCallback((event) => {
         if (!state.isRecording) return;
         event.stopImmediatePropagation();
         event.stopPropagation();
@@ -28,6 +32,15 @@ export default function Keybind({value: initialValue, onChange, max = 2, clearab
             setState({value: state.accum.slice(0), isRecording: false, accum: []});
         }
     }, [state, max, onChange]);
+
+    const keyUpHandler = useCallback((event) => {
+        if (!state.isRecording) return;
+        event.stopImmediatePropagation();
+        event.stopPropagation();
+        event.preventDefault();
+
+        if (event.key === state.accum[0]) setState({value: state.accum.slice(0), isRecording: false, accum: []});
+    }, [state]);
 
     const clearKeybind = useCallback((event) => {
         event.stopPropagation();
