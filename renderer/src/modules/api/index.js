@@ -69,6 +69,22 @@ export default class BdApi {
     get UI() {return UI;}
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
+    Components = {
+        get Tooltip() {return DiscordModules.Tooltip;},
+        get ColorInput() {return ColorInput;},
+        get DropdownInput() {return DropdownInput;},
+        get SettingItem() {return SettingItem;},
+        get KeybindInput() {return KeybindInput;},
+        get NumberInput() {return NumberInput;},
+        get RadioInput() {return RadioInput;},
+        get SearchInput() {return SearchInput;},
+        get SliderInput() {return SliderInput;},
+        get SwitchInput() {return SwitchInput;},
+        get TextInput() {return TextInput;},
+        get SettingGroup() {return SettingGroup;},
+        get ErrorBoundary() {return ErrorBoundary;},
+    };
+    Net = {fetch}; 
 }
 
 // Add legacy functions

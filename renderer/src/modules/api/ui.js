@@ -6,6 +6,7 @@ import Notices from "@ui/notices";
 import Tooltip from "@ui/tooltip";
 import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
+import ErrorBoundary from "@ui/errorboundary";
 
 
 /**
@@ -80,7 +81,7 @@ const UI = {
      * @param {string} [options.video] Youtube link or url of a video file to use as the banner
      * @param {string} [options.poster] URL to use for the video freeze-frame poster
      * @param {string|ReactElement|Array<string|ReactElement>} [options.footer] What to show in the modal footer
-     * @param {Array<object>} [options.changes] List of changes to show (see description for details)
+     * @param {Array<Changes>} [options.changes] List of changes to show (see description for details)
      * @returns {string} The key used for this modal.
      */
     showChangelogModal(options) {
@@ -169,7 +170,8 @@ const UI = {
      * as the Group React Component found under the `Components` API.
      * 
      * `onChange` will always be given 3 arguments: category id, setting id, and setting value. In the case
-     * that you have settings on the "root" of the panel, the category id is `null`.
+     * that you have settings on the "root" of the panel, the category id is `null`. Any `onChange`
+     * listeners attached to individual settings will fire before the panel-level change listener.
      * 
      * `onDrawerToggle` is given 2 arguments: category id, and the current shown state. You can use this to
      * save drawer states.
@@ -186,18 +188,28 @@ const UI = {
      */
     buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}) {
         if (!settings?.length) throw new Error("No settings provided!");
-        if (typeof(onChange) !== "function") throw new Error("No change listener provided!");
-        return React.createElement(React.Fragment, null, settings.map(setting => {
+
+        return React.createElement(ErrorBoundary, null, settings.map(setting => {
+            if (!setting.id || !setting.type) throw new Error(`Setting item missing id or type`);
+
             if (setting.type === "category") {
                 const shownByDefault = setting.hasOwnProperty("shown") ? setting.shown : true;
-                const categoryProps = Object.assign({}, setting, {
-                    onChange,
+
+                return React.createElement(Group, {
+                    ...setting,
+                    onChange: onChange,
                     onDrawerToggle: state => onDrawerToggle?.(setting.id, state),
                     shown: getDrawerState?.(setting.id, shownByDefault) ?? shownByDefault
                 });
-                return React.createElement(Group, categoryProps);
             }
-            return buildSetting(Object.assign({}, setting, {onChange: value => onChange(null, setting.id, value)}));
+
+            return buildSetting({
+                ...setting,
+                onChange: value => {
+                    setting?.onChange?.(value);
+                    onChange(null, setting.id, value);
+                }
+            });
         }));
     }
 

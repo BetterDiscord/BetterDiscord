@@ -21,8 +21,11 @@ export default function Group({onChange, id, name, button, shown, onDrawerToggle
     }, [id, onChange]);
 
     return <Drawer collapsible={collapsible} name={name} button={button} shown={shown} onDrawerToggle={onDrawerToggle} showDivider={showDivider}>
-                {settings.length && settings.filter(s => !s.hidden).map((setting) => {
-                    const callback = value => change(setting.id, value);
+                {settings?.length > 0 && settings.filter(s => !s.hidden).map((setting) => {
+                    const callback = value => {
+                        setting?.onChange?.(value);
+                        change(setting.id, value);
+                    };
                     return buildSetting({...setting, onChange: callback});
                 })}
                 {children}
@@ -42,5 +45,5 @@ export function buildSetting(setting) {
     if (setting.type == "color") children = <Color disabled={setting.disabled} id={setting.id} value={setting.value} defaultValue={setting.defaultValue} colors={setting.colors} onChange={setting.onChange} />;
     if (setting.type == "custom") children = setting.children;
     if (!children) return null;
-    return <Item id={setting.id} inline={setting.hasOwnProperty("inline") ? setting.inline : setting.type !== "radio"} key={setting.id} name={setting.name} note={setting.note}>{children}</Item>;
+    return <Item id={setting.id} inline={setting.hasOwnProperty("inline") ? setting.inline : setting.type !== "radio" && setting.type !== "color"} key={setting.id} name={setting.name} note={setting.note}>{children}</Item>;
 }
