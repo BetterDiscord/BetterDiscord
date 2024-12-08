@@ -155,7 +155,7 @@ const UI = {
      * @param {ReactElement} [setting.children] Only used for "custom" type
      * @param {CallableFunction} [setting.onChange] Callback when the value changes (only argument is new value)
      * @param {boolean} [setting.disabled=false] Whether this setting is disabled
-     * @param {boolean} [setting.inline=true] Whether the input should render inline with the name (this is false by default only for radio type)
+     * @param {boolean} [setting.inline=true] Whether the input should render inline with the name (this is false by default for slider, color, and radio types)
      * @returns A SettingItem with a an input as the child
      */
     buildSetting(setting) {

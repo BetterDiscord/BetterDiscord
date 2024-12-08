@@ -39,11 +39,11 @@ export function buildSetting(setting) {
     if (setting.type == "number") children = <Number disabled={setting.disabled} id={setting.id} min={setting.min} max={setting.max} step={setting.step} value={setting.value} onChange={setting.onChange} />;
     if (setting.type == "switch") children = <Switch disabled={setting.disabled} id={setting.id} value={setting.value} onChange={setting.onChange} />;
     if (setting.type == "text") children = <Textbox disabled={setting.disabled} id={setting.id} value={setting.value} onChange={setting.onChange} />;
-    if (setting.type == "slider") children = <Slider disabled={setting.disabled} id={setting.id} min={setting.min} max={setting.max} step={setting.step} value={setting.value} onChange={setting.onChange} />;
+    if (setting.type == "slider") children = <Slider disabled={setting.disabled} id={setting.id} min={setting.min} max={setting.max} step={setting.step} value={setting.value} onChange={setting.onChange} units={setting.units} markers={setting.markers} />;
     if (setting.type == "radio") children = <Radio disabled={setting.disabled} id={setting.id} name={setting.id} options={setting.options} value={setting.value} onChange={setting.onChange} />;
     if (setting.type == "keybind") children = <Keybind disabled={setting.disabled} id={setting.id} value={setting.value} max={setting.max} onChange={setting.onChange} />;
     if (setting.type == "color") children = <Color disabled={setting.disabled} id={setting.id} value={setting.value} defaultValue={setting.defaultValue} colors={setting.colors} onChange={setting.onChange} />;
     if (setting.type == "custom") children = setting.children;
     if (!children) return null;
-    return <Item id={setting.id} inline={setting.hasOwnProperty("inline") ? setting.inline : setting.type !== "radio" && setting.type !== "color"} key={setting.id} name={setting.name} note={setting.note}>{children}</Item>;
+    return <Item id={setting.id} inline={setting.hasOwnProperty("inline") ? setting.inline : setting.type !== "radio" && setting.type !== "color" && setting.type !== "slider"} key={setting.id} name={setting.name} note={setting.note}>{children}</Item>;
 }
