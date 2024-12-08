@@ -83,7 +83,7 @@ export default function AddonCard({addon, isEmbed}) {
         likes: Strings.Addons.likeCount.format({likes: formatNumberWithSuffix(addon.likes)}),
     }), [addon]);
 
-    const [ uninstallHovering, setUninstallHovering ] = useState(false);
+    const [ hovering, setHovering ] = useState(false);
 
     return (
         <div 
@@ -238,23 +238,15 @@ export default function AddonCard({addon, isEmbed}) {
                         </DiscordModules.Tooltip>
                     )}
                     <div className="bd-addon-store-card-spacer" />
-                    {!isInstalled ? (
-                        <Button
-                            onClick={installAddon}
-                            disabled={disabled}
-                        >
-                            {"Install"}
-                        </Button>
-                    ) : (
-                        <Button
-                            color={uninstallHovering ? Button.Colors.RED : Button.Colors.TRANSPARENT}
-                            onClick={triggerDelete}
-                            onMouseEnter={() => setUninstallHovering(true)}
-                            onMouseLeave={() => setUninstallHovering(false)}
-                        >
-                            {uninstallHovering ? "Uninstall" : "Installed"}
-                        </Button>
-                    )}
+                    <Button
+                        color={isInstalled ? hovering ? Button.Colors.RED : Button.Colors.TRANSPARENT : Button.Colors.BRAND}
+                        onClick={isInstalled ? triggerDelete : installAddon}
+                        onMouseEnter={() => setHovering(true)}
+                        onMouseLeave={() => setHovering(false)}
+                        disabled={isInstalled && disabled}
+                    >
+                        {isInstalled ? hovering ? Strings.Addons.deleteAddon : Strings.Addons.isInstalled : Strings.Addons.downloadAddon}
+                    </Button>
                 </div>
             </div>
         </div>
