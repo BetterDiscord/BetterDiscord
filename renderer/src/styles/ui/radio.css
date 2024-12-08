@@ -14,6 +14,15 @@
     color: var(--interactive-normal);
 }
 
+.bd-radio-group.bd-radio-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bd-radio-group.bd-radio-disabled .bd-radio-option {
+    pointer-events: none;
+}
+
 .bd-radio-option:hover {
     background-color: var(--background-modifier-hover);
 }

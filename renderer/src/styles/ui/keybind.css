@@ -10,6 +10,15 @@
     cursor: pointer;
 }
 
+.bd-keybind-wrap.bd-keybind-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bd-keybind-wrap.bd-keybind-disabled .bd-keybind-controls {
+    pointer-events: none;
+}
+
 .bd-keybind-wrap input {
     outline: none;
     border: none;

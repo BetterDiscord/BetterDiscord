@@ -2,7 +2,16 @@
     display: flex;
     color: var(--text-normal);
     align-items: center;
-  }
+}
+
+.bd-slider-wrap.bd-slider-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bd-slider-wrap.bd-slider-disabled .bd-slider-input {
+    pointer-events: none;
+}
   
   .bd-slider-label {
     background: var(--brand-experiment);

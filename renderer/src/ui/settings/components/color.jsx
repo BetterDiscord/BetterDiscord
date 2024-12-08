@@ -57,15 +57,16 @@ const getContrastColor = (color) => {
 };
 
 
-export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue}) {
+export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}) {
     const [value, setValue] = useState(initialValue);
     const change = useCallback((e) => {
+        if (disabled) return;
         onChange?.(resolveColor(e.target.value));
         setValue(e.target.value);
-    }, [onChange]);
+    }, [onChange, disabled]);
 
     const intValue = resolveColor(value, false);
-    return <div className="bd-color-picker-container">
+    return <div className={`bd-color-picker-container ${disabled ? "bd-color-picker-disabled" : ""}`}>
         <div className="bd-color-picker-controls">
             <DiscordModules.Tooltip text="Default" position="bottom">
                 {props => (
@@ -81,7 +82,7 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
                 {props => (
                     <div className="bd-color-picker-custom">
                         <Dropper color={getContrastColor(resolveColor(value, true))} />
-                        <input {...props} style={{backgroundColor: resolveColor(value)}} type="color" className="bd-color-picker" value={resolveColor(value)} onChange={change} />
+                        <input {...props} style={{backgroundColor: resolveColor(value)}} type="color" className="bd-color-picker" value={resolveColor(value)} onChange={change} disabled={disabled} />
                     </div>
                 )}
             </DiscordModules.Tooltip>
