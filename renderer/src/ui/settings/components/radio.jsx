@@ -17,7 +17,7 @@ export default function Radio({name, value, options, onChange, disabled}) {
 
     function renderOption(opt, i) {
         const isSelected = index === i;
-        return <label className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")}>
+        return <label className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")} style={{borderColor: opt.color ?? "transparent"}}>
                 <input onChange={change} type="radio" name={name} checked={isSelected} value={i} disabled={disabled} />
                 {/* <span className="bd-radio-button"></span> */}
                 <RadioIcon className="bd-radio-icon" size="24" checked={isSelected} />

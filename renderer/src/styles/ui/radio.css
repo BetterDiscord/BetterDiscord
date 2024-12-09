@@ -5,7 +5,8 @@
 .bd-radio-option {
     display: flex;
     align-items: center;
-    padding: 10px;
+    border-left: 3px solid transparent;
+    padding: 10px 10px 10px 7px;
     margin-bottom: 8px;
     cursor: pointer;
     user-select: none;

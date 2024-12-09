@@ -119,8 +119,8 @@ export class Filters {
      * @returns {module:WebpackModules.Filters~filter} - Combinatory filter of all arguments
      */
     static combine(...filters) {
-        return module => {
-            return filters.every(filter => filter(module));
+        return (exports, module, id) => {
+            return filters.every(filter => filter(exports, module, id));
         };
     }
 }
@@ -515,7 +515,7 @@ export default class WebpackModules {
 
                     const listeners = [...this.listeners];
                     for (let i = 0; i < listeners.length; i++) {
-                        try {listeners[i](exports);}
+                        try {listeners[i](exports, module, module.id);}
                         catch (error) {
                             Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);
                         }
@@ -525,7 +525,7 @@ export default class WebpackModules {
                     Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
                 }
                 finally {
-                	require.m[moduleId] = originalModule;
+                    require.m[moduleId] = originalModule;
                 }
             };
 

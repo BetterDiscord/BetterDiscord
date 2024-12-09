@@ -68,7 +68,7 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
     const intValue = resolveColor(value, false);
     return <div className={`bd-color-picker-container ${disabled ? "bd-color-picker-disabled" : ""}`}>
         <div className="bd-color-picker-controls">
-            <DiscordModules.Tooltip text="Default" position="bottom">
+            {defaultValue && <DiscordModules.Tooltip text="Default" position="bottom">
                 {props => (
                     <div {...props} className="bd-color-picker-default" style={{backgroundColor: resolveColor(defaultValue)}} onClick={() => change({target: {value: defaultValue}})}>
                         {intValue === resolveColor(defaultValue, false)
@@ -77,7 +77,7 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
                         }
                     </div>
                 )}
-            </DiscordModules.Tooltip>
+            </DiscordModules.Tooltip>}
             <DiscordModules.Tooltip text={Strings.Settings.customColor} position="bottom">
                 {props => (
                     <div className="bd-color-picker-custom">
@@ -87,7 +87,7 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
                 )}
             </DiscordModules.Tooltip>
         </div>
-        <div className="bd-color-picker-swatch">
+        {colors?.length > 0 && <div className="bd-color-picker-swatch">
             {
                 colors.map((int, index) => (
                     <div key={index} className="bd-color-picker-swatch-item" style={{backgroundColor: resolveColor(int)}} onClick={() => change({target: {value: int}})}>
@@ -98,6 +98,6 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
                     </div>
                 ))
             }
-        </div>
+        </div>}
     </div>;
 }

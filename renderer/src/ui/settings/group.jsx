@@ -47,5 +47,5 @@ export function buildSetting(setting) {
     if (setting.type == "color") children = <Color {...setting} />;
     if (setting.type == "custom") children = setting.children;
     if (!children) return null;
-    return <Item id={setting.id} inline={setting.hasOwnProperty("inline") ? setting.inline : setting.type !== "radio" && setting.type !== "color" && setting.type !== "slider"} key={setting.id} name={setting.name} note={setting.note}>{children}</Item>;
+    return <Item id={setting.id} inline={setting.hasOwnProperty("inline") ? setting.inline : setting.type !== "radio"} key={setting.id} name={setting.name} note={setting.note}>{children}</Item>;
 }
