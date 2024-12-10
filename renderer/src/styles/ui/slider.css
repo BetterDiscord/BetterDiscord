@@ -115,3 +115,7 @@
     left: calc(50% - 1px);
     z-index: -1;
 }
+
+.bd-setting-item.inline:first-child:has(.bd-slider-wrap) {
+    padding-top: 50px;
+}

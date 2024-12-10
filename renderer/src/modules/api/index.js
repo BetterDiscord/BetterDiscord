@@ -1,4 +1,4 @@
-import Logger from "@common/logger";
+import BDLogger from "@common/logger";
 
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
@@ -15,6 +15,7 @@ import Webpack from "./webpack";
 import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
+import Logger from "./logger";
 
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
@@ -36,6 +37,7 @@ const PatcherAPI = new Patcher();
 const DataAPI = new Data();
 const DOMAPI = new DOM();
 const ContextMenuAPI = new ContextMenu();
+const DefaultLogger = new Logger();
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
@@ -46,7 +48,7 @@ export default class BdApi {
         if (!pluginName) return BdApi;
         if (bounded.has(pluginName)) return bounded.get(pluginName);
         if (typeof(pluginName) !== "string") {
-            Logger.error("BdApi", "Plugin name not a string, returning generic API!");
+            BDLogger.error("BdApi", "Plugin name not a string, returning generic API!");
             return BdApi;
         }
 
@@ -57,6 +59,7 @@ export default class BdApi {
         this.Patcher = new Patcher(pluginName);
         this.Data = new Data(pluginName);
         this.DOM = new DOM(pluginName);
+        this.Logger = new Logger(pluginName);
 
         bounded.set(pluginName, this);
     }
@@ -175,6 +178,12 @@ BdApi.Components = {
  * @type Net
  */
 BdApi.Net = {fetch};
+
+/**
+ * An instance of {@link Logger} for logging information.
+ * @type Logger
+ */
+BdApi.Logger = DefaultLogger;
 
 Object.freeze(BdApi);
 Object.freeze(BdApi.Net);
