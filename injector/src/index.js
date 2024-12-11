@@ -14,6 +14,7 @@ if (fs.existsSync(oldInstall)) {
 import ipc from "./modules/ipc";
 import BrowserWindow from "./modules/browserwindow";
 import CSP from "./modules/csp";
+import Sentry from "./modules/sentry";
 
 if (!process.argv.includes("--vanilla")) {
     process.env.NODE_OPTIONS = "--no-force-async-hooks-checks";
@@ -29,6 +30,7 @@ if (!process.argv.includes("--vanilla")) {
     // Remove CSP immediately on linux since they install to discord_desktop_core still
     try {
         CSP.remove();
+        Sentry.block();
     }
     catch (_) {
         // Remove when everyone is moved to core

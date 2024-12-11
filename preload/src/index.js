@@ -14,4 +14,13 @@ contextBridge.exposeInMainWorld("BetterDiscordPreload", () => {
     return BdApi;
 });
 
+
+// Block sentry from being required
+// const M = require("module");
+// const originalRequire = M.prototype.require;
+// M.prototype.require = function(id) {
+//     if (id.toLowerCase().includes("sentry")) return null;
+//     return originalRequire.apply(this, [id]);
+// };
+
 init();
