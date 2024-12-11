@@ -55,6 +55,11 @@ class Logger {
      * @param {Error} error - Error object to log with the message.
      */
     stacktrace(pluginName, message, error) {
+        if (this.#pluginName) {
+            error = message;
+            message = pluginName;
+            pluginName = this.#pluginName;
+        }
         console.error(`%c[${pluginName}]%c ${message}\n\n%c`, this.#nameStyle, "color: red; font-weight: 700;", "color: red;", error);
     }
 
