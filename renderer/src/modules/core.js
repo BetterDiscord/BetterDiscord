@@ -88,6 +88,7 @@ export default new class Core {
         if (Config.version !== previousVersion) {
             Modals.showChangelogModal(Changelog);
             DataStore.setBDData("version", Config.version);
+            DataStore.transferConfigFiles();
         }
     }
 
