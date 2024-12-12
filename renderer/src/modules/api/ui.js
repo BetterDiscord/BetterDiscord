@@ -189,7 +189,7 @@ const UI = {
     buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}) {
         if (!settings?.length) throw new Error("No settings provided!");
 
-        return React.createElement(ErrorBoundary, null, settings.map(setting => {
+        return React.createElement(ErrorBoundary, {id: "buildSettingsPanel", name: "BdApi.UI"}, settings.map(setting => {
             if (!setting.id || !setting.type) throw new Error(`Setting item missing id or type`);
 
             if (setting.type === "category") {
