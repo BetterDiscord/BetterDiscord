@@ -86,6 +86,16 @@ class DOM {
     }
 
     /**
+     * Create multiple DOM elements
+     * 
+     * @param {[ type: string, options?: { id?: string, className?: string, target?: string | Element }, ...children: Array<string | Node> ][]} nodes - Configuration arrays for elements to create
+     * @returns {HTMLElement[]}
+     */
+    createElements(...configs) {
+        return DOMManager.createElements(...configs)
+    }
+
+    /**
      * Utility function to make creating DOM elements easier. Acts similarly 
      * to `React.createElement`
      * 
