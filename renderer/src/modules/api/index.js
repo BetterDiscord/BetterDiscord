@@ -29,6 +29,9 @@ import SwitchInput from "@ui/settings/components/switch";
 import TextInput from "@ui/settings/components/textbox";
 import SettingGroup from "@ui/settings/group";
 import ErrorBoundary from "@ui/errorboundary";
+import Text from "@ui/base/text";
+import Flex from "@ui/base/flex";
+import Button from "@ui/base/button";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -38,6 +41,31 @@ const DataAPI = new Data();
 const DOMAPI = new DOM();
 const ContextMenuAPI = new ContextMenu();
 const DefaultLogger = new Logger();
+
+/**
+ * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
+ * @type Components
+ * @summary {@link Components} a namespace holding a series of React components
+ * @name Components
+ */
+const Components = {
+    get Tooltip() {return DiscordModules.Tooltip;},
+    get ColorInput() {return ColorInput;},
+    get DropdownInput() {return DropdownInput;},
+    get SettingItem() {return SettingItem;},
+    get KeybindInput() {return KeybindInput;},
+    get NumberInput() {return NumberInput;},
+    get RadioInput() {return RadioInput;},
+    get SearchInput() {return SearchInput;},
+    get SliderInput() {return SliderInput;},
+    get SwitchInput() {return SwitchInput;},
+    get TextInput() {return TextInput;},
+    get SettingGroup() {return SettingGroup;},
+    get ErrorBoundary() {return ErrorBoundary;},
+    get Text() {return Text;},
+    get Flex() {return Flex;},
+    get Button() {return Button;},
+};
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
@@ -72,21 +100,7 @@ export default class BdApi {
     get UI() {return UI;}
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
-    Components = {
-        get Tooltip() {return DiscordModules.Tooltip;},
-        get ColorInput() {return ColorInput;},
-        get DropdownInput() {return DropdownInput;},
-        get SettingItem() {return SettingItem;},
-        get KeybindInput() {return KeybindInput;},
-        get NumberInput() {return NumberInput;},
-        get RadioInput() {return RadioInput;},
-        get SearchInput() {return SearchInput;},
-        get SliderInput() {return SliderInput;},
-        get SwitchInput() {return SwitchInput;},
-        get TextInput() {return TextInput;},
-        get SettingGroup() {return SettingGroup;},
-        get ErrorBoundary() {return ErrorBoundary;},
-    };
+    get Components() {return Components;}
     Net = {fetch}; 
 }
 
@@ -157,21 +171,7 @@ BdApi.ContextMenu = ContextMenuAPI;
  * An set of react components plugins can make use of.
  * @type Components
  */
-BdApi.Components = {
-    get Tooltip() {return DiscordModules.Tooltip;},
-    get ColorInput() {return ColorInput;},
-    get DropdownInput() {return DropdownInput;},
-    get SettingItem() {return SettingItem;},
-    get KeybindInput() {return KeybindInput;},
-    get NumberInput() {return NumberInput;},
-    get RadioInput() {return RadioInput;},
-    get SearchInput() {return SearchInput;},
-    get SliderInput() {return SliderInput;},
-    get SwitchInput() {return SwitchInput;},
-    get TextInput() {return TextInput;},
-    get SettingGroup() {return SettingGroup;},
-    get ErrorBoundary() {return ErrorBoundary;},
-};
+BdApi.Components = Components;
 
 /**
  * An instance of {@link Net} for using network related tools.
