@@ -1,5 +1,16 @@
 .bd-color-picker-container {
     display: flex;
+    justify-content: center;
+}
+
+.bd-color-picker-container.bd-color-picker-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bd-color-picker-container.bd-color-picker-disabled > .bd-color-picker-controls,
+.bd-color-picker-container.bd-color-picker-disabled > .bd-color-picker-swatch {
+    pointer-events: none;
 }
 
 .bd-color-picker-controls {
@@ -10,8 +21,8 @@
 
 .bd-color-picker-default {
     cursor: pointer;
-    width: 72px;
-    height: 54px;
+    width: 75px;
+    height: 60px;
     border-radius: 4px;
     margin-right: 9px;
     display: flex;
@@ -29,13 +40,14 @@
     position: absolute;
     top: 5px;
     right: 5px;
+    pointer-events: none;
 }
 
 .bd-color-picker {
     outline: none;
-    width: 70px;
+    width: 75px;
     border: none;
-    height: 54px;
+    height: 60px;
     margin-top: 1px;
     border-radius: 4px;
     cursor: pointer;
@@ -50,16 +62,35 @@
     flex-wrap: wrap;
     align-content: flex-start;
     margin-left: 5px !important;
-    max-width: 340px;
+    max-width: 330px;
 }
 
 .bd-color-picker-swatch-item {
     cursor: pointer;
     border-radius: 4px;
-    width: 23px;
-    height: 23px;
+    width: 15px;
+    height: 15px;
     margin: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+
+.bd-setting-item.inline .bd-color-picker-swatch {
+    max-width: 220px;
+    margin-top: 1px;
+}
+
+
+.bd-setting-item.inline .bd-color-picker-default,
+.bd-setting-item.inline .bd-color-picker {
+    width: 50px;
+    height: 40px
+}
+
+.bd-setting-item.inline .bd-color-picker-swatch-item {
+    height: 18px;
+    width: 18px;
+    margin: 2px 2px;
 }

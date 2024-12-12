@@ -48,6 +48,11 @@
     transition: 150ms ease border-color;
 }
 
+.bd-select.bd-select-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 .bd-select:hover,
 .bd-select.menu-open {
     border-color: var(--background-tertiary);
@@ -123,7 +128,7 @@
 
 .bd-setting-header label {
     font-weight: 500;
-    cursor: pointer;
+    /* cursor: pointer; */
     overflow: hidden;
     word-wrap: break-word;
     font-size: 16px;

@@ -1,4 +1,4 @@
-import Logger from "@common/logger";
+import BDLogger from "@common/logger";
 
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
@@ -15,6 +15,20 @@ import Webpack from "./webpack";
 import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
+import Logger from "./logger";
+
+import ColorInput from "@ui/settings/components/color";
+import DropdownInput from "@ui/settings/components/dropdown";
+import SettingItem from "@ui/settings/components/item";
+import KeybindInput from "@ui/settings/components/keybind";
+import NumberInput from "@ui/settings/components/number";
+import RadioInput from "@ui/settings/components/radio";
+import SearchInput from "@ui/settings/components/search";
+import SliderInput from "@ui/settings/components/slider";
+import SwitchInput from "@ui/settings/components/switch";
+import TextInput from "@ui/settings/components/textbox";
+import SettingGroup from "@ui/settings/group";
+import ErrorBoundary from "@ui/errorboundary";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -23,6 +37,7 @@ const PatcherAPI = new Patcher();
 const DataAPI = new Data();
 const DOMAPI = new DOM();
 const ContextMenuAPI = new ContextMenu();
+const DefaultLogger = new Logger();
 
 /**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
@@ -33,7 +48,7 @@ export default class BdApi {
         if (!pluginName) return BdApi;
         if (bounded.has(pluginName)) return bounded.get(pluginName);
         if (typeof(pluginName) !== "string") {
-            Logger.error("BdApi", "Plugin name not a string, returning generic API!");
+            BDLogger.error("BdApi", "Plugin name not a string, returning generic API!");
             return BdApi;
         }
 
@@ -44,6 +59,7 @@ export default class BdApi {
         this.Patcher = new Patcher(pluginName);
         this.Data = new Data(pluginName);
         this.DOM = new DOM(pluginName);
+        this.Logger = new Logger(pluginName);
 
         bounded.set(pluginName, this);
     }
@@ -57,7 +73,19 @@ export default class BdApi {
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     Components = {
-        get Tooltip() {return DiscordModules.Tooltip;}
+        get Tooltip() {return DiscordModules.Tooltip;},
+        get ColorInput() {return ColorInput;},
+        get DropdownInput() {return DropdownInput;},
+        get SettingItem() {return SettingItem;},
+        get KeybindInput() {return KeybindInput;},
+        get NumberInput() {return NumberInput;},
+        get RadioInput() {return RadioInput;},
+        get SearchInput() {return SearchInput;},
+        get SliderInput() {return SliderInput;},
+        get SwitchInput() {return SwitchInput;},
+        get TextInput() {return TextInput;},
+        get SettingGroup() {return SettingGroup;},
+        get ErrorBoundary() {return ErrorBoundary;},
     };
     Net = {fetch}; 
 }
@@ -125,11 +153,37 @@ BdApi.DOM = DOMAPI;
  */
 BdApi.ContextMenu = ContextMenuAPI;
 
+/**
+ * An set of react components plugins can make use of.
+ * @type Components
+ */
 BdApi.Components = {
-    get Tooltip() {return DiscordModules.Tooltip;}
+    get Tooltip() {return DiscordModules.Tooltip;},
+    get ColorInput() {return ColorInput;},
+    get DropdownInput() {return DropdownInput;},
+    get SettingItem() {return SettingItem;},
+    get KeybindInput() {return KeybindInput;},
+    get NumberInput() {return NumberInput;},
+    get RadioInput() {return RadioInput;},
+    get SearchInput() {return SearchInput;},
+    get SliderInput() {return SliderInput;},
+    get SwitchInput() {return SwitchInput;},
+    get TextInput() {return TextInput;},
+    get SettingGroup() {return SettingGroup;},
+    get ErrorBoundary() {return ErrorBoundary;},
 };
 
+/**
+ * An instance of {@link Net} for using network related tools.
+ * @type Net
+ */
 BdApi.Net = {fetch};
+
+/**
+ * An instance of {@link Logger} for logging information.
+ * @type Logger
+ */
+BdApi.Logger = DefaultLogger;
 
 Object.freeze(BdApi);
 Object.freeze(BdApi.Net);

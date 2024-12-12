@@ -119,8 +119,8 @@ export class Filters {
      * @returns {module:WebpackModules.Filters~filter} - Combinatory filter of all arguments
      */
     static combine(...filters) {
-        return module => {
-            return filters.every(filter => filter(module));
+        return (exports, module, id) => {
+            return filters.every(filter => filter(exports, module, id));
         };
     }
 }
@@ -398,7 +398,7 @@ export default class WebpackModules {
 
         return new Promise((resolve) => {
             const cancel = () => this.removeListener(listener);
-            const listener = function(exports) {
+            const listener = function(exports, module, id) {
                 if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") return;
 
                 let foundModule = null;
@@ -407,14 +407,14 @@ export default class WebpackModules {
                         foundModule = null;
                         const wrappedExport = exports[key];
                         if (!wrappedExport) continue;
-                        if (wrappedFilter(wrappedExport)) foundModule = wrappedExport;
+                        if (wrappedFilter(wrappedExport, module, id)) foundModule = wrappedExport;
                     }
                 }
                 else {
-                    if (exports.Z && wrappedFilter(exports.Z)) foundModule = defaultExport ? exports.Z : exports;
-                    if (exports.ZP && wrappedFilter(exports.ZP)) foundModule = defaultExport ? exports.ZP : exports;
-                    if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = defaultExport ? exports.default : exports;
-                    if (wrappedFilter(exports)) foundModule = exports;
+                    if (exports.Z && wrappedFilter(exports.Z, module, id)) foundModule = defaultExport ? exports.Z : exports;
+                    if (exports.ZP && wrappedFilter(exports.ZP, module, id)) foundModule = defaultExport ? exports.ZP : exports;
+                    if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, id)) foundModule = defaultExport ? exports.default : exports;
+                    if (wrappedFilter(exports, module, id)) foundModule = exports;
 
                 }
                 
@@ -515,7 +515,7 @@ export default class WebpackModules {
 
                     const listeners = [...this.listeners];
                     for (let i = 0; i < listeners.length; i++) {
-                        try {listeners[i](exports);}
+                        try {listeners[i](exports, module, module.id);}
                         catch (error) {
                             Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);
                         }
@@ -525,7 +525,7 @@ export default class WebpackModules {
                     Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
                 }
                 finally {
-                	require.m[moduleId] = originalModule;
+                    require.m[moduleId] = originalModule;
                 }
             };
 

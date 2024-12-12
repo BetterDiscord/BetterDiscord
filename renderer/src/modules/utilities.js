@@ -216,4 +216,16 @@ export default class Utilities {
 
         return classes.join(" ");
     }
+
+    /**
+     * Gets a nested value (if it exists) safely. Path should be something like `prop.prop2.prop3`.
+     * Numbers can be used for arrays as well like `prop.prop2.array.0.id`.
+     * @param {Object} obj - object to get nested value of
+     * @param {string} path - representation of the key path to obtain
+     */
+    static getNestedValue(obj, path) {
+        return path.split(".").reduce(function(ob, prop) {
+            return ob && ob[prop];
+        }, obj);
+    }
 }
