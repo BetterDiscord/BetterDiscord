@@ -112,19 +112,23 @@
     white-space: pre-wrap;
     word-wrap: break-word;
     width: 490px;
-    max-height: 800px;
+    max-height: min(800px, 60vh);
 }
 
 .bd-modal-medium {
     width: 600px;
-    max-height: 800px;
+    max-height: min(800px, 60vh);
     min-height: 400px;
 }
 
 .bd-modal-large {
     width: 800px;
-    max-height: 960px;
+    max-height: min(960px, 70vh);
     min-height: 400px;
+}
+
+.bd-addon-modal {
+    min-height: 0;
 }
 
 .bd-modal-header,

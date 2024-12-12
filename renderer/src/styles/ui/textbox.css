@@ -8,4 +8,9 @@
     border: none;
     padding: 10px;
     height: 40px;
-  }
+}
+
+.bd-text-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

@@ -5,7 +5,7 @@ import Arrow from "@ui/icons/downarrow";
 const {useState, useCallback} = React;
 
 
-export default function Select({value: initialValue, options, style, onChange}) {
+export default function Select({value: initialValue, options, style, onChange, disabled}) {
     const [value, setValue] = useState(initialValue ?? options[0].value);
     const change = useCallback((val) => {
         onChange?.(val);
@@ -23,11 +23,13 @@ export default function Select({value: initialValue, options, style, onChange}) 
         event.preventDefault();
         event.stopPropagation();
 
+        if (disabled) return;
+
         const next = !open;
         setOpen(next);
         if (!next) return;
         document.addEventListener("click", hideMenu);
-    }, [hideMenu, open]);
+    }, [hideMenu, open, disabled]);
 
 
     // ?? options[0] provides a double failsafe
@@ -40,7 +42,8 @@ export default function Select({value: initialValue, options, style, onChange}) 
 
     const styleClass = style == "transparent" ? " bd-select-transparent" : "";
     const isOpen = open ? " menu-open" : "";
-    return <div className={`bd-select${styleClass}${isOpen}`} onClick={showMenu}>
+    const isDisabled = disabled ? " bd-select-disabled" : "";
+    return <div className={`bd-select${styleClass}${isOpen}${isDisabled}`} onClick={showMenu}>
                 <div className="bd-select-value">{selected.label}</div>
                 <Arrow className="bd-select-arrow" />
                 {open && optionComponents}

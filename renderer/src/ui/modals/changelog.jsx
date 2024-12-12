@@ -57,7 +57,7 @@ function Video({src, poster}) {
 }
 
 
-export default function ChangelogModal({transitionState, footer, title, subtitle, onClose, video, poster, image, description, changes}) {
+export default function ChangelogModal({transitionState, footer, title, subtitle, onClose, video, poster, banner, blurb, changes}) {
 
     const ChangelogHeader = useMemo(() => <Header justify={Flex.Justify.BETWEEN}>
         <Flex direction={Flex.Direction.VERTICAL}>
@@ -78,23 +78,27 @@ export default function ChangelogModal({transitionState, footer, title, subtitle
     </Footer>, [footer]);
 
     const changelogItems = useMemo(() => {
-        const items = [video ? <Video src={video} poster={poster} /> : <img src={image} className="bd-changelog-poster" />];
-        if (description) items.push(<p>{SimpleMarkdownExt.parseToReact(description)}</p>);
-        for (let c = 0; c < changes.length; c++) {
+        const items = [];
+        if (video) items.push(<Video src={video} poster={poster} />);
+        else if (banner) items.push(<img src={banner} className="bd-changelog-poster" />);
+
+        if (blurb) items.push(<p>{SimpleMarkdownExt.parseToReact(blurb)}</p>);
+
+        for (let c = 0; c < changes?.length; c++) {
             const entry = changes[c];
             const type = "bd-changelog-" + entry.type;
             const margin = c == 0 ? " bd-changelog-first" : "";
             items.push(<h1 className={`bd-changelog-title ${type}${margin}`}>{entry.title}</h1>);
-            if (entry.description) items.push(<p>{SimpleMarkdownExt.parseToReact(entry.description)}</p>);
+            if (entry.blurb) items.push(<p>{SimpleMarkdownExt.parseToReact(entry.blurb)}</p>);
             const list = <ul>{entry.items.map(i => <li>{SimpleMarkdownExt.parseToReact(i)}</li>)}</ul>;
             items.push(list);
         }
         return items;
-    }, [description, video, image, poster, changes]);
+    }, [blurb, video, banner, poster, changes]);
 
     return <Root className="bd-changelog-modal" transitionState={transitionState} size={Root.Sizes.MEDIUM} style={Root.Styles.STANDARD}>
         {ChangelogHeader}
         <Content>{changelogItems}</Content>
-        {ChangelogFooter}
+        {(footer || title === "BetterDiscord") && ChangelogFooter}
     </Root>;
 }

@@ -14,3 +14,8 @@
     border-radius: 3px;
     width: 70px;
 }
+
+.bd-number-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

@@ -1,4 +1,5 @@
 import Utilities from "@modules/utilities";
+import {comparator} from "@structs/semver";
 
 
 /**
@@ -71,6 +72,27 @@ const Utils = {
      */
     className() {
         return Utilities.className(...arguments);
+    },
+
+    /**
+     * Gets a nested value (if it exists) of an object safely. keyPath should be something like `key.key2.key3`.
+     * Numbers can be used for arrays as well like `key.key2.array.0.id`.
+     * @param {object} obj - object to get nested value from
+     * @param {string} keyPath - key path to the desired value
+     */
+    getNestedValue(obj, keyPath) {
+        return Utilities.getNestedValue(obj, keyPath);
+    },
+
+    /**
+     * This works on semantic versioning e.g. "1.0.0".
+     * 
+     * @param {string} currentVersion
+     * @param {string} newVersion
+     * @returns {number} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
+     */
+    semverCompare(currentVersion, newVersion) {
+        return comparator(currentVersion, newVersion);
     }
 };
 
