@@ -495,7 +495,7 @@ class Store {
 const ThemeStore = new Store("theme");
 const PluginStore = new Store("plugin");
 
-const STORE_PROTOCOL_REGEX = /^betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/(\S+)/i;
+const STORE_PROTOCOL_REGEX = /^betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/(.+?)\/?$/i;
 
 const addonStore = new class AddonStore {
     constructor() {
@@ -511,9 +511,9 @@ const addonStore = new class AddonStore {
 
         RemoteAPI.setProtocolListener((url) => {
             const match = url.match(STORE_PROTOCOL_REGEX);
-            if (!match) return;
+            if (!match) return;            
 
-            this.requestAddon(match[1]).then((addon) => addon.download());
+            this.requestAddon(decodeURIComponent(match[1])).then((addon) => addon.download());
         });
     }
 

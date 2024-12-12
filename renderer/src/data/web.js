@@ -1,5 +1,5 @@
 const HOSTNAME = "betterdiscord.app";
-const API_VERSION = "v2";
+const API_VERSION = "latest";
 
 /**
  * @param  {...string[]} paths 
