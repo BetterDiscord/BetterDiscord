@@ -15,6 +15,8 @@ import InstallModal from "@ui/modals/installmodal";
 import DiscordModules from "@modules/discordmodules";
 import Settings from "@modules/settingsmanager";
 import Web from "@data/web";
+import RemoteAPI from "@polyfill/remote";
+import { HANDLE_PROTOCOL } from "@common/constants/ipcevents";
 
 /**
  * @typedef {{
@@ -28,7 +30,8 @@ import Web from "@data/web";
  *      downloads: number,
  *      tags: string[],
  *      thumbnail_url: string | null,
- *      release_date: string,
+ *      initial_release_date: string,
+ *      latest_release_date: string,
  *      guild: RawAddonGuild | null,
  *      version: string
  * }} RawAddon
@@ -126,7 +129,8 @@ class Addon {
         this.id = addon.id;
         this.name = addon.name;
 
-        this.releaseDate = new Date(addon.release_date);
+        this.releaseDate = new Date(addon.initial_release_date);
+        this.lastModified = new Date(addon.latest_release_date);
         
         this.type = addon.type;
         
@@ -325,12 +329,12 @@ class Addon {
         return this.manager.isLoaded(this.filename);
     }
 
-    hasUpdate() {
-        if (!this.manager.isLoaded(this.filename)) return false;
-
-        this.updater.checkForUpdate(this.filename, this.manager.getAddon(this.filename).version);
-
-        return this.updater.pending.includes(this.filename);
+    recentlyUpdated() {
+        const now = new Date();
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(now.getDate() - 7);
+      
+        return this.lastModified > oneWeekAgo && this.lastModified <= now;
     }
 }
 
@@ -491,6 +495,8 @@ class Store {
 const ThemeStore = new Store("theme");
 const PluginStore = new Store("plugin");
 
+const STORE_PROTOCOL_REGEX = /^betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/(\S+)/i;
+
 const addonStore = new class AddonStore {
     constructor() {
         if (!DataStore.getBDData("known-addons")) {
@@ -502,6 +508,13 @@ const addonStore = new class AddonStore {
                 DataStore.setBDData("known-addons", Object.fromEntries(addons.map(m => [ m.file_name, true ])));
             });
         }
+
+        RemoteAPI.setProtocolListener((url) => {
+            const match = url.match(STORE_PROTOCOL_REGEX);
+            if (!match) return;
+
+            this.requestAddon(match[1]).then((addon) => addon.download());
+        });
     }
 
     /** @param {"plugin" | "theme"} type  */
@@ -524,7 +537,6 @@ const addonStore = new class AddonStore {
         return this._singleAddonCache[idOrName] ??= new Promise((resolve, reject) => {
             request(Web.store.addon(idOrName), (error, _, body) => {
                 const data = JSON.parse(body);
-                
 
                 if (error || data.status === 404) {
                     reject(error || data.title);

@@ -211,7 +211,7 @@ button.bd-addon-store-card-button {
 .bd-addon-store {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: clamp(8px, 2vw, 20px);
+    gap: 20px clamp(8px, 2vw, 20px);
     margin: 10px 0;
 }
 

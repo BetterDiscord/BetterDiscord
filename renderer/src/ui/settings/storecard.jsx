@@ -12,6 +12,7 @@ import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import Eye from "@ui/icons/eye";
 import {FlowerStar} from "./addonshared";
+import Delete from "@ui/icons/delete";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 
@@ -74,16 +75,13 @@ export default function AddonCard({addon, isEmbed}) {
 
     const badge = useMemo(() => {
         if (addon.isUnknown()) return Strings.Addons.new;
+        if (addon.recentlyUpdated()) return "UPDATED";
     }, [addon]);
-
-    const markAsSeen = useCallback(() => addon.markAsKnown(), [addon]);
 
     const {downloads, likes} = useMemo(() => ({
         downloads: Strings.Addons.downloadCount.format({downloads: formatNumberWithSuffix(addon.downloads)}),
         likes: Strings.Addons.likeCount.format({likes: formatNumberWithSuffix(addon.likes)}),
     }), [addon]);
-
-    const [ hovering, setHovering ] = useState(false);
 
     return (
         <div 
@@ -91,7 +89,9 @@ export default function AddonCard({addon, isEmbed}) {
                 "bd-addon-store-card": true, 
                 "bd-addon-store-card-embed": isEmbed 
             })} 
-            onMouseEnter={markAsSeen}
+            onMouseEnter={() => {
+                addon.markAsKnown();
+            }}
         >
             <div className="bd-addon-store-card-splash">
                 <div className="bd-addon-store-card-preview">
@@ -238,15 +238,24 @@ export default function AddonCard({addon, isEmbed}) {
                         </DiscordModules.Tooltip>
                     )}
                     <div className="bd-addon-store-card-spacer" />
-                    <Button
-                        color={isInstalled ? hovering ? Button.Colors.RED : Button.Colors.TRANSPARENT : Button.Colors.BRAND}
-                        onClick={isInstalled ? triggerDelete : installAddon}
-                        onMouseEnter={() => setHovering(true)}
-                        onMouseLeave={() => setHovering(false)}
-                        disabled={isInstalled && disabled}
-                    >
-                        {isInstalled ? hovering ? Strings.Addons.deleteAddon : Strings.Addons.isInstalled : Strings.Addons.downloadAddon}
-                    </Button>
+                    {isInstalled ? (
+                        <DiscordModules.Tooltip text={Strings.Addons.deleteAddon}>
+                            {(props) => (
+                                <Button 
+                                    {...props} 
+                                    onClick={triggerDelete} 
+                                    color={Button.Colors.RED} 
+                                    size={Button.Sizes.ICON}
+                                >
+                                    <Delete size={24} />
+                                </Button>
+                            )}
+                        </DiscordModules.Tooltip>
+                    ) : (
+                        <Button onClick={installAddon} disabled={disabled}>
+                            {Strings.Addons.downloadAddon}
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>

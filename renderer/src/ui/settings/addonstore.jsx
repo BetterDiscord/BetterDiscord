@@ -18,18 +18,20 @@ import Paginator from "@ui/misc/paginator";
 import Info from "@ui/icons/info";
 import ReloadIcon from "@ui/icons/reload";
 import Arrow from "@ui/icons/downarrow";
+import Logger from "@common/logger";
 
 const {useState, useMemo, useCallback} = React;
 
 const buildSortOptions = () => [
-    {label: Strings.Addons.popularity, value: "popularity"},
+    {label: Strings.Addons.downloads, value: "downloads"},
+    // {label: Strings.Addons.popularity, value: "popularity"},
     {label: Strings.Addons.name, value: "name"},
     {label: Strings.Addons.author, value: "author"},
     {label: Strings.Addons.version, value: "version"},
     {label: Strings.Addons.modified, value: "modified"},
+    {label: Strings.Addons.releaseDate, value: "releaseDate"},
     {label: Strings.Addons.isInstalled, value: "isInstalled"},
-    {label: Strings.Addons.likes, value: "likes"},
-    {label: Strings.Addons.downloads, value: "downloads"}
+    {label: Strings.Addons.likes, value: "likes"}
 ];
 
 const MAX_AMOUNT_OF_CARDS = 30;
@@ -138,7 +140,7 @@ export default function AddonStorePage({type, title, refToScroller}) {
         setPage(0);
     }, []);
 
-    const [sort, setSort] = useState(() => getState(`${type}-store`, "sort", "popularity"));
+    const [sort, setSort] = useState(() => getState(`${type}-store`, "sort", "downloads"));
     const [ascending, setAscending] = useState(() => getState(`${type}-store`, "ascending", true));
     
     const changeDirection = useCallback((value) => {
@@ -197,12 +199,23 @@ export default function AddonStorePage({type, title, refToScroller}) {
                 case "isInstalled":
                     comparison = (a.isInstalled() === b.isInstalled()) ? 0 : (a.isInstalled() ? -1 : 1);
                     break;
-                case "popularity":
-                    comparison = (b.downloads * 0.7 + b.likes * 0.3) - (a.downloads * 0.7 + a.likes * 0.3);
+                case "modified":
+                    comparison = a.lastModified - b.lastModified;
+                    break;
+                case "releaseDate":
+                    comparison = a.releaseDate - b.releaseDate;
+                    break;
+                case "name":
+                    break;
+                // case "popularity":
+                //     comparison = (b.downloads * 0.7 + b.likes * 0.3) - (a.downloads * 0.7 + a.likes * 0.3);
+                //     break;
+                default:
+                    Logger.warn("AddonStore", `Sorting method '${sort}' is unknown`);
                     break;
             }
 
-            if (comparison === 0) comparison = a.name.localeCompare(b.name);
+            if (comparison === 0 || isNaN(comparison)) comparison = a.name.localeCompare(b.name);
         
             return ascending ? comparison : -comparison; // Adjust for ascending/descending
         });

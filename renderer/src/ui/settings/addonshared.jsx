@@ -70,7 +70,7 @@ export function FlowerStar({size = 16}) {
     const checksize = React.useMemo(() => 10 / 16 * size, [size]);
 
     return (
-        <DiscordModules.Tooltip text="Verified" hideOnClick={false}>
+        <DiscordModules.Tooltip text={Strings.Addons.official} aria-label={Strings.Addons.official} hideOnClick={false}>
             {(props) => (
                 <div className="bd-flower-star" {...props}>
                     <svg viewBox="0 0 16 15.2" width={size} height={size}>

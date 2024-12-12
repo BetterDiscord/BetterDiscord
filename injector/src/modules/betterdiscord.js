@@ -113,6 +113,21 @@ export default class BetterDiscord {
         browserWindow.webContents.on("render-process-gone", () => {
             hasCrashed = true;
         });
+
+        if (electron.app.setAsDefaultProtocolClient("betterdiscord")) {
+            process.env.BETTERDISCORD_PROTOCOL = process.argv.find((arg) => arg.startsWith("betterdiscord://"));
+
+            electron.app.on("second-instance", (event, argv) => {
+                // Ignore multi instance
+                if (~argv.indexOf("--multi-instance")) return;
+
+                const arg = argv.find((arg) => arg.startsWith("betterdiscord://"));
+
+                if (arg) {
+                    browserWindow.webContents.send(IPCEvents.HANDLE_PROTOCOL, arg);
+                }
+            });
+        }
     }
 
     static disableMediaKeys() {

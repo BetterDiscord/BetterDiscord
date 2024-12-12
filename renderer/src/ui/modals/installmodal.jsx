@@ -196,7 +196,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
                 />
                 <ModalItem 
                     leading={<Clock size={24} />}
-                    content={addon.releaseDate.toLocaleString(LocaleManager.discordLocale)}
+                    content={addon.lastModified.toLocaleString(LocaleManager.discordLocale)}
                 />
                 <ModalItem 
                     leading={<GitHub size={24} />}
