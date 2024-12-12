@@ -127,3 +127,22 @@ if (BetterDiscord.getSetting("developer", "reactDevTools")) {
         await ReactDevTools.install(dataPath);
     });
 }
+
+// eslint-disable-next-line accessor-pairs
+Object.defineProperty(global, "appSettings", {
+    set(setting) {
+        setting.set("DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING", true);
+        if (BetterDiscord.getSetting("window", "removeMinimumSize")) {
+            setting.set("MIN_WIDTH", 0);
+            setting.set("MIN_HEIGHT", 0);
+        }
+        else {
+            setting.set("MIN_WIDTH", 940);
+            setting.set("MIN_HEIGHT", 500);
+        }
+        delete global.appSettings;
+        global.appSettings = setting;
+    },
+    configurable: true,
+    enumerable: false
+});

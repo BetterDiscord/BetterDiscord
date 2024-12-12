@@ -35,24 +35,6 @@ if (!process.argv.includes("--vanilla")) {
     }
 }
 
-// Enable DevTools on Stable.
-try {
-    let fakeAppSettings;
-    Object.defineProperty(global, "appSettings", {
-        get() {
-            return fakeAppSettings;
-        },
-        set(value) {
-            if (!value.hasOwnProperty("settings")) value.settings = {};
-            value.settings.DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING = true;
-            fakeAppSettings = value;
-        },
-    });
-}
-catch (_) {
-    // Remove when everyone is moved to core
-}
-
 // Needs to run this after Discord but before ready()
 if (!process.argv.includes("--vanilla")) {
     const BetterDiscord = require("./modules/betterdiscord").default;
