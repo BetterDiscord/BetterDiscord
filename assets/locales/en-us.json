@@ -35,11 +35,11 @@
                 },
                 "alwaysEnable": {
                     "name": "Always Enable",
-                    "note": "By default enables addons downloaded via the addon store."
+                    "note": "When enabled by default addons downloaded via the addon store will be enabled."
                 },
                 "addonEmbeds": {
                     "name": "Addon Embeds",
-                    "note": "Embeds the store addon cards into chat."
+                    "note": "Embeds the addon store cards into chat."
                 }
             },
             "window": {
@@ -182,6 +182,7 @@
         "added": "Date Added",
         "modified": "Date Modified",
         "releaseDate": "Release Date",
+        "lastUpdated": "Last Update",
         "isEnabled": "Enabled",
         "popularity": "Popularity",
         "isInstalled": "Installed",
@@ -223,6 +224,7 @@
         "successfullyDownload": "Successfully downloaded {{name}}",
         "failedToFetch": "Unable to get addons",
         "new": "New",
+        "updated": "Updated",
         "downloadCount": "{{downloads}} Downloads",
         "likeCount": "{{likes}} Likes",
         "tags": "Tags",

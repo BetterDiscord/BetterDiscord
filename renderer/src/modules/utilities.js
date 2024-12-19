@@ -1,4 +1,6 @@
 import Logger from "@common/logger";
+import DiscordModules from "./discordmodules";
+import WebpackModules from "./webpackmodules";
 
 
 export default class Utilities {
@@ -226,5 +228,35 @@ export default class Utilities {
         return path.split(".").reduce(function(ob, prop) {
             return ob && ob[prop];
         }, obj);
+    }
+
+    /**
+     * Shows the guild join modal, to join invites
+     * @param {string} code 
+     */
+    static async showGuildJoinModal(code) {
+        const tester = /\.gg\/(.*)$/;
+        if (tester.test(code)) code = code.match(tester)[1];
+
+        const native = WebpackModules.getModule(m => m.minimize && m.architecture);
+        
+        const resolved = await DiscordModules.InviteActions.resolveInvite(code);
+        const {minimize, focus} = native;
+        
+        native.minimize = () => {};
+        native.focus = () => {};
+        
+        try {
+            await DiscordModules.Dispatcher.dispatch({
+                type: "INVITE_MODAL_OPEN",
+                invite: resolved.invite,
+                code: resolved.code,
+                context: "APP"
+            });
+        }
+        finally {
+            native.minimize = minimize;
+            native.focus = focus;
+        }
     }
 }

@@ -28,7 +28,7 @@ const buildSortOptions = () => [
     {label: Strings.Addons.name, value: "name"},
     {label: Strings.Addons.author, value: "author"},
     {label: Strings.Addons.version, value: "version"},
-    {label: Strings.Addons.modified, value: "modified"},
+    {label: Strings.Addons.lastUpdated, value: "modified"},
     {label: Strings.Addons.releaseDate, value: "releaseDate"},
     {label: Strings.Addons.isInstalled, value: "isInstalled"},
     {label: Strings.Addons.likes, value: "likes"}
@@ -191,7 +191,6 @@ export default function AddonStorePage({type, title, refToScroller}) {
                 case "version":
                     comparison = a[sort].localeCompare(b[sort]);
                     break;
-                case "modified":
                 case "likes":
                 case "downloads":
                     comparison = b[sort] - a[sort];
@@ -200,10 +199,10 @@ export default function AddonStorePage({type, title, refToScroller}) {
                     comparison = (a.isInstalled() === b.isInstalled()) ? 0 : (a.isInstalled() ? -1 : 1);
                     break;
                 case "modified":
-                    comparison = a.lastModified - b.lastModified;
+                    comparison = b.lastModified - a.lastModified;
                     break;
                 case "releaseDate":
-                    comparison = a.releaseDate - b.releaseDate;
+                    comparison = b.releaseDate - a.releaseDate;
                     break;
                 case "name":
                     break;

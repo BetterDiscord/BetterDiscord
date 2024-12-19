@@ -14,14 +14,17 @@ const AccessibilityContext = WebpackModules.getModule(m => m?._currentValue?.red
  */
 
 /**
- * @param {{
- *    type?: SpinnerTypes, 
- *    animated?: boolean, 
- *    className?: string, 
- *    itemClassName?: string, 
- *    "aria-label"?: string
- * }} props 
- * @returns {JSX.Element}
+ * @typedef {Object} SpinnerProps
+ * @property {SpinnerType} [type] Type of the spinner
+ * @property {boolean} [animated] Should the spinner be animated
+ * @property {string} [className] Classes to pass to the spinner
+ * @property {string} [itemClassName] Classes for the motion items in the spinner
+ * @property {string} [aria-label]
+ */
+
+/**
+ * Clone of Discord's builtin spinner, acts 100% the same
+ * @param {SpinnerProps} props 
  */
 function Spinner(props) {
     const {reducedMotion} = React.useContext(AccessibilityContext);
@@ -42,14 +45,23 @@ function Spinner(props) {
         }
     }, [props.type, reducedMotion?.enabled]);
 
+    /** @type {string} */
+    const className = React.useMemo(() => {
+        return Utilities.className({
+            "bd-spinner-stopAnimation": !animated
+        }, "bd-spinner", `bd-spinner-${type}`, props.className);
+    }, [props.className, animated, type]);
+
+    const itemClassName = React.useMemo(() => {
+        return Utilities.className("bd-spinner-path", props.itemClassName);
+    }, [props.itemClassName]);
+
     switch (type) {
         case SpinnerType.SPINNING_CIRCLE:
         case SpinnerType.SPINNING_CIRCLE_SIMPLE: {
             return (
                 <div
-                    className={Utilities.className({
-                        "bd-spinner-stopAnimation": !animated
-                    }, "bd-spinner", `bd-spinner-${type}`, props.className)}
+                    className={className}
                     role="img"
                     aria-label={props["aria-label"]}
                     {...props}
@@ -61,11 +73,11 @@ function Spinner(props) {
                         >
                             {type === SpinnerType.SPINNING_CIRCLE && (
                                 <>
-                                    <circle cx={50} cy={50} r={20} className="bd-spinner-path" />
-                                    <circle cx={50} cy={50} r={20} className="bd-spinner-path" />
+                                    <circle cx={50} cy={50} r={20} className={itemClassName} />
+                                    <circle cx={50} cy={50} r={20} className={itemClassName} />
                                 </>
                             )}
-                            <circle cx={50} cy={50} r={20} className="bd-spinner-path" />
+                            <circle cx={50} cy={50} r={20} className={itemClassName} />
                         </svg>
                     </div>
                 </div>
@@ -74,18 +86,16 @@ function Spinner(props) {
         default: {
             return (
                 <span
-                    className={Utilities.className({
-                        "bd-spinner-stopAnimation": !animated
-                    }, "bd-spinner", `bd-spinner-${type}`, props.className)}
+                    className={className}
                     role="img"
                     aria-label={props["aria-label"]}
                     {...props}
                 >
                     <span className="bd-spinner-inner">
-                        <span className="bd-spinner-path" />
-                        <span className="bd-spinner-path" />
+                        <span className={itemClassName} />
+                        <span className={itemClassName} />
                         {(type === SpinnerType.PULSING_ELLIPSIS || type === SpinnerType.LOW_MOTION) && (
-                            <span className="bd-spinner-path" />
+                            <span className={itemClassName} />
                         )}
                     </span>
                 </span>

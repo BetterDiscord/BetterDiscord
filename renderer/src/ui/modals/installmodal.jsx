@@ -19,7 +19,7 @@ import Footer from "@ui/modals/footer";
 import ModalRoot from "@ui/modals/root";
 import CheckBox from "@ui/settings/components/checkbox";
 import Spinner from "@ui/spinner";
-import { FlowerStar } from "@ui/settings/addonshared";
+import {FlowerStar} from "@ui/settings/addonshared";
 
 const {useLayoutEffect, useCallback, useState, useRef} = React;
 
@@ -99,7 +99,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
 
     const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
     const attemptJoinGuild = useCallback(() => addon.joinGuild(), [addon]);
-    const openSourceCode = useCallback(() => addon.openRawCode(), [addon]);
+    const openSourceCode = useCallback(() => addon.openSourceCode(), [addon]);
 
     const [isInstalling, setInstalling] = useState(false);
 

@@ -114,17 +114,30 @@ export default class BetterDiscord {
             hasCrashed = true;
         });
 
+        // Seems to be windows exclusive. MacOS requires a build plist change
         if (electron.app.setAsDefaultProtocolClient("betterdiscord")) {
-            process.env.BETTERDISCORD_PROTOCOL = process.argv.find((arg) => arg.startsWith("betterdiscord://"));
+            // If application was opened via protocol, set process.env.BETTERDISCORD_PROTOCOL
+            const protocol = process.argv.find((arg) => arg.startsWith("betterdiscord://"));
+            if (protocol) {
+                process.env.BETTERDISCORD_PROTOCOL = process.argv.find((arg) => arg.startsWith("betterdiscord://"));
+            }
+
+            // I think this is how it works on MacOS
+            // But cant work still because of a build plist needs changed (I think?)
+            electron.app.on("open-url", (event, url) => {
+                if (url.startsWith("betterdiscord://")) {
+                    browserWindow.webContents.send(IPCEvents.HANDLE_PROTOCOL, url);
+                }
+            });
 
             electron.app.on("second-instance", (event, argv) => {
                 // Ignore multi instance
-                if (~argv.indexOf("--multi-instance")) return;
+                if (argv.includes("--multi-instance")) return;
 
-                const arg = argv.find((arg) => arg.startsWith("betterdiscord://"));
+                const url = argv.find((arg) => arg.startsWith("betterdiscord://"));
 
-                if (arg) {
-                    browserWindow.webContents.send(IPCEvents.HANDLE_PROTOCOL, arg);
+                if (url) {
+                    browserWindow.webContents.send(IPCEvents.HANDLE_PROTOCOL, url);
                 }
             });
         }

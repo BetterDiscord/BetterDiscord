@@ -9,16 +9,20 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 import Utilities from "@modules/utilities";
 import Settings from "@modules/settingsmanager";
+import RemoteAPI from "@polyfill/remote";
 
 const SimpleMarkdownWrapper = WebpackModules.getByProps("parse", "defaultRules");
-
 let MessageAccessories;
 
 const MAX_EMBEDS = 10;
 
-// Make it so we can detect links that have <> around them
-const ADDON_REGEX_SOURCE = "(?:https?:\\/\\/betterdiscord\\.app\\/(?:theme|plugin)|betterdiscord:\\/\\/(?:(?:theme|plugin|addon)s?)|store)(?:\\/|\\?id=)(\\S+)";
-const ADDON_REGEX = new RegExp(`(?:<${ADDON_REGEX_SOURCE}>|${ADDON_REGEX_SOURCE})`, "gi");
+const PROTOCOL_REGEX = /^<betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/([^/\s]+)\/?>/i;
+const APP_PROTOCOL_REGEX = /^betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/([^/]+)\/?$/i;
+
+const ADDON_REGEX = new RegExp([
+    PROTOCOL_REGEX.source.slice(1),
+    /https?:\/\/betterdiscord\.app\/(?:theme|plugin)(?:\/([^/\s]+)\/?|\?id=(\d+))/.source
+].join("|"), "gi");
 
 /**
  * Extract all bd addon links
@@ -35,13 +39,13 @@ function extractAddonLinks(text, max = Infinity) {
 
     /** @type {RegExpExecArray} */
     let exec;
-    while ((exec = ADDON_REGEX.exec(text))) {
+    while ((exec = ADDON_REGEX.exec(text))) {                
         // if https://betterdiscord.app/type/id not <https://betterdiscord.app/type/id>
         // if <betterdiscord://addon/id> not betterdiscord://addon/id
-        if (!(exec[0][0] === "h" || exec[0][1] === "b")) continue;
+        if (exec[0][0] === "h" && text[exec.index - 1] === "<") continue;
 
         matches.push({
-            id: exec[1] || exec[2],
+            id: exec[1] || exec[2] || exec[3],
             match: exec[0],
             index: exec.index
         });
@@ -59,13 +63,22 @@ export default new class AddonStoreBuiltin extends Builtin {
         super();
 
         Settings.on(this.collection, this.category, "addonEmbeds", () => this.forceUpdateChat());
+
+        RemoteAPI.setProtocolListener((url) => {
+            if (!Settings.get(this.collection, this.category, this.id)) return;
+            
+            const match = url.match(APP_PROTOCOL_REGEX);
+            if (!match) return;
+
+            AddonStore.requestAddon(decodeURIComponent(match[1])).then((addon) => addon.download());
+        });
     }
 
     get name() {return "AddonStore";}
     get category() {return "store";}
     get id() {return "bdAddonStore";}
 
-    async enabled() {
+    enabled() {
         this.patchEmbeds();
         this.patchMarkdown();
     }
@@ -85,7 +98,7 @@ export default new class AddonStoreBuiltin extends Builtin {
             }
             
             // Update forward messages
-            for (const forward of message.querySelectorAll(`[id^="message-accessories-"] [id^="message-accessories-"]`)) {
+            for (const forward of message.querySelectorAll("[id^=\"message-accessories-\"] [id^=\"message-accessories-\"]")) {
                 ReactUtils.getOwnerInstance(forward).forceUpdate();
             }
         }
@@ -101,23 +114,21 @@ export default new class AddonStoreBuiltin extends Builtin {
              */
             match: (text, state) => {
                 if (!state.allowLinks) return;
-                return /^<betterdiscord:\/\/(?:(theme|plugin|addon)s?|store)\/(\S+)>/i.exec(text);
+                return PROTOCOL_REGEX.exec(text);
             },
             /**
              * @param {RegExpExecArray} exec 
              * @param {Function} parse 
              * @param {Record<string, any>} state 
              */
-            parse: (exec) => {
-                return {
-                    type: this.id,
-                    content: [{
-                        type: "text",
-                        content: exec[0].slice(1, -1)
-                    }],
-                    exec
-                };
-            },
+            parse: (exec) => ({
+                type: this.id,
+                content: [{
+                    type: "text",
+                    content: exec[0].slice(1, -1)
+                }],
+                exec
+            }),
             /**
              * @param {{ content: any, exec: RegExpExecArray }} node 
              * @param {Function} parse 
@@ -136,7 +147,7 @@ export default new class AddonStoreBuiltin extends Builtin {
                     onClick(event) {
                         event.preventDefault();
 
-                        AddonStore.requestAddon(node.exec[2]).then(addon => addon.download(false));
+                        AddonStore.requestAddon(node.exec[1]).then(addon => addon.download(false));
                     }
                 }, parse(node.content, state));
             }
@@ -149,7 +160,7 @@ export default new class AddonStoreBuiltin extends Builtin {
         MessageAccessories ??= await WebpackModules.getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
 
         this.after(MessageAccessories.prototype, "renderEmbeds", (_, [ message ], res) => {
-            if (!Settings.get("settings", "store", "addonEmbeds")) {
+            if (!Settings.get(this.collection, this.category, "addonEmbeds")) {
                 return res;
             }
 
@@ -171,16 +182,12 @@ export default new class AddonStoreBuiltin extends Builtin {
             
             const matches = extractAddonLinks(message.content, MAX_EMBEDS);
             
-            // Go throught and either replace a prexisting embed
-            // or add a new one
-
+            // Go through and either replace a prexisting embed or add a new one
             if (matches.length) {
                 const embeds = [ ...res ];
 
                 for (let key = 0; key < matches.length; key++) {
                     const {match, id} = matches[key];
-                    // How to use labeled statements?
-                    // So i can just continue the matches one
                     let shouldAdd = embeds.length < MAX_EMBEDS;
 
                     for (let embedIndex = 0; embedIndex < res.length; embedIndex++) {

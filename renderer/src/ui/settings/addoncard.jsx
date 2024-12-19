@@ -27,6 +27,7 @@ import ErrorIcon from "@ui/icons/error";
 import ThemeIcon from "@ui/icons/theme";
 import {FlowerStar} from "./addonshared";
 import AddonStore from "@modules/addonstore";
+import Utilities from "@modules/utilities";
 
 const {useState, useCallback, useMemo, useEffect} = React;
 
@@ -81,11 +82,8 @@ function buildLink(type, url) {
         link.props.onClick = function(event) {
             event.preventDefault();
             event.stopPropagation();
-            let code = url;
-            const tester = /\.gg\/(.*)$/;
-            if (tester.test(code)) code = code.match(tester)[1];
-            LayerManager.popLayer();
-            DiscordModules.InviteActions?.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
+            
+            Utilities.showGuildJoinModal(url);
         };
     }
     return makeButton(Strings.Addons[type], link);

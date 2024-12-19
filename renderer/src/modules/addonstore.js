@@ -1,4 +1,3 @@
-import request from "request";
 import path from "path";
 import fs from "fs";
 
@@ -12,11 +11,9 @@ import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
 import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
-import DiscordModules from "@modules/discordmodules";
 import Settings from "@modules/settingsmanager";
 import Web from "@data/web";
-import RemoteAPI from "@polyfill/remote";
-import { HANDLE_PROTOCOL } from "@common/constants/ipcevents";
+import Utilities from "./utilities";
 
 /**
  * @typedef {{
@@ -33,7 +30,8 @@ import { HANDLE_PROTOCOL } from "@common/constants/ipcevents";
  *      initial_release_date: string,
  *      latest_release_date: string,
  *      guild: RawAddonGuild | null,
- *      version: string
+ *      version: string,
+ *      latest_source_url: string
  * }} RawAddon
  */
 
@@ -58,6 +56,10 @@ import { HANDLE_PROTOCOL } from "@common/constants/ipcevents";
  * }} RawAddonGuild
  */
 
+/**
+ * @param {Addon} addon 
+ * @returns {Promise<boolean>}
+ */
 function showConfirmDelete(addon) {
     return new Promise(resolve => {
         Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
@@ -73,13 +75,20 @@ function showConfirmDelete(addon) {
 /** @typedef {Guild} Guild */
 
 class Guild {
-    /** @type {Record<string, Guild>} */
+    /** 
+     * @private
+     * @type {Record<string, Guild>}
+     */
     static cache = {};
 
-    /** @param {RawAddonGuild} guild  */
-    constructor(guild) {        
-        if (typeof Guild.cache[guild.id] === "object") {
-            const cached = Guild.cache[guild.id];
+    /**
+     * @public
+     * @param {RawAddonGuild} guild 
+     * @returns {Guild}
+     */
+    static from(guild) {
+        if (typeof this.cache[guild.id] === "object") {
+            const cached = this.cache[guild.id];
 
             cached.name = guild.name;
             cached.invite = guild.invite_link;
@@ -88,6 +97,14 @@ class Guild {
             return cached;
         }
 
+        return new this(guild);
+    }
+
+    /**
+     * @private
+     * @param {RawAddonGuild} guild
+     */
+    constructor(guild) {
         this.name = guild.name;
         this.id = guild.snowflake;
 
@@ -96,36 +113,63 @@ class Guild {
         this.hash = guild.avatar_hash?.trim?.();
     }
 
+    /** @public */
     get url() {
         let filename = `${this.hash}.webp`;
         if (filename.startsWith("a_")) filename = `${this.hash}.gif`;
         
-        return `https://cdn.discordapp.com/icons/${this.id}/${filename}?size=96`;
+        return `https://cdn.discordapp.com/icons/${this.id}/${filename}?size=256`;
     }
+    /** @public */
     get acronym() {return this.name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");}
 }
 
 class Addon {
-    /** @type {Record<string, Addon>} */
+    /** 
+     * @private
+     * @type {Record<string, Addon>} 
+     */
     static cache = {};
 
-    /** @param {RawAddon} addon  */
-    constructor(addon) {
-        if (typeof Addon.cache[addon.id] === "object") {
-            const cached = Addon.cache[addon.id];
+    /**
+     * Update pre-existing addon class without create a new one
+     * @public
+     * @param {RawAddon} addon 
+     * @returns {Addon}
+     */
+    static from(addon) {
+        // Dont create a new one if addon already exists
+        // Just sync data
+        if (typeof this.cache[addon.id] === "object") {
+            const cached = this.cache[addon.id];            
 
             cached.downloads = Math.max(cached.downloads, addon.downloads);
             cached.likes = Math.max(cached.likes, addon.likes);
 
             const guild = addon.guild || addon.author.guild;
             /** @type {Guild | null} */
-            cached.guild = guild ? new Guild(guild) : null;
+            cached.guild = guild ? Guild.from(guild) : null;
+
+            cached.latestSourceUrl = addon.latest_source_url;
+            cached.version = addon.version;
+            cached.description = addon.description;
+            cached.tags = addon.tags;
+            cached.thumbnail = Web.resources.thumbnail(addon.thumbnail_url);
 
             cached._addon = addon;
 
             return cached;
         }
 
+        return new this(addon);
+    }
+
+    /**
+     * Do not directly call
+     * @private
+     * @param {RawAddon} addon 
+     */
+    constructor(addon) {
         this.id = addon.id;
         this.name = addon.name;
 
@@ -140,10 +184,9 @@ class Addon {
         
         const guild = addon.guild || addon.author.guild;
         /** @type {Guild | null} */
-        this.guild = guild ? new Guild(guild) : null;
+        this.guild = guild ? Guild.from(guild) : null;
         
         this.manager = addon.type === "plugin" ? PluginManager : ThemeManager;
-        this.updater = addon.type === "plugin" ? require("./updater").PluginUpdater : require("./updater").ThemeUpdater;
         
         this.description = addon.description;
         
@@ -156,6 +199,8 @@ class Addon {
 
         this.filename = addon.file_name;
 
+        this.latestSourceUrl = addon.latest_source_url;
+
         /** @private */
         this._addon = addon;
         
@@ -164,6 +209,7 @@ class Addon {
 
     /**
      * To prompt new addons
+     * @public
      * @returns {boolean} 
      */
     isUnknown() {
@@ -172,7 +218,11 @@ class Addon {
         if (!data) return false;
         return !data[this.filename];
     }
-    /** To hide the badge */
+
+    /** 
+     * To hide the badge
+     * @public
+     */
     markAsKnown() {
         const data = DataStore.getBDData("known-addons");
 
@@ -184,101 +234,97 @@ class Addon {
         DataStore.setBDData("known-addons", data);
     }
 
-    /** Opens the Theme preview site */
-    async openPreview() {
+    /** 
+     * Opens the Theme preview site
+     * @public
+     */
+    openPreview() {
         if (this.type === "plugin") {
             throw new Error("Addon is a plugin!");
         }
-
-        const response = await fetch(Web.redirects.github(this.id), {method: "HEAD"});
-
-        if (!response.ok) {
-            throw new Error("Unable to get github url!");
-        }
       
-        window.open(Web.previewURL(response.url), "_blank", "noopener,noreferrer");
+        window.open(Web.previewURL(this.latestSourceUrl), "_blank", "noopener,noreferrer");
     }
 
-    /** Opens the bd's site page for the addon */
+    /** 
+     * Opens the bd's site page for the addon
+     * @public
+     */
     openAddonPage() {
         window.open(Web.redirects[this.type](this.id), "_blank", "noopener,noreferrer");
     }
 
-    /** Opens the raw code page */
-    openRawCode() {
-        window.open(Web.redirects.github(this.id), "_blank", "noopener,noreferrer");
+    /**
+     * Opens the addons github page
+     * @public
+     */
+    openSourceCode() {
+        window.open(Web.convertRawGitHubUrl(this.latestSourceUrl), "_blank", "noopener,noreferrer");
     }
 
-    /** Opens the raw code page */
+    /** 
+     * Opens the raw code page 
+     * @public
+     */
     openAuthorPage() {
         window.open(Web.pages.developer(this.author), "_blank", "noopener,noreferrer");
     }
 
-    /** Attempts to join guild */
+    /**
+     * Attempts to join a guild
+     * @public
+     */
     joinGuild() {
         if (!this.guild) return;
 
-        let code = this.guild.invite;
-        const tester = /\.gg\/(.*)$/;
-        if (tester.test(code)) code = code.match(tester)[1];
-        
-        DiscordModules.Dispatcher.dispatch({
-            type: "LAYER_POP"
-        });
-
-        DiscordModules.InviteActions?.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
+        Utilities.showGuildJoinModal(this.guild.invite);
     }
 
     /**
      * Attempt to download addon
      * Shows a confirmation modal (unless skipped) then installs the addon
+     * @public
      * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
      * @returns {Promise<void>}
      */
     async download(shouldSkipConfirm = false) {
         if (this.isInstalled()) return;
 
-        const install = (shouldEnable) => new Promise((resolve, reject) => {
-            // Sometimes there is a weird issue where the download endpoint returns a 302
-            // But nothing indiciating a true redirect, so it will fallback to using the github redirect
-            const createCallback = (isWrapper) => {
-                return (error, req, body) => {
-                    if (error || req.statusCode >= 300 || req.statusCode < 200) {
-                        Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}' trying again:`, error || req);
-
-                        if (isWrapper && req.statusCode === 302) {
-                            request(Web.redirects.github(this.id), createCallback(false));
-                            return;
-                        }
-                        
-                        Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error || req);
-            
-                        Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
-                            type: "danger"
-                        });
-
-                        reject(error || new Error(`Failed to fetch addon with status ${req.statusCode}!`));
-
-                        return;
+        const install = async (shouldEnable) => {
+            try {
+                const request = await fetch(Web.redirects.github(this.id), {
+                    headers: {
+                        // Tell the site to count the download
+                        "X-Store-Download": this.name
                     }
-    
-                    // If should enable, tell the manager that it is before hand
-                    if (shouldEnable) {
-                        this.manager.state[this.name] = true;
-                    }
-            
-                    Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
-                        type: "success"
-                    });
-            
-                    fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), body);
-    
-                    resolve();
-                };
-            };
+                });
 
-            request(Web.redirects.download(this.id), createCallback(true));
-        });
+                if (!request.ok) {
+                    throw new Error("Addon was not found!");
+                }
+
+                const text = await request.text();
+
+                if (shouldEnable) {
+                    this.manager.state[this.name] = true;
+                }
+                
+                fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), text);
+
+                Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
+                    type: "success"
+                });
+
+                this.downloads++;
+            } 
+            catch (error) {
+                Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error);
+    
+                Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
+                    type: "danger"
+                });
+            }
+        };
         
         return this._download ??= new Promise((resolve) => {
             if (shouldSkipConfirm) return install(Settings.get("settings", "store", "alwaysEnable")).finally(() => resolve());
@@ -309,7 +355,8 @@ class Addon {
     }
 
     /**
-     * Attempt to delete addon
+     * Attempt to delete the local addon
+     * @public
      * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
      */
     async delete(shouldSkipConfirm = false) {
@@ -325,10 +372,12 @@ class Addon {
         if (this.manager.deleteAddon) this.manager.deleteAddon(foundAddon);
     }
 
+    /** @public */
     isInstalled() {
         return this.manager.isLoaded(this.filename);
     }
 
+    /** @public */
     recentlyUpdated() {
         const now = new Date();
         const oneWeekAgo = new Date();
@@ -350,6 +399,7 @@ class Store {
      * @private 
      */
     addons = [];
+    /** @public */
     getAddons() {return this.addons.concat();}
 
     /** @readonly */
@@ -368,7 +418,8 @@ class Store {
         this.requestAddons();
     };
 
-    requestAddons() {
+    /** @public */
+    async requestAddons() {
         Logger.debug("AddonStore", `Requesting all ${this.type}s`);
 
         this.loading = true;
@@ -379,59 +430,62 @@ class Store {
 
         this._emitChange();
 
-        request(Web.store[this.type + "s"], (error, _, body) => {
-            try {
-                this.error = null;
-                this.loading = false;
+        try {
+            const request = await fetch(Web.store[this.type + "s"]);
 
-                if (error) {
-                    Logger.stacktrace("AddonStore", `Failed to fetch ${this.type}`, error);
-    
-                    Toasts.show(Strings.Addons.failedToFetch, {
-                        type: "danger"
-                    });
+            if (!request.ok) throw new Error("Request was not ok!");
 
-                    this.error = error instanceof Error ? error : new Error(String(error));
-    
+            /** @type {RawAddon[]} */
+            const json = await request.json();
+            
+            this.addons.push(...json.map((addon) => Addon.from(addon)));
+
+            const data = DataStore.getBDData("known-addons");
+            if (data) {
+                for (const addon of this.addons) {
+                    if (addon.filename in data) continue;
+
+                    data[addon.filename] = false;
+                }
+
+                DataStore.setBDData("known-addons", data);
+            }
+
+            this.error = null;
+        } 
+        catch (error) {
+            Logger.stacktrace("AddonStore", `Failed to fetch ${this.type}`, error);
+
+            Toasts.show(Strings.Addons.failedToFetch, {
+                type: "danger"
+            });
+
+            this.error = error instanceof Error ? error : new Error(String(error));
+        }
+        finally {
+            this.loading = false;
+
+            this._emitChange();
+
+            let minutes = 60;
+
+            if (this.error) {
+                minutes = 5;
+
+                // If the user is not online, just wait until the user is online
+                if (this.error.message.startsWith("getaddrinfo ENOTFOUND") && !window.navigator.onLine) {
+                    Logger.debug("AddonStore", "User is offline waiting for connection...");
+
+                    window.removeEventListener("online", this._onLineListener);
+                    window.addEventListener("online", this._onLineListener);
+
+                    // eslint-disable-next-line no-unsafe-finally
                     return;
                 }
-    
-                this.addons.push(...JSON.parse(body).map((addon) => new Addon(addon)));
-
-                const data = DataStore.getBDData("known-addons");
-                if (data) {
-                    for (const addon of this.addons) {
-                        if (addon.filename in data) continue;
-
-                        data[addon.filename] = false;
-                    }
-
-                    DataStore.setBDData("known-addons", data);
-                }
-            } 
-            finally {
-                this._emitChange();
-
-                let minutes = 60;
-
-                if (this.error) {
-                    minutes = 5;
-
-                    // If the user is not online, just wait until the user is online
-                    if (this.error.message.startsWith("getaddrinfo ENOTFOUND") && !window.navigator.onLine) {
-                        Logger.debug("AddonStore", "User is offline waiting for connection...");
-
-                        window.removeEventListener("online", this._onLineListener);
-                        window.addEventListener("online", this._onLineListener);
-
-                        // eslint-disable-next-line no-unsafe-finally
-                        return;
-                    }
-                }
-
-                this._setTimeout = setTimeout(() => this.requestAddons(), minutes * 60 * 1000);
             }
-        });
+
+            this._setTimeout = setTimeout(() => this.requestAddons(), minutes * 60 * 1000);
+        }
     }
 
     /** @private */
@@ -439,7 +493,10 @@ class Store {
 
     /** @private */
     _initialized = false;
-    /** Wrapper for {@link requestAddons} to allow it to be called only once, used in the UI */
+    /**
+     * Wrapper for {@link requestAddons} to allow it to be called only once, used in the UI 
+     * @public
+     */
     initialize() {
         if (this._initialized) return;
         this._initialized = true;
@@ -470,6 +527,7 @@ class Store {
     }
     /** 
      * A react hook for {@link getState}
+     * @public
      * @returns {ReturnType<typeof this["getState"]>}
      */
     useState() {
@@ -495,29 +553,21 @@ class Store {
 const ThemeStore = new Store("theme");
 const PluginStore = new Store("plugin");
 
-const STORE_PROTOCOL_REGEX = /^betterdiscord:\/\/(?:(?:theme|plugin|addon)s?|store)\/(.+?)\/?$/i;
-
 const addonStore = new class AddonStore {
     constructor() {
         if (!DataStore.getBDData("known-addons")) {
-            request(Web.store.addons, (err, req, body) => {
-                if (err) return;
-
-                const addons = JSON.parse(body);                
+            fetch(Web.store.addons).then(async (request) => {
+                const addons = await request.json();
 
                 DataStore.setBDData("known-addons", Object.fromEntries(addons.map(m => [ m.file_name, true ])));
             });
         }
-
-        RemoteAPI.setProtocolListener((url) => {
-            const match = url.match(STORE_PROTOCOL_REGEX);
-            if (!match) return;            
-
-            this.requestAddon(decodeURIComponent(match[1])).then((addon) => addon.download());
-        });
     }
 
-    /** @param {"plugin" | "theme"} type  */
+    /** 
+     * @public
+     * @param {"plugin" | "theme"} type 
+     */
     getStore(type) {
         if (type === "plugin") return PluginStore;
         return ThemeStore;
@@ -526,7 +576,8 @@ const addonStore = new class AddonStore {
     /** @private */
     _singleAddonCache = {};
     /**
-     * Used for the embeds and download api
+     * Request a singular addon at a time
+     * @public
      * @param {number|string} idOrName 
      * @returns {Promise<Addon>}
      */
@@ -534,25 +585,39 @@ const addonStore = new class AddonStore {
         const cache = this.getAddon(idOrName);
         if (typeof cache === "object") return Promise.resolve(cache);
 
-        return this._singleAddonCache[idOrName] ??= new Promise((resolve, reject) => {
-            request(Web.store.addon(idOrName), (error, _, body) => {
-                const data = JSON.parse(body);
-
-                if (error || data.status === 404) {
-                    reject(error || data.title);
-                    return;
+        return this._singleAddonCache[idOrName] ??= (async () => {
+            try {
+                const request = await fetch(Web.store.addon(idOrName));
+                /** @type {RawAddon | { title: string, status: number }} */
+                const data = await request.json();
+    
+                if (!request.ok || data.status === 404) {
+                    throw new Error(data.title);
                 }
-
+    
                 this._singleAddonCache[data.name] = this._singleAddonCache[idOrName];
                 this._singleAddonCache[data.id] = this._singleAddonCache[idOrName];
+    
+                return Addon.from(data);
+            } 
+            catch (error) {
+                Logger.stacktrace("AddonStore", `Failed to fetch ${idOrName}`, error);
+    
+                Toasts.show(Strings.Addons.failedToFetch, {
+                    type: "danger"
+                });
 
-                resolve(new Addon(data));
-            });
-        });
+                // To allow future fetches
+                delete this._singleAddonCache[idOrName];
+
+                throw error;
+            }
+        })();
     }
 
     /**
      * Gets a addon via id or name
+     * @public 
      * @param {number|string} id 
      * @returns {Addon | null}
      */
@@ -569,12 +634,14 @@ const addonStore = new class AddonStore {
     }
 
     /**
+     * @public
      * @param {string} filename
+     * @returns {boolean}
      */
     isOfficial(filename) {
         const data = DataStore.getBDData("known-addons");
 
-        return data && filename in data;
+        return Boolean(data && filename in data);
     }
 };
 

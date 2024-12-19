@@ -37,6 +37,7 @@ function formatNumberWithSuffix(value) {
 export default function AddonCard({addon, isEmbed}) {
     const [isInstalled, setInstalled] = useState(() => addon.isInstalled());
     const [disabled, setDisabled] = useState(false);
+    const [downloadCount, setDownloads] = useState(addon.downloads);
 
     const [isTagEnabled, toggleTag] = useContext(TagContext);
 
@@ -47,12 +48,13 @@ export default function AddonCard({addon, isEmbed}) {
         
         await addon.download(event.shiftKey);
 
+        setDownloads(addon.downloads);
+
         setDisabled(false);
     }, [addon]);
 
-    // Maybe show the guild invite confirm modal?
     const acceptInvite = useCallback(() => addon.joinGuild(), [addon]);
-    const openSourceCode = useCallback(() => addon.openRawCode(), [addon]);
+    const openSourceCode = useCallback(() => addon.openSourceCode(), [addon]);
     const openAddonPage = useCallback(() => addon.openAddonPage(), [addon]);
     const openAddonPreview = useCallback(() => addon.openPreview(), [addon]);
     const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
@@ -75,13 +77,13 @@ export default function AddonCard({addon, isEmbed}) {
 
     const badge = useMemo(() => {
         if (addon.isUnknown()) return Strings.Addons.new;
-        if (addon.recentlyUpdated()) return "UPDATED";
+        if (addon.recentlyUpdated()) return Strings.Addons.updated;
     }, [addon]);
 
     const {downloads, likes} = useMemo(() => ({
-        downloads: Strings.Addons.downloadCount.format({downloads: formatNumberWithSuffix(addon.downloads)}),
+        downloads: Strings.Addons.downloadCount.format({downloads: formatNumberWithSuffix(downloadCount)}),
         likes: Strings.Addons.likeCount.format({likes: formatNumberWithSuffix(addon.likes)}),
-    }), [addon]);
+    }), [addon, downloadCount]);
 
     return (
         <div 

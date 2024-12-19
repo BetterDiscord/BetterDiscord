@@ -71,6 +71,20 @@ export default new class Web {
         
         return `https://discord-preview.vercel.app/?file=${encodeURIComponent(jsdelivr)}`;
     }
+
+    /** @param {string} rawGitURL  */
+    convertRawGitHubUrl(rawGitURL) {
+        const match = rawGitURL.match(RAW_GIT_URL);
+
+        if (!match) {
+            throw new Error("Enable to parse url!");
+        }
+        // https://github.com/QWERTxD/BetterDiscordPlugins/blob/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
+        // https://raw.githubusercontent.com/QWERTxD/BetterDiscordPlugins/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
+        const [, user, repo, commit, filePath] = match;
+        
+        return `https://github.com/${user}/${repo}/blob/${commit}/${filePath}`;
+    }
     
     redirects = {
         github: makeRedirects("/gh-redirect"),

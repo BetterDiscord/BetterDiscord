@@ -13,15 +13,14 @@ export * as os from "os";
 import electron from "electron";
 import * as IPCEvents from "common/constants/ipcevents";
 
-// Currently for the store, but can easily be changed later anywhere
+// Currently for the store, but can easily be changed later on
+const {BETTERDISCORD_PROTOCOL} = process.env;
+delete process.env.BETTERDISCORD_PROTOCOL;
+
 export function setProtocolListener(callback) {
-    const listener = (event, url) => callback(url);
-
-    if (process.env.BETTERDISCORD_PROTOCOL) {
-        callback(process.env.BETTERDISCORD_PROTOCOL);
-
-        delete process.env.BETTERDISCORD_PROTOCOL;
+    if (BETTERDISCORD_PROTOCOL) {
+        process.nextTick(() => callback(BETTERDISCORD_PROTOCOL));
     }
 
-    electron.ipcRenderer.on(IPCEvents.HANDLE_PROTOCOL, listener);
+    electron.ipcRenderer.on(IPCEvents.HANDLE_PROTOCOL, (event, url) => callback(url));
 }
