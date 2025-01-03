@@ -33,12 +33,11 @@ const OptionTypes = {
 };
 
 const iconClasses = {...Webpack.getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask), builtInSeparator: Webpack.getModule(x=>x.builtInSeparator).builtInSeparator}
-const [module_icons, key_icons] = Webpack.getWithKey(Webpack.Filters.byStrings(".type===", ".BUILT_IN?"), {
+const ApplicationIcons = Webpack.getWithKey(Webpack.Filters.byStrings(".type===", ".BUILT_IN?"), {
     target: Webpack.getModule((e, m) => Webpack.modules[m.id].toString().includes("hasSpaceTerminator:"))
 });
-const [module_app, key_app] = Webpack.getWithKey(Filters.byStrings('.getScoreWithoutLoadingLatest'));
-const [module_slashcommand_sidebar, key_slashcommand_sidebar] = Webpack.getWithKey(Filters.byStrings('.setActiveCategoryIndex',',getScrollOffsetForIndex:'))
-const [module, key] = Webpack.getWithKey(Filters.byStrings('.BUILT_IN_INTEGRATION'));
+const ApplicationCommandIndexStore = Webpack.getWithKey(Filters.byStrings('.getScoreWithoutLoadingLatest'));
+const BuiltInModule = Webpack.getWithKey(Filters.byStrings('.BUILT_IN_INTEGRATION'));
 
 class MainCommandAPI {
     static #commands = new Map();
@@ -62,7 +61,15 @@ class MainCommandAPI {
     }
 
     static #patchCommandSystem() {
-        Patcher.after('CommandsManager', module, key, (_, args, commands) => {
+        /* Code for later. Will be sidebar patch. */
+        /*Patcher.after('CommandsManager', sidebarModule, "Z", (_, args, res) => {
+            const Unpatch = Patcher.after('CommandsManager', res, 'type', (_,args, res) => {
+                Unpatch()
+                console.log(args, res)
+            })
+        });*/
+
+        Patcher.after('CommandsManager', ...BuiltInModule, (_, args, commands) => {
             const allCommands = Array.from(this.#commands.values())
                 .flatMap(commandMap => Array.from(commandMap.values()))
                 .map(command => ({
@@ -73,7 +80,7 @@ class MainCommandAPI {
             return [...commands, ...allCommands];
         });
 
-        Patcher.after('CommandsManager', module_app, key_app, (that, args, res) => {
+        Patcher.after('CommandsManager', ...ApplicationCommandIndexStore, (that, args, res) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
 
             for (const sectionedCommand of res.sectionedCommands) {
@@ -97,7 +104,7 @@ class MainCommandAPI {
             return res;
         });
 
-        Patcher.after('CommandsManager', module_icons, key_icons, (that, [{ id }], res) => {
+        Patcher.after('CommandsManager', ...ApplicationIcons, (that, [{ id }], res) => {
             let iconUrl = pluginmanager.getAddon(id)?.icon ?? null;
 
             function Logo({ width, height, padding = 0, className, isSelected, selectable }) {
@@ -152,7 +159,7 @@ class MainCommandAPI {
     }
 
     static #formatCommand(command) {
-        if (!command?.id || !command?.displayName || !command?.execute) {
+        if (!command?.id || !command?.name || !command?.execute) {
             return 'Invalid command format: missing required properties';
         }
     
@@ -160,10 +167,10 @@ class MainCommandAPI {
             get id() { return command.id; },
             get __registerId() { return command.id; },
             get applicationId() { return command.caller; },
-            get displayName() { return command.displayName; },
+            get displayName() { return command.name; },
             get target() { return 1; },
-            get name() { return command.name || command.displayName.toLowerCase(); },
-            get untranslatedName() { return command.untranslatedName || command.displayName.toLowerCase(); },
+            get name() { return command.name },
+            get untranslatedName() { return command.name },
             get type() { return command.type || CommandTypes.CHAT_INPUT; },
             get inputType() { return command.inputType || InputTypes.BUILT_IN; },
             get displayDescription() { return command.description || ""; },
@@ -181,8 +188,8 @@ class MainCommandAPI {
             throw new Error('MainCommandAPI must be initialized before registering commands');
         }
 
-        if (!caller || !command?.displayName || !command?.execute) {
-            throw new Error('Command must have a caller, displayName, and execute function');
+        if (!caller || !command?.name || !command?.execute) {
+            throw new Error('Command must have a caller, name, and execute function');
         }
 
         const pluginCommands = this.#commands.get(caller) || new Map();
