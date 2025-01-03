@@ -5,13 +5,23 @@
 .bd-radio-option {
     display: flex;
     align-items: center;
-    padding: 10px;
+    border-left: 3px solid transparent;
+    padding: 10px 10px 10px 7px;
     margin-bottom: 8px;
     cursor: pointer;
     user-select: none;
     background-color: var(--background-secondary);
     border-radius: 3px;
     color: var(--interactive-normal);
+}
+
+.bd-radio-group.bd-radio-disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.bd-radio-group.bd-radio-disabled .bd-radio-option {
+    pointer-events: none;
 }
 
 .bd-radio-option:hover {

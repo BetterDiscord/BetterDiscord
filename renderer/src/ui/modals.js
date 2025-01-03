@@ -1,5 +1,3 @@
-import Config from "@data/config";
-
 import FormattableString from "@structs/string";
 
 import Logger from "@common/logger";
@@ -201,7 +199,7 @@ export default class Modals {
                 onCloseCallback: () => {
                     if (props?.transitionState === 2) onClose?.();
                 }
-            }, props), React.createElement(ErrorBoundary, {}, content)));
+            }, props), React.createElement(ErrorBoundary, {id: "showConfirmationModal", name: "Modals"}, content)));
         }, {modalKey: key});
         return modalKey;
     }
@@ -216,15 +214,13 @@ export default class Modals {
             themeErrors: Array.isArray(themeErrors) ? themeErrors : []
         };
         this.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(AddonErrorModal, Object.assign(options, props)));
+            return React.createElement(ErrorBoundary, {id: "showAddonErrors", name: "Modals"}, React.createElement(AddonErrorModal, Object.assign(options, props)));
         });
     }
 
     static showChangelogModal(options = {}) {
-        options = Object.assign({image: "https://i.imgur.com/wuh5yMK.png", description: "", changes: [], title: "BetterDiscord", subtitle: `v${Config.version}`}, options);
-
         const key = this.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(ChangelogModal, Object.assign(options, props)));
+            return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign(options, props)));
         });
         return key;
     }
@@ -271,7 +267,7 @@ export default class Modals {
         };
 
         return this.openModal(props => {
-            return React.createElement(ErrorBoundary, null, React.createElement(ConfirmationModal, Object.assign(options, props), child));
+            return React.createElement(ErrorBoundary, {id: "showAddonSettingsModal", name: "Modals"}, React.createElement(ConfirmationModal, Object.assign(options, props), child));
         });
     }
 
@@ -280,7 +276,7 @@ export default class Modals {
     static makeStack() {
         const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
         DOMManager.bdBody.append(div);
-        ReactDOM.render(<ErrorBoundary hideError={true}><ModalStack /></ErrorBoundary>, div);
+        ReactDOM.render(<ErrorBoundary id="makeStack" name="Modals" hideError={true}><ModalStack /></ErrorBoundary>, div);
         this.hasInitialized = true;
     }
     

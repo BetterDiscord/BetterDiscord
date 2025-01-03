@@ -3,6 +3,28 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## 1.11.0
+
+### Added
+ - Added new `showChangelogModal` to the `UI` namespace
+ - Added `getNestedValue` and `semverCompare` to `Utils`
+ - Added settings builders to `UI` namespace as `buildSettingItem` and `buildSettingsPanel`
+ - Added a `Logger` namespace for easier and prettier logging of debug information
+ - Added some React components under `BdApi.Components
+
+### Removed
+
+### Changed
+
+### Fixed
+ - Fixed a `0` showing up when modals weren't on screen
+ - Fixed the version string not showing up in settings
+ - Fixed an issue where enabled/disabling custom css wouldn't update the style
+ - Fixed tooltips not being able to have custom labels
+ - Fixed lazy `Webpack` listeners not being given the correct arguments
+ - Fixed `Filters.combine` not using the correct arguments
+ - Fixed plugin settings modals overflowing the window
+
 ## 1.10.2
 
 ### Added
