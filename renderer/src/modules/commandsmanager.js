@@ -40,10 +40,6 @@ const [module_app, key_app] = Webpack.getWithKey(Filters.byStrings('.getScoreWit
 const [module_slashcommand_sidebar, key_slashcommand_sidebar] = Webpack.getWithKey(Filters.byStrings('.setActiveCategoryIndex',',getScrollOffsetForIndex:'))
 const [module, key] = Webpack.getWithKey(Filters.byStrings('.BUILT_IN_INTEGRATION'));
 
-function classNames(...args) {
-    return args.filter(Boolean).join(' ');
-}
-
 class MainCommandAPI {
     static #commands = new Map();
     static #sections = new Map();
@@ -102,57 +98,57 @@ class MainCommandAPI {
         });
 
         Patcher.after('CommandsManager', module_icons, key_icons, (that, [{ id }], res) => {
-            let iconUrl = pluginmanager.getAddon(id)?.icon ?? null
-        
-            const acronym = id
-                .split('-')
-                .map(part => part[0]?.toUpperCase() || '')
-                .join('') || id
-                .split(' ')
-                .map(part => part[0]?.toUpperCase() || '')
-                .join('');
-        
+            let iconUrl = pluginmanager.getAddon(id)?.icon ?? null;
+
             function Logo({ width, height, padding = 0, className, isSelected, selectable }) {
+                const acronym = id
+                    .split('-')
+                    .map(part => part[0]?.toUpperCase() || '')
+                    .join('') || 
+                    id.split(' ')
+                    .map(part => part[0]?.toUpperCase() || '')
+                    .join('');
+        
                 return React.createElement(
                     "div",
                     {
                         style: { width, height, padding },
-                        className: classNames(
+                        className: [
                             selectable && iconClasses.selectable,
                             isSelected && iconClasses.selected,
                             iconClasses.wrapper,
                             iconClasses.icon,
-                            className,
-                        )
+                            className
+                        ].filter(Boolean).join(' ')
                     },
                     iconUrl
                         ? React.createElement("img", {
-                              src: iconUrl,
-                              alt: acronym,
-                              style: { width: "100%", height: "100%" }
-                          })
+                            src: iconUrl,
+                            alt: acronym,
+                            style: { width: "100%", height: "100%" }
+                        })
                         : React.createElement(
-                              "span",
-                              {
-                                  style: {
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center", 
-                                      fontSize: Math.min(width, height) / 1.2,
-                                      backgroundColor: "transparent",
-                                      borderRadius: "50%",
-                                      width: "100%",
-                                      fontWeight: 'bold',
-                                      height: "100%"
-                                  }
-                              },
-                              acronym
-                          )
+                            "span",
+                            {
+                                style: {
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    fontSize: Math.min(width, height) / 1.2,
+                                    backgroundColor: "transparent",
+                                    borderRadius: "50%",
+                                    width: "100%",
+                                    fontWeight: 'bold',
+                                    height: "100%"
+                                }
+                            },
+                            acronym
+                        )
                 );
             }
         
-            return this.#sections.has(id) ? Logo : res
-        });        
+            return this.#sections.has(id) ? Logo : res;
+        });  
     }
 
     static #formatCommand(command) {
