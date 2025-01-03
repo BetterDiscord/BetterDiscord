@@ -53,6 +53,8 @@ export default new class Core {
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
+        MainCommandAPI.start();
+
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
 
