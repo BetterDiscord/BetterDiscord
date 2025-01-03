@@ -1,0 +1,67 @@
+import MainCommandAPI from "@modules/commandsmanager";
+
+/**
+ * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
+ * This allows plugins to register and manage their own commands.
+ * @type CommandAPI
+ * @summary {@link CommandAPI} is a utility class for managing commands.
+ * @name CommandAPI
+ */
+class CommandAPI {
+    #callerName = "";
+
+    constructor(callerName) {
+        if (!callerName) return;
+        this.#callerName = callerName;
+    }
+
+    /**
+     * Registers a new command
+     * @param {string} caller Name of the caller registering the command
+     * @param {object} command Command object to register
+     */
+    register(caller, command) {
+        if (this.#callerName) {
+            command = caller;
+            caller = this.#callerName;
+        }
+        MainCommandAPI.registerCommand(caller, command);
+        return this.unregister.bind(this, caller, command)
+    }
+
+    /**
+     * Unregisters a specific command
+     * @param {string} caller Name of the caller that registered the command
+     * @param {string} commandId ID of the command to unregister
+     */
+    unregister(caller, commandId) {
+        if (this.#callerName) {
+            commandId = caller;
+            caller = this.#callerName;
+        }
+        MainCommandAPI.unregisterCommand(caller, commandId);
+    }
+
+    /**
+     * Unregisters all commands for a specific caller
+     * @param {string} caller Name of the caller whose commands should be unregistered
+     */
+    unregisterAll(caller) {
+        if (this.#callerName) caller = this.#callerName;
+        MainCommandAPI.unregisterAll(caller);
+    }
+
+    /**
+     * Gets all commands registered by a specific caller
+     * @param {string} caller Name of the caller whose commands should be retrieved
+     * @returns {Array} Array of command objects registered by the caller
+     */
+    getCommandsByCaller(caller) {
+        if (this.#callerName) caller = this.#callerName;
+        return MainCommandAPI.getCommandsByCaller(caller);
+    }
+}
+
+Object.freeze(CommandAPI);
+Object.freeze(CommandAPI.prototype);
+export default CommandAPI;
