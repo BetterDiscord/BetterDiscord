@@ -90,7 +90,7 @@ export default class BdApi {
         this.Data = new Data(pluginName);
         this.DOM = new DOM(pluginName);
         this.Logger = new Logger(pluginName);
-        this.Commands = new CommandAPI(pluginName)
+        this.Commands = new CommandAPI(pluginName);
 
         bounded.set(pluginName, this);
     }
@@ -180,7 +180,7 @@ BdApi.Components = Components;
  * An instance of {@link CommandAPI} for adding slash commands.
  * @type CommandAPI
  */
-BdApi.Commands = CommandsAPI
+BdApi.Commands = CommandsAPI;
 
 /**
  * An instance of {@link Net} for using network related tools.

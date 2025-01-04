@@ -26,7 +26,7 @@ class CommandAPI {
             caller = this.#callerName;
         }
         MainCommandAPI.registerCommand(caller, command);
-        return this.unregister.bind(this, caller, command)
+        return this.unregister.bind(this, caller, command);
     }
 
     /**
