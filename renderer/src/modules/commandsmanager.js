@@ -210,12 +210,14 @@ class MainCommandAPI {
         });
     }
 
+    /*
+    Technically should never be used.
     static stop() {
         Patcher.unpatchAll();
         this.#commands.clear();
         this.#sections.clear();
         this.#initialized = false;
-    }
+    }*/
 
     static #patchCommandSystem() {
         this.#patchSidebarModule();
