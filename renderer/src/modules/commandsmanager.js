@@ -5,6 +5,7 @@ import Logger from "@common/logger";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import BDLogo from "@ui/icons/bdlogo";
+import thememanager from "./thememanager";
 
 const CommandTypes = {
     CHAT_INPUT: 1,
@@ -31,132 +32,6 @@ const OptionTypes = {
     NUMBER: 10,
     ATTACHMENT: 11
 };
-
-const CommandsRegister = [
-    {
-        id: 'betterdiscord-toggle',
-        name: 'toggle',
-        displayName: 'Enable/Disable Plugin or Theme',
-        description: 'Enables or disables a plugin or theme.',
-        options: [
-            {
-                type: OptionTypes.STRING,
-                name: 'type',
-                description: 'The type (plugin/theme) to enable or disable',
-                required: true,
-                choices: [
-                    { name: 'plugin', value: 'plugin' },
-                    { name: 'theme', value: 'theme' }
-                ]
-            },
-            {
-                type: OptionTypes.STRING,
-                name: 'name',
-                description: 'The name of the plugin or theme to enable/disable',
-                required: true,
-                min_length: 1,
-                max_length: 100
-            }
-        ],
-        execute: (data) => {
-            const type = data.find(option => option.name === 'type')?.value;
-            const name = data.find(option => option.name === 'name')?.value;
-
-            if (['plugin', 'theme'].includes(type)) {
-                const targetApi = type === 'plugin' ? BdApi.Plugins : BdApi.Themes;
-                const isEnabled = targetApi.isEnabled(name);
-                isEnabled ? targetApi.disable(name) : targetApi.enable(name);
-            }
-            return { result: `Toggled ${type} ${name}`, send: false };
-        }
-    },
-    {
-        id: 'betterdiscord-plugin-info',
-        name: 'info',
-        displayName: 'Plugin/Theme Info',
-        description: 'Gets information about a plugin or theme.',
-        options: [
-            {
-                type: OptionTypes.STRING,
-                name: 'type',
-                description: 'The type (plugin/theme) to get info about',
-                required: true,
-                choices: [
-                    { name: 'plugin', displayName: 'Plugin', value: 'plugin' },
-                    { name: 'theme', displayName: 'Theme', value: 'theme' }
-                ]
-            },
-            {
-                type: OptionTypes.STRING,
-                name: 'name',
-                description: 'The name of the plugin or theme to get info about',
-                required: true,
-                min_length: 1,
-                max_length: 100
-            }
-        ],
-        execute: (data) => {
-            const type = data.find(option => option.name === 'type')?.value;
-            const name = data.find(option => option.name === 'name')?.value;
-
-            if (type && name) {
-                const pluginOrTheme = type === 'plugin' ? BdApi.Plugins.get(name) : BdApi.Themes.get(name);
-                if (pluginOrTheme) {
-                    const { name, isEnabled, version, author } = pluginOrTheme;
-                    Logger.info(`Fetched info for ${type}: ${name}`);
-                    return { result: `${name}, ${isEnabled ? 'Enabled' : 'Disabled'}, v${version}, ${author}`, send: false };
-                } else {
-                    Logger.error(`No ${type} found with the name: ${name}`);
-                    return { result: `No ${type} found with the name: ${name}`, send: false };
-                }
-            }
-        }
-    },
-    {
-        id: 'betterdiscord-list-plugins-themes',
-        name: 'list',
-        displayName: 'List Plugins and Themes',
-        description: 'Lists all installed plugins and/or themes.',
-        options: [
-            {
-                type: OptionTypes.STRING,
-                name: 'type',
-                description: 'Specify whether to list plugins, themes, or both',
-                required: false,
-                choices: [
-                    { name: 'plugin', displayName: 'Plugin', value: 'plugin' },
-                    { name: 'theme', displayName: 'Theme', value: 'theme' },
-                    { name: 'both', displayName: 'Both', value: 'both' }
-                ]
-            }
-        ],
-        execute: (data) => {
-            const type = data.find(option => option.name === 'type')?.value;
-
-            if (type === 'plugin' || type === 'both') {
-                const plugins = BdApi.Plugins.getAll();
-                let result = 'Listing all installed plugins:\n';
-                plugins.forEach(plugin => {
-                    const { name, version, isEnabled } = plugin;
-                    result += `${name}, v${version}, ${isEnabled ? 'Enabled' : 'Disabled'}\n`;
-                });
-                return { result, send: false };
-            }
-            if (type === 'theme' || type === 'both') {
-                const themes = BdApi.Themes.getAll();
-                let result = 'Listing all installed themes:\n';
-                themes.forEach(theme => {
-                    const { name, version, isEnabled } = theme;
-                    result += `${name}, v${version}, ${isEnabled ? 'Enabled' : 'Disabled'}\n`;
-                });
-                return { result, send: false };
-            }
-            if (!type || !['plugin', 'theme', 'both'].includes(type)) {
-                return { result: 'Please specify "plugin", "theme", or "both" to list the items.', send: false };
-            }
-        }
-    }
-];
 
 const iconClasses = {
     ...Webpack.getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
@@ -205,9 +80,9 @@ class MainCommandAPI {
         this.#initialized = true;
         this.#patchCommandSystem();
 
-        CommandsRegister.forEach(command => {
+        /*CommandsRegister.forEach(command => {
             this.registerCommand('BetterDiscord', command, { icon: 'https://betterdiscord.app/resources/branding/logo_small.svg' });
-        });
+        });*/
     }
 
     /*
@@ -455,9 +330,7 @@ class MainCommandAPI {
         return (data, { channel, guild }) => {
             const result = originalExecute(data, { channel, guild });
 
-            if (result?.result) {
-                this.sendBotMessage(result.result, { channel, guild });
-            }
+            this.sendBotMessage(result, { channel, guild });
 
             return result;
         };
@@ -474,7 +347,8 @@ class MainCommandAPI {
 
         const loadingMessage = createBotMessage({
             channelId: channel.id,
-            content: result,
+            content: result.result || "",
+            embeds: [result.embeds] || [],
             loggingName: "BetterDiscord",
             type: 20
         });
