@@ -30,6 +30,50 @@ const OptionTypes = {
     ATTACHMENT: 11
 };
 
+/**
+ * @typedef {{
+*      CHAT_INPUT: 1,
+*      USER: 2,
+*      MESSAGE: 3
+* }} CommandTypes
+*/
+
+/**
+* @typedef {{
+*      BUILT_IN: 0,
+*      TEXT: 1,
+*      SEARCH: 2
+* }} InputTypes
+*/
+
+/**
+* @typedef {{
+*      SUB_COMMAND: 1,
+*      SUB_COMMAND_GROUP: 2,
+*      STRING: 3,
+*      INTEGER: 4,
+*      BOOLEAN: 5,
+*      USER: 6,
+*      CHANNEL: 7,
+*      ROLE: 8,
+*      MENTIONABLE: 9,
+*      NUMBER: 10,
+*      ATTACHMENT: 11
+* }} OptionTypes
+*/
+
+/**
+* @typedef {1 | 2 | 3} CommandType
+*/
+
+/**
+* @typedef {0 | 1 | 2} InputType
+*/
+
+/**
+* @typedef {1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11} OptionType
+*/
+
 const iconClasses = {
     ...Webpack.getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
     builtInSeparator: Webpack.getModule(x => x.builtInSeparator)?.builtInSeparator
