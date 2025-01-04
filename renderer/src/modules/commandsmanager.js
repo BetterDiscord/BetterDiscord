@@ -270,13 +270,14 @@ class MainCommandAPI {
         }
 
         const pluginCommands = this.#commands.get(caller) || new Map();
-        const commandId = command.id || `bd-${caller}-${command.displayName.toLowerCase()}`;
+        const commandId = `bd-${caller}-${command.id}`;
 
         if (pluginCommands.has(commandId)) {
             throw new Error(`Command with id ${commandId} is already registered`);
         }
 
         const formattedCommand = {
+            ...command,
             get id() {return commandId;},
             get __registerId() {return commandId;},
             get applicationId() {return caller;},
@@ -287,14 +288,17 @@ class MainCommandAPI {
             get displayDescription() {return command.description || "";},
             get options() {
                 return command.options ? command.options.map(option => ({
+                    ...option,
                     get name() {return option.name;},
                     get description() {return option.description;},
+                    get displayDescription() {return option.description;},
                     type: option.type,
                     required: option.required || false,
                     get choices() {
                         return option.choices ? option.choices.map(choice => ({
+                            ...choice,
                             get name() {return choice.name;},
-                            get displayName() {return choice.name;}
+                            get displayName() {return choice.name;},
                         })) : undefined;
                     },
                     get displayName() {return option.name;}
