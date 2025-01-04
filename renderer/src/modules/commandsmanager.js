@@ -69,15 +69,8 @@ const isValidImageUrl = (url) => {
 class MainCommandAPI {
     static #commands = new Map();
     static #sections = new Map();
-    static #initialized = false;
 
     static start() {
-        if (this.#initialized) {
-            Logger.warn('MainCommandAPI is already initialized');
-            return;
-        }
-
-        this.#initialized = true;
         this.#patchCommandSystem();
 
         /*CommandsRegister.forEach(command => {
@@ -271,10 +264,6 @@ class MainCommandAPI {
     }
 
     static registerCommand(caller, command, data) {
-        if (!this.#initialized) {
-            throw new Error('MainCommandAPI must be initialized before registering commands');
-        }
-
         if (!caller || !command?.name || !command?.execute) {
             throw new Error('Command must have a caller, name, and execute function');
         }
