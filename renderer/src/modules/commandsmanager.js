@@ -339,22 +339,27 @@ class MainCommandAPI {
             username: "BetterDiscord",
             system: true,
         });
-
+    
         const loadingMessage = createBotMessage({
             channelId: channel.id,
             content: result?.result || "",
-            embeds: [result.embeds] || [],
             loggingName: "BetterDiscord",
             type: 20
         });
-
+    
+        const updatedEmbeds = result?.embeds?.map(embed => ({
+            ...embed,
+            type: "rich"
+        }));
+    
         Object.assign(loadingMessage, {
-            author: LocalUser
+            author: LocalUser,
+            embeds: updatedEmbeds
         });
-
+    
         MessagesModule.receiveMessage(channel.id, loadingMessage, true);
     }
-
+    
     static unregisterCommand(caller, commandId) {
         const pluginCommands = this.#commands.get(caller);
         if (pluginCommands?.delete(commandId) && pluginCommands.size === 0) {
