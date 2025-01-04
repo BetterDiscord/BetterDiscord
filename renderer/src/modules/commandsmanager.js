@@ -469,7 +469,7 @@ class MainCommandAPI {
             username: "BetterDiscord",
             system: true,
         });
-        
+
         const loadingMessage = createBotMessage({
             channelId: channel.id,
             content: result,
@@ -478,7 +478,7 @@ class MainCommandAPI {
         });
 
         Object.assign(loadingMessage, {
-            author: LocalUser // User doesn't take a author argument.
+            author: LocalUser // createBotMessage doesn't take a author argument.
         });
 
         MessagesModule.receiveMessage(channel.id, loadingMessage, true)
