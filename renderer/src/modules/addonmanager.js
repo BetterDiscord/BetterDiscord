@@ -90,7 +90,7 @@ export default class AddonManager {
                     Logger.warn(this.name, `Duplicate files found: ${filename} and ${newFilename}`);
                     return;
                 }
-                
+
                 // Rename the file and let it go on
                 try {
                     fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
@@ -215,7 +215,7 @@ export default class AddonManager {
             }
             return e;
         }
-        
+
 
         const error = this.initializeAddon(addon);
         if (error) {
@@ -227,7 +227,7 @@ export default class AddonManager {
 
         if (shouldToast) Toasts.success(Strings.Addons.wasLoaded.format({name: addon.name, version: addon.version}));
         this.emit("loaded", addon);
-        
+
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
     }
@@ -329,7 +329,7 @@ export default class AddonManager {
         for (const name of results.removed) this.unloadAddon(name);
     }
 
-    loadAllAddons() {
+    async loadAllAddons() {
         this.loadState();
         const errors = [];
         const files = fs.readdirSync(this.addonFolder);
@@ -353,7 +353,7 @@ export default class AddonManager {
                     Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
                     continue;
                 }
-                
+
                 // Rename the file and let it go on
                 fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
             }
