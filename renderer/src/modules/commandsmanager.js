@@ -272,7 +272,7 @@ class MainCommandAPI {
         });
     }
 
-    static registerCommand(caller, command, data) {
+    static registerCommand(caller, command) {
         if (!caller || !command?.name || !command?.execute) {
             throw new Error("Command must have a caller, name, and execute function");
         }
@@ -284,7 +284,17 @@ class MainCommandAPI {
             throw new Error(`Command with id ${commandId} is already registered`);
         }
 
-        const formattedCommand = {
+        const formattedCommand = this.#formatCommand(caller, command, commandId);
+        pluginCommands.set(commandId, formattedCommand);
+        this.#commands.set(caller, pluginCommands);
+
+        this.#ensureSection(caller);
+
+        return () => this.unregisterCommand(caller, command.id);
+    }
+
+    static #formatCommand(caller, command, commandId) {
+        return {
             ...command,
             get id() {return commandId;},
             get __registerId() {return commandId;},
@@ -294,40 +304,42 @@ class MainCommandAPI {
             get name() {return command.name || "";},
             get description() {return command.description || "";},
             get displayDescription() {return command.description || "";},
-            get options() {
-                return command.options ? command.options.map(option => ({
-                    ...option,
-                    get name() {return option.name;},
-                    get description() {return option.description;},
-                    get displayDescription() {return option.description;},
-                    type: option.type,
-                    required: option.required || false,
-                    get choices() {
-                        return option.choices ? option.choices.map(choice => ({
-                            ...choice,
-                            get name() {return choice.name;},
-                            get displayName() {return choice.name;},
-                        })) : undefined;
-                    },
-                    get displayName() {return option.name;}
-                })) : [];
-            },
+            get options() {return this.#formatOptions(command.options);},
             execute: this.#patchExecuteFunction(command.execute),
-            integrationType: command.integrationType || 0,
+            get integrationType() {return command.integrationType || 0;},
             get integrationTitle() {return command.integrationTitle || caller;},
             isBD: true
         };
+    }
+    
+    static #formatOptions(options) {
+        if (!options) return [];
+        
+        return options.map(option => ({
+            ...option,
+            get name() {return option.name;},
+            get description() {return option.description;},
+            get displayDescription() {return option.description;},
+            type: option.type,
+            get required() {return option.required || false;},
+            get choices() {
+                return option.choices?.map(choice => ({
+                    ...choice,
+                    get name() {return choice.name;},
+                    get displayName() {return choice.name;}
+                }));
+            },
+            get displayName() {return option.name;}
+        }));
+    }
 
-        pluginCommands.set(commandId, formattedCommand);
-        this.#commands.set(caller, pluginCommands);
-
+    static #ensureSection(caller) {
         if (!this.#sections.has(caller)) {
             this.#sections.set(caller, {
                 id: caller,
                 name: caller,
                 type: 0,
                 key: "1",
-                icon: data?.icon,
                 isBD: true
             });
         }
@@ -346,7 +358,8 @@ class MainCommandAPI {
     static async sendBotMessage(result, {channel}) {
         try {
             result = await result;
-        } catch (error) {
+        }
+        catch (error) {
             return;
         }
     
@@ -382,10 +395,14 @@ class MainCommandAPI {
     }
 
     static unregisterCommand(caller, commandId) {
+        const fullCommandId = `bd-${caller}-${commandId}`;
         const pluginCommands = this.#commands.get(caller);
-        if (pluginCommands?.delete(commandId) && pluginCommands.size === 0) {
-            this.#commands.delete(caller);
-            this.#sections.delete(caller);
+        
+        if (pluginCommands?.delete(fullCommandId)) {
+            if (pluginCommands.size === 0) {
+                this.#commands.delete(caller);
+                this.#sections.delete(caller);
+            }
         }
     }
 

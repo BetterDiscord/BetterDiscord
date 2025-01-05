@@ -17,29 +17,49 @@ class CommandAPI {
 
     /**
      * Registers a new command
-     * @param {string} caller Name of the caller registering the command
-     * @param {object} command Command object to register
+     * @param {string|object} callerOrCommand Caller name or command object if caller is preset
+     * @param {object} [command] Command object (optional if caller is preset)
+     * @returns {Function|undefined} Unregister function
      */
-    register(caller, command) {
-        if (this.#callerName) {
-            command = caller;
-            caller = this.#callerName;
+    register(callerOrCommand, command) {
+        const caller = this.#callerName || callerOrCommand;
+        const commandObj = this.#callerName ? callerOrCommand : command;
+
+        if (!this.#validateRegistration(caller, commandObj)) {
+            return;
         }
-        MainCommandAPI.registerCommand(caller, command);
-        return this.unregister.bind(this, caller, command);
+
+        return MainCommandAPI.registerCommand(caller, commandObj);
     }
 
     /**
-     * Unregisters a specific command
-     * @param {string} caller Name of the caller that registered the command
-     * @param {string} commandId ID of the command to unregister
+     * Unregisters a command
+     * @param {string} callerOrCommandId Caller name or command ID if caller is preset
+     * @param {string} [commandId] Command ID (optional if caller is preset)
      */
-    unregister(caller, commandId) {
-        if (this.#callerName) {
-            commandId = caller;
-            caller = this.#callerName;
+    unregister(callerOrCommandId, commandId) {
+        const caller = this.#callerName || callerOrCommandId;
+        const finalCommandId = this.#callerName ? callerOrCommandId : commandId;
+
+        if (!this.#validateUnregistration(caller, finalCommandId)) {
+            return;
         }
-        MainCommandAPI.unregisterCommand(caller, commandId);
+
+        MainCommandAPI.unregisterCommand(caller, finalCommandId);
+    }
+
+    /**
+     * @private
+     */
+    #validateRegistration(caller, command) {
+        return typeof caller === "string" && typeof command === "object" && command?.id && command?.name && command?.execute;
+    }
+
+    /**
+     * @private
+     */
+    #validateUnregistration(caller, commandId) {
+        return typeof caller === "string" && (!commandId || typeof commandId === "string");
     }
 
     /**
