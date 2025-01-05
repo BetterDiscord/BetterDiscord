@@ -222,6 +222,7 @@
         "wasLoaded": "{{name}} v{{version}} was loaded.",
         "failedToDownload": "Failed to download {{type}} {{name}}",
         "successfullyDownload": "Successfully downloaded {{name}}",
+        "alreadyInstalled": "{{name}} is already installed",
         "failedToFetch": "Unable to get addons",
         "new": "New",
         "updated": "Updated",

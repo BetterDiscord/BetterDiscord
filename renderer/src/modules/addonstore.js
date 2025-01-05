@@ -122,6 +122,14 @@ class Guild {
     }
     /** @public */
     get acronym() {return this.name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");}
+
+    /**
+     * SHows the guild join modal (if the addon has a guild)
+     * @public
+     */
+    join() {
+        Utilities.showGuildJoinModal(this.invite);
+    }
 }
 
 class Addon {
@@ -243,7 +251,7 @@ class Addon {
             throw new Error("Addon is a plugin!");
         }
       
-        window.open(Web.previewURL(this.latestSourceUrl), "_blank", "noopener,noreferrer");
+        window.open(Web.convertToPreviewURL(this.latestSourceUrl), "_blank", "noopener,noreferrer");
     }
 
     /** 
@@ -259,7 +267,7 @@ class Addon {
      * @public
      */
     openSourceCode() {
-        window.open(Web.convertRawGitHubUrl(this.latestSourceUrl), "_blank", "noopener,noreferrer");
+        window.open(Web.convertRawToGitHubURL(this.latestSourceUrl), "_blank", "noopener,noreferrer");
     }
 
     /** 
@@ -271,24 +279,23 @@ class Addon {
     }
 
     /**
-     * Attempts to join a guild
-     * @public
-     */
-    joinGuild() {
-        if (!this.guild) return;
-
-        Utilities.showGuildJoinModal(this.guild.invite);
-    }
-
-    /**
      * Attempt to download addon
-     * Shows a confirmation modal (unless skipped) then installs the addon
+     * Shows a confirmation modal (unless skipped) and installs the addon
+     * 
+     * If the addon is installed or gets installed (before the modal closes), 
+     * it will close the modal and resolve
      * @public
      * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
      * @returns {Promise<void>}
      */
     async download(shouldSkipConfirm = false) {
-        if (this.isInstalled()) return;
+        if (this.isInstalled()) {
+            Toasts.show(Strings.Addons.alreadyInstalled.format({name: this.name}), {
+                type: "info"
+            });
+
+            return;
+        }
 
         const install = async (shouldEnable) => {
             try {
@@ -431,7 +438,7 @@ class Store {
         this._emitChange();
 
         try {
-            const request = await fetch(Web.store[this.type + "s"]);
+            const request = await fetch(Web.store[this.type + "s"]);            
 
             if (!request.ok) throw new Error("Request was not ok!");
 
@@ -554,7 +561,7 @@ const ThemeStore = new Store("theme");
 const PluginStore = new Store("plugin");
 
 const addonStore = new class AddonStore {
-    constructor() {
+    initialize() {        
         if (!DataStore.getBDData("known-addons")) {
             fetch(Web.store.addons).then(async (request) => {
                 const addons = await request.json();

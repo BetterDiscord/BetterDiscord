@@ -53,7 +53,7 @@ export default function AddonCard({addon, isEmbed}) {
         setDisabled(false);
     }, [addon]);
 
-    const acceptInvite = useCallback(() => addon.joinGuild(), [addon]);
+    const acceptInvite = useCallback(() => addon.guild.join(), [addon]);
     const openSourceCode = useCallback(() => addon.openSourceCode(), [addon]);
     const openAddonPage = useCallback(() => addon.openAddonPage(), [addon]);
     const openAddonPreview = useCallback(() => addon.openPreview(), [addon]);

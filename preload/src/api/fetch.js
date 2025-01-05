@@ -27,12 +27,12 @@ export function nativeFetch(requestedUrl, fetchOptions) {
 
     /** * @param {URL} url */
     const execute = (url, options, redirectCount = 0) => {
-        const Module = url.protocol === "http:" ? http : https;
-        
+        const Module = url.protocol === "http:" ? http : https;        
+
         const req = Module.request(url.href, {
             headers: options.headers ?? {},
             method: options.method ?? "GET",
-            timeout: options.timeout ?? 3000
+            timeout: options.timeout ?? 5_000
         }, res => {
             if (redirectCodes.has(res.statusCode) && res.headers.location && options.redirect !== "manual") {
                 redirectCount++;

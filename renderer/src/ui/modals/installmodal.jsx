@@ -98,7 +98,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
     const [shouldEnable, setShouldEnable] = useState(() => Settings.get("settings", "store", "alwaysEnable"));
 
     const openAuthorPage = useCallback(() => addon.openAuthorPage(), [addon]);
-    const attemptJoinGuild = useCallback(() => addon.joinGuild(), [addon]);
+    const attemptJoinGuild = useCallback(() => addon.guild.join(), [addon]);
     const openSourceCode = useCallback(() => addon.openSourceCode(), [addon]);
 
     const [isInstalling, setInstalling] = useState(false);

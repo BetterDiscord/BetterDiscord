@@ -1,5 +1,10 @@
+/** @type {`betteridscord.${"app" | "dev"}`} */
 const HOSTNAME = "betterdiscord.app";
-const API_VERSION = "latest";
+/**
+ * The current API version to use
+ * @type {`v${number}` | "latest"}
+ */
+const API_VERSION = "v3";
 
 /**
  * @param  {...string[]} paths 
@@ -45,22 +50,22 @@ const releaseChannels = {
 // Theres 2 empty/missing thumbnails, the one the site uses and a empty store one
 const EMPTY_USE_STORE = true;
 
-const RAW_GIT_URL = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
+const RAW_GIT_URL_REGEX = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\/(.+?)\/(.+)$/;
 
-export default new class Web {
+export default class Web {
     /**
      * This will allow preloading of the addon channels
      * @param {string} channelId 
      * @returns {"plugin" | "theme" | undefined}
      */
-    getReleaseChannelType(channelId) {
+    static getReleaseChannelType(channelId) {
         if (releaseChannels.plugin.includes(channelId)) return "plugin";
         if (releaseChannels.theme.includes(channelId)) return "theme";
     }
 
     /** @param {string} rawGitURL  */
-    previewURL(rawGitURL) {
-        const match = rawGitURL.match(RAW_GIT_URL);
+    static convertToPreviewURL(rawGitURL) {
+        const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
         if (!match) {
             throw new Error("Enable to parse url!");
@@ -72,27 +77,31 @@ export default new class Web {
         return `https://discord-preview.vercel.app/?file=${encodeURIComponent(jsdelivr)}`;
     }
 
-    /** @param {string} rawGitURL  */
-    convertRawGitHubUrl(rawGitURL) {
-        const match = rawGitURL.match(RAW_GIT_URL);
+    /** 
+     * Converts a raw github link into a normal github page
+     * @example
+     * https://raw.githubusercontent.com/QWERTxD/BetterDiscordPlugins/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
+     * https://github.com/QWERTxD/BetterDiscordPlugins/blob/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
+     * @param {string} rawGitURL
+     */
+    static convertRawToGitHubURL(rawGitURL) {
+        const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
         if (!match) {
             throw new Error("Enable to parse url!");
         }
-        // https://github.com/QWERTxD/BetterDiscordPlugins/blob/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
-        // https://raw.githubusercontent.com/QWERTxD/BetterDiscordPlugins/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
         const [, user, repo, commit, filePath] = match;
         
         return `https://github.com/${user}/${repo}/blob/${commit}/${filePath}`;
     }
     
-    redirects = {
+    static redirects = {
         github: makeRedirects("/gh-redirect"),
         download: makeRedirects("/download"),
         theme: makeRedirects("/theme"),
         plugin: makeRedirects("/plugin")
     };
-    pages = {
+    static pages = {
         themes: join("/themes"),
         theme: makePage("/theme"),
         plugins: join("/plugins"),
@@ -100,13 +109,13 @@ export default new class Web {
         developers: join("/developers"),
         developer: makePage("/developer")
     };
-    resources = {
+    static resources = {
         EMPTY_THUMBNAIL: EMPTY_USE_STORE ? "/resources/store/missing.svg" : "/resources/ui/content_thumbnail.svg",
-        /** @param {string} thumbnail */
-        thumbnail: (thumbnail) => join(thumbnail || this.resources.EMPTY_THUMBNAIL)
+        /** @param {? string} thumbnail */
+        thumbnail: (thumbnail) => join(thumbnail || Web.resources.EMPTY_THUMBNAIL)
     };
 
-    store = {
+    static store = {
         addons: apiJoin("/store/addons"),
         themes: apiJoin("/store/themes"),
         plugins: apiJoin("/store/plugins"),
@@ -167,4 +176,4 @@ export default new class Web {
             ]
         }
     };
-};
+}

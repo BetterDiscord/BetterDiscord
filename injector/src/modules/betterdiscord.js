@@ -119,7 +119,7 @@ export default class BetterDiscord {
             // If application was opened via protocol, set process.env.BETTERDISCORD_PROTOCOL
             const protocol = process.argv.find((arg) => arg.startsWith("betterdiscord://"));
             if (protocol) {
-                process.env.BETTERDISCORD_PROTOCOL = process.argv.find((arg) => arg.startsWith("betterdiscord://"));
+                process.env.BETTERDISCORD_PROTOCOL = protocol;
             }
 
             // I think this is how it works on MacOS

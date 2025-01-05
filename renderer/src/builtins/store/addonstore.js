@@ -3,12 +3,15 @@ import Builtin from "@structs/builtin";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
 import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
-import AddonEmbed from "@ui/misc/storeembed";
 import ReactUtils from "@modules/api/reactutils";
-import ErrorBoundary from "@ui/errorboundary";
-import Web from "@data/web";
 import Utilities from "@modules/utilities";
 import Settings from "@modules/settingsmanager";
+
+import AddonEmbed from "@ui/misc/storeembed";
+import ErrorBoundary from "@ui/errorboundary";
+
+import Web from "@data/web";
+
 import RemoteAPI from "@polyfill/remote";
 
 const SimpleMarkdownWrapper = WebpackModules.getByProps("parse", "defaultRules");
@@ -63,15 +66,19 @@ export default new class AddonStoreBuiltin extends Builtin {
         super();
 
         Settings.on(this.collection, this.category, "addonEmbeds", () => this.forceUpdateChat());
+    }
 
-        RemoteAPI.setProtocolListener((url) => {
+    initialize() {        
+        RemoteAPI.setProtocolListener((url) => {                        
             if (!Settings.get(this.collection, this.category, this.id)) return;
-            
+
             const match = url.match(APP_PROTOCOL_REGEX);
-            if (!match) return;
+            if (!match) return;            
 
             AddonStore.requestAddon(decodeURIComponent(match[1])).then((addon) => addon.download());
         });
+        
+        return super.initialize(...arguments);
     }
 
     get name() {return "AddonStore";}
