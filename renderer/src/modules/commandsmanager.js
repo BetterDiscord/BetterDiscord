@@ -82,9 +82,6 @@ const iconClasses = {
 const ApplicationIcons = Webpack.getWithKey(Webpack.Filters.byStrings(".type===", ".BUILT_IN?"), {
     target: Webpack.getModule((e, m) => Webpack.modules[m.id].toString().includes("hasSpaceTerminator:"))
 });
-const ApplicationCommandIndexStore = Webpack.getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
-const BuiltInModule = Webpack.getWithKey(Filters.byStrings(".BUILT_IN_INTEGRATION"));
-const SidebarModule = Webpack.getByStrings(".BUILT_IN?", "categoryListRef:", {defaultExport: false});
 const getAcronym = (e) =>
     e != null
         ? e.replace(/"s /g, " ").replace(/\w+/g, a => a[0]).replace(/\s/g, "").slice(0, 2)
@@ -125,11 +122,14 @@ class MainCommandAPI {
         this.#patchSidebarModule();
         this.#patchCommandHandlers();
         this.#patchApplicationIcons();
+        this.#patchIndexStore();
 
         IconsModule.BOT_AVATARS.betterdiscord = "https://github.com/BetterDiscord.png";
     }
 
     static #patchSidebarModule() {
+        const SidebarModule = Webpack.getByStrings(".BUILT_IN?", "categoryListRef:", {defaultExport: false});
+
         Patcher.instead("CommandsManager", SidebarModule, "Z", (that, [props], original) => {
             const sections = [...props.sections];
 
@@ -172,15 +172,10 @@ class MainCommandAPI {
         });
     }
 
-    static #patchCommandHandlers() {
-        Patcher.after("CommandsManager", ...BuiltInModule, (_, __, commands) => {
-            const allCommands = Array.from(this.#commands.values())
-                .flatMap(commandMap => Array.from(commandMap.values()));
+    static #patchIndexStore() {
+        const [mod, key] = Webpack.getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
 
-            return [...commands, ...allCommands];
-        });
-
-        Patcher.after("CommandsManager", ...ApplicationCommandIndexStore, (that, args, res) => {
+        Patcher.after("CommandsManager", mod, key, (that, args, res) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
 
             for (const sectionedCommand of res.sectionedCommands) {
@@ -204,8 +199,23 @@ class MainCommandAPI {
         });
     }
 
+    static #patchCommandHandlers() {
+        const [mod, key] = Webpack.getWithKey(Filters.byStrings(".BUILT_IN_INTEGRATION"));
+
+        Patcher.after("CommandsManager", mod, key, (_, __, commands) => {
+            const allCommands = Array.from(this.#commands.values())
+                .flatMap(commandMap => Array.from(commandMap.values()));
+
+            return [...commands, ...allCommands];
+        });
+    }
+
     static #patchApplicationIcons() {
-        Patcher.after("CommandsManager", ...ApplicationIcons, (that, [{id}], res) => {
+        const [mod, key] = Webpack.getWithKey(Webpack.Filters.byStrings(".type===", ".BUILT_IN?"), {
+            target: Webpack.getModule((e, m) => Webpack.modules[m.id].toString().includes("hasSpaceTerminator:"))
+        });
+
+        Patcher.after("CommandsManager", mod, key, (that, [{id}], res) => {
             const getIconUrl = () => {
                 const metadataIcon = pluginmanager.getAddon(id)?.icon ?? null;
                 const sectionIcon = this.#sections.has(id) ? this.#sections.get(id)?.icon : null;
@@ -304,7 +314,7 @@ class MainCommandAPI {
             get name() {return command.name || "";},
             get description() {return command.description || "";},
             get displayDescription() {return command.description || "";},
-            get options() {return this.#formatOptions(command.options);},
+            get options() {return MainCommandAPI.#formatOptions(command.options);},
             execute: this.#patchExecuteFunction(command.execute),
             get integrationType() {return command.integrationType || 0;},
             get integrationTitle() {return command.integrationTitle || caller;},
