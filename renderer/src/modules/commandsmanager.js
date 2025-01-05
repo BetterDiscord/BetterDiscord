@@ -343,23 +343,32 @@ class MainCommandAPI {
         };
     }
 
-    static sendBotMessage(result, {channel}) {
-        result = result || {};
+    static async sendBotMessage(result, {channel}) {
+        try {
+            result = await result;
+        } catch (error) {
+            return;
+        }
     
-        if (!result.result && (!result.embeds || !result.embeds.length)) return;
+        if (!(result !== null && typeof result === "object" && !Array.isArray(result))) {
+            return;
+        }
     
         const loadingMessage = createBotMessage({
             channelId: channel.id,
-            content: result.result || undefined,
+            content: typeof result.content === "string" ? result.content : undefined,
             loggingName: undefined,
             type: 20
         });
     
-        if (result.embeds?.length) {
-            const embedsArray = Array.isArray(result.embeds) ? result.embeds : [result.embeds];
-            loadingMessage.embeds = embedsArray.map(embed => ({
+        if (typeof result.embeds === "object" && result.embeds !== null) {
+            loadingMessage.embeds = Array.isArray(result.embeds) 
+                ? result.embeds 
+                : [result.embeds];
+    
+            loadingMessage.embeds = loadingMessage.embeds.map(embed => ({
                 ...embed,
-                type: embed?.type || "rich"
+                type: embed.type || "rich"
             }));
         }
     
@@ -367,7 +376,7 @@ class MainCommandAPI {
             author: localBDBot
         });
     
-        if (loadingMessage.content || loadingMessage.embeds?.length) {
+        if (loadingMessage.content || (Array.isArray(loadingMessage.embeds) && loadingMessage.embeds.length > 0)) {
             MessagesModule.receiveMessage(channel.id, loadingMessage, true);
         }
     }
