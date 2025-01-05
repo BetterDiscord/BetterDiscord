@@ -95,12 +95,20 @@ const createBotMessage = Webpack.getByStrings("username:\"Clyde\"", {searchExpor
 const MessagesModule = Webpack.getModule(x => x.receiveMessage);
 const IconsModule = Webpack.getModule(x => x.BOT_AVATARS);
 
+const localBDBot = new User({
+    avatar: "betterdiscord",
+    id: "676620914632294467",
+    bot: true,
+    username: "BetterDiscord",
+    system: true,
+});
+
 const isValidImageUrl = (url) => {
     try {
         const validatedUrl = new URL(url);
         return ((validatedUrl.protocol === "data:" && validatedUrl.pathname.startsWith("image/")) || validatedUrl.protocol === "https:");
     }
- catch (e) {
+    catch (e) {
         return false;
     }
 };
@@ -336,34 +344,34 @@ class MainCommandAPI {
     }
 
     static sendBotMessage(result, {channel}) {
-        const LocalUser = new User({
-            avatar: "betterdiscord",
-            id: "676620914632294467",
-            bot: true,
-            username: "BetterDiscord",
-            system: true,
-        });
+        result = result || {};
+    
+        if (!result.result && (!result.embeds || !result.embeds.length)) return;
     
         const loadingMessage = createBotMessage({
             channelId: channel.id,
-            content: result?.result || "",
-            loggingName: "BetterDiscord",
+            content: result.result || undefined,
+            loggingName: undefined,
             type: 20
         });
     
-        const updatedEmbeds = result?.embeds?.map(embed => ({
-            ...embed,
-            type: "rich"
-        }));
+        if (result.embeds?.length) {
+            const embedsArray = Array.isArray(result.embeds) ? result.embeds : [result.embeds];
+            loadingMessage.embeds = embedsArray.map(embed => ({
+                ...embed,
+                type: embed?.type || "rich"
+            }));
+        }
     
         Object.assign(loadingMessage, {
-            author: LocalUser,
-            embeds: updatedEmbeds
+            author: localBDBot
         });
     
-        MessagesModule.receiveMessage(channel.id, loadingMessage, true);
+        if (loadingMessage.content || loadingMessage.embeds?.length) {
+            MessagesModule.receiveMessage(channel.id, loadingMessage, true);
+        }
     }
-    
+
     static unregisterCommand(caller, commandId) {
         const pluginCommands = this.#commands.get(caller);
         if (pluginCommands?.delete(commandId) && pluginCommands.size === 0) {
