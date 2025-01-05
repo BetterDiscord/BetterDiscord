@@ -79,9 +79,6 @@ const iconClasses = {
     builtInSeparator: Webpack.getModule(x => x.builtInSeparator)?.builtInSeparator
 };
 
-const ApplicationIcons = Webpack.getWithKey(Webpack.Filters.byStrings(".type===", ".BUILT_IN?"), {
-    target: Webpack.getModule((e, m) => Webpack.modules[m.id].toString().includes("hasSpaceTerminator:"))
-});
 const getAcronym = (e) =>
     e != null
         ? e.replace(/"s /g, " ").replace(/\w+/g, a => a[0]).replace(/\s/g, "").slice(0, 2)
