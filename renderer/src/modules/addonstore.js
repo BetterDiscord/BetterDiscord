@@ -1,11 +1,12 @@
 import path from "path";
 import fs from "fs";
 
+import request from "request";
+
 import Logger from "@common/logger";
 import Toasts from "@ui/toasts";
 import DataStore from "@modules/datastore";
 import Strings from "@modules/strings";
-import fetch from "@modules/api/fetch";
 import React from "@modules/react";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
@@ -221,10 +222,7 @@ class Addon {
      * @returns {boolean} 
      */
     isUnknown() {
-        const data = DataStore.getBDData("known-addons");
-
-        if (!data) return false;
-        return !data[this.filename];
+        return addonStore.isUnknown(this.filename);
     }
 
     /** 
@@ -232,14 +230,7 @@ class Addon {
      * @public
      */
     markAsKnown() {
-        const data = DataStore.getBDData("known-addons");
-
-        if (!data) return;
-
-        if (data[this.filename]) return;
-
-        data[this.filename] = true;
-        DataStore.setBDData("known-addons", data);
+        addonStore.markAsKnown(this.filename);
     }
 
     /** 
@@ -297,41 +288,41 @@ class Addon {
             return;
         }
 
-        const install = async (shouldEnable) => {
-            try {
-                const request = await fetch(Web.redirects.github(this.id), {
-                    headers: {
-                        // Tell the site to count the download
-                        "X-Store-Download": this.name
+        const install = (shouldEnable) => new Promise((resolve) => {
+            request(Web.redirects.github(this.id), {
+                headers: {
+                    "X-Store-Download": this.name
+                }
+            }, (err, req, text) => {
+                try {
+                    if (err || req.aborted || req.statusMessage !== "OK") {
+                        throw err || req;
                     }
-                });
 
-                if (!request.ok) {
-                    throw new Error("Addon was not found!");
-                }
-
-                const text = await request.text();
-
-                if (shouldEnable) {
-                    this.manager.state[this.name] = true;
-                }
-                
-                fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), text);
-
-                Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
-                    type: "success"
-                });
-
-                this.downloads++;
-            } 
-            catch (error) {
-                Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error);
+                    if (shouldEnable) {
+                        this.manager.state[this.name] = true;
+                    }
+                    
+                    fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), text);
     
-                Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
-                    type: "danger"
-                });
-            }
-        };
+                    Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
+                        type: "success"
+                    });
+    
+                    this.downloads++;
+                }
+                catch (error) {
+                    Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error);
+        
+                    Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
+                        type: "danger"
+                    });
+                }
+                finally {
+                    resolve();
+                }
+            });
+        });
         
         return this._download ??= new Promise((resolve) => {
             if (shouldSkipConfirm) return install(Settings.get("settings", "store", "alwaysEnable")).finally(() => resolve());
@@ -394,10 +385,140 @@ class Addon {
     }
 }
 
-class Store {
-    /** @param {"plugin" | "theme"} type  */
-    constructor(type) {
-        this.type = type;
+const addonStore = new class AddonStore {
+    initialize() {
+        this._cache = DataStore.getData("addon-store") || {};        
+
+        if (this._cache.version !== Web.API_VERSION) {
+            this._cache = {
+                known: this._cache.known || [],
+                addons: {},
+                version: Web.API_VERSION
+            };
+        }        
+
+        this._useCache();
+        this.requestAddons(true);
+    }
+
+    // Caching stuff
+    /**
+     * @type {{
+     *      addons: Record<string, RawAddon>,
+     *      known: string[],
+     *      version: string
+     * }}
+     */
+    _cache;
+    /** @private */
+    _useCache() {
+        for (const key in this._cache.addons) {
+            if (Object.prototype.hasOwnProperty.call(this._cache.addons, key)) {
+                this.addons.push(
+                    new Addon(this._cache.addons[key])
+                );
+            }
+        }
+    }
+    /** @private */
+    _writeCache(cache = this._cache) {
+        this._cache = cache;
+
+        DataStore.setData("addon-store", this._cache);
+    }
+
+    /** @private */
+    _singleAddonCache = {};
+    /**
+     * Request a singular addon at a time
+     * @public
+     * @param {number|string} idOrName 
+     * @returns {Promise<Addon>}
+     */
+    requestAddon(idOrName) {        
+        const cache = this.getAddon(idOrName);
+        if (typeof cache === "object") return Promise.resolve(cache);
+
+        return this._singleAddonCache[idOrName] ??= new Promise((resolve, reject) => {
+            request(Web.store.addon(idOrName), (err, req, body) => {
+                try {
+                    if (err || req.aborted || req.statusMessage !== "OK") {
+                        throw err || req;
+                    }
+
+                    const data = JSON.parse(body);
+
+                    if (!request.ok || data.status === 404) {
+                        throw new Error(data.title);
+                    }
+        
+                    this._singleAddonCache[data.name] = this._singleAddonCache[idOrName];
+                    this._singleAddonCache[data.id] = this._singleAddonCache[idOrName];
+        
+                    resolve(Addon.from(data));
+                } 
+                catch (error) {
+                    Logger.stacktrace("AddonStore", `Failed to fetch ${idOrName}`, error);
+        
+                    Toasts.show(Strings.Addons.failedToFetch, {
+                        type: "danger"
+                    });
+
+                    // To allow future fetches
+                    delete this._singleAddonCache[idOrName];
+
+                    reject(
+                        error instanceof Error ? error : new Error(`Failed to request addons: Status ${req.statusCode}`)
+                    );
+                }
+            });
+        });
+    }
+
+    /**
+     * Gets a addon via id or name
+     * @public 
+     * @param {number|string} id 
+     * @returns {Addon | null}
+     */
+    getAddon(id) {
+        const decoded = decodeURIComponent(id.toString()).toLowerCase();
+
+        for (const key in Addon.cache) {
+            if (Object.prototype.hasOwnProperty.call(Addon.cache, key)) {
+                const addon = Addon.cache[key];
+                
+                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded) return addon;
+            }
+        }
+    }
+
+    /**
+     * @public
+     * @param {string} filename
+     * @returns {boolean}
+     */
+    isOfficial(filename) {
+        return filename.toLowerCase() in this._cache.addons;
+    }
+    /**
+     * @public
+     * @param {string} filename
+     * @returns {boolean}
+     */
+    isUnknown(filename) {
+        return filename.toLowerCase() in this._cache.addons && !this._cache.known.includes(filename);
+    }
+    /**
+     * @public
+     * @param {string} filename
+     */
+    markAsKnown(filename) {        
+        if (this.isUnknown(filename)) {
+            this._cache.known.push(filename);
+
+            this._writeCache();
+        }
     }
 
     /** 
@@ -408,9 +529,6 @@ class Store {
     addons = [];
     /** @public */
     getAddons() {return this.addons.concat();}
-
-    /** @readonly */
-    type;
 
     /** @type {Error | null} */
     error = null;
@@ -425,51 +543,104 @@ class Store {
         this.requestAddons();
     };
 
-    /** @public */
-    async requestAddons() {
-        Logger.debug("AddonStore", `Requesting all ${this.type}s`);
+    /**
+     * @param {? boolean} firstRun 
+     */
+    async requestAddons(firstRun = false) {
+        Logger.debug("AddonStore", "Requesting all addons");
+
+        if (!(firstRun && Object.keys(this._cache.addons).length)) {
+            this.addons.length = 0;
+        }
 
         this.loading = true;
-        this.addons.length = 0;
 
         clearTimeout(this._setTimeout);
         this._setTimeout = null;
 
         this._emitChange();
 
-        try {
-            const request = await fetch(Web.store[this.type + "s"]);            
+        // If the user goes offline it will silent error
+        // This is to go around that, so the store wont get stuck "loading" forever
+        let failed = false;
+        const offLineListener = () => {
+            window.removeEventListener("offline", offLineListener);
 
-            if (!request.ok) throw new Error("Request was not ok!");
-
-            /** @type {RawAddon[]} */
-            const json = await request.json();
+            failed = true;
             
-            this.addons.push(...json.map((addon) => Addon.from(addon)));
+            this.loading = false;
 
-            const data = DataStore.getBDData("known-addons");
-            if (data) {
-                for (const addon of this.addons) {
-                    if (addon.filename in data) continue;
+            Logger.debug("AddonStore", "User is offline waiting for connection...");
 
-                    data[addon.filename] = false;
-                }
-
-                DataStore.setBDData("known-addons", data);
-            }
-
-            this.error = null;
-        } 
-        catch (error) {
-            Logger.stacktrace("AddonStore", `Failed to fetch ${this.type}`, error);
+            window.removeEventListener("online", this._onLineListener);
+            window.addEventListener("online", this._onLineListener);
 
             Toasts.show(Strings.Addons.failedToFetch, {
                 type: "danger"
             });
 
-            this.error = error instanceof Error ? error : new Error(String(error));
+            this.error = new Error("Failed to request addons: User is offline!");
+
+            this._useCache();
+
+            this._emitChange();
+        };
+
+        if (window.navigator.onLine) {
+            window.addEventListener("offline", offLineListener);
         }
-        finally {
+        else {
+            offLineListener();
+            return;
+        }
+
+        request(Web.store.addons, (err, req, body) => {
+            window.removeEventListener("offline", offLineListener);
+            if (failed) return;
+
+            try {
+                if (err || req.aborted || req.statusMessage !== "OK") {
+                    throw err || req;
+                }
+    
+                const json = JSON.parse(body);
+    
+                const isFirstRun = this._cache.known.length === 0 && Object.keys(this._cache.addons).length === 0;
+                
+                /** @type {typeof this._cache} */
+                const data = {
+                    known: this._cache.known || {},
+                    addons: {},
+                    version: Web.API_VERSION
+                };
+
+                this.addons.length = 0;
+    
+                for (const addon of json) {
+                    this.addons.push(Addon.from(addon));                
+    
+                    data.addons[addon.file_name.toLowerCase()] = addon;
+                    if (isFirstRun) {
+                        data.known.push(addon.file_name);
+                    }
+                }
+    
+                this._writeCache(data);
+    
+                this.error = null;
+            } 
+            catch (error) {
+                Logger.stacktrace("AddonStore", "Failed to request addons", error);
+    
+                Toasts.show(Strings.Addons.failedToFetch, {
+                    type: "danger"
+                });
+    
+                this.error = error instanceof Error ? error : new Error(`Failed to request addons: Status ${req.statusCode}`);
+    
+                this._useCache();
+            }
+
             this.loading = false;
 
             this._emitChange();
@@ -485,31 +656,16 @@ class Store {
 
                     window.removeEventListener("online", this._onLineListener);
                     window.addEventListener("online", this._onLineListener);
-
-                    // eslint-disable-next-line no-unsafe-finally
                     return;
                 }
             }
 
             this._setTimeout = setTimeout(() => this.requestAddons(), minutes * 60 * 1000);
-        }
+        });
     }
 
     /** @private */
     _setTimeout = null;
-
-    /** @private */
-    _initialized = false;
-    /**
-     * Wrapper for {@link requestAddons} to allow it to be called only once, used in the UI 
-     * @public
-     */
-    initialize() {
-        if (this._initialized) return;
-        this._initialized = true;
-        
-        this.requestAddons();
-    }
 
     // Listener stuff
     /** @private */
@@ -538,8 +694,6 @@ class Store {
      * @returns {ReturnType<typeof this["getState"]>}
      */
     useState() {
-        this.initialize();
-
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const [state, setState] = React.useState(() => this.getState());
 
@@ -555,100 +709,16 @@ class Store {
 
         return state;
     }
-}
-
-const ThemeStore = new Store("theme");
-const PluginStore = new Store("plugin");
-
-const addonStore = new class AddonStore {
-    initialize() {        
-        if (!DataStore.getBDData("known-addons")) {
-            fetch(Web.store.addons).then(async (request) => {
-                const addons = await request.json();
-
-                DataStore.setBDData("known-addons", Object.fromEntries(addons.map(m => [ m.file_name, true ])));
-            });
-        }
-    }
-
-    /** 
-     * @public
-     * @param {"plugin" | "theme"} type 
-     */
-    getStore(type) {
-        if (type === "plugin") return PluginStore;
-        return ThemeStore;
-    }
-
-    /** @private */
-    _singleAddonCache = {};
-    /**
-     * Request a singular addon at a time
-     * @public
-     * @param {number|string} idOrName 
-     * @returns {Promise<Addon>}
-     */
-    requestAddon(idOrName) {        
-        const cache = this.getAddon(idOrName);
-        if (typeof cache === "object") return Promise.resolve(cache);
-
-        return this._singleAddonCache[idOrName] ??= (async () => {
-            try {
-                const request = await fetch(Web.store.addon(idOrName));
-                /** @type {RawAddon | { title: string, status: number }} */
-                const data = await request.json();
-    
-                if (!request.ok || data.status === 404) {
-                    throw new Error(data.title);
-                }
-    
-                this._singleAddonCache[data.name] = this._singleAddonCache[idOrName];
-                this._singleAddonCache[data.id] = this._singleAddonCache[idOrName];
-    
-                return Addon.from(data);
-            } 
-            catch (error) {
-                Logger.stacktrace("AddonStore", `Failed to fetch ${idOrName}`, error);
-    
-                Toasts.show(Strings.Addons.failedToFetch, {
-                    type: "danger"
-                });
-
-                // To allow future fetches
-                delete this._singleAddonCache[idOrName];
-
-                throw error;
-            }
-        })();
-    }
 
     /**
-     * Gets a addon via id or name
-     * @public 
-     * @param {number|string} id 
-     * @returns {Addon | null}
-     */
-    getAddon(id) {
-        const decoded = decodeURIComponent(id.toString()).toLowerCase();
-
-        for (const key in Addon.cache) {
-            if (Object.prototype.hasOwnProperty.call(Addon.cache, key)) {
-                const addon = Addon.cache[key];
-                
-                if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded) return addon;
-            }
-        }
-    }
-
-    /**
+     * Add a listener to subscribe when the store changes
      * @public
-     * @param {string} filename
-     * @returns {boolean}
+     * @param {() => void} listener 
+     * @returns {() => void}
      */
-    isOfficial(filename) {
-        const data = DataStore.getBDData("known-addons");
-
-        return Boolean(data && filename in data);
+    addChangeListener(listener) {
+        this._subscribers.add(listener);
+        return () => this._subscribers.delete(listener);
     }
 };
 

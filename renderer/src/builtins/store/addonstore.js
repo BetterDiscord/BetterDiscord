@@ -180,8 +180,6 @@ export default new class AddonStoreBuiltin extends Builtin {
             if (type) {
                 const id = message.embeds[0].rawDescription?.split?.("\n")?.at?.(-1)?.match?.(/\?id=(\d+)/);
 
-                AddonStore.getStore(type).initialize();
-
                 if (id) return React.createElement(ErrorBoundary, null, React.createElement(AddonEmbed,{id: id[1], original: res}));
 
                 return res;

@@ -116,7 +116,7 @@ function TagDropdown({type, selected, onChange}) {
  * @param {{type: "plugin"|"theme", title: string, refToScroller: any}} param0 
  */
 export default function AddonStorePage({type, title, refToScroller}) {
-    const {error, addons, loading} = AddonStore.getStore(type).useState();
+    const {error, addons, loading} = AddonStore.useState();
 
     const [page, setPage] = useState(0);
 
@@ -237,7 +237,7 @@ export default function AddonStorePage({type, title, refToScroller}) {
             <div className="bd-controls-basic">
                 {/* {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
                 {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder), "folder")}
-                {makeBasicButton(Strings.Addons.reload, <ReloadIcon size={20} />, () => loading ? {} : AddonStore.getStore(type).requestAddons(), "reload")}
+                {makeBasicButton(Strings.Addons.reload, <ReloadIcon size={20} />, () => loading ? {} : AddonStore.requestAddons(), "reload")}
             </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">

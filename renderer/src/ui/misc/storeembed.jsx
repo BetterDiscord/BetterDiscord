@@ -12,7 +12,10 @@ export default function AddonEmbed({id, original}) {
     const [tags, setTags] = useState({});
     
     useEffect(() => {
-        AddonStore.requestAddon(decodeURIComponent(id)).then(setAddon, () => setLoading(false));
+        return AddonStore.addChangeListener(() => {
+            setAddon(AddonStore.getAddon(id));
+            setLoading(AddonStore.loading);
+        });
     }, [id]);
 
     if (!addon) {

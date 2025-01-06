@@ -94,6 +94,8 @@ export default class Web {
         
         return `https://github.com/${user}/${repo}/blob/${commit}/${filePath}`;
     }
+
+    static API_VERSION = API_VERSION;
     
     static redirects = {
         github: makeRedirects("/gh-redirect"),
