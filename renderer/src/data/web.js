@@ -1,13 +1,12 @@
-/** @type {`betteridscord.${"app" | "dev"}`} */
 const HOSTNAME = "betterdiscord.app";
 /**
  * The current API version to use
- * @type {`v${number}` | "latest"}
+ * @type {`v${bigint}` | "latest"}
  */
 const API_VERSION = "v3";
 
 /**
- * @param  {...string[]} paths 
+ * @param  {string[]} paths 
  */
 const join = (...paths) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
@@ -16,7 +15,7 @@ const join = (...paths) => {
 };
 
 /**
- * @param  {...string[]} paths 
+ * @param  {string[]} paths 
  */
 const apiJoin = (...paths) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
@@ -68,7 +67,7 @@ export default class Web {
         const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
         if (!match) {
-            throw new Error("Enable to parse url!");
+            throw new Error("Failed to parse url!");
         }
 
         const [, user, repo, commit, filePath] = match;
@@ -88,8 +87,9 @@ export default class Web {
         const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
         if (!match) {
-            throw new Error("Enable to parse url!");
+            throw new Error("Failed to parse url!");
         }
+
         const [, user, repo, commit, filePath] = match;
         
         return `https://github.com/${user}/${repo}/blob/${commit}/${filePath}`;
