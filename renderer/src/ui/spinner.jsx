@@ -113,4 +113,4 @@ export const SpinnerType = Spinner.Type = Object.freeze({
     LOW_MOTION: "low-motion"
 });
 
-export default Spinner;
+export default Object.freeze(Spinner);

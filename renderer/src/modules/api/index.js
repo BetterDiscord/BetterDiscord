@@ -32,6 +32,7 @@ import ErrorBoundary from "@ui/errorboundary";
 import Text from "@ui/base/text";
 import Flex from "@ui/base/flex";
 import Button from "@ui/base/button";
+import Spinner from "@ui/spinner";
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -65,6 +66,7 @@ const Components = {
     get Text() {return Text;},
     get Flex() {return Flex;},
     get Button() {return Button;},
+    get Spinner() {return Spinner;},
 };
 
 /**

@@ -154,16 +154,16 @@
 
 @keyframes bd-spinner-spinning-circle-dash {
     0% {
-        stroke-dasharray: 1200;
+        stroke-dasharray: 1, 200;
         stroke-dashoffset: 0;
     }
 
     50% {
-        stroke-dasharray: 130200;
+        stroke-dasharray: 130, 200;
     }
 
     to {
-        stroke-dasharray: 130200;
+        stroke-dasharray: 130, 200;
         stroke-dashoffset: -124;
     }
 }
@@ -187,15 +187,15 @@
 
 @keyframes bd-spinner-wandering-cubes {
     25% {
-        transform: translate(22px, 0) rotate(-90deg) scale(0.5);
+        transform: translateX(22px) rotate(-90deg) scale(0.5);
     }
 
     50% {
-        transform: translate(22px, 22px) rotate(-180deg);
+        transform: translateX(22px) translateY(22px) rotate(-180deg);
     }
 
     75% {
-        transform: translate(0, 22px) rotate(-270deg) scale(0.5);
+        transform: translateX(0) translateY(22px) rotate(-270deg) scale(0.5);
     }
 
     to {

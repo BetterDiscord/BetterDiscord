@@ -12,6 +12,9 @@ export default function AddonEmbed({id, original}) {
     const [tags, setTags] = useState({});
     
     useEffect(() => {
+        setAddon(AddonStore.getAddon(id));
+        setLoading(AddonStore.loading);
+        
         return AddonStore.addChangeListener(() => {
             setAddon(AddonStore.getAddon(id));
             setLoading(AddonStore.loading);

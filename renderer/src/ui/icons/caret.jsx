@@ -1,5 +1,8 @@
 import React from "@modules/react";
 
+/**
+ * @param {{ angle?: number, size?: number }} props \
+ */
 export default function Caret(props) {
     const size = props.size || 24;
     const angle = props.angle || 0;
