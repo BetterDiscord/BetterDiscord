@@ -50,72 +50,13 @@ export const MessageEmbedTypes = {
     GAMING_PROFILE: "gaming_profile",
   };
 
-/**
- * @typedef {{
-*      CHAT_INPUT: 1,
-*      USER: 2,
-*      MESSAGE: 3
-* }} CommandTypes
-*/
-
-/**
-* @typedef {{
-*      BUILT_IN: 0,
-*      TEXT: 1,
-*      SEARCH: 2
-* }} InputTypes
-*/
-
-/**
-* @typedef {{
-*      SUB_COMMAND: 1,
-*      SUB_COMMAND_GROUP: 2,
-*      STRING: 3,
-*      INTEGER: 4,
-*      BOOLEAN: 5,
-*      USER: 6,
-*      CHANNEL: 7,
-*      ROLE: 8,
-*      MENTIONABLE: 9,
-*      NUMBER: 10,
-*      ATTACHMENT: 11
-* }} OptionTypes
-*/
-
-/**
-* @typedef {1 | 2 | 3} CommandType
-*/
-
-/**
-* @typedef {0 | 1 | 2} InputType
-*/
-
-/**
-* @typedef {1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11} OptionType
-*/
-
 const iconClasses = {
     ...Webpack.getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
     builtInSeparator: Webpack.getModule(x => x.builtInSeparator)?.builtInSeparator
 };
 
-const getAcronym = (e) =>
-    e != null
-        ? e.replace(/"s /g, " ").replace(/\w+/g, a => a[0]).replace(/\s/g, "").slice(0, 2)
-        : "";
-
-const User = Webpack.getByStrings("hasHadPremium(){");
-const createBotMessage = Webpack.getByStrings("username:\"Clyde\"", {searchExports: true});
-const MessagesModule = Webpack.getModule(x => x.receiveMessage);
-const IconsModule = Webpack.getModule(x => x.BOT_AVATARS);
-
-const localBDBot = new User({
-    avatar: "betterdiscord",
-    id: "676620914632294467",
-    bot: true,
-    username: "BetterDiscord",
-    system: true,
-});
+const getAcronym = (input) =>
+    input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
 
 const isValidImageUrl = (url) => {
     try {
@@ -127,21 +68,35 @@ const isValidImageUrl = (url) => {
     }
 };
 
-class MainCommandAPI {
+class CommandManager {
     static #commands = new Map();
     static #sections = new Map();
 
-    static start() {
+    static initialize() {
         this.#patchCommandSystem();
     }
 
     static #patchCommandSystem() {
+
+        this.User = Webpack.getByStrings("hasHadPremium(){");
+        this.createBotMessage = Webpack.getByStrings("username:\"Clyde\"", {searchExports: true});
+        this.MessagesModule = Webpack.getModule(x => x.receiveMessage);
+        this.IconsModule = Webpack.getModule(x => x.BOT_AVATARS);
+        
+        this.localBDBot = new this.User({
+            avatar: "betterdiscord",
+            id: "676620914632294467",
+            bot: true,
+            username: "BetterDiscord",
+            system: true,
+        });
+
         this.#patchSidebarModule();
         this.#patchCommandHandlers();
         this.#patchApplicationIcons();
         this.#patchIndexStore();
 
-        IconsModule.BOT_AVATARS.betterdiscord = "https://github.com/BetterDiscord.png";
+        this.IconsModule.BOT_AVATARS.betterdiscord = "https://github.com/BetterDiscord.png";
     }
 
     static #patchSidebarModule() {
@@ -331,7 +286,7 @@ class MainCommandAPI {
             get name() {return command.name || "";},
             get description() {return command.description || "";},
             get displayDescription() {return command.description || "";},
-            get options() {return MainCommandAPI.#formatOptions(command.options);},
+            get options() {return CommandManager.#formatOptions(command.options);},
             execute: this.#patchExecuteFunction(command.execute),
             get integrationType() {return command.integrationType || 0;},
             get integrationTitle() {return command.integrationTitle || caller;},
@@ -394,7 +349,7 @@ class MainCommandAPI {
             return;
         }
     
-        const loadingMessage = createBotMessage({
+        const loadingMessage = this.createBotMessage({
             channelId: channel.id,
             content: typeof result.content === "string" ? result.content : undefined,
             loggingName: undefined,
@@ -413,11 +368,11 @@ class MainCommandAPI {
         }
     
         Object.assign(loadingMessage, {
-            author: localBDBot
+            author: this.localBDBot
         });
     
         if (loadingMessage.content || (Array.isArray(loadingMessage.embeds) && loadingMessage.embeds.length > 0)) {
-            MessagesModule.receiveMessage(channel.id, loadingMessage, true);
+            this.MessagesModule.receiveMessage(channel.id, loadingMessage, true);
         }
     }
 
@@ -443,7 +398,4 @@ class MainCommandAPI {
     }
 }
 
-Object.freeze(MainCommandAPI);
-Object.freeze(MainCommandAPI.prototype);
-Object.freeze(MainCommandAPI.constructor);
-export default MainCommandAPI;
+export default CommandManager;

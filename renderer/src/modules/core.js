@@ -23,7 +23,7 @@ import Styles from "@styles/index.css";
 
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
-import MainCommandAPI from "./commandsmanager";
+import CommandManager from "./commandsmanager";
 
 
 export default new class Core {
@@ -53,7 +53,8 @@ export default new class Core {
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
-        MainCommandAPI.start();
+        Logger.log("Startup", "Initializing CommandManager");
+        CommandManager.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
