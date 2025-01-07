@@ -325,7 +325,12 @@ class Addon {
         });
         
         return this._download ??= new Promise((resolve) => {
-            if (shouldSkipConfirm) return install(Settings.get("settings", "store", "alwaysEnable")).finally(() => resolve());
+            const onFinish = () => {
+                delete this._download;
+                resolve();
+            };
+
+            if (shouldSkipConfirm) return install(Settings.get("settings", "store", "alwaysEnable")).finally(() => onFinish());
 
             let installing = false;
 
@@ -337,10 +342,7 @@ class Addon {
                     return install(shouldEnable);
                 }
             }), {
-                onCloseCallback: () => {
-                    resolve();
-                    this._download = null;
-                },
+                onCloseCallback: onFinish,
                 // Override the on close request to make it only close when not installing
                 onCloseRequest() {
                     // If installing make it so the modal cannot close until install is finished
@@ -371,7 +373,7 @@ class Addon {
     }
 
     /** @public */
-    isInstalled() {
+    isInstalled() {        
         return this.manager.isLoaded(this.filename);
     }
 
@@ -397,6 +399,8 @@ const addonStore = new class AddonStore {
             };
         }        
 
+        // window.AddonStore = this;
+        
         this._useCache();
         this.requestAddons(true);
     }
