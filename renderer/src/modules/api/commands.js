@@ -1,4 +1,4 @@
-import MainCommandAPI from "@modules/commandsmanager";
+import MainCommandAPI, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes} from "@modules/commandsmanager";
 
 /**
  * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
@@ -14,6 +14,13 @@ class CommandAPI {
         if (!callerName) return;
         this.#callerName = callerName;
     }
+
+    Types = {
+        OptionTypes,
+        CommandTypes,
+        InputTypes,
+        MessageEmbedTypes
+    };
 
     /**
      * Registers a new command

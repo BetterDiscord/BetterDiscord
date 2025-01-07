@@ -4,19 +4,19 @@ import {Filters} from "@modules/webpackmodules";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 
-const CommandTypes = {
+export const CommandTypes = {
     CHAT_INPUT: 1,
     USER: 2,
     MESSAGE: 3
 };
 
-const InputTypes = {
+export const InputTypes = {
     BUILT_IN: 0,
     TEXT: 1,
     SEARCH: 2
 };
 
-const OptionTypes = {
+export const OptionTypes = {
     SUB_COMMAND: 1,
     SUB_COMMAND_GROUP: 2,
     STRING: 3,
@@ -29,6 +29,26 @@ const OptionTypes = {
     NUMBER: 10,
     ATTACHMENT: 11
 };
+
+export const MessageEmbedTypes = {
+    IMAGE: "image",
+    VIDEO: "video",
+    LINK: "link",
+    ARTICLE: "article",
+    TWEET: "tweet",
+    RICH: "rich",
+    GIFV: "gifv",
+    APPLICATION_NEWS: "application_news",
+    AUTO_MODERATION_MESSAGE: "auto_moderation_message",
+    AUTO_MODERATION_NOTIFICATION: "auto_moderation_notification",
+    TEXT: "text",
+    POST_PREVIEW: "post_preview",
+    GIFT: "gift",
+    SAFETY_POLICY_NOTICE: "safety_policy_notice",
+    SAFETY_SYSTEM_NOTIFICATION: "safety_system_notification",
+    VOICE_CHANNEL: "voice_channel",
+    GAMING_PROFILE: "gaming_profile",
+  };
 
 /**
  * @typedef {{
