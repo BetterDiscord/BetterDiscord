@@ -105,12 +105,12 @@ function Spinner(props) {
 }
 
 export const SpinnerType = Spinner.Type = Object.freeze({
-    WANDERING_CUBES: "wanderingCubes",
-    CHASING_DOTS: "chasingDots",
-    PULSING_ELLIPSIS: "pulsingEllipsis",
-    SPINNING_CIRCLE: "spinningCircle",
-    SPINNING_CIRCLE_SIMPLE: "spinningCircleSimple",
-    LOW_MOTION: "lowMotion"
+    WANDERING_CUBES: "wandering-cubes",
+    CHASING_DOTS: "chasing-dots",
+    PULSING_ELLIPSIS: "pulsing-ellipsis",
+    SPINNING_CIRCLE: "spinning-circle",
+    SPINNING_CIRCLE_SIMPLE: "spinning-circle-simple",
+    LOW_MOTION: "low-motion"
 });
 
 export default Spinner;

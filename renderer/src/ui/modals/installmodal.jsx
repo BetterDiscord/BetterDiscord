@@ -224,7 +224,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
             </div>
             <Footer justify={Flex.Justify.BETWEEN} align={Flex.Align.CENTER}>
                 <Button onClick={doInstall} disabled={isInstalling}>
-                    {isInstalling ? <Spinner type="pulsingEllipsis" /> : Strings.Addons.downloadAddon}
+                    {isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : Strings.Addons.downloadAddon}
                 </Button>
                 <CheckBox 
                     value={shouldEnable} 
