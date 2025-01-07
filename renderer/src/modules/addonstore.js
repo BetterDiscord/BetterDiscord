@@ -498,11 +498,14 @@ const addonStore = new class AddonStore {
     }
 
     /**
+     * Determines whether an addon is official
+     * Disabled currently
      * @public
      * @param {string} filename
      * @returns {boolean}
      */
     isOfficial(filename) {
+        return false;
         return filename.toLowerCase() in this._cache.addons;
     }
     /**
