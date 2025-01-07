@@ -443,4 +443,7 @@ class MainCommandAPI {
     }
 }
 
+Object.freeze(MainCommandAPI);
+Object.freeze(MainCommandAPI.prototype);
+Object.freeze(MainCommandAPI.constructor);
 export default MainCommandAPI;
