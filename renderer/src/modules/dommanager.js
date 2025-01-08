@@ -61,21 +61,6 @@ export default class DOMManager {
     }  
         
     /**
-     * Create multiple DOM elements
-     * 
-     * @param {[ type: string, options?: { id?: string, className?: string, target?: string | Element }, ...children: Array<string | Node> ][]} nodes - Configuration arrays for elements to create
-     * @returns {HTMLElement[]}
-     */
-    static createElements(...nodes) {
-        const elements = nodes.map(node => {
-            const [type, options = {}, ...children] = node;
-            return DOMManager.createElement(type, options, ...children);
-        });
-
-        return elements;
-    }
-
-    /**
      * Parses a string of HTML and returns the results. If the second parameter is true,
      * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
      * This is extremely useful if you have a list of elements at the top level, they can then be appended all at once to another node.
