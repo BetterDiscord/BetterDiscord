@@ -7,7 +7,8 @@ export default [
             {type: "switch", id: "voiceDisconnect", value: false},
             {type: "switch", id: "showToasts", value: true},
             {type: "switch", id: "mediaKeys", value: false},
-            {type: "switch", id: "bdContextMenu", value: true}
+            {type: "switch", id: "bdContextMenu", value: true},
+            {type: "switch", id: "themeAttributes", value: true}
         ]
     },
     {
@@ -29,7 +30,6 @@ export default [
             {type: "switch", id: "customcss", value: true},
             {type: "switch", id: "liveUpdate", value: false},
             {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "system"}]},
-            {type: "switch", id: "themeAttributes", value: false}
         ]
     },
     {

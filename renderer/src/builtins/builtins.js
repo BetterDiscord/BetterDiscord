@@ -1,11 +1,11 @@
 // Export these two first because they add settings/panels
 
-export {default as CustomCSS} from "./customcss/customcss";
-export {default as ThemeAttributes} from "./customcss/themeattributes";
+export {default as CustomCSS} from "./customcss";
 
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
 export {default as MediaKeys} from "./general/mediakeys";
 export {default as BDContextMenu} from "./general/contextmenu";
+export {default as ThemeAttributes} from "./general/themeattributes";
 
 // export {default as EmoteModule} from "./emotes/emotes";
 // export {default as EmoteMenu} from "./emotes/emotemenu";
