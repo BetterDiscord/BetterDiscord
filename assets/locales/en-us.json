@@ -83,6 +83,10 @@
                         "detached": "Detached Window",
                         "system": "System Editor"
                     }
+                },
+                "themeAttributes": {
+                    "name": "Theme Attributes",
+                    "note": "Adds attributes to various elements to assist in theming"
                 }
             },
             "developer": {

@@ -1,6 +1,7 @@
 // Export these two first because they add settings/panels
 
-export {default as CustomCSS} from "./customcss";
+export {default as CustomCSS} from "./customcss/customcss";
+export {default as ThemeAttributes} from "./customcss/themeattributes";
 
 export {default as VoiceDisconnect} from "./general/voicedisconnect";
 export {default as MediaKeys} from "./general/mediakeys";

@@ -28,7 +28,8 @@ export default [
         settings: [
             {type: "switch", id: "customcss", value: true},
             {type: "switch", id: "liveUpdate", value: false},
-            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "system"}]}
+            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "system"}]},
+            {type: "switch", id: "themeAttributes", value: false}
         ]
     },
     {
