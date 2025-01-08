@@ -34,16 +34,32 @@ export default class DOMManager {
         return baseElement.querySelector(e);
     }
 
-    static createElement(tag, options = {}, child = null) {
-        const {className, id, target} = options;
-        const element = document.createElement(tag);
-        if (className) element.className = className;
-        if (id) element.id = id;
-        if (child) element.append(child);
-        if (target) this.getElement(target).append(element);
+    /**
+     * Utility function to make creating DOM elements easier. 
+     * Has backward compatibility with previous createElement implementation.
+     * 
+     * @param {string} type HTML tag name to create
+     * @param {object} [options={}] Options object to customize the element
+     * @param {string} [options.className] Class name to add to the element
+     * @param {string} [options.id] ID to set for the element
+     * @param {string|HTMLElement} [options.target] Target element or selector to append to
+     * @param {(Node|string|(Node|string)[])[]} children Child node to add
+     * @returns {HTMLElement} The created HTML element
+    */
+    static createElement(type, options = {}, ...children) {
+        const element = document.createElement(type);
+    
+        Object.assign(element, options);
+    
+        element.append(...children.flat());
+    
+        if (options.target) {
+            (typeof options.target === "string" ? document.querySelector(options.target) : options.target)?.append(element);
+        }
+    
         return element;
-    }
-
+    }  
+        
     /**
      * Parses a string of HTML and returns the results. If the second parameter is true,
      * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
