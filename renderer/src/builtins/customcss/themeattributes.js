@@ -19,17 +19,17 @@ export default new class ThemeAttributes extends Builtin {
             const authorId = author?.id;
             if (!authorId) return;
             args["data-author-id"] = authorId;
-            args["data-author-self"] = !!author.email;
+            args["data-is-self"] = !!author.email;
         });
         Patcher.after("ThemeAttributesPatcher", TabBarComponent?.Item?.prototype, "render", (thisObject, args, returnValue) => {
             returnValue.props["data-tab-id"] = returnValue?._owner?.pendingProps?.id;
         });
         Patcher.after("ThemeAttributesPatcher", TabBarComponent, "Header", (thisObject, args, returnValue) => {
-            returnValue.props["data-tab-header-id"] = returnValue.props.children.props.children;
+            returnValue.props["data-header-id"] = returnValue.props.children.props.children;
         });
         Patcher.after("ThemeAttributesPatcher", UserProfileComponent, "render", (thisObject, [{user}], returnValue) => {
             returnValue.props["data-member-id"] = user.id;
-            returnValue.props["data-member-self"] = !!user.email;
+            returnValue.props["data-is-self"] = !!user.email;
         });
     }
 
