@@ -73,7 +73,7 @@ export class CoreUpdater {
     static async initialize() {
         setInterval(() => {
             this.checkForUpdate(false);
-        }, 7200000);
+        }, 2 * 60 * 60 * 1000);
     }
 
     static async checkForUpdate(showNotice = true) {
@@ -152,7 +152,7 @@ class AddonUpdater {
         await this.updateCache();
         setInterval(() => {
             this.checkAll(false);
-        }, 7200000);
+        }, 2 * 60 * 60 * 1000);
 
         Events.on(`${this.type}-loaded`, addon => {
             this.checkForUpdate(addon.filename, addon.version);
