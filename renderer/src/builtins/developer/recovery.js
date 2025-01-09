@@ -1,4 +1,4 @@
-import Webpack from "@modules/api/webpack";
+import Webpack from "@modules/webpackmodules";
 import Button from "@ui/base/button";
 import React from "@modules/react";
 import Logger from "@common/logger";
