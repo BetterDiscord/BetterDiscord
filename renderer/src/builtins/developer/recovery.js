@@ -106,7 +106,7 @@ export default class Recovery extends Builtin {
                         instance.setState({info: null, error: null});
                     }}
                 >
-                    {Strings.Collections.settings.developer.recover}
+                    {Strings.Misc.recover}
                 </Button>,
                 parsedError && <ErrorDetails componentStack={parsedError} />
             );

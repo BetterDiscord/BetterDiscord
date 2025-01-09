@@ -110,8 +110,7 @@
                 "devTools": {
                     "name": "DevTools",
                     "note": "Enables toggling DevTools with ctrl+shift+i"
-                },
-                "recover": "Attempt to recover Discord"
+                }
             },
             "editor": {
                 "name": "Editor Preferences",
@@ -265,5 +264,8 @@
     "Socials": {
         "twitter": "Follow Us!",
         "github": "Star Us!"
+    },
+    "Misc": {
+        "recover": "Attempt to recover Discord"
     }
 }
