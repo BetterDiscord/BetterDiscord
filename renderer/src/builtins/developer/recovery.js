@@ -58,14 +58,10 @@ export default new class Recovery extends Builtin {
     get category() {return "developer";}
     get id() {return "recovery";}
 
-    initialize() {
+    async enabled() {
         this.patchErrorBoundry();
         this.parseModule = Webpack.getByKeys("defaultRules", "parse");
         this.routeModule = Webpack.getByStrings("transitionTo", {searchExports: true});
-    }
-
-    async enabled() {
-        this.initialize();
     }
 
     async disabled() {
