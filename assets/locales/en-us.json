@@ -25,6 +25,10 @@
                 "bdContextMenu": {
                     "name": "Settings Context Menu",
                     "note": "Adds a BetterDiscord subsection to the settings context menu."
+                },
+                "themeAttributes": {
+                    "name": "Theme Attributes",
+                    "note": "Adds attributes to various elements to assist in theming."
                 }
             },
             "store": {
