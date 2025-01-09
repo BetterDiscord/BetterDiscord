@@ -73,6 +73,30 @@ export class Filters {
     }
 
     /**
+     * Generates a {@link module:WebpackModules.Filters~filter} that filters by source code content.
+     * @param {...(string|RegExp)} searches - Strings or RegExps to match against the module's source
+     * @returns {module:WebpackModules.Filters~filter} - A filter that checks module source
+     */
+    static bySource(...searches) {
+        return (exports, module) => {
+            if (!module?.id) return false;
+            let source = "";
+            try {
+                source = WebpackModules.require.m[module.id].toString();
+            }
+            catch (err) {
+                return false;
+            }
+            if (!source) return false;
+            
+            return searches.every(search => {
+                if (typeof search === "string") return source.includes(search);
+                return Boolean(source.match(search));
+            });
+        };
+    }
+
+    /**
      * Generates a {@link module:WebpackModules.Filters~filter} that filters by strings.
      * @param {...String} search - A RegExp to check on the module
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of strings
@@ -369,6 +393,25 @@ export default class WebpackModules {
      */
     static getByString(...strings) {
         return this.getModule(Filters.byStrings(...strings));
+    }
+
+    /**
+     * Finds a module using its source code.
+     * @param {String|RegExp} match String or regular expression to use to filter modules
+     * @param {Boolean} first Whether to return only the first matching module
+     * @return {Any}
+     */
+    static getBySource(match, first = true) {
+        return this.getModule(Filters.bySource(match), {first});
+    }
+
+    /**
+     * Finds all modules matching source code content.
+     * @param {String|RegExp} match String or regular expression to use to filter modules
+     * @return {Any}
+     */
+    static getAllBySource(match) {
+        return this.getModule(Filters.bySource(match), {first: false});
     }
 
     /**
