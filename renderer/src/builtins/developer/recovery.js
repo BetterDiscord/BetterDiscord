@@ -93,7 +93,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                             className="bd-error-github"
                             onClick={openGithubIssue}
                         >
-                            Report on GitHub
+                            {Strings.Collections.settings.developer.recovery.report}
                         </Button>
                     )}
                     {pluginInfo?.invite && (
@@ -101,7 +101,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                             className="bd-error-discord"
                             onClick={openDiscordSupport}
                         >
-                            Join Support Server
+                            {Strings.Addons.invite}
                         </Button>
                     )}
                 </div>
@@ -179,7 +179,7 @@ export default new class Recovery extends Builtin {
                     }}
                 >
                     {Strings.Collections.settings.developer.recovery.button}
-                </Button>,
+                    </Button>,
                 parsedError && <ErrorDetails componentStack={parsedError} stack={errorStack?.error?.stack} pluginInfo={pluginInfo} instance={instance} />
             );
         });

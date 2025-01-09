@@ -133,7 +133,8 @@
                 "recovery": {
                     "name": "Recovery",
                     "note": "Enables the ability to attempt to save discord without reloading",
-                    "button": "Attempt to recover Discord"
+                    "button": "Attempt to recover Discord",
+                    "report": "Report on Github"
                 }
             },
             "editor": {
