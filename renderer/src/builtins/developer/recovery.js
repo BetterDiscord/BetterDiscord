@@ -60,8 +60,8 @@ export default new class Recovery extends Builtin {
 
     async enabled() {
         this.patchErrorBoundry();
-        this.parseModule = Webpack.getByKeys("defaultRules", "parse");
-        this.routeModule = Webpack.getByStrings("transitionTo", {searchExports: true});
+        this.parseModule = Webpack.getByProps("defaultRules", "parse");
+        this.routeModule = Webpack.getByString("transitionTo", {searchExports: true});
     }
 
     async disabled() {
@@ -96,9 +96,9 @@ export default new class Recovery extends Builtin {
     }
 
     patchErrorBoundry() {
-        const mod = Webpack.getModule(x=>x.Z.prototype._handleSubmitReport);
+        const mod = Webpack.getByPrototypes("_handleSubmitReport");
 
-        this.after(mod?.Z?.prototype, "render", (instance, args, retValue) => {
+        this.after(mod?.prototype, "render", (instance, args, retValue) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;
             const buttons = retValue?.props?.action?.props;
 
