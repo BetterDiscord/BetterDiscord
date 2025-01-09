@@ -66,6 +66,13 @@ const Webpack = {
         byRegex(regex) {return Filters.byRegex(regex);},
 
         /**
+         * Generates a function that filters by source code content.
+         * @param {string|RegExp} match String or RegExp to match against the module's source
+         * @returns {function} A filter that checks for matching source code
+         */
+        bySource(match) {return Filters.bySource(match);},
+
+        /**
          * Generates a function that filters by strings.
          * @param {...string} strings A list of strings
          * @returns {function} A filter that checks for a set of strings
@@ -247,6 +254,26 @@ const Webpack = {
         const options = getOptions(strings);
 
         return WebpackModules.getModule(Filters.byStrings(...strings), options);
+    },
+
+    /**
+     * Finds a module using its source code.
+     * @param {...(String|RegExp)} searches - Strings or regular expressions to match in the source code
+     * @return {Any}
+     */
+    getBySource(...searches) {
+        const options = getOptions(searches);
+        return WebpackModules.getModule(Filters.bySource(...searches), options);
+    },
+
+    /**
+     * Finds all modules matching source code content.
+     * @param {...(String|RegExp)} searches - Strings or regular expressions to match in the source code
+     * @return {Any[]}
+     */
+    getAllBySource(...searches) {
+        const options = getOptions(searches, {first: false});
+        return WebpackModules.getModule(Filters.bySource(...searches), options);
     },
 
     /**
