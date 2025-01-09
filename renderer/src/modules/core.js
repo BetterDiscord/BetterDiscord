@@ -14,9 +14,11 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
+
 import IPC from "./ipc";
 import Editor from "./editor";
 import Updater from "./updater";
+
 import Styles from "@styles/index.css";
 
 import Modals from "@ui/modals";

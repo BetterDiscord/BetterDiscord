@@ -1,5 +1,4 @@
 import Webpack from "@modules/api/webpack";
-import Patcher from "@modules/patcher";
 import Button from "@ui/base/button";
 import React from "@modules/react";
 import Logger from "@common/logger";
@@ -53,14 +52,18 @@ const ErrorDetails = ({componentStack}) => {
     );
 };
 
-export default class Recovery extends Builtin {
-    static initialize() {
+export default new class Recovery extends Builtin {
+    get name() {return "Recovery";}
+    get category() {return "general";}
+    get id() {return "recovery";}
+
+    initialize() {
         this.patchErrorBoundry();
         this.parseModule = Webpack.getByKeys("defaultRules", "parse");
         this.routeModule = Webpack.getByStrings("transitionTo", {searchExports: true});
     }
 
-    static attemptRecovery() {
+    attemptRecovery() {
         try {
             Dispatcher?.dispatch?.({
                 type: "LAYER_POP_ALL"
@@ -87,10 +90,10 @@ export default class Recovery extends Builtin {
         }
     }
 
-    static patchErrorBoundry() {
-        const [mod] = Webpack.getWithKey(Webpack.Filters.byStrings(":this._handleSubmitReport,children:"));
+    patchErrorBoundry() {
+        const mod = Webpack.getModule(x=>x.Z.prototype._handleSubmitReport);
 
-        Patcher.after("Recovery", mod?.Z?.prototype, "render", (instance, args, retValue) => {
+        this.after(mod?.Z?.prototype, "render", (instance, args, retValue) => {
             const buttons = retValue?.props?.action?.props;
 
             if (!buttons) return;
@@ -106,10 +109,10 @@ export default class Recovery extends Builtin {
                         instance.setState({info: null, error: null});
                     }}
                 >
-                    {Strings.Misc.recover}
-                </Button>,
+                    {Strings.Collections.settings.developer.recover}
+                    </Button>,
                 parsedError && <ErrorDetails componentStack={parsedError} />
             );
         });
     }
-}
+};

@@ -104,7 +104,7 @@
     padding: 16px;
 }
 
-[class*="errorPage_"] [class*="buttons_"] [class*="button_"] [class*="bd-button"] {
+[class*="errorPage_"] [class*="buttons_"] [class*="button_"] {
     width: 100%;
     max-width: 400px;
     margin: 0;
