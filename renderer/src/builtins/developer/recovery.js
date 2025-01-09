@@ -3,8 +3,11 @@ import Patcher from "@modules/patcher";
 import Button from "@ui/base/button";
 import React from "@modules/react";
 import Logger from "@common/logger";
-import discordmodules from "@modules/discordmodules";
+import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
+import Builtin from "@structs/builtin";
+
+const Dispatcher = DiscordModules.Dispatcher;
 
 const ErrorDetails = ({componentStack}) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
@@ -50,7 +53,7 @@ const ErrorDetails = ({componentStack}) => {
     );
 };
 
-export default class Recovery {
+export default class Recovery extends Builtin {
     static initialize() {
         this.patchErrorBoundry();
         this.parseModule = Webpack.getByKeys("defaultRules", "parse");
@@ -59,7 +62,7 @@ export default class Recovery {
 
     static attemptRecovery() {
         try {
-            discordmodules?.dispatch?.({
+            Dispatcher?.dispatch?.({
                 type: "LAYER_POP_ALL"
             });
         }
@@ -68,7 +71,7 @@ export default class Recovery {
         }
 
         try {
-            this.dispatch?.dispatch?.({
+            Dispatcher?.dispatch?.({
                 type: "MODAL_POP_ALL"
             });
         }
@@ -103,7 +106,7 @@ export default class Recovery {
                         instance.setState({info: null, error: null});
                     }}
                 >
-                    {Strings.Misc.recover}
+                    {Strings.Collections.settings.developer.recover}
                 </Button>,
                 parsedError && <ErrorDetails componentStack={parsedError} />
             );
