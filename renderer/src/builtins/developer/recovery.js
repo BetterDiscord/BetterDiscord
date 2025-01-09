@@ -54,7 +54,7 @@ const ErrorDetails = ({componentStack}) => {
 
 export default new class Recovery extends Builtin {
     get name() {return "Recovery";}
-    get category() {return "general";}
+    get category() {return "developer";}
     get id() {return "recovery";}
 
     initialize() {
