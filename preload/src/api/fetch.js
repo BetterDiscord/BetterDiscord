@@ -27,8 +27,8 @@ export function nativeFetch(requestedUrl, fetchOptions) {
 
     /** * @param {URL} url */
     const execute = (url, options, redirectCount = 0) => {
-        const Module = url.protocol === "http:" ? http : https;
-        
+        const Module = url.protocol === "http:" ? http : https;        
+
         const req = Module.request(url.href, {
             headers: options.headers ?? {},
             method: options.method ?? "GET",

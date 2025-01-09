@@ -48,9 +48,11 @@ export default function Flex({
         direction = Direction.HORIZONTAL,
         align = Align.STRETCH,
         justify = Justify.START,
-        wrap = Wrap.NO_WRAP
+        wrap = Wrap.NO_WRAP,
+        ...props
     }) {
     return <div
+                {...props}
                 className={Utilities.className(
                     "bd-flex",
                     direction,
