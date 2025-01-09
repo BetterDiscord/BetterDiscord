@@ -22,6 +22,17 @@ export default [
     },
     {
         type: "category",
+        id: "store",
+        collapsible: true,
+        shown: false,
+        settings: [
+            {type: "switch", id: "bdAddonStore", value: true},
+            {type: "switch", id: "alwaysEnable", value: false},
+            {type: "switch", id: "addonEmbeds", value: true}
+        ]
+    },
+    {
+        type: "category",
         id: "customcss",
         collapsible: true,
         shown: false,

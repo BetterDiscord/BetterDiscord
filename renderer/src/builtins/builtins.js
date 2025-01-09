@@ -6,6 +6,8 @@ export {default as VoiceDisconnect} from "./general/voicedisconnect";
 export {default as MediaKeys} from "./general/mediakeys";
 export {default as BDContextMenu} from "./general/contextmenu";
 
+export {default as AddonStore} from "./store/addonstore";
+
 // export {default as EmoteModule} from "./emotes/emotes";
 // export {default as EmoteMenu} from "./emotes/emotemenu";
 // export {default as EmoteAutocaps} from "./emotes/emoteautocaps";

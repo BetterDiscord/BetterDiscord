@@ -25,6 +25,9 @@ import SupportIcon from "@ui/icons/support";
 import ExtIcon from "@ui/icons/extension";
 import ErrorIcon from "@ui/icons/error";
 import ThemeIcon from "@ui/icons/theme";
+import {FlowerStar} from "./addonshared";
+import AddonStore from "@modules/addonstore";
+import Utilities from "@modules/utilities";
 
 const {useState, useCallback, useMemo, useEffect} = React;
 
@@ -79,11 +82,8 @@ function buildLink(type, url) {
         link.props.onClick = function(event) {
             event.preventDefault();
             event.stopPropagation();
-            let code = url;
-            const tester = /\.gg\/(.*)$/;
-            if (tester.test(code)) code = code.match(tester)[1];
-            LayerManager.popLayer();
-            DiscordModules.InviteActions?.acceptInviteAndTransitionToInviteChannel({inviteKey: code});
+            
+            Utilities.showGuildJoinModal(url);
         };
     }
     return makeButton(Strings.Addons[type], link);
@@ -145,13 +145,16 @@ export default function AddonCard({addon, prefix, type, disabled, enabled: initi
         if (authorIndex) authorArray[authorIndex] = authorComponent;
 
         return [
-            <div className="bd-name">{getString(addon.name)}</div>,
+            <div className="bd-name">
+                {AddonStore.isOfficial(addon.filename) && <FlowerStar />}
+                {getString(addon.name)}
+            </div>,
             <div className="bd-meta">
                 <span className="bd-version">v{getString(addon.version)}</span>
                 {authorArray}
             </div>
         ];
-    }, [addon.name, addon.version, addon.authorLink, addon.authorId, addon.author, messageAuthor]);
+    }, [addon.name, addon.version, addon.authorLink, addon.authorId, addon.author, addon.filename, messageAuthor]);
 
     const footer = useMemo(() => {
         const links = Object.keys(LinkIcons);

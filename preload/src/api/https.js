@@ -44,6 +44,7 @@ const makeRequest = (url, options, callback, setReq) => {
         req.end();
     }
 
+    req.on("error", (error) => callback(error));
 };
 
 const request = function (url, options, callback) {

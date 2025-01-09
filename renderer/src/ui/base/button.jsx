@@ -74,6 +74,7 @@ export default function Button({
         type={type === "button" ? null : type}
         onClick={disabled ? () => {} : handleClick}
         onKeyDown={disabled ? () => {} : onKeyDown}
+        disabled={disabled}
         >
         <div className="bd-button-content">{children}</div>
     </button>;

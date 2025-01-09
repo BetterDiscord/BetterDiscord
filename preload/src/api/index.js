@@ -9,3 +9,18 @@ export * from "./fetch";
 export * as path from "path";
 export * as net from "net"; // TODO: evaluate need and create wrapper
 export * as os from "os";
+
+import electron from "electron";
+import * as IPCEvents from "common/constants/ipcevents";
+
+// Currently for the store, but can easily be changed later on
+const {BETTERDISCORD_PROTOCOL} = process.env;
+delete process.env.BETTERDISCORD_PROTOCOL;
+
+export function setProtocolListener(callback) {
+    if (BETTERDISCORD_PROTOCOL) {
+        process.nextTick(() => callback(BETTERDISCORD_PROTOCOL));
+    }
+
+    electron.ipcRenderer.on(IPCEvents.HANDLE_PROTOCOL, (event, url) => callback(url));
+}

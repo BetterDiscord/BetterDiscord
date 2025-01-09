@@ -22,13 +22,9 @@ import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
-
+import Web from "@data/web";
 
 const UserSettingsWindow = WebpackModules.getByProps("updateAccount");
-
-const base = "https://api.betterdiscord.app/v2/store/";
-const route = r => `${base}${r}s`;
-const redirect = addonId => `https://betterdiscord.app/gh-redirect?id=${addonId}`;
 
 const getJSON = url => {
     return new Promise(resolve => {
@@ -146,7 +142,7 @@ class AddonUpdater {
         this.pending = [];
     }
 
-    async initialize() {
+    async initialize() {    
         await this.updateCache();
         this.checkAll();
         Events.on(`${this.type}-loaded`, addon => {
@@ -161,7 +157,7 @@ class AddonUpdater {
 
     async updateCache() {
         this.cache = {};
-        const addonData = await getJSON(route(this.type));
+        const addonData = await getJSON(Web.store[this.type + "s"]);        
         addonData.reduce(reducer, this.cache);
     }
 
@@ -174,7 +170,7 @@ class AddonUpdater {
         if (showNotice) this.showUpdateNotice();
     }
  
-    checkForUpdate(filename, currentVersion) {
+    checkForUpdate(filename, currentVersion) {        
         if (this.pending.includes(filename)) return;
         const info = this.cache[path.basename(filename)];
         if (!info) return;
@@ -188,7 +184,7 @@ class AddonUpdater {
  
     async updateAddon(filename) {
         const info = this.cache[filename];
-        request(redirect(info.id), (error, _, body) => {
+        request(Web.redirects.github(info.id), (error, _, body) => {
             if (error) {
                 Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
                 return;
