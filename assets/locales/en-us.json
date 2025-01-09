@@ -264,5 +264,8 @@
     "Socials": {
         "twitter": "Follow Us!",
         "github": "Star Us!"
+    },
+    "Misc": {
+        "recover": "Attempt to recover Discord"
     }
 }
