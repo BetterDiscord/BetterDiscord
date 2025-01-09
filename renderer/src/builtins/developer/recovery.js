@@ -5,6 +5,7 @@ import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
 import Builtin from "@structs/builtin";
+import Settings from "@modules/settingsmanager";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
@@ -63,6 +64,14 @@ export default new class Recovery extends Builtin {
         this.routeModule = Webpack.getByStrings("transitionTo", {searchExports: true});
     }
 
+    async enabled() {
+        this.initialize();
+    }
+
+    async disabled() {
+        this.unpatchAll();
+    }
+
     attemptRecovery() {
         try {
             Dispatcher?.dispatch?.({
@@ -94,6 +103,7 @@ export default new class Recovery extends Builtin {
         const mod = Webpack.getModule(x=>x.Z.prototype._handleSubmitReport);
 
         this.after(mod?.Z?.prototype, "render", (instance, args, retValue) => {
+            if (!Settings.get(this.collection, this.category, this.id)) return;
             const buttons = retValue?.props?.action?.props;
 
             if (!buttons) return;
@@ -109,7 +119,7 @@ export default new class Recovery extends Builtin {
                         instance.setState({info: null, error: null});
                     }}
                 >
-                    {Strings.Collections.settings.developer.recover}
+                    {Strings.Collections.settings.developer.recovery.button}
                     </Button>,
                 parsedError && <ErrorDetails componentStack={parsedError} />
             );

@@ -111,7 +111,11 @@
                     "name": "DevTools",
                     "note": "Enables toggling DevTools with ctrl+shift+i"
                 },
-                "recover": "Attempt to recover Discord"
+                "recovery": {
+                    "name": "Recovery",
+                    "note": "Enables the ability to attempt to save discord without reloading",
+                    "button": "Attempt to recover Discord"
+                }
             },
             "editor": {
                 "name": "Editor Preferences",

@@ -68,6 +68,7 @@ export default [
             {type: "switch", id: "reactDevTools", value: false, enableWith: "devTools"},
             {type: "switch", id: "inspectElement", value: false, enableWith: "devTools"},
             {type: "switch", id: "devToolsWarning", value: false, enableWith: "devTools"},
+            {type: "switch", id: "recovery", value: true, enableWith: "recovery"},
         ]
     },
     // {
