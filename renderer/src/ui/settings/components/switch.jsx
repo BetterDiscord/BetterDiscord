@@ -3,7 +3,7 @@ import React from "@modules/react";
 const {useState, useCallback} = React;
 
 
-export default function Switch({id, checked: initialValue, disabled, onChange, internalState = true}) {
+export default function Switch({id, value: initialValue, disabled, onChange, internalState = true}) {
     const [checked, setChecked] = useState(initialValue);
     const change = useCallback(() => {
         onChange?.(!checked);

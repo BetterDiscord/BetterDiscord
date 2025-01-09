@@ -1,0 +1,121 @@
+.bd-install-modal-guild {
+    --guild-size: 32px;
+
+    border-radius: 6px;
+    width: var(--guild-size);
+    height: var(--guild-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-primary);
+    transition: background-color 0.15s ease-out, color 0.15s ease-out;
+    overflow: hidden;
+    position: relative;
+    font-weight: 500;
+    line-height: 1.2em;
+    white-space: nowrap;
+}
+
+.bd-install-modal-guild img {
+    width: var(--guild-size);
+    height: var(--guild-size);
+}
+
+.bd-install-modal-item:hover .bd-install-modal-guild {
+    color: var(--white);
+    background-color: var(--bg-brand);
+}
+
+.bd-install-modal-header {
+    margin: 0 20px;
+    align-items: center;
+    gap: 8px;
+    display: flex;
+}
+
+.bd-install-modal-items {
+    margin: 20px;
+    background: var(--background-secondary);
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.bd-install-modal-item {
+    padding: 12px;
+    color: var(--text-normal);
+    gap: 12px;
+}
+
+.bd-install-modal-items > .bd-install-modal-item:not(:last-child) {
+    border-bottom: 1px solid var(--border-faint);
+}
+
+.bd-install-modal-item-leading {
+    max-width: 24px;
+    min-width: 24px;
+    display: flex;
+}
+
+.bd-install-modal-item-trailing {
+    display: flex;
+}
+
+.bd-install-modal-item-content {
+    width: 100%;
+}
+
+.bd-install-modal-clickable {
+    cursor: pointer;
+    border-radius: 3px;
+    background-color: transparent;
+    transition: background-color ease 100ms;
+}
+
+.bd-install-modal-clickable:hover {
+    color: var(--interactive-hover);
+    background: var(--bg-overlay-hover, var(--background-modifier-hover));
+}
+
+.bd-install-modal-author-svg {
+    contain: paint;
+}
+
+.bd-install-modal-author-img {
+    width: 100%;
+    height: 100%;
+}
+
+.bd-install-modal-splash {
+    height: 197px;
+    position: relative;
+    display: block;
+    overflow: visible;
+    margin-bottom: 32px;
+}
+
+.bd-install-modal-preview {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.bd-install-modal-preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 3px 3px 0 0;
+}
+
+.bd-install-modal-author {
+    position: absolute;
+    bottom: -21px;
+    left: 12px;
+}
+
+.bd-install-modal-author-mask {
+    padding: 4px;
+    background-color: var(--background-primary);
+}

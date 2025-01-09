@@ -18,11 +18,13 @@ import DiscordModules from "./discordmodules";
 import IPC from "./ipc";
 import Editor from "./editor";
 import Updater from "./updater";
+import AddonStore from "./addonstore";
+
 
 import Styles from "@styles/index.css";
-
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
+import CommandManager from "./commandsmanager";
 
 
 export default new class Core {
@@ -43,6 +45,9 @@ export default new class Core {
         Logger.log("Startup", "Initializing DataStore");
         DataStore.initialize();
 
+        Logger.log("Startup", "Initializing AddonStore");
+        AddonStore.initialize();
+
         Logger.log("Startup", "Initializing LocaleManager");
         LocaleManager.initialize();
 
@@ -51,6 +56,9 @@ export default new class Core {
 
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
+
+        Logger.log("Startup", "Initializing CommandManager");
+        CommandManager.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();

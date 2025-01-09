@@ -73,6 +73,30 @@ export class Filters {
     }
 
     /**
+     * Generates a {@link module:WebpackModules.Filters~filter} that filters by source code content.
+     * @param {...(string|RegExp)} searches - Strings or RegExps to match against the module's source
+     * @returns {module:WebpackModules.Filters~filter} - A filter that checks module source
+     */
+    static bySource(...searches) {
+        return (exports, module) => {
+            if (!module?.id) return false;
+            let source = "";
+            try {
+                source = WebpackModules.require.m[module.id].toString();
+            }
+            catch (err) {
+                return false;
+            }
+            if (!source) return false;
+            
+            return searches.every(search => {
+                if (typeof search === "string") return source.includes(search);
+                return Boolean(source.match(search));
+            });
+        };
+    }
+
+    /**
      * Generates a {@link module:WebpackModules.Filters~filter} that filters by strings.
      * @param {...String} search - A RegExp to check on the module
      * @returns {module:WebpackModules.Filters~filter} - A filter that checks for a set of strings
@@ -119,8 +143,8 @@ export class Filters {
      * @returns {module:WebpackModules.Filters~filter} - Combinatory filter of all arguments
      */
     static combine(...filters) {
-        return module => {
-            return filters.every(filter => filter(module));
+        return (exports, module, id) => {
+            return filters.every(filter => filter(exports, module, id));
         };
     }
 }
@@ -372,6 +396,25 @@ export default class WebpackModules {
     }
 
     /**
+     * Finds a module using its source code.
+     * @param {String|RegExp} match String or regular expression to use to filter modules
+     * @param {Boolean} first Whether to return only the first matching module
+     * @return {Any}
+     */
+    static getBySource(match, first = true) {
+        return this.getModule(Filters.bySource(match), {first});
+    }
+
+    /**
+     * Finds all modules matching source code content.
+     * @param {String|RegExp} match String or regular expression to use to filter modules
+     * @return {Any}
+     */
+    static getAllBySource(match) {
+        return this.getModule(Filters.bySource(match), {first: false});
+    }
+
+    /**
      * Finds all modules with a set of strings.
      * @param {...String} strings Strings to use to filter modules
      * @return {Any}
@@ -398,7 +441,7 @@ export default class WebpackModules {
 
         return new Promise((resolve) => {
             const cancel = () => this.removeListener(listener);
-            const listener = function(exports) {
+            const listener = function(exports, module, id) {
                 if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") return;
 
                 let foundModule = null;
@@ -407,14 +450,14 @@ export default class WebpackModules {
                         foundModule = null;
                         const wrappedExport = exports[key];
                         if (!wrappedExport) continue;
-                        if (wrappedFilter(wrappedExport)) foundModule = wrappedExport;
+                        if (wrappedFilter(wrappedExport, module, id)) foundModule = wrappedExport;
                     }
                 }
                 else {
-                    if (exports.Z && wrappedFilter(exports.Z)) foundModule = defaultExport ? exports.Z : exports;
-                    if (exports.ZP && wrappedFilter(exports.ZP)) foundModule = defaultExport ? exports.ZP : exports;
-                    if (exports.__esModule && exports.default && wrappedFilter(exports.default)) foundModule = defaultExport ? exports.default : exports;
-                    if (wrappedFilter(exports)) foundModule = exports;
+                    if (exports.Z && wrappedFilter(exports.Z, module, id)) foundModule = defaultExport ? exports.Z : exports;
+                    if (exports.ZP && wrappedFilter(exports.ZP, module, id)) foundModule = defaultExport ? exports.ZP : exports;
+                    if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, id)) foundModule = defaultExport ? exports.default : exports;
+                    if (wrappedFilter(exports, module, id)) foundModule = exports;
 
                 }
                 
@@ -515,7 +558,7 @@ export default class WebpackModules {
 
                     const listeners = [...this.listeners];
                     for (let i = 0; i < listeners.length; i++) {
-                        try {listeners[i](exports);}
+                        try {listeners[i](exports, module, module.id);}
                         catch (error) {
                             Logger.stacktrace("WebpackModules", "Could not fire callback listener:", error);
                         }
@@ -525,7 +568,7 @@ export default class WebpackModules {
                     Logger.stacktrace("WebpackModules", "Could not patch pushed module", error);
                 }
                 finally {
-                	require.m[moduleId] = originalModule;
+                    require.m[moduleId] = originalModule;
                 }
             };
 

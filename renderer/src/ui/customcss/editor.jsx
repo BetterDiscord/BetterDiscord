@@ -24,7 +24,7 @@ function makeButton(button, value) {
 function makeSwitch(control) {
     return <Flex align={Flex.Align.CENTER} style={{gap: "10px"}}>
                 <Text>{control.label}</Text>
-                <Switch onChange={control.onChange} checked={control.checked} />
+                <Switch onChange={control.onChange} value={control.checked} />
             </Flex>;
 }
 

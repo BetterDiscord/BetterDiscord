@@ -1,4 +1,4 @@
-import {ipcRenderer as IPC, shell} from "electron";
+import {ipcRenderer as IPC, shell, webUtils} from "electron";
 
 export const ipcRenderer = {
     send: IPC.send.bind(IPC),
@@ -9,4 +9,4 @@ export const ipcRenderer = {
     off: IPC.off.bind(IPC)
 };
 
-export {shell};
+export {shell, webUtils};

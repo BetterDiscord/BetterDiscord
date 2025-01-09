@@ -7,7 +7,8 @@ export default [
             {type: "switch", id: "voiceDisconnect", value: false},
             {type: "switch", id: "showToasts", value: true},
             {type: "switch", id: "mediaKeys", value: false},
-            {type: "switch", id: "bdContextMenu", value: true}
+            {type: "switch", id: "bdContextMenu", value: true},
+            {type: "switch", id: "themeAttributes", value: true}
         ]
     },
     {
@@ -22,13 +23,24 @@ export default [
     },
     {
         type: "category",
+        id: "store",
+        collapsible: true,
+        shown: false,
+        settings: [
+            {type: "switch", id: "bdAddonStore", value: true},
+            {type: "switch", id: "alwaysEnable", value: false},
+            {type: "switch", id: "addonEmbeds", value: true}
+        ]
+    },
+    {
+        type: "category",
         id: "customcss",
         collapsible: true,
         shown: false,
         settings: [
             {type: "switch", id: "customcss", value: true},
             {type: "switch", id: "liveUpdate", value: false},
-            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "system"}]}
+            {type: "dropdown", id: "openAction", value: "settings", options: [{value: "settings"}, {value: "detached"}, {value: "system"}]},
         ]
     },
     {

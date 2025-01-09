@@ -4,6 +4,9 @@ import Modals from "@ui/modals";
 import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Tooltip from "@ui/tooltip";
+import Group, {buildSetting} from "@ui/settings/group";
+import React from "@modules/react";
+import ErrorBoundary from "@ui/errorboundary";
 
 
 /**
@@ -58,6 +61,34 @@ const UI = {
     },
 
     /**
+     * Shows a changelog modal in a similar style to Discord's. Customizable with images, videos, colored sections and supports markdown.
+     * 
+     * The changes option is a array of objects that have this typing:
+     * ```ts
+     * interface Changes {
+     *     title: string;
+     *     type: "fixed" | "added" | "progress" | "changed";
+     *     items: Array<string>;
+     *     blurb?: string;
+     * }
+     * ```
+     * 
+     * @param {object} options Information to display in the modal
+     * @param {string} options.title Title to show in the modal header
+     * @param {string} options.subtitle Title to show below the main header
+     * @param {string} [options.blurb] Text to show in the body of the modal before the list of changes
+     * @param {string} [options.banner] URL to an image to display as the banner of the modal
+     * @param {string} [options.video] Youtube link or url of a video file to use as the banner
+     * @param {string} [options.poster] URL to use for the video freeze-frame poster
+     * @param {string|ReactElement|Array<string|ReactElement>} [options.footer] What to show in the modal footer
+     * @param {Array<Changes>} [options.changes] List of changes to show (see description for details)
+     * @returns {string} The key used for this modal.
+     */
+    showChangelogModal(options) {
+        return Modals.showChangelogModal(options);
+    },
+
+    /**
      * This shows a toast similar to android towards the bottom of the screen.
      *
      * @param {string} content The string to show in the toast
@@ -109,6 +140,77 @@ const UI = {
         if (data.error) throw new Error(data.error);
 
         return data;
+    },
+
+    /**
+     * Creates a single setting wrapped in a setting item that has a name and note.
+     * The shape of the object should match the props of the component you want to render, check the
+     * `BdApi.Components` section for details. Shown below are ones common to all setting types.
+     * @param {object} setting 
+     * @param {string} setting.type One of: dropdown, number, switch, text, slider, radio, keybind, color, custom
+     * @param {string} setting.id Identifier to used for callbacks
+     * @param {string} setting.name Visual name to display
+     * @param {string} setting.note Visual description to display
+     * @param {any} setting.value Current value of the setting
+     * @param {ReactElement} [setting.children] Only used for "custom" type
+     * @param {CallableFunction} [setting.onChange] Callback when the value changes (only argument is new value)
+     * @param {boolean} [setting.disabled=false] Whether this setting is disabled
+     * @param {boolean} [setting.inline=true] Whether the input should render inline with the name (this is false by default for radio type)
+     * @returns A SettingItem with a an input as the child
+     */
+    buildSettingItem(setting) {
+        return buildSetting(setting);
+    },
+
+    /**
+     * Creates a settings panel (react element) based on json-like data.
+     * 
+     * The `settings` array here is an array of the same settings types described in `buildSetting` above.
+     * However, this API allows one additional setting "type" called `category`. This has the same properties
+     * as the Group React Component found under the `Components` API.
+     * 
+     * `onChange` will always be given 3 arguments: category id, setting id, and setting value. In the case
+     * that you have settings on the "root" of the panel, the category id is `null`. Any `onChange`
+     * listeners attached to individual settings will fire before the panel-level change listener.
+     * 
+     * `onDrawerToggle` is given 2 arguments: category id, and the current shown state. You can use this to
+     * save drawer states.
+     * 
+     * `getDrawerState` is given 2 arguments: category id, and the default shown state. You can use this to
+     * recall a saved drawer state.
+     * 
+     * @param {object} props 
+     * @param {Array<object>} props.settings Array of settings to show
+     * @param {CallableFunction} props.onChange Function called on every change
+     * @param {CallableFunction} [props.onDrawerToggle] Optionally used to save drawer states
+     * @param {CallableFunction} [props.getDrawerState] Optionially used to recall drawer states
+     * @returns React element usable for a settings panel
+     */
+    buildSettingsPanel({settings, onChange, onDrawerToggle, getDrawerState}) {
+        if (!settings?.length) throw new Error("No settings provided!");
+
+        return React.createElement(ErrorBoundary, {id: "buildSettingsPanel", name: "BdApi.UI"}, settings.map(setting => {
+            if (!setting.id || !setting.type) throw new Error(`Setting item missing id or type`);
+
+            if (setting.type === "category") {
+                const shownByDefault = setting.hasOwnProperty("shown") ? setting.shown : true;
+
+                return React.createElement(Group, {
+                    ...setting,
+                    onChange: onChange,
+                    onDrawerToggle: state => onDrawerToggle?.(setting.id, state),
+                    shown: getDrawerState?.(setting.id, shownByDefault) ?? shownByDefault
+                });
+            }
+
+            return buildSetting({
+                ...setting,
+                onChange: value => {
+                    setting?.onChange?.(value);
+                    onChange(null, setting.id, value);
+                }
+            });
+        }));
     }
 
 };

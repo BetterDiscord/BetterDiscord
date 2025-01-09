@@ -1,25 +1,15 @@
 import React from "@modules/react";
 import Strings from "@modules/strings";
-import Utilities from "@modules/utilities";
-import Events from "@modules/emitter";
 import Settings from "@modules/settingsmanager";
-import DataStore from "@modules/datastore";
-import WebpackModules, {Filters} from "@modules/webpackmodules";
-import Patcher from "@modules/patcher";
 import DiscordModules from "@modules/discordmodules";
 
 import Button from "@ui/base/button";
 import Modals from "@ui/modals";
 
-import AddonList from "@ui/settings/addonlist";
 import SettingsGroup from "@ui/settings/group";
 import SettingsTitle from "@ui/settings/title";
-import Header from "@ui/settings/sidebarheader";
 
 import Restore from "@ui/icons/restore";
-
-
-const {useCallback, useEffect, useReducer} = React;
 
 function makeResetButton(collectionId) {
     const action = confirmReset(() => Settings.resetCollection(collectionId));
