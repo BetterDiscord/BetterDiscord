@@ -202,6 +202,78 @@ const Webpack = {
     },
 
     /**
+     * Gets a module's mangled properties by mapping them to friendly names
+     * @memberof Webpack
+     * @param {Function|String|RegExp} filter - Filter to find the module. Can be a filter function, string, or RegExp for source matching
+     * @param {Object.<string, Function>} mangled - Object mapping desired property names to their filter functions
+     * @param {object} [options] - Options to configure the search
+     * @param {boolean} [options.defaultExport=true] - Whether to return default export when matching the default export
+     * @param {boolean} [options.searchExports=false] - Whether to execute the filter on webpack exports
+     * @returns {Object} Object containing the mangled properties with friendly names
+     */
+    getMangled(filter, mangled, options = {}) {
+        const {defaultExport = false, searchExports = false} = options;
+    
+        if (typeof defaultExport !== "boolean") {
+            return Logger.error(
+                "BdApi.Webpack~getMangled",
+                "Invalid type for options.defaultExport",
+                defaultExport,
+                "Expected: boolean"
+            );
+        }
+    
+        if (typeof searchExports !== "boolean") {
+            return Logger.error(
+                "BdApi.Webpack~getMangled",
+                "Invalid type for options.searchExports",
+                searchExports,
+                "Expected: boolean"
+            );
+        }
+    
+        if (typeof filter === "string" || filter instanceof RegExp) {
+            filter = Filters.bySource(filter);
+        }
+    
+        const returnValue = {};
+        const module = WebpackModules.getModule(
+            (exports, moduleInstance, id) => {
+                if (!(exports instanceof Object)) return false;
+                return filter(exports, moduleInstance, id);
+            },
+            {defaultExport, searchExports}
+        );
+    
+        if (!module) return returnValue;
+    
+        const mangledEntries = Object.entries(mangled);
+    
+        for (const searchKey in module) {
+            if (!Object.prototype.hasOwnProperty.call(module, searchKey)) continue;
+    
+            for (const [key, propertyFilter] of mangledEntries) {
+                if (key in returnValue) continue;
+    
+                if (propertyFilter(module[searchKey])) {
+                    Object.defineProperty(returnValue, key, {
+                        get() {
+                            return module[searchKey];
+                        },
+                        set(value) {
+                            module[searchKey] = value;
+                        },
+                        enumerable: true,
+                        configurable: false,
+                    });
+                }
+            }
+        }
+    
+        return returnValue;
+    },    
+
+    /**
      * Finds a single module using properties on its prototype.
      * @param {...string} prototypes Properties to use to filter modules
      * @return {Any}
