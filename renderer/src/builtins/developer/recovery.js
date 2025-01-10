@@ -12,7 +12,7 @@ import Toasts from "@ui/toasts";
 const Dispatcher = DiscordModules.Dispatcher;
 
 async function attemptRecovery() {
-    const routeModule = Webpack.getByString("transitionTo - Transitioning to", {searchExports: true});
+    const transitionTo = Webpack.getByString("transitionTo - Transitioning to", {searchExports: true});
     
     const recoverySteps = [
         {
@@ -24,7 +24,7 @@ async function attemptRecovery() {
             errorMessage: "Failed to pop all modals"
         },
         {
-            action: () => routeModule?.("/channels/@me"),
+            action: () => transitionTo?.("/channels/@me"),
             errorMessage: "Failed to route to main channel"
         }
     ];
