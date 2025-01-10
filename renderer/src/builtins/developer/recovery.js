@@ -1,5 +1,5 @@
 import Webpack from "@modules/webpackmodules";
-import Button from "@ui/base/button";
+import Button, { Colors } from "@ui/base/button";
 import React from "@modules/react";
 import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
@@ -107,6 +107,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                         <Button
                             className="bd-error-github"
                             onClick={openGithubIssue}
+                            color={Colors.YELLOW}
                         >
                             {Strings.Collections.settings.developer.recovery.report}
                         </Button>

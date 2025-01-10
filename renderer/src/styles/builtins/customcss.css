@@ -250,17 +250,15 @@
 }
 
 .bd-error-github {
-    background-color: var(--brand-experiment) !important;
-    color: var(--text-normal) !important;
+    background-color: "#fdd18c" !important;
 }
 
 .bd-error-github:hover {
-    background-color: var(--brand-experiment-560) !important;
+    background-color: "#fcc145" !important;
 }
 
 .bd-error-discord {
     background-color: var(--button-positive-background) !important;
-    color: var(--text-normal) !important;
 }
 
 .bd-error-discord:hover {
