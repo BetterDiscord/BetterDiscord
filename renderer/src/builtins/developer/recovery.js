@@ -158,7 +158,7 @@ export default new class Recovery extends Builtin {
             };
         }
         catch (error) {
-            Logger.error("Failed to get plugin info:", error);
+            Logger.error("Recovery", `Failed to get plugin info: ${error}`);
             return null;
         }
     }
