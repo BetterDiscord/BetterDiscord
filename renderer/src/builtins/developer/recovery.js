@@ -1,5 +1,5 @@
 import Webpack from "@modules/webpackmodules";
-import Button, { Colors } from "@ui/base/button";
+import Button, {Colors} from "@ui/base/button";
 import React from "@modules/react";
 import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
