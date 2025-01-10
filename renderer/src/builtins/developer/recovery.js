@@ -34,7 +34,7 @@ async function attemptRecovery() {
             await action();
         } 
         catch (error) {
-            Logger.error(errorMessage + ":", error);
+            Logger.error("Recovery", `${errorMessage}:, ${error}`);
         }
     }
 }
