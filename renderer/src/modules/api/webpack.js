@@ -205,7 +205,7 @@ const Webpack = {
      * Gets a module's mangled properties by mapping them to friendly names.
      * @template T - The type of the resulting object with friendly property names.
      * @memberof Webpack
-     * @param {((module: any) => boolean) | string | RegExp} filter - Filter to find the module. Can be a filter function, string, or RegExp for source matching.
+     * @param  {(exports: any, module: any, id: any) => boolean | string | RegExp} filter - Filter to find the module. Can be a filter function, string, or RegExp for source matching.
      * @param {Record<keyof T, (prop: any) => boolean>} mangled - Object mapping desired property names to their filter functions.
      * @param {object} [options] - Options to configure the search.
      * @param {boolean} [options.defaultExport=true] - Whether to return default export when matching the default export.
