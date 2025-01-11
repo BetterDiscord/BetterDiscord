@@ -108,10 +108,7 @@ export default new class DataStore {
         // Getting here means not cached, read from disk
         try {this.pluginData[pluginName] = JSON.parse(fs.readFileSync(this.getPluginFile(pluginName)));}
         // Setup blank data if parse fails
-        catch (e) {
-            Logger.stacktrace("DataStore", `Could not parse ${pluginName}'s config file`, e);
-            return this.pluginData[pluginName] = {};
-        }
+        catch {return this.pluginData[pluginName] = {};}
     }
 
     getPluginData(pluginName, key) {
