@@ -27,6 +27,8 @@ const ADDON_REGEX = new RegExp([
     /https?:\/\/betterdiscord\.app\/(?:theme|plugin)(?:\/([^/\s]+)\/?|\?id=(\d+))/.source
 ].join("|"), "gi");
 
+const CODEBLOCK_REGEX = /(`+)([\s\S]*?[^`])\1(?!`)/g;
+
 /**
  * Extract all bd addon links
  * @param {string} text
@@ -39,6 +41,13 @@ function extractAddonLinks(text, max = Infinity) {
     const matches = [];
 
     if (max <= 0) return matches;
+    
+    /**
+     * @type {[ start: number, stop: number ]}
+     */
+    const codeblocks = Array.from(text.matchAll(CODEBLOCK_REGEX), (match) => [ 
+        match.index, match.index + match[0].length
+     ]);    
 
     /** @type {RegExpExecArray} */
     let exec;
@@ -47,6 +56,18 @@ function extractAddonLinks(text, max = Infinity) {
         // if <betterdiscord://addon/id> not betterdiscord://addon/id
         if (exec[0][0] === "h" && text[exec.index - 1] === "<") continue;
 
+        const endIndex = exec.index + exec.length;
+
+        let isInCodeblock = false;
+        for (const [ start, end ] of codeblocks) {
+            if (start < exec.index && endIndex < end) {
+                isInCodeblock = true;
+                break;
+            }
+        }        
+
+        if (isInCodeblock) continue;
+        
         matches.push({
             id: exec[1] || exec[2] || exec[3],
             match: exec[0],
