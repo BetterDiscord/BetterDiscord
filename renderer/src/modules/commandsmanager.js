@@ -92,7 +92,7 @@ class CommandManager {
         });
 
         this.#patchSidebarModule();
-        this.#patchCommandHandlers();
+        this.#patchQuery();
         this.#patchApplicationIcons();
         this.#patchIndexStore();
 
@@ -102,26 +102,17 @@ class CommandManager {
     static #patchSidebarModule() {
         const SidebarModule = Webpack.getByStrings(".BUILT_IN?", "categoryListRef:", {defaultExport: false});
 
-        Patcher.instead("CommandsManager", SidebarModule, "Z", (that, [props], original) => {
-            const sections = [...props.sections];
+        Patcher.after("CommandsManager", SidebarModule, "Z", (that, [props], res) => {
+            if (!this.#sections.size) return;            
 
-            const index = sections.findIndex(section => section.id === "-1");
-            if (index !== -1) {
-                const bdSections = sections.splice(index + 1);
-                const builtIn = sections.pop();
+            const child = res.props.children;
 
-                sections.push(...bdSections, builtIn);
-            }
+            if (child.props?.__bdPatched) return;
 
-            const result = original.call(that, {...props, sections});
-            const child = result.props.children;
-
-            if (child.props?.__bdPatched) return result;
-
-            result.props.children = React.cloneElement(child, {
+            res.props.children = React.cloneElement(child, {
                 renderCategoryListItem: (...args) => {
                     const ret = child.props.renderCategoryListItem(...args);
-                    const nextSection = sections[args[1] + 1];
+                    const nextSection = props.sections[args[1] + 1];
 
                     if (nextSection && nextSection.id === "-1") {
                         return React.cloneElement(ret, {
@@ -139,12 +130,10 @@ class CommandManager {
                 },
                 __bdPatched: true
             });
-
-            return result;
         });
     }
 
-    static #patchIndexStore() {
+    static #patchIndexStore() {        
         const [mod, key] = Webpack.getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
 
         Patcher.after("CommandsManager", mod, key, (that, args, res) => {
@@ -154,15 +143,18 @@ class CommandManager {
                 if (sectionedCommand.section.id !== "-1") continue;
                 sectionedCommand.data = sectionedCommand.data.filter(m => !m.isBD);
             }
+    
+            let descriptorsIndex = res.descriptors.findIndex((value) => value.id === "-1");
+            let sectionedCommandsIndex = res.sectionedCommands.findIndex((value) => value.section.id === "-1");
 
             for (const section of this.#sections.values()) {
                 const commands = this.getCommandsByCaller(section.id);
                 if (commands.length > 0) {
-                    res.sectionedCommands.push({
+                    res.sectionedCommands.splice(sectionedCommandsIndex++, 0, {
                         section,
                         data: commands
                     });
-                    res.descriptors.push(section);
+                    res.descriptors.splice(descriptorsIndex++, 0, section);
                     res.commands.push(...commands);
                 }
             }
@@ -171,14 +163,31 @@ class CommandManager {
         });
     }
 
-    static #patchCommandHandlers() {
-        const [mod, key] = Webpack.getWithKey(Filters.byStrings(".BUILT_IN_INTEGRATION"));
+    static #patchQuery() {
+        const ApplicationCommandIndexStore = Webpack.getStore("ApplicationCommandIndexStore");
 
-        Patcher.after("CommandsManager", mod, key, (_, __, commands) => {
-            const allCommands = Array.from(this.#commands.values())
-                .flatMap(commandMap => Array.from(commandMap.values()));
+        Patcher.after("CommandManager", ApplicationCommandIndexStore, "query", (that, args, res) => {
+            if (!args[1].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
 
-            return [...commands, ...allCommands];
+            const text = args[1].text || "";
+
+            for (const sectionedCommand of res.sectionedCommands) {
+                if (sectionedCommand.section.id !== "-1") continue;
+                sectionedCommand.data = sectionedCommand.data.filter(m => !m.isBD);
+            }
+
+            for (const section of this.#sections.values()) {
+                const commands = this.getCommandsByCaller(section.id).filter((cmd) => cmd.name.includes(text) || cmd.description.includes(text));
+
+                if (commands.length > 0) {
+                    res.sectionedCommands.push({
+                        section,
+                        data: commands
+                    });
+                    res.descriptors.push(section);
+                    res.commands.unshift(...commands);
+                }
+            }
         });
     }
 
