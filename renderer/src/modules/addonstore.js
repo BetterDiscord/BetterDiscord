@@ -301,6 +301,8 @@ class Addon {
 
                     if (shouldEnable) {
                         this.manager.state[this.name] = true;
+
+                        this.manager.saveState();
                     }
                     
                     fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), text);
