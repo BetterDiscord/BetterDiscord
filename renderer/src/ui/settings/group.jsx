@@ -11,7 +11,7 @@ import Radio from "./components/radio";
 import Keybind from "./components/keybind";
 import Color from "./components/color";
 import Filepicker from "./components/file";
-import Button from "./components/button";
+import Button from "../base/button";
 
 const {useCallback} = React;
 
