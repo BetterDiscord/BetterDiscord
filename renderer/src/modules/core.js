@@ -67,7 +67,7 @@ export default new class Core {
 
         Modals.initialize();
         FloatingWindows.initialize();
-        
+
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
             Builtins[module].initialize();
