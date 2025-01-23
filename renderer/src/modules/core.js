@@ -26,7 +26,6 @@ import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
 import CommandManager from "./commandsmanager";
 
-
 export default new class Core {
     async startup() {
         if (this.hasStarted) return;

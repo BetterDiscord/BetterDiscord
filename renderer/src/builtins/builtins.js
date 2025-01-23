@@ -13,6 +13,8 @@ export {default as AddonStore} from "./store/addonstore";
 // export {default as EmoteMenu} from "./emotes/emotemenu";
 // export {default as EmoteAutocaps} from "./emotes/emoteautocaps";
 
+export {default as Recovery} from "@builtins/developer/recovery";
+
 export {default as DevToolsListener} from "./developer/devtools";
 export {default as Debugger} from "./developer/debugger";
 export {default as ReactDevTools} from "./developer/reactdevtools";
