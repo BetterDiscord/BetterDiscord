@@ -14,6 +14,7 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
+import RDTFix from "@builtins/rdtFix";
 
 import IPC from "./ipc";
 import Editor from "./editor";
@@ -67,6 +68,9 @@ export default new class Core {
 
         Modals.initialize();
         FloatingWindows.initialize();
+        
+        Logger.log("Startup", "Initializing RDTFix");
+        RDTFix.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
