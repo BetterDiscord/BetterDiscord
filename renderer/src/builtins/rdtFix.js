@@ -13,12 +13,4 @@ export default class RDTFix {
             },
         });
     }
-
-    static stop() {
-        Object.defineProperty(window, "$type", {
-            value: () => {
-                return this.#originalType;
-            },
-        });
-    }
 }
