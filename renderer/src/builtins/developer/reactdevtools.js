@@ -10,7 +10,6 @@ export default new class ReactDevTools extends Builtin {
     get name() {return "ReactDevTools";}
     get category() {return "developer";}
     get id() {return "reactDevTools";}
-    #originalType;
 
     async enabled() {
         this.showModal();
@@ -23,15 +22,15 @@ export default new class ReactDevTools extends Builtin {
 
     initialize() {
         super.initialize();
-        
-        this.#originalType = window.$type;
+
+        let originalType = window.$type;
         
         Object.defineProperty(window, "$type", {
             get: () => {
-                return this.#originalType;
+                return originalType;
             },
             set: (v) => {
-                this.#originalType = v?.__originalFunction || v;
+                originalType = v?.__originalFunction || v;
             },
         });
     }
