@@ -14,7 +14,7 @@ import ThemeManager from "./thememanager";
 import Settings from "./settingsmanager";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
-import RDTFix from "@builtins/rdtFix";
+import RDTFix from "@modules/rdtFix";
 
 import IPC from "./ipc";
 import Editor from "./editor";
