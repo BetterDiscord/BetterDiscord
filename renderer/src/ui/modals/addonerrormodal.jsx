@@ -37,8 +37,8 @@ function AddonError({err, index}) {
         </div>;
     }
 
-    return <div key={`${err.type}-${index}`} className={joinClassNames("bd-addon-error", (expanded) ? "expanded" : "collapsed")}>
-        <div className="bd-addon-error-header" onClick={toggle} >
+    return <details key={`${err.type}-${index}`} className={joinClassNames("bd-addon-error", (expanded) ? "expanded" : "collapsed")}>
+        <summary className="bd-addon-error-header" onClick={toggle} >
             <div className="bd-addon-error-icon">
                 {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
             </div>
@@ -54,9 +54,9 @@ function AddonError({err, index}) {
             <svg className="bd-addon-error-expander" width="24" height="24" viewBox="0 0 24 24">
                 <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path>
             </svg>
-        </div>
+        </summary>
         {renderErrorBody(err)}
-    </div>;
+    </details>;
 }
 
 

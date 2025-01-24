@@ -1,3 +1,8 @@
+.bd-error-modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .bd-addon-errors {
     margin-top: 16px;
 }
@@ -22,8 +27,14 @@
 .bd-addon-error-header {
     display: flex;
     align-items: center;
+    border-radius: 5px;
     padding: 20px 16px;
     cursor: pointer;
+    outline: none;
+}
+
+.bd-addon-error-header:focus-visible {
+    box-shadow: 0 0 0 4px var(--focus-primary);
 }
 
 .bd-addon-error-icon {
@@ -45,17 +56,18 @@
 }
 
 .bd-addon-error-expander {
+    transform: rotate(-90deg);
     color: var(--interactive-normal);
     transition: transform 0.2s ease;
+}
+
+.bd-addon-error[open] .bd-addon-error-expander {
+    transform: none;
 }
 
 .bd-addon-error-expander,
 .bd-addon-error-icon {
     flex: 0 0 auto;
-}
-
-.bd-addon-error.collapsed .bd-addon-error-expander {
-    transform: rotate(90deg);
 }
 
 .bd-addon-error-header-inner {
@@ -68,6 +80,10 @@
     padding: 0 16px 24px;
 }
 
+.bd-addon-error-body .bd-divider {
+    margin-bottom: 24px;
+}
+
 .bd-addon-error-stack code {
     user-select: text;
     font-size: 0.875rem;
@@ -78,6 +94,26 @@
     scrollbar-color: var(--background-tertiary) var(--background-secondary);
     background: var(--background-secondary);
     border: 1px solid var(--background-tertiary);
+}
+
+.bd-addon-error-stack pre {
+    position: relative;
+}
+
+.bd-addon-error-stack pre [class^="codeActions"] {
+    position: absolute;
+    display: none;
+    right: 4px;
+    top: 8px;
+    color: var(--text-normal);
+}
+
+.bd-addon-error-stack pre:hover [class^="codeActions"] {
+    display: block;
+}
+
+.bd-addon-error-stack pre [class^="codeActions"] > div {
+    cursor: pointer;
 }
 
 .bd-addon-error-details {

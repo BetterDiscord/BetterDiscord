@@ -1,4 +1,5 @@
 import React from "@modules/react";
+import Divider from "@ui/divider";
 
 
 export default function SettingItem({id, name, note, inline, children}) {
@@ -9,6 +10,6 @@ export default function SettingItem({id, name, note, inline, children}) {
                 </div>
                 <div className={"bd-setting-note"}>{note}</div>
                 {!inline && children}
-                <div className={"bd-setting-divider"} />
+                <Divider className="bd-setting-divider" />
             </div>;
 }

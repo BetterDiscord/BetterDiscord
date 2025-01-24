@@ -31,6 +31,7 @@
 .bd-divider {
     width: 100%;
     height: 1px;
+    margin: 0;
+    border: none;
     border-top: thin solid var(--background-modifier-accent);
-    margin-bottom: 1em;
 }
