@@ -1,3 +1,5 @@
+import Logger from "@common/logger";
+
 export default class DOMManager {
 
     /** Document/window width */
@@ -54,6 +56,7 @@ export default class DOMManager {
         element.append(...children.flat());
     
         if (options.target) {
+            Logger.warn("DOM.createElement", `Usage of the "target" option has been deprecated and will be removed in the next version.`);
             (typeof options.target === "string" ? document.querySelector(options.target) : options.target)?.append(element);
         }
     
