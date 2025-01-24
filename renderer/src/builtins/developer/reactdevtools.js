@@ -19,6 +19,22 @@ export default new class ReactDevTools extends Builtin {
         this.showModal();
     }
 
+
+    initialize() {
+        super.initialize();
+
+        let originalType = window.$type?.__originalFunction || window.$type;
+        
+        Object.defineProperty(window, "$type", {
+            get: () => {
+                return originalType;
+            },
+            set: (v) => {
+                originalType = v?.__originalFunction || v;
+            },
+        });
+    }
+
     showModal() {
         if (!this.initialized) return;
         Modals.showConfirmationModal(Strings.Modals.additionalInfo, Strings.Modals.restartPrompt, {
