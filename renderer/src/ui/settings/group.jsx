@@ -11,6 +11,7 @@ import Radio from "./components/radio";
 import Keybind from "./components/keybind";
 import Color from "./components/color";
 import Filepicker from "./components/file";
+import Button from "../base/button";
 
 const {useCallback} = React;
 
@@ -45,6 +46,7 @@ export function buildSetting(setting) {
     if (setting.type == "radio") children = <Radio {...setting} />;
     if (setting.type == "keybind") children = <Keybind {...setting} />;
     if (setting.type == "color") children = <Color {...setting} />;
+    if (setting.type == "button") children = <Button {...setting} />;
     if (setting.type == "custom") children = setting.children;
     if (!children) return null;
     return <Item id={setting.id} inline={setting.hasOwnProperty("inline") ? setting.inline : setting.type !== "radio"} key={setting.id} name={setting.name} note={setting.note}>{children}</Item>;
