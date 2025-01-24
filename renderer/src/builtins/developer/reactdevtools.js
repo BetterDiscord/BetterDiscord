@@ -23,7 +23,7 @@ export default new class ReactDevTools extends Builtin {
     initialize() {
         super.initialize();
 
-        let originalType = window.$type;
+        let originalType = window.$type?.__originalFunction || window.$type;
         
         Object.defineProperty(window, "$type", {
             get: () => {

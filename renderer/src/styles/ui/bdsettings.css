@@ -148,11 +148,8 @@
     margin-bottom: 10px;
 }
 
-.bd-setting-divider {
-    width: 100%;
-    height: 1px;
+.bd-divider.bd-setting-divider {
     margin-top: 20px;
-    border-bottom: thin solid var(--background-modifier-accent);
 }
 
 .bd-settings-container {
