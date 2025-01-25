@@ -200,10 +200,11 @@ export default class WebpackModules {
      * @param {Boolean} [options.first=true] Whether to return only the first matching module
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters.
+     * @param {Boolean} [options.raw=false] Whether to return the whole Module object when matching exports
      * @return {Any}
      */
     static getModule(filter, options = {}) {
-        const {first = true, defaultExport = true, searchExports = false} = options;
+        const {first = true, defaultExport = true, searchExports = false, raw = false} = options;
         const wrappedFilter = wrapFilter(filter);
 
         const modules = this.getAllModules();
@@ -230,6 +231,7 @@ export default class WebpackModules {
                     if (!wrappedExport) continue;
                     if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
                     if (!foundModule) continue;
+                    if (raw) foundModule = module;
                     if (first) return foundModule;
                     rm.push(foundModule);
                 }
@@ -241,6 +243,7 @@ export default class WebpackModules {
                 if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
                 if (wrappedFilter(exports, module, index)) foundModule = exports;
                 if (!foundModule) continue;
+                if (raw) foundModule = module;
                 if (first) return foundModule;
                 rm.push(foundModule);
             }
@@ -259,6 +262,7 @@ export default class WebpackModules {
      * @param {Boolean} [queries.first=true] Whether to return only the first matching module
      * @param {Boolean} [queries.defaultExport=true] Whether to return default export when matching the default export
      * @param {Boolean} [queries.searchExports=false] Whether to execute the filter on webpack export getters.
+     * @param {Boolean} [queries.raw=false] Whether to return the whole Module object when matching exports
      * @return {Any}
      */
     static getBulk(...queries) {
@@ -274,7 +278,7 @@ export default class WebpackModules {
 
             for (let q = 0; q < queries.length; q++) {
                 const query = queries[q];
-                const {filter, first = true, defaultExport = true, searchExports = false} = query;
+                const {filter, first = true, defaultExport = true, searchExports = false, raw = false} = query;
                 if (first && returnedModules[q]) continue; // If they only want the first, and we already found it, move on
                 if (!first && !returnedModules[q]) returnedModules[q] = []; // If they want multiple and we haven't setup the subarry, do it now
 
@@ -287,6 +291,7 @@ export default class WebpackModules {
                         if (!wrappedExport) continue;
                         if (wrappedFilter(wrappedExport, module, index)) foundModule = wrappedExport;
                         if (!foundModule) continue;
+                        if (raw) foundModule = module;
                         if (first) returnedModules[q] = foundModule;
                         else returnedModules[q].push(foundModule);
                     }
@@ -298,6 +303,7 @@ export default class WebpackModules {
                     if (exports.__esModule && exports.default && wrappedFilter(exports.default, module, index)) foundModule = defaultExport ? exports.default : exports;
                     if (wrappedFilter(exports, module, index)) foundModule = exports;
                     if (!foundModule) continue;
+                    if (raw) foundModule = module;
                     if (first) returnedModules[q] = foundModule;
                     else returnedModules[q].push(foundModule);
                 }
@@ -314,6 +320,7 @@ export default class WebpackModules {
      * @param {any} [options.target=null] Optional module target to look inside.
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters. 
+     * @param {Boolean} [options.raw=false] Whether to return the whole Module object when matching exports
      * @return {[Any, string]}
      */
     static *getWithKey(filter, {target = null, ...rest} = {}) {
@@ -430,10 +437,11 @@ export default class WebpackModules {
      * @param {AbortSignal} [options.signal] AbortSignal of an AbortController to cancel the promise
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
      * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters.
+     * @param {Boolean} [options.raw=false] Whether to return the whole Module object when matching exports
      * @returns {Promise<any>}
      */
     static getLazy(filter, options = {}) {
-        const {signal: abortSignal, defaultExport = true, searchExports = false} = options;
+        const {signal: abortSignal, defaultExport = true, searchExports = false, raw = false} = options;
         const fromCache = this.getModule(filter, {defaultExport, searchExports});
         if (fromCache) return Promise.resolve(fromCache);
 
@@ -462,6 +470,7 @@ export default class WebpackModules {
                 }
                 
                 if (!foundModule) return;
+                if (raw) foundModule = module;
                 cancel();
                 resolve(foundModule);
             };
