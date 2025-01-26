@@ -2,6 +2,7 @@ import Builtin from "@structs/builtin";
 import buildAddonCommand from "./addons";
 import DebugCommand from "./debug";
 import RestartCommand from "./restart";
+import SupportCommand from "./support";
 
 
 export default new class DefaultCommands extends Builtin {
@@ -14,7 +15,8 @@ export default new class DefaultCommands extends Builtin {
             buildAddonCommand("plugin"),
             buildAddonCommand("theme"),
             DebugCommand,
-            RestartCommand
+            RestartCommand,
+            SupportCommand
         );
     }
 

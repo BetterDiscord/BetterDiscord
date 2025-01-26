@@ -196,6 +196,7 @@ export default class Utilities {
 
     /**
      * Shows the guild join modal, to join invites
+     * TODO: move this to the modals module
      * @param {string} code 
      */
     static async showGuildJoinModal(code) {
