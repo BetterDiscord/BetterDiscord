@@ -49,14 +49,22 @@ function getAddonCount(type) {
 function getDebugInfo() {
     const pluginCount = getAddonCount("plugin");
     const themeCount = getAddonCount("theme");
-    const lines = ["```md", `## Discord Info\n${getDiscordInfo()}\n`];
+    const lines = [`## Discord Info\n${getDiscordInfo()}\n`];
     lines.push(`## BetterDiscord`);
-    for (let l = 0; l < 500; l++) lines.push(`stable ${Config.version}\n`);
+    lines.push(`stable ${Config.version}\n`);
     lines.push(`### ${pluginCount.total} Plugins (${pluginCount.enabled} Enabled):\n${PluginManager.addonList.map(a => `- ${a.name}${PluginManager.isEnabled(a.id) ? " (Enabled)" : ""}`).join("\n")}\n`);
     lines.push(`### ${themeCount.total} Themes (${themeCount.enabled} Enabled):\n${ThemeManager.addonList.map(a => `- ${a.name}${ThemeManager.isEnabled(a.id) ? " (Enabled)" : ""}`).join("\n")}`);
-    lines.push("```");
     return lines.join("\n");
 }
+
+const enterEvent = new KeyboardEvent("keydown", {
+    key: "Enter",
+    code: "Enter",
+    keyCode: 13,
+    which: 13,
+    bubbles: true, // Make sure the event bubbles
+    cancelable: false,
+});
 
 export default {
     id: "debug",
@@ -73,11 +81,15 @@ export default {
     execute: async (data, {channel}) => {
         const shouldSend = data.find(o => o.name === "send").value;
         const info = getDebugInfo();
-        if (!shouldSend) return {content: info};
-        if (info.length > 2000) {
+        const codeblocked = `\`\`\`md\n${info}\n\`\`\``;
+        if (!shouldSend) return {content: codeblocked};
+        if (codeblocked.length > 2000) {
             nativeModule.copy(info);
-            return {content: "The debug info was too long to send automatically! Instead, the info has been copied to your clipboard. Paste (ctrl+v) the info in the textbox below and Discord will automatically attach it as a text file."};
+            nativeModule.paste();
+            const textArea = document.querySelector(`[class*="slateTextArea_"]`);
+            if (textArea) return setTimeout(() => textArea.dispatchEvent(enterEvent), 75);
+            return {content: "The debug info was too long to send automatically! It has been attached as a text file instead."};
         }
-        MessageUtils.sendMessage(channel.id, {content: info});
+        MessageUtils.sendMessage(channel.id, {content: codeblocked});
     }
 };

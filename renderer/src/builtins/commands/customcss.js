@@ -6,6 +6,15 @@ import WebpackModules from "@modules/webpackmodules";
 
 const MessageUtils = WebpackModules.getByProps("sendMessage");
 
+const enterEvent = new KeyboardEvent("keydown", {
+    key: "Enter",
+    code: "Enter",
+    keyCode: 13,
+    which: 13,
+    bubbles: true, // Make sure the event bubbles
+    cancelable: false,
+});
+
 export default {
     id: "customcss",
     name: "customcss",
@@ -57,8 +66,11 @@ export default {
             const css = CustomCSS.savedCss;
             const codeblocked = `\`\`\`css\n${css}\n\`\`\``;
             if (codeblocked.length > 2000) {
-                window?.DiscordNative?.clipboard?.copy(css);
-                return {content: "Your CustomCSS was too big to send automatically! Instead, the css has been copied to your clipboard. Paste (ctrl+v) the css in the textbox below and Discord will automatically attach it as a text file."};
+                window?.DiscordNative?.clipboard?.copy?.(css);
+                window?.DiscordNative?.clipboard?.paste?.();
+                const textArea = document.querySelector(`[class*="slateTextArea_"]`);
+                if (textArea) return setTimeout(() => textArea.dispatchEvent(enterEvent), 75);
+                return {content: "The CustomCSS was too big to send automatically! It has been attached as a text file instead."};
             }
             MessageUtils.sendMessage(channel.id, {content: `\`\`\`css\n${css}\n\`\`\``});
         }
