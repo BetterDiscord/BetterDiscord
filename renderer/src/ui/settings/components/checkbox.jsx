@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import React from "@modules/react";
-import Utilities from "@modules/utilities";
 import Flex from "@ui/base/flex";
 import Checkmark from "@ui/icons/check";
 
@@ -32,7 +32,7 @@ export default function CheckBox(props) {
 
     return (
         <Flex 
-            className={Utilities.className("bd-checkbox", props.className, {"bd-checkbox-disabled": props.disabled, "bd-checkbox-has-label": props.label, "bd-checkbox-reverse": props.reverse})} 
+            className={clsx("bd-checkbox", props.className, {"bd-checkbox-disabled": props.disabled, "bd-checkbox-has-label": props.label, "bd-checkbox-reverse": props.reverse})} 
             align={Flex.Align.CENTER}
             direction={props.reverse ? Flex.Direction.HORIZONTAL_REVERSE : Flex.Direction.HORIZONTAL}
             onClick={onChange}
@@ -41,13 +41,13 @@ export default function CheckBox(props) {
                 type="checkbox" 
                 checked={state} 
                 id={props.id} 
-                className={Utilities.className("bd-checkbox-input", props.inputClassName)}
+                className={clsx("bd-checkbox-input", props.inputClassName)}
             />
-            <div className={Utilities.className("bd-checkbox-box", props.iconClassName)}>
+            <div className={clsx("bd-checkbox-box", props.iconClassName)}>
                 <Checkmark size={18} />
             </div>
             {props.label && (
-                <div className={Utilities.className("bd-checkbox-label", props.label)}>{props.label}</div>
+                <div className={clsx("bd-checkbox-label", props.label)}>{props.label}</div>
             )}
         </Flex>
     );

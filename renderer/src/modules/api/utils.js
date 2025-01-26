@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Utilities from "@modules/utilities";
 import {comparator} from "@structs/semver";
 
@@ -65,13 +66,13 @@ const Utils = {
      * Builds a classname string from any number of arguments. This includes arrays and objects.
      * When given an array all values from the array are added to the list.
      * When given an object they keys are added as the classnames if the value is truthy.
-     * Copyright (c) 2018 Jed Watson https://github.com/JedWatson/classnames MIT License
+     * Copyright (c) Luke Edwards <luke.edwards05@gmail.com> (lukeed.com)
      * 
      * @param {...any} argument Anything that should be used to add classnames
      * @returns {string} Joined classname
      */
     className() {
-        return Utilities.className(...arguments);
+        return clsx(...arguments);
     },
 
     /**

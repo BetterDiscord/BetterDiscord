@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import React from "@modules/react";
-import Utilities from "@modules/utilities";
 
 import Flex from "../base/flex";
 
@@ -7,7 +7,7 @@ import Flex from "../base/flex";
 export default function Footer({id, className, children, justify, direction, align, wrap}) {
     return <Flex
                 id={id}
-                className={Utilities.className("bd-modal-footer", className)}
+                className={clsx("bd-modal-footer", className)}
                 grow={0}
                 shrink={0}
                 direction={direction ?? Flex.Direction.HORIZONTAL_REVERSE}

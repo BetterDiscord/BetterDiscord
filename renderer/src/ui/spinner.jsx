@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import React from "@modules/react";
-import Utilities from "@modules/utilities";
 import WebpackModules from "@modules/webpackmodules";
 
 const AccessibilityContext = WebpackModules.getModule(m => m?._currentValue?.reducedMotion, {searchExports: true}) || React.createContext({
@@ -47,13 +47,13 @@ function Spinner(props) {
 
     /** @type {string} */
     const className = React.useMemo(() => {
-        return Utilities.className({
+        return clsx({
             "bd-spinner-stopAnimation": !animated
         }, "bd-spinner", `bd-spinner-${type}`, props.className);
     }, [props.className, animated, type]);
 
     const itemClassName = React.useMemo(() => {
-        return Utilities.className("bd-spinner-path", props.itemClassName);
+        return clsx("bd-spinner-path", props.itemClassName);
     }, [props.itemClassName]);
 
     switch (type) {
