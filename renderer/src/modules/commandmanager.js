@@ -102,7 +102,7 @@ class CommandManager {
     static #patchSidebarModule() {
         const SidebarModule = Webpack.getByStrings(".BUILT_IN?", "categoryListRef:", {defaultExport: false});
 
-        Patcher.after("CommandsManager", SidebarModule, "Z", (that, [props], res) => {
+        Patcher.after("CommandManager", SidebarModule, "Z", (that, [props], res) => {
             if (!this.#sections.size) return;            
 
             const child = res.props.children;
@@ -136,7 +136,7 @@ class CommandManager {
     static #patchIndexStore() {        
         const [mod, key] = Webpack.getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
 
-        Patcher.after("CommandsManager", mod, key, (that, args, res) => {
+        Patcher.after("CommandManager", mod, key, (that, args, res) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
 
             for (const sectionedCommand of res.sectionedCommands) {
@@ -158,7 +158,6 @@ class CommandManager {
                     res.commands.push(...commands);
                 }
             }
-
             return res;
         });
     }
@@ -196,7 +195,7 @@ class CommandManager {
             target: Webpack.getModule((e, m) => Webpack.modules[m.id].toString().includes("hasSpaceTerminator:"))
         });
 
-        Patcher.after("CommandsManager", mod, key, (that, [{id}], res) => {
+        Patcher.after("CommandManager", mod, key, (that, [{id}], res) => {
             const getIconUrl = () => {
                 const metadataIcon = pluginmanager.getAddon(id)?.icon ?? null;
                 const sectionIcon = this.#sections.has(id) ? this.#sections.get(id)?.icon : null;
@@ -338,11 +337,11 @@ class CommandManager {
 
     static #patchExecuteFunction(originalExecute) {
         return (data, {channel, guild}) => {
-            const result = originalExecute(data, {channel, guild});
+                const result = originalExecute(data, {channel, guild});
 
-            this.sendBotMessage(result, {channel, guild});
+                this.sendBotMessage(result, {channel, guild});
 
-            return result;
+                return result;
         };
     }
 

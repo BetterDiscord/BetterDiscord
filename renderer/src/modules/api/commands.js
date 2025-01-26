@@ -1,4 +1,4 @@
-import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes} from "@modules/commandsmanager";
+import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes} from "@modules/commandmanager";
 
 /**
  * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
