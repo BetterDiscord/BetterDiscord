@@ -18,7 +18,7 @@ const enterEvent = new KeyboardEvent("keydown", {
 export default {
     id: "customcss",
     name: "customcss",
-    description: `Toggle or view your CustomCSS`,
+    description: `Toggle, open, or share your CustomCSS`,
     options: [
         {
             type: OptionTypes.STRING,
@@ -36,24 +36,24 @@ export default {
     ],
     execute: async (data, {channel}) => {
         const action = data.find(o => o.name === "action").value;
-        const isEnabled = Settings.get("settings", "customcss", "customcss");
+        const isEnabled = Settings.get("customcss", "customcss");
 
         if (action === "toggle") {
-            Settings.set("settings", "customcss", "customcss", !isEnabled);
+            Settings.set("customcss", "customcss", !isEnabled);
             return {content: `CustomCSS has been toggled!`};
         }
 
         if (action === "enable") {
             if (isEnabled) return {content: `CustomCSS is already enabled!`};
 
-            Settings.set("settings", "customcss", "customcss", true);
+            Settings.set("customcss", "customcss", true);
             return {content: `CustomCSS has been enabled!`};
         }
 
         if (action === "disable") {
             if (!isEnabled) return {content: `CustomCSS is already disabled!`};
 
-            Settings.set("settings", "customcss", "customcss", false);
+            Settings.set("customcss", "customcss", false);
             return {content: `CustomCSS has been disabled!`};
         }
 

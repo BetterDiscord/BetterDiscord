@@ -4,6 +4,7 @@ import DebugCommand from "./debug";
 import RestartCommand from "./restart";
 import SupportCommand from "./support";
 import CustomCSSCommand from "./customcss";
+import SettingsCommand from "./settings";
 
 
 export default new class DefaultCommands extends Builtin {
@@ -18,7 +19,8 @@ export default new class DefaultCommands extends Builtin {
             DebugCommand,
             RestartCommand,
             SupportCommand,
-            CustomCSSCommand
+            CustomCSSCommand,
+            SettingsCommand
         );
     }
 
