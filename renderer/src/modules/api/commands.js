@@ -59,6 +59,7 @@ class CommandAPI {
      * @private
      */
     #validateRegistration(caller, command) {
+        if (caller === "BetterDiscord") throw new Error("Plugins cannot register commands as BetterDiscord");
         return typeof caller === "string" && typeof command === "object" && command?.id && command?.name && command?.execute;
     }
 
