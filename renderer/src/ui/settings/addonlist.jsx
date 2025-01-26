@@ -19,7 +19,7 @@ import CheckIcon from "@ui/icons/check";
 import CloseIcon from "@ui/icons/close";
 
 import NoResults from "@ui/blankslates/noresults";
-import EmptyImage from "@ui/blankslates/emptyimage";
+import EmptySlate from "@ui/blankslates/empty";
 import Web from "@data/web";
 import Store from "@ui/icons/store";
 import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader, addonContext} from "./addonshared";
@@ -44,11 +44,17 @@ function openFolder(folder) {
     ipc.openPath(folder);
 }
 
-function blankslate(type, onClick) {
+function Blankslate({type, folder}) {
+    const {toggleStore} = React.useContext(addonContext);
+    const storeEnabled = Settings.get("settings", "store", "bdAddonStore");
     const message = Strings.Addons.blankSlateMessage.format({link: Web.pages[`${type}s`], type}).toString();
-    return <EmptyImage title={Strings.Addons.blankSlateHeader.format({type})} message={message}>
-        <Button size={Button.Sizes.LARGE} onClick={onClick}>{Strings.Addons.openFolder.format({type})}</Button>
-    </EmptyImage>;
+    const onClick = storeEnabled ? toggleStore : () => openFolder(folder);
+    const buttonLabel = storeEnabled ? Strings.Addons.openStore : Strings.Addons.openFolder;
+    return <EmptySlate title={Strings.Addons.blankSlateHeader.format({type})} message={storeEnabled ? "" : message}>
+        <Button size={Button.Sizes.LARGE} onClick={onClick}>
+            {buttonLabel.format({type: `${type[0].toUpperCase()}${type.substring(1)}`})}
+        </Button>
+    </EmptySlate>;
 }
 
 function makeControlButton(title, children, action, selected = false) {
@@ -224,7 +230,7 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
             </div>
         </div>,
         <StoreCard />,
-        !hasAddonsInstalled && blankslate(type, () => openFolder(folder)),
+        !hasAddonsInstalled && <Blankslate type={type} folder={folder} />,
         isSearching && !hasResults && hasAddonsInstalled && <NoResults />,
         hasAddonsInstalled && <div key="addonList" className={"bd-addon-list" + (view == "grid" ? " bd-grid-view" : "")}>{renderedCards}</div>
     ];

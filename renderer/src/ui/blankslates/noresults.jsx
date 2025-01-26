@@ -1,14 +1,16 @@
+import clsx from "clsx";
 import React from "@modules/react";
-import DiscordModules from "@modules/discordmodules";
 
 import MagnifyingGlass from "@ui/icons/magnifyingglass";
+import Strings from "@modules/strings";
 
 
 export default function NoResults(props) {
-    return <div className={"bd-empty-results" + (props.className ? ` ${props.className}` : "")}>
-                <MagnifyingGlass />
+    return <div className={clsx("bd-empty-results", props.className)}>
+                {props.image ? props.image : <MagnifyingGlass />}
                 <div className="bd-empty-results-text">
-                    {props.text || DiscordModules.Strings.SEARCH_NO_RESULTS || ""}
+                    {props.text || Strings.Addons.results.format({results: 0}) || ""}
                 </div>
+                {props.children}
             </div>;
 }
