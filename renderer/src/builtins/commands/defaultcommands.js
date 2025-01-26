@@ -3,6 +3,7 @@ import buildAddonCommand from "./addons";
 import DebugCommand from "./debug";
 import RestartCommand from "./restart";
 import SupportCommand from "./support";
+import CustomCSSCommand from "./customcss";
 
 
 export default new class DefaultCommands extends Builtin {
@@ -16,7 +17,8 @@ export default new class DefaultCommands extends Builtin {
             buildAddonCommand("theme"),
             DebugCommand,
             RestartCommand,
-            SupportCommand
+            SupportCommand,
+            CustomCSSCommand
         );
     }
 

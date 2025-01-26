@@ -76,7 +76,7 @@ export default {
         if (!shouldSend) return {content: info};
         if (info.length > 2000) {
             nativeModule.copy(info);
-            return {content: "The debug info was too long to send automatically! Instead, has been copied to your clipboard. Paste (ctrl+v) the info in the textbox below and Discord will automatically attach it as a text file."};
+            return {content: "The debug info was too long to send automatically! Instead, the info has been copied to your clipboard. Paste (ctrl+v) the info in the textbox below and Discord will automatically attach it as a text file."};
         }
         MessageUtils.sendMessage(channel.id, {content: info});
     }
