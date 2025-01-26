@@ -1,6 +1,7 @@
 import Builtin from "@structs/builtin";
 import buildAddonCommand from "./addons";
 import DebugCommand from "./debug";
+import RestartCommand from "./restart";
 
 
 export default new class DefaultCommands extends Builtin {
@@ -12,7 +13,8 @@ export default new class DefaultCommands extends Builtin {
         this.addCommands(
             buildAddonCommand("plugin"),
             buildAddonCommand("theme"),
-            DebugCommand
+            DebugCommand,
+            RestartCommand
         );
     }
 
