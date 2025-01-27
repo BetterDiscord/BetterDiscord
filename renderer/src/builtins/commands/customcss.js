@@ -1,20 +1,10 @@
 import CustomCSS from "@builtins/customcss";
 import {OptionTypes} from "@modules/commandmanager";
+import DiscordModules from "@modules/discordmodules";
 import Settings from "@modules/settingsmanager";
-import WebpackModules from "@modules/webpackmodules";
 
 
-const MessageUtils = WebpackModules.getByProps("sendMessage");
-
-const enterEvent = new KeyboardEvent("keydown", {
-    key: "Enter",
-    code: "Enter",
-    keyCode: 13,
-    which: 13,
-    bubbles: true, // Make sure the event bubbles
-    cancelable: false,
-});
-
+// TODO: consider moving this into the CustomCSS builtin rather than importing it
 export default {
     id: "customcss",
     name: "customcss",
@@ -64,15 +54,12 @@ export default {
 
         if (action === "share") {
             const css = CustomCSS.savedCss;
-            const codeblocked = `\`\`\`css\n${css}\n\`\`\``;
-            if (codeblocked.length > 2000) {
-                window?.DiscordNative?.clipboard?.copy?.(css);
-                window?.DiscordNative?.clipboard?.paste?.();
-                const textArea = document.querySelector(`[class*="slateTextArea_"]`);
-                if (textArea) return setTimeout(() => textArea.dispatchEvent(enterEvent), 75);
-                return {content: "The CustomCSS was too big to send automatically! It has been attached as a text file instead."};
-            }
-            MessageUtils.sendMessage(channel.id, {content: `\`\`\`css\n${css}\n\`\`\``});
+            const file = new File([css], "custom.css", {type: "text/css"});
+
+            // Use a timeout because this doesn't work if you do it within the context of a slash command
+            if (DiscordModules.promptToUpload) return setTimeout(() => DiscordModules.promptToUpload?.([file], channel, 0), 1);
+
+           return {content: "Unable to attach your Custom CSS as a file. Please report this issue to BetterDiscord's [GitHub](https://github.com/BetterDiscord/BetterDiscord) if no one else has already done so!"};
         }
     }
 };

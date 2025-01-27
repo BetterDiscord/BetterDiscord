@@ -1,10 +1,8 @@
 import {OptionTypes} from "@modules/commandmanager";
+import DiscordModules from "@modules/discordmodules";
 import Plugins from "@modules/pluginmanager";
 import Themes from "@modules/thememanager";
-import WebpackModules from "@modules/webpackmodules";
 
-
-const MessageUtils = WebpackModules.getByProps("sendMessage");
 
 export default (type) => {
     const manager = type === "plugin" ? Plugins : Themes;
@@ -89,7 +87,7 @@ export default (type) => {
             }
 
             if (action === "share") {
-                MessageUtils.sendMessage(channel.id, {content: `<betterdiscord://store/${addon.name}>`});
+                DiscordModules.MessageUtils.sendMessage(channel.id, {content: `<betterdiscord://store/${addon.name}>`});
             }
         }
     };

@@ -1,27 +1,20 @@
 import Config from "@data/config";
 import {OptionTypes} from "@modules/commandmanager";
+import DiscordModules from "@modules/discordmodules";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
-import WebpackModules from "@modules/webpackmodules";
 
 
-const MessageUtils = WebpackModules.getByProps("sendMessage");
-
-let osModule;
-let nativeModule;
 function getDiscordInfo() {
-    if (!osModule) osModule = WebpackModules.getByProps("os", "layout");
-    if (!nativeModule) nativeModule = WebpackModules.getByProps("setBadge");
-
-    const releaseChannel = nativeModule.releaseChannel;
-    const hostVersion = nativeModule.version.join(".");
-    const hostBuildNumber = nativeModule.buildNumber;
-    const osArch = nativeModule.architecture;
+    const releaseChannel = DiscordModules.RemoteModule.releaseChannel;
+    const hostVersion = DiscordModules.RemoteModule.version.join(".");
+    const hostBuildNumber = DiscordModules.RemoteModule.buildNumber;
+    const osArch = DiscordModules.RemoteModule.architecture;
     const osVersion = window?.DiscordNative?.os?.release;
-    let osName = osModule.os.toString();
+    let osName = DiscordModules.UserAgent.os.toString();
 
     // eslint-disable-next-line no-unused-vars
-    const [macVer, _, winVer] = nativeModule.parsedOSRelease;
+    const [macVer, _, winVer] = DiscordModules.RemoteModule.parsedOSRelease;
 
     if (osName.includes("Windows 10") && winVer >= 22e3) osName = osName.replace("Windows 10", "Windows 11");
     if (osName.includes("OS X 10.15.7") && macVer >= 20) osName = "macOS ".concat(macVer - 9);
@@ -57,15 +50,6 @@ function getDebugInfo() {
     return lines.join("\n");
 }
 
-const enterEvent = new KeyboardEvent("keydown", {
-    key: "Enter",
-    code: "Enter",
-    keyCode: 13,
-    which: 13,
-    bubbles: true, // Make sure the event bubbles
-    cancelable: false,
-});
-
 export default {
     id: "debug",
     name: "debug",
@@ -83,13 +67,12 @@ export default {
         const info = getDebugInfo();
         const codeblocked = `\`\`\`md\n${info}\n\`\`\``;
         if (!shouldSend) return {content: codeblocked};
-        if (codeblocked.length > 2000) {
-            nativeModule.copy(info);
-            nativeModule.paste();
-            const textArea = document.querySelector(`[class*="slateTextArea_"]`);
-            if (textArea) return setTimeout(() => textArea.dispatchEvent(enterEvent), 75);
-            return {content: "The debug info was too long to send automatically! It has been attached as a text file instead."};
-        }
-        MessageUtils.sendMessage(channel.id, {content: codeblocked});
+
+        const file = new File([info], "debug.md", {type: "text/markdown"});
+
+        // Use a timeout because this doesn't work if you do it within the context of a slash command
+        if (DiscordModules.promptToUpload) return setTimeout(() => DiscordModules.promptToUpload?.([file], channel, 0), 1);
+
+        return {content: "Unable to attach your debug info as a file. Please report this issue to BetterDiscord's [GitHub](https://github.com/BetterDiscord/BetterDiscord) if no one else has already done so!"};
     }
 };
