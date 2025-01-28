@@ -10,7 +10,7 @@ export default (type) => {
     return {
         id: `${type}s`,
         name: `${type}s`,
-        description: `Toggle or view your ${type}s`,
+        description: `Enable, disable, or view your ${type}s`,
         options: [
             {
                 type: OptionTypes.STRING,
@@ -18,7 +18,6 @@ export default (type) => {
                 description: "Action to take",
                 required: true,
                 choices: [
-                    {name: "Toggle", value: "toggle"},
                     {name: "Enable", value: "enable"},
                     {name: "Disable", value: "disable"},
                     {name: "Show Info", value: "info"},
@@ -43,11 +42,6 @@ export default (type) => {
             const addonId = data.find(o => o.name === "name").value;
             const addon = manager.getAddon(addonId);
             const isEnabled = manager.isEnabled(addon.id);
-    
-            if (action === "toggle") {
-                manager.toggleAddon(addon.id);
-                return {content: `${addon.name} has been toggled!`};
-            }
 
             if (action === "enable") {
                 if (isEnabled) return {content: `${addon.name} is already enabled!`};

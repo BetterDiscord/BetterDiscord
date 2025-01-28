@@ -8,7 +8,7 @@ import Settings from "@modules/settingsmanager";
 export default {
     id: "customcss",
     name: "customcss",
-    description: `Toggle, open, or share your CustomCSS`,
+    description: `Enable, disable, open, or share your CustomCSS`,
     options: [
         {
             type: OptionTypes.STRING,
@@ -16,7 +16,6 @@ export default {
             description: "Action to take",
             required: true,
             choices: [
-                {name: "Toggle", value: "toggle"},
                 {name: "Enable", value: "enable"},
                 {name: "Disable", value: "disable"},
                 {name: "Open Editor", value: "open"},
@@ -27,11 +26,6 @@ export default {
     execute: async (data, {channel}) => {
         const action = data.find(o => o.name === "action").value;
         const isEnabled = Settings.get("customcss", "customcss");
-
-        if (action === "toggle") {
-            Settings.set("customcss", "customcss", !isEnabled);
-            return {content: `CustomCSS has been toggled!`};
-        }
 
         if (action === "enable") {
             if (isEnabled) return {content: `CustomCSS is already enabled!`};

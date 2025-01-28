@@ -5,7 +5,7 @@ import Settings from "@modules/settingsmanager";
 export default {
     id: "settings",
     name: "settings",
-    description: `Toggle or open your settings`,
+    description: `Enable or disable your settings`,
     options: [
         {
             type: OptionTypes.STRING,
@@ -13,7 +13,6 @@ export default {
             description: "Action to take",
             required: true,
             choices: [
-                {name: "Toggle", value: "toggle"},
                 {name: "Enable", value: "enable"},
                 {name: "Disable", value: "disable"}
             ]
@@ -38,11 +37,6 @@ export default {
         const id = settingData[1];
         const name = settingData[2];
         const isEnabled = Settings.get(catId, id);
-
-        if (action === "toggle") {
-            Settings.set(catId, id, !isEnabled);
-            return {content: `${name} has been toggled!`};
-        }
 
         if (action === "enable") {
             if (isEnabled) return {content: `${name} is already enabled!`};
