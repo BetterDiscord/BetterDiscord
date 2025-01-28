@@ -63,6 +63,10 @@
                 "frame": {
                     "name": "Window Frame",
                     "note": "Adds the native os window frame to the main window"
+                },
+                "inAppTrafficLights": {
+                    "name": "Use In App Traffic Lights",
+                    "note": "Instead of using the OS traffic lights it will use a in app one"
                 }
             },
             "addons": {

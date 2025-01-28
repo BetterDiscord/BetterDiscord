@@ -66,7 +66,9 @@ export default [
         settings: [
             {type: "switch", id: "transparency", value: false},
             {type: "switch", id: "removeMinimumSize", value: false},
-            {type: "switch", id: "frame", value: false, hidden: true}
+            {type: "switch", id: "frame", value: process.platform === "linux"},
+            // MacOS exclusive
+            {type: "switch", id: "inAppTrafficLights", value: false, disabled: process.env.BETTERDISCORD_NATIVE_FRAME === "true", hidden: process.platform !== "darwin"}
         ]
     },
     {
