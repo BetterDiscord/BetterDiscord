@@ -1,9 +1,11 @@
 {
     "extends": "eslint:recommended",
     "env": {
+        "mocha": true,
         "node": true,
         "es2020": true
     },
+    "ignorePatterns": ["dist/**"],
     "parserOptions": {
         "ecmaVersion": 2022,
         "sourceType": "module",

@@ -181,7 +181,7 @@
 }
 
 .bd-addon-store-card-tag:hover {
-    color: var(--interactive-hover)
+    color: var(--interactive-hover);
 }
 
 .bd-addon-store-card-tag-selected,
@@ -224,7 +224,7 @@ button.bd-addon-store-card-button {
     line-height: 1.3333333333333333;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: .02em;
+    letter-spacing: 0.02em;
     user-select: none;
 }
 
@@ -245,7 +245,7 @@ button.bd-addon-store-card-button {
     gap: 6px;
     align-items: center;
     margin-top: 10px;
-  }
+}
 
 .bd-addon-store-card-loading {
     padding: 4px;

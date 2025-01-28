@@ -5,19 +5,13 @@
     "main": "src/index.js",
     "private": true,
     "scripts": {
-        "build": "webpack --progress --color",
-        "watch": "webpack --progress --color --watch",
-        "build-prod": "webpack --stats minimal --mode production",
-        "lint": "eslint --ext .js src/"
+        "build": "pnpm webpack --progress --color",
+        "watch": "pnpm webpack --progress --color --watch",
+        "build-prod": "pnpm webpack --stats minimal --mode production",
+        "lint": "pnpm eslint .",
+        "lint-fix": "pnpm run lint --fix"
     },
     "devDependencies": {
         "webpack": "^5.90.3"
-    },
-    "pnpm": {
-        "overrides": {
-            "braces@<3.0.3": ">=3.0.3",
-            "webpack@<5.94.0": ">=5.94.0",
-            "micromatch@<4.0.8": ">=4.0.8"
-        }
     }
 }

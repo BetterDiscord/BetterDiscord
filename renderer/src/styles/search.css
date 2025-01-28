@@ -17,7 +17,7 @@
     flex: 1;
 }
 
-.bd-search::-webkit-input-placeholder {
+.bd-search::input-placeholder {
     color: var(--text-muted);
 }
 

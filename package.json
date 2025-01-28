@@ -4,16 +4,19 @@
     "description": "Enhances Discord by adding functionality and themes.",
     "main": "src/index.js",
     "scripts": {
-        "build": "pnpm run build-injector && pnpm run build-preload && pnpm run build-renderer",
-        "build-prod": "pnpm --filter injector build-prod && pnpm --filter preload build-prod && pnpm --filter renderer build-prod",
+        "build": "pnpm run -r build",
+        "build-prod": "pnpm -r build-prod",
         "build-injector": "pnpm --filter injector build",
         "build-renderer": "pnpm --filter renderer build",
         "build-preload": "pnpm --filter preload build",
         "inject": "node scripts/inject.js",
-        "lint": "eslint --ext .js common/ && pnpm --filter injector lint && pnpm --filter preload lint && pnpm --filter renderer lint-js",
-        "test": "mocha --require @babel/register --recursive \"./tests/renderer/*.js\"",
+        "lint": "pnpm eslint . && pnpm stylelint **/*.css",
+        "lint-fix": "pnpm eslint . --fix && pnpm stylelint **/*.css --quiet",
+        "lint-prod": "pnpm eslint . --quiet && pnpm stylelint **/*.css --quiet",
+        "test": "mocha --require @babel/register --recursive \"./tests/**/*.js\"",
+        "test-prod": "pnpm run test --reporter min",
         "dist": "pnpm run build-prod && node scripts/pack.js",
-        "api": "jsdoc -X -r renderer/src/modules/api/ > jsdoc-ast.json",
+        "api": "pnpm jsdoc -X -r renderer/src/modules/api/ > jsdoc-ast.json",
         "translations": "node -r dotenv/config scripts/translations.js"
     },
     "devDependencies": {
@@ -26,6 +29,8 @@
         "eslint-plugin-react": "^7.33.2",
         "eslint-plugin-react-hooks": "^4.6.0",
         "mocha": "^10.3.0",
+        "stylelint": "^14.16.1",
+        "stylelint-config-standard": "^24.0.0",
         "terser-webpack-plugin": "^5.3.10",
         "webpack": "^5.90.3",
         "webpack-cli": "^4.10.0"

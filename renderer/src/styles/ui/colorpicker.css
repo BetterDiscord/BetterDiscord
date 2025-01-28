@@ -76,21 +76,19 @@
     justify-content: center;
 }
 
-
 .bd-setting-item.inline .bd-color-picker-swatch {
     max-width: 220px;
     margin-top: 1px;
 }
 
-
 .bd-setting-item.inline .bd-color-picker-default,
 .bd-setting-item.inline .bd-color-picker {
     width: 50px;
-    height: 40px
+    height: 40px;
 }
 
 .bd-setting-item.inline .bd-color-picker-swatch-item {
     height: 18px;
     width: 18px;
-    margin: 2px 2px;
+    margin: 2px;
 }

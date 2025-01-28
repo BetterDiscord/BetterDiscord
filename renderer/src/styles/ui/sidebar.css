@@ -7,7 +7,7 @@
 .bd-sidebar-header h2 {
     padding: 6px 10px;
     box-sizing: border-box;
-    color: #96989d;
+    color: #96989D;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -15,7 +15,7 @@
     display: flex;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: .02em;
+    letter-spacing: 0.02em;
     font-size: 12px;
 }
 

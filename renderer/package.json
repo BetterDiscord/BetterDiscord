@@ -4,16 +4,16 @@
     "private": true,
     "main": "src/index.js",
     "scripts": {
-        "build": "webpack --progress --color",
-        "watch": "webpack --progress --color --watch",
-        "build-prod": "webpack --mode production --no-devtool",
-        "lint-js": "eslint --ext .jsx,.js src/",
-        "build-css": "postcss src/styles/index.css -o dist/style.css",
-        "watch-css": "postcss src/styles/index.css -o dist/style.css -w",
-        "lint-css": "stylelint src/styles/*.css && stylelint src/styles/**/*.css",
-        "lint": "npm run lint-js && npm run lint-css",
-        "lint-prod": "npm run lint-js -- --quiet && npm run lint-css -- --quiet",
-        "test-prod": "npm run test -- --reporter min"
+        "build": "pnpm webpack --progress --color",
+        "watch": "pnpm webpack --progress --color --watch",
+        "build-prod": "pnpm webpack --mode production --no-devtool",
+        "build-css": "pnpm postcss src/styles/index.css -o dist/style.css",
+        "watch-css": "pnpm postcss src/styles/index.css -o dist/style.css -w",
+        "lint-css": "pnpm stylelint **/*.css",
+        "lint-js": "pnpm eslint .",
+        "lint": "pnpm run lint-js && pnpm run lint-css",
+        "lint-fix": "pnpm run lint-js --fix && pnpm run lint-css --fix",
+        "lint-prod": "pnpm run lint-js --quiet && pnpm run lint-css --quiet"
     },
     "devDependencies": {
         "@babel/core": "^7.23.9",
@@ -35,12 +35,5 @@
     },
     "dependencies": {
         "buffer": "^6.0.3"
-    },
-    "pnpm": {
-        "overrides": {
-            "braces@<3.0.3": ">=3.0.3",
-            "webpack@<5.94.0": ">=5.94.0",
-            "micromatch@<4.0.8": ">=4.0.8"
-        }
     }
 }

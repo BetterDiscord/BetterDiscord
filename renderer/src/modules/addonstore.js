@@ -508,6 +508,7 @@ const addonStore = new class AddonStore {
      */
     isOfficial(filename) {
         return false;
+        // eslint-disable-next-line no-unreachable
         return filename.toLowerCase() in this._cache.addons;
     }
     /**
