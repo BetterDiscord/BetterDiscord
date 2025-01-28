@@ -9,7 +9,8 @@
         "watch": "pnpm webpack --progress --color --watch",
         "build-prod": "pnpm webpack --stats minimal --mode production",
         "lint": "pnpm eslint .",
-        "lint-fix": "pnpm run lint --fix"
+        "lint-fix": "pnpm run lint --fix",
+        "lint-prod": "pnpm run lint --quiet"
     },
     "devDependencies": {
         "webpack": "^5.90.3"
