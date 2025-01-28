@@ -1,6 +1,6 @@
+import clsx from "clsx";
 import React from "@modules/react";
 import Strings from "@modules/strings";
-import Utilities from "@modules/utilities";
 
 import Button from "@ui/base/button";
 
@@ -53,7 +53,7 @@ export default function Paginator({className, currentPage, length, pageSize, onP
     }, [currentPage, max, maxVisible]);
 
     return (
-        <div className={Utilities.className("bd-paginator", className)}>
+        <div className={clsx("bd-paginator", className)}>
             <Button 
                 className="bd-paginator-back" 
                 color={Button.Colors.TRANSPARENT} 

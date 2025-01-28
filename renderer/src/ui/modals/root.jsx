@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import React from "@modules/react";
-import Utilities from "@modules/utilities";
 import WebpackModules from "@modules/webpackmodules";
 
 const Spring = WebpackModules.getByProps("useSpring", "animated");
@@ -40,7 +40,7 @@ export default function ModalRoot({className, transitionState, children, size = 
 
     return <FocusLock disableTrack={true}>
         <Spring.animated.div
-                className={Utilities.className("bd-modal-root", size, className, style)}
+                className={clsx("bd-modal-root", size, className, style)}
                 style={springStyles}
             >
         {children}
@@ -84,7 +84,7 @@ export default function ModalRoot({className, transitionState, children, size = 
     // return springTransition((styles, isVisible) => {
     //     if (!isVisible) console.log("not visible");
     //     return <Spring.animated.div
-    //             className={Utilities.className("bd-modal-root", size, className, style)}
+    //             className={clsx("bd-modal-root", size, className, style)}
     //             style={styles}
     //         >
     //     {children}

@@ -121,6 +121,13 @@ export default new class CustomCSS extends Builtin {
         DataStore.saveCustomCSS(this.savedCss);
     }
 
+    open() {
+        if (this.isDetached) return;
+        if (this.nativeOpen) return this.openNative();
+        else if (this.startDetached) return this.openDetached(this.savedCss);
+        return UserSettings?.open?.(this.id);
+    }
+
     openNative() {
         electron.shell.openExternal(`file://${DataStore.customCSS}`);
     }

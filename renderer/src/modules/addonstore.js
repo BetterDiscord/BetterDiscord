@@ -506,10 +506,9 @@ const addonStore = new class AddonStore {
      * @param {string} filename
      * @returns {boolean}
      */
-    isOfficial(filename) {
+    isOfficial(/* filename */) {
         return false;
-        // eslint-disable-next-line no-unreachable
-        return filename.toLowerCase() in this._cache.addons;
+        // return filename.toLowerCase() in this._cache.addons;
     }
     /**
      * @public

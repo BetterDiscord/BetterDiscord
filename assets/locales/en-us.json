@@ -29,6 +29,10 @@
                 "themeAttributes": {
                     "name": "Theme Attributes",
                     "note": "Adds attributes to various elements to assist in theming."
+                },
+                "defaultCommands": {
+                    "name": "Default Commands",
+                    "note": "Shows BetterDiscord commands in your slash command menu."
                 }
             },
             "store": {
@@ -221,14 +225,16 @@
         "unknownAuthor": "Unknown Author",
         "noDescription": "Description not provided.",
         "alreadyExists": "There is already a {{type}} with name {{name}}",
-        "alreadWatching": "Already watching  addons.",
+        "alreadWatching": "Already watching addons.",
         "metaError": "META could not be parsed.",
         "missingNameData": "META missing name data.",
         "metaNotFound": "META was not found.",
         "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
         "blankSlateHeader": "You don't have any {{type}}s!",
-        "blankSlateMessage": "Grab some from [this website]({{link}}) and add them to your {{type}} folder.",
+        "blankSlateMessage": "Grab some from [our website]({{link}}) and add them to your {{type}} folder.",
+        "blankSlateHeaderGeneric": "You don't have anything!",
+        "blankSlateMessageGeneric": "You should probably get some.",
         "wasLoaded": "{{name}} v{{version}} was loaded.",
         "failedToDownload": "Failed to download {{type}} {{name}}",
         "successfullyDownload": "Successfully downloaded {{name}}",
