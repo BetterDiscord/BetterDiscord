@@ -38,9 +38,9 @@ const openPath = (event, path) => {
     else shell.openPath(path);
 };
 
-const relaunch = () => {
+const relaunch = (event, args = []) => {
+    app.relaunch({args: process.argv.slice(1).concat(Array.isArray(args) ? args : [args])});
     app.quit();
-    app.relaunch();
 };
 
 const runScript = async (event, script) => {

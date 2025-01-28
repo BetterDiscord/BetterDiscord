@@ -24,7 +24,7 @@ import AddonStore from "./addonstore";
 import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
-import CommandManager from "./commandsmanager";
+import CommandManager from "./commandmanager";
 
 export default new class Core {
     async startup() {

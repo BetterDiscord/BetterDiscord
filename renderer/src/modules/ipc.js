@@ -25,8 +25,8 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.TOGGLE_DEVTOOLS);
     }
 
-    relaunch() {
-        return ipc.send(IPCEvents.RELAUNCH);
+    relaunch(args) {
+        return ipc.send(IPCEvents.RELAUNCH, args);
     }
 
     runScript(script) {
