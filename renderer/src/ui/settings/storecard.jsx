@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Web from "@data/web";
 
 import React from "@modules/react";
@@ -8,7 +9,6 @@ import Events from "@modules/emitter";
 import Button from "@ui/base/button";
 import GitHub from "@ui/icons/github";
 import Support from "@ui/icons/support";
-import Utilities from "@modules/utilities";
 import Globe from "@ui/icons/globe";
 import Eye from "@ui/icons/eye";
 import {FlowerStar} from "./addonshared";
@@ -87,7 +87,7 @@ export default function AddonCard({addon, isEmbed}) {
 
     return (
         <div 
-            className={Utilities.className({ 
+            className={clsx({ 
                 "bd-addon-store-card": true, 
                 "bd-addon-store-card-embed": isEmbed 
             })} 
@@ -168,7 +168,7 @@ export default function AddonCard({addon, isEmbed}) {
                 <div className="bd-addon-store-card-tags">
                     {addon.tags.map((tag) => (
                         <span
-                            className={Utilities.className({"bd-addon-store-card-tag": true, "bd-addon-store-card-tag-selected": isTagEnabled(tag)})}
+                            className={clsx({"bd-addon-store-card-tag": true, "bd-addon-store-card-tag-selected": isTagEnabled(tag)})}
                             onClick={() => toggleTag(tag)}
                         >
                             {tag}

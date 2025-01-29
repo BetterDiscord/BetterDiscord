@@ -43,8 +43,13 @@ export default new class DataStore {
         const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
         for (const file of dataFiles) {
             let data = {};
-            try {data = __non_webpack_require__(path.resolve(this.dataFolder, file));}
-            catch (e) {Logger.stacktrace("DataStore", `Could not load file ${file}`, e);}
+            try {
+                const content = fs.readFileSync(path.resolve(this.dataFolder, file)).toString();
+                data = JSON.parse(content);
+            }
+            catch (e) {
+                Logger.stacktrace("DataStore", `Could not load file ${file}`, e);
+            }
             this.data[file.split(".")[0]] = data;
         }
     }

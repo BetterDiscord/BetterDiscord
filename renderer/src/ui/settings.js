@@ -167,7 +167,6 @@ export default new class SettingsRenderer {
             for (const panel of Settings.panels.sort((a,b) => a.order > b.order ? 1 : -1)) {
                 if (panel.clickListener) panel.onClick = (event) => panel.clickListener(thisObject, event, returnValue);
                 if (!panel.className) panel.className = `bd-${panel.id}-tab`;
-                if (typeof(panel.label) !== "string") panel.label = panel.label.toString();
                 insert(panel);
             }
         });

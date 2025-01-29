@@ -506,9 +506,9 @@ const addonStore = new class AddonStore {
      * @param {string} filename
      * @returns {boolean}
      */
-    isOfficial(filename) {
+    isOfficial(/* filename */) {
         return false;
-        return filename.toLowerCase() in this._cache.addons;
+        // return filename.toLowerCase() in this._cache.addons;
     }
     /**
      * @public

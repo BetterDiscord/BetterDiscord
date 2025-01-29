@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import React from "@modules/react";
-import Utilities from "@modules/utilities";
 
 
 export const Direction = Object.freeze({
@@ -33,7 +33,7 @@ export const Wrap = Object.freeze({
 
 export function Child(props) {
     if (!props.className) props.className = "";
-    props.className = Utilities.className(props.className, "bd-flex-child");
+    props.className = clsx(props.className, "bd-flex-child");
     return <Flex {...props} />;
 }
 
@@ -53,7 +53,7 @@ export default function Flex({
     }) {
     return <div
                 {...props}
-                className={Utilities.className(
+                className={clsx(
                     "bd-flex",
                     direction,
                     justify,

@@ -1,5 +1,5 @@
+import clsx from "clsx";
 import React from "@modules/react";
-import Utilities from "@modules/utilities";
 
 
 export const Colors = Object.freeze({
@@ -32,7 +32,7 @@ export const Sizes = Object.freeze({
 export default function Text({tag: Tag = "div", className, children, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style}) {
     return <Tag
                 className={
-                    Utilities.className(
+                    clsx(
                         color, size, className,
                         {
                             "bd-selectable": selectable,

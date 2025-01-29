@@ -3,10 +3,12 @@ import Logger from "@common/logger";
 import Events from "@modules/emitter";
 import Settings from "@modules/settingsmanager";
 import Patcher from "@modules/patcher";
+import CommandManager from "@modules/commandmanager";
 
 
 export default class BuiltinModule {
 
+    #commands = new Set();
     get name() {return "Unnamed Builtin";}
     get collection() {return "settings";}
     get category() {return "general";}
@@ -102,5 +104,16 @@ export default class BuiltinModule {
 
     unpatchAll() {
         return Patcher.unpatchAll(this.name);
+    }
+
+    addCommands(...commands) {
+        for (const command of commands) {
+            const unregister = CommandManager.registerCommand("BetterDiscord", command);
+            this.#commands.add(unregister);
+        }
+    }
+
+    removeCommands() {
+        for (const unregister of this.#commands) unregister();
     }
 }

@@ -1,4 +1,4 @@
-import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes} from "@modules/commandsmanager";
+import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes} from "@modules/commandmanager";
 
 /**
  * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
@@ -59,6 +59,7 @@ class CommandAPI {
      * @private
      */
     #validateRegistration(caller, command) {
+        if (caller === "BetterDiscord") throw new Error("Plugins cannot register commands as BetterDiscord");
         return typeof caller === "string" && typeof command === "object" && command?.id && command?.name && command?.execute;
     }
 

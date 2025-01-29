@@ -9,7 +9,7 @@ import Utilities from "./utilities";
 import WebpackModules, {Filters} from "./webpackmodules";
 
 
-export default Utilities.memoizeObject({
+const DiscordModules = Utilities.memoizeObject({
     get React() {return WebpackModules.getByProps("createElement", "cloneElement");},
     get ReactDOM() {return WebpackModules.getByProps("render", "findDOMNode");},
     get ChannelActions() {return WebpackModules.getByProps("selectChannel");},
@@ -24,5 +24,11 @@ export default Utilities.memoizeObject({
         const fallback = props => props.children?.({}) ?? null;
 
         return WebpackModules.getModule(Filters.byPrototypeKeys(["renderTooltip"]), {searchExports: true}) ?? fallback;
-    }
+    },
+    get promptToUpload() {return WebpackModules.getModule(Filters.byStrings("getUploadCount", "instantBatchUpload"), {searchExports: true});},
+    get RemoteModule() {return WebpackModules.getByProps("setBadge");},
+    get UserAgent() {return WebpackModules.getByProps("os", "layout");},
+    get MessageUtils() {return WebpackModules.getByProps("sendMessage");},
 });
+
+export default DiscordModules;

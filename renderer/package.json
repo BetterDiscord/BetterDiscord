@@ -34,7 +34,8 @@
         "webpack": "^5.90.3"
     },
     "dependencies": {
-        "buffer": "^6.0.3"
+        "buffer": "^6.0.3",
+        "clsx": "^2.1.1"
     },
     "pnpm": {
         "overrides": {
