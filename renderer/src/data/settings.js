@@ -9,7 +9,6 @@ export default [
             {type: "switch", id: "mediaKeys", value: false},
             {type: "switch", id: "bdContextMenu", value: true},
             {type: "switch", id: "themeAttributes", value: true},
-            {type: "switch", id: "defaultCommands", value: true},
         ]
     },
     {

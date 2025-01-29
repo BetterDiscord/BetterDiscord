@@ -94,11 +94,11 @@ class DOM {
      * @param {string} [options.className] Class name to add to the element
      * @param {string} [options.id] ID to set for the element
      * @param {HTMLElement} [options.target] Target element to automatically append to
-     * @param {HTMLElement} [child] Child node to add
+     * @param {(Node|string|(Node|string)[])[]} [children] Child nodes to add
      * @returns {HTMLElement} The created HTML element
      */
-    createElement(tag, options = {}, child = null) {
-        return DOMManager.createElement(tag, options, child);
+    createElement(tag, options = {}, ...children) {
+        return DOMManager.createElement(tag, options, ...children);
     }
 
     /**

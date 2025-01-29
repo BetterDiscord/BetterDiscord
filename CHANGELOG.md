@@ -3,6 +3,36 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## [Unreleased]
+
+### Added
+ - Added built-in addon store
+ - Slash command API
+ - Default BetterDiscord slash commands
+ - Search webpack modules by source code string (or regex) search (`getBySource`)
+ - Basic theme attributes
+ - React crash recovery
+ - API for mapping the mangled keys of a single module (`getMangled`)
+ - Webpack search APIs now have a `raw` option to return the entire `Module` object
+
+### Removed
+
+### Changed
+ - `createElements` can now accept multiple children and any number of directly assignable properties
+ - Settings builder now accepts a `button` type
+ - Addon error modal now uses `details` and `summary` to be more accessible
+ - Internal setting strings are now handled via `get` functions to allow for blind auto-translations
+ - `className` function changed to use `clsx` under the hood--our first true dependency
+
+### Fixed
+ - Fixed remove minimum size
+ - Clicking component source in react devtoools now goes to the right component when patched
+ - Corrupt plugin configs won't halt operation
+ - Blankslate for no addons in the list now render properly
+
+### Deprecated
+ - `target` option of `createElements` is deprecated
+
 ## 1.11.0
 
 ### Added

@@ -29,10 +29,6 @@
                 "themeAttributes": {
                     "name": "Theme Attributes",
                     "note": "Adds attributes to various elements to assist in theming."
-                },
-                "defaultCommands": {
-                    "name": "Default Commands",
-                    "note": "Shows BetterDiscord commands in your slash command menu."
                 }
             },
             "store": {
