@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "rules": {
+    "indentation": [4, {"except": ["value"], "severity": "warning"}],
+    "selector-type-case": ["lower", {"ignoreTypes": ["foreignObject"]}],
+    "color-hex-length": "long",
+    "color-hex-case": "upper",
+    "no-missing-end-of-source-newline": null
+  }
+}

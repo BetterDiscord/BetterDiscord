@@ -10,8 +10,8 @@
     min-width: 250px;
     box-sizing: border-box;
     border-radius: 3px;
-    background-color: hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .1);
-    border: 1px solid hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .3);
+    background-color: hsl(0deg calc(var(--saturation-factor, 1) *0%) 0% / 10%);
+    border: 1px solid hsl(0deg calc(var(--saturation-factor, 1) *0%) 0% / 30%);
     padding: 0 4px;
     height: 40px;
 }
@@ -25,7 +25,7 @@
     width: 100%;
     cursor: pointer;
 }
-  
+
 .bd-file-input::-webkit-file-upload-button {
     height: 0;
     width: 0;
@@ -42,9 +42,10 @@
 
 .bd-file-input-wrap .bd-file-input-clear {
     margin-left: 5px;
+
     /* background: none!important; */
     opacity: 0.5;
-    padding-right: 4px!important;
+    padding-right: 4px !important;
 }
 
 .bd-file-input-wrap .bd-file-input-clear:hover {

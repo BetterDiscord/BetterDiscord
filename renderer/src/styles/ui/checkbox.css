@@ -1,7 +1,5 @@
 .bd-checkbox {
     position: relative;
-    -webkit-user-select: none;
-    -moz-user-select: none;
     user-select: none;
     gap: 8px;
     cursor: pointer;
@@ -23,11 +21,10 @@
     opacity: 0;
     margin: 0;
     padding: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     z-index: 1;
 }
+
 .bd-checkbox-box {
     width: 24px;
     height: 24px;
@@ -41,6 +38,7 @@
     box-sizing: border-box;
     border-radius: 6px;
 }
+
 .bd-checkbox-input:checked + .bd-checkbox-box {
     border-color: var(--brand-400);
     background-color: var(--brand-500);
@@ -56,6 +54,6 @@
 }
 
 .bd-checkbox.bd-checkbox-disabled {
-    opacity: .6;
+    opacity: 0.6;
     cursor: not-allowed;
 }

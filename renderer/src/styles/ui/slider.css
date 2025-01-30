@@ -17,7 +17,6 @@
     margin-bottom: 10px;
 }
 
-
 .bd-slider-wrap.bd-slider-disabled {
     cursor: not-allowed;
     opacity: 0.5;
@@ -30,7 +29,7 @@
 .bd-slider-wrap.bd-slider-disabled > .bd-slider-input::-webkit-slider-thumb {
     pointer-events: none;
 }
-  
+
 .bd-slider-label {
     background: black;
     font-weight: 700;
@@ -45,11 +44,13 @@
 .bd-slider-input:hover + .bd-slider-label {
     opacity: 1;
 }
-  
+
 .bd-slider-input {
     /* height: 8px; */
     appearance: none;
+
     /* min-width: 350px; */
+
     /* border-radius: 5px; */
     outline: none;
     pointer-events: none;
@@ -58,30 +59,29 @@
     width: 100%;
     z-index: 2;
 }
-  
-  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
 .bd-slider-input::-webkit-slider-thumb {
     appearance: none;
     width: 10px;
     height: 24px;
     top: 50%;
     border-radius: 3px;
-    background-color: hsl(0,calc(var(--saturation-factor, 1)*0%),100%);
-    border: 1px solid hsl(210,calc(var(--saturation-factor, 1)*2.9%),86.7%);
-    -webkit-box-shadow: 0 3px 1px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.05),0 2px 2px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.1),0 3px 3px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.05);
-    box-shadow: 0 3px 1px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.05),0 2px 2px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.1),0 3px 3px 0 hsla(0,calc(var(--saturation-factor, 1)*0%),0%,.05);
+    background-color: hsl(0deg calc(var(--saturation-factor, 1) *0%) 100%);
+    border: 1px solid hsl(210deg calc(var(--saturation-factor, 1) *2.9%) 86.7%);
+    box-shadow: 0 3px 1px 0 hsl(0deg calc(var(--saturation-factor, 1) *0%) 0% / 5%), 0 2px 2px 0 hsl(0deg calc(var(--saturation-factor, 1) *0%) 0% / 10%), 0 3px 3px 0 hsl(0deg calc(var(--saturation-factor, 1) *0%) 0% / 5%);
     cursor: ew-resize;
+
     /* z-index: 3; */
     pointer-events: all;
 }
 
 .bd-slider-track {
     height: 8px;
-    border-radius: 4px;
     min-width: 350px;
-    border-radius: 5px;   
-    background: hsl(217,calc(var(--saturation-factor, 1)*7.6%),33.5%);
-    transition: opacity .2s;
+    border-radius: 5px;
+    background: hsl(217deg calc(var(--saturation-factor, 1) *7.6%) 33.5%);
+    transition: opacity 0.2s;
     background-image: linear-gradient(#3E82E5, #3E82E5);
     background-size: 70% 100%;
     background-repeat: no-repeat;
@@ -110,7 +110,7 @@
     position: absolute;
     width: 2px;
     height: 24px;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgb(255 255 255 / 20%);
     top: -26px;
     left: calc(50% - 1px);
     z-index: -1;

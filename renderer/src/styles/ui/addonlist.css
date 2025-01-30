@@ -110,14 +110,14 @@
 
 .bd-description-wrap {
     flex: 1;
-    padding: 8px 16px 0 16px;
+    padding: 8px 16px 0;
 }
 
 .bd-description-wrap .banner {
     padding: 5px;
     border: 2px solid gray;
     background: #26191E;
-    color: #ffffff;
+    color: #FFFFFF;
     font-weight: 700px;
     border-radius: 5px;
     font-size: 16px;
@@ -131,7 +131,7 @@
 }
 
 .banner .bd-icon {
-    fill: #ffffff;
+    fill: #FFFFFF;
     margin-right: 5px;
     height: 16px !important;
 }
@@ -176,7 +176,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 16px 16px 16px;
+    padding: 8px 16px 16px;
     overflow: hidden;
 }
 
@@ -244,7 +244,7 @@
 
 .bd-addon-modal-settings {
     /* padding: 16px; */
-    padding: 0 16px 16px 16px;
+    padding: 0 16px 16px;
 }
 
 .bd-addon-modal-footer .bd-button {
@@ -252,11 +252,11 @@
 }
 
 .bd-addon-modal-footer .bd-button:hover {
-    background-color: rgb(56, 117, 206);
+    background-color: rgb(56 117 206);
 }
 
 .bd-addon-modal-footer .bd-button:active {
-    background-color: rgb(50, 104, 183);
+    background-color: rgb(50 104 183);
 }
 
 .bd-addon-views {
@@ -321,7 +321,7 @@
 }
 
 .bd-addon-list .bd-footer .bd-link svg {
-    fill: currentColor;
+    fill: currentcolor;
 }
 
 .bd-addon-list .bd-footer .bd-links .bd-addon-button {
@@ -340,6 +340,7 @@
     cursor: pointer;
     margin: 10px 0;
 }
+
 .bd-store-card-icon {
     border-radius: 50%;
     flex-grow: 0;
@@ -352,6 +353,7 @@
     color: var(--interactive-normal);
     padding: 8px;
 }
+
 .bd-store-card-body {
     flex-grow: 1;
     flex-shrink: 1;
@@ -361,6 +363,7 @@
     align-items: flex-start;
     margin-left: 12px;
 }
+
 .bd-store-card-caret {
     color: var(--interactive-normal);
 }

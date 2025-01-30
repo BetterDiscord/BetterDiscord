@@ -6,8 +6,8 @@
     min-width: 250px;
     box-sizing: border-box;
     border-radius: 3px;
-    background-color: hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .1);
-    border: 1px solid hsla(0, calc(var(--saturation-factor, 1)*0%), 0%, .3);
+    background-color: hsl(0deg calc(var(--saturation-factor, 1) *0%) 0% / 10%);
+    border: 1px solid hsl(0deg calc(var(--saturation-factor, 1) *0%) 0% / 30%);
     padding: 0 4px;
     height: 40px;
     cursor: pointer;
@@ -39,15 +39,15 @@
 }
 
 .bd-keybind-wrap.recording {
-    border-color: hsla(359, calc(var(--saturation-factor, 1)*82.6%), 59.4%, .3);
+    border-color: hsl(359deg calc(var(--saturation-factor, 1) *82.6%) 59.4% / 30%);
 }
 
 .bd-keybind-wrap.recording {
-    box-shadow: 0 0 6px hsla(359, calc(var(--saturation-factor, 1)*82.6%), 59.4%, .3);
+    box-shadow: 0 0 6px hsl(359deg calc(var(--saturation-factor, 1) *82.6%) 59.4% / 30%);
 }
 
 .bd-keybind-wrap.recording input {
-    color: hsl(359, calc(var(--saturation-factor, 1)*82.6%), 59.4%)
+    color: hsl(359deg calc(var(--saturation-factor, 1) *82.6%) 59.4%);
 }
 
 .bd-keybind-wrap .bd-keybind-record {
@@ -56,9 +56,10 @@
 
 .bd-keybind-clear {
     margin-left: 5px;
+
     /* background: none!important; */
     opacity: 0.5;
-    padding-right: 4px!important;
+    padding-right: 4px !important;
 }
 
 .bd-keybind-clear:hover {
