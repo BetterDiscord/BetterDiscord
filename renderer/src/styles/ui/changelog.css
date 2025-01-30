@@ -6,14 +6,16 @@
     outline: none;
 }
 
-.bd-changelog-modal code.inline {
-    padding: 0.2em;
+.bd-changelog-modal code {
+    padding: 0 0.2em;
     margin: -0.2em 0;
-    border-radius: 3px;
+    border-radius: 4px;
     font-size: 85%;
+    border: 1px solid var(--background-tertiary);
     line-height: 1.125rem;
     white-space: pre-wrap;
     background: var(--background-secondary);
+    border: 1px solid var(--background-tertiary);
 }
 
 .bd-changelog-modal .bd-modal-content {

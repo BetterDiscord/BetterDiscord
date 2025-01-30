@@ -74,6 +74,17 @@ class DOM {
     }
 
     /**
+     * Adds a listener for when a node matching a selector is added to the document body.
+     * The listener is automatically removed upon firing.
+     * The callback is given the matching element.
+     * @param {string} selector - node to wait for
+     * @param {callable} callback - function to be performed on event
+     */
+    onAdded(selector, callback) {
+        return DOMManager.onAdded(selector, callback);
+    }
+
+    /**
      * Utility to help smoothly animate using JavaScript.
      * 
      * @param {function} update Render function indicating the style should be updated
@@ -94,11 +105,11 @@ class DOM {
      * @param {string} [options.className] Class name to add to the element
      * @param {string} [options.id] ID to set for the element
      * @param {HTMLElement} [options.target] Target element to automatically append to
-     * @param {HTMLElement} [child] Child node to add
+     * @param {(Node|string|(Node|string)[])[]} [children] Child nodes to add
      * @returns {HTMLElement} The created HTML element
      */
-    createElement(tag, options = {}, child = null) {
-        return DOMManager.createElement(tag, options, child);
+    createElement(tag, options = {}, ...children) {
+        return DOMManager.createElement(tag, options, ...children);
     }
 
     /**

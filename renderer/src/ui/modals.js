@@ -7,7 +7,7 @@ import Strings from "@modules/strings";
 import Settings from "@modules/settingsmanager";
 import Events from "@modules/emitter";
 // import DiscordModules from "@modules/discordmodules";
-import WebpackModules from "@modules/webpackmodules";
+import WebpackModules, {Filters} from "@modules/webpackmodules";
 import DOMManager from "@modules/dommanager";
 
 import AddonErrorModal from "./modals/addonerrormodal";
@@ -31,7 +31,10 @@ export default class Modals {
     static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
 
     static get ModalActions() {
-        return this._ModalActions ??= WebpackModules.getByProps("openModal", "closeModal", "updateModal");
+        return this._ModalActions ??= WebpackModules.getMangled("onCloseRequest:null!=", {
+            openModal: Filters.byStrings("onCloseRequest:null!="),
+            closeModal: Filters.byStrings(".setState", ".getState()[")
+        });
     }
     static get ModalQueue() {return this._ModalQueue ??= [];}
 

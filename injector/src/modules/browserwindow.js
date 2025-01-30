@@ -16,9 +16,15 @@ class BrowserWindow extends electron.BrowserWindow {
             options.backgroundColor = "#00000000";
         }
 
-        // Only affect frame if it is *explicitly* set
-        // const shouldHaveFrame = BetterDiscord.getSetting("window", "frame");
-        // if (typeof(shouldHaveFrame) === "boolean") options.frame = shouldHaveFrame;
+
+        const inAppTrafficLights = Boolean(BetterDiscord.getSetting("window", "inAppTrafficLights") ?? false);
+
+        process.env.BETTERDISCORD_NATIVE_FRAME = options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
+        process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights;
+        
+        if (inAppTrafficLights) {
+            delete options.titleBarStyle;
+        }
 
         super(options);
         this.__originalPreload = originalPreload;

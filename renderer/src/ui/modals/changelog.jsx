@@ -15,6 +15,7 @@ import CloseButton from "./close";
 import SimpleMarkdownExt from "@structs/markdown";
 import Twitter from "@ui/icons/twitter";
 import GitHub from "@ui/icons/github";
+import Utilities from "@modules/utilities";
 
 const {useMemo} = React;
 
@@ -23,7 +24,8 @@ const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {an
 const joinSupportServer = (click) => {
     click.preventDefault();
     click.stopPropagation();
-    DiscordModules.InviteActions.acceptInviteAndTransitionToInviteChannel({inviteKey: "0Tmfo5ZbORCRqbAd"});
+    Utilities.showGuildJoinModal("pwXhuRkmgy");
+    DiscordModules.Dispatcher.dispatch({type: "LAYER_POP"});
 };
 
 const supportLink = <a className={`${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`} onClick={joinSupportServer}>Join our Discord Server.</a>;
