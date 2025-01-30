@@ -3,7 +3,7 @@ import Logger from "@common/logger";
 import Events from "@modules/emitter";
 import Settings from "@modules/settingsmanager";
 import Patcher from "@modules/patcher";
-import CommandManager from "@modules/commandmanager";
+import Commandsmanager from "@modules/commandmanager";
 
 
 export default class BuiltinModule {
@@ -108,7 +108,7 @@ export default class BuiltinModule {
 
     addCommands(...commands) {
         for (const command of commands) {
-            const unregister = CommandManager.registerCommand("BetterDiscord", command);
+            const unregister = Commandsmanager.registerCommand("BetterDiscord", command);
             this.#commands.add(unregister);
         }
     }

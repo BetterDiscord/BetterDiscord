@@ -413,6 +413,43 @@ export default class WebpackModules {
     }
 
     /**
+     * Finds a function by searching through module source code.
+     * @memberof Webpack
+     * @param {(string|RegExp|Function)} match - Search criteria:
+     * @param {object} [options] Options to configure the search
+     * @param {boolean} [options.defaultExport=true] Whether to return default export when matching default export
+     * @param {boolean} [options.searchExports=false] Whether to search nested exports
+     * @returns {Any} Returns [module, key, function] if found
+     */
+    /* static getFunctionBySource(moduleSource, functionSource) {
+        const moduleExports = this.getBySource(moduleSource);
+        if (!moduleExports) return null;
+
+        const checkExport = (exportItem, path = "") => {
+            if (typeof exportItem === "function") {
+                const source = exportItem.toString();
+                const isMatch = typeof functionSource === "string"
+                    ? source.includes(functionSource)
+                    : functionSource instanceof RegExp
+                        ? functionSource.test(source)
+                        : false;
+                if (isMatch) return {module: moduleExports, key: path, func: exportItem};
+            }
+            else if (typeof exportItem === "object" && exportItem !== null) {
+                for (const key in exportItem) {
+                    const result = checkExport(exportItem[key], path ? `${path}.${key}` : key);
+                    if (result) return result;
+                }
+            }
+            return null;
+        };
+
+        const result = checkExport(moduleExports);
+        return result ? result.func : null;
+    } */
+
+
+    /**
      * Finds all modules matching source code content.
      * @param {String|RegExp} match String or regular expression to use to filter modules
      * @return {Any}

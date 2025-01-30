@@ -285,12 +285,27 @@ export default class Modals {
     }
     
     static openModal(render, options = {}) {
-        if (typeof(this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
+        if (typeof(this.ModalActions.openModal) === "function") {
+            const modalKey = this.ModalActions.openModal(render);
+            return {
+                close: () => this.ModalActions.closeModal(modalKey),
+                id: modalKey,
+                update: (newRender, updatedOptions = {}) => 
+                    this.ModalActions.updateModal(modalKey, newRender, updatedOptions),
+                isOpen: () => this.hasModalOpen
+            };
+        }
         if (!this.hasInitialized) this.makeStack();
         options.modalKey = generateKey(options.modalKey);
         Events.emit("open-modal", render, options);
-        return options.modalKey;
-    }
+        return {
+            close: () => Events.emit("close-modal", options.modalKey),
+            id: options.modalKey,
+            update: (newRender, updatedOptions = {}) => 
+                Events.emit("update-modal", options.modalKey, newRender, updatedOptions),
+            isOpen: () => this.hasModalOpen
+        };
+     }
 }
 
 

@@ -25,6 +25,7 @@ import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
 import CommandManager from "./commandmanager";
+import NotificationUI from "@ui/notifications/notification";
 
 export default new class Core {
     async startup() {
@@ -56,8 +57,11 @@ export default new class Core {
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
-        Logger.log("Startup", "Initializing CommandManager");
+        Logger.log("Startup", "Initializing Commandsmanager");
         CommandManager.initialize();
+
+        Logger.log("Startup", "Initializing NotificationUI");
+        NotificationUI.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();

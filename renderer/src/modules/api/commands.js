@@ -1,4 +1,4 @@
-import CommandManager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes} from "@modules/commandmanager";
+import Commandsmanager, {CommandTypes, InputTypes, MessageEmbedTypes, OptionTypes} from "@modules/commandmanager";
 
 /**
  * `CommandAPI` is a utility class for managing commands. Instance is accessible through the BdApi.
@@ -36,7 +36,7 @@ class CommandAPI {
             return;
         }
 
-        return CommandManager.registerCommand(caller, commandObj);
+        return Commandsmanager.registerCommand(caller, commandObj);
     }
 
     /**
@@ -52,7 +52,7 @@ class CommandAPI {
             return;
         }
 
-        CommandManager.unregisterCommand(caller, finalCommandId);
+        Commandsmanager.unregisterCommand(caller, finalCommandId);
     }
 
     /**
@@ -76,7 +76,7 @@ class CommandAPI {
      */
     unregisterAll(caller) {
         if (this.#callerName) caller = this.#callerName;
-        CommandManager.unregisterAll(caller);
+        Commandsmanager.unregisterAll(caller);
     }
 
     /**
@@ -86,7 +86,7 @@ class CommandAPI {
      */
     getCommandsByCaller(caller) {
         if (this.#callerName) caller = this.#callerName;
-        return CommandManager.getCommandsByCaller(caller);
+        return Commandsmanager.getCommandsByCaller(caller);
     }
 }
 
