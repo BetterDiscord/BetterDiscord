@@ -67,7 +67,9 @@ export class CoreUpdater {
     static remoteVersion = "";
 
     static async initialize() {
-        this.checkForUpdate();
+        setInterval(() => {
+            this.checkForUpdate(false);
+        }, 2 * 60 * 60 * 1000);
     }
 
     static async checkForUpdate(showNotice = true) {
@@ -144,7 +146,10 @@ class AddonUpdater {
 
     async initialize() {    
         await this.updateCache();
-        this.checkAll();
+        setInterval(() => {
+            this.checkAll(false);
+        }, 2 * 60 * 60 * 1000);
+
         Events.on(`${this.type}-loaded`, addon => {
             this.checkForUpdate(addon.filename, addon.version);
         });
