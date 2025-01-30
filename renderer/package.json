@@ -36,12 +36,5 @@
     "dependencies": {
         "buffer": "^6.0.3",
         "clsx": "^2.1.1"
-    },
-    "pnpm": {
-        "overrides": {
-            "braces@<3.0.3": ">=3.0.3",
-            "webpack@<5.94.0": ">=5.94.0",
-            "micromatch@<4.0.8": ">=4.0.8"
-        }
     }
 }
