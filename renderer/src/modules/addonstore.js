@@ -288,7 +288,7 @@ class Addon {
             return;
         }
 
-        const install = (shouldEnable) => new Promise((resolve) => {
+        const install = (shouldEnable) => new Promise((resolve, reject) => {
             request(Web.redirects.github(this.id), {
                 headers: {
                     "X-Store-Download": this.name
@@ -319,6 +319,8 @@ class Addon {
                     Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
                         type: "danger"
                     });
+
+                    reject(error);
                 }
                 finally {
                     resolve();

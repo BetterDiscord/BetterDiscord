@@ -117,7 +117,8 @@ export default new class BDContextMenu extends Builtin {
                 label: Strings.Addons.openStore.format({type: label}),
                 action: () => {
                     this.openCategory(label.toLowerCase());
-                    DOMManager.onAdded(".bd-store-card", (elem) => elem?.click());
+                    // If the addon store instantly opens have it just stop basically
+                    DOMManager.onAdded(":where(.bd-store-card, .bd-addon-title > :nth-child(3))", (elem) => elem?.click());
                 }
             });
         }
