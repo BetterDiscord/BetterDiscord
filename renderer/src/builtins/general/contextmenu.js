@@ -9,6 +9,7 @@ import pluginManager from "@modules/pluginmanager";
 import themeManager from "@modules/thememanager";
 import Utilities from "@modules/utilities";
 import React from "@modules/react";
+import DOMManager from "@modules/dommanager";
 
 
 const ContextMenu = new ContextMenuPatcher();
@@ -98,19 +99,34 @@ export default new class BDContextMenu extends Builtin {
      */
     buildAddonMenu(label, manager) {
         const names = manager.addonList.map(a => a.name || a.getName()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+        const toggles = names.map(name => {
+            return {
+                type: "toggle",
+                label: name,
+                disabled: manager.getAddon(name)?.partial ?? false,
+                active: manager.isEnabled(name),
+                action: () => manager.toggleAddon(name)
+            };
+        });
+
+        // If the store is enabled, add a separate item to open it
+        if (Settings.get("settings", "store", "bdAddonStore")) {
+            if (toggles.length) toggles.push({type: "separator"}); // Add separator when addons exist
+
+            toggles.push({
+                label: Strings.Addons.openStore.format({type: label}),
+                action: () => {
+                    this.openCategory(label.toLowerCase());
+                    DOMManager.onAdded(".bd-store-card", (elem) => elem?.click());
+                }
+            });
+        }
+
         return {
             type: "submenu",
             label: label,
             action: () => this.openCategory(label.toLowerCase()),
-            items: names.map(name => {
-                return {
-                    type: "toggle",
-                    label: name,
-                    disabled: manager.getAddon(name)?.partial ?? false,
-                    active: manager.isEnabled(name),
-                    action: () => manager.toggleAddon(name)
-                };
-            })
+            items: toggles
         };
     }
 

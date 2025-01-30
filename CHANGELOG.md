@@ -17,6 +17,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
  - New native window frame option
  - In-app traffic lights for macOS when using a native frame
  - Added `onAdded` to the plugin api under `DOM`
+ - New `Open Addon Store` entry in context menu
 
 ### Removed
 
