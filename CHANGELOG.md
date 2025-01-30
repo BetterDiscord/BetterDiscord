@@ -14,11 +14,14 @@ This changelog starts with the restructured 1.0.0 release that happened after co
  - React crash recovery
  - API for mapping the mangled keys of a single module (`getMangled`)
  - Webpack search APIs now have a `raw` option to return the entire `Module` object
+ - New native window frame option
+ - In-app traffic lights for macOS when using a native frame
+ - Added `onAdded` to the plugin api under `DOM`
 
 ### Removed
 
 ### Changed
- - `createElements` can now accept multiple children and any number of directly assignable properties
+ - `DOM.createElement` can now accept multiple children and any number of directly assignable properties
  - Settings builder now accepts a `button` type
  - Addon error modal now uses `details` and `summary` to be more accessible
  - Internal setting strings are now handled via `get` functions to allow for blind auto-translations
@@ -29,6 +32,8 @@ This changelog starts with the restructured 1.0.0 release that happened after co
  - Clicking component source in react devtoools now goes to the right component when patched
  - Corrupt plugin configs won't halt operation
  - Blankslate for no addons in the list now render properly
+ - Fixed grabbing context menu components
+ - Fixed grabbing modal actions
 
 ### Deprecated
  - `target` option of `createElements` is deprecated

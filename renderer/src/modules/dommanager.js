@@ -168,6 +168,7 @@ export default class DOMManager {
     /**
      * Adds a listener for when a node matching a selector is added to the document body.
      * The listener is automatically removed upon firing.
+     * The callback is given the matching element.
      * @param {string} selector - node to wait for
      * @param {callable} callback - function to be performed on event
      */
@@ -183,7 +184,7 @@ export default class DOMManager {
                     const childrenMatch = mutation.querySelector(selector);
                     if (directMatch || childrenMatch) {
                         observer.disconnect();
-                        return callback(directMatch ?? childrenMatch);
+                        return callback(directMatch || childrenMatch);
                     }
                 }
             }
