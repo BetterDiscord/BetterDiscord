@@ -333,6 +333,63 @@ export default class WebpackModules {
     }
 
     /**
+     * Gets a module's mangled properties by mapping them to friendly names.
+     * @template T The type of the resulting object with friendly property names.
+     * @memberof Webpack
+     * @param  {(exports: any, module: any, id: any) => boolean | string | RegExp} filter Filter to find the module. Can be a filter function, string, or RegExp for source matching.
+     * @param {Record<keyof T, (prop: any) => boolean>} mangled Object mapping desired property names to their filter functions.
+     * @param {object} [options] Options to configure the search.
+     * @param {boolean} [options.defaultExport=true] Whether to return default export when matching the default export.
+     * @param {boolean} [options.searchExports=false] Whether to execute the filter on webpack exports.
+     * @param {boolean} [options.raw=false] Whether to return the whole Module object when matching exports
+     * @returns {T} Object containing the mangled properties with friendly names.
+     */
+    static getMangled(filter, mangled, options = {}) {
+        const {defaultExport = false, searchExports = false, raw = false} = options;
+
+        if (typeof filter === "string" || filter instanceof RegExp) {
+            filter = Filters.bySource(filter);
+        }
+    
+        const returnValue = {};
+        let module = this.getModule(
+            (exports, moduleInstance, id) => {
+                if (!(exports instanceof Object)) return false;
+                return filter(exports, moduleInstance, id);
+            },
+            {defaultExport, searchExports, raw}
+        );
+    
+        if (!module) return returnValue;
+        if (raw) module = module.exports;
+    
+        const mangledEntries = Object.entries(mangled);
+    
+        for (const searchKey in module) {
+            if (!Object.prototype.hasOwnProperty.call(module, searchKey)) continue;
+    
+            for (const [key, propertyFilter] of mangledEntries) {
+                if (key in returnValue) continue;
+    
+                if (propertyFilter(module[searchKey])) {
+                    Object.defineProperty(returnValue, key, {
+                        get() {
+                            return module[searchKey];
+                        },
+                        set(value) {
+                            module[searchKey] = value;
+                        },
+                        enumerable: true,
+                        configurable: false,
+                    });
+                }
+            }
+        }
+    
+        return returnValue;
+    } 
+
+    /**
      * Finds all modules matching a filter function.
      * @param {Function} filter A function to use to filter modules
      */
