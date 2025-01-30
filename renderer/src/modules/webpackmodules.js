@@ -1,5 +1,6 @@
 /**
  * Allows for grabbing and searching through Discord's webpacked modules.
+ * TODO: please for the love of god refactor and/or rewrite
  * @module WebpackModules
  * @version 0.0.2
  */
@@ -154,18 +155,32 @@ const hasThrown = new WeakSet();
 
 const wrapFilter = filter => (exports, module, moduleId) => {
     try {
+        if (exports instanceof Window) return false;
         if (exports?.default?.remove && exports?.default?.set && exports?.default?.clear && exports?.default?.get && !exports?.default?.sort) return false;
         if (exports.remove && exports.set && exports.clear && exports.get && !exports.sort) return false;
         if (exports?.default?.getToken || exports?.default?.getEmail || exports?.default?.showToken) return false;
         if (exports.getToken || exports.getEmail || exports.showToken) return false;
         return filter(exports, module, moduleId);
     }
-    catch (err) {
-        if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+    catch (error) {
+        if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", error, {filter, module});
         hasThrown.add(filter);
         return false;
     }
 };
+
+const TypedArray = Object.getPrototypeOf(Uint8Array);
+function shouldSkipModule(exports) {
+    if (!exports) return true;
+    if (exports.TypedArray) return true;
+    if (exports === window) return true;
+    if (exports === document.documentElement) return true;
+    if (exports[Symbol.toStringTag] === "DOMTokenList") return true;
+    if (exports === Symbol) return true;
+    if (exports instanceof Window) return true;
+    if (exports instanceof TypedArray) return true;
+    return false;
+}
 
 export default class WebpackModules {
 
@@ -219,7 +234,7 @@ export default class WebpackModules {
             catch {continue;}
 
             const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
+            if (shouldSkipModule(exports)) continue;
             
             if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                 for (const key in exports) {
@@ -274,7 +289,7 @@ export default class WebpackModules {
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
+            if (shouldSkipModule(exports)) continue;
 
             for (let q = 0; q < queries.length; q++) {
                 const query = queries[q];
@@ -507,7 +522,7 @@ export default class WebpackModules {
         return new Promise((resolve) => {
             const cancel = () => this.removeListener(listener);
             const listener = function(exports, module, id) {
-                if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") return;
+                if (shouldSkipModule(exports)) return;
 
                 let foundModule = null;
                 if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {

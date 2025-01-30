@@ -27,6 +27,9 @@ This changelog starts with the restructured 1.0.0 release that happened after co
  - Addon error modal now uses `details` and `summary` to be more accessible
  - Internal setting strings are now handled via `get` functions to allow for blind auto-translations
  - `className` function changed to use `clsx` under the hood--our first true dependency
+ - Webpack searching does some additional sanity checking to help prevent errors on string searches
+   - String searches are becoming more and more common so this will help performance on those searches
+   - The downside is this has some very slight overhead for all other types of searching
 
 ### Fixed
  - Fixed remove minimum size
@@ -37,7 +40,7 @@ This changelog starts with the restructured 1.0.0 release that happened after co
  - Fixed grabbing modal actions
 
 ### Deprecated
- - `target` option of `createElements` is deprecated
+ - `target` option of `DOM.createElement` is deprecated
 
 ## 1.11.0
 
