@@ -3,7 +3,7 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
-## [Unreleased]
+## 1.12.0
 
 ### Added
  - Added built-in addon store
