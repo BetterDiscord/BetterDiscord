@@ -70,7 +70,7 @@ const Webpack = {
          * @param {string|RegExp} match String or RegExp to match against the module's source
          * @returns {function} A filter that checks for matching source code
          */
-        bySource(match) {return Filters.bySource(match);},
+        bySource(...match) {return Filters.bySource(...match);},
 
         /**
          * Generates a function that filters by strings.
