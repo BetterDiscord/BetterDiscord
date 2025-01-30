@@ -3,6 +3,45 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## 1.12.0
+
+### Added
+ - Added built-in addon store
+ - Slash command API
+ - Default BetterDiscord slash commands
+ - Search webpack modules by source code string (or regex) search (`getBySource`)
+ - Basic theme attributes
+ - React crash recovery
+ - API for mapping the mangled keys of a single module (`getMangled`)
+ - Webpack search APIs now have a `raw` option to return the entire `Module` object
+ - New native window frame option
+ - In-app traffic lights for macOS when using a native frame
+ - Added `onAdded` to the plugin api under `DOM`
+ - New `Open Addon Store` entry in context menu
+
+### Removed
+
+### Changed
+ - `DOM.createElement` can now accept multiple children and any number of directly assignable properties
+ - Settings builder now accepts a `button` type
+ - Addon error modal now uses `details` and `summary` to be more accessible
+ - Internal setting strings are now handled via `get` functions to allow for blind auto-translations
+ - `className` function changed to use `clsx` under the hood--our first true dependency
+ - Webpack searching does some additional sanity checking to help prevent errors on string searches
+   - String searches are becoming more and more common so this will help performance on those searches
+   - The downside is this has some very slight overhead for all other types of searching
+
+### Fixed
+ - Fixed remove minimum size
+ - Clicking component source in react devtoools now goes to the right component when patched
+ - Corrupt plugin configs won't halt operation
+ - Blankslate for no addons in the list now render properly
+ - Fixed grabbing context menu components
+ - Fixed grabbing modal actions
+
+### Deprecated
+ - `target` option of `DOM.createElement` is deprecated
+
 ## 1.11.0
 
 ### Added

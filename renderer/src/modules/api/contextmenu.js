@@ -1,4 +1,4 @@
-import WebpackModules from "@modules/webpackmodules";
+import WebpackModules, {Filters} from "@modules/webpackmodules";
 import Patcher from "@modules/patcher";
 import Logger from "@common/logger";
 import React from "@modules/react";
@@ -16,6 +16,58 @@ const MenuComponents = {
     Item: ModulesBundle?.MenuItem,
     Menu: ModulesBundle?.Menu,
 };
+
+startupComplete = Object.values(MenuComponents).every(v => v);
+
+if (!startupComplete) {
+    const REGEX = /(function .{1,3}\(.{1,3}\){return null}){5}/;
+    const EXTRACT_REGEX = /\.type===.{1,3}\.(.{1,3})\)return .{1,3}\.push\((?:null!=.{1,3}\.props\..+?)?{type:"(.+?)",/g;
+    const EXTRACT_GROUP_REGEX = /\.type===.{1,3}\.(.{1,3})\){.+{type:"groupstart"/;
+
+    let menuItemsId;
+    let menuParser = "";
+
+    for (const key in WebpackModules.modules) {
+        if (Object.prototype.hasOwnProperty.call(WebpackModules.modules, key)) {
+            if (REGEX.test(WebpackModules.modules[key].toString())) {
+                menuItemsId = key;
+                break;
+            }
+        }
+    }
+
+    for (const key in WebpackModules.modules) {
+        if (Object.prototype.hasOwnProperty.call(WebpackModules.modules, key)) {
+            const string = WebpackModules.modules[key].toString();
+
+            if (string.includes(menuItemsId) && string.includes("separator")) {
+                menuParser = string;
+                break;
+            }
+        }
+    }
+
+    const contextMenuComponents = WebpackModules.require(menuItemsId);
+
+    for (const [, key, type] of menuParser.matchAll(EXTRACT_REGEX)) {
+        switch (type) {
+            case "separator": MenuComponents.Separator ??= contextMenuComponents[key]; break;
+            case "radio": MenuComponents.RadioItem ??= contextMenuComponents[key]; break;
+            case "checkbox": MenuComponents.CheckboxItem ??= contextMenuComponents[key]; break;
+            case "item": 
+            case "customitem": MenuComponents.Item ??= contextMenuComponents[key]; break;
+            case "compositecontrol":
+            case "control": MenuComponents.ControlItem ??= contextMenuComponents[key]; break;
+        }
+    }
+
+    const match = menuParser.match(EXTRACT_GROUP_REGEX);
+    if (match) {
+        MenuComponents.Group ??= contextMenuComponents[match[1]];
+    }
+
+    MenuComponents.Menu ??= WebpackModules.getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {searchExports: true});
+}
 
 startupComplete = Object.values(MenuComponents).every(v => v);
 

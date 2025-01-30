@@ -12,7 +12,7 @@ export default new class DefaultCommands extends Builtin {
     get category() {return "general";}
     get id() {return "defaultCommands";}
 
-    enabled() {
+    initialize() {
         this.addCommands(
             buildAddonCommand("plugin"),
             buildAddonCommand("theme"),
@@ -22,9 +22,5 @@ export default new class DefaultCommands extends Builtin {
             CustomCSSCommand,
             SettingsCommand
         );
-    }
-
-    disabled() {
-        this.removeCommands();
     }
 };

@@ -25,3 +25,4 @@ export {default as DebugLogs} from "./developer/debuglogs";
 
 export {default as WindowPrefs} from "./window/transparency";
 export {default as RemoveMinimumSize} from "./window/removeminimumsize";
+export {default as NativeFrame} from "./window/nativeframe";

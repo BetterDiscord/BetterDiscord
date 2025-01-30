@@ -4,32 +4,49 @@ import config from "./config";
 export default {
     title: "BetterDiscord",
     subtitle: `v${config.version}`,
-    // video: "https://www.youtube.com/embed/evyvq9eQTqA?si=opmzjGjUArT4VLrj&vq=hd720p&hd=1&rel=0&showinfo=0&mute=1&loop=1&autohide=1",
-    banner: "https://i.imgur.com/wuh5yMK.png",
-    blurb: "This update is mostly to make the lives of plugin developers easier. Users should see more plugins with fancy settings panels in the coming days!",
+    video: "https://www.youtube.com/embed/jDclfjPc3k0?si=YlQwrCHnoYkTfa6G&vq=hd720p&hd=1&rel=0&showinfo=0&mute=0&loop=1&autohide=1",
+    // banner: "https://i.imgur.com/wuh5yMK.png",
+    blurb: "This update is packed with features both for users as well as developers. Take a look at the video above for a quick showcase or read down below for details.",
     changes: [
         {
-            title: "New Plugin APIs",
+            title: "Cool New Features!",
             type: "added",
-            blurb: "Documentation for these new APIs should be arriving soon. In the meantime, I recommend taking a look at [this demo plugin](https://gist.github.com/zerebos/b13adc05f22df008ee5d0411d9d18ff0) that nicely showcases some of the new APIs.",
+            blurb: "These are features that have been requested by the community for a long time. Huge shoutout to our contributors [@doggybootsy](https://github.com/doggybootsy) and [@zrodevkaan](https://github.com/zrodevkaan) for making this happen!",
             items: [
-                "Plugins can now show a fancy changelog modal using `BdApi.UI.showChangelogModal`!",
-                "New utilities were added to `Utils` as `getNestedValue` and `semverCompare`. You may know them from ZLibrary already.",
-                "Settings panels are now easier to build than ever. You can build individual settings with `UI.buildSettingItem` or an entire panel at once using `UI.buildSettingsPanel`. It's very customizable including letting you use custom components!",
-                "Debug data can now be easily and fancily output to console using the new `Logger` namespace.",
-                "BetterDiscord's own React components (or at least some of them) are now available under `BdApi.Components`. This should make building stable UIs much easier.",
+                "The in-app **Addon Store** is finally here! Head to your plugins or themes pages to browse through everything our site has to offer.",
+                "**Slash commands** have landed! BetterDiscord now has some built-in slash commands, and it also makes it easy for plugins to add some too!",
+                "You can now **recovery from crashes** in many cases. It'll also make it easier to report issue to BetterDiscord and plugin developers.",
+                "Themes can make use of new attributes to **adapt to your screen**. This means themes can have fancy additions like separate message styling for yourself, or a special background in specific channels.",
+                "**Frame options** have finally returned! You can now choose to use your operating system's native frame. And on macOS you can choose whether to use the in-app traffic lights with the frame.",
             ]
         },
         {
             title: "Bugs Squashed",
             type: "fixed",
             items: [
-                "Plugin settings modal should no longer overflow your screen!",
-                "The BetterDiscord version (and debug info) at the bottom left of settings should be there again.",
+                "Fixed both Modals and Context Menus for the recent Discord update.",
+                "Remove minimum size should work again but now require **two** restarts.",
+                "Plugins with corrupted data will no longer fail to load.",
                 "Enabling or disabling the custom css system will now update things properly.",
-                "No more weird `0` showing up on screen after exiting a modal.",
-                "Tooltips will now stop ignoring custom labels.",
-                "Lazy `Webpack` listeners as well as `Filters.combine` are now given the right number of arguments.",
+                "The help screen in settings will now show up properly when you have no plugins or themes.",
+                "Modals for addon errors are now more accessible by using standardized elements.",
+            ]
+        },
+        {
+            title: "Developer Stuff",
+            type: "improved",
+            blurb: "Additional information on the new APIs and deprecations will be added to the docs as soon as possible!",
+            items: [
+                "`BdApi.DOM.createElement` now supports passing multiple children and a number of new properties.",
+                "The `target` option for `createElement` is now deprecated and will be removed in the next couple versions.",
+                "Slash commands can now be added via `BdApi.Commands.register`. You can check the BetterDiscord's source for an example until the docs are updated.",
+                "Plugins can now search webpack modules via their original source strings using `BdApi.Webpack.getBySource`. This is especially useful for wrapped or limited functions.",
+                "Another new search has been added for webpack modules called `getMangled`. It allows you to find a single module and map any number of its members or exports to different keys in an object. Very helpful for utility modules.",
+                "The last change for webpack modules is the new `raw` option. Normally `getModule` returns the exports, but with the `raw` option it will return the entire `Module` object.",
+                "Building settings with `buildSetting` can now be customized further by using the `button` type.",
+                "`Utils.className` now uses the `clsx` package under the hood. This is a drop-in replacement that should also work faster.",
+                "When using React DevTools, clicking to go to source of a patched component will now correclty take you to the original component.",
+                "Webpack searches will have less errors spitting out into console and hopefully improve performance for those using string searches."
             ]
         },
     ]
