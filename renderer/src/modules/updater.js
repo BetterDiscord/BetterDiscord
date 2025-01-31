@@ -60,7 +60,7 @@ export default class Updater {
             CoreUpdater.initialize();
             PluginUpdater.initialize();
             ThemeUpdater.initialize();
-        }, 3000);
+        }, 3000); // this is to try to combat that weird bug I spotted a few months back where the banner would instantly disappear sometimes. The small delay should help.
 
         const updateInterval = Settings.get("addons", "updateInterval");
         if (updateInterval !== "0") {
