@@ -22,17 +22,18 @@
 }
 
 .bd-notification-topbar {
-    display: flex;
+    display: inline-flex;
     justify-content: space-between;
     align-items: center;
     align-content: center;
     font-size: 16px;
     font-weight: bold;
     padding: 10px 10px 0;
+    margin-left: 3px;
 }
 
 .bd-notification-title {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
 }
@@ -48,7 +49,7 @@
 }
 
 .bd-notification-body {
-    margin-left: 32px;
+    margin-left: 3px;
     font-size: 14px;
     line-height: 1.5;
     padding: 0 10px;

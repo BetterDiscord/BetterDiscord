@@ -25,7 +25,7 @@ import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
 import CommandManager from "./commandmanager";
-import NotificationUI from "@ui/notifications/notification";
+import NotificationUI from "@modules/notification";
 
 export default new class Core {
     async startup() {

@@ -1,4 +1,4 @@
-import NotificationUI from "@ui/notifications/notification";
+import NotificationUI from "@modules/notification";
 
 class NotificationAPI {
   static show(notificationObj) {
