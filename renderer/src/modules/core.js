@@ -57,7 +57,7 @@ export default new class Core {
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
 
-        Logger.log("Startup", "Initializing Commandsmanager");
+        Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
 
         Logger.log("Startup", "Initializing NotificationUI");
