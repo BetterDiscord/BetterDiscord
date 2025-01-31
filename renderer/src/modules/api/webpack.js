@@ -339,13 +339,6 @@ const Webpack = {
     },
 
     /**
-     * Finds a module using its source code.
-     * @param {...(String|RegExp)} searches - Strings or regular expressions to match in the source code
-     * @return {Any}
-     */
-    getFunctionBySource: WebpackModules.getFunctionBySource,
-
-    /**
      * Finds all modules matching source code content.
      * @param {...(String|RegExp)} searches - Strings or regular expressions to match in the source code
      * @return {Any[]}
