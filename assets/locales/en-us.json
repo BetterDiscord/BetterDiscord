@@ -78,6 +78,19 @@
                         "detached": "Detached Window",
                         "system": "System Editor"
                     }
+                },
+                "updateInterval": {
+                    "name": "Update Check Interval",
+                    "note": "How often to check for addon/core updates",
+                    "options": {
+                        "0": "Off",
+                        "1": "Every 1 hour",
+                        "2": "Every 2 hours",
+                        "3": "Every 3 hours",
+                        "4": "Every 4 hours",
+                        "5": "Every 5 hours",
+                        "6": "Every 6 hours"
+                    }
                 }
             },
             "customcss": {

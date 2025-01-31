@@ -18,7 +18,16 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "addonErrors", value: true},
-            {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]}
+            {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]},
+            {type: "dropdown", id: "updateInterval", value: "2", options: [
+                {value: "0"},
+                {value: "1"},
+                {value: "2"},
+                {value: "3"},
+                {value: "4"},
+                {value: "5"},
+                {value: "6"}
+            ]}
         ]
     },
     {
