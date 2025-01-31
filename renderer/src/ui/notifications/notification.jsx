@@ -113,7 +113,7 @@ const PersistentNotificationContainer = () => {
     }, []);
 
     return (
-        <div className="discord-notification-container">
+        <div className="bd-notification-container">
             {notifications.map((notification) => (
                 <NotificationItem
                     key={notification.id}
@@ -177,13 +177,13 @@ const NotificationItem = ({notification}) => {
         <spring.animated.div
             onMouseOver={() => {setContinueProgress(false);}}
             onMouseLeave={() => {setProgress(100); setContinueProgress(true);}}
-            onClick
+            onClick={notification.onClick}
             style={props}
-            className={`discord-notification ${exiting ? "discord-notification-exit" : "discord-notification-enter"
-                } discord-notification-${type}`}
+            className={`bd-notification ${exiting ? "bd-notification-exit" : "bd-notification-enter"
+                } bd-notification-${type}`}
         >
-            <div className="discord-notification-topbar">
-                <div className="discord-notification-title">
+            <div className="bd-notification-topbar">
+                <div className="bd-notification-title">
                     {notification.icon ? <notification.icon /> : <Icon type={type} />}
                     {title}
                 </div>
@@ -192,14 +192,14 @@ const NotificationItem = ({notification}) => {
                         e.stopPropagation();
                         handleClose();
                     }}
-                    className="discord-notification-close"
+                    className="bd-notification-close"
                 >
                     ✕
                 </button>
             </div>
-            <span className="discord-notification-body">{content}</span>
+            <span className="bd-notification-body">{content}</span>
             {actions.length > 0 && (
-                <div className="discord-notification-footer">
+                <div className="bd-notification-footer">
                     {actions.map((action, index) => (
                         <Button
                             key={index}
@@ -209,7 +209,7 @@ const NotificationItem = ({notification}) => {
                                 action.onClick();
                                 handleClose();
                             }}
-                            className="discord-notification-action"
+                            className="bd-notification-action"
                         >
                             {action.label}
                         </Button>
@@ -217,7 +217,7 @@ const NotificationItem = ({notification}) => {
                 </div>
             )}
             <div
-                className="discord-notification-progress"
+                className="bd-notification-progress"
                 style={{
                     width: `${progress}%`,
                     backgroundColor: {

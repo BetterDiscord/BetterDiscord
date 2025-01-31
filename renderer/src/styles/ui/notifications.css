@@ -1,4 +1,4 @@
-.discord-notification-container {
+.bd-notification-container {
     position: fixed;
     top: 16px;
     right: 16px;
@@ -8,7 +8,7 @@
     z-index: 1000;
 }
 
-.discord-notification {
+.bd-notification {
     background: #313338 /*var(--background-primary)*/;
     color: var(--text-normal);
     border-radius: 4px;
@@ -21,7 +21,7 @@
     backdrop-filter: blur(5em);
 }
 
-.discord-notification-topbar {
+.bd-notification-topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -31,13 +31,13 @@
     padding: 10px 10px 0;
 }
 
-.discord-notification-title {
+.bd-notification-title {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.discord-notification-close {
+.bd-notification-close {
     background: none;
     border: none;
     color: var(--text-normal);
@@ -47,21 +47,21 @@
     &:hover { color: var(--info-warning-background); }
 }
 
-.discord-notification-body {
+.bd-notification-body {
     margin-left: 32px;
     font-size: 14px;
     line-height: 1.5;
     padding: 0 10px;
 }
 
-.discord-notification-footer {
+.bd-notification-footer {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(100px, 3fr));
     gap: 8px;
     padding: 10px;
 }
 
-.discord-notification-action {
+.bd-notification-action {
     background-color: var(--button-secondary-background);
     color: var(--button-secondary-text);
     border: none;
@@ -73,18 +73,18 @@
     &:hover { background-color: var(--button-secondary-background-hover); }
 }
 
-.discord-notification-progress {
+.bd-notification-progress {
     height: 4px;
     transition: width 0.1s linear;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
 
-.discord-notification-enter {
+.bd-notification-enter {
     animation: slideIn 0.5s ease-out forwards;
 }
 
-.discord-notification-exit {
+.bd-notification-exit {
     animation: slideOut 0.5s ease-in forwards;
 }
 
