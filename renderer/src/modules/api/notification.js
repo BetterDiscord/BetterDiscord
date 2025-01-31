@@ -1,8 +1,11 @@
 import NotificationUI from "@modules/notification";
 
+let cntr = 0;
+
 class NotificationAPI {
   static show(notificationObj) {
-    const id = notificationObj.id || `notification-${Date.now()}`;
+    cntr++;
+    const id = notificationObj.id || `notification-${cntr}`;
 
     const defaultObj = {
       id,

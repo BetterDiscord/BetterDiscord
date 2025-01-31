@@ -100,7 +100,7 @@ class NotificationUI {
 
 }
 
-const PersistentNotificationContainer = () => {
+const PersistentNotificationContainer = React.memo(() => {
     const [notifications, setNotifications] = React.useState([]);
 
     React.useEffect(() => {
@@ -118,7 +118,8 @@ const PersistentNotificationContainer = () => {
             ))}
         </div>
     );
-};
+});
+
 const spring = Webpack.getModule(x => x?.animated?.div);
 
 const NotificationItem = ({notification}) => {
@@ -131,33 +132,27 @@ const NotificationItem = ({notification}) => {
         actions = [],
     } = notification;
 
-    const [progress, setProgress] = React.useState(100);
     const [exiting, setExiting] = React.useState(false);
-    const [continueProgress, setContinueProgress] = React.useState(true);
+    const [isPaused, setIsPaused] = React.useState(false);
 
-    const props = spring.useSpring({
+    const slideProps = spring.useSpring({
         opacity: exiting ? 0 : 1,
         transform: exiting ? "translateX(100%)" : "translateX(0%)",
         config: {tension: 280, friction: 20}
     });
 
-    React.useEffect(() => {
-        if (!continueProgress) return;
-        const startTime = Date.now();
-        const timer = setInterval(() => {
-            const elapsed = Date.now() - startTime;
-            const remainingPercentage = Math.max(0, 100 - (elapsed / duration) * 100);
-
-            setProgress(remainingPercentage);
-
-            if (remainingPercentage <= 0) {
-                clearInterval(timer);
+    const progressProps = spring.useSpring({
+        width: "0%",
+        from: {width: "100%"},
+        config: {duration},
+        pause: isPaused,
+        onChange: ({width}) => {
+            if (width === "0%") {
                 NotificationUI.hide(id);
             }
-        }, 10);
-
-        return () => clearInterval(timer);
-    }, [duration, id, continueProgress]);
+        },
+        reset: isPaused
+    });
 
     React.useEffect(() => {
         setExiting(notification.exiting);
@@ -170,16 +165,17 @@ const NotificationItem = ({notification}) => {
 
     return (
         <spring.animated.div
-            onMouseOver={() => {setContinueProgress(false);}}
-            onMouseLeave={() => {setProgress(100); setContinueProgress(true);}}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
             onClick={(e) => {
                 e.stopPropagation();
                 notification.onClick?.();
                 handleClose();
             }}
-            style={props}
-            className={`bd-notification ${exiting ? "bd-notification-exit" : "bd-notification-enter"
-                } bd-notification-${type}`}
+            style={slideProps}
+            className={`bd-notification ${
+                exiting ? "bd-notification-exit" : "bd-notification-enter"
+            } bd-notification-${type}`}
         >
             <div className="bd-notification-topbar">
                 <div className="bd-notification-title">
@@ -216,10 +212,10 @@ const NotificationItem = ({notification}) => {
                     ))}
                 </div>
             )}
-            <div
+            <spring.animated.div
                 className="bd-notification-progress"
                 style={{
-                    width: `${progress}%`,
+                    ...progressProps,
                     backgroundColor: {
                         success: "var(--status-positive)",
                         error: "var(--status-danger)",
