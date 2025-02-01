@@ -148,8 +148,15 @@
     position: absolute;
     cursor: pointer;
     transition: background-color 0.3s;
-    &:hover { background-color: var(--brand-500); opacity: 0.8; }
-    &.selected { background-color: var(--brand-500); }
+}
+
+.bd-box:hover {
+    background-color: var(--brand-500);
+    opacity: 0.8;
+}
+
+.bd-box.selected {
+    background-color: var(--brand-500);
 }
 
 .bd-box-disabled {
@@ -162,8 +169,15 @@
     cursor: not-allowed !important;
     opacity: 0.5;
     transition: background-color 0.3s;
-    &:hover { background-color: var(--brand-500); opacity: 0.8; }
-    &.selected { background-color: var(--brand-500); }
+}
+
+.bd-box-disabled:hover {
+    background-color: var(--brand-500);
+    opacity: 0.8;
+}
+
+.bd-box-disabled.selected {
+    background-color: var(--brand-500);
 }
 
 .bd-center-svg {
