@@ -25,25 +25,28 @@ const extractCSS = (content) => {
 class InstallCSS {
     static initialize() {
         const patch = WebpackModules.getBySource(".VOICE_HANGOUT_INVITE?\"\":");
-        Patcher.after("InstallCSS", patch.ZP, "type", (_, __, res) => {
-            const content = __?.[0].message.content;
+        Patcher.after("InstallCSS", patch.ZP, "type", (_, [args], res) => {
+            const isEnabled = Settings.get("customcss", "customcss");
+            if (!isEnabled) return;
+
+            const content = args.message.content;
             if (!content) return;
 
             const codeActions = Utils.findInTree(res, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
             if (!codeActions) return;
+            const currentText = Utils.findInTree(res, x => x?.text, {walkable: ["props", "children"]})?.text;
             codeActions.children = [
                 codeActions.children,
                 <Icon key="icon" onClick={async () => {
-                    const cssCode = extractCSS(content);
-                    if (!cssCode) return;
+                    if (!currentText) return;
+
                     const savedCss = CustomCSS.savedCss || "";
-                    CustomCSS.saveCSS(savedCss + "\n" + cssCode);
-                    const isEnabled = Settings.get("customcss", "customcss", "customcss");
-                    if (isEnabled) {
-                        CustomCSS.loadCSS();
-                        UI.showToast("CSS was successfully added into CustomCSS.", {type: "success"});
-                    }
-                }} />
+                    const newCSS = savedCss + "\n" + currentText;
+
+                    CustomCSS.saveCSS(newCSS);
+                    CustomCSS.insertCSS(newCSS);
+                    UI.showToast("CSS was successfully added into CustomCSS.", {type: "success"});
+                }}/>
             ];
         });
     }
