@@ -1,16 +1,12 @@
 import WebpackModules from "@modules/webpackmodules";
 import Patcher from "@modules/patcher";
 import Utils from "@modules/api/utils";
+import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
 
-const Icon = () => (
-    <div className role="button" tabIndex={-1}>
-        <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            role="img"
-        >
+const Icon = ({onClick}) => (
+    <div onClick={onClick} role="button" tabIndex={-1}>
+        <svg width="16" height="16" viewBox="0 0 24 24" role="img">
             <path
                 id="bg"
                 fill="#FFF"
@@ -20,8 +16,8 @@ const Icon = () => (
     </div>
 );
 
-const isCSS = (potentialCss) => {
-    return /@import\s+(?:url\([^)]+\)|["'][^"']+["'])/i.test(potentialCss) || /[{]\s*[\w-]+:|\b[\w-]+\s*[{]\s*[\w-]+:/i.test(potentialCss);
+const extractCSS = (content) => {
+    return content.match(/```css\n([\s\S]*)\n```/)[1];
 };
 
 class InstallCSS {
@@ -29,17 +25,23 @@ class InstallCSS {
         const patch = WebpackModules.getBySource(".VOICE_HANGOUT_INVITE?\"\":");
         Patcher.after("InstallCSS", patch.ZP, "type", (_, __, res) => {
             const content = __?.[0].message.content;
-            if (!content.startsWith("```css") && !isCSS(content)) return;
+            if (!content) return;
+
             const codeActions = Utils.findInTree(res, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
-
             if (!codeActions) return;
-
             codeActions.children = [
                 codeActions.children,
-                <Icon key="icon"/>
+                <Icon key="icon" onClick={async () => {
+                    const cssCode = extractCSS(content);
+                    if (!cssCode) return;
+                    const savedCss = CustomCSS.savedCss || "";
+                    CustomCSS.saveCSS(savedCss + "\n" + cssCode);
+                    if (await CustomCSS.enabled()) {
+                        CustomCSS.loadCSS();
+                    }
+                }} />
             ];
         });
-
     }
 }
 
