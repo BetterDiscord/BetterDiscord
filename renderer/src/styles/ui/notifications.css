@@ -45,7 +45,10 @@
     cursor: pointer;
     font-size: 18px;
     transition: color 0.2s ease-in-out;
-    &:hover { color: var(--info-warning-background); }
+}
+
+.bd-notification-close:hover {
+    color: var(--info-warning-background);
 }
 
 .bd-notification-body {
@@ -71,7 +74,10 @@
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
-    &:hover { background-color: var(--button-secondary-background-hover); }
+}
+
+.bd-notification-action:hover {
+    background-color: var(--button-secondary-background-hover);
 }
 
 .bd-notification-progress {
