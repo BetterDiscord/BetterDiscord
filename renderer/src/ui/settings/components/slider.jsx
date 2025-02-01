@@ -45,7 +45,14 @@ export default function Slider({value: initialValue, min, max, step, onChange, d
         <div className="bd-slider-label" style={{left: `${percent(value)}%`, transform: `translateX(${labelOffset}%)`}}>{value}{units}</div>
         <div className="bd-slider-track" style={{backgroundSize: percent(value) + "% 100%"}} onClick={trackClick}></div>
         {markers?.length > 0 && <div className="bd-slider-marker-container">
-            {markers.map(m => <div className="bd-slider-marker" style={{left: percent(m) + "%"}} onClick={() => jumpToValue(m)}>{m}{units}</div>)}
+            {markers.map(m => {
+                const markerValue = m?.value ?? m;
+                const markerLabel = m?.label ?? m;
+                const showUnits = units && !m?.label;
+                return <div className="bd-slider-marker" style={{left: percent(markerValue) + "%"}} onClick={() => jumpToValue(markerValue)}>
+                    {markerLabel}{showUnits && units}
+                </div>;
+            })}
         </div>}
     </div>;
 }

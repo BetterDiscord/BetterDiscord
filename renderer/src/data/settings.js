@@ -93,7 +93,23 @@ export default [
     //     shown: true,
     //     settings: [
     //         {name: "Text test", note: "Just testing it", type: "text", id: "texttest", value: ""},
-    //         {name: "Slider test", note: "Just testing it", type: "slider", id: "slidertest", value: 30, min: 20, max: 50, step: 10},
+    //         {
+    //             name: "Slider test",
+    //             note: "Just testing it",
+    //             type: "slider",
+    //             id: "slidertest",
+    //             value: 30,
+    //             min: 20,
+    //             max: 50,
+    //             step: 10,
+    //             units: "em",
+    //             markers: [
+    //                 {label: "max", value: 50},
+    //                 30,
+    //                 {label: "min", value: 20},
+    //                 {label: "anything", value: 40}
+    //             ],
+    //         },
     //         {
     //             name: "Radio test",
     //             note: "Just testing it",
