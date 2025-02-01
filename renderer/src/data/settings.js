@@ -107,6 +107,19 @@ export default [
     //                 {name: "Last", value: "last", description: "nothing more to add"}
     //             ]
     //         },
+    //         {
+    //             type: "slider",
+    //             id: "maxWidth",
+    //             name: "Notification Width",
+    //             note: "Maximum width of notifications",
+    //             value: 370,
+    //             min: 100,
+    //             max: 400,
+    //             markers: [100, 200, 300, 400],
+    //             units: "px",
+    //             defaultValue: 370,
+    //             stickToMarkers: false
+    //         },
     //         {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
     //         {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},
     //     ]

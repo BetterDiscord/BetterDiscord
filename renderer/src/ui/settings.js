@@ -98,13 +98,12 @@ export default new class SettingsRenderer {
     }
 
     onChange(onChange) {
-        return (collection, category, id) => {
-            onChange(collection, category, id);
+        return (categoryId, settingId, value) => {
+            onChange(categoryId, settingId, value);
 
             // Delay until after switch animation
-            // TODO: lift settings state to SettingsPanel
-            // to prevent the need for this.
-            setTimeout(this.forceUpdate.bind(this), 250);
+            // TODO: find a better workaround
+            if (settingId === "customcss") setTimeout(this.forceUpdate.bind(this), 250);
         };
     }
 
