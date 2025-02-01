@@ -291,7 +291,9 @@ class Addon {
         const install = (shouldEnable) => new Promise((resolve, reject) => {
             request(Web.redirects.github(this.id), {
                 headers: {
-                    "X-Store-Download": this.name
+                    "X-Store-Download": this.name,
+                    "Cache-Control": "no-cache",
+                    "Pragma": "no-cache"
                 }
             }, (err, req, text) => {
                 try {
@@ -448,7 +450,12 @@ const addonStore = new class AddonStore {
         if (typeof cache === "object") return Promise.resolve(cache);
 
         return this._singleAddonCache[idOrName] ??= new Promise((resolve, reject) => {
-            request(Web.store.addon(idOrName), (err, req, body) => {
+            request(Web.store.addon(idOrName), {
+                headers: {
+                    "Cache-Control": "no-cache",
+                    "Pragma": "no-cache"
+                }
+            }, (err, req, body) => {
                 try {
                     if (err || req.aborted || req.statusMessage !== "OK") {
                         throw err || req;
@@ -605,7 +612,12 @@ const addonStore = new class AddonStore {
             return;
         }
 
-        request(Web.store.addons, (err, req, body) => {
+        request(Web.store.addons, {
+            headers: {
+                "Cache-Control": "no-cache",
+                "Pragma": "no-cache"
+            }
+        }, (err, req, body) => {
             window.removeEventListener("offline", offLineListener);
             if (failed) return;
 
