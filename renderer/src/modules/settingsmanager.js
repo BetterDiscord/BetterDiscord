@@ -75,9 +75,10 @@ export default new class SettingsManager {
         if (!this.state[collection.id]) this.state[collection.id] = {};
 
         // Use a getter so the collection name auto translates
+        const collectionName = collection.name;
         Object.defineProperty(collection, "name", {
             enumerable: true,
-            get: () => Strings.Collections[collection.id]?.name?.toString() || collection.name
+            get: () => Strings.Collections[collection.id]?.name?.toString() || collectionName
         });
 
         const categories = collection.settings;
@@ -89,9 +90,10 @@ export default new class SettingsManager {
             if (!this.state[collection.id].hasOwnProperty(category.id)) this.state[collection.id][category.id] = {};
 
             // Use a getter so category name auto translates
+            const categoryName = category.name;
             Object.defineProperty(category, "name", {
                 enumerable: true,
-                get: () => Strings.Collections[collection.id][category.id]?.name?.toString() || category.name
+                get: () => Strings.Collections[collection.id]?.[category.id]?.name?.toString() || categoryName
             });
 
             
@@ -105,25 +107,28 @@ export default new class SettingsManager {
                 setting.defaultValue = setting.value;
 
                 // Use a getter so the setting name and note auto translate
+                const settingName = setting.name;
+                const settingNote = setting.note;
                 Object.defineProperties(setting, {
                     name: {
                         enumerable: true,
-                        get: () => Strings.Collections[collection.id][category.id][setting.id]?.name?.toString() || setting.name
+                        get: () => Strings.Collections[collection.id]?.[category.id]?.[setting.id]?.name?.toString() || settingName
                     },
                     note: {
                         enumerable: true,
-                        get: () => Strings.Collections[collection.id][category.id][setting.id]?.note?.toString() || setting.note
+                        get: () => Strings.Collections[collection.id]?.[category.id]?.[setting.id]?.note?.toString() || settingNote
                     }
                 });
 
                 // Use a getter for option labels to auto translate
                 if (setting.options) {
                     for (const opt of setting.options) {
+                        const optLabel = opt.label;
                         Object.defineProperty(opt, "label", {
                             enumerable: true,
                             get: () => {
-                                const translations = Strings.Collections[collection.id][category.id][setting.id]?.options;
-                                return translations?.[opt.id]?.toString() || translations?.[opt.value]?.toString() || opt.label;
+                                const translations = Strings.Collections[collection.id]?.[category.id]?.[setting.id]?.options;
+                                return translations?.[opt.id]?.toString() || translations?.[opt.value]?.toString() || optLabel;
                             }
                         });
                     }
