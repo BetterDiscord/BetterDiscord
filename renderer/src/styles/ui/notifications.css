@@ -9,7 +9,7 @@
 }
 
 .bd-notification {
-    background: #313338 /*var(--background-primary)*/;
+    background: var(--bg-overlay-1,var(--background-secondary-alt)) /*var(--background-primary)*/;
     color: var(--text-normal);
     border-radius: 4px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
