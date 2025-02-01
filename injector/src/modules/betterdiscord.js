@@ -16,6 +16,57 @@ if (process.platform === "win32" || process.platform === "darwin") dataPath = pa
 else dataPath = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config"); // This will help with snap packages eventually
 dataPath = path.join(dataPath, "BetterDiscord") + "/";
 
+const script = `(async function() {
+  function deepQuerySelector(node, selector) {
+    if (!node) return null;
+    const found = node.querySelector(selector);
+    if (found) return found;
+    if (node.shadowRoot) {
+      const shadowResult = deepQuerySelector(node.shadowRoot, selector);
+      if (shadowResult) return shadowResult;
+    }
+    for (let child of node.children) {
+      const childResult = deepQuerySelector(child, selector);
+      if (childResult) return childResult;
+    }
+    return null;
+  }
+
+  const header = deepQuerySelector(document, ".tabbed-pane-header");
+
+  const debugButton = document.createElement("button");
+  debugButton.innerHTML = \`
+    <div style="display: flex; align-items: center; gap: 4px;">
+      <span>Debug BD</span>
+    </div>
+  \`;
+  
+  debugButton.style.cssText = \`
+    background: transparent;
+    border: none;
+    color: #dcddde;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: var(--font-primary);
+    margin-right: 8px;
+  \`;
+  
+  debugButton.addEventListener('mouseclick', openDevToolsForDevTools);
+  debugButton.addEventListener('mouseenter', () => {
+    console.log(document.body);
+  });
+  debugButton.addEventListener('mouseleave', () => {
+        console.log(window);
+  });
+
+  header.insertBefore(debugButton, header.firstChild);
+})();`;
+
+
 let hasCrashed = false;
 export default class BetterDiscord {
     static getWindowPrefs() {
@@ -103,6 +154,10 @@ export default class BetterDiscord {
                 }
             });
             hasCrashed = false;
+        });
+
+        browserWindow.webContents.on("devtools-opened", () => {
+            browserWindow.webContents.devToolsWebContents?.executeJavaScript(script);
         });
 
         // This is used to alert renderer code to onSwitch events

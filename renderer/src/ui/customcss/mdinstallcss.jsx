@@ -4,6 +4,7 @@ import Utils from "@modules/api/utils";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
 import UI from "@modules/api/ui";
+import Settings from "@modules/settingsmanager";
 
 const Icon = ({onClick}) => (
     <div onClick={onClick} role="button" tabIndex={-1}>
@@ -37,10 +38,11 @@ class InstallCSS {
                     if (!cssCode) return;
                     const savedCss = CustomCSS.savedCss || "";
                     CustomCSS.saveCSS(savedCss + "\n" + cssCode);
-                    if (await CustomCSS.enabled()) {
+                    const isEnabled = Settings.get("customcss", "customcss", "customcss");
+                    if (isEnabled) {
                         CustomCSS.loadCSS();
+                        UI.showToast("CSS was successfully added into CustomCSS.", {type: "success"});
                     }
-                    UI.showToast("CSS was successfully added into CustomCSS.", {type: "success"});
                 }} />
             ];
         });
