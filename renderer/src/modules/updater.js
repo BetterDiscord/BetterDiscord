@@ -56,11 +56,9 @@ export default class Updater {
             }
         });
 
-        setTimeout(() => {
-            CoreUpdater.initialize();
-            PluginUpdater.initialize();
-            ThemeUpdater.initialize();
-        }, 3000); // this is to try to combat that weird bug I spotted a few months back where the banner would instantly disappear sometimes. The small delay should help.
+        CoreUpdater.initialize();
+        PluginUpdater.initialize();
+        ThemeUpdater.initialize();
 
         if (Settings.get("addons", "checkForUpdates")) {
             this.startUpdateInterval();
@@ -97,8 +95,9 @@ export class CoreUpdater {
     static apiData = {};
     static remoteVersion = "";
 
-    static async initialize(checkUpdates = true) {
-        if (checkUpdates) {
+    static async initialize() {
+        const shouldCheck = Settings.get("addons", "checkForUpdates");
+        if (shouldCheck) {
             this.checkForUpdate();
         }
     }
@@ -175,9 +174,10 @@ class AddonUpdater {
         this.pending = [];
     }
 
-    async initialize(checkUpdates = true) {    
+    async initialize() {    
         await this.updateCache();
-        if (checkUpdates) {
+        const shouldCheck = Settings.get("addons", "checkForUpdates");
+        if (shouldCheck) {
             this.checkAll();
         }
         Events.on(`${this.type}-loaded`, addon => {
@@ -222,7 +222,7 @@ class AddonUpdater {
         request(Web.redirects.github(info.id), (error, response, body) => {
             if (error || response.statusCode !== 200) {
                 Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
-                Toasts.error(Strings.Updater.updateFailed.format({name: info.name, version: info.version}));
+                Toasts.error(Strings.Updater.addonUpdateFailed.format({name: info.name, version: info.version}));
                 return;
             }
 
