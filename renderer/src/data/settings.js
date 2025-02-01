@@ -18,7 +18,9 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "addonErrors", value: true},
-            {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]}
+            {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]},
+            {type: "switch", id: "checkForUpdates", value: true},
+            {type: "slider", id: "updateInterval", value: 4, min: 2, max: 12, step: 1, markers: [2, 4, 6, 8, 10, 12], units: "hrs", enableWith: "checkForUpdates"}
         ]
     },
     {
