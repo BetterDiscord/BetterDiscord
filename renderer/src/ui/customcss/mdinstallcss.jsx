@@ -27,7 +27,7 @@ const isCSS = (potentialCss) => {
 class InstallCSS {
     static initialize() {
         const patch = WebpackModules.getBySource(".VOICE_HANGOUT_INVITE?\"\":");
-        Patcher.after("n", patch.ZP, "type", (_, __, res) => {
+        Patcher.after("InstallCSS", patch.ZP, "type", (_, __, res) => {
             const content = __?.[0].message.content;
             if (!content.startsWith("```css") && !isCSS(content)) return;
             const yeah = Utils.findInTree(res, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
