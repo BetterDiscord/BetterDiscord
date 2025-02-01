@@ -3,6 +3,7 @@ import Patcher from "@modules/patcher";
 import Utils from "@modules/api/utils";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
+import UI from "@modules/api/ui";
 
 const Icon = ({onClick}) => (
     <div onClick={onClick} role="button" tabIndex={-1}>
@@ -39,6 +40,7 @@ class InstallCSS {
                     if (await CustomCSS.enabled()) {
                         CustomCSS.loadCSS();
                     }
+                    UI.showToast("CSS was successfully added into CustomCSS.", {type: "success"});
                 }} />
             ];
         });
