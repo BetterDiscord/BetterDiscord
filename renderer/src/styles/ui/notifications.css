@@ -1,7 +1,7 @@
 .bd-notification-container {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    /*top: 16px;*/
+    /*right: 16px;*/
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -112,3 +112,82 @@
         transform: translateX(100%);
     }
 }
+
+.bd-container {
+    background: var(--background-secondary);
+    border: 3px solid var(--brand-500);
+    border-radius: 8px;
+    color: var(--text-normal);
+    position: relative;
+    width: 500px;
+    height: 300px;
+    margin: 50px auto;
+}
+
+.bd-container-disabled {
+    background: var(--background-secondary);
+    border: 3px solid var(--red-400);
+    border-radius: 8px;
+    color: var(--text-normal);
+    position: relative;
+    width: 500px;
+    height: 300px;
+    margin: 50px auto;
+}
+
+.position-wrapper {
+    width: 500px;
+}
+
+.bd-box {
+    background-color: var(--primary-400);
+    border-radius: 3px;
+    width: 150px;
+    height: 80px;
+    margin: 6px;
+    position: absolute;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    &:hover { background-color: var(--brand-500); opacity: 0.8; }
+    &.selected { background-color: var(--brand-500); }
+}
+
+.bd-box-disabled {
+    background-color: var(--primary-400);
+    border-radius: 3px;
+    width: 150px;
+    height: 80px;
+    margin: 6px;
+    position: absolute;
+    cursor: not-allowed !important;
+    opacity: 0.5;
+    transition: background-color 0.3s;
+    &:hover { background-color: var(--brand-500); opacity: 0.8; }
+    &.selected { background-color: var(--brand-500); }
+}
+
+.bd-center-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+}
+
+.top-left { top: 0; left: 0; }
+.top-right { top: 0; right: 0; }
+.bottom-left { bottom: 0; left: 0; }
+.bottom-right { bottom: 0; right: 0; }
+
+.bd-center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.bd-text { margin: 0; color: var(--text-normal); }
+
+.bd-p { margin: 10px 0 0; color: var(--text-normal); }

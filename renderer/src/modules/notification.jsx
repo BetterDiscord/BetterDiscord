@@ -2,6 +2,7 @@ import Webpack from "@modules/api/webpack";
 import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import Button from "@ui/base/button";
+import Settings from "@modules/settingsmanager";
 
 const Icon = ({type}) => {
     switch (type) {
@@ -33,8 +34,8 @@ const Icon = ({type}) => {
                         d="M12 8.5C12.8284 8.5 13.5 7.82843 13.5 7C13.5 6.17157 12.8284 5.5 12 5.5C11.1716 5.5 10.5 6.17157 10.5 7C10.5 7.82843 11.1716 8.5 12 8.5Z"
                         fill="#3B82F6"/>
                     <path
-                          d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z"
-                          fill="#3B82F6"/>
+                        d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z"
+                        fill="#3B82F6"/>
                 </svg>
             );
         case "success":
@@ -97,23 +98,78 @@ class NotificationUI {
             }, 500);
         }
     }
-
 }
 
 const PersistentNotificationContainer = React.memo(() => {
     const [notifications, setNotifications] = React.useState([]);
+    const [position, setPosition] = React.useState("top-right");
 
     React.useEffect(() => {
         NotificationUI.setNotifications = setNotifications;
-        return () => {NotificationUI.setNotifications = null;};
+
+        const updatePosition = () => {
+            const notificationPosition = Settings.get("settings", "general", "notification");
+            setPosition(notificationPosition);
+        };
+
+        updatePosition();
+
+        Settings.on("settings", "general", "notification", updatePosition);
+
+        return () => {
+            NotificationUI.setNotifications = null;
+        };
     }, []);
 
+    const getPositionStyles = () => {
+        const base = {
+            position: "fixed",
+            zIndex: 1000,
+            display: "flex",
+            gap: "8px",
+            padding: "16px",
+            pointerEvents: "none"
+        };
+
+        const positions = {
+            "top-right": {
+                top: 16,
+                right: 16,
+                flexDirection: "column"
+            },
+            "top-left": {
+                top: 16,
+                left: 16,
+                flexDirection: "column"
+            },
+            "bottom-right": {
+                bottom: 16,
+                right: 16,
+                flexDirection: "column-reverse"
+            },
+            "bottom-left": {
+                bottom: 16,
+                left: 16,
+                flexDirection: "column-reverse"
+            }
+        };
+
+        return {
+            ...base,
+            ...positions[position]
+        };
+    };
+
     return (
-        <div className="bd-notification-container">
+        <div
+            className="bd-notification-container"
+            style={getPositionStyles()}
+        >
             {notifications.map((notification) => (
                 <NotificationItem
                     key={notification.id}
                     notification={notification}
+                    position={position}
                 />
             ))}
         </div>
@@ -122,7 +178,7 @@ const PersistentNotificationContainer = React.memo(() => {
 
 const spring = Webpack.getModule(x => x?.animated?.div);
 
-const NotificationItem = ({notification}) => {
+const NotificationItem = ({notification, position}) => {
     const {
         id,
         title = "",
@@ -135,11 +191,26 @@ const NotificationItem = ({notification}) => {
     const [exiting, setExiting] = React.useState(false);
     const [isPaused, setIsPaused] = React.useState(false);
 
-    const slideProps = spring.useSpring({
-        opacity: exiting ? 0 : 1,
-        transform: exiting ? "translateX(100%)" : "translateX(0%)",
-        config: {tension: 280, friction: 20}
-    });
+    const getSlideAnimation = () => {
+        const baseSlide = {
+            opacity: exiting ? 0 : 1,
+            config: {tension: 280, friction: 20}
+        };
+
+        if (position.includes("right")) {
+            return {
+                ...baseSlide,
+                transform: exiting ? "translateX(100%)" : "translateX(0%)"
+            };
+        } 
+            return {
+                ...baseSlide,
+                transform: exiting ? "translateX(-100%)" : "translateX(0%)"
+            };
+        
+    };
+
+    const slideProps = spring.useSpring(getSlideAnimation());
 
     const progressProps = spring.useSpring({
         width: "0%",
@@ -172,7 +243,10 @@ const NotificationItem = ({notification}) => {
                 notification.onClick?.();
                 handleClose();
             }}
-            style={slideProps}
+            style={{
+                ...slideProps,
+                pointerEvents: "auto"
+            }}
             className={`bd-notification ${
                 exiting ? "bd-notification-exit" : "bd-notification-enter"
             } bd-notification-${type}`}
