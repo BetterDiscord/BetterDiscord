@@ -30,12 +30,12 @@ class InstallCSS {
         Patcher.after("InstallCSS", patch.ZP, "type", (_, __, res) => {
             const content = __?.[0].message.content;
             if (!content.startsWith("```css") && !isCSS(content)) return;
-            const yeah = Utils.findInTree(res, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
+            const codeActions = Utils.findInTree(res, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
 
-            if (!yeah) return;
+            if (!codeActions) return;
 
-            yeah.children = [
-                yeah.children,
+            codeActions.children = [
+                codeActions.children,
                 <Icon key="icon"/>
             ];
         });
