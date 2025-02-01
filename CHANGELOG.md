@@ -3,6 +3,29 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## 1.12.1
+
+### Added
+ - Sliders can now set more specific labels in their markers
+ - Addon update checking can now be toggled
+ - Update checking can now be done periodically
+
+### Removed
+- Removed extra code in the devtools warning module
+
+### Changed
+ - `forceUpdate` is only used for particular setting IDs
+ - `bySource` now accepted multiple searches
+ - Store and addon requests now set the no-cache directive
+
+### Fixed
+ - Fixed frame showing up on linux
+ - Fixed opening store from context menu
+ - Fixed addon store error causing freezes
+ - Fixed crashing when mentioning a bot
+ - Fixed addon updates not checking status code
+
+
 ## 1.12.0
 
 ### Added

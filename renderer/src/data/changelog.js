@@ -6,7 +6,7 @@ export default {
     subtitle: `v${config.version}`,
     video: "https://www.youtube.com/embed/jDclfjPc3k0?si=YlQwrCHnoYkTfa6G&vq=hd720p&hd=1&rel=0&showinfo=0&mute=0&loop=1&autohide=1",
     // banner: "https://i.imgur.com/wuh5yMK.png",
-    blurb: "This update is packed with features both for users as well as developers. Take a look at the video above for a quick showcase or read down below for details.",
+    blurb: "This changelog includes the changes from 1.12.0, check the `Bugs Squashed` section for more info on what was fixed in this release!",
     changes: [
         {
             title: "Cool New Features!",
@@ -30,6 +30,10 @@ export default {
                 "Enabling or disabling the custom css system will now update things properly.",
                 "The help screen in settings will now show up properly when you have no plugins or themes.",
                 "Modals for addon errors are now more accessible by using standardized elements.",
+                "The native frame should no longer disappear by default on Linux.",
+                "Errors from the addon store should no longer lock you in place.",
+                "Getting a bad response from the server will no longer overwrite your plugins and themes with an error code.",
+                "Fixed a crash that happened when mentioning a bot."
             ]
         },
         {
@@ -46,7 +50,9 @@ export default {
                 "Building settings with `buildSetting` can now be customized further by using the `button` type.",
                 "`Utils.className` now uses the `clsx` package under the hood. This is a drop-in replacement that should also work faster.",
                 "When using React DevTools, clicking to go to source of a patched component will now correclty take you to the original component.",
-                "Webpack searches will have less errors spitting out into console and hopefully improve performance for those using string searches."
+                "Webpack searches will have less errors spitting out into console and hopefully improve performance for those using string searches.",
+                "Slider settings can now have marker objects with a label and value to apply arbitrary labels.",
+                "You can now show a guild invite modal via `UI.showInviteModal`."
             ]
         },
     ]
