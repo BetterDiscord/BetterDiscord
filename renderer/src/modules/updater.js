@@ -42,6 +42,8 @@ const reducer = (acc, addon) => {
 };
 
 export default class Updater {
+    static updateCheckInterval = null;
+
     static initialize() {
         Settings.registerPanel("updates", Strings.Panels.updates, {
             order: 1,
@@ -54,9 +56,38 @@ export default class Updater {
             }
         });
 
-        CoreUpdater.initialize();
-        PluginUpdater.initialize();
-        ThemeUpdater.initialize();
+        setTimeout(() => {
+            CoreUpdater.initialize();
+            PluginUpdater.initialize();
+            ThemeUpdater.initialize();
+        }, 3000); // this is to try to combat that weird bug I spotted a few months back where the banner would instantly disappear sometimes. The small delay should help.
+
+        if (Settings.get("addons", "checkForUpdates")) {
+            this.startUpdateInterval();
+        }
+
+        Events.on("setting-updated", (collection, category, id, value) => {
+            if (collection === "settings" && category === "addons" && 
+               (id === "updateInterval" || id === "checkForUpdates")) {
+                this.startUpdateInterval();
+            }
+        });
+    }
+
+    static startUpdateInterval() {
+        if (this.updateCheckInterval) {
+            clearInterval(this.updateCheckInterval);
+            this.updateCheckInterval = null;
+        }
+
+        if (!Settings.get("addons", "checkForUpdates")) return;
+
+        const hours = Settings.get("addons", "updateInterval");
+        this.updateCheckInterval = setInterval(() => {
+            CoreUpdater.checkForUpdate();
+            PluginUpdater.checkAll(true);
+            ThemeUpdater.checkAll(true);
+        }, hours * 60 * 60 * 1000);
     }
 }
 
@@ -66,8 +97,10 @@ export class CoreUpdater {
     static apiData = {};
     static remoteVersion = "";
 
-    static async initialize() {
-        this.checkForUpdate();
+    static async initialize(checkUpdates = true) {
+        if (checkUpdates) {
+            this.checkForUpdate();
+        }
     }
 
     static async checkForUpdate(showNotice = true) {
@@ -142,9 +175,11 @@ class AddonUpdater {
         this.pending = [];
     }
 
-    async initialize() {    
+    async initialize(checkUpdates = true) {    
         await this.updateCache();
-        this.checkAll();
+        if (checkUpdates) {
+            this.checkAll();
+        }
         Events.on(`${this.type}-loaded`, addon => {
             this.checkForUpdate(addon.filename, addon.version);
         });
@@ -184,9 +219,10 @@ class AddonUpdater {
  
     async updateAddon(filename) {
         const info = this.cache[filename];
-        request(Web.redirects.github(info.id), (error, _, body) => {
-            if (error) {
+        request(Web.redirects.github(info.id), (error, response, body) => {
+            if (error || response.statusCode !== 200) {
                 Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
+                Toasts.error(Strings.Updater.updateFailed.format({name: info.name, version: info.version}));
                 return;
             }
 
