@@ -9,6 +9,8 @@ export default [
             {type: "switch", id: "mediaKeys", value: false},
             {type: "switch", id: "bdContextMenu", value: true},
             {type: "switch", id: "themeAttributes", value: true},
+            {type: "position", id: "notification", value: "top-right", inline: false, condition: {collection: "settings", category: "general", id: "notificationEnabled"}},
+            {type: "switch", id: "notificationEnabled", value: true},
         ]
     },
     {

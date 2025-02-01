@@ -29,6 +29,14 @@
                 "themeAttributes": {
                     "name": "Theme Attributes",
                     "note": "Adds attributes to various elements to assist in theming."
+                },
+                "notification": {
+                    "name": "Notification",
+                    "note": "Lets you choose where you want notifications to popup."
+                },
+                "notificationEnabled": {
+                    "name": "Show Notifications",
+                    "note": "Prevents or allows notifications to be shown on screen."
                 }
             },
             "store": {

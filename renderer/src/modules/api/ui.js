@@ -7,6 +7,7 @@ import Tooltip from "@ui/tooltip";
 import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
+import NotificationAPI from "./notification";
 
 
 /**
@@ -25,6 +26,8 @@ const UI = {
     alert(title, content) {
         Modals.alert(title, content);
     },
+
+    showNotification: NotificationAPI.show,
 
     /**
      * Creates a tooltip to automatically show on hover.
