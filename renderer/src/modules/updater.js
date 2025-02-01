@@ -181,7 +181,9 @@ class AddonUpdater {
             this.checkAll();
         }
         Events.on(`${this.type}-loaded`, addon => {
-            this.checkForUpdate(addon.filename, addon.version);
+            if (!Settings.get("addons", "checkForUpdates")) {
+                this.checkForUpdate(addon.filename, addon.version);
+            }
         });
 
         Events.on(`${this.type}-unloaded`, addon => {
