@@ -79,6 +79,10 @@
                         "system": "System Editor"
                     }
                 },
+                "checkForUpdates": {
+                    "name": "Automatically Check For Updates",
+                    "note": "Periodically checks for updates to your addons and core BD"
+                },
                 "updateInterval": {
                     "name": "Update Check Interval",
                     "note": "How often to check for addon/core updates",

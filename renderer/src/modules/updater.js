@@ -62,13 +62,13 @@ export default class Updater {
             ThemeUpdater.initialize();
         }, 3000); // this is to try to combat that weird bug I spotted a few months back where the banner would instantly disappear sometimes. The small delay should help.
 
-        const updateInterval = Settings.get("addons", "updateInterval");
-        if (updateInterval !== "0") {
+        if (Settings.get("addons", "checkForUpdates")) {
             this.startUpdateInterval();
         }
 
         Events.on("setting-updated", (collection, category, id, value) => {
-            if (collection === "settings" && category === "addons" && id === "updateInterval") {
+            if (collection === "settings" && category === "addons" && 
+               (id === "updateInterval" || id === "checkForUpdates")) {
                 this.startUpdateInterval();
             }
         });
@@ -80,13 +80,9 @@ export default class Updater {
             this.updateCheckInterval = null;
         }
 
-        const updateInterval = Settings.get("addons", "updateInterval");
-        if (updateInterval === "0") {
-            return;
-        }
+        if (!Settings.get("addons", "checkForUpdates")) return;
 
-        const hours = parseInt(updateInterval);
-
+        const hours = Settings.get("addons", "updateInterval");
         this.updateCheckInterval = setInterval(() => {
             CoreUpdater.checkForUpdate();
             PluginUpdater.checkAll(true);
