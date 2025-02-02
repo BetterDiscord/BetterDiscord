@@ -272,10 +272,12 @@
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
         "editorTitle": "Custom CSS Editor",
-        "cssInstallSuccess": "CSS was successfully added into CustomCSS."
+        "cssInstallSuccess": "CSS was successfully added into CustomCSS.",
+        "cssInstallError": "CSS failed to be added into CustomCSS."
     },
     "Modals": {
         "confirmAction": "Are You Sure?",
+        "installCss": "Are you positive that you want to add this CSS to your Custom CSS?",
         "okay": "Okay",
         "done": "Done",
         "cancel": "Cancel",
