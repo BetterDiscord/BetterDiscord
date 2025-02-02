@@ -1,4 +1,4 @@
-import Remote from "../../polyfill/remote";
+import Remote from "../polyfill/remote";
 
 const redirects = new Set(["manual", "follow"]);
 const methods = new Set(["GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS", "HEAD", "CONNECT", "TRACE"]);

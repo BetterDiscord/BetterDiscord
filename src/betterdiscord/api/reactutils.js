@@ -1,4 +1,4 @@
-import DiscordModules from "@modules//discordmodules";
+import DiscordModules from "@modules/discordmodules";
 
 
 /**
