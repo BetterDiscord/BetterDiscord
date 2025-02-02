@@ -5,6 +5,7 @@ import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
 import UI from "@modules/api/ui";
 import Settings from "@modules/settingsmanager";
+import Strings from "@modules/strings";
 
 const Icon = ({onClick}) => (
     <div onClick={onClick} role="button" tabIndex={-1}>
@@ -18,14 +19,10 @@ const Icon = ({onClick}) => (
     </div>
 );
 
-const extractCSS = (content) => {
-    return content.match(/```css\n([\s\S]*)\n```/)[1];
-};
-
 class InstallCSS {
     static initialize() {
         const patch = WebpackModules.getBySource(".VOICE_HANGOUT_INVITE?\"\":");
-        Patcher.after("InstallCSS", patch.ZP, "type", (_, [args], res) => {
+        Patcher.after("InstallCSS", patch?.ZP, "type", (_, [args], res) => {
             const isEnabled = Settings.get("customcss", "customcss");
             if (!isEnabled) return;
 
@@ -45,7 +42,7 @@ class InstallCSS {
 
                     CustomCSS.saveCSS(newCSS);
                     CustomCSS.insertCSS(newCSS);
-                    UI.showToast("CSS was successfully added into CustomCSS.", {type: "success"});
+                    UI.showToast(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
                 }}/>
             ];
         });

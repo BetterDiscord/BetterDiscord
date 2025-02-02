@@ -60,6 +60,7 @@ export default new class Core {
         Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
 
+        Logger.log("Startup", "Initializing Internal InstallCSS");
         InstallCSS.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
