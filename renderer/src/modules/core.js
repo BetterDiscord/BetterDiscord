@@ -25,6 +25,7 @@ import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
 import CommandManager from "./commandmanager";
+import InstallCSS from "@ui/customcss/mdinstallcss";
 
 export default new class Core {
     async startup() {
@@ -58,6 +59,9 @@ export default new class Core {
 
         Logger.log("Startup", "Initializing CommandManager");
         CommandManager.initialize();
+
+        Logger.log("Startup", "Initializing Internal InstallCSS");
+        InstallCSS.initialize();
 
         Logger.log("Startup", "Waiting for connection...");
         await this.waitForConnection();
