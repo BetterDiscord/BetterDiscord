@@ -86,6 +86,14 @@
                         "detached": "Detached Window",
                         "system": "System Editor"
                     }
+                },
+                "checkForUpdates": {
+                    "name": "Automatically Check For Updates",
+                    "note": "Periodically checks for updates to your addons and core BD"
+                },
+                "updateInterval": {
+                    "name": "Update Check Interval",
+                    "note": "How often to check for addon/core updates"
                 }
             },
             "customcss": {
@@ -263,7 +271,8 @@
         "openNative": "Open in System Editor",
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
-        "editorTitle": "Custom CSS Editor"
+        "editorTitle": "Custom CSS Editor",
+        "cssInstallSuccess": "CSS was successfully added into CustomCSS."
     },
     "Modals": {
         "confirmAction": "Are You Sure?",
@@ -309,6 +318,7 @@
         "updateAvailable": "BetterDiscord has a new update (v{{version}})",
         "addonUpdatesAvailable": "BetterDiscord has found updates for {{count}} of your {{type}}s!",
         "addonUpdated": "{{name}} has been updated to version {{version}}!",
+        "addonUpdateFailed": "Failed to update {{name}}. Please try again later.",
         "checking": "Checking for updates!",
         "finishedChecking": "Finished checking for updates!",
         "checkForUpdates": "Check For Updates!",

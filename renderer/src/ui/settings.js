@@ -98,13 +98,18 @@ export default new class SettingsRenderer {
     }
 
     onChange(onChange) {
-        return (collection, category, id) => {
-            onChange(collection, category, id);
+        return (categoryId, settingId, value) => {
+            onChange(categoryId, settingId, value);
 
             // Delay until after switch animation
-            // TODO: lift settings state to SettingsPanel
-            // to prevent the need for this.
-            setTimeout(this.forceUpdate.bind(this), 250);
+            // TODO: find a better workaround
+            // customcss is here to let the tab show/hide
+            // devTools is here for toggles that enableWith
+            // checkForUpdates also here for enableWith
+            // lift state to top level properly to avoid this
+            if (settingId === "customcss" || settingId === "devTools" || settingId === "checkForUpdates") {
+                setTimeout(this.forceUpdate.bind(this), 250);
+            }
         };
     }
 

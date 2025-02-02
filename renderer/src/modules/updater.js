@@ -28,7 +28,13 @@ const UserSettingsWindow = WebpackModules.getByProps("updateAccount");
 
 const getJSON = url => {
     return new Promise(resolve => {
-        request(url, (error, _, body) => {
+        request({
+            url: url,
+            headers: {
+                "Cache-Control": "no-cache",
+                "Pragma": "no-cache"
+            }
+        }, (error, _, body) => {
             if (error) return resolve([]);
             resolve(JSON.parse(body));
         });
@@ -42,6 +48,8 @@ const reducer = (acc, addon) => {
 };
 
 export default class Updater {
+    static updateCheckInterval = null;
+
     static initialize() {
         Settings.registerPanel("updates", Strings.Panels.updates, {
             order: 1,
@@ -57,6 +65,31 @@ export default class Updater {
         CoreUpdater.initialize();
         PluginUpdater.initialize();
         ThemeUpdater.initialize();
+
+        Events.on("setting-updated", (collection, category, id) => {
+            if (collection !== "settings" || category !== "addons") return;
+            if (id !== "updateInterval" && id !== "checkForUpdates") return;
+            this.startUpdateInterval();
+        });
+
+        // This function will already check the setting
+        this.startUpdateInterval();
+    }
+
+    static startUpdateInterval() {
+        if (this.updateCheckInterval) {
+            clearInterval(this.updateCheckInterval);
+            this.updateCheckInterval = null;
+        }
+
+        if (!Settings.get("addons", "checkForUpdates")) return;
+
+        const hours = Settings.get("addons", "updateInterval");
+        this.updateCheckInterval = setInterval(() => {
+            CoreUpdater.checkForUpdate();
+            PluginUpdater.checkAll();
+            ThemeUpdater.checkAll();
+        }, hours * 60 * 60 * 1000);
     }
 }
 
@@ -67,6 +100,7 @@ export class CoreUpdater {
     static remoteVersion = "";
 
     static async initialize() {
+        if (!Settings.get("addons", "checkForUpdates")) return;
         this.checkForUpdate();
     }
 
@@ -144,8 +178,10 @@ class AddonUpdater {
 
     async initialize() {    
         await this.updateCache();
-        this.checkAll();
+        if (Settings.get("addons", "checkForUpdates")) this.checkAll();
+
         Events.on(`${this.type}-loaded`, addon => {
+            if (!Settings.get("addons", "checkForUpdates")) return;
             this.checkForUpdate(addon.filename, addon.version);
         });
 
@@ -184,9 +220,16 @@ class AddonUpdater {
  
     async updateAddon(filename) {
         const info = this.cache[filename];
-        request(Web.redirects.github(info.id), (error, _, body) => {
-            if (error) {
+        request({
+            url: Web.redirects.github(info.id),
+            headers: {
+                "Cache-Control": "no-cache",
+                "Pragma": "no-cache"
+            }
+        }, (error, response, body) => {
+            if (error || response.statusCode !== 200) {
                 Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
+                Toasts.error(Strings.Updater.addonUpdateFailed.format({name: info.name, version: info.version}));
                 return;
             }
 

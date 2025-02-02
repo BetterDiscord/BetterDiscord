@@ -9,6 +9,7 @@ import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@modules/settingsmanager";
 import NotificationUI from "@modules/notification";
+import Utilities from "@modules/utilities";
 
 
 /**
@@ -110,6 +111,14 @@ const UI = {
      */
     showChangelogModal(options) {
         return Modals.showChangelogModal(options);
+    },
+
+    /**
+     * Shows a modal for joining a guild like you would natively through Discord.
+     * @param {string} inviteCode the invite code
+     */
+    showInviteModal(inviteCode) {
+        return Utilities.showGuildJoinModal(inviteCode);
     },
 
     /**

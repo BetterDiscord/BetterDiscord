@@ -287,6 +287,8 @@ class CommandManager {
     }
 
     static #formatCommand(caller, command, commandId) {
+        const self = this;
+
         return {
             ...command,
             get id() {return commandId;},
@@ -302,6 +304,7 @@ class CommandManager {
             get integrationType() {return command.integrationType || 0;},
             get integrationTitle() {return command.integrationTitle || caller;},
             get inputType() {return command.inputType ?? InputTypes.BUILT_IN;},
+            get section() {self.#ensureSection(caller); return self.#sections.get(caller);},
             isBD: true
         };
     }

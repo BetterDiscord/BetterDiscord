@@ -1,5 +1,6 @@
 /**
  * Allows for grabbing and searching through Discord's webpacked modules.
+ * TODO: please for the love of god refactor and/or rewrite
  * @module WebpackModules
  * @version 0.0.2
  */
@@ -154,18 +155,32 @@ const hasThrown = new WeakSet();
 
 const wrapFilter = filter => (exports, module, moduleId) => {
     try {
+        if (exports instanceof Window) return false;
         if (exports?.default?.remove && exports?.default?.set && exports?.default?.clear && exports?.default?.get && !exports?.default?.sort) return false;
         if (exports.remove && exports.set && exports.clear && exports.get && !exports.sort) return false;
         if (exports?.default?.getToken || exports?.default?.getEmail || exports?.default?.showToken) return false;
         if (exports.getToken || exports.getEmail || exports.showToken) return false;
         return filter(exports, module, moduleId);
     }
-    catch (err) {
-        if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", filter, err);
+    catch (error) {
+        if (!hasThrown.has(filter)) Logger.warn("WebpackModules~getModule", "Module filter threw an exception.", error, {filter, module});
         hasThrown.add(filter);
         return false;
     }
 };
+
+const TypedArray = Object.getPrototypeOf(Uint8Array);
+function shouldSkipModule(exports) {
+    if (!exports) return true;
+    if (exports.TypedArray) return true;
+    if (exports === window) return true;
+    if (exports === document.documentElement) return true;
+    if (exports[Symbol.toStringTag] === "DOMTokenList") return true;
+    if (exports === Symbol) return true;
+    if (exports instanceof Window) return true;
+    if (exports instanceof TypedArray) return true;
+    return false;
+}
 
 export default class WebpackModules {
 
@@ -219,7 +234,7 @@ export default class WebpackModules {
             catch {continue;}
 
             const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
+            if (shouldSkipModule(exports)) continue;
             
             if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                 for (const key in exports) {
@@ -274,7 +289,7 @@ export default class WebpackModules {
             if (!modules.hasOwnProperty(index)) continue;
             const module = modules[index];
             const {exports} = module;
-            if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") continue;
+            if (shouldSkipModule(exports)) continue;
 
             for (let q = 0; q < queries.length; q++) {
                 const query = queries[q];
@@ -331,6 +346,63 @@ export default class WebpackModules {
         
         yield target && Object.keys(target).find(k => filter(target[k]));
     }
+
+    /**
+     * Gets a module's mangled properties by mapping them to friendly names.
+     * @template T The type of the resulting object with friendly property names.
+     * @memberof Webpack
+     * @param  {(exports: any, module: any, id: any) => boolean | string | RegExp} filter Filter to find the module. Can be a filter function, string, or RegExp for source matching.
+     * @param {Record<keyof T, (prop: any) => boolean>} mangled Object mapping desired property names to their filter functions.
+     * @param {object} [options] Options to configure the search.
+     * @param {boolean} [options.defaultExport=true] Whether to return default export when matching the default export.
+     * @param {boolean} [options.searchExports=false] Whether to execute the filter on webpack exports.
+     * @param {boolean} [options.raw=false] Whether to return the whole Module object when matching exports
+     * @returns {T} Object containing the mangled properties with friendly names.
+     */
+    static getMangled(filter, mangled, options = {}) {
+        const {defaultExport = false, searchExports = false, raw = false} = options;
+
+        if (typeof filter === "string" || filter instanceof RegExp) {
+            filter = Filters.bySource(filter);
+        }
+    
+        const returnValue = {};
+        let module = this.getModule(
+            (exports, moduleInstance, id) => {
+                if (!(exports instanceof Object)) return false;
+                return filter(exports, moduleInstance, id);
+            },
+            {defaultExport, searchExports, raw}
+        );
+    
+        if (!module) return returnValue;
+        if (raw) module = module.exports;
+    
+        const mangledEntries = Object.entries(mangled);
+    
+        for (const searchKey in module) {
+            if (!Object.prototype.hasOwnProperty.call(module, searchKey)) continue;
+    
+            for (const [key, propertyFilter] of mangledEntries) {
+                if (key in returnValue) continue;
+    
+                if (propertyFilter(module[searchKey])) {
+                    Object.defineProperty(returnValue, key, {
+                        get() {
+                            return module[searchKey];
+                        },
+                        set(value) {
+                            module[searchKey] = value;
+                        },
+                        enumerable: true,
+                        configurable: false,
+                    });
+                }
+            }
+        }
+    
+        return returnValue;
+    } 
 
     /**
      * Finds all modules matching a filter function.
@@ -450,7 +522,7 @@ export default class WebpackModules {
         return new Promise((resolve) => {
             const cancel = () => this.removeListener(listener);
             const listener = function(exports, module, id) {
-                if (!exports || exports === window || exports === document.documentElement || exports[Symbol.toStringTag] === "DOMTokenList") return;
+                if (shouldSkipModule(exports)) return;
 
                 let foundModule = null;
                 if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {

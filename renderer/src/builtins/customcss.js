@@ -19,7 +19,6 @@ import SettingsTitle from "@ui/settings/title";
 
 
 const UserSettings = WebpackModules.getByProps("updateAccount");
-const Dispatcher = DiscordModules.Dispatcher;
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
@@ -168,6 +167,6 @@ export default new class CustomCSS extends Builtin {
         });
         this.isDetached = true;
         UserSettings.close();
-        Dispatcher.dispatch({type: "LAYER_POP"});
+        DiscordModules.Dispatcher?.dispatch({type: "LAYER_POP"});
     }
 };

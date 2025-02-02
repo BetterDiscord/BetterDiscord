@@ -67,10 +67,10 @@ const Webpack = {
 
         /**
          * Generates a function that filters by source code content.
-         * @param {string|RegExp} match String or RegExp to match against the module's source
+         * @param {...(string|RegExp)} searches - Strings or RegExps to match against the module's source
          * @returns {function} A filter that checks for matching source code
          */
-        bySource(match) {return Filters.bySource(match);},
+        bySource(...searches) {return Filters.bySource(...searches);},
 
         /**
          * Generates a function that filters by strings.
@@ -226,51 +226,10 @@ const Webpack = {
      */
     getMangled(filter, mangled, options = {}) {
         const {defaultExport = false, searchExports = false, raw = false} = options;
-
         if (typeof(defaultExport) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.defaultExport", defaultExport, "Expected: boolean");
         if (typeof(searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.searchExports", searchExports, "Expected: boolean");
         if (typeof(raw) !== "boolean") return Logger.error("BdApi.Webpack~getMangled", "Invalid type for options.raw", raw, "Expected: boolean");
-    
-        if (typeof filter === "string" || filter instanceof RegExp) {
-            filter = Filters.bySource(filter);
-        }
-    
-        const returnValue = {};
-        let module = WebpackModules.getModule(
-            (exports, moduleInstance, id) => {
-                if (!(exports instanceof Object)) return false;
-                return filter(exports, moduleInstance, id);
-            },
-            {defaultExport, searchExports, raw}
-        );
-    
-        if (!module) return returnValue;
-        if (raw) module = module.exports;
-    
-        const mangledEntries = Object.entries(mangled);
-    
-        for (const searchKey in module) {
-            if (!Object.prototype.hasOwnProperty.call(module, searchKey)) continue;
-    
-            for (const [key, propertyFilter] of mangledEntries) {
-                if (key in returnValue) continue;
-    
-                if (propertyFilter(module[searchKey])) {
-                    Object.defineProperty(returnValue, key, {
-                        get() {
-                            return module[searchKey];
-                        },
-                        set(value) {
-                            module[searchKey] = value;
-                        },
-                        enumerable: true,
-                        configurable: false,
-                    });
-                }
-            }
-        }
-    
-        return returnValue;
+        return WebpackModules.getMangled(filter, mangled, options);
     },    
 
     /**
