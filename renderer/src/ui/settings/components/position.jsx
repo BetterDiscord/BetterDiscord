@@ -1,5 +1,6 @@
 import React from "@modules/react";
 import Settings from "@modules/settingsmanager";
+import Text from "@ui/base/text";
 
 const Position = ({value, onChange, disabled, condition}) => {
     const positions = [
@@ -43,13 +44,13 @@ const Position = ({value, onChange, disabled, condition}) => {
             <div className="bd-position-info">
                 {value ? (
                     <>
-                        <h3 className="bd-text">Selected Position:</h3>
-                        <p className="bd-p">
+                        <Text>Selected Position:</Text>
+                        <Text>
                             {value.replace(/-/g, " ").toUpperCase()}
-                        </p>
+                        </Text>
                     </>
                 ) : (
-                    <h3 className="bd-text">Click a box to select position</h3>
+                    <Text>Click a box to select position</Text>
                 )}
             </div>
         </div>
