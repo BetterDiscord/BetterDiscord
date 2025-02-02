@@ -274,15 +274,13 @@ export default class Modals {
         });
     }
 
-
-
     static makeStack() {
         const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
         DOMManager.bdBody.append(div);
         ReactDOM.render(<ErrorBoundary id="makeStack" name="Modals" hideError={true}><ModalStack /></ErrorBoundary>, div);
         this.hasInitialized = true;
     }
-    
+
     static openModal(render, options = {}) {
         if (typeof(this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
         if (!this.hasInitialized) this.makeStack();

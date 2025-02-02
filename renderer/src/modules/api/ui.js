@@ -7,6 +7,8 @@ import Tooltip from "@ui/tooltip";
 import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
+import Settings from "@modules/settingsmanager";
+import NotificationUI from "@modules/notification";
 import Utilities from "@modules/utilities";
 
 
@@ -16,6 +18,8 @@ import Utilities from "@modules/utilities";
  * @summary {@link UI} is a utility class for creating user interfaces.
  * @name UI
  */
+let cntr = 0;
+
 const UI = {
     /**
      * Shows a generic but very customizable modal.
@@ -27,7 +31,27 @@ const UI = {
         Modals.alert(title, content);
     },
 
-    /**
+    showNotification(notificationObj) {
+        if (!Settings.get("settings", "general", "notificationEnabled")) return;
+        cntr++;
+        const id = notificationObj.id || `notification-${cntr}`;
+
+        const defaultObj = {
+            id,
+            title: "",
+            content: "",
+            type: "info",
+            duration: 5000,
+            icon: null
+        };
+
+        const finalNotification = {...defaultObj, ...notificationObj, id};
+
+        NotificationUI.show(finalNotification);
+        return () => NotificationUI.hide(id);
+    },
+
+/**
      * Creates a tooltip to automatically show on hover.
      *
      * @param {HTMLElement} node DOM node to monitor and show the tooltip on
