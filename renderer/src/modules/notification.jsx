@@ -198,7 +198,7 @@ const NotificationItem = ({notification, position}) => {
         onChange: ({width}) => {
             if (width === "0%") {
                 NotificationUI.hide(id);
-                notification.onDurationDone();
+                notification.onDurationDone?.();
             }
         },
         reset: isPaused
