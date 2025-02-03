@@ -1,5 +1,5 @@
 import Patcher from "@modules/patcher";
-import Webpack from "./api/webpack";
+import Webpack from "../api/webpack";
 import {Filters} from "@modules/webpackmodules";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";

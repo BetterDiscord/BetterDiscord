@@ -4,7 +4,7 @@ import Strings from "@modules/strings";
 import Settings from "@modules/settingsmanager";
 import Webpack from "@modules/webpackmodules";
 
-import ContextMenuPatcher from "@modules/api/contextmenu";
+import ContextMenuPatcher from "@api/contextmenu";
 import pluginManager from "@modules/pluginmanager";
 import themeManager from "@modules/thememanager";
 import Utilities from "@modules/utilities";

@@ -11,7 +11,7 @@ export * as net from "net"; // TODO: evaluate need and create wrapper
 export * as os from "os";
 
 import electron from "electron";
-import * as IPCEvents from "common/constants/ipcevents";
+import * as IPCEvents from "@common/constants/ipcevents";
 import DiscordNativePatch from "../discordnativepatch";
 
 // Currently for the store, but can easily be changed later on

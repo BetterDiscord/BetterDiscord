@@ -1,4 +1,5 @@
 import Logger from "@common/logger";
+import {Buffer} from "../../../node_modules/buffer/index";
 
 
 Object.defineProperty(window, "Buffer", {

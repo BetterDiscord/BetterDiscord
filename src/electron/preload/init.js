@@ -1,5 +1,5 @@
 import {ipcRenderer as IPC} from "electron";
-import * as IPCEvents from "common/constants/ipcevents";
+import * as IPCEvents from "@common/constants/ipcevents";
 
 export default function() {
     // Load Discord's original preload
@@ -12,7 +12,7 @@ export default function() {
         try {
             const originalKill = process.kill;
             process.kill = function() {};
-            __non_webpack_require__(preload);
+            require(preload);
             process.kill = originalKill;
         }
         catch (e) {

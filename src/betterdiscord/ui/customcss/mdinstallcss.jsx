@@ -1,9 +1,9 @@
 import WebpackModules from "@modules/webpackmodules";
 import Patcher from "@modules/patcher";
-import Utils from "@modules/api/utils";
+import Utils from "@api/utils";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
-import UI from "@modules/api/ui";
+import UI from "@api/ui";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
 

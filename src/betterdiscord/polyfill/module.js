@@ -33,7 +33,7 @@ export default class Module {
             const ext = path.extname(file);
 
             if (file === "package.json") {
-                const pkg = __non_webpack_require__(path.resolve(parent, file));
+                const pkg = require(path.resolve(parent, file));
                 if (!Reflect.has(pkg, "main")) continue;
 
                 return path.resolve(parent, pkg.main);

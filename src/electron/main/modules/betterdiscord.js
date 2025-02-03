@@ -4,7 +4,7 @@ import electron from "electron";
 import {spawn} from "child_process";
 
 import ReactDevTools from "./reactdevtools";
-import * as IPCEvents from "common/constants/ipcevents";
+import * as IPCEvents from "@common/constants/ipcevents";
 
 // Build info file only exists for non-linux (for current injection)
 const appPath = electron.app.getAppPath();
@@ -20,19 +20,19 @@ let hasCrashed = false;
 export default class BetterDiscord {
     static getWindowPrefs() {
         if (!fs.existsSync(buildInfoFile)) return {};
-        const buildInfo = __non_webpack_require__(buildInfoFile);
+        const buildInfo = require(buildInfoFile);
         const prefsFile = path.resolve(dataPath, "data", buildInfo.releaseChannel, "windowprefs.json");
         if (!fs.existsSync(prefsFile)) return {};
-        return __non_webpack_require__(prefsFile);
+        return require(prefsFile);
     }
 
     static getSetting(category, key) {
         if (this._settings) return this._settings[category]?.[key];
 
         try {
-            const buildInfo = __non_webpack_require__(buildInfoFile);
+            const buildInfo = require(buildInfoFile);
             const settingsFile = path.resolve(dataPath, "data", buildInfo.releaseChannel, "settings.json");
-            this._settings = __non_webpack_require__(settingsFile) ?? {};
+            this._settings = require(settingsFile) ?? {};
             return this._settings[category]?.[key];
         }
         catch (_) {
@@ -48,7 +48,9 @@ export default class BetterDiscord {
     }
 
     static async injectRenderer(browserWindow) {
-        const location = path.join(__dirname, "renderer.js");
+        // TODO: write bun plugin to avoid this
+        // eslint-disable-next-line no-eval
+        const location = path.join(eval("__dirname"), "betterdiscord.js");
         if (!fs.existsSync(location)) return; // TODO: cut a fatal log
         const content = fs.readFileSync(location).toString();
         const success = await browserWindow.webContents.executeJavaScript(`
@@ -61,7 +63,7 @@ export default class BetterDiscord {
                     return false;
                 }
             })();
-            //# sourceURL=betterdiscord/renderer.js
+            //# sourceURL=betterdiscord/betterdiscord.js
         `);
 
         if (!success) return; // TODO: cut a fatal log
@@ -71,7 +73,7 @@ export default class BetterDiscord {
 
         // Setup some useful vars to avoid blocking IPC calls
         try {
-            process.env.DISCORD_RELEASE_CHANNEL = __non_webpack_require__(buildInfoFile).releaseChannel;
+            process.env.DISCORD_RELEASE_CHANNEL = require(buildInfoFile).releaseChannel;
         }
         catch (e) {
             process.env.DISCORD_RELEASE_CHANNEL = "stable";

@@ -4,7 +4,7 @@ const crypto = (() => {
     return () => {
         if (cache) return cache;
 
-        return cache = __non_webpack_require__("crypto");
+        return cache = require("crypto");
     };
 })();
 

@@ -8,7 +8,7 @@ import https from "./https";
 import buffer from "./buffer";
 import crypto from "./crypto";
 import Remote from "./remote";
-import Logger from "common/logger";
+import Logger from "@common/logger";
 
 const deprecated = new Map([
     ["request", "Use BdApi.Net.fetch instead."],

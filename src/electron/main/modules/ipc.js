@@ -1,7 +1,7 @@
 import {spawn} from "child_process";
 import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell} from "electron";
 
-import * as IPCEvents from "common/constants/ipcevents";
+import * as IPCEvents from "@common/constants/ipcevents";
 
 const getPath = (event, pathReq) => {
     let returnPath;

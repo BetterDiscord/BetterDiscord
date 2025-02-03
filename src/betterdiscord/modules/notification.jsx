@@ -1,4 +1,4 @@
-import Webpack from "@modules/api/webpack";
+import Webpack from "@api/webpack";
 import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import Button from "@ui/base/button";

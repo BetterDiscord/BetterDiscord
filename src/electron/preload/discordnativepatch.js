@@ -1,7 +1,7 @@
 import electron from "electron";
 import path from "path";
 
-import * as IPCEvents from "common/constants/ipcevents";
+import * as IPCEvents from "@common/constants/ipcevents";
 
 let dataPath = "";
 if (process.platform === "win32" || process.platform === "darwin") dataPath = path.join(electron.ipcRenderer.sendSync(IPCEvents.GET_PATH, "userData"), "..");
@@ -14,7 +14,7 @@ function getSetting(category, key) {
 
     try {
         const settingsFile = path.resolve(dataPath, "data", process.env.DISCORD_RELEASE_CHANNEL, "settings.json");
-        _settings = __non_webpack_require__(settingsFile) ?? {};
+        _settings = require(settingsFile) ?? {};
         return _settings[category]?.[key];
     }
     catch (_) {
@@ -101,9 +101,9 @@ class DiscordNativePatch {
     }
 
     static patch() {
-        const electronPath = __non_webpack_require__.resolve("electron");
-        delete __non_webpack_require__.cache[electronPath].exports; // If it didn't work, try to delete existing
-        __non_webpack_require__.cache[electronPath].exports = {...electron, contextBridge}; // Try to assign again after deleting
+        const electronPath = require.resolve("electron");
+        delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
+        require.cache[electronPath].exports = {...electron, contextBridge}; // Try to assign again after deleting
     }
 
     static init() {

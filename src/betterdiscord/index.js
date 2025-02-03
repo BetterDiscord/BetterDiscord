@@ -2,7 +2,7 @@ import require from "./polyfill"; // eslint-disable-line no-unused-vars
 import secure from "./secure";
 import LoadingIcon from "./loadingicon";
 import BetterDiscord from "@modules/core";
-import BdApi from "@modules/api/index";
+import BdApi from "@api/index";
 
 // Perform some setup
 secure();

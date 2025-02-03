@@ -7,7 +7,9 @@ class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options); // eslint-disable-line constructor-super
         const originalPreload = options.webPreferences.preload;
-        options.webPreferences.preload = path.join(__dirname, "preload.js");
+        // TODO: write bun plugin to avoid this
+        // eslint-disable-next-line no-eval
+        options.webPreferences.preload = path.join(eval("__dirname"), "preload.js");
 
         // Don't allow just "truthy" values
         const shouldBeTransparent = BetterDiscord.getSetting("window", "transparency");
@@ -36,8 +38,8 @@ Object.assign(BrowserWindow, electron.BrowserWindow);
 
 export default class {
     static patchBrowserWindow() {
-        const electronPath = __non_webpack_require__.resolve("electron");
-        delete __non_webpack_require__.cache[electronPath].exports; // If it didn't work, try to delete existing
-        __non_webpack_require__.cache[electronPath].exports = {...electron, BrowserWindow}; // Try to assign again after deleting
+        const electronPath = require.resolve("electron");
+        delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
+        require.cache[electronPath].exports = {...electron, BrowserWindow}; // Try to assign again after deleting
     }
 }

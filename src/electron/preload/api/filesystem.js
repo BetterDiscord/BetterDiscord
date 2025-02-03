@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import cloneObject from "common/clone";
-import Logger from "common/logger";
+import cloneObject from "@common/clone";
+import Logger from "@common/logger";
 
 export function readFile(path, options = "utf8") {
     return fs.readFileSync(path, options);
@@ -11,7 +11,7 @@ export function writeFile(path, content, options) {
         content = Buffer.from(content);
     }
 
-    const doWriteFile = options?.originalFs ? __non_webpack_require__("original-fs").writeFileSync : fs.writeFileSync;
+    const doWriteFile = options?.originalFs ? require("original-fs").writeFileSync : fs.writeFileSync;
 
     return doWriteFile(path, content, options);
 }
