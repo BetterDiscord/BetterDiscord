@@ -8,7 +8,8 @@ export default new Proxy(LocaleManager.strings, {
         if (!strings.hasOwnProperty(category)) {
             return new Proxy({}, {
                 get: function() {
-                    return `String group "${category}" not found.`;
+                    // Use a FormattableString anyways so code using `.format()` doesn't fail
+                    return new FormattableString(`String group "${category}" not found.`);
                 }
             });
         }

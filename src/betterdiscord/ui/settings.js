@@ -106,8 +106,9 @@ export default new class SettingsRenderer {
             // customcss is here to let the tab show/hide
             // devTools is here for toggles that enableWith
             // checkForUpdates also here for enableWith
+            // notificationEnabled also for enableWith
             // lift state to top level properly to avoid this
-            if (settingId === "customcss" || settingId === "devTools" || settingId === "checkForUpdates") {
+            if (settingId === "customcss" || settingId === "devTools" || settingId === "checkForUpdates" || settingId === "notificationEnabled") {
                 setTimeout(this.forceUpdate.bind(this), 250);
             }
         };

@@ -139,7 +139,7 @@ export default function FloatingWindow({id, title, resizable, children, classNam
 
 
 
-    const finalClassname = `floating-window${` ${className}` || ""}${resizable ? " resizable" : ""}${modalOpen ? " modal-open" : ""}`;
+    const finalClassname = `floating-window${className ? ` ${className}` : ""}${resizable ? " resizable" : ""}${modalOpen ? " modal-open" : ""}`;
     const styles = {height: initialHeight, width: initialWidth, left: position.x || 0, top: position.y || 0};
     return <div id={id} className={finalClassname} ref={window} style={styles}>
                 <div className="floating-window-titlebar" ref={titlebar}>

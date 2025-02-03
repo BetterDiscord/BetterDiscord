@@ -1,4 +1,4 @@
-import * as Locales from "@assets/locales/index";
+import Locales from "@assets/locales/index";
 
 import DiscordModules from "./discordmodules";
 import Utilities from "./utilities";

@@ -1,6 +1,6 @@
 /* eslint-disable no-multi-spaces */
 
-module.exports = {
+export default {
     "en-US": require("./en-us.json"),   // English, US
     "en-GB": require("./en-gb.json"),   // English, UK
     "zh-CN": require("./zh-cn.json"),   // Chinese, Simplified

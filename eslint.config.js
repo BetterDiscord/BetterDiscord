@@ -30,6 +30,7 @@ export default ts.config(
 
     // Setup general JS rules
     {
+        files: ["**/*.js", "**/*.jsx"],
         rules: {
             "accessor-pairs": "error",
             "block-spacing": ["error", "never"],
