@@ -1,6 +1,6 @@
 import Webpack from "@modules/api/webpack";
 import Patcher from "@modules/patcher";
-import React from "@modules/react";
+import React, {ReactDOM} from "@modules/react";
 import Button from "@ui/base/button";
 import Settings from "@modules/settingsmanager";
 import Text from "@ui/base/text";
@@ -56,15 +56,19 @@ const Icon = ({type}) => {
 class NotificationUI {
     static notifications = [];
     static setNotifications = null;
-    static patch = Webpack.getBySource("\"Shakeable is shaken when not mounted\"")?.Z;
+    static root = null;
 
     static initialize() {
-        Patcher.after("NotificationPatch", this?.patch, "type", (_, __, res) => {
-            if (!res.props.children) res.props.children = [];
-            res.props.children.push(
-                <PersistentNotificationContainer />
-            );
-        });
+        const rootId = "bd-notifications-root";
+        let root = document.getElementById(rootId);
+        if (!root) {
+            root = document.createElement("div");
+            root.id = rootId;
+            document.body.appendChild(root);
+        }
+        this.root = root;
+
+        ReactDOM.createRoot(root).render(<PersistentNotificationContainer />);
     }
 
     static show(notificationObj) {
@@ -107,64 +111,37 @@ const PersistentNotificationContainer = React.memo(() => {
 
     React.useEffect(() => {
         NotificationUI.setNotifications = setNotifications;
-
         const updatePosition = () => {
             const notificationPosition = Settings.get("settings", "general", "notificationPosition");
             setPosition(notificationPosition);
         };
-
         updatePosition();
-
         Settings.on("settings", "general", "notificationPosition", updatePosition);
-
         return () => {
             NotificationUI.setNotifications = null;
         };
     }, []);
 
     const getPositionStyles = () => {
-        const base = {
-            position: "fixed",
-            zIndex: 1000,
-            display: "flex",
-            gap: "8px",
-            padding: "16px",
-            pointerEvents: "none"
-        };
-
         const positions = {
-            "top-right": {
-                top: 16,
-                right: 16,
-                flexDirection: "column"
-            },
-            "top-left": {
-                top: 16,
-                left: 16,
-                flexDirection: "column"
-            },
-            "bottom-right": {
-                bottom: 16,
-                right: 16,
-                flexDirection: "column-reverse"
-            },
-            "bottom-left": {
-                bottom: 16,
-                left: 16,
-                flexDirection: "column-reverse"
-            }
+            "top-right": {top: 16, right: 16, flexDirection: "column"},
+            "top-left": {top: 16, left: 16, flexDirection: "column"},
+            "bottom-right": {bottom: 16, right: 16, flexDirection: "column-reverse"},
+            "bottom-left": {bottom: 16, left: 16, flexDirection: "column-reverse"}
         };
-
-        return {
-            ...base,
-            ...positions[position]
-        };
+        return positions[position];
     };
 
     return (
         <div
-            className="bd-notification-container"
-            style={getPositionStyles()}
+            id="bd-notifications-root"
+            style={{
+                display: "flex",
+                gap: "8px",
+                padding: "16px",
+                pointerEvents: "none",
+                ...getPositionStyles()
+            }}
         >
             {notifications.map((notification) => (
                 <NotificationItem
