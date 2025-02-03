@@ -3,18 +3,14 @@ import Patcher from "@modules/patcher";
 import Utils from "@modules/api/utils";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
-import UI from "@modules/api/ui";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
-import Modals from "@ui/modals";
 import Logger from "@common/logger";
+import NotificationUI from "@modules/notification";
+import UI from "@modules/api/ui";
 
 const Icon = ({onClick}) => (
-    <div
-        onClick={onClick}
-        role="button"
-        tabIndex={0}
-    >
+    <div onClick={onClick} role="button" tabIndex={0}>
         <svg width="16" height="16" viewBox="0 0 24 24" role="img">
             <path
                 fill="currentColor"
@@ -25,21 +21,6 @@ const Icon = ({onClick}) => (
 );
 
 const containsCss = (content) => content?.includes("```css");
-
-const installCSS = (currentText) => {
-    try {
-        const savedCss = CustomCSS.savedCss || "";
-        const newCSS = savedCss + "\n" + currentText;
-
-        CustomCSS.saveCSS(newCSS);
-        CustomCSS.insertCSS(newCSS);
-        UI.showToast(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
-    }
-    catch (error) {
-        Logger.log("InstallCSS", "Failed to install CSS:", error);
-        UI.showToast(Strings.CustomCSS.cssInstallError, {type: "error"});
-    }
-};
 
 class InstallCSS {
     static initialize() {
@@ -61,7 +42,7 @@ class InstallCSS {
                 codeActions.children,
                 <Icon key="install-css" onClick={(event) => {
                     if (event.shiftKey) {
-                        installCSS(currentText);
+                        this.handleCSSInstall(currentText);
                         return;
                     }
 
@@ -71,12 +52,53 @@ class InstallCSS {
                         {
                             confirmText: Strings.Modals.okay,
                             cancelText: Strings.Modals.cancel,
-                            onConfirm: () => installCSS(currentText)
+                            onConfirm: () => this.handleCSSInstall(currentText)
                         }
                     );
                 }}/>
             ];
         });
+    }
+
+    static handleCSSInstall(currentText) {
+        try {
+            const oldCSS = CustomCSS.savedCss || "";
+            const newCSS = oldCSS + "\n" + currentText;
+
+            CustomCSS.saveCSS(newCSS);
+            CustomCSS.insertCSS(newCSS);
+            UI.showToast(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
+
+            const notificationId = `css-undo-${Date.now()}`;
+
+            NotificationUI.show({
+                id: notificationId,
+                title: Strings.CustomCSS.cssInstalled,
+                content: Strings.CustomCSS.cssReverting,
+                type: "info",
+                duration: 10000,
+                actions: [{
+                    label: "Keep",
+                    onClick: () => this.keepChanges(oldCSS, notificationId)
+                }],
+                onDurationDone: () => this.revertCSS()
+            });
+
+        }
+        catch (error) {
+            Logger.log("InstallCSS", "Failed to install CSS:", error);
+            UI.showToast(Strings.CustomCSS.cssInstallError, {type: "error"});
+        }
+    }
+
+    static keepChanges() {
+        UI.showToast(Strings.CustomCSS.cssKept, {type: "success"});
+    }
+
+    static revertCSS(oldCSS) {
+        CustomCSS.saveCSS(oldCSS);
+        CustomCSS.insertCSS(oldCSS);
+        UI.showToast(Strings.CustomCSS.cssReverted, {type: "error"});
     }
 }
 
