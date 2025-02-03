@@ -5,7 +5,7 @@
     "main": "src/index.js",
     "scripts": {
         "build": "bun scripts/build.ts",
-        "watch": "bun run --bun chokidar 'src/**/*.{js,ts,jsx,tsx}' -c  'bun run build' --initial",
+        "watch": "bun scripts/build.ts --watch",
         "build:main": "bun run build --module=main",
         "build:preload": "bun run build --module=preload",
         "build:betterdiscord": "bun run build --module=betterdiscord",
@@ -22,8 +22,8 @@
         "@electron/asar": "^3.2.0",
         "@types/bun": "^1.2.2",
         "bun-style-loader": "^0.4.0",
-        "chokidar-cli": "^3.0.0",
         "dotenv": "^16.4.5",
+        "esbuild": "^0.24.2",
         "eslint": "^8.57.1",
         "eslint-plugin-react": "^7.33.2",
         "eslint-plugin-react-hooks": "^4.6.0",

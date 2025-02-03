@@ -7,9 +7,7 @@ class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options); // eslint-disable-line constructor-super
         const originalPreload = options.webPreferences.preload;
-        // TODO: write bun plugin to avoid this
-        // eslint-disable-next-line no-eval
-        options.webPreferences.preload = path.join(eval("__dirname"), "preload.js");
+        options.webPreferences.preload = path.join(__dirname, "preload.js");
 
         // Don't allow just "truthy" values
         const shouldBeTransparent = BetterDiscord.getSetting("window", "transparency");

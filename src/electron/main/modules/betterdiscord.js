@@ -48,9 +48,7 @@ export default class BetterDiscord {
     }
 
     static async injectRenderer(browserWindow) {
-        // TODO: write bun plugin to avoid this
-        // eslint-disable-next-line no-eval
-        const location = path.join(eval("__dirname"), "betterdiscord.js");
+        const location = path.join(__dirname, "betterdiscord.js");
         if (!fs.existsSync(location)) return; // TODO: cut a fatal log
         const content = fs.readFileSync(location).toString();
         const success = await browserWindow.webContents.executeJavaScript(`
@@ -65,7 +63,7 @@ export default class BetterDiscord {
             })();
             //# sourceURL=betterdiscord/betterdiscord.js
         `);
-
+        
         if (!success) return; // TODO: cut a fatal log
     }
 
