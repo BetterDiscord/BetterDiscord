@@ -198,6 +198,7 @@ const NotificationItem = ({notification, position}) => {
         onChange: ({width}) => {
             if (width === "0%") {
                 NotificationUI.hide(id);
+                notification.onDurationDone();
             }
         },
         reset: isPaused
@@ -209,7 +210,9 @@ const NotificationItem = ({notification, position}) => {
 
     const handleClose = () => {
         setExiting(true);
-        setTimeout(() => NotificationUI.hide(id), 500);
+        setTimeout(() => {
+            NotificationUI.hide(id);
+        }, 500);
     };
 
     return (
