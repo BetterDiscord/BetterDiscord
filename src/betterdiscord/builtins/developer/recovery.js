@@ -8,7 +8,7 @@ import Builtin from "@structs/builtin";
 import Settings from "@modules/settingsmanager";
 import pluginmanager from "@modules/pluginmanager";
 import Toasts from "@ui/toasts";
-import Utilities from "@modules/utilities";
+import Modals from "@ui/modals";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
@@ -90,7 +90,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
         if (pluginInfo?.invite) {
             attemptRecovery();
             instance.setState({info: null, error: null});
-            if (pluginInfo.invite) Utilities.showGuildJoinModal(pluginInfo.invite);
+            if (pluginInfo.invite) Modals.showGuildJoinModal(pluginInfo.invite);
         }
     };
 

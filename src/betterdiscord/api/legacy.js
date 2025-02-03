@@ -357,7 +357,7 @@ function testJSON(data) {
     try {
         return JSON.parse(data);
     }
-    catch (err) {
+    catch {
         return false;
     }
 }

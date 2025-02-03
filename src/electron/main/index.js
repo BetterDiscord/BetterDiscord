@@ -30,7 +30,7 @@ if (!process.argv.includes("--vanilla")) {
     try {
         CSP.remove();
     }
-    catch (_) {
+    catch {
         // Remove when everyone is moved to core
     }
 }

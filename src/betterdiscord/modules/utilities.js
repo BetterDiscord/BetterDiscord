@@ -1,9 +1,5 @@
 import Logger from "@common/logger";
-import DiscordModules from "./discordmodules";
-import WebpackModules from "./webpackmodules";
-import Patcher from "./patcher";
 
-const native = WebpackModules.getModule(m => m.minimize && m.architecture);
 
 export default class Utilities {
     /**
@@ -192,38 +188,5 @@ export default class Utilities {
         return path.split(".").reduce(function(ob, prop) {
             return ob && ob[prop];
         }, obj);
-    }
-
-    /**
-     * Shows the guild join modal, to join invites
-     * TODO: move this to the modals module
-     * @param {string} code 
-     */
-    static async showGuildJoinModal(code) {
-        const tester = /\.gg\/(.*)$/;
-        if (tester.test(code)) code = code.match(tester)[1];
-        
-        const {invite} = await DiscordModules.InviteActions.resolveInvite(code);
-        
-        if (!invite) {
-            Logger.debug("Utilities", "Failed to resolve invite:", code);
-            return;
-        }
-        
-        const minimize = Patcher.instead("BetterDiscord~showGuildJoinModal", native, "minimize", () => {});
-        const focus = Patcher.instead("BetterDiscord~showGuildJoinModal", native, "focus", () => {});
-        
-        try {
-            await DiscordModules.Dispatcher.dispatch({
-                type: "INVITE_MODAL_OPEN",
-                invite,
-                code,
-                context: "APP"
-            });
-        }
-        finally {
-            minimize();
-            focus();
-        }
     }
 }

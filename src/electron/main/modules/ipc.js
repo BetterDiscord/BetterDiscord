@@ -48,7 +48,7 @@ const runScript = async (event, script) => {
         // TODO: compile with vm to prevent escape with clever strings
         await event.sender.executeJavaScript(`(() => {try {${script}} catch {}})();`);
     }
-    catch (e) {
+    catch {
         // TODO: cut a log
     }
 };

@@ -27,7 +27,6 @@ import ErrorIcon from "@ui/icons/error";
 import ThemeIcon from "@ui/icons/theme";
 import {FlowerStar} from "./addonshared";
 import AddonStore from "@modules/addonstore";
-import Utilities from "@modules/utilities";
 
 const {useState, useCallback, useMemo, useEffect} = React;
 
@@ -83,7 +82,7 @@ function buildLink(type, url) {
             event.preventDefault();
             event.stopPropagation();
             
-            Utilities.showGuildJoinModal(url);
+            Modals.showGuildJoinModal(url);
         };
     }
     return makeButton(Strings.Addons[type], link);

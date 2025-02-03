@@ -70,7 +70,7 @@ export default class ReactDevTools {
             const ext = await session.defaultSession.loadExtension(extPath);
             if (!ext) return; // TODO: cut a log
         }
-        catch (err) {
+        catch {
             // TODO: cut a log
         }
     }
@@ -82,7 +82,7 @@ export default class ReactDevTools {
         try {
             await session.defaultSession.removeExtension(extPath);
         }
-        catch (err) {
+        catch {
             // TODO: cut a log
         }
     }

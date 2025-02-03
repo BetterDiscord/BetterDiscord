@@ -15,7 +15,7 @@ import CloseButton from "./close";
 import SimpleMarkdownExt from "@structs/markdown";
 import Twitter from "@ui/icons/twitter";
 import GitHub from "@ui/icons/github";
-import Utilities from "@modules/utilities";
+import Modals from "@ui/modals";
 
 const {useMemo} = React;
 
@@ -24,7 +24,7 @@ const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {an
 const joinSupportServer = (click) => {
     click.preventDefault();
     click.stopPropagation();
-    Utilities.showGuildJoinModal("pwXhuRkmgy");
+    Modals.showGuildJoinModal("pwXhuRkmgy");
     DiscordModules.Dispatcher.dispatch({type: "LAYER_POP"});
 };
 

@@ -68,7 +68,7 @@ export class Filters {
             if (!method) return false;
             let methodString = "";
             try {methodString = method.toString([]);}
-            catch (err) {methodString = method.toString();}
+            catch {methodString = method.toString();}
             return methodString.search(search) !== -1;
         };
     }
@@ -85,7 +85,7 @@ export class Filters {
             try {
                 source = WebpackModules.require.m[module.id].toString();
             }
-            catch (err) {
+            catch {
                 return false;
             }
             if (!source) return false;
@@ -107,7 +107,7 @@ export class Filters {
             if (!module?.toString || typeof(module?.toString) !== "function") return; // Not stringable
             let moduleString = "";
             try {moduleString = module?.toString([]);}
-            catch (err) {moduleString = module?.toString();}
+            catch {moduleString = module?.toString();}
             if (!moduleString) return false; // Could not create string
             for (const s of strings) {
                 if (!moduleString.includes(s)) return false;

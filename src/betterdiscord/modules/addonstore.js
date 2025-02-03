@@ -14,7 +14,6 @@ import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
 import Settings from "@modules/settingsmanager";
 import Web from "@data/web";
-import Utilities from "./utilities";
 
 /**
  * @typedef {{
@@ -129,7 +128,7 @@ class Guild {
      * @public
      */
     join() {
-        Utilities.showGuildJoinModal(this.invite);
+        Modals.showGuildJoinModal(this.invite);
     }
 }
 

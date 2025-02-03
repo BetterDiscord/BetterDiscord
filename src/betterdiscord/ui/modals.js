@@ -6,7 +6,8 @@ import ReactDOM from "@modules/reactdom";
 import Strings from "@modules/strings";
 import Settings from "@modules/settingsmanager";
 import Events from "@modules/emitter";
-// import DiscordModules from "@modules/discordmodules";
+import Patcher from "@modules/patcher";
+import DiscordModules from "@modules/discordmodules";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
 import DOMManager from "@modules/dommanager";
 
@@ -24,6 +25,8 @@ import CustomMarkdown from "./base/markdown";
 import ChangelogModal from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
 
+
+const native = WebpackModules.getModule(m => m.minimize && m.architecture);
 
 export default class Modals {
 
@@ -118,13 +121,16 @@ export default class Modals {
             const container = modal.querySelector(".scroller");
 
             try {
+                // eslint-disable-next-line react/no-deprecated
                 ReactDOM.render(content, container);
             }
             catch (error) {
                 container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`));
+                Logger.stacktrace("Modals", "Could not render modal", error);
             }
 
             DOMManager.onRemoved(container, () => {
+                // eslint-disable-next-line react/no-deprecated
                 ReactDOM.unmountComponentAtNode(container);
             });
         }
@@ -228,6 +234,38 @@ export default class Modals {
         return key;
     }
 
+    /**
+     * Shows the guild join modal, to join invites
+     * @param {string} code 
+     */
+    static async showGuildJoinModal(code) {
+        const tester = /\.gg\/(.*)$/;
+        if (tester.test(code)) code = code.match(tester)[1];
+        
+        const {invite} = await DiscordModules.InviteActions.resolveInvite(code);
+        
+        if (!invite) {
+            Logger.debug("Utilities", "Failed to resolve invite:", code);
+            return;
+        }
+        
+        const minimize = Patcher.instead("BetterDiscord~showGuildJoinModal", native, "minimize", () => {});
+        const focus = Patcher.instead("BetterDiscord~showGuildJoinModal", native, "focus", () => {});
+        
+        try {
+            await DiscordModules.Dispatcher.dispatch({
+                type: "INVITE_MODAL_OPEN",
+                invite,
+                code,
+                context: "APP"
+            });
+        }
+        finally {
+            minimize();
+            focus();
+        }
+    }
+
     static showAddonSettingsModal(name, panel) {
 
         let child = panel;
@@ -277,6 +315,7 @@ export default class Modals {
     static makeStack() {
         const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
         DOMManager.bdBody.append(div);
+        // eslint-disable-next-line react/no-deprecated
         ReactDOM.render(<ErrorBoundary id="makeStack" name="Modals" hideError={true}><ModalStack /></ErrorBoundary>, div);
         this.hasInitialized = true;
     }

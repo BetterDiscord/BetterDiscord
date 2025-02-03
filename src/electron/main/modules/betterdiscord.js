@@ -35,7 +35,7 @@ export default class BetterDiscord {
             this._settings = require(settingsFile) ?? {};
             return this._settings[category]?.[key];
         }
-        catch (_) {
+        catch {
             this._settings = {};
             return this._settings[category]?.[key];
         }
@@ -63,7 +63,7 @@ export default class BetterDiscord {
             })();
             //# sourceURL=betterdiscord/betterdiscord.js
         `);
-        
+
         if (!success) return; // TODO: cut a fatal log
     }
 
@@ -73,7 +73,7 @@ export default class BetterDiscord {
         try {
             process.env.DISCORD_RELEASE_CHANNEL = require(buildInfoFile).releaseChannel;
         }
-        catch (e) {
+        catch {
             process.env.DISCORD_RELEASE_CHANNEL = "stable";
         }
         process.env.DISCORD_PRELOAD = browserWindow.__originalPreload;

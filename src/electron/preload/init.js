@@ -15,7 +15,7 @@ export default function() {
             require(preload);
             process.kill = originalKill;
         }
-        catch (e) {
+        catch {
             // TODO bail out
         }
     }

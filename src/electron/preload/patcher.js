@@ -1,6 +1,5 @@
 import {webFrame} from "electron";
 
-/* global window:false */
 
 export default function () {
     const patcher = function () {

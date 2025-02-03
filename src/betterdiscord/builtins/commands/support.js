@@ -1,4 +1,4 @@
-import Utilities from "@modules/utilities";
+import Modals from "@ui/modals";
 
 
 export default {
@@ -7,6 +7,6 @@ export default {
     description: "Get help and support for BetterDiscord",
     options: [],
     execute: async () => {
-        Utilities.showGuildJoinModal("rC8b2H6SCt");
+        Modals.showGuildJoinModal("rC8b2H6SCt");
     }
 };

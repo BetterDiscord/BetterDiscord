@@ -9,7 +9,6 @@ import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@modules/settingsmanager";
 import NotificationUI from "@modules/notification";
-import Utilities from "@modules/utilities";
 
 
 /**
@@ -118,7 +117,7 @@ const UI = {
      * @param {string} inviteCode the invite code
      */
     showInviteModal(inviteCode) {
-        return Utilities.showGuildJoinModal(inviteCode);
+        return Modals.showGuildJoinModal(inviteCode);
     },
 
     /**

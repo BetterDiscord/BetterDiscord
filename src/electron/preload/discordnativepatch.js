@@ -17,7 +17,7 @@ function getSetting(category, key) {
         _settings = require(settingsFile) ?? {};
         return _settings[category]?.[key];
     }
-    catch (_) {
+    catch {
         _settings = {};
         return _settings[category]?.[key];
     }

@@ -39,4 +39,5 @@
           "@ui/*": ["./src/betterdiscord/ui/*"]
       }
     },
+    "include": ["src/**/*", "scripts/*", "tests/**/*"],
 }

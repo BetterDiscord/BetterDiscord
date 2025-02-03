@@ -2,7 +2,7 @@
     "name": "betterdiscord",
     "version": "1.12.1",
     "description": "Enhances Discord by adding functionality and themes.",
-    "main": "src/index.js",
+    "type": "module",
     "scripts": {
         "build": "bun scripts/build.ts",
         "watch": "bun scripts/build.ts --watch",
@@ -11,7 +11,7 @@
         "build:betterdiscord": "bun run build --module=betterdiscord",
         "build:production": "bun run build --minify",
         "inject": "bun scripts/inject.js",
-        "lint": "bun run --bun eslint --ext .js,.jsx src",
+        "lint": "bun run --bun eslint",
         "lint-css": "stylelint src/betterdiscord/styles/*.css && stylelint src/betterdiscord/styles/**/*.css",
         "test": "bun test tests/",
         "dist": "bun run build:production && bun scripts/pack.js",
@@ -21,14 +21,17 @@
     "devDependencies": {
         "@electron/asar": "^3.2.0",
         "@types/bun": "^1.2.2",
+        "@types/eslint": "^9.6.1",
         "bun-style-loader": "^0.4.0",
         "dotenv": "^16.4.5",
         "esbuild": "^0.24.2",
-        "eslint": "^8.57.1",
-        "eslint-plugin-react": "^7.33.2",
-        "eslint-plugin-react-hooks": "^4.6.0",
+        "eslint": "^9.19.0",
+        "eslint-plugin-react": "^7.37.4",
+        "eslint-plugin-react-hooks": "^5.2.0-canary-9ff42a87-20250130",
+        "globals": "^15.14.0",
         "stylelint": "^14.16.1",
-        "stylelint-config-standard": "^24.0.0"
+        "stylelint-config-standard": "^24.0.0",
+        "typescript-eslint": "^8.22.0"
     },
     "dependencies": {
         "buffer": "^6.0.3",

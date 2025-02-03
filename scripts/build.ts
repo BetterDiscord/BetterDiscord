@@ -1,5 +1,6 @@
 import path from "node:path";
 import {fileURLToPath} from "node:url";
+import pkg from "../package.json";
 
 import styleLoader from "bun-style-loader";
 import * as esbuild from "esbuild";
@@ -15,9 +16,9 @@ interface EntryPoint {
 }
 
 const moduleConfigs: Record<string, EntryPoint> = {
-    betterdiscord: {in: "src/betterdiscord/index.js", out: "betterdiscord"},
-    main: {in: "src/electron/main/index.js", out: "main"},
-    preload: {in: "src/electron/preload/index.js", out: "preload"},
+    betterdiscord: {"in": "src/betterdiscord/index.js", "out": "betterdiscord"},
+    main: {"in": "src/electron/main/index.js", "out": "main"},
+    preload: {"in": "src/electron/preload/index.js", "out": "preload"},
 };
 
 let modulesRequested = process.argv.filter(a => a.startsWith("--module=")).map(a => a.replace("--module=", ""));
@@ -49,6 +50,9 @@ async function runBuild() {
         treeShaking: true,
         charset: "utf8",
         minify: isProduction,
+        define: {
+            "process.env.__VERSION__": JSON.stringify(pkg.version)
+        }
     });
 
 

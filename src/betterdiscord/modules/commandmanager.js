@@ -66,7 +66,7 @@ const isValidImageUrl = (url) => {
         const validatedUrl = new URL(url);
         return ((validatedUrl.protocol === "data:" && validatedUrl.pathname.startsWith("image/")) || validatedUrl.protocol === "https:");
     }
-    catch (e) {
+    catch {
         return false;
     }
 };
