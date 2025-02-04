@@ -50,19 +50,19 @@
 }
 
 .bd-addon-error-icon svg {
-    fill: var(--interactive-normal);
+    color: var(--interactive-normal);
     width: 24px !important;
     height: 24px !important;
 }
 
 .bd-addon-error-expander {
-    transform: rotate(-90deg);
+    transform: none;
     color: var(--interactive-normal);
     transition: transform 0.2s ease;
 }
 
 .bd-addon-error[open] .bd-addon-error-expander {
-    transform: none;
+    transform: rotate(90deg);
 }
 
 .bd-addon-error-expander,

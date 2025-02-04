@@ -1,6 +1,6 @@
 import React from "@modules/react";
 
-import RadioIcon from "@ui/icons/radio";
+import {CircleCheckIcon, CircleIcon} from "lucide-react";
 
 const {useState, useCallback} = React;
 
@@ -19,8 +19,7 @@ export default function Radio({name, value, options, onChange, disabled}) {
         const isSelected = index === i;
         return <label className={"bd-radio-option" + (isSelected ? " bd-radio-selected" : "")} style={{borderColor: opt.color ?? "transparent"}}>
                 <input onChange={change} type="radio" name={name} checked={isSelected} value={i} disabled={disabled} />
-                {/* <span className="bd-radio-button"></span> */}
-                <RadioIcon className="bd-radio-icon" size="24" checked={isSelected} />
+                {isSelected ? <CircleCheckIcon className="bd-radio-icon" size="24" /> : <CircleIcon className="bd-radio-icon" size="24" />}
                 <div className="bd-radio-label-wrap">
                     <div className="bd-radio-label">{opt.name}</div>
                     <div className="bd-radio-description">{opt.desc || opt.description}</div>

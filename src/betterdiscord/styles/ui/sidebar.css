@@ -26,9 +26,9 @@
 
 .bd-sidebar-header .bd-icon {
     cursor: pointer;
-    fill: var(--interactive-normal);
+    color: var(--interactive-normal);
 }
 
 .bd-sidebar-header .bd-changelog-button:hover .bd-icon {
-    fill: var(--interactive-hover);
+    color: var(--interactive-hover);
 }

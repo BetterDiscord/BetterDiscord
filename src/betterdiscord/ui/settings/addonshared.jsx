@@ -5,8 +5,7 @@ import DiscordModules from "@modules/discordmodules";
 import Button from "@ui/base/button";
 import DataStore from "@modules/datastore";
 import SettingsTitle from "@ui/settings/title";
-import Caret from "@ui/icons/caret";
-import Checkmark from "@ui/icons/check";
+import {BadgeCheckIcon, ChevronRightIcon} from "lucide-react";
 
 export const buildDirectionOptions = () => [
   {label: Strings.Sorting.ascending, value: true},
@@ -53,7 +52,7 @@ export function AddonHeader({children, count, searching}) {
                     <span onClick={exitStore}>{title}</span>
                     {showingStore && (
                         <>
-                            <Caret size={24} />
+                            <ChevronRightIcon size="24px" />
                             <span>{Strings.Addons.store}</span>
                         </>
                     )}
@@ -67,18 +66,12 @@ export function AddonHeader({children, count, searching}) {
 }
 
 export function FlowerStar({size = 16}) {
-    const checksize = React.useMemo(() => 10 / 16 * size, [size]);
 
     return (
         <DiscordModules.Tooltip text={Strings.Addons.official} aria-label={Strings.Addons.official} hideOnClick={false}>
             {(props) => (
                 <div className="bd-flower-star" {...props}>
-                    <svg viewBox="0 0 16 15.2" width={size} height={size}>
-                        <path d="m16 7.6c0 .79-1.28 1.38-1.52 2.09s.44 2 0 2.59-1.84.35-2.46.8-.79 1.84-1.54 2.09-1.67-.8-2.47-.8-1.75 1-2.47.8-.92-1.64-1.54-2.09-2-.18-2.46-.8.23-1.84 0-2.59-1.54-1.3-1.54-2.09 1.28-1.38 1.52-2.09-.44-2 0-2.59 1.85-.35 2.48-.8.78-1.84 1.53-2.12 1.67.83 2.47.83 1.75-1 2.47-.8.91 1.64 1.53 2.09 2 .18 2.46.8-.23 1.84 0 2.59 1.54 1.3 1.54 2.09z" fill="currentColor" fillRule="evenodd" />
-                    </svg>
-                    <div className="bd-flower-star-checkmark">
-                        <Checkmark size={checksize} />
-                    </div>
+                    <BadgeCheckIcon size={`${size}px`} />
                 </div>
             )}
         </DiscordModules.Tooltip>

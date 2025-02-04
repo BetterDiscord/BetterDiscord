@@ -9,17 +9,12 @@ import Events from "@modules/emitter";
 import Button from "@ui/base/button";
 import Flex from "@ui/base/flex";
 import Text from "@ui/base/text";
-import Clock from "@ui/icons/clock";
-import GitHub from "@ui/icons/github";
-import Info from "@ui/icons/info";
-import Support from "@ui/icons/support";
-import Tag from "@ui/icons/tag";
-import User from "@ui/icons/user";
 import Footer from "@ui/modals/footer";
 import ModalRoot from "@ui/modals/root";
 import CheckBox from "@ui/settings/components/checkbox";
 import Spinner from "@ui/spinner";
 import {FlowerStar} from "@ui/settings/addonshared";
+import {CircleHelpIcon, ClockIcon, GithubIcon, InfoIcon, TagIcon, UserIcon} from "lucide-react";
 
 const {useLayoutEffect, useCallback, useState, useRef} = React;
 
@@ -187,30 +182,30 @@ export default function InstallModal({addon, transitionState, install, onClose})
             </div>
             <div className="bd-install-modal-items">
                 <ModalItem 
-                    leading={<Info size={24} />}
+                    leading={<InfoIcon size="24px" />}
                     content={addon.description}
                 />
                 <ModalItem 
-                    leading={<Tag size={24} />}
+                    leading={<TagIcon size="24px" />}
                     content={addon.version}
                 />
                 <ModalItem 
-                    leading={<Clock size={24} />}
+                    leading={<ClockIcon size="24px" />}
                     content={addon.lastModified.toLocaleString(LocaleManager.discordLocale)}
                 />
                 <ModalItem 
-                    leading={<GitHub size={24} />}
+                    leading={<GithubIcon size="24px" />}
                     content={addon.filename}
                     action={openSourceCode}
                 />
                 <ModalItem 
-                    leading={<User size={24} />}
+                    leading={<UserIcon size="24px" />}
                     content={addon.author}
                     action={openAuthorPage}
                 />
                 {addon.guild && (
                     <ModalItem 
-                        leading={<Support size={24} />}
+                        leading={<CircleHelpIcon size="24px" />}
                         content={(
                             <Flex direction={Flex.Direction.VERTICAL}>
                                 <Text>{addon.guild.name}</Text>

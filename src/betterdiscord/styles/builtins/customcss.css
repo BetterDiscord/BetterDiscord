@@ -23,9 +23,9 @@
     background: var(--background-modifier-active);
 }
 
-#bd-editor-controls button svg {
+/* #bd-editor-controls button svg {
     fill: currentColor;
-}
+} */
 
 #bd-editor-controls {
     display: flex;

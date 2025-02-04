@@ -5,10 +5,8 @@ import Settings from "@modules/settingsmanager";
 
 import Editor from "./editor";
 
-import Refresh from "@ui/icons/reload";
-import Save from "@ui/icons/save";
-import Edit from "@ui/icons/edit";
-import Detach from "@ui/icons/detach";
+import {RotateCwIcon, SaveIcon, PencilIcon, ExternalLinkIcon} from "lucide-react";
+
 
 const {useState, useCallback, useEffect, forwardRef, useImperativeHandle, useRef} = React;
 
@@ -58,11 +56,11 @@ export default forwardRef(function CssEditor({css, openNative, update, save, onC
                 id={id}
                 onChange={onChange}
                 controls={[
-                    {label: <Refresh size="18px" />, tooltip: Strings.CustomCSS.update, onClick: updateCss},
-                    {label: <Save size="18px" />, tooltip: Strings.CustomCSS.save, onClick: saveCss},
-                    {label: <Edit size="18px" />, tooltip: Strings.CustomCSS.openNative, onClick: popoutNative},
+                    {label: <RotateCwIcon size="18px" />, tooltip: Strings.CustomCSS.update, onClick: updateCss},
+                    {label: <SaveIcon size="18px" />, tooltip: Strings.CustomCSS.save, onClick: saveCss},
+                    {label: <PencilIcon size="18px" />, tooltip: Strings.CustomCSS.openNative, onClick: popoutNative},
                     {label: Strings.Collections.settings.customcss.liveUpdate.name, type: "boolean", onChange: toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"},
-                    openDetached && {label: <Detach size="18px" />, tooltip: Strings.CustomCSS.openDetached, onClick: popout, side: "right"}
+                    openDetached && {label: <ExternalLinkIcon size="18px" />, tooltip: Strings.CustomCSS.openDetached, onClick: popout, side: "right"}
                 ].filter(c => c)}
                 value={css}
             />;

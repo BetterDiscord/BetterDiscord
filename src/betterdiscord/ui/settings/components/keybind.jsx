@@ -1,8 +1,7 @@
 import React from "@modules/react";
 
 import Button from "../../base/button";
-import Keyboard from "@ui/icons/keyboard";
-import Close from "@ui/icons/close";
+import {KeyboardIcon, XIcon} from "lucide-react";
 
 const {useState, useCallback, useEffect} = React;
 
@@ -62,8 +61,8 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
 
     const displayValue = !state.value.length ? "" : state.value.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
     return <div className={"bd-keybind-wrap" + (state.isRecording ? " recording" : "") + (disabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
-            <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={state.isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><Keyboard size="24px" /></Button>
+            <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={state.isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
             <input readOnly={true} type="text" className="bd-keybind-input" value={displayValue} placeholder="No keybind set" disabled={disabled} />
-            {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clearKeybind} className="bd-keybind-clear"><Close size="24px" /></Button>}
+            {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clearKeybind} className="bd-keybind-clear"><XIcon size="24px" /></Button>}
         </div>;
 }

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import React from "@modules/react";
 import Flex from "@ui/base/flex";
-import Checkmark from "@ui/icons/check";
+import {CheckIcon} from "lucide-react";
 
 /**
  * 
@@ -44,7 +44,7 @@ export default function CheckBox(props) {
                 className={clsx("bd-checkbox-input", props.inputClassName)}
             />
             <div className={clsx("bd-checkbox-box", props.iconClassName)}>
-                <Checkmark size={18} />
+                <CheckIcon size="18px" />
             </div>
             {props.label && (
                 <div className={clsx("bd-checkbox-label", props.label)}>{props.label}</div>

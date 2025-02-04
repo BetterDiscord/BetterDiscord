@@ -39,6 +39,9 @@ async function runBuild() {
         outdir: path.join(rootDir, "dist"),
         format: "cjs",
         jsx: "transform",
+        alias: {
+            "react": "@modules/react",
+        },
         external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os"],
         target: ["chrome128", "node20"],
         loader: {
@@ -50,6 +53,7 @@ async function runBuild() {
         treeShaking: true,
         charset: "utf8",
         minify: isProduction,
+        legalComments: "none",
         define: {
             "process.env.__VERSION__": JSON.stringify(pkg.version)
         }

@@ -6,15 +6,13 @@ import Text from "@ui/base/text";
 import Button from "@ui/base/button";
 import Flex from "@ui/base/flex";
 
-import Extension from "@ui/icons/extension";
-import ThemeIcon from "@ui/icons/theme";
-
 import Divider from "@ui/divider";
 
 import Header from "./header";
 import Content from "./content";
 import ModalRoot from "./root";
 import Footer from "./footer";
+import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
 
 const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
 const {useState, useCallback, useMemo} = React;
@@ -40,20 +38,16 @@ function AddonError({err, index}) {
     return <details key={`${err.type}-${index}`} className={joinClassNames("bd-addon-error", (expanded) ? "expanded" : "collapsed")}>
         <summary className="bd-addon-error-header" onClick={toggle} >
             <div className="bd-addon-error-icon">
-                {err.type == "plugin" ? <Extension /> : <ThemeIcon />}
+                {err.type == "plugin" ? <PlugIcon /> : <PaletteIcon />}
             </div>
             <div className="bd-addon-error-header-inner">
                 <Text tag="h3" size={Text.Sizes.SIZE_16} color={Text.Colors.HEADER_PRIMARY} strong={true}>{err.name}</Text>
                 <div className="bd-addon-error-details">
-                    <svg className="bd-addon-error-details-icon" aria-hidden="false" width="16" height="16" viewBox="0 0 12 12">
-                        <path fill="currentColor" d="M6 1C3.243 1 1 3.244 1 6c0 2.758 2.243 5 5 5s5-2.242 5-5c0-2.756-2.243-5-5-5zm0 2.376a.625.625 0 110 1.25.625.625 0 010-1.25zM7.5 8.5h-3v-1h1V6H5V5h1a.5.5 0 01.5.5v2h1v1z"></path>
-                    </svg>
+                    <InfoIcon className="bd-addon-error-details-icon" size="16px" />
                     <Text color={Text.Colors.HEADER_SECONDARY} size={Text.Sizes.SIZE_12}>{err.message}</Text>
                 </div>
             </div>
-            <svg className="bd-addon-error-expander" width="24" height="24" viewBox="0 0 24 24">
-                <path fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M7 10L12 15 17 10" aria-hidden="true"></path>
-            </svg>
+            <ChevronRightIcon className="bd-addon-error-expander" size="24px" />
         </summary>
         {renderErrorBody(err)}
     </details>;

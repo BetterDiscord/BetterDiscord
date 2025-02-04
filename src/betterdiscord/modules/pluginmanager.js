@@ -136,7 +136,7 @@ export default new class PluginManager extends AddonManager {
             return addon;
         }
         catch (err) {
-            throw new AddonError(addon.name || addon.filename, module.filename, Strings.Addons.compileError, {message: err.message, stack: err.stack}, this.prefix);
+            throw new AddonError(addon.name || addon.filename, filename, Strings.Addons.compileError, {message: err.message, stack: err.stack}, this.prefix);
         }
     }
 

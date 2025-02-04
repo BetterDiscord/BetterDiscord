@@ -12,20 +12,13 @@ import Search from "./components/search";
 import Modals from "@ui/modals";
 import ErrorBoundary from "@ui/errorboundary";
 
-import ListIcon from "@ui/icons/list";
-import GridIcon from "@ui/icons/grid";
-import FolderIcon from "@ui/icons/folder";
-import CheckIcon from "@ui/icons/check";
-import CloseIcon from "@ui/icons/close";
-
 import NoResults from "@ui/blankslates/noresults";
 import EmptySlate from "@ui/blankslates/empty";
 import Web from "@data/web";
-import Store from "@ui/icons/store";
 import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader, addonContext} from "./addonshared";
 import Settings from "@modules/settingsmanager";
 import Text from "@ui/base/text";
-import Caret from "@ui/icons/caret";
+import {CheckIcon, ChevronRightIcon, FolderIcon, LayoutGridIcon, StoreIcon, StretchHorizontalIcon, XIcon} from "lucide-react";
 
 const {useState, useCallback, useEffect, useReducer, useMemo} = React;
 
@@ -107,14 +100,14 @@ function StoreCard() {
             onClick={toggleStore} 
         >
             <div className="bd-store-card-icon">
-                <Store size={24} />
+                <StoreIcon size="24px" />
             </div>
             <div className="bd-store-card-body">
                 <Text color={Text.Colors.HEADER_PRIMARY} className="bd-store-card-title">{Strings.Addons.openStore.format({type: title})}</Text>
                 <Text color={Text.Colors.HEADER_SECONDARY} className="bd-store-card-description">{Strings.Addons.storeMessage.format({type: title.toLocaleLowerCase()})}</Text>
             </div>
             <div className="bd-store-card-caret">
-                <Caret />
+                <ChevronRightIcon size="24px" />
             </div>
         </div>
     );
@@ -208,9 +201,9 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
         <div className={"bd-controls bd-addon-controls"}>
             {/* <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: title})}...`} /> */}
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <FolderIcon />, openFolder.bind(null, folder), "folder")}
+                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <FolderIcon size="20px" />, openFolder.bind(null, folder), "folder")}
                 {makeBasicButton(Strings.Addons.enableAll, <CheckIcon size="20px" />, confirmEnable(enableAll, title), "enable-all")}
-                {makeBasicButton(Strings.Addons.disableAll, <CloseIcon size="20px" />, disableAll, "disable-all")}
+                {makeBasicButton(Strings.Addons.disableAll, <XIcon size="20px" />, disableAll, "disable-all")}
             </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">
@@ -224,8 +217,8 @@ export default function AddonList({prefix, type, title, folder, addonList, addon
                     </div>
                 </div>
                 <div className="bd-addon-views">
-                    {makeControlButton(Strings.Addons.listView, <ListIcon />, listView, view === "list")}
-                    {makeControlButton(Strings.Addons.gridView, <GridIcon />, gridView, view === "grid")}
+                    {makeControlButton(Strings.Addons.listView, <StretchHorizontalIcon size="20px" />, listView, view === "list")}
+                    {makeControlButton(Strings.Addons.gridView, <LayoutGridIcon />, gridView, view === "grid")}
                 </div>
             </div>
         </div>,

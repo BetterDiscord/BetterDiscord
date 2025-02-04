@@ -202,6 +202,15 @@ button.bd-addon-store-card-button {
     color: var(--interactive-active);
 }
 
+.bd-addon-store-card .bd-button.bd-button-filled svg {
+    color: var(--interactive-hover);
+}
+
+.bd-addon-store-card .bd-button.bd-button-filled.bd-color-red {
+    padding: 8px;
+}
+
+
 .bd-addon-store-card-badge {
     position: absolute;
     right: 8px;
@@ -288,11 +297,5 @@ img:where(.bd-addon-store-card-preview-img, .bd-install-modal-preview-img)[src="
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     overflow: hidden;
-}
-
-.bd-flower-star-checkmark {
-    color: var(--white-500);
-    position: absolute;
 }

@@ -40,10 +40,11 @@
     border-style: solid;
     box-sizing: border-box;
     border-radius: 6px;
+    color: var(--interactive-active);
 }
 .bd-checkbox-input:checked + .bd-checkbox-box {
-    border-color: var(--brand-400);
-    background-color: var(--brand-500);
+    border-color: #3E82E5;
+    background-color: #3E82E5;
 }
 
 .bd-checkbox-input:not(:checked) + .bd-checkbox-box > svg {

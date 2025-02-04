@@ -9,14 +9,15 @@ import Modals from "@ui/modals";
 import SettingsGroup from "@ui/settings/group";
 import SettingsTitle from "@ui/settings/title";
 
-import Restore from "@ui/icons/restore";
+import {ListRestartIcon} from "lucide-react";
+
 
 function makeResetButton(collectionId) {
     const action = confirmReset(() => Settings.resetCollection(collectionId));
     return <DiscordModules.Tooltip color="primary" position="top" text={Strings.Settings.resetSettings}>
                 {(props) =>
                     <Button {...props} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} onClick={action}>
-                        <Restore />
+                        <ListRestartIcon />
                     </Button>
                 }
             </DiscordModules.Tooltip>;
