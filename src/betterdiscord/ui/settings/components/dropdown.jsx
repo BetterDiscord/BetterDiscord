@@ -1,6 +1,5 @@
 import React from "@modules/react";
-
-import Arrow from "@ui/icons/downarrow";
+import {ChevronDown} from "lucide-react";
 
 const {useState, useCallback} = React;
 
@@ -45,7 +44,7 @@ export default function Select({value: initialValue, options, style, onChange, d
     const isDisabled = disabled ? " bd-select-disabled" : "";
     return <div className={`bd-select${styleClass}${isOpen}${isDisabled}`} onClick={showMenu}>
                 <div className="bd-select-value">{selected.label}</div>
-                <Arrow className="bd-select-arrow" />
+                <ChevronDown size="16px" className="bd-select-arrow" />
                 {open && optionComponents}
             </div>;
 }

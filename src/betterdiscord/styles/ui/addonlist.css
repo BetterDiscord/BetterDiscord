@@ -61,11 +61,17 @@
 
 .bd-addon-header .bd-icon {
     margin-right: 8px;
-    fill: var(--header-primary);
+    color: var(--header-primary);
+}
+
+.bd-grid-view .bd-addon-header .bd-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
 }
 
 .disabled .bd-addon-header .bd-icon {
-    fill: red;
+    color: red;
 }
 
 .bd-title,
@@ -137,7 +143,8 @@
 }
 
 .banner-danger .bd-icon {
-    fill: #F04747;
+    color: #f04747;
+    fill: none;
 }
 
 .bd-addon-list .bd-description {
@@ -190,7 +197,7 @@
 }
 
 .bd-controls > .bd-addon-button svg {
-    fill: #FFFFFF;
+    color: var(--interactive-active);
 }
 
 .bd-controls > .bd-addon-button:first-of-type {
@@ -270,11 +277,11 @@
 }
 
 .bd-addon-controls .bd-button svg {
-    fill: var(--interactive-normal);
+    color: var(--interactive-normal);
 }
 
 .bd-addon-controls .bd-button.selected svg {
-    fill: #FFFFFF;
+    color: #FFFFFF;
 }
 
 .bd-addon-controls .bd-button:hover {
@@ -294,7 +301,7 @@
 }
 
 .bd-controls-basic .bd-button:active svg {
-    fill: #FFFFFF;
+    color: #FFFFFF;
 }
 
 .bd-controls-basic .bd-button:active {
@@ -321,7 +328,7 @@
 }
 
 .bd-addon-list .bd-footer .bd-link svg {
-    fill: currentColor;
+    color: var(--interactive-normal);
 }
 
 .bd-addon-list .bd-footer .bd-links .bd-addon-button {

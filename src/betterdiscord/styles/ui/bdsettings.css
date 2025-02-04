@@ -71,7 +71,7 @@
 
 .bd-select-arrow {
     margin-left: 10px;
-    fill: var(--interactive-normal);
+    color: var(--interactive-normal);
 }
 
 .bd-select .bd-select-options {

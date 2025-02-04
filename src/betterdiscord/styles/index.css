@@ -36,6 +36,12 @@
 @import "./search.css";
 @import "./text.css";
 
+:root {
+    --bd-brand: #3E82E5;
+    --bd-brand-hover: #3875CE;
+    --bd-brand-active: #3268B7;
+}
+
 .bd-chat-badge {
     vertical-align: bottom;
     line-height: 1.375rem;

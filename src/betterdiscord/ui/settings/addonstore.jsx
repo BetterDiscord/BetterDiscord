@@ -5,7 +5,6 @@ import ipc from "@modules/ipc";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
 
-import Folder from "@ui/icons/folder";
 import AddonCard, {TagContext} from "@ui/settings/storecard";
 import Search from "@ui/settings/components/search";
 import Dropdown from "@ui/settings/components/dropdown";
@@ -15,10 +14,8 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader} from "./addonshared";
 import Paginator from "@ui/misc/paginator";
-import Info from "@ui/icons/info";
-import ReloadIcon from "@ui/icons/reload";
-import Arrow from "@ui/icons/downarrow";
 import Logger from "@common/logger";
+import {ChevronDownIcon, FolderIcon, InfoIcon, RotateCwIcon} from "lucide-react";
 
 const {useState, useMemo, useCallback} = React;
 
@@ -90,7 +87,7 @@ function TagDropdown({type, selected, onChange}) {
     return (
         <div className={`bd-select bd-select-transparent${open ? " menu-open" : ""}`} onClick={showMenu}>
             <div className="bd-select-value">{selectedTags.length}/{tags.length}</div>
-            <Arrow className="bd-select-arrow" />
+            <ChevronDownIcon className="bd-select-arrow" size="16px" />
             {open && (
                 <div className="bd-select-options">
                     {tags.map((tag, index) => {
@@ -236,8 +233,8 @@ export default function AddonStorePage({type, title, refToScroller}) {
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
                 {/* {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
-                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <Folder />, () => ipc.openPath(manager.addonFolder), "folder")}
-                {makeBasicButton(Strings.Addons.reload, <ReloadIcon size={20} />, () => loading ? {} : AddonStore.requestAddons(), "reload")}
+                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder), "folder")}
+                {makeBasicButton(Strings.Addons.reload, <RotateCwIcon size="20px" />, () => loading ? {} : AddonStore.requestAddons(), "reload")}
             </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">
@@ -266,7 +263,7 @@ export default function AddonStorePage({type, title, refToScroller}) {
         </div>,
         (!loading && error) && (
             <div className="bd-addon-store-warning">
-                <Info size={24} />
+                <InfoIcon size="24px" />
                 <div>
                     <div>{Strings.Addons.failedToFetch}</div>
                     <div>{error.message}</div>

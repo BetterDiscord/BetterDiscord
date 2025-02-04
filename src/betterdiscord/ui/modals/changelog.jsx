@@ -13,9 +13,8 @@ import Text from "../base/text";
 import CloseButton from "./close";
 
 import SimpleMarkdownExt from "@structs/markdown";
-import Twitter from "@ui/icons/twitter";
-import GitHub from "@ui/icons/github";
 import Modals from "@ui/modals";
+import {GithubIcon, TwitterIcon} from "lucide-react";
 
 const {useMemo} = React;
 
@@ -33,13 +32,13 @@ const defaultFooter = <Text>Need support? {supportLink}</Text>;
 
 const twitter = <DiscordModules.Tooltip color="primary" position="top" text={Strings.Socials.twitter}>
     {p => <a {...p} className="bd-social" href="https://x.com/_BetterDiscord_" rel="noopener noreferrer" target="_blank">
-        <Twitter />
+        <TwitterIcon size="18px" />
         </a>}
     </DiscordModules.Tooltip>;
 
 const github = <DiscordModules.Tooltip color="primary" position="top" text={Strings.Socials.github}>
     {p => <a {...p} className="bd-social" href="https://github.com/BetterDiscord/BetterDiscord" rel="noopener noreferrer" target="_blank">
-        <GitHub />
+        <GithubIcon size="18px" />
         </a>}
     </DiscordModules.Tooltip>;
 

@@ -6,6 +6,7 @@
     align-items: center;
     padding: 3px;
     margin-right: 4px; /* Align with other icons */
+    color: var(--interactive-active);
 }
 
 .bd-empty-updates {
@@ -19,16 +20,16 @@
 }
 
 .bd-empty-updates svg {
-  fill: #43B581;
+  color: #43B581;
   margin-bottom: 20px;
 }
 
 .bd-button.bd-button-icon svg {
-  fill: var(--interactive-normal);
+  color: var(--interactive-normal);
 }
 
 .bd-button.bd-button-icon:hover svg {
-  fill: var(--interactive-hover);
+  color: var(--interactive-hover);
 }
 
 .bd-button.bd-button-icon.animate {

@@ -7,12 +7,8 @@ import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";
 
 import Button from "@ui/base/button";
-import GitHub from "@ui/icons/github";
-import Support from "@ui/icons/support";
-import Globe from "@ui/icons/globe";
-import Eye from "@ui/icons/eye";
 import {FlowerStar} from "./addonshared";
-import Delete from "@ui/icons/delete";
+import {CircleHelpIcon, EyeIcon, GithubIcon, GlobeIcon, Trash2Icon} from "lucide-react";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 
@@ -195,7 +191,7 @@ export default function AddonCard({addon, isEmbed}) {
                                 look={Button.Looks.BLANK}
                                 onClick={openAddonPage}
                             >
-                                <Globe size={18} />
+                                <GlobeIcon size="20px" />
                             </Button>
                         )}
                     </DiscordModules.Tooltip>
@@ -207,7 +203,7 @@ export default function AddonCard({addon, isEmbed}) {
                                 look={Button.Looks.BLANK}
                                 onClick={openSourceCode}
                             >
-                                <GitHub size={18} />
+                                <GithubIcon size="20px" />
                             </Button>
                         )}
                     </DiscordModules.Tooltip>
@@ -220,7 +216,7 @@ export default function AddonCard({addon, isEmbed}) {
                                     look={Button.Looks.BLANK}
                                     onClick={openAddonPreview}
                                 >
-                                    <Eye size={18} />
+                                    <EyeIcon size="20px" />
                                 </Button>
                             )}
                         </DiscordModules.Tooltip>
@@ -234,7 +230,7 @@ export default function AddonCard({addon, isEmbed}) {
                                     look={Button.Looks.BLANK}
                                     onClick={acceptInvite}
                                 >
-                                    <Support size={18} />
+                                    <CircleHelpIcon size="20px" />
                                 </Button>
                             )}
                         </DiscordModules.Tooltip>
@@ -249,7 +245,7 @@ export default function AddonCard({addon, isEmbed}) {
                                     color={Button.Colors.RED} 
                                     size={Button.Sizes.ICON}
                                 >
-                                    <Delete size={24} />
+                                    <Trash2Icon size="20px" />
                                 </Button>
                             )}
                         </DiscordModules.Tooltip>

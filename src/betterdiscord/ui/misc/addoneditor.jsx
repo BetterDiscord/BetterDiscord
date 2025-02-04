@@ -3,8 +3,7 @@ import Strings from "@modules/strings";
 
 import Editor from "@ui/customcss/editor";
 
-import Save from "@ui/icons/save";
-import Edit from "@ui/icons/edit";
+import {RotateCwIcon, SaveIcon} from "lucide-react";
 
 const {useState, useCallback, forwardRef, useImperativeHandle, useRef} = React;
 
@@ -35,8 +34,8 @@ export default forwardRef(function AddonEditor({content, language, save, openNat
                 language={language}
                 id={id}
                 controls={[
-                    {label: <Save size="18px" />, tooltip: Strings.CustomCSS.save, onClick: saveAddon},
-                    {label: <Edit size="18px" />, tooltip: Strings.CustomCSS.openNative, onClick: popoutNative}
+                    {label: <SaveIcon size="18px" />, tooltip: Strings.CustomCSS.save, onClick: saveAddon},
+                    {label: <RotateCwIcon size="18px" />, tooltip: Strings.CustomCSS.openNative, onClick: popoutNative}
                 ]}
                 value={content}
                 onChange={onChange}

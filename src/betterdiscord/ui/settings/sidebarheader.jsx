@@ -4,10 +4,9 @@ import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
 
-import HistoryIcon from "@ui/icons/history";
-
 import Modals from "@ui/modals";
 import Button from "@ui/base/button";
+import {HistoryIcon} from "lucide-react";
 
 
 export default function SettingsTitle() {

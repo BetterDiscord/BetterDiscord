@@ -1,7 +1,7 @@
 import React from "@modules/react";
 
 import Button from "../base/button";
-import Close from "../icons/close";
+import {XIcon} from "lucide-react";
 
 
 export default function CloseButton({onClick}) {
@@ -12,6 +12,6 @@ export default function CloseButton({onClick}) {
                 color={Button.Colors.TRANSPARENT}
                 onClick={onClick}
             >
-        <Close size="24px" />
+        <XIcon size="24px" />
     </Button>;
 }

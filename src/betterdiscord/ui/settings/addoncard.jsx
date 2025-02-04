@@ -14,29 +14,19 @@ import Switch from "./components/switch";
 import Modals from "@ui/modals";
 import Toasts from "@ui/toasts";
 
-import EditIcon from "@ui/icons/edit";
-import DeleteIcon from "@ui/icons/delete";
-import CogIcon from "@ui/icons/cog";
-import GitHubIcon from "@ui/icons/github";
-import MoneyIcon from "@ui/icons/dollarsign";
-import WebIcon from "@ui/icons/globe";
-import PatreonIcon from "@ui/icons/patreon";
-import SupportIcon from "@ui/icons/support";
-import ExtIcon from "@ui/icons/extension";
-import ErrorIcon from "@ui/icons/error";
-import ThemeIcon from "@ui/icons/theme";
 import {FlowerStar} from "./addonshared";
 import AddonStore from "@modules/addonstore";
+import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
 
 const {useState, useCallback, useMemo, useEffect} = React;
 
 
 const LinkIcons = {
-    website: WebIcon,
-    source: GitHubIcon,
-    invite: SupportIcon,
-    donate: MoneyIcon,
-    patreon: PatreonIcon
+    website: GlobeIcon,
+    source: GithubIcon,
+    invite: CircleHelpIcon,
+    donate: CircleDollarSignIcon,
+    patreon: HeartHandshakeIcon
 };
 
 const LayerManager = {
@@ -75,7 +65,7 @@ function makeButton(title, children, action, {isControl = false, danger = false,
 
 function buildLink(type, url) {
     if (!url) return null;
-    const icon = React.createElement(LinkIcons[type]);
+    const icon = React.createElement(LinkIcons[type], {size: "20px"});
     const link = <a className="bd-link bd-link-website" href={url} target="_blank" rel="noopener noreferrer">{icon}</a>;
     if (type == "invite") {
         link.props.onClick = function(event) {
@@ -161,21 +151,21 @@ export default function AddonCard({addon, prefix, type, disabled, enabled: initi
         return <div className="bd-footer">
                     <span className="bd-links">{linkComponents}</span> 
                     <div className="bd-controls">
-                        {hasSettings && makeButton(Strings.Addons.addonSettings, <CogIcon size={"20px"} />, showSettings, {isControl: true, disabled: !isEnabled})}
-                        {editAddon && makeButton(Strings.Addons.editAddon, <EditIcon size={"20px"} />, editAddon, {isControl: true})}
-                        {deleteAddon && makeButton(Strings.Addons.deleteAddon, <DeleteIcon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
+                        {hasSettings && makeButton(Strings.Addons.addonSettings, <SettingsIcon size={"20px"} />, showSettings, {isControl: true, disabled: !isEnabled})}
+                        {editAddon && makeButton(Strings.Addons.editAddon, <PencilIcon size={"20px"} />, editAddon, {isControl: true})}
+                        {deleteAddon && makeButton(Strings.Addons.deleteAddon, <Trash2Icon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
                     </div>
                 </div>;
     }, [hasSettings, editAddon, deleteAddon, addon, isEnabled, showSettings]);
 
     return <div id={`${addon.id}-card`} className={"bd-addon-card" + (disabled ? " bd-addon-card-disabled" : "")}>
                 <div className="bd-addon-header">
-                        {type === "plugin" ? <ExtIcon size="18px" className="bd-icon" /> : <ThemeIcon size="18px" className="bd-icon" />}
+                        {type === "plugin" ? <PlugIcon size="20px" className="bd-icon" /> : <PaletteIcon size="20px" className="bd-icon" />}
                         <div className="bd-title">{title}</div>
                         <Switch internalState={false} disabled={disabled} value={isEnabled} onChange={onChange} />
                 </div>
                 <div className="bd-description-wrap">
-                    {disabled && <div className="banner banner-danger"><ErrorIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}
+                    {disabled && <div className="banner banner-danger"><ShieldAlertIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}
                     <div className="bd-description">{SimpleMarkdown.parseToReact(getString(addon.description))}</div>
                 </div>
                 {footer}

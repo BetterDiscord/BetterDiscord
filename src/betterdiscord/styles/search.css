@@ -23,7 +23,7 @@
 
 .bd-search-wrapper > svg {
     margin-right: 2px;
-    fill: var(--interactive-normal);
+    color: var(--interactive-normal);
 }
 
 .bd-search-wrapper > .bd-button {

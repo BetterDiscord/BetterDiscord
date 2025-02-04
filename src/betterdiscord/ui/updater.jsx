@@ -11,10 +11,7 @@ import SettingItem from "@ui/settings/components/item";
 import SettingsTitle from "@ui/settings/title";
 import Toasts from "@ui/toasts";
 
-import Checkmark from "@ui/icons/check";
-import Download from "@ui/icons/download";
-import Reload from "@ui/icons/reload";
-import Sync from "@ui/icons/sync";
+import {ArrowDownToLineIcon, CheckIcon, RefreshCwIcon, RotateCwIcon} from "lucide-react";
 
 
 const {useState, useCallback, useEffect} = React;
@@ -40,15 +37,15 @@ function makeButton(tooltip, children, action, options = {}) {
 function CoreUpdaterPanel({hasUpdate, remoteVersion, update}) {
     return <Drawer name="BetterDiscord" collapsible={true}>
         <SettingItem name={`Core v${Config.version}`} note={hasUpdate ? Strings.Updater.versionAvailable.format({version: remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
-            {!hasUpdate && <div className="bd-filled-checkmark"><Checkmark size="18px" /></div>}
-            {hasUpdate && makeButton(Strings.Updater.updateButton, <Download />, update, {className: "no-animation"})}
+            {!hasUpdate && <div className="bd-filled-checkmark"><CheckIcon size="18px" /></div>}
+            {hasUpdate && makeButton(Strings.Updater.updateButton, <ArrowDownToLineIcon />, update, {className: "no-animation"})}
         </SettingItem>
     </Drawer>;
 }
 
 function NoUpdates({type}) {
     return <div className="bd-empty-updates">
-        <Checkmark size="48px" />
+        <CheckIcon size="48px" />
         {Strings.Updater.upToDateBlankslate.format({type: type})}
     </div>;
 }
@@ -58,13 +55,13 @@ function AddonUpdaterPanel({pending, type, updater, update, updateAll}) {
     return <Drawer
             name={Strings.Panels[type]}
             collapsible={true}
-            titleChildren={filenames.length > 1 ? makeButton(Strings.Updater.updateAll, <Reload size="20px" />, () => updateAll(type)) : null}>
+            titleChildren={filenames.length > 1 ? makeButton(Strings.Updater.updateAll, <RotateCwIcon size="20px" />, () => updateAll(type)) : null}>
         {!filenames.length && <NoUpdates type={type} />}
         {filenames.map(f => {
             const info = updater.cache[f];
             const addon = updater.manager.addonList.find(a => a.filename === f);
             return <SettingItem name={`${addon.name} v${addon.version}`} note={Strings.Updater.versionAvailable.format({version: info.version})} inline={true} id={addon.name}>
-                    {makeButton(Strings.Updater.updateButton, <Reload />, () => update(type, f))}
+                    {makeButton(Strings.Updater.updateButton, <RotateCwIcon />, () => update(type, f))}
                     {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{Strings.Updater.updateButton}</Button> */}
                 </SettingItem>;
     })}
@@ -139,7 +136,7 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater})
 
     return [
         <SettingsTitle text={Strings.Panels.updates}>
-            {makeButton(Strings.Updater.checkForUpdates, <Sync />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})}
+            {makeButton(Strings.Updater.checkForUpdates, <RefreshCwIcon />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})}
         </SettingsTitle>,
         <CoreUpdaterPanel remoteVersion={coreUpdater.remoteVersion} hasUpdate={hasCoreUpdate} update={updateCore} />,
         <AddonUpdaterPanel type="plugins" pending={updates.plugins} update={updateAddon} updateAll={updateAllAddons} updater={pluginUpdater} />,

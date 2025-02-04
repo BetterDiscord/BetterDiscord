@@ -3,10 +3,9 @@ import Strings from "@modules/strings";
 
 import Screen from "@structs/screen";
 
-import CloseButton from "@ui/icons/close";
-import MaximizeIcon from "@ui/icons/fullscreen";
-
 import Modals from "@ui/modals";
+
+import {XIcon, MaximizeIcon} from "lucide-react";
 
 const {useState, useCallback, useEffect, useRef} = React;
 
@@ -146,10 +145,10 @@ export default function FloatingWindow({id, title, resizable, children, classNam
                     <span className="title">{title}</span>
                     <div className="floating-window-buttons">
                         <div className="button maximize-button" onClick={maximize}>
-                            <MaximizeIcon size="18px" />
+                            <MaximizeIcon size="16px" />
                         </div>
                         <div className="button close-button" onClick={close}>
-                            <CloseButton />
+                            <XIcon size="16px" />
                         </div>
                     </div>
                 </div>

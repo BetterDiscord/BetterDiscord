@@ -22,8 +22,9 @@ import SettingsGroup from "@ui/settings/group";
 import SettingsTitle from "@ui/settings/title";
 import Header from "@ui/settings/sidebarheader";
 
-import Restore from "./icons/restore";
 import Text from "./base/text";
+
+import {ListRestartIcon} from "lucide-react";
 
 function makeResetButton(collectionId, refresh) {
     const action = confirmReset(() => {
@@ -33,7 +34,7 @@ function makeResetButton(collectionId, refresh) {
     return <DiscordModules.Tooltip color="primary" position="top" text={Strings.Settings.resetSettings}>
                 {(props) =>
                     <Button {...props} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} onClick={action}>
-                        <Restore />
+                        <ListRestartIcon />
                     </Button>
                 }
             </DiscordModules.Tooltip>;
