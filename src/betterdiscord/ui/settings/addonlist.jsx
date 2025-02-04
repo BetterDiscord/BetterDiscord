@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from "@modules/react";
+import React, {useState, useCallback, useMemo} from "@modules/react";
 import Strings from "@modules/strings";
 import DiscordModules from "@modules/discordmodules";
 import ipc from "@modules/ipc";
@@ -19,6 +19,7 @@ import Settings from "@modules/settingsmanager";
 import Text from "@ui/base/text";
 import {CheckIcon, ChevronRightIcon, FolderIcon, LayoutGridIcon, StoreIcon, StretchHorizontalIcon, XIcon} from "lucide-react";
 import {useInternalStore} from "@ui/hooks";
+import {shallowEqual} from "fast-equals";
 
 
 const buildSortOptions = () => [
@@ -122,19 +123,11 @@ export default function AddonList({title, store}) {
     const [ascending, setAscending] = useState(getState.bind(null, store.prefix, "ascending", true));
     const [view, setView] = useState(getState.bind(null, store.prefix, "view", "list"));
 
-    // useEffect(() => {
-    //     console.log("useEffect: AddonList mounted");
-    // }, []);
 
-    // const state = useSyncExternalStore((cb) => store.addChangeListener(cb), () => store.getState());
-    const addonList = useInternalStore(store, () => store.addonList);
-    const addonState = useInternalStore(store, () => store.state);
-    // const state = {state: addonState, list: addonList};
-    // const addonState = useSyncExternalStore(store.addChangeListener.bind(store), () => Object.assign({}, store.state));
-    // console.log("render:", addonState);
+    const addonList = useInternalStore(store, () => store.addonList, [store]);
+    const addonState = useInternalStore(store, () => Object.assign({}, store.state), [store], shallowEqual);
 
     const onChange = useCallback((id) => {
-        // console.log("onChange: ", id);
         store.toggleAddon(id);
     }, [store]);
 
@@ -177,7 +170,7 @@ export default function AddonList({title, store}) {
         store?.deleteAddon?.(addon);
     }, [addonList, store]);
 
-    const renderedCards = (() => {
+    const renderedCards = useMemo(() => {
         let sorted = addonList.sort((a, b) => {
             const sortByEnabled = sort === "isEnabled";
             const first = sortByEnabled ? addonState[a.id] : a[sort];
@@ -209,7 +202,7 @@ export default function AddonList({title, store}) {
                         <AddonCard store={store} disabled={addon.partial} type={store.prefix} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />
                     </ErrorBoundary>;
         });
-    })();
+    }, [store, addonList, addonState, onChange, reload,, triggerDelete, triggerEdit, query, ascending, sort]);
 
     const hasAddonsInstalled = addonList.length !== 0;
     const isSearching = !!query;
