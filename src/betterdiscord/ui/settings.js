@@ -140,11 +140,9 @@ export default new class SettingsRenderer {
         })];
     }
 
-    getAddonPanel(title, addonList, addonState, options = {}) {
+    getAddonPanel(title, options = {}) {
         return (props) => React.createElement(AddonPage, Object.assign({}, {
             title: title,
-            addonList: addonList,
-            addonState: addonState,
             ...props
         }, options));
     }

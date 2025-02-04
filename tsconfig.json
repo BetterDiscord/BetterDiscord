@@ -34,6 +34,7 @@
           "@api/*": ["./src/betterdiscord/api/*"],
           "@modules/*": ["./src/betterdiscord/modules/*"],
           "@polyfill/*": ["./src/betterdiscord/polyfill/*"],
+          "@stores/*": ["./src/betterdiscord/stores/*"],
           "@structs/*": ["./src/betterdiscord/structs/*"],
           "@styles/*": ["./src/betterdiscord/styles/*"],
           "@ui/*": ["./src/betterdiscord/ui/*"]

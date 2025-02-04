@@ -8,7 +8,7 @@ const {useState, useCallback} = React;
 
 export default function AddonPage(props) {
     // If 0 addons installed open the store automatically
-    const [showStore, setShowStore] = useState(() => Settings.get("settings", "store", "bdAddonStore") && !props.addonList.length);
+    const [showStore, setShowStore] = useState(() => Settings.get("settings", "store", "bdAddonStore") && !props.store.addonList.length);
 
     const toggleStore = useCallback(() => setShowStore(v => !v), []);
 

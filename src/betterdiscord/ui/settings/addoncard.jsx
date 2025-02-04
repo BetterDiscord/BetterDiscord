@@ -3,7 +3,6 @@ import Logger from "@common/logger";
 import SimpleMarkdown from "@structs/markdown";
 
 import React from "@modules/react";
-import Events from "@modules/emitter";
 import Strings from "@modules/strings";
 import WebpackModules from "@modules/webpackmodules";
 import DiscordModules from "@modules/discordmodules";
@@ -18,7 +17,7 @@ import {FlowerStar} from "./addonshared";
 import AddonStore from "@modules/addonstore";
 import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
 
-const {useState, useCallback, useMemo, useEffect} = React;
+const {useCallback, useMemo} = React;
 
 
 const LinkIcons = {
@@ -78,30 +77,14 @@ function buildLink(type, url) {
     return makeButton(Strings.Addons[type], link);
 }
 
-export default function AddonCard({addon, prefix, type, disabled, enabled: initialValue, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}) {
-    const [isEnabled, setEnabled] = useState(initialValue);
-
-    useEffect(() => {
-        const onEnabled = updated => {
-            if (addon.id === updated.id) setEnabled(true);
-        };
-        const onDisabled = updated => {
-            if (addon.id === updated.id) setEnabled(false);
-        };
-        Events.on(`${prefix}-enabled`, onEnabled);
-        Events.on(`${prefix}-disabled`, onDisabled);
-        return () => {
-            Events.off(`${prefix}-enabled`, onEnabled);
-            Events.off(`${prefix}-disabled`, onDisabled);
-        };
-    }, [prefix, addon]);
+export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}) {
 
     const onChange = useCallback(() => {
         if (parentChange) parentChange(addon.id);
     }, [addon.id, parentChange]);
 
     const showSettings = useCallback(() => {
-        if (!hasSettings || !isEnabled) return;
+        if (!hasSettings || !enabled) return;
         const name = getString(addon.name);
         try {
             Modals.showAddonSettingsModal(name, getSettingsPanel());
@@ -110,7 +93,7 @@ export default function AddonCard({addon, prefix, type, disabled, enabled: initi
             Toasts.show(Strings.Addons.settingsError.format({name}), {type: "error"});
             Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err);
         }
-    }, [hasSettings, isEnabled, addon.name, getSettingsPanel]);
+    }, [hasSettings, enabled, addon.name, getSettingsPanel]);
 
     const messageAuthor = useCallback(() => {
         if (!addon.authorId) return;
@@ -151,18 +134,18 @@ export default function AddonCard({addon, prefix, type, disabled, enabled: initi
         return <div className="bd-footer">
                     <span className="bd-links">{linkComponents}</span> 
                     <div className="bd-controls">
-                        {hasSettings && makeButton(Strings.Addons.addonSettings, <SettingsIcon size={"20px"} />, showSettings, {isControl: true, disabled: !isEnabled})}
+                        {hasSettings && makeButton(Strings.Addons.addonSettings, <SettingsIcon size={"20px"} />, showSettings, {isControl: true, disabled: !enabled})}
                         {editAddon && makeButton(Strings.Addons.editAddon, <PencilIcon size={"20px"} />, editAddon, {isControl: true})}
                         {deleteAddon && makeButton(Strings.Addons.deleteAddon, <Trash2Icon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
                     </div>
                 </div>;
-    }, [hasSettings, editAddon, deleteAddon, addon, isEnabled, showSettings]);
+    }, [hasSettings, editAddon, deleteAddon, addon, enabled, showSettings]);
 
     return <div id={`${addon.id}-card`} className={"bd-addon-card" + (disabled ? " bd-addon-card-disabled" : "")}>
                 <div className="bd-addon-header">
                         {type === "plugin" ? <PlugIcon size="20px" className="bd-icon" /> : <PaletteIcon size="20px" className="bd-icon" />}
                         <div className="bd-title">{title}</div>
-                        <Switch internalState={false} disabled={disabled} value={isEnabled} onChange={onChange} />
+                        <Switch internalState={false} disabled={disabled} value={enabled} onChange={onChange} />
                 </div>
                 <div className="bd-description-wrap">
                     {disabled && <div className="banner banner-danger"><ShieldAlertIcon className="bd-icon" />{`An error was encountered while trying to load this ${type}.`}</div>}
