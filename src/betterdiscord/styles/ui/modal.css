@@ -127,6 +127,12 @@
     min-height: 400px;
 }
 
+.bd-modal-jumbo {
+    width: 1200px;
+    max-height: min(960px, 70vh);
+    min-height: 600px;
+}
+
 .bd-addon-modal {
     min-height: 0;
 }

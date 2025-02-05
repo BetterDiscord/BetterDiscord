@@ -19,6 +19,7 @@ import ModalRoot from "./modals/root";
 // import ModalContent from "./modals/content";
 // import ModalFooter from "./modals/footer";
 
+import Root from "./modals/root.jsx";
 import ConfirmationModal from "./modals/confirmation";
 // import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
@@ -175,7 +176,7 @@ export default class Modals {
         if (content instanceof FormattableString) content = content.toString();
 
         const emptyFunction = () => {};
-        const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
+        const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined, size = Root.Sizes.SMALL} = options;
 
         if (!this.ModalActions) {
             return this.default(title, content, [
@@ -205,6 +206,7 @@ export default class Modals {
                 cancelText: cancelText,
                 onConfirm: onConfirm,
                 onCancel: onCancel,
+                className: size,
                 onCloseCallback: () => {
                     if (props?.transitionState === 2) onClose?.();
                 }
