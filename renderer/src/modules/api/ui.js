@@ -7,6 +7,7 @@ import Tooltip from "@ui/tooltip";
 import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
+import Utilities from "@modules/utilities";
 
 
 /**
@@ -86,6 +87,14 @@ const UI = {
      */
     showChangelogModal(options) {
         return Modals.showChangelogModal(options);
+    },
+
+    /**
+     * Shows a modal for joining a guild like you would natively through Discord.
+     * @param {string} inviteCode the invite code
+     */
+    showInviteModal(inviteCode) {
+        return Utilities.showGuildJoinModal(inviteCode);
     },
 
     /**

@@ -18,7 +18,9 @@ export default [
         shown: false,
         settings: [
             {type: "switch", id: "addonErrors", value: true},
-            {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]}
+            {type: "dropdown", id: "editAction", value: "detached", options: [{value: "detached"}, {value: "system"}]},
+            {type: "switch", id: "checkForUpdates", value: true},
+            {type: "slider", id: "updateInterval", value: 4, min: 2, max: 12, step: 1, markers: [2, 4, 6, 8, 10, 12], units: "hrs", enableWith: "checkForUpdates"}
         ]
     },
     {
@@ -93,7 +95,23 @@ export default [
     //     shown: true,
     //     settings: [
     //         {name: "Text test", note: "Just testing it", type: "text", id: "texttest", value: ""},
-    //         {name: "Slider test", note: "Just testing it", type: "slider", id: "slidertest", value: 30, min: 20, max: 50, step: 10},
+    //         {
+    //             name: "Slider test",
+    //             note: "Just testing it",
+    //             type: "slider",
+    //             id: "slidertest",
+    //             value: 30,
+    //             min: 20,
+    //             max: 50,
+    //             step: 10,
+    //             units: "em",
+    //             markers: [
+    //                 {label: "max", value: 50},
+    //                 30,
+    //                 {label: "min", value: 20},
+    //                 {label: "anything", value: 40}
+    //             ],
+    //         },
     //         {
     //             name: "Radio test",
     //             note: "Just testing it",
@@ -106,6 +124,19 @@ export default [
     //                 {name: "Something", value: 666, description: "something else"},
     //                 {name: "Last", value: "last", description: "nothing more to add"}
     //             ]
+    //         },
+    //         {
+    //             type: "slider",
+    //             id: "maxWidth",
+    //             name: "Notification Width",
+    //             note: "Maximum width of notifications",
+    //             value: 370,
+    //             min: 100,
+    //             max: 400,
+    //             markers: [100, 200, 300, 400],
+    //             units: "px",
+    //             defaultValue: 370,
+    //             stickToMarkers: false
     //         },
     //         {name: "Keybind test", note: "Just testing it", type: "keybind", id: "keybindtest", value: ["Control", "H"]},
     //         {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},

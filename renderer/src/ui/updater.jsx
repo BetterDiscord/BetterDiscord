@@ -109,8 +109,12 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater})
         await checkCoreUpdate();
         await checkAddons("plugins");
         await checkAddons("themes");
+        setUpdates({
+            plugins: pluginUpdater.pending.slice(0),
+            themes: themeUpdater.pending.slice(0)
+        });
         Toasts.info(Strings.Updater.finishedChecking);
-    }, [checkAddons, checkCoreUpdate]);
+    }, [checkAddons, checkCoreUpdate, pluginUpdater, themeUpdater]);
 
     const updateCore = useCallback(async () => {
         await coreUpdater.update();
