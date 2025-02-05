@@ -7,6 +7,8 @@ import UI from "@api/ui";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
 import {PackageOpenIcon} from "lucide-react";
+import Logger from "@api/logger.js";
+import NotificationUI from "@modules/notification.jsx";
 
 
 class InstallCSS {
@@ -24,19 +26,67 @@ class InstallCSS {
             const currentText = Utils.findInTree(res, x => x?.text, {walkable: ["props", "children"]})?.text;
             codeActions.children = [
                 codeActions.children,
-                <PackageOpenIcon size="16px" key="icon" onClick={async () => {
-                    if (!currentText) return;
+                <PackageOpenIcon size="16px" key="icon" onClick={async (event) => {
+                    if (event.shiftKey) {
+                        this.handleCSSInstall(currentText);
+                        return;
+                    }
 
-                    const savedCss = CustomCSS.savedCss || "";
-                    const newCSS = savedCss + "\n" + currentText;
-
-                    CustomCSS.saveCSS(newCSS);
-                    CustomCSS.insertCSS(newCSS);
-                    UI.showToast(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
+                    UI.showConfirmationModal(
+                        Strings.Modals.confirmAction,
+                        Strings.Modals.installCss,
+                        {
+                            confirmText: Strings.Modals.okay,
+                            cancelText: Strings.Modals.cancel,
+                            onConfirm: () => this.handleCSSInstall(currentText)
+                        }
+                    );
                 }}/>
             ];
         });
     }
+
+    static handleCSSInstall(currentText) {
+        try {
+            const oldCSS = CustomCSS.savedCss || "";
+            const newCSS = oldCSS + "\n" + currentText;
+
+            CustomCSS.saveCSS(newCSS);
+            CustomCSS.insertCSS(newCSS);
+            UI.showToast(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
+
+            const notificationId = `css-undo-${Date.now()}`;
+
+            NotificationUI.show({
+                id: notificationId,
+                title: Strings.CustomCSS.cssInstalled,
+                content: Strings.CustomCSS.cssReverting,
+                type: "info",
+                duration: 10000,
+                actions: [{
+                    label: "Keep",
+                    onClick: () => this.keepChanges(oldCSS, notificationId)
+                }],
+                onDurationDone: () => this.revertCSS(oldCSS)
+            });
+
+        }
+        catch (error) {
+            Logger.log("InstallCSS", "Failed to install CSS:", error);
+            UI.showToast(Strings.CustomCSS.cssInstallError, {type: "error"});
+        }
+    }
+
+    static keepChanges() {
+        UI.showToast(Strings.CustomCSS.cssKept, {type: "success"});
+    }
+
+    static revertCSS(oldCSS) {
+        CustomCSS.saveCSS(oldCSS);
+        CustomCSS.insertCSS(oldCSS);
+        UI.showToast(Strings.CustomCSS.cssReverted, {type: "error"});
+    }
+
 }
 
 export default InstallCSS;
