@@ -10,8 +10,9 @@ import {PackageOpenIcon} from "lucide-react";
 import Logger from "@api/logger.js";
 import NotificationUI from "@modules/notification.jsx";
 
-
 class InstallCSS {
+    static activeNotifications = new Map();
+
     static initialize() {
         const patch = WebpackModules.getBySource(".VOICE_HANGOUT_INVITE?\"\":");
         Patcher.after("InstallCSS", patch?.ZP, "type", (_, [args], res) => {
@@ -57,6 +58,11 @@ class InstallCSS {
 
             const notificationId = `css-undo-${Date.now()}`;
 
+            this.activeNotifications.set(notificationId, {
+                oldCSS,
+                newCSS
+            });
+
             NotificationUI.show({
                 id: notificationId,
                 title: Strings.CustomCSS.cssInstalled,
@@ -65,11 +71,10 @@ class InstallCSS {
                 duration: 10000,
                 actions: [{
                     label: "Keep",
-                    onClick: () => this.keepChanges(oldCSS, notificationId)
+                    onClick: () => this.keepChanges(notificationId)
                 }],
-                onDurationDone: () => this.revertCSS(oldCSS)
+                onDurationDone: () => this.revertCSS(notificationId)
             });
-
         }
         catch (error) {
             Logger.log("InstallCSS", "Failed to install CSS:", error);
@@ -77,16 +82,20 @@ class InstallCSS {
         }
     }
 
-    static keepChanges() {
+    static keepChanges(notificationId) {
+        this.activeNotifications.delete(notificationId);
         UI.showToast(Strings.CustomCSS.cssKept, {type: "success"});
     }
 
-    static revertCSS(oldCSS) {
-        CustomCSS.saveCSS(oldCSS);
-        CustomCSS.insertCSS(oldCSS);
+    static revertCSS(notificationId) {
+        const cssState = this.activeNotifications.get(notificationId);
+        if (!cssState) return;
+
+        CustomCSS.saveCSS(cssState.oldCSS);
+        CustomCSS.insertCSS(cssState.oldCSS);
+        this.activeNotifications.delete(notificationId);
         UI.showToast(Strings.CustomCSS.cssReverted, {type: "error"});
     }
-
 }
 
 export default InstallCSS;
