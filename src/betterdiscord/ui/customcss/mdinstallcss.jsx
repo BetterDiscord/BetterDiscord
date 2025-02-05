@@ -1,14 +1,15 @@
 import WebpackModules from "@modules/webpackmodules";
 import Patcher from "@modules/patcher";
-import Utils from "@api/utils";
+import Utils from "@modules/utilities";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
 import UI from "@api/ui";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
 import {PackageOpenIcon} from "lucide-react";
-import Logger from "@api/logger.js";
-import NotificationUI from "@modules/notification.jsx";
+import Logger from "@common/logger";
+import NotificationUI from "@modules/notification";
+import Toasts from "@ui/toasts.js";
 
 class InstallCSS {
     static activeNotifications = new Map();
@@ -86,13 +87,13 @@ class InstallCSS {
         }
         catch (error) {
             Logger.log("InstallCSS", "Failed to install CSS:", error);
-            UI.showToast(Strings.CustomCSS.cssInstallError, {type: "error"});
+            Toasts.showToast(Strings.CustomCSS.cssInstallError, {type: "error"});
         }
     }
 
     static keepChanges(notificationId) {
         this.activeNotifications.delete(notificationId);
-        UI.showToast(Strings.CustomCSS.cssKept, {type: "success"});
+        Toasts.showToast(Strings.CustomCSS.cssKept, {type: "success"});
     }
 
     static revertCSS(notificationId) {
@@ -105,7 +106,7 @@ class InstallCSS {
         CustomCSS.saveCSS(newCSS);
         CustomCSS.insertCSS(newCSS);
         this.activeNotifications.delete(notificationId);
-        UI.showToast(Strings.CustomCSS.cssReverted, {type: "error"});
+        Toasts.showToast(Strings.CustomCSS.cssReverted, {type: "error"});
     }
 }
 
