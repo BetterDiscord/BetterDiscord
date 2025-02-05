@@ -100,7 +100,7 @@ class InstallCSS {
         if (!cssBlock) return;
 
         const currentCSS = CustomCSS.savedCss || "";
-        const newCSS = currentCSS.replace(cssBlock, "").replace(/\n\n+/g, "\n").trim();
+        const newCSS = currentCSS.replace(cssBlock, "");
 
         CustomCSS.saveCSS(newCSS);
         CustomCSS.insertCSS(newCSS);
