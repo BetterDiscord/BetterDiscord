@@ -29,6 +29,14 @@
                 "themeAttributes": {
                     "name": "Theme Attributes",
                     "note": "Adds attributes to various elements to assist in theming."
+                },
+                "notificationPosition": {
+                    "name": "Notification",
+                    "note": "Lets you choose where you want notifications to popup."
+                },
+                "notificationEnabled": {
+                    "name": "Show Notifications",
+                    "note": "Prevents or allows notifications to be shown on screen."
                 }
             },
             "store": {
@@ -263,7 +271,8 @@
         "openNative": "Open in System Editor",
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
-        "editorTitle": "Custom CSS Editor"
+        "editorTitle": "Custom CSS Editor",
+        "cssInstallSuccess": "CSS was successfully added into CustomCSS."
     },
     "Modals": {
         "confirmAction": "Are You Sure?",
