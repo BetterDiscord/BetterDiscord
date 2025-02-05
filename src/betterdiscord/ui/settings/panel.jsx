@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import Strings from "@modules/strings";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import DiscordModules from "@modules/discordmodules";
 
 import Button from "@ui/base/button";

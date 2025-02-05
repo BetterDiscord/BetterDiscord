@@ -1,7 +1,7 @@
 import React from "@modules/react";
 import AddonStorePage from "./addonstore";
 import AddonList from "./addonlist";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import {addonContext} from "./addonshared";
 
 const {useState, useCallback} = React;

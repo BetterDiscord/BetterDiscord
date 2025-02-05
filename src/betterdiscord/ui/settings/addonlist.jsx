@@ -15,7 +15,7 @@ import NoResults from "@ui/blankslates/noresults";
 import EmptySlate from "@ui/blankslates/empty";
 import Web from "@data/web";
 import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader, addonContext} from "./addonshared";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {CheckIcon, ChevronRightIcon, FolderIcon, LayoutGridIcon, StoreIcon, StretchHorizontalIcon, XIcon} from "lucide-react";
 import {useInternalStore} from "@ui/hooks";
@@ -202,7 +202,7 @@ export default function AddonList({title, store}) {
                         <AddonCard store={store} disabled={addon.partial} type={store.prefix} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />
                     </ErrorBoundary>;
         });
-    }, [store, addonList, addonState, onChange, reload,, triggerDelete, triggerEdit, query, ascending, sort]);
+    }, [store, addonList, addonState, onChange, reload, triggerDelete, triggerEdit, query, ascending, sort]);
 
     const hasAddonsInstalled = addonList.length !== 0;
     const isSearching = !!query;

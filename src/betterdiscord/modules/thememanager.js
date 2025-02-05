@@ -5,7 +5,7 @@ import Config from "@data/config";
 import AddonError from "@structs/addonerror";
 
 import AddonManager from "./addonmanager";
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import DOMManager from "./dommanager";
 import Strings from "./strings";
 

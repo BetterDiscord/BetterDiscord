@@ -1,6 +1,6 @@
 import Logger from "@common/logger";
 
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import WebpackModules from "@modules/webpackmodules";
 import DOMManager from "@modules/dommanager";
 

@@ -6,7 +6,7 @@ import WebpackModules from "@modules/webpackmodules";
 import DiscordModules from "@modules/discordmodules";
 import DataStore from "@modules/datastore";
 import DOMManager from "@modules/dommanager";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Patcher from "@modules/patcher";
 import ipc from "@modules/ipc";
 

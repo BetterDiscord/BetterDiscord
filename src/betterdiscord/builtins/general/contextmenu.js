@@ -1,7 +1,7 @@
 import Builtin from "@structs/builtin";
 
 import Strings from "@modules/strings";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Webpack from "@modules/webpackmodules";
 
 import ContextMenuPatcher from "@api/contextmenu";

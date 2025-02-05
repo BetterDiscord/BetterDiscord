@@ -3,7 +3,7 @@ import electron from "electron";
 
 import Builtin from "@structs/builtin";
 
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import DataStore from "@modules/datastore";
 import React from "@modules/react";
 import WebpackModules from "@modules/webpackmodules";

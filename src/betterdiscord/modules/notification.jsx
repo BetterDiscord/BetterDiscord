@@ -2,7 +2,7 @@ import Webpack from "@api/webpack";
 import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import Button from "@ui/base/button";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
 

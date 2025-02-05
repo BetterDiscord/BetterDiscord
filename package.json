@@ -16,7 +16,8 @@
         "test": "bun test tests/",
         "dist": "bun run build:production && bun scripts/pack.js",
         "api": "bun run --bun jsdoc -X -r renderer/src/modules/api/ > dist/jsdoc-ast.json",
-        "translations": "bun -r dotenv/config scripts/translations.js"
+        "translations": "bun -r dotenv/config scripts/translations.js",
+        "circulars": "bun run --bun dpdm --no-warning --no-tree src/betterdiscord/index.js"
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",
@@ -25,6 +26,7 @@
         "@types/react": "^18.3.1",
         "bun-style-loader": "^0.4.0",
         "dotenv": "^16.4.5",
+        "dpdm": "^3.14.0",
         "esbuild": "^0.24.2",
         "eslint": "^9.19.0",
         "eslint-plugin-react": "^7.37.4",

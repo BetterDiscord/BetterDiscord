@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 
 import Button from "../base/button";
 import Flex from "../base/flex";

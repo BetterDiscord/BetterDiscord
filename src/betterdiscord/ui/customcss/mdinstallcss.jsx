@@ -4,7 +4,7 @@ import Utils from "@api/utils";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
 import UI from "@api/ui";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Strings from "@modules/strings";
 import {PackageOpenIcon} from "lucide-react";
 

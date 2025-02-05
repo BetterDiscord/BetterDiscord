@@ -11,7 +11,7 @@ import LocaleManager from "./localemanager";
 import DOMManager from "./dommanager";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import DataStore from "./datastore";
 import DiscordModules from "./discordmodules";
 

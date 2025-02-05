@@ -5,7 +5,7 @@ import Logger from "@common/logger";
 
 import AddonError from "@structs/addonerror";
 
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import Events from "./emitter";
 import DataStore from "./datastore";
 import React from "./react";
