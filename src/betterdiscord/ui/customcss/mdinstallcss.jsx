@@ -14,35 +14,46 @@ class InstallCSS {
     static activeNotifications = new Map();
 
     static initialize() {
-        const patch = WebpackModules.getBySource(".VOICE_HANGOUT_INVITE?\"\":");
-        Patcher.after("InstallCSS", patch?.ZP, "type", (_, [args], res) => {
+        const patch = WebpackModules.getModule(m => m.defaultRules && m.parse).defaultRules.codeBlock;
+        Patcher.after("InstallCSS", patch, "react", (_, [args], child) => {
             const isEnabled = Settings.get("customcss", "customcss");
             if (!isEnabled) return;
 
-            const content = args.message.content;
+            const content = args.content;
             if (!content) return;
 
-            const codeActions = Utils.findInTree(res, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
-            if (!codeActions) return;
-            const currentText = Utils.findInTree(res, x => x?.text, {walkable: ["props", "children"]})?.text;
-            codeActions.children = [
-                codeActions.children,
-                <PackageOpenIcon style={{cursor: "pointer"}} size="16px" key="icon" onClick={async (event) => {
-                    if (event.shiftKey) {
-                        this.handleCSSInstall(currentText);
-                        return;
-                    }
+            if (child?.type !== "pre") return;
+            if (args?.lang !== "css") return;
 
-                    UI.showConfirmationModal(
-                        Strings.Modals.confirmAction,
-                        Strings.Modals.installCss,
-                        {
-                            confirmText: Strings.Modals.okay,
-                            cancelText: Strings.Modals.cancel,
-                            onConfirm: () => this.handleCSSInstall(currentText)
+            const codeActions = Utils.findInTree(child, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
+            if (!codeActions) return;
+
+            if (!args?.content) return;
+
+            const existingCodeblocks = Array.isArray(codeActions.children) ? codeActions.children : [codeActions.children];
+            codeActions.children = [
+                ...existingCodeblocks,
+                <PackageOpenIcon
+                    style={{cursor: "pointer"}}
+                    size="16px"
+                    key="icon"
+                    onClick={async (event) => {
+                        if (event.shiftKey) {
+                            this.handleCSSInstall(args?.content);
+                            return;
                         }
-                    );
-                }}/>
+
+                        UI.showConfirmationModal(
+                            Strings.Modals.confirmAction,
+                            Strings.Modals.installCss,
+                            {
+                                confirmText: Strings.Modals.okay,
+                                cancelText: Strings.Modals.cancel,
+                                onConfirm: () => this.handleCSSInstall(args?.content)
+                            }
+                        );
+                    }}
+                />
             ];
         });
     }
@@ -64,7 +75,7 @@ class InstallCSS {
                 id: notificationId,
                 title: Strings.CustomCSS.cssInstalled,
                 content: Strings.CustomCSS.cssReverting,
-                type: "info",
+                type: "warning",
                 duration: 10000,
                 actions: [{
                     label: "Keep",
