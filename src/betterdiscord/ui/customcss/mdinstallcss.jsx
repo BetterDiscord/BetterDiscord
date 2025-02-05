@@ -47,10 +47,10 @@ class InstallCSS {
         });
     }
 
-    static handleCSSInstall(currentText) {
+    static handleCSSInstall(cssBlock) {
         try {
-            const oldCSS = CustomCSS.savedCss || "";
-            const newCSS = oldCSS + "\n" + currentText;
+            const currentCSS = CustomCSS.savedCss || "";
+            const newCSS = currentCSS + "\n" + cssBlock;
 
             CustomCSS.saveCSS(newCSS);
             CustomCSS.insertCSS(newCSS);
@@ -58,10 +58,7 @@ class InstallCSS {
 
             const notificationId = `css-undo-${Date.now()}`;
 
-            this.activeNotifications.set(notificationId, {
-                oldCSS,
-                newCSS
-            });
+            this.activeNotifications.set(notificationId, cssBlock);
 
             NotificationUI.show({
                 id: notificationId,
@@ -88,11 +85,14 @@ class InstallCSS {
     }
 
     static revertCSS(notificationId) {
-        const cssState = this.activeNotifications.get(notificationId);
-        if (!cssState) return;
+        const cssBlock = this.activeNotifications.get(notificationId);
+        if (!cssBlock) return;
 
-        CustomCSS.saveCSS(cssState.oldCSS);
-        CustomCSS.insertCSS(cssState.oldCSS);
+        const currentCSS = CustomCSS.savedCss || "";
+        const newCSS = currentCSS.replace(cssBlock, "").replace(/\n\n+/g, "\n").trim();
+
+        CustomCSS.saveCSS(newCSS);
+        CustomCSS.insertCSS(newCSS);
         this.activeNotifications.delete(notificationId);
         UI.showToast(Strings.CustomCSS.cssReverted, {type: "error"});
     }
