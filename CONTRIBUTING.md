@@ -2,29 +2,35 @@
 
 Thanks for taking the time to contribute!
 
-The following is a set of guidelines for contributing to BetterDiscord. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request. These guidelines have been adapted from [Atom](https://github.com/atom/atom/blob/master/CONTRIBUTING.md).
+The following is a set of guidelines for contributing to BetterDiscord. These are mostly guidelines, not rules. Use your
+best judgment, and feel free to propose changes to this document in a pull request. These guidelines have been adapted
+from [Atom](https://github.com/atom/atom/blob/master/CONTRIBUTING.md).
 
 #### Table Of Contents
 
 [Code of Conduct](#code-of-conduct)
 
 [What should I know before I get started?](#what-should-i-know-before-i-get-started)
-  * [BetterDiscord Architecture](#betterdiscord-architecture)
+
+* [BetterDiscord Architecture](#betterdiscord-architecture)
 
 [How Can I Contribute?](#how-can-i-contribute)
-  * [Reporting Bugs](#reporting-bugs)
-  * [Suggesting Enhancements](#suggesting-enhancements)
-  * [Your First Code Contribution](#your-first-code-contribution)
-  * [Pull Requests](#pull-requests)
-  * [Translations](#translations)
+
+* [Reporting Bugs](#reporting-bugs)
+* [Suggesting Enhancements](#suggesting-enhancements)
+* [Your First Code Contribution](#your-first-code-contribution)
+* [Pull Requests](#pull-requests)
+* [Translations](#translations)
 
 [Styleguides](#styleguides)
-  * [Git Commit Messages](#git-commit-messages)
-  * [JavaScript Styleguide](#javascript-styleguide)
-  * [CSS Styleguide](#css-styleguide)
+
+* [Git Commit Messages](#git-commit-messages)
+* [JavaScript and TypeScript Styleguide](#javascript-and-typescript-styleguide)
+* [CSS Styleguide](#css-styleguide)
 
 [Additional Notes](#additional-notes)
-  * [Issue Labels](#issue-labels)
+
+* [Issue Labels](#issue-labels)
 
 ## Code of Conduct
 
@@ -34,92 +40,215 @@ See our [Code of Conduct](https://github.com/BetterDiscord/BetterDiscord/blob/ma
 
 ### BetterDiscord Architecture
 
-BetterDiscord is currently broken up into three packages--the local injector, the preload, and the renderer application. They form this miniature monorepo that is managed by [`pnpm`](https://pnpm.io/).
+BetterDiscord is now organized as a **monolithic** repository rather than a monorepo, simplifying the structure while
+maintaining modularity. The project is divided into the following main components:
 
-#### Injector
+```plaintext
+.
+├── common/
+│   ├── i18n/
+│   ├── logger/
+│   └── utils/
+│ 
+├── electron/
+│   ├── main/ (formerly injector)
+│   └── preload/
+│
+├── extension/
+│
+└── betterdiscord/ (formerly renderer)
+    ├── api/
+    ├── patcher/
+    ├── webpack/
+    └── ...
+```
 
-The main job of this package is to inject into Discord and load the renderer package. The injector and its code live in the `injector` folder.
+#### Electron Main (formerly Injector)
 
-#### Preload
+The `main` folder contains the new injector logic responsible for injecting and installing BetterDiscord into Discord (
+used with Electron). It initializes the renderer and manages Discord interaction.
 
-Preload is the preload script for Discord's main `BrowserWindow` object. This sets up our cross-context APIs. The preload package and its code live in the `preload` folder.
+#### Electron Preload
 
-#### Renderer Application
+The `preload` folder contains the preload script responsible for establishing cross-context APIs. Preload scripts run in
+Electron's browser processes.
 
-This is the main payload of BetterDiscord. This is what gets executed in the renderer context by the [injector](#injector). This portion is where most of the user interaction and development will be. This module is responsible for loading plugins and themes, as well as handling settings, and more. The renderer and its code live in the `renderer` folder.
+#### BetterDiscord Core (formerly Renderer)
+
+The `betterdiscord` folder contains the core of BetterDiscord, including APIs, patchers, and user-facing functionality
+such as plugin and theme management.
+
+---
+
+### Updated Development Environment
+
+#### Runtime: Bun
+
+We have switched from **Node.js** to [**Bun**](https://bun.sh) as our runtime environment and package manager. Make sure
+to [install Bun](https://bun.sh/docs/installation) and use it instead of `npm` or `pnpm`:
+
+- Install dependencies:
+  ```
+  bun install
+  ```
+
+#### Build Process: esbuild
+
+We now use [**esbuild**](https://esbuild.github.io) for compiling and bundling. It provides faster build times and
+improved watch functionality.
+
+- Build the project:
+  ```
+  bun run build
+  ```
+
+#### Testing: bun:test
+
+We have migrated from Mocha to `bun:test` for a simpler, faster testing experience. Run tests using:
+
+```
+bun test
+```
+
+#### TypeScript Integration
+
+The project is transitioning from JavaScript to TypeScript incrementally. New development should use TypeScript whenever
+possible. Existing JavaScript can be converted as changes are made.
+
+---
 
 ## How Can I Contribute?
 
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for BetterDiscord. Following these guidelines helps maintainers and the community understand your report, reproduce the behavior, and find related reports.
+This section guides you through submitting a bug report for BetterDiscord. Following these guidelines helps maintainers
+and the community understand your report, reproduce the behavior, and find related reports.
 
-Before creating bug reports, please check [this list](#before-submitting-a-bug-report) as you might find out that you don't need to create one. When you are creating a bug report, please [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill out [the required template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/BUG-REPORT.yml), the information it asks for helps us resolve issues faster.
+Before creating bug reports, please check [this list](#before-submitting-a-bug-report) as you might find out that you
+don't need to create one. When you are creating a bug report,
+please [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill
+out [the required template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/BUG-REPORT.yml),
+the information it asks for helps us resolve issues faster.
 
-> **Note:** If you find a **Closed** issue that seems like it is the same thing that you're experiencing, open a new issue and include a link to the original issue in the body of your new one.
+> **Note:** If you find a **Closed** issue that seems like it is the same thing that you're experiencing, open a new
+> issue and include a link to the original issue in the body of your new one.
 
 #### Before Submitting A Bug Report
 
-* **Try [repairing your installation](https://docs.betterdiscord.app/users/getting-started/installation).** This can often fix issues where Discord has overwritten the injector or corrupted data files.
-* **Check the [#faq channel](https://betterdiscord.app/invite)** on our support server for answers to many questions. Also check the **#announcements** channel for any recent announcements about breaking changes.
-* **Perform a [search](https://github.com/BetterDiscord/BetterDiscord/issues)** to see if the problem has already been reported. If it has **and the issue is still open**, add a :+1: to the existing issue instead of opening a new one.
+* **Try [repairing your installation](https://docs.betterdiscord.app/users/getting-started/installation).** This can
+  often fix issues where Discord has overwritten the injector or corrupted data files.
+* **Check the [#faq channel](https://betterdiscord.app/invite)** on our support server for answers to many questions.
+  Also check the **#announcements** channel for any recent announcements about breaking changes.
+* **Perform a [search](https://github.com/BetterDiscord/BetterDiscord/issues)** to see if the problem has already been
+  reported. If it has **and the issue is still open**, add a :+1: to the existing issue instead of opening a new one.
 
 #### How Do I Submit A (Good) Bug Report?
 
-Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined this is a new bug using the steps from above, create an issue and provide the following information by filling in [the template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/BUG-REPORT.yml).
+Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined this is a new
+bug using the steps from above, create an issue and provide the following information by filling
+in [the template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/BUG-REPORT.yml).
 
 Explain the problem and include additional details to help maintainers reproduce the problem:
 
 * **Use a clear and descriptive title** for the issue to identify the problem.
-* **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by explaining how you started Discord, e.g. which addons exactly you used, and what actions were taken. When listing steps, **don't just say what you did, but explain how you did it**. For example, if you opened a menu, explain if you used the mouse, or a keyboard shortcut or something else entirely.
-* **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or copy/pasteable snippets, which you use in those examples. If you're providing snippets in the issue, use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
-* **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
+* **Describe the exact steps which reproduce the problem** in as many details as possible. For example, start by
+  explaining how you started Discord, e.g. which addons exactly you used, and what actions were taken. When listing
+  steps, **don't just say what you did, but explain how you did it**. For example, if you opened a menu, explain if you
+  used the mouse, or a keyboard shortcut or something else entirely.
+* **Provide specific examples to demonstrate the steps**. Include links to files or GitHub projects, or copy/pasteable
+  snippets, which you use in those examples. If you're providing snippets in the issue,
+  use [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
+* **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that
+  behavior.
 * **Explain which behavior you expected to see instead and why.**
-* **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem.
-* **If you're reporting that Discord/BetterDiscord crashed**, include a crash report with a stack trace from the console. To open the [console](https://developers.google.com/web/tools/chrome-devtools/) press `ctrl`+`shift`+`i` and click the `console` tab at the top. You should see red errors toward the bottom of this page. Include the crash report in the issue in a [code block](https://help.github.com/articles/markdown-basics/#multiple-lines), a [file attachment](https://help.github.com/articles/file-attachments-on-issues-and-pull-requests/), a [gist](https://gist.github.com/) (and provide link to that gist), or even a screenshot of the error.
-* **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened and share more information using the guidelines below.
+* **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the
+  problem.
+* **If you're reporting that Discord/BetterDiscord crashed**, include a crash report with a stack trace from the
+  console. To open the [console](https://developers.google.com/web/tools/chrome-devtools/) press `ctrl`+`shift`+`i` and
+  click the `console` tab at the top. You should see red errors toward the bottom of this page. Include the crash report
+  in the issue in a [code block](https://help.github.com/articles/markdown-basics/#multiple-lines),
+  a [file attachment](https://help.github.com/articles/file-attachments-on-issues-and-pull-requests/),
+  a [gist](https://gist.github.com/) (and provide link to that gist), or even a screenshot of the error.
+* **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened and
+  share more information using the guidelines below.
 
 Provide more context by answering these questions:
 
-* **Did the problem start happening recently** (e.g. after updating to a new version of Discord/BetterDiscord) or was this always a problem?
-* If the problem started happening recently, what's the version and release channel as well as the versions of BetterDiscord?
-* **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which conditions it normally happens.
+* **Did the problem start happening recently** (e.g. after updating to a new version of Discord/BetterDiscord) or was
+  this always a problem?
+* If the problem started happening recently, what's the version and release channel as well as the versions of
+  BetterDiscord?
+* **Can you reliably reproduce the issue?** If not, provide details about how often the problem happens and under which
+  conditions it normally happens.
 
 Include details about your configuration and environment:
 
-* **Which version and release channel of Discord are you using?** The version looks something like `0.0.306` and the release channels are stable, canary, and ptb.
-* **What's the name and version of the OS you're using**? Ideally there are no cross-compatibility issues, but it does happen.
+* **Which version and release channel of Discord are you using?** The version looks something like `0.0.306` and the
+  release channels are stable, canary, and ptb.
+* **What's the name and version of the OS you're using**? Ideally there are no cross-compatibility issues, but it does
+  happen.
 * **Which plugins/themes do you have installed?** You can provide a list or screenshot of the folder.
 
 ### Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for BetterDiscord, including completely new features and minor improvements to existing functionality. Following these guidelines helps maintainers and the community understand your suggestion and find related suggestions.
+This section guides you through submitting an enhancement suggestion for BetterDiscord, including completely new
+features and minor improvements to existing functionality. Following these guidelines helps maintainers and the
+community understand your suggestion and find related suggestions.
 
-Before creating enhancement suggestions, please check [this list](#before-submitting-an-enhancement-suggestion) as you might find out that you don't need to create one. When you are creating an enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). Fill in [the template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/FEATURE-REQUEST.yml), including the steps that you imagine you would take if the feature you're requesting existed.
+Before creating enhancement suggestions, please check [this list](#before-submitting-an-enhancement-suggestion) as you
+might find out that you don't need to create one. When you are creating an enhancement suggestion,
+please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion). Fill
+in [the template](https://github.com/BetterDiscord/BetterDiscord/blob/main/.github/ISSUE_TEMPLATE/FEATURE-REQUEST.yml),
+including the steps that you imagine you would take if the feature you're requesting existed.
 
 #### Before Submitting An Enhancement Suggestion
 
 * **Check if there's already a plugin which provides that enhancement.**
-* **Perform a [cursory search](https://guides.github.com/features/issues/)** to see if the enhancement has already been suggested. If it has, add a :+1: to the existing issue instead of opening a new one.
+* **Perform a [cursory search](https://guides.github.com/features/issues/)** to see if the enhancement has already been
+  suggested. If it has, add a :+1: to the existing issue instead of opening a new one.
 
 #### How Do I Submit A (Good) Enhancement Suggestion?
 
-Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've determined this is a new suggestion using the steps from above, create an issue and provide the following information:
+Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com/features/issues/). After you've
+determined this is a new suggestion using the steps from above, create an issue and provide the following information:
 
 * **Use a clear and descriptive title** for the issue to identify the suggestion.
 * **Provide a step-by-step description of the suggested enhancement** in as many details as possible.
-* **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets which you use in those examples, as [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
+* **Provide specific examples to demonstrate the steps**. Include copy/pasteable snippets which you use in those
+  examples, as [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
 * **Describe the current behavior** and **explain which behavior you expected to see instead** and why.
-* **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of BetterDiscord which the suggestion is related to.
-* **Explain why this enhancement would be useful** to most BetterDiscord users and isn't something that can or should be implemented as a plugin.
+* **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of BetterDiscord
+  which the suggestion is related to.
+* **Explain why this enhancement would be useful** to most BetterDiscord users and isn't something that can or should be
+  implemented as a plugin.
 
 ### Your First Code Contribution
 
-Unsure where to begin contributing? You can start by looking through `help-wanted` issues or any issues labelled `can't reproduce`.
+Unsure where to begin contributing? You can start by looking through `help-wanted` issues or any issues labelled
+`can't reproduce`.
 
 #### Local development
 
-BetterDiscord can be developed and tested locally. First, clone the repo and run `pnpm install && pnpm build` this will generate a `dist` folder with compiled files. Next you'll need to inject your local setup to your desired release channel. There is a script in the repository to do this automatically for most cases. Just run `pnpm inject <channel>` where `<channel>` is the release channel--any of: stable, canary, ptb. Then for this to take effect, you'll need to fully restart Discord. Any future modifications to the renderer portion will be picked up on Discord reload. Preload and injector changes will require restarts.
+BetterDiscord can still be developed and tested locally. First, clone the repo and run:
+
+```bash
+bun install && bun run build
+```
+
+This will generate a `dist` folder with compiled files. Next, you'll need to inject your local setup to your desired
+Discord release channel. Use the following script:
+
+```bash
+bun run inject <channel>
+```
+
+Here, `<channel>` refers to your target Discord release channel, such as `stable`, `canary`, or `ptb`. After injection:
+
+- Restart Discord fully for the changes to take effect.
+- Changes to the **renderer** portion will apply on Discord reload, but changes to **preload** or **main** require
+  restarting Discord.
+
+---
 
 ### Pull Requests
 
@@ -127,13 +256,20 @@ Please follow these steps to have your contribution considered by the maintainer
 
 1. Use a pull request template, if one exists.
 2. Follow the [styleguides](#styleguides)
-3. After you submit your pull request, verify that all [status checks](https://help.github.com/articles/about-status-checks/) are passing <details><summary>What if the status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will open an issue to track that problem with our status check suite.</details>
+3. After you submit your pull request, verify that
+   all [status checks](https://help.github.com/articles/about-status-checks/) are passing <details><summary>What if the
+   status checks are failing?</summary>If a status check is failing, and you believe that the failure is unrelated to
+   your change, please leave a comment on the pull request explaining why you believe the failure is unrelated. A
+   maintainer will re-run the status check for you. If we conclude that the failure was a false positive, then we will
+   open an issue to track that problem with our status check suite.</details>
 
-While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
+While the prerequisites above must be satisfied prior to having your pull request reviewed, the reviewer(s) may ask you
+to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
 
 ### Translations
 
-BetterDiscord supports a number of languages thanks to translations provided by the community. Translations for the BetterDiscord project should be submitted via [POEditor](https://poeditor.com/join/project?hash=nRljcnV0ET).
+BetterDiscord supports a number of languages thanks to translations provided by the community. Translations for the
+BetterDiscord project should be submitted via [POEditor](https://poeditor.com/join/project?hash=nRljcnV0ET).
 
 * After joining the project, contact staff about your request being approved.
 * Do not submit translations generated with a translation such as Google Translate, DeepL, or anything of the sorts.
@@ -145,18 +281,19 @@ BetterDiscord supports a number of languages thanks to translations provided by 
 
 * Use the present tense ("Add feature" not "Added feature")
 * Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
-* Limit the first line to 72 characters or less
+* Limit the first line to 72 characters or fewer
 * Reference issues and pull requests liberally after the first line
 * When only changing documentation, include `[ci skip]` in the commit title
 
-### JavaScript Styleguide
+### JavaScript and TypeScript Styleguide
 
-All JavaScript must adhere to the [ESLint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/.eslintrc) of the repo.
+All JavaScript and TypeScript code must adhere to
+the [ESLint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/.eslintrc) of the repo.
 
 Some other style related points not covered by ESLint:
 
 * Use verbose variable names
-* Prefer to use react patches over DOM manipulation when possible
+* Prefer to use React patches over DOM manipulation when possible
 * Prefer to use separate components from Discord when possible
 * Inline `export`s with expressions whenever possible
   ```js
@@ -172,15 +309,16 @@ Some other style related points not covered by ESLint:
   export default ClassName
   ```
 * Place class properties in the following order:
-    * Class methods and properties (methods starting with `static`)
-    * Instance methods and properties
+  * Class methods and properties (methods starting with `static`)
+  * Instance methods and properties
 * Place requires in the following order:
-    * Built in Node Modules (such as `path`)
-    * Repo level global imports (such as `modules`, `builtins`)
-    * Local Modules (using relative paths)
+  * Built in Node Modules (such as `path`)
+  * Repo level global imports (such as `modules`, `builtins`)
+  * Local Modules (using relative paths)
 * Prefer to import whole modules instead of singular functions
-    * Keep modules namespaced and organized
-    * This includes Node Modules (such as `fs`)
+  * Keep modules namespaced and organized
+  * This includes Node Modules (such as `fs`)
+
 ```js
 const fs = require("fs"); // Use this
 const {readFile, writeFile} = require("fs"); // Avoid this
@@ -189,9 +327,13 @@ import Utilities from "./utilities"; // Use this
 import {deepclone, isEmpty} from "./utilties"; // Avoid this
 ```
 
+TypeScript rules have been configured to allow for incremental adoption. JavaScript files will only be linted with
+JavaScript-specific rules, while TypeScript files will follow both JS and TS rules.
+
 ### CSS Styleguide
 
-All CSS must adhere to the [Stylelint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/renderer/.stylelintrc) of the repo.
+All CSS must adhere to
+the [Stylelint rules](https://github.com/BetterDiscord/BetterDiscord/blob/main/renderer/.stylelintrc) of the repo.
 
 Some other style related points not covered by StyleLint:
 
@@ -203,22 +345,28 @@ Some other style related points not covered by StyleLint:
 
 ### Issue Labels
 
-This section lists the labels we use to help us track and manage issues. Please open an issue if you have suggestions for new labels.
+This section lists the labels we use to help us track and manage issues. Please open an issue if you have suggestions
+for new labels.
 
-[GitHub search](https://help.github.com/articles/searching-issues/) makes it easy to use labels for finding groups of issues or pull requests you're interested in. For example, you might be interested in [bugs that have not been able to be reproduced](https://github.com/BetterDiscord/BetterDiscord/issues?q=is%3Aopen+label%3A%22can%27t+reproduce%22+label%3A%22bug%22). To help you find issues, each label is listed with search links for finding open items with that label. We encourage you to read about [other search filters](https://help.github.com/articles/searching-issues/) which will help you write more focused queries.
+[GitHub search](https://help.github.com/articles/searching-issues/) makes it easy to use labels for finding groups of
+issues or pull requests you're interested in. For example, you might be interested
+in [bugs that have not been reproduced](https://github.com/BetterDiscord/BetterDiscord/issues?q=is%3Aopen+label%3A%22can%27t+reproduce%22+label%3A%22bug%22).
+To help you find issues, each label is listed with search links for finding open items with that label. We encourage you
+to read about [other search filters](https://help.github.com/articles/searching-issues/) which will help you write more
+focused queries.
 
 #### Type of Issue and Issue State
 
-| Label name | Description | View All |
-| --- | --- | --- |
-| `awaiting response` | Waiting for a response from the user, issues with this tag are prone to pruning. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/bug) |
-| `bug` | Issue related to a bug report, may or may not be yet confirmed. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/awaiting%20response) |
-| `can't fix` | Issues which are invalid or are a limitation of something else like Electron. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/can%27t%20fix) |
-| `can't reproduce` | Reported bugs that could not be confirmed, help welcome. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/can%27t%20reproduce) |
-| `confirmed` | Confirmed bugs to be actively worked. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/confirmed) |
-| `duplicate` | Issues which are duplicates of other issues, i.e. they have been reported before. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/duplicate) |
-| `enhancement` | Feature or improvement suggestion. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/enhancement) |
-| `help wanted` | Help from the community appreciated. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/help%20wanted) |
-| `needs info` | Issue did not supply enough information to take action on. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/needs%20info) |
-| `question` | Questions more than bug reports or feature requests (e.g. how do I do X). | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/question) |
-| `wontfix` | Decision has been made not to fix these issues at least for now. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/wontfix) |
+| Label name          | Description                                                                       | View All                                                                              |
+|---------------------|-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| `awaiting response` | Waiting for a response from the user, issues with this tag are prone to pruning.  | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/bug)                 |
+| `bug`               | Issue related to a bug report, may or may not be yet confirmed.                   | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/awaiting%20response) |
+| `can't fix`         | Issues which are invalid or are a limitation of something else like Electron.     | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/can%27t%20fix)       |
+| `can't reproduce`   | Reported bugs that could not be confirmed, help welcome.                          | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/can%27t%20reproduce) |
+| `confirmed`         | Confirmed bugs to be actively worked.                                             | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/confirmed)           |
+| `duplicate`         | Issues which are duplicates of other issues, i.e. they have been reported before. | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/duplicate)           |
+| `enhancement`       | Feature or improvement suggestion.                                                | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/enhancement)         |
+| `help wanted`       | Help from the community appreciated.                                              | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/help%20wanted)       |
+| `needs info`        | Issue did not supply enough information to take action on.                        | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/needs%20info)        |
+| `question`          | Questions more than bug reports or feature requests (e.g. how do I do X).         | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/question)            |
+| `wontfix`           | Decision has been made not to fix these issues at least for now.                  | [View All](https://github.com/BetterDiscord/BetterDiscord/labels/wontfix)             |
