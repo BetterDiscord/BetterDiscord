@@ -3,13 +3,13 @@ import Patcher from "@modules/patcher";
 import Utils from "@modules/utilities";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
-import UI from "@api/ui";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
 import {PackageOpenIcon} from "lucide-react";
 import Logger from "@common/logger";
 import NotificationUI from "@modules/notification";
 import Toasts from "@ui/toasts.js";
+import Modals from "@ui/modals.js";
 
 class InstallCSS {
     static activeNotifications = new Map();
@@ -44,7 +44,7 @@ class InstallCSS {
                             return;
                         }
 
-                        UI.showConfirmationModal(
+                        Modals.showConfirmationModal(
                             Strings.Modals.confirmAction,
                             Strings.Modals.installCss,
                             {
@@ -66,7 +66,7 @@ class InstallCSS {
 
             CustomCSS.saveCSS(newCSS);
             CustomCSS.insertCSS(newCSS);
-            UI.showToast(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
+            Toasts.showToast(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
 
             const notificationId = `css-undo-${Date.now()}`;
 
