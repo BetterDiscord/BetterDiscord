@@ -26,7 +26,7 @@ class InstallCSS {
             const currentText = Utils.findInTree(res, x => x?.text, {walkable: ["props", "children"]})?.text;
             codeActions.children = [
                 codeActions.children,
-                <PackageOpenIcon size="16px" key="icon" onClick={async (event) => {
+                <PackageOpenIcon style={{cursor: "pointer"}} size="16px" key="icon" onClick={async (event) => {
                     if (event.shiftKey) {
                         this.handleCSSInstall(currentText);
                         return;
