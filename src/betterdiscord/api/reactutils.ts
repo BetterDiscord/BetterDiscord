@@ -92,7 +92,13 @@ const ReactUtils: ReactUtils = {
         return document.getElementById("app-mount")?._reactRootContainer?._internalRoot?.current;
     },
 
-    getInternalInstance(node: HTMLElement) {
+    /**
+     * Gets the internal React data of a specified node.
+     *
+     * @param {HTMLElement} node Node to get the internal React data from
+     * @returns {object|undefined} Either the found data or `undefined`
+     */
+    getInternalInstance(node: HTMLElement): object | undefined {
         if ((node as any).__reactFiber$) return (node as any).__reactFiber$;
         const key = Object.keys(node).find(
             k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber")
@@ -100,11 +106,22 @@ const ReactUtils: ReactUtils = {
         return key ? (node as any)[key] : null;
     },
 
+    /**
+     * Attempts to find the "owner" node to the current node. This is generally
+     * a node with a `stateNode` - a class component.
+     *
+     * @param {HTMLElement} node Node to obtain React instance of
+     * @param {object} options Options for the search
+     * @param {array} [options.include] List of items to include in the search
+     * @param {array} [options.exclude=["Popout", "Tooltip", "Scroller", "BackgroundFlash"]] List of items to exclude from the search.
+     * @param {callable} [options.filter=_=>_] Filter to check the current instance with (should return a boolean)
+     * @return {object|undefined} The owner instance or `undefined` if not found
+     */
     getOwnerInstance(node: HTMLElement | undefined, {
         include,
         exclude = ["Popout", "Tooltip", "Scroller", "BackgroundFlash"],
         filter = () => true
-    }: GetOwnerInstanceOptions = {}) {
+    }: GetOwnerInstanceOptions = {}): object | undefined | null {
         if (!node) return null;
         const excluding = include === undefined;
         const nameFilter = excluding ? exclude : include;
@@ -132,8 +149,14 @@ const ReactUtils: ReactUtils = {
         return null;
     },
 
+    /**
+     * Creates an unrendered React component that wraps HTML elements.
+     *
+     * @param {HTMLElement} element Element or array of elements to wrap
+     * @returns {object} Unrendered React component
+     */
     wrapElement(element: HTMLElement | HTMLElement[]) {
-        return class ReactWrapper extends DiscordModules.React.Component {
+        return class ReactWrapper extends React.Component {
             element: HTMLElement | HTMLElement[];
             state: { hasError: boolean };
 
