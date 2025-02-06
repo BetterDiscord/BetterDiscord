@@ -115,6 +115,8 @@ export default ts.config(
     {
         files: ["**/*.ts", "**/*.tsx"],
         rules: {
+            "@typescript-eslint/no-explicit-any": ["off"],
+            "@typescript-eslint/no-unnecessary-type-constraint": ["off"],
             "@typescript-eslint/array-type": ["error", {"default": "array-simple"}],
             "@typescript-eslint/no-unused-vars": ["error", {argsIgnorePattern: "^_", varsIgnorePattern: "^_"}]
         }

@@ -6,7 +6,6 @@ import Builtin from "@structs/builtin";
 import Settings from "@modules/settingsmanager";
 import DataStore from "@modules/datastore";
 import React from "@modules/react";
-import WebpackModules from "@modules/webpackmodules";
 import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
 import Strings from "@modules/strings";
@@ -16,9 +15,10 @@ import Utilities from "@modules/utilities";
 import CSSEditor from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
+import {getByKeys} from "@modules/webpack";
 
 
-const UserSettings = WebpackModules.getByProps("updateAccount");
+const UserSettings = getByKeys([ "updateAccount" ]);
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}

@@ -1,6 +1,5 @@
 import Builtin from "@structs/builtin";
 
-import WebpackModules, {Filters} from "@modules/webpackmodules";
 import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
 import ReactUtils from "@api/reactutils";
@@ -13,8 +12,9 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
+import {Filters, getByKeys, getLazy} from "@modules/webpack";
 
-const SimpleMarkdownWrapper = WebpackModules.getByProps("parse", "defaultRules");
+const SimpleMarkdownWrapper = getByKeys([ "parse", "defaultRules" ]);
 let MessageAccessories;
 
 const MAX_EMBEDS = 10;
@@ -185,7 +185,7 @@ export default new class AddonStoreBuiltin extends Builtin {
     }
  
     async patchEmbeds() {
-        MessageAccessories ??= await WebpackModules.getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
+        MessageAccessories ??= await getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
 
         this.after(MessageAccessories.prototype, "renderEmbeds", (_, [ message ], res) => {
             if (!Settings.get(this.collection, this.category, "addonEmbeds")) {

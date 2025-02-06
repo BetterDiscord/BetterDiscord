@@ -1,9 +1,8 @@
 import Patcher from "@modules/patcher";
-import Webpack from "../api/webpack";
-import {Filters} from "@modules/webpackmodules";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
+import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "./webpack";
 
 export const CommandTypes = {
     CHAT_INPUT: 1,
@@ -54,8 +53,8 @@ export const MessageEmbedTypes = {
   };
 
 const iconClasses = {
-    ...Webpack.getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
-    builtInSeparator: Webpack.getModule(x => x.builtInSeparator)?.builtInSeparator
+    ...getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
+    builtInSeparator: getModule(x => x.builtInSeparator)?.builtInSeparator
 };
 
 const getAcronym = (input) =>
@@ -81,10 +80,10 @@ class CommandManager {
 
     static #patchCommandSystem() {
 
-        this.User = Webpack.getByStrings("hasHadPremium(){");
-        this.createBotMessage = Webpack.getByStrings("username:\"Clyde\"", {searchExports: true});
-        this.MessagesModule = Webpack.getModule(x => x.receiveMessage);
-        this.IconsModule = Webpack.getModule(x => x.BOT_AVATARS);
+        this.User = getByStrings([ "hasHadPremium(){" ]);
+        this.createBotMessage = getByStrings([ "username:\"Clyde\"" ], {searchExports: true});
+        this.MessagesModule = getModule(x => x.receiveMessage);
+        this.IconsModule = getModule(x => x.BOT_AVATARS);
         
         this.localBDBot = new this.User({
             avatar: "betterdiscord",
@@ -103,7 +102,7 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = Webpack.getByStrings(".BUILT_IN?", "categoryListRef:", {defaultExport: false});
+        const SidebarModule = getByStrings([ ".BUILT_IN?", "categoryListRef:" ], {defaultExport: false});
 
         Patcher.after("CommandManager", SidebarModule, "Z", (that, [props], res) => {
             if (!this.#sections.size) return;            
@@ -137,7 +136,7 @@ class CommandManager {
     }
 
     static #patchIndexStore() {        
-        const [mod, key] = Webpack.getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
+        const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
 
         Patcher.after("CommandManager", mod, key, (that, args, res) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
@@ -166,7 +165,7 @@ class CommandManager {
     }
 
     static #patchQuery() {
-        const ApplicationCommandIndexStore = Webpack.getStore("ApplicationCommandIndexStore");
+        const ApplicationCommandIndexStore = getStore("ApplicationCommandIndexStore");
 
         Patcher.after("CommandManager", ApplicationCommandIndexStore, "query", (that, args, res) => {
             if (!args[1].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
@@ -194,8 +193,8 @@ class CommandManager {
     }
 
     static #patchApplicationIcons() {
-        const [mod, key] = Webpack.getWithKey(Webpack.Filters.byStrings(".type===", ".BUILT_IN?"), {
-            target: Webpack.getModule((e, m) => Webpack.modules[m.id].toString().includes("hasSpaceTerminator:"))
+        const [mod, key] = getWithKey(Filters.byStrings(".type===", ".BUILT_IN?"), {
+            target: getModule((e, m) => modules[m.id].toString().includes("hasSpaceTerminator:"))
         });
 
         Patcher.after("CommandManager", mod, key, (that, [{id}], res) => {

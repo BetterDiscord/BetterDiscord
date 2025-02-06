@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import WebpackModules from "@modules/webpackmodules";
+import {getByKeys, getModule} from "@modules/webpack";
 
-const Spring = WebpackModules.getByProps("useSpring", "animated");
-const Anims = WebpackModules.getByProps("Easing");
+const Spring = getByKeys([ "useSpring", "animated" ]);
+const Anims = getByKeys([ "Easing" ]);
 
 
 export const Sizes = Object.freeze({
@@ -19,8 +19,8 @@ export const Styles = Object.freeze({
 });
 
 
-const AccessibilityContext = WebpackModules.getModule(m => m?._currentValue?.reducedMotion, {searchExports: true});
-const FocusLock = WebpackModules.getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true}) ?? React.Fragment;
+const AccessibilityContext = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true});
+const FocusLock = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true}) ?? React.Fragment;
 
 export default function ModalRoot({className, transitionState, children, size = Sizes.DYNAMIC, style = Styles.CUSTOM}) {
     const visible = transitionState == 0 || transitionState == 1; // 300 ms

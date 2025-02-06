@@ -1,10 +1,10 @@
-import WebpackModules from "@modules/webpackmodules";
 import DOMManager from "@modules/dommanager";
+import {getByKeys} from "@modules/webpack";
 
 
 export default class Notices {
-    static get baseClass() {return this.__baseClass ??= WebpackModules.getByProps("container", "base", "sidebar")?.base;}
-    static get errorPageClass() {return this.__errorPageClass ??= WebpackModules.getByProps("errorPage")?.errorPage;}
+    static get baseClass() {return this.__baseClass ??= getByKeys([ "container", "base", "sidebar" ])?.base;}
+    static get errorPageClass() {return this.__errorPageClass ??= getByKeys([ "errorPage" ])?.errorPage;}
 
     /** Shorthand for `type = "info"` for {@link module:Notices.show} */
     static info(content, options = {}) {return this.show(content, Object.assign({}, options, {type: "info"}));}

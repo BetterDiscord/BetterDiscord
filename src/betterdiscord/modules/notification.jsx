@@ -27,7 +27,7 @@ const Icon = ({type}) => {
 class NotificationUI {
     static notifications = [];
     static setNotifications = null;
-    static patch = Webpack.getBySource("\"Shakeable is shaken when not mounted\"")?.Z;
+    static patch = Webpack.getBySource([ "\"Shakeable is shaken when not mounted\"" ], {searchDefault: false})?.Z;
 
     static initialize() {
         Patcher.after("NotificationPatch", this?.patch, "type", (_, __, res) => {

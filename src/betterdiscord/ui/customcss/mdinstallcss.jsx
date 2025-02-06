@@ -1,4 +1,3 @@
-import WebpackModules from "@modules/webpackmodules";
 import Patcher from "@modules/patcher";
 import Utils from "@api/utils";
 import CustomCSS from "@builtins/customcss";
@@ -7,11 +6,13 @@ import UI from "@api/ui";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
 import {PackageOpenIcon} from "lucide-react";
+import {getBySource} from "@modules/webpack";
 
 
 class InstallCSS {
     static initialize() {
-        const patch = WebpackModules.getBySource(".VOICE_HANGOUT_INVITE?\"\":");
+        const patch = getBySource([".VOICE_HANGOUT_INVITE?\"\":"], {searchDefault: false});
+
         Patcher.after("InstallCSS", patch?.ZP, "type", (_, [args], res) => {
             const isEnabled = Settings.get("customcss", "customcss");
             if (!isEnabled) return;

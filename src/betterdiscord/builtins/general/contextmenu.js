@@ -2,7 +2,6 @@ import Builtin from "@structs/builtin";
 
 import Strings from "@modules/strings";
 import Settings from "@modules/settingsmanager";
-import Webpack from "@modules/webpackmodules";
 
 import ContextMenuPatcher from "@api/contextmenu";
 import pluginManager from "@modules/pluginmanager";
@@ -10,10 +9,11 @@ import themeManager from "@modules/thememanager";
 import Utilities from "@modules/utilities";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
+import {getByKeys} from "@modules/webpack";
 
 
 const ContextMenu = new ContextMenuPatcher();
-const UserSettingsWindow = Webpack.getByProps("open", "updateAccount");
+const UserSettingsWindow = getByKeys([ "open", "updateAccount" ]);
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
