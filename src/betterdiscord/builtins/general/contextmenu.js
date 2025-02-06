@@ -10,6 +10,7 @@ import themeManager from "@modules/thememanager";
 import Utilities from "@modules/utilities";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
+import Modals from "@ui/modals";
 
 
 const ContextMenu = new ContextMenuPatcher();
@@ -105,7 +106,17 @@ export default new class BDContextMenu extends Builtin {
                 label: name,
                 disabled: manager.getAddon(name)?.partial ?? false,
                 active: manager.isEnabled(name),
-                action: () => manager.toggleAddon(name)
+                action: (e) => {
+                    if (!e.shiftKey) manager.toggleAddon(name);
+                    else {
+                        let addon = manager.getAddon(name);
+                        const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
+                        const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
+                        if (hasSettings) {
+                            Modals.showAddonSettingsModal(name, getSettings());
+                        }
+                    }
+                }
             };
         });
 
