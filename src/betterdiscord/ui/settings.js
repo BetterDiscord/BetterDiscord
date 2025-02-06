@@ -12,7 +12,7 @@ import DiscordModules from "@modules/discordmodules";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
 
-import ReactUtils from "@api/reactutils.js";
+import ReactUtils from "@api/reactutils";
 
 import Button from "@ui/base/button";
 import Modals from "@ui/modals";

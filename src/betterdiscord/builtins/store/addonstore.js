@@ -3,7 +3,7 @@ import Builtin from "@structs/builtin";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
 import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
-import ReactUtils from "@api/reactutils.js";
+import ReactUtils from "@api/reactutils";
 import Utilities from "@modules/utilities";
 import Settings from "@modules/settingsmanager";
 
