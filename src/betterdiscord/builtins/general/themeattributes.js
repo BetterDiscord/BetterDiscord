@@ -1,6 +1,6 @@
 import Builtin from "@structs/builtin";
 import Utilities from "@modules/utilities";
-import {getByStrings, getModule} from "@modules/webpack";
+import {getByStrings, getModule} from "@webpack";
 
 const MessageComponent = getByStrings([ "isSystemMessage", "hasReply" ], {defaultExport: false});
 const TabBarComponent = getByStrings([ "({getFocusableElements:()=>{let" ], {searchExports: true});

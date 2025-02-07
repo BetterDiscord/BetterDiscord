@@ -6,7 +6,7 @@ import UI from "@api/ui";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
 import {PackageOpenIcon} from "lucide-react";
-import {getBySource} from "@modules/webpack";
+import {getBySource} from "@webpack";
 
 
 class InstallCSS {

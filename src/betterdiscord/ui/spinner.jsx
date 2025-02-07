@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import {getModule} from "@modules/webpack";
+import {getModule} from "@webpack";
 
 const AccessibilityContext = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true}) || React.createContext({
     reducedMotion: {enabled: false}

@@ -12,9 +12,9 @@ import Content from "./content";
 import ModalRoot from "./root";
 import Footer from "./footer";
 import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
-import {getByKeys} from "@modules/webpack";
+import {getByKeys} from "@webpack";
 
-const Parser = Object(getByKeys([ "defaultRules", "parse" ])).defaultRules;
+const Parser = Object(getByKeys(["defaultRules", "parse"])).defaultRules;
 const {useState, useCallback, useMemo} = React;
 
 const joinClassNames = (...classNames) => classNames.filter(e => e).join(" ");

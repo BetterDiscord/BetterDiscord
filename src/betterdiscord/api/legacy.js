@@ -12,7 +12,7 @@ import ipc from "@modules/ipc";
 import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Modals from "@ui/modals";
-import {getAllModules, getByDisplayName, getByKeys, getByPrototypes, getModule} from "@modules/webpack";
+import {getAllModules, getByDisplayName, getByKeys, getByPrototypes, getModule} from "@webpack";
 
 /** 
  * The React module being used inside Discord.

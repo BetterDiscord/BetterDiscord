@@ -16,7 +16,7 @@ import Toasts from "@ui/toasts";
 import {FlowerStar} from "./addonshared";
 import AddonStore from "@modules/addonstore";
 import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
-import {getByKeys} from "@modules/webpack";
+import {getByKeys} from "@webpack";
 
 const {useState, useCallback, useMemo, useEffect} = React;
 
@@ -48,10 +48,10 @@ const LayerManager = {
     }
 };
 
-const UserStore = getByKeys([ "getCurrentUser" ]);
-const ChannelStore = getByKeys([ "getDMFromUserId" ]);
-const PrivateChannelActions = getByKeys([ "openPrivateChannel" ]);
-const ChannelActions = getByKeys([ "selectPrivateChannel" ]);
+const UserStore = getByKeys(["getCurrentUser"]);
+const ChannelStore = getByKeys(["getDMFromUserId"]);
+const PrivateChannelActions = getByKeys(["openPrivateChannel"]);
+const ChannelActions = getByKeys(["selectPrivateChannel"]);
 const getString = value => typeof value == "string" ? value : value.toString();
 
 function makeButton(title, children, action, {isControl = false, danger = false, disabled = false} = {}) {

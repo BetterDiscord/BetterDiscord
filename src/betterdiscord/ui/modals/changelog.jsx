@@ -14,12 +14,12 @@ import CloseButton from "./close";
 import SimpleMarkdownExt from "@structs/markdown";
 import Modals from "@ui/modals";
 import {GithubIcon, TwitterIcon} from "lucide-react";
-import {getByKeys} from "@modules/webpack";
+import {getByKeys} from "@webpack";
 
 const {useMemo} = React;
 
 
-const AnchorClasses = getByKeys([ "anchorUnderlineOnHover" ]) || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
+const AnchorClasses = getByKeys(["anchorUnderlineOnHover"]) || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
 const joinSupportServer = (click) => {
     click.preventDefault();
     click.stopPropagation();

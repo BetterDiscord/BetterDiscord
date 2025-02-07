@@ -1,5 +1,5 @@
 import Logger from "@common/logger";
-import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@modules/webpack";
+import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
 

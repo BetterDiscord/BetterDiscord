@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
-import {getModule} from "@modules/webpack";
+import {getModule} from "@webpack";
 
 
 let DiscordMarkdown, rules;

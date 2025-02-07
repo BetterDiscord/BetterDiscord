@@ -4,7 +4,7 @@ import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
 
 import FloatingWindowContainer from "./floating/container";
-import { getByDisplayName } from "@modules/webpack";
+import {getByDisplayName} from "@webpack";
 
 
 const AppLayerProvider = getByDisplayName("AppLayerProvider");

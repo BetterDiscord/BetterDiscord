@@ -1,4 +1,4 @@
-import {Filters, getByKeys, getModule, modules, webpackRequire} from "@modules/webpack";
+import {Filters, getByKeys, getModule, modules, webpackRequire} from "@webpack";
 import Patcher from "@modules/patcher";
 import Logger from "@common/logger";
 import React from "@modules/react";
@@ -6,7 +6,7 @@ import React from "@modules/react";
 
 let startupComplete = false;
 
-const ModulesBundle = getByKeys([ "MenuItem", "Menu" ]);
+const ModulesBundle = getByKeys(["MenuItem", "Menu"]);
 const MenuComponents = {
     Separator: ModulesBundle?.MenuSeparator,
     CheckboxItem: ModulesBundle?.MenuCheckboxItem,

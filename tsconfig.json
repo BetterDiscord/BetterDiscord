@@ -37,7 +37,8 @@
           "@polyfill/*": ["./src/betterdiscord/polyfill/*"],
           "@structs/*": ["./src/betterdiscord/structs/*"],
           "@styles/*": ["./src/betterdiscord/styles/*"],
-          "@ui/*": ["./src/betterdiscord/ui/*"]
+          "@ui/*": ["./src/betterdiscord/ui/*"],
+          "@webpack": ["./src/betterdiscord/webpack"],
       }
     },
     "include": ["src/**/*", "scripts/*", "tests/**/*"],

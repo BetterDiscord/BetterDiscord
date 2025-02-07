@@ -2,7 +2,7 @@ import React from "@modules/react";
 import Events from "@modules/emitter";
 
 import Backdrop from "./backdrop";
-import {getWithKey} from "@modules/webpack";
+import {getWithKey} from "@webpack";
 
 const {Fragment, useState, useCallback, useEffect} = React;
 

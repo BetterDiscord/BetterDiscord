@@ -2,13 +2,13 @@ import Logger from "@common/logger";
 
 import Settings from "@modules/settingsmanager";
 import DOMManager from "@modules/dommanager";
-import {getByKeys} from "@modules/webpack";
+import {getByKeys} from "@webpack";
 
 
 export default class Toasts {
 
-    static get ChannelsClass() {return getByKeys([ "sidebar", "hasNotice" ]).sidebar.split(" ")[0];}
-    static get MembersWrapClass() {return getByKeys([ "membersWrap" ]).membersWrap.split(" ")[0];}
+    static get ChannelsClass() {return getByKeys(["sidebar", "hasNotice"]).sidebar.split(" ")[0];}
+    static get MembersWrapClass() {return getByKeys(["membersWrap"]).membersWrap.split(" ")[0];}
 
     static get shouldShowToasts() {return Settings.get("settings", "general", "showToasts");}
 

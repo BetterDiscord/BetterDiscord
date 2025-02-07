@@ -22,9 +22,9 @@ import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
-import {getByKeys} from "./webpack";
+import {getByKeys} from "@webpack";
 
-const UserSettingsWindow = getByKeys([ "updateAccount" ]);
+const UserSettingsWindow = getByKeys(["updateAccount"]);
 
 const getJSON = url => {
     return new Promise(resolve => {

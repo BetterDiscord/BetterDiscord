@@ -24,7 +24,7 @@ import Header from "@ui/settings/sidebarheader";
 import Text from "./base/text";
 
 import {ListRestartIcon} from "lucide-react";
-import {Filters, getByKeys, getLazy} from "@modules/webpack";
+import {Filters, getByKeys, getLazy} from "@webpack";
 
 function makeResetButton(collectionId, refresh) {
     const action = confirmReset(() => {
@@ -239,7 +239,7 @@ export default new class SettingsRenderer {
     }
 
     forceUpdate() {
-        const viewClass = getByKeys([ "standardSidebarView" ])?.standardSidebarView.split(" ")[0];
+        const viewClass = getByKeys(["standardSidebarView"])?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
         const stateNode = Utilities.findInTree(ReactUtils.getInternalInstance(node), m => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});

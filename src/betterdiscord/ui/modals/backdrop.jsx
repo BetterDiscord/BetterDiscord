@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import {getByKeys} from "@modules/webpack";
+import {getByKeys} from "@webpack";
 
-const Spring = getByKeys([ "useSpring", "animated" ]);
+const Spring = getByKeys(["useSpring", "animated"]);
 
 
 export default function Backdrop({isVisible, className, onClick}) {

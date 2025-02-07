@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import {getByKeys, getModule} from "@modules/webpack";
+import {getByKeys, getModule} from "@webpack";
 
-const Spring = getByKeys([ "useSpring", "animated" ]);
-const Anims = getByKeys([ "Easing" ]);
+const Spring = getByKeys(["useSpring", "animated"]);
+const Anims = getByKeys(["Easing"]);
 
 
 export const Sizes = Object.freeze({

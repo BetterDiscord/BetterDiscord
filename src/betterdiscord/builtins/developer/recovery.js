@@ -8,7 +8,7 @@ import Settings from "@modules/settingsmanager";
 import pluginmanager from "@modules/pluginmanager";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
-import {getByKeys, getByPrototypes, getByStrings} from "@modules/webpack";
+import {getByKeys, getByPrototypes, getByStrings} from "@webpack";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
@@ -142,7 +142,7 @@ export default new class Recovery extends Builtin {
 
     async enabled() {
         this.patchErrorBoundry();
-        this.parseModule = getByKeys([ "defaultRules", "parse" ]);
+        this.parseModule = getByKeys(["defaultRules", "parse"]);
     }
 
     async disabled() {
@@ -166,7 +166,7 @@ export default new class Recovery extends Builtin {
     }
 
     patchErrorBoundry() {
-        const mod = getByPrototypes([ "_handleSubmitReport" ]);
+        const mod = getByPrototypes(["_handleSubmitReport"]);
 
         this.after(mod?.prototype, "render", (instance, args, retValue) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;

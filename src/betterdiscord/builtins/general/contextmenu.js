@@ -9,11 +9,11 @@ import themeManager from "@modules/thememanager";
 import Utilities from "@modules/utilities";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
-import {getByKeys} from "@modules/webpack";
+import {getByKeys} from "@webpack";
 
 
 const ContextMenu = new ContextMenuPatcher();
-const UserSettingsWindow = getByKeys([ "open", "updateAccount" ]);
+const UserSettingsWindow = getByKeys(["open", "updateAccount"]);
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}

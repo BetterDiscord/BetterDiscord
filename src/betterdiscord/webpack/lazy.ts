@@ -1,4 +1,4 @@
-import { getModule } from "./get-module";
+import { getModule } from "./searching";
 import { lazyListeners } from "./require";
 import { shouldSkipModule, getDefaultKey, wrapFilter } from "./shared";
 
@@ -21,24 +21,26 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
                 return;
             }
 
+            if (!searchExports && !searchDefault) return;
+
             let defaultKey: string | undefined;
-            const keys: string[] = [];
-            if (searchExports) keys.push(...Object.keys(module.exports));
-            else if (searchDefault && (defaultKey = getDefaultKey(module))) keys.push(defaultKey);
-
-            for (const key of keys) {
+            const searchKeys: string[] = [];
+            if (searchExports) searchKeys.push(...Object.keys(module.exports));
+            else if (searchDefault && (defaultKey = getDefaultKey(module))) searchKeys.push(defaultKey);
+    
+            for (let i = 0; i < searchKeys.length; i++) {
+                const key = searchKeys[i];
                 const exported = module.exports[key];
-
+    
                 if (shouldSkipModule(exported)) continue;
-
+    
                 if (filter(exported, module, module.id)) {
                     if (!defaultExport && defaultKey === key) {
-                        resolve(module.exports);
+                        resolve(raw ? module : exported);
                         cancel();
                         return;
                     }
-
-                    
+    
                     resolve(raw ? module : exported);
                     cancel();
                 }

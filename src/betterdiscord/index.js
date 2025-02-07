@@ -13,10 +13,6 @@ Object.defineProperty(window, "BdApi", {
 });
 window.global = window;
 
-import("@modules/webpack").then(r => {
-    window.__webpack__ = r;
-})
-
 // Add loading icon at the bottom right
 LoadingIcon.show();
 BetterDiscord.startup();

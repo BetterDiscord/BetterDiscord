@@ -12,9 +12,9 @@ import ErrorBoundary from "@ui/errorboundary";
 import Web from "@data/web";
 
 import RemoteAPI from "@polyfill/remote";
-import {Filters, getByKeys, getLazy} from "@modules/webpack";
+import {Filters, getByKeys, getLazy} from "@webpack";
 
-const SimpleMarkdownWrapper = getByKeys([ "parse", "defaultRules" ]);
+const SimpleMarkdownWrapper = getByKeys(["parse", "defaultRules"]);
 let MessageAccessories;
 
 const MAX_EMBEDS = 10;

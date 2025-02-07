@@ -23,7 +23,7 @@ import ConfirmationModal from "./modals/confirmation";
 import CustomMarkdown from "./base/markdown";
 import ChangelogModal from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
-import {Filters, getMangled, getModule} from "@modules/webpack";
+import {Filters, getMangled, getModule} from "@webpack";
 
 
 const native = getModule(m => m.minimize && m.architecture);

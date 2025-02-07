@@ -2,7 +2,7 @@ import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
-import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "./webpack";
+import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
 
 export const CommandTypes = {
     CHAT_INPUT: 1,
@@ -80,7 +80,7 @@ class CommandManager {
 
     static #patchCommandSystem() {
 
-        this.User = getByStrings([ "hasHadPremium(){" ]);
+        this.User = getByStrings(["hasHadPremium(){"]);
         this.createBotMessage = getByStrings([ "username:\"Clyde\"" ], {searchExports: true});
         this.MessagesModule = getModule(x => x.receiveMessage);
         this.IconsModule = getModule(x => x.BOT_AVATARS);

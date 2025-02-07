@@ -15,10 +15,10 @@ import Utilities from "@modules/utilities";
 import CSSEditor from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
-import {getByKeys} from "@modules/webpack";
+import {getByKeys} from "@webpack";
 
 
-const UserSettings = getByKeys([ "updateAccount" ]);
+const UserSettings = getByKeys(["updateAccount"]);
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
