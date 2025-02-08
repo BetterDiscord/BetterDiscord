@@ -25,24 +25,24 @@ function SettingsProvider({collection, category, id, children}) {
     return <SettingsContext.Provider value={state}>{children}</SettingsContext.Provider>;
 }
 
-export default function Group({onChange, id, name, button, shown, onDrawerToggle, showDivider, collapsible, settings, children, collection}) {
+export default function Group({onChange, id, name = "", button = null, shown, onDrawerToggle, showDivider = false, collapsible, settings, children = null, collection}) {
     const change = useCallback((settingId, value) => {
         if (id) onChange?.(id, settingId, value);
         else onChange?.(settingId, value);
     }, [id, onChange]);
 
     return <Drawer collapsible={collapsible} name={name} button={button} shown={shown} onDrawerToggle={onDrawerToggle} showDivider={showDivider}>
-                {settings?.length > 0 && settings.filter(s => !s.hidden).map((setting) => {
-                    const callback = value => {
-                        setting?.onChange?.(value);
-                        change(setting.id, value);
-                    };
-                    const settingItem = buildSetting({...setting, onChange: callback});
-                    if (!collection) return settingItem;
-                    return <SettingsProvider collection={collection} category={id} id={setting.id}>{settingItem}</SettingsProvider>;
-                })}
-                {children}
-            </Drawer>;
+        {settings?.length > 0 && settings.filter(s => !s.hidden).map((setting) => {
+            const callback = value => {
+                setting?.onChange?.(value);
+                change(setting.id, value);
+            };
+            const settingItem = buildSetting({...setting, onChange: callback});
+            if (!collection) return settingItem;
+            return <SettingsProvider collection={collection} category={id} id={setting.id}>{settingItem}</SettingsProvider>;
+        })}
+        {children}
+    </Drawer>;
 }
 
 

@@ -8,6 +8,7 @@ import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
 import Store from "./base";
 import type {ComponentType} from "react";
+import type AddonManager from "@modules/addonmanager";
 
 
 export interface SettingsCollection {
@@ -20,10 +21,14 @@ export interface SettingsCollection {
 export interface SettingsPanel {
     id: string;
     order: number;
+    className?: string;
     label: string;
     section: string;
-    clickListener?: () => void;
-    element?: ComponentType
+    clickListener?: (thisObject: unknown) => void;
+    onClick?: (event: MouseEvent) => void;
+    element?: ComponentType;
+    type?: "addon" | "settings";
+    manager?: AddonManager;
 }
 
 type State = Record<string, Record<string, any>>;
@@ -56,19 +61,26 @@ export default new class SettingsManager extends Store {
         this.collections.splice(location, 1);
     }
 
-    // TODO: Move this to SettingsRenderer and also add a registerContentPanel
-    registerPanel(id: string, name: string, options: {onClick: () => void; element: ComponentType; order: number}) {
+    registerPanel(id: string, name: string, options: {onClick?: () => void; element?: ComponentType; order: number; type?: "addon" | "settings"; manager?: AddonManager;}) {
         if (this.panels.find(p => p.id == id)) return Logger.error("Settings", "Already have a panel with id " + id);
-        const {element, onClick, order = 1} = options;
+        const {element, onClick, order = 1, type = "settings"} = options;
         const section: SettingsPanel = {
             id,
+            type,
             order,
             get label() {return Strings.Panels[id as keyof typeof Strings.Panels].toString() || name;},
             section: id
         };
+        if (options.manager) section.manager = options.manager;
         if (onClick) section.clickListener = onClick;
         if (element) section.element = element instanceof DiscordModules.React.Component ? () => DiscordModules.React.createElement(element, {}) : typeof(element) == "function" ? element : () => element;
         this.panels.push(section);
+    }
+
+    registerAddonPanel(manager: AddonManager) {
+        const plural = manager.prefix + "s";
+        const title = Strings.Panels[plural as keyof typeof Strings.Panels];
+        this.registerPanel(plural, title, {order: manager.order, type: "addon", manager: manager});
     }
 
     removePanel(id: string) {
@@ -99,7 +111,7 @@ export default new class SettingsManager extends Store {
         });
 
         const categories = collection.settings;
-        
+
         for (let cc = 0; cc < categories.length; cc++) {
             const category = categories[cc];
 
@@ -114,7 +126,7 @@ export default new class SettingsManager extends Store {
                 get: () => Strings.Collections[collection.id as keyof typeof Strings.Collections]?.[category.id]?.name?.toString() || categoryName
             });
 
-            
+
             for (let s = 0; s < category.settings.length; s++) {
                 const setting = category.settings[s];
 
@@ -214,19 +226,12 @@ export default new class SettingsManager extends Store {
         const categories = collection.settings;
         for (let cc = 0; cc < categories.length; cc++) {
             const category = categories[cc];
-            // if (category.type != "category") {
-            //     // console.log("cat", collection.id, category.id, this.get(collection.id, category.id), category.value);
-            //     if (this.get(collection.id, category.id) == category.defaultValue) continue;
-            //     this.set(collection.id, category.id, category.defaultValue);
-            // }
-            // else {
-                for (let s = 0; s < category.settings.length; s++) {
-                    const setting = category.settings[s];
-                    // console.log("setting", collection.id, category.id, setting.id, this.get(collection.id, category.id, setting.id), setting.defaultValue);
-                    if (this.get(collection.id, category.id, setting.id) == setting.defaultValue) continue;
-                    this.set(collection.id, category.id, setting.id, setting.defaultValue);
-                }
-            // }
+            for (let s = 0; s < category.settings.length; s++) {
+                const setting = category.settings[s];
+                // console.log("setting", collection.id, category.id, setting.id, this.get(collection.id, category.id, setting.id), setting.defaultValue);
+                if (this.get(collection.id, category.id, setting.id) == setting.defaultValue) continue;
+                this.set(collection.id, category.id, setting.id, setting.defaultValue);
+            }
         }
     }
 
@@ -256,14 +261,14 @@ export default new class SettingsManager extends Store {
         return this.state[collection][category][id!];
     }
 
-    set(collection: string, category: string, id: string, value?: unknown): any {
+    set(collection: string, category: string, id: string | unknown, value?: unknown): any {
         if (arguments.length == 3) {
             value = id;
             id = category;
             category = collection;
             collection = "settings";
         }
-        return this.onSettingChange(collection, category, id, value);
+        return this.onSettingChange(collection, category, id as string, value);
     }
 
     on(collection: string, category: string, identifier: string, callback: (val: unknown) => void) {

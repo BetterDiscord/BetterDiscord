@@ -29,20 +29,28 @@ export const Sizes = Object.freeze({
 });
 
 
-export default function Text({tag: Tag = "div", className, children, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style}) {
+/**
+ *
+ * @param {object} props
+ * @param {string} [props.color=Colors.STANDARD]
+ * @param {string} [props.size=Sizes.SIZE_14]
+ * @param {any[]|any|null} [props.children=null]
+ * @returns
+ */
+export default function Text({tag: Tag = "div", className = "", children = null, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style}) {
     return <Tag
-                className={
-                    clsx(
-                        color, size, className,
-                        {
-                            "bd-selectable": selectable,
-                            "bd-text-strong": strong
-                        }
-                    )}
-                style={style}
-            >
-            {children}
-            </Tag>;
+        className={
+            clsx(
+                color, size, className,
+                {
+                    "bd-selectable": selectable,
+                    "bd-text-strong": strong
+                }
+            )}
+        style={style}
+    >
+        {children}
+    </Tag>;
 }
 
 Text.Colors = Colors;

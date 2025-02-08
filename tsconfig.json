@@ -1,25 +1,25 @@
 {
   "compilerOptions": {
       // Enable latest features
-      "lib": ["ESNext"],
+      "lib": ["ESNext", "DOM"],
       "target": "ESNext",
       "module": "ESNext",
       "moduleDetection": "force",
       "jsx": "react",
       "jsxFactory": "React.createElement",
       "allowJs": true,
-  
+
       // Bundler mode
       "moduleResolution": "bundler",
       "allowImportingTsExtensions": true,
       "verbatimModuleSyntax": true,
       "noEmit": true,
-  
+
       // Best practices
       "strict": true,
       "skipLibCheck": true,
       "noFallthroughCasesInSwitch": true,
-  
+
       // Some stricter flags
       "noUnusedLocals": true,
       "noUnusedParameters": true,
@@ -31,14 +31,17 @@
           "@common/*": ["./src/common/*"],
           "@builtins/*": ["./src/betterdiscord/builtins/*"],
           "@data/*": ["./src/betterdiscord/data/*"],
+          "@discord/*": ["./src/betterdiscord/types/discord/*"],
           "@api/*": ["./src/betterdiscord/api/*"],
           "@modules/*": ["./src/betterdiscord/modules/*"],
           "@polyfill/*": ["./src/betterdiscord/polyfill/*"],
           "@stores/*": ["./src/betterdiscord/stores/*"],
           "@structs/*": ["./src/betterdiscord/structs/*"],
           "@styles/*": ["./src/betterdiscord/styles/*"],
-          "@ui/*": ["./src/betterdiscord/ui/*"]
-      }
+          "@ui/*": ["./src/betterdiscord/ui/*"],
+          "@utils/*": ["./src/betterdiscord/utils/*"]
+      },
+      // "typeRoots": ["node_modules/@types", "src/betterdiscord/types"]
     },
     "include": ["src/**/*", "scripts/*", "tests/**/*"],
 }

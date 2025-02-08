@@ -17,7 +17,7 @@
         "dist": "bun run build:production && bun scripts/pack.js",
         "api": "bun run --bun jsdoc -X -r renderer/src/modules/api/ > dist/jsdoc-ast.json",
         "translations": "bun -r dotenv/config scripts/translations.js",
-        "circulars": "bun run --bun dpdm --no-warning --no-tree src/betterdiscord/index.js"
+        "circulars": "bun run --bun dpdm -T --no-warning --no-tree src/betterdiscord/index.js"
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",

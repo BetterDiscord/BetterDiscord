@@ -12,8 +12,11 @@ import SettingsTitle from "@ui/settings/title";
 import {ListRestartIcon} from "lucide-react";
 
 
-function makeResetButton(collectionId) {
-    const action = confirmReset(() => Settings.resetCollection(collectionId));
+function makeResetButton(collectionId, refresh) {
+    const action = confirmReset(() => {
+        Settings.resetCollection(collectionId);
+        refresh?.();
+    });
     return <DiscordModules.Tooltip color="primary" position="top" text={Strings.Settings.resetSettings}>
                 {(props) =>
                     <Button {...props} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} onClick={action}>
@@ -25,7 +28,7 @@ function makeResetButton(collectionId) {
 
 /**
  * @param {function} action
- * @returns 
+ * @returns
  */
 function confirmReset(action) {
     return () => {
@@ -39,15 +42,13 @@ function confirmReset(action) {
 }
 
 export default function SettingsPanel({id, title, groups, onChange, onDrawerToggle, getDrawerState}) {
-
-    // TODO: add onChange here to lift and manage state here
-
     return <>
         <SettingsTitle text={title}>
             {makeResetButton(id)}
         </SettingsTitle>,
         {groups.map(section => {
             const props = Object.assign({}, section, {
+                collection: id,
                 onChange,
                 onDrawerToggle: state => onDrawerToggle(id, section.id, state),
                 shown: getDrawerState(id, section.id, section.hasOwnProperty("shown") ? section.shown : true)
