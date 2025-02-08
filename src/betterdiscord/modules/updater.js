@@ -16,15 +16,15 @@ import React from "./react";
 import Settings from "@stores/settings";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
-import WebpackModules from "./webpackmodules";
 
 import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
+import {getByKeys} from "@webpack";
 
-const UserSettingsWindow = WebpackModules.getByProps("updateAccount");
+const UserSettingsWindow = getByKeys(["updateAccount"]);
 
 const getJSON = url => {
     return new Promise(resolve => {

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
       // Enable latest features
-      "lib": ["ESNext"],
+      "lib": ["ESNext", "DOM"],
       "target": "ESNext",
       "module": "ESNext",
       "moduleDetection": "force",
@@ -19,6 +19,7 @@
       "strict": true,
       "skipLibCheck": true,
       "noFallthroughCasesInSwitch": true,
+      "noImplicitAny": true,
   
       // Some stricter flags
       "noUnusedLocals": true,
@@ -37,7 +38,8 @@
           "@stores/*": ["./src/betterdiscord/stores/*"],
           "@structs/*": ["./src/betterdiscord/structs/*"],
           "@styles/*": ["./src/betterdiscord/styles/*"],
-          "@ui/*": ["./src/betterdiscord/ui/*"]
+          "@ui/*": ["./src/betterdiscord/ui/*"],
+          "@webpack": ["./src/betterdiscord/webpack"],
       }
     },
     "include": ["src/**/*", "scripts/*", "tests/**/*"],

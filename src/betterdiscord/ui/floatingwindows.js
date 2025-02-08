@@ -2,12 +2,12 @@ import React from "@modules/react";
 import ReactDOM from "@modules/reactdom";
 import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
-import WebpackModules from "@modules/webpackmodules";
 
 import FloatingWindowContainer from "./floating/container";
+import {getByDisplayName} from "@webpack";
 
 
-const AppLayerProvider = WebpackModules.getByDisplayName("AppLayerProvider");
+const AppLayerProvider = getByDisplayName("AppLayerProvider");
 
 let hasInitialized = false;
 export default class FloatingWindows {
