@@ -108,6 +108,7 @@ export class CoreUpdater {
     static remoteVersion = "";
 
     static async initialize() {
+        if (Config.development) return; // Don't run updater on development build
         if (!Settings.get("addons", "checkForUpdates")) return;
         this.checkForUpdate();
     }

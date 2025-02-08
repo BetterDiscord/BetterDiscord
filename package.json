@@ -9,7 +9,7 @@
         "build:main": "bun run build --module=main",
         "build:preload": "bun run build --module=preload",
         "build:betterdiscord": "bun run build --module=betterdiscord",
-        "build:production": "bun run build --minify",
+        "build:production": "NODE_ENV=production bun run build --minify",
         "inject": "bun scripts/inject.js",
         "lint": "bun run --bun eslint",
         "lint-css": "stylelint src/betterdiscord/styles/*.css && stylelint src/betterdiscord/styles/**/*.css",

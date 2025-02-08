@@ -8,6 +8,7 @@ let userData = "";
 export default {
     get branch() {return process.env.__BRANCH__;},
     get commit() {return process.env.__COMMIT__;},
+    get development() {return process.env.__DEVELOPMENT__;},
 
     /** @type {string} */
     get version() {return version;},

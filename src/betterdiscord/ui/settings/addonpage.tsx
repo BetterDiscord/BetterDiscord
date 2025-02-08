@@ -22,7 +22,7 @@ export default function AddonPage(props: any) {
     return (
         <addonContext.Provider value={{toggleStore, showingStore: showStore, ...props}}>
             {showStore ? (
-                <AddonStorePage {...props} />
+                <AddonStorePage {...props} type={props.store.prefix} />
             ) : (
                 <AddonList {...props} />
             )}
