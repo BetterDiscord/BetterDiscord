@@ -1,42 +1,6 @@
-import { Filters, getModule } from ".";
+import type {FluxStore, FluxStoreConstructor, CommonlyUsedStores} from "discord/modules";
+import {Filters, getModule} from ".";
 
-interface FluxStore {
-    _dispatchToken: string;
-    _isInitialized: boolean;
-    getName(): string;
-    getDispatchToken(): string;
-    
-    initialize(): void;
-    initializeIfNeeded(): void;
-
-    emitChange(): void;
-    hasChangeCallbacks(): boolean;
-    addChangeListener(listener: () => void): void;
-    removeChangeListener(listener: () => void): void;
-    addReactChangeListener(listener: () => void): void;
-    removeReactChangeListener(listener: () => void): void;
-    
-    syncWith(stores: FluxStore[], emitChange: boolean, delay?: number): void;
-    waitFor(...stores: FluxStore[]): void;
-
-    [key: PropertyKey]: any;
-}
-
-interface FluxStoreConstructor {
-    new (dispatcher: unknown, handlers: unknown): FluxStore,
-    getAll(): FluxStore[],
-    prototype: FluxStore
-}
-
-type CommonlyUsedStores = (
-    "UserStore" |
-    "GuildStore" |
-    "SelectedGuildStore" |
-    "GuildMemberStore" |
-    "ChannelStore" |
-    "SelectedChannelStore" |
-    "MessageStore"
-);
 
 type StoreNameType = CommonlyUsedStores | string & { _name_?: "" };
 

@@ -30,7 +30,7 @@ import type {Addon} from "betterdiscordweb";
 import {getByKeys} from "@webpack";
 
 
-const UserSettingsWindow = getByKeys<{open?: (id: string) => void}>(["updateAccount"]);
+const UserSettingsWindow = getByKeys<{open?(id: string): void}>(["updateAccount"]);
 
 const getJSON = (url: string) => {
     return new Promise(resolve => {

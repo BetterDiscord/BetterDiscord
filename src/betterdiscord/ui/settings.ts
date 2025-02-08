@@ -78,7 +78,7 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        const UserSettings = await getLazy<{prototype: {getPredicateSections: () => Section[]}}>(Filters.byPrototypeKeys(["getPredicateSections"]));
+        const UserSettings = await getLazy<{prototype: {getPredicateSections(): Section[]}}>(Filters.byPrototypeKeys(["getPredicateSections"]));
         if (!UserSettings) return;
 
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
@@ -114,7 +114,7 @@ export default new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getLazy<{Z: () => void}>(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
+        const versionDisplayModule = await getLazy<{Z(): void}>(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
         if (!versionDisplayModule?.Z) return;
 
         Patcher.after("SettingsManager", versionDisplayModule, "Z", () => {
