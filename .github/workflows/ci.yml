@@ -30,6 +30,9 @@ jobs:
 
       - name: Build asar
         run: bun run dist
+        env:
+          BRANCH_NAME: ${{github.head_ref || github.ref_name}}
+          COMMIT_HASH: ${{github.sha}}
 
       # Only upload artifact on PR, otherwise it gets pushed to canary
       - name: Upload artifact

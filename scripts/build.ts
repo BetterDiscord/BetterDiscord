@@ -10,8 +10,8 @@ const fileURL = Bun.fileURLToPath(import.meta.url);
 const rootDir = path.join(path.dirname(fileURL), "..");
 const isProduction = process.argv.includes("--minify");
 
-const BRANCH_NAME = (await $`git symbolic-ref --short HEAD`.quiet().text()).trim();
-const COMMIT_HASH = (await $`git rev-parse --short HEAD`.quiet().text()).trim();
+const BRANCH_NAME = Bun.env.BRANCH_NAME ?? (await $`git symbolic-ref --short HEAD`.quiet().text()).trim();
+const COMMIT_HASH = Bun.env.COMMIT_HASH ?? (await $`git rev-parse --short HEAD`.quiet().text()).trim();
 
 interface EntryPoint {
     in: string;
