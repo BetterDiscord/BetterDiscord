@@ -29,7 +29,7 @@ export default class Logger {
      *
      * @param {string} module - Name of the calling module.
      * @param {string} message - Message or error to have logged.
-     * @param {Error} error - Error object to log with the message.
+     * @param {any} error - Error object to log with the message.
      */
     static stacktrace(module, message, error) {
         console.error(`%c[${module}]%c ${message}\n\n%c`, "color: #3a71c1; font-weight: 700;", "color: red; font-weight: 700;", "color: red;", error);

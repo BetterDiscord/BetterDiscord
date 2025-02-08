@@ -6,7 +6,7 @@
  import Logger from "@common/logger";
 
  import DiscordModules from "./discordmodules";
- import WebpackModules from "./webpackmodules";
+ import {getByKeys} from "@webpack";
  
  
  export default class Patcher {
@@ -45,7 +45,7 @@
      static resolveModule(module) {
          if (!module || typeof(module) === "function" || (typeof(module) === "object" && !Array.isArray(module))) return module;
          if (typeof module === "string") return DiscordModules[module];
-         if (Array.isArray(module)) return WebpackModules.findByUniqueProperties(module);
+         if (Array.isArray(module)) return getByKeys(module);
          return null;
      }
  

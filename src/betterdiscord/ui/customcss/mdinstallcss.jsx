@@ -1,4 +1,3 @@
-import WebpackModules from "@modules/webpackmodules";
 import Patcher from "@modules/patcher";
 import Utils from "@modules/utilities";
 import CustomCSS from "@builtins/customcss";
@@ -6,6 +5,7 @@ import React from "@modules/react";
 import Settings from "@modules/settingsmanager";
 import Strings from "@modules/strings";
 import {PackageOpenIcon} from "lucide-react";
+import {getModule} from "@webpack";
 import Logger from "@common/logger";
 import NotificationUI from "@modules/notification";
 import Toasts from "@ui/toasts.js";
@@ -15,7 +15,7 @@ class InstallCSS {
     static activeNotifications = new Map();
 
     static initialize() {
-        const patch = WebpackModules.getModule(m => m.defaultRules && m.parse).defaultRules.codeBlock;
+        const patch = getModule(m => m.defaultRules && m.parse).defaultRules.codeBlock;
         Patcher.after("InstallCSS", patch, "react", (_, [args], child) => {
             const isEnabled = Settings.get("customcss", "customcss");
             if (!isEnabled) return;

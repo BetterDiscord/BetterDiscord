@@ -1,13 +1,13 @@
 import React from "@modules/react";
 import Events from "@modules/emitter";
-import WebpackModules from "@modules/webpackmodules";
 
 import Backdrop from "./backdrop";
+import {getWithKey} from "@webpack";
 
 const {Fragment, useState, useCallback, useEffect} = React;
 
 
-const [Transitions, TransitionKey] = WebpackModules.getWithKey(m => m?.defaultProps?.transitionAppear);
+const [Transitions, TransitionKey] = getWithKey(m => m?.defaultProps?.transitionAppear);
 const TransitionGroup = Transitions && TransitionKey ? Transitions[TransitionKey] : function() {};
 
 class ModalLayer extends React.Component {
