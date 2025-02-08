@@ -2,7 +2,7 @@ import React from "@modules/react";
 import Utilities from "@modules/utilities";
 import Settings from "@stores/settings";
 import DataStore from "@modules/datastore";
-import WebpackModules, {Filters} from "@modules/webpackmodules";
+import {Filters, getByKeys, getLazy} from "@webpack";
 import Patcher from "@modules/patcher";
 
 import ReactUtils from "@api/reactutils";
@@ -78,7 +78,8 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        const UserSettings = await WebpackModules.getLazy(Filters.byPrototypeKeys(["getPredicateSections"]));
+        const UserSettings = await getLazy<{prototype: {getPredicateSections: () => Section[]}}>(Filters.byPrototypeKeys(["getPredicateSections"]));
+        if (!UserSettings) return;
 
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
             let location = returnValue.findIndex((s: Section) => s.section.toLowerCase() == "changelog") - 1;
@@ -113,7 +114,7 @@ export default new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await WebpackModules.getLazy(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
+        const versionDisplayModule = await getLazy<{Z: () => void}>(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
         if (!versionDisplayModule?.Z) return;
 
         Patcher.after("SettingsManager", versionDisplayModule, "Z", () => {
@@ -122,7 +123,7 @@ export default new class SettingsRenderer {
     }
 
     forceUpdate() {
-        const viewClass = WebpackModules.getByProps("standardSidebarView")?.standardSidebarView.split(" ")[0];
+        const viewClass = getByKeys<{standardSidebarView: string}>(["standardSidebarView"])?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
         const stateNode = Utilities.findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});

@@ -2,7 +2,6 @@ import Logger from "@common/logger";
 
 import Config from "@data/config";
 
-import WebpackModules from "@modules/webpackmodules";
 import DiscordModules from "@modules/discordmodules";
 import DataStore from "@modules/datastore";
 import DOMManager from "@modules/dommanager";
@@ -13,6 +12,7 @@ import ipc from "@modules/ipc";
 import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Modals from "@ui/modals";
+import {getAllModules, getByDisplayName, getByKeys, getByPrototypes, getModule} from "@webpack";
 
 /** 
  * The React module being used inside Discord.
@@ -171,7 +171,7 @@ function showToast(content, options = {}) {
  * @memberof BdApi
  */
 function findModule(filter) {
-    return WebpackModules.getModule(filter);
+    return getModule(filter);
 }
 
 /**
@@ -183,7 +183,7 @@ function findModule(filter) {
  * @memberof BdApi
  */
 function findAllModules(filter) {
-    return WebpackModules.getModule(filter, {first: false});
+    return getAllModules(filter);
 }
 
 /**
@@ -195,7 +195,7 @@ function findAllModules(filter) {
  * @memberof BdApi
  */
 function findModuleByProps(...props) {
-    return WebpackModules.getByProps(...props);
+    return getByKeys(...props);
 }
 
 
@@ -208,7 +208,7 @@ function findModuleByProps(...props) {
  * @memberof BdApi
  */
 function findModuleByPrototypes(...protos) {
-    return WebpackModules.getByPrototypes(...protos);
+    return getByPrototypes(...protos);
 }
 
 /**
@@ -220,7 +220,7 @@ function findModuleByPrototypes(...protos) {
  * @memberof BdApi
  */
 function findModuleByDisplayName(name) {
-    return WebpackModules.getByDisplayName(name);
+    return getByDisplayName(name);
 }
 
 /**

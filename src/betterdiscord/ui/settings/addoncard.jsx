@@ -4,7 +4,6 @@ import SimpleMarkdown from "@structs/markdown";
 
 import React from "@modules/react";
 import Strings from "@modules/strings";
-import WebpackModules from "@modules/webpackmodules";
 import DiscordModules from "@modules/discordmodules";
 
 
@@ -16,6 +15,7 @@ import Toasts from "@ui/toasts";
 import {FlowerStar} from "./addonshared";
 import AddonStore from "@modules/addonstore";
 import {CircleDollarSignIcon, CircleHelpIcon, PlugIcon, GithubIcon, GlobeIcon, HeartHandshakeIcon, PaletteIcon, PencilIcon, SettingsIcon, ShieldAlertIcon, Trash2Icon} from "lucide-react";
+import {getByKeys} from "@webpack";
 
 const {useCallback, useMemo} = React;
 
@@ -47,10 +47,10 @@ const LayerManager = {
     }
 };
 
-const UserStore = WebpackModules.getByProps("getCurrentUser");
-const ChannelStore = WebpackModules.getByProps("getDMFromUserId");
-const PrivateChannelActions = WebpackModules.getByProps("openPrivateChannel");
-const ChannelActions = WebpackModules.getByProps("selectPrivateChannel");
+const UserStore = getByKeys(["getCurrentUser"]);
+const ChannelStore = getByKeys(["getDMFromUserId"]);
+const PrivateChannelActions = getByKeys(["openPrivateChannel"]);
+const ChannelActions = getByKeys(["selectPrivateChannel"]);
 const getString = value => typeof value == "string" ? value : value.toString();
 
 function makeButton(title, children, action, {isControl = false, danger = false, disabled = false} = {}) {

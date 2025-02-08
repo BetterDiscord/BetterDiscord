@@ -2,7 +2,6 @@ import Builtin from "@structs/builtin";
 
 import Strings from "@modules/strings";
 import Settings from "@stores/settings";
-import Webpack from "@modules/webpackmodules";
 
 import ContextMenuPatcher from "@api/contextmenu";
 import pluginManager from "@modules/pluginmanager";
@@ -10,10 +9,11 @@ import themeManager from "@modules/thememanager";
 import Utilities from "@modules/utilities";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
+import {getByKeys} from "@webpack";
 
 
 const ContextMenu = new ContextMenuPatcher();
-const UserSettingsWindow = Webpack.getByProps("open", "updateAccount");
+const UserSettingsWindow = getByKeys(["open", "updateAccount"]);
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
@@ -93,9 +93,9 @@ export default new class BDContextMenu extends Builtin {
 
     /**
      * TODO: Can this be done better now that it's integrated?
-     * @param {string} label 
-     * @param {import("../../modules/addonmanager").default} manager 
-     * @returns 
+     * @param {string} label
+     * @param {import("../../modules/addonmanager").default} manager
+     * @returns
      */
     buildAddonMenu(label, manager) {
         const names = manager.addonList.map(a => a.name || a.getName()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));

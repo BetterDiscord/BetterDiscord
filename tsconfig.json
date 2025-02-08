@@ -19,6 +19,7 @@
       "strict": true,
       "skipLibCheck": true,
       "noFallthroughCasesInSwitch": true,
+      "noImplicitAny": true,
 
       // Some stricter flags
       "noUnusedLocals": true,
@@ -38,7 +39,8 @@
           "@structs/*": ["./src/betterdiscord/structs/*"],
           "@styles/*": ["./src/betterdiscord/styles/*"],
           "@ui/*": ["./src/betterdiscord/ui/*"],
-          "@utils/*": ["./src/betterdiscord/utils/*"]
+          "@utils/*": ["./src/betterdiscord/utils/*"],
+          "@webpack": ["./src/betterdiscord/webpack"],
       },
       "typeRoots": ["node_modules/@types", "src/betterdiscord/types"]
     },

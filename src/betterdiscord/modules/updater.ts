@@ -17,7 +17,6 @@ import React from "./react";
 import Settings from "@stores/settings";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
-import WebpackModules from "./webpackmodules";
 
 import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
@@ -28,8 +27,10 @@ import type AddonManager from "./addonmanager";
 import type FormattableString from "@structs/string";
 import type {Release} from "github";
 import type {Addon} from "betterdiscordweb";
+import {getByKeys} from "@webpack";
 
-const UserSettingsWindow = WebpackModules.getByProps("updateAccount");
+
+const UserSettingsWindow = getByKeys<{open?: (id: string) => void}>(["updateAccount"]);
 
 const getJSON = (url: string) => {
     return new Promise(resolve => {
