@@ -6,7 +6,7 @@
  import Logger from "@common/logger";
 
  import DiscordModules from "./discordmodules";
- import {getByKeys} from "@webpack/webpack";
+ import {getByKeys} from "@webpack";
  
  
  export default class Patcher {
