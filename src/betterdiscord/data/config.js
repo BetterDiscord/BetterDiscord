@@ -6,6 +6,9 @@ let userData = "";
 
 // TODO: refactor this away entirely
 export default {
+    get branch() {return process.env.__BRANCH__;},
+    get commit() {return process.env.__COMMIT__;},
+
     get version() {return version;},
     set version(str) {version = str;},
 

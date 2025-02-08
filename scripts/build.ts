@@ -1,14 +1,17 @@
+import Bun, {$} from "bun";
 import path from "node:path";
-import {fileURLToPath} from "node:url";
 import pkg from "../package.json";
 
 import styleLoader from "bun-style-loader";
 import * as esbuild from "esbuild";
 
 
-const fileURL = fileURLToPath(import.meta.url);
+const fileURL = Bun.fileURLToPath(import.meta.url);
 const rootDir = path.join(path.dirname(fileURL), "..");
 const isProduction = process.argv.includes("--minify");
+
+const BRANCH_NAME = (await $`git symbolic-ref --short HEAD`.quiet().text()).trim();
+const COMMIT_HASH = (await $`git rev-parse --short HEAD`.quiet().text()).trim();
 
 interface EntryPoint {
     in: string;
@@ -55,7 +58,9 @@ async function runBuild() {
         minify: isProduction,
         legalComments: "none",
         define: {
-            "process.env.__VERSION__": JSON.stringify(pkg.version)
+            "process.env.__VERSION__": JSON.stringify(pkg.version),
+            "process.env.__BRANCH__": JSON.stringify(BRANCH_NAME),
+            "process.env.__COMMIT__": JSON.stringify(COMMIT_HASH)
         }
     });
 
@@ -65,9 +70,9 @@ async function runBuild() {
     }
     else {
         await ctx.rebuild();
-        await ctx.dispose(); 
+        await ctx.dispose();
     }
-    
+
     const after = performance.now();
     console.log(`Finished building ${names} in ${(after - before).toFixed(2)}ms`);
     console.log("");
