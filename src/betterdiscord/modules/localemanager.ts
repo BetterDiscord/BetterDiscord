@@ -3,7 +3,6 @@ import defaultStrings from "@assets/locales/en-us.json";
 
 import DiscordModules from "./discordmodules";
 import Utilities from "./utilities";
-import Events from "./emitter";
 
 const {LocaleStore} = DiscordModules;
 
@@ -29,7 +28,5 @@ export default new class LocaleManager {
         // Get the strings of the new language and extend if a translation exists
         const newStrings = Locales[this.discordLocale as keyof typeof Locales];
         if (newStrings) Utilities.extendTruthy(this.strings, newStrings);
-
-        Events.emit("strings-updated");
     }
 };

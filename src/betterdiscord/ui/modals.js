@@ -74,12 +74,12 @@ export default class Modals {
                     </div>
                 </div>
             </div>`);
-        
+
         const handleClose = () => {
             modal.classList.add("closing");
             setTimeout(() => {
                 modal.remove();
-                
+
                 const next = this.ModalQueue.shift();
                 if (!next) return;
 
@@ -137,10 +137,10 @@ export default class Modals {
         else {
             modal.querySelector(".scroller").append(content);
         }
-        
+
         modal.querySelector(".footer button").addEventListener("click", handleClose);
         modal.querySelector(".bd-backdrop").addEventListener("click", handleClose);
-        
+
         const handleOpen = () => document.getElementById("app-mount").append(modal);
 
         if (this.hasModalOpen) {
@@ -162,7 +162,7 @@ export default class Modals {
      * @param {object} [options] - options to modify the modal
      * @param {boolean} [options.danger=false] - whether the main button should be red or not
      * @param {string} [options.confirmText=Okay] - text for the confirmation/submit button
-     * @param {string} [options.cancelText=Cancel] - text for the cancel button
+     * @param {string|null} [options.cancelText=Cancel] - text for the cancel button
      * @param {callable} [options.onConfirm=NOOP] - callback to occur when clicking the submit button
      * @param {callable} [options.onCancel=NOOP] - callback to occur when clicking the cancel button
      * @param {callable} [options.onClose=NOOP] - callback to occur when exiting the modal
@@ -236,22 +236,22 @@ export default class Modals {
 
     /**
      * Shows the guild join modal, to join invites
-     * @param {string} code 
+     * @param {string} code
      */
     static async showGuildJoinModal(code) {
         const tester = /\.gg\/(.*)$/;
         if (tester.test(code)) code = code.match(tester)[1];
-        
+
         const {invite} = await DiscordModules.InviteActions.resolveInvite(code);
-        
+
         if (!invite) {
             Logger.debug("Utilities", "Failed to resolve invite:", code);
             return;
         }
-        
+
         const minimize = Patcher.instead("BetterDiscord~showGuildJoinModal", native, "minimize", () => {});
         const focus = Patcher.instead("BetterDiscord~showGuildJoinModal", native, "focus", () => {});
-        
+
         try {
             await DiscordModules.Dispatcher.dispatch({
                 type: "INVITE_MODAL_OPEN",

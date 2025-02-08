@@ -31,7 +31,6 @@
           "@common/*": ["./src/common/*"],
           "@builtins/*": ["./src/betterdiscord/builtins/*"],
           "@data/*": ["./src/betterdiscord/data/*"],
-          "@discord/*": ["./src/betterdiscord/types/discord/*"],
           "@api/*": ["./src/betterdiscord/api/*"],
           "@modules/*": ["./src/betterdiscord/modules/*"],
           "@polyfill/*": ["./src/betterdiscord/polyfill/*"],
@@ -41,7 +40,7 @@
           "@ui/*": ["./src/betterdiscord/ui/*"],
           "@utils/*": ["./src/betterdiscord/utils/*"]
       },
-      // "typeRoots": ["node_modules/@types", "src/betterdiscord/types"]
+      "typeRoots": ["node_modules/@types", "src/betterdiscord/types"]
     },
     "include": ["src/**/*", "scripts/*", "tests/**/*"],
 }

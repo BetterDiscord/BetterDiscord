@@ -1,6 +1,5 @@
 import React from "@modules/react";
 import Utilities from "@modules/utilities";
-import Events from "@modules/emitter";
 import Settings from "@stores/settings";
 import DataStore from "@modules/datastore";
 import WebpackModules, {Filters} from "@modules/webpackmodules";
@@ -32,7 +31,6 @@ export default new class SettingsRenderer {
     initialize() {
         this.patchSections();
         this.patchVersionInformation();
-        Events.on("strings-updated", this.forceUpdate);
     }
 
     onDrawerToggle(collection: string, group: string, state: boolean) {
@@ -54,7 +52,7 @@ export default new class SettingsRenderer {
             onChange(categoryId, settingId, value);
 
             // Delay until after switch animation
-            // TODO: find a better workaround
+            // TODO: adjust settingscontext to do disable and more
             // customcss is here to let the tab show/hide
             // devTools is here for toggles that enableWith
             // checkForUpdates also here for enableWith

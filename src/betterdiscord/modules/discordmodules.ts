@@ -8,7 +8,7 @@
 import type {ComponentType, FunctionComponent} from "react";
 import Utilities from "./utilities";
 import WebpackModules, {Filters} from "./webpackmodules";
-import type {RemoteModule, GetClientInfo, UserAgentInfo} from "@discord/modules";
+import type {RemoteModule, GetClientInfo, UserAgentInfo} from "discord/modules";
 
 
 const DiscordModules = Utilities.memoizeObject({
