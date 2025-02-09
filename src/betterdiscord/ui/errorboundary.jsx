@@ -6,8 +6,8 @@ import IPC from "@modules/ipc";
 export default class ErrorBoundary extends React.Component {
     /**
      * Creates an error boundary with optional fallbacks and debug info.
-     * @param {object} props 
-     * @param {ReactElement[]} props.children - An optional id for debugging purposes
+     * @param {object} props
+     * @param {ReactElement[]} [props.children] - An optional id for debugging purposes
      * @param {string} [props.id="Unknown"] - An optional id for debugging purposes
      * @param {string} [props.name="Unknown"] - An optional name for debugging purposes
      * @param {boolean} [props.hideError=false] - Whether to hide the default error message in the ui (never shown if there is a fallback)
@@ -34,7 +34,7 @@ export default class ErrorBoundary extends React.Component {
                         There was an unexpected Error. Click to open console for more details.
                     </div>;
         }
-        return this.props.children; 
+        return this.props.children;
     }
 }
 

@@ -1,7 +1,7 @@
 import CustomCSS from "@builtins/customcss";
 import {OptionTypes} from "@modules/commandmanager";
 import DiscordModules from "@modules/discordmodules";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 
 
 // TODO: consider moving this into the CustomCSS builtin rather than importing it

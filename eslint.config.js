@@ -30,7 +30,7 @@ export default ts.config(
 
     // Setup general JS rules
     {
-        files: ["**/*.js", "**/*.jsx"],
+        files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
         rules: {
             "accessor-pairs": "error",
             "block-spacing": ["error", "never"],
@@ -115,13 +115,16 @@ export default ts.config(
     {
         files: ["**/*.ts", "**/*.tsx"],
         rules: {
+            // typescript does these better and eslint can't detect most
+            "no-undef": "off",
+            "no-redeclare": "off",
             "@typescript-eslint/no-explicit-any": ["off"],
             "@typescript-eslint/no-unnecessary-type-constraint": ["off"],
             "@typescript-eslint/array-type": ["error", {"default": "array-simple"}],
             "@typescript-eslint/no-unused-vars": ["error", {argsIgnorePattern: "^_", varsIgnorePattern: "^_"}]
         }
     },
-    
+
     // Setup rules for scripts
     {
         files: ["scripts/*"],

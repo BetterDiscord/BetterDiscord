@@ -1,9 +1,9 @@
-import config from "./config";
+import config from "@stores/config";
 
 // fixed, improved, added, progress
 export default {
     title: "BetterDiscord",
-    subtitle: `v${config.version}`,
+    subtitle: `v${config.get("version")}`,
     video: "https://www.youtube.com/embed/jDclfjPc3k0?si=YlQwrCHnoYkTfa6G&vq=hd720p&hd=1&rel=0&showinfo=0&mute=0&loop=1&autohide=1",
     // banner: "https://i.imgur.com/wuh5yMK.png",
     blurb: "This changelog includes the changes from 1.12.0, check the `Bugs Squashed` section for more info on what was fixed in this release!",

@@ -1,4 +1,4 @@
-import Config from "@data/config";
+import Config from "@stores/config";
 
 import React from "@modules/react";
 import Strings from "@modules/strings";
@@ -36,7 +36,7 @@ function makeButton(tooltip, children, action, options = {}) {
 
 function CoreUpdaterPanel({hasUpdate, remoteVersion, update}) {
     return <Drawer name="BetterDiscord" collapsible={true}>
-        <SettingItem name={`Core v${Config.version}`} note={hasUpdate ? Strings.Updater.versionAvailable.format({version: remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
+        <SettingItem name={`Core v${Config.get("version")}`} note={hasUpdate ? Strings.Updater.versionAvailable.format({version: remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
             {!hasUpdate && <div className="bd-filled-checkmark"><CheckIcon size="18px" /></div>}
             {hasUpdate && makeButton(Strings.Updater.updateButton, <ArrowDownToLineIcon />, update, {className: "no-animation"})}
         </SettingItem>
