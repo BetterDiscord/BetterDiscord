@@ -12,6 +12,7 @@ import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import {getAllModules, getByDisplayName, getByKeys, getByPrototypes, getModule} from "@webpack";
+import type {ReactElement} from "react";
 
 /**
  * The React module being used inside Discord.
@@ -59,7 +60,7 @@ const version = Config.get("version");
  * @param {string} css CSS to apply to the document
  * @memberof BdApi
  */
-function injectCSS(id, css) {
+function injectCSS(id: string, css: string) {
     DOMManager.injectStyle(id, css);
 }
 
@@ -70,7 +71,7 @@ function injectCSS(id, css) {
  * @param {string} id ID uses for the style element
  * @memberof BdApi
  */
-function clearCSS(id) {
+function clearCSS(id: string) {
     DOMManager.removeStyle(id);
 }
 
@@ -83,7 +84,7 @@ function clearCSS(id) {
  * @returns {Promise} Resolves upon onload event
  * @memberof BdApi
  */
-function linkJS(id, url) {
+function linkJS(id: string, url: string) {
     return DOMManager.injectScript(id, url);
 }
 
@@ -94,7 +95,7 @@ function linkJS(id, url) {
  * @param {string} id ID of the script element
  * @memberof BdApi
  */
-function unlinkJS(id) {
+function unlinkJS(id: string) {
     DOMManager.removeScript(id);
 }
 
@@ -106,7 +107,7 @@ function unlinkJS(id) {
  * @param {(string|ReactElement|Array<string|ReactElement>)} content A string of text to display in the modal
  * @memberof BdApi
  */
-function alert(title, content) {
+function alert(title: string, content: (string|ReactElement|Array<string|ReactElement>)) {
     Modals.alert(title, content);
 }
 
@@ -125,7 +126,7 @@ function alert(title, content) {
  * @returns {string} The key used for this modal
  * @memberof BdApi
  */
-function showConfirmationModal(title, content, options = {}) {
+function showConfirmationModal(title: string, content: (string|ReactElement|Array<string|ReactElement>), options = {}) {
     return Modals.showConfirmationModal(title, content, options);
 }
 
@@ -141,7 +142,7 @@ function showConfirmationModal(title, content, options = {}) {
  * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the BD setting
  * @memberof BdApi
  */
-function showToast(content, options = {}) {
+function showToast(content: string, options = {}) {
     Toasts.show(content, options);
 }
 
@@ -157,7 +158,7 @@ function showToast(content, options = {}) {
  * @returns {function} A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
  * @memberof BdApi
  */
- function showNotice(content, options = {}) {
+ function showNotice(content: string, options = {}) {
     return Notices.show(content, options);
 }
 
@@ -169,7 +170,7 @@ function showToast(content, options = {}) {
  * @returns {any} Either the matching module or `undefined`
  * @memberof BdApi
  */
-function findModule(filter) {
+function findModule(filter: () => boolean) {
     return getModule(filter);
 }
 
@@ -181,7 +182,7 @@ function findModule(filter) {
  * @returns {Array} Either an array of matching modules or an empty array
  * @memberof BdApi
  */
-function findAllModules(filter) {
+function findAllModules(filter: () => boolean) {
     return getAllModules(filter);
 }
 
@@ -193,8 +194,8 @@ function findAllModules(filter) {
  * @returns {any} Either the matching module or `undefined`
  * @memberof BdApi
  */
-function findModuleByProps(...props) {
-    return getByKeys(...props);
+function findModuleByProps(...props: string[]) {
+    return getByKeys(props);
 }
 
 
@@ -206,8 +207,8 @@ function findModuleByProps(...props) {
  * @returns {any} Either the matching module or `undefined`
  * @memberof BdApi
  */
-function findModuleByPrototypes(...protos) {
-    return getByPrototypes(...protos);
+function findModuleByPrototypes(...protos: string[]) {
+    return getByPrototypes(protos);
 }
 
 /**
@@ -218,7 +219,7 @@ function findModuleByPrototypes(...protos) {
  * @returns {any} Either the matching module or `undefined`
  * @memberof BdApi
  */
-function findModuleByDisplayName(name) {
+function findModuleByDisplayName(name: string) {
     return getByDisplayName(name);
 }
 
@@ -230,9 +231,9 @@ function findModuleByDisplayName(name) {
  * @returns {object|undefined} Either the found data or `undefined`
  * @memberof BdApi
  */
-function getInternalInstance(node) {
+function getInternalInstance(node: any) {
     if (node.__reactInternalInstance$) return node.__reactInternalInstance$;
-        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber"))] || null;
+        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber")) as any] || null;
 }
 
 /**
@@ -244,7 +245,7 @@ function getInternalInstance(node) {
  * @returns {any} The stored data
  * @memberof BdApi
  */
-function loadData(pluginName, key) {
+function loadData(pluginName: string, key: string) {
     return DataStore.getPluginData(pluginName, key);
 }
 
@@ -257,7 +258,7 @@ function loadData(pluginName, key) {
  * @param {any} data The data to be saved
  * @memberof BdApi
  */
-function saveData(pluginName, key, data) {
+function saveData(pluginName: string, key: string, data: any) {
     return DataStore.setPluginData(pluginName, key, data);
 }
 
@@ -269,7 +270,7 @@ function saveData(pluginName, key, data) {
  * @param {string} key Which piece of data to delete
  * @memberof BdApi
  */
-function deleteData(pluginName, key) {
+function deleteData(pluginName: string, key: string) {
     DataStore.deletePluginData(pluginName, key);
 }
 
@@ -291,21 +292,21 @@ function deleteData(pluginName, key) {
  * @returns {function} A function that cancels the monkey patch
  * @memberof BdApi
  */
-function monkeyPatch(what, methodName, options) {
+function monkeyPatch(what: object, methodName: string, options: {callerId: string; after?: () => any; before?: () => any; instead?: () => any; once?: boolean; silent?: boolean;}) {
     const {before, after, instead, once = false, callerId = "BdApi"} = options;
     const patchType = before ? "before" : after ? "after" : instead ? "instead" : "";
     if (!patchType) return Logger.err("BdApi", "Must provide one of: after, before, instead");
-    const originalMethod = what[methodName];
-    const data = {
+    const originalMethod = what[methodName as keyof typeof what] as (...args: any[]) => any;
+    const data: Record<string, any> = {
         originalMethod: originalMethod,
         callOriginalMethod: () => data.originalMethod.apply(data.thisObject, data.methodArguments)
     };
-    data.cancelPatch = Patcher[patchType](callerId, what, methodName, (thisObject, args, returnValue) => {
+    data.cancelPatch = Patcher[patchType](callerId, what, methodName, (thisObject: any, args: any[], returnValue: any) => {
         data.thisObject = thisObject;
         data.methodArguments = args;
         data.returnValue = returnValue;
         try {
-            const patchReturn = Reflect.apply(options[patchType], null, [data]);
+            const patchReturn = Reflect.apply(options[patchType] as any, null, [data]);
             if (once) data.cancelPatch();
             return patchReturn;
         }
@@ -324,7 +325,7 @@ function monkeyPatch(what, methodName, options) {
  * @param {function} callback Function to run when removed
  * @memberof BdApi
  */
-function onRemoved(node, callback) {
+function onRemoved(node: Element, callback: () => void) {
     return DOMManager.onRemoved(node, callback);
 }
 
@@ -337,8 +338,8 @@ function onRemoved(node, callback) {
  * @returns {function} The new wrapped function
  * @memberof BdApi
  */
-function suppressErrors(method, message) {
-    return (...params) => {
+function suppressErrors(method: (...args: any[]) => any, message: string) {
+    return (...params: any[]) => {
         try {return method(...params);}
         catch (e) {Logger.stacktrace("SuppressedError", "Error occurred in " + message, e);}
     };
@@ -348,11 +349,11 @@ function suppressErrors(method, message) {
  * Tests a given object to determine if it is valid JSON.
  *
  * @deprecated
- * @param {object} data Data to be tested
+ * @param {string} data Data to be tested
  * @returns {boolean} Result of the test
  * @memberof BdApi
  */
-function testJSON(data) {
+function testJSON(data: string) {
     try {
         return JSON.parse(data);
     }
@@ -371,7 +372,7 @@ function testJSON(data) {
  * @returns {boolean} If the setting is enabled
  * @memberof BdApi
  */
-function isSettingEnabled(collection, category, id) {
+function isSettingEnabled(collection: string, category: string, id: string) {
     return Settings.get(collection, category, id);
 }
 
@@ -384,7 +385,7 @@ function isSettingEnabled(collection, category, id) {
  * @param {string} id Setting ID in the category
  * @memberof BdApi
  */
-function enableSetting(collection, category, id) {
+function enableSetting(collection: string, category: string, id: string) {
     return Settings.set(collection, category, id, true);
 }
 
@@ -397,7 +398,7 @@ function enableSetting(collection, category, id) {
  * @param {string} id Setting ID in the category
  * @memberof BdApi
  */
-function disableSetting(collection, category, id) {
+function disableSetting(collection: string, category: string, id: string) {
     return Settings.set(collection, category, id, false);
 }
 
@@ -410,7 +411,7 @@ function disableSetting(collection, category, id) {
  * @param {string} id Setting ID in the category
  * @memberof BdApi
  */
-function toggleSetting(collection, category, id) {
+function toggleSetting(collection: string, category: string, id: string) {
     return Settings.set(collection, category, id, !Settings.get(collection, category, id));
 }
 
@@ -422,7 +423,7 @@ function toggleSetting(collection, category, id) {
  * @returns {any} The stored data
  * @memberof BdApi
  */
-function getBDData(key) {
+function getBDData(key: string) {
     return DataStore.getBDData(key);
 }
 
@@ -434,7 +435,7 @@ function getBDData(key) {
  * @returns {any} The stored data
  * @memberof BdApi
  */
-function setBDData(key, data) {
+function setBDData(key: string, data: object) {
     return DataStore.setBDData(key, data);
 }
 
@@ -459,7 +460,7 @@ function setBDData(key, data) {
  * @returns {Promise<object>} Result of the dialog
  * @memberof BdApi
  */
-async function openDialog(options) {
+async function openDialog(options: object) {
     const data = await ipc.openDialog(options);
     if (data.error) throw new Error(data.error);
 
