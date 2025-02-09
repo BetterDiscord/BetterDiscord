@@ -1,4 +1,5 @@
 import Logger from "@common/logger";
+import DiscordModules from "@modules/discordmodules";
 import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
@@ -14,9 +15,8 @@ const getOptions = <T, B extends Webpack.Options>(args: WithOptions<T, B>, defau
     return [ args as T[], defaultOptions ];
 };
 
-interface WebpackOptions extends Webpack.Options {
-    first?: boolean
-}
+type WebpackOptions = (Webpack.SingleOptions & { first?: true }) |
+    (Webpack.Options & { first: false });
 
 /**
  * `Webpack` is a utility class for getting internal webpack modules. Instance is accessible through the {@link BdApi}.
@@ -32,6 +32,8 @@ const Webpack = {
     modules: modules,
 
     Stores: Stores,
+
+    common: DiscordModules,
 
     /**
      * Series of {@link Filters} to be used for finding webpack modules.
@@ -87,7 +89,7 @@ const Webpack = {
         if (("searchExports" in options) && typeof(options.searchExports) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Invalid type for options.searchExports", options.searchExports, "Expected: boolean");
         if (("raw" in options) && typeof(options.raw) !== "boolean") return Logger.error("BdApi.Webpack~getModule", "Invalid type for options.raw", options.raw, "Expected: boolean");
         
-        if (options.first === false) return getAllModules(filter, options) as T;
+        if (options.first === false) return getAllModules(filter, options) as T;        
         return getModule<T>(filter, options);
     },
 

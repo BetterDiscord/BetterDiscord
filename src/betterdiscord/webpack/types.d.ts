@@ -25,6 +25,9 @@ declare namespace Webpack {
         raw?: boolean
     };
 
+    type SingleOptions = Options & {
+        cacheId?: string
+    }
     type BulkQueries = Options & {
         filter: Filter,
         all?: boolean
@@ -33,7 +36,7 @@ declare namespace Webpack {
         target?: any
     };
 
-    type LazyOptions = Options & { signal?: AbortSignal };
+    type LazyOptions = SingleOptions & { signal?: AbortSignal };
 
     type ModuleWithEffect = [
         any[],

@@ -6,7 +6,7 @@ import {getModule} from "@webpack";
 let DiscordMarkdown, rules;
 
 function setupMarkdown() {
-    DiscordMarkdown = getModule(m => m?.prototype?.render && m.rules);
+    DiscordMarkdown = getModule(m => m?.prototype?.render && m.rules, {cacheId: "core-markdown-DiscordMarkdown"});
     rules = {};
     if (DiscordMarkdown) {
         rules = {

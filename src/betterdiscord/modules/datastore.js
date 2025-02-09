@@ -16,6 +16,7 @@ const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "sta
 //             -> settings.json
 //             -> plugins.json
 //             -> themes.json
+//             -> webpackCache.json
 
 export default new class DataStore {
     constructor() {
@@ -57,6 +58,7 @@ export default new class DataStore {
     get pluginFolder() {return this._pluginFolder || (this._pluginFolder = path.resolve(Config.dataPath, "plugins"));}
     get themeFolder() {return this._themeFolder || (this._themeFolder = path.resolve(Config.dataPath, "themes"));}
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
+    get webpackCache() {return this._webpackCache || (this._webpackCache = path.resolve(this.dataFolder, "webpackCache.json"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
     getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
@@ -133,5 +135,17 @@ export default new class DataStore {
         this.ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
         delete this.pluginData[pluginName][key];
         fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4));
+    }
+
+    getWebpackCache() {
+        return JSON.parse(fs.readFileSync(this.webpackCache) || "{}");
+    }
+
+    setWebpackCache(cache) {
+        if (this.saveWPCTimeout) clearTimeout(this.saveWPCTimeout);
+
+        this.saveWPCTimeout = setTimeout(() => {
+            fs.writeFileSync(this.webpackCache, JSON.stringify(cache, 4, null));
+        }, 100);
     }
 };

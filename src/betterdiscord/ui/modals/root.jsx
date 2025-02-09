@@ -1,9 +1,9 @@
 import clsx from "clsx";
 import React from "@modules/react";
 import {getByKeys, getModule} from "@webpack";
+import DiscordModules from "@modules/discordmodules";
 
-const Spring = getByKeys(["useSpring", "animated"]);
-const Anims = getByKeys(["Easing"]);
+const Anims = getByKeys(["Easing"], {cacheId: "core-modalroot-Anims"});
 
 
 export const Sizes = Object.freeze({
@@ -19,8 +19,8 @@ export const Styles = Object.freeze({
 });
 
 
-const AccessibilityContext = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true});
-const FocusLock = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true}) ?? React.Fragment;
+const AccessibilityContext = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true, cacheId: "core-modalsroot-AccessibilityContext"});
+const FocusLock = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true, cacheId: "core-modalsroot-FocusLock"}) ?? React.Fragment;
 
 export default function ModalRoot({className, transitionState, children, size = Sizes.DYNAMIC, style = Styles.CUSTOM}) {
     const visible = transitionState == 0 || transitionState == 1; // 300 ms
@@ -28,7 +28,7 @@ export default function ModalRoot({className, transitionState, children, size = 
     const preferences = React.useContext(AccessibilityContext ?? {});
     const reducedMotion = preferences?.reducedMotion?.enabled ?? document.documentElement?.classList.contains("reduce-motion");
     
-    const springStyles = Spring.useSpring({
+    const springStyles = DiscordModules.Spring.useSpring({
         opacity: visible ? 1 : 0,
         transform: visible || reducedMotion ? "scale(1)" : "scale(0.7)",
         config: {
@@ -39,12 +39,12 @@ export default function ModalRoot({className, transitionState, children, size = 
     });
 
     return <FocusLock disableTrack={true}>
-        <Spring.animated.div
+        <DiscordModules.Spring.animated.div
                 className={clsx("bd-modal-root", size, className, style)}
                 style={springStyles}
             >
         {children}
-    </Spring.animated.div>
+    </DiscordModules.Spring.animated.div>
     </FocusLock>;
     // const [visible, setVisible] = React.useState(true);
 

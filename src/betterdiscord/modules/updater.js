@@ -22,9 +22,8 @@ import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
-import {getByKeys} from "@webpack";
+import DiscordModules from "./discordmodules";
 
-const UserSettingsWindow = getByKeys(["updateAccount"]);
 
 const getJSON = url => {
     return new Promise(resolve => {
@@ -126,7 +125,7 @@ export class CoreUpdater {
                 label: Strings.Notices.moreInfo,
                 onClick: () => {
                     close();
-                    UserSettingsWindow?.open?.("updates");
+                    DiscordModules.UserSettingsWindow?.open?.("updates");
                 }
             }]
         });
@@ -248,7 +247,7 @@ class AddonUpdater {
                 label: Strings.Notices.moreInfo,
                 onClick: () => {
                     close();
-                    UserSettingsWindow?.open?.("updates");
+                    DiscordModules.UserSettingsWindow?.open?.("updates");
                 }
             }]
         });

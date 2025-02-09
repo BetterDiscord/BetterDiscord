@@ -9,11 +9,10 @@ import themeManager from "@modules/thememanager";
 import Utilities from "@modules/utilities";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
-import {getByKeys} from "@webpack";
+import DiscordModules from "@modules/discordmodules";
 
 
 const ContextMenu = new ContextMenuPatcher();
-const UserSettingsWindow = getByKeys(["open", "updateAccount"]);
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
@@ -133,6 +132,6 @@ export default new class BDContextMenu extends Builtin {
 
     async openCategory(id) {
         ContextMenu.close();
-        UserSettingsWindow?.open?.(id);
+        DiscordModules.UserSettingsWindow?.open?.(id);
     }
 };

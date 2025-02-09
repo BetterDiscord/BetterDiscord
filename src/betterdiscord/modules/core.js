@@ -33,10 +33,6 @@ export default new class Core {
         if (this.hasStarted) return;
         this.hasStarted = true;
 
-        Config.appPath = process.env.DISCORD_APP_PATH;
-        Config.userData = process.env.DISCORD_USER_DATA;
-        Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
-
         IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
 
         // Load css early

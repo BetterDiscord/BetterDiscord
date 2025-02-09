@@ -1,12 +1,10 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import {getByKeys} from "@webpack";
-
-const Spring = getByKeys(["useSpring", "animated"]);
+import DiscordModules from "@modules/discordmodules";
 
 
 export default function Backdrop({isVisible, className, onClick}) {
-    const transition = Spring.useTransition(isVisible, {
+    const transition = DiscordModules.Spring.useTransition(isVisible, {
         keys: e => e ? "backdrop" : "empty",
         config: {duration: 300},
         from: {
@@ -26,7 +24,7 @@ export default function Backdrop({isVisible, className, onClick}) {
     return transition((styles, visible) => {
         if (!visible) return null;
 
-        return <Spring.animated.div
+        return <DiscordModules.Spring.animated.div
                 className={clsx("bd-modal-backdrop", className)}
                 style={styles}
                 onClick={onClick}

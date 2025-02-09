@@ -26,7 +26,7 @@ import ModalStack, {generateKey} from "./modals/stack";
 import {Filters, getMangled, getModule} from "@webpack";
 
 
-const native = getModule(m => m.minimize && m.architecture);
+const native = getModule(m => m.minimize && m.architecture, {cacheId: "core-modals-nativeModal"});
 
 export default class Modals {
 

@@ -1,8 +1,9 @@
 let version = process.env.__VERSION__;
 
 let path = "";
-let appPath = "";
-let userData = "";
+let appPath = process.env.DISCORD_APP_PATH;
+let userData = process.env.DISCORD_USER_DATA;
+let dataPath = process.env.BETTERDISCORD_DATA_PATH;
 
 // TODO: refactor this away entirely
 export default {
@@ -18,4 +19,7 @@ export default {
 
     get userData() {return userData;},
     set userData(str) {userData = str;},
+
+    get dataPath() {return dataPath;},
+    set dataPath(str) {dataPath = str;},
 };
