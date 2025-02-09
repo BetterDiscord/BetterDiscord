@@ -7,7 +7,7 @@ import Tooltip from "@ui/tooltip";
 import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import NotificationUI from "@modules/notification";
 
 

@@ -1,19 +1,19 @@
-import Webpack from "@modules/webpackmodules";
 import Button, {Colors} from "@ui/base/button";
 import React from "@modules/react";
 import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
 import Builtin from "@structs/builtin";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import pluginmanager from "@modules/pluginmanager";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
+import {getByKeys, getByPrototypes, getByStrings} from "@webpack";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
 async function attemptRecovery() {
-    const transitionTo = Webpack.getByString("transitionTo - Transitioning to", {searchExports: true});
+    const transitionTo = getByStrings([ "transitionTo - Transitioning to" ], {searchExports: true});
     
     const recoverySteps = [
         {
@@ -142,7 +142,7 @@ export default new class Recovery extends Builtin {
 
     async enabled() {
         this.patchErrorBoundry();
-        this.parseModule = Webpack.getByProps("defaultRules", "parse");
+        this.parseModule = getByKeys(["defaultRules", "parse"]);
     }
 
     async disabled() {
@@ -166,7 +166,7 @@ export default new class Recovery extends Builtin {
     }
 
     patchErrorBoundry() {
-        const mod = Webpack.getByPrototypes("_handleSubmitReport");
+        const mod = getByPrototypes(["_handleSubmitReport"]);
 
         this.after(mod?.prototype, "render", (instance, args, retValue) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;

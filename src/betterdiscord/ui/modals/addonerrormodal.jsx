@@ -1,6 +1,5 @@
 import React from "@modules/react";
 import Strings from "@modules/strings";
-import WebpackModules from "@modules/webpackmodules";
 
 import Text from "@ui/base/text";
 import Button from "@ui/base/button";
@@ -13,8 +12,9 @@ import Content from "./content";
 import ModalRoot from "./root";
 import Footer from "./footer";
 import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
+import {getByKeys} from "@webpack";
 
-const Parser = Object(WebpackModules.getByProps("defaultRules", "parse")).defaultRules;
+const Parser = Object(getByKeys(["defaultRules", "parse"])).defaultRules;
 const {useState, useCallback, useMemo} = React;
 
 const joinClassNames = (...classNames) => classNames.filter(e => e).join(" ");
@@ -58,6 +58,11 @@ function generateTab(id, errors) {
     return {id, errors, name: Strings.Panels[id]};
 }
 
+/**
+ *
+ * @param {{transitionState?: number; onClose?(): void; pluginErrors: (import("@structs/addonerror").default)[]; themeErrors: (import("@structs/addonerror").default)[];}} param0
+ * @returns
+ */
 export default function AddonErrorModal({transitionState, onClose, pluginErrors, themeErrors}) {
     const tabs = useMemo(() => {
         return [

@@ -1,8 +1,8 @@
-import Webpack from "@api/webpack";
+import {getBySource, getModule} from "@webpack";
 import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import Button from "@ui/base/button";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
 
@@ -27,7 +27,7 @@ const Icon = ({type}) => {
 class NotificationUI {
     static notifications = [];
     static setNotifications = null;
-    static patch = Webpack.getBySource("\"Shakeable is shaken when not mounted\"")?.Z;
+    static patch = getBySource([ "\"Shakeable is shaken when not mounted\"" ], {searchDefault: false})?.Z;
 
     static initialize() {
         Patcher.after("NotificationPatch", this?.patch, "type", (_, __, res) => {
@@ -148,7 +148,7 @@ const PersistentNotificationContainer = React.memo(() => {
     );
 });
 
-const spring = Webpack.getModule(x => x?.animated?.div);
+const spring = getModule(x => x?.animated?.div);
 
 const NotificationItem = ({notification, position}) => {
     const {

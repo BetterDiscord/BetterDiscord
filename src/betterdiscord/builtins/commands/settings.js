@@ -1,5 +1,5 @@
 import {OptionTypes} from "@modules/commandmanager";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 
 
 export default {
