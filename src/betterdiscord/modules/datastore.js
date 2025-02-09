@@ -146,7 +146,7 @@ export default new class DataStore {
         if (this.saveWPCTimeout) clearTimeout(this.saveWPCTimeout);
 
         this.saveWPCTimeout = setTimeout(() => {
-            fs.writeFileSync(this.webpackCache, JSON.stringify(cache, 4, null));
+            fs.writeFileSync(this.webpackCache, JSON.stringify(cache, null, 4));
         }, 100);
     }
 };
