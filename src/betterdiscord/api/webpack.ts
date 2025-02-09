@@ -109,11 +109,11 @@ const Webpack = {
     },
 
     getByRegex<T>(regex: RegExp, options: WebpackOptions = {}) {
-        return this.getModule<T>(Filters.byRegex(regex), options);
+        return Webpack.getModule<T>(Filters.byRegex(regex), options);
     },
 
     getAllByRegex<T extends any[]>(regex: RegExp, options: WebpackOptions = {}) {
-        return this.getModule<T>(Filters.byRegex(regex), Object.assign({}, options, {first: false}));
+        return Webpack.getModule<T>(Filters.byRegex(regex), Object.assign({}, options, {first: false}));
     },
 
     getMangled<T extends object>(filter: Webpack.Filter | string | RegExp, mangled: Record<keyof T, Webpack.ExportedOnlyFilter>, options: Webpack.Options = {}) {
@@ -127,46 +127,46 @@ const Webpack = {
     getByPrototypeKeys<T>(...prototypes: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(prototypes);
 
-        return this.getModule<T>(Filters.byPrototypeKeys(keys), options);
+        return Webpack.getModule<T>(Filters.byPrototypeKeys(keys), options);
     },
     getAllByPrototypeKeys<T extends any[]>(...prototypes: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(prototypes);
 
-        return this.getModule<T>(Filters.byPrototypeKeys(keys), Object.assign({}, options, {first: false}));
+        return Webpack.getModule<T>(Filters.byPrototypeKeys(keys), Object.assign({}, options, {first: false}));
     },
 
     getByKeys<T>(...props: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(props);
 
-        return this.getModule<T>(Filters.byKeys(keys), options);
+        return Webpack.getModule<T>(Filters.byKeys(keys), options);
     },
     getAllByKeys<T extends any[]>(...props: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(props);
 
-        return this.getModule<T>(Filters.byKeys(keys), Object.assign({}, options, {first: false}));
+        return Webpack.getModule<T>(Filters.byKeys(keys), Object.assign({}, options, {first: false}));
     },
 
     getByStrings<T>(...strings: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(strings);
 
-        return this.getModule<T>(Filters.byStrings(...keys), options);
+        return Webpack.getModule<T>(Filters.byStrings(...keys), options);
     },
     getAllByStrings<T extends any[]>(...strings: WithOptions<string, WebpackOptions>) {
         const [keys, options] = getOptions(strings);
 
-        return this.getModule<T>(Filters.byStrings(...keys), Object.assign({}, options, {first: false}));
+        return Webpack.getModule<T>(Filters.byStrings(...keys), Object.assign({}, options, {first: false}));
     },
 
     getBySource<T>(...searches: WithOptions<string | RegExp, WebpackOptions>) {
         const [keys, options] = getOptions(searches);
 
-        return this.getModule<T>(Filters.bySource(...keys), options);
+        return Webpack.getModule<T>(Filters.bySource(...keys), options);
     },
 
     getAllBySource<T extends object[]>(...searches: WithOptions<string | RegExp, WebpackOptions>) {
         const [keys, options] = getOptions(searches);
 
-        return this.getModule<T>(Filters.bySource(...keys), Object.assign({}, options, {first: false}));
+        return Webpack.getModule<T>(Filters.bySource(...keys), Object.assign({}, options, {first: false}));
     },
 
     getStore(name: string) {return getStore(name);},
