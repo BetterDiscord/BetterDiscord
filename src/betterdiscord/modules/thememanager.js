@@ -1,6 +1,6 @@
 import path from "path";
 
-import Config from "@data/config";
+import Config from "@stores/config";
 
 import AddonError from "@structs/addonerror";
 
@@ -16,7 +16,7 @@ export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}
     get extension() {return ".theme.css";}
     get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
-    get addonFolder() {return path.resolve(Config.dataPath, "themes");}
+    get addonFolder() {return path.resolve(Config.get("dataPath"), "themes");}
     get prefix() {return "theme";}
     get language() {return "css";}
     get order() {return 4;}

@@ -8,13 +8,29 @@ import Content from "./content";
 
 import Text from "../base/text";
 import Button from "../base/button";
+import type {PropsWithChildren} from "react";
 
 const {useRef, useEffect, useLayoutEffect} = React;
 
 
-export default function ConfirmationModal({transitionState, onClose, onCloseCallback, className, size = Root.Sizes.SMALL, header, children, danger = false, onCancel = () => {}, onConfirm = () => {}, cancelText = Strings.Modals.cancel, confirmText = Strings.Modals.okay}) {
-    
-    const buttonRef = useRef(null);
+export type ConfirmationModalOptions = PropsWithChildren<{
+    onClose?(): void;
+    onConfirm?(): void;
+    onCancel?(): void;
+    onCloseCallback?(): void;
+    transitionState?: number;
+    size?: typeof Root.Sizes[keyof typeof Root.Sizes];
+    className?: string;
+    header?: string;
+    confirmText?: string;
+    cancelText?: string | null;
+    danger?: boolean;
+    key?: string | number;
+}>;
+
+export default function ConfirmationModal({transitionState, onClose, onCloseCallback, className, size = Root.Sizes.SMALL, header, children, danger = false, onCancel = () => {}, onConfirm = () => {}, cancelText = Strings.Modals.cancel, confirmText = Strings.Modals.okay}: ConfirmationModalOptions) {
+
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         setTimeout(() => buttonRef?.current?.focus?.(), 0);
@@ -36,7 +52,7 @@ export default function ConfirmationModal({transitionState, onClose, onCloseCall
                 color={danger ? Button.Colors.RED : Button.Colors.BRAND}
                 onClick={() => {
                     onConfirm?.();
-                    onClose();
+                    onClose?.();
                 }}
             >
                 {confirmText}
@@ -47,7 +63,7 @@ export default function ConfirmationModal({transitionState, onClose, onCloseCall
                 color={Button.Colors.PRIMARY}
                 onClick={() => {
                     onCancel?.();
-                    onClose();
+                    onClose?.();
                 }}
             >
                 {cancelText}

@@ -5,7 +5,7 @@ import path from "path";
 
 import Logger from "@common/logger";
 
-import Config from "@data/config";
+import Config from "@stores/config";
 
 import {comparator as semverComparator, regex as semverRegex} from "@structs/semver";
 
@@ -108,7 +108,7 @@ export class CoreUpdater {
     static remoteVersion = "";
 
     static async initialize() {
-        if (Config.development) return; // Don't run updater on development build
+        if (Config.isDevelopment) return; // Don't run updater on development build
         if (!Settings.get("addons", "checkForUpdates")) return;
         this.checkForUpdate();
     }
@@ -125,7 +125,7 @@ export class CoreUpdater {
 
         const data: Release = await resp.json();
         const remoteVersion = data.tag_name.startsWith("v") ? data.tag_name.slice(1) : data.tag_name;
-        this.hasUpdate = ignoreVersion || semverComparator(Config.version, remoteVersion) > 0;
+        this.hasUpdate = ignoreVersion || semverComparator(Config.get("version"), remoteVersion) > 0;
         this.remoteVersion = remoteVersion;
         this.apiData = data;
     }
@@ -149,7 +149,7 @@ export class CoreUpdater {
             return;
         }
 
-        let canaryUpdated = DataStore.getBDData("canaryUpdated");
+        let canaryUpdated: string | Date = DataStore.getBDData("canaryUpdated") as string;
         let remoteVersion = asset.updated_at;
         try {
             if (canaryUpdated) canaryUpdated = new Date(canaryUpdated);
@@ -165,7 +165,7 @@ export class CoreUpdater {
     }
 
     static async checkForUpdate(showNotice = true) {
-        const isOnCanary = Config.branch !== "main";
+        const isOnCanary = Config.isCanary;
         const isCanaryEnabled = Settings.get("developer", "canary");
 
         /**
@@ -219,7 +219,7 @@ export class CoreUpdater {
 
             // For canary, save the last updated data. For stable, overwrite the current version to prevent further updates
             if (Settings.get("developer", "canary")) DataStore.setBDData("canaryUpdated", this.remoteVersion);
-            else Config.version = this.remoteVersion;
+            else Config.set("version", this.remoteVersion);
 
             Modals.showConfirmationModal(Strings.Updater.updateSuccessful, Strings.Modals.restartPrompt, {
                 confirmText: Strings.Modals.restartNow,

@@ -8,7 +8,25 @@ export interface DiscordNativeAPI {
         arch: string;
         release: string;
     };
-    app: unknown;
+    app: {
+        getReleaseChannel(): string;
+        getVersion(): void;
+        getModuleVersions(): void;
+        getBuildNumber(): void;
+        getAppArch(): void;
+        getPath(): void;
+        setBadgeCount(): void;
+        dock: {
+            bounce(): void;
+            cancelBounce(): void;
+            setBadge(): void;
+        };
+        relaunch(): void;
+        getDefaultDoubleClickAction(): void;
+        pauseFrameEvictor(): void;
+        unpauseFrameEvictor(): void;
+        registerUserInteractionHandler(): void;
+    };
     clipboard: {
         copy(s: string): void;
         copyImage(b: Uint8Array): void;

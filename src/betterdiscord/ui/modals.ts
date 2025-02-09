@@ -18,46 +18,38 @@ import ModalRoot from "./modals/root";
 // import ModalContent from "./modals/content";
 // import ModalFooter from "./modals/footer";
 
-import ConfirmationModal from "./modals/confirmation";
+import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
 // import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
 import ChangelogModal from "./modals/changelog";
 import ModalStack, {generateKey} from "./modals/stack";
-import {Filters, getMangled, getModule} from "@webpack";
+import {Filters, getMangled} from "@webpack";
+import type {ComponentType, ReactElement, RefObject} from "react";
+import type AddonError from "@structs/addonerror";
 
 
-const native = getModule(m => m.minimize && m.architecture);
+const queue: Array<() => void> = [];
+
+interface ModalActions {
+    openModal: (e: () => ReactElement) => string | number;
+    closeModal: (key: string | number) => void;
+}
 
 export default class Modals {
 
     static get shouldShowAddonErrors() {return Settings.get("settings", "addons", "addonErrors");}
     static get hasModalOpen() {return !!document.getElementsByClassName("bd-modal").length;}
+    static get ModalQueue() {return queue;}
 
+    static _ModalActions: ModalActions;
     static get ModalActions() {
         return this._ModalActions ??= getMangled("onCloseRequest:null!=", {
             openModal: Filters.byStrings("onCloseRequest:null!="),
             closeModal: Filters.byStrings(".setState", ".getState()[")
-        });
-    }
-    static get ModalQueue() {return this._ModalQueue ??= [];}
-
-    static async initialize() {
-        const names = ["ModalActions"];
-
-        for (const name of names) {
-            let value = this[name];
-
-            if (name === "ModalActions") {
-                value = Object.keys(this.ModalActions).every(k => this.ModalActions[k]);
-            }
-
-            if (!value) {
-                Logger.warn("Modals", `Missing ${name} module!`);
-            }
-        }
+        }) as ModalActions;
     }
 
-    static default(title, content, buttons = []) {
+    static default(title: string, content: string|ReactElement|ReactElement[]|HTMLElement|Array<string|ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
         const modal = DOMManager.parseHTML(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">
@@ -73,7 +65,7 @@ export default class Modals {
                         <div class="footer footer-2yfCgX footer-3rDWdC footer-2gL1pp"></div>
                     </div>
                 </div>
-            </div>`);
+            </div>`) as HTMLElement;
 
         const handleClose = () => {
             modal.classList.add("closing");
@@ -94,10 +86,10 @@ export default class Modals {
             });
         }
 
-        const buttonContainer = modal.querySelector(".footer");
+        const buttonContainer = modal.querySelector(".footer")!;
         for (const button of buttons) {
             const buttonEl = Object.assign(document.createElement("button"), {
-                onclick: (e) => {
+                onclick: (e: MouseEvent) => {
                     try {
                         button.action(e);
                     }
@@ -118,14 +110,14 @@ export default class Modals {
         }
 
         if (Array.isArray(content) ? content.every(el => React.isValidElement(el)) : React.isValidElement(content)) {
-            const container = modal.querySelector(".scroller");
+            const container = modal.querySelector(".scroller")!;
 
             try {
                 // eslint-disable-next-line react/no-deprecated
-                ReactDOM.render(content, container);
+                ReactDOM.render(content as ReactElement, container);
             }
             catch (error) {
-                container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`));
+                container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`) as HTMLElement);
                 Logger.stacktrace("Modals", "Could not render modal", error);
             }
 
@@ -135,13 +127,13 @@ export default class Modals {
             });
         }
         else {
-            modal.querySelector(".scroller").append(content);
+            modal.querySelector(".scroller")!.append(content as Element);
         }
 
-        modal.querySelector(".footer button").addEventListener("click", handleClose);
-        modal.querySelector(".bd-backdrop").addEventListener("click", handleClose);
+        modal.querySelector(".footer button")!.addEventListener("click", handleClose);
+        modal.querySelector(".bd-backdrop")!.addEventListener("click", handleClose);
 
-        const handleOpen = () => document.getElementById("app-mount").append(modal);
+        const handleOpen = () => document.getElementById("app-mount")!.append(modal);
 
         if (this.hasModalOpen) {
             this.ModalQueue.push(handleOpen);
@@ -151,7 +143,7 @@ export default class Modals {
         }
     }
 
-    static alert(title, content) {
+    static alert(title: string, content: (string|ReactElement|Array<string|ReactElement>)) {
         this.showConfirmationModal(title, content, {cancelText: null});
     }
 
@@ -169,9 +161,7 @@ export default class Modals {
      * @param {string} [options.key] - key used to identify the modal. If not provided, one is generated and returned
      * @returns {string} - the key used for this modal
      */
-    static showConfirmationModal(title, content, options = {}) {
-        const ModalActions = this.ModalActions;
-
+    static showConfirmationModal(title: string, content: (string|ReactElement|Array<string|ReactElement>), options: ConfirmationModalOptions = {}) {
         if (content instanceof FormattableString) content = content.toString();
 
         const emptyFunction = () => {};
@@ -181,21 +171,21 @@ export default class Modals {
             return this.default(title, content, [
                 confirmText && {label: confirmText, action: onConfirm},
                 cancelText && {label: cancelText, action: onCancel, danger}
-            ].filter(Boolean));
+            ].filter(Boolean) as any);
         }
 
         if (!Array.isArray(content)) content = [content];
         content = content.map(c => typeof(c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
 
-        const modalKey = this.openModal(props => {
+        const modalKey = this.openModal((props: any) => {
             return React.createElement(ErrorBoundary, {
                 onError: () => {
                     setTimeout(() => {
-                        ModalActions.closeModal(modalKey);
+                        this.ModalActions.closeModal(modalKey);
                         this.default(title, content, [
                             confirmText && {label: confirmText, action: onConfirm},
                             cancelText && {label: cancelText, action: onCancel, danger}
-                        ].filter(Boolean));
+                        ].filter(Boolean) as any);
                     });
                 }
             }, React.createElement(ConfirmationModal, Object.assign({
@@ -213,12 +203,11 @@ export default class Modals {
         return modalKey;
     }
 
-    static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}) {
+    static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}: {plugins: AddonError[]; themes: AddonError[];}) {
         if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
 
         const options = {
-            ref: this.addonErrorsRef,
             pluginErrors: Array.isArray(pluginErrors) ? pluginErrors : [],
             themeErrors: Array.isArray(themeErrors) ? themeErrors : []
         };
@@ -227,7 +216,19 @@ export default class Modals {
         });
     }
 
-    static showChangelogModal(options = {}) {
+    // TODO: move typing to changelog after converting
+    static showChangelogModal(options: {
+        transitionState?: number;
+        footer?: string;
+        title?: string;
+        subtitle?: string;
+        onClose?(): void;
+        video?: string;
+        poster?: string;
+        banner?: string;
+        blurb?: string;
+        changes?: object;
+    } = {}) {
         const key = this.openModal(props => {
             return React.createElement(ErrorBoundary, {id: "showChangelogModal", name: "Modals"}, React.createElement(ChangelogModal, Object.assign(options, props)));
         });
@@ -238,22 +239,22 @@ export default class Modals {
      * Shows the guild join modal, to join invites
      * @param {string} code
      */
-    static async showGuildJoinModal(code) {
+    static async showGuildJoinModal(code: string) {
         const tester = /\.gg\/(.*)$/;
-        if (tester.test(code)) code = code.match(tester)[1];
+        if (tester.test(code)) code = code.match(tester)![1];
 
-        const {invite} = await DiscordModules.InviteActions.resolveInvite(code);
+        const {invite} = await DiscordModules.InviteActions?.resolveInvite(code) ?? {invite: null};
 
         if (!invite) {
             Logger.debug("Utilities", "Failed to resolve invite:", code);
             return;
         }
 
-        const minimize = Patcher.instead("BetterDiscord~showGuildJoinModal", native, "minimize", () => {});
-        const focus = Patcher.instead("BetterDiscord~showGuildJoinModal", native, "focus", () => {});
+        const minimize = Patcher.instead("BetterDiscord~showGuildJoinModal", DiscordModules.RemoteModule!, "minimize", () => {});
+        const focus = Patcher.instead("BetterDiscord~showGuildJoinModal", DiscordModules.RemoteModule!, "focus", () => {});
 
         try {
-            await DiscordModules.Dispatcher.dispatch({
+            await DiscordModules.Dispatcher?.dispatch({
                 type: "INVITE_MODAL_OPEN",
                 invite,
                 code,
@@ -266,15 +267,17 @@ export default class Modals {
         }
     }
 
-    static showAddonSettingsModal(name, panel) {
+    static showAddonSettingsModal(name: string, panel: Element | string | (() => ReactElement) | ReactElement | ComponentType) {
 
         let child = panel;
         if (panel instanceof Node || typeof(panel) === "string") {
-            child = class ReactWrapper extends React.Component {
-                constructor(props) {
+            child = class ReactWrapper extends React.Component<any, {hasError: boolean}> {
+                element: Element | string;
+                elementRef: RefObject<Element | string>;
+                constructor(props?: any) {
                     super(props);
                     this.elementRef = React.createRef();
-                    this.element = panel;
+                    this.element = panel as (Element | string);
                     this.state = {hasError: false};
                 }
 
@@ -283,17 +286,16 @@ export default class Modals {
                 }
 
                 componentDidMount() {
-                    if (this.element instanceof Node) this.elementRef.current.appendChild(this.element);
+                    if (this.element instanceof Node) (this.elementRef as RefObject<Element>).current?.appendChild(this.element as Element);
                 }
 
                 render() {
                     if (this.state.hasError) return React.createElement(TextElement, {color: TextElement.Colors.STATUS_RED}, Strings.Addons.settingsError);
-                    const props = {
+                    return React.createElement("div", {
                         className: "bd-addon-settings-wrap",
-                        ref: this.elementRef
-                    };
-                    if (typeof(this.element) === "string") props.dangerouslySetInnerHTML = {__html: this.element};
-                    return React.createElement("div", props);
+                        ref: this.elementRef,
+                        dangerouslySetInnerHTML: typeof(this.element) === "string" ? {__html: this.element} : undefined
+                    });
                 }
             };
         }
@@ -307,20 +309,25 @@ export default class Modals {
             confirmText: Strings.Modals.done
         };
 
-        return this.openModal(props => {
-            return React.createElement(ErrorBoundary, {id: "showAddonSettingsModal", name: "Modals"}, React.createElement(ConfirmationModal, Object.assign(options, props), child));
+        return this.openModal((props: any) => {
+            return React.createElement(ErrorBoundary, {id: "showAddonSettingsModal", name: "Modals"}, React.createElement(ConfirmationModal, Object.assign(options, props), child as ReactElement));
         });
     }
 
+    static hasInitialized = false;
     static makeStack() {
-        const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
+        const div = DOMManager.parseHTML(`<div id="bd-modal-container">`) as HTMLElement;
         DOMManager.bdBody.append(div);
         // eslint-disable-next-line react/no-deprecated
-        ReactDOM.render(<ErrorBoundary id="makeStack" name="Modals" hideError={true}><ModalStack /></ErrorBoundary>, div);
+        ReactDOM.render(
+            [React.createElement(ErrorBoundary, {id: "makeStack", name: "Modals", hideError: true}, React.createElement(ModalStack))],
+            // <ErrorBoundary id="makeStack" name="Modals" hideError={true}><ModalStack /></ErrorBoundary>,
+            div
+        );
         this.hasInitialized = true;
     }
 
-    static openModal(render, options = {}) {
+    static openModal(render: (props?: unknown) => ReactElement, options: {modalKey?: string | number} = {}) {
         if (typeof(this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
         if (!this.hasInitialized) this.makeStack();
         options.modalKey = generateKey(options.modalKey);

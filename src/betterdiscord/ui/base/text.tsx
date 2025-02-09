@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "@modules/react";
+import type {CSSProperties, ElementType, HTMLAttributes, PropsWithChildren} from "react";
 
 
 export const Colors = Object.freeze({
@@ -29,15 +30,16 @@ export const Sizes = Object.freeze({
 });
 
 
-/**
- *
- * @param {object} props
- * @param {string} [props.color=Colors.STANDARD]
- * @param {string} [props.size=Sizes.SIZE_14]
- * @param {any[]|any|null} [props.children=null]
- * @returns
- */
-export default function Text({tag: Tag = "div", className = "", children = null, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style}) {
+type TextProps = PropsWithChildren<{
+    tag?: ElementType<HTMLAttributes<HTMLElement>>;
+    className?: string;
+    color?: typeof Colors[keyof typeof Colors];
+    size?: typeof Sizes[keyof typeof Sizes];
+    selectable?: boolean;
+    strong?: boolean;
+    style?: CSSProperties;
+}>;
+export default function Text({tag: Tag = "div", className = "", children = null, color = Colors.STANDARD, size = Sizes.SIZE_14, selectable, strong, style}: TextProps) {
     return <Tag
         className={
             clsx(

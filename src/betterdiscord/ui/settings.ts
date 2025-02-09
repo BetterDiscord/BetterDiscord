@@ -34,14 +34,14 @@ export default new class SettingsRenderer {
     }
 
     onDrawerToggle(collection: string, group: string, state: boolean) {
-        const drawerStates = DataStore.getBDData("drawerStates") || {};
+        const drawerStates: Partial<Record<string, Record<string, boolean>>> = DataStore.getBDData("drawerStates") || {};
         if (!drawerStates[collection]) drawerStates[collection] = {};
         drawerStates[collection][group] = state;
         DataStore.setBDData("drawerStates", drawerStates);
     }
 
     getDrawerState(collection: string, group: string, defaultValue: boolean) {
-        const drawerStates = DataStore.getBDData("drawerStates") || {};
+        const drawerStates: Partial<Record<string, Record<string, boolean>>> = DataStore.getBDData("drawerStates") || {};
         if (!drawerStates[collection]) return defaultValue;
         if (!drawerStates[collection].hasOwnProperty(group)) return defaultValue;
         return drawerStates[collection][group];

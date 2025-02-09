@@ -1,4 +1,4 @@
-import config from "@data/config";
+import config from "@stores/config";
 import type AddonManager from "@modules/addonmanager";
 import DiscordModules from "@modules/discordmodules";
 import PluginManager from "@modules/pluginmanager";
@@ -60,8 +60,8 @@ export function getAddonList(manager: AddonManager) {
 }
 
 export function getCoreInfo() {
-    const channel = config.branch === "main" ? "stable" : "canary";
-    return `${channel} ${config.version} (${config.commit?.substring(0, 7)})\n`;
+    const channel = config.isCanary ? "canary" : "stable";
+    return `${channel} ${config.get("version")} (${config.get("commit")?.substring(0, 7)})\n`;
 }
 
 export function getAddonInfo() {

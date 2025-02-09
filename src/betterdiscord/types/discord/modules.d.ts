@@ -78,6 +78,7 @@ export interface Dispatcher {
     waitFor(IDs: string[]): void;
     dispatch<T>(payload: T): void;
     isDispatching(): boolean;
+    subscribe<T extends (...args: any[]) => void>(id: string, cb: T): void;
 }
 
 
@@ -136,4 +137,24 @@ export interface DiscordPermissions {
     VIEW_CHANNEL: 1024n;
     VIEW_CREATOR_MONETIZATION_ANALYTICS: 2199023255552n;
     VIEW_GUILD_ANALYTICS: 524288n;
+}
+
+export interface InviteActions {
+    resolveInvite(code: string): {code: string; invite: {code: string}};
+    getInviteContext(): void;
+    createInvite(): void;
+    mobileCreateInvite(): void;
+    getAllFriendInvites(): void;
+    createFriendInvite(): void;
+    revokeFriendInvites(): void;
+    revokeFriendInvite(): void;
+    clearInviteFromStore(): void;
+    revokeInvite(): void;
+    acceptInvite(): void;
+    acceptInviteAndTransitionToInviteChannel(): void;
+    transitionToInvite(): void;
+    transitionToInviteSync(): void;
+    openNativeAppModal(): void;
+    openApp(): void;
+    transitionToInviteChannelSync(): void;
 }

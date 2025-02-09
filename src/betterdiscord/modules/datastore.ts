@@ -3,7 +3,7 @@ import path from "path";
 
 import Logger from "@common/logger";
 
-import Config from "@data/config";
+import Config from "@stores/config";
 
 
 const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable";
@@ -18,15 +18,18 @@ const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "sta
 //             -> themes.json
 
 export default new class DataStore {
+
+    data: Record<string, Record<string, unknown>>;
+    pluginData: Record<string, Record<string, unknown>>;
+
     constructor() {
         this.data = {misc: {}};
         this.pluginData = {};
-        this.cacheData = {};
     }
 
     initialize() {
-        const bdFolderExists = fs.existsSync(Config.dataPath);
-        if (!bdFolderExists) fs.mkdirSync(Config.dataPath);
+        const bdFolderExists = fs.existsSync(Config.get("dataPath"));
+        if (!bdFolderExists) fs.mkdirSync(Config.get("dataPath"));
 
         const pluginFolderExists = fs.existsSync(this.pluginFolder);
         if (!pluginFolderExists) fs.mkdirSync(this.pluginFolder);
@@ -54,44 +57,38 @@ export default new class DataStore {
         }
     }
 
-    get pluginFolder() {return this._pluginFolder || (this._pluginFolder = path.resolve(Config.dataPath, "plugins"));}
-    get themeFolder() {return this._themeFolder || (this._themeFolder = path.resolve(Config.dataPath, "themes"));}
+    _pluginFolder?: string;
+    _themeFolder?: string;
+    _customCSS?: string;
+    _baseFolder?: string;
+    _dataFolder?: string;
+    get pluginFolder() {return this._pluginFolder || (this._pluginFolder = path.resolve(Config.get("dataPath"), "plugins"));}
+    get themeFolder() {return this._themeFolder || (this._themeFolder = path.resolve(Config.get("dataPath"), "themes"));}
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
-    get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
+    get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.get("dataPath"), "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
-    getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
+    getPluginFile(pluginName: string) {return path.resolve(Config.get("dataPath"), "plugins", pluginName + ".config.json");}
 
 
-    _getFile(key) {
+    _getFile(key: string) {
         if (key == "settings" || key == "plugins" || key == "themes" || key == "window") return path.resolve(this.dataFolder, `${key}.json`);
         return path.resolve(this.dataFolder, `misc.json`);
     }
 
-    getBDData(key) {
+    getBDData(key: string) {
         return this.data.misc[key] || "";
     }
 
-    setBDData(key, value) {
+    setBDData(key: string, value: unknown) {
         this.data.misc[key] = value;
         fs.writeFileSync(path.resolve(this.dataFolder, `misc.json`), JSON.stringify(this.data.misc, null, 4));
     }
 
-    getLocale(locale) {
-        const file = path.resolve(this.localeFolder, `${locale}.json`);
-        if (!fs.existsSync(file)) return null;
-        try {return JSON.parse(fs.readFileSync(file).toString());}
-        catch {return false;}
-    }
-
-    saveLocale(locale, strings) {
-        fs.writeFileSync(path.resolve(this.localeFolder, `${locale}.json`), JSON.stringify(strings, null, 4));
-    }
-
-    getData(key) {
+    getData(key: string) {
         return this.data[key] || "";
     }
 
-    setData(key, value) {
+    setData(key: string, value: Record<string, unknown>) {
         this.data[key] = value;
         fs.writeFileSync(path.resolve(this.dataFolder, `${key}.json`), JSON.stringify(value, null, 4));
     }
@@ -100,28 +97,28 @@ export default new class DataStore {
         return fs.readFileSync(this.customCSS).toString();
     }
 
-    saveCustomCSS(css) {
+    saveCustomCSS(css: string) {
         return fs.writeFileSync(this.customCSS, css);
     }
 
-    ensurePluginData(pluginName) {
+    ensurePluginData(pluginName: string) {
         if (typeof(this.pluginData[pluginName]) !== "undefined") return; // Already have data cached
 
         // Setup blank data if config doesn't exist
         if (!fs.existsSync(this.getPluginFile(pluginName))) return this.pluginData[pluginName] = {};
 
         // Getting here means not cached, read from disk
-        try {this.pluginData[pluginName] = JSON.parse(fs.readFileSync(this.getPluginFile(pluginName)));}
+        try {this.pluginData[pluginName] = JSON.parse(fs.readFileSync(this.getPluginFile(pluginName)).toString());}
         // Setup blank data if parse fails
         catch {return this.pluginData[pluginName] = {};}
     }
 
-    getPluginData(pluginName, key) {
+    getPluginData(pluginName: string, key: string) {
         this.ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
         return this.pluginData[pluginName][key]; // Return blindly to allow falsey values
     }
 
-    setPluginData(pluginName, key, value) {
+    setPluginData(pluginName: string, key: string, value: unknown) {
         if (value === undefined) return; // Can't set undefined, use deletePluginData
         this.ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
 
@@ -129,7 +126,7 @@ export default new class DataStore {
         fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4)); // Save to disk
     }
 
-    deletePluginData(pluginName, key) {
+    deletePluginData(pluginName: string, key: string) {
         this.ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
         delete this.pluginData[pluginName][key];
         fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4));

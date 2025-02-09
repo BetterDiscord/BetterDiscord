@@ -62,7 +62,7 @@ async function runBuild() {
             "process.env.__VERSION__": JSON.stringify(pkg.version),
             "process.env.__BRANCH__": JSON.stringify(BRANCH_NAME),
             "process.env.__COMMIT__": JSON.stringify(COMMIT_HASH),
-            "process.env.__DEVELOPMENT__": (DEVELOPMENT === "development").toString()
+            "process.env.__BUILD__": (DEVELOPMENT === "development").toString()
         }
     });
 

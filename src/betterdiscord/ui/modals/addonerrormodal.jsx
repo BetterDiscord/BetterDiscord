@@ -58,6 +58,11 @@ function generateTab(id, errors) {
     return {id, errors, name: Strings.Panels[id]};
 }
 
+/**
+ *
+ * @param {{transitionState?: number; onClose?(): void; pluginErrors: (import("@structs/addonerror").default)[]; themeErrors: (import("@structs/addonerror").default)[];}} param0
+ * @returns
+ */
 export default function AddonErrorModal({transitionState, onClose, pluginErrors, themeErrors}) {
     const tabs = useMemo(() => {
         return [

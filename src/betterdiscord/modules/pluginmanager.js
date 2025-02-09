@@ -3,7 +3,7 @@ import vm from "vm";
 
 import Logger from "@common/logger";
 
-import Config from "@data/config";
+import Config from "@stores/config";
 
 import AddonError from "@structs/addonerror";
 
@@ -27,7 +27,7 @@ export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
     get extension() {return ".plugin.js";}
     get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
-    get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
+    get addonFolder() {return path.resolve(Config.get("dataPath"), "plugins");}
     get prefix() {return "plugin";}
     get language() {return "javascript";}
     get order() {return 3;}

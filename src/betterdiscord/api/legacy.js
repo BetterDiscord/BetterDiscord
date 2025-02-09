@@ -1,11 +1,10 @@
 import Logger from "@common/logger";
 
-import Config from "@data/config";
-
 import DiscordModules from "@modules/discordmodules";
 import DataStore from "@modules/datastore";
 import DOMManager from "@modules/dommanager";
 import Settings from "@stores/settings";
+import Config from "@stores/config";
 import Patcher from "@modules/patcher";
 import ipc from "@modules/ipc";
 
@@ -14,21 +13,21 @@ import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import {getAllModules, getByDisplayName, getByKeys, getByPrototypes, getModule} from "@webpack";
 
-/** 
+/**
  * The React module being used inside Discord.
  * @type React
  * @memberof BdApi
  */
 const React = DiscordModules.React;
 
-/** 
+/**
  * The ReactDOM module being used inside Discord.
  * @type ReactDOM
  * @memberof BdApi
  */
 const ReactDOM = DiscordModules.ReactDOM;
 
-/** 
+/**
  * A reference object to get BD's settings.
  * @type object
  * @deprecated
@@ -36,7 +35,7 @@ const ReactDOM = DiscordModules.ReactDOM;
  */
 const settings = Settings.collections;
 
-/** 
+/**
  * A reference object for BD's emotes.
  * @type object
  * @deprecated
@@ -44,17 +43,17 @@ const settings = Settings.collections;
  */
 const emotes = {};
 
-/** 
+/**
  * A reference string for BD's version.
  * @type string
  * @memberof BdApi
  */
-const version = Config.version;
+const version = Config.get("version");
 
 
 /**
  * Adds a `<style>` to the document with the given ID.
- * 
+ *
  * @deprecated
  * @param {string} id ID to use for style element
  * @param {string} css CSS to apply to the document
@@ -66,7 +65,7 @@ function injectCSS(id, css) {
 
 /**
  * Removes a `<style>` from the document corresponding to the given ID.
- * 
+ *
  * @deprecated
  * @param {string} id ID uses for the style element
  * @memberof BdApi
@@ -77,7 +76,7 @@ function clearCSS(id) {
 
 /**
  * Automatically creates and links a remote JS script.
- * 
+ *
  * @deprecated
  * @param {string} id ID of the script element
  * @param {string} url URL of the remote script
@@ -90,7 +89,7 @@ function linkJS(id, url) {
 
 /**
  * Removes a remotely linked JS script.
- * 
+ *
  * @deprecated
  * @param {string} id ID of the script element
  * @memberof BdApi
@@ -101,7 +100,7 @@ function unlinkJS(id) {
 
 /**
  * Shows a generic but very customizable modal.
- * 
+ *
  * @deprecated
  * @param {string} title Title of the modal
  * @param {(string|ReactElement|Array<string|ReactElement>)} content A string of text to display in the modal
@@ -113,7 +112,7 @@ function alert(title, content) {
 
 /**
  * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
- * 
+ *
  * @deprecated
  * @param {string} title Title of the modal
  * @param {(string|ReactElement|Array<string|ReactElement>)} children Single or mixed array of React elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
@@ -148,7 +147,7 @@ function showToast(content, options = {}) {
 
 /**
  * Shows a notice above Discord's chat layer.
- * 
+ *
  * @deprecated
  * @param {string|Node} content Content of the notice
  * @param {object} options Options for the notice
@@ -164,7 +163,7 @@ function showToast(content, options = {}) {
 
 /**
  * Finds a webpack module using a filter.
- * 
+ *
  * @deprecated
  * @param {function} filter A filter given the exports, module, and moduleId. Returns `true` if the module matches.
  * @returns {any} Either the matching module or `undefined`
@@ -176,7 +175,7 @@ function findModule(filter) {
 
 /**
  * Finds multiple webpack modules using a filter.
- * 
+ *
  * @deprecated
  * @param {function} filter A filter given the exports, module, and moduleId. Returns `true` if the module matches.
  * @returns {Array} Either an array of matching modules or an empty array
@@ -188,7 +187,7 @@ function findAllModules(filter) {
 
 /**
  * Finds a webpack module by own properties.
- * 
+ *
  * @deprecated
  * @param {...string} props Any desired properties
  * @returns {any} Either the matching module or `undefined`
@@ -201,7 +200,7 @@ function findModuleByProps(...props) {
 
 /**
  * Finds a webpack module by own prototypes.
- * 
+ *
  * @deprecated
  * @param {...string} protos Any desired prototype properties
  * @returns {any} Either the matching module or `undefined`
@@ -213,7 +212,7 @@ function findModuleByPrototypes(...protos) {
 
 /**
  * Finds a webpack module by `displayName` property.
- * 
+ *
  * @deprecated
  * @param {string} name Desired `displayName` property
  * @returns {any} Either the matching module or `undefined`
@@ -225,7 +224,7 @@ function findModuleByDisplayName(name) {
 
 /**
  * Gets the internal React data of a specified node.
- * 
+ *
  * @deprecated
  * @param {HTMLElement} node Node to get the internal React data from.
  * @returns {object|undefined} Either the found data or `undefined`
@@ -238,7 +237,7 @@ function getInternalInstance(node) {
 
 /**
  * Loads previously stored data.
- * 
+ *
  * @deprecated
  * @param {string} pluginName Name of the plugin loading data
  * @param {string} key Which piece of data to load
@@ -251,7 +250,7 @@ function loadData(pluginName, key) {
 
 /**
  * Saves JSON-serializable data.
- * 
+ *
  * @deprecated
  * @param {string} pluginName Name of the plugin saving data
  * @param {string} key Which piece of data to store
@@ -264,7 +263,7 @@ function saveData(pluginName, key, data) {
 
 /**
  * Deletes a piece of stored data. This is different than saving `null` or `undefined`.
- * 
+ *
  * @deprecated
  * @param {string} pluginName Name of the plugin deleting data
  * @param {string} key Which piece of data to delete
@@ -276,10 +275,10 @@ function deleteData(pluginName, key) {
 
 /**
  * Monkey-patches a method on an object. The patching callback may be run before, after or instead of target method.
- * 
+ *
  *  - Be careful when monkey-patching. Think not only about original functionality of target method and your changes, but also about developers of other plugins, who may also patch this method before or after you. Try to change target method behaviour as little as possible, and avoid changing method signatures.
  *  - Display name of patched method is changed, so you can see if a function has been patched (and how many times) while debugging or in the stack trace. Also, patched methods have property `__monkeyPatched` set to `true`, in case you want to check something programmatically.
- * 
+ *
  * @deprecated
  * @param {object} what Object to be patched. You can can also pass class prototypes to patch all class instances.
  * @param {string} methodName Name of the function to be patched
@@ -319,7 +318,7 @@ function monkeyPatch(what, methodName, options) {
 
 /**
  * Adds a listener for when the node is removed from the document body.
- * 
+ *
  * @deprecated
  * @param {HTMLElement} node Node to be observed
  * @param {function} callback Function to run when removed
@@ -331,7 +330,7 @@ function onRemoved(node, callback) {
 
 /**
  * Wraps a given function in a `try..catch` block.
- * 
+ *
  * @deprecated
  * @param {function} method Function to wrap
  * @param {string} message Additional message to print when an error occurs
@@ -347,7 +346,7 @@ function suppressErrors(method, message) {
 
 /**
  * Tests a given object to determine if it is valid JSON.
- * 
+ *
  * @deprecated
  * @param {object} data Data to be tested
  * @returns {boolean} Result of the test
@@ -364,7 +363,7 @@ function testJSON(data) {
 
 /**
  * Gets a specific setting's status from BD.
- * 
+ *
  * @deprecated
  * @param {string} [collection="settings"] Collection ID
  * @param {string} category Category ID in the collection
@@ -378,7 +377,7 @@ function isSettingEnabled(collection, category, id) {
 
 /**
  * Enables a BetterDiscord setting by IDs.
- * 
+ *
  * @deprecated
  * @param {string} [collection="settings"] Collection ID
  * @param {string} category Category ID in the collection
@@ -391,7 +390,7 @@ function enableSetting(collection, category, id) {
 
 /**
  * Disables a BetterDiscord setting by IDs.
- * 
+ *
  * @deprecated
  * @param {string} [collection="settings"] Collection ID
  * @param {string} category Category ID in the collection
@@ -404,7 +403,7 @@ function disableSetting(collection, category, id) {
 
 /**
  * Toggles a BetterDiscord setting by IDs.
- * 
+ *
  * @deprecated
  * @param {string} [collection="settings"] Collection ID
  * @param {string} category Category ID in the collection
@@ -417,7 +416,7 @@ function toggleSetting(collection, category, id) {
 
 /**
  * Gets some data in BetterDiscord's misc data.
- * 
+ *
  * @deprecated
  * @param {string} key Key of the data to load
  * @returns {any} The stored data
@@ -429,7 +428,7 @@ function getBDData(key) {
 
 /**
  * Sets some data in BetterDiscord's misc data.
- * 
+ *
  * @deprecated
  * @param {string} key Key of the data to store
  * @returns {any} The stored data
@@ -440,9 +439,9 @@ function setBDData(key, data) {
 }
 
 /**
- * Gives access to the [Electron Dialog](https://www.electronjs.org/docs/latest/api/dialog/) api. 
+ * Gives access to the [Electron Dialog](https://www.electronjs.org/docs/latest/api/dialog/) api.
  * Returns a `Promise` that resolves to an `object` that has a `boolean` cancelled and a `filePath` string for saving and a `filePaths` string array for opening.
- * 
+ *
  * @deprecated
  * @param {object} options Options object to configure the dialog
  * @param {"open"|"save"} [options.mode="open"] Determines whether the dialog should open or save files

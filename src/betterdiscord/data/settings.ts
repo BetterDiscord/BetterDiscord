@@ -1,4 +1,4 @@
-import config from "./config";
+import config from "@stores/config";
 
 export default [
     {
@@ -89,7 +89,7 @@ export default [
             {type: "switch", id: "inspectElement", value: false, enableWith: "devTools"},
             {type: "switch", id: "devToolsWarning", value: false, enableWith: "devTools"},
             {type: "switch", id: "recovery", value: true, enableWith: "devTools"},
-            {type: "switch", id: "canary", value: config.branch !== "main", hidden: true},
+            {type: "switch", id: "canary", value: config.isCanary, hidden: true},
         ]
     },
     {

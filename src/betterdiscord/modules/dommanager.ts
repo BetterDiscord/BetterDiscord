@@ -1,5 +1,6 @@
 import Logger from "@common/logger";
 
+// TODO: revamp the "manager" part
 export default class DOMManager {
 
     /** Document/window width */
@@ -8,15 +9,15 @@ export default class DOMManager {
     /** Document/window height */
     static get screenHeight() {return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);}
 
-    static get bdHead() {return this.getElement("bd-head");}
-    static get bdBody() {return this.getElement("bd-body");}
-    static get bdScripts() {return this.getElement("bd-scripts");}
-    static get bdStyles() {return this.getElement("bd-styles");}
-    static get bdThemes() {return this.getElement("bd-themes");}
-    static get bdCustomCSS() {return this.getElement("style#customcss");}
-    static get bdTooltips() {return this.getElement("bd-tooltips") || this.createElement("bd-tooltips").appendTo(this.bdBody);}
-    static get bdModals() {return this.getElement("bd-modals") || this.createElement("bd-modals").appendTo(this.bdBody);}
-    static get bdToasts() {return this.getElement("bd-toasts") || this.createElement("bd-toasts").appendTo(this.bdBody);}
+    static get bdHead() {return this.getElement("bd-head")!;}
+    static get bdBody() {return this.getElement("bd-body")!;}
+    static get bdScripts() {return this.getElement("bd-scripts")!;}
+    static get bdStyles() {return this.getElement("bd-styles")!;}
+    static get bdThemes() {return this.getElement("bd-themes")!;}
+    static get bdCustomCSS() {return this.getElement("style#customcss")!;}
+    // static get bdTooltips() {return this.getElement("bd-tooltips") || this.createElement("bd-tooltips").appendTo(this.bdBody);}
+    // static get bdModals() {return this.getElement("bd-modals") || this.createElement("bd-modals").appendTo(this.bdBody);}
+    // static get bdToasts() {return this.getElement("bd-toasts") || this.createElement("bd-toasts").appendTo(this.bdBody);}
 
     static initialize() {
         // this.createElement("bd-head", {target: document.head});
@@ -27,54 +28,46 @@ export default class DOMManager {
         // this.createElement("style", {id: "customcss", target: this.bdHead});
     }
 
-    static escapeID(id) {
+    static escapeID(id: string) {
         return id.replace(/^[^a-z]+|[^\w-]+/gi, "-");
     }
 
-    static getElement(e, baseElement = document) {
+    // TODO: do more of this overloading for better typing and less assertions
+    static getElement(e: Node, baseElement?: Element): Node;
+    static getElement(e: string, baseElement?: Element): Element | null;
+    static getElement(e: Node | string, baseElement: Element = document.documentElement) {
         if (e instanceof Node) return e;
         return baseElement.querySelector(e);
     }
 
     /**
-     * Utility function to make creating DOM elements easier. 
+     * Utility function to make creating DOM elements easier.
      * Has backward compatibility with previous createElement implementation.
-     * 
-     * @param {string} type HTML tag name to create
-     * @param {object} [options={}] Options object to customize the element
-     * @param {string} [options.className] Class name to add to the element
-     * @param {string} [options.id] ID to set for the element
-     * @param {string|HTMLElement} [options.target] Target element or selector to append to
-     * @param {(Node|string|(Node|string)[])[]} children Child node to add
-     * @returns {HTMLElement} The created HTML element
     */
-    static createElement(type, options = {}, ...children) {
+    static createElement(type: string, options: {id?: string, target?: string | Element;} = {}, ...children: Array<Node|string|Array<Node|string>>) {
         const element = document.createElement(type);
-    
+
         Object.assign(element, options);
-    
+
         element.append(...children.flat());
-    
+
         if (options.target) {
             Logger.warn("DOM.createElement", `Usage of the "target" option has been deprecated and will be removed in the next version.`);
             (typeof options.target === "string" ? document.querySelector(options.target) : options.target)?.append(element);
         }
-    
+
         return element;
-    }  
-        
+    }
+
     /**
      * Parses a string of HTML and returns the results. If the second parameter is true,
      * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
      * This is extremely useful if you have a list of elements at the top level, they can then be appended all at once to another node.
-     * 
+     *
      * If the second parameter is false, then the return value will be the list of parsed
      * nodes and there were multiple top level nodes, otherwise the single node is returned.
-     * @param {string} html - HTML to be parsed
-     * @param {boolean} [fragment=false] - Whether or not the return should be the raw `DocumentFragment`
-     * @returns {(DocumentFragment|NodeList|HTMLElement)} - The result of HTML parsing
      */
-    static parseHTML(html, fragment = false) {
+    static parseHTML(html: string, fragment = false) {
         const template = document.createElement("template");
         template.innerHTML = html;
         const node = template.content.cloneNode(true);
@@ -82,27 +75,27 @@ export default class DOMManager {
         return node.childNodes.length > 1 ? node.childNodes : node.childNodes[0];
     }
 
-    static removeStyle(id) {
+    static removeStyle(id: string) {
         id = this.escapeID(id);
         const exists = this.getElement(`#${id}`, this.bdStyles);
         if (exists) exists.remove();
     }
 
-    static injectStyle(id, css) {
+    static injectStyle(id: string, css: string) {
         id = this.escapeID(id);
         const style = this.getElement(`#${id}`, this.bdStyles) || this.createElement("style", {id});
         style.textContent = css;
         this.bdStyles.append(style);
     }
 
-    static unlinkStyle(id) {
+    static unlinkStyle(id: string) {
         return this.removeStyle(id);
     }
 
-    static linkStyle(id, url, {documentHead = false} = {}) {
+    static linkStyle(id: string, url: string, {documentHead = false} = {}) {
         id = this.escapeID(id);
         return new Promise(resolve => {
-            const link = this.getElement(`#${id}`, this.bdStyles) || this.createElement("link", {id});
+            const link: HTMLLinkElement = this.getElement(`#${id}`, this.bdStyles) as HTMLLinkElement || this.createElement("link", {id});
             link.rel = "stylesheet";
             link.href = url;
             link.onload = resolve;
@@ -111,33 +104,33 @@ export default class DOMManager {
         });
     }
 
-    static removeTheme(id) {
+    static removeTheme(id: string) {
         id = this.escapeID(id);
         const exists = this.getElement(`#${id}`, this.bdThemes);
         if (exists) exists.remove();
     }
 
-    static injectTheme(id, css) {
+    static injectTheme(id: string, css: string) {
         id = this.escapeID(id);
         const style = this.getElement(`#${id}`, this.bdThemes) || this.createElement("style", {id});
         style.textContent = css;
         this.bdThemes.append(style);
     }
 
-    static updateCustomCSS(css) {
+    static updateCustomCSS(css: string) {
         this.bdCustomCSS.textContent = css;
     }
 
-    static removeScript(id) {
+    static removeScript(id: string) {
         id = this.escapeID(id);
         const exists = this.getElement(`#${id}`, this.bdScripts);
         if (exists) exists.remove();
     }
 
-    static injectScript(id, url) {
+    static injectScript(id: string, url: string) {
         id = this.escapeID(id);
         return new Promise((resolve, reject) => {
-            const script = this.getElement(`#${id}`, this.bdScripts) || this.createElement("script", {id});
+            const script: HTMLScriptElement = this.getElement(`#${id}`, this.bdScripts) as HTMLScriptElement || this.createElement("script", {id});
             script.src = url;
             script.onload = resolve;
             script.onerror = reject;
@@ -146,19 +139,19 @@ export default class DOMManager {
     }
 
     // https://javascript.info/js-animation
-    static animate({timing = _ => _, update, duration}) {
+    static animate({timing = _ => _, update, duration}: {timing?: (_: number) => number; update: (p: number) => void; duration: number}) {
         const start = performance.now();
-        
+
         let id = requestAnimationFrame(function animate(time) {
             // timeFraction goes from 0 to 1
             let timeFraction = (time - start) / duration;
             if (timeFraction > 1) timeFraction = 1;
-        
+
             // calculate the current animation state
             const progress = timing(timeFraction);
-        
+
             update(progress); // draw it
-        
+
             if (timeFraction < 1) id = requestAnimationFrame(animate);
         });
 
@@ -172,19 +165,19 @@ export default class DOMManager {
      * @param {string} selector - node to wait for
      * @param {callable} callback - function to be performed on event
      */
-    static onAdded(selector, callback) {
-        if (document.body.querySelector(selector)) return callback(document.body.querySelector(selector));
+    static onAdded(selector: string, callback: (e: Element) => void) {
+        if (document.body.querySelector(selector)) return callback(document.body.querySelector(selector)!);
 
         const observer = new MutationObserver((mutations) => {
             for (let m = 0; m < mutations.length; m++) {
                 for (let i = 0; i < mutations[m].addedNodes.length; i++) {
                     const mutation = mutations[m].addedNodes[i];
-                    if (mutation.nodeType === 3) continue; // ignore text
-                    const directMatch = mutation.matches(selector) && mutation;
-                    const childrenMatch = mutation.querySelector(selector);
+                    if (mutation.nodeType !== 1) continue; // ignore non-elements
+                    const directMatch = (mutation as Element).matches(selector) && (mutation as Element);
+                    const childrenMatch = (mutation as Element).querySelector(selector);
                     if (directMatch || childrenMatch) {
                         observer.disconnect();
-                        return callback(directMatch || childrenMatch);
+                        return callback(directMatch || childrenMatch!);
                     }
                 }
             }
@@ -201,7 +194,7 @@ export default class DOMManager {
      * @param {HTMLElement} node - node to wait for
      * @param {callable} callback - function to be performed on event
      */
-    static onRemoved(node, callback) {
+    static onRemoved(node: Node, callback: () => void) {
         const observer = new MutationObserver((mutations) => {
             for (let m = 0; m < mutations.length; m++) {
                 const mutation = mutations[m];
