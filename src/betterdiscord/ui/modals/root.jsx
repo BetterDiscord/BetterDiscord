@@ -10,7 +10,6 @@ export const Sizes = Object.freeze({
     SMALL: "bd-modal-small",
     MEDIUM: "bd-modal-medium",
     LARGE: "bd-modal-large",
-    JUMBO: "bd-modal-jumbo",
     DYNAMIC: ""
 });
 
