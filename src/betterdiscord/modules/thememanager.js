@@ -1,35 +1,25 @@
 import path from "path";
 
-import Config from "@data/config";
+import Config from "@stores/config";
 
 import AddonError from "@structs/addonerror";
 
 import AddonManager from "./addonmanager";
-import Settings from "@stores/settings";
 import DOMManager from "./dommanager";
 import Strings from "./strings";
 
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
-import SettingsRenderer from "@ui/settings";
 
 
 export default new class ThemeManager extends AddonManager {
     get name() {return "ThemeManager";}
     get extension() {return ".theme.css";}
     get duplicatePattern() {return /\.theme\s?\([0-9]+\)\.css/;}
-    get addonFolder() {return path.resolve(Config.dataPath, "themes");}
+    get addonFolder() {return path.resolve(Config.get("dataPath"), "themes");}
     get prefix() {return "theme";}
     get language() {return "css";}
-
-    initialize() {
-        const errors = super.initialize();
-        Settings.registerPanel("themes", Strings.Panels.themes, {
-            order: 4,
-            element: SettingsRenderer.getAddonPanel(Strings.Panels.themes, {store: this})
-        });
-        return errors;
-    }
+    get order() {return 4;}
 
     /* Aliases */
     updateThemeList() {return this.updateList();}

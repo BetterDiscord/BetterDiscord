@@ -1,3 +1,4 @@
+// @ts-expect-error this is an internal polyfill not yet typed
 import {ipcRenderer as ipc} from "electron";
 
 import * as IPCEvents from "@common/constants/ipcevents";
@@ -25,15 +26,15 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.TOGGLE_DEVTOOLS);
     }
 
-    relaunch(args) {
+    relaunch(args?: string[]) {
         return ipc.send(IPCEvents.RELAUNCH, args);
     }
 
-    runScript(script) {
+    runScript(script: string) {
         return ipc.invoke(IPCEvents.RUN_SCRIPT, script);
     }
 
-    openWindow(url, options) {
+    openWindow(url: string, options: {windowOptions: object; closeOnUrl: boolean;}) {
         return ipc.invoke(IPCEvents.OPEN_WINDOW, url, options);
     }
 
@@ -41,11 +42,11 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.INSPECT_ELEMENT);
     }
 
-    setMinimumSize(width, height) {
+    setMinimumSize(width: number, height: number) {
         return ipc.send(IPCEvents.MINIMUM_SIZE, width, height);
     }
 
-    setWindowSize(width, height) {
+    setWindowSize(width: number, height: number) {
         return ipc.send(IPCEvents.WINDOW_SIZE, width, height);
     }
 
@@ -53,15 +54,16 @@ export default new class IPCRenderer {
         return ipc.send(IPCEvents.DEVTOOLS_WARNING);
     }
 
-    openDialog(options) {
+    // TODO: merge dialog options type with main process
+    openDialog(options: object) {
         return ipc.invoke(IPCEvents.OPEN_DIALOG, options);
     }
 
-    getSystemAccentColor() {
+    getSystemAccentColor(): Promise<string> {
         return ipc.invoke(IPCEvents.GET_ACCENT_COLOR);
     }
 
-    openPath(path) {
+    openPath(path: string) {
         return ipc.send(IPCEvents.OPEN_PATH, path);
     }
 };

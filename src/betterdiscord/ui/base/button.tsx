@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "@modules/react";
+import type {KeyboardEventHandler, MouseEvent, MouseEventHandler, PropsWithChildren, RefObject} from "react";
 
 
 // S.Looks = y;
@@ -41,6 +42,19 @@ export const Sizes = Object.freeze({
 });
 
 
+type ButtonProps = PropsWithChildren<{
+    className?: string;
+    onClick?: MouseEventHandler<HTMLButtonElement>;
+    onKeyDown?: KeyboardEventHandler<HTMLButtonElement>;
+    buttonRef?: RefObject<HTMLButtonElement>;
+    disabled?: boolean;
+    type?: "button" | "submit" | "reset";
+    look?: typeof Looks[keyof typeof Looks];
+    color?: typeof Colors[keyof typeof Colors];
+    size?: typeof Sizes[keyof typeof Sizes];
+    grow?: boolean;
+}>;
+
 export default function Button({
     className,
     children,
@@ -54,14 +68,14 @@ export default function Button({
     size = Sizes.MEDIUM,
     grow = true,
     ...others
-}) {
-    
-    const handleClick = useCallback(event => {
+}: ButtonProps) {
+
+    const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         event.stopPropagation();
         onClick?.(event);
     }, [onClick]);
-    
+
     return <button {...others} className={
         clsx(
             "bd-button",
@@ -72,7 +86,7 @@ export default function Button({
             grow ? "bd-button-grow" : ""
         )}
         ref={buttonRef}
-        type={type === "button" ? null : type}
+        type={type === "button" ? undefined : type}
         onClick={disabled ? () => {} : handleClick}
         onKeyDown={disabled ? () => {} : onKeyDown}
         disabled={disabled}

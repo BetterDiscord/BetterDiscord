@@ -1,6 +1,7 @@
+import type {Webpack} from "discord";
 import * as Filters from "./filter";
 import {getAllModules, getModule} from "./searching";
-import { getLazy } from "./lazy";
+import {getLazy} from "./lazy";
 
 export function getByKeys<T>(keys: string[], options: Webpack.Options = {}) {
     return getModule<T>(Filters.byKeys(keys), options);

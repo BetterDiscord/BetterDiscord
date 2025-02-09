@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import React from "@modules/react";
+import type {PropsWithChildren} from "react";
 
 
 export const Direction = Object.freeze({
@@ -31,12 +32,24 @@ export const Wrap = Object.freeze({
 });
 
 
-export function Child(props) {
+export function Child(props: {className?: string}) {
     if (!props.className) props.className = "";
     props.className = clsx(props.className, "bd-flex-child");
     return <Flex {...props} />;
 }
 
+type FlexProps = PropsWithChildren<{
+    id?: string;
+    className?: string;
+    style?: string;
+    shrink?: number;
+    grow?: number;
+    basis?: "auto",
+    justify?: typeof Justify[keyof typeof Justify];
+    direction?: typeof Direction[keyof typeof Direction];
+    align?: typeof Align[keyof typeof Align];
+    wrap?: typeof Wrap[keyof typeof Wrap];
+}>;
 
 export default function Flex({
         children,
@@ -50,7 +63,7 @@ export default function Flex({
         justify = Justify.START,
         wrap = Wrap.NO_WRAP,
         ...props
-    }) {
+    }: FlexProps) {
     return <div
                 {...props}
                 className={clsx(

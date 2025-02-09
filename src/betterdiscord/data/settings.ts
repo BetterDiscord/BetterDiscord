@@ -1,3 +1,5 @@
+import config from "@stores/config";
+
 export default [
     {
         type: "category",
@@ -87,6 +89,7 @@ export default [
             {type: "switch", id: "inspectElement", value: false, enableWith: "devTools"},
             {type: "switch", id: "devToolsWarning", value: false, enableWith: "devTools"},
             {type: "switch", id: "recovery", value: true, enableWith: "devTools"},
+            {type: "switch", id: "canary", value: config.isCanary, hidden: true},
         ]
     },
     {
@@ -170,7 +173,7 @@ export interface SwitchSetting extends SettingItem {
 export interface DropdownSetting<T> extends SettingItem {
     type: "dropdown";
     value: T;
-    options: {id?: string; label: string; value: T}[];
+    options: Array<{id?: string; label: string; value: T}>;
     style?: "transparent" | "default";
 }
 
@@ -181,7 +184,7 @@ export interface SliderSetting extends SettingItem {
     max: number;
     step?: number;
     units: string;
-    markers: (number | {label: string; value: number})[];
+    markers: Array<(number | {label: string; value: number})>;
 }
 
 export interface TextSetting extends SettingItem {
@@ -194,7 +197,7 @@ export interface TextSetting extends SettingItem {
 export interface RadioSetting<T> extends SettingItem {
     type: "radio";
     value: T;
-    options: {name: string, value: T, description: string}[];
+    options: Array<{name: string, value: T, description: string}>;
 }
 
 export interface KeybindSetting extends SettingItem {

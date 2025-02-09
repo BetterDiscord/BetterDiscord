@@ -3,18 +3,16 @@ import vm from "vm";
 
 import Logger from "@common/logger";
 
-import Config from "@data/config";
+import Config from "@stores/config";
 
 import AddonError from "@structs/addonerror";
 
 import AddonManager from "./addonmanager";
-import Settings from "@stores/settings";
 import Strings from "./strings";
 import Events from "./emitter";
 
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
-import SettingsRenderer from "@ui/settings";
 
 
 const normalizeExports = name => `
@@ -29,9 +27,10 @@ export default new class PluginManager extends AddonManager {
     get name() {return "PluginManager";}
     get extension() {return ".plugin.js";}
     get duplicatePattern() {return /\.plugin\s?\([0-9]+\)\.js/;}
-    get addonFolder() {return path.resolve(Config.dataPath, "plugins");}
+    get addonFolder() {return path.resolve(Config.get("dataPath"), "plugins");}
     get prefix() {return "plugin";}
     get language() {return "javascript";}
+    get order() {return 3;}
 
     constructor() {
         super();
@@ -46,10 +45,6 @@ export default new class PluginManager extends AddonManager {
     initialize() {
         const errors = super.initialize();
         this.setupFunctions();
-        Settings.registerPanel("plugins", Strings.Panels.plugins, {
-            order: 3,
-            element: SettingsRenderer.getAddonPanel(Strings.Panels.plugins, {store: this})
-        });
         return errors;
     }
 
@@ -83,7 +78,7 @@ export default new class PluginManager extends AddonManager {
         try {
             const isValid = typeof(addon.exports) === "function";
             if (!isValid) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin not a valid format.", {message: "Plugins should be either a function or a class", stack: ""}, this.prefix);
-            
+
             const PluginClass = addon.exports;
             const meta = Object.assign({}, addon);
             delete meta.exports;

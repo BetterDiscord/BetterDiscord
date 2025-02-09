@@ -40,6 +40,8 @@ export default class AddonManager extends Store {
     get addonFolder() {return "";}
     get language() {return "";}
     get prefix() {return "addon";}
+    get order() {return 2;}
+
     emit(event, ...args) {
         // Emit the events as a store for react
         super.emit();
@@ -58,6 +60,7 @@ export default class AddonManager extends Store {
     }
 
     initialize() {
+        Settings.registerAddonPanel(this);
         return this.loadAllAddons();
     }
 
@@ -99,7 +102,7 @@ export default class AddonManager extends Store {
                     Logger.warn(this.name, `Duplicate files found: ${filename} and ${newFilename}`);
                     return;
                 }
-                
+
                 // Rename the file and let it go on
                 try {
                     fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
@@ -224,7 +227,7 @@ export default class AddonManager extends Store {
             }
             return e;
         }
-        
+
 
         const error = this.initializeAddon(addon);
         if (error) {
@@ -236,7 +239,7 @@ export default class AddonManager extends Store {
 
         if (shouldToast) Toasts.success(Strings.Addons.wasLoaded.format({name: addon.name, version: addon.version}));
         this.emit("loaded", addon);
-        
+
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
     }
@@ -362,7 +365,7 @@ export default class AddonManager extends Store {
                     Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
                     continue;
                 }
-                
+
                 // Rename the file and let it go on
                 fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
             }

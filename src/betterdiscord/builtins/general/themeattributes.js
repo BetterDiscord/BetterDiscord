@@ -1,6 +1,6 @@
 import Builtin from "@structs/builtin";
-import Utilities from "@modules/utilities";
 import {getByStrings, getModule} from "@webpack";
+import {findInTree} from "@common/utils";
 
 const MessageComponent = getByStrings([ "isSystemMessage", "hasReply" ], {defaultExport: false});
 const TabBarComponent = getByStrings([ "({getFocusableElements:()=>{let" ], {searchExports: true});
@@ -14,7 +14,7 @@ export default new class ThemeAttributes extends Builtin {
     enabled() {
         this.before(MessageComponent, "Z", (thisObject, [args]) => {
             if (args["aria-roledescription"] !== "Message") return;
-            const author = Utilities.findInTree(args, (arg) => arg?.username, {walkable: ["props", "childrenMessageContent", "message", "author"]});
+            const author = findInTree(args, (arg) => arg?.username, {walkable: ["props", "childrenMessageContent", "message", "author"]});
             const authorId = author?.id;
             if (!authorId) return;
             args["data-author-id"] = authorId;

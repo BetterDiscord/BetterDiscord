@@ -1,6 +1,6 @@
 import Logger from "@common/logger";
 
-import Config from "@data/config";
+import Config from "@stores/config";
 import Changelog from "@data/changelog";
 
 import * as Builtins from "@builtins/builtins";
@@ -20,22 +20,20 @@ import Editor from "./editor";
 import Updater from "./updater";
 import AddonStore from "./addonstore";
 
-
 import Styles from "@styles/index.css";
 import Modals from "@ui/modals";
 import FloatingWindows from "@ui/floatingwindows";
+import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
 import NotificationUI from "@modules/notification";
 import InstallCSS from "@ui/customcss/mdinstallcss";
 
 export default new class Core {
+    hasStarted = false;
+
     async startup() {
         if (this.hasStarted) return;
         this.hasStarted = true;
-
-        Config.appPath = process.env.DISCORD_APP_PATH;
-        Config.userData = process.env.DISCORD_USER_DATA;
-        Config.dataPath = process.env.BETTERDISCORD_DATA_PATH;
 
         IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
 
@@ -54,6 +52,7 @@ export default new class Core {
 
         Logger.log("Startup", "Initializing Settings");
         Settings.initialize();
+        SettingsRenderer.initialize();
 
         Logger.log("Startup", "Initializing DOMManager");
         DOMManager.initialize();
@@ -63,7 +62,7 @@ export default new class Core {
 
         Logger.log("Startup", "Initializing NotificationUI");
         NotificationUI.initialize();
-      
+
         Logger.log("Startup", "Initializing Internal InstallCSS");
         InstallCSS.initialize();
 
@@ -73,12 +72,12 @@ export default new class Core {
         Logger.log("Startup", "Initializing Editor");
         await Editor.initialize();
 
-        Modals.initialize();
+        Logger.log("Startup", "Initializing FloatingWindows");
         FloatingWindows.initialize();
 
         Logger.log("Startup", "Initializing Builtins");
         for (const module in Builtins) {
-            Builtins[module].initialize();
+            Builtins[module as keyof typeof Builtins].initialize();
         }
 
         Logger.log("Startup", "Loading Plugins");
@@ -100,16 +99,16 @@ export default new class Core {
         Modals.showAddonErrors({plugins: pluginErrors, themes: themeErrors});
 
         const previousVersion = DataStore.getBDData("version");
-        if (Config.version !== previousVersion) {
+        if (Config.get("version") !== previousVersion) {
             Modals.showChangelogModal(Changelog);
-            DataStore.setBDData("version", Config.version);
+            DataStore.setBDData("version", Config.get("version"));
         }
     }
 
     waitForConnection() {
-        return new Promise(done => {
-            if (DiscordModules.UserStore.getCurrentUser()) return done();
-            DiscordModules.Dispatcher.subscribe("CONNECTION_OPEN", done);
+        return new Promise<void>(done => {
+            if (DiscordModules.UserStore?.getCurrentUser()) return done();
+            DiscordModules.Dispatcher?.subscribe("CONNECTION_OPEN", done);
         });
     }
 };

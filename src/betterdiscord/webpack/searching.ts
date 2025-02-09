@@ -1,15 +1,16 @@
+import type {Webpack} from "discord";
 import {webpackRequire} from "./require";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 
 export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = {}): T | undefined {
     const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
-    
+
     filter = wrapFilter(filter);
 
-    const keys = Object.keys(webpackRequire.c);    
+    const keys = Object.keys(webpackRequire.c);
     for (let i = 0; i < keys.length; i++) {
         const module = webpackRequire.c[keys[i]];
-        
+
         if (shouldSkipModule(module.exports)) continue;
 
         if (filter(module.exports, module, module.id)) {
@@ -23,8 +24,8 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = 
         if (searchExports) searchKeys.push(...Object.keys(module.exports));
         else if (searchDefault && (defaultKey = getDefaultKey(module))) searchKeys.push(defaultKey);
 
-        for (let i = 0; i < searchKeys.length; i++) {
-            const key = searchKeys[i];
+        for (let j = 0; j < searchKeys.length; j++) {
+            const key = searchKeys[j];
             const exported = module.exports[key];
 
             if (shouldSkipModule(exported)) continue;
@@ -45,14 +46,14 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = 
 
 export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, options: Webpack.Options = {}): T {
     const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
-    
+
     filter = wrapFilter(filter);
     const modules = [] as unknown as T;
-    
-    const keys = Object.keys(webpackRequire.c);    
+
+    const keys = Object.keys(webpackRequire.c);
     for (let i = 0; i < keys.length; i++) {
         const module = webpackRequire.c[keys[i]];
-        
+
         if (shouldSkipModule(module.exports)) continue;
 
         if (filter(module.exports, module, module.id)) {
@@ -66,8 +67,8 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, optio
         if (searchExports) searchKeys.push(...Object.keys(module.exports));
         else if (searchDefault && (defaultKey = getDefaultKey(module))) searchKeys.push(defaultKey);
 
-        for (let i = 0; i < searchKeys.length; i++) {
-            const key = searchKeys[i];
+        for (let j = 0; j < searchKeys.length; j++) {
+            const key = searchKeys[j];
             const exported = module.exports[key];
 
             if (shouldSkipModule(exported)) continue;

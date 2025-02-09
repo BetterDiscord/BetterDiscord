@@ -1,9 +1,12 @@
 import clsx from "clsx";
 import React from "@modules/react";
 import {getByKeys, getModule} from "@webpack";
+import type {PropsWithChildren} from "react";
 
-const Spring = getByKeys(["useSpring", "animated"]);
-const Anims = getByKeys(["Easing"]);
+
+// TODO: rewrite these types properly
+const Spring: any = getByKeys(["useSpring", "animated"]);
+const Anims: any = getByKeys(["Easing"]);
 
 
 export const Sizes = Object.freeze({
@@ -19,15 +22,22 @@ export const Styles = Object.freeze({
 });
 
 
-const AccessibilityContext = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true});
-const FocusLock = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true}) ?? React.Fragment;
+const AccessibilityContext: any = getModule(m => m?._currentValue?.reducedMotion, {searchExports: true});
+const FocusLock: any = getModule(m => m?.render?.toString().includes("impressionProperties") && m?.render?.toString().includes(".Provider"), {searchExports: true}) ?? React.Fragment;
 
-export default function ModalRoot({className, transitionState, children, size = Sizes.DYNAMIC, style = Styles.CUSTOM}) {
+type RootProps = PropsWithChildren<{
+    className?: string;
+    transitionState?: number;
+    size?: typeof Sizes[keyof typeof Sizes];
+    style?: typeof Styles[keyof typeof Styles];
+}>;
+
+export default function ModalRoot({className, transitionState, children, size = Sizes.DYNAMIC, style = Styles.CUSTOM}: RootProps) {
     const visible = transitionState == 0 || transitionState == 1; // 300 ms
-    
-    const preferences = React.useContext(AccessibilityContext ?? {});
+
+    const preferences: any = React.useContext(AccessibilityContext ?? {});
     const reducedMotion = preferences?.reducedMotion?.enabled ?? document.documentElement?.classList.contains("reduce-motion");
-    
+
     const springStyles = Spring.useSpring({
         opacity: visible ? 1 : 0,
         transform: visible || reducedMotion ? "scale(1)" : "scale(0.7)",

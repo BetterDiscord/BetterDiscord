@@ -1,23 +1,26 @@
-import { bySource } from "./filter";
-import { getModule } from "./searching";
-import { webpackRequire } from "./require";
-import { getDefaultKey, shouldSkipModule, wrapFilter } from "./shared";
+/* eslint-disable no-labels */
+/* eslint-disable no-label-var */
+import type {Webpack} from "discord";
+import {bySource} from "./filter";
+import {getModule} from "./searching";
+import {webpackRequire} from "./require";
+import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 
 export function *getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
     yield target ??= getModule(exports =>
         Object.values(exports).some(filter),
         rest
     );
-    
+
     yield target && Object.keys(target).find(k => filter(target[k]));
 }
 
 export function getMangled<T extends object>(
-    filter: Webpack.Filter | string | RegExp, 
-    mappers: Record<keyof T, Webpack.ExportedOnlyFilter>, 
+    filter: Webpack.Filter | string | RegExp,
+    mappers: Record<keyof T, Webpack.ExportedOnlyFilter>,
     options: Webpack.Options = {}
 ): T {
-    const { raw = false, ...rest } = options;
+    const {raw = false, ...rest} = options;
 
     const mapped = {} as T;
 
@@ -25,7 +28,7 @@ export function getMangled<T extends object>(
         filter = bySource(filter);
     }
 
-    let module = getModule<any>(filter, { raw, ...rest });
+    let module = getModule<any>(filter, {raw, ...rest});
     if (!module) return mapped;
     if (raw) module = module.exports;
 
@@ -63,7 +66,7 @@ export function getMangled<T extends object>(
     }
 
     // Debug info and to not deal with types define it
-    Object.defineProperty(mapped, Symbol("betterdiscord.getMangled"), { value: module });
+    Object.defineProperty(mapped, Symbol("betterdiscord.getMangled"), {value: module});
 
     return mapped;
 }
@@ -76,11 +79,11 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
         filter: wrapFilter(query.filter)
     }));
 
-    
-    const keys = Object.keys(webpackRequire.c);    
+
+    const keys = Object.keys(webpackRequire.c);
     for (let i = 0; i < keys.length; i++) {
         const module = webpackRequire.c[keys[i]];
-        
+
 
         if (shouldSkipModule(module.exports)) continue;
 
@@ -102,11 +105,11 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
             }
 
             let defaultKey: string | undefined;
-            const keys: string[] = [];
-            if (searchExports) keys.push(...Object.keys(module.exports));
-            else if (searchDefault && (defaultKey = getDefaultKey(module))) keys.push(defaultKey);
+            const exportKeys: string[] = [];
+            if (searchExports) exportKeys.push(...Object.keys(module.exports));
+            else if (searchDefault && (defaultKey = getDefaultKey(module))) exportKeys.push(defaultKey);
 
-            for (const key of keys) {
+            for (const key of exportKeys) {
                 const exported = module.exports[key];
 
                 if (shouldSkipModule(exported)) continue;
