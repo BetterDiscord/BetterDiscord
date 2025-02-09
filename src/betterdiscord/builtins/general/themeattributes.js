@@ -1,10 +1,10 @@
 import Builtin from "@structs/builtin";
-import WebpackModules, {Filters} from "@modules/webpackmodules";
-import Utilities from "@modules/utilities";
+import {getByStrings, getModule} from "@webpack";
+import {findInTree} from "@common/utils";
 
-const MessageComponent = WebpackModules.getModule(Filters.byStrings("isSystemMessage", "hasReply"), {defaultExport: false});
-const TabBarComponent = WebpackModules.getModule(Filters.byStrings("({getFocusableElements:()=>{let"), {searchExports: true});
-const UserProfileComponent = WebpackModules.getModule((m) => m.render?.toString?.().includes("pendingThemeColors"));
+const MessageComponent = getByStrings([ "isSystemMessage", "hasReply" ], {defaultExport: false});
+const TabBarComponent = getByStrings([ "({getFocusableElements:()=>{let" ], {searchExports: true});
+const UserProfileComponent = getModule((m) => m.render?.toString?.().includes("pendingThemeColors"));
 
 export default new class ThemeAttributes extends Builtin {
     get name() {return "ThemeAttributes";}
@@ -14,7 +14,7 @@ export default new class ThemeAttributes extends Builtin {
     enabled() {
         this.before(MessageComponent, "Z", (thisObject, [args]) => {
             if (args["aria-roledescription"] !== "Message") return;
-            const author = Utilities.findInTree(args, (arg) => arg?.username, {walkable: ["props", "childrenMessageContent", "message", "author"]});
+            const author = findInTree(args, (arg) => arg?.username, {walkable: ["props", "childrenMessageContent", "message", "author"]});
             const authorId = author?.id;
             if (!authorId) return;
             args["data-author-id"] = authorId;

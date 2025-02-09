@@ -3,22 +3,22 @@ import electron from "electron";
 
 import Builtin from "@structs/builtin";
 
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import DataStore from "@modules/datastore";
 import React from "@modules/react";
-import WebpackModules from "@modules/webpackmodules";
 import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
 import Strings from "@modules/strings";
 import DiscordModules from "@modules/discordmodules";
-import Utilities from "@modules/utilities";
 
 import CSSEditor from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
+import {getByKeys} from "@webpack";
+import {debounce, findInTree} from "@common/utils";
 
 
-const UserSettings = WebpackModules.getByProps("updateAccount");
+const UserSettings = getByKeys(["updateAccount"]);
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}
@@ -49,7 +49,7 @@ export default new class CustomCSS extends Builtin {
                 if (this.isDetached) return;
                 if (this.nativeOpen) return this.openNative();
                 else if (this.startDetached) return this.openDetached(this.savedCss);
-                const settingsView = Utilities.findInTree(thisObject._reactInternals, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
+                const settingsView = findInTree(thisObject._reactInternals, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
                 if (settingsView && settingsView.onSetSection) settingsView.onSetSection(this.id);
             }
         });
@@ -140,7 +140,7 @@ export default new class CustomCSS extends Builtin {
             save: this.saveCSS.bind(this),
             update: this.insertCSS.bind(this),
             openNative: this.openNative.bind(this),
-            onChange: Utilities.debounce(this.onChange.bind(this), 500)
+            onChange: debounce(this.onChange.bind(this), 500)
         });
 
         FloatingWindows.open({

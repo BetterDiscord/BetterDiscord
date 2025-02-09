@@ -1,20 +1,20 @@
 import Builtin from "@structs/builtin";
 
 import Strings from "@modules/strings";
-import Settings from "@modules/settingsmanager";
-import Webpack from "@modules/webpackmodules";
+import Settings from "@stores/settings";
 
 import ContextMenuPatcher from "@api/contextmenu";
 import pluginManager from "@modules/pluginmanager";
 import themeManager from "@modules/thememanager";
-import Utilities from "@modules/utilities";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
 import Modals from "@ui/modals";
+import {getByKeys} from "@webpack";
+import {findInTree} from "@common/utils";
 
 
 const ContextMenu = new ContextMenuPatcher();
-const UserSettingsWindow = Webpack.getByProps("open", "updateAccount");
+const UserSettingsWindow = getByKeys(["open", "updateAccount"]);
 
 export default new class BDContextMenu extends Builtin {
     get name() {return "BDContextMenu";}
@@ -35,7 +35,7 @@ export default new class BDContextMenu extends Builtin {
     }
 
     callback(retVal) {
-        const target = Utilities.findInTree(retVal, b => Array.isArray(b) && b.some(e => e?.key?.toLowerCase() === "my_account"), {walkable: ["props", "children"]});
+        const target = findInTree(retVal, b => Array.isArray(b) && b.some(e => e?.key?.toLowerCase() === "my_account"), {walkable: ["props", "children"]});
         if (!target) return;
 
         // Prevent conflict with plugin until its eradicated
@@ -94,9 +94,9 @@ export default new class BDContextMenu extends Builtin {
 
     /**
      * TODO: Can this be done better now that it's integrated?
-     * @param {string} label 
-     * @param {import("../../modules/addonmanager").default} manager 
-     * @returns 
+     * @param {string} label
+     * @param {import("../../modules/addonmanager").default} manager
+     * @returns
      */
     buildAddonMenu(label, manager) {
         const names = manager.addonList.map(a => a.name || a.getName()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));

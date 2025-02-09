@@ -1,5 +1,5 @@
 import DiscordModules from "@modules/discordmodules";
-import Utilities from "@modules/utilities";
+import {extend} from "@common/utils";
 
 
 export default class SimpleMarkdownExt {
@@ -11,7 +11,7 @@ export default class SimpleMarkdownExt {
     static _initialize() {
         const SMD = DiscordModules.SimpleMarkdown;
         const originalLink = SMD.defaultRules.link.react;
-        const newRules = Utilities.extend({}, SMD.defaultRules, {link: {react: function() {
+        const newRules = extend({}, SMD.defaultRules, {link: {react: function() {
             const original = Reflect.apply(originalLink, undefined, arguments);
             original.props.className = "bd-link";
             original.props.target = "_blank";
