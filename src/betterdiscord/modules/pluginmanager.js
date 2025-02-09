@@ -68,7 +68,7 @@ export default new class PluginManager extends AddonManager {
     reloadPlugin(idOrFileOrAddon) {
         const error = this.reloadAddon(idOrFileOrAddon);
         if (error) Modals.showAddonErrors({plugins: [error]});
-        return typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        return typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
     }
 
     /* Overrides */
@@ -76,7 +76,7 @@ export default new class PluginManager extends AddonManager {
         if (!addon.exports || !addon.name) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin had no exports or @name property", {message: "Plugin had no exports or no @name property. @name property is required for all addons.", stack: ""}, this.prefix);
 
         try {
-            const isValid = typeof(addon.exports) === "function";
+            const isValid = typeof (addon.exports) === "function";
             if (!isValid) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin not a valid format.", {message: "Plugins should be either a function or a class", stack: ""}, this.prefix);
 
             const PluginClass = addon.exports;
@@ -92,7 +92,7 @@ export default new class PluginManager extends AddonManager {
             addon.version = thePlugin.getVersion ? thePlugin.getVersion() : addon.version;
             if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin is missing name, author, description, or version", {message: "Plugin must provide name, author, description, and version.", stack: ""}, this.prefix);
             try {
-                if (typeof(addon.instance.load) == "function") addon.instance.load();
+                if (typeof (addon.instance.load) == "function") addon.instance.load();
             }
             catch (error) {
                 this.state[addon.id] = false;
@@ -128,7 +128,7 @@ export default new class PluginManager extends AddonManager {
     getAddon(id) {return this.getPlugin(id);}
 
     startPlugin(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         const plugin = addon.instance;
         try {
@@ -146,7 +146,7 @@ export default new class PluginManager extends AddonManager {
     }
 
     stopPlugin(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         const plugin = addon.instance;
         try {
@@ -180,7 +180,7 @@ export default new class PluginManager extends AddonManager {
         for (let i = 0; i < this.addonList.length; i++) {
             const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;
-            if (typeof(plugin?.onSwitch) === "function") {
+            if (typeof (plugin?.onSwitch) === "function") {
                 try {plugin.onSwitch();}
                 catch (err) {Logger.stacktrace(this.name, `Unable to fire onSwitch for ${this.addonList[i].name} v${this.addonList[i].version}`, err);}
             }

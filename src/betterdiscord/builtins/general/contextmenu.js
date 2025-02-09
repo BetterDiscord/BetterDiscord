@@ -112,7 +112,7 @@ export default new class BDContextMenu extends Builtin {
                     }
                     else {
                         const addon = manager.getAddon(name);
-                        const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
+                        const hasSettings = addon.instance && typeof (addon.instance.getSettingsPanel) === "function";
                         const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
                         if (hasSettings) {
                             Modals.showAddonSettingsModal(name, getSettings());

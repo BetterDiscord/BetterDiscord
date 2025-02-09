@@ -101,7 +101,7 @@ export default ts.config(
             "space-infix-ops": "error",
             "space-unary-ops": [
                 "error",
-                {words: true, nonwords: false, overrides: {"typeof": false}}
+                {words: true, nonwords: false}
             ],
             "spaced-comment": ["error", "always", {exceptions: ["-", "*"]}],
             "template-curly-spacing": "error",
