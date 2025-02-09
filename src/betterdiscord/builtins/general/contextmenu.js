@@ -8,6 +8,7 @@ import pluginManager from "@modules/pluginmanager";
 import themeManager from "@modules/thememanager";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
+import Modals from "@ui/modals";
 import {getByKeys} from "@webpack";
 import {findInTree} from "@common/utils";
 
@@ -105,7 +106,19 @@ export default new class BDContextMenu extends Builtin {
                 label: name,
                 disabled: manager.getAddon(name)?.partial ?? false,
                 active: manager.isEnabled(name),
-                action: () => manager.toggleAddon(name)
+                action: (e) => {
+                    if (!e.shiftKey) {
+                        manager.toggleAddon(name);
+                    }
+                    else {
+                        const addon = manager.getAddon(name);
+                        const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
+                        const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
+                        if (hasSettings) {
+                            Modals.showAddonSettingsModal(name, getSettings());
+                        }
+                    }
+                }
             };
         });
 
