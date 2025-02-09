@@ -18,6 +18,7 @@ import ModalRoot from "./modals/root";
 // import ModalContent from "./modals/content";
 // import ModalFooter from "./modals/footer";
 
+import Root from "./modals/root.jsx";
 import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
 // import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
@@ -49,7 +50,7 @@ export default class Modals {
         }) as ModalActions;
     }
 
-    static default(title: string, content: string|ReactElement|ReactElement[]|HTMLElement|Array<string|ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
+    static default(title: string, content: string | ReactElement | ReactElement[] | HTMLElement | Array<string | ReactElement>, buttons: Array<{danger?: boolean; label: string; action: (e?: MouseEvent) => void;}> = []) {
         const modal = DOMManager.parseHTML(`<div class="bd-modal-wrapper theme-dark">
                 <div class="bd-backdrop backdrop-1wrmKB"></div>
                 <div class="bd-modal modal-1UGdnR">
@@ -143,7 +144,7 @@ export default class Modals {
         }
     }
 
-    static alert(title: string, content: (string|ReactElement|Array<string|ReactElement>)) {
+    static alert(title: string, content: (string | ReactElement | Array<string | ReactElement>)) {
         this.showConfirmationModal(title, content, {cancelText: null});
     }
 
@@ -161,11 +162,11 @@ export default class Modals {
      * @param {string} [options.key] - key used to identify the modal. If not provided, one is generated and returned
      * @returns {string} - the key used for this modal
      */
-    static showConfirmationModal(title: string, content: (string|ReactElement|Array<string|ReactElement>), options: ConfirmationModalOptions = {}) {
+    static showConfirmationModal(title: string, content: (string | ReactElement | Array<string | ReactElement>), options: ConfirmationModalOptions = {}) {
         if (content instanceof FormattableString) content = content.toString();
 
         const emptyFunction = () => {};
-        const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined} = options;
+        const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined, size = Root.Sizes.SMALL} = options;
 
         if (!this.ModalActions) {
             return this.default(title, content, [
@@ -175,7 +176,7 @@ export default class Modals {
         }
 
         if (!Array.isArray(content)) content = [content];
-        content = content.map(c => typeof(c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
+        content = content.map(c => typeof (c) === "string" ? React.createElement(CustomMarkdown, null, c) : c);
 
         const modalKey = this.openModal((props: any) => {
             return React.createElement(ErrorBoundary, {
@@ -195,6 +196,7 @@ export default class Modals {
                 cancelText: cancelText,
                 onConfirm: onConfirm,
                 onCancel: onCancel,
+                className: size,
                 onCloseCallback: () => {
                     if (props?.transitionState === 2) onClose?.();
                 }
@@ -270,8 +272,8 @@ export default class Modals {
     static showAddonSettingsModal(name: string, panel: Element | string | (() => ReactElement) | ReactElement | ComponentType) {
 
         let child = panel;
-        if (panel instanceof Node || typeof(panel) === "string") {
-            child = class ReactWrapper extends React.Component<any, {hasError: boolean}> {
+        if (panel instanceof Node || typeof (panel) === "string") {
+            child = class ReactWrapper extends React.Component<any, {hasError: boolean;}> {
                 element: Element | string;
                 elementRef: RefObject<Element | string>;
                 constructor(props?: any) {
@@ -294,12 +296,12 @@ export default class Modals {
                     return React.createElement("div", {
                         className: "bd-addon-settings-wrap",
                         ref: this.elementRef,
-                        dangerouslySetInnerHTML: typeof(this.element) === "string" ? {__html: this.element} : undefined
+                        dangerouslySetInnerHTML: typeof (this.element) === "string" ? {__html: this.element} : undefined
                     });
                 }
             };
         }
-        if (typeof(child) === "function") child = React.createElement(child);
+        if (typeof (child) === "function") child = React.createElement(child);
 
         const options = {
             className: "bd-addon-modal",
@@ -327,8 +329,8 @@ export default class Modals {
         this.hasInitialized = true;
     }
 
-    static openModal(render: (props?: unknown) => ReactElement, options: {modalKey?: string | number} = {}) {
-        if (typeof(this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
+    static openModal(render: (props?: unknown) => ReactElement, options: {modalKey?: string | number;} = {}) {
+        if (typeof (this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
         if (!this.hasInitialized) this.makeStack();
         options.modalKey = generateKey(options.modalKey);
         Events.emit("open-modal", render, options);
