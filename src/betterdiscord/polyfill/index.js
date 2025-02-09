@@ -26,7 +26,7 @@ export const createRequire = function (path) {
         // erroneously does this a lot apparently which
         // causes us to do filesystem accesses in our default
         // switch statement mainly used for absolute paths
-        if (typeof(mod) === "string" && mod.startsWith("./")) return;
+        if (typeof (mod) === "string" && mod.startsWith("./")) return;
 
         if (deprecated.has(mod)) {
             Logger.warn("Remote~Require", `The "${mod}" module is marked as deprecated. ${deprecated.get(mod)}`);

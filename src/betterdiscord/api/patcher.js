@@ -86,7 +86,7 @@ class Patcher {
      */
     getPatchesByCaller(caller) {
         if (this.#callerName) caller = this.#callerName;
-        if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of getPatchesByCaller must be a string representing the caller");
+        if (typeof (caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of getPatchesByCaller must be a string representing the caller");
         return MainPatcher.getPatchesByCaller(caller);
     }
 
@@ -97,7 +97,7 @@ class Patcher {
      */
     unpatchAll(caller) {
         if (this.#callerName) caller = this.#callerName;
-        if (typeof(caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of unpatchAll must be a string representing the caller");
+        if (typeof (caller) !== "string") return Logger.err("BdApi.Patcher", "Parameter 0 of unpatchAll must be a string representing the caller");
         MainPatcher.unpatchAll(caller);
     }
 }

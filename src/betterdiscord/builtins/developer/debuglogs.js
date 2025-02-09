@@ -53,16 +53,16 @@ export default new class DebugLogs extends Builtin {
         const sanitized = [];
         for (let i = 0; i < args.length; i++) {
             const arg = args[i];
-            if (typeof(arg) === "string") {
+            if (typeof (arg) === "string") {
                 const styleCount = occurrences(arg, "%c");
                 sanitized.push(arg.replace(/%c/g, ""));
                 if (styleCount > 0) i += styleCount;
             }
 
-            if (typeof(arg) === "undefined") sanitized.push("undefined");
-            if (typeof(arg) === "object" && arg && arg.message && arg.stack) sanitized.push(`${arg.message}\n${arg.stack}`);
-            else if (typeof(arg) === "object") sanitized.push(JSON.stringify(arg, getCircularReplacer()));
-            if (typeof(arg) === "function" || typeof(arg) === "boolean" || typeof(arg) === "number") sanitized.push(arg.toString());
+            if (typeof (arg) === "undefined") sanitized.push("undefined");
+            if (typeof (arg) === "object" && arg && arg.message && arg.stack) sanitized.push(`${arg.message}\n${arg.stack}`);
+            else if (typeof (arg) === "object") sanitized.push(JSON.stringify(arg, getCircularReplacer()));
+            if (typeof (arg) === "function" || typeof (arg) === "boolean" || typeof (arg) === "number") sanitized.push(arg.toString());
         }
         return sanitized.join(" ");
     }

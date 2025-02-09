@@ -127,7 +127,7 @@ export default function FloatingWindow({id, title, resizable, children, classNam
 
     const close = useCallback(async () => {
         let shouldClose = true;
-        const didConfirmClose = typeof(doConfirmClose) == "function" ? doConfirmClose() : doConfirmClose;
+        const didConfirmClose = typeof (doConfirmClose) == "function" ? doConfirmClose() : doConfirmClose;
         if (didConfirmClose) {
             setOpen(true);
             shouldClose = await confirmClose(confirmationText);

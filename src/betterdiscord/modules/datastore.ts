@@ -102,7 +102,7 @@ export default new class DataStore {
     }
 
     ensurePluginData(pluginName: string) {
-        if (typeof(this.pluginData[pluginName]) !== "undefined") return; // Already have data cached
+        if (typeof (this.pluginData[pluginName]) !== "undefined") return; // Already have data cached
 
         // Setup blank data if config doesn't exist
         if (!fs.existsSync(this.getPluginFile(pluginName))) return this.pluginData[pluginName] = {};

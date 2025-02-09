@@ -7,13 +7,13 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
     const cached = getModule<T>(filter, options);
     if (cached) return Promise.resolve(cached);
 
-    const {signal: abortSignal, defaultExport = true, searchDefault, searchExports = false, raw = false} = options;
+    const {signal: abortSignal, defaultExport = true, searchDefault = true, searchExports = false, raw = false} = options;
     filter = wrapFilter(filter);
 
     return new Promise((resolve) => {
         const cancel = () => void lazyListeners.delete(listener);
 
-        const listener: Webpack.Filter = (module) => {
+        const listener: Webpack.Filter = (_, module) => {
             if (shouldSkipModule(module.exports)) return;
 
             if (filter(module.exports, module, module.id)) {

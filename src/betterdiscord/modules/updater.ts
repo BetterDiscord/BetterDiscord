@@ -30,7 +30,7 @@ import type {Addon} from "betterdiscordweb";
 import {getByKeys} from "@webpack";
 
 
-const UserSettingsWindow = getByKeys<{open?(id: string): void}>(["updateAccount"]);
+const UserSettingsWindow = getByKeys<{open?(id: string): void;}>(["updateAccount"]);
 
 const getJSON = (url: string) => {
     return new Promise(resolve => {
@@ -108,13 +108,12 @@ export class CoreUpdater {
     static remoteVersion = "";
 
     static async initialize() {
-        if (Config.isDevelopment) return; // Don't run updater on development build
         if (!Settings.get("addons", "checkForUpdates")) return;
         this.checkForUpdate();
     }
 
     static async checkForStable(ignoreVersion = false) {
-        const resp = await fetch(`https://api.github.com/repos/BetterDiscord/BetterDiscord/releases/latest`,{
+        const resp = await fetch(`https://api.github.com/repos/BetterDiscord/BetterDiscord/releases/latest`, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -131,7 +130,7 @@ export class CoreUpdater {
     }
 
     static async checkForCanary(ignoreVersion = false) {
-        const resp = await fetch(`https://api.github.com/repos/BetterDiscord/BetterDiscord/releases`,{
+        const resp = await fetch(`https://api.github.com/repos/BetterDiscord/BetterDiscord/releases`, {
             method: "GET",
             headers: {
                 "Accept": "application/json",
@@ -165,6 +164,7 @@ export class CoreUpdater {
     }
 
     static async checkForUpdate(showNotice = true) {
+        if (Config.isDevelopment) return; // Don't run updater on development build
         const isOnCanary = Config.isCanary;
         const isCanaryEnabled = Settings.get("developer", "canary");
 
@@ -205,10 +205,10 @@ export class CoreUpdater {
                         "User-Agent": "BetterDiscord Updater",
                         "Accept": "application/octet-stream"
                     }
-                }, (err: Error, resp: {statusCode: number; statusMessage: string}, body: string) => {
-                if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
-                return resolve(body);
-            }));
+                }, (err: Error, resp: {statusCode: number; statusMessage: string;}, body: string) => {
+                    if (err || resp.statusCode != 200) return reject(err || `${resp.statusCode} ${resp.statusMessage}`);
+                    return resolve(body);
+                }));
 
             const asarPath = path.join(DataStore.baseFolder, "betterdiscord.asar");
             // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -302,7 +302,7 @@ class AddonUpdater {
                 "Cache-Control": "no-cache",
                 "Pragma": "no-cache"
             }
-        }, (error: Error, response: {statusCode: number}, body: string) => {
+        }, (error: Error, response: {statusCode: number;}, body: string) => {
             if (error || response.statusCode !== 200) {
                 Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
                 Toasts.error((Strings.Updater.addonUpdateFailed as unknown as FormattableString).format({name: info.name, version: info.version}));

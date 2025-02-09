@@ -176,8 +176,8 @@ export default function AddonList({title, store}) {
             const first = sortByEnabled ? addonState[a.id] : a[sort];
             const second = sortByEnabled ? addonState[b.id] : b[sort]; 
             const stringSort = (str1, str2) => str1.toLocaleLowerCase().localeCompare(str2.toLocaleLowerCase());
-            if (typeof(first) == "string") return stringSort(first, second);
-            if (typeof(first) == "boolean") return (first === second) ? stringSort(a.name, b.name) : first ? -1 : 1;
+            if (typeof (first) == "string") return stringSort(first, second);
+            if (typeof (first) == "boolean") return (first === second) ? stringSort(a.name, b.name) : first ? -1 : 1;
             if (first > second) return 1;
             if (second > first) return -1;
             return 0;
@@ -196,7 +196,7 @@ export default function AddonList({title, store}) {
         }
 
         return sorted.map(addon => {
-            const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
+            const hasSettings = addon.instance && typeof (addon.instance.getSettingsPanel) === "function";
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
             return <ErrorBoundary id={addon.id} name="AddonCard">
                         <AddonCard store={store} disabled={addon.partial} type={store.prefix} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />
