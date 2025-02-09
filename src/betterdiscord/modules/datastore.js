@@ -138,7 +138,7 @@ export default new class DataStore {
     }
 
     getWebpackCache() {
-        if(!fs.existsSync(this.webpackCache)) return {};
+        if (!fs.existsSync(this.webpackCache)) return {};
         return JSON.parse(fs.readFileSync(this.webpackCache) || "{}");
     }
 

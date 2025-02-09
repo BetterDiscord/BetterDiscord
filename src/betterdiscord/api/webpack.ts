@@ -1,5 +1,4 @@
 import Logger from "@common/logger";
-import DiscordModules from "@modules/discordmodules";
 import {Filters, getAllModules, getBulk, getLazy, getMangled, getModule, getStore, getWithKey, modules, Stores} from "@webpack";
 
 type WithOptions<T, B extends WebpackOptions> = [...T[], B] | T[];
@@ -32,8 +31,6 @@ const Webpack = {
     modules: modules,
 
     Stores: Stores,
-
-    common: DiscordModules,
 
     /**
      * Series of {@link Filters} to be used for finding webpack modules.
