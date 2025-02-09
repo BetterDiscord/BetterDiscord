@@ -57,6 +57,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: ${{github.event_name == 'push'}}
         with:
+          prerelease: true
           name: BetterDiscord Canary
           body: This is the canary release for BetterDiscord automatically kept up to date using GitHub actions.
           tag_name: canary
