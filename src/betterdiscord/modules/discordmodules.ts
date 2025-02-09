@@ -5,14 +5,14 @@
  * @version 0.0.3
  */
 
-import Utilities from "./utilities";
+import {memoize} from "@common/utils";
 import type {RemoteModule, GetClientInfo, UserAgentInfo, Dispatcher, InviteActions} from "discord/modules";
 import {Filters, getByKeys, getByStrings, getModule, getStore} from "@webpack";
 import type React from "react";
 import type ReactDOM from "react-dom";
 
 
-const DiscordModules = Utilities.memoizeObject({
+const DiscordModules = memoize({
     get React(): typeof React {return getByKeys(["createElement", "cloneElement"]) as typeof React;},
     get ReactDOM(): typeof ReactDOM {return getByKeys(["render", "findDOMNode"]) as typeof ReactDOM;},
     get ChannelActions() {return getByKeys(["selectChannel"]);},

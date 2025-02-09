@@ -2,7 +2,7 @@ import Locales from "@assets/locales/index";
 import defaultStrings from "@assets/locales/en-us.json";
 
 import DiscordModules from "./discordmodules";
-import Utilities from "./utilities";
+import {extend} from "@common/utils";
 
 const {LocaleStore} = DiscordModules;
 
@@ -13,7 +13,7 @@ export default new class LocaleManager {
     strings: typeof defaultStrings;
 
     constructor() {
-        this.strings = Utilities.extend({}, Locales[this.defaultLocale as keyof typeof Locales]) as typeof defaultStrings;
+        this.strings = extend({}, Locales[this.defaultLocale as keyof typeof Locales]) as typeof defaultStrings;
     }
 
     initialize() {
@@ -23,10 +23,10 @@ export default new class LocaleManager {
 
     setLocale() {
         // Reset to the default locale in case a language is incomplete
-        Utilities.extend(this.strings, Locales[this.defaultLocale as keyof typeof Locales]);
+        extend(this.strings, Locales[this.defaultLocale as keyof typeof Locales]);
 
         // Get the strings of the new language and extend if a translation exists
         const newStrings = Locales[this.discordLocale as keyof typeof Locales];
-        if (newStrings) Utilities.extendTruthy(this.strings, newStrings);
+        if (newStrings) extend(this.strings, newStrings);
     }
 };

@@ -7,16 +7,18 @@ export default new class ConfigStore extends Store {
         commit: process.env.__COMMIT__!,
         build: process.env.__BUILD__!,
         version: process.env.__VERSION__!,
-        dataPath: "",
-        appPath: "",
-        userData: "",
+
+        // TODO: asynchronously get these from the main process instead of hacky env vars
+        dataPath: process.env.BETTERDISCORD_DATA_PATH!,
+        appPath: process.env.DISCORD_APP_PATH!,
+        userData: process.env.DISCORD_USER_DATA!,
     };
 
     get(id: keyof typeof this.data) {
         return this.data[id];
     }
 
-    set(id: keyof typeof this.data, value: string = "") {
+    set(id: keyof typeof this.data, value: string) {
         this.data[id] = value;
         this.emit();
     }

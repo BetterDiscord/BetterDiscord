@@ -1,5 +1,4 @@
 import Patcher from "@modules/patcher";
-import Utils from "@modules/utilities";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
 import Settings from "@stores/settings";
@@ -10,6 +9,7 @@ import Logger from "@common/logger";
 import NotificationUI from "@modules/notification";
 import Toasts from "@ui/toasts.js";
 import Modals from "@ui/modals.js";
+import {findInTree} from "@common/utils";
 
 class InstallCSS {
     static activeNotifications = new Map();
@@ -26,7 +26,7 @@ class InstallCSS {
             if (child?.type !== "pre") return;
             if (args?.lang !== "css") return;
 
-            const codeActions = Utils.findInTree(child, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
+            const codeActions = findInTree(child, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
             if (!codeActions) return;
 
             if (!args?.content) return;

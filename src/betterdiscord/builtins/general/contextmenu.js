@@ -6,10 +6,10 @@ import Settings from "@stores/settings";
 import ContextMenuPatcher from "@api/contextmenu";
 import pluginManager from "@modules/pluginmanager";
 import themeManager from "@modules/thememanager";
-import Utilities from "@modules/utilities";
 import React from "@modules/react";
 import DOMManager from "@modules/dommanager";
 import {getByKeys} from "@webpack";
+import {findInTree} from "@common/utils";
 
 
 const ContextMenu = new ContextMenuPatcher();
@@ -34,7 +34,7 @@ export default new class BDContextMenu extends Builtin {
     }
 
     callback(retVal) {
-        const target = Utilities.findInTree(retVal, b => Array.isArray(b) && b.some(e => e?.key?.toLowerCase() === "my_account"), {walkable: ["props", "children"]});
+        const target = findInTree(retVal, b => Array.isArray(b) && b.some(e => e?.key?.toLowerCase() === "my_account"), {walkable: ["props", "children"]});
         if (!target) return;
 
         // Prevent conflict with plugin until its eradicated

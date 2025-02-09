@@ -1,5 +1,4 @@
 import React from "@modules/react";
-import Utilities from "@modules/utilities";
 import Settings from "@stores/settings";
 import DataStore from "@modules/datastore";
 import {Filters, getByKeys, getLazy} from "@webpack";
@@ -15,6 +14,7 @@ import SettingsPanel from "@ui/settings/panel";
 import type {SettingsCategory} from "@data/settings";
 import type {ComponentType, ReactNode} from "react";
 import VersionInfo from "./misc/versioninfo";
+import {findInTree} from "@common/utils";
 
 
 interface Section {
@@ -126,7 +126,7 @@ export default new class SettingsRenderer {
         const viewClass = getByKeys<{standardSidebarView: string}>(["standardSidebarView"])?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
-        const stateNode = Utilities.findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
+        const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
         if (stateNode) stateNode.forceUpdate();
     }
 };

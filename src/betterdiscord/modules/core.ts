@@ -35,11 +35,6 @@ export default new class Core {
         if (this.hasStarted) return;
         this.hasStarted = true;
 
-        // TODO: asynchronously get these from the backend instead of hacky env vars
-        Config.set("appPath", process.env.DISCORD_APP_PATH);
-        Config.set("userData", process.env.DISCORD_USER_DATA);
-        Config.set("dataPath", process.env.BETTERDISCORD_DATA_PATH);
-
         IPC.getSystemAccentColor().then(value => DOMManager.injectStyle("bd-os-values", `:root {--os-accent-color: #${value};}`));
 
         // Load css early
