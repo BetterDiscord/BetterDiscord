@@ -2,12 +2,19 @@ import React from "@modules/react";
 
 import Button from "../../base/button";
 import {KeyboardIcon, XIcon} from "lucide-react";
+import {none, SettingsContext} from "@ui/contexts";
 
-const {useState, useCallback, useEffect} = React;
+const {useState, useCallback, useEffect, useContext} = React;
 
 
 export default function Keybind({value: initialValue, onChange, max = 4, clearable = false, disabled}) {
-    const [state, setState] = useState({value: initialValue, isRecording: false, accum: []});
+    // TODO: make these their own states
+    const [state, setState] = useState({isRecording: false, accum: []});
+
+    const [internalValue, setValue] = useState(initialValue);
+    const contextValue = useContext(SettingsContext);
+    
+    const value = contextValue !== none ? contextValue : internalValue;
 
     useEffect(() => {
         window.addEventListener("keydown", keyDownHandler, true);
@@ -27,8 +34,9 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
 
         state.accum.push(event.key);
         if (state.accum.length == max) {
-            if (onChange) onChange(state.accum);
-            setState({value: state.accum.slice(0), isRecording: false, accum: []});
+            setState({isRecording: false, accum: []});
+            setValue(state.accum.slice(0));
+            onChange?.(state.accum);
         }
     }, [state, max, onChange]);
 
@@ -39,8 +47,9 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
         event.preventDefault();
 
         if (event.key === state.accum[0]) {
+            setState({isRecording: false, accum: []});
+            setValue(state.accum.slice(0));
             onChange?.(state.accum);
-            setState({value: state.accum.slice(0), isRecording: false, accum: []});
         }
     }, [state, onChange]);
 
@@ -49,7 +58,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
         event.preventDefault();
         if (disabled) return;
         if (onChange) onChange([]);
-        setState({...state, isRecording: false, value: [], accum: []});
+        setState({...state, isRecording: false, accum: []});
     }, [onChange, state, disabled]);
 
     const onClick = useCallback((e) => {
@@ -59,7 +68,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
     }, [state, clearKeybind, disabled]);
 
 
-    const displayValue = !state.value.length ? "" : state.value.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
+    const displayValue = !value.length ? "" : value.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
     return <div className={"bd-keybind-wrap" + (state.isRecording ? " recording" : "") + (disabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
             <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={state.isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
             <input readOnly={true} type="text" className="bd-keybind-input" value={displayValue} placeholder="No keybind set" disabled={disabled} />

@@ -2,8 +2,9 @@ import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
 import {CheckIcon, PipetteIcon} from "lucide-react";
+import {none, SettingsContext} from "@ui/contexts";
 
-const {useState, useCallback} = React;
+const {useState, useCallback, useContext} = React;
 
 
 const defaultColors = [1752220, 3066993, 3447003, 10181046, 15277667, 15844367, 15105570, 15158332, 9807270, 6323595, 1146986, 2067276, 2123412, 7419530, 11342935, 12745742, 11027200, 10038562, 9936031, 5533306];
@@ -44,7 +45,11 @@ const getContrastColor = (color) => {
 
 
 export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}) {
-    const [value, setValue] = useState(initialValue);
+    const [internalValue, setValue] = useState(initialValue);
+    const contextValue = useContext(SettingsContext);
+        
+    const value = contextValue !== none ? contextValue : internalValue;
+
     const change = useCallback((e) => {
         if (disabled) return;
         onChange?.(resolveColor(e.target.value));

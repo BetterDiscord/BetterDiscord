@@ -2,9 +2,9 @@ name: BetterDiscord CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["development"]
   pull_request:
-    branches: ["main"]
+    branches: ["development"]
 
 jobs:
   build:
@@ -14,33 +14,52 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare PNPM
-        uses: pnpm/action-setup@v4
+      - name: Prepare Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 7
-
-      - name: Prepare Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 16
-          cache: pnpm
+          bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
-      #    - name: Lint
-      #      run: pnpm lint
+      - name: Run tests
+        run: bun run test
 
-      #    - name: Run tests
-      #      run: pnpm test
+      - name: Lint code
+        run: bun run lint
 
       - name: Build asar
-        run: pnpm dist
+        run: bun run dist
+        env:
+          BRANCH_NAME: ${{github.head_ref || github.ref_name}}
+          COMMIT_HASH: ${{github.sha}}
 
-      - uses: actions/upload-artifact@v4
-        name: Upload artifact
-        if: ${{github.ref == 'refs/heads/main'}} # Only create artifacts when pushed to main
+      # Only upload artifact on PR, otherwise it gets pushed to canary
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: ${{github.event_name == 'pull_request'}}
         with:
           if-no-files-found: error
           retention-days: 30
           path: dist/betterdiscord.asar
+
+      # Update the canary tag on push to development
+      - name: Update tag
+        uses: richardsimko/update-tag@v1
+        if: ${{github.event_name == 'push'}}
+        with:
+          tag_name: canary
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      # Update the canary release on push to development
+      - name: Update canary release
+        uses: softprops/action-gh-release@v2
+        if: ${{github.event_name == 'push'}}
+        with:
+          prerelease: true
+          name: BetterDiscord Canary
+          body: This is the canary release for BetterDiscord automatically kept up to date using GitHub actions.
+          tag_name: canary
+          fail_on_unmatched_files: true
+          files: dist/betterdiscord.asar

@@ -1,16 +1,21 @@
-import React from "@modules/react";
+import React, {useContext} from "@modules/react";
+import {none, SettingsContext} from "@ui/contexts";
 
 const {useState, useCallback} = React;
 
 
 export default function Switch({id, value: initialValue, disabled, onChange, internalState = true}) {
     const [checked, setChecked] = useState(initialValue);
-    const change = useCallback(() => {
-        onChange?.(!checked);
-        setChecked(!checked);
-    }, [checked, onChange]);
+    const contextValue = useContext(SettingsContext);
+    const shouldUseContext = contextValue !== none;
 
-    const isChecked = internalState ? checked : initialValue;
+    const isChecked = shouldUseContext ? contextValue : internalState ? checked : initialValue;
+
+    const change = useCallback(() => {
+        onChange?.(!isChecked);
+        setChecked(!isChecked);
+    }, [onChange, isChecked]);
+    
     const enabledClass = disabled ? " bd-switch-disabled" : "";
     const checkedClass = isChecked ? " bd-switch-checked" : "";
     return <div className={`bd-switch` + enabledClass + checkedClass}>

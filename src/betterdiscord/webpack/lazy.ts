@@ -1,6 +1,7 @@
-import { getModule } from "./searching";
-import { lazyListeners } from "./require";
-import { shouldSkipModule, getDefaultKey, wrapFilter } from "./shared";
+import type {Webpack} from "discord";
+import {getModule} from "./searching";
+import {lazyListeners} from "./require";
+import {shouldSkipModule, getDefaultKey, wrapFilter} from "./shared";
 
 export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
     const cached = getModule<T>(filter, options);
@@ -27,20 +28,20 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
             const searchKeys: string[] = [];
             if (searchExports) searchKeys.push(...Object.keys(module.exports));
             else if (searchDefault && (defaultKey = getDefaultKey(module))) searchKeys.push(defaultKey);
-    
+
             for (let i = 0; i < searchKeys.length; i++) {
                 const key = searchKeys[i];
                 const exported = module.exports[key];
-    
+
                 if (shouldSkipModule(exported)) continue;
-    
+
                 if (filter(exported, module, module.id)) {
                     if (!defaultExport && defaultKey === key) {
                         resolve(raw ? module : exported);
                         cancel();
                         return;
                     }
-    
+
                     resolve(raw ? module : exported);
                     cancel();
                 }

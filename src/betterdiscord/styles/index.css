@@ -1,4 +1,5 @@
 /* stylelint-disable no-descending-specificity */
+
 /* TODO: find a way to go back to glob imports */
 
 @import "./builtins/customcss.css";
@@ -68,4 +69,10 @@
     margin: 0;
     border: none;
     border-top: thin solid var(--background-modifier-accent);
+}
+
+.bd-version-info {
+    padding: 8px 10px;
+    text-transform: capitalize;
+    cursor: pointer;
 }

@@ -1,6 +1,7 @@
 import Logger from "@common/logger";
 
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
+
 import DOMManager from "@modules/dommanager";
 import {getByKeys} from "@webpack";
 

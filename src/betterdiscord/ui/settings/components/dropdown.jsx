@@ -1,11 +1,16 @@
 import React from "@modules/react";
+import {none, SettingsContext} from "@ui/contexts";
 import {ChevronDown} from "lucide-react";
 
-const {useState, useCallback} = React;
+const {useState, useCallback, useContext} = React;
 
 
 export default function Select({value: initialValue, options, style, onChange, disabled}) {
-    const [value, setValue] = useState(initialValue ?? options[0].value);
+    const [internalValue, setValue] = useState(initialValue ?? options[0].value);
+    const contextValue = useContext(SettingsContext);
+
+    const value = contextValue !== none ? contextValue : internalValue;
+
     const change = useCallback((val) => {
         onChange?.(val);
         setValue(val);

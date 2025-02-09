@@ -1,11 +1,11 @@
-import Utilities from "@modules/utilities";
+import {formatString} from "@common/utils";
 
 
 const LINK = /\[(.+?)]/;
 
 export default class FormattableString extends String {
     format(values) {
-        return Utilities.formatString(this, values);
+        return formatString(this, values);
     }
 
     replaceLink(callback) {

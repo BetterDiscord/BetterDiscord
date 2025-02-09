@@ -12,7 +12,7 @@ import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
 import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Web from "@data/web";
 
 /**

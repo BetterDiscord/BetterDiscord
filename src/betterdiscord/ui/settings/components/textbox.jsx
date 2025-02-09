@@ -1,10 +1,15 @@
 import React from "@modules/react";
+import {none, SettingsContext} from "@ui/contexts";
 
-const {useState, useCallback} = React;
+const {useState, useCallback, useContext} = React;
 
 
 export default function Textbox({value: initialValue, maxLength, placeholder, onKeyDown, onChange, disabled}) {
-    const [value, setValue] = useState(initialValue);
+    const [internalValue, setValue] = useState(initialValue);
+    const contextValue = useContext(SettingsContext);
+    
+    const value = contextValue !== none ? contextValue : internalValue;
+
     const change = useCallback((e) => {
         if (disabled) return;
         onChange?.(e.target.value);

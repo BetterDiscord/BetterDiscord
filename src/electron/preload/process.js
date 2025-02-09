@@ -1,3 +1,3 @@
-import cloneObject, {getKeys} from "@common/clone";
+import {clone, getKeys} from "@common/utils";
 
-export default cloneObject(process, {}, getKeys(process).filter(p => p !== "config"));
+export default clone(process, {}, getKeys(process).filter(p => p !== "config"));

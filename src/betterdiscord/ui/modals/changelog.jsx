@@ -58,6 +58,22 @@ function Video({src, poster}) {
 }
 
 
+/**
+ *
+ * @param {{
+ *  transitionState?: number;
+ *  footer?: string;
+ *  title?: string;
+ *  subtitle?: string;
+ *  onClose?(): void;
+ *  video?: string;
+ *  poster?: string;
+ *  banner?: string;
+ *  blurb?: string;
+ *  changes?: object;
+ * }} param0
+ * @returns
+ */
 export default function ChangelogModal({transitionState, footer, title, subtitle, onClose, video, poster, banner, blurb, changes}) {
 
     const ChangelogHeader = useMemo(() => <Header justify={Flex.Justify.BETWEEN}>

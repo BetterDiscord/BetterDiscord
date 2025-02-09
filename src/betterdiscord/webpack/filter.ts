@@ -1,4 +1,5 @@
-import { webpackRequire } from "./require";
+import type {Webpack} from "discord";
+import {webpackRequire} from "./require";
 
 export function byKeys(props: string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
     return module => {
@@ -39,7 +40,7 @@ export function byRegex(search: RegExp, filter: Webpack.ExportedOnlyFilter = m =
 }
 
 export function bySource(...searches: Array<string | RegExp>):Webpack.Filter {
-    return (exports, module) => {
+    return (_, module) => {
         if (!module?.id) return false;
         let source = "";
         try {
@@ -49,7 +50,7 @@ export function bySource(...searches: Array<string | RegExp>):Webpack.Filter {
             return false;
         }
         if (!source) return false;
-        
+
         return searches.every(search => {
             if (typeof search === "string") return source.includes(search);
             return Boolean(source.match(search));
@@ -84,9 +85,9 @@ export function byStoreName(name: string): Webpack.ExportedOnlyFilter {
 }
 
 export function combine(...filters: Webpack.ExportedOnlyFilter[]): Webpack.ExportedOnlyFilter
-export function combine(...filters: Array<Webpack.ExportedOnlyFilter | Webpack.Filter>): Webpack.Filter 
+export function combine(...filters: Array<Webpack.ExportedOnlyFilter | Webpack.Filter>): Webpack.Filter
 export function combine(...filters: Webpack.Filter[]): Webpack.Filter {
     return (exports, module, id) => {
-        return filters.every(filter => filter.call(null, exports, module, id));
+        return filters.every(filter => filter(exports, module, id));
     };
 }

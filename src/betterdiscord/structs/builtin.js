@@ -1,7 +1,7 @@
 import Logger from "@common/logger";
 
 import Events from "@modules/emitter";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Patcher from "@modules/patcher";
 import CommandManager from "@modules/commandmanager";
 

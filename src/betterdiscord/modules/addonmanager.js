@@ -5,7 +5,7 @@ import Logger from "@common/logger";
 
 import AddonError from "@structs/addonerror";
 
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import Events from "./emitter";
 import DataStore from "./datastore";
 import React from "./react";
@@ -15,6 +15,7 @@ import ipc from "./ipc";
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
+import Store from "@stores/base";
 
 
 // const SWITCH_ANIMATION_TIME = 250;
@@ -31,7 +32,7 @@ const stripBOM = function(fileContent) {
     return fileContent;
 };
 
-export default class AddonManager {
+export default class AddonManager extends Store {
 
     get name() {return "";}
     get extension() {return "";}
@@ -39,9 +40,19 @@ export default class AddonManager {
     get addonFolder() {return "";}
     get language() {return "";}
     get prefix() {return "addon";}
-    emit(event, ...args) {return Events.emit(`${this.prefix}-${event}`, ...args);}
+    get order() {return 2;}
+
+    emit(event, ...args) {
+        // Emit the events as a store for react
+        super.emit();
+
+        // Emit the events as a normal emitter while other parts
+        // of the codebase are still converting to stores
+        return Events.emit(`${this.prefix}-${event}`, ...args);
+    }
 
     constructor() {
+        super();
         this.timeCache = {};
         this.addonList = [];
         this.state = {};
@@ -49,6 +60,7 @@ export default class AddonManager {
     }
 
     initialize() {
+        Settings.registerAddonPanel(this);
         return this.loadAllAddons();
     }
 
@@ -90,7 +102,7 @@ export default class AddonManager {
                     Logger.warn(this.name, `Duplicate files found: ${filename} and ${newFilename}`);
                     return;
                 }
-                
+
                 // Rename the file and let it go on
                 try {
                     fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
@@ -215,7 +227,7 @@ export default class AddonManager {
             }
             return e;
         }
-        
+
 
         const error = this.initializeAddon(addon);
         if (error) {
@@ -227,7 +239,7 @@ export default class AddonManager {
 
         if (shouldToast) Toasts.success(Strings.Addons.wasLoaded.format({name: addon.name, version: addon.version}));
         this.emit("loaded", addon);
-        
+
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
     }
@@ -353,7 +365,7 @@ export default class AddonManager {
                     Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
                     continue;
                 }
-                
+
                 // Rename the file and let it go on
                 fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
             }

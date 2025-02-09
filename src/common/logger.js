@@ -39,7 +39,7 @@ export default class Logger {
      * Logs using error formatting. For logging an actual error object consider {@link module:Logger.stacktrace}
      *
      * @param {string} module - Name of the calling module.
-     * @param {string} message - Messages to have logged.
+     * @param {any[]} message - Messages to have logged.
      */
     static err(module, ...message) {Logger._log(module, message, "error");}
 

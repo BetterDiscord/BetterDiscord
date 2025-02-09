@@ -1,0 +1,39 @@
+{
+    // JSON Schema https://code.visualstudio.com/docs/editor/tasks-appendix
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "bun run build",
+            "detail": "bun scripts/build.ts",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+        },
+        {
+            "label": "Watch",
+            "type": "shell",
+            "command": "bun run watch",
+            "detail": "bun scripts/build.ts --watch",
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+        },
+        {
+            "label": "Test",
+            "type": "shell",
+            "command": "bun run test",
+            "detail": "bun test tests/",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+        }
+    ]
+}

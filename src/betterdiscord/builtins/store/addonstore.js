@@ -3,8 +3,7 @@ import Builtin from "@structs/builtin";
 import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
 import ReactUtils from "@api/reactutils";
-import Utilities from "@modules/utilities";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 
 import AddonEmbed from "@ui/misc/storeembed";
 import ErrorBoundary from "@ui/errorboundary";
@@ -14,6 +13,7 @@ import Web from "@data/web";
 import RemoteAPI from "@polyfill/remote";
 import {Filters, getLazy} from "@webpack";
 import DiscordModules from "@modules/discordmodules";
+import {findInTree} from "@common/utils";
 
 const SimpleMarkdownWrapper = DiscordModules.SimpleMarkdownWrapper;
 let MessageAccessories;
@@ -34,25 +34,25 @@ const CODEBLOCK_REGEX = /(`+)([\s\S]*?[^`])\1(?!`)/g;
  * Extract all bd addon links
  * @param {string} text
  * @param {number} max
- * @return {{ id: string, match: string, index: number }[]} 
+ * @return {{ id: string, match: string, index: number }[]}
  */
 function extractAddonLinks(text, max = Infinity) {
     ADDON_REGEX.lastIndex = 0;
-    
+
     const matches = [];
 
     if (max <= 0) return matches;
-    
+
     /**
      * @type {[ start: number, stop: number ]}
      */
-    const codeblocks = Array.from(text.matchAll(CODEBLOCK_REGEX), (match) => [ 
+    const codeblocks = Array.from(text.matchAll(CODEBLOCK_REGEX), (match) => [
         match.index, match.index + match[0].length
-     ]);    
+     ]);
 
     /** @type {RegExpExecArray} */
     let exec;
-    while ((exec = ADDON_REGEX.exec(text))) {                
+    while ((exec = ADDON_REGEX.exec(text))) {
         // if https://betterdiscord.app/type/id not <https://betterdiscord.app/type/id>
         // if <betterdiscord://addon/id> not betterdiscord://addon/id
         if (exec[0][0] === "h" && text[exec.index - 1] === "<") continue;
@@ -65,10 +65,10 @@ function extractAddonLinks(text, max = Infinity) {
                 isInCodeblock = true;
                 break;
             }
-        }        
+        }
 
         if (isInCodeblock) continue;
-        
+
         matches.push({
             id: exec[1] || exec[2] || exec[3],
             match: exec[0],
@@ -90,16 +90,16 @@ export default new class AddonStoreBuiltin extends Builtin {
         Settings.on(this.collection, this.category, "addonEmbeds", () => this.forceUpdateChat());
     }
 
-    initialize() {        
-        RemoteAPI.setProtocolListener((url) => {                        
+    initialize() {
+        RemoteAPI.setProtocolListener((url) => {
             if (!Settings.get(this.collection, this.category, this.id)) return;
 
             const match = url.match(APP_PROTOCOL_REGEX);
-            if (!match) return;            
+            if (!match) return;
 
             AddonStore.requestAddon(decodeURIComponent(match[1])).then((addon) => addon.download());
         });
-        
+
         return super.initialize(...arguments);
     }
 
@@ -117,7 +117,7 @@ export default new class AddonStoreBuiltin extends Builtin {
         for (const message of document.querySelectorAll("[id^=chat-messages-]")) {
             const instance = ReactUtils.getInternalInstance(message);
 
-            const child = Utilities.findInTree(instance, ($child) => typeof $child?.memoizedProps?.onMouseLeave === "function", {
+            const child = findInTree(instance, ($child) => typeof $child?.memoizedProps?.onMouseLeave === "function", {
                 walkable: [ "child" ]
             });
 
@@ -125,7 +125,7 @@ export default new class AddonStoreBuiltin extends Builtin {
                 child.memoizedProps.onMouseLeave();
                 child.memoizedProps.onMouseMove();
             }
-            
+
             // Update forward messages
             for (const forward of message.querySelectorAll("[id^=\"message-accessories-\"] [id^=\"message-accessories-\"]")) {
                 ReactUtils.getOwnerInstance(forward).forceUpdate();
@@ -133,22 +133,22 @@ export default new class AddonStoreBuiltin extends Builtin {
         }
     }
 
-    // TODO: Patch slate to add markdown support for the betterdiscord:// protocol 
+    // TODO: Patch slate to add markdown support for the betterdiscord:// protocol
     patchMarkdown() {
         SimpleMarkdownWrapper.defaultRules[this.id] = {
             order: 5,
             /**
-             * @param {text} text 
-             * @param {Record<string, any>} state 
+             * @param {text} text
+             * @param {Record<string, any>} state
              */
             match: (text, state) => {
                 if (!state.allowLinks) return;
                 return PROTOCOL_REGEX.exec(text);
             },
             /**
-             * @param {RegExpExecArray} exec 
-             * @param {Function} parse 
-             * @param {Record<string, any>} state 
+             * @param {RegExpExecArray} exec
+             * @param {Function} parse
+             * @param {Record<string, any>} state
              */
             parse: (exec) => ({
                 type: this.id,
@@ -159,9 +159,9 @@ export default new class AddonStoreBuiltin extends Builtin {
                 exec
             }),
             /**
-             * @param {{ content: any, exec: RegExpExecArray }} node 
-             * @param {Function} parse 
-             * @param {Record<string, any>} state 
+             * @param {{ content: any, exec: RegExpExecArray }} node
+             * @param {Function} parse
+             * @param {Record<string, any>} state
              */
             react: (node, parse, state) => {
                 const href = node.exec[0].slice(1, -1);
@@ -184,7 +184,7 @@ export default new class AddonStoreBuiltin extends Builtin {
 
         SimpleMarkdownWrapper.parse = SimpleMarkdownWrapper.reactParserFor(SimpleMarkdownWrapper.defaultRules);
     }
- 
+
     async patchEmbeds() {
         MessageAccessories ??= await getLazy(Filters.byPrototypeKeys([ "renderEmbeds" ]), {searchExports: true});
 
@@ -194,7 +194,7 @@ export default new class AddonStoreBuiltin extends Builtin {
             }
 
             res ??= [];
-            
+
             let type = Web.getReleaseChannelType(message.channel_id);
             // Allow for forwarded messages
             if (!type && message.messageReference?.type === 1 && !message.messageSnapshots.length) type = Web.getReleaseChannelType(message.messageReference.channel_id);
@@ -206,9 +206,9 @@ export default new class AddonStoreBuiltin extends Builtin {
 
                 return res;
             }
-            
+
             const matches = extractAddonLinks(message.content, MAX_EMBEDS);
-            
+
             // Go through and either replace a prexisting embed or add a new one
             if (matches.length) {
                 const embeds = [ ...res ];

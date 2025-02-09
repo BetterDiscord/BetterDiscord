@@ -1,4 +1,5 @@
 import DataStore from "@modules/datastore";
+import type {Webpack} from "discord";
 import {webpackRequire} from "./require";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 
@@ -13,7 +14,7 @@ function getIdFromStack() {
     let plugin = null;
     let discriminator = 0;
 
-    // find the earliest plugin to be in the call stack 
+    // find the earliest plugin to be in the call stack
     for (const match of matches) {
         if (match[1] != prev) {
             prev = match[1];
@@ -66,29 +67,29 @@ function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filter, opti
 
 export function getModule<T>(filter: Webpack.Filter, options: Webpack.SingleOptions = {}): T | undefined {
     let cacheId = options.cacheId;
-    if(!cacheId) cacheId = getIdFromStack();
+    if (!cacheId) cacheId = getIdFromStack();
 
     filter = wrapFilter(filter);
 
     // check whether the cached id works
-    if(cacheId && cache[cacheId]) {
+    if (cacheId && cache[cacheId]) {
         const id = cache[cacheId];
         const module = webpackRequire.c[id];
-        
+
         const matched = getMatched<T>(module, filter, options);
-        if(matched) return matched;
+        if (matched) return matched;
     }
 
-    const keys = Object.keys(webpackRequire.c);    
+    const keys = Object.keys(webpackRequire.c);
     for (let i = 0; i < keys.length; i++) {
         const module = webpackRequire.c[keys[i]];
-        
+
         const matched = getMatched<T>(module, filter, options);
-        if(matched) {
-            if(cacheId) {
+        if (matched) {
+            if (cacheId) {
                 cache[cacheId] = keys[i];
                 DataStore.setWebpackCache(cache);
-            }   
+            }
             return matched;
         }
     }
@@ -98,14 +99,14 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.SingleOpti
 
 export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, options: Webpack.Options = {}): T {
     const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
-    
+
     filter = wrapFilter(filter);
     const modules = [] as unknown as T;
-    
-    const keys = Object.keys(webpackRequire.c);    
+
+    const keys = Object.keys(webpackRequire.c);
     for (let i = 0; i < keys.length; i++) {
         const module = webpackRequire.c[keys[i]];
-        
+
         if (shouldSkipModule(module.exports)) continue;
 
         if (filter(module.exports, module, module.id)) {
@@ -119,8 +120,8 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, optio
         if (searchExports) searchKeys.push(...Object.keys(module.exports));
         else if (searchDefault && (defaultKey = getDefaultKey(module))) searchKeys.push(defaultKey);
 
-        for (let i = 0; i < searchKeys.length; i++) {
-            const key = searchKeys[i];
+        for (let j = 0; j < searchKeys.length; j++) {
+            const key = searchKeys[j];
             const exported = module.exports[key];
 
             if (shouldSkipModule(exported)) continue;

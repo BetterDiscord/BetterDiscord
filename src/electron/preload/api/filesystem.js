@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import cloneObject from "@common/clone";
+import {clone} from "@common/utils";
 import Logger from "@common/logger";
 
 export function readFile(path, options = "utf8") {
@@ -57,7 +57,7 @@ export function unlinkSync(fileToDelete) {
 }
 
 export function createWriteStream(path, options) {
-    return cloneObject(fs.createWriteStream(path, options));
+    return clone(fs.createWriteStream(path, options));
 }
 
 export function watch(path, options, callback) {
@@ -79,7 +79,7 @@ export function watch(path, options, callback) {
 
 export function getStats(path, options) {
     const stats = fs.statSync(path, options);
-    
+
     return {
         ...stats,
         isFile: stats.isFile.bind(stats),

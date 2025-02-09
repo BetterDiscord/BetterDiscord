@@ -1,12 +1,16 @@
 import React from "@modules/react";
+import {none, SettingsContext} from "@ui/contexts";
 
 import {CircleCheckIcon, CircleIcon} from "lucide-react";
 
-const {useState, useCallback} = React;
+const {useState, useCallback, useContext} = React;
 
 
-export default function Radio({name, value, options, onChange, disabled}) {
+export default function Radio({name, value: initialValue, options, onChange, disabled}) {
+    const contextValue = useContext(SettingsContext);
+    const value = contextValue !== none ? contextValue : initialValue;
     const [index, setIndex] = useState(options.findIndex(o => o.value === value));
+
     const change = useCallback((e) => {
         if (disabled) return;
         const newIndex = parseInt(e.target.value);

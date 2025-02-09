@@ -1,0 +1,36 @@
+{
+    // This was adapted from Vencord's launch.json https://github.com/Vendicated/Vencord/blob/main/.vscode/launch.json
+    //
+    // These configurations allow you to use VScode's debugging tools with BetterDiscord.
+    //
+    // First, launch one of these configurations or compound configurations directly from VSCode.
+    //
+    // Then, to debug the "electron" packages run Discord from the command line with the --inspect flag.
+    // To debug the "betterdiscord" package, add the --remote-debugging-port=9222 flag.
+    // You can combine both to end up with a command like ./Discord.exe --inspect --remote-debugging-port=9222
+    //
+    // Once Discord is up and running you can come back here make use of the debugger tools.
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Renderer",
+            "port": 9222,
+            "request": "attach",
+            "type": "chrome",
+            "webRoot": "${workspaceFolder}/src/betterdiscord"
+        },
+        {
+            "name": "Main & Preload",
+            "port": 9229,
+            "request": "attach",
+            "skipFiles": ["<node_internals>/**"],
+            "type": "node",
+        }
+    ],
+    "compounds": [
+        {
+            "name": "All Processes",
+            "configurations": ["Renderer", "Main & Preload"]
+        }
+    ]
+}
