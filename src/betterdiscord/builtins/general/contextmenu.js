@@ -107,9 +107,11 @@ export default new class BDContextMenu extends Builtin {
                 disabled: manager.getAddon(name)?.partial ?? false,
                 active: manager.isEnabled(name),
                 action: (e) => {
-                    if (!e.shiftKey) manager.toggleAddon(name);
+                    if (!e.shiftKey) {
+                        manager.toggleAddon(name);
+                    }
                     else {
-                        let addon = manager.getAddon(name);
+                        const addon = manager.getAddon(name);
                         const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
                         const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
                         if (hasSettings) {
