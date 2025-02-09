@@ -4,7 +4,7 @@ import Logger from "@common/logger";
 import React from "@modules/react";
 import ReactDOM from "@modules/reactdom";
 import Strings from "@modules/strings";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Events from "@modules/emitter";
 import Patcher from "@modules/patcher";
 import DiscordModules from "@modules/discordmodules";

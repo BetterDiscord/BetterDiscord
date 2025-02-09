@@ -144,4 +144,101 @@ export default [
             {name: "Color test", note: "Just testing it", type: "color", id: "colortest", value: "#ff0000", defaultValue: "#ffffff"},
         ]
     }
-];
+] as SettingsCategory[];
+
+
+export type SettingType = "switch" | "dropdown" | "switch" | "slider" | "color" | "text" | "position" | "radio" | "file" | "keybind" | "number";
+
+export interface SettingItem {
+    type: SettingType;
+    id: string;
+    value: unknown;
+    name?: string;
+    note?: string;
+    disabled?: boolean;
+    enableWith?: string;
+    disableWith?: string;
+    defaultValue?: unknown;
+    inline?: boolean;
+}
+
+export interface SwitchSetting extends SettingItem {
+    type: "switch";
+    value: boolean;
+}
+
+export interface DropdownSetting<T> extends SettingItem {
+    type: "dropdown";
+    value: T;
+    options: {id?: string; label: string; value: T}[];
+    style?: "transparent" | "default";
+}
+
+export interface SliderSetting extends SettingItem {
+    type: "dropdown";
+    value: number;
+    min: number;
+    max: number;
+    step?: number;
+    units: string;
+    markers: (number | {label: string; value: number})[];
+}
+
+export interface TextSetting extends SettingItem {
+    type: "text";
+    value: string;
+    placeholder?: string;
+    maxLength?: number;
+}
+
+export interface RadioSetting<T> extends SettingItem {
+    type: "radio";
+    value: T;
+    options: {name: string, value: T, description: string}[];
+}
+
+export interface KeybindSetting extends SettingItem {
+    type: "keybind";
+    value: string[];
+    clearable?: boolean;
+    max?: number;
+}
+
+type HexString = `#${string}`;
+type Color = HexString | number;
+export interface ColorSetting extends SettingItem {
+    type: "color";
+    value: Color;
+    defaultValue?: Color;
+    colors?: Color[];
+}
+
+export interface PositionSetting extends SettingItem {
+    type: "position";
+    value: "top-right" | "bottom-right" | "bottom-left" | "top-left";
+}
+
+export interface NumberSetting extends SettingItem {
+    type: "number";
+    value: number;
+    min: number;
+    max: number;
+    step?: number;
+}
+
+export interface FileSetting extends SettingItem {
+    type: "file";
+    value: string;
+    clearable?: boolean;
+    accept?: string;
+    multiple?: boolean;
+}
+
+export interface SettingsCategory {
+    type: "category";
+    id: string;
+    name?: string;
+    collapsible: boolean;
+    shown: boolean;
+    settings: SettingItem[];
+}

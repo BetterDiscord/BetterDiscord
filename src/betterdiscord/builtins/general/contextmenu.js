@@ -1,7 +1,7 @@
 import Builtin from "@structs/builtin";
 
 import Strings from "@modules/strings";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 
 import ContextMenuPatcher from "@api/contextmenu";
 import pluginManager from "@modules/pluginmanager";
@@ -93,9 +93,9 @@ export default new class BDContextMenu extends Builtin {
 
     /**
      * TODO: Can this be done better now that it's integrated?
-     * @param {string} label 
-     * @param {import("../../modules/addonmanager").default} manager 
-     * @returns 
+     * @param {string} label
+     * @param {import("../../modules/addonmanager").default} manager
+     * @returns
      */
     buildAddonMenu(label, manager) {
         const names = manager.addonList.map(a => a.name || a.getName()).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));

@@ -13,11 +13,19 @@ import Color from "./components/color";
 import Filepicker from "./components/file";
 import Button from "../base/button";
 import Position from "@ui/settings/components/position";
+import {SettingsContext} from "@ui/contexts";
+import {useInternalStore} from "@ui/hooks";
+import SettingsStore from "@stores/settings";
 
 const {useCallback} = React;
 
 
-export default function Group({onChange, id, name, button, shown, onDrawerToggle, showDivider, collapsible, settings, children}) {
+function SettingsProvider({collection, category, id, children}) {
+    const state = useInternalStore(SettingsStore, () => SettingsStore.get(collection, category, id));
+    return <SettingsContext.Provider value={state}>{children}</SettingsContext.Provider>;
+}
+
+export default function Group({onChange, id, name, button, shown, onDrawerToggle, showDivider, collapsible, settings, children, collection}) {
     const change = useCallback((settingId, value) => {
         if (id) onChange?.(id, settingId, value);
         else onChange?.(settingId, value);
@@ -29,7 +37,9 @@ export default function Group({onChange, id, name, button, shown, onDrawerToggle
                         setting?.onChange?.(value);
                         change(setting.id, value);
                     };
-                    return buildSetting({...setting, onChange: callback});
+                    const settingItem = buildSetting({...setting, onChange: callback});
+                    if (!collection) return settingItem;
+                    return <SettingsProvider collection={collection} category={id} id={setting.id}>{settingItem}</SettingsProvider>;
                 })}
                 {children}
             </Drawer>;

@@ -4,7 +4,7 @@ import React from "@modules/react";
 import Strings from "@modules/strings";
 import Utilities from "@modules/utilities";
 import Events from "@modules/emitter";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import DataStore from "@modules/datastore";
 import Patcher from "@modules/patcher";
 import DiscordModules from "@modules/discordmodules";
@@ -133,6 +133,7 @@ export default new class SettingsRenderer {
         //         />;
         return [React.createElement(SettingsTitle, {text: title}, makeResetButton(id, this.forceUpdate.bind(this))), groups.map(section => {
             return React.createElement(SettingsGroup, Object.assign({}, section, {
+                collection: id,
                 onChange: onChange,
                 onDrawerToggle: state => this.onDrawerToggle(id, section.id, state),
                 shown: this.getDrawerState(id, section.id, section.hasOwnProperty("shown") ? section.shown : true)
@@ -140,11 +141,9 @@ export default new class SettingsRenderer {
         })];
     }
 
-    getAddonPanel(title, addonList, addonState, options = {}) {
+    getAddonPanel(title, options = {}) {
         return (props) => React.createElement(AddonPage, Object.assign({}, {
             title: title,
-            addonList: addonList,
-            addonState: addonState,
             ...props
         }, options));
     }

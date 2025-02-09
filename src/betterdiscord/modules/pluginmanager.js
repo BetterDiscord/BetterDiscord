@@ -8,7 +8,7 @@ import Config from "@data/config";
 import AddonError from "@structs/addonerror";
 
 import AddonManager from "./addonmanager";
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import Strings from "./strings";
 import Events from "./emitter";
 
@@ -48,19 +48,7 @@ export default new class PluginManager extends AddonManager {
         this.setupFunctions();
         Settings.registerPanel("plugins", Strings.Panels.plugins, {
             order: 3,
-            element: SettingsRenderer.getAddonPanel(Strings.Panels.plugins, this.addonList, this.state, {
-                type: this.prefix,
-                folder: this.addonFolder,
-                onChange: this.togglePlugin.bind(this),
-                reload: this.reloadPlugin.bind(this),
-                refreshList: this.updatePluginList.bind(this),
-                saveAddon: this.saveAddon.bind(this),
-                editAddon: this.editAddon.bind(this),
-                deleteAddon: this.deleteAddon.bind(this),
-                enableAll: this.enableAllAddons.bind(this),
-                disableAll: this.disableAllAddons.bind(this),
-                prefix: this.prefix
-            })
+            element: SettingsRenderer.getAddonPanel(Strings.Panels.plugins, {store: this})
         });
         return errors;
     }

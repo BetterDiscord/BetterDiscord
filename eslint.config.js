@@ -30,7 +30,7 @@ export default ts.config(
 
     // Setup general JS rules
     {
-        files: ["**/*.js", "**/*.jsx"],
+        files: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"],
         rules: {
             "accessor-pairs": "error",
             "block-spacing": ["error", "never"],
@@ -121,7 +121,7 @@ export default ts.config(
             "@typescript-eslint/no-unused-vars": ["error", {argsIgnorePattern: "^_", varsIgnorePattern: "^_"}]
         }
     },
-    
+
     // Setup rules for scripts
     {
         files: ["scripts/*"],

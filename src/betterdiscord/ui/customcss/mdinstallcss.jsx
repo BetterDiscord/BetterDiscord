@@ -2,7 +2,7 @@ import Patcher from "@modules/patcher";
 import Utils from "@modules/utilities";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Strings from "@modules/strings";
 import {PackageOpenIcon} from "lucide-react";
 import {getModule} from "@webpack";

@@ -5,7 +5,7 @@ import Config from "@data/config";
 import DiscordModules from "@modules/discordmodules";
 import DataStore from "@modules/datastore";
 import DOMManager from "@modules/dommanager";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import Patcher from "@modules/patcher";
 import ipc from "@modules/ipc";
 

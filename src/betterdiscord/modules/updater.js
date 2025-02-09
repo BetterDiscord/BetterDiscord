@@ -13,7 +13,7 @@ import IPC from "./ipc";
 import Strings from "./strings";
 import DataStore from "./datastore";
 import React from "./react";
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 

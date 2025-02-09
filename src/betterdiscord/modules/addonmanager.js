@@ -5,7 +5,7 @@ import Logger from "@common/logger";
 
 import AddonError from "@structs/addonerror";
 
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import Events from "./emitter";
 import DataStore from "./datastore";
 import React from "./react";
@@ -15,6 +15,7 @@ import ipc from "./ipc";
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
+import Store from "@stores/base";
 
 
 // const SWITCH_ANIMATION_TIME = 250;
@@ -31,7 +32,7 @@ const stripBOM = function(fileContent) {
     return fileContent;
 };
 
-export default class AddonManager {
+export default class AddonManager extends Store {
 
     get name() {return "";}
     get extension() {return "";}
@@ -39,9 +40,17 @@ export default class AddonManager {
     get addonFolder() {return "";}
     get language() {return "";}
     get prefix() {return "addon";}
-    emit(event, ...args) {return Events.emit(`${this.prefix}-${event}`, ...args);}
+    emit(event, ...args) {
+        // Emit the events as a store for react
+        super.emit();
+
+        // Emit the events as a normal emitter while other parts
+        // of the codebase are still converting to stores
+        return Events.emit(`${this.prefix}-${event}`, ...args);
+    }
 
     constructor() {
+        super();
         this.timeCache = {};
         this.addonList = [];
         this.state = {};

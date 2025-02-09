@@ -5,7 +5,7 @@ import Config from "@data/config";
 import AddonError from "@structs/addonerror";
 
 import AddonManager from "./addonmanager";
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import DOMManager from "./dommanager";
 import Strings from "./strings";
 
@@ -26,19 +26,7 @@ export default new class ThemeManager extends AddonManager {
         const errors = super.initialize();
         Settings.registerPanel("themes", Strings.Panels.themes, {
             order: 4,
-            element: SettingsRenderer.getAddonPanel(Strings.Panels.themes, this.addonList, this.state, {
-                type: this.prefix,
-                folder: this.addonFolder,
-                onChange: this.toggleTheme.bind(this),
-                reload: this.reloadTheme.bind(this),
-                refreshList: this.updateThemeList.bind(this),
-                saveAddon: this.saveAddon.bind(this),
-                editAddon: this.editAddon.bind(this),
-                deleteAddon: this.deleteAddon.bind(this),
-                enableAll: this.enableAllAddons.bind(this),
-                disableAll: this.disableAllAddons.bind(this),
-                prefix: this.prefix
-            })
+            element: SettingsRenderer.getAddonPanel(Strings.Panels.themes, {store: this})
         });
         return errors;
     }

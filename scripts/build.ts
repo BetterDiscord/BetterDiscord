@@ -40,7 +40,7 @@ async function runBuild() {
         format: "cjs",
         jsx: "transform",
         alias: {
-            "react": "@modules/react",
+            react: "@modules/react",
         },
         external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os"],
         target: ["chrome128", "node20"],

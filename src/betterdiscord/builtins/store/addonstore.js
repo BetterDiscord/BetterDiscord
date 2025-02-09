@@ -4,7 +4,7 @@ import AddonStore from "@modules/addonstore";
 import React from "@modules/react";
 import ReactUtils from "@api/reactutils";
 import Utilities from "@modules/utilities";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 
 import AddonEmbed from "@ui/misc/storeembed";
 import ErrorBoundary from "@ui/errorboundary";

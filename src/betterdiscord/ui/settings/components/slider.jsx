@@ -1,10 +1,14 @@
 import React from "@modules/react";
+import {none, SettingsContext} from "@ui/contexts";
 
-const {useState, useCallback, useMemo, useRef} = React;
+const {useState, useCallback, useMemo, useRef, useContext} = React;
 
 
 export default function Slider({value: initialValue, min, max, step, onChange, disabled, units = "", markers = []}) {
-    const [value, setValue] = useState(initialValue);
+    const [internalValue, setValue] = useState(initialValue);
+    const contextValue = useContext(SettingsContext);
+    
+    const value = contextValue !== none ? contextValue : internalValue;
     const inputRef = useRef(null);
 
     const change = useCallback((e) => {

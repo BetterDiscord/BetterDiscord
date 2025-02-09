@@ -4,7 +4,7 @@ import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
 import Builtin from "@structs/builtin";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 import pluginmanager from "@modules/pluginmanager";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
