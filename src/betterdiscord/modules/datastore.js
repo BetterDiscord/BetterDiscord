@@ -22,7 +22,6 @@ export default new class DataStore {
     constructor() {
         this.data = {misc: {}};
         this.pluginData = {};
-        this.cacheData = {};
     }
 
     initialize() {
@@ -58,7 +57,7 @@ export default new class DataStore {
     get pluginFolder() {return this._pluginFolder || (this._pluginFolder = path.resolve(Config.dataPath, "plugins"));}
     get themeFolder() {return this._themeFolder || (this._themeFolder = path.resolve(Config.dataPath, "themes"));}
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
-    get webpackCache() {return this._webpackCache || (this._webpackCache = path.resolve(this.dataFolder, "webpackCache.json"));}
+    get webpackCachePath() {return this._webpackCachePath || (this._webpackCachePath = path.resolve(this.dataFolder, "webpackCache.json"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
     getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
@@ -138,15 +137,35 @@ export default new class DataStore {
     }
 
     getWebpackCache() {
-        if (!fs.existsSync(this.webpackCache)) return {};
-        return JSON.parse(fs.readFileSync(this.webpackCache) || "{}");
+        if (this.webpackCache) return this.webpackCache;
+
+        if (!fs.existsSync(this.webpackCachePath)) this.webpackCache = {};
+        else this.webpackCache = JSON.parse(fs.readFileSync(this.webpackCachePath));
+        
+        return this.webpackCache;
     }
 
     setWebpackCache(cache) {
-        if (this.saveWPCTimeout) clearTimeout(this.saveWPCTimeout);
+        this.webpackCache = cache;
 
-        this.saveWPCTimeout = setTimeout(() => {
-            fs.writeFileSync(this.webpackCache, JSON.stringify(cache, null, 4));
+        // save after 100ms of inactivity
+        if (this.saveWPCDebounce) clearTimeout(this.saveWPCDebounce);
+
+        this.saveWPCDebounce = setTimeout(() => {
+            fs.writeFileSync(this.webpackCachePath, JSON.stringify(this.webpackCache, null, 4));
+            if (this.saveWPC) {
+                clearTimeout(this.saveWPC);
+                this.saveWPC = null;
+            }
         }, 100);
+        
+        // save guaranteed after 10 seconds
+        if (!this.saveWPC) {
+            this.saveWPC = setTimeout(() => {
+                fs.writeFileSync(this.webpackCachePath, JSON.stringify(this.webpackCache, null, 4));
+                this.saveWPC = null;
+                if (this.saveWPCDebounce) clearTimeout(this.saveWPCDebounce);
+            }, 10000);
+        }
     }
 };
