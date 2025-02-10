@@ -43,7 +43,7 @@
      }
  
      static resolveModule(module) {
-         if (!module || typeof(module) === "function" || (typeof(module) === "object" && !Array.isArray(module))) return module;
+         if (!module || typeof (module) === "function" || (typeof (module) === "object" && !Array.isArray(module))) return module;
          if (typeof module === "string") return DiscordModules[module];
          if (Array.isArray(module)) return getByKeys(module);
          return null;
@@ -68,7 +68,7 @@
                  for (const insteadPatch of insteads) {
                      try {
                          const tempReturn = insteadPatch.callback(this, arguments, patch.originalFunction.bind(this));
-                         if (typeof(tempReturn) !== "undefined") returnValue = tempReturn;
+                         if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
                      }
                      catch (err) {
                          Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
@@ -79,7 +79,7 @@
              for (const slavePatch of patch.children.filter(c => c.type === "after")) {
                  try {
                      const tempReturn = slavePatch.callback(this, arguments, returnValue);
-                     if (typeof(tempReturn) !== "undefined") returnValue = tempReturn;
+                     if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
                  }
                  catch (err) {
                      Logger.err("Patcher", `Could not fire after callback of ${patch.functionName} for ${slavePatch.caller}`, err);

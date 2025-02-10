@@ -16,9 +16,9 @@ export const readFile = function (path, options = "utf8", callback) {
 };
 
 export const writeFile = function (path, data, options = "utf8", callback) {
-    if (typeof(options) === "function") {
+    if (typeof (options) === "function") {
         callback = options;
-        if (!["object", "string"].includes(typeof(options))) options = undefined;
+        if (!["object", "string"].includes(typeof (options))) options = undefined;
     }
 
     try {

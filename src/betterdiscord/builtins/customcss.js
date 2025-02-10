@@ -79,7 +79,7 @@ export default new class CustomCSS extends Builtin {
             }
             const stats = fs.statSync(DataStore.customCSS);
             if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
-            if (typeof(stats.mtime.getTime()) !== "number") return;
+            if (typeof (stats.mtime.getTime()) !== "number") return;
             if (timeCache[filename] == stats.mtime.getTime()) return;
             timeCache[filename] = stats.mtime.getTime();
             if (eventType == "change") {
@@ -110,13 +110,13 @@ export default new class CustomCSS extends Builtin {
     }
 
     insertCSS(newCss) {
-        if (typeof(newCss) === "undefined") newCss = this.insertedCss;
+        if (typeof (newCss) === "undefined") newCss = this.insertedCss;
         else this.insertedCss = newCss;
         DOMManager.updateCustomCSS(newCss);
     }
 
     saveCSS(newCss) {
-        if (typeof(newCss) !== "undefined") this.savedCss = newCss;
+        if (typeof (newCss) !== "undefined") this.savedCss = newCss;
         DataStore.saveCustomCSS(this.savedCss);
     }
 

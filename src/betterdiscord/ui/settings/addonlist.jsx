@@ -50,11 +50,11 @@ function Blankslate({type, folder}) {
 }
 
 function makeControlButton(title, children, action, selected = false) {
-    return <DiscordModules.Tooltip color="primary" position="top" text={title}>
-                {(props) => {
-                    return <Button {...props} size={Button.Sizes.NONE} look={Button.Looks.BLANK} className={"bd-button bd-view-button" + (selected ? " selected" : "")} onClick={action}>{children}</Button>;
-                }}
-            </DiscordModules.Tooltip>;
+    return <DiscordModules.Tooltip color="primary" position="top" text={title.toString()}>
+        {(props) => {
+            return <Button {...props} size={Button.Sizes.NONE} aria-label={title.toString()} look={Button.Looks.BLANK} className={"bd-button bd-view-button" + (selected ? " selected" : "")} onClick={action}>{children}</Button>;
+        }}
+    </DiscordModules.Tooltip>;
 }
 
 function confirmDelete(addon) {
@@ -69,15 +69,15 @@ function confirmDelete(addon) {
 }
 
 /**
- * @param {function} action 
+ * @param {function} action
  * @param {string} type
- * @returns 
+ * @returns
  */
 function confirmEnable(action, type) {
     /**
      * @param {MouseEvent} event
      */
-    return function(event) {
+    return function (event) {
         if (event.shiftKey) return action();
         Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.enableAllWarning.format({type: type.toLocaleLowerCase()}), {
             confirmText: Strings.Modals.okay,
@@ -88,15 +88,15 @@ function confirmEnable(action, type) {
     };
 }
 
-function StoreCard() {    
+function StoreCard() {
     const {title, toggleStore} = React.useContext(addonContext);
-    
+
     if (!Settings.get("settings", "store", "bdAddonStore")) return;
 
     return (
-        <div 
-            className="bd-store-card" 
-            onClick={toggleStore} 
+        <div
+            className="bd-store-card"
+            onClick={toggleStore}
         >
             <div className="bd-store-card-icon">
                 <StoreIcon size="24px" />
@@ -113,9 +113,9 @@ function StoreCard() {
 }
 
 /**
- * @param {object} props 
+ * @param {object} props
  * @param {import("@modules/addonmanager").default} props.store
- * @returns 
+ * @returns
  */
 export default function AddonList({title, store}) {
     const [query, setQuery] = useState("");
@@ -174,10 +174,10 @@ export default function AddonList({title, store}) {
         let sorted = addonList.sort((a, b) => {
             const sortByEnabled = sort === "isEnabled";
             const first = sortByEnabled ? addonState[a.id] : a[sort];
-            const second = sortByEnabled ? addonState[b.id] : b[sort]; 
+            const second = sortByEnabled ? addonState[b.id] : b[sort];
             const stringSort = (str1, str2) => str1.toLocaleLowerCase().localeCompare(str2.toLocaleLowerCase());
-            if (typeof(first) == "string") return stringSort(first, second);
-            if (typeof(first) == "boolean") return (first === second) ? stringSort(a.name, b.name) : first ? -1 : 1;
+            if (typeof (first) == "string") return stringSort(first, second);
+            if (typeof (first) == "boolean") return (first === second) ? stringSort(a.name, b.name) : first ? -1 : 1;
             if (first > second) return 1;
             if (second > first) return -1;
             return 0;
@@ -196,11 +196,11 @@ export default function AddonList({title, store}) {
         }
 
         return sorted.map(addon => {
-            const hasSettings = addon.instance && typeof(addon.instance.getSettingsPanel) === "function";
+            const hasSettings = addon.instance && typeof (addon.instance.getSettingsPanel) === "function";
             const getSettings = hasSettings && addon.instance.getSettingsPanel.bind(addon.instance);
             return <ErrorBoundary id={addon.id} name="AddonCard">
-                        <AddonCard store={store} disabled={addon.partial} type={store.prefix} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />
-                    </ErrorBoundary>;
+                <AddonCard store={store} disabled={addon.partial} type={store.prefix} editAddon={() => triggerEdit(addon.id)} deleteAddon={() => triggerDelete(addon.id)} key={addon.id} addon={addon} onChange={onChange} enabled={addonState[addon.id]} reload={reload} hasSettings={hasSettings} getSettingsPanel={getSettings} />
+            </ErrorBoundary>;
         });
     }, [store, addonList, addonState, onChange, reload, triggerDelete, triggerEdit, query, ascending, sort]);
 

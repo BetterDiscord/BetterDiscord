@@ -28,7 +28,7 @@ export default function findInTree(tree: Record<string|number, unknown> | null, 
    else {
        const toWalk = walkable == null ? Object.keys(tree) : walkable;
        for (const key of toWalk) {
-           if (typeof(tree[key]) == "undefined" || ignore.includes(key)) continue;
+           if (typeof (tree[key]) == "undefined" || ignore.includes(key)) continue;
            tempReturn = findInTree(tree[key] as Record<string|number, unknown>, searchFilter, {walkable, ignore});
            if (typeof tempReturn != "undefined") return tempReturn;
        }

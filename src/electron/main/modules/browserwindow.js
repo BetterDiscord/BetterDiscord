@@ -11,7 +11,7 @@ class BrowserWindow extends electron.BrowserWindow {
 
         // Don't allow just "truthy" values
         const shouldBeTransparent = BetterDiscord.getSetting("window", "transparency");
-        if (typeof(shouldBeTransparent) === "boolean" && shouldBeTransparent) {
+        if (typeof (shouldBeTransparent) === "boolean" && shouldBeTransparent) {
             options.transparent = true;
             options.backgroundColor = "#00000000";
         }

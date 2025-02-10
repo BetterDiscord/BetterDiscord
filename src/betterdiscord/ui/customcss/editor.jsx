@@ -15,17 +15,17 @@ const languages = ["abap", "abc", "actionscript", "ada", "apache_conf", "asciido
 
 function makeButton(button, value) {
     return <DiscordModules.Tooltip color="primary" position="top" text={button.tooltip}>
-                {props => {
-                    return <Button {...props} size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={(event) => {button.onClick(event, value?.());}}>{button.label}</Button>;
-                }}
-            </DiscordModules.Tooltip>;
+        {props => {
+            return <Button {...props} aria-label={button.tooltip} size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={(event) => {button.onClick(event, value?.());}}>{button.label}</Button>;
+        }}
+    </DiscordModules.Tooltip>;
 }
 // <Switch disabled={disabled} checked={isEnabled} onChange={onChange} />
 function makeSwitch(control) {
     return <Flex align={Flex.Align.CENTER} style={{gap: "10px"}}>
-                <Text>{control.label}</Text>
-                <Switch onChange={control.onChange} value={control.checked} />
-            </Flex>;
+        <Text>{control.label}</Text>
+        <Switch onChange={control.onChange} value={control.checked} />
+    </Flex>;
 }
 
 function buildControl(value, control) {
@@ -140,16 +140,16 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
     const controlsRight = controls.filter(c => c.side == "right").map(buildControl.bind(null, () => editor?.getValue()));
 
     return <div id="bd-editor-panel" className={theme}>
-                <div id="bd-editor-controls">
-                    <div className="controls-section controls-left">
-                        {controlsLeft}
-                    </div>
-                    <div className="controls-section controls-right">
-                        {controlsRight}
-                    </div>
-                </div>
-                <div className="editor-wrapper">
-                    <div id={id} className={"editor " + theme}></div>
-                </div>
-            </div>;
+        <div id="bd-editor-controls">
+            <div className="controls-section controls-left">
+                {controlsLeft}
+            </div>
+            <div className="controls-section controls-right">
+                {controlsRight}
+            </div>
+        </div>
+        <div className="editor-wrapper">
+            <div id={id} className={"editor " + theme}></div>
+        </div>
+    </div>;
 });

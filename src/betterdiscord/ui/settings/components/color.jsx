@@ -29,13 +29,13 @@ const getRGB = (color) => {
 
     result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color);
     if (result) return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
-    
+
     result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color);
     if (result) return [parseInt(result[1] + result[1], 16), parseInt(result[2] + result[2], 16), parseInt(result[3] + result[3], 16)];
 };
 
 const luma = (color) => {
-    const rgb = (typeof(color) === "string") ? getRGB(color) : color;
+    const rgb = (typeof (color) === "string") ? getRGB(color) : color;
     return (0.2126 * rgb[0]) + (0.7152 * rgb[1]) + (0.0722 * rgb[2]); // SMPTE C, Rec. 709 weightings
 };
 
@@ -47,7 +47,7 @@ const getContrastColor = (color) => {
 export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}) {
     const [internalValue, setValue] = useState(initialValue);
     const contextValue = useContext(SettingsContext);
-        
+
     const value = contextValue !== none ? contextValue : internalValue;
 
     const change = useCallback((e) => {

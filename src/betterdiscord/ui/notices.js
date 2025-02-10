@@ -60,7 +60,7 @@ export default class Notices {
         }), this.createElement("span", {
             className: "bd-notice-content"
         }, content), ...buttons.map((button) => {
-            if (!button || !button.label || typeof(button.onClick) !== "function") return null;
+            if (!button || !button.label || typeof (button.onClick) !== "function") return null;
 
             return this.createElement("button", {
                 className: "bd-notice-button",

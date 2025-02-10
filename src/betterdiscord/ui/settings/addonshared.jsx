@@ -8,13 +8,13 @@ import SettingsTitle from "@ui/settings/title";
 import {BadgeCheckIcon, ChevronRightIcon} from "lucide-react";
 
 export const buildDirectionOptions = () => [
-  {label: Strings.Sorting.ascending, value: true},
-  {label: Strings.Sorting.descending, value: false}
+    {label: Strings.Sorting.ascending, value: true},
+    {label: Strings.Sorting.descending, value: false}
 ];
 
 export function makeBasicButton(title, children, action, key) {
-    return <DiscordModules.Tooltip color="primary" position="top" text={title} key={key}>
-        {(props) => <Button {...props} size={Button.Sizes.NONE} look={Button.Looks.BLANK} className="bd-button" onClick={action}>{children}</Button>}
+    return <DiscordModules.Tooltip color="primary" position="top" aria-label={title} text={title} key={key}>
+        {(props) => <Button {...props} aria-label={title} size={Button.Sizes.NONE} look={Button.Looks.BLANK} className="bd-button" onClick={action}>{children}</Button>}
     </DiscordModules.Tooltip>;
 }
 
@@ -34,7 +34,7 @@ export function saveState(type, control, value) {
 export const addonContext = React.createContext();
 
 /**
- * @param {{ children: any, count: number, searching: boolean}} param0 
+ * @param {{ children: any, count: number, searching: boolean}} param0
  */
 export function AddonHeader({children, count, searching}) {
     /** @type {{ title: any, toggleStore(): void, showingStore: boolean }} */
@@ -46,7 +46,7 @@ export function AddonHeader({children, count, searching}) {
     }, [showingStore, toggleStore]);
 
     return (
-        <SettingsTitle 
+        <SettingsTitle
             text={(
                 <div className="bd-addon-title" data-showing-store={showingStore}>
                     <span onClick={exitStore}>{title}</span>

@@ -3,7 +3,7 @@ function cloneArray(array: any[]): any[] {
     for (let a = 0; a < array.length; a++) {
         const element = array[a];
 
-        if (typeof(element) !== "object" || element === null) {
+        if (typeof (element) !== "object" || element === null) {
             clone[a] = element;
         }
         else if (Array.isArray(element)) {
@@ -17,7 +17,7 @@ function cloneArray(array: any[]): any[] {
 }
 
 function shouldSkip(obj: any) {
-    if (typeof(obj) !== "object") return true;
+    if (typeof (obj) !== "object") return true;
     if (obj === null) return true;
     if (Array.isArray(obj)) return true;
 }
@@ -46,13 +46,13 @@ export default function extend<T extends Record<string | number | symbol, any>>(
 
             if (value === target) continue;
 
-            if (typeof(value) !== "object" || value === null) {
+            if (typeof (value) !== "object" || value === null) {
                 target[key as keyof T] = value;
             }
             else if (Array.isArray(value)) {
                 target[key as keyof T] = cloneArray(value) as T[keyof T];
             }
-            else if (typeof(source) !== "object" || source === null || Array.isArray(source)) {
+            else if (typeof (source) !== "object" || source === null || Array.isArray(source)) {
                 target[key as keyof T] = extend({}, value) as T[keyof T];
             }
             else {

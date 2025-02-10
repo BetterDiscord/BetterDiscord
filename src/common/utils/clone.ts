@@ -10,8 +10,8 @@ export default function cloneObject<T extends Record<string|number|symbol, unkno
     if (!Array.isArray(keys)) keys = getKeys(target);
 
     return keys.reduce((clone, key) => {
-        if (typeof(target[key]) === "object" && !Array.isArray(target[key]) && target[key] !== null) clone[key] = cloneObject(target[key] as T, {}) as T[keyof T];
-        else if (typeof(target[key]) === "function") clone[key] = target[key].bind(target);
+        if (typeof (target[key]) === "object" && !Array.isArray(target[key]) && target[key] !== null) clone[key] = cloneObject(target[key] as T, {}) as T[keyof T];
+        else if (typeof (target[key]) === "function") clone[key] = target[key].bind(target);
         else clone[key] = target[key];
 
         return clone;

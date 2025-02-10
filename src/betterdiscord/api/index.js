@@ -79,7 +79,7 @@ export default class BdApi {
     constructor(pluginName) {
         if (!pluginName) return BdApi;
         if (bounded.has(pluginName)) return bounded.get(pluginName);
-        if (typeof(pluginName) !== "string") {
+        if (typeof (pluginName) !== "string") {
             BDLogger.error("BdApi", "Plugin name not a string, returning generic API!");
             return BdApi;
         }
