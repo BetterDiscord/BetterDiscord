@@ -18,12 +18,12 @@ function makeResetButton(collectionId, refresh) {
         refresh?.();
     });
     return <DiscordModules.Tooltip color="primary" position="top" text={Strings.Settings.resetSettings}>
-                {(props) =>
-                    <Button {...props} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} onClick={action}>
-                        <ListRestartIcon />
-                    </Button>
-                }
-            </DiscordModules.Tooltip>;
+        {(props) =>
+            <Button {...props} aria-label={Strings.Settings.resetSettings} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} onClick={action}>
+                <ListRestartIcon />
+            </Button>
+        }
+    </DiscordModules.Tooltip>;
 }
 
 /**

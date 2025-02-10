@@ -30,8 +30,8 @@ function makeButton(tooltip, children, action, options = {}) {
     };
 
     return <DiscordModules.Tooltip color="primary" position="top" text={tooltip}>
-                {(props) => <Button {...props} className={`bd-update-button ${className}`} size={size} look={look} color={color} onClick={onClick}>{children}</Button>}
-            </DiscordModules.Tooltip>;
+        {(props) => <Button {...props} aria-label={tooltip} className={`bd-update-button ${className}`} size={size} look={look} color={color} onClick={onClick}>{children}</Button>}
+    </DiscordModules.Tooltip>;
 }
 
 function CoreUpdaterPanel({hasUpdate, remoteVersion, update}) {
@@ -53,18 +53,18 @@ function NoUpdates({type}) {
 function AddonUpdaterPanel({pending, type, updater, update, updateAll}) {
     const filenames = pending;
     return <Drawer
-            name={Strings.Panels[type]}
-            collapsible={true}
-            titleChildren={filenames.length > 1 ? makeButton(Strings.Updater.updateAll, <RotateCwIcon size="20px" />, () => updateAll(type)) : null}>
+        name={Strings.Panels[type]}
+        collapsible={true}
+        titleChildren={filenames.length > 1 ? makeButton(Strings.Updater.updateAll, <RotateCwIcon size="20px" />, () => updateAll(type)) : null}>
         {!filenames.length && <NoUpdates type={type} />}
         {filenames.map(f => {
             const info = updater.cache[f];
             const addon = updater.manager.addonList.find(a => a.filename === f);
             return <SettingItem name={`${addon.name} v${addon.version}`} note={Strings.Updater.versionAvailable.format({version: info.version})} inline={true} id={addon.name}>
-                    {makeButton(Strings.Updater.updateButton, <RotateCwIcon />, () => update(type, f))}
-                    {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{Strings.Updater.updateButton}</Button> */}
-                </SettingItem>;
-    })}
+                {makeButton(Strings.Updater.updateButton, <RotateCwIcon />, () => update(type, f))}
+                {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{Strings.Updater.updateButton}</Button> */}
+            </SettingItem>;
+        })}
     </Drawer>;
 }
 
