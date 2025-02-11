@@ -76,8 +76,10 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.SingleOpti
         const id = cache[cacheId];
         const module = webpackRequire.c[id];
 
-        const matched = getMatched<T>(module, filter, options);
-        if (matched) return matched;
+        if(module) {
+            const matched = getMatched<T>(module, filter, options);
+            if (matched) return matched;
+        }
     }
 
     const keys = Object.keys(webpackRequire.c);
