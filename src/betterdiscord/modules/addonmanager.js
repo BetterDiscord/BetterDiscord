@@ -5,7 +5,7 @@ import Logger from "@common/logger";
 
 import AddonError from "@structs/addonerror";
 
-import Settings from "./settingsmanager";
+import Settings from "@stores/settings";
 import Events from "./emitter";
 import DataStore from "./datastore";
 import React from "./react";
@@ -15,6 +15,7 @@ import ipc from "./ipc";
 import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
+import Store from "@stores/base";
 
 
 // const SWITCH_ANIMATION_TIME = 250;
@@ -31,7 +32,7 @@ const stripBOM = function(fileContent) {
     return fileContent;
 };
 
-export default class AddonManager {
+export default class AddonManager extends Store {
 
     get name() {return "";}
     get extension() {return "";}
@@ -39,9 +40,19 @@ export default class AddonManager {
     get addonFolder() {return "";}
     get language() {return "";}
     get prefix() {return "addon";}
-    emit(event, ...args) {return Events.emit(`${this.prefix}-${event}`, ...args);}
+    get order() {return 2;}
+
+    emit(event, ...args) {
+        // Emit the events as a store for react
+        super.emit();
+
+        // Emit the events as a normal emitter while other parts
+        // of the codebase are still converting to stores
+        return Events.emit(`${this.prefix}-${event}`, ...args);
+    }
 
     constructor() {
+        super();
         this.timeCache = {};
         this.addonList = [];
         this.state = {};
@@ -49,6 +60,7 @@ export default class AddonManager {
     }
 
     initialize() {
+        Settings.registerAddonPanel(this);
         return this.loadAllAddons();
     }
 
@@ -90,7 +102,7 @@ export default class AddonManager {
                     Logger.warn(this.name, `Duplicate files found: ${filename} and ${newFilename}`);
                     return;
                 }
-                
+
                 // Rename the file and let it go on
                 try {
                     fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
@@ -106,7 +118,7 @@ export default class AddonManager {
                 // console.log("watcher", stats);
                 if (!stats.isFile()) return;
                 if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
-                if (typeof(stats.mtime.getTime()) !== "number") return;
+                if (typeof (stats.mtime.getTime()) !== "number") return;
                 if (this.timeCache[filename] == stats.mtime.getTime()) return;
                 this.timeCache[filename] = stats.mtime.getTime();
                 if (eventType == "rename") this.loadAddon(filename, true);
@@ -201,7 +213,7 @@ export default class AddonManager {
 
     // Subclasses should use the return (if not AddonError) and push to this.addonList
     loadAddon(filename, shouldToast = false) {
-        if (typeof(filename) === "undefined") return;
+        if (typeof (filename) === "undefined") return;
         let addon;
         try {
             addon = this.requireAddon(path.resolve(this.addonFolder, filename));
@@ -215,7 +227,7 @@ export default class AddonManager {
             }
             return e;
         }
-        
+
 
         const error = this.initializeAddon(addon);
         if (error) {
@@ -227,13 +239,13 @@ export default class AddonManager {
 
         if (shouldToast) Toasts.success(Strings.Addons.wasLoaded.format({name: addon.name, version: addon.version}));
         this.emit("loaded", addon);
-        
+
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
     }
 
     unloadAddon(idOrFileOrAddon, shouldToast = true, isReload = false) {
-        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         // console.log("watcher", "unloadAddon", idOrFileOrAddon, addon);
         if (!addon) return false;
         if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
@@ -245,7 +257,7 @@ export default class AddonManager {
     }
 
     reloadAddon(idOrFileOrAddon, shouldToast = true) {
-        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         const didUnload = this.unloadAddon(addon, shouldToast, true);
         if (addon && !didUnload) return didUnload;
         return this.loadAddon(addon ? addon.filename : idOrFileOrAddon, shouldToast);
@@ -268,7 +280,7 @@ export default class AddonManager {
     }
 
     enableAddon(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon || addon.partial) return;
         if (this.state[addon.id]) return;
         this.state[addon.id] = true;
@@ -290,7 +302,7 @@ export default class AddonManager {
     }
 
     disableAddon(idOrAddon) {
-        const addon = typeof(idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
+        const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon || addon.partial) return;
         if (!this.state[addon.id]) return;
         this.state[addon.id] = false;
@@ -353,7 +365,7 @@ export default class AddonManager {
                     Logger.warn("AddonManager", `Duplicate files found: ${filename} and ${newFilename}`);
                     continue;
                 }
-                
+
                 // Rename the file and let it go on
                 fs.renameSync(absolutePath, path.resolve(this.addonFolder, newFilename));
             }
@@ -367,20 +379,20 @@ export default class AddonManager {
     }
 
     deleteAddon(idOrFileOrAddon) {
-        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         // console.log(path.resolve(this.addonFolder, addon.filename), fs.unlinkSync)
         return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
     }
 
     saveAddon(idOrFileOrAddon, content) {
-        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         return fs.writeFileSync(path.resolve(this.addonFolder, addon.filename), content);
     }
 
     editAddon(idOrFileOrAddon, system) {
-        const addon = typeof(idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         const fullPath = path.resolve(this.addonFolder, addon.filename);
-        if (typeof(system) == "undefined") system = Settings.get("settings", "addons", "editAction") == "system";
+        if (typeof (system) == "undefined") system = Settings.get("settings", "addons", "editAction") == "system";
         if (system) return openItem(`${fullPath}`);
         return this.openDetached(addon);
     }

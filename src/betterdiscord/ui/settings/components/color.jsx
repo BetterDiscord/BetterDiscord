@@ -2,8 +2,9 @@ import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
 import {CheckIcon, PipetteIcon} from "lucide-react";
+import {none, SettingsContext} from "@ui/contexts";
 
-const {useState, useCallback} = React;
+const {useState, useCallback, useContext} = React;
 
 
 const defaultColors = [1752220, 3066993, 3447003, 10181046, 15277667, 15844367, 15105570, 15158332, 9807270, 6323595, 1146986, 2067276, 2123412, 7419530, 11342935, 12745742, 11027200, 10038562, 9936031, 5533306];
@@ -28,13 +29,13 @@ const getRGB = (color) => {
 
     result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color);
     if (result) return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
-    
+
     result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color);
     if (result) return [parseInt(result[1] + result[1], 16), parseInt(result[2] + result[2], 16), parseInt(result[3] + result[3], 16)];
 };
 
 const luma = (color) => {
-    const rgb = (typeof(color) === "string") ? getRGB(color) : color;
+    const rgb = (typeof (color) === "string") ? getRGB(color) : color;
     return (0.2126 * rgb[0]) + (0.7152 * rgb[1]) + (0.0722 * rgb[2]); // SMPTE C, Rec. 709 weightings
 };
 
@@ -44,7 +45,11 @@ const getContrastColor = (color) => {
 
 
 export default function Color({value: initialValue, onChange, colors = defaultColors, defaultValue, disabled}) {
-    const [value, setValue] = useState(initialValue);
+    const [internalValue, setValue] = useState(initialValue);
+    const contextValue = useContext(SettingsContext);
+
+    const value = contextValue !== none ? contextValue : internalValue;
+
     const change = useCallback((e) => {
         if (disabled) return;
         onChange?.(resolveColor(e.target.value));

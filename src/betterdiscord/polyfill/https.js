@@ -4,7 +4,7 @@ import Remote from "./remote";
 
 
 export function get(url, options = {}, callback) {
-    if (typeof(options) === "function") {
+    if (typeof (options) === "function") {
         callback = options;
         options = null;
     }

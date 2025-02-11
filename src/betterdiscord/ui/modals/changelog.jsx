@@ -1,5 +1,4 @@
 import React from "@modules/react";
-import WebpackModules from "@modules/webpackmodules";
 import DiscordModules from "@modules/discordmodules";
 import Strings from "@modules/strings";
 
@@ -15,11 +14,12 @@ import CloseButton from "./close";
 import SimpleMarkdownExt from "@structs/markdown";
 import Modals from "@ui/modals";
 import {GithubIcon, TwitterIcon} from "lucide-react";
+import {getByKeys} from "@webpack";
 
 const {useMemo} = React;
 
 
-const AnchorClasses = WebpackModules.getByProps("anchorUnderlineOnHover") || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
+const AnchorClasses = getByKeys(["anchorUnderlineOnHover"]) || {anchor: "anchor-3Z-8Bb", anchorUnderlineOnHover: "anchorUnderlineOnHover-2ESHQB"};
 const joinSupportServer = (click) => {
     click.preventDefault();
     click.stopPropagation();
@@ -58,6 +58,22 @@ function Video({src, poster}) {
 }
 
 
+/**
+ *
+ * @param {{
+ *  transitionState?: number;
+ *  footer?: string;
+ *  title?: string;
+ *  subtitle?: string;
+ *  onClose?(): void;
+ *  video?: string;
+ *  poster?: string;
+ *  banner?: string;
+ *  blurb?: string;
+ *  changes?: object;
+ * }} param0
+ * @returns
+ */
 export default function ChangelogModal({transitionState, footer, title, subtitle, onClose, video, poster, banner, blurb, changes}) {
 
     const ChangelogHeader = useMemo(() => <Header justify={Flex.Justify.BETWEEN}>

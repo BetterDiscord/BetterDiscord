@@ -154,7 +154,8 @@
                     "name": "Recovery",
                     "note": "Enables the ability to attempt to save discord without reloading",
                     "button": "Attempt to recover Discord",
-                    "report": "Report on Github"
+                    "report": "Report on Github",
+                    "safeMode": "Relaunch in Safe Mode"
                 }
             },
             "editor": {

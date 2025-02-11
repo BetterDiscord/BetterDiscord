@@ -15,7 +15,7 @@ export default new Proxy(LocaleManager.strings, {
         }
         return new Proxy(strings[category], {
             get: function(obj, prop) {
-                if (typeof(obj[prop]) == "string") return new FormattableString(obj[prop]);
+                if (typeof (obj[prop]) == "string") return new FormattableString(obj[prop]);
                 return obj[prop];
             }
         });

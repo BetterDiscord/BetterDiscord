@@ -1,4 +1,4 @@
-import WebpackModules, {Filters} from "@modules/webpackmodules";
+import {Filters, getByKeys, getModule, modules, webpackRequire} from "@webpack";
 import Patcher from "@modules/patcher";
 import Logger from "@common/logger";
 import React from "@modules/react";
@@ -6,7 +6,7 @@ import React from "@modules/react";
 
 let startupComplete = false;
 
-const ModulesBundle = WebpackModules.getByProps("MenuItem", "Menu");
+const ModulesBundle = getByKeys(["MenuItem", "Menu"]);
 const MenuComponents = {
     Separator: ModulesBundle?.MenuSeparator,
     CheckboxItem: ModulesBundle?.MenuCheckboxItem,
@@ -27,18 +27,18 @@ if (!startupComplete) {
     let menuItemsId;
     let menuParser = "";
 
-    for (const key in WebpackModules.modules) {
-        if (Object.prototype.hasOwnProperty.call(WebpackModules.modules, key)) {
-            if (REGEX.test(WebpackModules.modules[key].toString())) {
+    for (const key in modules) {
+        if (Object.prototype.hasOwnProperty.call(modules, key)) {
+            if (REGEX.test(modules[key].toString())) {
                 menuItemsId = key;
                 break;
             }
         }
     }
 
-    for (const key in WebpackModules.modules) {
-        if (Object.prototype.hasOwnProperty.call(WebpackModules.modules, key)) {
-            const string = WebpackModules.modules[key].toString();
+    for (const key in modules) {
+        if (Object.prototype.hasOwnProperty.call(modules, key)) {
+            const string = modules[key].toString();
 
             if (string.includes(menuItemsId) && string.includes("separator")) {
                 menuParser = string;
@@ -47,7 +47,7 @@ if (!startupComplete) {
         }
     }
 
-    const contextMenuComponents = WebpackModules.require(menuItemsId);
+    const contextMenuComponents = webpackRequire(menuItemsId);
 
     for (const [, key, type] of menuParser.matchAll(EXTRACT_REGEX)) {
         switch (type) {
@@ -66,7 +66,7 @@ if (!startupComplete) {
         MenuComponents.Group ??= contextMenuComponents[match[1]];
     }
 
-    MenuComponents.Menu ??= WebpackModules.getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {searchExports: true});
+    MenuComponents.Menu ??= getModule(Filters.byStrings("getContainerProps()", ".keyboardModeEnabled&&null!="), {searchExports: true});
 }
 
 startupComplete = Object.values(MenuComponents).every(v => v);
@@ -75,7 +75,7 @@ const ContextMenuActions = (() => {
     const out = {};
 
     try {
-        const ActionsModule = WebpackModules.getModule((mod, target, id) => WebpackModules.require.m[id]?.toString().includes(`type:"CONTEXT_MENU_OPEN"`), {searchExports: false});
+        const ActionsModule = getModule((mod, target, id) => modules[id]?.toString().includes(`type:"CONTEXT_MENU_OPEN"`), {searchExports: false});
 
         for (const key of Object.keys(ActionsModule)) {
             if (ActionsModule[key].toString().includes("CONTEXT_MENU_CLOSE")) {
@@ -86,7 +86,7 @@ const ContextMenuActions = (() => {
             }
         }
 
-        startupComplete &&= typeof(out.closeContextMenu) === "function" && typeof(out.openContextMenu) === "function";
+        startupComplete &&= typeof (out.closeContextMenu) === "function" && typeof (out.openContextMenu) === "function";
     }
     catch (error) {
         startupComplete = false;
@@ -110,7 +110,7 @@ class MenuPatcher {
         if (!startupComplete) return Logger.warn("ContextMenu~Patcher", "Startup wasn't successfully, aborting initialization.");
 
         const {module, key} = (() => {
-            const foundModule = WebpackModules.getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes(`type:"CONTEXT_MENU_CLOSE"`)), {searchExports: false});
+            const foundModule = getModule(m => Object.values(m).some(v => typeof v === "function" && v.toString().includes(`type:"CONTEXT_MENU_CLOSE"`)), {searchExports: false});
             const foundKey = Object.keys(foundModule).find(k => foundModule[k].length === 3);
 
             return {module: foundModule, key: foundKey};

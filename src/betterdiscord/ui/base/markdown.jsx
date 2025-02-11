@@ -1,12 +1,12 @@
 import React from "@modules/react";
-import WebpackModules from "@modules/webpackmodules";
 import DiscordModules from "@modules/discordmodules";
+import {getModule} from "@webpack";
 
 
 let DiscordMarkdown, rules;
 
 function setupMarkdown() {
-    DiscordMarkdown = WebpackModules.find(m => m?.prototype?.render && m.rules);
+    DiscordMarkdown = getModule(m => m?.prototype?.render && m.rules);
     rules = {};
     if (DiscordMarkdown) {
         rules = {

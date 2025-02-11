@@ -1,7 +1,7 @@
 import React from "@modules/react";
 import Strings from "@modules/strings";
 import Events from "@modules/emitter";
-import Settings from "@modules/settingsmanager";
+import Settings from "@stores/settings";
 
 import Editor from "./editor";
 

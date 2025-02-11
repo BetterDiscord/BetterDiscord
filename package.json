@@ -9,21 +9,25 @@
         "build:main": "bun run build --module=main",
         "build:preload": "bun run build --module=preload",
         "build:betterdiscord": "bun run build --module=betterdiscord",
-        "build:production": "bun run build --minify",
+        "build:production": "NODE_ENV=production bun run build --minify",
         "inject": "bun scripts/inject.js",
         "lint": "bun run --bun eslint",
         "lint-css": "stylelint src/betterdiscord/styles/*.css && stylelint src/betterdiscord/styles/**/*.css",
         "test": "bun test tests/",
         "dist": "bun run build:production && bun scripts/pack.js",
         "api": "bun run --bun jsdoc -X -r renderer/src/modules/api/ > dist/jsdoc-ast.json",
-        "translations": "bun -r dotenv/config scripts/translations.js"
+        "translations": "bun -r dotenv/config scripts/translations.js",
+        "circulars": "bun run --bun dpdm -T --no-warning --no-tree src/betterdiscord/index.js"
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",
         "@types/bun": "^1.2.2",
         "@types/eslint": "^9.6.1",
+        "@types/react": "^18.3.1",
+        "@types/react-dom": "^18.3.5",
         "bun-style-loader": "^0.4.0",
         "dotenv": "^16.4.5",
+        "dpdm": "^3.14.0",
         "esbuild": "^0.24.2",
         "eslint": "^9.19.0",
         "eslint-plugin-react": "^7.37.4",
@@ -36,6 +40,7 @@
     "dependencies": {
         "buffer": "^6.0.3",
         "clsx": "^2.1.1",
+        "fast-equals": "^5.2.2",
         "lucide-react": "^0.474.0"
     },
     "engines": {
