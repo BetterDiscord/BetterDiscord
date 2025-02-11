@@ -1,7 +1,0 @@
-{
-    "globals": {
-        "describe": false,
-        "it": false,
-        "Reflect": false
-    }
-}

@@ -1,0 +1,213 @@
+.bd-notification-container {
+    position: fixed;
+    /*top: 16px;*/
+    /*right: 16px;*/
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1000;
+}
+
+.bd-notification {
+    background: var(--bg-overlay-1,var(--background-secondary-alt)) /*var(--background-primary)*/;
+    color: var(--text-normal);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(5em);
+}
+
+.bd-notification-topbar {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 10px 0;
+    margin-left: 3px;
+}
+
+.bd-notification-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bd-notification-close {
+    background: none;
+    border: none;
+    color: var(--text-normal);
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.2s ease-in-out;
+}
+
+.bd-notification-close:hover {
+    color: var(--info-warning-background);
+}
+
+.bd-notification-body {
+    margin-left: 3px;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 5px 10px;
+}
+
+.bd-notification-footer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 3fr));
+    gap: 8px;
+    padding: 10px;
+}
+
+.bd-notification-action {
+    background-color: var(--button-secondary-background);
+    color: var(--button-secondary-text);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.bd-notification-action:hover {
+    background-color: var(--button-secondary-background-hover);
+}
+
+.bd-notification-progress {
+    height: 4px;
+    transition: width 0.1s linear;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.bd-notification-enter {
+    animation: slideIn 0.5s ease-out forwards;
+}
+
+.bd-notification-exit {
+    animation: slideOut 0.5s ease-in forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.bd-container {
+    background: var(--background-secondary);
+    border: 3px solid var(--brand-500);
+    border-radius: 8px;
+    color: var(--text-normal);
+    position: relative;
+    width: 500px;
+    height: 300px;
+    margin: 50px auto;
+}
+
+.bd-container-disabled {
+    background: var(--background-secondary);
+    border: 3px solid var(--red-400);
+    border-radius: 8px;
+    color: var(--text-normal);
+    position: relative;
+    width: 500px;
+    height: 300px;
+    margin: 50px auto;
+}
+
+.position-wrapper {
+    width: 500px;
+}
+
+.bd-box {
+    background-color: var(--primary-400);
+    border-radius: 3px;
+    width: 150px;
+    height: 80px;
+    margin: 6px;
+    position: absolute;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.bd-box:hover {
+    background-color: var(--brand-500);
+    opacity: 0.8;
+}
+
+.bd-box.selected {
+    background-color: var(--brand-500);
+}
+
+.bd-box-disabled {
+    background-color: var(--primary-400);
+    border-radius: 3px;
+    width: 150px;
+    height: 80px;
+    margin: 6px;
+    position: absolute;
+    cursor: not-allowed !important;
+    opacity: 0.5;
+    transition: background-color 0.3s;
+}
+
+.bd-box-disabled:hover {
+    background-color: var(--brand-500);
+    opacity: 0.8;
+}
+
+.bd-box-disabled.selected {
+    background-color: var(--brand-500);
+}
+
+.bd-center-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+}
+
+.top-left { top: 0; left: 0; }
+.top-right { top: 0; right: 0; }
+.bottom-left { bottom: 0; left: 0; }
+.bottom-right { bottom: 0; right: 0; }
+
+.bd-center-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.bd-text { margin: 0; color: var(--text-normal); }
+
+.bd-p { margin: 10px 0 0; color: var(--text-normal); }

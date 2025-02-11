@@ -3,6 +3,90 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## 1.12.1
+
+### Added
+ - Sliders can now set more specific labels in their markers
+ - Addon update checking can now be toggled
+ - Update checking can now be done periodically
+
+### Removed
+- Removed extra code in the devtools warning module
+
+### Changed
+ - `forceUpdate` is only used for particular setting IDs
+ - `bySource` now accepted multiple searches
+ - Store and addon requests now set the no-cache directive
+
+### Fixed
+ - Fixed frame showing up on linux
+ - Fixed opening store from context menu
+ - Fixed addon store error causing freezes
+ - Fixed crashing when mentioning a bot
+ - Fixed addon updates not checking status code
+
+
+## 1.12.0
+
+### Added
+ - Added built-in addon store
+ - Slash command API
+ - Default BetterDiscord slash commands
+ - Search webpack modules by source code string (or regex) search (`getBySource`)
+ - Basic theme attributes
+ - React crash recovery
+ - API for mapping the mangled keys of a single module (`getMangled`)
+ - Webpack search APIs now have a `raw` option to return the entire `Module` object
+ - New native window frame option
+ - In-app traffic lights for macOS when using a native frame
+ - Added `onAdded` to the plugin api under `DOM`
+ - New `Open Addon Store` entry in context menu
+
+### Removed
+
+### Changed
+ - `DOM.createElement` can now accept multiple children and any number of directly assignable properties
+ - Settings builder now accepts a `button` type
+ - Addon error modal now uses `details` and `summary` to be more accessible
+ - Internal setting strings are now handled via `get` functions to allow for blind auto-translations
+ - `className` function changed to use `clsx` under the hood--our first true dependency
+ - Webpack searching does some additional sanity checking to help prevent errors on string searches
+   - String searches are becoming more and more common so this will help performance on those searches
+   - The downside is this has some very slight overhead for all other types of searching
+
+### Fixed
+ - Fixed remove minimum size
+ - Clicking component source in react devtoools now goes to the right component when patched
+ - Corrupt plugin configs won't halt operation
+ - Blankslate for no addons in the list now render properly
+ - Fixed grabbing context menu components
+ - Fixed grabbing modal actions
+
+### Deprecated
+ - `target` option of `DOM.createElement` is deprecated
+
+## 1.11.0
+
+### Added
+ - Added new `showChangelogModal` to the `UI` namespace
+ - Added `getNestedValue` and `semverCompare` to `Utils`
+ - Added settings builders to `UI` namespace as `buildSettingItem` and `buildSettingsPanel`
+ - Added a `Logger` namespace for easier and prettier logging of debug information
+ - Added some React components under `BdApi.Components
+
+### Removed
+
+### Changed
+
+### Fixed
+ - Fixed a `0` showing up when modals weren't on screen
+ - Fixed the version string not showing up in settings
+ - Fixed an issue where enabled/disabling custom css wouldn't update the style
+ - Fixed tooltips not being able to have custom labels
+ - Fixed lazy `Webpack` listeners not being given the correct arguments
+ - Fixed `Filters.combine` not using the correct arguments
+ - Fixed plugin settings modals overflowing the window
+
 ## 1.10.2
 
 ### Added
