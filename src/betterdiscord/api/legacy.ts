@@ -3,7 +3,7 @@ import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import JsonStore from "@stores/json";
 import DOMManager from "@modules/dommanager";
-import Settings from "@stores/settings";
+import Settings, {type SettingsCollection} from "@stores/settings";
 import Config from "@stores/config";
 import Patcher from "@modules/patcher";
 import ipc from "@modules/ipc";
@@ -12,21 +12,23 @@ import Toasts from "@ui/toasts";
 import Notices from "@ui/notices";
 import Modals from "@ui/modals";
 import {getAllModules, getByDisplayName, getByKeys, getByPrototypes, getModule} from "@webpack";
-import type {ReactElement} from "react";
+import type React2 from "react";
+import type ReactDOM2 from "react-dom";
+import type {ConfirmationModalOptions} from "@ui/modals/confirmation";
 
 /**
  * The React module being used inside Discord.
  * @type React
  * @memberof BdApi
  */
-const React = DiscordModules.React;
+const React: typeof React2 = DiscordModules.React;
 
 /**
  * The ReactDOM module being used inside Discord.
  * @type ReactDOM
  * @memberof BdApi
  */
-const ReactDOM = DiscordModules.ReactDOM;
+const ReactDOM: typeof ReactDOM2 = DiscordModules.ReactDOM;
 
 /**
  * A reference object to get BD's settings.
@@ -34,7 +36,7 @@ const ReactDOM = DiscordModules.ReactDOM;
  * @deprecated
  * @memberof BdApi
  */
-const settings = Settings.collections;
+const settings: SettingsCollection[] = Settings.collections;
 
 /**
  * A reference object for BD's emotes.
@@ -42,14 +44,14 @@ const settings = Settings.collections;
  * @deprecated
  * @memberof BdApi
  */
-const emotes = {};
+const emotes: object = {};
 
 /**
  * A reference string for BD's version.
  * @type string
  * @memberof BdApi
  */
-const version = Config.get("version");
+const version: string = Config.get("version");
 
 
 /**
@@ -84,7 +86,7 @@ function clearCSS(id: string) {
  * @returns {Promise} Resolves upon onload event
  * @memberof BdApi
  */
-function linkJS(id: string, url: string) {
+function linkJS(id: string, url: string): Promise<any> {
     return DOMManager.injectScript(id, url);
 }
 
@@ -107,7 +109,7 @@ function unlinkJS(id: string) {
  * @param {(string|ReactElement|Array<string|ReactElement>)} content A string of text to display in the modal
  * @memberof BdApi
  */
-function alert(title: string, content: (string | ReactElement | Array<string | ReactElement>)) {
+function alert(title: string, content: (string | React2.ReactElement | Array<string | React2.ReactElement>)) {
     Modals.alert(title, content);
 }
 
@@ -126,7 +128,7 @@ function alert(title: string, content: (string | ReactElement | Array<string | R
  * @returns {string} The key used for this modal
  * @memberof BdApi
  */
-function showConfirmationModal(title: string, content: (string | ReactElement | Array<string | ReactElement>), options = {}) {
+function showConfirmationModal(title: string, content: (string | React2.ReactElement | Array<string | React2.ReactElement>), options: ConfirmationModalOptions = {}): string {
     return Modals.showConfirmationModal(title, content, options);
 }
 
@@ -142,7 +144,7 @@ function showConfirmationModal(title: string, content: (string | ReactElement | 
  * @param {boolean} [options.forceShow=false] Whether to force showing the toast and ignore the BD setting
  * @memberof BdApi
  */
-function showToast(content: string, options = {}) {
+function showToast(content: string, options: {type?: string; icon?: boolean; timeout?: number; forceShow?: boolean;} = {}) {
     Toasts.show(content, options);
 }
 
@@ -158,7 +160,7 @@ function showToast(content: string, options = {}) {
  * @returns {function} A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
  * @memberof BdApi
  */
-function showNotice(content: string, options = {}) {
+function showNotice(content: string, options: {type?: string; buttons?: Array<{label: string; onClick(): void;}>; timeout?: number;} = {}): (immediately?: boolean) => void {
     return Notices.show(content, options);
 }
 
@@ -170,7 +172,7 @@ function showNotice(content: string, options = {}) {
  * @returns {any} Either the matching module or `undefined`
  * @memberof BdApi
  */
-function findModule(filter: () => boolean) {
+function findModule(filter: () => boolean): any {
     return getModule(filter);
 }
 
@@ -182,7 +184,7 @@ function findModule(filter: () => boolean) {
  * @returns {Array} Either an array of matching modules or an empty array
  * @memberof BdApi
  */
-function findAllModules(filter: () => boolean) {
+function findAllModules(filter: () => boolean): any[] {
     return getAllModules(filter);
 }
 
@@ -194,7 +196,7 @@ function findAllModules(filter: () => boolean) {
  * @returns {any} Either the matching module or `undefined`
  * @memberof BdApi
  */
-function findModuleByProps(...props: string[]) {
+function findModuleByProps(...props: string[]): any {
     return getByKeys(props);
 }
 
@@ -207,7 +209,7 @@ function findModuleByProps(...props: string[]) {
  * @returns {any} Either the matching module or `undefined`
  * @memberof BdApi
  */
-function findModuleByPrototypes(...protos: string[]) {
+function findModuleByPrototypes(...protos: string[]): any {
     return getByPrototypes(protos);
 }
 
@@ -219,7 +221,7 @@ function findModuleByPrototypes(...protos: string[]) {
  * @returns {any} Either the matching module or `undefined`
  * @memberof BdApi
  */
-function findModuleByDisplayName(name: string) {
+function findModuleByDisplayName(name: string): any {
     return getByDisplayName(name);
 }
 
@@ -231,7 +233,7 @@ function findModuleByDisplayName(name: string) {
  * @returns {object|undefined} Either the found data or `undefined`
  * @memberof BdApi
  */
-function getInternalInstance(node: any) {
+function getInternalInstance(node: any): object | undefined {
     if (node.__reactInternalInstance$) return node.__reactInternalInstance$;
     return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber")) as any] || null;
 }
@@ -245,7 +247,7 @@ function getInternalInstance(node: any) {
  * @returns {any} The stored data
  * @memberof BdApi
  */
-function loadData(pluginName: string, key: string) {
+function loadData(pluginName: string, key: string): any {
     return JsonStore.getData(pluginName, key);
 }
 
@@ -292,7 +294,7 @@ function deleteData(pluginName: string, key: string) {
  * @returns {function} A function that cancels the monkey patch
  * @memberof BdApi
  */
-function monkeyPatch(what: object, methodName: string, options: {callerId: string; after?: () => any; before?: () => any; instead?: () => any; once?: boolean; silent?: boolean;}) {
+function monkeyPatch(what: object, methodName: string, options: {callerId: string; after?: () => any; before?: () => any; instead?: () => any; once?: boolean; silent?: boolean;}): () => void {
     const {before, after, instead, once = false, callerId = "BdApi"} = options;
     const patchType = before ? "before" : after ? "after" : instead ? "instead" : "";
     if (!patchType) return Logger.err("BdApi", "Must provide one of: after, before, instead");
@@ -338,7 +340,7 @@ function onRemoved(node: Element, callback: () => void) {
  * @returns {function} The new wrapped function
  * @memberof BdApi
  */
-function suppressErrors(method: (...args: any[]) => any, message: string) {
+function suppressErrors(method: (...args: any[]) => any, message: string): (...args: any[]) => any {
     return (...params: any[]) => {
         try {return method(...params);}
         catch (e) {Logger.stacktrace("SuppressedError", "Error occurred in " + message, e);}
@@ -353,7 +355,7 @@ function suppressErrors(method: (...args: any[]) => any, message: string) {
  * @returns {boolean} Result of the test
  * @memberof BdApi
  */
-function testJSON(data: string) {
+function testJSON(data: string): boolean {
     try {
         return JSON.parse(data);
     }
@@ -372,7 +374,7 @@ function testJSON(data: string) {
  * @returns {boolean} If the setting is enabled
  * @memberof BdApi
  */
-function isSettingEnabled(collection: string, category: string, id: string) {
+function isSettingEnabled(collection: string, category: string, id: string): boolean {
     return Settings.get(collection, category, id);
 }
 
@@ -423,7 +425,7 @@ function toggleSetting(collection: string, category: string, id: string) {
  * @returns {any} The stored data
  * @memberof BdApi
  */
-function getBDData(key: string) {
+function getBDData(key: string): any {
     return JsonStore.get("misc", key);
 }
 
@@ -435,7 +437,7 @@ function getBDData(key: string) {
  * @returns {any} The stored data
  * @memberof BdApi
  */
-function setBDData(key: string, data: object) {
+function setBDData(key: string, data: object): any {
     return JsonStore.set("misc", key, data);
 }
 
@@ -460,47 +462,85 @@ function setBDData(key: string, data: object) {
  * @returns {Promise<object>} Result of the dialog
  * @memberof BdApi
  */
-async function openDialog(options: object) {
+async function openDialog(options: object): Promise<object> {
     const data = await ipc.openDialog(options);
     if (data.error) throw new Error(data.error);
 
     return data;
 }
 
-export {
-    React,
-    ReactDOM,
-    settings,
-    emotes,
-    version,
-    injectCSS,
-    clearCSS,
-    linkJS,
-    unlinkJS,
-    alert,
-    showConfirmationModal,
-    showToast,
-    showNotice,
-    findModule,
-    findAllModules,
-    findModuleByProps,
-    findModuleByPrototypes,
-    findModuleByDisplayName,
-    getInternalInstance,
-    loadData,
-    loadData as getData,
-    saveData,
-    saveData as setData,
-    deleteData,
-    monkeyPatch,
-    onRemoved,
-    suppressErrors,
-    testJSON,
-    isSettingEnabled,
-    enableSetting,
-    disableSetting,
-    toggleSetting,
-    getBDData,
-    setBDData,
-    openDialog
+class Legacy {
+    React = React;
+    ReactDOM = ReactDOM;
+    settings = settings;
+    emotes = emotes;
+    version = version;
+    injectCSS = injectCSS;
+    clearCSS = clearCSS;
+    linkJS = linkJS;
+    unlinkJS = unlinkJS;
+    alert = alert;
+    showConfirmationModal = showConfirmationModal;
+    showToast = showToast;
+    showNotice = showNotice;
+    findModule = findModule;
+    findAllModules = findAllModules;
+    findModuleByProps = findModuleByProps;
+    findModuleByPrototypes = findModuleByPrototypes;
+    findModuleByDisplayName = findModuleByDisplayName;
+    getInternalInstance = getInternalInstance;
+    loadData = loadData;
+    getData = loadData;
+    saveData = saveData;
+    setData = saveData;
+    deleteData = deleteData;
+    monkeyPatch = monkeyPatch;
+    onRemoved = onRemoved;
+    suppressErrors = suppressErrors;
+    testJSON = testJSON;
+    isSettingEnabled = isSettingEnabled;
+    enableSetting = enableSetting;
+    disableSetting = disableSetting;
+    toggleSetting = toggleSetting;
+    getBDData = getBDData;
+    setBDData = setBDData;
+    openDialog = openDialog;
+
+    static React = React;
+    static ReactDOM = ReactDOM;
+    static settings = settings;
+    static emotes = emotes;
+    static version = version;
+    static injectCSS = injectCSS;
+    static clearCSS = clearCSS;
+    static linkJS = linkJS;
+    static unlinkJS = unlinkJS;
+    static alert = alert;
+    static showConfirmationModal = showConfirmationModal;
+    static showToast = showToast;
+    static showNotice = showNotice;
+    static findModule = findModule;
+    static findAllModules = findAllModules;
+    static findModuleByProps = findModuleByProps;
+    static findModuleByPrototypes = findModuleByPrototypes;
+    static findModuleByDisplayName = findModuleByDisplayName;
+    static getInternalInstance = getInternalInstance;
+    static loadData = loadData;
+    static getData = loadData;
+    static saveData = saveData;
+    static setData = saveData;
+    static deleteData = deleteData;
+    static monkeyPatch = monkeyPatch;
+    static onRemoved = onRemoved;
+    static suppressErrors = suppressErrors;
+    static testJSON = testJSON;
+    static isSettingEnabled = isSettingEnabled;
+    static enableSetting = enableSetting;
+    static disableSetting = disableSetting;
+    static toggleSetting = toggleSetting;
+    static getBDData = getBDData;
+    static setBDData = setBDData;
+    static openDialog = openDialog;
 };
+
+export default Legacy;

@@ -12,7 +12,7 @@ import ReactUtils from "./reactutils";
 import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
-import * as Legacy from "./legacy";
+import Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
 import Logger from "./logger";
@@ -47,7 +47,6 @@ const DefaultLogger = new Logger();
 
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
- * @type Components
  * @summary {@link Components} a namespace holding a series of React components
  * @name Components
  */
@@ -75,8 +74,31 @@ const Components = {
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
  * @name BdApi
  */
-export default class BdApi {
-    constructor(pluginName) {
+export default class BdApi extends Legacy {
+    Patcher: Patcher = PatcherAPI;
+    Data: Data = DataAPI;
+    DOM: DOM = DOMAPI; 
+    Logger: Logger = DefaultLogger;
+    Commands: CommandAPI = CommandsAPI;
+
+    static Patcher: Patcher;
+    static Data: Data;
+    static DOM: DOM;
+    static Logger: Logger;
+    static Commands: CommandAPI;
+
+    static Plugins: AddonAPI;
+    static Themes: AddonAPI;
+    static Webpack: typeof Webpack;
+    static UI: typeof UI;
+    static ReactUtils: typeof ReactUtils;
+    static Utils: typeof Utils;
+    static ContextMenu: ContextMenu;
+    static Components: typeof Components;
+    static Net: { fetch: typeof fetch };
+
+    constructor(pluginName: string) {
+        super();
         if (!pluginName) return BdApi;
         if (bounded.has(pluginName)) return bounded.get(pluginName);
         if (typeof (pluginName) !== "string") {
