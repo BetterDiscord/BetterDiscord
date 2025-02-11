@@ -5,7 +5,7 @@ interface PatchedReactHooks {
     useMemo<T>(factory: () => T): T;
     useState<T>(initial: T | (() => T)): [T, () => void];
     useReducer<T>(reducer: (state: T, action: any) => T, initial: T): [T, () => void];
-    useRef<T>(value?: T): { current: T | null };
+    useRef<T>(value?: T): {current: T | null;};
     useCallback<T extends (...args: any[]) => any>(callback: T): T;
     useContext<T>(context: React.Context<T>): T;
     useEffect(): void;
@@ -35,7 +35,7 @@ const patchedReactHooks: PatchedReactHooks = {
         return [initial, () => {}];
     },
     useRef<T>(value: T | null = null) {
-        return { current: value };
+        return {current: value};
     },
     useCallback<T extends (...args: any[]) => any>(callback: T) {
         return callback;
@@ -158,23 +158,24 @@ const ReactUtils: ReactUtils = {
     wrapElement(element: HTMLElement | HTMLElement[]) {
         return class ReactWrapper extends React.Component {
             element: HTMLElement | HTMLElement[];
-            state: { hasError: boolean };
+            state: {hasError: boolean;};
 
             constructor(props: any) {
                 super(props);
                 this.element = element;
-                this.state = { hasError: false };
+                this.state = {hasError: false};
             }
 
             componentDidCatch() {
-                this.setState({ hasError: true });
+                this.setState({hasError: true});
             }
 
             componentDidMount() {
                 const refElement = (this.refs as any).element;
                 if (Array.isArray(this.element)) {
                     this.element.forEach(el => refElement.appendChild(el));
-                } else {
+                }
+                else {
                     refElement.appendChild(this.element);
                 }
             }
@@ -195,7 +196,7 @@ const ReactUtils: ReactUtils = {
         return function wrappedComponent(props: P, context: any) {
             const reactInternals = (React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
             const reactDispatcher = reactInternals.ReactCurrentDispatcher.current;
-            const originalDispatcher = { ...reactDispatcher };
+            const originalDispatcher = {...reactDispatcher};
 
             Object.assign(reactDispatcher, patchedReactHooks, customPatches);
 
