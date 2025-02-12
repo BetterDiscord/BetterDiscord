@@ -330,8 +330,8 @@ export default class AddonManager extends Store {
 
     loadNewAddons() {
         const files = fs.readdirSync(this.addonFolder);
-        const removed = this.addonList.filter(t => !files.includes(t.filename)).map(c => c.id);
-        const added = files.filter(f => !this.addonList.find(t => t.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.addonFolder, f)).isFile());
+        const removed = this.addonList.filter(a => !files.includes(a.filename)).map(c => c.id);
+        const added = files.filter(f => !this.addonList.find(a => a.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.addonFolder, f)).isFile());
         return {added, removed};
     }
 
