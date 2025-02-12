@@ -3,7 +3,7 @@ import FormattableString from "@structs/string";
 import Logger from "@common/logger";
 import React from "@modules/react";
 import ReactDOM from "@modules/reactdom";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Settings from "@stores/settings";
 import Events from "@modules/emitter";
 import Patcher from "@modules/patcher";
@@ -82,7 +82,7 @@ export default class Modals {
 
         if (!buttons.length) {
             buttons.push({
-                label: Strings.Modals.okay,
+                label: t("Modals.okay"),
                 action: handleClose
             });
         }
@@ -166,7 +166,7 @@ export default class Modals {
         if (content instanceof FormattableString) content = content.toString();
 
         const emptyFunction = () => {};
-        const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = Strings.Modals.okay, cancelText = Strings.Modals.cancel, danger = false, key = undefined, size = Root.Sizes.SMALL} = options;
+        const {onClose = emptyFunction, onConfirm = emptyFunction, onCancel = emptyFunction, confirmText = t("Modals.okay"), cancelText = t("Modals.cancel"), danger = false, key = undefined, size = Root.Sizes.SMALL} = options;
 
         if (!this.ModalActions) {
             return this.default(title, content, [
@@ -292,7 +292,7 @@ export default class Modals {
                 }
 
                 render() {
-                    if (this.state.hasError) return React.createElement(TextElement, {color: TextElement.Colors.STATUS_RED}, Strings.Addons.settingsError);
+                    if (this.state.hasError) return React.createElement(TextElement, {color: TextElement.Colors.STATUS_RED}, t("Addons.settingsError"));
                     return React.createElement("div", {
                         className: "bd-addon-settings-wrap",
                         ref: this.elementRef,
@@ -308,7 +308,7 @@ export default class Modals {
             size: ModalRoot.Sizes.MEDIUM,
             header: `${name} Settings`,
             cancelText: null,
-            confirmText: Strings.Modals.done
+            confirmText: t("Modals.done")
         };
 
         return this.openModal((props: any) => {

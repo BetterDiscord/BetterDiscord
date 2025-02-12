@@ -2,7 +2,7 @@ import Patcher from "@modules/patcher";
 import CustomCSS from "@builtins/customcss";
 import React from "@modules/react";
 import Settings from "@stores/settings";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import {PackageOpenIcon} from "lucide-react";
 import {getModule} from "@webpack";
 import Logger from "@common/logger";
@@ -45,11 +45,11 @@ class InstallCSS {
                         }
 
                         Modals.showConfirmationModal(
-                            Strings.Modals.confirmAction,
-                            Strings.Modals.installCss,
+                            t("Modals.confirmAction"),
+                            t("Modals.installCss"),
                             {
-                                confirmText: Strings.Modals.okay,
-                                cancelText: Strings.Modals.cancel,
+                                confirmText: t("Modals.okay"),
+                                cancelText: t("Modals.cancel"),
                                 onConfirm: () => this.handleCSSInstall(args?.content)
                             }
                         );
@@ -66,7 +66,7 @@ class InstallCSS {
 
             CustomCSS.saveCSS(newCSS);
             CustomCSS.insertCSS(newCSS);
-            Toasts.show(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
+            Toasts.show(t("CustomCSS.cssInstallSuccess"), {type: "success"});
 
             const notificationId = `css-undo-${Date.now()}`;
 
@@ -74,8 +74,8 @@ class InstallCSS {
 
             NotificationUI.show({
                 id: notificationId,
-                title: Strings.CustomCSS.cssInstalled,
-                content: Strings.CustomCSS.cssReverting,
+                title: t("CustomCSS.cssInstalled"),
+                content: t("CustomCSS.cssReverting"),
                 type: "warning",
                 duration: 10000,
                 actions: [{
@@ -87,13 +87,13 @@ class InstallCSS {
         }
         catch (error) {
             Logger.log("InstallCSS", "Failed to install CSS:", error);
-            Toasts.show(Strings.CustomCSS.cssInstallError, {type: "error"});
+            Toasts.show(t("CustomCSS.cssInstallError"), {type: "error"});
         }
     }
 
     static keepChanges(notificationId) {
         this.activeNotifications.delete(notificationId);
-        Toasts.show(Strings.CustomCSS.cssKept, {type: "success"});
+        Toasts.show(t("CustomCSS.cssKept"), {type: "success"});
     }
 
     static revertCSS(notificationId) {
@@ -106,7 +106,7 @@ class InstallCSS {
         CustomCSS.saveCSS(newCSS);
         CustomCSS.insertCSS(newCSS);
         this.activeNotifications.delete(notificationId);
-        Toasts.show(Strings.CustomCSS.cssReverted, {type: "error"});
+        Toasts.show(t("CustomCSS.cssReverted"), {type: "error"});
     }
 }
 

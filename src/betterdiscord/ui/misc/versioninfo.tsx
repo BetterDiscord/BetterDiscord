@@ -1,7 +1,7 @@
 import DiscordModules from "@modules/discordmodules";
 import pluginmanager from "@modules/pluginmanager";
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import thememanager from "@modules/thememanager";
 import settings from "@stores/settings";
 import Text from "@ui/base/text";
@@ -67,10 +67,10 @@ export default function VersionInfo() {
                 BD {getCoreInfo()}
             </Text>
             <Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>
-                {Strings.Panels.plugins.toString()} {pluginCount.total} ({pluginCount.enabled} {Strings.Addons.isEnabled.toString()})
+                {t("Panels.plugins.toString")()} {pluginCount.total} ({pluginCount.enabled} {t("Addons.isEnabled.toString")()})
             </Text>
             <Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>
-                {Strings.Panels.themes.toString()} {themeCount.total} ({themeCount.enabled} {Strings.Addons.isEnabled.toString()})
+                {t("Panels.themes.toString")()} {themeCount.total} ({themeCount.enabled} {t("Addons.isEnabled.toString")()})
             </Text>
         </div>}
     </DiscordModules.Tooltip>;

@@ -1,4 +1,5 @@
 import Localizations from "@assets/locales";
+import Default from "@assets/locales/en-us.json";
 import {formatString, getNestedProp} from "@common/utils";
 
 
@@ -25,9 +26,25 @@ type NestedKeyOf<ObjectType extends object> =
         : `${Key}`
     }[keyof ObjectType & (string | number)];
 
-type TranslationKeys = NestedKeyOf<typeof Localizations["en-US"]>;
+// type pString = `${string}_${keyof Plural}`;
+// type RemovePrefix<TPrefix extends string, TString extends string> = TString extends `${TPrefix}${infer T}` ? T : never;
+// type RemovePostfix<TPostfix extends string, TString extends string> = TString extends `${infer T}${TPostfix}` ? T : TString;
 
-type Locale = keyof typeof Localizations;
+// type NestedKeyOf2<ObjectType extends object> =
+//     {[Key in keyof ObjectType & (string | number | pString)]: ObjectType[Key] extends object
+//         ? `${Key}` | `${Key}.${RemovePostfix<`_${keyof Plural}`, NestedKeyOf<ObjectType[Key]>>}`
+//         : `${Key}`
+//     }[keyof ObjectType & (string | number | pString)];
+
+// type Single = typeof Localizations["en-US"];
+
+// export type AltKeys = NestedKeyOf2<typeof Default>;
+export type TranslationKey = NestedKeyOf<typeof Default>;
+
+// function foo(t: AltKeys) {}
+// const test = foo("Panels.plugins");
+
+export type Locale = keyof typeof Localizations;
 
 interface InitOptions {
     locale?: Locale;
@@ -72,20 +89,20 @@ const i18n = {
         return target;
     },
 
-    t(phrase: TranslationKeys, replacements?: Replacements & {count?: number;}) {
+    t(key: TranslationKey, replacements?: Replacements & {count?: number;}) {
         // console.log(phrase);
-        let target = getNestedProp(currentTranslations[currentLocale], phrase) as Translation;
-        if (!target) target = getNestedProp(currentTranslations[currentFallback], phrase);
+        let target = getNestedProp(currentTranslations[currentLocale], key) as Translation;
+        if (!target) target = getNestedProp(currentTranslations[currentFallback], key);
         // console.log(target);
-        if (!target) return null;
+        if (!target) return "String not found!";
 
         if (replacements) {
             if ("count" in replacements) target = i18n.pluralize(target, replacements.count!);
-            if (typeof target !== "string") return null;
+            if (typeof target !== "string") return "String not found!";
             target = formatString(target, replacements);
         }
 
-        if (typeof target !== "string") return null;
+        if (typeof target !== "string") return "String not found!";
         return target;
     }
 };

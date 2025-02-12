@@ -2,7 +2,7 @@ import DiscordModules from "@modules/discordmodules";
 import LocaleManager from "@modules/localemanager";
 import React from "@modules/react";
 import Settings from "@stores/settings";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Web from "@data/web";
 import Events from "@modules/emitter";
 
@@ -30,7 +30,7 @@ function ModalItem({leading, content, trailing, action}) {
 
 
 /**
- * @param {{guild: import("@modules/addonstore").Guild}} props 
+ * @param {{guild: import("@modules/addonstore").Guild}} props
  */
 function GuildIcon({guild}) {
     const [state, setState] = useState(() => guild.hash?.trim() ? 0 : 2);
@@ -73,7 +73,7 @@ function GuildIcon({guild}) {
 
         return removeListeners;
     }, [guild]);
-    
+
     return (
         <div className="bd-install-modal-guild" ref={ref}>
             {state === 0 ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : state === 1 ? null : guild.acronym}
@@ -82,12 +82,12 @@ function GuildIcon({guild}) {
 }
 
 /**
- * @param {{ 
- *    addon: import("@modules/addonstore").Addon, 
- *    transitionState: number, 
- *    onClose(): void, 
+ * @param {{
+ *    addon: import("@modules/addonstore").Addon,
+ *    transitionState: number,
+ *    onClose(): void,
  *    install(shouldEnable: boolean): Promise<void>
- * }} props 
+ * }} props
  */
 export default function InstallModal({addon, transitionState, install, onClose}) {
     const [shouldEnable, setShouldEnable] = useState(() => Settings.get("settings", "store", "alwaysEnable"));
@@ -118,7 +118,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
         <ModalRoot transitionState={transitionState} size={ModalRoot.Sizes.SMALL} className="bd-addon-store-modal">
             <div className="bd-install-modal-splash">
                 <div className="bd-install-modal-preview">
-                    <img 
+                    <img
                         src={addon.thumbnail}
                         onError={(event) => {
                             // Fallback to blank thumbnail
@@ -161,7 +161,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
                                     >
                                         <DiscordModules.Tooltip text={addon.author}>
                                             {(props) => (
-                                                <img 
+                                                <img
                                                     loading="lazy"
                                                     className="bd-install-modal-author-img"
                                                     src={addon.avatar}
@@ -181,35 +181,35 @@ export default function InstallModal({addon, transitionState, install, onClose})
                 <Text size={Text.Sizes.SIZE_20} color={Text.Colors.HEADER_PRIMARY}>{addon.name}</Text>
             </div>
             <div className="bd-install-modal-items">
-                <ModalItem 
+                <ModalItem
                     leading={<InfoIcon size="24px" />}
                     content={addon.description}
                 />
-                <ModalItem 
+                <ModalItem
                     leading={<TagIcon size="24px" />}
                     content={addon.version}
                 />
-                <ModalItem 
+                <ModalItem
                     leading={<ClockIcon size="24px" />}
                     content={addon.lastModified.toLocaleString(LocaleManager.discordLocale)}
                 />
-                <ModalItem 
+                <ModalItem
                     leading={<GithubIcon size="24px" />}
                     content={addon.filename}
                     action={openSourceCode}
                 />
-                <ModalItem 
+                <ModalItem
                     leading={<UserIcon size="24px" />}
                     content={addon.author}
                     action={openAuthorPage}
                 />
                 {addon.guild && (
-                    <ModalItem 
+                    <ModalItem
                         leading={<CircleHelpIcon size="24px" />}
                         content={(
                             <Flex direction={Flex.Direction.VERTICAL}>
                                 <Text>{addon.guild.name}</Text>
-                                <Text size={Text.Sizes.SIZE_12} color={Text.Colors.MUTED}>{Strings.Addons.invite}</Text>
+                                <Text size={Text.Sizes.SIZE_12} color={Text.Colors.MUTED}>{t("Addons.invite")}</Text>
                             </Flex>
                         )}
                         trailing={<GuildIcon guild={addon.guild} />}
@@ -219,12 +219,12 @@ export default function InstallModal({addon, transitionState, install, onClose})
             </div>
             <Footer justify={Flex.Justify.BETWEEN} align={Flex.Align.CENTER}>
                 <Button onClick={doInstall} disabled={isInstalling}>
-                    {isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : Strings.Addons.downloadAddon}
+                    {isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : t("Addons.downloadAddon")}
                 </Button>
-                <CheckBox 
-                    value={shouldEnable} 
-                    onChange={setShouldEnable} 
-                    label={<Text>{Strings.Modals.automaticallyEnable}</Text>} 
+                <CheckBox
+                    value={shouldEnable}
+                    onChange={setShouldEnable}
+                    label={<Text>{t("Modals.automaticallyEnable")}</Text>}
                 />
             </Footer>
         </ModalRoot>
