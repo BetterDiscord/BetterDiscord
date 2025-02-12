@@ -1,8 +1,10 @@
+import type {Webpack} from "discord";
 import Logger from "@common/logger";
 
 export let webpackRequire: Webpack.Require;
 
 export const lazyListeners = new Set<Webpack.Filter>();
+
 
 let __ORIGINAL_PUSH__ = window.webpackChunkdiscord_app.push;
 
@@ -55,9 +57,9 @@ function handlePush(chunk: Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffec
 }
 
 window.webpackChunkdiscord_app.push([
-    [ Symbol("BetterDiscord") ],
+    [Symbol("BetterDiscord")],
     {},
-    (__webpack_require__) => {
+    (__webpack_require__: any) => {
         if ("b" in __webpack_require__) {
             webpackRequire = __webpack_require__;
         }

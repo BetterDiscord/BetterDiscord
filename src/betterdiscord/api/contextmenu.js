@@ -86,7 +86,7 @@ const ContextMenuActions = (() => {
             }
         }
 
-        startupComplete &&= typeof(out.closeContextMenu) === "function" && typeof(out.openContextMenu) === "function";
+        startupComplete &&= typeof (out.closeContextMenu) === "function" && typeof (out.openContextMenu) === "function";
     }
     catch (error) {
         startupComplete = false;

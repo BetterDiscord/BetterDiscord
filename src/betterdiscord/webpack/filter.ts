@@ -4,7 +4,7 @@ import {webpackRequire} from "./require";
 export function byKeys(props: string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
     return module => {
         if (!module) return false;
-        if (typeof(module) !== "object" && typeof(module) !== "function") return false;
+        if (typeof (module) !== "object" && typeof (module) !== "function") return false;
         const component = filter(module);
         if (!component) return false;
         for (let p = 0; p < props.length; p++) {
@@ -17,7 +17,7 @@ export function byKeys(props: string[], filter: Webpack.ExportedOnlyFilter = m =
 export function byPrototypeKeys(fields: string[], filter: Webpack.ExportedOnlyFilter = m => m): Webpack.ExportedOnlyFilter {
     return module => {
         if (!module) return false;
-        if (typeof(module) !== "object" && typeof(module) !== "function") return false;
+        if (typeof (module) !== "object" && typeof (module) !== "function") return false;
         const component = filter(module);
         if (!component) return false;
         if (!component.prototype) return false;
@@ -60,7 +60,7 @@ export function bySource(...searches: Array<string | RegExp>):Webpack.Filter {
 
 export function byStrings(...strings: string[]): Webpack.ExportedOnlyFilter {
     return module => {
-        if (!module?.toString || typeof(module?.toString) !== "function") return; // Not stringable
+        if (!module?.toString || typeof (module?.toString) !== "function") return; // Not stringable
         let moduleString = "";
         try {moduleString = module?.toString([]);}
         catch {moduleString = module?.toString();}

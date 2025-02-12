@@ -6,6 +6,7 @@ import Strings from "@modules/strings";
 import Builtin from "@structs/builtin";
 import Settings from "@stores/settings";
 import pluginmanager from "@modules/pluginmanager";
+import IPC from "@modules/ipc";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 import {getByKeys, getByPrototypes, getByStrings} from "@webpack";
@@ -13,8 +14,8 @@ import {getByKeys, getByPrototypes, getByStrings} from "@webpack";
 const Dispatcher = DiscordModules.Dispatcher;
 
 async function attemptRecovery() {
-    const transitionTo = getByStrings([ "transitionTo - Transitioning to" ], {searchExports: true});
-    
+    const transitionTo = getByStrings(["transitionTo - Transitioning to"], {searchExports: true});
+
     const recoverySteps = [
         {
             action: () => Dispatcher?.dispatch?.({type: "LAYER_POP_ALL"}),
@@ -33,7 +34,7 @@ async function attemptRecovery() {
     for (const {action, errorMessage} of recoverySteps) {
         try {
             await action();
-        } 
+        }
         catch (error) {
             Logger.error("Recovery", `${errorMessage}:, ${error}`);
         }
@@ -46,7 +47,7 @@ const parseGithubUrl = (url) => {
         if (!urlObj.hostname.includes("github")) return null;
         const [owner, repo] = urlObj.pathname.split("/").filter(Boolean);
         return owner && repo ? `https://github.com/${owner}/${repo.replace(/\.git$/, "")}` : null;
-    } 
+    }
     catch {
         return null;
     }
@@ -101,7 +102,6 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
         if (pluginInfo?.githubUrl) {
             const baseRepoUrl = parseGithubUrl(pluginInfo.githubUrl);
             if (!baseRepoUrl) return;
-            
             const identifier = `$BDBug{${pluginInfo.name}}{${pluginInfo.version}}`;
             const issueTitle = encodeURIComponent(`[Bug Report] Plugin Crash - ${pluginInfo?.name} v${pluginInfo?.version}`);
             const issueBody = encodeURIComponent(
@@ -146,6 +146,16 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                             {Strings.Addons.invite}
                         </Button>
                     )}
+                    <Button
+                        className="bd-error-safe-mode"
+                        onClick={() => {
+                            pluginmanager.addonList.forEach((x) => pluginmanager.disableAddon(x.name));
+                            IPC.relaunch();
+                        }}
+                        color={Colors.RED}
+                    >
+                        {Strings.Collections.settings.developer.recovery.safeMode}
+                    </Button>
                 </div>
             </div>
             <div
@@ -204,7 +214,7 @@ export default new class Recovery extends Builtin {
 
             const foundIssue = /betterdiscord:\/\/(plugins)\/(.*?).(\w+).js/.exec(errorStack.error?.stack);
             let pluginInfo = null;
-            
+
             if (foundIssue) {
                 const pluginName = `${foundIssue[2]}.plugin.js`;
                 pluginInfo = this.getPluginInfo(pluginName);
@@ -221,7 +231,7 @@ export default new class Recovery extends Builtin {
                     }}
                 >
                     {Strings.Collections.settings.developer.recovery.button}
-                    </Button>,
+                </Button>,
                 parsedError && <ErrorDetails componentStack={parsedError} stack={errorStack?.error?.stack} pluginInfo={pluginInfo} instance={instance} />
             );
         });
