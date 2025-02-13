@@ -66,7 +66,7 @@ class InstallCSS {
 
             CustomCSS.saveCSS(newCSS);
             CustomCSS.insertCSS(newCSS);
-            Toasts.showToast(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
+            Toasts.show(Strings.CustomCSS.cssInstallSuccess, {type: "success"});
 
             const notificationId = `css-undo-${Date.now()}`;
 
@@ -87,13 +87,13 @@ class InstallCSS {
         }
         catch (error) {
             Logger.log("InstallCSS", "Failed to install CSS:", error);
-            Toasts.showToast(Strings.CustomCSS.cssInstallError, {type: "error"});
+            Toasts.show(Strings.CustomCSS.cssInstallError, {type: "error"});
         }
     }
 
     static keepChanges(notificationId) {
         this.activeNotifications.delete(notificationId);
-        Toasts.showToast(Strings.CustomCSS.cssKept, {type: "success"});
+        Toasts.show(Strings.CustomCSS.cssKept, {type: "success"});
     }
 
     static revertCSS(notificationId) {
@@ -106,7 +106,7 @@ class InstallCSS {
         CustomCSS.saveCSS(newCSS);
         CustomCSS.insertCSS(newCSS);
         this.activeNotifications.delete(notificationId);
-        Toasts.showToast(Strings.CustomCSS.cssReverted, {type: "error"});
+        Toasts.show(Strings.CustomCSS.cssReverted, {type: "error"});
     }
 }
 
