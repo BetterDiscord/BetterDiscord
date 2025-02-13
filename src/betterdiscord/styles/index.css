@@ -73,6 +73,6 @@
 
 .bd-version-info {
     padding: 8px 10px;
-    text-transform: capitalize;
+    /* text-transform: capitalize; */
     cursor: pointer;
 }

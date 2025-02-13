@@ -67,10 +67,10 @@ export default function VersionInfo() {
                 BD {getCoreInfo()}
             </Text>
             <Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>
-                {t("Panels.plugins.toString")()} {pluginCount.total} ({pluginCount.enabled} {t("Addons.isEnabled.toString")()})
+                {t("Panels.plugins")} {pluginCount.total} ({pluginCount.enabled} {t("Addons.isEnabled")})
             </Text>
             <Text color={Text.Colors.MUTED} size={Text.Sizes.SIZE_12}>
-                {t("Panels.themes.toString")()} {themeCount.total} ({themeCount.enabled} {t("Addons.isEnabled.toString")()})
+                {t("Panels.themes")} {themeCount.total} ({themeCount.enabled} {t("Addons.isEnabled")})
             </Text>
         </div>}
     </DiscordModules.Tooltip>;
