@@ -1,5 +1,4 @@
-import type {Locale} from "@common/i18n";
-import i18n from "@common/i18n"; // eslint-disable-line no-duplicate-imports
+import i18n, {type Locale} from "@common/i18n";
 
 import DiscordModules from "./discordmodules";
 

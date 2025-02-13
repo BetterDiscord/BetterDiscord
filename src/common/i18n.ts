@@ -89,7 +89,7 @@ const i18n = {
         return target;
     },
 
-    t(key: TranslationKey, replacements?: Replacements & {count?: number;}) {
+    t(key: TranslationKey | (string & {}), replacements?: Replacements) {
         // console.log(phrase);
         let target = getNestedProp(currentTranslations[currentLocale], key) as Translation;
         if (!target) target = getNestedProp(currentTranslations[currentFallback], key);

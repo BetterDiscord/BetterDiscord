@@ -5,7 +5,7 @@ import SettingsConfig, {type DropdownSetting, type SettingsCategory} from "@data
 import DataStore from "@modules/datastore";
 import Events from "@modules/emitter";
 import DiscordModules from "@modules/discordmodules";
-import {t, type TranslationKey} from "@common/i18n";
+import {t} from "@common/i18n";
 import Store from "./base";
 import type {ComponentType} from "react";
 import type AddonManager from "@modules/addonmanager";
@@ -68,7 +68,7 @@ export default new class SettingsManager extends Store {
             id,
             type,
             order,
-            get label() {return t(`Panels.${id}` as TranslationKey) || name;},
+            get label() {return t(`Panels.${id}`) || name;},
             section: id
         };
         if (options.manager) section.manager = options.manager;
@@ -107,7 +107,7 @@ export default new class SettingsManager extends Store {
         const collectionName = collection.name;
         Object.defineProperty(collection, "name", {
             enumerable: true,
-            get: () => t(`Collections.${collection.id}.name` as TranslationKey) || collectionName
+            get: () => t(`Collections.${collection.id}.name`) || collectionName
         });
 
         const categories = collection.settings;
@@ -122,7 +122,7 @@ export default new class SettingsManager extends Store {
             const categoryName = category.name;
             Object.defineProperty(category, "name", {
                 enumerable: true,
-                get: () => t(`Collections.${collection.id}.${category.id}.name` as TranslationKey) || categoryName
+                get: () => t(`Collections.${collection.id}.${category.id}.name`) || categoryName
             });
 
 
@@ -141,11 +141,11 @@ export default new class SettingsManager extends Store {
                 Object.defineProperties(setting, {
                     name: {
                         enumerable: true,
-                        get: () => t(`Collections.${collection.id}.${category.id}.${setting.id}.name` as TranslationKey) || settingName
+                        get: () => t(`Collections.${collection.id}.${category.id}.${setting.id}.name`) || settingName
                     },
                     note: {
                         enumerable: true,
-                        get: () => t(`Collections.${collection.id}.${category.id}.${setting.id}.note` as TranslationKey) || settingNote
+                        get: () => t(`Collections.${collection.id}.${category.id}.${setting.id}.note`) || settingNote
                     }
                 });
 
@@ -156,7 +156,7 @@ export default new class SettingsManager extends Store {
                         Object.defineProperty(opt, "label", {
                             enumerable: true,
                             get: () => {
-                                return t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.id}` as TranslationKey) || t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.value}` as TranslationKey) || optLabel;
+                                return t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.id}`) || t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.value}`) || optLabel;
                             }
                         });
                     }
