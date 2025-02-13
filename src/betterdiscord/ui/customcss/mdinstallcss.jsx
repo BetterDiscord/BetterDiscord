@@ -24,7 +24,7 @@ class InstallCSS {
             if (!content) return;
 
             if (child?.type !== "pre") return;
-            if (args?.lang !== "css") return;
+            if (args?.lang.toLowerCase() !== "css") return;
 
             const codeActions = findInTree(child, x => x?.className?.includes("codeActions"), {walkable: ["props", "children"]});
             if (!codeActions) return;
