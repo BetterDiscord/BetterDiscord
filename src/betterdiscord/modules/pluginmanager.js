@@ -8,7 +8,7 @@ import Config from "@stores/config";
 import AddonError from "@structs/addonerror";
 
 import AddonManager from "./addonmanager";
-import Strings from "./strings";
+import {t} from "@common/i18n";
 import Events from "./emitter";
 
 import Toasts from "@ui/toasts";
@@ -96,11 +96,11 @@ export default new class PluginManager extends AddonManager {
             }
             catch (error) {
                 this.state[addon.id] = false;
-                return new AddonError(addon.name, addon.filename, Strings.Addons.methodError.format({method: "load()"}), {message: error.message, stack: error.stack}, this.prefix);
+                return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "load()"}), {message: error.message, stack: error.stack}, this.prefix);
             }
         }
         catch (error) {
-            return new AddonError(addon.name, addon.filename, Strings.Addons.methodError.format({method: "Plugin constructor()"}), {message: error.message, stack: error.stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "Plugin constructor()"}), {message: error.message, stack: error.stack}, this.prefix);
         }
     }
 
@@ -119,7 +119,7 @@ export default new class PluginManager extends AddonManager {
             return addon;
         }
         catch (err) {
-            throw new AddonError(addon.name || addon.filename, filename, Strings.Addons.compileError, {message: err.message, stack: err.stack}, this.prefix);
+            throw new AddonError(addon.name || addon.filename, filename, t("Addons.compileError"), {message: err.message, stack: err.stack}, this.prefix);
         }
     }
 
@@ -137,12 +137,12 @@ export default new class PluginManager extends AddonManager {
         catch (err) {
             this.state[addon.id] = false;
             this.emit("disabled", addon);
-            Toasts.error(Strings.Addons.couldNotStart.format({name: addon.name, version: addon.version}));
+            Toasts.error(t("Addons.couldNotStart", {name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
-            return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "start()"}), {message: err.message, stack: err.stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: err.message, stack: err.stack}, this.prefix);
         }
         this.emit("started", addon.id);
-        Toasts.show(Strings.Addons.enabled.format({name: addon.name, version: addon.version}));
+        Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
     }
 
     stopPlugin(idOrAddon) {
@@ -154,12 +154,12 @@ export default new class PluginManager extends AddonManager {
         }
         catch (err) {
             this.state[addon.id] = false;
-            Toasts.error(Strings.Addons.couldNotStop.format({name: addon.name, version: addon.version}));
+            Toasts.error(t("Addons.couldNotStop", {name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
-            return new AddonError(addon.name, addon.filename, Strings.Addons.enabled.format({method: "stop()"}), {message: err.message, stack: err.stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "stop()"}), {message: err.message, stack: err.stack}, this.prefix);
         }
         this.emit("stopped", addon.id);
-        Toasts.show(Strings.Addons.disabled.format({name: addon.name, version: addon.version}));
+        Toasts.show(t("Addons.disabled", {name: addon.name, version: addon.version}));
     }
 
     getPlugin(idOrFile) {

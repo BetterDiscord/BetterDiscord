@@ -8,7 +8,7 @@ import DataStore from "@modules/datastore";
 import React from "@modules/react";
 import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
 import CSSEditor from "@ui/customcss/csseditor";
@@ -35,9 +35,9 @@ export default new class CustomCSS extends Builtin {
     }
 
     async enabled() {
-        Settings.registerPanel(this.id, Strings.Panels.customcss, {
+        Settings.registerPanel(this.id, t("Panels.customcss"), {
             order: 2,
-            element: () => [<SettingsTitle text={Strings.CustomCSS.editorTitle} />, React.createElement(CSSEditor, {
+            element: () => [<SettingsTitle text={t("CustomCSS.editorTitle")} />, React.createElement(CSSEditor, {
                 css: this.savedCss,
                 save: this.saveCSS.bind(this),
                 update: this.insertCSS.bind(this),
@@ -151,7 +151,7 @@ export default new class CustomCSS extends Builtin {
                 if (!editorRef || !editorRef.current || !editorRef.current.resize) return;
                 editorRef.current.resize();
             },
-            title: Strings.CustomCSS.editorTitle,
+            title: t("CustomCSS.editorTitle"),
             id: "floating-editor-window",
             height: 470,
             width: 410,
@@ -163,7 +163,7 @@ export default new class CustomCSS extends Builtin {
                 if (Settings.get("settings", "customcss", "liveUpdate")) return false;
                 return editorRef.current.hasUnsavedChanges;
             },
-            confirmationText: Strings.CustomCSS.confirmationText
+            confirmationText: t("CustomCSS.confirmationText")
         });
         this.isDetached = true;
         UserSettings.close();

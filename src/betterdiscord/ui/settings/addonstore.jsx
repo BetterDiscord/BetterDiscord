@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import AddonStore from "@modules/addonstore";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import ipc from "@modules/ipc";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
@@ -20,15 +20,15 @@ import {ChevronDownIcon, FolderIcon, InfoIcon, RotateCwIcon} from "lucide-react"
 const {useState, useMemo, useCallback} = React;
 
 const buildSortOptions = () => [
-    {label: Strings.Addons.downloads, value: "downloads"},
-    // {label: Strings.Addons.popularity, value: "popularity"},
-    {label: Strings.Addons.name, value: "name"},
-    {label: Strings.Addons.author, value: "author"},
-    {label: Strings.Addons.version, value: "version"},
-    {label: Strings.Addons.lastUpdated, value: "modified"},
-    {label: Strings.Addons.releaseDate, value: "releaseDate"},
-    {label: Strings.Addons.isInstalled, value: "isInstalled"},
-    {label: Strings.Addons.likes, value: "likes"}
+    {label: t("Addons.downloads"), value: "downloads"},
+    // {label: t("Addons.popularity"), value: "popularity"},
+    {label: t("Addons.name"), value: "name"},
+    {label: t("Addons.author"), value: "author"},
+    {label: t("Addons.version"), value: "version"},
+    {label: t("Addons.lastUpdated"), value: "modified"},
+    {label: t("Addons.releaseDate"), value: "releaseDate"},
+    {label: t("Addons.isInstalled"), value: "isInstalled"},
+    {label: t("Addons.likes"), value: "likes"}
 ];
 
 const MAX_AMOUNT_OF_CARDS = 30;
@@ -82,7 +82,7 @@ function TagDropdown({type, selected, onChange}) {
 
     const tags = useMemo(() => Web.store.tags[type], [type]);
 
-    const selectedTags = useMemo(() => Object.entries(selected).filter(([, value]) => value).map(([ key ]) => key), [selected]);
+    const selectedTags = useMemo(() => Object.entries(selected).filter(([, value]) => value).map(([key]) => key), [selected]);
 
     return (
         <div className={`bd-select bd-select-transparent${open ? " menu-open" : ""}`} onClick={showMenu}>
@@ -228,18 +228,18 @@ export default function AddonStorePage({type, title, refToScroller}) {
 
     return [
         <AddonHeader key="title" count={filtered.length} searching={query.length !== 0}>
-            <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: `${filtered.length} ${title}`})}...`} />
+            <Search onChange={search} placeholder={`${t("Addons.search", {type: `${filtered.length} ${title}`})}...`} />
         </AddonHeader>,
         <div className="bd-controls bd-addon-controls">
             <div className="bd-controls-basic">
-                {/* {makeBasicButton(Strings.Addons.website, <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
-                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder), "folder")}
-                {makeBasicButton(Strings.Addons.reload, <RotateCwIcon size="20px" />, () => loading ? {} : AddonStore.requestAddons(), "reload")}
+                {/* {makeBasicButton(t("Addons.website"), <Globe />, () => window.open(Web.pages[`${manager.prefix}s`]))} */}
+                {makeBasicButton(t("Addons.openFolder", {type: title}), <FolderIcon size="20px" />, () => ipc.openPath(manager.addonFolder), "folder")}
+                {makeBasicButton(t("Addons.reload"), <RotateCwIcon size="20px" />, () => loading ? {} : AddonStore.requestAddons(), "reload")}
             </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">
                     <div className="bd-select-wrapper">
-                        <label className="bd-label">{Strings.Addons.tags}:</label>
+                        <label className="bd-label">{t("Addons.tags")}:</label>
                         <TagDropdown
                             type={type}
                             selected={tags}
@@ -247,17 +247,17 @@ export default function AddonStorePage({type, title, refToScroller}) {
                         />
                     </div>
                     <div className="bd-select-wrapper">
-                        <label className="bd-label">{Strings.Sorting.sortBy}:</label>
+                        <label className="bd-label">{t("Sorting.sortBy")}:</label>
                         <Dropdown options={buildSortOptions()} value={sort} onChange={changeSort} style="transparent" />
                     </div>
                     <div className="bd-select-wrapper">
-                        <label className="bd-label">{Strings.Sorting.order}:</label>
+                        <label className="bd-label">{t("Sorting.order")}:</label>
                         <Dropdown options={buildDirectionOptions()} value={ascending} onChange={changeDirection} style="transparent" />
                     </div>
                 </div>
                 {/* <div className="bd-addon-views">
-                    {makeControlButton(Strings.Addons.listView, <ListIcon />, listView, view === "list")}
-                    {makeControlButton(Strings.Addons.gridView, <GridIcon />, gridView, view === "grid")}
+                    {makeControlButton(t("Addons.listView"), <ListIcon />, listView, view === "list")}
+                    {makeControlButton(t("Addons.gridView"), <GridIcon />, gridView, view === "grid")}
                 </div> */}
             </div>
         </div>,
@@ -265,7 +265,7 @@ export default function AddonStorePage({type, title, refToScroller}) {
             <div className="bd-addon-store-warning">
                 <InfoIcon size="24px" />
                 <div>
-                    <div>{Strings.Addons.failedToFetch}</div>
+                    <div>{t("Addons.failedToFetch")}</div>
                     <div>{error.message}</div>
                 </div>
             </div>

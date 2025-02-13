@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
 import Button from "@ui/base/button";
@@ -8,8 +8,8 @@ import SettingsTitle from "@ui/settings/title";
 import {BadgeCheckIcon, ChevronRightIcon} from "lucide-react";
 
 export const buildDirectionOptions = () => [
-    {label: Strings.Sorting.ascending, value: true},
-    {label: Strings.Sorting.descending, value: false}
+    {label: t("Sorting.ascending"), value: true},
+    {label: t("Sorting.descending"), value: false}
 ];
 
 export function makeBasicButton(title, children, action, key) {
@@ -53,10 +53,10 @@ export function AddonHeader({children, count, searching}) {
                     {showingStore && (
                         <>
                             <ChevronRightIcon size="24px" />
-                            <span>{Strings.Addons.store}</span>
+                            <span>{t("Addons.store")}</span>
                         </>
                     )}
-                    {searching && <span> - {Strings.Addons.results.format({count: String(count)})}</span>}
+                    {searching && <span> - {t("Addons.results", {count: String(count)})}</span>}
                 </div>
             )}
         >
@@ -68,7 +68,7 @@ export function AddonHeader({children, count, searching}) {
 export function FlowerStar({size = 16}) {
 
     return (
-        <DiscordModules.Tooltip text={Strings.Addons.official} aria-label={Strings.Addons.official} hideOnClick={false}>
+        <DiscordModules.Tooltip text={t("Addons.official")} aria-label={t("Addons.official")} hideOnClick={false}>
             {(props) => (
                 <div className="bd-flower-star" {...props}>
                     <BadgeCheckIcon size={`${size}px`} />

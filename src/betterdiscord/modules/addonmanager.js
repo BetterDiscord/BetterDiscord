@@ -9,7 +9,7 @@ import Settings from "@stores/settings";
 import Events from "./emitter";
 import DataStore from "./datastore";
 import React from "./react";
-import Strings from "./strings";
+import {t} from "@common/i18n";
 import ipc from "./ipc";
 
 import AddonEditor from "@ui/misc/addoneditor";
@@ -25,7 +25,7 @@ const openItem = ipc.openPath;
 const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
 
-const stripBOM = function(fileContent) {
+const stripBOM = function (fileContent) {
     if (fileContent.charCodeAt(0) === 0xFEFF) {
         fileContent = fileContent.slice(1);
     }
@@ -148,7 +148,7 @@ export default class AddonManager extends Store {
         if (hasOldMeta) return this.parseOldMeta(fileContent, filename);
         const hasNewMeta = firstLine.includes("/**");
         if (hasNewMeta) return this.parseNewMeta(fileContent);
-        throw new AddonError(filename, filename, Strings.Addons.metaNotFound, {message: "", stack: fileContent}, this.prefix);
+        throw new AddonError(filename, filename, t("Addons.metaNotFound"), {message: "", stack: fileContent}, this.prefix);
     }
 
     parseOldMeta(fileContent, filename) {
@@ -159,9 +159,9 @@ export default class AddonManager extends Store {
             parsed = JSON.parse(metaData);
         }
         catch (err) {
-            throw new AddonError(filename, filename, Strings.Addons.metaError, err, this.prefix);
+            throw new AddonError(filename, filename, t("Addons.metaError"), err, this.prefix);
         }
-        if (!parsed || !parsed.name) throw new AddonError(filename, filename, Strings.Addons.missingNameData, {message: "", stack: meta}, this.prefix);
+        if (!parsed || !parsed.name) throw new AddonError(filename, filename, t("Addons.missingNameData"), {message: "", stack: meta}, this.prefix);
         parsed.format = "json";
         return parsed;
     }
@@ -195,9 +195,9 @@ export default class AddonManager extends Store {
         fileContent = stripBOM(fileContent);
         const stats = fs.statSync(filename);
         const addon = this.extractMeta(fileContent, path.basename(filename));
-        if (!addon.author) addon.author = Strings.Addons.unknownAuthor;
+        if (!addon.author) addon.author = t("Addons.unknownAuthor");
         if (!addon.version) addon.version = "???";
-        if (!addon.description) addon.description = Strings.Addons.noDescription;
+        if (!addon.description) addon.description = t("Addons.noDescription");
         // if (!addon.name || !addon.author || !addon.description || !addon.version) return new AddonError(addon.name || path.basename(filename), filename, "Addon is missing name, author, description, or version", {message: "Addon must provide name, author, description, and version.", stack: ""}, this.prefix);
         addon.id = addon.name || path.basename(filename);
         addon.slug = path.basename(filename).replace(this.extension, "").replace(/ /g, "-");
@@ -206,7 +206,7 @@ export default class AddonManager extends Store {
         addon.modified = stats.mtimeMs;
         addon.size = stats.size;
         addon.fileContent = fileContent;
-        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name, filename, Strings.Addons.alreadyExists.format({type: this.prefix, name: addon.name}), this.prefix);
+        if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), this.prefix);
         this.addonList.push(addon);
         return addon;
     }
@@ -237,7 +237,7 @@ export default class AddonManager extends Store {
             return error;
         }
 
-        if (shouldToast) Toasts.success(Strings.Addons.wasLoaded.format({name: addon.name, version: addon.version}));
+        if (shouldToast) Toasts.success(t("Addons.wasLoaded", {name: addon.name, version: addon.version}));
         this.emit("loaded", addon);
 
         if (!this.state[addon.id]) return this.state[addon.id] = false;
@@ -252,7 +252,7 @@ export default class AddonManager extends Store {
 
         this.addonList.splice(this.addonList.indexOf(addon), 1);
         this.emit("unloaded", addon);
-        if (shouldToast) Toasts.success(Strings.Addons.wasUnloaded.format({name: addon.name}));
+        if (shouldToast) Toasts.success(t("Addons.wasUnloaded", {name: addon.name}));
         return true;
     }
 
@@ -286,8 +286,8 @@ export default class AddonManager extends Store {
         this.state[addon.id] = true;
         this.emit("enabled", addon);
         // setTimeout(() => {
-            this.startAddon(addon);
-            this.saveState();
+        this.startAddon(addon);
+        this.saveState();
         // }, SWITCH_ANIMATION_TIME);
     }
 
@@ -308,8 +308,8 @@ export default class AddonManager extends Store {
         this.state[addon.id] = false;
         this.emit("disabled", addon);
         // setTimeout(() => {
-            this.stopAddon(addon);
-            this.saveState();
+        this.stopAddon(addon);
+        this.saveState();
         // }, SWITCH_ANIMATION_TIME);
     }
 
@@ -330,8 +330,8 @@ export default class AddonManager extends Store {
 
     loadNewAddons() {
         const files = fs.readdirSync(this.addonFolder);
-        const removed = this.addonList.filter(t => !files.includes(t.filename)).map(c => c.id);
-        const added = files.filter(f => !this.addonList.find(t => t.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.addonFolder, f)).isFile());
+        const removed = this.addonList.filter(a => !files.includes(a.filename)).map(c => c.id);
+        const added = files.filter(f => !this.addonList.find(a => a.filename == f) && f.endsWith(this.extension) && fs.statSync(path.resolve(this.addonFolder, f)).isFile());
         return {added, removed};
     }
 
@@ -434,7 +434,7 @@ export default class AddonManager extends Store {
                 if (!editorRef || !editorRef.current) return false;
                 return editorRef.current.hasUnsavedChanges;
             },
-            confirmationText: Strings.Addons.confirmationText.format({name: addon.name})
+            confirmationText: t("Addons.confirmationText", {name: addon.name})
         });
     }
 }

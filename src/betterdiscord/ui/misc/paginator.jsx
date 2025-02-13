@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 
 import Button from "@ui/base/button";
 
@@ -42,7 +42,7 @@ export default function Paginator({className, currentPage, length, pageSize, onP
                 visible.push(0, "...");
 
                 for (let index = currentPage - diff; index <= (currentPage + diff); index++) {
-                  visible.push(index);
+                    visible.push(index);
                 }
 
                 visible.push("...", max - 1);
@@ -61,7 +61,7 @@ export default function Paginator({className, currentPage, length, pageSize, onP
                 disabled={currentPage === 0}
                 onClick={() => onPageChange(currentPage - 1)}
             >
-                {Strings.Paginator.back}
+                {t("Paginator.back")}
             </Button>
             <div className="bd-paginator-bubbles">
                 {visiblePages.map((value, key) => {
@@ -85,7 +85,7 @@ export default function Paginator({className, currentPage, length, pageSize, onP
                 disabled={currentPage === (max - 1)}
                 onClick={() => onPageChange(currentPage + 1)}
             >
-                {Strings.Paginator.next}
+                {t("Paginator.next")}
             </Button>
         </div>
     );

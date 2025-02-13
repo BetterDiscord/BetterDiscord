@@ -71,9 +71,9 @@ interface GetOwnerInstanceOptions {
 
 interface ReactUtils {
     rootInstance: any;
-    getInternalInstance(node: HTMLElement): any | null;
-    getOwnerInstance(node: HTMLElement | undefined, options?: GetOwnerInstanceOptions): any | null;
-    wrapElement(element: HTMLElement | HTMLElement[]): React.ComponentType;
+    getInternalInstance(node: Element): any | null;
+    getOwnerInstance(node: Element | undefined, options?: GetOwnerInstanceOptions): any | null;
+    wrapElement(element: Element | Element[]): React.ComponentType;
     wrapInHooks<P extends object>(
         functionComponent: React.FunctionComponent<P>,
         customPatches?: Partial<PatchedReactHooks>

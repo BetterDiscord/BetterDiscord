@@ -2,7 +2,7 @@ import clsx from "clsx";
 import Web from "@data/web";
 
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";
 
@@ -72,13 +72,13 @@ export default function AddonCard({addon, isEmbed}) {
     }, [addon]);
 
     const badge = useMemo(() => {
-        if (addon.isUnknown()) return Strings.Addons.new;
-        if (addon.recentlyUpdated()) return Strings.Addons.updated;
+        if (addon.isUnknown()) return t("Addons.new");
+        if (addon.recentlyUpdated()) return t("Addons.updated");
     }, [addon]);
 
     const {downloads, likes} = useMemo(() => ({
-        downloads: Strings.Addons.downloadCount.format({downloads: formatNumberWithSuffix(downloadCount)}),
-        likes: Strings.Addons.likeCount.format({likes: formatNumberWithSuffix(addon.likes)}),
+        downloads: t("Addons.downloadCount", {count: formatNumberWithSuffix(downloadCount)}),
+        likes: t("Addons.likeCount", {count: formatNumberWithSuffix(addon.likes)}),
     }), [addon, downloadCount]);
 
     return (
@@ -183,7 +183,7 @@ export default function AddonCard({addon, isEmbed}) {
                     </div>
                 </div>
                 <div className="bd-addon-store-card-actions">
-                    <DiscordModules.Tooltip text={Strings.Addons.website}>
+                    <DiscordModules.Tooltip text={t("Addons.website")}>
                         {(props) => (
                             <Button
                                 {...props}
@@ -195,7 +195,7 @@ export default function AddonCard({addon, isEmbed}) {
                             </Button>
                         )}
                     </DiscordModules.Tooltip>
-                    <DiscordModules.Tooltip text={Strings.Addons.source}>
+                    <DiscordModules.Tooltip text={t("Addons.source")}>
                         {(props) => (
                             <Button
                                 {...props}
@@ -208,7 +208,7 @@ export default function AddonCard({addon, isEmbed}) {
                         )}
                     </DiscordModules.Tooltip>
                     {addon.type === "theme" && (
-                        <DiscordModules.Tooltip text={Strings.Addons.preview}>
+                        <DiscordModules.Tooltip text={t("Addons.preview")}>
                             {(props) => (
                                 <Button
                                     {...props}
@@ -222,7 +222,7 @@ export default function AddonCard({addon, isEmbed}) {
                         </DiscordModules.Tooltip>
                     )}
                     {addon.guild && (
-                        <DiscordModules.Tooltip text={Strings.Addons.invite}>
+                        <DiscordModules.Tooltip text={t("Addons.invite")}>
                             {(props) => (
                                 <Button
                                     {...props}
@@ -237,7 +237,7 @@ export default function AddonCard({addon, isEmbed}) {
                     )}
                     <div className="bd-addon-store-card-spacer" />
                     {isInstalled ? (
-                        <DiscordModules.Tooltip text={Strings.Addons.deleteAddon}>
+                        <DiscordModules.Tooltip text={t("Addons.deleteAddon")}>
                             {(props) => (
                                 <Button
                                     {...props}
@@ -251,7 +251,7 @@ export default function AddonCard({addon, isEmbed}) {
                         </DiscordModules.Tooltip>
                     ) : (
                         <Button onClick={installAddon} disabled={disabled}>
-                            {Strings.Addons.downloadAddon}
+                            {t("Addons.downloadAddon")}
                         </Button>
                     )}
                 </div>

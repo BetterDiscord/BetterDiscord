@@ -5,7 +5,7 @@ import SettingsConfig, {type DropdownSetting, type SettingsCategory} from "@data
 import DataStore from "@modules/datastore";
 import Events from "@modules/emitter";
 import DiscordModules from "@modules/discordmodules";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Store from "./base";
 import type {ComponentType} from "react";
 import type AddonManager from "@modules/addonmanager";
@@ -68,7 +68,7 @@ export default new class SettingsManager extends Store {
             id,
             type,
             order,
-            get label() {return Strings.Panels[id as keyof typeof Strings.Panels].toString() || name;},
+            get label() {return t(`Panels.${id}`) || name;},
             section: id
         };
         if (options.manager) section.manager = options.manager;
@@ -79,7 +79,7 @@ export default new class SettingsManager extends Store {
 
     registerAddonPanel(manager: AddonManager) {
         const plural = manager.prefix + "s";
-        const title = Strings.Panels[plural as keyof typeof Strings.Panels];
+        const title = t(`Panels.${plural as "plugins" | "themes"}`)!;
         this.registerPanel(plural, title, {order: manager.order, type: "addon", manager: manager});
     }
 
@@ -107,7 +107,7 @@ export default new class SettingsManager extends Store {
         const collectionName = collection.name;
         Object.defineProperty(collection, "name", {
             enumerable: true,
-            get: () => Strings.Collections[collection.id as keyof typeof Strings.Collections]?.name?.toString() || collectionName
+            get: () => t(`Collections.${collection.id}.name`) || collectionName
         });
 
         const categories = collection.settings;
@@ -122,8 +122,7 @@ export default new class SettingsManager extends Store {
             const categoryName = category.name;
             Object.defineProperty(category, "name", {
                 enumerable: true,
-                // @ts-expect-error Cannot handle generic strings via proxy. This will be fixed with the new i18n system.
-                get: () => Strings.Collections[collection.id as keyof typeof Strings.Collections]?.[category.id]?.name?.toString() || categoryName
+                get: () => t(`Collections.${collection.id}.${category.id}.name`) || categoryName
             });
 
 
@@ -142,13 +141,11 @@ export default new class SettingsManager extends Store {
                 Object.defineProperties(setting, {
                     name: {
                         enumerable: true,
-                        // @ts-expect-error Cannot handle generic strings via proxy. This will be fixed with the new i18n system.
-                        get: () => Strings.Collections[collection.id as keyof typeof Strings.Collections]?.[category.id]?.[setting.id]?.name?.toString() || settingName
+                        get: () => t(`Collections.${collection.id}.${category.id}.${setting.id}.name`) || settingName
                     },
                     note: {
                         enumerable: true,
-                        // @ts-expect-error Cannot handle generic strings via proxy. This will be fixed with the new i18n system.
-                        get: () => Strings.Collections[collection.id as keyof typeof Strings.Collections]?.[category.id]?.[setting.id]?.note?.toString() || settingNote
+                        get: () => t(`Collections.${collection.id}.${category.id}.${setting.id}.note`) || settingNote
                     }
                 });
 
@@ -159,9 +156,7 @@ export default new class SettingsManager extends Store {
                         Object.defineProperty(opt, "label", {
                             enumerable: true,
                             get: () => {
-                                // @ts-expect-error Cannot handle generic strings via proxy. This will be fixed with the new i18n system.
-                                const translations = Strings.Collections[collection.id as keyof typeof Strings.Collections]?.[category.id]?.[setting.id]?.options;
-                                return translations?.[opt.id]?.toString() || translations?.[opt.value]?.toString() || optLabel;
+                                return t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.id}`) || t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.value}`) || optLabel;
                             }
                         });
                     }
@@ -196,22 +191,22 @@ export default new class SettingsManager extends Store {
     }
 
     loadCollection(id: string) {
-        const previousState = DataStore.getData(id);
+        const previousState = DataStore.getData(id) as Partial<State>;
         if (!previousState) return this.saveCollection(id);
         for (const category in this.state[id]) {
             if (!previousState[category]) Object.assign(previousState, {[category]: this.state[id][category]});
             for (const setting in this.state[id][category]) {
-                if (previousState[category][setting] == undefined) continue;
+                if (previousState[category]![setting] == undefined) continue;
                 const settingObj = this.getSetting(id, category, setting);
                 switch (settingObj?.type) {
                     case "radio":
                     case "dropdown": {
-                        const exists = (settingObj as DropdownSetting<unknown>).options.some(o => o.value == previousState[category][setting]);
-                        if (exists) this.state[id][category][setting] = previousState[category][setting];
+                        const exists = (settingObj as DropdownSetting<unknown>).options.some(o => o.value == previousState[category]![setting]);
+                        if (exists) this.state[id][category][setting] = previousState[category]![setting];
                         break;
                     }
                     default: {
-                        this.state[id][category][setting] = previousState[category][setting];
+                        this.state[id][category][setting] = previousState[category]![setting];
                     }
                 }
             }

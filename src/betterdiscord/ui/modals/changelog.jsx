@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 
 import Root from "./root";
 import Header from "./header";
@@ -30,26 +30,26 @@ const joinSupportServer = (click) => {
 const supportLink = <a className={`${AnchorClasses.anchor} ${AnchorClasses.anchorUnderlineOnHover}`} onClick={joinSupportServer}>Join our Discord Server.</a>;
 const defaultFooter = <Text>Need support? {supportLink}</Text>;
 
-const twitter = <DiscordModules.Tooltip color="primary" position="top" text={Strings.Socials.twitter}>
+const twitter = <DiscordModules.Tooltip color="primary" position="top" text={t("Socials.twitter")}>
     {p => <a {...p} className="bd-social" href="https://x.com/_BetterDiscord_" rel="noopener noreferrer" target="_blank">
         <TwitterIcon size="18px" />
-        </a>}
-    </DiscordModules.Tooltip>;
+    </a>}
+</DiscordModules.Tooltip>;
 
-const github = <DiscordModules.Tooltip color="primary" position="top" text={Strings.Socials.github}>
+const github = <DiscordModules.Tooltip color="primary" position="top" text={t("Socials.github")}>
     {p => <a {...p} className="bd-social" href="https://github.com/BetterDiscord/BetterDiscord" rel="noopener noreferrer" target="_blank">
         <GithubIcon size="18px" />
-        </a>}
-    </DiscordModules.Tooltip>;
+    </a>}
+</DiscordModules.Tooltip>;
 
 function YoutubeEmbed({src}) {
     return <iframe
-            src={src}
-            title="YouTube video player"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-        />;
+        src={src}
+        title="YouTube video player"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+    />;
 }
 
 function Video({src, poster}) {

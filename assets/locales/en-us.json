@@ -225,7 +225,11 @@
         "disableAll": "Disable All",
         "enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
         "search": "Search {{type}}",
-        "results": "{{count}} Results",
+        "results": {
+            "zero": "No Results",
+            "one": "{{count}} Result",
+            "other": "{{count}} Results"
+        },
         "editAddon": "Edit",
         "deleteAddon": "Delete",
         "downloadAddon": "Download",
@@ -248,7 +252,7 @@
         "metaNotFound": "META was not found.",
         "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "You don't have any {{type}}s!",
+        "blankSlateHeader": "You don't have any {{type}}!",
         "blankSlateMessage": "Grab some from [our website]({{link}}) and add them to your {{type}} folder.",
         "blankSlateHeaderGeneric": "You don't have anything!",
         "blankSlateMessageGeneric": "You should probably get some.",
@@ -259,8 +263,14 @@
         "failedToFetch": "Unable to get addons",
         "new": "New",
         "updated": "Updated",
-        "downloadCount": "{{downloads}} Downloads",
-        "likeCount": "{{likes}} Likes",
+        "downloadCount": {
+            "one": "{{count}} Download",
+            "other": "{{count}} Downloads"
+        },
+        "likeCount": {
+            "one": "{{count}} Like",
+            "other": "{{count}} Likes"
+        },
         "tags": "Tags",
         "preview": "Preview",
         "official": "Official"
@@ -323,7 +333,10 @@
         "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
         "updateSuccessful": "Update Successful!",
         "updateAvailable": "BetterDiscord has a new update (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord has found updates for {{count}} of your {{type}}s!",
+        "addonUpdatesAvailable": {
+            "one": "BetterDiscord has found an update for {{count}} of your {{type}}!",
+            "other": "BetterDiscord has found updates for {{count}} of your {{type}}!"
+        },
         "addonUpdated": "{{name}} has been updated to version {{version}}!",
         "addonUpdateFailed": "Failed to update {{name}}. Please try again later.",
         "checking": "Checking for updates!",

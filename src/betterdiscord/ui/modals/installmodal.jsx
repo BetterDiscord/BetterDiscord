@@ -2,7 +2,7 @@ import DiscordModules from "@modules/discordmodules";
 import LocaleManager from "@modules/localemanager";
 import React from "@modules/react";
 import Settings from "@stores/settings";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Web from "@data/web";
 import Events from "@modules/emitter";
 
@@ -209,7 +209,7 @@ export default function InstallModal({addon, transitionState, install, onClose})
                         content={(
                             <Flex direction={Flex.Direction.VERTICAL}>
                                 <Text>{addon.guild.name}</Text>
-                                <Text size={Text.Sizes.SIZE_12} color={Text.Colors.MUTED}>{Strings.Addons.invite}</Text>
+                                <Text size={Text.Sizes.SIZE_12} color={Text.Colors.MUTED}>{t("Addons.invite")}</Text>
                             </Flex>
                         )}
                         trailing={<GuildIcon guild={addon.guild} />}
@@ -219,12 +219,12 @@ export default function InstallModal({addon, transitionState, install, onClose})
             </div>
             <Footer justify={Flex.Justify.BETWEEN} align={Flex.Align.CENTER}>
                 <Button onClick={doInstall} disabled={isInstalling}>
-                    {isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : Strings.Addons.downloadAddon}
+                    {isInstalling ? <Spinner type={Spinner.Type.PULSING_ELLIPSIS} /> : t("Addons.downloadAddon")}
                 </Button>
                 <CheckBox
                     value={shouldEnable}
                     onChange={setShouldEnable}
-                    label={<Text>{Strings.Modals.automaticallyEnable}</Text>}
+                    label={<Text>{t("Modals.automaticallyEnable")}</Text>}
                 />
             </Footer>
         </ModalRoot>

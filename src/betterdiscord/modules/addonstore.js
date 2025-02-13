@@ -6,7 +6,7 @@ import request from "request";
 import Logger from "@common/logger";
 import Toasts from "@ui/toasts";
 import DataStore from "@modules/datastore";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import React from "@modules/react";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
@@ -62,9 +62,9 @@ import Web from "@data/web";
  */
 function showConfirmDelete(addon) {
     return new Promise(resolve => {
-        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
+        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
             danger: true,
-            confirmText: Strings.Addons.deleteAddon,
+            confirmText: t("Addons.deleteAddon"),
             onConfirm: () => {resolve(true);},
             onCancel: () => {resolve(false);}
         });
@@ -121,7 +121,7 @@ class Guild {
         return `https://cdn.discordapp.com/icons/${this.id}/${filename}?size=256`;
     }
     /** @public */
-    get acronym() {return this.name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");}
+    get acronym() {return this.name.replace(/'s /g, " ").replace(/\w+/g, str => str[0]).replace(/\s/g, "");}
 
     /**
      * SHows the guild join modal (if the addon has a guild)
@@ -280,7 +280,7 @@ class Addon {
      */
     async download(shouldSkipConfirm = false) {
         if (this.isInstalled()) {
-            Toasts.show(Strings.Addons.alreadyInstalled.format({name: this.name}), {
+            Toasts.show(t("Addons.alreadyInstalled", {name: this.name}), {
                 type: "info"
             });
 
@@ -308,7 +308,7 @@ class Addon {
 
                     fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), text);
 
-                    Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
+                    Toasts.show(t("Addons.successfullyDownload", {name: this.name}), {
                         type: "success"
                     });
 
@@ -317,7 +317,7 @@ class Addon {
                 catch (error) {
                     Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error);
 
-                    Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
+                    Toasts.show(t("Addons.failedToDownload", {type: this.type, name: this.name}), {
                         type: "danger"
                     });
 
@@ -474,7 +474,7 @@ const addonStore = new class AddonStore {
                 catch (error) {
                     Logger.stacktrace("AddonStore", `Failed to fetch ${idOrName}`, error);
 
-                    Toasts.show(Strings.Addons.failedToFetch, {
+                    Toasts.show(t("Addons.failedToFetch"), {
                         type: "danger"
                     });
 
@@ -592,7 +592,7 @@ const addonStore = new class AddonStore {
             window.removeEventListener("online", this._onLineListener);
             window.addEventListener("online", this._onLineListener);
 
-            Toasts.show(Strings.Addons.failedToFetch, {
+            Toasts.show(t("Addons.failedToFetch"), {
                 type: "danger"
             });
 
@@ -654,7 +654,7 @@ const addonStore = new class AddonStore {
             catch (error) {
                 Logger.stacktrace("AddonStore", "Failed to request addons", error);
 
-                Toasts.show(Strings.Addons.failedToFetch, {
+                Toasts.show(t("Addons.failedToFetch"), {
                     type: "danger"
                 });
 

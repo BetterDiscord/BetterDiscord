@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useMemo} from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import ipc from "@modules/ipc";
 
@@ -23,12 +23,12 @@ import {shallowEqual} from "fast-equals";
 
 
 const buildSortOptions = () => [
-    {label: Strings.Addons.name, value: "name"},
-    {label: Strings.Addons.author, value: "author"},
-    {label: Strings.Addons.version, value: "version"},
-    {label: Strings.Addons.added, value: "added"},
-    {label: Strings.Addons.modified, value: "modified"},
-    {label: Strings.Addons.isEnabled, value: "isEnabled"}
+    {label: t("Addons.name"), value: "name"},
+    {label: t("Addons.author"), value: "author"},
+    {label: t("Addons.version"), value: "version"},
+    {label: t("Addons.added"), value: "added"},
+    {label: t("Addons.modified"), value: "modified"},
+    {label: t("Addons.isEnabled"), value: "isEnabled"}
 ];
 
 
@@ -39,12 +39,12 @@ function openFolder(folder) {
 function Blankslate({type, folder}) {
     const {toggleStore} = React.useContext(addonContext);
     const storeEnabled = Settings.get("settings", "store", "bdAddonStore");
-    const message = Strings.Addons.blankSlateMessage.format({link: Web.pages[`${type}s`], type}).toString();
+    const message = t("Addons.blankSlateMessage", {link: Web.pages[`${type}s`], type}).toString();
     const onClick = storeEnabled ? toggleStore : () => openFolder(folder);
-    const buttonLabel = storeEnabled ? Strings.Addons.openStore : Strings.Addons.openFolder;
-    return <EmptySlate title={Strings.Addons.blankSlateHeader.format({type})} message={storeEnabled ? "" : message}>
+    const buttonKey = storeEnabled ? "Addons.openStore" : "Addons.openFolder";
+    return <EmptySlate title={t("Addons.blankSlateHeader", {type})} message={storeEnabled ? "" : message}>
         <Button size={Button.Sizes.LARGE} onClick={onClick}>
-            {buttonLabel.format({type: `${type[0].toUpperCase()}${type.substring(1)}`})}
+            {t(buttonKey, {type: `${type[0].toUpperCase()}${type.substring(1)}`})}
         </Button>
     </EmptySlate>;
 }
@@ -59,9 +59,9 @@ function makeControlButton(title, children, action, selected = false) {
 
 function confirmDelete(addon) {
     return new Promise(resolve => {
-        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
+        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
             danger: true,
-            confirmText: Strings.Addons.deleteAddon,
+            confirmText: t("Addons.deleteAddon"),
             onConfirm: () => {resolve(true);},
             onCancel: () => {resolve(false);}
         });
@@ -79,9 +79,9 @@ function confirmEnable(action, type) {
      */
     return function (event) {
         if (event.shiftKey) return action();
-        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.enableAllWarning.format({type: type.toLocaleLowerCase()}), {
-            confirmText: Strings.Modals.okay,
-            cancelText: Strings.Modals.cancel,
+        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.enableAllWarning", {type: type.toLocaleLowerCase()}), {
+            confirmText: t("Modals.okay"),
+            cancelText: t("Modals.cancel"),
             danger: true,
             onConfirm: action,
         });
@@ -102,8 +102,8 @@ function StoreCard() {
                 <StoreIcon size="24px" />
             </div>
             <div className="bd-store-card-body">
-                <Text color={Text.Colors.HEADER_PRIMARY} className="bd-store-card-title">{Strings.Addons.openStore.format({type: title})}</Text>
-                <Text color={Text.Colors.HEADER_SECONDARY} className="bd-store-card-description">{Strings.Addons.storeMessage.format({type: title.toLocaleLowerCase()})}</Text>
+                <Text color={Text.Colors.HEADER_PRIMARY} className="bd-store-card-title">{t("Addons.openStore", {type: title})}</Text>
+                <Text color={Text.Colors.HEADER_SECONDARY} className="bd-store-card-description">{t("Addons.storeMessage", {type: title.toLocaleLowerCase()})}</Text>
             </div>
             <div className="bd-store-card-caret">
                 <ChevronRightIcon size="24px" />
@@ -210,29 +210,29 @@ export default function AddonList({title, store}) {
 
     return [
         <AddonHeader count={renderedCards.length} searching={isSearching}>
-            <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: `${renderedCards.length} ${title}`})}...`} />
+            <Search onChange={search} placeholder={`${t("Addons.search", {type: `${renderedCards.length} ${title}`})}...`} />
         </AddonHeader>,
         <div className={"bd-controls bd-addon-controls"}>
-            {/* <Search onChange={search} placeholder={`${Strings.Addons.search.format({type: title})}...`} /> */}
+            {/* <Search onChange={search} placeholder={`${t("Addons.search", {type: title})}...`} /> */}
             <div className="bd-controls-basic">
-                {makeBasicButton(Strings.Addons.openFolder.format({type: title}), <FolderIcon size="20px" />, openFolder.bind(null, store.addonFolder), "folder")}
-                {makeBasicButton(Strings.Addons.enableAll, <CheckIcon size="20px" />, confirmEnable(enableAll, title), "enable-all")}
-                {makeBasicButton(Strings.Addons.disableAll, <XIcon size="20px" />, disableAll, "disable-all")}
+                {makeBasicButton(t("Addons.openFolder", {type: title}), <FolderIcon size="20px" />, openFolder.bind(null, store.addonFolder), "folder")}
+                {makeBasicButton(t("Addons.enableAll"), <CheckIcon size="20px" />, confirmEnable(enableAll, title), "enable-all")}
+                {makeBasicButton(t("Addons.disableAll"), <XIcon size="20px" />, disableAll, "disable-all")}
             </div>
             <div className="bd-controls-advanced">
                 <div className="bd-addon-dropdowns">
                     <div className="bd-select-wrapper">
-                        <label className="bd-label">{Strings.Sorting.sortBy}:</label>
+                        <label className="bd-label">{t("Sorting.sortBy")}:</label>
                         <Dropdown options={buildSortOptions()} value={sort} onChange={changeSort} style="transparent" />
                     </div>
                     <div className="bd-select-wrapper">
-                        <label className="bd-label">{Strings.Sorting.order}:</label>
+                        <label className="bd-label">{t("Sorting.order")}:</label>
                         <Dropdown options={buildDirectionOptions()} value={ascending} onChange={changeDirection} style="transparent" />
                     </div>
                 </div>
                 <div className="bd-addon-views">
-                    {makeControlButton(Strings.Addons.listView, <StretchHorizontalIcon size="20px" />, listView, view === "list")}
-                    {makeControlButton(Strings.Addons.gridView, <LayoutGridIcon />, gridView, view === "grid")}
+                    {makeControlButton(t("Addons.listView"), <StretchHorizontalIcon size="20px" />, listView, view === "list")}
+                    {makeControlButton(t("Addons.gridView"), <LayoutGridIcon />, gridView, view === "grid")}
                 </div>
             </div>
         </div>,

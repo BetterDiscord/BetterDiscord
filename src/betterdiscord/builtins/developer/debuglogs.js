@@ -3,7 +3,7 @@ import path from "path";
 
 import Builtin from "@structs/builtin";
 import DataStore from "@modules/datastore";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 
 import Modals from "@ui/modals";
 
@@ -74,9 +74,9 @@ export default new class DebugLogs extends Builtin {
             const stats = fs.statSync(this.logFile);
             const mb = stats.size / (1024 * 1024);
             if (mb < 100) return; // Under 100MB, all good
-            return new Promise(resolve => Modals.showConfirmationModal(Strings.Modals.additionalInfo, Strings.Modals.debuglog, {
-                confirmText: Strings.Modals.okay,
-                cancelText: Strings.Modals.cancel,
+            return new Promise(resolve => Modals.showConfirmationModal(t("Modals.additionalInfo"), t("Modals.debuglog"), {
+                confirmText: t("Modals.okay"),
+                cancelText: t("Modals.cancel"),
                 danger: true,
                 onConfirm: () => fs.rmSync(this.logFile),
                 onClose: resolve

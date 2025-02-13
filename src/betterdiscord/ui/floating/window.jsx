@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 
 import Screen from "@structs/screen";
 
@@ -12,9 +12,9 @@ const {useState, useCallback, useEffect, useRef} = React;
 
 function confirmClose(confirmationText) {
     return new Promise(resolve => {
-        Modals.showConfirmationModal(Strings.Modals.confirmAction, confirmationText, {
+        Modals.showConfirmationModal(t("Modals.confirmAction"), confirmationText, {
             danger: true,
-            confirmText: Strings.Modals.close,
+            confirmText: t("Modals.close"),
             onConfirm: () => {resolve(true);},
             onCancel: () => {resolve(false);}
         });
@@ -141,19 +141,19 @@ export default function FloatingWindow({id, title, resizable, children, classNam
     const finalClassname = `floating-window${className ? ` ${className}` : ""}${resizable ? " resizable" : ""}${modalOpen ? " modal-open" : ""}`;
     const styles = {height: initialHeight, width: initialWidth, left: position.x || 0, top: position.y || 0};
     return <div id={id} className={finalClassname} ref={window} style={styles}>
-                <div className="floating-window-titlebar" ref={titlebar}>
-                    <span className="title">{title}</span>
-                    <div className="floating-window-buttons">
-                        <div className="button maximize-button" onClick={maximize}>
-                            <MaximizeIcon size="16px" />
-                        </div>
-                        <div className="button close-button" onClick={close}>
-                            <XIcon size="16px" />
-                        </div>
-                    </div>
+        <div className="floating-window-titlebar" ref={titlebar}>
+            <span className="title">{title}</span>
+            <div className="floating-window-buttons">
+                <div className="button maximize-button" onClick={maximize}>
+                    <MaximizeIcon size="16px" />
                 </div>
-                <div className="floating-window-content">
-                    {children}
+                <div className="button close-button" onClick={close}>
+                    <XIcon size="16px" />
                 </div>
-            </div>;
+            </div>
+        </div>
+        <div className="floating-window-content">
+            {children}
+        </div>
+    </div>;
 }

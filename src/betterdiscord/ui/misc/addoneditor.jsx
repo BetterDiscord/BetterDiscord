@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 
 import Editor from "@ui/customcss/editor";
 
@@ -30,14 +30,14 @@ export default forwardRef(function AddonEditor({content, language, save, openNat
     }, [save]);
 
     return <Editor
-                ref={editorRef}
-                language={language}
-                id={id}
-                controls={[
-                    {label: <SaveIcon size="18px" />, tooltip: Strings.CustomCSS.save, onClick: saveAddon},
-                    {label: <RotateCwIcon size="18px" />, tooltip: Strings.CustomCSS.openNative, onClick: popoutNative}
-                ]}
-                value={content}
-                onChange={onChange}
-            />;
+        ref={editorRef}
+        language={language}
+        id={id}
+        controls={[
+            {label: <SaveIcon size="18px" />, tooltip: t("CustomCSS.save"), onClick: saveAddon},
+            {label: <RotateCwIcon size="18px" />, tooltip: t("CustomCSS.openNative"), onClick: popoutNative}
+        ]}
+        value={content}
+        onChange={onChange}
+    />;
 });
