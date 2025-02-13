@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import {CheckIcon, PipetteIcon} from "lucide-react";
 import {none, SettingsContext} from "@ui/contexts";
 
@@ -69,7 +69,7 @@ export default function Color({value: initialValue, onChange, colors = defaultCo
                     </div>
                 )}
             </DiscordModules.Tooltip>}
-            <DiscordModules.Tooltip text={Strings.Settings.customColor} position="bottom">
+            <DiscordModules.Tooltip text={t("Settings.customColor")} position="bottom">
                 {props => (
                     <div className="bd-color-picker-custom">
                         <PipetteIcon size="14px" color={getContrastColor(resolveColor(value, true))} />

@@ -27,7 +27,7 @@ const Icon = ({type}) => {
 class NotificationUI {
     static notifications = [];
     static setNotifications = null;
-    static patch = getBySource([ "\"Shakeable is shaken when not mounted\"" ], {searchDefault: false})?.Z;
+    static patch = getBySource(["\"Shakeable is shaken when not mounted\""], {searchDefault: false})?.Z;
 
     static initialize() {
         Patcher.after("NotificationPatch", this?.patch, "type", (_, __, res) => {
@@ -174,12 +174,12 @@ const NotificationItem = ({notification, position}) => {
                 ...baseSlide,
                 transform: exiting ? "translateX(100%)" : "translateX(0%)"
             };
-        } 
-            return {
-                ...baseSlide,
-                transform: exiting ? "translateX(-100%)" : "translateX(0%)"
-            };
-        
+        }
+        return {
+            ...baseSlide,
+            transform: exiting ? "translateX(-100%)" : "translateX(0%)"
+        };
+
     };
 
     const slideProps = spring.useSpring(getSlideAnimation());
@@ -220,9 +220,8 @@ const NotificationItem = ({notification, position}) => {
                 ...slideProps,
                 pointerEvents: "auto"
             }}
-            className={`bd-notification ${
-                exiting ? "bd-notification-exit" : "bd-notification-enter"
-            } bd-notification-${type}`}
+            className={`bd-notification ${exiting ? "bd-notification-exit" : "bd-notification-enter"
+                } bd-notification-${type}`}
         >
             <div className="bd-notification-topbar">
                 <div className="bd-notification-title">

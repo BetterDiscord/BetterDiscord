@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Events from "@modules/emitter";
 import Settings from "@stores/settings";
 
@@ -48,20 +48,20 @@ export default forwardRef(function CssEditor({css, openNative, update, save, onC
         save?.(newCSS);
         setUnsaved(false);
     }, [save]);
-    
+
 
     return <Editor
-                ref={editorRef}
-                readOnly={readOnly}
-                id={id}
-                onChange={onChange}
-                controls={[
-                    {label: <RotateCwIcon size="18px" />, tooltip: Strings.CustomCSS.update, onClick: updateCss},
-                    {label: <SaveIcon size="18px" />, tooltip: Strings.CustomCSS.save, onClick: saveCss},
-                    {label: <PencilIcon size="18px" />, tooltip: Strings.CustomCSS.openNative, onClick: popoutNative},
-                    {label: Strings.Collections.settings.customcss.liveUpdate.name, type: "boolean", onChange: toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"},
-                    openDetached && {label: <ExternalLinkIcon size="18px" />, tooltip: Strings.CustomCSS.openDetached, onClick: popout, side: "right"}
-                ].filter(c => c)}
-                value={css}
-            />;
+        ref={editorRef}
+        readOnly={readOnly}
+        id={id}
+        onChange={onChange}
+        controls={[
+            {label: <RotateCwIcon size="18px" />, tooltip: t("CustomCSS.update"), onClick: updateCss},
+            {label: <SaveIcon size="18px" />, tooltip: t("CustomCSS.save"), onClick: saveCss},
+            {label: <PencilIcon size="18px" />, tooltip: t("CustomCSS.openNative"), onClick: popoutNative},
+            {label: t("Collections.settings.customcss.liveUpdate.name"), type: "boolean", onChange: toggleLiveUpdate, checked: Settings.get("settings", "customcss", "liveUpdate"), side: "right"},
+            openDetached && {label: <ExternalLinkIcon size="18px" />, tooltip: t("CustomCSS.openDetached"), onClick: popout, side: "right"}
+        ].filter(c => c)}
+        value={css}
+    />;
 });

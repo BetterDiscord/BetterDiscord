@@ -2,7 +2,7 @@ import Button, {Colors} from "@ui/base/button";
 import React from "@modules/react";
 import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Builtin from "@structs/builtin";
 import Settings from "@stores/settings";
 import pluginmanager from "@modules/pluginmanager";
@@ -111,7 +111,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                             onClick={openGithubIssue}
                             color={Colors.YELLOW}
                         >
-                            {Strings.Collections.settings.developer.recovery.report}
+                            {t("Collections.settings.developer.recovery.report")}
                         </Button>
                     )}
                     {pluginInfo?.invite && (
@@ -119,7 +119,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                             className="bd-error-discord"
                             onClick={openDiscordSupport}
                         >
-                            {Strings.Addons.invite}
+                            {t("Addons.invite")}
                         </Button>
                     )}
                     <Button
@@ -130,7 +130,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                         }}
                         color={Colors.RED}
                     >
-                        {Strings.Collections.settings.developer.recovery.safeMode}
+                        {t("Collections.settings.developer.recovery.safeMode")}
                     </Button>
                 </div>
             </div>
@@ -206,7 +206,7 @@ export default new class Recovery extends Builtin {
                         instance.setState({info: null, error: null});
                     }}
                 >
-                    {Strings.Collections.settings.developer.recovery.button}
+                    {t("Collections.settings.developer.recovery.button")}
                 </Button>,
                 parsedError && <ErrorDetails componentStack={parsedError} stack={errorStack?.error?.stack} pluginInfo={pluginInfo} instance={instance} />
             );
