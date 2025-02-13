@@ -7,7 +7,7 @@ import Config from "@stores/config";
 
 import AddonError from "@structs/addonerror";
 
-import AddonManager from "./addonmanager";
+import AddonManager, {type Addon} from "./addonmanager";
 import {t} from "@common/i18n";
 import Events from "./emitter";
 
@@ -15,7 +15,19 @@ import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
 
 
-const normalizeExports = name => `
+export interface Plugin extends Addon {
+    exports: any;
+    instance: {
+        load?(): void;
+        start(): void;
+        stop(): void;
+        observer?(m: MutationRecord): void;
+        getSettingsPanel?(): any;
+        onSwitch?(): void;
+    };
+}
+
+const normalizeExports = (name: string) => `
 if (module.exports.default) {
     module.exports = module.exports.default;
 }
@@ -31,6 +43,9 @@ export default new class PluginManager extends AddonManager {
     get prefix() {return "plugin";}
     get language() {return "javascript";}
     get order() {return 3;}
+
+    addonList: Plugin[] = [];
+    observer: MutationObserver;
 
     constructor() {
         super();
@@ -52,27 +67,27 @@ export default new class PluginManager extends AddonManager {
     updatePluginList() {return this.updateList();}
     loadAllPlugins() {return this.loadAllAddons();}
 
-    enablePlugin(idOrAddon) {return this.enableAddon(idOrAddon);}
-    disablePlugin(idOrAddon) {return this.disableAddon(idOrAddon);}
-    togglePlugin(id) {return this.toggleAddon(id);}
+    enablePlugin(idOrAddon: string | Plugin) {return this.enableAddon(idOrAddon);}
+    disablePlugin(idOrAddon: string | Plugin) {return this.disableAddon(idOrAddon);}
+    togglePlugin(id: string) {return this.toggleAddon(id);}
 
-    unloadPlugin(idOrFileOrAddon) {return this.unloadAddon(idOrFileOrAddon);}
-    loadPlugin(filename) {return this.loadAddon(filename);}
+    unloadPlugin(idOrFileOrAddon: string | Plugin) {return this.unloadAddon(idOrFileOrAddon);}
+    loadPlugin(filename: string) {return this.loadAddon(filename);}
 
-    loadAddon(filename, shouldCTE = true) {
+    loadAddon(filename: string, shouldCTE = true) {
         const error = super.loadAddon(filename, shouldCTE);
         if (error && shouldCTE) Modals.showAddonErrors({plugins: [error]});
         return error;
     }
 
-    reloadPlugin(idOrFileOrAddon) {
+    reloadPlugin(idOrFileOrAddon: string | Plugin) {
         const error = this.reloadAddon(idOrFileOrAddon);
         if (error) Modals.showAddonErrors({plugins: [error]});
         return typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
     }
 
     /* Overrides */
-    initializeAddon(addon) {
+    initializeAddon(addon: Plugin) {
         if (!addon.exports || !addon.name) return new AddonError(addon.name || addon.filename, addon.filename, "Plugin had no exports or @name property", {message: "Plugin had no exports or no @name property. @name property is required for all addons.", stack: ""}, this.prefix);
 
         try {
@@ -96,38 +111,38 @@ export default new class PluginManager extends AddonManager {
             }
             catch (error) {
                 this.state[addon.id] = false;
-                return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "load()"}), {message: error.message, stack: error.stack}, this.prefix);
+                return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "load()"}), {message: (error as Error).message, stack: (error as Error).stack}, this.prefix);
             }
         }
         catch (error) {
-            return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "Plugin constructor()"}), {message: error.message, stack: error.stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, t("Addons.methodError", {method: "Plugin constructor()"}), {message: (error as Error).message, stack: (error as Error).stack}, this.prefix);
         }
     }
 
-    requireAddon(filename) {
-        const addon = super.requireAddon(filename);
+    requireAddon(filename: string) {
+        const addon = super.requireAddon(filename) as Plugin;
         try {
             const module = {filename, exports: {}};
             // Test if the code is valid gracefully
-            vm.compileFunction(addon.fileContent, ["require", "module", "exports", "__filename", "__dirname"], {filename: path.basename(filename)});
+            vm.compileFunction(addon.fileContent!, ["require", "module", "exports", "__filename", "__dirname"], {filename: path.basename(filename)});
             addon.fileContent += normalizeExports(addon.exports || addon.name);
             addon.fileContent += `\n//# sourceURL=betterdiscord://plugins/${addon.filename}`;
-            const wrappedPlugin = new Function(["require", "module", "exports", "__filename", "__dirname"], addon.fileContent); // eslint-disable-line no-new-func
+            const wrappedPlugin = new Function("require", "module", "exports", "__filename", "__dirname", addon.fileContent!); // eslint-disable-line no-new-func
             wrappedPlugin(window.require, module, module.exports, module.filename, this.addonFolder);
             addon.exports = module.exports;
             delete addon.fileContent;
             return addon;
         }
         catch (err) {
-            throw new AddonError(addon.name || addon.filename, filename, t("Addons.compileError"), {message: err.message, stack: err.stack}, this.prefix);
+            throw new AddonError(addon.name || addon.filename, filename, t("Addons.compileError"), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
     }
 
-    startAddon(id) {return this.startPlugin(id);}
-    stopAddon(id) {return this.stopPlugin(id);}
-    getAddon(id) {return this.getPlugin(id);}
+    startAddon(idOrAddon: string | Plugin) {return this.startPlugin(idOrAddon);}
+    stopAddon(idOrAddon: string | Plugin) {return this.stopPlugin(idOrAddon);}
+    getAddon(id: string) {return this.getPlugin(id);}
 
-    startPlugin(idOrAddon) {
+    startPlugin(idOrAddon: string | Plugin) {
         const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         const plugin = addon.instance;
@@ -136,16 +151,16 @@ export default new class PluginManager extends AddonManager {
         }
         catch (err) {
             this.state[addon.id] = false;
-            this.emit("disabled", addon);
+            this.trigger("disabled", addon);
             Toasts.error(t("Addons.couldNotStart", {name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
-            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: err.message, stack: err.stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "start()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
-        this.emit("started", addon.id);
+        this.trigger("started", addon.id);
         Toasts.show(t("Addons.enabled", {name: addon.name, version: addon.version}));
     }
 
-    stopPlugin(idOrAddon) {
+    stopPlugin(idOrAddon: string | Plugin) {
         const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon) return;
         const plugin = addon.instance;
@@ -156,13 +171,13 @@ export default new class PluginManager extends AddonManager {
             this.state[addon.id] = false;
             Toasts.error(t("Addons.couldNotStop", {name: addon.name, version: addon.version}));
             Logger.stacktrace(this.name, `${addon.name} v${addon.version} could not be started.`, err);
-            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "stop()"}), {message: err.message, stack: err.stack}, this.prefix);
+            return new AddonError(addon.name, addon.filename, t("Addons.enabled", {method: "stop()"}), {message: (err as Error).message, stack: (err as Error).stack}, this.prefix);
         }
-        this.emit("stopped", addon.id);
+        this.trigger("stopped", addon.id);
         Toasts.show(t("Addons.disabled", {name: addon.name, version: addon.version}));
     }
 
-    getPlugin(idOrFile) {
+    getPlugin(idOrFile: string) {
         const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
         if (!addon) return;
         return addon;
@@ -187,7 +202,7 @@ export default new class PluginManager extends AddonManager {
         }
     }
 
-    onMutation(mutation) {
+    onMutation(mutation: MutationRecord) {
         for (let i = 0; i < this.addonList.length; i++) {
             const plugin = this.addonList[i].instance;
             if (!this.state[this.addonList[i].id]) continue;

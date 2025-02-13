@@ -114,7 +114,7 @@ export default new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getLazy<{Z(): void;}>(Filters.byStrings("copyValue", "TEXT_COPIED"), {defaultExport: false});
+        const versionDisplayModule = await getLazy<{Z(): void;}>(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
         if (!versionDisplayModule?.Z) return;
 
         Patcher.after("SettingsManager", versionDisplayModule, "Z", () => {

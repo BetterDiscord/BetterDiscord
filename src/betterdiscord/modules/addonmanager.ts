@@ -16,6 +16,7 @@ import AddonEditor from "@ui/misc/addoneditor";
 import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
 import Store from "@stores/base";
+import type {SystemError} from "bun";
 
 
 // const SWITCH_ANIMATION_TIME = 250;
@@ -25,14 +26,39 @@ const openItem = ipc.openPath;
 const splitRegex = /[^\S\r\n]*?\r?(?:\r\n|\n)[^\S\r\n]*?\*[^\S\r\n]?/;
 const escapedAtRegex = /^\\@/;
 
-const stripBOM = function (fileContent) {
+const stripBOM = function (fileContent: string) {
     if (fileContent.charCodeAt(0) === 0xFEFF) {
         fileContent = fileContent.slice(1);
     }
     return fileContent;
 };
 
-export default class AddonManager extends Store {
+// This is a temporary type, no one should rely on this externally
+export interface Addon {
+    added: number;
+    author: string;
+    authorId?: string;
+    authorLink?: string;
+    description: string;
+    donate?: string;
+    fileContent?: string;
+    filename: string;
+    format: string;
+    id: string;
+    invite?: string;
+    modified: number;
+    name: string;
+    partial?: boolean;
+    patreon?: string;
+    size: number;
+    slug: string;
+    source?: string;
+    version: string;
+    website?: string;
+}
+
+
+export default abstract class AddonManager extends Store {
 
     get name() {return "";}
     get extension() {return "";}
@@ -42,7 +68,7 @@ export default class AddonManager extends Store {
     get prefix() {return "addon";}
     get order() {return 2;}
 
-    emit(event, ...args) {
+    trigger(event: string, ...args: any[]) {
         // Emit the events as a store for react
         super.emit();
 
@@ -51,13 +77,10 @@ export default class AddonManager extends Store {
         return Events.emit(`${this.prefix}-${event}`, ...args);
     }
 
-    constructor() {
-        super();
-        this.timeCache = {};
-        this.addonList = [];
-        this.state = {};
-        this.windows = new Set();
-    }
+    timeCache: Record<string, number> = {};
+    abstract addonList: Addon[];
+    state: Record<string, boolean> = {};
+    windows = new Set<string>();
 
     initialize() {
         Settings.registerAddonPanel(this);
@@ -65,10 +88,10 @@ export default class AddonManager extends Store {
     }
 
     // Subclasses should overload this and modify the addon object as needed to fully load it
-    initializeAddon() {return;}
+    abstract initializeAddon(addon: Addon): AddonError | undefined | void;
 
-    startAddon() {return;}
-    stopAddon() {return;}
+    abstract startAddon(idOrAddon: string | Addon): AddonError | undefined | void;
+    abstract stopAddon(idOrAddon: string | Addon): AddonError | undefined | void;
 
     loadState() {
         const saved = DataStore.getData(`${this.prefix}s`);
@@ -80,6 +103,7 @@ export default class AddonManager extends Store {
         DataStore.setData(`${this.prefix}s`, this.state);
     }
 
+    watcher?: fs.FSWatcher;
     watchAddons() {
         if (this.watcher) return Logger.err(this.name, `Already watching ${this.prefix} addons.`);
         Logger.log(this.name, `Starting to watch ${this.prefix} addons.`);
@@ -128,7 +152,7 @@ export default class AddonManager extends Store {
                 // window.watcherError = err;
                 // console.log("watcher", err);
                 // console.dir(err);
-                if (err.code !== "ENOENT" && !err?.message.startsWith("ENOENT")) return;
+                if ((err as SystemError).code !== "ENOENT" && !(err as SystemError)?.message.startsWith("ENOENT")) return;
                 delete this.timeCache[filename];
                 this.unloadAddon(filename, true);
             }
@@ -142,39 +166,40 @@ export default class AddonManager extends Store {
         Logger.log(this.name, `No longer watching ${this.prefix} addons.`);
     }
 
-    extractMeta(fileContent, filename) {
+    extractMeta(fileContent: string, filename: string) {
         const firstLine = fileContent.split("\n")[0];
-        const hasOldMeta = firstLine.includes("//META") && firstLine.includes("*//");
-        if (hasOldMeta) return this.parseOldMeta(fileContent, filename);
-        const hasNewMeta = firstLine.includes("/**");
-        if (hasNewMeta) return this.parseNewMeta(fileContent);
-        throw new AddonError(filename, filename, t("Addons.metaNotFound"), {message: "", stack: fileContent}, this.prefix);
+
+        const hasMetaComment = firstLine.includes("/**");
+        if (!hasMetaComment) throw new AddonError(filename, filename, t("Addons.metaNotFound"), {message: "", stack: fileContent}, this.prefix);
+        const metaInfo = this.parseJSDoc(fileContent);
+
+        /**
+         * Okay we have a meta JSDoc, let's validate it
+         * and do some extra parsing for advanced options
+         */
+
+        if (!metaInfo.author || typeof (metaInfo.author) !== "string") metaInfo.author = t("Addons.unknownAuthor");
+        if (!metaInfo.version || typeof (metaInfo.version) !== "string") metaInfo.version = "???";
+        if (!metaInfo.description || typeof (metaInfo.description) !== "string") metaInfo.description = t("Addons.noDescription");
+
+        return metaInfo;
     }
 
-    parseOldMeta(fileContent, filename) {
-        const meta = fileContent.split("\n")[0];
-        const metaData = meta.substring(meta.lastIndexOf("//META") + 6, meta.lastIndexOf("*//"));
-        let parsed = null;
-        try {
-            parsed = JSON.parse(metaData);
-        }
-        catch (err) {
-            throw new AddonError(filename, filename, t("Addons.metaError"), err, this.prefix);
-        }
-        if (!parsed || !parsed.name) throw new AddonError(filename, filename, t("Addons.missingNameData"), {message: "", stack: meta}, this.prefix);
-        parsed.format = "json";
-        return parsed;
-    }
-
-    parseNewMeta(fileContent) {
+    parseJSDoc(fileContent: string) {
         const block = fileContent.split("/**", 2)[1].split("*/", 1)[0];
-        const out = {};
+        const out: Record<string, string | string[]> = {};
         let field = "";
         let accum = "";
         for (const line of block.split(splitRegex)) {
             if (line.length === 0) continue;
             if (line.charAt(0) === "@" && line.charAt(1) !== " ") {
-                out[field] = accum.trim();
+                if (!out[field]) {
+                    out[field] = accum.trim();
+                }
+                else {
+                    if (!Array.isArray(out[field])) out[field] = [out[field] as string];
+                    (out[field] as string[]).push(accum.trim());
+                }
                 const l = line.indexOf(" ");
                 field = line.substring(1, l);
                 accum = line.substring(l + 1);
@@ -183,18 +208,24 @@ export default class AddonManager extends Store {
                 accum += " " + line.replace("\\n", "\n").replace(escapedAtRegex, "@");
             }
         }
-        out[field] = accum.trim();
+        if (!out[field]) {
+            out[field] = accum.trim();
+        }
+        else {
+            if (!Array.isArray(out[field])) out[field] = [out[field] as string];
+            (out[field] as string[]).push(accum.trim());
+        }
         delete out[""];
         out.format = "jsdoc";
         return out;
     }
 
     // Subclasses should overload this and modify the addon using the fileContent as needed to "require()"" the file
-    requireAddon(filename) {
+    requireAddon(filename: string): Addon {
         let fileContent = fs.readFileSync(filename, "utf8");
         fileContent = stripBOM(fileContent);
         const stats = fs.statSync(filename);
-        const addon = this.extractMeta(fileContent, path.basename(filename));
+        const addon = this.extractMeta(fileContent, path.basename(filename)) as Partial<Addon>;
         if (!addon.author) addon.author = t("Addons.unknownAuthor");
         if (!addon.version) addon.version = "???";
         if (!addon.description) addon.description = t("Addons.noDescription");
@@ -207,12 +238,12 @@ export default class AddonManager extends Store {
         addon.size = stats.size;
         addon.fileContent = fileContent;
         if (this.addonList.find(c => c.id == addon.id)) throw new AddonError(addon.name, filename, t("Addons.alreadyExists", {type: this.prefix, name: addon.name}), this.prefix);
-        this.addonList.push(addon);
-        return addon;
+        this.addonList.push(addon as Addon);
+        return addon as Addon;
     }
 
     // Subclasses should use the return (if not AddonError) and push to this.addonList
-    loadAddon(filename, shouldToast = false) {
+    loadAddon(filename: string, shouldToast = false): AddonError | false | undefined | void {
         if (typeof (filename) === "undefined") return;
         let addon;
         try {
@@ -223,9 +254,9 @@ export default class AddonManager extends Store {
             if (partialAddon) {
                 partialAddon.partial = true;
                 this.state[partialAddon.id] = false;
-                this.emit("loaded", partialAddon);
+                this.trigger("loaded", partialAddon);
             }
-            return e;
+            return e as AddonError;
         }
 
 
@@ -233,58 +264,62 @@ export default class AddonManager extends Store {
         if (error) {
             this.state[addon.id] = false;
             addon.partial = true;
-            this.emit("loaded", addon);
+            this.trigger("loaded", addon);
             return error;
         }
 
         if (shouldToast) Toasts.success(t("Addons.wasLoaded", {name: addon.name, version: addon.version}));
-        this.emit("loaded", addon);
+        this.trigger("loaded", addon);
 
         if (!this.state[addon.id]) return this.state[addon.id] = false;
         return this.startAddon(addon);
     }
 
-    unloadAddon(idOrFileOrAddon, shouldToast = true, isReload = false) {
+    unloadAddon(idOrFileOrAddon: string | Addon, shouldToast = true, isReload = false) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         // console.log("watcher", "unloadAddon", idOrFileOrAddon, addon);
         if (!addon) return false;
-        if (this.state[addon.id]) isReload ? this.stopAddon(addon) : this.disableAddon(addon);
+        if (this.state[addon.id]) {
+            if (isReload) this.stopAddon(addon);
+            else this.disableAddon(addon);
+        }
 
         this.addonList.splice(this.addonList.indexOf(addon), 1);
-        this.emit("unloaded", addon);
+        this.trigger("unloaded", addon);
         if (shouldToast) Toasts.success(t("Addons.wasUnloaded", {name: addon.name}));
         return true;
     }
 
-    reloadAddon(idOrFileOrAddon, shouldToast = true) {
+    reloadAddon(idOrFileOrAddon: string | Addon, shouldToast = true) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        if (!addon) return false;
         const didUnload = this.unloadAddon(addon, shouldToast, true);
         if (addon && !didUnload) return didUnload;
-        return this.loadAddon(addon ? addon.filename : idOrFileOrAddon, shouldToast);
+        return this.loadAddon(addon ? addon.filename : idOrFileOrAddon as string, shouldToast);
     }
 
-    isLoaded(idOrFile) {
+    isLoaded(idOrFile: string) {
         const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
         if (!addon) return false;
         return true;
     }
 
-    isEnabled(idOrFile) {
+    isEnabled(idOrFile: string) {
         const addon = this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
         if (!addon) return false;
         return this.state[addon.id];
     }
 
-    getAddon(idOrFile) {
+    getAddon(idOrFile: string) {
         return this.addonList.find(c => c.id == idOrFile || c.filename == idOrFile);
     }
 
-    enableAddon(idOrAddon) {
+    enableAddon(idOrAddon: string | Addon) {
         const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon || addon.partial) return;
         if (this.state[addon.id]) return;
         this.state[addon.id] = true;
-        this.emit("enabled", addon);
+        this.trigger("enabled", addon);
         // setTimeout(() => {
         this.startAddon(addon);
         this.saveState();
@@ -292,21 +327,21 @@ export default class AddonManager extends Store {
     }
 
     enableAllAddons() {
-        const originalSetting = Settings.get("settings", "general", "showToasts", false);
+        const originalSetting = Settings.get("settings", "general", "showToasts");
         Settings.set("settings", "general", "showToasts", false);
         for (let a = 0; a < this.addonList.length; a++) {
             this.enableAddon(this.addonList[a]);
         }
         Settings.set("settings", "general", "showToasts", originalSetting);
-        this.emit("batch");
+        this.trigger("batch");
     }
 
-    disableAddon(idOrAddon) {
+    disableAddon(idOrAddon: string | Addon) {
         const addon = typeof (idOrAddon) == "string" ? this.addonList.find(p => p.id == idOrAddon) : idOrAddon;
         if (!addon || addon.partial) return;
         if (!this.state[addon.id]) return;
         this.state[addon.id] = false;
-        this.emit("disabled", addon);
+        this.trigger("disabled", addon);
         // setTimeout(() => {
         this.stopAddon(addon);
         this.saveState();
@@ -314,16 +349,16 @@ export default class AddonManager extends Store {
     }
 
     disableAllAddons() {
-        const originalSetting = Settings.get("settings", "general", "showToasts", false);
+        const originalSetting = Settings.get("settings", "general", "showToasts");
         Settings.set("settings", "general", "showToasts", false);
         for (let a = 0; a < this.addonList.length; a++) {
             this.disableAddon(this.addonList[a]);
         }
         Settings.set("settings", "general", "showToasts", originalSetting);
-        this.emit("batch");
+        this.trigger("batch");
     }
 
-    toggleAddon(id) {
+    toggleAddon(id: string) {
         if (this.state[id]) this.disableAddon(id);
         else this.enableAddon(id);
     }
@@ -378,33 +413,36 @@ export default class AddonManager extends Store {
         return errors;
     }
 
-    deleteAddon(idOrFileOrAddon) {
+    deleteAddon(idOrFileOrAddon: string | Addon) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        if (!addon) return;
         // console.log(path.resolve(this.addonFolder, addon.filename), fs.unlinkSync)
         return fs.unlinkSync(path.resolve(this.addonFolder, addon.filename));
     }
 
-    saveAddon(idOrFileOrAddon, content) {
+    saveAddon(idOrFileOrAddon: string | Addon, content: string) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        if (!addon) return;
         return fs.writeFileSync(path.resolve(this.addonFolder, addon.filename), content);
     }
 
-    editAddon(idOrFileOrAddon, system) {
+    editAddon(idOrFileOrAddon: string | Addon, system?: "system" | "detached" | boolean) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
+        if (!addon) return;
         const fullPath = path.resolve(this.addonFolder, addon.filename);
-        if (typeof (system) == "undefined") system = Settings.get("settings", "addons", "editAction") == "system";
+        if (typeof (system) == "undefined") system = Settings.get("settings", "addons", "editAction") === "system";
         if (system) return openItem(`${fullPath}`);
         return this.openDetached(addon);
     }
 
-    openDetached(addon) {
+    openDetached(addon: Addon) {
         const fullPath = path.resolve(this.addonFolder, addon.filename);
         const content = fs.readFileSync(fullPath).toString();
 
         if (this.windows.has(fullPath)) return;
         this.windows.add(fullPath);
 
-        const editorRef = React.createRef();
+        const editorRef = React.createRef<{resize(): void; hasUnsavedChanges: boolean;}>();
         const editor = React.createElement(AddonEditor, {
             id: "bd-floating-editor-" + addon.id,
             ref: editorRef,
@@ -419,7 +457,7 @@ export default class AddonManager extends Store {
                 this.windows.delete(fullPath);
             },
             onResize: () => {
-                if (!editorRef || !editorRef.current || !editorRef.current.resize) return;
+                if (!editorRef || !editorRef.current || !editorRef.current.resize!) return;
                 editorRef.current.resize();
             },
             title: addon.name,
