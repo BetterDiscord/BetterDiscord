@@ -39,22 +39,34 @@ export function byRegex(search: RegExp, filter: Webpack.ExportedOnlyFilter = m =
     };
 }
 
-export function bySource(...searches: Array<string | RegExp>):Webpack.Filter {
+export function bySource(...searches: Array<string | RegExp>): Webpack.Filter {
+    const moduleCache = webpackRequire.m;
+
     return (_, module) => {
-        if (!module?.id) return false;
-        let source = "";
+        const id = module?.id;
+        if (!id) return false;
+
+        let source: string;
         try {
-            source = webpackRequire.m[module.id].toString();
+            source = moduleCache[id].toString();
         }
         catch {
             return false;
         }
+
         if (!source) return false;
 
-        return searches.every(search => {
-            if (typeof search === "string") return source.includes(search);
-            return Boolean(source.match(search));
-        });
+        for (let i = 0; i < searches.length; i++) {
+            const search = searches[i];
+            if (typeof search === "string") {
+                if (!source.includes(search)) return false;
+            }
+            else {
+                if (!search.test(source)) return false;
+            }
+        }
+
+        return true;
     };
 }
 
@@ -84,8 +96,8 @@ export function byStoreName(name: string): Webpack.ExportedOnlyFilter {
     };
 }
 
-export function combine(...filters: Webpack.ExportedOnlyFilter[]): Webpack.ExportedOnlyFilter
-export function combine(...filters: Array<Webpack.ExportedOnlyFilter | Webpack.Filter>): Webpack.Filter
+export function combine(...filters: Webpack.ExportedOnlyFilter[]): Webpack.ExportedOnlyFilter;
+export function combine(...filters: Array<Webpack.ExportedOnlyFilter | Webpack.Filter>): Webpack.Filter;
 export function combine(...filters: Webpack.Filter[]): Webpack.Filter {
     return (exports, module, id) => {
         return filters.every(filter => filter(exports, module, id));
