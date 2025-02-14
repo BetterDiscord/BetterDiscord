@@ -1,3 +1,4 @@
+import {editor as Monaco} from "monaco-editor";
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import Settings from "@stores/settings";
@@ -47,7 +48,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
     const onThemeChange = useCallback(() => {
         const newTheme = ThemeStore?.theme === "light" ? "vs" : "vs-dark";
         if (newTheme === theme) return;
-        if (window.monaco?.editor) window.monaco.editor.setTheme(newTheme);
+        if (Monaco) Monaco.setTheme(newTheme);
         setTheme(newTheme);
     }, [theme]);
 
@@ -78,8 +79,8 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
 
     useEffect(() => {
         let toDispose = null;
-        if (window.monaco?.editor) {
-            const monacoEditor = window.monaco.editor.create(document.getElementById(id), {
+        if (Monaco) {
+            const monacoEditor = Monaco.create(document.getElementById(id), {
                 value: value,
                 language: language,
                 theme: theme,
