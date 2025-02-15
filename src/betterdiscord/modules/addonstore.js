@@ -5,7 +5,7 @@ import request from "request";
 
 import Logger from "@common/logger";
 import Toasts from "@ui/toasts";
-import DataStore from "@modules/datastore";
+import JsonStore from "@stores/json";
 import {t} from "@common/i18n";
 import React from "@modules/react";
 import PluginManager from "@modules/pluginmanager";
@@ -394,7 +394,7 @@ class Addon {
 
 const addonStore = new class AddonStore {
     initialize() {
-        this._cache = DataStore.getData("addon-store") || {};
+        this._cache = JsonStore.get("addon-store") || {};
 
         if (this._cache.version !== Web.API_VERSION) {
             this._cache = {
@@ -433,7 +433,7 @@ const addonStore = new class AddonStore {
     _writeCache(cache = this._cache) {
         this._cache = cache;
 
-        DataStore.setData("addon-store", this._cache);
+        JsonStore.set("addon-store", this._cache);
     }
 
     /** @private */
