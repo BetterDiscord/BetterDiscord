@@ -1,6 +1,6 @@
 import Builtin from "@structs/builtin";
 
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Settings from "@stores/settings";
 
 import ContextMenuPatcher from "@api/contextmenu";
@@ -46,21 +46,21 @@ export default new class BDContextMenu extends Builtin {
 
         // Updater
         items.push({
-            label: Strings.Panels.updates,
+            label: t("Panels.updates"),
             action: () => this.openCategory("updates")
         });
 
         // Custom CSS
         if (Settings.get("settings", "customcss", "customcss")) {
             items.push({
-                label: Strings.Panels.customcss,
+                label: t("Panels.customcss"),
                 action: () => this.openCategory("customcss")
             });
         }
 
         // Plugins & Themes
-        items.push(this.buildAddonMenu(Strings.Panels.plugins, pluginManager));
-        items.push(this.buildAddonMenu(Strings.Panels.themes, themeManager));
+        items.push(this.buildAddonMenu(t("Panels.plugins"), pluginManager));
+        items.push(this.buildAddonMenu(t("Panels.themes"), themeManager));
 
         // Parent SubMenu
         const bdSubMenu = ContextMenu.buildItem({type: "submenu", label: "BetterDiscord", items: items});
@@ -127,7 +127,7 @@ export default new class BDContextMenu extends Builtin {
             if (toggles.length) toggles.push({type: "separator"}); // Add separator when addons exist
 
             toggles.push({
-                label: Strings.Addons.openStore.format({type: label}),
+                label: t("Addons.openStore", {type: label}),
                 action: () => {
                     this.openCategory(label.toLowerCase());
                     // If the addon store instantly opens have it just stop basically

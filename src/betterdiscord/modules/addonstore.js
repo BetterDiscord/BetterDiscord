@@ -6,7 +6,7 @@ import request from "request";
 import Logger from "@common/logger";
 import Toasts from "@ui/toasts";
 import DataStore from "@modules/datastore";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import React from "@modules/react";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
@@ -57,14 +57,14 @@ import Web from "@data/web";
  */
 
 /**
- * @param {Addon} addon 
+ * @param {Addon} addon
  * @returns {Promise<boolean>}
  */
 function showConfirmDelete(addon) {
     return new Promise(resolve => {
-        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Addons.confirmDelete.format({name: addon.name}), {
+        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Addons.confirmDelete", {name: addon.name}), {
             danger: true,
-            confirmText: Strings.Addons.deleteAddon,
+            confirmText: t("Addons.deleteAddon"),
             onConfirm: () => {resolve(true);},
             onCancel: () => {resolve(false);}
         });
@@ -75,7 +75,7 @@ function showConfirmDelete(addon) {
 /** @typedef {Guild} Guild */
 
 class Guild {
-    /** 
+    /**
      * @private
      * @type {Record<string, Guild>}
      */
@@ -83,7 +83,7 @@ class Guild {
 
     /**
      * @public
-     * @param {RawAddonGuild} guild 
+     * @param {RawAddonGuild} guild
      * @returns {Guild}
      */
     static from(guild) {
@@ -117,11 +117,11 @@ class Guild {
     get url() {
         let filename = `${this.hash}.webp`;
         if (filename.startsWith("a_")) filename = `${this.hash}.gif`;
-        
+
         return `https://cdn.discordapp.com/icons/${this.id}/${filename}?size=256`;
     }
     /** @public */
-    get acronym() {return this.name.replace(/'s /g," ").replace(/\w+/g, str => str[0]).replace(/\s/g,"");}
+    get acronym() {return this.name.replace(/'s /g, " ").replace(/\w+/g, str => str[0]).replace(/\s/g, "");}
 
     /**
      * SHows the guild join modal (if the addon has a guild)
@@ -133,23 +133,23 @@ class Guild {
 }
 
 class Addon {
-    /** 
+    /**
      * @private
-     * @type {Record<string, Addon>} 
+     * @type {Record<string, Addon>}
      */
     static cache = {};
 
     /**
      * Update pre-existing addon class without create a new one
      * @public
-     * @param {RawAddon} addon 
+     * @param {RawAddon} addon
      * @returns {Addon}
      */
     static from(addon) {
         // Dont create a new one if addon already exists
         // Just sync data
         if (typeof this.cache[addon.id] === "object") {
-            const cached = this.cache[addon.id];            
+            const cached = this.cache[addon.id];
 
             cached.downloads = Math.max(cached.downloads, addon.downloads);
             cached.likes = Math.max(cached.likes, addon.likes);
@@ -175,7 +175,7 @@ class Addon {
     /**
      * Do not directly call
      * @private
-     * @param {RawAddon} addon 
+     * @param {RawAddon} addon
      */
     constructor(addon) {
         this.id = addon.id;
@@ -183,26 +183,26 @@ class Addon {
 
         this.releaseDate = new Date(addon.initial_release_date);
         this.lastModified = new Date(addon.latest_release_date);
-        
+
         this.type = addon.type;
-        
+
         this.thumbnail = Web.resources.thumbnail(addon.thumbnail_url);
         this.avatar = `https://avatars.githubusercontent.com/u/${addon.author.github_id}?v=4`;
         this.author = addon.author.display_name;
-        
+
         const guild = addon.guild || addon.author.guild;
         /** @type {Guild | null} */
         this.guild = guild ? Guild.from(guild) : null;
-        
+
         this.manager = addon.type === "plugin" ? PluginManager : ThemeManager;
-        
+
         this.description = addon.description;
-        
+
         this.tags = addon.tags;
-        
+
         this.downloads = addon.downloads;
         this.likes = addon.likes;
-        
+
         this.version = addon.version;
 
         this.filename = addon.file_name;
@@ -211,20 +211,20 @@ class Addon {
 
         /** @private */
         this._addon = addon;
-        
+
         Addon.cache[addon.id] = this;
     }
 
     /**
      * To prompt new addons
      * @public
-     * @returns {boolean} 
+     * @returns {boolean}
      */
     isUnknown() {
         return addonStore.isUnknown(this.filename);
     }
 
-    /** 
+    /**
      * To hide the badge
      * @public
      */
@@ -232,7 +232,7 @@ class Addon {
         addonStore.markAsKnown(this.filename);
     }
 
-    /** 
+    /**
      * Opens the Theme preview site
      * @public
      */
@@ -240,11 +240,11 @@ class Addon {
         if (this.type === "plugin") {
             throw new Error("Addon is a plugin!");
         }
-      
+
         window.open(Web.convertToPreviewURL(this.latestSourceUrl), "_blank", "noopener,noreferrer");
     }
 
-    /** 
+    /**
      * Opens the bd's site page for the addon
      * @public
      */
@@ -260,8 +260,8 @@ class Addon {
         window.open(Web.convertRawToGitHubURL(this.latestSourceUrl), "_blank", "noopener,noreferrer");
     }
 
-    /** 
-     * Opens the raw code page 
+    /**
+     * Opens the raw code page
      * @public
      */
     openAuthorPage() {
@@ -271,8 +271,8 @@ class Addon {
     /**
      * Attempt to download addon
      * Shows a confirmation modal (unless skipped) and installs the addon
-     * 
-     * If the addon is installed or gets installed (before the modal closes), 
+     *
+     * If the addon is installed or gets installed (before the modal closes),
      * it will close the modal and resolve
      * @public
      * @param {boolean} shouldSkipConfirm Should skip the confirm to delete the addon
@@ -280,7 +280,7 @@ class Addon {
      */
     async download(shouldSkipConfirm = false) {
         if (this.isInstalled()) {
-            Toasts.show(Strings.Addons.alreadyInstalled.format({name: this.name}), {
+            Toasts.show(t("Addons.alreadyInstalled", {name: this.name}), {
                 type: "info"
             });
 
@@ -305,19 +305,19 @@ class Addon {
 
                         this.manager.saveState();
                     }
-                    
+
                     fs.writeFileSync(path.join(this.manager.addonFolder, this.filename), text);
-    
-                    Toasts.show(Strings.Addons.successfullyDownload.format({name: this.name}), {
+
+                    Toasts.show(t("Addons.successfullyDownload", {name: this.name}), {
                         type: "success"
                     });
-    
+
                     this.downloads++;
                 }
                 catch (error) {
                     Logger.stacktrace("AddonStore", `Failed to fetch addon '${this.filename}':`, error);
-        
-                    Toasts.show(Strings.Addons.failedToDownload.format({type: this.type, name: this.name}), {
+
+                    Toasts.show(t("Addons.failedToDownload", {type: this.type, name: this.name}), {
                         type: "danger"
                     });
 
@@ -328,7 +328,7 @@ class Addon {
                 }
             });
         });
-        
+
         return this._download ??= new Promise((resolve) => {
             const onFinish = () => {
                 delete this._download;
@@ -340,8 +340,8 @@ class Addon {
             let installing = false;
 
             const key = Modals.ModalActions.openModal((props) => React.createElement(InstallModal, {
-                ...props, 
-                addon: this, 
+                ...props,
+                addon: this,
                 install: (shouldEnable) => {
                     installing = true;
                     return install(shouldEnable);
@@ -378,7 +378,7 @@ class Addon {
     }
 
     /** @public */
-    isInstalled() {        
+    isInstalled() {
         return this.manager.isLoaded(this.filename);
     }
 
@@ -387,14 +387,14 @@ class Addon {
         const now = new Date();
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(now.getDate() - 7);
-      
+
         return this.lastModified > oneWeekAgo && this.lastModified <= now;
     }
 }
 
 const addonStore = new class AddonStore {
     initialize() {
-        this._cache = DataStore.getData("addon-store") || {};        
+        this._cache = DataStore.getData("addon-store") || {};
 
         if (this._cache.version !== Web.API_VERSION) {
             this._cache = {
@@ -402,10 +402,10 @@ const addonStore = new class AddonStore {
                 addons: {},
                 version: Web.API_VERSION
             };
-        }        
+        }
 
         // window.AddonStore = this;
-        
+
         this._useCache();
         this.requestAddons(true);
     }
@@ -441,10 +441,10 @@ const addonStore = new class AddonStore {
     /**
      * Request a singular addon at a time
      * @public
-     * @param {number|string} idOrName 
+     * @param {number|string} idOrName
      * @returns {Promise<Addon>}
      */
-    requestAddon(idOrName) {        
+    requestAddon(idOrName) {
         const cache = this.getAddon(idOrName);
         if (typeof cache === "object") return Promise.resolve(cache);
 
@@ -465,16 +465,16 @@ const addonStore = new class AddonStore {
                     if (!request.ok || data.status === 404) {
                         throw new Error(data.title);
                     }
-        
+
                     this._singleAddonCache[data.name] = this._singleAddonCache[idOrName];
                     this._singleAddonCache[data.id] = this._singleAddonCache[idOrName];
-        
+
                     resolve(Addon.from(data));
-                } 
+                }
                 catch (error) {
                     Logger.stacktrace("AddonStore", `Failed to fetch ${idOrName}`, error);
-        
-                    Toasts.show(Strings.Addons.failedToFetch, {
+
+                    Toasts.show(t("Addons.failedToFetch"), {
                         type: "danger"
                     });
 
@@ -491,8 +491,8 @@ const addonStore = new class AddonStore {
 
     /**
      * Gets a addon via id or name
-     * @public 
-     * @param {number|string} id 
+     * @public
+     * @param {number|string} id
      * @returns {Addon | null}
      */
     getAddon(id) {
@@ -501,7 +501,7 @@ const addonStore = new class AddonStore {
         for (const key in Addon.cache) {
             if (Object.prototype.hasOwnProperty.call(Addon.cache, key)) {
                 const addon = Addon.cache[key];
-                
+
                 if (addon.id.toString() === decoded || addon.name.toLowerCase() === decoded) return addon;
             }
         }
@@ -530,7 +530,7 @@ const addonStore = new class AddonStore {
      * @public
      * @param {string} filename
      */
-    markAsKnown(filename) {        
+    markAsKnown(filename) {
         if (this.isUnknown(filename)) {
             this._cache.known.push(filename);
 
@@ -538,10 +538,10 @@ const addonStore = new class AddonStore {
         }
     }
 
-    /** 
+    /**
      * @type {Addon[]}
      * @readonly
-     * @private 
+     * @private
      */
     addons = [];
     /** @public */
@@ -552,7 +552,7 @@ const addonStore = new class AddonStore {
     loading = false;
 
     /**
-     * Listener for when the user is offline and tries to fetch the addons 
+     * Listener for when the user is offline and tries to fetch the addons
      * @private
      */
     _onLineListener = () => {
@@ -561,7 +561,7 @@ const addonStore = new class AddonStore {
     };
 
     /**
-     * @param {? boolean} firstRun 
+     * @param {? boolean} firstRun
      */
     async requestAddons(firstRun = false) {
         Logger.debug("AddonStore", "Requesting all addons");
@@ -584,7 +584,7 @@ const addonStore = new class AddonStore {
             window.removeEventListener("offline", offLineListener);
 
             failed = true;
-            
+
             this.loading = false;
 
             Logger.debug("AddonStore", "User is offline waiting for connection...");
@@ -592,7 +592,7 @@ const addonStore = new class AddonStore {
             window.removeEventListener("online", this._onLineListener);
             window.addEventListener("online", this._onLineListener);
 
-            Toasts.show(Strings.Addons.failedToFetch, {
+            Toasts.show(t("Addons.failedToFetch"), {
                 type: "danger"
             });
 
@@ -624,11 +624,11 @@ const addonStore = new class AddonStore {
                 if (err || req.aborted || req.statusMessage !== "OK") {
                     throw err || req;
                 }
-    
+
                 const json = JSON.parse(body);
-    
+
                 const isFirstRun = this._cache.known.length === 0 && Object.keys(this._cache.addons).length === 0;
-                
+
                 /** @type {typeof this._cache} */
                 const data = {
                     known: this._cache.known || {},
@@ -637,29 +637,29 @@ const addonStore = new class AddonStore {
                 };
 
                 this.addons.length = 0;
-    
+
                 for (const addon of json) {
-                    this.addons.push(Addon.from(addon));                
-    
+                    this.addons.push(Addon.from(addon));
+
                     data.addons[addon.file_name.toLowerCase()] = addon;
                     if (isFirstRun) {
                         data.known.push(addon.file_name);
                     }
                 }
-    
+
                 this._writeCache(data);
-    
+
                 this.error = null;
-            } 
+            }
             catch (error) {
                 Logger.stacktrace("AddonStore", "Failed to request addons", error);
-    
-                Toasts.show(Strings.Addons.failedToFetch, {
+
+                Toasts.show(t("Addons.failedToFetch"), {
                     type: "danger"
                 });
-    
+
                 this.error = error instanceof Error ? error : new Error(`Failed to request addons: Status ${req.statusCode}`);
-    
+
                 this._useCache();
             }
 
@@ -699,7 +699,7 @@ const addonStore = new class AddonStore {
         }
     }
 
-    /** 
+    /**
      * get important data from the store to use in the ui
      * @private Not need anywhere except for react
      */
@@ -710,7 +710,7 @@ const addonStore = new class AddonStore {
             loading: this.loading
         };
     }
-    /** 
+    /**
      * A react hook for {@link getState}
      * @public
      * @returns {ReturnType<typeof this["getState"]>}
@@ -735,7 +735,7 @@ const addonStore = new class AddonStore {
     /**
      * Add a listener to subscribe when the store changes
      * @public
-     * @param {() => void} listener 
+     * @param {() => void} listener
      * @returns {() => void}
      */
     addChangeListener(listener) {

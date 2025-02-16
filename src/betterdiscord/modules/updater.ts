@@ -11,7 +11,7 @@ import {comparator as semverComparator, regex as semverRegex} from "@structs/sem
 
 import Events from "./emitter";
 import IPC from "./ipc";
-import Strings from "./strings";
+import {t} from "@common/i18n";
 import DataStore from "./datastore";
 import React from "./react";
 import Settings from "@stores/settings";
@@ -24,7 +24,6 @@ import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
 import type AddonManager from "./addonmanager";
-import type FormattableString from "@structs/string";
 import type {Release} from "github";
 import type {Addon} from "betterdiscordweb";
 import {getByKeys} from "@webpack";
@@ -58,7 +57,7 @@ export default class Updater {
 
     static initialize() {
         // TODO: get rid of element creation
-        Settings.registerPanel("updates", Strings.Panels.updates, {
+        Settings.registerPanel("updates", t("Panels.updates"), {
             order: 1,
             element: () => {
                 return React.createElement(UpdaterPanel, {
@@ -182,9 +181,9 @@ export class CoreUpdater {
 
         if (!this.hasUpdate || !showNotice) return;
 
-        const close = Notices.info((Strings.Updater.updateAvailable as unknown as FormattableString).format({version: this.remoteVersion}), {
+        const close = Notices.info(t("Updater.updateAvailable", {version: this.remoteVersion}), {
             buttons: [{
-                label: Strings.Notices.moreInfo,
+                label: t("Notices.moreInfo"),
                 onClick: () => {
                     close();
                     UserSettingsWindow?.open?.("updates");
@@ -221,16 +220,16 @@ export class CoreUpdater {
             if (Settings.get("developer", "canary")) DataStore.setBDData("canaryUpdated", this.remoteVersion);
             else Config.set("version", this.remoteVersion);
 
-            Modals.showConfirmationModal(Strings.Updater.updateSuccessful, Strings.Modals.restartPrompt, {
-                confirmText: Strings.Modals.restartNow,
-                cancelText: Strings.Modals.restartLater,
+            Modals.showConfirmationModal(t("Updater.updateSuccessful"), t("Modals.restartPrompt"), {
+                confirmText: t("Modals.restartNow"),
+                cancelText: t("Modals.restartLater"),
                 danger: true,
                 onConfirm: () => IPC.relaunch()
             });
         }
         catch (err) {
             Logger.stacktrace("Updater", "Failed to update", err as Error);
-            Modals.showConfirmationModal(Strings.Updater.updateFailed, Strings.Updater.updateFailedMessage, {
+            Modals.showConfirmationModal(t("Updater.updateFailed"), t("Updater.updateFailedMessage"), {
                 cancelText: null
             });
         }
@@ -305,13 +304,13 @@ class AddonUpdater {
         }, (error: Error, response: {statusCode: number;}, body: string) => {
             if (error || response.statusCode !== 200) {
                 Logger.stacktrace("AddonUpdater", `Failed to download body for ${info.id}:`, error);
-                Toasts.error((Strings.Updater.addonUpdateFailed as unknown as FormattableString).format({name: info.name, version: info.version}));
+                Toasts.error(t("Updater.addonUpdateFailed", {name: info.name, version: info.version}));
                 return;
             }
 
             const file = path.join(path.resolve(this.manager.addonFolder), filename);
             fileSystem.writeFile(file, body.toString(), () => {
-                Toasts.success((Strings.Updater.addonUpdated as unknown as FormattableString).format({name: info.name, version: info.version}));
+                Toasts.success(t("Updater.addonUpdated", {name: info.name, version: info.version}));
                 this.pending.splice(this.pending.indexOf(filename), 1);
             });
         });
@@ -319,9 +318,9 @@ class AddonUpdater {
 
     showUpdateNotice() {
         if (!this.pending.length) return;
-        const close = Notices.info((Strings.Updater.addonUpdatesAvailable as unknown as FormattableString).format({count: this.pending.length, type: this.type}), {
+        const close = Notices.info(t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}), {
             buttons: [{
-                label: Strings.Notices.moreInfo,
+                label: t("Notices.moreInfo"),
                 onClick: () => {
                     close();
                     UserSettingsWindow?.open?.("updates");
