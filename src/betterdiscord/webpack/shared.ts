@@ -30,6 +30,7 @@ export function shouldSkipModule(exports: any) {
     if (exports === Symbol) return true;
     if (exports instanceof Window) return true;
     if (exports instanceof TypedArray) return true;
+    if ((exports.$$loader && exports.$$baseObject) || (exports.Z?.$$loader && exports.Z?.$$baseObject)) return true;
     return false;
 }
 
