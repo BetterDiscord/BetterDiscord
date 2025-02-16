@@ -37,7 +37,7 @@ export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions 
 
                 if (filter(exported, module, module.id)) {
                     if (!defaultExport && defaultKey === key) {
-                        resolve(raw ? module : exported);
+                        resolve(raw ? module : module.exports);
                         cancel();
                         return;
                     }
