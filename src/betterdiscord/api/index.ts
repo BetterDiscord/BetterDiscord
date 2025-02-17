@@ -3,6 +3,7 @@ import BDLogger from "@common/logger";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
 import DiscordModules from "@modules/discordmodules";
+import Config from "@stores/config";
 
 import AddonAPI from "./addonapi";
 import Data from "./data";
@@ -12,7 +13,6 @@ import ReactUtils from "./reactutils";
 import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
-import * as Legacy from "./legacy";
 import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
 import Logger from "./logger";
@@ -35,6 +35,9 @@ import Flex from "@ui/base/flex";
 import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
 
+import type ReactType from "react";
+import type ReactDOMType from "react-dom";
+
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
 const ThemeAPI = new AddonAPI(ThemeManager);
@@ -47,7 +50,6 @@ const DefaultLogger = new Logger();
 
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
- * @type Components
  * @summary {@link Components} a namespace holding a series of React components
  * @name Components
  */
@@ -72,20 +74,66 @@ const Components = {
 };
 
 /**
+ * The React module being used inside Discord.
+ * @type React
+ * @memberof BdApi
+ */
+const React: typeof ReactType = DiscordModules.React;
+
+/**
+ * The ReactDOM module being used inside Discord.
+ * @type ReactDOM
+ * @memberof BdApi
+ */
+const ReactDOM: typeof ReactDOMType = DiscordModules.ReactDOM;
+
+/**
+ * A reference string for BD's version.
+ * @type string
+ * @memberof BdApi
+ */
+const version: string = Config.get("version");
+
+/**
  * `BdApi` is a globally (`window.BdApi`) accessible object for use by plugins and developers to make their lives easier.
  * @name BdApi
  */
 export default class BdApi {
-    constructor(pluginName) {
+    Patcher: Patcher = PatcherAPI;
+    Data: Data = DataAPI;
+    DOM: DOM = DOMAPI; 
+    Logger: Logger = DefaultLogger;
+    Commands: CommandAPI = CommandsAPI;
+    React = React;
+    ReactDOM = ReactDOM;
+    version = version;
+
+    static Patcher: Patcher;
+    static Data: Data;
+    static DOM: DOM;
+    static Logger: Logger;
+    static Commands: CommandAPI;
+    static React = React;
+    static ReactDOM = ReactDOM;
+    static version = version;
+
+    static Plugins: AddonAPI;
+    static Themes: AddonAPI;
+    static Webpack: typeof Webpack;
+    static UI: typeof UI;
+    static ReactUtils: typeof ReactUtils;
+    static Utils: typeof Utils;
+    static ContextMenu: ContextMenu;
+    static Components: typeof Components;
+    static Net: { fetch: typeof fetch };
+
+    constructor(pluginName: string) {
         if (!pluginName) return BdApi;
         if (bounded.has(pluginName)) return bounded.get(pluginName);
         if (typeof (pluginName) !== "string") {
             BDLogger.error("BdApi", "Plugin name not a string, returning generic API!");
             return BdApi;
         }
-
-        // Re-add legacy functions
-        Object.assign(this, Legacy);
 
         // Bind to pluginName
         this.Patcher = new Patcher(pluginName);
@@ -108,9 +156,6 @@ export default class BdApi {
     get Components() {return Components;}
     Net = {fetch}; 
 }
-
-// Add legacy functions
-Object.assign(BdApi, Legacy);
 
 /**
  * An instance of {@link AddonAPI} to access plugins.

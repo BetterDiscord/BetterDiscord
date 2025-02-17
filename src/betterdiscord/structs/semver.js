@@ -58,7 +58,7 @@ function preCompare(a, b) {
  * 
  * @param {string} currentVersion
  * @param {string} remoteVersion
- * @returns {number} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
+ * @returns {-1 | 0 | 1} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
  */
 export function comparator(currentVersion, remoteVersion) {
     const current = regex.exec(currentVersion);
