@@ -40,17 +40,8 @@ const Webpack = {
      * @memberof Webpack
      */
     Filters: {
-        /**
-         * @deprecated
-         */
-        byProps(...props: string[]) {return Filters.byKeys(props);},
         /** Generates a function that filters by a set of properties. */
         byKeys(...keys: string[]) {return Filters.byKeys(keys);},
-
-        /**
-         * @deprecated
-         */
-        byPrototypeFields(...props: string[]) {return Filters.byPrototypeKeys(props);},
 
         /** Generates a function that filters by a set of properties on the object's prototype. */
         byPrototypeKeys(...props: string[]) {return Filters.byPrototypeKeys(props);},

@@ -5,7 +5,6 @@ import {debounce, extend, findInTree} from "@common/utils";
 
 /**
  * `Utils` is a utility containing commonly reused functions. Instance is accessible through the {@link BdApi}.
- * @type Utils
  * @summary {@link Utils} is a utility class for interacting with React internals.
  * @name Utils
  */
@@ -18,10 +17,8 @@ const Utils = {
      * @param {object} options Additional options to customize the search
      * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. `null` indicates all keys are walkable.
      * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search. Most helpful when `walkable = null`.
-     */
-    findInTree(tree, searchFilter, options = {}) {
-        return findInTree(tree, searchFilter, options);
-    },
+    */
+    findInTree: findInTree,
 
     /**
      * Deep extends an object with a set of other objects. Objects later in the list
@@ -33,9 +30,7 @@ const Utils = {
      * @param {...object} extenders Objects to extend with
      * @returns {object} A reference to `extendee`
      */
-    extend(extendee, ...extenders) {
-        return extend(extendee, ...extenders);
-    },
+    extend: extend,
 
     /**
      * Returns a function, that, as long as it continues to be invoked, will not
@@ -48,9 +43,7 @@ const Utils = {
      * @param {number} delay Number of ms to delay calls
      * @return {function} A debounced version of the function
      */
-    debounce(executor, delay) {
-        return debounce(executor, delay);
-    },
+    debounce: debounce,
 
     /**
      * Takes a string of HTML and escapes it using the browser's own escaping mechanism.
@@ -58,7 +51,7 @@ const Utils = {
      * @param {string} html HTML to be escaped
      * @return {string} Escaped HTML string
      */
-    escapeHTML(html) {
+    escapeHTML(html: string): string {
         const textNode = document.createTextNode("");
         const spanElement = document.createElement("span");
         spanElement.append(textNode);
@@ -75,18 +68,15 @@ const Utils = {
      * @param {...any} argument Anything that should be used to add classnames
      * @returns {string} Joined classname
      */
-    className() {
-        return clsx(...arguments);
-    },
-
+    className: clsx,
     /**
      * Gets a nested value (if it exists) of an object safely. keyPath should be something like `key.key2.key3`.
      * Numbers can be used for arrays as well like `key.key2.array.0.id`.
      * @param {object} obj - object to get nested value from
      * @param {string} keyPath - key path to the desired value
      */
-    getNestedValue(obj, keyPath) {
-        return keyPath.split(".").reduce(function(ob, prop) {
+    getNestedValue<T, P extends Path<T>>(obj: T, keyPath: P): PathValue<T, P> {
+        return keyPath.split(".").reduce(function (ob, prop) {
             return ob && ob[prop];
         }, obj);
     },
@@ -98,10 +88,27 @@ const Utils = {
      * @param {string} newVersion
      * @returns {number} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
      */
-    semverCompare(currentVersion, newVersion) {
-        return comparator(currentVersion, newVersion);
-    }
-};
+    semverCompare: comparator,
+} as const;
+
+// https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959
+type Path<T> = T extends object ? {[K in keyof T]:
+    `${Exclude<K, symbol>}${"" | `.${Path<T[K]>}`}`
+}[keyof T] : never;
+
+// https://github.com/nestjs/config/blob/master/lib/types/path-value.type.ts
+type PathValue<
+    T,
+    P extends Path<T>,
+> = P extends `${infer Key}.${infer Rest}`
+    ? Key extends keyof T
+    ? Rest extends Path<T[Key]>
+    ? PathValue<T[Key], Rest>
+    : never
+    : never
+    : P extends keyof T
+    ? T[P]
+    : never;
 
 Object.freeze(Utils);
 
