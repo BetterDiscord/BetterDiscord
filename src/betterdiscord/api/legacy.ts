@@ -1,7 +1,7 @@
 import Logger from "@common/logger";
 
 import DiscordModules from "@modules/discordmodules";
-import DataStore from "@modules/datastore";
+import JsonStore from "@stores/json";
 import DOMManager from "@modules/dommanager";
 import Settings from "@stores/settings";
 import Config from "@stores/config";
@@ -107,7 +107,7 @@ function unlinkJS(id: string) {
  * @param {(string|ReactElement|Array<string|ReactElement>)} content A string of text to display in the modal
  * @memberof BdApi
  */
-function alert(title: string, content: (string|ReactElement|Array<string|ReactElement>)) {
+function alert(title: string, content: (string | ReactElement | Array<string | ReactElement>)) {
     Modals.alert(title, content);
 }
 
@@ -126,7 +126,7 @@ function alert(title: string, content: (string|ReactElement|Array<string|ReactEl
  * @returns {string} The key used for this modal
  * @memberof BdApi
  */
-function showConfirmationModal(title: string, content: (string|ReactElement|Array<string|ReactElement>), options = {}) {
+function showConfirmationModal(title: string, content: (string | ReactElement | Array<string | ReactElement>), options = {}) {
     return Modals.showConfirmationModal(title, content, options);
 }
 
@@ -158,7 +158,7 @@ function showToast(content: string, options = {}) {
  * @returns {function} A callback for closing the notice. Passing `true` as first parameter closes immediately without transitioning out.
  * @memberof BdApi
  */
- function showNotice(content: string, options = {}) {
+function showNotice(content: string, options = {}) {
     return Notices.show(content, options);
 }
 
@@ -233,7 +233,7 @@ function findModuleByDisplayName(name: string) {
  */
 function getInternalInstance(node: any) {
     if (node.__reactInternalInstance$) return node.__reactInternalInstance$;
-        return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber")) as any] || null;
+    return node[Object.keys(node).find(k => k.startsWith("__reactInternalInstance") || k.startsWith("__reactFiber")) as any] || null;
 }
 
 /**
@@ -246,7 +246,7 @@ function getInternalInstance(node: any) {
  * @memberof BdApi
  */
 function loadData(pluginName: string, key: string) {
-    return DataStore.getPluginData(pluginName, key);
+    return JsonStore.getData(pluginName, key);
 }
 
 /**
@@ -259,7 +259,7 @@ function loadData(pluginName: string, key: string) {
  * @memberof BdApi
  */
 function saveData(pluginName: string, key: string, data: any) {
-    return DataStore.setPluginData(pluginName, key, data);
+    return JsonStore.setData(pluginName, key, data);
 }
 
 /**
@@ -271,7 +271,7 @@ function saveData(pluginName: string, key: string, data: any) {
  * @memberof BdApi
  */
 function deleteData(pluginName: string, key: string) {
-    DataStore.deletePluginData(pluginName, key);
+    JsonStore.deleteData(pluginName, key);
 }
 
 /**
@@ -424,7 +424,7 @@ function toggleSetting(collection: string, category: string, id: string) {
  * @memberof BdApi
  */
 function getBDData(key: string) {
-    return DataStore.getBDData(key);
+    return JsonStore.get("misc", key);
 }
 
 /**
@@ -436,7 +436,7 @@ function getBDData(key: string) {
  * @memberof BdApi
  */
 function setBDData(key: string, data: object) {
-    return DataStore.setBDData(key, data);
+    return JsonStore.set("misc", key, data);
 }
 
 /**

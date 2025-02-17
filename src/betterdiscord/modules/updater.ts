@@ -12,7 +12,7 @@ import {comparator as semverComparator, regex as semverRegex} from "@structs/sem
 import Events from "./emitter";
 import IPC from "./ipc";
 import {t} from "@common/i18n";
-import DataStore from "./datastore";
+import JsonStore from "@stores/json";
 import React from "./react";
 import Settings from "@stores/settings";
 import PluginManager from "./pluginmanager";
@@ -147,7 +147,7 @@ export class CoreUpdater {
             return;
         }
 
-        let canaryUpdated: string | Date = DataStore.getBDData("canaryUpdated") as string;
+        let canaryUpdated: string | Date = JsonStore.get("misc", "canaryUpdated") as string;
         let remoteVersion = asset.updated_at;
         try {
             if (canaryUpdated) canaryUpdated = new Date(canaryUpdated);
@@ -209,7 +209,7 @@ export class CoreUpdater {
                     return resolve(body);
                 }));
 
-            const asarPath = path.join(DataStore.baseFolder, "betterdiscord.asar");
+            const asarPath = path.join(Config.get("bdPath"), "betterdiscord.asar");
             // eslint-disable-next-line @typescript-eslint/no-require-imports
             const fs = require("original-fs");
             fs.writeFileSync(asarPath, buff);
@@ -217,7 +217,7 @@ export class CoreUpdater {
             this.hasUpdate = false;
 
             // For canary, save the last updated data. For stable, overwrite the current version to prevent further updates
-            if (Settings.get("developer", "canary")) DataStore.setBDData("canaryUpdated", this.remoteVersion);
+            if (Settings.get("developer", "canary")) JsonStore.set("misc", "canaryUpdated", this.remoteVersion);
             else Config.set("version", this.remoteVersion);
 
             Modals.showConfirmationModal(t("Updater.updateSuccessful"), t("Modals.restartPrompt"), {

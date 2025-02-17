@@ -8,23 +8,31 @@ import {RotateCwIcon, SaveIcon} from "lucide-react";
 const {useState, useCallback, forwardRef, useImperativeHandle, useRef} = React;
 
 
-export default forwardRef(function AddonEditor({content, language, save, openNative, id = "bd-addon-editor"}, ref) {
-    const editorRef = useRef(null);
+interface Props {
+    content: string;
+    language: string;
+    save: (c: string) => void;
+    openNative: () => void;
+    id?: string;
+}
+
+export default forwardRef(function AddonEditor({content, language, save, openNative, id = "bd-addon-editor"}: Props, ref) {
+    const editorRef = useRef<{resize(): void; showSettings(): void; getValue(): string; setValue(s: string): void;}>();
     const [hasUnsavedChanges, setUnsaved] = useState(false);
 
     useImperativeHandle(ref, () => {
         return {
-            resize() {editorRef.current.resize();},
-            showSettings() {editorRef.current.showSettings();},
-            get value() {return editorRef.current.getValue();},
-            set value(newValue) {editorRef.current.setValue(newValue);},
+            resize() {editorRef.current?.resize();},
+            showSettings() {editorRef.current?.showSettings();},
+            get value(): string | undefined {return editorRef.current?.getValue();},
+            set value(newValue: string) {editorRef.current?.setValue(newValue);},
             get hasUnsavedChanges() {return hasUnsavedChanges;}
         };
     }, [hasUnsavedChanges]);
 
     const popoutNative = useCallback(() => openNative?.(), [openNative]);
     const onChange = useCallback(() => setUnsaved(true), []);
-    const saveAddon = useCallback((event, newCSS) => {
+    const saveAddon = useCallback((_: any, newCSS: string) => {
         save?.(newCSS);
         setUnsaved(false);
     }, [save]);

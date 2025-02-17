@@ -1,4 +1,4 @@
-import DataStore from "@modules/datastore";
+import JsonStore from "@stores/json";
 
 
 /**
@@ -11,7 +11,7 @@ class Data {
 
     #callerName = "";
 
-    constructor(callerName) {
+    constructor(callerName?: string) {
         if (!callerName) return;
         this.#callerName = callerName;
     }
@@ -23,13 +23,13 @@ class Data {
      * @param {string} key Which piece of data to store
      * @param {any} data The data to be saved
      */
-    save(pluginName, key, data) {
+    save(pluginName: string, key: string, data: unknown) {
         if (this.#callerName) {
             data = key;
             key = pluginName;
             pluginName = this.#callerName;
         }
-        return DataStore.setPluginData(pluginName, key, data);
+        return JsonStore.setData(pluginName, key, data);
     }
 
     /**
@@ -39,12 +39,12 @@ class Data {
      * @param {string} key Which piece of data to load
      * @returns {any} The stored data
      */
-    load(pluginName, key) {
+    load(pluginName: string, key: string) {
         if (this.#callerName) {
             key = pluginName;
             pluginName = this.#callerName;
         }
-        return DataStore.getPluginData(pluginName, key);
+        return JsonStore.getData(pluginName, key);
     }
 
     /**
@@ -53,12 +53,12 @@ class Data {
      * @param {string} pluginName Name of the plugin deleting data
      * @param {string} key Which piece of data to delete.
      */
-    delete(pluginName, key) {
+    delete(pluginName: string, key: string) {
         if (this.#callerName) {
             key = pluginName;
             pluginName = this.#callerName;
         }
-        return DataStore.deletePluginData(pluginName, key);
+        return JsonStore.deleteData(pluginName, key);
     }
 
 }

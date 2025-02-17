@@ -1,10 +1,11 @@
 import fs from "fs";
+import path from "path";
 import electron from "electron";
 
 import Builtin from "@structs/builtin";
 
 import Settings from "@stores/settings";
-import DataStore from "@modules/datastore";
+import Config from "@stores/config";
 import React from "@modules/react";
 import Events from "@modules/emitter";
 import DOMManager from "@modules/dommanager";
@@ -26,6 +27,7 @@ export default new class CustomCSS extends Builtin {
     get id() {return "customcss";}
     get startDetached() {return Settings.get(this.collection, this.category, "openAction") == "detached";}
     get nativeOpen() {return Settings.get(this.collection, this.category, "openAction") == "system";}
+    get file() {return path.resolve(Config.get("channelPath"), "custom.css");}
 
     constructor() {
         super();
@@ -68,22 +70,22 @@ export default new class CustomCSS extends Builtin {
         if (this.watcher) return this.error("Already watching content.");
         const timeCache = {};
         this.log("Starting to watch content.");
-        this.watcher = fs.watch(DataStore.customCSS, {persistent: false}, async (eventType, filename) => {
+        this.watcher = fs.watch(this.file, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename) return;
             await new Promise(r => setTimeout(r, 50));
-            try {fs.statSync(DataStore.customCSS);}
+            try {fs.statSync(this.file);}
             catch (err) {
                 if (err.code !== "ENOENT") return;
                 delete timeCache[filename];
                 this.saveCSS("");
             }
-            const stats = fs.statSync(DataStore.customCSS);
+            const stats = fs.statSync(this.file);
             if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
             if (typeof (stats.mtime.getTime()) !== "number") return;
             if (timeCache[filename] == stats.mtime.getTime()) return;
             timeCache[filename] = stats.mtime.getTime();
             if (eventType == "change") {
-                const newCSS = DataStore.loadCustomCSS();
+                const newCSS = this.loadCSS();
                 if (newCSS == this.savedCss) return;
                 this.savedCss = newCSS;
                 this.insertCSS(this.savedCss);
@@ -106,7 +108,12 @@ export default new class CustomCSS extends Builtin {
     }
 
     loadCSS() {
-        this.savedCss = DataStore.loadCustomCSS();
+        try {
+            this.savedCss = fs.readFileSync(this.file).toString();
+        }
+        catch {
+            this.savedCss = "";
+        }
     }
 
     insertCSS(newCss) {
@@ -117,7 +124,7 @@ export default new class CustomCSS extends Builtin {
 
     saveCSS(newCss) {
         if (typeof (newCss) !== "undefined") this.savedCss = newCss;
-        DataStore.saveCustomCSS(this.savedCss);
+        fs.writeFileSync(this.file, this.savedCss);
     }
 
     open() {
@@ -128,7 +135,7 @@ export default new class CustomCSS extends Builtin {
     }
 
     openNative() {
-        electron.shell.openExternal(`file://${DataStore.customCSS}`);
+        electron.shell.openExternal(`file://${this.file}`);
     }
 
     openDetached(currentCSS) {

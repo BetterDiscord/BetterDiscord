@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React from "@modules/react";
-import type {PropsWithChildren} from "react";
+import type {CSSProperties, PropsWithChildren} from "react";
 
 
 export const Direction = Object.freeze({
@@ -32,7 +32,7 @@ export const Wrap = Object.freeze({
 });
 
 
-export function Child(props: {className?: string}) {
+export function Child(props: {className?: string;}) {
     if (!props.className) props.className = "";
     props.className = clsx(props.className, "bd-flex-child");
     return <Flex {...props} />;
@@ -41,7 +41,7 @@ export function Child(props: {className?: string}) {
 type FlexProps = PropsWithChildren<{
     id?: string;
     className?: string;
-    style?: string;
+    style?: CSSProperties;
     shrink?: number;
     grow?: number;
     basis?: "auto",
@@ -52,36 +52,36 @@ type FlexProps = PropsWithChildren<{
 }>;
 
 export default function Flex({
-        children,
-        className,
-        style,
-        shrink = 1,
-        grow = 1,
-        basis = "auto",
-        direction = Direction.HORIZONTAL,
-        align = Align.STRETCH,
-        justify = Justify.START,
-        wrap = Wrap.NO_WRAP,
-        ...props
-    }: FlexProps) {
+    children,
+    className,
+    style,
+    shrink = 1,
+    grow = 1,
+    basis = "auto",
+    direction = Direction.HORIZONTAL,
+    align = Align.STRETCH,
+    justify = Justify.START,
+    wrap = Wrap.NO_WRAP,
+    ...props
+}: FlexProps) {
     return <div
-                {...props}
-                className={clsx(
-                    "bd-flex",
-                    direction,
-                    justify,
-                    align,
-                    wrap,
-                    className
-                )}
-                style={Object.assign({
-                    flexShrink: shrink,
-                    flexGrow: grow,
-                    flexBasis: basis
-                }, style)}
-            >
+        {...props}
+        className={clsx(
+            "bd-flex",
+            direction,
+            justify,
+            align,
+            wrap,
+            className
+        )}
+        style={Object.assign({
+            flexShrink: shrink,
+            flexGrow: grow,
+            flexBasis: basis
+        }, style)}
+    >
         {children}
-        </div>;
+    </div>;
 }
 
 Flex.Child = Child;
