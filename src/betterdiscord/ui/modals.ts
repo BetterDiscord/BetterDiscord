@@ -205,7 +205,7 @@ export default class Modals {
         return modalKey;
     }
 
-    static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}: {plugins: AddonError[]; themes: AddonError[];}) {
+    static showAddonErrors({plugins: pluginErrors = [], themes: themeErrors = []}: {plugins?: AddonError[]; themes?: AddonError[];}) {
         if (!pluginErrors || !themeErrors || !this.shouldShowAddonErrors) return;
         if (!pluginErrors.length && !themeErrors.length) return;
 
