@@ -2,9 +2,9 @@ import type {FluxStore, FluxStoreConstructor, CommonlyUsedStores} from "discord/
 import {Filters, getModule} from ".";
 
 
-type StoreNameType = CommonlyUsedStores | string & { _name_?: "" };
+type StoreNameType = CommonlyUsedStores | string & {_name_?: "";};
 
-let Flux: { Store: FluxStoreConstructor } | undefined;
+let Flux: {Store: FluxStoreConstructor;} | undefined;
 export function getStore(name: StoreNameType): FluxStore | undefined {
     if (!Flux) Flux = getModule(m => m.Store?.getAll);
     if (!Flux) return getModule<FluxStore>(Filters.byStoreName(name))!;

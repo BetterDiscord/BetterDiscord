@@ -3,7 +3,7 @@ import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
 import Button from "@ui/base/button";
-import DataStore from "@modules/datastore";
+import JsonStore from "@stores/json";
 import SettingsTitle from "@ui/settings/title";
 import {BadgeCheckIcon, ChevronRightIcon} from "lucide-react";
 
@@ -19,16 +19,16 @@ export function makeBasicButton(title, children, action, key) {
 }
 
 export function getState(type, control, defaultValue) {
-    const addonlistControls = DataStore.getBDData("addonlistControls") || {};
+    const addonlistControls = JsonStore.get("misc", "addonlistControls") || {};
     if (!addonlistControls[type]) return defaultValue;
     if (!Object.prototype.hasOwnProperty.call(addonlistControls[type], control)) return defaultValue;
     return addonlistControls[type][control];
 }
 export function saveState(type, control, value) {
-    const addonlistControls = DataStore.getBDData("addonlistControls") || {};
+    const addonlistControls = JsonStore.get("misc", "addonlistControls") || {};
     if (!addonlistControls[type]) addonlistControls[type] = {};
     addonlistControls[type][control] = value;
-    DataStore.setBDData("addonlistControls", addonlistControls);
+    JsonStore.set("misc", "addonlistControls", addonlistControls);
 }
 
 export const addonContext = React.createContext();
