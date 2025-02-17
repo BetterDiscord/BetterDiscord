@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import Settings from "@stores/settings";
-import DataStore from "@modules/datastore";
+import JsonStore from "@stores/json";
 import {Filters, getByKeys, getLazy} from "@webpack";
 import Patcher from "@modules/patcher";
 
@@ -34,14 +34,14 @@ export default new class SettingsRenderer {
     }
 
     onDrawerToggle(collection: string, group: string, state: boolean) {
-        const drawerStates: Partial<Record<string, Record<string, boolean>>> = DataStore.getBDData("drawerStates") || {};
+        const drawerStates: Partial<Record<string, Record<string, boolean>>> = JsonStore.get("misc", "drawerStates") || {};
         if (!drawerStates[collection]) drawerStates[collection] = {};
         drawerStates[collection][group] = state;
-        DataStore.setBDData("drawerStates", drawerStates);
+        JsonStore.set("misc", "drawerStates", drawerStates);
     }
 
     getDrawerState(collection: string, group: string, defaultValue: boolean) {
-        const drawerStates: Partial<Record<string, Record<string, boolean>>> = DataStore.getBDData("drawerStates") || {};
+        const drawerStates: Partial<Record<string, Record<string, boolean>>> = JsonStore.get("misc", "drawerStates") || {};
         if (!drawerStates[collection]) return defaultValue;
         if (!drawerStates[collection].hasOwnProperty(group)) return defaultValue;
         return drawerStates[collection][group];

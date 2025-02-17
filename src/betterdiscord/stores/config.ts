@@ -1,3 +1,4 @@
+import path from "path";
 import Store from "./base";
 
 
@@ -9,9 +10,13 @@ export default new class ConfigStore extends Store {
         version: process.env.__VERSION__!,
 
         // TODO: asynchronously get these from the main process instead of hacky env vars
-        dataPath: process.env.BETTERDISCORD_DATA_PATH!,
         appPath: process.env.DISCORD_APP_PATH!,
         userData: process.env.DISCORD_USER_DATA!,
+        bdPath: process.env.BETTERDISCORD_DATA_PATH!,
+        dataPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "data"),
+        pluginsPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "plugins"),
+        themesPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "themes"),
+        channelPath: path.join(process.env.BETTERDISCORD_DATA_PATH!, "data", window?.DiscordNative?.app?.getReleaseChannel?.() ?? "stable"),
     };
 
     get(id: keyof typeof this.data) {

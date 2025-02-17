@@ -7,7 +7,7 @@ import AddonError from "@structs/addonerror";
 
 import Settings from "@stores/settings";
 import Events from "./emitter";
-import DataStore from "./datastore";
+import JsonStore from "@stores/json";
 import React from "./react";
 import {t} from "@common/i18n";
 import ipc from "./ipc";
@@ -71,13 +71,13 @@ export default class AddonManager extends Store {
     stopAddon() {return;}
 
     loadState() {
-        const saved = DataStore.getData(`${this.prefix}s`);
+        const saved = JsonStore.get(`${this.prefix}s`);
         if (!saved) return;
         Object.assign(this.state, saved);
     }
 
     saveState() {
-        DataStore.setData(`${this.prefix}s`, this.state);
+        JsonStore.set(`${this.prefix}s`, this.state);
     }
 
     watchAddons() {
