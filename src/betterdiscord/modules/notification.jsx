@@ -1,5 +1,4 @@
-import {getBySource, getModule} from "@webpack";
-import Patcher from "@modules/patcher";
+import {getModule} from "@webpack";
 import React, {ReactDOM} from "@modules/react";
 import Button from "@ui/base/button";
 import Settings from "@stores/settings";
