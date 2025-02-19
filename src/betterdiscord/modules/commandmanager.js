@@ -50,7 +50,7 @@ export const MessageEmbedTypes = {
     SAFETY_SYSTEM_NOTIFICATION: "safety_system_notification",
     VOICE_CHANNEL: "voice_channel",
     GAMING_PROFILE: "gaming_profile",
-  };
+};
 
 const iconClasses = {
     ...getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
@@ -81,10 +81,10 @@ class CommandManager {
     static #patchCommandSystem() {
 
         this.User = getByStrings(["hasHadPremium(){"]);
-        this.createBotMessage = getByStrings([ "username:\"Clyde\"" ], {searchExports: true});
+        this.createBotMessage = getByStrings(["username:\"Clyde\""], {searchExports: true});
         this.MessagesModule = getModule(x => x.receiveMessage);
         this.IconsModule = getModule(x => x.BOT_AVATARS);
-        
+
         this.localBDBot = new this.User({
             avatar: "betterdiscord",
             id: "676620914632294467",
@@ -102,10 +102,10 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings([ ".BUILT_IN?", "categoryListRef:" ], {defaultExport: false});
+        const SidebarModule = getByStrings([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
 
         Patcher.after("CommandManager", SidebarModule, "Z", (that, [props], res) => {
-            if (!this.#sections.size) return;            
+            if (!this.#sections.size) return;
 
             const child = res.props.children;
 
@@ -135,7 +135,7 @@ class CommandManager {
         });
     }
 
-    static #patchIndexStore() {        
+    static #patchIndexStore() {
         const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
 
         Patcher.after("CommandManager", mod, key, (that, args, res) => {
@@ -145,7 +145,7 @@ class CommandManager {
                 if (sectionedCommand.section.id !== "-1") continue;
                 sectionedCommand.data = sectionedCommand.data.filter(m => !m.isBD);
             }
-    
+
             let descriptorsIndex = res.descriptors.findIndex((value) => value.id === "-1");
             let sectionedCommandsIndex = res.sectionedCommands.findIndex((value) => value.section.id === "-1");
 
@@ -307,10 +307,10 @@ class CommandManager {
             isBD: true
         };
     }
-    
+
     static #formatOptions(options) {
         if (!options) return [];
-        
+
         return options.map(option => ({
             ...option,
             get name() {return option.name;},
@@ -334,7 +334,7 @@ class CommandManager {
             this.#sections.set(caller, {
                 id: caller,
                 name: caller,
-                type: 0,
+                type: 1,
                 key: "1",
                 icon: caller === "BetterDiscord" ? "https://github.com/BetterDiscord.png" : null,
                 isBD: true
@@ -366,33 +366,33 @@ class CommandManager {
         catch (error) {
             return Logger.stacktrace("CommandManager", "Failed to get result of execute()", error);
         }
-    
+
         if (!(result !== null && typeof result === "object" && !Array.isArray(result))) {
             return;
         }
-    
+
         const loadingMessage = this.createBotMessage({
             channelId: channel.id,
             content: typeof result.content === "string" ? result.content : undefined,
             loggingName: undefined,
             type: 20
         });
-    
+
         if (typeof result.embeds === "object" && result.embeds !== null) {
-            loadingMessage.embeds = Array.isArray(result.embeds) 
-                ? result.embeds 
+            loadingMessage.embeds = Array.isArray(result.embeds)
+                ? result.embeds
                 : [result.embeds];
-    
+
             loadingMessage.embeds = loadingMessage.embeds.map(embed => ({
                 ...embed,
                 type: embed.type || "rich"
             }));
         }
-    
+
         Object.assign(loadingMessage, {
             author: this.localBDBot
         });
-    
+
         if (loadingMessage.content || (Array.isArray(loadingMessage.embeds) && loadingMessage.embeds.length > 0)) {
             this.MessagesModule.receiveMessage(channel.id, loadingMessage, true);
         }
@@ -401,7 +401,7 @@ class CommandManager {
     static unregisterCommand(caller, commandId) {
         const fullCommandId = `bd-${caller}-${commandId}`;
         const pluginCommands = this.#commands.get(caller);
-        
+
         if (pluginCommands?.delete(fullCommandId)) {
             if (pluginCommands.size === 0) {
                 this.#commands.delete(caller);
