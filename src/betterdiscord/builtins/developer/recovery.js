@@ -9,12 +9,13 @@ import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
-import {getByKeys, getByPrototypes, getByStrings} from "@webpack";
+import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
 async function attemptRecovery() {
     const transitionTo = getByStrings(["transitionTo - Transitioning to"], {searchExports: true});
+    const modalModule = getMangled(`,["contextKey"]),`, {CloseAllModals: x => x.toString?.()?.includes(".key,") && x.toString?.()?.includes("getState();")});
 
     const recoverySteps = [
         {
@@ -28,6 +29,10 @@ async function attemptRecovery() {
         {
             action: () => transitionTo?.("/channels/@me"),
             errorMessage: "Failed to route to main channel"
+        },
+        {
+            action: () => modalModule?.CloseAllModals(),
+            errorMessage: "Failed to close all modals"
         }
     ];
 
@@ -201,8 +206,8 @@ export default new class Recovery extends Builtin {
             buttons.children.push(
                 <Button
                     className="bd-button-recovery"
-                    onClick={() => {
-                        attemptRecovery();
+                    onClick={async () => {
+                        await attemptRecovery();
                         instance.setState({info: null, error: null});
                     }}
                 >
