@@ -2,14 +2,13 @@ import {useInsertionEffect, useReducer, useRef} from "@modules/react";
 import type Store from "../stores/base";
 import type React from "react";
 
-
-const empty = Symbol("betterdiscord.empty");
-
 export function useInternalStore<T>(stores: Store | Store[], factory: () => T, deps?: React.DependencyList, areStateEqual: (oldState: T, newState: T) => boolean = (oldState, newState) => oldState === newState): T {
     const [, forceUpdate] = useForceUpdate();
-    const state = useRef(empty as T);
+    const state = useRef(undefined as T);
+    const factoryRef = useRef(undefined as unknown as () => T);
 
-    if (state.current === empty) {
+    if (factoryRef.current === undefined) {
+        factoryRef.current = factory;
         state.current = factory();
     }
 
@@ -23,6 +22,8 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
             if (Object.is(deps[index], prevDeps.current[index])) {
                 continue;
             }
+
+            factoryRef.current = factory;
 
             const newState = factory();
 
@@ -39,7 +40,7 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
     useInsertionEffect(() => {
         const $stores = Array.isArray(stores) ? stores : [stores];
         function listener() {
-            const newState = factory();
+            const newState = factoryRef.current();
             if (!areStateEqual(state.current, newState)) {
                 state.current = newState;
                 forceUpdate();
@@ -49,7 +50,7 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
         for (const store of $stores) {
             store.addChangeListener(listener);
         }
-      
+
         return () => {
             for (const store of $stores) {
                 store.removeChangeListener(listener);
@@ -59,7 +60,6 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
 
     return state.current;
 }
-
 
 export function useForceUpdate() {
     return useReducer<(num: number) => number>((num) => num + 1, 0);

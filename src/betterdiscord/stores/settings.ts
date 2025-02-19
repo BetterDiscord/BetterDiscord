@@ -246,14 +246,14 @@ export default new class SettingsManager extends Store {
         return this.collections.find(c => c.id == collection)?.settings.find(c => c.id == category)?.settings.find(s => s.id == id);
     }
 
-    get(collection: string, category: string, id?: string) {
+    get<T>(collection: string, category: string, id?: string): T {
         if (arguments.length == 2) {
             id = category;
             category = collection;
             collection = "settings";
         }
-        if (!this.state[collection] || !this.state[collection][category]) return false;
-        return this.state[collection][category][id!];
+        if (!this.state[collection] || !this.state[collection][category]) return false as T;
+        return this.state[collection][category][id!] as T;
     }
 
     set(collection: string, category: string, id: string | unknown, value?: unknown): any {

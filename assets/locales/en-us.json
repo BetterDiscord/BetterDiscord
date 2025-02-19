@@ -160,6 +160,17 @@
             },
             "editor": {
                 "name": "Editor Preferences",
+                "theme": {
+                    "name": "Theme",
+                    "note": "Theme",
+                    "options": {
+                        "system": "System",
+                        "vs-dark": "Dark",
+                        "vs": "Light",
+                        "hc-black": "High Contrast Black",
+                        "hc-light": "High Contrast Light"
+                    }
+                },
                 "lineNumbers": {
                     "name": "Line Numbers",
                     "note": "Enables showing line numbers on the side of the editor"
@@ -179,6 +190,14 @@
                 "quickSuggestions": {
                     "name": "Quick Suggestions",
                     "note": "Enables showing the autocomplete suggestions as you type"
+                },
+                "insertSpaces": {
+                    "name": "Insert Spaces",
+                    "note": "Insert spaces instead of tabs"
+                },
+                "tabSize": {
+                    "name": "Tab Size",
+                    "note": "The number of spaces a tab is equal to"
                 },
                 "renderWhitespace": {
                     "name": "Show Whitespace",

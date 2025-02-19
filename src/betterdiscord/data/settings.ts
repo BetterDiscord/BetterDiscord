@@ -55,10 +55,13 @@ export default [
         collapsible: true,
         shown: false,
         settings: [
+            {type: "dropdown", id: "theme", value: "selection", options: [{value: "system"}, {value: "vs-dark"}, {value: "vs"}, {value: "hc-black"}, {value: "hc-light"}]},
             {type: "switch", id: "lineNumbers", value: true},
             {type: "switch", id: "minimap", value: true},
             {type: "switch", id: "hover", value: true},
             {type: "switch", id: "quickSuggestions", value: true},
+            {type: "switch", id: "insertSpaces", value: false},
+            {type: "number", id: "tabSize", min: 1, value: 4},
             {type: "number", id: "fontSize", min: 2, value: 14},
             {type: "dropdown", id: "renderWhitespace", value: "selection", options: [{value: "none"}, {value: "all"}, {value: "selection"}]}
         ]
@@ -173,7 +176,7 @@ export interface SwitchSetting extends SettingItem {
 export interface DropdownSetting<T> extends SettingItem {
     type: "dropdown";
     value: T;
-    options: Array<{id?: string; label: string; value: T}>;
+    options: Array<{id?: string; label: string; value: T;}>;
     style?: "transparent" | "default";
 }
 
@@ -184,7 +187,7 @@ export interface SliderSetting extends SettingItem {
     max: number;
     step?: number;
     units: string;
-    markers: Array<(number | {label: string; value: number})>;
+    markers: Array<(number | {label: string; value: number;})>;
 }
 
 export interface TextSetting extends SettingItem {
@@ -197,7 +200,7 @@ export interface TextSetting extends SettingItem {
 export interface RadioSetting<T> extends SettingItem {
     type: "radio";
     value: T;
-    options: Array<{name: string, value: T, description: string}>;
+    options: Array<{name: string, value: T, description: string;}>;
 }
 
 export interface KeybindSetting extends SettingItem {
