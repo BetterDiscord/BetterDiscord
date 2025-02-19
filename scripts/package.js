@@ -8,9 +8,9 @@ module.exports = function(dist) {
     const pkgFile = path.join(dist, "package.json");
     if (fs.existsSync(pkgFile)) {
         const currentPkg = require(pkgFile);
-        if (currentPkg.name && currentPkg.main && currentPkg.main === "injector.js") return console.log("    ✅ Existing package.json is valid");
+        if (currentPkg.name && currentPkg.main && currentPkg.main === "main.js") return console.log("    ✅ Existing package.json is valid");
         console.log("    ⚠️ Existing package.json is invalid");
     }
-    fs.writeFileSync(pkgFile, JSON.stringify({name: "betterdiscord", main: "injector.js"}));
+    fs.writeFileSync(pkgFile, JSON.stringify({name: "betterdiscord", main: "main.js"}));
     console.log("    ✅ Created new package.json");
 };

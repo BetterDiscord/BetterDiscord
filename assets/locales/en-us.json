@@ -154,7 +154,8 @@
                     "name": "Recovery",
                     "note": "Enables the ability to attempt to save discord without reloading",
                     "button": "Attempt to recover Discord",
-                    "report": "Report on Github"
+                    "report": "Report on Github",
+                    "safeMode": "Relaunch in Safe Mode"
                 }
             },
             "editor": {
@@ -224,7 +225,11 @@
         "disableAll": "Disable All",
         "enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
         "search": "Search {{type}}",
-        "results": "{{count}} Results",
+        "results": {
+            "zero": "No Results",
+            "one": "{{count}} Result",
+            "other": "{{count}} Results"
+        },
         "editAddon": "Edit",
         "deleteAddon": "Delete",
         "downloadAddon": "Download",
@@ -247,7 +252,7 @@
         "metaNotFound": "META was not found.",
         "compileError": "Could not be compiled. See console for details.",
         "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "You don't have any {{type}}s!",
+        "blankSlateHeader": "You don't have any {{type}}!",
         "blankSlateMessage": "Grab some from [our website]({{link}}) and add them to your {{type}} folder.",
         "blankSlateHeaderGeneric": "You don't have anything!",
         "blankSlateMessageGeneric": "You should probably get some.",
@@ -258,8 +263,14 @@
         "failedToFetch": "Unable to get addons",
         "new": "New",
         "updated": "Updated",
-        "downloadCount": "{{downloads}} Downloads",
-        "likeCount": "{{likes}} Likes",
+        "downloadCount": {
+            "one": "{{count}} Download",
+            "other": "{{count}} Downloads"
+        },
+        "likeCount": {
+            "one": "{{count}} Like",
+            "other": "{{count}} Likes"
+        },
         "tags": "Tags",
         "preview": "Preview",
         "official": "Official"
@@ -272,10 +283,16 @@
         "openDetached": "Detach Window",
         "settings": "Editor Settings",
         "editorTitle": "Custom CSS Editor",
-        "cssInstallSuccess": "CSS was successfully added into CustomCSS."
+        "cssInstallSuccess": "CSS was successfully added into CustomCSS.",
+        "cssInstalled": "CSS installed!",
+        "cssInstallError": "CSS failed to be added into CustomCSS.",
+        "cssReverted": "CSS was reverted.",
+        "cssReverting": "Changes will be reverted in 10 seconds",
+        "cssKept": "CSS changes kept permanently"
     },
     "Modals": {
         "confirmAction": "Are You Sure?",
+        "installCss": "Are you sure you want to add this CSS to your Custom CSS?",
         "okay": "Okay",
         "done": "Done",
         "cancel": "Cancel",
@@ -316,7 +333,10 @@
         "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
         "updateSuccessful": "Update Successful!",
         "updateAvailable": "BetterDiscord has a new update (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord has found updates for {{count}} of your {{type}}s!",
+        "addonUpdatesAvailable": {
+            "one": "BetterDiscord has found an update for {{count}} of your {{type}}!",
+            "other": "BetterDiscord has found updates for {{count}} of your {{type}}!"
+        },
         "addonUpdated": "{{name}} has been updated to version {{version}}!",
         "addonUpdateFailed": "Failed to update {{name}}. Please try again later.",
         "checking": "Checking for updates!",
