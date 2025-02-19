@@ -5,6 +5,7 @@ import Button from "@ui/base/button";
 import Settings from "@stores/settings";
 import Text from "@ui/base/text";
 import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
+import DOMManager from "./dommanager";
 
 const Icon = ({type}) => {
     switch (type) {
@@ -35,7 +36,7 @@ class NotificationUI {
         if (!root) {
             root = document.createElement("div");
             root.id = rootId;
-            document.body.appendChild(root);
+            DOMManager.bdBody.appendChild(root);
         }
         this.root = root;
 
