@@ -204,3 +204,15 @@
     color: var(--bd-editor-foreground, var(--text-normal));
     padding: 4px;
 }
+
+.bd-editor-footer-right .codicon {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    height: 100%;
+    outline-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre;
+    padding: 0 3px;
+}

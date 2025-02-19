@@ -34,7 +34,7 @@ export interface FloatingWindowProps {
     width?: number;
     height?: number;
     minX?: number;
-    minY?: 0;
+    minY?: number;
     maxX?: number,
     maxY?: number,
     onResize?(): void;
@@ -43,15 +43,27 @@ export interface FloatingWindowProps {
     confirmationText?: string;
 }
 
-export default function FloatingWindow({id, title, resizable, children, className, center, top: initialTop = 0, left: initialLeft = 0, width: initialWidth = 470, height: initialHeight = 410, minX = 0, minY = 0, maxX = Screen.width, maxY = Screen.height, onResize, close: doClose, confirmClose: doConfirmClose, confirmationText}: FloatingWindowProps) {
+export default function FloatingWindow({id, title, resizable, children, className, center, top: initialTop = 0, left: initialLeft = 0, width: initialWidth = 470, height: initialHeight = 410, minX = 0, minY = 0, maxX = -1, maxY = -1, onResize, close: doClose, confirmClose: doConfirmClose, confirmationText}: FloatingWindowProps) {
     const [modalOpen, setOpen] = useState(false);
+
+    const max = useRef({x: maxX, y: maxY});
+    max.current.x = maxX;
+    max.current.y = maxY;
 
     const positioning = useRef({
         offset: {x: 0, y: 0},
         size: {width: 0, height: 0},
+        max: {
+            get x() {return max.current.x === -1 ? Screen.width : max.current.x;},
+            get y() {return max.current.y === -1 ? Screen.height : max.current.y;}
+        },
+        min: {x: minX, y: minY},
         position: {x: 0, y: 0},
         isDragging: false
     });
+
+    positioning.current.min.x = minX;
+    positioning.current.min.y = minY;
 
     const titlebar = useRef<HTMLDivElement>(null);
     const window = useRef<HTMLDivElement>(null);
@@ -65,19 +77,19 @@ export default function FloatingWindow({id, title, resizable, children, classNam
         if (!positioning.current.isDragging) return;
 
         let newTop = (e.clientY - positioning.current.offset.y);
-        if (newTop <= minY) newTop = minY;
-        if (newTop + positioning.current.size.height >= maxY) newTop = maxY - positioning.current.size.height;
+        if (newTop <= positioning.current.min.y) newTop = positioning.current.min.y;
+        if (newTop + positioning.current.size.height >= positioning.current.max.y) newTop = positioning.current.max.y - positioning.current.size.height;
 
         let newLeft = (e.clientX - positioning.current.offset.x);
-        if (newLeft <= minX) newLeft = minX;
-        if (newLeft + positioning.current.size.width >= maxX) newLeft = maxX - positioning.current.size.width;
+        if (newLeft <= positioning.current.min.x) newLeft = positioning.current.min.x;
+        if (newLeft + positioning.current.size.width >= positioning.current.max.x) newLeft = positioning.current.max.x - positioning.current.size.width;
 
         positioning.current.position.x = newLeft;
         positioning.current.position.y = newTop;
 
         window.current!.style.left = `${newLeft}px`;
         window.current!.style.top = `${newTop}px`;
-    }, [minX, minY, maxX, maxY]);
+    }, []);
 
 
     const onDragStart = useCallback((e: MouseEvent) => {
@@ -99,8 +111,8 @@ export default function FloatingWindow({id, title, resizable, children, classNam
             if (onResize) onResize();
             const left = parseInt(window.current!.style.left);
             const top = parseInt(window.current!.style.top);
-            if (left + width >= maxX) window.current!.style.width = (maxX - left) + "px";
-            if (top + height >= maxY) window.current!.style.height = (maxY - top) + "px";
+            if (left + width >= positioning.current.max.x) window.current!.style.width = (positioning.current.max.x - left) + "px";
+            if (top + height >= positioning.current.max.y) window.current!.style.height = (positioning.current.max.y - top) + "px";
         }
 
         positioning.current.size.width = width;
@@ -108,7 +120,7 @@ export default function FloatingWindow({id, title, resizable, children, classNam
 
         window.current!.style.left = `${positioning.current.position.x}px`;
         window.current!.style.top = `${positioning.current.position.y}px`;
-    }, [window, maxX, maxY, onResize]);
+    }, [window, onResize]);
 
 
     useEffect(() => {
@@ -144,24 +156,24 @@ export default function FloatingWindow({id, title, resizable, children, classNam
         const bottom = top + height;
 
         // Prevent expanding off the bottom and right and readjust position
-        if (bottom > maxY) window.current!.style.top = (maxY - height) + "px";
-        if (right > maxX) window.current!.style.left = (maxX - width) + "px";
+        if (bottom > positioning.current.max.y) window.current!.style.top = (positioning.current.max.y - height) + "px";
+        if (right > positioning.current.max.x) window.current!.style.left = (positioning.current.max.x - width) + "px";
 
         const newLeft = parseInt(window.current!.style.left);
         const newTop = parseInt(window.current!.style.top);
 
         // For small screens it's possible pushes us off the other direction... we need to readjust size
-        if (newTop < minY) {
-            const difference = minY - newTop;
-            window.current!.style.top = minY + "px";
+        if (newTop < positioning.current.min.y) {
+            const difference = positioning.current.min.y - newTop;
+            window.current!.style.top = positioning.current.min.y + "px";
             window.current!.style.height = (height - difference) + "px";
         }
-        if (newLeft < minX) {
-            const difference = minX - newLeft;
-            window.current!.style.left = minX + "px";
+        if (newLeft < positioning.current.min.x) {
+            const difference = positioning.current.min.x - newLeft;
+            window.current!.style.left = positioning.current.min.x + "px";
             window.current!.style.height = (width - difference) + "px";
         }
-    }, [window, minX, minY, maxX, maxY, onResize]);
+    }, [window, onResize]);
 
 
     const close = useCallback(async () => {

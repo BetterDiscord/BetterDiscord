@@ -49,6 +49,7 @@ function getTheme(): Themes {
     const theme = Settings.get<"system" | Themes>("settings", "editor", "theme");
 
     if (theme === "system") {
+        if (Stores.AccessibilityStore?.useForcedColors) return "hc-black";
         return Stores.ThemeStore?.theme === "light" ? "vs" : "vs-dark";
     }
 
@@ -196,6 +197,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             }
 
             Stores.ThemeStore?.addReactChangeListener(themeListener);
+            Stores.AccessibilityStore?.addReactChangeListener(themeListener);
 
             updateThemingVars();
 
@@ -204,6 +206,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                 undo();
                 onDidChangeMarkers.dispose();
                 Stores.ThemeStore?.removeReactChangeListener(themeListener);
+                Stores.AccessibilityStore?.removeReactChangeListener(themeListener);
             };
         }
 
@@ -284,9 +287,9 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             <div className="bd-editor-footer">
                 <div className="bd-editor-footer-left">
                     <div className="bd-editor-footer-item" onClick={toggleShowingProblems}>
-                        <span className="codicon codicon-error"></span>
+                        <span className="codicon codicon-error" />
                         <span>{" "}{markerInfo[0]}{" "}</span>
-                        <span className="codicon codicon-warning"></span>
+                        <span className="codicon codicon-warning" />
                         <span>{" "}{markerInfo[1]}</span>
                     </div>
                 </div>
@@ -303,6 +306,10 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                         <span>{insertSpaces ? "Spaces" : "Tabs"}</span>
                         <span>: </span>
                         <span>{tabSize}</span>
+                    </div>
+                    <div className="bd-editor-footer-item">
+                        <span className={`codicon ${markerInfo[0] ? "codicon-bracket-error" : "codicon-bracket"}`} />
+                        <span>{language}</span>
                     </div>
                 </div>
             </div>

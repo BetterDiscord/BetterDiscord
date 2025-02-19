@@ -5,13 +5,6 @@ import FloatingWindow from "./window";
 
 const {useState, useCallback, useEffect} = React;
 
-
-function minY() {
-    const appContainer = document.querySelector(`#app-mount > div[class*="app-"]`);
-    if (appContainer) return appContainer.offsetTop;
-    return 0;
-}
-
 export default function FloatingWindowContainer() {
     const [windows, setWindows] = useState([]);
     const open = useCallback(window => {
@@ -30,8 +23,8 @@ export default function FloatingWindowContainer() {
     }, [open]);
 
     return windows.map(window =>
-        <FloatingWindow {...window} close={() => close(window.id)} minY={minY()} key={window.id}>
-                {window.children}
+        <FloatingWindow {...window} close={() => close(window.id)} key={window.id}>
+            {window.children}
         </FloatingWindow>
     );
 }
