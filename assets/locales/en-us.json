@@ -162,7 +162,7 @@
                 "name": "Editor Preferences",
                 "theme": {
                     "name": "Theme",
-                    "note": "Theme",
+                    "note": "The theme for the code editor",
                     "options": {
                         "system": "System",
                         "vs-dark": "Dark",
