@@ -34,6 +34,10 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
             break;
         }
     }
+    else {
+        // If no deps update factory always
+        factoryRef.current = factory;
+    }
 
     prevDeps.current = deps;
 
