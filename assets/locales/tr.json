@@ -1,189 +1,189 @@
 {
-    "Panels": {
-        "plugins": "Eklentiler",
-        "themes": "Temalar",
-        "customcss": "Özel CSS"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Ayarlar",
-            "general": {
-                "name": "Genel",
-                "voiceDisconnect": {
-                    "name": "Ses Kanalından Ayrılma",
-                    "note": "Discord'u kapatırken aktif ses kanalından ayrılır"
-                },
-                "showToasts": {
-                    "name": "Bildirimleri Göster",
-                    "note": "Önemli bilgilendirmeler için küçük bir bidirim gösterir"
-                },
-                "mediaKeys": {
-                    "name": "Medya Tuşlarını Deaktive Et",
-                    "note": "Bir video oynattıktan sonra Discord'un Multimedya tuşlarını ele geçirmesini engeller."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Minimum boyutu kaldır",
-                    "note": "Discord'un 940x500 boyut limitini kaldırır"
-                },
-                "name": "Pencere Tercihleri",
-                "transparency": {
-                    "name": "Şeffaflığı Etkinleştir",
-                    "note": "Ana pencerenin şeffaf olmasına el verir (yeniden başlatma gerekli)"
-                },
-                "frame": {
-                    "name": "Pencere Çerçevesi",
-                    "note": "Yerel işletim sistemi penceresini ana pencereye ekler"
-                }
-            },
-            "addons": {
-                "name": "Eklenti Yöneticisi",
-                "addonErrors": {
-                    "name": "Eklenti Hatalarını Göster",
-                    "note": "Eklenti/tema hatalarında yazı baloncuğu gösterir"
-                },
-                "editAction": {
-                    "name": "Eylemi düzenle",
-                    "note": "Eklenti ve temaları düzenlerken çıkacakları yer",
-                    "options": {
-                        "detached": "Bağımsız Pencere",
-                        "system": "Sistem Düzenleyici"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "Özel CSS",
-                "customcss": {
-                    "name": "Özel CSS",
-                    "note": "Özel CSS sekmesini aktifleştirir"
-                },
-                "liveUpdate": {
-                    "name": "Canlı Güncelleme",
-                    "note": "Yazdıkca CSS'i günceller"
-                },
-                "startDetached": {
-                    "name": "Bağımsız Başlat",
-                    "note": "Özel CSS sekme tuşuna basınca bağımsız sekmede açar"
-                },
-                "nativeOpen": {
-                    "name": "Seçili editör'de aç",
-                    "note": "Özel CSS sekme tuşuna basınca seçili yazı editörünüzde açar"
-                },
-                "openAction": {
-                    "name": "Editör Yeri",
-                    "note": "Özel CSS'in varsayılan açılma yeri",
-                    "options": {
-                        "settings": "Ayarlar Menüsü",
-                        "detached": "Bağımsız Pencere",
-                        "system": "Sistem Editörü"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Geliştirici (Developer) Ayarları",
-                "debuggerHotkey": {
-                    "name": "Hata ayıklayıcı kısayolu",
-                    "note": "F8'e basınca hata ayıklayıcının açılmasını sağlar"
-                },
-                "reactDevTools": {
-                    "name": "React Geliştirici Araçları",
-                    "note": "Yerli React Geliştirici araçlarınızı Discord'a ekler"
-                },
-                "inspectElement": {
-                    "name": "Öğeyi Denetle Kısayolu",
-                    "note": "Çoğu tarayıca yaygın olan (ctrl + shift + c) Öğeyi Denetle kısayolunu etkinleştirir"
-                },
-                "devToolsWarning": {
-                    "name": "DevTools uyarısını kapat",
-                    "note": "Discord'un \"Bekle!\" mesajını yazmasını engeller"
-                },
-                "debugLogs": {
-                    "name": "Hata Ayıklama çıktıları",
-                    "note": "Konsoldaki herşeyi BetterDiscord klasöründeki debug.log dosyasına kaydeder"
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{author}} tarafından {{name}} v{{version}}",
-        "byline": "{{author}} tarafından",
-        "openFolder": "{{type}} Dosyasını Aç",
-        "reload": "Yeniden-Başlat",
-        "addonSettings": "Ayarlar",
-        "website": "Website",
-        "source": "Kaynak",
-        "invite": "Destek Sunucusu",
-        "donate": "Bağış",
-        "patreon": "Patreon",
-        "name": "İsim",
-        "author": "Yapımcı",
-        "version": "Versiyon",
-        "added": "Eklenim Tarihi",
-        "modified": "Düzenlenme Tarihi",
-        "search": "{{type}} ara",
-        "editAddon": "Düzenle",
-        "deleteAddon": "Sil",
-        "confirmDelete": "{{name}} eklentisini silmek istediğinize emin misiniz?",
-        "confirmationText": "{{name}} eklentisinde kaydedilmemiş değişiklikler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
-        "enabled": "{{name}} başlatıldı.",
-        "disabled": "{{name}} kapatıldı.",
-        "couldNotEnable": "{{name}} başlatılamadı.",
-        "couldNotDisable": "{{name}} kapatılamadı.",
-        "couldNotStart": "{{name}} başlatılamadı.",
-        "couldNotStop": "{{name}} durdurulamadı.",
-        "settingsError": "{{name}} için ayarlar açılamadı.",
-        "methodError": "{{method}} çalıştırılamadı.",
-        "unknownAuthor": "Bilinmeyen Yapımcı",
-        "noDescription": "Açıklama Yok.",
-        "alreadyExists": "{{name}} isimli bir {{type}} zaten var",
-        "alreadWatching": "Eklentiler zaten izleniyor.",
-        "metaError": "META ayrıştırılamadı.",
-        "missingNameData": "META isim verisi yok.",
-        "metaNotFound": "META bulunamadı.",
-        "compileError": "Derlenemedi.",
-        "wasUnloaded": "{{name}} çıkarıldı.",
-        "blankSlateHeader": "Hiç {{type}}(a/e)arın yok!",
-        "blankSlateMessage": "[Bu siteden]({{link}}) al ve {{type}} klasörüne ekle."
-    },
-    "CustomCSS": {
-        "confirmationText": "Özel CSS'inde kaydedilmemiş değişimler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
-        "update": "Güncelle",
-        "save": "Kaydet",
-        "openNative": "Sistem Editöründe aç",
-        "openDetached": "Pencereyi Ayır",
-        "settings": "Editör Ayarları",
-        "editorTitle": "Özel CSS Editörü"
-    },
-    "Modals": {
-        "confirmAction": "Emin Misin?",
-        "okay": "Tamam",
-        "done": "Bitti",
-        "cancel": "İptal",
-        "nevermind": "Boşver",
-        "close": "Kapat",
-        "name": "İsim",
-        "message": "Mesaj",
-        "error": "Hata",
-        "addonErrors": "Eklenti Hataları",
-        "restartRequired": "Yeniden Başlatma Lazım",
-        "restartNow": "Şimdi Yeniden Başlat",
-        "restartLater": "Sonra Yeniden Başlat",
-        "additionalInfo": "Ek Bilgi",
-        "restartPrompt": "Etki görmek için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
-    },
-    "ReactDevTools": {
-        "notFound": "Eklenti Bulunamadı",
-        "notFoundDetails": "React Geliştirici Araçları bilgisayarınızda bulunamadı.\nLütfen eklentiyi Chrome tarayıcınıza indiriniz."
-    },
-    "Sorting": {
-        "sortBy": "Göre Sırala",
-        "order": "Sıra",
-        "ascending": "Yükselen",
-        "descending": "Azalan"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "Bu seçeneğin düzgün çalışması için şeffaf bir tema gerekiyor.\nWindows'da bu aero snapping ve maksimize etmeyi bozabilir.\n\nEtki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?",
-        "disabledInfo": "Etki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
-    }
+	"Panels": {
+		"plugins": "Eklentiler",
+		"themes": "Temalar",
+		"customcss": "Özel CSS"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Ayarlar",
+			"general": {
+				"name": "Genel",
+				"voiceDisconnect": {
+					"name": "Ses Kanalından Ayrılma",
+					"note": "Discord'u kapatırken aktif ses kanalından ayrılır"
+				},
+				"showToasts": {
+					"name": "Bildirimleri Göster",
+					"note": "Önemli bilgilendirmeler için küçük bir bidirim gösterir"
+				},
+				"mediaKeys": {
+					"name": "Medya Tuşlarını Deaktive Et",
+					"note": "Bir video oynattıktan sonra Discord'un Multimedya tuşlarını ele geçirmesini engeller."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Minimum boyutu kaldır",
+					"note": "Discord'un 940x500 boyut limitini kaldırır"
+				},
+				"name": "Pencere Tercihleri",
+				"transparency": {
+					"name": "Şeffaflığı Etkinleştir",
+					"note": "Ana pencerenin şeffaf olmasına el verir (yeniden başlatma gerekli)"
+				},
+				"frame": {
+					"name": "Pencere Çerçevesi",
+					"note": "Yerel işletim sistemi penceresini ana pencereye ekler"
+				}
+			},
+			"addons": {
+				"name": "Eklenti Yöneticisi",
+				"addonErrors": {
+					"name": "Eklenti Hatalarını Göster",
+					"note": "Eklenti/tema hatalarında yazı baloncuğu gösterir"
+				},
+				"editAction": {
+					"name": "Eylemi düzenle",
+					"note": "Eklenti ve temaları düzenlerken çıkacakları yer",
+					"options": {
+						"detached": "Bağımsız Pencere",
+						"system": "Sistem Düzenleyici"
+					}
+				}
+			},
+			"customcss": {
+				"name": "Özel CSS",
+				"customcss": {
+					"name": "Özel CSS",
+					"note": "Özel CSS sekmesini aktifleştirir"
+				},
+				"liveUpdate": {
+					"name": "Canlı Güncelleme",
+					"note": "Yazdıkca CSS'i günceller"
+				},
+				"startDetached": {
+					"name": "Bağımsız Başlat",
+					"note": "Özel CSS sekme tuşuna basınca bağımsız sekmede açar"
+				},
+				"nativeOpen": {
+					"name": "Seçili editör'de aç",
+					"note": "Özel CSS sekme tuşuna basınca seçili yazı editörünüzde açar"
+				},
+				"openAction": {
+					"name": "Editör Yeri",
+					"note": "Özel CSS'in varsayılan açılma yeri",
+					"options": {
+						"settings": "Ayarlar Menüsü",
+						"detached": "Bağımsız Pencere",
+						"system": "Sistem Editörü"
+					}
+				}
+			},
+			"developer": {
+				"name": "Geliştirici (Developer) Ayarları",
+				"debuggerHotkey": {
+					"name": "Hata ayıklayıcı kısayolu",
+					"note": "F8'e basınca hata ayıklayıcının açılmasını sağlar"
+				},
+				"reactDevTools": {
+					"name": "React Geliştirici Araçları",
+					"note": "Yerli React Geliştirici araçlarınızı Discord'a ekler"
+				},
+				"inspectElement": {
+					"name": "Öğeyi Denetle Kısayolu",
+					"note": "Çoğu tarayıca yaygın olan (ctrl + shift + c) Öğeyi Denetle kısayolunu etkinleştirir"
+				},
+				"devToolsWarning": {
+					"name": "DevTools uyarısını kapat",
+					"note": "Discord'un \"Bekle!\" mesajını yazmasını engeller"
+				},
+				"debugLogs": {
+					"name": "Hata Ayıklama çıktıları",
+					"note": "Konsoldaki herşeyi BetterDiscord klasöründeki debug.log dosyasına kaydeder"
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{author}} tarafından {{name}} v{{version}}",
+		"byline": "{{author}} tarafından",
+		"openFolder": "{{type}} Dosyasını Aç",
+		"reload": "Yeniden-Başlat",
+		"addonSettings": "Ayarlar",
+		"website": "Website",
+		"source": "Kaynak",
+		"invite": "Destek Sunucusu",
+		"donate": "Bağış",
+		"patreon": "Patreon",
+		"name": "İsim",
+		"author": "Yapımcı",
+		"version": "Versiyon",
+		"added": "Eklenim Tarihi",
+		"modified": "Düzenlenme Tarihi",
+		"search": "{{type}} ara",
+		"editAddon": "Düzenle",
+		"deleteAddon": "Sil",
+		"confirmDelete": "{{name}} eklentisini silmek istediğinize emin misiniz?",
+		"confirmationText": "{{name}} eklentisinde kaydedilmemiş değişiklikler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
+		"enabled": "{{name}} başlatıldı.",
+		"disabled": "{{name}} kapatıldı.",
+		"couldNotEnable": "{{name}} başlatılamadı.",
+		"couldNotDisable": "{{name}} kapatılamadı.",
+		"couldNotStart": "{{name}} başlatılamadı.",
+		"couldNotStop": "{{name}} durdurulamadı.",
+		"settingsError": "{{name}} için ayarlar açılamadı.",
+		"methodError": "{{method}} çalıştırılamadı.",
+		"unknownAuthor": "Bilinmeyen Yapımcı",
+		"noDescription": "Açıklama Yok.",
+		"alreadyExists": "{{name}} isimli bir {{type}} zaten var",
+		"alreadWatching": "Eklentiler zaten izleniyor.",
+		"metaError": "META ayrıştırılamadı.",
+		"missingNameData": "META isim verisi yok.",
+		"metaNotFound": "META bulunamadı.",
+		"compileError": "Derlenemedi.",
+		"wasUnloaded": "{{name}} çıkarıldı.",
+		"blankSlateHeader": "Hiç {{type}}(a/e)arın yok!",
+		"blankSlateMessage": "[Bu siteden]({{link}}) al ve {{type}} klasörüne ekle."
+	},
+	"CustomCSS": {
+		"confirmationText": "Özel CSS'inde kaydedilmemiş değişimler var. Bu pencereyi kapatmak değişikliklerin kaybolmasına yol açar.",
+		"update": "Güncelle",
+		"save": "Kaydet",
+		"openNative": "Sistem Editöründe aç",
+		"openDetached": "Pencereyi Ayır",
+		"settings": "Editör Ayarları",
+		"editorTitle": "Özel CSS Editörü"
+	},
+	"Modals": {
+		"confirmAction": "Emin Misin?",
+		"okay": "Tamam",
+		"done": "Bitti",
+		"cancel": "İptal",
+		"nevermind": "Boşver",
+		"close": "Kapat",
+		"name": "İsim",
+		"message": "Mesaj",
+		"error": "Hata",
+		"addonErrors": "Eklenti Hataları",
+		"restartRequired": "Yeniden Başlatma Lazım",
+		"restartNow": "Şimdi Yeniden Başlat",
+		"restartLater": "Sonra Yeniden Başlat",
+		"additionalInfo": "Ek Bilgi",
+		"restartPrompt": "Etki görmek için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
+	},
+	"ReactDevTools": {
+		"notFound": "Eklenti Bulunamadı",
+		"notFoundDetails": "React Geliştirici Araçları bilgisayarınızda bulunamadı.\nLütfen eklentiyi Chrome tarayıcınıza indiriniz."
+	},
+	"Sorting": {
+		"sortBy": "Göre Sırala",
+		"order": "Sıra",
+		"ascending": "Yükselen",
+		"descending": "Azalan"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Bu seçeneğin düzgün çalışması için şeffaf bir tema gerekiyor.\nWindows'da bu aero snapping ve maksimize etmeyi bozabilir.\n\nEtki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?",
+		"disabledInfo": "Etki etmesi için Discord'un yeniden başlatılması gerek. Şimdi yeniden başlatmak ister misiniz?"
+	}
 }

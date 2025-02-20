@@ -1,5 +1,5 @@
-import React from "@modules/react";
 import Events from "@modules/emitter";
+import React from "@modules/react";
 
 import FloatingWindow from "./window";
 
@@ -31,7 +31,7 @@ export default function FloatingWindowContainer() {
 
     return windows.map(window =>
         <FloatingWindow {...window} close={() => close(window.id)} minY={minY()} key={window.id}>
-                {window.children}
+            {window.children}
         </FloatingWindow>
     );
 }

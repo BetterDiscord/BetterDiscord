@@ -1,21 +1,21 @@
-import React from "@modules/react";
-import AddonStore from "@modules/addonstore";
 import {t} from "@common/i18n";
+import AddonStore from "@modules/addonstore";
 import ipc from "@modules/ipc";
 import PluginManager from "@modules/pluginmanager";
+import React from "@modules/react";
 import ThemeManager from "@modules/thememanager";
 
-import AddonCard, {TagContext} from "@ui/settings/storecard";
-import Search from "@ui/settings/components/search";
-import Dropdown from "@ui/settings/components/dropdown";
-import NoResults from "@ui/blankslates/noresults";
-import Spinner from "@ui/spinner";
-import ErrorBoundary from "@ui/errorboundary";
-import Web from "@data/web";
-import {buildDirectionOptions, makeBasicButton, getState, saveState, AddonHeader} from "./addonshared";
-import Paginator from "@ui/misc/paginator";
 import Logger from "@common/logger";
+import Web from "@data/web";
+import NoResults from "@ui/blankslates/noresults";
+import ErrorBoundary from "@ui/errorboundary";
+import Paginator from "@ui/misc/paginator";
+import Dropdown from "@ui/settings/components/dropdown";
+import Search from "@ui/settings/components/search";
+import AddonCard, {TagContext} from "@ui/settings/storecard";
+import Spinner from "@ui/spinner";
 import {ChevronDownIcon, FolderIcon, InfoIcon, RotateCwIcon} from "lucide-react";
+import {AddonHeader, buildDirectionOptions, getState, makeBasicButton, saveState} from "./addonshared";
 
 const {useState, useMemo, useCallback} = React;
 

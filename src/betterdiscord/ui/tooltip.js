@@ -1,10 +1,7 @@
 import Logger from "@common/logger";
 import DOMManager from "@modules/dommanager";
 
-
-const toPx = function (value) {
-    return `${value}px`;
-};
+const toPx = (value) => `${value}px`;
 
 const styles = ["primary", "info", "success", "warn", "danger"];
 const sides = ["top", "right", "bottom", "left"];
@@ -22,7 +19,12 @@ export default class Tooltip {
      * @param {boolean} [options.disabled=false] - whether the tooltip should be disabled from showing on hover
      */
     constructor(node, text, options = {}) {
-        const {style = "primary", side = "top", preventFlip = false, disabled = false} = options;
+        const {
+            style = "primary",
+            side = "top",
+            preventFlip = false,
+            disabled = false,
+        } = options;
         this.node = node;
         this.label = text;
         this.style = style.toLowerCase();
@@ -31,11 +33,13 @@ export default class Tooltip {
         this.disabled = disabled;
         this.active = false;
 
-        if (!sides.includes(this.side)) return Logger.err("Tooltip", `Side ${this.side} does not exist.`);
-        if (!styles.includes(this.style)) return Logger.err("Tooltip", `Style ${this.style} does not exist.`);
+        if (!sides.includes(this.side)) {return Logger.err("Tooltip", `Side ${this.side} does not exist.`);}
+        if (!styles.includes(this.style)) {return Logger.err("Tooltip", `Style ${this.style} does not exist.`);}
 
         this.element = DOMManager.parseHTML(`<div class="bd-layer">`);
-        this.tooltipElement = DOMManager.parseHTML(`<div class="bd-tooltip"><div class="bd-tooltip-pointer"></div><div class="bd-tooltip-content"></div></div>`);
+        this.tooltipElement = DOMManager.parseHTML(
+            `<div class="bd-tooltip"><div class="bd-tooltip-pointer"></div><div class="bd-tooltip-content"></div></div>`,
+        );
         this.tooltipElement.classList.add(`bd-tooltip-${this.style}`);
 
         this.labelElement = this.tooltipElement.childNodes[1];
@@ -55,18 +59,38 @@ export default class Tooltip {
     }
 
     /** Alias for the constructor */
-    static create(node, text, options = {}) {return new Tooltip(node, text, options);}
+    static create(node, text, options = {}) {
+        return new Tooltip(node, text, options);
+    }
 
     /** Container where the tooltip will be appended. */
-    get container() {return document.querySelector(`#app-mount`);}
+    get container() {
+        return document.querySelector(`#app-mount`);
+    }
     /** Boolean representing if the tooltip will fit on screen above the element */
-    get canShowAbove() {return this.node.getBoundingClientRect().top - this.element.offsetHeight >= 0;}
+    get canShowAbove() {
+        return (
+            this.node.getBoundingClientRect().top - this.element.offsetHeight >= 0
+        );
+    }
     /** Boolean representing if the tooltip will fit on screen below the element */
-    get canShowBelow() {return this.node.getBoundingClientRect().top + this.node.offsetHeight + this.element.offsetHeight <= DOMManager.screenHeight;}
+    get canShowBelow() {
+        return (
+            this.node.getBoundingClientRect().top + this.node.offsetHeight + this.element.offsetHeight <= DOMManager.screenHeight
+        );
+    }
     /** Boolean representing if the tooltip will fit on screen to the left of the element */
-    get canShowLeft() {return this.node.getBoundingClientRect().left - this.element.offsetWidth >= 0;}
+    get canShowLeft() {
+        return (
+            this.node.getBoundingClientRect().left - this.element.offsetWidth >= 0
+        );
+    }
     /** Boolean representing if the tooltip will fit on screen to the right of the element */
-    get canShowRight() {return this.node.getBoundingClientRect().left + this.node.offsetWidth + this.element.offsetWidth <= DOMManager.screenWidth;}
+    get canShowRight() {
+        return (
+            this.node.getBoundingClientRect().left + this.node.offsetWidth + this.element.offsetWidth <= DOMManager.screenWidth
+        );
+    }
 
     /** Hides the tooltip. Automatically called on mouseleave. */
     hide() {
@@ -85,23 +109,23 @@ export default class Tooltip {
         this.container.append(this.element);
 
         if (this.side == "top") {
-            if (this.canShowAbove || (!this.canShowAbove && this.preventFlip)) this.showAbove();
-            else this.showBelow();
+            if (this.canShowAbove || (!this.canShowAbove && this.preventFlip)) {this.showAbove();}
+            else {this.showBelow();}
         }
 
         if (this.side == "bottom") {
-            if (this.canShowBelow || (!this.canShowBelow && this.preventFlip)) this.showBelow();
-            else this.showAbove();
+            if (this.canShowBelow || (!this.canShowBelow && this.preventFlip)) {this.showBelow();}
+            else {this.showAbove();}
         }
 
         if (this.side == "left") {
-            if (this.canShowLeft || (!this.canShowLeft && this.preventFlip)) this.showLeft();
-            else this.showRight();
+            if (this.canShowLeft || (!this.canShowLeft && this.preventFlip)) {this.showLeft();}
+            else {this.showRight();}
         }
 
         if (this.side == "right") {
-            if (this.canShowRight || (!this.canShowRight && this.preventFlip)) this.showRight();
-            else this.showLeft();
+            if (this.canShowRight || (!this.canShowRight && this.preventFlip)) {this.showRight();}
+            else {this.showLeft();}
         }
 
         /** Do not create a new observer each time if one already exists! */
@@ -111,7 +135,7 @@ export default class Tooltip {
             mutations.forEach((mutation) => {
                 const nodes = Array.from(mutation.removedNodes);
                 const directMatch = nodes.indexOf(this.node) > -1;
-                const parentMatch = nodes.some(parent => parent.contains(this.node));
+                const parentMatch = nodes.some((parent) => parent.contains(this.node));
                 if (directMatch || parentMatch) {
                     this.hide();
                     this.observer.disconnect();
@@ -125,38 +149,60 @@ export default class Tooltip {
     /** Force showing the tooltip above the node. */
     showAbove() {
         this.tooltipElement.classList.add("bd-tooltip-top");
-        this.element.style.setProperty("top", toPx(this.node.getBoundingClientRect().top - this.element.offsetHeight - 10));
+        this.element.style.setProperty(
+            "top",
+            toPx(
+                this.node.getBoundingClientRect().top - this.element.offsetHeight - 10,
+            ),
+        );
         this.centerHorizontally();
     }
 
     /** Force showing the tooltip below the node. */
     showBelow() {
         this.tooltipElement.classList.add("bd-tooltip-bottom");
-        this.element.style.setProperty("top", toPx(this.node.getBoundingClientRect().top + this.node.offsetHeight + 10));
+        this.element.style.setProperty(
+            "top",
+            toPx(this.node.getBoundingClientRect().top + this.node.offsetHeight + 10),
+        );
         this.centerHorizontally();
     }
 
     /** Force showing the tooltip to the left of the node. */
     showLeft() {
         this.tooltipElement.classList.add("bd-tooltip-left");
-        this.element.style.setProperty("left", toPx(this.node.getBoundingClientRect().left - this.element.offsetWidth - 10));
+        this.element.style.setProperty(
+            "left",
+            toPx(
+                this.node.getBoundingClientRect().left - this.element.offsetWidth - 10,
+            ),
+        );
         this.centerVertically();
     }
 
     /** Force showing the tooltip to the right of the node. */
     showRight() {
         this.tooltipElement.classList.add("bd-tooltip-right");
-        this.element.style.setProperty("left", toPx(this.node.getBoundingClientRect().left + this.node.offsetWidth + 10));
+        this.element.style.setProperty(
+            "left",
+            toPx(this.node.getBoundingClientRect().left + this.node.offsetWidth + 10),
+        );
         this.centerVertically();
     }
 
     centerHorizontally() {
-        const nodecenter = this.node.getBoundingClientRect().left + (this.node.offsetWidth / 2);
-        this.element.style.setProperty("left", toPx(nodecenter - (this.element.offsetWidth / 2)));
+        const nodecenter = this.node.getBoundingClientRect().left + this.node.offsetWidth / 2;
+        this.element.style.setProperty(
+            "left",
+            toPx(nodecenter - this.element.offsetWidth / 2),
+        );
     }
 
     centerVertically() {
-        const nodecenter = this.node.getBoundingClientRect().top + (this.node.offsetHeight / 2);
-        this.element.style.setProperty("top", toPx(nodecenter - (this.element.offsetHeight / 2)));
+        const nodecenter = this.node.getBoundingClientRect().top + this.node.offsetHeight / 2;
+        this.element.style.setProperty(
+            "top",
+            toPx(nodecenter - this.element.offsetHeight / 2),
+        );
     }
 }

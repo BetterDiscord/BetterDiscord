@@ -38,7 +38,7 @@ class Logger {
      * @param {string} pluginName - Name of the plugin
      * @param {string} nameStyle - CSS to style the plugin name
      * @param {string} messageStyle - CSS to style the main message
-     * @returns 
+     * @returns
      */
     constructor(pluginName = undefined, nameStyle = undefined, messageStyle = undefined) {
         if (!pluginName) return;
@@ -65,7 +65,7 @@ class Logger {
 
     /**
      * Logs an error message.
-     * 
+     *
      * @param {string} pluginName Name of the calling module
      * @param  {...any} message Messages to have logged.
      */
@@ -118,7 +118,7 @@ class Logger {
 
         // If a name was set via constructor move the "name" to be part of the message
         if (pluginName && this.#pluginName) message = [pluginName, ...message];
-        
+
         const displayName = this.#pluginName || pluginName;
         console[type](`%c[${displayName}]%c`, this.#nameStyle, this.#messageStyle, ...message);
     }

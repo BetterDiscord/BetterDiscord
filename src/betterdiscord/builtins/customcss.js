@@ -4,19 +4,19 @@ import electron from "electron";
 
 import Builtin from "@structs/builtin";
 
-import Settings from "@stores/settings";
-import Config from "@stores/config";
-import React from "@modules/react";
-import Events from "@modules/emitter";
-import DOMManager from "@modules/dommanager";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
+import DOMManager from "@modules/dommanager";
+import Events from "@modules/emitter";
+import React from "@modules/react";
+import Config from "@stores/config";
+import Settings from "@stores/settings";
 
+import {debounce, findInTree} from "@common/utils";
 import CSSEditor from "@ui/customcss/csseditor";
 import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
 import {getByKeys} from "@webpack";
-import {debounce, findInTree} from "@common/utils";
 
 
 const UserSettings = getByKeys(["updateAccount"]);

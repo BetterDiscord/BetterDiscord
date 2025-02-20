@@ -1,6 +1,5 @@
-import DiscordModules from "@modules/discordmodules";
 import {extend} from "@common/utils";
-
+import DiscordModules from "@modules/discordmodules";
 
 export default class SimpleMarkdownExt {
     static parseToReact(str, inline = true) {
@@ -11,17 +10,23 @@ export default class SimpleMarkdownExt {
     static _initialize() {
         const SMD = DiscordModules.SimpleMarkdown;
         const originalLink = SMD.defaultRules.link.react;
-        const newRules = extend({}, SMD.defaultRules, {link: {react: function() {
-            const original = Reflect.apply(originalLink, undefined, arguments);
-            original.props.className = "bd-link";
-            original.props.target = "_blank";
-            original.props.rel = "noopener noreferrer";
-            return original;
-        }}});
+        const newRules = extend({}, SMD.defaultRules, {
+            link: {
+                react: () => {
+                    const original = Reflect.apply(originalLink, undefined, arguments);
+                    original.props.className = "bd-link";
+                    original.props.target = "_blank";
+                    original.props.rel = "noopener noreferrer";
+                    return original;
+                },
+            },
+        });
 
         for (const type in newRules) {
             if (!newRules[type].requiredFirstCharacters) continue;
-            newRules[type].requiredFirstCharacters = Object.values(newRules[type].requiredFirstCharacters);
+            newRules[type].requiredFirstCharacters = Object.values(
+                newRules[type].requiredFirstCharacters,
+            );
         }
 
         this._parse = SMD.parserFor(newRules);

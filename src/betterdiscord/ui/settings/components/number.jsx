@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import {none, SettingsContext} from "@ui/contexts";
+import {SettingsContext, none} from "@ui/contexts";
 
 const {useState, useCallback, useContext} = React;
 

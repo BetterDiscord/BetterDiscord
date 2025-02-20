@@ -1,5 +1,5 @@
-import fs from "@polyfill/fs";
 import path from "path";
+import fs from "@polyfill/fs";
 import Store from "./base";
 import Config from "./config";
 

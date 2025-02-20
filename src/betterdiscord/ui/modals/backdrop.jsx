@@ -1,6 +1,6 @@
-import clsx from "clsx";
 import React from "@modules/react";
 import {getByKeys} from "@webpack";
+import clsx from "clsx";
 
 const Spring = getByKeys(["useSpring", "animated"]);
 
@@ -27,9 +27,9 @@ export default function Backdrop({isVisible, className, onClick}) {
         if (!visible) return null;
 
         return <Spring.animated.div
-                className={clsx("bd-modal-backdrop", className)}
-                style={styles}
-                onClick={onClick}
+            className={clsx("bd-modal-backdrop", className)}
+            style={styles}
+            onClick={onClick}
         />;
     });
 }

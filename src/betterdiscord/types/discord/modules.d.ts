@@ -1,4 +1,4 @@
-import type {ForwardRefExoticComponent, MemoExoticComponent, JSX} from "react";
+import type {ForwardRefExoticComponent, JSX, MemoExoticComponent} from "react";
 
 export interface RemoteModule {
     releaseChannel: string;
@@ -57,9 +57,9 @@ export interface FluxStore {
 }
 
 export interface FluxStoreConstructor {
-    new (dispatcher: unknown, handlers: unknown): FluxStore,
+    new(dispatcher: unknown, handlers: unknown): FluxStore,
     getAll(): FluxStore[],
-    prototype: FluxStore
+    prototype: FluxStore;
 }
 
 export type CommonlyUsedStores = (
@@ -140,7 +140,7 @@ export interface DiscordPermissions {
 }
 
 export interface InviteActions {
-    resolveInvite(code: string): {code: string; invite: {code: string}};
+    resolveInvite(code: string): {code: string; invite: {code: string;};};
     getInviteContext(): void;
     createInvite(): void;
     mobileCreateInvite(): void;

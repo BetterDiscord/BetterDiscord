@@ -1,247 +1,247 @@
 {
-    "Panels": {
-        "plugins": "Pluginok",
-        "themes": "Témák",
-        "customcss": "Egyéni CSS",
-        "updates": "Frissítések"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Beállítások",
-            "general": {
-                "name": "Általános",
-                "voiceDisconnect": {
-                    "name": "Hangkapcsolat megszakítása",
-                    "note": "Kapcsolat megszakítása a hangkiszolgálóval amikor bezárod a Discordot"
-                },
-                "showToasts": {
-                    "name": "Értesítés megjelenítése induláskor",
-                    "note": "Kis értesítést jelenít meg a fontos információkról"
-                },
-                "mediaKeys": {
-                    "name": "Médiavezérlő billentyűk letiltása",
-                    "note": "Megakadályozza, hogy a Discord a videók lejátszása után átkalibrálja a médiavezérlő billentyűket."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Minimális méret felülírása",
-                    "note": "Felülírja és eltávolítja a Discord kényszerített minimális 940x500-as ablakméretét"
-                },
-                "name": "Ablak beállítások",
-                "transparency": {
-                    "name": "Átlátszóság engedélyezése",
-                    "note": "A főablak átláthatóvá tétele (újraindítást igényel)"
-                },
-                "frame": {
-                    "name": "Ablakkeret",
-                    "note": "Hozzáadja az alap os ablakkeretet a főablakhoz"
-                }
-            },
-            "addons": {
-                "name": "Kiegészítőkezelő",
-                "addonErrors": {
-                    "name": "Kiegészítő hibaüzenetek megjelenítése",
-                    "note": "Megjelenít egy ablakot a pluginok/témák hibáiról"
-                },
-                "editAction": {
-                    "name": "Szerkesztő beállítása",
-                    "note": "A pluginok és témák szerkesztése ebben a szerkesztőben",
-                    "options": {
-                        "detached": "Különálló ablak",
-                        "system": "Rendszer alapértelmezett"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "Egyéni CSS",
-                "customcss": {
-                    "name": "Egyéni CSS",
-                    "note": "Engedélyezi az Egyéni CSS szekciót"
-                },
-                "liveUpdate": {
-                    "name": "Frissítés élőben",
-                    "note": "Frissíti a css-t szerkesztés közben"
-                },
-                "startDetached": {
-                    "name": "Indítás külön ablakban",
-                    "note": "Az Egyéni CSS szekcióra kattintva a szerkesztő egy külön ablakban nyílik meg"
-                },
-                "nativeOpen": {
-                    "name": "Megnyitás natív szerkesztőben",
-                    "note": "Az Egyéni CSS fülre kattintva megnyílik az egyéni css egy natív szerkesztőben"
-                },
-                "openAction": {
-                    "name": "Szerkesztő helye",
-                    "note": "Az Egyéni CSS alapértelmezetten itt nyílik meg",
-                    "options": {
-                        "settings": "Beállítások menü",
-                        "detached": "Különálló ablak",
-                        "system": "Rendszer alapértelmezett"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Fejlesztői beállítások",
-                "debuggerHotkey": {
-                    "name": "Hibakereső gyorsbillentyű",
-                    "note": "Lehetővé teszi a debugger aktiválását az F8 megnyomásakor, amikor a DevTools meg van nyitva"
-                },
-                "reactDevTools": {
-                    "name": "React fejlesztői eszközök",
-                    "note": "Beilleszti a telepített React Developer Toolst a Discordba"
-                },
-                "inspectElement": {
-                    "name": "Elem vizsgálat gyorsbillentyűje",
-                    "note": "Engedélyezi a legtöbb böngészőben használt elem vizsgálata gyorsbillentyűt (ctrl + shift + c)"
-                },
-                "devToolsWarning": {
-                    "name": "DevTools riasztás leállítása",
-                    "note": "Megakadályozza, hogy a Discord kiírja a \"Várj!\" üzenetét"
-                },
-                "debugLogs": {
-                    "name": "Hibakereső napló",
-                    "note": "A konzolról mindent kiír a BetterDiscord mappában lévő debug.log fájlba"
-                },
-                "devTools": {
-                    "name": "Fejlesztői eszközök",
-                    "note": "Engedélyezi a DevTools bekapcsolását a ctrl+shift+i billentyűkombinációval"
-                }
-            },
-            "editor": {
-                "name": "Szerkesztői beállítások",
-                "lineNumbers": {
-                    "name": "Szakasz sorszámok",
-                    "note": "Lehetővé teszi a szakasz sorszámok megjelenítését a szerkesztő oldalán"
-                },
-                "fontSize": {
-                    "name": "Betűméret",
-                    "note": "A szerkesztőben használandó betűtípus mérete (pt)"
-                },
-                "minimap": {
-                    "name": "Minitérkép",
-                    "note": "Megjeleníti a kódminitérkép megjelenítését a szerkesztő oldalán"
-                },
-                "hover": {
-                    "name": "Hivatkozási eszköztippek",
-                    "note": "Megjeleníti a hivatkozási eszköztippek megjelenítését a szabályok és szelektorok lebegtetésekor"
-                },
-                "quickSuggestions": {
-                    "name": "Gyors javaslatok",
-                    "note": "Engedélyezi az automatikus kitöltési javaslatok megjelenítését gépelés közben"
-                },
-                "renderWhitespace": {
-                    "name": "Fehér tér megjelenítése",
-                    "note": "Szóközök megjelenítése a szerkesztőben",
-                    "options": {
-                        "all": "Mindig",
-                        "none": "Soha",
-                        "selection": "Kiválasztás"
-                    }
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} {{author}} által",
-        "byline": "{{author}} által",
-        "openFolder": "{{type}} mappa megnyitása",
-        "reload": "Újratöltés",
-        "addonSettings": "Beállítások",
-        "website": "Weboldal",
-        "source": "Forrás",
-        "invite": "Támogatási szerver",
-        "donate": "Támogatás",
-        "patreon": "Patreon",
-        "name": "Név",
-        "author": "Szerző",
-        "version": "Verzió",
-        "added": "Hozzáadás dátuma",
-        "modified": "Módosítás dátuma",
-        "search": "Keresés {{type}}",
-        "editAddon": "Szerkesztés",
-        "deleteAddon": "Törlés",
-        "confirmDelete": "Biztos, hogy törölni akarja ezt: {{name}}?",
-        "confirmationText": "A {{name}} módosításait nem kerültek mentésre. Ha bezárja ezt az ablakot, ezek a módosítások elvesznek.",
-        "enabled": "{{name}} bekapcsolva.",
-        "disabled": "{{name}} ki lett kapcsolva.",
-        "couldNotEnable": "{{name}} nem elindítható.",
-        "couldNotDisable": "{{name}} nem kikapcsolható.",
-        "couldNotStart": "{{name}} nem elindítható.",
-        "couldNotStop": "{{name}} nem leállítható.",
-        "settingsError": "Nem sikerült megnyitni a {{name}} beállításait",
-        "methodError": "{{method}} nem kivehető.",
-        "unknownAuthor": "Ismeretlen szerző",
-        "noDescription": "Leírás nincs megadva.",
-        "alreadyExists": "Már létezik egy {{type}} {{name}} névvel",
-        "alreadWatching": "Jelenleg a kiegészítőket nézed.",
-        "metaError": "Nem sikerült elemezni a META-t.",
-        "missingNameData": "Hiányzik a névadat a META-ból.",
-        "metaNotFound": "META nem található.",
-        "compileError": "Sikertelen indítás. Részletekért lásd a konzolt.",
-        "wasUnloaded": "{{name}} nem indult el.",
-        "blankSlateHeader": "Még nem rendelkezel egy ilyennel sem: {{type}}!",
-        "blankSlateMessage": "Szerezz néhányat [erről a weboldalról]({{link}}), és add őket a {{type}} mappádhoz.",
-        "isEnabled": "Bekapcsolva",
-        "wasLoaded": "{{name}} v{{{version}} betöltődött."
-    },
-    "CustomCSS": {
-        "confirmationText": "Az Egyéni CSS módosításait nem kerültek mentésre. Ha bezárja ezt az ablakot, ezek a módosítások elvesznek.",
-        "update": "Frissítés",
-        "save": "Mentés",
-        "openNative": "Megnyitás a Rendszer szerkesztőjében",
-        "openDetached": "Különálló ablak",
-        "settings": "Szerkesztő beállítások",
-        "editorTitle": "Egyéni CSS szerkesztő"
-    },
-    "Modals": {
-        "confirmAction": "Biztos vagy benne?",
-        "okay": "Oké",
-        "done": "Kész",
-        "cancel": "Mégse",
-        "nevermind": "Mégse",
-        "close": "Bezárás",
-        "name": "Név",
-        "message": "Üzenet",
-        "error": "Hiba",
-        "addonErrors": "Kiegészítők hibái",
-        "restartRequired": "Újraindítás szükséges",
-        "restartNow": "Újraindítás most",
-        "restartLater": "Újraindítás később",
-        "additionalInfo": "További információk",
-        "restartPrompt": "A Discordot újra kell indítani ahhoz, hogy érvénybe lépjen a változtatás. Most akarod újraindítani?"
-    },
-    "ReactDevTools": {
-        "notFound": "A kifejezés nem található",
-        "notFoundDetails": "Nem található a React Developer Tools bővítmény a számítógépén. Kérjük, telepítse a bővítményt a Chrome helyi telepítésébe."
-    },
-    "Sorting": {
-        "sortBy": "Rendezés",
-        "order": "Rendezés",
-        "ascending": "Növekvő",
-        "descending": "Csökkenő"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "Ez az opció átlátszó témát igényel a megfelelő működéshez. Windowson ez megszakíthatja az aero snappinget és a maximalizálást.\n\nA Discordot újra kell indítani, hogy érvénybe lépjen. Szeretnéd most újraindítani?",
-        "disabledInfo": "A Discordot újra kell indítani ahhoz, hogy érvénybe lépjen. Szeretnéd most újraindítani?"
-    },
-    "Notices": {
-        "moreInfo": "További információ"
-    },
-    "Updater": {
-        "updateFailed": "A frissítés sikertelen!",
-        "updateFailedMessage": "A BetterDiscord frissítése sikertelen. Kérjük, töltse le a telepítő legújabb verzióját erről a weboldalról: (https://betterdiscord.app/), majd telepítse újra.",
-        "updateSuccessful": "Frissítés sikeres!",
-        "updateAvailable": "Új frissítés erélhető a BetterDiscordhoz: (v{{version}})",
-        "addonUpdatesAvailable": "A BetterDiscord {{count}} frissítést talált ebben a témában: {{type}}!",
-        "addonUpdated": "A {{name}} frissült {{version}} verzióra!",
-        "checking": "Frissítések keresése!",
-        "finishedChecking": "Frissítések ellenőrzése sikeres!",
-        "checkForUpdates": "Frissítések keresése!",
-        "updateAll": "Az összes frissítése!",
-        "noUpdatesAvailable": "Nincsenek elérhető frissítések.",
-        "versionAvailable": "Verziófrissítés elérhető: {{version}}!",
-        "upToDateBlankslate": "Minden {{type}} naprakész!",
-        "updateButton": "Frissítés!"
-    }
+	"Panels": {
+		"plugins": "Pluginok",
+		"themes": "Témák",
+		"customcss": "Egyéni CSS",
+		"updates": "Frissítések"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Beállítások",
+			"general": {
+				"name": "Általános",
+				"voiceDisconnect": {
+					"name": "Hangkapcsolat megszakítása",
+					"note": "Kapcsolat megszakítása a hangkiszolgálóval amikor bezárod a Discordot"
+				},
+				"showToasts": {
+					"name": "Értesítés megjelenítése induláskor",
+					"note": "Kis értesítést jelenít meg a fontos információkról"
+				},
+				"mediaKeys": {
+					"name": "Médiavezérlő billentyűk letiltása",
+					"note": "Megakadályozza, hogy a Discord a videók lejátszása után átkalibrálja a médiavezérlő billentyűket."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Minimális méret felülírása",
+					"note": "Felülírja és eltávolítja a Discord kényszerített minimális 940x500-as ablakméretét"
+				},
+				"name": "Ablak beállítások",
+				"transparency": {
+					"name": "Átlátszóság engedélyezése",
+					"note": "A főablak átláthatóvá tétele (újraindítást igényel)"
+				},
+				"frame": {
+					"name": "Ablakkeret",
+					"note": "Hozzáadja az alap os ablakkeretet a főablakhoz"
+				}
+			},
+			"addons": {
+				"name": "Kiegészítőkezelő",
+				"addonErrors": {
+					"name": "Kiegészítő hibaüzenetek megjelenítése",
+					"note": "Megjelenít egy ablakot a pluginok/témák hibáiról"
+				},
+				"editAction": {
+					"name": "Szerkesztő beállítása",
+					"note": "A pluginok és témák szerkesztése ebben a szerkesztőben",
+					"options": {
+						"detached": "Különálló ablak",
+						"system": "Rendszer alapértelmezett"
+					}
+				}
+			},
+			"customcss": {
+				"name": "Egyéni CSS",
+				"customcss": {
+					"name": "Egyéni CSS",
+					"note": "Engedélyezi az Egyéni CSS szekciót"
+				},
+				"liveUpdate": {
+					"name": "Frissítés élőben",
+					"note": "Frissíti a css-t szerkesztés közben"
+				},
+				"startDetached": {
+					"name": "Indítás külön ablakban",
+					"note": "Az Egyéni CSS szekcióra kattintva a szerkesztő egy külön ablakban nyílik meg"
+				},
+				"nativeOpen": {
+					"name": "Megnyitás natív szerkesztőben",
+					"note": "Az Egyéni CSS fülre kattintva megnyílik az egyéni css egy natív szerkesztőben"
+				},
+				"openAction": {
+					"name": "Szerkesztő helye",
+					"note": "Az Egyéni CSS alapértelmezetten itt nyílik meg",
+					"options": {
+						"settings": "Beállítások menü",
+						"detached": "Különálló ablak",
+						"system": "Rendszer alapértelmezett"
+					}
+				}
+			},
+			"developer": {
+				"name": "Fejlesztői beállítások",
+				"debuggerHotkey": {
+					"name": "Hibakereső gyorsbillentyű",
+					"note": "Lehetővé teszi a debugger aktiválását az F8 megnyomásakor, amikor a DevTools meg van nyitva"
+				},
+				"reactDevTools": {
+					"name": "React fejlesztői eszközök",
+					"note": "Beilleszti a telepített React Developer Toolst a Discordba"
+				},
+				"inspectElement": {
+					"name": "Elem vizsgálat gyorsbillentyűje",
+					"note": "Engedélyezi a legtöbb böngészőben használt elem vizsgálata gyorsbillentyűt (ctrl + shift + c)"
+				},
+				"devToolsWarning": {
+					"name": "DevTools riasztás leállítása",
+					"note": "Megakadályozza, hogy a Discord kiírja a \"Várj!\" üzenetét"
+				},
+				"debugLogs": {
+					"name": "Hibakereső napló",
+					"note": "A konzolról mindent kiír a BetterDiscord mappában lévő debug.log fájlba"
+				},
+				"devTools": {
+					"name": "Fejlesztői eszközök",
+					"note": "Engedélyezi a DevTools bekapcsolását a ctrl+shift+i billentyűkombinációval"
+				}
+			},
+			"editor": {
+				"name": "Szerkesztői beállítások",
+				"lineNumbers": {
+					"name": "Szakasz sorszámok",
+					"note": "Lehetővé teszi a szakasz sorszámok megjelenítését a szerkesztő oldalán"
+				},
+				"fontSize": {
+					"name": "Betűméret",
+					"note": "A szerkesztőben használandó betűtípus mérete (pt)"
+				},
+				"minimap": {
+					"name": "Minitérkép",
+					"note": "Megjeleníti a kódminitérkép megjelenítését a szerkesztő oldalán"
+				},
+				"hover": {
+					"name": "Hivatkozási eszköztippek",
+					"note": "Megjeleníti a hivatkozási eszköztippek megjelenítését a szabályok és szelektorok lebegtetésekor"
+				},
+				"quickSuggestions": {
+					"name": "Gyors javaslatok",
+					"note": "Engedélyezi az automatikus kitöltési javaslatok megjelenítését gépelés közben"
+				},
+				"renderWhitespace": {
+					"name": "Fehér tér megjelenítése",
+					"note": "Szóközök megjelenítése a szerkesztőben",
+					"options": {
+						"all": "Mindig",
+						"none": "Soha",
+						"selection": "Kiválasztás"
+					}
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} {{author}} által",
+		"byline": "{{author}} által",
+		"openFolder": "{{type}} mappa megnyitása",
+		"reload": "Újratöltés",
+		"addonSettings": "Beállítások",
+		"website": "Weboldal",
+		"source": "Forrás",
+		"invite": "Támogatási szerver",
+		"donate": "Támogatás",
+		"patreon": "Patreon",
+		"name": "Név",
+		"author": "Szerző",
+		"version": "Verzió",
+		"added": "Hozzáadás dátuma",
+		"modified": "Módosítás dátuma",
+		"search": "Keresés {{type}}",
+		"editAddon": "Szerkesztés",
+		"deleteAddon": "Törlés",
+		"confirmDelete": "Biztos, hogy törölni akarja ezt: {{name}}?",
+		"confirmationText": "A {{name}} módosításait nem kerültek mentésre. Ha bezárja ezt az ablakot, ezek a módosítások elvesznek.",
+		"enabled": "{{name}} bekapcsolva.",
+		"disabled": "{{name}} ki lett kapcsolva.",
+		"couldNotEnable": "{{name}} nem elindítható.",
+		"couldNotDisable": "{{name}} nem kikapcsolható.",
+		"couldNotStart": "{{name}} nem elindítható.",
+		"couldNotStop": "{{name}} nem leállítható.",
+		"settingsError": "Nem sikerült megnyitni a {{name}} beállításait",
+		"methodError": "{{method}} nem kivehető.",
+		"unknownAuthor": "Ismeretlen szerző",
+		"noDescription": "Leírás nincs megadva.",
+		"alreadyExists": "Már létezik egy {{type}} {{name}} névvel",
+		"alreadWatching": "Jelenleg a kiegészítőket nézed.",
+		"metaError": "Nem sikerült elemezni a META-t.",
+		"missingNameData": "Hiányzik a névadat a META-ból.",
+		"metaNotFound": "META nem található.",
+		"compileError": "Sikertelen indítás. Részletekért lásd a konzolt.",
+		"wasUnloaded": "{{name}} nem indult el.",
+		"blankSlateHeader": "Még nem rendelkezel egy ilyennel sem: {{type}}!",
+		"blankSlateMessage": "Szerezz néhányat [erről a weboldalról]({{link}}), és add őket a {{type}} mappádhoz.",
+		"isEnabled": "Bekapcsolva",
+		"wasLoaded": "{{name}} v{{{version}} betöltődött."
+	},
+	"CustomCSS": {
+		"confirmationText": "Az Egyéni CSS módosításait nem kerültek mentésre. Ha bezárja ezt az ablakot, ezek a módosítások elvesznek.",
+		"update": "Frissítés",
+		"save": "Mentés",
+		"openNative": "Megnyitás a Rendszer szerkesztőjében",
+		"openDetached": "Különálló ablak",
+		"settings": "Szerkesztő beállítások",
+		"editorTitle": "Egyéni CSS szerkesztő"
+	},
+	"Modals": {
+		"confirmAction": "Biztos vagy benne?",
+		"okay": "Oké",
+		"done": "Kész",
+		"cancel": "Mégse",
+		"nevermind": "Mégse",
+		"close": "Bezárás",
+		"name": "Név",
+		"message": "Üzenet",
+		"error": "Hiba",
+		"addonErrors": "Kiegészítők hibái",
+		"restartRequired": "Újraindítás szükséges",
+		"restartNow": "Újraindítás most",
+		"restartLater": "Újraindítás később",
+		"additionalInfo": "További információk",
+		"restartPrompt": "A Discordot újra kell indítani ahhoz, hogy érvénybe lépjen a változtatás. Most akarod újraindítani?"
+	},
+	"ReactDevTools": {
+		"notFound": "A kifejezés nem található",
+		"notFoundDetails": "Nem található a React Developer Tools bővítmény a számítógépén. Kérjük, telepítse a bővítményt a Chrome helyi telepítésébe."
+	},
+	"Sorting": {
+		"sortBy": "Rendezés",
+		"order": "Rendezés",
+		"ascending": "Növekvő",
+		"descending": "Csökkenő"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Ez az opció átlátszó témát igényel a megfelelő működéshez. Windowson ez megszakíthatja az aero snappinget és a maximalizálást.\n\nA Discordot újra kell indítani, hogy érvénybe lépjen. Szeretnéd most újraindítani?",
+		"disabledInfo": "A Discordot újra kell indítani ahhoz, hogy érvénybe lépjen. Szeretnéd most újraindítani?"
+	},
+	"Notices": {
+		"moreInfo": "További információ"
+	},
+	"Updater": {
+		"updateFailed": "A frissítés sikertelen!",
+		"updateFailedMessage": "A BetterDiscord frissítése sikertelen. Kérjük, töltse le a telepítő legújabb verzióját erről a weboldalról: (https://betterdiscord.app/), majd telepítse újra.",
+		"updateSuccessful": "Frissítés sikeres!",
+		"updateAvailable": "Új frissítés erélhető a BetterDiscordhoz: (v{{version}})",
+		"addonUpdatesAvailable": "A BetterDiscord {{count}} frissítést talált ebben a témában: {{type}}!",
+		"addonUpdated": "A {{name}} frissült {{version}} verzióra!",
+		"checking": "Frissítések keresése!",
+		"finishedChecking": "Frissítések ellenőrzése sikeres!",
+		"checkForUpdates": "Frissítések keresése!",
+		"updateAll": "Az összes frissítése!",
+		"noUpdatesAvailable": "Nincsenek elérhető frissítések.",
+		"versionAvailable": "Verziófrissítés elérhető: {{version}}!",
+		"upToDateBlankslate": "Minden {{type}} naprakész!",
+		"updateButton": "Frissítés!"
+	}
 }

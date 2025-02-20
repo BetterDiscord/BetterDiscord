@@ -1,7 +1,7 @@
-import React from "@modules/react";
 import {t} from "@common/i18n";
-import Settings from "@stores/settings";
 import DiscordModules from "@modules/discordmodules";
+import React from "@modules/react";
+import Settings from "@stores/settings";
 
 import Button from "@ui/base/button";
 import Modals from "@ui/modals";

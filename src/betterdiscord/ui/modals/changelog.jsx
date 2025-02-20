@@ -1,11 +1,11 @@
-import React from "@modules/react";
-import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
+import DiscordModules from "@modules/discordmodules";
+import React from "@modules/react";
 
-import Root from "./root";
-import Header from "./header";
-import Footer from "./footer";
 import Content from "./content";
+import Footer from "./footer";
+import Header from "./header";
+import Root from "./root";
 
 import Flex from "../base/flex";
 import Text from "../base/text";
@@ -13,8 +13,8 @@ import CloseButton from "./close";
 
 import SimpleMarkdownExt from "@structs/markdown";
 import Modals from "@ui/modals";
-import {GithubIcon, TwitterIcon} from "lucide-react";
 import {getByKeys} from "@webpack";
+import {GithubIcon, TwitterIcon} from "lucide-react";
 
 const {useMemo} = React;
 

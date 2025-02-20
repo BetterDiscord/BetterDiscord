@@ -2,12 +2,12 @@ import Config from "@stores/config";
 
 import AddonError from "@structs/addonerror";
 
+import {t} from "@common/i18n";
 import AddonManager, {type Addon} from "./addonmanager";
 import DOMManager from "./dommanager";
-import {t} from "@common/i18n";
 
-import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
+import Toasts from "@ui/toasts";
 
 
 export interface Theme extends Addon {

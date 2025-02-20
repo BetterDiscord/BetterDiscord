@@ -1,8 +1,8 @@
-import config from "@stores/config";
 import type AddonManager from "@modules/addonmanager";
 import DiscordModules from "@modules/discordmodules";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
+import config from "@stores/config";
 
 
 export function getDiscordClientInfo() {

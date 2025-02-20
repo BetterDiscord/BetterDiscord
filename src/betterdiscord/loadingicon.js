@@ -33,13 +33,13 @@ loadingIcon.className = "bd-loaderv2";
 loadingIcon.title = "BetterDiscord is loading...";
 
 export default class {
-    static show() {
-        document.body.appendChild(iconStyle);
-        document.body.appendChild(loadingIcon);
-    }
+  static show() {
+    document.body.appendChild(iconStyle);
+    document.body.appendChild(loadingIcon);
+  }
 
-    static hide() {
-        if (iconStyle) iconStyle.remove();
-        if (loadingIcon) loadingIcon.remove();
-    }
+  static hide() {
+    if (iconStyle) iconStyle.remove();
+    if (loadingIcon) loadingIcon.remove();
+  }
 }

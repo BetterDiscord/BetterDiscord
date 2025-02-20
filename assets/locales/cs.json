@@ -1,247 +1,247 @@
 {
-    "Panels": {
-        "plugins": "Pluginy",
-        "themes": "Témata",
-        "customcss": "Vlastní CSS",
-        "updates": "Aktualizace"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Nastavení",
-            "general": {
-                "name": "Obecné",
-                "voiceDisconnect": {
-                    "name": "Odpojení z hlas. kanálu",
-                    "note": "Odpojit z hlasového kanálu při zavření Discordu"
-                },
-                "showToasts": {
-                    "name": "Zobrazit vyskakovací okna",
-                    "note": "Zobrazí malé oznámení pro důležité informace"
-                },
-                "mediaKeys": {
-                    "name": "Zakázat klávesy médií",
-                    "note": "Zabrání Discordu přivlastnění kláves médií při přehrávání videa."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Odebrat minimální velikost",
-                    "note": "Odebere Discordem vynucenou minimální velikost okna 940x500"
-                },
-                "name": "Předvolby okna",
-                "transparency": {
-                    "name": "Povolit průhlednost",
-                    "note": "Povolí průhlednost hlavního okna (vyžaduje restart)"
-                },
-                "frame": {
-                    "name": "Okraj okna",
-                    "note": "Přidá nativní systémový okraj okna k hlavnímu oknu"
-                }
-            },
-            "addons": {
-                "name": "Správce doplňků",
-                "addonErrors": {
-                    "name": "Zobrazit chyby doplňků",
-                    "note": "Zobrazí okno s chybami pluginů/témat"
-                },
-                "editAction": {
-                    "name": "Upravit akci",
-                    "note": "Kde se objeví doplňky a témata při úpravě",
-                    "options": {
-                        "detached": "Oddělené okno",
-                        "system": "Systémový editor"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "Vlastní CSS",
-                "customcss": {
-                    "name": "Vlastní CSS",
-                    "note": "Povolí záložku Vlastní CSS"
-                },
-                "liveUpdate": {
-                    "name": "Okamžitá aktualizace",
-                    "note": "Aktualizuje CSS při psaní"
-                },
-                "startDetached": {
-                    "name": "Spustit odděleně",
-                    "note": "Kliknutí na záložku Vlastní CSS otevře editor v odděleném okně"
-                },
-                "nativeOpen": {
-                    "name": "Otevřít v nativním editoru",
-                    "note": "Kliknutí na záložku Vlastní CSS otevře tvé vlastní CSS ve tvém nativním editoru"
-                },
-                "openAction": {
-                    "name": "Lokace editoru",
-                    "note": "Kde se má ve výchozím nastavení otevřít Vlastní CSS",
-                    "options": {
-                        "settings": "Menu nastavení",
-                        "detached": "Oddělené okno",
-                        "system": "Systémový editor"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Vývojářská nastavení",
-                "debuggerHotkey": {
-                    "name": "Zkratka ladění",
-                    "note": "Povolí aktivaci ladění při stisknutí F8"
-                },
-                "reactDevTools": {
-                    "name": "Vývojářské nástroje React",
-                    "note": "Vloží tvou lokální instalaci React Developer Tools do Discordu"
-                },
-                "inspectElement": {
-                    "name": "Zkratka prozkoumání prvku",
-                    "note": "Povolí klávesovou zkratku prozkoumání prvku (Ctrl + Shift + C), která je normální ve většině prohlížečů"
-                },
-                "devToolsWarning": {
-                    "name": "Zastavit varování DevTools",
-                    "note": "Zabrání Discordu vypisovat jeho \"Zadrž!\" zprávu"
-                },
-                "debugLogs": {
-                    "name": "Ladicí protokoly",
-                    "note": "Vypíše vše z konzole do souboru debug.log ve složce BetterDiscordu"
-                },
-                "devTools": {
-                    "name": "DevTools",
-                    "note": "Povolí přepnutí DevTools při stisku Ctrl+Shift+I"
-                }
-            },
-            "editor": {
-                "name": "Předvolby editoru",
-                "lineNumbers": {
-                    "name": "Čísla řádků",
-                    "note": "Povolí zobrazování čísel řádků vedle editoru"
-                },
-                "fontSize": {
-                    "name": "Velikost písma",
-                    "note": "Velikost písma (pt) k použití v editoru"
-                },
-                "minimap": {
-                    "name": "Minimapa",
-                    "note": "Povolí zobrazování kódu v minimapě vedle editoru"
-                },
-                "hover": {
-                    "name": "Referenční tooltipy",
-                    "note": "Povolí zobrazování referenčních tooltipů při přechodu přes pravidla a selektory"
-                },
-                "quickSuggestions": {
-                    "name": "Rychlé návrhy",
-                    "note": "Povolí zobrazování automaticky dokončovaných návrhů, zatímco píšete"
-                },
-                "renderWhitespace": {
-                    "name": "Zobrazit neviditelnou mezeru",
-                    "note": "Zda v editoru zobrazit neviditelnou mezeru",
-                    "options": {
-                        "all": "Vždy",
-                        "none": "Nikdy",
-                        "selection": "Výběr"
-                    }
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} od {{author}}",
-        "byline": "od {{author}}",
-        "openFolder": "Otevřít složku {{type}}",
-        "reload": "Znovu načíst",
-        "addonSettings": "Nastavení",
-        "website": "Web",
-        "source": "Zdroj",
-        "invite": "Server podpory",
-        "donate": "Přispět",
-        "patreon": "Patreon",
-        "name": "Název",
-        "author": "Autor",
-        "version": "Verze",
-        "added": "Datum přidání",
-        "modified": "Datum upravení",
-        "search": "Hledat {{type}}",
-        "editAddon": "Upravit",
-        "deleteAddon": "Odstranit",
-        "confirmDelete": "Opravdu chceš odstranit {{name}}?",
-        "confirmationText": "Máš neuložené změny u {{name}}. Zavřením tohoto okna je všechny ztratíš.",
-        "enabled": "Doplněk {{name}} byl povolen.",
-        "disabled": "Doplněk {{name}} byl zakázán.",
-        "couldNotEnable": "Doplněk {{name}} nemohl být povolen.",
-        "couldNotDisable": "Doplněk {{name}} nemohl být zakázán.",
-        "couldNotStart": "Doplněk {{name}} nemohl být spuštěn.",
-        "couldNotStop": "Doplněk {{name}} nemohl být zastaven.",
-        "settingsError": "Nepodařilo se otevřít nastavení {{name}}",
-        "methodError": "Nepodařilo se spustit metodu {{method}}.",
-        "unknownAuthor": "Neznámý autor",
-        "noDescription": "Bez popisu.",
-        "alreadyExists": "Již existuje {{type}} s názvem {{name}}",
-        "alreadWatching": "Již sledujete doplňky.",
-        "metaError": "META být nemohl parsován.",
-        "missingNameData": "META chybějící údaje názvu.",
-        "metaNotFound": "META nebyl nalezen.",
-        "compileError": "Nepodařilo se zkompilovat.",
-        "wasUnloaded": "Doplněk {{name}} byl odnačten.",
-        "blankSlateHeader": "Nemáš žádné doplňky typu {{type}}!",
-        "blankSlateMessage": "Najdi si nějaké na [tomto webu]({{link}}) a přidej je do své {{type}} složky.",
-        "isEnabled": "Povoleno",
-        "wasLoaded": "Doplněk {{name}} v{{version}} byl načten."
-    },
-    "CustomCSS": {
-        "confirmationText": "Máš neuložené změny ve vlastním CSS. Zavřením tohoto okna je všechny ztratíš.",
-        "update": "Aktualizovat",
-        "save": "Uložit",
-        "openNative": "Otevřít v systémovém editoru",
-        "openDetached": "Oddělit okno",
-        "settings": "Nastavení editoru",
-        "editorTitle": "Okno vlastního CSS"
-    },
-    "Modals": {
-        "confirmAction": "Opravdu?",
-        "okay": "Dobře",
-        "done": "Hotovo",
-        "cancel": "Zrušit",
-        "nevermind": "Ne",
-        "close": "Zavřít",
-        "name": "Název",
-        "message": "Zpráva",
-        "error": "Chyba",
-        "addonErrors": "Chyby doplňku",
-        "restartRequired": "Vyžadován restart",
-        "restartNow": "Restartovat nyní",
-        "restartLater": "Restartovat později",
-        "additionalInfo": "Dodatečné informace",
-        "restartPrompt": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
-    },
-    "ReactDevTools": {
-        "notFound": "Rozšíření nenalezeno",
-        "notFoundDetails": "Nepodařilo se nalézt rozšíření React Developer Tools na tvém počítači. Nainstaluj si prosím rozšíření na své lokální Chrome instalaci."
-    },
-    "Sorting": {
-        "sortBy": "Seřadit podle",
-        "order": "Pořadí",
-        "ascending": "Vzestupně",
-        "descending": "Sestupně"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "Tato možnost vyžaduje průhledné téma, aby fungovala správně. Na Windows to může rozbít Areo přichytávání a maximalizování.\n\nAby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?",
-        "disabledInfo": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
-    },
-    "Notices": {
-        "moreInfo": "Více informací"
-    },
-    "Updater": {
-        "updateFailed": "Aktualizace selhala!",
-        "updateFailedMessage": "Aktualizace BettterDiscordu se nezdařila. Stáhněte si prosím nejnovější verzi instalátoru z našeho webu (https://betterdiscord.app) a přeinstalujte jej.",
-        "updateSuccessful": "Aktualizace byla úspěšná!",
-        "updateAvailable": "BetterDiscord má novou aktualizaci (v{{version}})",
-        "addonUpdatesAvailable": "BetterDiscord nalezl aktualizace {{count}} vašich doplňků typu {{type}}!",
-        "addonUpdated": "Doplněk {{name}} byl aktualizován na verzi {{version}}!",
-        "checking": "Kontrola aktualizací!",
-        "finishedChecking": "Kontrola aktualizací dokončena!",
-        "checkForUpdates": "Zkontrolovat aktualizace!",
-        "updateAll": "Aktualizovat vše!",
-        "noUpdatesAvailable": "Nejsou dostupné žádné aktualizace.",
-        "versionAvailable": "Je dostupná verze {{version}}!",
-        "upToDateBlankslate": "Všechny vaše doplňky typu {{type}} jsou aktuální!",
-        "updateButton": "Aktualizovat!"
-    }
+	"Panels": {
+		"plugins": "Pluginy",
+		"themes": "Témata",
+		"customcss": "Vlastní CSS",
+		"updates": "Aktualizace"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Nastavení",
+			"general": {
+				"name": "Obecné",
+				"voiceDisconnect": {
+					"name": "Odpojení z hlas. kanálu",
+					"note": "Odpojit z hlasového kanálu při zavření Discordu"
+				},
+				"showToasts": {
+					"name": "Zobrazit vyskakovací okna",
+					"note": "Zobrazí malé oznámení pro důležité informace"
+				},
+				"mediaKeys": {
+					"name": "Zakázat klávesy médií",
+					"note": "Zabrání Discordu přivlastnění kláves médií při přehrávání videa."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Odebrat minimální velikost",
+					"note": "Odebere Discordem vynucenou minimální velikost okna 940x500"
+				},
+				"name": "Předvolby okna",
+				"transparency": {
+					"name": "Povolit průhlednost",
+					"note": "Povolí průhlednost hlavního okna (vyžaduje restart)"
+				},
+				"frame": {
+					"name": "Okraj okna",
+					"note": "Přidá nativní systémový okraj okna k hlavnímu oknu"
+				}
+			},
+			"addons": {
+				"name": "Správce doplňků",
+				"addonErrors": {
+					"name": "Zobrazit chyby doplňků",
+					"note": "Zobrazí okno s chybami pluginů/témat"
+				},
+				"editAction": {
+					"name": "Upravit akci",
+					"note": "Kde se objeví doplňky a témata při úpravě",
+					"options": {
+						"detached": "Oddělené okno",
+						"system": "Systémový editor"
+					}
+				}
+			},
+			"customcss": {
+				"name": "Vlastní CSS",
+				"customcss": {
+					"name": "Vlastní CSS",
+					"note": "Povolí záložku Vlastní CSS"
+				},
+				"liveUpdate": {
+					"name": "Okamžitá aktualizace",
+					"note": "Aktualizuje CSS při psaní"
+				},
+				"startDetached": {
+					"name": "Spustit odděleně",
+					"note": "Kliknutí na záložku Vlastní CSS otevře editor v odděleném okně"
+				},
+				"nativeOpen": {
+					"name": "Otevřít v nativním editoru",
+					"note": "Kliknutí na záložku Vlastní CSS otevře tvé vlastní CSS ve tvém nativním editoru"
+				},
+				"openAction": {
+					"name": "Lokace editoru",
+					"note": "Kde se má ve výchozím nastavení otevřít Vlastní CSS",
+					"options": {
+						"settings": "Menu nastavení",
+						"detached": "Oddělené okno",
+						"system": "Systémový editor"
+					}
+				}
+			},
+			"developer": {
+				"name": "Vývojářská nastavení",
+				"debuggerHotkey": {
+					"name": "Zkratka ladění",
+					"note": "Povolí aktivaci ladění při stisknutí F8"
+				},
+				"reactDevTools": {
+					"name": "Vývojářské nástroje React",
+					"note": "Vloží tvou lokální instalaci React Developer Tools do Discordu"
+				},
+				"inspectElement": {
+					"name": "Zkratka prozkoumání prvku",
+					"note": "Povolí klávesovou zkratku prozkoumání prvku (Ctrl + Shift + C), která je normální ve většině prohlížečů"
+				},
+				"devToolsWarning": {
+					"name": "Zastavit varování DevTools",
+					"note": "Zabrání Discordu vypisovat jeho \"Zadrž!\" zprávu"
+				},
+				"debugLogs": {
+					"name": "Ladicí protokoly",
+					"note": "Vypíše vše z konzole do souboru debug.log ve složce BetterDiscordu"
+				},
+				"devTools": {
+					"name": "DevTools",
+					"note": "Povolí přepnutí DevTools při stisku Ctrl+Shift+I"
+				}
+			},
+			"editor": {
+				"name": "Předvolby editoru",
+				"lineNumbers": {
+					"name": "Čísla řádků",
+					"note": "Povolí zobrazování čísel řádků vedle editoru"
+				},
+				"fontSize": {
+					"name": "Velikost písma",
+					"note": "Velikost písma (pt) k použití v editoru"
+				},
+				"minimap": {
+					"name": "Minimapa",
+					"note": "Povolí zobrazování kódu v minimapě vedle editoru"
+				},
+				"hover": {
+					"name": "Referenční tooltipy",
+					"note": "Povolí zobrazování referenčních tooltipů při přechodu přes pravidla a selektory"
+				},
+				"quickSuggestions": {
+					"name": "Rychlé návrhy",
+					"note": "Povolí zobrazování automaticky dokončovaných návrhů, zatímco píšete"
+				},
+				"renderWhitespace": {
+					"name": "Zobrazit neviditelnou mezeru",
+					"note": "Zda v editoru zobrazit neviditelnou mezeru",
+					"options": {
+						"all": "Vždy",
+						"none": "Nikdy",
+						"selection": "Výběr"
+					}
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} od {{author}}",
+		"byline": "od {{author}}",
+		"openFolder": "Otevřít složku {{type}}",
+		"reload": "Znovu načíst",
+		"addonSettings": "Nastavení",
+		"website": "Web",
+		"source": "Zdroj",
+		"invite": "Server podpory",
+		"donate": "Přispět",
+		"patreon": "Patreon",
+		"name": "Název",
+		"author": "Autor",
+		"version": "Verze",
+		"added": "Datum přidání",
+		"modified": "Datum upravení",
+		"search": "Hledat {{type}}",
+		"editAddon": "Upravit",
+		"deleteAddon": "Odstranit",
+		"confirmDelete": "Opravdu chceš odstranit {{name}}?",
+		"confirmationText": "Máš neuložené změny u {{name}}. Zavřením tohoto okna je všechny ztratíš.",
+		"enabled": "Doplněk {{name}} byl povolen.",
+		"disabled": "Doplněk {{name}} byl zakázán.",
+		"couldNotEnable": "Doplněk {{name}} nemohl být povolen.",
+		"couldNotDisable": "Doplněk {{name}} nemohl být zakázán.",
+		"couldNotStart": "Doplněk {{name}} nemohl být spuštěn.",
+		"couldNotStop": "Doplněk {{name}} nemohl být zastaven.",
+		"settingsError": "Nepodařilo se otevřít nastavení {{name}}",
+		"methodError": "Nepodařilo se spustit metodu {{method}}.",
+		"unknownAuthor": "Neznámý autor",
+		"noDescription": "Bez popisu.",
+		"alreadyExists": "Již existuje {{type}} s názvem {{name}}",
+		"alreadWatching": "Již sledujete doplňky.",
+		"metaError": "META být nemohl parsován.",
+		"missingNameData": "META chybějící údaje názvu.",
+		"metaNotFound": "META nebyl nalezen.",
+		"compileError": "Nepodařilo se zkompilovat.",
+		"wasUnloaded": "Doplněk {{name}} byl odnačten.",
+		"blankSlateHeader": "Nemáš žádné doplňky typu {{type}}!",
+		"blankSlateMessage": "Najdi si nějaké na [tomto webu]({{link}}) a přidej je do své {{type}} složky.",
+		"isEnabled": "Povoleno",
+		"wasLoaded": "Doplněk {{name}} v{{version}} byl načten."
+	},
+	"CustomCSS": {
+		"confirmationText": "Máš neuložené změny ve vlastním CSS. Zavřením tohoto okna je všechny ztratíš.",
+		"update": "Aktualizovat",
+		"save": "Uložit",
+		"openNative": "Otevřít v systémovém editoru",
+		"openDetached": "Oddělit okno",
+		"settings": "Nastavení editoru",
+		"editorTitle": "Okno vlastního CSS"
+	},
+	"Modals": {
+		"confirmAction": "Opravdu?",
+		"okay": "Dobře",
+		"done": "Hotovo",
+		"cancel": "Zrušit",
+		"nevermind": "Ne",
+		"close": "Zavřít",
+		"name": "Název",
+		"message": "Zpráva",
+		"error": "Chyba",
+		"addonErrors": "Chyby doplňku",
+		"restartRequired": "Vyžadován restart",
+		"restartNow": "Restartovat nyní",
+		"restartLater": "Restartovat později",
+		"additionalInfo": "Dodatečné informace",
+		"restartPrompt": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
+	},
+	"ReactDevTools": {
+		"notFound": "Rozšíření nenalezeno",
+		"notFoundDetails": "Nepodařilo se nalézt rozšíření React Developer Tools na tvém počítači. Nainstaluj si prosím rozšíření na své lokální Chrome instalaci."
+	},
+	"Sorting": {
+		"sortBy": "Seřadit podle",
+		"order": "Pořadí",
+		"ascending": "Vzestupně",
+		"descending": "Sestupně"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Tato možnost vyžaduje průhledné téma, aby fungovala správně. Na Windows to může rozbít Areo přichytávání a maximalizování.\n\nAby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?",
+		"disabledInfo": "Aby se tato změna projevila, bude potřeba restartovat Discord. Chceš jej restartovat nyní?"
+	},
+	"Notices": {
+		"moreInfo": "Více informací"
+	},
+	"Updater": {
+		"updateFailed": "Aktualizace selhala!",
+		"updateFailedMessage": "Aktualizace BettterDiscordu se nezdařila. Stáhněte si prosím nejnovější verzi instalátoru z našeho webu (https://betterdiscord.app) a přeinstalujte jej.",
+		"updateSuccessful": "Aktualizace byla úspěšná!",
+		"updateAvailable": "BetterDiscord má novou aktualizaci (v{{version}})",
+		"addonUpdatesAvailable": "BetterDiscord nalezl aktualizace {{count}} vašich doplňků typu {{type}}!",
+		"addonUpdated": "Doplněk {{name}} byl aktualizován na verzi {{version}}!",
+		"checking": "Kontrola aktualizací!",
+		"finishedChecking": "Kontrola aktualizací dokončena!",
+		"checkForUpdates": "Zkontrolovat aktualizace!",
+		"updateAll": "Aktualizovat vše!",
+		"noUpdatesAvailable": "Nejsou dostupné žádné aktualizace.",
+		"versionAvailable": "Je dostupná verze {{version}}!",
+		"upToDateBlankslate": "Všechny vaše doplňky typu {{type}} jsou aktuální!",
+		"updateButton": "Aktualizovat!"
+	}
 }

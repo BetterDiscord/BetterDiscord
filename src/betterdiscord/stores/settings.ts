@@ -2,13 +2,13 @@ import Logger from "@common/logger";
 
 import SettingsConfig, {type DropdownSetting, type SettingsCategory} from "@data/settings";
 
-import JsonStore from "./json";
-import Events from "@modules/emitter";
-import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
-import Store from "./base";
-import type {ComponentType} from "react";
 import type AddonManager from "@modules/addonmanager";
+import DiscordModules from "@modules/discordmodules";
+import Events from "@modules/emitter";
+import type {ComponentType} from "react";
+import Store from "./base";
+import JsonStore from "./json";
 
 
 export interface SettingsCollection {

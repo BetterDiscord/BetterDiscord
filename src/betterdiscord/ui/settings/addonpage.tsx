@@ -1,8 +1,8 @@
 import React from "@modules/react";
-import AddonStorePage from "./addonstore";
-import AddonList from "./addonlist";
 import Settings from "@stores/settings";
+import AddonList from "./addonlist";
 import {addonContext} from "./addonshared";
+import AddonStorePage from "./addonstore";
 
 const {useState, useCallback} = React;
 

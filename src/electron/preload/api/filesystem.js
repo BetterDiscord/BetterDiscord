@@ -1,6 +1,6 @@
 import * as fs from "fs";
-import {clone} from "@common/utils";
 import Logger from "@common/logger";
+import {clone} from "@common/utils";
 
 export function readFile(path, options = "utf8") {
     return fs.readFileSync(path, options);

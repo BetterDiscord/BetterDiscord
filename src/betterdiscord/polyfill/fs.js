@@ -1,11 +1,9 @@
 import Remote from "./remote";
 
+export const readFileSync = (path, options = "utf8") =>
+    Remote.filesystem.readFile(path, options);
 
-export const readFileSync = function (path, options = "utf8") {
-    return Remote.filesystem.readFile(path, options);
-};
-
-export const readFile = function (path, options = "utf8", callback) {
+export const readFile = (path, options = "utf8", callback) => {
     try {
         const contents = Remote.filesystem.readFile(path, options);
         callback(null, contents);
@@ -15,10 +13,10 @@ export const readFile = function (path, options = "utf8", callback) {
     }
 };
 
-export const writeFile = function (path, data, options = "utf8", callback) {
-    if (typeof (options) === "function") {
+export const writeFile = (path, data, options = "utf8", callback) => {
+    if (typeof options === "function") {
         callback = options;
-        if (!["object", "string"].includes(typeof (options))) options = undefined;
+        if (!["object", "string"].includes(typeof options)) options = undefined;
     }
 
     try {
@@ -30,11 +28,11 @@ export const writeFile = function (path, data, options = "utf8", callback) {
     }
 };
 
-export const writeFileSync = function (path, data, options) {
+export const writeFileSync = (path, data, options) => {
     Remote.filesystem.writeFile(path, data, options);
 };
 
-export const readdir = function (path, options, callback) {
+export const readdir = (path, options, callback) => {
     try {
         const result = Remote.filesystem.readDirectory(path, options);
         callback(null, result);
@@ -44,11 +42,10 @@ export const readdir = function (path, options, callback) {
     }
 };
 
-export const readdirSync = function (path, options) {
-    return Remote.filesystem.readDirectory(path, options);
-};
+export const readdirSync = (path, options) =>
+    Remote.filesystem.readDirectory(path, options);
 
-export const mkdir = function (path, options, callback) {
+export const mkdir = (path, options, callback) => {
     try {
         const result = Remote.filesystem.createDirectory(path, options);
         callback(null, result);
@@ -58,11 +55,11 @@ export const mkdir = function (path, options, callback) {
     }
 };
 
-export const mkdirSync = function (path, options) {
+export const mkdirSync = (path, options) => {
     Remote.filesystem.createDirectory(path, options);
 };
 
-export const rmdir = function (path, options, callback) {
+export const rmdir = (path, options, callback) => {
     try {
         const result = Remote.filesystem.deleteDirectory(path, options);
         callback(null, result);
@@ -72,11 +69,11 @@ export const rmdir = function (path, options, callback) {
     }
 };
 
-export const rmdirSync = function (path, options) {
+export const rmdirSync = (path, options) => {
     Remote.filesystem.deleteDirectory(path, options);
 };
 
-export const rm = function (path, options, callback) {
+export const rm = (path, options, callback) => {
     try {
         const result = Remote.filesystem.rm(path, options);
         callback(null, result);
@@ -86,11 +83,11 @@ export const rm = function (path, options, callback) {
     }
 };
 
-export const rmSync = function (path, options) {
+export const rmSync = (path, options) => {
     Remote.filesystem.rmSync(path, options);
 };
 
-export const exists = function (path, options, callback) {
+export const exists = (path, options, callback) => {
     try {
         const result = Remote.filesystem.exists(path, options);
         callback(null, result);
@@ -100,11 +97,10 @@ export const exists = function (path, options, callback) {
     }
 };
 
-export const existsSync = function (path, options) {
-    return Remote.filesystem.exists(path, options);
-};
+export const existsSync = (path, options) =>
+    Remote.filesystem.exists(path, options);
 
-export const stat = function (path, options, callback) {
+export const stat = (path, options, callback) => {
     try {
         const result = Remote.filesystem.getStats(path, options);
         callback(null, result);
@@ -114,14 +110,13 @@ export const stat = function (path, options, callback) {
     }
 };
 
-export const statSync = function (path, options) {
-    return Remote.filesystem.getStats(path, options);
-};
+export const statSync = (path, options) =>
+    Remote.filesystem.getStats(path, options);
 
 export const lstat = stat;
 export const lstatSync = statSync;
 
-export const rename = function (oldPath, newPath, options, callback) {
+export const rename = (oldPath, newPath, options, callback) => {
     try {
         const result = Remote.filesystem.rename(oldPath, newPath, options);
         callback(null, result);
@@ -131,11 +126,10 @@ export const rename = function (oldPath, newPath, options, callback) {
     }
 };
 
-export const renameSync = function (oldPath, newPath, options) {
-    return Remote.filesystem.renameSync(oldPath, newPath, options);
-};
+export const renameSync = (oldPath, newPath, options) =>
+    Remote.filesystem.renameSync(oldPath, newPath, options);
 
-export const realpath = function (path, options, callback) {
+export const realpath = (path, options, callback) => {
     try {
         const result = Remote.filesystem.getStats(path, options);
         callback(null, result);
@@ -145,9 +139,8 @@ export const realpath = function (path, options, callback) {
     }
 };
 
-export const realpathSync = function (path, options) {
-    return Remote.filesystem.getRealPath(path, options);
-};
+export const realpathSync = (path, options) =>
+    Remote.filesystem.getRealPath(path, options);
 
 export const watch = (path, options, callback) => {
     return Remote.filesystem.watch(path, options, callback);
@@ -186,5 +179,5 @@ export default {
     watch,
     writeFile,
     writeFileSync,
-    createWriteStream
+    createWriteStream,
 };

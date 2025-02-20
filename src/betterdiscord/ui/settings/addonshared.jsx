@@ -1,9 +1,9 @@
-import React from "@modules/react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
+import React from "@modules/react";
 
-import Button from "@ui/base/button";
 import JsonStore from "@stores/json";
+import Button from "@ui/base/button";
 import SettingsTitle from "@ui/settings/title";
 import {BadgeCheckIcon, ChevronRightIcon} from "lucide-react";
 

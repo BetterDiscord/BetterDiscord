@@ -1,7 +1,7 @@
 import type {Webpack} from "discord";
-import {getModule} from "./searching";
 import {lazyListeners} from "./require";
-import {shouldSkipModule, getDefaultKey, wrapFilter} from "./shared";
+import {getModule} from "./searching";
+import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 
 export function getLazy<T>(filter: Webpack.Filter, options: Webpack.LazyOptions = {}): Promise<T | undefined> {
     const cached = getModule<T>(filter, options);

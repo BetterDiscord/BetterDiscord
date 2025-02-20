@@ -1,14 +1,14 @@
-import React from "@modules/react";
 import {t} from "@common/i18n";
+import React from "@modules/react";
 
-import Root from "./root";
-import Header from "./header";
-import Footer from "./footer";
 import Content from "./content";
+import Footer from "./footer";
+import Header from "./header";
+import Root from "./root";
 
-import Text from "../base/text";
-import Button from "../base/button";
 import type {PropsWithChildren} from "react";
+import Button from "../base/button";
+import Text from "../base/text";
 
 const {useRef, useEffect, useLayoutEffect} = React;
 

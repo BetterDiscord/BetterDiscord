@@ -1,8 +1,8 @@
-import clsx from "clsx";
 import SimpleMarkdown from "@structs/markdown";
+import clsx from "clsx";
 
-import React from "@modules/react";
 import {t} from "@common/i18n";
+import React from "@modules/react";
 
 
 function EmptyImage() {

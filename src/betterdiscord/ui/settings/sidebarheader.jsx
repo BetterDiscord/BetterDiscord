@@ -1,11 +1,11 @@
 import Changelog from "@data/changelog";
 
-import React from "@modules/react";
-import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
+import DiscordModules from "@modules/discordmodules";
+import React from "@modules/react";
 
-import Modals from "@ui/modals";
 import Button from "@ui/base/button";
+import Modals from "@ui/modals";
 import {HistoryIcon} from "lucide-react";
 
 

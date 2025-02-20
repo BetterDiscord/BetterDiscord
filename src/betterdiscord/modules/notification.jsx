@@ -1,9 +1,9 @@
-import {getModule} from "@webpack";
 import React, {ReactDOM} from "@modules/react";
-import Button from "@ui/base/button";
 import Settings from "@stores/settings";
+import Button from "@ui/base/button";
 import Text from "@ui/base/text";
-import {CircleAlertIcon, InfoIcon, TriangleAlertIcon, CircleCheckIcon} from "lucide-react";
+import {getModule} from "@webpack";
+import {CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon} from "lucide-react";
 import DOMManager from "./dommanager";
 
 const Icon = ({type}) => {

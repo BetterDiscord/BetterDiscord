@@ -1,189 +1,189 @@
 {
-    "Panels": {
-        "plugins": "Plugins",
-        "themes": "Temas",
-        "customcss": "CSS Personalizado"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Definições",
-            "general": {
-                "name": "Geral",
-                "voiceDisconnect": {
-                    "name": "Disconectar Voz",
-                    "note": "Disconectar do servidor de voz quando fechar o discord"
-                },
-                "showToasts": {
-                    "name": "Mostrar notificações",
-                    "note": "Mostra uma pequena notificação para informações importantes"
-                },
-                "mediaKeys": {
-                    "name": "Desativar as chaves Mídia",
-                    "note": "Previne o Discord de dar hijack as chaves Mídia depois de ver um video."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Remove o tamanho mínimo",
-                    "note": "Remove o tamanho mínimo obrigatório de janela do Discord de 940x500"
-                },
-                "name": "Preferência de Janela",
-                "transparency": {
-                    "name": "Ativar Transparência",
-                    "note": "Ativa a janela principal para ter transparência (requer reniciar)"
-                },
-                "frame": {
-                    "name": "Moldura da janela",
-                    "note": "Adiciona a moldura de janela nativa do sistema operativo à janela principal"
-                }
-            },
-            "addons": {
-                "name": "Gestor de extensões",
-                "addonErrors": {
-                    "name": "Mostra os erros das extensões",
-                    "note": "Mostra uma janela com os erros dos plugins/temas"
-                },
-                "editAction": {
-                    "name": "Editar ação",
-                    "note": "Onde os plugins e os temas irão aparecer quando se edita",
-                    "options": {
-                        "detached": "Separar janela",
-                        "system": "Editor de sistema"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "CSS Personalizado",
-                "customcss": {
-                    "name": "CSS Personalizado",
-                    "note": "Ativa a aba de CSS Personalizado"
-                },
-                "liveUpdate": {
-                    "name": "Atualizações diretas",
-                    "note": "Atualiza o css a medida que se escreve"
-                },
-                "startDetached": {
-                    "name": "Começar desanexado",
-                    "note": "Clicar na aba de CSS Personalizado abre o editor numa janela separada"
-                },
-                "nativeOpen": {
-                    "name": "Abrir o editor Nativo",
-                    "note": "Clicar na aba de CSS Personalizado abre o css personalizado no seu editor nativo"
-                },
-                "openAction": {
-                    "name": "Editor de localização",
-                    "note": "Onde o CSS personalizado abre por predifinição",
-                    "options": {
-                        "settings": "Menu de definições",
-                        "detached": "Separar Janela",
-                        "system": "Editor de sistema"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Definições de desenvolvedor",
-                "debuggerHotkey": {
-                    "name": "Debugger Hotkey",
-                    "note": "Permite a ativação do debugger quando pressiona o F8"
-                },
-                "reactDevTools": {
-                    "name": "Ferramentas de Desenvolvedor React",
-                    "note": "Injeta a instalação local da Ferramenta de Desenvolvedor React para o Discord"
-                },
-                "inspectElement": {
-                    "name": "Tecla de Inspecionar Elemento",
-                    "note": "Ativa a tecla de inspecionar elemento (ctrl + shift + c) que é comum na maioria dos navegadores browser"
-                },
-                "devToolsWarning": {
-                    "name": "Pára o aviso de DevTools",
-                    "note": "Pára o Discord de mostrar a mensagem \"Hold up!\""
-                },
-                "debugLogs": {
-                    "name": "Debug Logs",
-                    "note": "Saída de tudo da consola para o ficheiro debug.log na pasta BetterDiscord"
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} feito por {{author}}",
-        "byline": "feito por {{author}}",
-        "openFolder": "Abrir a pasta {{type}}",
-        "reload": "Recarregar",
-        "addonSettings": "Definições",
-        "website": "Website",
-        "source": "Fonte",
-        "invite": "Servidor de Suporte",
-        "donate": "Doar",
-        "patreon": "Patreon",
-        "name": "Nome",
-        "author": "Autor",
-        "version": "Versão",
-        "added": "Data Adicionada",
-        "modified": "Data Modificada",
-        "search": "Procurar {{type}}",
-        "editAddon": "Editar",
-        "deleteAddon": "Apagar",
-        "confirmDelete": "Tem a certeza que quer apagar {{name}}?",
-        "confirmationText": "Tem alterações não guardadas no {{name}}. Se fechar esta janela irá perder essas alterações.",
-        "enabled": "{{name}} foi ativo.",
-        "disabled": "{{name}} foi desativado.",
-        "couldNotEnable": "{{name}} não foi possível ser ativado.",
-        "couldNotDisable": "{{name}} não pode ser desativado.",
-        "couldNotStart": "{{name}} não pode ser iniciado.",
-        "couldNotStop": "{{name}} não pode ser parádo.",
-        "settingsError": "Não foi possível abrir as configurações para {{name}}",
-        "methodError": "{{method}} não pode ser retirado.",
-        "unknownAuthor": "Autor Desconhecido",
-        "noDescription": "Descrição não fornecida.",
-        "alreadyExists": "Já existe um {{type}} com o nome {{name}}",
-        "alreadWatching": "Já assiste as extensões.",
-        "metaError": "META não pôde ser analisado.",
-        "missingNameData": "Em falta dados do nome de META.",
-        "metaNotFound": "META não encontrada.",
-        "compileError": "Não foi possível compilar.",
-        "wasUnloaded": "{{name}} foi descarregado.",
-        "blankSlateHeader": "Não tem nenhum {{type}}!",
-        "blankSlateMessage": "Pega um pouco deste [this website]({{link}}) e adiciona eles à tua pasta {{type}}."
-    },
-    "CustomCSS": {
-        "confirmationText": "Tem alterações não guardadas no CSS Personalizado. Se fechar esta janela irá perder essas alterações.",
-        "update": "Atualizar",
-        "save": "Guardar",
-        "openNative": "Abrir o Editor de Sistema",
-        "openDetached": "Separar Janela",
-        "settings": "Definições de Editor",
-        "editorTitle": "Editor de CSS Personalizado"
-    },
-    "Modals": {
-        "confirmAction": "Tem a certeza?",
-        "okay": "Okay",
-        "done": "Feito",
-        "cancel": "Cancelar",
-        "nevermind": "Deixa estár",
-        "close": "Fechar",
-        "name": "Nome",
-        "message": "Mensagem",
-        "error": "Erro",
-        "addonErrors": "Erro de extensão",
-        "restartRequired": "Necessário Reniciar",
-        "restartNow": "Reniciar Agora",
-        "restartLater": "Reniciar Mais Tarde",
-        "additionalInfo": "Informação Adicional",
-        "restartPrompt": "Para ter efeito, o Discord precisa ser reiniciado. Deseja reiniciar agora?"
-    },
-    "ReactDevTools": {
-        "notFound": "Extensão não encontrada",
-        "notFoundDetails": "Não foi possivel achar a extensão Ferramenta Desenvolvedor React no seu computador. Por favor instale a extensão no seu Chrome local."
-    },
-    "Sorting": {
-        "sortBy": "Ordenar por",
-        "order": "Ordenar",
-        "ascending": "Ascendente",
-        "descending": "Descendente"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "Esta opção requer um tema transparente para funcionar corretamente. No Windows, isso pode interromper o ajuste e a maximização do aero.\n\nPara ter efeito, o Discord precisa ser reiniciado. Quer reiniciar agora?",
-        "disabledInfo": "Para ter efeito, o Discord precisa ser reiniciado. Quer reiniciar agora?"
-    }
+	"Panels": {
+		"plugins": "Plugins",
+		"themes": "Temas",
+		"customcss": "CSS Personalizado"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Definições",
+			"general": {
+				"name": "Geral",
+				"voiceDisconnect": {
+					"name": "Disconectar Voz",
+					"note": "Disconectar do servidor de voz quando fechar o discord"
+				},
+				"showToasts": {
+					"name": "Mostrar notificações",
+					"note": "Mostra uma pequena notificação para informações importantes"
+				},
+				"mediaKeys": {
+					"name": "Desativar as chaves Mídia",
+					"note": "Previne o Discord de dar hijack as chaves Mídia depois de ver um video."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Remove o tamanho mínimo",
+					"note": "Remove o tamanho mínimo obrigatório de janela do Discord de 940x500"
+				},
+				"name": "Preferência de Janela",
+				"transparency": {
+					"name": "Ativar Transparência",
+					"note": "Ativa a janela principal para ter transparência (requer reniciar)"
+				},
+				"frame": {
+					"name": "Moldura da janela",
+					"note": "Adiciona a moldura de janela nativa do sistema operativo à janela principal"
+				}
+			},
+			"addons": {
+				"name": "Gestor de extensões",
+				"addonErrors": {
+					"name": "Mostra os erros das extensões",
+					"note": "Mostra uma janela com os erros dos plugins/temas"
+				},
+				"editAction": {
+					"name": "Editar ação",
+					"note": "Onde os plugins e os temas irão aparecer quando se edita",
+					"options": {
+						"detached": "Separar janela",
+						"system": "Editor de sistema"
+					}
+				}
+			},
+			"customcss": {
+				"name": "CSS Personalizado",
+				"customcss": {
+					"name": "CSS Personalizado",
+					"note": "Ativa a aba de CSS Personalizado"
+				},
+				"liveUpdate": {
+					"name": "Atualizações diretas",
+					"note": "Atualiza o css a medida que se escreve"
+				},
+				"startDetached": {
+					"name": "Começar desanexado",
+					"note": "Clicar na aba de CSS Personalizado abre o editor numa janela separada"
+				},
+				"nativeOpen": {
+					"name": "Abrir o editor Nativo",
+					"note": "Clicar na aba de CSS Personalizado abre o css personalizado no seu editor nativo"
+				},
+				"openAction": {
+					"name": "Editor de localização",
+					"note": "Onde o CSS personalizado abre por predifinição",
+					"options": {
+						"settings": "Menu de definições",
+						"detached": "Separar Janela",
+						"system": "Editor de sistema"
+					}
+				}
+			},
+			"developer": {
+				"name": "Definições de desenvolvedor",
+				"debuggerHotkey": {
+					"name": "Debugger Hotkey",
+					"note": "Permite a ativação do debugger quando pressiona o F8"
+				},
+				"reactDevTools": {
+					"name": "Ferramentas de Desenvolvedor React",
+					"note": "Injeta a instalação local da Ferramenta de Desenvolvedor React para o Discord"
+				},
+				"inspectElement": {
+					"name": "Tecla de Inspecionar Elemento",
+					"note": "Ativa a tecla de inspecionar elemento (ctrl + shift + c) que é comum na maioria dos navegadores browser"
+				},
+				"devToolsWarning": {
+					"name": "Pára o aviso de DevTools",
+					"note": "Pára o Discord de mostrar a mensagem \"Hold up!\""
+				},
+				"debugLogs": {
+					"name": "Debug Logs",
+					"note": "Saída de tudo da consola para o ficheiro debug.log na pasta BetterDiscord"
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} feito por {{author}}",
+		"byline": "feito por {{author}}",
+		"openFolder": "Abrir a pasta {{type}}",
+		"reload": "Recarregar",
+		"addonSettings": "Definições",
+		"website": "Website",
+		"source": "Fonte",
+		"invite": "Servidor de Suporte",
+		"donate": "Doar",
+		"patreon": "Patreon",
+		"name": "Nome",
+		"author": "Autor",
+		"version": "Versão",
+		"added": "Data Adicionada",
+		"modified": "Data Modificada",
+		"search": "Procurar {{type}}",
+		"editAddon": "Editar",
+		"deleteAddon": "Apagar",
+		"confirmDelete": "Tem a certeza que quer apagar {{name}}?",
+		"confirmationText": "Tem alterações não guardadas no {{name}}. Se fechar esta janela irá perder essas alterações.",
+		"enabled": "{{name}} foi ativo.",
+		"disabled": "{{name}} foi desativado.",
+		"couldNotEnable": "{{name}} não foi possível ser ativado.",
+		"couldNotDisable": "{{name}} não pode ser desativado.",
+		"couldNotStart": "{{name}} não pode ser iniciado.",
+		"couldNotStop": "{{name}} não pode ser parádo.",
+		"settingsError": "Não foi possível abrir as configurações para {{name}}",
+		"methodError": "{{method}} não pode ser retirado.",
+		"unknownAuthor": "Autor Desconhecido",
+		"noDescription": "Descrição não fornecida.",
+		"alreadyExists": "Já existe um {{type}} com o nome {{name}}",
+		"alreadWatching": "Já assiste as extensões.",
+		"metaError": "META não pôde ser analisado.",
+		"missingNameData": "Em falta dados do nome de META.",
+		"metaNotFound": "META não encontrada.",
+		"compileError": "Não foi possível compilar.",
+		"wasUnloaded": "{{name}} foi descarregado.",
+		"blankSlateHeader": "Não tem nenhum {{type}}!",
+		"blankSlateMessage": "Pega um pouco deste [this website]({{link}}) e adiciona eles à tua pasta {{type}}."
+	},
+	"CustomCSS": {
+		"confirmationText": "Tem alterações não guardadas no CSS Personalizado. Se fechar esta janela irá perder essas alterações.",
+		"update": "Atualizar",
+		"save": "Guardar",
+		"openNative": "Abrir o Editor de Sistema",
+		"openDetached": "Separar Janela",
+		"settings": "Definições de Editor",
+		"editorTitle": "Editor de CSS Personalizado"
+	},
+	"Modals": {
+		"confirmAction": "Tem a certeza?",
+		"okay": "Okay",
+		"done": "Feito",
+		"cancel": "Cancelar",
+		"nevermind": "Deixa estár",
+		"close": "Fechar",
+		"name": "Nome",
+		"message": "Mensagem",
+		"error": "Erro",
+		"addonErrors": "Erro de extensão",
+		"restartRequired": "Necessário Reniciar",
+		"restartNow": "Reniciar Agora",
+		"restartLater": "Reniciar Mais Tarde",
+		"additionalInfo": "Informação Adicional",
+		"restartPrompt": "Para ter efeito, o Discord precisa ser reiniciado. Deseja reiniciar agora?"
+	},
+	"ReactDevTools": {
+		"notFound": "Extensão não encontrada",
+		"notFoundDetails": "Não foi possivel achar a extensão Ferramenta Desenvolvedor React no seu computador. Por favor instale a extensão no seu Chrome local."
+	},
+	"Sorting": {
+		"sortBy": "Ordenar por",
+		"order": "Ordenar",
+		"ascending": "Ascendente",
+		"descending": "Descendente"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Esta opção requer um tema transparente para funcionar corretamente. No Windows, isso pode interromper o ajuste e a maximização do aero.\n\nPara ter efeito, o Discord precisa ser reiniciado. Quer reiniciar agora?",
+		"disabledInfo": "Para ter efeito, o Discord precisa ser reiniciado. Quer reiniciar agora?"
+	}
 }

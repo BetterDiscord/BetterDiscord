@@ -1,6 +1,6 @@
 import {useInsertionEffect, useReducer, useRef} from "@modules/react";
-import type Store from "../stores/base";
 import type React from "react";
+import type Store from "../stores/base";
 
 
 const empty = Symbol("betterdiscord.empty");
@@ -49,7 +49,7 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
         for (const store of $stores) {
             store.addChangeListener(listener);
         }
-      
+
         return () => {
             for (const store of $stores) {
                 store.removeChangeListener(listener);

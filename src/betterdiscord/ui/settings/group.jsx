@@ -1,21 +1,21 @@
 import React from "@modules/react";
 
-import Drawer from "./drawer";
-import Switch from "./components/switch";
-import Dropdown from "./components/dropdown";
-import Number from "./components/number";
-import Item from "./components/item";
-import Textbox from "./components/textbox";
-import Slider from "./components/slider";
-import Radio from "./components/radio";
-import Keybind from "./components/keybind";
-import Color from "./components/color";
-import Filepicker from "./components/file";
-import Button from "../base/button";
-import Position from "@ui/settings/components/position";
+import SettingsStore from "@stores/settings";
 import {SettingsContext} from "@ui/contexts";
 import {useInternalStore} from "@ui/hooks";
-import SettingsStore from "@stores/settings";
+import Position from "@ui/settings/components/position";
+import Button from "../base/button";
+import Color from "./components/color";
+import Dropdown from "./components/dropdown";
+import Filepicker from "./components/file";
+import Item from "./components/item";
+import Keybind from "./components/keybind";
+import Number from "./components/number";
+import Radio from "./components/radio";
+import Slider from "./components/slider";
+import Switch from "./components/switch";
+import Textbox from "./components/textbox";
+import Drawer from "./drawer";
 
 const {useCallback} = React;
 

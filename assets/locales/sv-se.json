@@ -1,181 +1,181 @@
 {
-    "Panels": {
-        "plugins": "Tillägg",
-        "themes": "Teman",
-        "customcss": "Egen CSS",
-        "updates": "Uppdateringar"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Inställningar",
-            "general": {
-                "name": "Allmänt",
-                "voiceDisconnect": {
-                    "name": "Lämna röstsamtal",
-                    "note": "Lämna röstsamtal när Discord stängs ner"
-                },
-                "showToasts": {
-                    "name": "Visa Toasts",
-                    "note": "Visar en liten notifikation för viktig information"
-                },
-                "mediaKeys": {
-                    "name": "Inaktivera mediaknapparna",
-                    "note": "Hindrar Discord från att ta över mediaknapparna efter att du har spelat upp en video."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Ta bort minimistorleken",
-                    "note": "Tar bort Discords minimifönsterstorlek på 940x500"
-                },
-                "name": "Fönsterinställningar",
-                "transparency": {
-                    "name": "Aktivera Genomskinlighet",
-                    "note": "Gör att huvudfönstret blir genomskinligt (kräver omstart)"
-                },
-                "frame": {
-                    "name": "Fönsterram",
-                    "note": "Lägger till operativsystemets standard fönsterram runt huvudfönstret"
-                }
-            },
-            "addons": {
-                "name": "Tilläggshanterare",
-                "addonErrors": {
-                    "name": "Visa tilläggsfel",
-                    "note": "Visar en modalruta med tillägg- och temafel"
-                }
-            },
-            "customcss": {
-                "name": "Egen CSS",
-                "customcss": {
-                    "name": "Egen CSS",
-                    "note": "Aktiverar \"Egen CSS\"-fliken"
-                },
-                "liveUpdate": {
-                    "name": "Uppdatera Direkt",
-                    "note": "Uppdaterar css allteftersom du skriver"
-                },
-                "startDetached": {
-                    "name": "Starta Frånkopplad",
-                    "note": "Öppnar CSS-redigeraren i ett separat fönster när \"Egen CSS\"-fliken klickas"
-                },
-                "nativeOpen": {
-                    "name": "Öppna I Standardredigerare",
-                    "note": "Öppnar CSS filen i operativsystemets standardredigerare när \"Egen CSS\"-fliken klickas"
-                }
-            },
-            "developer": {
-                "name": "Utvecklarinställningar",
-                "devToolsWarning": {
-                    "name": "Stäng av utvecklarverktygsvarningar",
-                    "note": "Hindrar Discord från att skriva ut sitt \"Vänta!\"-meddelande"
-                },
-                "debugLogs": {
-                    "name": "Felsökningsloggar",
-                    "note": "Allt från konsolen hamnar i filen debug.log i BetterDiscord mappen"
-                },
-                "devTools": {
-                    "name": "Utvecklarverktyg"
-                }
-            },
-            "editor": {
-                "lineNumbers": {
-                    "name": "Radnummer",
-                    "note": "Visar radnummer i marginalen i redigeringsfönstret"
-                },
-                "fontSize": {
-                    "name": "Teckenstorlek",
-                    "note": "Storlek på typsnittet som används i redigeringsfönstret"
-                },
-                "quickSuggestions": {
-                    "name": "Snabbförslag",
-                    "note": "Aktiverar autokompletteringsförslag när du skriver"
-                },
-                "renderWhitespace": {
-                    "name": "Visa blanksteg",
-                    "note": "När blanksteg ska markeras i redigeringsfönstret",
-                    "options": {
-                        "all": "Alltid",
-                        "none": "Aldrig"
-                    }
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} av {{author}}",
-        "byline": "av {{author}}",
-        "openFolder": "Öppna mappen för {{type}}",
-        "reload": "Ladda om",
-        "addonSettings": "Inställningar",
-        "website": "Webbplats",
-        "source": "Källa",
-        "invite": "Supportserver",
-        "donate": "Donera",
-        "patreon": "Patreon",
-        "name": "Namn",
-        "author": "Upphovsman",
-        "version": "Version",
-        "added": "Tilläggsdatum",
-        "modified": "Ändringsdatum",
-        "search": "Sök efter {{type}}",
-        "editAddon": "Redigera",
-        "deleteAddon": "Ta bort",
-        "confirmDelete": "Är du säker på att du vill ta bort {{name}}?",
-        "enabled": "{{name}} har aktiverats.",
-        "disabled": "{{name}} har inaktiverats.",
-        "couldNotEnable": "{{name}} kunde inte aktiverats.",
-        "couldNotDisable": "{{name}} kunde inte inaktiverats.",
-        "couldNotStart": "{{name}} kunde inte startas.",
-        "couldNotStop": "{{name}} kunde inte stoppas.",
-        "settingsError": "Kunde inte öppna inställningarna för {{namn}}",
-        "unknownAuthor": "Okänd upphovsman",
-        "noDescription": "Beskrivning saknas.",
-        "compileError": "Kunde inte kompileras. Se konsolen för mer information.",
-        "isEnabled": "Aktiverad",
-        "listView": "Listvy",
-        "gridView": "Rutnätsvy"
-    },
-    "CustomCSS": {
-        "confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",
-        "update": "Uppdatera",
-        "save": "Spara",
-        "openNative": "Öppna I Standardredigerare",
-        "openDetached": "Koppla Loss Fönster",
-        "settings": "Inställningar för redigerare",
-        "editorTitle": "Egen CSS-redigerare"
-    },
-    "Modals": {
-        "confirmAction": "Är du säker?",
-        "okay": "Okej",
-        "cancel": "Avbryt",
-        "nevermind": "Avbryt",
-        "close": "Stäng",
-        "name": "Namn",
-        "message": "Meddelande",
-        "error": "Fel",
-        "addonErrors": "Tilläggsfel",
-        "restartRequired": "Omstart krävs",
-        "restartNow": "Starta om nu",
-        "restartLater": "Starta om senare",
-        "restartPrompt": "För att ändringarna ska träda i kraft måste Discord startas om. Vill du starta om nu?"
-    },
-    "Sorting": {
-        "sortBy": "Sortera efter",
-        "order": "Ordning",
-        "ascending": "Stigande",
-        "descending": "Fallande"
-    },
-    "Updater": {
-        "updateFailed": "Uppdateringen misslyckades!",
-        "updateFailedMessage": "BetterDiscord kunde inte uppdateras. Ladda ned den senaste versionen av installationsprogrammet från vår webbplats (https://betterdiscord.app/) och installera om BetterDiscord.",
-        "updateSuccessful": "Uppdateringen lyckades!",
-        "checking": "Söker efter uppdateringar!",
-        "finishedChecking": "Sökningen efter uppdateringar är slutförd!",
-        "checkForUpdates": "Sök efter uppdateringar!",
-        "updateAll": "Uppdatera alla!",
-        "noUpdatesAvailable": "Det finns inga uppdateringar tillgängliga.",
-        "upToDateBlankslate": "Alla dina {{type}} verkar vara uppdaterade!",
-        "updateButton": "Uppdatera!"
-    }
+	"Panels": {
+		"plugins": "Tillägg",
+		"themes": "Teman",
+		"customcss": "Egen CSS",
+		"updates": "Uppdateringar"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Inställningar",
+			"general": {
+				"name": "Allmänt",
+				"voiceDisconnect": {
+					"name": "Lämna röstsamtal",
+					"note": "Lämna röstsamtal när Discord stängs ner"
+				},
+				"showToasts": {
+					"name": "Visa Toasts",
+					"note": "Visar en liten notifikation för viktig information"
+				},
+				"mediaKeys": {
+					"name": "Inaktivera mediaknapparna",
+					"note": "Hindrar Discord från att ta över mediaknapparna efter att du har spelat upp en video."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Ta bort minimistorleken",
+					"note": "Tar bort Discords minimifönsterstorlek på 940x500"
+				},
+				"name": "Fönsterinställningar",
+				"transparency": {
+					"name": "Aktivera Genomskinlighet",
+					"note": "Gör att huvudfönstret blir genomskinligt (kräver omstart)"
+				},
+				"frame": {
+					"name": "Fönsterram",
+					"note": "Lägger till operativsystemets standard fönsterram runt huvudfönstret"
+				}
+			},
+			"addons": {
+				"name": "Tilläggshanterare",
+				"addonErrors": {
+					"name": "Visa tilläggsfel",
+					"note": "Visar en modalruta med tillägg- och temafel"
+				}
+			},
+			"customcss": {
+				"name": "Egen CSS",
+				"customcss": {
+					"name": "Egen CSS",
+					"note": "Aktiverar \"Egen CSS\"-fliken"
+				},
+				"liveUpdate": {
+					"name": "Uppdatera Direkt",
+					"note": "Uppdaterar css allteftersom du skriver"
+				},
+				"startDetached": {
+					"name": "Starta Frånkopplad",
+					"note": "Öppnar CSS-redigeraren i ett separat fönster när \"Egen CSS\"-fliken klickas"
+				},
+				"nativeOpen": {
+					"name": "Öppna I Standardredigerare",
+					"note": "Öppnar CSS filen i operativsystemets standardredigerare när \"Egen CSS\"-fliken klickas"
+				}
+			},
+			"developer": {
+				"name": "Utvecklarinställningar",
+				"devToolsWarning": {
+					"name": "Stäng av utvecklarverktygsvarningar",
+					"note": "Hindrar Discord från att skriva ut sitt \"Vänta!\"-meddelande"
+				},
+				"debugLogs": {
+					"name": "Felsökningsloggar",
+					"note": "Allt från konsolen hamnar i filen debug.log i BetterDiscord mappen"
+				},
+				"devTools": {
+					"name": "Utvecklarverktyg"
+				}
+			},
+			"editor": {
+				"lineNumbers": {
+					"name": "Radnummer",
+					"note": "Visar radnummer i marginalen i redigeringsfönstret"
+				},
+				"fontSize": {
+					"name": "Teckenstorlek",
+					"note": "Storlek på typsnittet som används i redigeringsfönstret"
+				},
+				"quickSuggestions": {
+					"name": "Snabbförslag",
+					"note": "Aktiverar autokompletteringsförslag när du skriver"
+				},
+				"renderWhitespace": {
+					"name": "Visa blanksteg",
+					"note": "När blanksteg ska markeras i redigeringsfönstret",
+					"options": {
+						"all": "Alltid",
+						"none": "Aldrig"
+					}
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} av {{author}}",
+		"byline": "av {{author}}",
+		"openFolder": "Öppna mappen för {{type}}",
+		"reload": "Ladda om",
+		"addonSettings": "Inställningar",
+		"website": "Webbplats",
+		"source": "Källa",
+		"invite": "Supportserver",
+		"donate": "Donera",
+		"patreon": "Patreon",
+		"name": "Namn",
+		"author": "Upphovsman",
+		"version": "Version",
+		"added": "Tilläggsdatum",
+		"modified": "Ändringsdatum",
+		"search": "Sök efter {{type}}",
+		"editAddon": "Redigera",
+		"deleteAddon": "Ta bort",
+		"confirmDelete": "Är du säker på att du vill ta bort {{name}}?",
+		"enabled": "{{name}} har aktiverats.",
+		"disabled": "{{name}} har inaktiverats.",
+		"couldNotEnable": "{{name}} kunde inte aktiverats.",
+		"couldNotDisable": "{{name}} kunde inte inaktiverats.",
+		"couldNotStart": "{{name}} kunde inte startas.",
+		"couldNotStop": "{{name}} kunde inte stoppas.",
+		"settingsError": "Kunde inte öppna inställningarna för {{namn}}",
+		"unknownAuthor": "Okänd upphovsman",
+		"noDescription": "Beskrivning saknas.",
+		"compileError": "Kunde inte kompileras. Se konsolen för mer information.",
+		"isEnabled": "Aktiverad",
+		"listView": "Listvy",
+		"gridView": "Rutnätsvy"
+	},
+	"CustomCSS": {
+		"confirmationText": "Du har osparade ändringar av egna CSS:en. Alla ändringar kommer försvinna om du stänger det här fönstret",
+		"update": "Uppdatera",
+		"save": "Spara",
+		"openNative": "Öppna I Standardredigerare",
+		"openDetached": "Koppla Loss Fönster",
+		"settings": "Inställningar för redigerare",
+		"editorTitle": "Egen CSS-redigerare"
+	},
+	"Modals": {
+		"confirmAction": "Är du säker?",
+		"okay": "Okej",
+		"cancel": "Avbryt",
+		"nevermind": "Avbryt",
+		"close": "Stäng",
+		"name": "Namn",
+		"message": "Meddelande",
+		"error": "Fel",
+		"addonErrors": "Tilläggsfel",
+		"restartRequired": "Omstart krävs",
+		"restartNow": "Starta om nu",
+		"restartLater": "Starta om senare",
+		"restartPrompt": "För att ändringarna ska träda i kraft måste Discord startas om. Vill du starta om nu?"
+	},
+	"Sorting": {
+		"sortBy": "Sortera efter",
+		"order": "Ordning",
+		"ascending": "Stigande",
+		"descending": "Fallande"
+	},
+	"Updater": {
+		"updateFailed": "Uppdateringen misslyckades!",
+		"updateFailedMessage": "BetterDiscord kunde inte uppdateras. Ladda ned den senaste versionen av installationsprogrammet från vår webbplats (https://betterdiscord.app/) och installera om BetterDiscord.",
+		"updateSuccessful": "Uppdateringen lyckades!",
+		"checking": "Söker efter uppdateringar!",
+		"finishedChecking": "Sökningen efter uppdateringar är slutförd!",
+		"checkForUpdates": "Sök efter uppdateringar!",
+		"updateAll": "Uppdatera alla!",
+		"noUpdatesAvailable": "Det finns inga uppdateringar tillgängliga.",
+		"upToDateBlankslate": "Alla dina {{type}} verkar vara uppdaterade!",
+		"updateButton": "Uppdatera!"
+	}
 }

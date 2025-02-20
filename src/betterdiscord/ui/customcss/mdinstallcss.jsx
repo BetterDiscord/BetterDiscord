@@ -1,15 +1,15 @@
-import Patcher from "@modules/patcher";
 import CustomCSS from "@builtins/customcss";
+import {t} from "@common/i18n";
+import Logger from "@common/logger";
+import {findInTree} from "@common/utils";
+import NotificationUI from "@modules/notification";
+import Patcher from "@modules/patcher";
 import React from "@modules/react";
 import Settings from "@stores/settings";
-import {t} from "@common/i18n";
-import {PackageOpenIcon} from "lucide-react";
-import {getModule} from "@webpack";
-import Logger from "@common/logger";
-import NotificationUI from "@modules/notification";
-import Toasts from "@ui/toasts.js";
 import Modals from "@ui/modals.js";
-import {findInTree} from "@common/utils";
+import Toasts from "@ui/toasts.js";
+import {getModule} from "@webpack";
+import {PackageOpenIcon} from "lucide-react";
 
 class InstallCSS {
     static activeNotifications = new Map();

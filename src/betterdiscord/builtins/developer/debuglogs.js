@@ -1,9 +1,9 @@
 import fs from "fs";
 import path from "path";
 
-import Builtin from "@structs/builtin";
-import Config from "@stores/config";
 import {t} from "@common/i18n";
+import Config from "@stores/config";
+import Builtin from "@structs/builtin";
 
 import Modals from "@ui/modals";
 

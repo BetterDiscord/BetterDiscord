@@ -1,10 +1,10 @@
+import {spawn} from "child_process";
 import fs from "fs";
 import path from "path";
 import electron from "electron";
-import {spawn} from "child_process";
 
-import ReactDevTools from "./reactdevtools";
 import * as IPCEvents from "@common/constants/ipcevents";
+import ReactDevTools from "./reactdevtools";
 
 // Build info file only exists for non-linux (for current injection)
 const appPath = electron.app.getAppPath();

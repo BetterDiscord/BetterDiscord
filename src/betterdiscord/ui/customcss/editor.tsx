@@ -1,12 +1,12 @@
-import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
+import React from "@modules/react";
 import Settings from "@stores/settings";
 import {Stores} from "@webpack";
 
+import Text from "@ui/base/text";
 import Button from "../base/button";
 import Flex from "../base/flex";
 import Switch from "../settings/components/switch";
-import Text from "@ui/base/text";
 
 const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
 

@@ -1,6 +1,6 @@
-import {webUtils} from "electron";
 import React from "@modules/react";
 import Button from "@ui/base/button";
+import {webUtils} from "electron";
 import {XIcon} from "lucide-react";
 
 const {useRef, useCallback, useEffect} = React;
@@ -36,5 +36,5 @@ export default function Filepicker({multiple, accept, clearable, onChange, disab
         <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={Button.Colors.PRIMARY} className="bd-file-input-browse" onClick={onClick}>Browse</Button>
         <input onChange={change} type="file" className="bd-file-input" multiple={multiple} accept={accept} disabled={disabled} ref={inputRef} />
         {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clear} className="bd-file-input-clear"><XIcon size="24px" /></Button>}
-        </div>;
+    </div>;
 }

@@ -67,17 +67,19 @@ export default (type) => {
                 if (addon.source) fields.push({name: "Source", value: `[GitHub](${addon.source})`, inline: true});
                 if (addon.invite) fields.push({name: "Support", value: `[Discord](https://discord.gg/${addon.invite})`, inline: true});
                 if (addon.donate) fields.push({name: "Donate", value: `[Link](${addon.donate})`, inline: true});
-                
-                return {embeds: [{
-                    color: 4096741,
-                    title: addon.name,
-                    description: addon.description,
-                    fields: fields,
-                    footer: {
-                        text: "Last updated"
-                    },
-                    timestamp: (new Date(addon.modified)).toISOString()
-                }]};
+
+                return {
+                    embeds: [{
+                        color: 4096741,
+                        title: addon.name,
+                        description: addon.description,
+                        fields: fields,
+                        footer: {
+                            text: "Last updated"
+                        },
+                        timestamp: (new Date(addon.modified)).toISOString()
+                    }]
+                };
             }
 
             if (action === "share") {

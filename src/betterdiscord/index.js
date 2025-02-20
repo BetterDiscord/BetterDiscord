@@ -1,8 +1,8 @@
+import BdApi from "@api/index";
+import BetterDiscord from "@modules/core";
+import LoadingIcon from "./loadingicon";
 import require from "./polyfill"; // eslint-disable-line no-unused-vars
 import secure from "./secure";
-import LoadingIcon from "./loadingicon";
-import BetterDiscord from "@modules/core";
-import BdApi from "@api/index";
 
 // Perform some setup
 secure();

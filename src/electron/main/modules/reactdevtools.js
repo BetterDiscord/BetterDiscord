@@ -49,8 +49,8 @@ const findExtension = (dataPath) => {
     }
     else {
         extensionPath += `/Default/Extensions/${REACT_DEVTOOLS_ID}`;
-    } 
-    
+    }
+
     // Get latest version
     if (fs.existsSync(extensionPath)) {
         extensionPath = findLatestVersion(extensionPath);

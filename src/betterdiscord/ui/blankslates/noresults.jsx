@@ -1,5 +1,5 @@
-import clsx from "clsx";
 import React from "@modules/react";
+import clsx from "clsx";
 
 import {t} from "@common/i18n";
 

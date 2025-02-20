@@ -11,7 +11,7 @@ const get = (opts, postData) => {
         opts.headers = {
             "Content-Type": "application/x-www-form-urlencoded",
             "Content-Length": postData.length
-         };
+        };
     }
 
     if (!opts.method) opts.method = "GET";

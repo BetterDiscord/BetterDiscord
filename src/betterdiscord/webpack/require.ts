@@ -1,5 +1,5 @@
-import type {Webpack} from "discord";
 import Logger from "@common/logger";
+import type {Webpack} from "discord";
 
 export let webpackRequire: Webpack.Require;
 
