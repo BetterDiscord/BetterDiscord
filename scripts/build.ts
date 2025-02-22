@@ -60,6 +60,7 @@ async function runBuild() {
         legalComments: "none",
         define: {
             "process.env.__VERSION__": JSON.stringify(pkg.version),
+            "process.env.__MONACO_VERSION__": JSON.stringify(pkg.dependencies["monaco-editor"]),
             "process.env.__BRANCH__": JSON.stringify(BRANCH_NAME),
             "process.env.__COMMIT__": JSON.stringify(COMMIT_HASH),
             "process.env.__BUILD__": JSON.stringify(DEVELOPMENT)

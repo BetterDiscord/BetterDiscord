@@ -43,7 +43,7 @@ export interface FloatingWindowProps {
     confirmationText?: string;
 }
 
-export default function FloatingWindow({id, title, resizable, children, className, center, top: initialTop = 0, left: initialLeft = 0, width: initialWidth = 470, height: initialHeight = 410, minX = 0, minY = 0, maxX = -1, maxY = -1, onResize, close: doClose, confirmClose: doConfirmClose, confirmationText}: FloatingWindowProps) {
+export default function FloatingWindow({id, title, resizable, children, className, center, top: initialTop = 0, left: initialLeft = 0, width: initialWidth = 410, height: initialHeight = 470, minX = 0, minY = 0, maxX = -1, maxY = -1, onResize, close: doClose, confirmClose: doConfirmClose, confirmationText}: FloatingWindowProps) {
     const [modalOpen, setOpen] = useState(false);
 
     const max = useRef({x: maxX, y: maxY});
@@ -190,11 +190,12 @@ export default function FloatingWindow({id, title, resizable, children, classNam
     const finalClassname = `floating-window${className ? ` ${className}` : ""}${resizable ? " resizable" : ""}${modalOpen ? " modal-open" : ""}`;
 
     useLayoutEffect(() => {
+        window.current!.style.height = `${initialHeight}px`;
+        window.current!.style.width = `${initialWidth}px`;
+
         positioning.current.position.x = center ? (Screen.width / 2) - (initialWidth / 2) : initialLeft;
         positioning.current.position.y = center ? (Screen.height / 2) - (initialHeight / 2) : initialTop;
 
-        window.current!.style.height = `${initialHeight}px`;
-        window.current!.style.width = `${initialWidth}px`;
         window.current!.style.left = `${positioning.current.position.x}px`;
         window.current!.style.top = `${positioning.current.position.y}px`;
     }, [center, initialHeight, initialLeft, initialTop, initialWidth]);

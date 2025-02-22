@@ -2,6 +2,7 @@ import Logger from "@common/logger";
 
 import DOMManager from "./dommanager";
 import {getAllModules, webpackRequire} from "@webpack";
+import Patcher from "./patcher";
 
 // List of all global classNames (from the app helmet stuff)
 const knownGlobalClasses = [
@@ -53,7 +54,7 @@ const knownGlobalClasses = [
 export default new class Editor {
 
     async initialize() {
-        const baseUrl = "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min";
+        const baseUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/${process.env.__MONACO_VERSION__}/min`;
 
         Object.defineProperty(window, "MonacoEnvironment", {
             value: {
@@ -156,6 +157,43 @@ export default new class Editor {
                         };
                     }
                 });
+
+                amdLoader(["vs/platform/clipboard/browser/clipboardService"], ({BrowserClipboardService}) => {
+                    Patcher.instead("monaco-editor", BrowserClipboardService.prototype, "readText", (that, [type], original) => {
+                        if (type) {
+                            return original.call(that, type);
+                        }
+
+                        return Promise.resolve(DiscordNative.clipboard.read());
+                    });
+                });
+
+                // JS
+                // monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+                //     noSemanticValidation: true,
+                //     noSyntaxValidation: false,
+                // });
+                // monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+                //     target: monaco.languages.typescript.ScriptTarget.ESNext,
+                //     allowNonTsExtensions: true,
+                // });
+
+                // const libSource = `
+                //     interface Webpack {}
+
+                //     declare class BdApi {
+                //         constructor(name: string) {}
+
+                //         Webpack!: Webpack;
+                //         static Webpack!: Webpack;
+                //     }
+                // `;
+
+                // const libUri = "ts:filename/bdapi.d.ts";
+                // monaco.languages.typescript.javascriptDefaults.addExtraLib(libSource, libUri);
+                // // When resolving definitions and references, the editor will try to use created models.
+                // // Creating a model for the library allows "peek definition/references" commands to work with the library.
+                // monaco.editor.createModel(libSource, "typescript", monaco.Uri.parse(libUri));
             });
         }
         catch (e) {

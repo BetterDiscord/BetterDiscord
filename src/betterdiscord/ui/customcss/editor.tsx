@@ -10,6 +10,9 @@ import Text from "@ui/base/text";
 import {useInternalStore} from "@ui/hooks";
 import {useLayoutEffect, useRef} from "react";
 
+type IStandaloneCodeEditor = import("monaco-editor").editor.IStandaloneCodeEditor;
+type IStandaloneEditorConstructionOptions = import("monaco-editor").editor.IStandaloneEditorConstructionOptions;
+
 const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
 
 
@@ -67,8 +70,8 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
     }, [requestedLang]);
 
     const [theme, setTheme] = useState(getTheme);
-    const [editor, setEditor] = useState<typeof window.monaco>();
-    const [, setBindings] = useState<Array<{dispose(): void;}>>([]);
+    const [editor, setEditor] = useState<IStandaloneCodeEditor | undefined>();
+    const [, setBindings] = useState<Array<{dispose(): void;} | undefined>>([]);
 
     const [selection, setSelection] = useState<[line: number, col: number, selected: number]>([0, 0, 0]);
     const [markerInfo, setInfo] = useState<[errors: number, warnings: number, markers: any[]]>([0, 0, []]);
@@ -81,19 +84,17 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
     const toggleShowingProblems = useCallback(() => setShowingProblems(v => !v), []);
 
     const onChange = useCallback(() => {
-        notifyParent?.(editor?.getValue());
+        if (editor) notifyParent?.(editor.getValue());
     }, [editor, notifyParent]);
     const resize = useCallback(() => editor?.layout(), [editor]);
-    const showSettings = useCallback(() => editor?.keyBinding.$defaultHandler.commands.showSettingsMenu.exec(editor), [editor]);
 
     useImperativeHandle(editorRef, () => {
         return {
             resize,
-            showSettings,
-            get value() {return editor.getValue();},
-            set value(newValue) {if (typeof newValue === "string") editor.setValue(newValue);}
+            get value() {return editor!.getValue();},
+            set value(newValue) {if (typeof newValue === "string") editor!.setValue(newValue);}
         };
-    }, [editor, resize, showSettings]);
+    }, [editor, resize]);
 
     useEffect(() => {
         setBindings(bins => [...bins, editor?.onDidChangeModelContent(onChange)]);
@@ -127,16 +128,10 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                     strings: Settings.get("settings", "editor", "quickSuggestions")
                 },
                 renderWhitespace: Settings.get("settings", "editor", "renderWhitespace")
-            });
+            } as IStandaloneEditorConstructionOptions);
 
-            const onDidChangeMarkers = window.monaco.editor.onDidChangeMarkers(markersChange);
-
-            const monacoEditor = window.monaco.editor.create(node, getOptions());
-
-            setEditor(monacoEditor);
-
-            function markersChange([uri]: [uri: any]) {
-                if (monacoEditor.getModel().uri !== uri) {
+            const onDidChangeMarkers = window.monaco.editor.onDidChangeMarkers(([uri]) => {
+                if (monacoEditor.getModel()!.uri !== uri) {
                     return;
                 }
 
@@ -151,22 +146,26 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                 }
 
                 setInfo([errors, warnings, markers]);
-            }
+            });
+
+            const monacoEditor = window.monaco.editor.create(node, getOptions());
+
+            setEditor(monacoEditor);
 
             // Listen for cursor or selection change
             monacoEditor.onDidChangeCursorSelection(() => {
-                const position = monacoEditor.getPosition();
+                const position = monacoEditor.getPosition()!;
 
                 const $selection = monacoEditor.getSelection();
 
                 // Calculate the number of characters selected
-                const selectedText = monacoEditor.getModel().getValueInRange($selection);
+                const selectedText = monacoEditor.getModel()!.getValueInRange($selection!);
 
                 setSelection([position.lineNumber, position.column, selectedText.length]);
             });
 
             function updateThemingVars() {
-                const styles = getComputedStyle(monacoEditor.getDomNode());
+                const styles = getComputedStyle(monacoEditor.getDomNode()!);
 
                 const background = styles.getPropertyValue("--vscode-editor-background");
                 const foreground = styles.getPropertyValue("--vscode-foreground");
@@ -219,10 +218,15 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             getValue: () => textarea.value,
             setValue: (val: string) => textarea.value = val,
             layout: () => {},
-            onDidChangeModelContent: (cb: (e: Event) => void) => {
+            onDidChangeModelContent: ((cb: (e: Event) => void) => {
                 textarea.onchange = cb;
                 textarea.oninput = cb;
-            },
+
+                return {
+                    dispose() {}
+                };
+            }) as any,
+            // @ts-expect-error For the footer
             isFallback: true
         });
 
@@ -241,8 +245,8 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
     if (editor && editor.layout) editor.layout();
 
     const gotoLine = useCallback(() => {
-        editor.focus();
-        editor.trigger("keyboard", "editor.action.gotoLine");
+        editor!.focus();
+        editor!.trigger("keyboard", "editor.action.gotoLine", "");
     }, [editor]);
 
     const controlsLeft = controls.filter(c => c.side != "right").map(buildControl.bind(null, () => editor?.getValue()));
@@ -283,6 +287,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                 </div>
             )}
         </div>
+        {/* @ts-expect-error Dont display the footer if its the footer */}
         {!editor?.isFallback && (
             <div className="bd-editor-footer">
                 <div className="bd-editor-footer-left">
