@@ -10,8 +10,10 @@ import Text from "@ui/base/text";
 import {useInternalStore} from "@ui/hooks";
 import {useLayoutEffect, useRef} from "react";
 
-type IStandaloneCodeEditor = import("monaco-editor").editor.IStandaloneCodeEditor;
-type IStandaloneEditorConstructionOptions = import("monaco-editor").editor.IStandaloneEditorConstructionOptions;
+import type {editor as Editor} from "monaco-editor";
+
+type IStandaloneCodeEditor = Editor.IStandaloneCodeEditor;
+type IStandaloneEditorConstructionOptions = Editor.IStandaloneEditorConstructionOptions;
 
 const {useState, useCallback, useEffect, forwardRef, useMemo, useImperativeHandle} = React;
 
