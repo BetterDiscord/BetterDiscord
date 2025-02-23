@@ -6,7 +6,7 @@ import {getModule} from "./searching";
 import {webpackRequire} from "./require";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 
-export function *getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
+export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
     yield target ??= getModule(exports =>
         Object.values(exports).some(filter),
         rest
@@ -21,24 +21,29 @@ export function getMangled<T extends object>(
     options: Webpack.Options = {}
 ): T {
     const {raw = false, ...rest} = options;
-
-    const mapped = {} as T;
+    const mapped = {} as Partial<T>;
 
     if (typeof filter === "string" || filter instanceof RegExp) {
         filter = bySource(filter);
     }
 
     let module = getModule<any>(filter, {raw, ...rest});
-    if (!module) return mapped;
+    if (!module) return mapped as T;
     if (raw) module = module.exports;
 
-    for (const searchKey in module) {
+    const moduleKeys = Object.keys(module);
+    const mapperKeys = Object.keys(mappers);
+
+    for (let i = 0; i < moduleKeys.length; i++) {
+        const searchKey = moduleKeys[i];
         if (!Object.prototype.hasOwnProperty.call(module, searchKey)) continue;
 
-        for (const key in mappers) {
+        for (let j = 0; j < mapperKeys.length; j++) {
+            const key = mapperKeys[j];
             if (!Object.prototype.hasOwnProperty.call(mappers, key)) continue;
             if (Object.prototype.hasOwnProperty.call(mapped, key)) continue;
 
+            // @ts-ignore
             if (mappers[key](module[searchKey])) {
                 Object.defineProperty(mapped, key, {
                     get() {
@@ -48,27 +53,29 @@ export function getMangled<T extends object>(
                         module[searchKey] = value;
                     },
                     enumerable: true,
-                    configurable: false
+                    configurable: true
                 });
             }
         }
     }
 
-    // Set everything that was not found to undefined
-    for (const key in mappers) {
+    for (let i = 0; i < mapperKeys.length; i++) {
+        const key = mapperKeys[i];
         if (!Object.prototype.hasOwnProperty.call(mapped, key)) {
-            Object.defineProperty(module, key, {
+            Object.defineProperty(mapped, key, {
                 value: undefined,
                 enumerable: true,
-                configurable: false
+                configurable: true
             });
         }
     }
 
-    // Debug info and to not deal with types define it
-    Object.defineProperty(mapped, Symbol("betterdiscord.getMangled"), {value: module});
+    Object.defineProperty(mapped, Symbol("betterdiscord.getMangled"), {
+        value: module,
+        configurable: true
+    });
 
-    return mapped;
+    return mapped as T;
 }
 
 export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
