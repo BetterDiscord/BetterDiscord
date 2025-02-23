@@ -53,7 +53,7 @@ export function getMangled<T extends object>(
                         module[searchKey] = value;
                     },
                     enumerable: true,
-                    configurable: true
+                    configurable: false
                 });
             }
         }
@@ -65,14 +65,14 @@ export function getMangled<T extends object>(
             Object.defineProperty(mapped, key, {
                 value: undefined,
                 enumerable: true,
-                configurable: true
+                configurable: false
             });
         }
     }
 
     Object.defineProperty(mapped, Symbol("betterdiscord.getMangled"), {
         value: module,
-        configurable: true
+        configurable: false
     });
 
     return mapped as T;
