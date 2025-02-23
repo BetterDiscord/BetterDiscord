@@ -32,7 +32,7 @@ export function getMangled<T extends object>(
     if (raw) module = module.exports;
 
     const moduleKeys = Object.keys(module);
-    const mapperKeys = Object.keys(mappers);
+    const mapperKeys = Object.keys(mappers) as Array<keyof T>;
 
     for (let i = 0; i < moduleKeys.length; i++) {
         const searchKey = moduleKeys[i];
