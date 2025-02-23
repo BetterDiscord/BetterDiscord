@@ -2,7 +2,7 @@ import Logger from "@common/logger";
 
 import SettingsConfig, {type DropdownSetting, type SettingsCategory} from "@data/settings";
 
-import DataStore from "@modules/datastore";
+import JsonStore from "./json";
 import Events from "@modules/emitter";
 import DiscordModules from "@modules/discordmodules";
 import {t} from "@common/i18n";
@@ -156,7 +156,7 @@ export default new class SettingsManager extends Store {
                         Object.defineProperty(opt, "label", {
                             enumerable: true,
                             get: () => {
-                                return t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.id}`) || t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.value}`) || optLabel;
+                                return t(`Collections.${collection.id}.${category.id}.${setting.id}.options.${opt.id ?? opt.value}`) || optLabel;
                             }
                         });
                     }
@@ -187,11 +187,11 @@ export default new class SettingsManager extends Store {
     }
 
     saveCollection(collection: string) {
-        DataStore.setData(collection, this.state[collection]);
+        JsonStore.set(collection as "settings", this.state[collection]);
     }
 
     loadCollection(id: string) {
-        const previousState = DataStore.getData(id) as Partial<State>;
+        const previousState = JsonStore.get(id as "settings") as Partial<State>;
         if (!previousState) return this.saveCollection(id);
         for (const category in this.state[id]) {
             if (!previousState[category]) Object.assign(previousState, {[category]: this.state[id][category]});

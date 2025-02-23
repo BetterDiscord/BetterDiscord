@@ -40,7 +40,7 @@ class Logger {
      * @param {string} messageStyle - CSS to style the main message
      * @returns 
      */
-    constructor(pluginName, nameStyle, messageStyle) {
+    constructor(pluginName = undefined, nameStyle = undefined, messageStyle = undefined) {
         if (!pluginName) return;
         this.#pluginName = pluginName;
         if (nameStyle) this.#nameStyle = nameStyle;

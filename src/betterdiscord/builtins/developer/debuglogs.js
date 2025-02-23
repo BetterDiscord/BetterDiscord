@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import Builtin from "@structs/builtin";
-import DataStore from "@modules/datastore";
+import Config from "@stores/config";
 import {t} from "@common/i18n";
 
 import Modals from "@ui/modals";
@@ -32,7 +32,7 @@ export default new class DebugLogs extends Builtin {
     get id() {return "debugLogs";}
 
     async enabled() {
-        this.logFile = path.join(DataStore.dataFolder, "debug.log");
+        this.logFile = path.join(Config.get("channelPath"), "debug.log");
         await this.checkFilesize();
         this.stream = fs.createWriteStream(this.logFile, {flags: "a"});
         this.stream.write(`\n\n================= Starting Debug Log (${timestamp()}) =================\n`);

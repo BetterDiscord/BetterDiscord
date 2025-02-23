@@ -1,3 +1,3 @@
-/** @type {import("../../../preload/src/api/index")} */
+/** @type {import("../../electron/preload/api/index")} */
 const RemoteAPI = window.BetterDiscordPreload();
 export default RemoteAPI;
