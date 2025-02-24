@@ -43,7 +43,6 @@ export function getMangled<T extends object>(
             if (!Object.prototype.hasOwnProperty.call(mappers, key)) continue;
             if (Object.prototype.hasOwnProperty.call(mapped, key)) continue;
 
-            // @ts-ignore
             if (mappers[key](module[searchKey])) {
                 Object.defineProperty(mapped, key, {
                     get() {
