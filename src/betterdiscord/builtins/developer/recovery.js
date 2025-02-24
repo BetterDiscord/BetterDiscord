@@ -36,14 +36,22 @@ async function attemptRecovery() {
         }
     ];
 
+    let allActionsCompleted = true;
+
     for (const {action, errorMessage} of recoverySteps) {
         try {
-            await action();
+            const result = action();
+            if (result instanceof Promise) {
+                await result;
+            }
         }
         catch (error) {
             Logger.error("Recovery", `${errorMessage}:, ${error}`);
+            allActionsCompleted = false;
         }
     }
+
+    return allActionsCompleted;
 }
 
 const parseGithubUrl = (url) => {
@@ -92,11 +100,16 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
         }
     };
 
-    const openDiscordSupport = () => {
+    const openDiscordSupport = async () => {
         if (pluginInfo?.invite) {
-            attemptRecovery();
-            instance.setState({info: null, error: null});
-            if (pluginInfo.invite) Modals.showGuildJoinModal(pluginInfo.invite);
+            const recoverySuccessful = await attemptRecovery();
+            if (recoverySuccessful) {
+                instance.setState({info: null, error: null});
+                if (pluginInfo.invite) Modals.showGuildJoinModal(pluginInfo.invite);
+            }
+            else {
+                Toasts.show("Recovery incomplete. Some actions failed to complete.");
+            }
         }
     };
 
@@ -129,9 +142,9 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                     )}
                     <Button
                         className="bd-error-safe-mode"
-                        onClick={() => {
+                        onClick={async () => {
                             pluginmanager.addonList.forEach((x) => pluginmanager.disableAddon(x.name));
-                            IPC.relaunch();
+                            await IPC.relaunch();
                         }}
                         color={Colors.RED}
                     >
@@ -207,8 +220,13 @@ export default new class Recovery extends Builtin {
                 <Button
                     className="bd-button-recovery"
                     onClick={async () => {
-                        await attemptRecovery();
-                        instance.setState({info: null, error: null});
+                        const recoverySuccessful = await attemptRecovery();
+                        if (recoverySuccessful) {
+                            instance.setState({info: null, error: null});
+                        }
+                        else {
+                            Toasts.show("Recovery incomplete. Some actions failed to complete.");
+                        }
                     }}
                 >
                     {t("Collections.settings.developer.recovery.button")}
