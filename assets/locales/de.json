@@ -34,7 +34,7 @@
                 },
                 "frame": {
                     "name": "Fensterrahmen",
-                    "note": "Zeigt das Hauptfenster im Standard-Design des Betriebssystems an"
+                    "note": "Nutzt den Standardrahmen des Betriebssystems für das Hauptfenster"
                 }
             },
             "addons": {
