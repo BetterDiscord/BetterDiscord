@@ -1,5 +1,5 @@
 import type {Webpack} from "discord";
-import {webpackRequire} from "./require";
+import {webpackModules} from "./require";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 
 export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = {}): T | undefined {
@@ -7,9 +7,8 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = 
 
     filter = wrapFilter(filter);
 
-    const keys = Object.keys(webpackRequire.c);
-    for (let i = 0; i < keys.length; i++) {
-        const module = webpackRequire.c[keys[i]];
+    for (let i = 0; i < webpackModules.length; i++) {
+        const module = webpackModules[i];
 
         if (shouldSkipModule(module.exports)) continue;
 
@@ -50,9 +49,8 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, optio
     filter = wrapFilter(filter);
     const modules = [] as unknown as T;
 
-    const keys = Object.keys(webpackRequire.c);
-    for (let i = 0; i < keys.length; i++) {
-        const module = webpackRequire.c[keys[i]];
+    for (let i = 0; i < webpackModules.length; i++) {
+        const module = webpackModules[i];
 
         if (shouldSkipModule(module.exports)) continue;
 

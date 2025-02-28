@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BetterDiscord Editor - </title>
+</head>
+
+<body class="monaco-workbench monaco-editor vs-dark">
+    <style>
+        :root body {
+            margin: 0;
+            position: fixed !important;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: var(--vscode-editor-background);
+            color: var(--vscode-foreground);
+            outline: 0 !important;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        #loader {
+            margin: 0;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            background-color: oklab(0.296709 -0.000735492 -0.00772537);
+            color: oklab(0.89908 -0.00192907 -0.0048306);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #action-bar {
+            color: var(--vscode-foreground);
+            border-top: 1px solid var(--vscode-tree-tableColumnsBorder);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #action-bar>div {
+            display: flex;
+            align-items: center;
+        }
+
+        #tabbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+        }
+
+        #tabbar-left {
+            display: flex;
+            gap: 4px;
+        }
+
+        .tabbar-action {
+            padding: 4px 8px;
+            display: flex;
+            text-decoration: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .tabbar-action:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #cccccc;
+        }
+
+        .footer-item {
+            align-items: center;
+            cursor: pointer;
+            display: flex;
+            height: 100%;
+            outline-width: 0;
+            overflow: hidden;
+            padding: 0 5px;
+            text-overflow: ellipsis;
+            white-space: pre;
+            margin-left: 3px;
+            margin-right: 3px;
+            text-decoration: none;
+        }
+
+        .footer-item:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #cccccc;
+        }
+
+        #live-update {
+            cursor: pointer;
+        }
+
+        #bd-icon {
+            height: 100px;
+            width: 1000px;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .55;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <div id="tabbar">
+        <div id="tabbar-left">
+            <div class="tabbar-action" id="save" title="Save">
+                <span class="codicon codicon-save"></span>
+            </div>
+            <div class="tabbar-action" id="open-editor" title="Open In System Editor">
+                <span class="codicon codicon-edit"></span>
+            </div>
+        </div>
+        <div id="tabbar-right">
+            <span>Live Update</span>
+            <input type="checkbox" name="live-update" id="live-update">
+        </div>
+    </div>
+    <div id="editor"></div>
+    <div id="action-bar">
+        <div id="action-bar-left">
+            <div class="footer-item" id="action-info">
+                <span class="codicon codicon-error"></span>
+                <span> 0 </span>
+                <span class="codicon codicon-warning"></span>
+                <span> 0</span>
+            </div>
+        </div>
+        <div id="action-bar-right">
+            <div class="footer-item" id="action-current-position">
+                <span id="current-position">Ln 1, Col 1</span>
+            </div>
+            <div class="footer-item" id="tab-size">Tabs: 4</div>
+            <div class="footer-item" id="action-langauge">
+                <span class="codicon codicon-bracket"></span>
+                <span id="language">CSS</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader">
+        <svg id="bd-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+            id="Calque_1" x="0px" y="0px" viewBox="0 0 2000 2000" enable-background="new 0 0 2000 2000"
+            xml:space="preserve">
+            <g>
+                <path fill="#3E82E5"
+                    d="M1402.2,631.7c-9.7-353.4-286.2-496-642.6-496H68.4v714.1l442,398V490.7h257c274.5,0,274.5,344.9,0,344.9H597.6v329.5h169.8c274.5,0,274.5,344.8,0,344.8h-699v354.9h691.2c356.3,0,632.8-142.6,642.6-496c0-162.6-44.5-284.1-122.9-368.6C1357.7,915.8,1402.2,794.3,1402.2,631.7z" />
+                <path fill="#FFFFFF"
+                    d="M1262.5,135.2L1262.5,135.2l-76.8,0c26.6,13.3,51.7,28.1,75,44.3c70.7,49.1,126.1,111.5,164.6,185.3c39.9,76.6,61.5,165.6,64.3,264.6l0,1.2v1.2c0,141.1,0,596.1,0,737.1v1.2l0,1.2c-2.7,99-24.3,188-64.3,264.6c-38.5,73.8-93.8,136.2-164.6,185.3c-22.6,15.7-46.9,30.1-72.6,43.1h72.5c346.2,1.9,671-171.2,671-567.9V716.7C1933.5,312.2,1608.7,135.2,1262.5,135.2z" />
+            </g>
+        </svg>
+        <span>Loading...</span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/EventEmitter/5.2.8/EventEmitter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js"></script>
+
+    <script>
+        let title = Editor.filename;
+        if (Editor.type === "custom-css") {
+            title = "Custom CSS";
+        }
+        document.title = `BetterDiscord Editor - ${title}`;
+
+        document.getElementById("language").textContent = Editor.type === "plugin" ? " JavaScript" : " CSS";
+
+        document.getElementById("open-editor").addEventListener("click", () => Editor.open());
+
+        const baseUrl = `https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min`;
+
+        Object.defineProperty(window, "MonacoEnvironment", {
+            value: {
+                getWorker: (workerId, label) => new Worker(`data:text/javascript;charset=utf-8,${encodeURIComponent(`
+                    self.MonacoEnvironment = {
+                        baseUrl: '${baseUrl}'
+                    };
+                    importScripts('${baseUrl}/vs/base/worker/${workerId}');`
+                )}`, {type: "classic", name: label})
+            }
+        });
+
+        require.config({paths: {vs: `${baseUrl}/vs`}});
+
+        const {options, liveUpdate: defaultLiveUpdate} = Editor.settings.get();
+
+        const loader = document.getElementById("loader");
+        // if (options.theme === "light" || options.theme === "hc-light") {
+        //     loader.style.background = "white";
+        //     loader.style.color = "black";
+        // }
+
+        require(["vs/editor/editor.main"], (monaco) => {
+            loader.remove();
+
+            const tabbar = document.getElementById("tabbar");
+            const actionBar = document.getElementById("action-bar");
+            const tabSize = document.getElementById("tab-size");
+
+            let lastSavedValue = Editor.read();
+            const editor = window.editor = monaco.editor.create(document.getElementById("editor"), {
+                ...options,
+                value: lastSavedValue,
+                language: Editor.type === "plugin" ? "javascript" : "css"
+            });
+
+            const liveUpdateNode = document.getElementById("live-update");
+            let liveUpdate = false;
+            if (Editor.type !== "custom-css") liveUpdateNode.parentElement.remove();
+            else {
+                liveUpdateNode.checked = liveUpdate = defaultLiveUpdate;
+                liveUpdateNode.addEventListener("change", () => {
+                    Editor.settings.setLiveUpdate(liveUpdate = liveUpdateNode.checked);
+
+                    if (liveUpdate) {
+                        save();
+                    }
+                });
+            }
+
+            tabSize.textContent = `${options.insertSpaces ? "Spaces" : "Tabs"}: ${options.tabSize}`;
+            Editor.settings.subscribe(({options, liveUpdate: newLiveUpdate}) => {
+                editor.updateOptions(options);
+                tabSize.textContent = `${options.insertSpaces ? "Spaces" : "Tabs"}: ${options.tabSize}`;
+
+                liveUpdateNode.checked = liveUpdate = newLiveUpdate;
+                if (Editor.type === "custom-css" && liveUpdate) {
+                    save();
+                }
+            });
+
+            const height = (node) => Math.max(node.clientHeight, node.offsetHeight);
+            function layout() {
+                editor.getDomNode().style.height = `${height(document.body) - height(tabbar) - height(actionBar)}px`;
+                editor.layout();
+            }
+
+            function save() {
+                Editor.write(lastSavedValue = editor.getValue());
+                Editor.shouldShowWarning(false);
+            }
+
+            editor.onDidChangeModelContent(() => {
+                if (liveUpdate) {
+                    save();
+                    return;
+                }
+
+                Editor.shouldShowWarning(!(liveUpdate || editor.getValue() === lastSavedValue));
+            });
+
+            const currentPosition = document.getElementById("current-position");
+            editor.onDidChangeCursorSelection(() => {
+                const position = editor.getPosition();
+                const selection = editor.getSelection();
+                const selectedText = editor.getModel().getValueInRange(selection);
+
+                let content = `Ln ${position.lineNumber}, Col ${position.column}`;
+                if (selectedText.length) content += ` (${selectedText.length} selected)`;
+
+                currentPosition.textContent = content;
+            });
+
+            window.addEventListener("resize", layout);
+            layout();
+
+            document.getElementById("save").addEventListener("click", save);
+
+            require(["vs/platform/clipboard/browser/clipboardService"], ({BrowserClipboardService}) => {
+                const readText = BrowserClipboardService.prototype.readText;
+
+                BrowserClipboardService.prototype.readText = function (type) {
+                    if (type) {
+                        return readText.apply(this, arguments);
+                    }
+
+                    return Promise.resolve(Editor.readText());
+                };
+            });
+        });
+    </script>
+</body>
+
+</html>

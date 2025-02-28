@@ -9,6 +9,8 @@ import {t} from "@common/i18n";
 import Store from "./base";
 import type {ComponentType} from "react";
 import type AddonManager from "@modules/addonmanager";
+import RemoteAPI from "@polyfill/remote";
+import {Stores} from "@webpack";
 
 
 export interface SettingsCollection {
@@ -34,13 +36,51 @@ export interface SettingsPanel {
 type State = Record<string, Record<string, any>>;
 
 export default new class SettingsManager extends Store {
-
     state: State = {};
     collections: SettingsCollection[] = [];
     panels: SettingsPanel[] = [];
 
     initialize() {
         this.registerCollection("settings", "Settings", SettingsConfig);
+
+        RemoteAPI.editor.updateSettings({
+            options: this.getEditorOptions(),
+            liveUpdate: this.get("settings", "customcss", "liveUpdate")
+        });
+        this.addChangeListener(() => {
+            RemoteAPI.editor.updateSettings({
+                options: this.getEditorOptions(),
+                liveUpdate: this.get("settings", "customcss", "liveUpdate")
+            });
+        });
+        RemoteAPI.editor.onLiveUpdateChange((state) => {
+            this.set("settings", "customcss", "liveUpdate", state);
+        });
+    }
+
+    getEditorOptions() {
+        let theme = this.get<"vs" | "vs-dark" | "hc-black" | "hc-light" | "system">("settings", "editor", "theme");
+
+        if (theme === "system") {
+            if (Stores.AccessibilityStore?.useForcedColors) theme = "hc-black";
+            else theme = Stores.ThemeStore?.theme === "light" ? "vs" : "vs-dark";
+        }
+
+        return {
+            theme,
+            fontSize: this.get("settings", "editor", "fontSize"),
+            lineNumbers: this.get("settings", "editor", "lineNumbers"),
+            minimap: {enabled: this.get("settings", "editor", "minimap")},
+            hover: {enabled: this.get("settings", "editor", "hover")},
+            insertSpaces: this.get("settings", "editor", "insertSpaces"),
+            tabSize: Number(this.get("settings", "editor", "tabSize")),
+            quickSuggestions: {
+                other: this.get("settings", "editor", "quickSuggestions"),
+                comments: this.get("settings", "editor", "quickSuggestions"),
+                strings: this.get("settings", "editor", "quickSuggestions")
+            },
+            renderWhitespace: this.get("settings", "editor", "renderWhitespace")
+        };
     }
 
     registerCollection(id: string, name: string, settings: SettingsCategory[]) {

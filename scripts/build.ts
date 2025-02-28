@@ -1,5 +1,6 @@
 import Bun, {$} from "bun";
 import path from "node:path";
+import fs from "node:fs";
 import pkg from "../package.json";
 
 import styleLoader from "bun-style-loader";
@@ -23,6 +24,7 @@ const moduleConfigs: Record<string, EntryPoint> = {
     betterdiscord: {"in": "src/betterdiscord/index.js", "out": "betterdiscord"},
     main: {"in": "src/electron/main/index.js", "out": "main"},
     preload: {"in": "src/electron/preload/index.js", "out": "preload"},
+    editor: {"in": "src/editor/preload.js", "out": "editor"},
 };
 
 let modulesRequested = process.argv.filter(a => a.startsWith("--module=")).map(a => a.replace("--module=", ""));
@@ -46,7 +48,7 @@ async function runBuild() {
         alias: {
             react: "@modules/react",
         },
-        external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os"],
+        external: ["fs", "original-fs", "path", "vm", "electron", "@electron/remote", "module", "request", "events", "child_process", "net", "http", "https", "crypto", "os", "url"],
         target: ["chrome128", "node20"],
         loader: {
             ".js": "jsx",
@@ -67,8 +69,15 @@ async function runBuild() {
         }
     });
 
+    fs.copyFileSync("src/editor/index.html", "dist/editor.html");
 
     if (process.argv.includes("--watch")) {
+        fs.watchFile("src/editor/index.html", () => {
+            console.log("[watch] copying editor.html");
+            fs.copyFileSync("src/editor/index.html", "dist/editor.html");
+            console.log("[watch] Copied editor.html");
+        });
+
         await ctx.watch();
     }
     else {

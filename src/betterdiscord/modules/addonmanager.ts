@@ -17,6 +17,7 @@ import FloatingWindows from "@ui/floatingwindows";
 import Toasts from "@ui/toasts";
 import Store from "@stores/base";
 import type {SystemError} from "bun";
+import RemoteAPI from "@polyfill/remote";
 
 
 // const SWITCH_ANIMATION_TIME = 250;
@@ -426,12 +427,13 @@ export default abstract class AddonManager extends Store {
         return fs.writeFileSync(path.resolve(this.addonFolder, addon.filename), content);
     }
 
-    editAddon(idOrFileOrAddon: string | Addon, system?: "system" | "detached" | boolean) {
+    editAddon(idOrFileOrAddon: string | Addon, system?: "system" | "detached" | "external" | boolean) {
         const addon = typeof (idOrFileOrAddon) == "string" ? this.addonList.find(c => c.id == idOrFileOrAddon || c.filename == idOrFileOrAddon) : idOrFileOrAddon;
         if (!addon) return;
         const fullPath = path.resolve(this.addonFolder, addon.filename);
-        if (typeof (system) == "undefined") system = Settings.get("settings", "addons", "editAction") === "system";
-        if (system) return openItem(`${fullPath}`);
+        if (typeof (system) == "undefined") system = Settings.get("settings", "addons", "editAction");
+        if (system === "system") return openItem(`${fullPath}`);
+        else if (system === "external") return RemoteAPI.editor.open(this.prefix as "theme", addon.filename);
         return this.openDetached(addon);
     }
 

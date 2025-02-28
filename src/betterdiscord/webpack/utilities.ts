@@ -3,10 +3,10 @@
 import type {Webpack} from "discord";
 import {bySource} from "./filter";
 import {getModule} from "./searching";
-import {webpackRequire} from "./require";
+import {webpackModules} from "./require";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 
-export function *getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
+export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {
     yield target ??= getModule(exports =>
         Object.values(exports).some(filter),
         rest
@@ -80,10 +80,8 @@ export function getBulk<T extends any[]>(...queries: Webpack.BulkQueries[]): T {
     }));
 
 
-    const keys = Object.keys(webpackRequire.c);
-    for (let i = 0; i < keys.length; i++) {
-        const module = webpackRequire.c[keys[i]];
-
+    for (let i = 0; i < webpackModules.length; i++) {
+        const module = webpackModules[i];
 
         if (shouldSkipModule(module.exports)) continue;
 

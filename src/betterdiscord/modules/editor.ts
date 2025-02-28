@@ -1,7 +1,7 @@
 import Logger from "@common/logger";
 
 import DOMManager from "./dommanager";
-import {getAllModules, webpackRequire} from "@webpack";
+import {getAllModules, webpackModules} from "@webpack";
 import Patcher from "./patcher";
 
 // List of all global classNames (from the app helmet stuff)
@@ -123,11 +123,9 @@ export default new class Editor {
                             return {suggestions: []}; // Don't show suggestions inside properties or elsewhere
                         }
 
-                        const newSize = Object.keys(webpackRequire.c).length;
-
-                        if (newSize !== size) {
+                        if (webpackModules.length !== size) {
                             suggestions = getSuggestions();
-                            size = newSize;
+                            size = webpackModules.length;
                         }
 
                         const classes = new Set(suggestions);

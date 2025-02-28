@@ -2,6 +2,7 @@ import electron from "electron";
 import path from "path";
 
 import BetterDiscord from "./betterdiscord";
+import Editor from "./editor";
 
 class BrowserWindow extends electron.BrowserWindow {
     constructor(options) {
@@ -21,7 +22,7 @@ class BrowserWindow extends electron.BrowserWindow {
 
         process.env.BETTERDISCORD_NATIVE_FRAME = options.frame = Boolean(BetterDiscord.getSetting("window", "frame") ?? options.frame ?? true);
         process.env.BETTERDISCORD_IN_APP_TRAFFIC_LIGHTS = inAppTrafficLights;
-        
+
         if (inAppTrafficLights) {
             delete options.titleBarStyle;
         }
@@ -29,6 +30,7 @@ class BrowserWindow extends electron.BrowserWindow {
         super(options);
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
+        Editor.initialize(this);
     }
 }
 

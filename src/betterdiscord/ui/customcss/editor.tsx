@@ -48,19 +48,6 @@ interface Props {
     onChange: (c: string) => void;
 }
 
-type Themes = "vs" | "vs-dark" | "hc-black" | "hc-light";
-
-function getTheme(): Themes {
-    const theme = Settings.get<"system" | Themes>("settings", "editor", "theme");
-
-    if (theme === "system") {
-        if (Stores.AccessibilityStore?.useForcedColors) return "hc-black";
-        return Stores.ThemeStore?.theme === "light" ? "vs" : "vs-dark";
-    }
-
-    return theme;
-}
-
 export default forwardRef(function CodeEditor({value, language: requestedLang = "css", id = "bd-editor", controls = [], onChange: notifyParent}: Props, editorRef) {
     const ref = useRef<HTMLDivElement>(null);
     const windowRef = useRef<HTMLDivElement>(null);
@@ -71,7 +58,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
         return requested;
     }, [requestedLang]);
 
-    const [theme, setTheme] = useState(getTheme);
+    const [theme, setTheme] = useState(() => Settings.getEditorOptions().theme);
     const [editor, setEditor] = useState<IStandaloneCodeEditor | undefined>();
     const [, setBindings] = useState<Array<{dispose(): void;} | undefined>>([]);
 
@@ -94,7 +81,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
         return {
             resize,
             get value() {return editor!.getValue();},
-            set value(newValue) {if (typeof newValue === "string") editor!.setValue(newValue);}
+            set value(newValue) {editor!.setValue(newValue);}
         };
     }, [editor, resize]);
 
@@ -117,19 +104,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             const getOptions = () => ({
                 value: value,
                 language: language,
-                theme: getTheme(),
-                fontSize: Settings.get("settings", "editor", "fontSize"),
-                lineNumbers: Settings.get("settings", "editor", "lineNumbers"),
-                minimap: {enabled: Settings.get("settings", "editor", "minimap")},
-                hover: {enabled: Settings.get("settings", "editor", "hover")},
-                insertSpaces: Settings.get("settings", "editor", "insertSpaces"),
-                tabSize: Settings.get("settings", "editor", "tabSize"),
-                quickSuggestions: {
-                    other: Settings.get("settings", "editor", "quickSuggestions"),
-                    comments: Settings.get("settings", "editor", "quickSuggestions"),
-                    strings: Settings.get("settings", "editor", "quickSuggestions")
-                },
-                renderWhitespace: Settings.get("settings", "editor", "renderWhitespace")
+                ...Settings.getEditorOptions()
             } as IStandaloneEditorConstructionOptions);
 
             const onDidChangeMarkers = window.monaco.editor.onDidChangeMarkers(([uri]) => {
@@ -154,13 +129,11 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
 
             setEditor(monacoEditor);
 
-            // Listen for cursor or selection change
             monacoEditor.onDidChangeCursorSelection(() => {
                 const position = monacoEditor.getPosition()!;
 
                 const $selection = monacoEditor.getSelection();
 
-                // Calculate the number of characters selected
                 const selectedText = monacoEditor.getModel()!.getValueInRange($selection!);
 
                 setSelection([position.lineNumber, position.column, selectedText.length]);
@@ -185,12 +158,12 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
 
             const undo = Settings.addChangeListener(() => {
                 monacoEditor.updateOptions(getOptions());
-                setTheme(getTheme());
+                setTheme(Settings.getEditorOptions().theme);
                 updateThemingVars();
             });
 
             function themeListener() {
-                const $theme = getTheme();
+                const $theme = Settings.getEditorOptions().theme;
 
                 setTheme($theme);
                 monacoEditor.updateOptions({theme: $theme});

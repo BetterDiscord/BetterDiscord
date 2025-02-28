@@ -10,6 +10,8 @@ export * as path from "path";
 export * as net from "net"; // TODO: evaluate need and create wrapper
 export * as os from "os";
 
+export * as editor from "./editor";
+
 import electron from "electron";
 import * as IPCEvents from "@common/constants/ipcevents";
 import DiscordNativePatch from "../discordnativepatch";

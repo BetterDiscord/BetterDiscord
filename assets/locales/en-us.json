@@ -84,6 +84,7 @@
                     "note": "Where plugins & themes appear when editing",
                     "options": {
                         "detached": "Detached Window",
+                        "external": "External Window",
                         "system": "System Editor"
                     }
                 },
@@ -120,6 +121,7 @@
                     "options": {
                         "settings": "Settings Menu",
                         "detached": "Detached Window",
+                        "external": "External Window",
                         "system": "System Editor"
                     }
                 }
