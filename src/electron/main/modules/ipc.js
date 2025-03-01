@@ -149,7 +149,6 @@ const updateSettings = (event, settings) => {
     process.env.BETTERDISCORD_EDITOR_OPTS = JSON.stringify(settings);
     Editor.updateSettings(settings);
 };
-
 export default class IPCMain {
     static registerEvents() {
         try {
