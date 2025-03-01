@@ -88,6 +88,6 @@ async function runBuild() {
 runBuild().catch(err => {
     console.log(err);
     for (const ctx of contextList) {
-        ctx.dispose();
+        ctx.dispose().catch(console.error);
     }
 });
