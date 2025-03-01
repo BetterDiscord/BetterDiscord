@@ -11,27 +11,19 @@ const appPath = electron.app.getAppPath();
 const buildInfoFile = path.resolve(appPath, "..", "build_info.json");
 
 // Locate data path to find transparency settings
-let dataPath = "";
-if (process.platform === "win32" || process.platform === "darwin") dataPath = path.join(electron.app.getPath("userData"), "..");
-else dataPath = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config"); // This will help with snap packages eventually
-dataPath = path.join(dataPath, "BetterDiscord") + "/";
+let bdFolder = "";
+if (process.platform === "win32" || process.platform === "darwin") bdFolder = path.join(electron.app.getPath("userData"), "..");
+else bdFolder = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config"); // This will help with snap packages eventually
+bdFolder = path.join(bdFolder, "BetterDiscord") + "/";
 
 let hasCrashed = false;
 export default class BetterDiscord {
-    static getWindowPrefs() {
-        if (!fs.existsSync(buildInfoFile)) return {};
-        const buildInfo = require(buildInfoFile);
-        const prefsFile = path.resolve(dataPath, "data", buildInfo.releaseChannel, "windowprefs.json");
-        if (!fs.existsSync(prefsFile)) return {};
-        return require(prefsFile);
-    }
-
     static getSetting(category, key) {
         if (this._settings) return this._settings[category]?.[key];
 
         try {
             const buildInfo = require(buildInfoFile);
-            const settingsFile = path.resolve(dataPath, "data", buildInfo.releaseChannel, "settings.json");
+            const settingsFile = path.resolve(bdFolder, "data", buildInfo.releaseChannel, "settings.json");
             this._settings = require(settingsFile) ?? {};
             return this._settings[category]?.[key];
         }
@@ -42,9 +34,15 @@ export default class BetterDiscord {
     }
 
     static ensureDirectories() {
-        if (!fs.existsSync(dataPath)) fs.mkdirSync(dataPath);
-        if (!fs.existsSync(path.join(dataPath, "plugins"))) fs.mkdirSync(path.join(dataPath, "plugins"));
-        if (!fs.existsSync(path.join(dataPath, "themes"))) fs.mkdirSync(path.join(dataPath, "themes"));
+        const dataFolder = path.join(bdFolder, "data");
+        if (!fs.existsSync(bdFolder)) fs.mkdirSync(bdFolder);
+        if (!fs.existsSync(dataFolder)) fs.mkdirSync(dataFolder);
+        if (!fs.existsSync(path.join(dataFolder, "stable"))) fs.mkdirSync(path.join(dataFolder, "stable"));
+        if (!fs.existsSync(path.join(dataFolder, "canary"))) fs.mkdirSync(path.join(dataFolder, "canary"));
+        if (!fs.existsSync(path.join(dataFolder, "ptb"))) fs.mkdirSync(path.join(dataFolder, "ptb"));
+        if (!fs.existsSync(path.join(dataFolder, "development"))) fs.mkdirSync(path.join(dataFolder, "development"));
+        if (!fs.existsSync(path.join(bdFolder, "plugins"))) fs.mkdirSync(path.join(bdFolder, "plugins"));
+        if (!fs.existsSync(path.join(bdFolder, "themes"))) fs.mkdirSync(path.join(bdFolder, "themes"));
     }
 
     static async injectRenderer(browserWindow) {
@@ -79,7 +77,7 @@ export default class BetterDiscord {
         process.env.DISCORD_PRELOAD = browserWindow.__originalPreload;
         process.env.DISCORD_APP_PATH = appPath;
         process.env.DISCORD_USER_DATA = electron.app.getPath("userData");
-        process.env.BETTERDISCORD_DATA_PATH = dataPath;
+        process.env.BETTERDISCORD_DATA_PATH = bdFolder;
 
         // When DOM is available, pass the renderer over the wall
         browserWindow.webContents.on("dom-ready", () => {
@@ -92,14 +90,14 @@ export default class BetterDiscord {
                 message: "Something crashed your Discord Client",
                 detail: "BetterDiscord has automatically disabled itself just in case. To enable it again, restart Discord or click the button below.\n\nThis may have been caused by a plugin. Try moving all of your plugins outside the plugin folder and see if Discord still crashed.",
                 buttons: ["Try Again", "Open Plugins Folder", "Cancel"],
-            }).then((result)=>{
+            }).then((result) => {
                 if (result.response === 0) {
                     electron.app.relaunch();
                     electron.app.exit();
                 }
                 if (result.response === 1) {
-                    if (process.platform === "win32") spawn("explorer.exe", [path.join(dataPath, "plugins")]);
-                    else electron.shell.openPath(path.join(dataPath, "plugins"));
+                    if (process.platform === "win32") spawn("explorer.exe", [path.join(bdFolder, "plugins")]);
+                    else electron.shell.openPath(path.join(bdFolder, "plugins"));
                 }
             });
             hasCrashed = false;
@@ -151,8 +149,8 @@ export default class BetterDiscord {
 }
 
 if (BetterDiscord.getSetting("developer", "reactDevTools")) {
-    electron.app.whenReady().then(async ()=>{
-        await ReactDevTools.install(dataPath);
+    electron.app.whenReady().then(async () => {
+        await ReactDevTools.install(bdFolder);
     });
 }
 

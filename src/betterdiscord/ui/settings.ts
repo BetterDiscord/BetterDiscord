@@ -1,6 +1,6 @@
 import React from "@modules/react";
 import Settings from "@stores/settings";
-import DataStore from "@modules/datastore";
+import JsonStore from "@stores/json";
 import {Filters, getByKeys, getLazy} from "@webpack";
 import Patcher from "@modules/patcher";
 
@@ -34,14 +34,14 @@ export default new class SettingsRenderer {
     }
 
     onDrawerToggle(collection: string, group: string, state: boolean) {
-        const drawerStates: Partial<Record<string, Record<string, boolean>>> = DataStore.getBDData("drawerStates") || {};
+        const drawerStates: Partial<Record<string, Record<string, boolean>>> = JsonStore.get("misc", "drawerStates") || {};
         if (!drawerStates[collection]) drawerStates[collection] = {};
         drawerStates[collection][group] = state;
-        DataStore.setBDData("drawerStates", drawerStates);
+        JsonStore.set("misc", "drawerStates", drawerStates);
     }
 
     getDrawerState(collection: string, group: string, defaultValue: boolean) {
-        const drawerStates: Partial<Record<string, Record<string, boolean>>> = DataStore.getBDData("drawerStates") || {};
+        const drawerStates: Partial<Record<string, Record<string, boolean>>> = JsonStore.get("misc", "drawerStates") || {};
         if (!drawerStates[collection]) return defaultValue;
         if (!drawerStates[collection].hasOwnProperty(group)) return defaultValue;
         return drawerStates[collection][group];
@@ -70,7 +70,7 @@ export default new class SettingsRenderer {
 
     getAddonPanel(title: string, options = {}) {
         return (props: any) => {
-                return React.createElement(AddonPage, Object.assign({}, {
+            return React.createElement(AddonPage, Object.assign({}, {
                 title: title,
                 ...props
             }, options));
@@ -78,7 +78,7 @@ export default new class SettingsRenderer {
     }
 
     async patchSections() {
-        const UserSettings = await getLazy<{prototype: {getPredicateSections(): Section[]}}>(Filters.byPrototypeKeys(["getPredicateSections"]));
+        const UserSettings = await getLazy<{prototype: {getPredicateSections(): Section[];};}>(Filters.byPrototypeKeys(["getPredicateSections"]));
         if (!UserSettings) return;
 
         Patcher.after("SettingsManager", UserSettings.prototype, "getPredicateSections", (thisObject: unknown, _: unknown, returnValue: any) => {
@@ -114,7 +114,7 @@ export default new class SettingsRenderer {
     }
 
     async patchVersionInformation() {
-        const versionDisplayModule = await getLazy<{Z(): void}>(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
+        const versionDisplayModule = await getLazy<{Z(): void;}>(Filters.byStrings("copyValue", "RELEASE_CHANNEL"), {defaultExport: false});
         if (!versionDisplayModule?.Z) return;
 
         Patcher.after("SettingsManager", versionDisplayModule, "Z", () => {
@@ -123,10 +123,10 @@ export default new class SettingsRenderer {
     }
 
     forceUpdate() {
-        const viewClass = getByKeys<{standardSidebarView: string}>(["standardSidebarView"], {cacheId: "core-settings-contentClasses"})?.standardSidebarView.split(" ")[0];
+        const viewClass = getByKeys<{standardSidebarView: string;}>(["standardSidebarView"], {cacheId: "core-settings-contentClasses"})?.standardSidebarView.split(" ")[0];
         const node = document.querySelector(`.${viewClass}`);
         if (!node) return;
-        const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
+        const stateNode = findInTree(ReactUtils.getInternalInstance(node), (m: {getPredicateSections: any;}) => m && m.getPredicateSections, {walkable: ["return", "stateNode"]});
         if (stateNode) stateNode.forceUpdate();
     }
 };

@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Settings from "@stores/settings";
 import DiscordModules from "@modules/discordmodules";
 
@@ -17,9 +17,9 @@ function makeResetButton(collectionId, refresh) {
         Settings.resetCollection(collectionId);
         refresh?.();
     });
-    return <DiscordModules.Tooltip color="primary" position="top" text={Strings.Settings.resetSettings}>
+    return <DiscordModules.Tooltip color="primary" position="top" text={t("Settings.resetSettings")}>
         {(props) =>
-            <Button {...props} aria-label={Strings.Settings.resetSettings} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} onClick={action}>
+            <Button {...props} aria-label={t("Settings.resetSettings")} size={Button.Sizes.ICON} look={Button.Looks.BLANK} color={Button.Colors.TRANSPARENT} onClick={action}>
                 <ListRestartIcon />
             </Button>
         }
@@ -32,9 +32,9 @@ function makeResetButton(collectionId, refresh) {
  */
 function confirmReset(action) {
     return () => {
-        Modals.showConfirmationModal(Strings.Modals.confirmAction, Strings.Settings.resetSettingsWarning, {
-            confirmText: Strings.Modals.okay,
-            cancelText: Strings.Modals.cancel,
+        Modals.showConfirmationModal(t("Modals.confirmAction"), t("Settings.resetSettingsWarning"), {
+            confirmText: t("Modals.okay"),
+            cancelText: t("Modals.cancel"),
             danger: true,
             onConfirm: action,
         });
@@ -45,7 +45,7 @@ export default function SettingsPanel({id, title, groups, onChange, onDrawerTogg
     return <>
         <SettingsTitle text={title}>
             {makeResetButton(id)}
-        </SettingsTitle>,
+        </SettingsTitle>
         {groups.map(section => {
             const props = Object.assign({}, section, {
                 collection: id,

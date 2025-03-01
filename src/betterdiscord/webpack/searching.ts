@@ -1,7 +1,7 @@
-import DataStore from "@modules/datastore";
 import type {Webpack} from "discord";
 import {webpackRequire} from "./require";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
+import WebpackStore from "@stores/webpack";
 
 // eslint-disable-next-line no-useless-escape
 const stackPluginRegex = /\/([^\/]+)\.plugin\.js:(\d+):(\d+)/g;
@@ -29,8 +29,6 @@ function getIdFromStack() {
     if (!plugin) return;
     return `${plugin}:${discriminator >>> 0}`;
 }
-
-const cache = DataStore.getWebpackCache();
 
 function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filter, options: Webpack.SingleOptions): T | undefined {
     const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
@@ -72,8 +70,8 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.SingleOpti
     filter = wrapFilter(filter);
 
     // check whether the cached id works
-    if (cacheId && cache[cacheId]) {
-        const id = cache[cacheId];
+    if (cacheId && WebpackStore.data[cacheId]) {
+        const id = WebpackStore.data[cacheId];
         const module = webpackRequire.c[id];
 
         if(module) {
@@ -89,8 +87,8 @@ export function getModule<T>(filter: Webpack.Filter, options: Webpack.SingleOpti
         const matched = getMatched<T>(module, filter, options);
         if (matched) {
             if (cacheId) {
-                cache[cacheId] = keys[i];
-                DataStore.setWebpackCache(cache);
+                WebpackStore.data[cacheId] = keys[i];
+                WebpackStore.save();
             }
             return matched;
         }

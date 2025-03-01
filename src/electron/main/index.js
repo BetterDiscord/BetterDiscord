@@ -39,4 +39,5 @@ if (!process.argv.includes("--vanilla")) {
 if (!process.argv.includes("--vanilla")) {
     const BetterDiscord = require("./modules/betterdiscord").default;
     BetterDiscord.disableMediaKeys();
+    BetterDiscord.ensureDirectories();
 }

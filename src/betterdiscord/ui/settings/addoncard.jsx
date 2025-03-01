@@ -3,7 +3,7 @@ import Logger from "@common/logger";
 import SimpleMarkdown from "@structs/markdown";
 
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 
 
@@ -74,7 +74,7 @@ function buildLink(type, url) {
             Modals.showGuildJoinModal(url);
         };
     }
-    return makeButton(Strings.Addons[type], link);
+    return makeButton(t(`Addons.${type}`), link);
 }
 
 export default function AddonCard({addon, enabled, type, disabled, onChange: parentChange, hasSettings, editAddon, deleteAddon, getSettingsPanel}) {
@@ -90,7 +90,7 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
             Modals.showAddonSettingsModal(name, getSettingsPanel());
         }
         catch (err) {
-            Toasts.show(Strings.Addons.settingsError.format({name}), {type: "error"});
+            Toasts.show(t("Addons.settingsError", {name}), {type: "error"});
             Logger.stacktrace("Addon Settings", "Unable to get settings panel for " + name + ".", err);
         }
     }, [hasSettings, enabled, addon.name, getSettingsPanel]);
@@ -108,7 +108,7 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
 
 
     const title = useMemo(() => {
-        const authorArray = Strings.Addons.byline.split(/({{[A-Za-z]+}})/);
+        const authorArray = t("Addons.byline").split(/({{[A-Za-z]+}})/);
         const authorComponent = addon.authorLink || addon.authorId
             ? <a className="bd-link bd-link-website" href={addon.authorLink || null} onClick={messageAuthor} target="_blank" rel="noopener noreferrer">{getString(addon.author)}</a>
             : <span className="bd-author">{getString(addon.author)}</span>;
@@ -134,9 +134,9 @@ export default function AddonCard({addon, enabled, type, disabled, onChange: par
         return <div className="bd-footer">
             <span className="bd-links">{linkComponents}</span>
             <div className="bd-controls">
-                {hasSettings && makeButton(Strings.Addons.addonSettings, <SettingsIcon size={"20px"} />, showSettings, {isControl: true, disabled: !enabled})}
-                {editAddon && makeButton(Strings.Addons.editAddon, <PencilIcon size={"20px"} />, editAddon, {isControl: true})}
-                {deleteAddon && makeButton(Strings.Addons.deleteAddon, <Trash2Icon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
+                {hasSettings && makeButton(t("Addons.addonSettings"), <SettingsIcon size={"20px"} />, showSettings, {isControl: true, disabled: !enabled})}
+                {editAddon && makeButton(t("Addons.editAddon"), <PencilIcon size={"20px"} />, editAddon, {isControl: true})}
+                {deleteAddon && makeButton(t("Addons.deleteAddon"), <Trash2Icon size={"20px"} />, deleteAddon, {isControl: true, danger: true})}
             </div>
         </div>;
     }, [hasSettings, editAddon, deleteAddon, addon, enabled, showSettings]);

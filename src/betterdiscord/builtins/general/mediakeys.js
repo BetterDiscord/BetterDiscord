@@ -1,6 +1,6 @@
 import Builtin from "@structs/builtin";
 
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import IPC from "@modules/ipc";
 
 import Modals from "@ui/modals";
@@ -21,9 +21,9 @@ export default new class MediaKeys extends Builtin {
 
     showModal() {
         if (!this.initialized) return;
-        Modals.showConfirmationModal(Strings.Modals.additionalInfo, Strings.Modals.restartPrompt, {
-            confirmText: Strings.Modals.restartNow,
-            cancelText: Strings.Modals.restartLater,
+        Modals.showConfirmationModal(t("Modals.additionalInfo"), t("Modals.restartPrompt"), {
+            confirmText: t("Modals.restartNow"),
+            cancelText: t("Modals.restartLater"),
             danger: true,
             onConfirm: () => IPC.relaunch()
         });

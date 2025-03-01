@@ -1,7 +1,7 @@
 import Config from "@stores/config";
 
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 import Events from "@modules/emitter";
 import DiscordModules from "@modules/discordmodules";
 
@@ -36,9 +36,9 @@ function makeButton(tooltip, children, action, options = {}) {
 
 function CoreUpdaterPanel({hasUpdate, remoteVersion, update}) {
     return <Drawer name="BetterDiscord" collapsible={true}>
-        <SettingItem name={`Core v${Config.get("version")}`} note={hasUpdate ? Strings.Updater.versionAvailable.format({version: remoteVersion}) : Strings.Updater.noUpdatesAvailable} inline={true} id={"core-updater"}>
+        <SettingItem name={`Core v${Config.get("version")}`} note={hasUpdate ? t("Updater.versionAvailable", {version: remoteVersion}) : t("Updater.noUpdatesAvailable")} inline={true} id={"core-updater"}>
             {!hasUpdate && <div className="bd-filled-checkmark"><CheckIcon size="18px" /></div>}
-            {hasUpdate && makeButton(Strings.Updater.updateButton, <ArrowDownToLineIcon />, update, {className: "no-animation"})}
+            {hasUpdate && makeButton(t("Updater.updateButton"), <ArrowDownToLineIcon />, update, {className: "no-animation"})}
         </SettingItem>
     </Drawer>;
 }
@@ -46,23 +46,23 @@ function CoreUpdaterPanel({hasUpdate, remoteVersion, update}) {
 function NoUpdates({type}) {
     return <div className="bd-empty-updates">
         <CheckIcon size="48px" />
-        {Strings.Updater.upToDateBlankslate.format({type: type})}
+        {t("Updater.upToDateBlankslate", {type: type})}
     </div>;
 }
 
 function AddonUpdaterPanel({pending, type, updater, update, updateAll}) {
     const filenames = pending;
     return <Drawer
-        name={Strings.Panels[type]}
+        name={t(`Panels.${type}`)}
         collapsible={true}
-        titleChildren={filenames.length > 1 ? makeButton(Strings.Updater.updateAll, <RotateCwIcon size="20px" />, () => updateAll(type)) : null}>
+        titleChildren={filenames.length > 1 ? makeButton(t("Updater.updateAll"), <RotateCwIcon size="20px" />, () => updateAll(type)) : null}>
         {!filenames.length && <NoUpdates type={type} />}
         {filenames.map(f => {
             const info = updater.cache[f];
             const addon = updater.manager.addonList.find(a => a.filename === f);
-            return <SettingItem name={`${addon.name} v${addon.version}`} note={Strings.Updater.versionAvailable.format({version: info.version})} inline={true} id={addon.name}>
-                {makeButton(Strings.Updater.updateButton, <RotateCwIcon />, () => update(type, f))}
-                {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{Strings.Updater.updateButton}</Button> */}
+            return <SettingItem name={`${addon.name} v${addon.version}`} note={t("Updater.versionAvailable", {version: info.version})} inline={true} id={addon.name}>
+                {makeButton(t("Updater.updateButton"), <RotateCwIcon />, () => update(type, f))}
+                {/* <Button size={Button.Sizes.SMALL} onClick={() => update(type, f)}>{t("Updater.updateButton")}</Button> */}
             </SettingItem>;
         })}
     </Drawer>;
@@ -102,7 +102,7 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater})
     }, [coreUpdater]);
 
     const checkForUpdates = useCallback(async () => {
-        Toasts.info(Strings.Updater.checking);
+        Toasts.info(t("Updater.checking"));
         await checkCoreUpdate();
         await checkAddons("plugins");
         await checkAddons("themes");
@@ -110,7 +110,7 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater})
             plugins: pluginUpdater.pending.slice(0),
             themes: themeUpdater.pending.slice(0)
         });
-        Toasts.info(Strings.Updater.finishedChecking);
+        Toasts.info(t("Updater.finishedChecking"));
     }, [checkAddons, checkCoreUpdate, pluginUpdater, themeUpdater]);
 
     const updateCore = useCallback(async () => {
@@ -135,8 +135,8 @@ export default function UpdaterPanel({coreUpdater, pluginUpdater, themeUpdater})
     }, [updateAddon, updates]);
 
     return [
-        <SettingsTitle text={Strings.Panels.updates}>
-            {makeButton(Strings.Updater.checkForUpdates, <RefreshCwIcon />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})}
+        <SettingsTitle text={t("Panels.updates")}>
+            {makeButton(t("Updater.checkForUpdates"), <RefreshCwIcon />, checkForUpdates, {className: "bd-update-check", stopAnimation: true})}
         </SettingsTitle>,
         <CoreUpdaterPanel remoteVersion={coreUpdater.remoteVersion} hasUpdate={hasCoreUpdate} update={updateCore} />,
         <AddonUpdaterPanel type="plugins" pending={updates.plugins} update={updateAddon} updateAll={updateAllAddons} updater={pluginUpdater} />,

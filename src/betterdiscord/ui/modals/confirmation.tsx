@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 
 import Root from "./root";
 import Header from "./header";
@@ -28,7 +28,7 @@ export type ConfirmationModalOptions = PropsWithChildren<{
     key?: string | number;
 }>;
 
-export default function ConfirmationModal({transitionState, onClose, onCloseCallback, className, size = Root.Sizes.SMALL, header, children, danger = false, onCancel = () => {}, onConfirm = () => {}, cancelText = Strings.Modals.cancel, confirmText = Strings.Modals.okay}: ConfirmationModalOptions) {
+export default function ConfirmationModal({transitionState, onClose, onCloseCallback, className, size = Root.Sizes.SMALL, header, children, danger = false, onCancel = () => {}, onConfirm = () => {}, cancelText = t("Modals.cancel"), confirmText = t("Modals.okay")}: ConfirmationModalOptions) {
 
     const buttonRef = useRef<HTMLButtonElement>(null);
 

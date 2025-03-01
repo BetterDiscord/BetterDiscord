@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 
 import Builtin from "@structs/builtin";
-import DataStore from "@modules/datastore";
-import Strings from "@modules/strings";
+import Config from "@stores/config";
+import {t} from "@common/i18n";
 
 import Modals from "@ui/modals";
 
@@ -32,7 +32,7 @@ export default new class DebugLogs extends Builtin {
     get id() {return "debugLogs";}
 
     async enabled() {
-        this.logFile = path.join(DataStore.dataFolder, "debug.log");
+        this.logFile = path.join(Config.get("channelPath"), "debug.log");
         await this.checkFilesize();
         this.stream = fs.createWriteStream(this.logFile, {flags: "a"});
         this.stream.write(`\n\n================= Starting Debug Log (${timestamp()}) =================\n`);
@@ -74,9 +74,9 @@ export default new class DebugLogs extends Builtin {
             const stats = fs.statSync(this.logFile);
             const mb = stats.size / (1024 * 1024);
             if (mb < 100) return; // Under 100MB, all good
-            return new Promise(resolve => Modals.showConfirmationModal(Strings.Modals.additionalInfo, Strings.Modals.debuglog, {
-                confirmText: Strings.Modals.okay,
-                cancelText: Strings.Modals.cancel,
+            return new Promise(resolve => Modals.showConfirmationModal(t("Modals.additionalInfo"), t("Modals.debuglog"), {
+                confirmText: t("Modals.okay"),
+                cancelText: t("Modals.cancel"),
                 danger: true,
                 onConfirm: () => fs.rmSync(this.logFile),
                 onClose: resolve

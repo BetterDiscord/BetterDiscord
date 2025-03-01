@@ -4,6 +4,7 @@ import {DiscordNativeAPI} from "./discord/native";
 interface DiscordWindow {
     webpackChunkdiscord_app: Array<Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect>;
     DiscordNative: DiscordNativeAPI;
+    monaco: any; // TODO: proper typing when maybe bundling monaco
 
     __SENTRY__: {
         logger?: {disable(): void;};

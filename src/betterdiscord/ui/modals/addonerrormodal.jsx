@@ -1,5 +1,5 @@
 import React from "@modules/react";
-import Strings from "@modules/strings";
+import {t} from "@common/i18n";
 
 import Text from "@ui/base/text";
 import Button from "@ui/base/button";
@@ -55,7 +55,7 @@ function AddonError({err, index}) {
 
 
 function generateTab(id, errors) {
-    return {id, errors, name: Strings.Panels[id]};
+    return {id, errors, name: t(`Panels.${id}`)};
 }
 
 /**
@@ -76,21 +76,21 @@ export default function AddonErrorModal({transitionState, onClose, pluginErrors,
     const selectedTab = tabs.find(e => e.id === tabId);
 
     return <ModalRoot transitionState={transitionState} className="bd-error-modal" size={ModalRoot.Sizes.MEDIUM}>
-            <Header className="bd-error-modal-header">
-                <Flex direction={Flex.Direction.VERTICAL}>
-                    <Text tag="h1" size={Text.Sizes.SIZE_14} color={Text.Colors.HEADER_PRIMARY} strong={true} style={{"text-transform": "uppercase", "margin-bottom": "8px"}}>{Strings.Modals.addonErrors}</Text>
-                    <div className="bd-tab-bar">
-                        {tabs.map(tab => <div onClick={() => {switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
-                    </div>
-                </Flex>
-            </Header>
-            <Content className="bd-error-modal-content">
-                <div className="bd-addon-errors">
-                    {selectedTab.errors.map((error, index) => <AddonError index={index} err={error} />)}
+        <Header className="bd-error-modal-header">
+            <Flex direction={Flex.Direction.VERTICAL}>
+                <Text tag="h1" size={Text.Sizes.SIZE_14} color={Text.Colors.HEADER_PRIMARY} strong={true} style={{"text-transform": "uppercase", "margin-bottom": "8px"}}>{t("Modals.addonErrors")}</Text>
+                <div className="bd-tab-bar">
+                    {tabs.map(tab => <div onClick={() => {switchToTab(tab.id);}} className={joinClassNames("bd-tab-item", tab.id === selectedTab.id && "selected")}>{tab.name}</div>)}
                 </div>
-            </Content>
-            <Footer className="bd-error-modal-footer">
-                <Button onClick={onClose}>{Strings.Modals.okay}</Button>
-            </Footer>
-        </ModalRoot>;
+            </Flex>
+        </Header>
+        <Content className="bd-error-modal-content">
+            <div className="bd-addon-errors">
+                {selectedTab.errors.map((error, index) => <AddonError index={index} err={error} />)}
+            </div>
+        </Content>
+        <Footer className="bd-error-modal-footer">
+            <Button onClick={onClose}>{t("Modals.okay")}</Button>
+        </Footer>
+    </ModalRoot>;
 }

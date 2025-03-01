@@ -8,7 +8,7 @@ import ThemeManager from "@modules/thememanager";
 export function getDiscordClientInfo() {
     const clientInfo = DiscordModules.GetClientInfo?.();
     if (clientInfo) {
-        return `${clientInfo.releaseChannel} ${clientInfo.buildNumber} (${clientInfo.versionHash.substring(0, 7)})`;
+        return `${clientInfo.releaseChannel[0].toUpperCase()}${clientInfo.releaseChannel.substring(1)} ${clientInfo.buildNumber} (${clientInfo.versionHash.substring(0, 7)})`;
     }
 
     return DiscordModules.RemoteModule?.releaseChannel ?? "Unknown";
@@ -60,7 +60,7 @@ export function getAddonList(manager: AddonManager) {
 }
 
 export function getCoreInfo() {
-    const channel = config.isCanary ? "canary" : "stable";
+    const channel = config.isCanary ? "Canary" : "Stable";
     return `${channel} ${config.get("version")} (${config.get("commit")?.substring(0, 7)})\n`;
 }
 
