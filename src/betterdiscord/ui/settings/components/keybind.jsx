@@ -48,7 +48,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
     // TODO: make these their own states
     const [state, setState] = useState({isRecording: false, accum: []});
 
-    const [internalValue, setValue] = useState(initialValue);
+    const [internalValue, setValue] = useState(useKeyCode ? reverseRemapArray(initialValue) : initialValue);
     const contextValue = useContext(SettingsContext);
 
     const value = contextValue !== none ? contextValue : internalValue;
