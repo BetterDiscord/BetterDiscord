@@ -50,7 +50,7 @@ function getMatched<T>(module: Webpack.Module<any>, filter: Webpack.Filter, opti
         const key = searchKeys[i];
         const exported = module.exports[key];
 
-        if (shouldSkipModule(exported)) return;
+        if (shouldSkipModule(exported)) continue;
 
         if (filter(exported, module, module.id)) {
             if (!defaultExport && defaultKey === key) {
