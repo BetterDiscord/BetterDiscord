@@ -45,8 +45,8 @@ function reverseRemapArray(arr) {
 
 
 export default function Keybind({value: initialValue, onChange, max = 4, clearable = false, useKeyCode = false, disabled}) {
-    // TODO: make these their own states
-    const [state, setState] = useState({isRecording: false, accum: []});
+    const [isRecording, setIsRecording] = useState(false);
+    const [accum, setAccum] = useState([]);
 
     const [internalValue, setValue] = useState(useKeyCode ? reverseRemapArray(initialValue) : initialValue);
     const contextValue = useContext(SettingsContext);
@@ -63,53 +63,57 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
     });
 
     const keyDownHandler = useCallback((event) => {
-        if (!state.isRecording) return;
+        if (!isRecording) return;
         event.stopImmediatePropagation();
         event.stopPropagation();
         event.preventDefault();
         let key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
-        if (event.repeat || state.accum.includes(key)) return;
+        if (event.repeat || accum.includes(key)) return;
 
-        state.accum.push(key);
-        if (state.accum.length == max) {
-            setState({isRecording: false, accum: []});
-            useKeyCode ? setValue(reverseRemapArray(state.accum.slice(0))) : setValue(state.accum.slice(0));
-            onChange?.(state.accum);
+        accum.push(key);
+        if (accum.length == max) {
+            setIsRecording(false);
+            setAccum([]);
+            useKeyCode ? setValue(reverseRemapArray(accum.slice(0))) : setValue(accum.slice(0));
+            onChange?.(accum);
         }
-    }, [state, max, onChange]);
+    }, [isRecording, accum, max, onChange]);
 
     const keyUpHandler = useCallback((event) => {
-        if (!state.isRecording) return;
+        if (!isRecording) return;
         event.stopImmediatePropagation();
         event.stopPropagation();
         event.preventDefault();
         let key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
 
-        if (key === state.accum[0]) {
-            setState({isRecording: false, accum: []});
-            useKeyCode ? setValue(reverseRemapArray(state.accum.slice(0))) : setValue(state.accum.slice(0));
-            onChange?.(state.accum);
+        if (key === accum[0]) {
+            setIsRecording(false);
+            setAccum([]);
+            useKeyCode ? setValue(reverseRemapArray(accum.slice(0))) : setValue(accum.slice(0));
+            onChange?.(accum);
         }
-    }, [state, onChange]);
+    }, [isRecording, accum, onChange]);
 
     const clearKeybind = useCallback((event) => {
         event.stopPropagation();
         event.preventDefault();
         if (disabled) return;
         if (onChange) onChange([]);
-        setState({...state, isRecording: false, accum: []});
-    }, [onChange, state, disabled]);
+        setIsRecording(false);
+        setAccum([]);
+        setValue([]);
+    }, [onChange, isRecording, accum, disabled]);
 
     const onClick = useCallback((e) => {
         if (disabled) return;
         if (e.target?.className?.includes?.("bd-keybind-clear") || e.target?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return clearKeybind(e);
-        setState({...state, isRecording: !state.isRecording});
-    }, [state, clearKeybind, disabled]);
+        setIsRecording(!isRecording);
+    }, [isRecording, accum, clearKeybind, disabled]);
 
 
     const displayValue = !value.length ? "" : value.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
-    return <div className={"bd-keybind-wrap" + (state.isRecording ? " recording" : "") + (disabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
-        <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={state.isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
+    return <div className={"bd-keybind-wrap" + (isRecording ? " recording" : "") + (disabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
+        <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
         <input readOnly={true} type="text" className="bd-keybind-input" size={displayValue.length} value={displayValue} placeholder="No keybind set" disabled={disabled} />
         {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clearKeybind} className="bd-keybind-clear"><XIcon size="24px" /></Button>}
     </div>;
