@@ -67,7 +67,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
         event.stopImmediatePropagation();
         event.stopPropagation();
         event.preventDefault();
-        let key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
+        const key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
         if (event.repeat || accum.includes(key)) return;
 
         accum.push(key);
@@ -77,14 +77,14 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
             useKeyCode ? setValue(reverseRemapArray(accum.slice(0))) : setValue(accum.slice(0));
             onChange?.(accum);
         }
-    }, [isRecording, accum, max, onChange]);
+    }, [isRecording, accum, max, onChange, useKeyCode]);
 
     const keyUpHandler = useCallback((event) => {
         if (!isRecording) return;
         event.stopImmediatePropagation();
         event.stopPropagation();
         event.preventDefault();
-        let key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
+        const key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
 
         if (key === accum[0]) {
             setIsRecording(false);
@@ -92,7 +92,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
             useKeyCode ? setValue(reverseRemapArray(accum.slice(0))) : setValue(accum.slice(0));
             onChange?.(accum);
         }
-    }, [isRecording, accum, onChange]);
+    }, [isRecording, accum, onChange, useKeyCode]);
 
     const clearKeybind = useCallback((event) => {
         event.stopPropagation();
@@ -101,14 +101,13 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
         if (onChange) onChange([]);
         setIsRecording(false);
         setAccum([]);
-        setValue([]);
-    }, [onChange, isRecording, accum, disabled]);
+    }, [onChange, disabled]);
 
     const onClick = useCallback((e) => {
         if (disabled) return;
         if (e.target?.className?.includes?.("bd-keybind-clear") || e.target?.closest(".bd-button")?.className?.includes("bd-keybind-clear")) return clearKeybind(e);
         setIsRecording(!isRecording);
-    }, [isRecording, accum, clearKeybind, disabled]);
+    }, [isRecording, clearKeybind, disabled]);
 
 
     const displayValue = !value.length ? "" : value.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
