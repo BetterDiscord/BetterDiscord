@@ -156,10 +156,33 @@
     <div id="tabbar">
         <div id="tabbar-left">
             <div class="tabbar-action" id="save" title="Save">
-                <span class="codicon codicon-save"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-save">
+                    <path
+                        d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                    <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                </svg>
             </div>
             <div class="tabbar-action" id="open-editor" title="Open In System Editor">
-                <span class="codicon codicon-edit"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-pencil">
+                    <path
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                    <path d="m15 5 4 4" />
+                </svg>
+            </div>
+            <div class="tabbar-action" id="refresh" title="Resync Editor">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-refresh-ccw">
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                    <path d="M16 16h5v5" />
+                </svg>
             </div>
         </div>
         <div id="tabbar-right">
@@ -172,9 +195,9 @@
         <div id="action-bar-left">
             <div class="footer-item" id="action-info">
                 <span class="codicon codicon-error"></span>
-                <span> 0 </span>
+                <span id="errors"> 0 </span>
                 <span class="codicon codicon-warning"></span>
-                <span> 0</span>
+                <span id="warnings"> 0</span>
             </div>
         </div>
         <div id="action-bar-right">
@@ -183,7 +206,7 @@
             </div>
             <div class="footer-item" id="tab-size">Tabs: 4</div>
             <div class="footer-item" id="action-langauge">
-                <span class="codicon codicon-bracket"></span>
+                <span class="codicon codicon-bracket" id="language-bracket"></span>
                 <span id="language">CSS</span>
             </div>
         </div>
@@ -234,9 +257,40 @@
         require(["vs/editor/editor.main"], (monaco) => {
             loader.remove();
 
+            monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+                noSemanticValidation: true,
+                noSyntaxValidation: false
+            });
+            monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+                target: monaco.languages.typescript.ScriptTarget.ESNext,
+                allowNonTsExtensions: true
+            });
+
             const tabbar = document.getElementById("tabbar");
             const actionBar = document.getElementById("action-bar");
             const tabSize = document.getElementById("tab-size");
+            const languageBracket = document.getElementById("language-bracket");
+
+            const errorsSpan = document.getElementById("errors");
+            const warningsSpan = document.getElementById("warnings");
+
+            monaco.editor.onDidChangeMarkers(([uri]) => {
+                const markers = monaco.editor.getModelMarkers({resource: uri});
+
+                let errors = 0;
+                let warnings = 0;
+
+                for (const element of markers) {
+                    if (element.severity === 4) warnings++;
+                    else if (element.severity === 8) errors++;
+                }
+
+                languageBracket.classList.remove("codicon-bracket", "codicon-bracket-error");
+                languageBracket.classList.add(markers.length ? "codicon-bracket-error" : "codicon-bracket");
+
+                errorsSpan.textContent = ` ${errors} `;
+                warningsSpan.textContent = ` ${warnings}`;
+            });
 
             let lastSavedValue = Editor.read();
             const editor = window.editor = monaco.editor.create(document.getElementById("editor"), {
@@ -290,6 +344,16 @@
                 Editor.shouldShowWarning(!(liveUpdate || editor.getValue() === lastSavedValue));
             });
 
+            document.getElementById("refresh").addEventListener("click", () => {
+                editor.executeEdits(null, [
+                    {
+                        range: editor.getModel().getFullModelRange(),
+                        text: Editor.read(),
+                        forceMoveMarkers: true
+                    }
+                ]);
+            });
+
             const currentPosition = document.getElementById("current-position");
             editor.onDidChangeCursorSelection(() => {
                 const position = editor.getPosition();
@@ -301,22 +365,26 @@
 
                 currentPosition.textContent = content;
             });
+            document.getElementById("action-current-position").addEventListener("click", () => {
+                editor.focus();
+                editor.trigger("keyboard", "editor.action.gotoLine", "");
+            });
 
             window.addEventListener("resize", layout);
             layout();
 
             document.getElementById("save").addEventListener("click", save);
 
-            require(["vs/platform/clipboard/browser/clipboardService"], ({BrowserClipboardService}) => {
-                const readText = BrowserClipboardService.prototype.readText;
+            window.navigator.clipboard.readText = () => Promise.resolve(Editor.readText());
 
-                BrowserClipboardService.prototype.readText = function (type) {
-                    if (type) {
-                        return readText.apply(this, arguments);
-                    }
+            document.addEventListener("keydown", (event) => {
+                if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    event.stopPropagation();
 
-                    return Promise.resolve(Editor.readText());
-                };
+                    save();
+                }
             });
         });
     </script>
