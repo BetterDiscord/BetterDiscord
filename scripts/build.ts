@@ -69,6 +69,7 @@ async function runBuild() {
         }
     });
 
+    if (!fs.existsSync("dist")) fs.mkdirSync("dist");
     fs.copyFileSync("src/editor/index.html", "dist/editor.html");
 
     if (process.argv.includes("--watch")) {
@@ -76,7 +77,7 @@ async function runBuild() {
             console.log("[watch] copying editor.html");
             fs.copyFileSync("src/editor/index.html", "dist/editor.html");
             console.log("[watch] Copied editor.html");
-        });
+        }).unref();
 
         await ctx.watch();
     }
