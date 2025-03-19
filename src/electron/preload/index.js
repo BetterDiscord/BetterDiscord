@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld("process", newProcess);
 contextBridge.exposeInMainWorld("BetterDiscordPreload", () => {
     if (hasInitialized) return null;
     hasInitialized = true;
-    return window.BetterDiscordPreload = BdApi;
+    return BdApi;
 });
 
 init();

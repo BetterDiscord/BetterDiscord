@@ -54,7 +54,7 @@ function handlePush(chunk: Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffec
     }
 
     try {
-        Reflect.apply(__ORIGINAL_PUSH__, window.webpackChunkdiscord_app, [chunk]);
+        return Reflect.apply(__ORIGINAL_PUSH__, window.webpackChunkdiscord_app, [chunk]);
     }
     finally {
         webpackModules = Object.values(webpackRequire.c);

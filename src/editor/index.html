@@ -341,7 +341,7 @@
                     return;
                 }
 
-                Editor.shouldShowWarning(!(liveUpdate || editor.getValue() === lastSavedValue));
+                Editor.shouldShowWarning(editor.getValue() !== lastSavedValue);
             });
 
             document.getElementById("refresh").addEventListener("click", () => {
