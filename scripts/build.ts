@@ -83,11 +83,18 @@ async function runBuild() {
     console.log(`Version: ${pkg.version}`);
     console.log(`Branch:  ${BRANCH_NAME}`);
     console.log(`Commit:  ${COMMIT_HASH}`);
+    console.log("");
 }
 
-runBuild().catch(err => {
-    console.log(err);
+runBuild().catch(async err => {
+    console.error(err);
     for (const ctx of contextList) {
-        ctx.dispose().catch(console.error);
+        try {
+            // "await" to avoid concurrent logging
+            await ctx.dispose();
+        } catch (err) {
+            console.error(err);
+        }
     }
+    process.exit(1);
 });
