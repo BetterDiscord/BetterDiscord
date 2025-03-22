@@ -1,5 +1,5 @@
 import path from "path";
-import fs from "fs";
+import fs, {stat} from "fs";
 
 import Logger from "@common/logger";
 
@@ -385,7 +385,7 @@ export default abstract class AddonManager extends Store {
             const absolutePath = path.resolve(this.addonFolder, filename);
             const stats = fs.statSync(absolutePath);
             if (!stats || !stats.isFile()) continue;
-            this.timeCache[filename] = stats.mtime.getTime();
+            this.timeCache[filename] = stats.mtimeMs;
 
             if (!filename.endsWith(this.extension)) {
                 // Lets check to see if this filename has the duplicated file pattern `something(1).ext`
