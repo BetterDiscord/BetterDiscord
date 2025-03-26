@@ -6,7 +6,7 @@ const HOSTNAME = "betterdiscord.app";
 const API_VERSION = "v3";
 
 /**
- * @param  {string[]} paths 
+ * @param  {string[]} paths
  */
 const join = (...paths) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
@@ -15,7 +15,7 @@ const join = (...paths) => {
 };
 
 /**
- * @param  {string[]} paths 
+ * @param  {string[]} paths
  */
 const apiJoin = (...paths) => {
     const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
@@ -23,13 +23,13 @@ const apiJoin = (...paths) => {
     return `https://api.${HOSTNAME}/${API_VERSION}/${path}`;
 };
 /**
- * @param {string} type 
+ * @param {string} type
  * @returns {(name: string) => string}
  */
 const makePage = (type) => (name) => join(`${type}/${encodeURIComponent(name)}`);
 
 /**
- * @param {string} type 
+ * @param {string} type
  * @returns {(id: string) => string}
  */
 const makeRedirects = (type) => (id) => join(`${type}?id=${id}`);
@@ -54,7 +54,7 @@ const RAW_GIT_URL_REGEX = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\
 export default class Web {
     /**
      * This will allow preloading of the addon channels
-     * @param {string} channelId 
+     * @param {string} channelId
      * @returns {"plugin" | "theme" | undefined}
      */
     static getReleaseChannelType(channelId) {
@@ -72,11 +72,11 @@ export default class Web {
 
         const [, user, repo, commit, filePath] = match;
         const jsdelivr = `https://cdn.jsdelivr.net/gh/${user}/${repo}@${commit}/${filePath}`;
-        
+
         return `https://discord-preview.vercel.app/?file=${encodeURIComponent(jsdelivr)}`;
     }
 
-    /** 
+    /**
      * Converts a raw github link into a normal github page
      * @example
      * https://raw.githubusercontent.com/QWERTxD/BetterDiscordPlugins/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
@@ -91,12 +91,12 @@ export default class Web {
         }
 
         const [, user, repo, commit, filePath] = match;
-        
+
         return `https://github.com/${user}/${repo}/blob/${commit}/${filePath}`;
     }
 
     static API_VERSION = API_VERSION;
-    
+
     static redirects = {
         github: makeRedirects("/gh-redirect"),
         download: makeRedirects("/download"),

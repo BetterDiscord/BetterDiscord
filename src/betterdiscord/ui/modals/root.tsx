@@ -1,6 +1,6 @@
-import clsx from "clsx";
 import React from "@modules/react";
 import {getByKeys, getModule} from "@webpack";
+import clsx from "clsx";
 import type {PropsWithChildren} from "react";
 
 
@@ -50,11 +50,11 @@ export default function ModalRoot({className, transitionState, children, size = 
 
     return <FocusLock disableTrack={true}>
         <Spring.animated.div
-                className={clsx("bd-modal-root", size, className, style)}
-                style={springStyles}
-            >
-        {children}
-    </Spring.animated.div>
+            className={clsx("bd-modal-root", size, className, style)}
+            style={springStyles}
+        >
+            {children}
+        </Spring.animated.div>
     </FocusLock>;
     // const [visible, setVisible] = React.useState(true);
 

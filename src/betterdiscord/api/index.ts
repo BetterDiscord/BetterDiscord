@@ -1,23 +1,27 @@
 import BDLogger from "@common/logger";
 
+import DiscordModules from "@modules/discordmodules";
 import PluginManager from "@modules/pluginmanager";
 import ThemeManager from "@modules/thememanager";
-import DiscordModules from "@modules/discordmodules";
 import Config from "@stores/config";
 
 import AddonAPI from "./addonapi";
+import CommandAPI from "./commands";
+import ContextMenu from "./contextmenu";
 import Data from "./data";
 import DOM from "./dom";
+import fetch from "./fetch";
+import Logger from "./logger";
 import Patcher from "./patcher";
 import ReactUtils from "./reactutils";
 import UI from "./ui";
 import Utils from "./utils";
 import Webpack from "./webpack";
-import ContextMenu from "./contextmenu";
-import fetch from "./fetch";
-import Logger from "./logger";
-import CommandAPI from "./commands";
 
+import Button from "@ui/base/button";
+import Flex from "@ui/base/flex";
+import Text from "@ui/base/text";
+import ErrorBoundary from "@ui/errorboundary";
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
 import SettingItem from "@ui/settings/components/item";
@@ -29,10 +33,6 @@ import SliderInput from "@ui/settings/components/slider";
 import SwitchInput from "@ui/settings/components/switch";
 import TextInput from "@ui/settings/components/textbox";
 import SettingGroup from "@ui/settings/group";
-import ErrorBoundary from "@ui/errorboundary";
-import Text from "@ui/base/text";
-import Flex from "@ui/base/flex";
-import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
 
 import type ReactType from "react";
@@ -101,7 +101,7 @@ const version: string = Config.get("version");
 export default class BdApi {
     Patcher: Patcher = PatcherAPI;
     Data: Data = DataAPI;
-    DOM: DOM = DOMAPI; 
+    DOM: DOM = DOMAPI;
     Logger: Logger = DefaultLogger;
     Commands: CommandAPI = CommandsAPI;
     React = React;
@@ -125,7 +125,7 @@ export default class BdApi {
     static Utils: typeof Utils;
     static ContextMenu: ContextMenu;
     static Components: typeof Components;
-    static Net: { fetch: typeof fetch };
+    static Net: {fetch: typeof fetch;};
 
     constructor(pluginName: string) {
         if (!pluginName) return BdApi;
@@ -154,7 +154,7 @@ export default class BdApi {
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     get Components() {return Components;}
-    Net = {fetch}; 
+    Net = {fetch};
 }
 
 /**
@@ -185,7 +185,7 @@ BdApi.Webpack = Webpack;
  * An instance of {@link Data} to manage data.
  * @type Data
  */
- BdApi.Data = DataAPI;
+BdApi.Data = DataAPI;
 
 /**
  * An instance of {@link UI} to create interfaces.

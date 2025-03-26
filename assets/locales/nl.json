@@ -1,61 +1,61 @@
 {
-    "Panels": {
-        "plugins": "Plug-ins",
-        "themes": "Thema's",
-        "customcss": "Aangepaste CSS"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Instellingen",
-            "general": {
-                "name": "Algemeen",
-                "voiceDisconnect": {
-                    "name": "Stem Verbroken",
-                    "note": "Verbreek de verbinding met de oproep"
-                },
-                "showToasts": {
-                    "name": "Laat Toasts Zien",
-                    "note": "Toont een melding voor belangrijke informatie"
-                },
-                "mediaKeys": {
-                    "name": "Schakel mediatoetsen uit",
-                    "note": "Voorkomt dat Discord uw mediatoetsen kaapt na het afspelen van een video."
-                }
-            }
-        }
-    },
-    "Addons": {
-        "byline": "door {{author}}",
-        "openFolder": "Open {{type}} folder",
-        "reload": "Herladeen",
-        "addonSettings": "Instellingen",
-        "website": "Website",
-        "source": "Bronnen",
-        "invite": "Support Server",
-        "donate": "Donatie",
-        "patreon": "Patreon",
-        "name": "Naam",
-        "author": "Schrijver",
-        "version": "Versie",
-        "added": "Datum toegevoegd",
-        "modified": "Datum gewijzigd ",
-        "editAddon": "Bewerken",
-        "deleteAddon": "Verwijderen",
-        "confirmDelete": "Weet je het zeker dat je {{name}} wilt verwijderen?",
-        "confirmationText": "Je hebt niet-opgeslagen wijzigingen in {{naam}}. Als je dit venster sluit, gaan alle wijzigingen verloren.",
-        "unknownAuthor": "Onbekende schrijver",
-        "noDescription": "Beschrijving kon niet worden weergegeven"
-    },
-    "Modals": {
-        "confirmAction": "Weet je het zeker?",
-        "okay": "Oké",
-        "cancel": "Annuleren",
-        "close": "Bijna",
-        "name": "Naam",
-        "message": "Berich",
-        "error": "Fout!"
-    },
-    "Sorting": {
-        "order": "Volgorde"
-    }
+	"Panels": {
+		"plugins": "Plug-ins",
+		"themes": "Thema's",
+		"customcss": "Aangepaste CSS"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Instellingen",
+			"general": {
+				"name": "Algemeen",
+				"voiceDisconnect": {
+					"name": "Stem Verbroken",
+					"note": "Verbreek de verbinding met de oproep"
+				},
+				"showToasts": {
+					"name": "Laat Toasts Zien",
+					"note": "Toont een melding voor belangrijke informatie"
+				},
+				"mediaKeys": {
+					"name": "Schakel mediatoetsen uit",
+					"note": "Voorkomt dat Discord uw mediatoetsen kaapt na het afspelen van een video."
+				}
+			}
+		}
+	},
+	"Addons": {
+		"byline": "door {{author}}",
+		"openFolder": "Open {{type}} folder",
+		"reload": "Herladeen",
+		"addonSettings": "Instellingen",
+		"website": "Website",
+		"source": "Bronnen",
+		"invite": "Support Server",
+		"donate": "Donatie",
+		"patreon": "Patreon",
+		"name": "Naam",
+		"author": "Schrijver",
+		"version": "Versie",
+		"added": "Datum toegevoegd",
+		"modified": "Datum gewijzigd ",
+		"editAddon": "Bewerken",
+		"deleteAddon": "Verwijderen",
+		"confirmDelete": "Weet je het zeker dat je {{name}} wilt verwijderen?",
+		"confirmationText": "Je hebt niet-opgeslagen wijzigingen in {{naam}}. Als je dit venster sluit, gaan alle wijzigingen verloren.",
+		"unknownAuthor": "Onbekende schrijver",
+		"noDescription": "Beschrijving kon niet worden weergegeven"
+	},
+	"Modals": {
+		"confirmAction": "Weet je het zeker?",
+		"okay": "Oké",
+		"cancel": "Annuleren",
+		"close": "Bijna",
+		"name": "Naam",
+		"message": "Berich",
+		"error": "Fout!"
+	},
+	"Sorting": {
+		"order": "Volgorde"
+	}
 }

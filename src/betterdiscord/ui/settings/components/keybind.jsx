@@ -1,8 +1,8 @@
 import React from "@modules/react";
 
-import Button from "../../base/button";
+import {SettingsContext, none} from "@ui/contexts";
 import {KeyboardIcon, XIcon} from "lucide-react";
-import {none, SettingsContext} from "@ui/contexts";
+import Button from "../../base/button";
 
 const {useState, useCallback, useEffect, useContext} = React;
 
@@ -13,7 +13,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
 
     const [internalValue, setValue] = useState(initialValue);
     const contextValue = useContext(SettingsContext);
-    
+
     const value = contextValue !== none ? contextValue : internalValue;
 
     useEffect(() => {
@@ -71,8 +71,8 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
 
     const displayValue = !value.length ? "" : value.map(k => k === "Control" ? "Ctrl" : k).join(" + ");
     return <div className={"bd-keybind-wrap" + (state.isRecording ? " recording" : "") + (disabled ? " bd-keybind-disabled" : "")} onClick={onClick}>
-            <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={state.isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
-            <input readOnly={true} type="text" className="bd-keybind-input" value={displayValue} placeholder="No keybind set" disabled={disabled} />
-            {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clearKeybind} className="bd-keybind-clear"><XIcon size="24px" /></Button>}
-        </div>;
+        <Button size={Button.Sizes.ICON} look={Button.Looks.FILLED} color={state.isRecording ? Button.Colors.RED : Button.Colors.PRIMARY} className="bd-keybind-record" onClick={onClick}><KeyboardIcon size="24px" /></Button>
+        <input readOnly={true} type="text" className="bd-keybind-input" value={displayValue} placeholder="No keybind set" disabled={disabled} />
+        {clearable && <Button size={Button.Sizes.ICON} look={Button.Looks.BLANK} onClick={clearKeybind} className="bd-keybind-clear"><XIcon size="24px" /></Button>}
+    </div>;
 }

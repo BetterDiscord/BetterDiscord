@@ -124,7 +124,7 @@ export interface Channel {
     name: string;
     nicks: {
         [key: string]: string;
-    }
+    };
     ownerId: string;
     rawRecipients: User[];
     recipientFlags: number;

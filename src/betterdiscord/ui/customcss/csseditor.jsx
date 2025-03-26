@@ -1,11 +1,11 @@
-import React from "@modules/react";
 import {t} from "@common/i18n";
 import Events from "@modules/emitter";
+import React from "@modules/react";
 import Settings from "@stores/settings";
 
 import Editor from "./editor";
 
-import {RotateCwIcon, SaveIcon, PencilIcon, ExternalLinkIcon} from "lucide-react";
+import {ExternalLinkIcon, PencilIcon, RotateCwIcon, SaveIcon} from "lucide-react";
 
 
 const {useState, useCallback, useEffect, forwardRef, useImperativeHandle, useRef} = React;

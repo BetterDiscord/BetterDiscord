@@ -1,18 +1,18 @@
-import React from "@modules/react";
 import {t} from "@common/i18n";
+import React from "@modules/react";
 
-import Text from "@ui/base/text";
 import Button from "@ui/base/button";
 import Flex from "@ui/base/flex";
+import Text from "@ui/base/text";
 
 import Divider from "@ui/divider";
 
-import Header from "./header";
-import Content from "./content";
-import ModalRoot from "./root";
-import Footer from "./footer";
-import {ChevronRightIcon, PlugIcon, InfoIcon, PaletteIcon} from "lucide-react";
 import {getByKeys} from "@webpack";
+import {ChevronRightIcon, InfoIcon, PaletteIcon, PlugIcon} from "lucide-react";
+import Content from "./content";
+import Footer from "./footer";
+import Header from "./header";
+import ModalRoot from "./root";
 
 const Parser = Object(getByKeys(["defaultRules", "parse"])).defaultRules;
 const {useState, useCallback, useMemo} = React;

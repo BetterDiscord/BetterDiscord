@@ -1,20 +1,20 @@
-import React from "@modules/react";
-import Settings from "@stores/settings";
-import JsonStore from "@stores/json";
-import {Filters, getByKeys, getLazy} from "@webpack";
 import Patcher from "@modules/patcher";
+import React from "@modules/react";
+import JsonStore from "@stores/json";
+import Settings from "@stores/settings";
+import {Filters, getByKeys, getLazy} from "@webpack";
 
 import ReactUtils from "@api/reactutils";
 
 import AddonPage from "@ui/settings/addonpage";
-import Header from "@ui/settings/sidebarheader";
 import SettingsPanel from "@ui/settings/panel";
+import Header from "@ui/settings/sidebarheader";
 
 
+import {findInTree} from "@common/utils";
 import type {SettingsCategory} from "@data/settings";
 import type {ComponentType, ReactNode} from "react";
 import VersionInfo from "./misc/versioninfo";
-import {findInTree} from "@common/utils";
 
 
 interface Section {

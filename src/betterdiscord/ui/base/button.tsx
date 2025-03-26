@@ -1,5 +1,5 @@
-import clsx from "clsx";
 import React from "@modules/react";
+import clsx from "clsx";
 import type {KeyboardEventHandler, MouseEvent, MouseEventHandler, PropsWithChildren, RefObject} from "react";
 
 
@@ -90,7 +90,7 @@ export default function Button({
         onClick={disabled ? () => {} : handleClick}
         onKeyDown={disabled ? () => {} : onKeyDown}
         disabled={disabled}
-        >
+    >
         <div className="bd-button-content">{children}</div>
     </button>;
 }

@@ -2,8 +2,8 @@
 /* eslint-disable no-label-var */
 import type {Webpack} from "discord";
 import {bySource} from "./filter";
-import {getModule} from "./searching";
 import {webpackRequire} from "./require";
+import {getModule} from "./searching";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
 
 export function* getWithKey(filter: Webpack.ExportedOnlyFilter, {target = null, ...rest}: Webpack.WithKeyOptions = {}) {

@@ -23,19 +23,19 @@ export default function Drawer({name, collapsible, shown = true, showDivider, ch
             drawer.style.setProperty("height", "");
             drawer.classList.remove("animating");
         }, timeout);
-        
+
     }, [collapsed, onDrawerToggle]);
 
     const collapseClass = collapsible ? `collapsible ${collapsed ? "collapsed" : "expanded"}` : "";
     const groupClass = `${baseClassName} ${collapseClass}`;
 
     return <div className={groupClass}>
-                <Title text={name} collapsible={collapsible} onClick={toggleCollapse} isGroup={true}>
-                    {titleChildren}
-                </Title>
-                <div className="bd-settings-container" ref={container}>
-                    {children}
-                </div>
-                {showDivider && <Divider />}
-            </div>;
+        <Title text={name} collapsible={collapsible} onClick={toggleCollapse} isGroup={true}>
+            {titleChildren}
+        </Title>
+        <div className="bd-settings-container" ref={container}>
+            {children}
+        </div>
+        {showDivider && <Divider />}
+    </div>;
 }

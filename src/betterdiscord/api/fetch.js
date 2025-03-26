@@ -41,7 +41,7 @@ const convertSignal = signal => {
  * @property {"manual" | "follow"} [redirect] - Whether to follow redirects.
  * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
  * @property {AbortSignal} [signal] - Signal to abruptly cancel the request
- * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable. 
+ * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable.
  * @property {number} [timeout] - Request timeout time.
  */
 

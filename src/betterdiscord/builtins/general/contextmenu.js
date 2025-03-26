@@ -4,13 +4,13 @@ import {t} from "@common/i18n";
 import Settings from "@stores/settings";
 
 import ContextMenuPatcher from "@api/contextmenu";
-import pluginManager from "@modules/pluginmanager";
-import themeManager from "@modules/thememanager";
-import React from "@modules/react";
+import {findInTree} from "@common/utils";
 import DOMManager from "@modules/dommanager";
+import pluginManager from "@modules/pluginmanager";
+import React from "@modules/react";
+import themeManager from "@modules/thememanager";
 import Modals from "@ui/modals";
 import {getByKeys} from "@webpack";
-import {findInTree} from "@common/utils";
 
 
 const ContextMenu = new ContextMenuPatcher();

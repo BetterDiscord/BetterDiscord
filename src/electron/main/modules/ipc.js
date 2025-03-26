@@ -1,5 +1,5 @@
 import {spawn} from "child_process";
-import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell} from "electron";
+import {BrowserWindow, app, dialog, ipcMain as ipc, shell, systemPreferences} from "electron";
 
 import * as IPCEvents from "@common/constants/ipcevents";
 
@@ -99,8 +99,8 @@ const stopDevtoolsWarning = event => event.sender.removeAllListeners("devtools-o
 
 const openDialog = (event, options = {}) => {
     const {
-        mode = "open", 
-        openDirectory = false, 
+        mode = "open",
+        openDirectory = false,
         openFile = true,
         multiSelections = false,
         filters,
@@ -119,7 +119,7 @@ const openDialog = (event, options = {}) => {
     if (!openFunction) return Promise.resolve({error: "Unkown Mode: " + mode});
 
     return openFunction.apply(dialog, [
-        modal && BrowserWindow.fromWebContents(event.sender), 
+        modal && BrowserWindow.fromWebContents(event.sender),
         {
             defaultPath,
             filters,

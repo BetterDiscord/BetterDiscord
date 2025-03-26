@@ -1,13 +1,13 @@
 import Config from "@stores/config";
 
-import React from "@modules/react";
 import {t} from "@common/i18n";
-import Events from "@modules/emitter";
 import DiscordModules from "@modules/discordmodules";
+import Events from "@modules/emitter";
+import React from "@modules/react";
 
 import Button from "@ui/base/button";
-import Drawer from "@ui/settings/drawer";
 import SettingItem from "@ui/settings/components/item";
+import Drawer from "@ui/settings/drawer";
 import SettingsTitle from "@ui/settings/title";
 import Toasts from "@ui/toasts";
 

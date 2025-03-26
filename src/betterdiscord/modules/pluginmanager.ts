@@ -7,12 +7,12 @@ import Config from "@stores/config";
 
 import AddonError from "@structs/addonerror";
 
-import AddonManager, {type Addon} from "./addonmanager";
 import {t} from "@common/i18n";
+import AddonManager, {type Addon} from "./addonmanager";
 import Events from "./emitter";
 
-import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
+import Toasts from "@ui/toasts";
 
 
 export interface Plugin extends Addon {

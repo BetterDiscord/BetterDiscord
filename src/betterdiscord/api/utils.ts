@@ -1,7 +1,6 @@
-import clsx from "clsx";
-import {comparator} from "@structs/semver";
 import {debounce, extend, findInTree} from "@common/utils";
-
+import {comparator} from "@structs/semver";
+import clsx from "clsx";
 
 /**
  * `Utils` is a utility containing commonly reused functions. Instance is accessible through the {@link BdApi}.
@@ -17,7 +16,7 @@ const Utils = {
      * @param {object} options Additional options to customize the search
      * @param {Array<string>|null} [options.walkable=null] Array of strings to use as keys that are allowed to be walked on. `null` indicates all keys are walkable.
      * @param {Array<string>} [options.ignore=[]] Array of strings to use as keys to exclude from the search. Most helpful when `walkable = null`.
-    */
+     */
     findInTree: findInTree,
 
     /**
@@ -76,9 +75,7 @@ const Utils = {
      * @param {string} keyPath - key path to the desired value
      */
     getNestedValue<T, P extends Path<T>>(obj: T, keyPath: P): PathValue<T, P> {
-        return keyPath.split(".").reduce(function (ob, prop) {
-            return ob && ob[prop];
-        }, obj);
+        return keyPath.split(".").reduce((ob, prop) => ob && ob[prop], obj);
     },
 
     /**
@@ -92,15 +89,12 @@ const Utils = {
 } as const;
 
 // https://stackoverflow.com/questions/58434389/typescript-deep-keyof-of-a-nested-object/58436959#58436959
-type Path<T> = T extends object ? {[K in keyof T]:
-    `${Exclude<K, symbol>}${"" | `.${Path<T[K]>}`}`
-}[keyof T] : never;
+type Path<T> = T extends object
+    ? {[K in keyof T]: `${Exclude<K, symbol>}${"" | `.${Path<T[K]>}`}`}[keyof T]
+    : never;
 
 // https://github.com/nestjs/config/blob/master/lib/types/path-value.type.ts
-type PathValue<
-    T,
-    P extends Path<T>,
-> = P extends `${infer Key}.${infer Rest}`
+type PathValue<T, P extends Path<T>> = P extends `${infer Key}.${infer Rest}`
     ? Key extends keyof T
     ? Rest extends Path<T[Key]>
     ? PathValue<T[Key], Rest>

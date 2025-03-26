@@ -1,5 +1,5 @@
-import Bun, {$} from "bun";
 import path from "node:path";
+import Bun, {$} from "bun";
 import pkg from "../package.json";
 
 import styleLoader from "bun-style-loader";

@@ -1,9 +1,9 @@
 import Builtin from "@structs/builtin";
 
-import IPC from "@modules/ipc";
-import Modals from "@ui/modals";
 import {t} from "@common/i18n";
 import Events from "@modules/emitter";
+import IPC from "@modules/ipc";
+import Modals from "@ui/modals";
 
 export default new class NativeFrame extends Builtin {
     get name() {return "NativeFrame";}

@@ -1,8 +1,8 @@
 import Logger from "@common/logger";
 
-import {compileFunction} from "./vm";
-import Remote from "./remote";
 import fs from "./fs";
+import Remote from "./remote";
+import {compileFunction} from "./vm";
 
 
 const path = Remote.path;

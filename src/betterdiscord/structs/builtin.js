@@ -1,9 +1,9 @@
 import Logger from "@common/logger";
 
-import Events from "@modules/emitter";
-import Settings from "@stores/settings";
-import Patcher from "@modules/patcher";
 import CommandManager from "@modules/commandmanager";
+import Events from "@modules/emitter";
+import Patcher from "@modules/patcher";
+import Settings from "@stores/settings";
 
 
 export default class BuiltinModule {

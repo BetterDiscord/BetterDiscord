@@ -1,14 +1,14 @@
-import Button, {Colors} from "@ui/base/button";
-import React from "@modules/react";
+import {t} from "@common/i18n";
 import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
-import {t} from "@common/i18n";
-import Builtin from "@structs/builtin";
-import Settings from "@stores/settings";
-import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
-import Toasts from "@ui/toasts";
+import pluginmanager from "@modules/pluginmanager";
+import React from "@modules/react";
+import Settings from "@stores/settings";
+import Builtin from "@structs/builtin";
+import Button, {Colors} from "@ui/base/button";
 import Modals from "@ui/modals";
+import Toasts from "@ui/toasts";
 import {getByKeys, getByPrototypes, getByStrings} from "@webpack";
 
 const Dispatcher = DiscordModules.Dispatcher;

@@ -1,364 +1,364 @@
 {
-    "Panels": {
-        "plugins": "Plugins",
-        "themes": "Themes",
-        "customcss": "Custom CSS",
-        "updates": "Updates"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Settings",
-            "general": {
-                "name": "General",
-                "voiceDisconnect": {
-                    "name": "Voice Disconnect",
-                    "note": "Disconnect from voice server when closing Discord"
-                },
-                "showToasts": {
-                    "name": "Show Toasts",
-                    "note": "Shows a small notification for important information"
-                },
-                "mediaKeys": {
-                    "name": "Disable Media Keys",
-                    "note": "Prevents Discord from hijacking your media keys after playing a video."
-                },
-                "bdContextMenu": {
-                    "name": "Settings Context Menu",
-                    "note": "Adds a BetterDiscord subsection to the settings context menu."
-                },
-                "themeAttributes": {
-                    "name": "Theme Attributes",
-                    "note": "Adds attributes to various elements to assist in theming."
-                },
-                "notificationPosition": {
-                    "name": "Notification",
-                    "note": "Lets you choose where you want notifications to popup."
-                },
-                "notificationEnabled": {
-                    "name": "Show Notifications",
-                    "note": "Prevents or allows notifications to be shown on screen."
-                }
-            },
-            "store": {
-                "name": "Addon Store",
-                "bdAddonStore": {
-                    "name": "Enable Addon Store",
-                    "note": "Enables the BetterDiscord Addon Store."
-                },
-                "alwaysEnable": {
-                    "name": "Always Enable",
-                    "note": "When enabled by default addons downloaded via the addon store will be enabled."
-                },
-                "addonEmbeds": {
-                    "name": "Addon Embeds",
-                    "note": "Embeds the addon store cards into chat."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Remove Minimum Size",
-                    "note": "Removes Discord's forced minimum window size of 940x500"
-                },
-                "name": "Window Preferences",
-                "transparency": {
-                    "name": "Enable Transparency",
-                    "note": "Enables the main window to be see-through (requires restart)"
-                },
-                "frame": {
-                    "name": "Window Frame",
-                    "note": "Adds the native os window frame to the main window"
-                },
-                "inAppTrafficLights": {
-                    "name": "Use In App Traffic Lights",
-                    "note": "Instead of using the OS traffic lights it will use a in app one"
-                }
-            },
-            "addons": {
-                "name": "Addon Manager",
-                "addonErrors": {
-                    "name": "Show Addon Errors",
-                    "note": "Shows a modal with plugin/theme errors"
-                },
-                "editAction": {
-                    "name": "Edit Action",
-                    "note": "Where plugins & themes appear when editing",
-                    "options": {
-                        "detached": "Detached Window",
-                        "system": "System Editor"
-                    }
-                },
-                "checkForUpdates": {
-                    "name": "Automatically Check For Updates",
-                    "note": "Periodically checks for updates to your addons and core BD"
-                },
-                "updateInterval": {
-                    "name": "Update Check Interval",
-                    "note": "How often to check for addon/core updates"
-                }
-            },
-            "customcss": {
-                "name": "Custom CSS",
-                "customcss": {
-                    "name": "Custom CSS",
-                    "note": "Enables the Custom CSS tab"
-                },
-                "liveUpdate": {
-                    "name": "Live Update",
-                    "note": "Updates the css as you type"
-                },
-                "startDetached": {
-                    "name": "Start Detached",
-                    "note": "Clicking the Custom CSS tab opens the editor in a separate window"
-                },
-                "nativeOpen": {
-                    "name": "Open in Native Editor",
-                    "note": "Clicking the Custom CSS tab opens your custom css in your native editor"
-                },
-                "openAction": {
-                    "name": "Editor Location",
-                    "note": "Where Custom CSS should open by default",
-                    "options": {
-                        "settings": "Settings Menu",
-                        "detached": "Detached Window",
-                        "system": "System Editor"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Developer Settings",
-                "debuggerHotkey": {
-                    "name": "Debugger Hotkey",
-                    "note": "Allows activating debugger when pressing F8 with DevTools open"
-                },
-                "reactDevTools": {
-                    "name": "React Developer Tools",
-                    "note": "Injects your local installation of React Developer Tools into Discord"
-                },
-                "inspectElement": {
-                    "name": "Inspect Element Hotkey",
-                    "note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
-                },
-                "devToolsWarning": {
-                    "name": "Stop DevTools Warning",
-                    "note": "Stops Discord from printing out their \"Hold Up!\" message"
-                },
-                "debugLogs": {
-                    "name": "Debug Logs",
-                    "note": "Outputs everything from the console into the debug.log file in the BetterDiscord folder"
-                },
-                "devTools": {
-                    "name": "DevTools",
-                    "note": "Enables toggling DevTools with ctrl+shift+i"
-                },
-                "recovery": {
-                    "name": "Recovery",
-                    "note": "Enables the ability to attempt to save discord without reloading",
-                    "button": "Attempt to recover Discord",
-                    "report": "Report on Github",
-                    "safeMode": "Relaunch in Safe Mode"
-                }
-            },
-            "editor": {
-                "name": "Editor Preferences",
-                "lineNumbers": {
-                    "name": "Line Numbers",
-                    "note": "Enables showing line numbers on the side of the editor"
-                },
-                "fontSize": {
-                    "name": "Font Size",
-                    "note": "Size of the font (pt) to use in the editor"
-                },
-                "minimap": {
-                    "name": "Minimap",
-                    "note": "Enables showing the code minimap on the side of the editor"
-                },
-                "hover": {
-                    "name": "Reference Tooltips",
-                    "note": "Enables showing the reference tooltips when hovering rules and selectors"
-                },
-                "quickSuggestions": {
-                    "name": "Quick Suggestions",
-                    "note": "Enables showing the autocomplete suggestions as you type"
-                },
-                "renderWhitespace": {
-                    "name": "Show Whitespace",
-                    "note": "When whitespace should be shown by the editor",
-                    "options": {
-                        "all": "Always",
-                        "none": "Never",
-                        "selection": "Selection"
-                    }
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} by {{author}}",
-        "byline": "by {{author}}",
-        "openFolder": "Open {{type}} Folder",
-        "openStore": "Open {{type}} Store",
-        "storeMessage": "Browse and install official community {{type}}",
-        "store": "Store",
-        "viewInstalled": "View Installed {{type}}",
-        "reload": "Reload",
-        "addonSettings": "Settings",
-        "website": "Website",
-        "source": "Source",
-        "invite": "Support Server",
-        "donate": "Donate",
-        "patreon": "Patreon",
-        "name": "Name",
-        "author": "Author",
-        "version": "Version",
-        "added": "Date Added",
-        "modified": "Date Modified",
-        "releaseDate": "Release Date",
-        "lastUpdated": "Last Update",
-        "isEnabled": "Enabled",
-        "popularity": "Popularity",
-        "isInstalled": "Installed",
-        "downloads": "Downloads",
-        "likes": "Likes",
-        "listView": "List View",
-        "gridView": "Grid View",
-        "enableAll": "Enable All",
-        "disableAll": "Disable All",
-        "enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
-        "search": "Search {{type}}",
-        "results": {
-            "zero": "No Results",
-            "one": "{{count}} Result",
-            "other": "{{count}} Results"
-        },
-        "editAddon": "Edit",
-        "deleteAddon": "Delete",
-        "downloadAddon": "Download",
-        "confirmDelete": "Are you sure you want to delete {{name}}?",
-        "confirmationText": "You have unsaved changes to {{name}}. Closing this window will lose all those changes.",
-        "enabled": "{{name}} has been enabled.",
-        "disabled": "{{name}} has been disabled.",
-        "couldNotEnable": "{{name}} could not be enabled.",
-        "couldNotDisable": "{{name}} could not be disabled.",
-        "couldNotStart": "{{name}} could not be started.",
-        "couldNotStop": "{{name}} could not be stopped.",
-        "settingsError": "Could not open settings for {{name}}",
-        "methodError": "{{method}} could not be fired.",
-        "unknownAuthor": "Unknown Author",
-        "noDescription": "Description not provided.",
-        "alreadyExists": "There is already a {{type}} with name {{name}}",
-        "alreadWatching": "Already watching addons.",
-        "metaError": "META could not be parsed.",
-        "missingNameData": "META missing name data.",
-        "metaNotFound": "META was not found.",
-        "compileError": "Could not be compiled. See console for details.",
-        "wasUnloaded": "{{name}} was unloaded.",
-        "blankSlateHeader": "You don't have any {{type}}!",
-        "blankSlateMessage": "Grab some from [our website]({{link}}) and add them to your {{type}} folder.",
-        "blankSlateHeaderGeneric": "You don't have anything!",
-        "blankSlateMessageGeneric": "You should probably get some.",
-        "wasLoaded": "{{name}} v{{version}} was loaded.",
-        "failedToDownload": "Failed to download {{type}} {{name}}",
-        "successfullyDownload": "Successfully downloaded {{name}}",
-        "alreadyInstalled": "{{name}} is already installed",
-        "failedToFetch": "Unable to get addons",
-        "new": "New",
-        "updated": "Updated",
-        "downloadCount": {
-            "one": "{{count}} Download",
-            "other": "{{count}} Downloads"
-        },
-        "likeCount": {
-            "one": "{{count}} Like",
-            "other": "{{count}} Likes"
-        },
-        "tags": "Tags",
-        "preview": "Preview",
-        "official": "Official"
-    },
-    "CustomCSS": {
-        "confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
-        "update": "Update",
-        "save": "Save",
-        "openNative": "Open in System Editor",
-        "openDetached": "Detach Window",
-        "settings": "Editor Settings",
-        "editorTitle": "Custom CSS Editor",
-        "cssInstallSuccess": "CSS was successfully added into CustomCSS.",
-        "cssInstalled": "CSS installed!",
-        "cssInstallError": "CSS failed to be added into CustomCSS.",
-        "cssReverted": "CSS was reverted.",
-        "cssReverting": "Changes will be reverted in 10 seconds",
-        "cssKept": "CSS changes kept permanently"
-    },
-    "Modals": {
-        "confirmAction": "Are You Sure?",
-        "installCss": "Are you sure you want to add this CSS to your Custom CSS?",
-        "okay": "Okay",
-        "done": "Done",
-        "cancel": "Cancel",
-        "nevermind": "Nevermind",
-        "close": "Close",
-        "name": "Name",
-        "message": "Message",
-        "error": "Error",
-        "addonErrors": "Addon Errors",
-        "restartRequired": "Restart Required",
-        "restartNow": "Restart Now",
-        "restartLater": "Restart Later",
-        "additionalInfo": "Additional Info",
-        "restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?",
-        "changelog": "Changelog",
-        "debuglog": "Your debug log file has exceeded 100MB, would you like to clear the log?",
-        "automaticallyEnable": "Automatically Enable"
-    },
-    "ReactDevTools": {
-        "notFound": "Extension Not Found",
-        "notFoundDetails": "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
-    },
-    "Sorting": {
-        "sortBy": "Sort By",
-        "order": "Order",
-        "ascending": "Ascending",
-        "descending": "Descending"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
-        "disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
-    },
-    "Notices": {
-        "moreInfo": "More Info"
-    },
-    "Updater": {
-        "updateFailed": "Update Failed!",
-        "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
-        "updateSuccessful": "Update Successful!",
-        "updateAvailable": "BetterDiscord has a new update (v{{version}})",
-        "addonUpdatesAvailable": {
-            "one": "BetterDiscord has found an update for {{count}} of your {{type}}!",
-            "other": "BetterDiscord has found updates for {{count}} of your {{type}}!"
-        },
-        "addonUpdated": "{{name}} has been updated to version {{version}}!",
-        "addonUpdateFailed": "Failed to update {{name}}. Please try again later.",
-        "checking": "Checking for updates!",
-        "finishedChecking": "Finished checking for updates!",
-        "checkForUpdates": "Check For Updates!",
-        "updateAll": "Update All!",
-        "noUpdatesAvailable": "No updates available.",
-        "versionAvailable": "Version {{version}} now available!",
-        "upToDateBlankslate": "All of your {{type}} seem to be up to date!",
-        "updateButton": "Update!"
-    },
-    "Settings": {
-        "customColor": "Custom Color",
-        "resetSettings": "Reset Settings",
-        "resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone."
-    },
-    "Socials": {
-        "twitter": "Follow Us!",
-        "github": "Star Us!"
-    },
-    "Paginator": {
-        "back": "Back",
-        "next": "Next"
-    }
+	"Panels": {
+		"plugins": "Plugins",
+		"themes": "Themes",
+		"customcss": "Custom CSS",
+		"updates": "Updates"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Settings",
+			"general": {
+				"name": "General",
+				"voiceDisconnect": {
+					"name": "Voice Disconnect",
+					"note": "Disconnect from voice server when closing Discord"
+				},
+				"showToasts": {
+					"name": "Show Toasts",
+					"note": "Shows a small notification for important information"
+				},
+				"mediaKeys": {
+					"name": "Disable Media Keys",
+					"note": "Prevents Discord from hijacking your media keys after playing a video."
+				},
+				"bdContextMenu": {
+					"name": "Settings Context Menu",
+					"note": "Adds a BetterDiscord subsection to the settings context menu."
+				},
+				"themeAttributes": {
+					"name": "Theme Attributes",
+					"note": "Adds attributes to various elements to assist in theming."
+				},
+				"notificationPosition": {
+					"name": "Notification",
+					"note": "Lets you choose where you want notifications to popup."
+				},
+				"notificationEnabled": {
+					"name": "Show Notifications",
+					"note": "Prevents or allows notifications to be shown on screen."
+				}
+			},
+			"store": {
+				"name": "Addon Store",
+				"bdAddonStore": {
+					"name": "Enable Addon Store",
+					"note": "Enables the BetterDiscord Addon Store."
+				},
+				"alwaysEnable": {
+					"name": "Always Enable",
+					"note": "When enabled by default addons downloaded via the addon store will be enabled."
+				},
+				"addonEmbeds": {
+					"name": "Addon Embeds",
+					"note": "Embeds the addon store cards into chat."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Remove Minimum Size",
+					"note": "Removes Discord's forced minimum window size of 940x500"
+				},
+				"name": "Window Preferences",
+				"transparency": {
+					"name": "Enable Transparency",
+					"note": "Enables the main window to be see-through (requires restart)"
+				},
+				"frame": {
+					"name": "Window Frame",
+					"note": "Adds the native os window frame to the main window"
+				},
+				"inAppTrafficLights": {
+					"name": "Use In App Traffic Lights",
+					"note": "Instead of using the OS traffic lights it will use a in app one"
+				}
+			},
+			"addons": {
+				"name": "Addon Manager",
+				"addonErrors": {
+					"name": "Show Addon Errors",
+					"note": "Shows a modal with plugin/theme errors"
+				},
+				"editAction": {
+					"name": "Edit Action",
+					"note": "Where plugins & themes appear when editing",
+					"options": {
+						"detached": "Detached Window",
+						"system": "System Editor"
+					}
+				},
+				"checkForUpdates": {
+					"name": "Automatically Check For Updates",
+					"note": "Periodically checks for updates to your addons and core BD"
+				},
+				"updateInterval": {
+					"name": "Update Check Interval",
+					"note": "How often to check for addon/core updates"
+				}
+			},
+			"customcss": {
+				"name": "Custom CSS",
+				"customcss": {
+					"name": "Custom CSS",
+					"note": "Enables the Custom CSS tab"
+				},
+				"liveUpdate": {
+					"name": "Live Update",
+					"note": "Updates the css as you type"
+				},
+				"startDetached": {
+					"name": "Start Detached",
+					"note": "Clicking the Custom CSS tab opens the editor in a separate window"
+				},
+				"nativeOpen": {
+					"name": "Open in Native Editor",
+					"note": "Clicking the Custom CSS tab opens your custom css in your native editor"
+				},
+				"openAction": {
+					"name": "Editor Location",
+					"note": "Where Custom CSS should open by default",
+					"options": {
+						"settings": "Settings Menu",
+						"detached": "Detached Window",
+						"system": "System Editor"
+					}
+				}
+			},
+			"developer": {
+				"name": "Developer Settings",
+				"debuggerHotkey": {
+					"name": "Debugger Hotkey",
+					"note": "Allows activating debugger when pressing F8 with DevTools open"
+				},
+				"reactDevTools": {
+					"name": "React Developer Tools",
+					"note": "Injects your local installation of React Developer Tools into Discord"
+				},
+				"inspectElement": {
+					"name": "Inspect Element Hotkey",
+					"note": "Enables the inspect element hotkey (ctrl + shift + c) that is common in most browsers"
+				},
+				"devToolsWarning": {
+					"name": "Stop DevTools Warning",
+					"note": "Stops Discord from printing out their \"Hold Up!\" message"
+				},
+				"debugLogs": {
+					"name": "Debug Logs",
+					"note": "Outputs everything from the console into the debug.log file in the BetterDiscord folder"
+				},
+				"devTools": {
+					"name": "DevTools",
+					"note": "Enables toggling DevTools with ctrl+shift+i"
+				},
+				"recovery": {
+					"name": "Recovery",
+					"note": "Enables the ability to attempt to save discord without reloading",
+					"button": "Attempt to recover Discord",
+					"report": "Report on Github",
+					"safeMode": "Relaunch in Safe Mode"
+				}
+			},
+			"editor": {
+				"name": "Editor Preferences",
+				"lineNumbers": {
+					"name": "Line Numbers",
+					"note": "Enables showing line numbers on the side of the editor"
+				},
+				"fontSize": {
+					"name": "Font Size",
+					"note": "Size of the font (pt) to use in the editor"
+				},
+				"minimap": {
+					"name": "Minimap",
+					"note": "Enables showing the code minimap on the side of the editor"
+				},
+				"hover": {
+					"name": "Reference Tooltips",
+					"note": "Enables showing the reference tooltips when hovering rules and selectors"
+				},
+				"quickSuggestions": {
+					"name": "Quick Suggestions",
+					"note": "Enables showing the autocomplete suggestions as you type"
+				},
+				"renderWhitespace": {
+					"name": "Show Whitespace",
+					"note": "When whitespace should be shown by the editor",
+					"options": {
+						"all": "Always",
+						"none": "Never",
+						"selection": "Selection"
+					}
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} by {{author}}",
+		"byline": "by {{author}}",
+		"openFolder": "Open {{type}} Folder",
+		"openStore": "Open {{type}} Store",
+		"storeMessage": "Browse and install official community {{type}}",
+		"store": "Store",
+		"viewInstalled": "View Installed {{type}}",
+		"reload": "Reload",
+		"addonSettings": "Settings",
+		"website": "Website",
+		"source": "Source",
+		"invite": "Support Server",
+		"donate": "Donate",
+		"patreon": "Patreon",
+		"name": "Name",
+		"author": "Author",
+		"version": "Version",
+		"added": "Date Added",
+		"modified": "Date Modified",
+		"releaseDate": "Release Date",
+		"lastUpdated": "Last Update",
+		"isEnabled": "Enabled",
+		"popularity": "Popularity",
+		"isInstalled": "Installed",
+		"downloads": "Downloads",
+		"likes": "Likes",
+		"listView": "List View",
+		"gridView": "Grid View",
+		"enableAll": "Enable All",
+		"disableAll": "Disable All",
+		"enableAllWarning": "Enabling all {{type}} can cause temporary lag and unexpected errors.\n\n(Hold shift while clicking to skip this prompt!)",
+		"search": "Search {{type}}",
+		"results": {
+			"zero": "No Results",
+			"one": "{{count}} Result",
+			"other": "{{count}} Results"
+		},
+		"editAddon": "Edit",
+		"deleteAddon": "Delete",
+		"downloadAddon": "Download",
+		"confirmDelete": "Are you sure you want to delete {{name}}?",
+		"confirmationText": "You have unsaved changes to {{name}}. Closing this window will lose all those changes.",
+		"enabled": "{{name}} has been enabled.",
+		"disabled": "{{name}} has been disabled.",
+		"couldNotEnable": "{{name}} could not be enabled.",
+		"couldNotDisable": "{{name}} could not be disabled.",
+		"couldNotStart": "{{name}} could not be started.",
+		"couldNotStop": "{{name}} could not be stopped.",
+		"settingsError": "Could not open settings for {{name}}",
+		"methodError": "{{method}} could not be fired.",
+		"unknownAuthor": "Unknown Author",
+		"noDescription": "Description not provided.",
+		"alreadyExists": "There is already a {{type}} with name {{name}}",
+		"alreadWatching": "Already watching addons.",
+		"metaError": "META could not be parsed.",
+		"missingNameData": "META missing name data.",
+		"metaNotFound": "META was not found.",
+		"compileError": "Could not be compiled. See console for details.",
+		"wasUnloaded": "{{name}} was unloaded.",
+		"blankSlateHeader": "You don't have any {{type}}!",
+		"blankSlateMessage": "Grab some from [our website]({{link}}) and add them to your {{type}} folder.",
+		"blankSlateHeaderGeneric": "You don't have anything!",
+		"blankSlateMessageGeneric": "You should probably get some.",
+		"wasLoaded": "{{name}} v{{version}} was loaded.",
+		"failedToDownload": "Failed to download {{type}} {{name}}",
+		"successfullyDownload": "Successfully downloaded {{name}}",
+		"alreadyInstalled": "{{name}} is already installed",
+		"failedToFetch": "Unable to get addons",
+		"new": "New",
+		"updated": "Updated",
+		"downloadCount": {
+			"one": "{{count}} Download",
+			"other": "{{count}} Downloads"
+		},
+		"likeCount": {
+			"one": "{{count}} Like",
+			"other": "{{count}} Likes"
+		},
+		"tags": "Tags",
+		"preview": "Preview",
+		"official": "Official"
+	},
+	"CustomCSS": {
+		"confirmationText": "You have unsaved changes to your Custom CSS. Closing this window will lose all those changes.",
+		"update": "Update",
+		"save": "Save",
+		"openNative": "Open in System Editor",
+		"openDetached": "Detach Window",
+		"settings": "Editor Settings",
+		"editorTitle": "Custom CSS Editor",
+		"cssInstallSuccess": "CSS was successfully added into CustomCSS.",
+		"cssInstalled": "CSS installed!",
+		"cssInstallError": "CSS failed to be added into CustomCSS.",
+		"cssReverted": "CSS was reverted.",
+		"cssReverting": "Changes will be reverted in 10 seconds",
+		"cssKept": "CSS changes kept permanently"
+	},
+	"Modals": {
+		"confirmAction": "Are You Sure?",
+		"installCss": "Are you sure you want to add this CSS to your Custom CSS?",
+		"okay": "Okay",
+		"done": "Done",
+		"cancel": "Cancel",
+		"nevermind": "Nevermind",
+		"close": "Close",
+		"name": "Name",
+		"message": "Message",
+		"error": "Error",
+		"addonErrors": "Addon Errors",
+		"restartRequired": "Restart Required",
+		"restartNow": "Restart Now",
+		"restartLater": "Restart Later",
+		"additionalInfo": "Additional Info",
+		"restartPrompt": "In order to take effect, Discord needs to be restarted. Do you want to restart now?",
+		"changelog": "Changelog",
+		"debuglog": "Your debug log file has exceeded 100MB, would you like to clear the log?",
+		"automaticallyEnable": "Automatically Enable"
+	},
+	"ReactDevTools": {
+		"notFound": "Extension Not Found",
+		"notFoundDetails": "Unable to find the React Developer Tools extension on your PC. Please install the extension on your local Chrome installation."
+	},
+	"Sorting": {
+		"sortBy": "Sort By",
+		"order": "Order",
+		"ascending": "Ascending",
+		"descending": "Descending"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "This option requires a transparent theme in order to work properly. On Windows this may break your aero snapping and maximizing.\n\nIn order to take effect, Discord needs to be restarted. Do you want to restart now?",
+		"disabledInfo": "In order to take effect, Discord needs to be restarted. Do you want to restart now?"
+	},
+	"Notices": {
+		"moreInfo": "More Info"
+	},
+	"Updater": {
+		"updateFailed": "Update Failed!",
+		"updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",
+		"updateSuccessful": "Update Successful!",
+		"updateAvailable": "BetterDiscord has a new update (v{{version}})",
+		"addonUpdatesAvailable": {
+			"one": "BetterDiscord has found an update for {{count}} of your {{type}}!",
+			"other": "BetterDiscord has found updates for {{count}} of your {{type}}!"
+		},
+		"addonUpdated": "{{name}} has been updated to version {{version}}!",
+		"addonUpdateFailed": "Failed to update {{name}}. Please try again later.",
+		"checking": "Checking for updates!",
+		"finishedChecking": "Finished checking for updates!",
+		"checkForUpdates": "Check For Updates!",
+		"updateAll": "Update All!",
+		"noUpdatesAvailable": "No updates available.",
+		"versionAvailable": "Version {{version}} now available!",
+		"upToDateBlankslate": "All of your {{type}} seem to be up to date!",
+		"updateButton": "Update!"
+	},
+	"Settings": {
+		"customColor": "Custom Color",
+		"resetSettings": "Reset Settings",
+		"resetSettingsWarning": "Resetting your settings returns them all to the original state, this cannot be undone."
+	},
+	"Socials": {
+		"twitter": "Follow Us!",
+		"github": "Star Us!"
+	},
+	"Paginator": {
+		"back": "Back",
+		"next": "Next"
+	}
 }

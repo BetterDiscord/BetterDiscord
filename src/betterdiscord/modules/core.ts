@@ -1,32 +1,32 @@
 import Logger from "@common/logger";
 
-import Config from "@stores/config";
 import Changelog from "@data/changelog";
+import Config from "@stores/config";
 
 import * as Builtins from "@builtins/builtins";
 
 import LoadingIcon from "../loadingicon";
 
-import LocaleManager from "./localemanager";
+import JsonStore from "@stores/json";
+import Settings from "@stores/settings";
+import DiscordModules from "./discordmodules";
 import DOMManager from "./dommanager";
+import LocaleManager from "./localemanager";
 import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
-import Settings from "@stores/settings";
-import JsonStore from "@stores/json";
-import DiscordModules from "./discordmodules";
 
-import IPC from "./ipc";
-import Editor from "./editor";
-import Updater from "./updater";
 import AddonStore from "./addonstore";
+import Editor from "./editor";
+import IPC from "./ipc";
+import Updater from "./updater";
 
+import NotificationUI from "@modules/notification";
 import Styles from "@styles/index.css";
-import Modals from "@ui/modals";
+import InstallCSS from "@ui/customcss/mdinstallcss";
 import FloatingWindows from "@ui/floatingwindows";
+import Modals from "@ui/modals";
 import SettingsRenderer from "@ui/settings";
 import CommandManager from "./commandmanager";
-import NotificationUI from "@modules/notification";
-import InstallCSS from "@ui/customcss/mdinstallcss";
 
 export default new class Core {
     hasStarted = false;

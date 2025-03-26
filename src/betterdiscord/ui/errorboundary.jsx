@@ -1,7 +1,6 @@
 import Logger from "@common/logger";
-import React from "@modules/react";
 import IPC from "@modules/ipc";
-
+import React from "@modules/react";
 
 export default class ErrorBoundary extends React.Component {
     /**
@@ -21,7 +20,11 @@ export default class ErrorBoundary extends React.Component {
 
     componentDidCatch(error) {
         this.setState({hasError: true});
-        Logger.stacktrace("ErrorBoundary", `React error detected for {name: ${this.props.name ?? "Unknown"}, id: ${this.props.id ?? "Unknown"}}`, error);
+        Logger.stacktrace(
+            "ErrorBoundary",
+            `React error detected for {name: ${this.props.name ?? "Unknown"}, id: ${this.props.id ?? "Unknown"}}`,
+            error,
+        );
         if (typeof this.props.onError === "function") this.props.onError(error);
     }
 
@@ -30,9 +33,11 @@ export default class ErrorBoundary extends React.Component {
             return this.props.fallback;
         }
         else if (this.state.hasError && !this.props.hideError) {
-            return <div onClick={() => IPC.openDevTools()} className="react-error">
-                        There was an unexpected Error. Click to open console for more details.
-                    </div>;
+            return (
+                <div onClick={() => IPC.openDevTools()} className="react-error">
+                    There was an unexpected Error. Click to open console for more details.
+                </div>
+            );
         }
         return this.props.children;
     }
@@ -42,6 +47,11 @@ const originalRender = ErrorBoundary.prototype.render;
 Object.defineProperty(ErrorBoundary.prototype, "render", {
     enumerable: false,
     configurable: false,
-    set: function() {Logger.warn("ErrorBoundary", "Addon policy for plugins https://docs.betterdiscord.app/plugins/introduction/guidelines#scope");},
-    get: () => originalRender
+    set: () => {
+        Logger.warn(
+            "ErrorBoundary",
+            "Addon policy for plugins https://docs.betterdiscord.app/plugins/introduction/guidelines#scope",
+        );
+    },
+    get: () => originalRender,
 });

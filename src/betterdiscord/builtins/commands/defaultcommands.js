@@ -1,10 +1,10 @@
 import Builtin from "@structs/builtin";
 import buildAddonCommand from "./addons";
+import CustomCSSCommand from "./customcss";
 import DebugCommand from "./debug";
 import RestartCommand from "./restart";
-import SupportCommand from "./support";
-import CustomCSSCommand from "./customcss";
 import SettingsCommand from "./settings";
+import SupportCommand from "./support";
 
 
 export default new class DefaultCommands extends Builtin {

@@ -1,13 +1,13 @@
 const fs = require("fs");
 const path = require("path");
 
-module.exports = function(dist) {
+module.exports = (dist) => {
     console.log("");
     console.log("Ensuring build validity");
     const files = [
         path.join(dist, "main.js"),
         path.join(dist, "preload.js"),
-        path.join(dist, "betterdiscord.js")
+        path.join(dist, "betterdiscord.js"),
     ];
 
     for (const file of files) {

@@ -43,7 +43,7 @@ The following is the list of Discord's available locales as of April 15th 2021
 
 English, US: en-US
 English, UK: en-GB
-Chinese Simplified: 
+Chinese Simplified:
 Traditional Chinese: zh-TW
 Czech: cs
 Danish: da

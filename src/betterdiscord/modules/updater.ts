@@ -1,7 +1,7 @@
-// @ts-expect-error this is an internal package not yet converted to TS
-import request from "request";
 import fileSystem from "fs";
 import path from "path";
+// @ts-expect-error this is an internal package not yet converted to TS
+import request from "request";
 
 import Logger from "@common/logger";
 
@@ -9,24 +9,24 @@ import Config from "@stores/config";
 
 import {comparator as semverComparator, regex as semverRegex} from "@structs/semver";
 
-import Events from "./emitter";
-import IPC from "./ipc";
 import {t} from "@common/i18n";
 import JsonStore from "@stores/json";
-import React from "./react";
 import Settings from "@stores/settings";
+import Events from "./emitter";
+import IPC from "./ipc";
 import PluginManager from "./pluginmanager";
+import React from "./react";
 import ThemeManager from "./thememanager";
 
-import Toasts from "@ui/toasts";
-import Notices from "@ui/notices";
-import Modals from "@ui/modals";
-import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
-import type AddonManager from "./addonmanager";
-import type {Release} from "github";
-import type {Addon} from "betterdiscordweb";
+import Modals from "@ui/modals";
+import Notices from "@ui/notices";
+import Toasts from "@ui/toasts";
+import UpdaterPanel from "@ui/updater";
 import {getByKeys} from "@webpack";
+import type {Addon} from "betterdiscordweb";
+import type {Release} from "github";
+import type AddonManager from "./addonmanager";
 
 
 const UserSettingsWindow = getByKeys<{open?(id: string): void;}>(["updateAccount"]);

@@ -1,8 +1,8 @@
+import Logger from "@common/logger";
 import Patcher from "@modules/patcher";
 import React from "@modules/react";
-import pluginmanager from "./pluginmanager";
-import Logger from "@common/logger";
 import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
+import pluginmanager from "./pluginmanager";
 
 export const CommandTypes = {
     CHAT_INPUT: 1,

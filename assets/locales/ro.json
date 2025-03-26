@@ -1,189 +1,189 @@
 {
-    "Panels": {
-        "plugins": "plugin-uri",
-        "themes": "temă",
-        "customcss": "CSS personalizat"
-    },
-    "Collections": {
-        "settings": {
-            "name": "setări",
-            "general": {
-                "name": "general",
-                "voiceDisconnect": {
-                    "name": "Deconectare de la voce",
-                    "note": "Deconectează-te de la un canal de voce când inchizi Discord-ul"
-                },
-                "showToasts": {
-                    "name": "Arată mesajele de sistem",
-                    "note": "Afișează notificări pentru informațiile importante"
-                },
-                "mediaKeys": {
-                    "name": "Dezactivează tastele Media",
-                    "note": "Previn-o Discord din a fura tastele media după redarea unui videoclip."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Elimină mărimea minimă",
-                    "note": "Elimina marimea minima de 940x500 a ferestrei"
-                },
-                "name": "Preferinte în privința mărimii ferestrei",
-                "transparency": {
-                    "name": "Activează Transparența",
-                    "note": "Fă ca fereastra principală să fie transparentă (necesită repornire)"
-                },
-                "frame": {
-                    "name": "Cadrul ferestrei",
-                    "note": "Adaugă cadrul sistemului de operare în fereastra principală"
-                }
-            },
-            "addons": {
-                "name": "Manager de adăugiri",
-                "addonErrors": {
-                    "name": "Arată erorile adăugirilor",
-                    "note": "Afișează un modal cu erorile plugin-urilor/temelor"
-                },
-                "editAction": {
-                    "name": "Modifică acțiunea",
-                    "note": "Unde apar plugin-urile si temele atunci când sunt editate",
-                    "options": {
-                        "detached": "Fereastră detașabilă",
-                        "system": "Editor de sistem"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "CSS personalizat",
-                "customcss": {
-                    "name": "CSS personalizat",
-                    "note": "Activează tab-ul de CSS personalizat"
-                },
-                "liveUpdate": {
-                    "name": "Actualizări live",
-                    "note": "Actualizează CSS-ul in timp ce scrii"
-                },
-                "startDetached": {
-                    "name": "Pornește intr-o altă fereastră",
-                    "note": "Click-ul pe tab-ul de CSS personalizat va deschide editor-ul intr-o fereastra separată"
-                },
-                "nativeOpen": {
-                    "name": "Deschide în editor-ul nativ",
-                    "note": "Click-ul pe fereastra de CSS personalizat va deschide editorul nativ al calculatorului"
-                },
-                "openAction": {
-                    "name": "Locația editorului",
-                    "note": "Unde ar trebui să se deschide CSS-ul personalizat",
-                    "options": {
-                        "settings": "Meniu de setări",
-                        "detached": "Fereastră detașabilă",
-                        "system": "Editor de sistem"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Setări de dezvoltator",
-                "debuggerHotkey": {
-                    "name": "Scurtătură pentru Debugger",
-                    "note": "Activează deschiderea debugger-ului la apasarea tastei F8"
-                },
-                "reactDevTools": {
-                    "name": "React Developer Tools",
-                    "note": "Instalează React Developer Tools in Discord"
-                },
-                "inspectElement": {
-                    "name": "Scurtătură pentru Inspect Element",
-                    "note": "Activează scurtătura pentru Inspect Element (CTRL + SHIFT + C) ce se găsește in cele mai multe browsere"
-                },
-                "devToolsWarning": {
-                    "name": "Dezactivează avertismentele",
-                    "note": "Opreste Discord-ul din a afișa mesajul \"Stai puțin!\""
-                },
-                "debugLogs": {
-                    "name": "Debug Logs",
-                    "note": "Transferă tot din consolă in fișierul debug.log din folderul BetterDiscord"
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} de {{author}}",
-        "byline": "de {{author}}",
-        "openFolder": "Deschide fișierul {{type}}",
-        "reload": "Reîmprospatează",
-        "addonSettings": "Setări",
-        "website": "Site Web",
-        "source": "Sursă",
-        "invite": "Susține Server-ul",
-        "donate": "Donează",
-        "patreon": "Patreon",
-        "name": "Nume",
-        "author": "Autor",
-        "version": "Versiune",
-        "added": "Data adăugării",
-        "modified": "Data modificării",
-        "search": "Caută {{type}}",
-        "editAddon": "Modifică",
-        "deleteAddon": "Șterge",
-        "confirmDelete": "Ești sigur că vrei să ștergi {{name}} ?",
-        "confirmationText": "Ai schimbări nesalvate la {{name}}. Închiderea acestei ferestre v-a duce la pierderea tuturor modificărilor.",
-        "enabled": "{{name}} a fost activat.",
-        "disabled": "{{name}} a fost dezactivat.",
-        "couldNotEnable": "{{name}} nu a putut fi activat.",
-        "couldNotDisable": "{{name}} nu a putut fi dezactivat.",
-        "couldNotStart": "{{name}} nu a putut porni.",
-        "couldNotStop": "{{name}} nu a putut fi oprit.",
-        "settingsError": "Nu s-au putut deschide setările pentru {{name}}",
-        "methodError": "{{method}} nu a putut fi executat.",
-        "unknownAuthor": "Autor necunoscut",
-        "noDescription": "Fără descriere.",
-        "alreadyExists": "Deja există un {{type}} cu numele {{name}}",
-        "alreadWatching": "Deja te uiti la addon-uri.",
-        "metaError": "META nu a putut fi analizat.",
-        "missingNameData": "META nu are un nume.",
-        "metaNotFound": "META nu a putut fi găsit.",
-        "compileError": "Nu s-a putut incărca.",
-        "wasUnloaded": "{{name}} a fost dezactivat.",
-        "blankSlateHeader": "Nu ai nici un {{type}}!",
-        "blankSlateMessage": "Descarcă câteva din [acest website]({{link}}) și adaugă-le in folder-ul tău {{type}}."
-    },
-    "CustomCSS": {
-        "confirmationText": "Ai modificări nesalvate in CSS-ul personalizat. Închiderea acestei ferestre va duce la anularea schimbărilor.",
-        "update": "Actualizare",
-        "save": "Salvează",
-        "openNative": "Deschide în editorul de sistem",
-        "openDetached": "Detașează fereastra",
-        "settings": "Setările editor-ului",
-        "editorTitle": "Editor de CSS personalizat"
-    },
-    "Modals": {
-        "confirmAction": "Ești sigur ?",
-        "okay": "Okay",
-        "done": "Gata",
-        "cancel": "Anulează",
-        "nevermind": "Nu contează",
-        "close": "Închide",
-        "name": "Nume",
-        "message": "Mesaj",
-        "error": "Eroare",
-        "addonErrors": "Eroare a",
-        "restartRequired": "Repornirea este necesară",
-        "restartNow": "Repornește acum",
-        "restartLater": "Reîncarcă mai târziu",
-        "additionalInfo": "Informații adiționale",
-        "restartPrompt": "Pentru a fi aplicate, Discord trebuie să repornească. Dorești să il repornești acuma ?"
-    },
-    "ReactDevTools": {
-        "notFound": "Extensia nu a putut fi găsită",
-        "notFoundDetails": "Nu s-au putut găsi extensia React Developer Tools in calculatorul tău. Te rugăm să instalezi extensia în cadrul Chrome."
-    },
-    "Sorting": {
-        "sortBy": "Sortează După",
-        "order": "Ordonează",
-        "ascending": "Crescător",
-        "descending": "Descrescător"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "Această opțiune necesită o temă transparentă pentru a funcționa normal. \nPe Windows ar putea putea să strice maximizarea.\nPentru ca aceste efecte să intre în vigoare, Discord trebuie să repornească. Dorești să il repornești acum ?",
-        "disabledInfo": "Pentru ca aceste setări să intre în efect, Discord trebuie să repornească. Dorești să îl repornești acum ?"
-    }
+	"Panels": {
+		"plugins": "plugin-uri",
+		"themes": "temă",
+		"customcss": "CSS personalizat"
+	},
+	"Collections": {
+		"settings": {
+			"name": "setări",
+			"general": {
+				"name": "general",
+				"voiceDisconnect": {
+					"name": "Deconectare de la voce",
+					"note": "Deconectează-te de la un canal de voce când inchizi Discord-ul"
+				},
+				"showToasts": {
+					"name": "Arată mesajele de sistem",
+					"note": "Afișează notificări pentru informațiile importante"
+				},
+				"mediaKeys": {
+					"name": "Dezactivează tastele Media",
+					"note": "Previn-o Discord din a fura tastele media după redarea unui videoclip."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Elimină mărimea minimă",
+					"note": "Elimina marimea minima de 940x500 a ferestrei"
+				},
+				"name": "Preferinte în privința mărimii ferestrei",
+				"transparency": {
+					"name": "Activează Transparența",
+					"note": "Fă ca fereastra principală să fie transparentă (necesită repornire)"
+				},
+				"frame": {
+					"name": "Cadrul ferestrei",
+					"note": "Adaugă cadrul sistemului de operare în fereastra principală"
+				}
+			},
+			"addons": {
+				"name": "Manager de adăugiri",
+				"addonErrors": {
+					"name": "Arată erorile adăugirilor",
+					"note": "Afișează un modal cu erorile plugin-urilor/temelor"
+				},
+				"editAction": {
+					"name": "Modifică acțiunea",
+					"note": "Unde apar plugin-urile si temele atunci când sunt editate",
+					"options": {
+						"detached": "Fereastră detașabilă",
+						"system": "Editor de sistem"
+					}
+				}
+			},
+			"customcss": {
+				"name": "CSS personalizat",
+				"customcss": {
+					"name": "CSS personalizat",
+					"note": "Activează tab-ul de CSS personalizat"
+				},
+				"liveUpdate": {
+					"name": "Actualizări live",
+					"note": "Actualizează CSS-ul in timp ce scrii"
+				},
+				"startDetached": {
+					"name": "Pornește intr-o altă fereastră",
+					"note": "Click-ul pe tab-ul de CSS personalizat va deschide editor-ul intr-o fereastra separată"
+				},
+				"nativeOpen": {
+					"name": "Deschide în editor-ul nativ",
+					"note": "Click-ul pe fereastra de CSS personalizat va deschide editorul nativ al calculatorului"
+				},
+				"openAction": {
+					"name": "Locația editorului",
+					"note": "Unde ar trebui să se deschide CSS-ul personalizat",
+					"options": {
+						"settings": "Meniu de setări",
+						"detached": "Fereastră detașabilă",
+						"system": "Editor de sistem"
+					}
+				}
+			},
+			"developer": {
+				"name": "Setări de dezvoltator",
+				"debuggerHotkey": {
+					"name": "Scurtătură pentru Debugger",
+					"note": "Activează deschiderea debugger-ului la apasarea tastei F8"
+				},
+				"reactDevTools": {
+					"name": "React Developer Tools",
+					"note": "Instalează React Developer Tools in Discord"
+				},
+				"inspectElement": {
+					"name": "Scurtătură pentru Inspect Element",
+					"note": "Activează scurtătura pentru Inspect Element (CTRL + SHIFT + C) ce se găsește in cele mai multe browsere"
+				},
+				"devToolsWarning": {
+					"name": "Dezactivează avertismentele",
+					"note": "Opreste Discord-ul din a afișa mesajul \"Stai puțin!\""
+				},
+				"debugLogs": {
+					"name": "Debug Logs",
+					"note": "Transferă tot din consolă in fișierul debug.log din folderul BetterDiscord"
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} de {{author}}",
+		"byline": "de {{author}}",
+		"openFolder": "Deschide fișierul {{type}}",
+		"reload": "Reîmprospatează",
+		"addonSettings": "Setări",
+		"website": "Site Web",
+		"source": "Sursă",
+		"invite": "Susține Server-ul",
+		"donate": "Donează",
+		"patreon": "Patreon",
+		"name": "Nume",
+		"author": "Autor",
+		"version": "Versiune",
+		"added": "Data adăugării",
+		"modified": "Data modificării",
+		"search": "Caută {{type}}",
+		"editAddon": "Modifică",
+		"deleteAddon": "Șterge",
+		"confirmDelete": "Ești sigur că vrei să ștergi {{name}} ?",
+		"confirmationText": "Ai schimbări nesalvate la {{name}}. Închiderea acestei ferestre v-a duce la pierderea tuturor modificărilor.",
+		"enabled": "{{name}} a fost activat.",
+		"disabled": "{{name}} a fost dezactivat.",
+		"couldNotEnable": "{{name}} nu a putut fi activat.",
+		"couldNotDisable": "{{name}} nu a putut fi dezactivat.",
+		"couldNotStart": "{{name}} nu a putut porni.",
+		"couldNotStop": "{{name}} nu a putut fi oprit.",
+		"settingsError": "Nu s-au putut deschide setările pentru {{name}}",
+		"methodError": "{{method}} nu a putut fi executat.",
+		"unknownAuthor": "Autor necunoscut",
+		"noDescription": "Fără descriere.",
+		"alreadyExists": "Deja există un {{type}} cu numele {{name}}",
+		"alreadWatching": "Deja te uiti la addon-uri.",
+		"metaError": "META nu a putut fi analizat.",
+		"missingNameData": "META nu are un nume.",
+		"metaNotFound": "META nu a putut fi găsit.",
+		"compileError": "Nu s-a putut incărca.",
+		"wasUnloaded": "{{name}} a fost dezactivat.",
+		"blankSlateHeader": "Nu ai nici un {{type}}!",
+		"blankSlateMessage": "Descarcă câteva din [acest website]({{link}}) și adaugă-le in folder-ul tău {{type}}."
+	},
+	"CustomCSS": {
+		"confirmationText": "Ai modificări nesalvate in CSS-ul personalizat. Închiderea acestei ferestre va duce la anularea schimbărilor.",
+		"update": "Actualizare",
+		"save": "Salvează",
+		"openNative": "Deschide în editorul de sistem",
+		"openDetached": "Detașează fereastra",
+		"settings": "Setările editor-ului",
+		"editorTitle": "Editor de CSS personalizat"
+	},
+	"Modals": {
+		"confirmAction": "Ești sigur ?",
+		"okay": "Okay",
+		"done": "Gata",
+		"cancel": "Anulează",
+		"nevermind": "Nu contează",
+		"close": "Închide",
+		"name": "Nume",
+		"message": "Mesaj",
+		"error": "Eroare",
+		"addonErrors": "Eroare a",
+		"restartRequired": "Repornirea este necesară",
+		"restartNow": "Repornește acum",
+		"restartLater": "Reîncarcă mai târziu",
+		"additionalInfo": "Informații adiționale",
+		"restartPrompt": "Pentru a fi aplicate, Discord trebuie să repornească. Dorești să il repornești acuma ?"
+	},
+	"ReactDevTools": {
+		"notFound": "Extensia nu a putut fi găsită",
+		"notFoundDetails": "Nu s-au putut găsi extensia React Developer Tools in calculatorul tău. Te rugăm să instalezi extensia în cadrul Chrome."
+	},
+	"Sorting": {
+		"sortBy": "Sortează După",
+		"order": "Ordonează",
+		"ascending": "Crescător",
+		"descending": "Descrescător"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Această opțiune necesită o temă transparentă pentru a funcționa normal. \nPe Windows ar putea putea să strice maximizarea.\nPentru ca aceste efecte să intre în vigoare, Discord trebuie să repornească. Dorești să il repornești acum ?",
+		"disabledInfo": "Pentru ca aceste setări să intre în efect, Discord trebuie să repornească. Dorești să îl repornești acum ?"
+	}
 }

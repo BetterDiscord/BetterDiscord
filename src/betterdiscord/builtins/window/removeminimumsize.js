@@ -1,8 +1,8 @@
 import Builtin from "@structs/builtin";
 
+import {t} from "@common/i18n";
 import IPC from "@modules/ipc";
 import Modals from "@ui/modals";
-import {t} from "@common/i18n";
 
 export default new class RemoveMinimumSize extends Builtin {
     get name() {return "RemoveMinimumSize";}

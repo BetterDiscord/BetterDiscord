@@ -42,7 +42,7 @@ function compareTokens(a, b) {
         else if (x === undefined) return -1;
         else if (x === y) continue;
         return compare(x, y);
-    } 
+    }
 }
 
 function preCompare(a, b) {
@@ -55,7 +55,7 @@ function preCompare(a, b) {
 
 /**
  * This works on semantic versioning e.g. "1.0.0".
- * 
+ *
  * @param {string} currentVersion
  * @param {string} remoteVersion
  * @returns {-1 | 0 | 1} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater

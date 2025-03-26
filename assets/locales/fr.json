@@ -1,189 +1,189 @@
 {
-    "Panels": {
-        "plugins": "Plugins",
-        "themes": "Thèmes",
-        "customcss": "CSS personnalisé"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Réglages",
-            "general": {
-                "name": "Général",
-                "voiceDisconnect": {
-                    "name": "Déconnexion vocale",
-                    "note": "Déconnexion du serveur vocal lors de la fermeture de Discord"
-                },
-                "showToasts": {
-                    "name": "Afficher les notifications bulles",
-                    "note": "Afficher une petite notification pour les informations importantes"
-                },
-                "mediaKeys": {
-                    "name": "Désactiver les Touches Médias",
-                    "note": "Empêche Discord de détourner vos touches multimédia après la lecture d'une vidéo."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Enlever la Taille Minimale",
-                    "note": "Enlève la taille de fenêtre minimale forcée de Discord qui est de 940x500"
-                },
-                "name": "Fenêtre des Préférences",
-                "transparency": {
-                    "name": "Activer la Transparence",
-                    "note": "Permet à la fenêtre principale d'être transparente (nécessite un redémarrage)"
-                },
-                "frame": {
-                    "name": "Cadre de la Fenêtre",
-                    "note": "Ajoute le cadre de la fenêtre native de l'OS à la fenêtre principale."
-                }
-            },
-            "addons": {
-                "name": "Gestionnaire d'Extensions",
-                "addonErrors": {
-                    "name": "Afficher les Erreurs d'Extensions",
-                    "note": "Affiche une modale avec les erreurs de plugin/thème"
-                },
-                "editAction": {
-                    "name": "Action Édition",
-                    "note": "Là où les thèmes & extensions apparaîtront lors de l'édition",
-                    "options": {
-                        "detached": "Fenêtre détachée",
-                        "system": "Éditeur système"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "CSS Personnalisé",
-                "customcss": {
-                    "name": "CSS Personnalisé",
-                    "note": "Activer l'onglet de CSS personnalisé"
-                },
-                "liveUpdate": {
-                    "name": "Mise à Jour Directe",
-                    "note": "Met à jour le CSS pendant que vous écrivez"
-                },
-                "startDetached": {
-                    "name": "Démarrer Détaché",
-                    "note": "En cliquant sur l'onglet CSS Personnalisé, l'éditeur s'ouvre dans une fenêtre distincte."
-                },
-                "nativeOpen": {
-                    "name": "Ouvrir dans l'Éditeur Natif",
-                    "note": "En cliquant sur CSS Personnalisé, l'onglet ouvrira votre CSS personnalisé dans votre éditeur natif"
-                },
-                "openAction": {
-                    "name": "Emplacement de l'Éditeur",
-                    "note": "Là où le CSS personnalisé doit s'ouvrir par défaut",
-                    "options": {
-                        "settings": "Menu Réglages",
-                        "detached": "Fenêtre Détachée",
-                        "system": "Éditeur système"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Réglages Développeur",
-                "debuggerHotkey": {
-                    "name": "Touches Raccourcis du Débugueur",
-                    "note": "Permettre l'activation du débugueur quand F8 est pressé"
-                },
-                "reactDevTools": {
-                    "name": "Outils Développeurs React",
-                    "note": "Injecte votre installation locale des Outils Développeurs React dans Discord"
-                },
-                "inspectElement": {
-                    "name": "Touche pour Inspecter l'Élément",
-                    "note": "Active le raccourci clavier de l'inspecteur d'élément (ctrl + shift + c) qui est commun à la plupart des navigateurs"
-                },
-                "devToolsWarning": {
-                    "name": "Arrêter les Avertissements des Outils Développement",
-                    "note": "Empêche Discord d'imprimer son message \\\"Attends!\\\""
-                },
-                "debugLogs": {
-                    "name": "Journaux de Débogage",
-                    "note": "Transmet tout ce qui se trouve dans la console au fichier debug.log situé dans le dossier de BetterDiscord"
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} par {{author}}",
-        "byline": "par {{author}}",
-        "openFolder": "Ouvrir dossier {{type}}",
-        "reload": "Recharger",
-        "addonSettings": "Réglages",
-        "website": "Site web",
-        "source": "Source",
-        "invite": "Server de support",
-        "donate": "Donner",
-        "patreon": "Patreon",
-        "name": "Nom",
-        "author": "Auteur",
-        "version": "Version",
-        "added": "Date d'Ajout",
-        "modified": "Date Modifiée",
-        "search": "Rechercher {{type}}",
-        "editAddon": "Édition",
-        "deleteAddon": "Suppression",
-        "confirmDelete": "Êtes-vous sûr de vouloir supprimer {{name}}?",
-        "confirmationText": "Vous n'avez pas sauvegardé les changements pour {{name}}. Fermer cette fenêtre fera perdre ces changements.",
-        "enabled": "{{name}} a été activé.",
-        "disabled": "{{name}} a été désactivé.",
-        "couldNotEnable": "{{name}} ne peut pas être activé.",
-        "couldNotDisable": "{{name}} n'a pas pu être désactivé.",
-        "couldNotStart": "{{name}} n'a pas pu être lancé.",
-        "couldNotStop": "{{name}} n'a pas pu être arrêté.",
-        "settingsError": "Impossible d'ouvrir les paramètres pour {{name}}",
-        "methodError": "{{method}} n'a pas pu être renvoyé.",
-        "unknownAuthor": "Auteur Inconnu",
-        "noDescription": "Description non fournie.",
-        "alreadyExists": "Il y a déjà un {{type}} avec comme nom {{name}}",
-        "alreadWatching": "Déjà en train de regarder les extensions.",
-        "metaError": "Le META n'a pas pu être analysé.",
-        "missingNameData": "Les données de META ne possèdent pas de nom.",
-        "metaNotFound": "Les données de META sont introuvables.",
-        "compileError": "Compilation impossible.",
-        "wasUnloaded": "{{name}} a été déchargé.",
-        "blankSlateHeader": "Vous n'avez pas de {{type}}!",
-        "blankSlateMessage": "Récupère-les depuis [ce site]({{link}}) et ajoute-les dans ton dossier {{type}}."
-    },
-    "CustomCSS": {
-        "confirmationText": "Vous avez des changements non sauvegardés dans votre CSS Personnalisé. Fermer cette fenêtre vous fera perdre ces changements.",
-        "update": "Mise à jour",
-        "save": "Sauvegarder",
-        "openNative": "Ouvrir dans l'Éditeur Système",
-        "openDetached": "Détacher la Fenêtre",
-        "settings": "Réglages de l'Éditeur",
-        "editorTitle": "Éditeur CSS Personnalisé"
-    },
-    "Modals": {
-        "confirmAction": "Êtes-vous sûr?",
-        "okay": "D'accord",
-        "done": "Terminé",
-        "cancel": "Annuler",
-        "nevermind": "Laisse tomber",
-        "close": "Fermer",
-        "name": "Nom",
-        "message": "Message",
-        "error": "Erreur",
-        "addonErrors": "Erreurs d'extension",
-        "restartRequired": "Redémarrage Requis",
-        "restartNow": "Redémarrer Maintenant",
-        "restartLater": "Redémarrer Ultérieurement",
-        "additionalInfo": "Info Additionnelle",
-        "restartPrompt": "Pour appliquer ces changements, Discord à besoin d'être redémarré. Voulez-vous redémarrer l'application maintenant?"
-    },
-    "ReactDevTools": {
-        "notFound": "Extension Introuvable",
-        "notFoundDetails": "Impossible de trouver l'extension de React Developer Tools sur ton PC. Merci d'installer l'extension dans votre installation locale de Chrome."
-    },
-    "Sorting": {
-        "sortBy": "Trier Par",
-        "order": "Ordre",
-        "ascending": "Ascendant",
-        "descending": "Descendant"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "Cette option requière un thème transparent pour pouvoir fonctionner correctement. Sous Windows, cela peut casser le style Aero de Windows lors de la maximisation et du clipsement de la fenêtre.\n\nAfin que ce changement soit actif, Discord doit être redémarré. Voulez-vous redémarrer l'application maintenant?",
-        "disabledInfo": "Afin que ce changement soit actif, Discord doit être redémarré. Voulez-vous redémarrer l'application maintenant?"
-    }
+	"Panels": {
+		"plugins": "Plugins",
+		"themes": "Thèmes",
+		"customcss": "CSS personnalisé"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Réglages",
+			"general": {
+				"name": "Général",
+				"voiceDisconnect": {
+					"name": "Déconnexion vocale",
+					"note": "Déconnexion du serveur vocal lors de la fermeture de Discord"
+				},
+				"showToasts": {
+					"name": "Afficher les notifications bulles",
+					"note": "Afficher une petite notification pour les informations importantes"
+				},
+				"mediaKeys": {
+					"name": "Désactiver les Touches Médias",
+					"note": "Empêche Discord de détourner vos touches multimédia après la lecture d'une vidéo."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Enlever la Taille Minimale",
+					"note": "Enlève la taille de fenêtre minimale forcée de Discord qui est de 940x500"
+				},
+				"name": "Fenêtre des Préférences",
+				"transparency": {
+					"name": "Activer la Transparence",
+					"note": "Permet à la fenêtre principale d'être transparente (nécessite un redémarrage)"
+				},
+				"frame": {
+					"name": "Cadre de la Fenêtre",
+					"note": "Ajoute le cadre de la fenêtre native de l'OS à la fenêtre principale."
+				}
+			},
+			"addons": {
+				"name": "Gestionnaire d'Extensions",
+				"addonErrors": {
+					"name": "Afficher les Erreurs d'Extensions",
+					"note": "Affiche une modale avec les erreurs de plugin/thème"
+				},
+				"editAction": {
+					"name": "Action Édition",
+					"note": "Là où les thèmes & extensions apparaîtront lors de l'édition",
+					"options": {
+						"detached": "Fenêtre détachée",
+						"system": "Éditeur système"
+					}
+				}
+			},
+			"customcss": {
+				"name": "CSS Personnalisé",
+				"customcss": {
+					"name": "CSS Personnalisé",
+					"note": "Activer l'onglet de CSS personnalisé"
+				},
+				"liveUpdate": {
+					"name": "Mise à Jour Directe",
+					"note": "Met à jour le CSS pendant que vous écrivez"
+				},
+				"startDetached": {
+					"name": "Démarrer Détaché",
+					"note": "En cliquant sur l'onglet CSS Personnalisé, l'éditeur s'ouvre dans une fenêtre distincte."
+				},
+				"nativeOpen": {
+					"name": "Ouvrir dans l'Éditeur Natif",
+					"note": "En cliquant sur CSS Personnalisé, l'onglet ouvrira votre CSS personnalisé dans votre éditeur natif"
+				},
+				"openAction": {
+					"name": "Emplacement de l'Éditeur",
+					"note": "Là où le CSS personnalisé doit s'ouvrir par défaut",
+					"options": {
+						"settings": "Menu Réglages",
+						"detached": "Fenêtre Détachée",
+						"system": "Éditeur système"
+					}
+				}
+			},
+			"developer": {
+				"name": "Réglages Développeur",
+				"debuggerHotkey": {
+					"name": "Touches Raccourcis du Débugueur",
+					"note": "Permettre l'activation du débugueur quand F8 est pressé"
+				},
+				"reactDevTools": {
+					"name": "Outils Développeurs React",
+					"note": "Injecte votre installation locale des Outils Développeurs React dans Discord"
+				},
+				"inspectElement": {
+					"name": "Touche pour Inspecter l'Élément",
+					"note": "Active le raccourci clavier de l'inspecteur d'élément (ctrl + shift + c) qui est commun à la plupart des navigateurs"
+				},
+				"devToolsWarning": {
+					"name": "Arrêter les Avertissements des Outils Développement",
+					"note": "Empêche Discord d'imprimer son message \\\"Attends!\\\""
+				},
+				"debugLogs": {
+					"name": "Journaux de Débogage",
+					"note": "Transmet tout ce qui se trouve dans la console au fichier debug.log situé dans le dossier de BetterDiscord"
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} par {{author}}",
+		"byline": "par {{author}}",
+		"openFolder": "Ouvrir dossier {{type}}",
+		"reload": "Recharger",
+		"addonSettings": "Réglages",
+		"website": "Site web",
+		"source": "Source",
+		"invite": "Server de support",
+		"donate": "Donner",
+		"patreon": "Patreon",
+		"name": "Nom",
+		"author": "Auteur",
+		"version": "Version",
+		"added": "Date d'Ajout",
+		"modified": "Date Modifiée",
+		"search": "Rechercher {{type}}",
+		"editAddon": "Édition",
+		"deleteAddon": "Suppression",
+		"confirmDelete": "Êtes-vous sûr de vouloir supprimer {{name}}?",
+		"confirmationText": "Vous n'avez pas sauvegardé les changements pour {{name}}. Fermer cette fenêtre fera perdre ces changements.",
+		"enabled": "{{name}} a été activé.",
+		"disabled": "{{name}} a été désactivé.",
+		"couldNotEnable": "{{name}} ne peut pas être activé.",
+		"couldNotDisable": "{{name}} n'a pas pu être désactivé.",
+		"couldNotStart": "{{name}} n'a pas pu être lancé.",
+		"couldNotStop": "{{name}} n'a pas pu être arrêté.",
+		"settingsError": "Impossible d'ouvrir les paramètres pour {{name}}",
+		"methodError": "{{method}} n'a pas pu être renvoyé.",
+		"unknownAuthor": "Auteur Inconnu",
+		"noDescription": "Description non fournie.",
+		"alreadyExists": "Il y a déjà un {{type}} avec comme nom {{name}}",
+		"alreadWatching": "Déjà en train de regarder les extensions.",
+		"metaError": "Le META n'a pas pu être analysé.",
+		"missingNameData": "Les données de META ne possèdent pas de nom.",
+		"metaNotFound": "Les données de META sont introuvables.",
+		"compileError": "Compilation impossible.",
+		"wasUnloaded": "{{name}} a été déchargé.",
+		"blankSlateHeader": "Vous n'avez pas de {{type}}!",
+		"blankSlateMessage": "Récupère-les depuis [ce site]({{link}}) et ajoute-les dans ton dossier {{type}}."
+	},
+	"CustomCSS": {
+		"confirmationText": "Vous avez des changements non sauvegardés dans votre CSS Personnalisé. Fermer cette fenêtre vous fera perdre ces changements.",
+		"update": "Mise à jour",
+		"save": "Sauvegarder",
+		"openNative": "Ouvrir dans l'Éditeur Système",
+		"openDetached": "Détacher la Fenêtre",
+		"settings": "Réglages de l'Éditeur",
+		"editorTitle": "Éditeur CSS Personnalisé"
+	},
+	"Modals": {
+		"confirmAction": "Êtes-vous sûr?",
+		"okay": "D'accord",
+		"done": "Terminé",
+		"cancel": "Annuler",
+		"nevermind": "Laisse tomber",
+		"close": "Fermer",
+		"name": "Nom",
+		"message": "Message",
+		"error": "Erreur",
+		"addonErrors": "Erreurs d'extension",
+		"restartRequired": "Redémarrage Requis",
+		"restartNow": "Redémarrer Maintenant",
+		"restartLater": "Redémarrer Ultérieurement",
+		"additionalInfo": "Info Additionnelle",
+		"restartPrompt": "Pour appliquer ces changements, Discord à besoin d'être redémarré. Voulez-vous redémarrer l'application maintenant?"
+	},
+	"ReactDevTools": {
+		"notFound": "Extension Introuvable",
+		"notFoundDetails": "Impossible de trouver l'extension de React Developer Tools sur ton PC. Merci d'installer l'extension dans votre installation locale de Chrome."
+	},
+	"Sorting": {
+		"sortBy": "Trier Par",
+		"order": "Ordre",
+		"ascending": "Ascendant",
+		"descending": "Descendant"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Cette option requière un thème transparent pour pouvoir fonctionner correctement. Sous Windows, cela peut casser le style Aero de Windows lors de la maximisation et du clipsement de la fenêtre.\n\nAfin que ce changement soit actif, Discord doit être redémarré. Voulez-vous redémarrer l'application maintenant?",
+		"disabledInfo": "Afin que ce changement soit actif, Discord doit être redémarré. Voulez-vous redémarrer l'application maintenant?"
+	}
 }

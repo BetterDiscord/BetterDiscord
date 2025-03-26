@@ -1,189 +1,189 @@
 {
-    "Panels": {
-        "plugins": "Pluginy",
-        "themes": "Témy",
-        "customcss": "Custom CSS"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Nastavenia",
-            "general": {
-                "name": "Základné",
-                "voiceDisconnect": {
-                    "name": "Odpojenie hovoru",
-                    "note": "Odpojiť z hovoru pri vypnutí Discordu"
-                },
-                "showToasts": {
-                    "name": "Zobraziť toasty",
-                    "note": "Zobraziť notifikáciu pre dôležité info"
-                },
-                "mediaKeys": {
-                    "name": "Zakázať Média tlačidlá",
-                    "note": "Zabráni Discordu prevziať kontrolu nad média tlačidlami po prehratí videa."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Zrušiť minimálnu velkosť",
-                    "note": "Zruší minimálnu veľkosť Discord okna 940x500"
-                },
-                "name": "Vlastnosti Okna",
-                "transparency": {
-                    "name": "Povoliť priehľadnosť",
-                    "note": "Povolí, aby bolo hlavné okno priehľadné (potrebný reštart)"
-                },
-                "frame": {
-                    "name": "Rám okna",
-                    "note": "Pridá klasický OS rám pre hlavné okno"
-                }
-            },
-            "addons": {
-                "name": "Manažér doplnkov",
-                "addonErrors": {
-                    "name": "Zobraziť chyby doplnkov",
-                    "note": "Zobrazí panel s chybou pluginu alebo témy"
-                },
-                "editAction": {
-                    "name": "Úprava akcie",
-                    "note": "Kde sa pluginy a témy zobrazia pri editovaní",
-                    "options": {
-                        "detached": "Oddelené okno",
-                        "system": "Systémový editor"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "Custom CSS",
-                "customcss": {
-                    "name": "Custom CSS",
-                    "note": "Aktivuje kartu \"Custom CSS\""
-                },
-                "liveUpdate": {
-                    "name": "Živý update",
-                    "note": "Aktualizuje css pri zmene"
-                },
-                "startDetached": {
-                    "name": "Spustiť oddelené",
-                    "note": "Kliknutie na kartu Custom CSS ju otvori v oddelenom okne"
-                },
-                "nativeOpen": {
-                    "name": "Otvoriť v natívnom editore",
-                    "note": "Kliknutie na kartu Custom CSS ju otvori v natívnom editore"
-                },
-                "openAction": {
-                    "name": "Cesta editora",
-                    "note": "Predvolený spôsob otvorenia Custom CSS",
-                    "options": {
-                        "settings": "Menu nastavení",
-                        "detached": "Oddelené okno",
-                        "system": "Systémový editor"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Vývojarske nastavenia",
-                "debuggerHotkey": {
-                    "name": "Klávesová skratka Debuggera",
-                    "note": "Povolí spustenie debuggera pri stlačení F8"
-                },
-                "reactDevTools": {
-                    "name": "React Developer Tools",
-                    "note": "Pridá inštaláciu React Developer Tools do Discordu"
-                },
-                "inspectElement": {
-                    "name": "Klávesová skratka Inspect Element",
-                    "note": "Povolí klávesovú skratku Inspect Element (ctrl + shift + c) ako pre bežné prehliadače"
-                },
-                "devToolsWarning": {
-                    "name": "Vypnúť DevTools Upozornenia",
-                    "note": "Vypne \"Hold Up!\" upozornenie od Discordu v konzole"
-                },
-                "debugLogs": {
-                    "name": "Výpis ladenia",
-                    "note": "Zapíše všetko z konzole do súboru debug.log v BetterDiscord zložke"
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} v{{version}} od {{author}}",
-        "byline": "od {{author}}",
-        "openFolder": "Otvoriť {{type}} Zložku",
-        "reload": "Znova načítať",
-        "addonSettings": "Nastavenia",
-        "website": "Stránka",
-        "source": "Zdroj",
-        "invite": "Server podpory",
-        "donate": "Prispieť",
-        "patreon": "Patreon",
-        "name": "Meno",
-        "author": "Autor",
-        "version": "Verzia",
-        "added": "Dátum pridania",
-        "modified": "Dátum zmeny",
-        "search": "Hľadať {{type}}",
-        "editAddon": "Upraviť",
-        "deleteAddon": "Zmazať",
-        "confirmDelete": "Ste si istý, že chcete zmazať {{name}}?",
-        "confirmationText": "Máte neuložené zmeny pre {{name}}. Zatvorením tohto okna stratíte všetky zmeny.",
-        "enabled": "{{name}} bol aktivovaný.",
-        "disabled": "{{name}} bol deaktivovaný.",
-        "couldNotEnable": "{{name}} nebolo možné aktivovať.",
-        "couldNotDisable": "{{name}} nebolo možné deaktivovať.",
-        "couldNotStart": "{{name}} nebolo možné spustiť.",
-        "couldNotStop": "{{name}} nebolo možné zastaviť.",
-        "settingsError": "Nie je možné otvoriť nastavenia pre {{name}}",
-        "methodError": "{{method}} nemohla byť vykonaná.",
-        "unknownAuthor": "Neznámy Autor",
-        "noDescription": "Bez popisu.",
-        "alreadyExists": "{{type}} s menom {{name}} už existuje",
-        "alreadWatching": "Doplnky sa už sledujú.",
-        "metaError": "META sa nepodarila načítať.",
-        "missingNameData": "META chýbajúce dáta názvu.",
-        "metaNotFound": "META nebola nájedná.",
-        "compileError": "Nepodarilo sa zostaviť.",
-        "wasUnloaded": "{{name}} bol odpojený.",
-        "blankSlateHeader": "Nenachádza sa žiadny/žiadna {{type}}!",
-        "blankSlateMessage": "Nájdi nejaké na [tejto stránke]({{link}}) a pridaj ich do zložky pre {{type}}."
-    },
-    "CustomCSS": {
-        "confirmationText": "Máte neuložené zmeny pre Custom CSS. Zatvorením tohto okna stratíte všetky zmeny.",
-        "update": "Aktualizovať",
-        "save": "Uložiť",
-        "openNative": "Otvoriť v Systémovom Editore",
-        "openDetached": "Oddeliť Okno",
-        "settings": "Nastavenia Editora",
-        "editorTitle": "Custom CSS Editor"
-    },
-    "Modals": {
-        "confirmAction": "Ste si istý?",
-        "okay": "Ok",
-        "done": "Dokončiť",
-        "cancel": "Zrušiť",
-        "nevermind": "Radšej nie",
-        "close": "Zavrieť",
-        "name": "Meno",
-        "message": "Správa",
-        "error": "Chyba",
-        "addonErrors": "Chyby Doplnkov",
-        "restartRequired": "Potrebný Reštart",
-        "restartNow": "Reštartovať Teraz",
-        "restartLater": "Reštartovať Neskôr",
-        "additionalInfo": "Ďalšie Info",
-        "restartPrompt": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
-    },
-    "ReactDevTools": {
-        "notFound": "Rozšírenie sa nenašlo",
-        "notFoundDetails": "Nebolo možné nájsť rozšírenie React Developer Tools na vašom PC. Prosím nainštalujte rozšírenie vo vašom prehliadači Chrome."
-    },
-    "Sorting": {
-        "sortBy": "Triediť podľa",
-        "order": "Poradie",
-        "ascending": "Vzostupne",
-        "descending": "Zostupne"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "Táto možnosť si vyžaduje priehľadnú tému, aby správne fungovala. V systéme Windows to môže spôsobiť prerušenie a maximalizáciu vášho aero.\n\nNa to, aby sa prejavila účinnosť, je potrebné reštartovať Discord. Chcete reštartovať teraz?",
-        "disabledInfo": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
-    }
+	"Panels": {
+		"plugins": "Pluginy",
+		"themes": "Témy",
+		"customcss": "Custom CSS"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Nastavenia",
+			"general": {
+				"name": "Základné",
+				"voiceDisconnect": {
+					"name": "Odpojenie hovoru",
+					"note": "Odpojiť z hovoru pri vypnutí Discordu"
+				},
+				"showToasts": {
+					"name": "Zobraziť toasty",
+					"note": "Zobraziť notifikáciu pre dôležité info"
+				},
+				"mediaKeys": {
+					"name": "Zakázať Média tlačidlá",
+					"note": "Zabráni Discordu prevziať kontrolu nad média tlačidlami po prehratí videa."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Zrušiť minimálnu velkosť",
+					"note": "Zruší minimálnu veľkosť Discord okna 940x500"
+				},
+				"name": "Vlastnosti Okna",
+				"transparency": {
+					"name": "Povoliť priehľadnosť",
+					"note": "Povolí, aby bolo hlavné okno priehľadné (potrebný reštart)"
+				},
+				"frame": {
+					"name": "Rám okna",
+					"note": "Pridá klasický OS rám pre hlavné okno"
+				}
+			},
+			"addons": {
+				"name": "Manažér doplnkov",
+				"addonErrors": {
+					"name": "Zobraziť chyby doplnkov",
+					"note": "Zobrazí panel s chybou pluginu alebo témy"
+				},
+				"editAction": {
+					"name": "Úprava akcie",
+					"note": "Kde sa pluginy a témy zobrazia pri editovaní",
+					"options": {
+						"detached": "Oddelené okno",
+						"system": "Systémový editor"
+					}
+				}
+			},
+			"customcss": {
+				"name": "Custom CSS",
+				"customcss": {
+					"name": "Custom CSS",
+					"note": "Aktivuje kartu \"Custom CSS\""
+				},
+				"liveUpdate": {
+					"name": "Živý update",
+					"note": "Aktualizuje css pri zmene"
+				},
+				"startDetached": {
+					"name": "Spustiť oddelené",
+					"note": "Kliknutie na kartu Custom CSS ju otvori v oddelenom okne"
+				},
+				"nativeOpen": {
+					"name": "Otvoriť v natívnom editore",
+					"note": "Kliknutie na kartu Custom CSS ju otvori v natívnom editore"
+				},
+				"openAction": {
+					"name": "Cesta editora",
+					"note": "Predvolený spôsob otvorenia Custom CSS",
+					"options": {
+						"settings": "Menu nastavení",
+						"detached": "Oddelené okno",
+						"system": "Systémový editor"
+					}
+				}
+			},
+			"developer": {
+				"name": "Vývojarske nastavenia",
+				"debuggerHotkey": {
+					"name": "Klávesová skratka Debuggera",
+					"note": "Povolí spustenie debuggera pri stlačení F8"
+				},
+				"reactDevTools": {
+					"name": "React Developer Tools",
+					"note": "Pridá inštaláciu React Developer Tools do Discordu"
+				},
+				"inspectElement": {
+					"name": "Klávesová skratka Inspect Element",
+					"note": "Povolí klávesovú skratku Inspect Element (ctrl + shift + c) ako pre bežné prehliadače"
+				},
+				"devToolsWarning": {
+					"name": "Vypnúť DevTools Upozornenia",
+					"note": "Vypne \"Hold Up!\" upozornenie od Discordu v konzole"
+				},
+				"debugLogs": {
+					"name": "Výpis ladenia",
+					"note": "Zapíše všetko z konzole do súboru debug.log v BetterDiscord zložke"
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} v{{version}} od {{author}}",
+		"byline": "od {{author}}",
+		"openFolder": "Otvoriť {{type}} Zložku",
+		"reload": "Znova načítať",
+		"addonSettings": "Nastavenia",
+		"website": "Stránka",
+		"source": "Zdroj",
+		"invite": "Server podpory",
+		"donate": "Prispieť",
+		"patreon": "Patreon",
+		"name": "Meno",
+		"author": "Autor",
+		"version": "Verzia",
+		"added": "Dátum pridania",
+		"modified": "Dátum zmeny",
+		"search": "Hľadať {{type}}",
+		"editAddon": "Upraviť",
+		"deleteAddon": "Zmazať",
+		"confirmDelete": "Ste si istý, že chcete zmazať {{name}}?",
+		"confirmationText": "Máte neuložené zmeny pre {{name}}. Zatvorením tohto okna stratíte všetky zmeny.",
+		"enabled": "{{name}} bol aktivovaný.",
+		"disabled": "{{name}} bol deaktivovaný.",
+		"couldNotEnable": "{{name}} nebolo možné aktivovať.",
+		"couldNotDisable": "{{name}} nebolo možné deaktivovať.",
+		"couldNotStart": "{{name}} nebolo možné spustiť.",
+		"couldNotStop": "{{name}} nebolo možné zastaviť.",
+		"settingsError": "Nie je možné otvoriť nastavenia pre {{name}}",
+		"methodError": "{{method}} nemohla byť vykonaná.",
+		"unknownAuthor": "Neznámy Autor",
+		"noDescription": "Bez popisu.",
+		"alreadyExists": "{{type}} s menom {{name}} už existuje",
+		"alreadWatching": "Doplnky sa už sledujú.",
+		"metaError": "META sa nepodarila načítať.",
+		"missingNameData": "META chýbajúce dáta názvu.",
+		"metaNotFound": "META nebola nájedná.",
+		"compileError": "Nepodarilo sa zostaviť.",
+		"wasUnloaded": "{{name}} bol odpojený.",
+		"blankSlateHeader": "Nenachádza sa žiadny/žiadna {{type}}!",
+		"blankSlateMessage": "Nájdi nejaké na [tejto stránke]({{link}}) a pridaj ich do zložky pre {{type}}."
+	},
+	"CustomCSS": {
+		"confirmationText": "Máte neuložené zmeny pre Custom CSS. Zatvorením tohto okna stratíte všetky zmeny.",
+		"update": "Aktualizovať",
+		"save": "Uložiť",
+		"openNative": "Otvoriť v Systémovom Editore",
+		"openDetached": "Oddeliť Okno",
+		"settings": "Nastavenia Editora",
+		"editorTitle": "Custom CSS Editor"
+	},
+	"Modals": {
+		"confirmAction": "Ste si istý?",
+		"okay": "Ok",
+		"done": "Dokončiť",
+		"cancel": "Zrušiť",
+		"nevermind": "Radšej nie",
+		"close": "Zavrieť",
+		"name": "Meno",
+		"message": "Správa",
+		"error": "Chyba",
+		"addonErrors": "Chyby Doplnkov",
+		"restartRequired": "Potrebný Reštart",
+		"restartNow": "Reštartovať Teraz",
+		"restartLater": "Reštartovať Neskôr",
+		"additionalInfo": "Ďalšie Info",
+		"restartPrompt": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
+	},
+	"ReactDevTools": {
+		"notFound": "Rozšírenie sa nenašlo",
+		"notFoundDetails": "Nebolo možné nájsť rozšírenie React Developer Tools na vašom PC. Prosím nainštalujte rozšírenie vo vašom prehliadači Chrome."
+	},
+	"Sorting": {
+		"sortBy": "Triediť podľa",
+		"order": "Poradie",
+		"ascending": "Vzostupne",
+		"descending": "Zostupne"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Táto možnosť si vyžaduje priehľadnú tému, aby správne fungovala. V systéme Windows to môže spôsobiť prerušenie a maximalizáciu vášho aero.\n\nNa to, aby sa prejavila účinnosť, je potrebné reštartovať Discord. Chcete reštartovať teraz?",
+		"disabledInfo": "Pre aplikáciu zmien je potrebné reštartovať Discord. Chcete reštartovať teraz?"
+	}
 }

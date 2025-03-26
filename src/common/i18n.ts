@@ -1,7 +1,6 @@
 import Localizations from "@assets/locales";
-import Default from "@assets/locales/en-us.json";
+import type Default from "@assets/locales/en-us.json";
 import {formatString, getNestedProp} from "@common/utils";
-
 
 interface Plural {
     zero?: string;
@@ -20,11 +19,11 @@ type Replacements = {
 };
 
 // TODO: move this to the types folder its useful
-type NestedKeyOf<ObjectType extends object> =
-    {[Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
-        ? `${Key}` | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
-        : `${Key}`
-    }[keyof ObjectType & (string | number)];
+type NestedKeyOf<ObjectType extends object> = {
+    [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
+    ? `${Key}` | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
+    : `${Key}`;
+}[keyof ObjectType & (string | number)];
 
 // type pString = `${string}_${keyof Plural}`;
 // type RemovePrefix<TPrefix extends string, TString extends string> = TString extends `${TPrefix}${infer T}` ? T : never;
@@ -49,21 +48,28 @@ export type Locale = keyof typeof Localizations;
 interface InitOptions {
     locale?: Locale;
     fallback?: Locale;
-    translations: Record<Locale, typeof Localizations[Locale]>;
+    translations: Record<Locale, (typeof Localizations)[Locale]>;
 }
-
 
 const ruleCache: Map<Locale, Intl.PluralRules> = new Map();
 
 let currentLocale: Locale;
 let currentFallback: Locale;
-let currentTranslations: Record<Locale, typeof Localizations[Locale]>;
+let currentTranslations: Record<Locale, (typeof Localizations)[Locale]>;
 
 const i18n = {
-    get locale() {return currentLocale;},
-    get rules() {return ruleCache.get(i18n.locale);},
-    get supportedLocales() {return Object.keys(currentTranslations);},
-    isSupported(abbr: Locale) {return Object.keys(currentTranslations).includes(abbr);},
+    get locale() {
+        return currentLocale;
+    },
+    get rules() {
+        return ruleCache.get(i18n.locale);
+    },
+    get supportedLocales() {
+        return Object.keys(currentTranslations);
+    },
+    isSupported(abbr: Locale) {
+        return Object.keys(currentTranslations).includes(abbr);
+    },
 
     // This can easily be made more generic if needed in the future
     init(options: InitOptions) {
@@ -82,7 +88,7 @@ const i18n = {
     pluralize(target: string | Plural, count: number) {
         if (typeof target === "string") return target;
         const hasZero = "zero" in target;
-        const selection = hasZero && (count === 0) ? "zero" : i18n.rules?.select(count);
+        const selection = hasZero && count === 0 ? "zero" : i18n.rules?.select(count);
         // console.log({hasZero, selection});
         if (!selection) return target;
         if (selection in target) return target[selection];
@@ -91,25 +97,26 @@ const i18n = {
 
     t(key: TranslationKey | (string & {}), replacements?: Replacements) {
         // console.log(phrase);
-        let target = getNestedProp(currentTranslations[currentLocale], key) as Translation;
-        if (!target) target = getNestedProp(currentTranslations[currentFallback], key);
+        let target = getNestedProp(
+            currentTranslations[currentLocale],
+            key,
+        ) as Translation;
+        if (!target) {target = getNestedProp(currentTranslations[currentFallback], key);}
         // console.log(target);
         if (!target) return "String not found!";
 
         if (replacements) {
-            if ("count" in replacements) target = i18n.pluralize(target, replacements.count!);
+            if ("count" in replacements) {target = i18n.pluralize(target, replacements.count!);}
             if (typeof target !== "string") return "String not found!";
             target = formatString(target, replacements);
         }
 
         if (typeof target !== "string") return "String not found!";
         return target;
-    }
+    },
 };
 
-
 i18n.init({translations: Localizations});
-
 
 export default i18n;
 export const t = i18n.t;

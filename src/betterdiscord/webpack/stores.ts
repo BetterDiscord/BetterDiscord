@@ -1,4 +1,4 @@
-import type {FluxStore, FluxStoreConstructor, CommonlyUsedStores} from "discord/modules";
+import type {CommonlyUsedStores, FluxStore, FluxStoreConstructor} from "discord/modules";
 import {Filters, getModule} from ".";
 
 

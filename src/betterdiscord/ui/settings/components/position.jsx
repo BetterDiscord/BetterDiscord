@@ -1,6 +1,6 @@
 import React, {useContext, useState} from "@modules/react";
 import Text from "@ui/base/text";
-import {none, SettingsContext} from "@ui/contexts";
+import {SettingsContext, none} from "@ui/contexts";
 
 const positions = [
     "top-left",
@@ -12,7 +12,7 @@ const positions = [
 const Position = ({value: initialValue, onChange, disabled}) => {
     const [internalValue, setValue] = useState(initialValue);
     const contextValue = useContext(SettingsContext);
-    
+
     const value = contextValue !== none ? contextValue : internalValue;
 
     const handlePositionChange = (position) => {

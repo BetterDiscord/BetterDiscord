@@ -1,19 +1,19 @@
+import {t} from "@common/i18n";
+import Web from "@data/web";
 import DiscordModules from "@modules/discordmodules";
+import Events from "@modules/emitter";
 import LocaleManager from "@modules/localemanager";
 import React from "@modules/react";
 import Settings from "@stores/settings";
-import {t} from "@common/i18n";
-import Web from "@data/web";
-import Events from "@modules/emitter";
 
 import Button from "@ui/base/button";
 import Flex from "@ui/base/flex";
 import Text from "@ui/base/text";
 import Footer from "@ui/modals/footer";
 import ModalRoot from "@ui/modals/root";
+import {FlowerStar} from "@ui/settings/addonshared";
 import CheckBox from "@ui/settings/components/checkbox";
 import Spinner from "@ui/spinner";
-import {FlowerStar} from "@ui/settings/addonshared";
 import {CircleHelpIcon, ClockIcon, GithubIcon, InfoIcon, TagIcon, UserIcon} from "lucide-react";
 
 const {useLayoutEffect, useCallback, useState, useRef} = React;

@@ -1,7 +1,6 @@
 import {OptionTypes} from "@modules/commandmanager";
 import Settings from "@stores/settings";
 
-
 export default {
     id: "settings",
     name: "settings",
@@ -14,8 +13,8 @@ export default {
             required: true,
             choices: [
                 {name: "Enable", value: "enable"},
-                {name: "Disable", value: "disable"}
-            ]
+                {name: "Disable", value: "disable"},
+            ],
         },
         {
             type: OptionTypes.STRING,
@@ -23,16 +22,19 @@ export default {
             description: `Which setting to modify?`,
             required: true,
             get choices() {
-                return Settings.collections[0].settings.map(c => {
-                    const switches = c.settings.filter(s => s.type === "switch");
-                    return switches.map(s => ({name: s.name, value: `${c.id}-${s.id}-${s.name}`}));
-                }).flat();
-            }
-        }
+                return Settings.collections[0].settings.flatMap((c) => {
+                    const switches = c.settings.filter((s) => s.type === "switch");
+                    return switches.map((s) => ({
+                        name: s.name,
+                        value: `${c.id}-${s.id}-${s.name}`,
+                    }));
+                });
+            },
+        },
     ],
     execute: async (data) => {
-        const action = data.find(o => o.name === "action").value;
-        const settingData = data.find(o => o.name === "setting").value.split("-");
+        const action = data.find((o) => o.name === "action").value;
+        const settingData = data.find((o) => o.name === "setting").value.split("-");
         const catId = settingData[0];
         const id = settingData[1];
         const name = settingData[2];
@@ -51,5 +53,5 @@ export default {
             Settings.set(catId, id, false);
             return {content: `${name} has been disabled!`};
         }
-    }
+    },
 };

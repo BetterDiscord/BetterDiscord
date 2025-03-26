@@ -1,14 +1,14 @@
-import clsx from "clsx";
 import Web from "@data/web";
+import clsx from "clsx";
 
-import React from "@modules/react";
 import {t} from "@common/i18n";
 import DiscordModules from "@modules/discordmodules";
 import Events from "@modules/emitter";
+import React from "@modules/react";
 
 import Button from "@ui/base/button";
-import {FlowerStar} from "./addonshared";
 import {CircleHelpIcon, EyeIcon, GithubIcon, GlobeIcon, Trash2Icon} from "lucide-react";
+import {FlowerStar} from "./addonshared";
 
 const {useCallback, useMemo, useState, useEffect, useContext, createContext} = React;
 

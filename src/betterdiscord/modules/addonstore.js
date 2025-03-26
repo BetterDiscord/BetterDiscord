@@ -1,19 +1,19 @@
-import path from "path";
 import fs from "fs";
+import path from "path";
 
 import request from "request";
 
-import Logger from "@common/logger";
-import Toasts from "@ui/toasts";
-import JsonStore from "@stores/json";
 import {t} from "@common/i18n";
-import React from "@modules/react";
+import Logger from "@common/logger";
+import Web from "@data/web";
 import PluginManager from "@modules/pluginmanager";
+import React from "@modules/react";
 import ThemeManager from "@modules/thememanager";
+import JsonStore from "@stores/json";
+import Settings from "@stores/settings";
 import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
-import Settings from "@stores/settings";
-import Web from "@data/web";
+import Toasts from "@ui/toasts";
 
 /**
  * @typedef {{

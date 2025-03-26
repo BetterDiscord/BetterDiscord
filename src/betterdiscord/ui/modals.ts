@@ -1,32 +1,32 @@
 import FormattableString from "@structs/string";
 
-import Logger from "@common/logger";
-import React from "@modules/react";
-import ReactDOM from "@modules/reactdom";
 import {t} from "@common/i18n";
-import Settings from "@stores/settings";
-import Events from "@modules/emitter";
-import Patcher from "@modules/patcher";
+import Logger from "@common/logger";
 import DiscordModules from "@modules/discordmodules";
 import DOMManager from "@modules/dommanager";
+import Events from "@modules/emitter";
+import Patcher from "@modules/patcher";
+import React from "@modules/react";
+import ReactDOM from "@modules/reactdom";
+import Settings from "@stores/settings";
 
-import AddonErrorModal from "./modals/addonerrormodal";
-import ErrorBoundary from "./errorboundary";
 import TextElement from "./base/text";
+import ErrorBoundary from "./errorboundary";
+import AddonErrorModal from "./modals/addonerrormodal";
 import ModalRoot from "./modals/root";
 // import ModalHeader from "./modals/header";
 // import ModalContent from "./modals/content";
 // import ModalFooter from "./modals/footer";
 
-import Root from "./modals/root.jsx";
-import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
+import type AddonError from "@structs/addonerror";
+import {Filters, getMangled} from "@webpack";
+import type {ComponentType, ReactElement, RefObject} from "react";
 // import Button from "./base/button";
 import CustomMarkdown from "./base/markdown";
 import ChangelogModal from "./modals/changelog";
+import ConfirmationModal, {type ConfirmationModalOptions} from "./modals/confirmation";
+import Root from "./modals/root.jsx";
 import ModalStack, {generateKey} from "./modals/stack";
-import {Filters, getMangled} from "@webpack";
-import type {ComponentType, ReactElement, RefObject} from "react";
-import type AddonError from "@structs/addonerror";
 
 
 const queue: Array<() => void> = [];

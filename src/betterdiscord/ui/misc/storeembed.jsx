@@ -1,5 +1,5 @@
-import React from "@modules/react";
 import AddonStore from "@modules/addonstore";
+import React from "@modules/react";
 
 import AddonCard, {TagContext} from "@ui/settings/storecard";
 import Spinner from "@ui/spinner";
@@ -10,11 +10,11 @@ export default function AddonEmbed({id, original}) {
     const [addon, setAddon] = useState(() => AddonStore.getAddon(id));
     const [loading, setLoading] = useState(() => true);
     const [tags, setTags] = useState({});
-    
+
     useEffect(() => {
         setAddon(AddonStore.getAddon(id));
         setLoading(AddonStore.loading);
-        
+
         return AddonStore.addChangeListener(() => {
             setAddon(AddonStore.getAddon(id));
             setLoading(AddonStore.loading);

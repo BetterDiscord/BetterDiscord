@@ -1,9 +1,9 @@
 import {contextBridge} from "electron";
+import * as BdApi from "./api";
+import DiscordNativePatch from "./discordnativepatch";
+import init from "./init";
 import patchDefine from "./patcher";
 import newProcess from "./process";
-import * as BdApi from "./api";
-import init from "./init";
-import DiscordNativePatch from "./discordnativepatch";
 
 patchDefine();
 DiscordNativePatch.init();

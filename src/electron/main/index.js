@@ -1,6 +1,6 @@
-import {app} from "electron";
-import path from "path";
 import fs from "fs";
+import path from "path";
+import {app} from "electron";
 
 // Detect old install and delete it
 const appPath = app.getAppPath(); // Should point to app or app.asar
@@ -11,9 +11,9 @@ if (fs.existsSync(oldInstall)) {
     app.relaunch();
 }
 
-import ipc from "./modules/ipc";
 import BrowserWindow from "./modules/browserwindow";
 import CSP from "./modules/csp";
+import ipc from "./modules/ipc";
 
 if (!process.argv.includes("--vanilla")) {
     process.env.NODE_OPTIONS = "--no-force-async-hooks-checks";

@@ -3,7 +3,6 @@
     "files.eol": "\n",
     "files.encoding": "utf8",
     "files.trimTrailingWhitespace": true,
-
     // Editor settings
     "editor.tabSize": 4,
     "editor.formatOnSave": true,
@@ -11,9 +10,8 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit"
     },
-
     "search.smartCase": true,
-
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     // JavaScript
     "[javascript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
@@ -25,8 +23,9 @@
     "javascript.preferences.quoteStyle": "double",
     "javascript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
     "javascript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
-    "javascript.preferences.autoImportFileExcludePatterns": ["src/betterdiscord/api/*"],
-
+    "javascript.preferences.autoImportFileExcludePatterns": [
+        "src/betterdiscord/api/*"
+    ],
     // TypeScript
     "[typescript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
@@ -38,11 +37,10 @@
     "typescript.preferences.quoteStyle": "double",
     "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false,
     "typescript.format.insertSpaceAfterOpeningAndBeforeClosingEmptyBraces": false,
-    "typescript.preferences.autoImportFileExcludePatterns": ["src/betterdiscord/api/*"],
-
-
+    "typescript.preferences.autoImportFileExcludePatterns": [
+        "src/betterdiscord/api/*"
+    ],
     // Extensions
-
     // VsCode Action Buttons
     "actionButtons": {
         "defaultColor": "statusBar.foreground",
@@ -50,28 +48,43 @@
         "reloadButton": null, // null = auto reload
         "commands": [
             {
-               "name": "$(tools) Build",
-               "useVsCodeApi": true,
-               "command": "workbench.action.tasks.runTask",
-               "args": ["Build"]
+                "name": "$(tools) Build",
+                "useVsCodeApi": true,
+                "command": "workbench.action.tasks.runTask",
+                "args": [
+                    "Build"
+                ]
             },
             {
-               "name": "$(eye) Watch",
-               "useVsCodeApi": true,
-               "command": "workbench.action.tasks.runTask",
-               "args": ["Watch"]
+                "name": "$(eye) Watch",
+                "useVsCodeApi": true,
+                "command": "workbench.action.tasks.runTask",
+                "args": [
+                    "Watch"
+                ]
             },
             {
-               "name": "$(beaker) Test",
-               "useVsCodeApi": true,
-               "command": "workbench.action.tasks.runTask",
-               "args": ["Test"]
+                "name": "$(beaker) Test",
+                "useVsCodeApi": true,
+                "command": "workbench.action.tasks.runTask",
+                "args": [
+                    "Test"
+                ]
             },
             {
                 "name": "$(list-tree) Todos",
                 "useVsCodeApi": true,
                 "command": "todo-tree-view.focus"
-            },
+            }
         ]
+    },
+    "[css]": {
+        "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
     }
 }

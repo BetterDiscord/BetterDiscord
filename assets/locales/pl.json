@@ -1,247 +1,247 @@
 {
-    "Panels": {
-        "plugins": "Wtyczki",
-        "themes": "Motywy",
-        "customcss": "Niestandardowy CSS",
-        "updates": "Aktualizacje"
-    },
-    "Collections": {
-        "settings": {
-            "name": "Ustawienia",
-            "general": {
-                "name": "Ogólne",
-                "voiceDisconnect": {
-                    "name": "Rozłączaj z czatem głosowym",
-                    "note": "Rozłącza z serwerem czatu głosowego przy wyłączeniu Discorda"
-                },
-                "showToasts": {
-                    "name": "Wyświetlaj okienka powiadomień",
-                    "note": "Wyświetla małe powiadomienia dla ważnych zdarzeń"
-                },
-                "mediaKeys": {
-                    "name": "Wyłącz przyciski multimedialne",
-                    "note": "Zapobiega korzystaniu z klawiszy multimedialnych przez Discorda podczas odtwarzania filmów."
-                }
-            },
-            "window": {
-                "removeMinimumSize": {
-                    "name": "Usuń limit minimalnego rozmiaru okna",
-                    "note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (940x500)"
-                },
-                "name": "Ustawienia okna",
-                "transparency": {
-                    "name": "Włącz przezroczystość",
-                    "note": "Dodaje efekt przezroczytstości do okna Discorda (wymaga ponownego uruchomienia)"
-                },
-                "frame": {
-                    "name": "Ramka okna",
-                    "note": "Dodaje systemową ramkę do okna Discorda"
-                }
-            },
-            "addons": {
-                "name": "Menedżer dodatków",
-                "addonErrors": {
-                    "name": "Wyświetlaj błędy dodatków",
-                    "note": "Wyświetla okno z błędami wtyczek i motywów"
-                },
-                "editAction": {
-                    "name": "Edytor dodatków",
-                    "note": "Ustawia domyślny edytor kodu wtyczek i motywów",
-                    "options": {
-                        "detached": "Osobne okno",
-                        "system": "Edytor systemowy"
-                    }
-                }
-            },
-            "customcss": {
-                "name": "Niestandardowy CSS",
-                "customcss": {
-                    "name": "Niestandardowy CSS",
-                    "note": "Wyświetla zakładkę z edytorem niestandardowego kodu CSS"
-                },
-                "liveUpdate": {
-                    "name": "Automatyczny podgląd",
-                    "note": "Aktualizuje CSS Discorda wraz z pisaniem kodu"
-                },
-                "startDetached": {
-                    "name": "Osobne okno edytora",
-                    "note": "Kliknięcie na zakładkę „Niestandardowy CSS” uruchomi edytor w osobnym oknie"
-                },
-                "nativeOpen": {
-                    "name": "Otwórz w edytorze systemowym",
-                    "note": "Kliknięcie na zakładkę „Niestandardowy CSS” uruchomi plik w edytorze systemowym"
-                },
-                "openAction": {
-                    "name": "Domyślny edytor",
-                    "note": "Ustawia domyślny edytor niestandardowego kodu CSS",
-                    "options": {
-                        "settings": "Ustawienia",
-                        "detached": "Osobne okno",
-                        "system": "Edytor systemowy"
-                    }
-                }
-            },
-            "developer": {
-                "name": "Ustawienia dla programistów",
-                "debuggerHotkey": {
-                    "name": "Debugger",
-                    "note": "Uruchamia debugger po naciśnięciu F8 przy otworzonym panelu narzędzi dla programistów"
-                },
-                "reactDevTools": {
-                    "name": "React Developer Tools",
-                    "note": "Wprowadza zainstalowane na Twoim komputerze rozszerzenie React Developer Tools do Discorda"
-                },
-                "inspectElement": {
-                    "name": "Narzędzie „Zbadaj element”",
-                    "note": "Umożliwia korzystanie z narzędzia „Zbadaj element” po użyciu skrótu klawiszowego Ctrl+Shift+C"
-                },
-                "devToolsWarning": {
-                    "name": "Nie wyświetlaj ostrzeżenia o szybkim wysyłaniu wiadomości",
-                    "note": "Zapobiega wyświetlaniu informacji o zbyt szybkim wysyłaniu wiadomości przez Discorda"
-                },
-                "debugLogs": {
-                    "name": "Dziennik zdarzeń",
-                    "note": "Przekierowuje informacje z konsoli do pliku debug.log w folderze BetterDiscorda"
-                },
-                "devTools": {
-                    "name": "Narzędzia dla programistów",
-                    "note": "Umożliwia wyświetlenie panelu narzędzi dla programistów po użyciu skrótu klawiszowego Ctrl+Shift+I"
-                }
-            },
-            "editor": {
-                "name": "Ustawienia edytora",
-                "lineNumbers": {
-                    "name": "Numery wierszy",
-                    "note": "Wyświetla numery wierszy po lewej stronie edytora"
-                },
-                "fontSize": {
-                    "name": "Rozmiar czcionki",
-                    "note": "Ustawia rozmiar czcionki (pt) w edytorze"
-                },
-                "minimap": {
-                    "name": "Podgląd",
-                    "note": "Wyświetla mały podgląd kodu po prawej stronie edytora"
-                },
-                "hover": {
-                    "name": "Etykiety",
-                    "note": "Wyświetla etykiety z dodatkowymi informacjami po najechaniu na element kodu"
-                },
-                "quickSuggestions": {
-                    "name": "Podpowiadanie składni",
-                    "note": "Włącza automatyczne podpowiadanie składni podczas pisania kodu"
-                },
-                "renderWhitespace": {
-                    "name": "Pokaż białe znaki",
-                    "note": "Określa, kiedy białe znaki będą wyświetlane w edytorze",
-                    "options": {
-                        "all": "Zawsze",
-                        "none": "Nigdy",
-                        "selection": "Przy zaznaczaniu"
-                    }
-                }
-            }
-        }
-    },
-    "Addons": {
-        "title": "{{name}} (wersja {{version}}) autorstwa {{author}}",
-        "byline": "autorstwa {{author}}",
-        "openFolder": "Otwórz folder ({{type}})",
-        "reload": "Odśwież",
-        "addonSettings": "Ustawienia",
-        "website": "Strona internetowa",
-        "source": "Źródło",
-        "invite": "Wspomóż serwer",
-        "donate": "Przekaż darowiznę",
-        "patreon": "Patreon",
-        "name": "Nazwa",
-        "author": "Twórca",
-        "version": "Wersja",
-        "added": "Data dodania",
-        "modified": "Data modyfikacji",
-        "search": "Wyszukaj",
-        "editAddon": "Edytuj",
-        "deleteAddon": "Usuń",
-        "confirmDelete": "Czy na pewno chcesz usunąć {{name}}?",
-        "confirmationText": "Masz niezapisane zmiany w kodzie {{name}}. Zamknięcie tego okna spowoduje odrzucenie wszystkich zmian.",
-        "enabled": "Dodatek {{name}} został włączony.",
-        "disabled": "Dodatek {{name}} został wyłączony.",
-        "couldNotEnable": "Dodatek {{name}} nie może zostać włączony.",
-        "couldNotDisable": "Dodatek {{name}} nie może zostać wyłączony.",
-        "couldNotStart": "Dodatek {{name}} nie może zostać uruchomiony.",
-        "couldNotStop": "Dodatek {{name}} nie może zostać zatrzymany.",
-        "settingsError": "Nie udało się otworzyć ustawień dodatku {{name}}",
-        "methodError": "Metoda {{method}} nie może zostać wywołana.",
-        "unknownAuthor": "Nieznany twórca",
-        "noDescription": "Brak opisu.",
-        "alreadyExists": "Masz już dodatek z nazwą {{name}}",
-        "alreadWatching": "Dodatki są już obserwowane.",
-        "metaError": "Nie udało się przetworzyć metadanych.",
-        "missingNameData": "Brak nazwy dodatku w metadanych.",
-        "metaNotFound": "Nie odnaleziono metadanych.",
-        "compileError": "Błąd kompilacji. Sprawdź konsolę, aby dowiedzieć się więcej.",
-        "wasUnloaded": "Dodatek {{name}} został odładowany.",
-        "blankSlateHeader": "Wygląda na to, że nic tu nie ma!",
-        "blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu.",
-        "isEnabled": "Stan",
-        "wasLoaded": "Dodatek {{name}} (wersja {{version}}) został załadowany."
-    },
-    "CustomCSS": {
-        "confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okienka spowoduje odrzucenie wszystkich zmian.",
-        "update": "Zaktualizuj",
-        "save": "Zapisz",
-        "openNative": "Otwórz w edytorze systemowym",
-        "openDetached": "Otwórz w osobnym oknie",
-        "settings": "Ustawienia edytora",
-        "editorTitle": "Edytor niestandardowego kodu CSS"
-    },
-    "Modals": {
-        "confirmAction": "Czy na pewno chcesz to zrobić?",
-        "okay": "Tak",
-        "done": "Potwierdź",
-        "cancel": "Anuluj",
-        "nevermind": "Anuluj",
-        "close": "Zamknij",
-        "name": "Nazwa",
-        "message": "Komunikat",
-        "error": "Błąd",
-        "addonErrors": "Błędy wtyczek",
-        "restartRequired": "Wymagane ponowne uruchomienie",
-        "restartNow": "Uruchom ponownie teraz",
-        "restartLater": "Uruchom ponownie później",
-        "additionalInfo": "Dodatkowe informacje",
-        "restartPrompt": "Uruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?"
-    },
-    "ReactDevTools": {
-        "notFound": "Nie znaleziono rozszerzenia",
-        "notFoundDetails": "Nie udało się znaleźć React Developer Tools na twoim urządzeniu. By kontynuować, zainstaluj to rozszerzenie w swojej przeglądarce Chrome."
-    },
-    "Sorting": {
-        "sortBy": "Sortuj wg",
-        "order": "Kolejność",
-        "ascending": "Rosnąca",
-        "descending": "Malejąca"
-    },
-    "WindowPrefs": {
-        "enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?",
-        "disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
-    },
-    "Notices": {
-        "moreInfo": "Dowiedz się więcej"
-    },
-    "Updater": {
-        "updateFailed": "Aktualizacja nie powiodła się!",
-        "updateFailedMessage": "Nie udało się zaktualizować BetterDiscorda. Pobierz najnowszy instalator z naszej strony (https://betterdiscord.app/) i zainstaluj aplikację ponownie.",
-        "updateSuccessful": "Aktualizacja powiodła się!",
-        "updateAvailable": "Dostępna jest nowa aktualizacja BetterDiscorda (wersja {{version}})",
-        "addonUpdatesAvailable": "Są dostępne nowe aktualizacje dla twoich dodatków ({{count}})!",
-        "addonUpdated": "Dodatek {{name}} został zaktualizowany do wersji {{version}}!",
-        "checking": "Sprawdzanie dostępności aktualizacji!",
-        "finishedChecking": "Zakończono sprawdzanie dostępności aktualizacji!",
-        "checkForUpdates": "Sprawdź dostępność aktualizacji",
-        "updateAll": "Zaktualizuj wszystko",
-        "noUpdatesAvailable": "Brak dostępnych aktualizacji.",
-        "versionAvailable": "Dostępna jest nowa wersja ({{version}})!",
-        "upToDateBlankslate": "Wszystkie dodatki są aktualne!",
-        "updateButton": "Zaktualizuj"
-    }
+	"Panels": {
+		"plugins": "Wtyczki",
+		"themes": "Motywy",
+		"customcss": "Niestandardowy CSS",
+		"updates": "Aktualizacje"
+	},
+	"Collections": {
+		"settings": {
+			"name": "Ustawienia",
+			"general": {
+				"name": "Ogólne",
+				"voiceDisconnect": {
+					"name": "Rozłączaj z czatem głosowym",
+					"note": "Rozłącza z serwerem czatu głosowego przy wyłączeniu Discorda"
+				},
+				"showToasts": {
+					"name": "Wyświetlaj okienka powiadomień",
+					"note": "Wyświetla małe powiadomienia dla ważnych zdarzeń"
+				},
+				"mediaKeys": {
+					"name": "Wyłącz przyciski multimedialne",
+					"note": "Zapobiega korzystaniu z klawiszy multimedialnych przez Discorda podczas odtwarzania filmów."
+				}
+			},
+			"window": {
+				"removeMinimumSize": {
+					"name": "Usuń limit minimalnego rozmiaru okna",
+					"note": "Usuwa wymuszony przez Discorda limit minimalnego rozmiaru okna (940x500)"
+				},
+				"name": "Ustawienia okna",
+				"transparency": {
+					"name": "Włącz przezroczystość",
+					"note": "Dodaje efekt przezroczytstości do okna Discorda (wymaga ponownego uruchomienia)"
+				},
+				"frame": {
+					"name": "Ramka okna",
+					"note": "Dodaje systemową ramkę do okna Discorda"
+				}
+			},
+			"addons": {
+				"name": "Menedżer dodatków",
+				"addonErrors": {
+					"name": "Wyświetlaj błędy dodatków",
+					"note": "Wyświetla okno z błędami wtyczek i motywów"
+				},
+				"editAction": {
+					"name": "Edytor dodatków",
+					"note": "Ustawia domyślny edytor kodu wtyczek i motywów",
+					"options": {
+						"detached": "Osobne okno",
+						"system": "Edytor systemowy"
+					}
+				}
+			},
+			"customcss": {
+				"name": "Niestandardowy CSS",
+				"customcss": {
+					"name": "Niestandardowy CSS",
+					"note": "Wyświetla zakładkę z edytorem niestandardowego kodu CSS"
+				},
+				"liveUpdate": {
+					"name": "Automatyczny podgląd",
+					"note": "Aktualizuje CSS Discorda wraz z pisaniem kodu"
+				},
+				"startDetached": {
+					"name": "Osobne okno edytora",
+					"note": "Kliknięcie na zakładkę „Niestandardowy CSS” uruchomi edytor w osobnym oknie"
+				},
+				"nativeOpen": {
+					"name": "Otwórz w edytorze systemowym",
+					"note": "Kliknięcie na zakładkę „Niestandardowy CSS” uruchomi plik w edytorze systemowym"
+				},
+				"openAction": {
+					"name": "Domyślny edytor",
+					"note": "Ustawia domyślny edytor niestandardowego kodu CSS",
+					"options": {
+						"settings": "Ustawienia",
+						"detached": "Osobne okno",
+						"system": "Edytor systemowy"
+					}
+				}
+			},
+			"developer": {
+				"name": "Ustawienia dla programistów",
+				"debuggerHotkey": {
+					"name": "Debugger",
+					"note": "Uruchamia debugger po naciśnięciu F8 przy otworzonym panelu narzędzi dla programistów"
+				},
+				"reactDevTools": {
+					"name": "React Developer Tools",
+					"note": "Wprowadza zainstalowane na Twoim komputerze rozszerzenie React Developer Tools do Discorda"
+				},
+				"inspectElement": {
+					"name": "Narzędzie „Zbadaj element”",
+					"note": "Umożliwia korzystanie z narzędzia „Zbadaj element” po użyciu skrótu klawiszowego Ctrl+Shift+C"
+				},
+				"devToolsWarning": {
+					"name": "Nie wyświetlaj ostrzeżenia o szybkim wysyłaniu wiadomości",
+					"note": "Zapobiega wyświetlaniu informacji o zbyt szybkim wysyłaniu wiadomości przez Discorda"
+				},
+				"debugLogs": {
+					"name": "Dziennik zdarzeń",
+					"note": "Przekierowuje informacje z konsoli do pliku debug.log w folderze BetterDiscorda"
+				},
+				"devTools": {
+					"name": "Narzędzia dla programistów",
+					"note": "Umożliwia wyświetlenie panelu narzędzi dla programistów po użyciu skrótu klawiszowego Ctrl+Shift+I"
+				}
+			},
+			"editor": {
+				"name": "Ustawienia edytora",
+				"lineNumbers": {
+					"name": "Numery wierszy",
+					"note": "Wyświetla numery wierszy po lewej stronie edytora"
+				},
+				"fontSize": {
+					"name": "Rozmiar czcionki",
+					"note": "Ustawia rozmiar czcionki (pt) w edytorze"
+				},
+				"minimap": {
+					"name": "Podgląd",
+					"note": "Wyświetla mały podgląd kodu po prawej stronie edytora"
+				},
+				"hover": {
+					"name": "Etykiety",
+					"note": "Wyświetla etykiety z dodatkowymi informacjami po najechaniu na element kodu"
+				},
+				"quickSuggestions": {
+					"name": "Podpowiadanie składni",
+					"note": "Włącza automatyczne podpowiadanie składni podczas pisania kodu"
+				},
+				"renderWhitespace": {
+					"name": "Pokaż białe znaki",
+					"note": "Określa, kiedy białe znaki będą wyświetlane w edytorze",
+					"options": {
+						"all": "Zawsze",
+						"none": "Nigdy",
+						"selection": "Przy zaznaczaniu"
+					}
+				}
+			}
+		}
+	},
+	"Addons": {
+		"title": "{{name}} (wersja {{version}}) autorstwa {{author}}",
+		"byline": "autorstwa {{author}}",
+		"openFolder": "Otwórz folder ({{type}})",
+		"reload": "Odśwież",
+		"addonSettings": "Ustawienia",
+		"website": "Strona internetowa",
+		"source": "Źródło",
+		"invite": "Wspomóż serwer",
+		"donate": "Przekaż darowiznę",
+		"patreon": "Patreon",
+		"name": "Nazwa",
+		"author": "Twórca",
+		"version": "Wersja",
+		"added": "Data dodania",
+		"modified": "Data modyfikacji",
+		"search": "Wyszukaj",
+		"editAddon": "Edytuj",
+		"deleteAddon": "Usuń",
+		"confirmDelete": "Czy na pewno chcesz usunąć {{name}}?",
+		"confirmationText": "Masz niezapisane zmiany w kodzie {{name}}. Zamknięcie tego okna spowoduje odrzucenie wszystkich zmian.",
+		"enabled": "Dodatek {{name}} został włączony.",
+		"disabled": "Dodatek {{name}} został wyłączony.",
+		"couldNotEnable": "Dodatek {{name}} nie może zostać włączony.",
+		"couldNotDisable": "Dodatek {{name}} nie może zostać wyłączony.",
+		"couldNotStart": "Dodatek {{name}} nie może zostać uruchomiony.",
+		"couldNotStop": "Dodatek {{name}} nie może zostać zatrzymany.",
+		"settingsError": "Nie udało się otworzyć ustawień dodatku {{name}}",
+		"methodError": "Metoda {{method}} nie może zostać wywołana.",
+		"unknownAuthor": "Nieznany twórca",
+		"noDescription": "Brak opisu.",
+		"alreadyExists": "Masz już dodatek z nazwą {{name}}",
+		"alreadWatching": "Dodatki są już obserwowane.",
+		"metaError": "Nie udało się przetworzyć metadanych.",
+		"missingNameData": "Brak nazwy dodatku w metadanych.",
+		"metaNotFound": "Nie odnaleziono metadanych.",
+		"compileError": "Błąd kompilacji. Sprawdź konsolę, aby dowiedzieć się więcej.",
+		"wasUnloaded": "Dodatek {{name}} został odładowany.",
+		"blankSlateHeader": "Wygląda na to, że nic tu nie ma!",
+		"blankSlateMessage": "Pobierz nowe dodatki z [tej strony]({{link}}) i przenieś je do odpowiedniego folderu.",
+		"isEnabled": "Stan",
+		"wasLoaded": "Dodatek {{name}} (wersja {{version}}) został załadowany."
+	},
+	"CustomCSS": {
+		"confirmationText": "Masz niezapisane zmiany w swoim niestandardowym kodzie CSS. Zamknięcie tego okienka spowoduje odrzucenie wszystkich zmian.",
+		"update": "Zaktualizuj",
+		"save": "Zapisz",
+		"openNative": "Otwórz w edytorze systemowym",
+		"openDetached": "Otwórz w osobnym oknie",
+		"settings": "Ustawienia edytora",
+		"editorTitle": "Edytor niestandardowego kodu CSS"
+	},
+	"Modals": {
+		"confirmAction": "Czy na pewno chcesz to zrobić?",
+		"okay": "Tak",
+		"done": "Potwierdź",
+		"cancel": "Anuluj",
+		"nevermind": "Anuluj",
+		"close": "Zamknij",
+		"name": "Nazwa",
+		"message": "Komunikat",
+		"error": "Błąd",
+		"addonErrors": "Błędy wtyczek",
+		"restartRequired": "Wymagane ponowne uruchomienie",
+		"restartNow": "Uruchom ponownie teraz",
+		"restartLater": "Uruchom ponownie później",
+		"additionalInfo": "Dodatkowe informacje",
+		"restartPrompt": "Uruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?"
+	},
+	"ReactDevTools": {
+		"notFound": "Nie znaleziono rozszerzenia",
+		"notFoundDetails": "Nie udało się znaleźć React Developer Tools na twoim urządzeniu. By kontynuować, zainstaluj to rozszerzenie w swojej przeglądarce Chrome."
+	},
+	"Sorting": {
+		"sortBy": "Sortuj wg",
+		"order": "Kolejność",
+		"ascending": "Rosnąca",
+		"descending": "Malejąca"
+	},
+	"WindowPrefs": {
+		"enabledInfo": "Ta opcja wymaga przezroczystego motywu do poprawnego działania. Na Windowsie mogą pojawić się problemy ze zmianą wielkości okna.\n\nUruchom ponownie Discorda, by zastosować zmiany. Czy chcesz to zrobić teraz?",
+		"disabledInfo": "Uruchom ponownie Discorda, by zmiany odniosły efekty. Czy chcesz to zrobić teraz?"
+	},
+	"Notices": {
+		"moreInfo": "Dowiedz się więcej"
+	},
+	"Updater": {
+		"updateFailed": "Aktualizacja nie powiodła się!",
+		"updateFailedMessage": "Nie udało się zaktualizować BetterDiscorda. Pobierz najnowszy instalator z naszej strony (https://betterdiscord.app/) i zainstaluj aplikację ponownie.",
+		"updateSuccessful": "Aktualizacja powiodła się!",
+		"updateAvailable": "Dostępna jest nowa aktualizacja BetterDiscorda (wersja {{version}})",
+		"addonUpdatesAvailable": "Są dostępne nowe aktualizacje dla twoich dodatków ({{count}})!",
+		"addonUpdated": "Dodatek {{name}} został zaktualizowany do wersji {{version}}!",
+		"checking": "Sprawdzanie dostępności aktualizacji!",
+		"finishedChecking": "Zakończono sprawdzanie dostępności aktualizacji!",
+		"checkForUpdates": "Sprawdź dostępność aktualizacji",
+		"updateAll": "Zaktualizuj wszystko",
+		"noUpdatesAvailable": "Brak dostępnych aktualizacji.",
+		"versionAvailable": "Dostępna jest nowa wersja ({{version}})!",
+		"upToDateBlankslate": "Wszystkie dodatki są aktualne!",
+		"updateButton": "Zaktualizuj"
+	}
 }

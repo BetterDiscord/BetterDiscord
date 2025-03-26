@@ -18,6 +18,6 @@ export default new class DeveloperMode extends Builtin {
             debugger; // eslint-disable-line no-debugger
             e.preventDefault();
             e.stopImmediatePropagation();
-         }
+        }
     }
 };
