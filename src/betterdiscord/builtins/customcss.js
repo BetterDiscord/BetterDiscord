@@ -19,7 +19,7 @@ import {getByKeys} from "@webpack";
 import {debounce, findInTree} from "@common/utils";
 
 
-const UserSettings = getByKeys(["updateAccount"]);
+const UserSettings = getByKeys(["updateAccount"], {cacheId: "core-customcss-UserSettings"});
 
 export default new class CustomCSS extends Builtin {
     get name() {return "Custom CSS";}

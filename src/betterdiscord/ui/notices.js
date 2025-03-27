@@ -3,8 +3,8 @@ import {getByKeys} from "@webpack";
 
 
 export default class Notices {
-    static get baseClass() {return this.__baseClass ??= getByKeys(["container", "base", "sidebar"])?.base;}
-    static get errorPageClass() {return this.__errorPageClass ??= getByKeys(["errorPage"])?.errorPage;}
+    static get baseClass() {return this.__baseClass ??= getByKeys(["container", "base", "sidebar"], {cacheId: "core-notices-baseClasses"})?.base;}
+    static get errorPageClass() {return this.__errorPageClass ??= getByKeys(["errorPage"], {cacheId: "core-notices-errorClasses"})?.errorPage;}
 
     /** Shorthand for `type = "info"` for {@link module:Notices.show} */
     static info(content, options = {}) {return this.show(content, Object.assign({}, options, {type: "info"}));}

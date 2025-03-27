@@ -53,8 +53,8 @@ export const MessageEmbedTypes = {
 };
 
 const iconClasses = {
-    ...getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
-    builtInSeparator: getModule(x => x.builtInSeparator)?.builtInSeparator
+    ...getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask, {cacheId: "core-commandmanager-iconClasses"}),
+    builtInSeparator: getModule(x => x.builtInSeparator, {cacheId: "core-commandmanager-builtInSeperator"})?.builtInSeparator
 };
 
 const getAcronym = (input) =>
@@ -80,10 +80,10 @@ class CommandManager {
 
     static #patchCommandSystem() {
 
-        this.User = getByStrings(["hasHadPremium(){"]);
-        this.createBotMessage = getByStrings(["username:\"Clyde\""], {searchExports: true});
-        this.MessagesModule = getModule(x => x.receiveMessage);
-        this.IconsModule = getModule(x => x.BOT_AVATARS);
+        this.User = getByStrings(["hasHadPremium(){"], {cacheId: "core-commandmanager-User"});
+        this.createBotMessage = getByStrings([ "username:\"Clyde\"" ], {searchExports: true, cacheId: "core-commandmanager-createBotMessage"});
+        this.MessagesModule = getModule(x => x.receiveMessage, {cacheId: "core-commandmanager-Messages"});
+        this.IconsModule = getModule(x => x.BOT_AVATARS, {cacheId: "core-commandmanager-Icons"});
 
         this.localBDBot = new this.User({
             avatar: "betterdiscord",
@@ -194,7 +194,7 @@ class CommandManager {
 
     static #patchApplicationIcons() {
         const [mod, key] = getWithKey(Filters.byStrings(".type===", ".BUILT_IN?"), {
-            target: getModule((e, m) => modules[m.id].toString().includes("hasSpaceTerminator:"))
+            target: getModule((e, m) => modules[m.id].toString().includes("hasSpaceTerminator:"), {cacheId: "core-commandmanager-appIconsTarget"})
         });
 
         Patcher.after("CommandManager", mod, key, (that, [{id}], res) => {
