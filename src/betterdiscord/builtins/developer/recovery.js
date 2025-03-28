@@ -41,9 +41,7 @@ async function attemptRecovery() {
     for (const {action, errorMessage} of recoverySteps) {
         try {
             const result = action();
-            if (result instanceof Promise) {
-                await result;
-            }
+            await result;
         }
         catch (error) {
             Logger.error("Recovery", `${errorMessage}:, ${error}`);
@@ -108,7 +106,7 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                 if (pluginInfo.invite) Modals.showGuildJoinModal(pluginInfo.invite);
             }
             else {
-                Toasts.show("Recovery incomplete. Some actions failed to complete.");
+                Toasts.show(t("Toasts.recoveryFailed"));
             }
         }
     };
@@ -225,7 +223,7 @@ export default new class Recovery extends Builtin {
                             instance.setState({info: null, error: null});
                         }
                         else {
-                            Toasts.show("Recovery incomplete. Some actions failed to complete.");
+                            Toasts.show(t("Toasts.recoveryFailed"));
                         }
                     }}
                 >
