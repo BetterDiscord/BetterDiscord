@@ -184,15 +184,16 @@
     padding: 3px 4px 0;
 }
 
-.bd-editor-problem .codicon-error {
+.bd-editor-problem.bd-editor-severity-8 svg {
     color: var(--info-danger-foreground);
 }
 
-.bd-editor-problem .codicon-warning {
+.bd-editor-problem.bd-editor-severity-4 svg {
     color: var(--info-warning-foreground);
 }
 
-.bd-editor-problem .codicon-info {
+.bd-editor-problem.bd-editor-severity-2 svg,
+.bd-editor-problem.bd-editor-severity-1 svg {
     color: var(--info-help-foreground);
 }
 

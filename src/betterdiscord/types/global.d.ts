@@ -3,7 +3,7 @@ import {DiscordNativeAPI} from "./discord/native";
 interface DiscordWindow {
     webpackChunkdiscord_app: Array<Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffect>;
     DiscordNative: DiscordNativeAPI;
-    monaco: typeof import("monaco-editor"); // TODO: proper typing when maybe bundling monaco
+    monaco: typeof import("monaco-editor");
 
     __SENTRY__: {
         logger?: {disable(): void;};

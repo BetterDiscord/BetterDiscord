@@ -145,10 +145,14 @@ const registerPreload = (event, path) => {
 const openEditor = (event, type, filename) => {
     Editor.open(type, filename);
 };
+
 const updateSettings = (event, settings) => {
-    process.env.BETTERDISCORD_EDITOR_OPTS = JSON.stringify(settings);
     Editor.updateSettings(settings);
 };
+const getSettings = (event) => {
+    event.returnValue = Editor.getSettings();
+};
+
 export default class IPCMain {
     static registerEvents() {
         try {
@@ -163,6 +167,7 @@ export default class IPCMain {
             ipc.on(IPCEvents.WINDOW_SIZE, setWindowSize);
             ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
             ipc.on(IPCEvents.REGISTER_PRELOAD, registerPreload);
+            ipc.on(IPCEvents.EDITOR_SETTINGS_GET, getSettings);
             ipc.handle(IPCEvents.GET_ACCENT_COLOR, getAccentColor);
             ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
             ipc.handle(IPCEvents.OPEN_DIALOG, openDialog);

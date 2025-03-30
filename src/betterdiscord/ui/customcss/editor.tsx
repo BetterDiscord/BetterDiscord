@@ -1,7 +1,7 @@
 import React from "@modules/react";
 import DiscordModules from "@modules/discordmodules";
 import Settings from "@stores/settings";
-import {Stores} from "@webpack";
+import EditorStore from "@stores/editor";
 
 import Button from "../base/button";
 import Flex from "../base/flex";
@@ -11,6 +11,7 @@ import {useInternalStore} from "@ui/hooks";
 import {useLayoutEffect, useRef} from "react";
 
 import type {editor as Editor} from "monaco-editor";
+import {Braces, CircleX, Info, TriangleAlert} from "lucide-react";
 
 type IStandaloneCodeEditor = Editor.IStandaloneCodeEditor;
 type IStandaloneEditorConstructionOptions = Editor.IStandaloneEditorConstructionOptions;
@@ -58,7 +59,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
         return requested;
     }, [requestedLang]);
 
-    const [theme, setTheme] = useState(() => Settings.getEditorOptions().theme);
+    const [theme, setTheme] = useState(() => EditorStore.getEditorOptions().theme);
     const [editor, setEditor] = useState<IStandaloneCodeEditor | undefined>();
     const [, setBindings] = useState<Array<{dispose(): void;} | undefined>>([]);
 
@@ -104,7 +105,7 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             const getOptions = () => ({
                 value: value,
                 language: language,
-                ...Settings.getEditorOptions()
+                ...EditorStore.getEditorOptions()
             } as IStandaloneEditorConstructionOptions);
 
             const onDidChangeMarkers = window.monaco.editor.onDidChangeMarkers(([uri]) => {
@@ -156,22 +157,11 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                 }
             }
 
-            const undo = Settings.addChangeListener(() => {
+            const undo = EditorStore.addChangeListener(() => {
                 monacoEditor.updateOptions(getOptions());
-                setTheme(Settings.getEditorOptions().theme);
+                setTheme(EditorStore.getEditorOptions().theme);
                 updateThemingVars();
             });
-
-            function themeListener() {
-                const $theme = Settings.getEditorOptions().theme;
-
-                setTheme($theme);
-                monacoEditor.updateOptions({theme: $theme});
-                updateThemingVars();
-            }
-
-            Stores.ThemeStore?.addReactChangeListener(themeListener);
-            Stores.AccessibilityStore?.addReactChangeListener(themeListener);
 
             updateThemingVars();
 
@@ -179,8 +169,6 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                 monacoEditor.dispose();
                 undo();
                 onDidChangeMarkers.dispose();
-                Stores.ThemeStore?.removeReactChangeListener(themeListener);
-                Stores.AccessibilityStore?.removeReactChangeListener(themeListener);
             };
         }
 
@@ -246,13 +234,16 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                     {markerInfo[2].map((marker, index) => (
                         <div key={index} className={`bd-editor-problem bd-editor-severity-${marker.severity}`}>
                             {marker.severity === 8 ? (
-                                <span className="codicon codicon-error" />
+                                // <span className="codicon codicon-error" />
+                                <CircleX size="1em" />
                             ) : marker.severity === 4 ? (
-                                <span className="codicon codicon-warning" />
+                                // <span className="codicon codicon-warning" />
+                                <TriangleAlert size="1em" />
                             ) : marker.severity === 2 ? (
-                                <span className="codicon codicon-info" />
+                                // <span className="codicon codicon-info" />
+                                <Info size="1em" />
                             ) : (
-                                <span className="codicon codicon-info" />
+                                <Info size="1em" />
                             )}
                             <span>{marker.message}</span>
                             <span>{marker.source}({marker.code})</span>
@@ -267,9 +258,9 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
             <div className="bd-editor-footer">
                 <div className="bd-editor-footer-left">
                     <div className="bd-editor-footer-item" onClick={toggleShowingProblems}>
-                        <span className="codicon codicon-error" />
+                        <CircleX size="1em" />
                         <span>{" "}{markerInfo[0]}{" "}</span>
-                        <span className="codicon codicon-warning" />
+                        <TriangleAlert size="1em" />
                         <span>{" "}{markerInfo[1]}</span>
                     </div>
                 </div>
@@ -288,8 +279,9 @@ export default forwardRef(function CodeEditor({value, language: requestedLang = 
                         <span>{tabSize}</span>
                     </div>
                     <div className="bd-editor-footer-item">
-                        <span className={`codicon ${markerInfo[0] ? "codicon-bracket-error" : "codicon-bracket"}`} />
-                        <span>{language}</span>
+                        {/* <span className={`codicon ${markerInfo[0] ? "codicon-bracket-error" : "codicon-bracket"}`} /> */}
+                        <Braces size="1em" />
+                        <span>{" "}{language}</span>
                     </div>
                 </div>
             </div>

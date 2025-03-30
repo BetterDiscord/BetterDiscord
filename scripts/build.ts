@@ -24,7 +24,8 @@ const moduleConfigs: Record<string, EntryPoint> = {
     betterdiscord: {"in": "src/betterdiscord/index.js", "out": "betterdiscord"},
     main: {"in": "src/electron/main/index.js", "out": "main"},
     preload: {"in": "src/electron/preload/index.js", "out": "preload"},
-    editor: {"in": "src/editor/preload.js", "out": "editor"},
+    editorPreload: {"in": "src/editor/preload.ts", "out": "editor/preload"},
+    editor: {"in": "src/editor/script.ts", "out": "editor/script"},
 };
 
 let modulesRequested = process.argv.filter(a => a.startsWith("--module=")).map(a => a.replace("--module=", ""));
@@ -70,12 +71,13 @@ async function runBuild() {
     });
 
     if (!fs.existsSync("dist")) fs.mkdirSync("dist");
-    fs.copyFileSync("src/editor/index.html", "dist/editor.html");
+    if (!fs.existsSync("dist/editor")) fs.mkdirSync("dist/editor");
+    fs.copyFileSync("src/editor/index.html", "dist/editor/index.html");
 
     if (process.argv.includes("--watch")) {
         fs.watchFile("src/editor/index.html", () => {
             console.log("[watch] copying editor.html");
-            fs.copyFileSync("src/editor/index.html", "dist/editor.html");
+            fs.copyFileSync("src/editor/index.html", "dist/editor/index.html");
             console.log("[watch] Copied editor.html");
         }).unref();
 

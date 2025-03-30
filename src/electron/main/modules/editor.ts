@@ -22,7 +22,7 @@ export default class Editor {
                 center: true,
                 show: false,
                 webPreferences: {
-                    preload: path.join(__dirname, "editor.js"),
+                    preload: path.join(__dirname, "editor/preload.js"),
                     sandbox: false
                 }
             });
@@ -33,7 +33,7 @@ export default class Editor {
                 window!.show();
             });
 
-            const url = pathToFileURL(path.join(__dirname, "editor.html"));
+            const url = pathToFileURL(path.join(__dirname, "editor/index.html"));
             url.searchParams.set("type", type);
             url.searchParams.set("filename", filename || "custom.css");
             window.loadURL(url.href);
@@ -106,7 +106,14 @@ export default class Editor {
         return item instanceof BrowserWindow && !item.isDestroyed();
     }
 
+    static #settings = {
+        options: {theme: "vs-dark"},
+        liveUpdate: false,
+        discordTheme: "dark"
+    };
     public static updateSettings(settings: any) {
+        this.#settings = settings;
+
         if (this.isValidWindow(this.windows["custom-css"])) {
             this.windows["custom-css"].webContents.send(IPCEvents.EDITOR_SETTINGS_UPDATE, settings);
         }
@@ -122,6 +129,9 @@ export default class Editor {
                 }
             }
         }
+    }
+    public static getSettings() {
+        return this.#settings;
     }
 
     private static _window: BrowserWindow;
