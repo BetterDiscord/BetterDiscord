@@ -32,36 +32,40 @@ const {options, liveUpdate: defaultLiveUpdate, discordTheme} = window.Editor.set
 const loader = document.getElementById("loader")!;
 
 function setLoaderTheme(theme: string) {
+    // --background-primary
+    let background: string;
+    // --background-seconday-alt
+    let backgroundAlt: string;
+    // --text-normal
+    let color: string;
+
     switch (theme) {
         case "light":
-            loader.style.background = "oklab(0.988044 0.0000450313 0.0000197887)";
-            loader.style.setProperty(
-                "--loader-color",
-                loader.style.color = "oklab(0.335195 0.00285903 -0.0100273)"
-            );
-            break;
-        case "dark":
-            loader.style.background = "oklab(0.323409 0.00288205 -0.0101295)";
-            loader.style.setProperty(
-                "--loader-color",
-                loader.style.color = "oklab(0.883042 0.00118408 -0.00389016)"
-            );
+            background = "oklab(0.988044 0.0000450313 0.0000197887)";
+            backgroundAlt = "oklab(0.940553 0.00079456 -0.00254363)";
+            color = "oklab(0.335195 0.00285903 -0.0100273)";
             break;
         case "darker":
-            loader.style.background = "oklab(0.245196 0.00206329 -0.00723176)";
-            loader.style.setProperty(
-                "--loader-color",
-                loader.style.color = "oklab(0.952331 0.000418991 -0.00125992)"
-            );
+            background = "oklab(0.245196 0.00206329 -0.00723176)";
+            backgroundAlt = "oklab(0.351123 0.00328721 -0.0115818)";
+            color = "oklab(0.952331 0.000418991 -0.00125992)";
             break;
         case "midnight":
-            loader.style.background = "oklab(0.155263 0.00116055 -0.00404651)";
-            loader.style.setProperty(
-                "--loader-color",
-                loader.style.color = "oklab(0.894999 0.000801653 -0.00257665)"
-            );
+            background = "oklab(0.155263 0.00116055 -0.00404651)";
+            backgroundAlt = "oklab(0.303553 0.00292034 -0.0103036)";
+            color = "oklab(0.894999 0.000801653 -0.00257665)";
+            break;
+        // case "dark":
+        default:
+            background = "oklab(0.323409 0.00288205 -0.0101295)";
+            backgroundAlt = "oklab(0.262384 0.00252247 -0.00889932)";
+            color = "oklab(0.883042 0.00118408 -0.00389016)";
             break;
     }
+
+    document.body.style.setProperty("--discord-background", background);
+    document.body.style.setProperty("--discord-background-alt", backgroundAlt);
+    document.body.style.setProperty("--discord-color", color);
 }
 
 setLoaderTheme(discordTheme);
