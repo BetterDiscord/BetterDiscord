@@ -55,7 +55,7 @@ export default [
         collapsible: true,
         shown: false,
         settings: [
-            {type: "dropdown", id: "theme", value: "selection", options: [{value: "system"}, {value: "vs-dark"}, {value: "vs"}, {value: "hc-black"}, {value: "hc-light"}]},
+            {type: "dropdown", id: "theme", value: "system", options: [{value: "system"}, {value: "vs-dark"}, {value: "vs"}, {value: "hc-black"}, {value: "hc-light"}]},
             {type: "switch", id: "lineNumbers", value: true},
             {type: "switch", id: "minimap", value: true},
             {type: "switch", id: "hover", value: true},
