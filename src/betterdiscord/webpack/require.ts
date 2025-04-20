@@ -4,7 +4,6 @@ import Logger from "@common/logger";
 export let webpackRequire: Webpack.Require;
 
 export const lazyListeners = new Set<Webpack.Filter>();
-export let webpackModules: Webpack.Module[] = [];
 
 let __ORIGINAL_PUSH__ = window.webpackChunkdiscord_app.push;
 
@@ -53,12 +52,7 @@ function handlePush(chunk: Webpack.ModuleWithoutEffect | Webpack.ModuleWithEffec
         });
     }
 
-    try {
-        return Reflect.apply(__ORIGINAL_PUSH__, window.webpackChunkdiscord_app, [chunk]);
-    }
-    finally {
-        webpackModules = Object.values(webpackRequire.c);
-    }
+    return Reflect.apply(__ORIGINAL_PUSH__, window.webpackChunkdiscord_app, [chunk]);
 }
 
 window.webpackChunkdiscord_app.push([
@@ -67,7 +61,6 @@ window.webpackChunkdiscord_app.push([
     (__webpack_require__: any) => {
         if ("b" in __webpack_require__) {
             webpackRequire = __webpack_require__;
-            webpackModules = Object.values(__webpack_require__.c);
         }
     }
 ]);

@@ -1,4 +1,4 @@
-import {BrowserWindow, dialog} from "electron";
+import {BrowserWindow, dialog, shell, type BrowserWindowConstructorOptions, type WebContents} from "electron";
 import path from "path";
 import {pathToFileURL} from "url";
 import * as IPCEvents from "@common/constants/ipcevents";
@@ -12,31 +12,63 @@ interface Windows {
 export default class Editor {
     private static windows: Windows = {theme: {}, plugin: {}};
 
-    public static open(type: "theme" | "plugin", filename: string): void;
-    public static open(type: "custom-css"): void;
-    public static open(type: "custom-css" | "theme" | "plugin", filename?: string): void {
+    // For eventually allow bd to have intellisense in the external window
+    public static _options: BrowserWindowConstructorOptions | null;
+
+    public static open(type: "theme" | "plugin", filename: string): WebContents;
+    public static open(type: "custom-css"): WebContents;
+    public static open(type: "custom-css" | "theme" | "plugin", filename?: string): WebContents {
+        const openedViaWindow = !!this._options;
+
         let window = type === "custom-css" ? this.windows["custom-css"] : this.windows[type][filename!];
+        if (openedViaWindow && window) {
+            if (!window.webContents.isLoading()) {
+                window.show();
+            }
+
+            // @ts-expect-error Not typed
+            return this._options.webContents;
+        }
+
         if (typeof window === "undefined" || window.isDestroyed()) {
             window = new BrowserWindow({
+                ...this._options,
                 frame: true,
                 center: true,
                 show: false,
                 webPreferences: {
+                    ...this._options?.webPreferences,
                     preload: path.join(__dirname, "editor/preload.js"),
-                    sandbox: false
+                    sandbox: false,
+                    allowRunningInsecureContent: true,
+                    webSecurity: false
                 }
             });
 
-            window.setMenuBarVisibility(false);
+            this._options = null;
 
-            window.once("ready-to-show", () => {
-                window!.show();
-            });
+            window.setMenu(null);
 
             const url = pathToFileURL(path.join(__dirname, "editor/index.html"));
             url.searchParams.set("type", type);
             url.searchParams.set("filename", filename || "custom.css");
-            window.loadURL(url.href);
+
+            if (openedViaWindow) {
+                window.webContents.once("will-navigate", (e) => {
+                    e.preventDefault();
+                    window!.loadURL(url.href);
+
+                    window!.once("ready-to-show", () => {
+                        window!.show();
+                    });
+                });
+            }
+            else {
+                window.once("ready-to-show", () => {
+                    window!.show();
+                });
+                window.loadURL(url.href);
+            }
 
             let shouldWarn = false;
             window.webContents.ipc.handle(IPCEvents.EDITOR_SHOULD_SHOW_WARNING, (event, $shouldWarn) => {
@@ -70,6 +102,12 @@ export default class Editor {
                 }
             });
 
+            window.webContents.setWindowOpenHandler((details) => {
+                shell.openExternal(details.url);
+
+                return {action: "deny"};
+            });
+
             if (this._window) {
                 const listener = () => {
                     shouldWarn = false;
@@ -100,6 +138,8 @@ export default class Editor {
         if (!window.webContents.isLoading()) {
             window.show();
         }
+
+        return window.webContents;
     }
 
     private static isValidWindow(item: any): item is BrowserWindow {

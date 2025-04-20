@@ -1,12 +1,13 @@
 import type {Webpack} from "discord";
-import {webpackModules} from "./require";
 import {getDefaultKey, shouldSkipModule, wrapFilter} from "./shared";
+import {webpackRequire} from "./require";
 
 export function getModule<T>(filter: Webpack.Filter, options: Webpack.Options = {}): T | undefined {
     const {defaultExport = true, searchExports = false, searchDefault = true, raw = false} = options;
 
     filter = wrapFilter(filter);
 
+    const webpackModules = Object.values(webpackRequire.c);
     for (let i = 0; i < webpackModules.length; i++) {
         const module = webpackModules[i];
 
@@ -49,6 +50,7 @@ export function getAllModules<T extends unknown[]>(filter: Webpack.Filter, optio
     filter = wrapFilter(filter);
     const modules = [] as unknown as T;
 
+    const webpackModules = Object.values(webpackRequire.c);
     for (let i = 0; i < webpackModules.length; i++) {
         const module = webpackModules[i];
 

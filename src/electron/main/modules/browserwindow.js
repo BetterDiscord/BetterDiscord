@@ -3,8 +3,16 @@ import path from "path";
 
 import BetterDiscord from "./betterdiscord";
 import Editor from "./editor";
+import * as IPCEvents from "@common/constants/ipcevents";
+
+// const EDITOR_URL_REGEX = /^betterdiscord:\/\/editor\/(?:custom-css|(theme|plugin)\/([^/]+))\/?/;
 
 class BrowserWindow extends electron.BrowserWindow {
+
+    /**
+     * @param {import("electron").BrowserWindowConstructorOptions} options
+     * @returns
+     */
     constructor(options) {
         if (!options || !options.webPreferences || !options.webPreferences.preload || !options.title) return super(options); // eslint-disable-line constructor-super
         const originalPreload = options.webPreferences.preload;
@@ -16,7 +24,6 @@ class BrowserWindow extends electron.BrowserWindow {
             options.transparent = true;
             options.backgroundColor = "#00000000";
         }
-
 
         const inAppTrafficLights = Boolean(BetterDiscord.getSetting("window", "inAppTrafficLights") ?? false);
 
@@ -31,6 +38,47 @@ class BrowserWindow extends electron.BrowserWindow {
         this.__originalPreload = originalPreload;
         BetterDiscord.setup(this);
         Editor.initialize(this);
+
+        const self = this;
+        this.webContents.setWindowOpenHandler = new Proxy(this.webContents.setWindowOpenHandler, {
+            apply(target, thisArg, argArray) {
+                const handler = argArray[0];
+
+                /**
+                 *
+                 * @type {(details: import("electron").HandlerDetails) => import("electron").WindowOpenHandlerResponse} callback
+                 */
+                argArray[0] = function (details) {
+                    // const match = details.url.match(EDITOR_URL_REGEX);
+                    // if (match) {
+                    //     const isCustomCSS = match[1] === undefined;
+
+                    //     return {
+                    //         action: "allow",
+                    //         createWindow(opts) {
+                    //             Editor._options = opts;
+
+                    //             const webContents = isCustomCSS ? Editor.open("custom-css") : Editor.open(match[1], match[2]);
+
+                    //             webContents.toggleDevTools();
+
+                    //             return webContents;
+                    //         }
+                    //     };
+                    // }
+
+                    // Just like chat make it only be on this client
+                    if (details.url.startsWith("betterdiscord://")) {
+                        self.webContents.send(IPCEvents.HANDLE_PROTOCOL, details.url);
+                        return {action: "deny"};
+                    }
+
+                    return handler.apply(this, arguments);
+                };
+
+                return Reflect.apply(target, thisArg, argArray);
+            }
+        });
     }
 }
 
