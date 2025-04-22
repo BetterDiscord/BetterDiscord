@@ -79,7 +79,7 @@ export default new class CustomCSS extends Builtin {
             }
             const stats = fs.statSync(this.file);
             if (!stats || !stats.mtimeMs) return;
-            if (typeof (stats.mtimeMs) !== "number") return;
+            if (typeof(stats.mtimeMs) !== "number") return;
             if (timeCache[filename] == stats.mtimeMs) return;
             timeCache[filename] = stats.mtimeMs;
             if (eventType == "change") {
