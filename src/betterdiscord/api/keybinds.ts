@@ -60,20 +60,12 @@ class keybindsManager {
 
     static bindPlugin(pluginName: string): Map<number, Keybind> {
         if (this.keybinds.has(pluginName)) {
-            this.unbindPlugin(pluginName);
+            this.unregisterAllKeybinds(pluginName);
         }
         const map = new Map();
         this.keybinds.set(pluginName, map);
         return map;
     };
-
-    static unbindPlugin(pluginName: string) {
-        const keybinds = this.keybinds.get(pluginName);
-        keybinds?.forEach((keybind, id) => {
-            DiscordUtils.inputEventUnregister(id);
-        });
-        this.keybinds.delete(pluginName);
-    }
 
     static convertToKeybindKeys(keys: any[]): KeybindKey[][] {
         if (!keys || keys.length === 0) return [];
@@ -167,6 +159,20 @@ class keybindsManager {
         }
         return true;
     }
+
+    /**
+     * Unregisters all Keybinds for the plugin.
+     *
+     * @returns {boolean} Whether the Keybinds were unregistered
+     */
+    static unregisterAllKeybinds(pluginName: string) {
+        const keybinds = this.keybinds.get(pluginName);
+        keybinds?.forEach((keybind, id) => {
+            DiscordUtils.inputEventUnregister(id);
+            keybinds.delete(id);
+        });
+        return true;
+    }
 }
 
 /**
@@ -216,6 +222,19 @@ export class Keybinds {
             pluginName = this.#callerName;
         }
         return keybindsManager.unregisterKeybind(pluginName, event);
+    }
+
+    /**
+     * Unregisters all Keybinds for the plugin.
+     *
+     * @returns {boolean} Whether the Keybinds were unregistered
+     */
+    unregisterAllKeybinds() {
+        if (this.#callerName) {
+            keybindsManager.unregisterAllKeybinds(this.#callerName);
+            return true;
+        }
+        return false;
     }
 }
 
