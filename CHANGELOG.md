@@ -3,6 +3,22 @@
 This changelog starts with the restructured 1.0.0 release that happened after context isolation changes. The changelogs here should more-or-less mirror the ones that get shown in the client but probably with less formatting and pizzazz.
 
 
+## 1.12.2
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
+ - Fixed pasting in monaco
+ - Fixed command auth
+ - Fixed toast location
+ - Fixed notice location
+ - Fixed mtime usages
+
+
 ## 1.12.1
 
 ### Added
