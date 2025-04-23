@@ -17,6 +17,7 @@ import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
 import Logger from "./logger";
 import CommandAPI from "./commands";
+import Keybinds from "./keybinds";
 
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
@@ -47,6 +48,7 @@ const DOMAPI = new DOM();
 const ContextMenuAPI = new ContextMenu();
 const CommandsAPI = new CommandAPI();
 const DefaultLogger = new Logger();
+const KeybindsAPI = new Keybinds();
 
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
@@ -101,9 +103,10 @@ const version: string = Config.get("version");
 export default class BdApi {
     Patcher: Patcher = PatcherAPI;
     Data: Data = DataAPI;
-    DOM: DOM = DOMAPI; 
+    DOM: DOM = DOMAPI;
     Logger: Logger = DefaultLogger;
     Commands: CommandAPI = CommandsAPI;
+    Keybinds: Keybinds = KeybindsAPI;
     React = React;
     ReactDOM = ReactDOM;
     version = version;
@@ -113,6 +116,7 @@ export default class BdApi {
     static DOM: DOM;
     static Logger: Logger;
     static Commands: CommandAPI;
+    static Keybinds: Keybinds;
     static React = React;
     static ReactDOM = ReactDOM;
     static version = version;
@@ -125,7 +129,7 @@ export default class BdApi {
     static Utils: typeof Utils;
     static ContextMenu: ContextMenu;
     static Components: typeof Components;
-    static Net: { fetch: typeof fetch };
+    static Net: {fetch: typeof fetch;};
 
     constructor(pluginName: string) {
         if (!pluginName) return BdApi;
@@ -141,6 +145,7 @@ export default class BdApi {
         this.DOM = new DOM(pluginName);
         this.Logger = new Logger(pluginName);
         this.Commands = new CommandAPI(pluginName);
+        this.Keybinds = new Keybinds(pluginName);
 
         bounded.set(pluginName, this);
     }
@@ -154,7 +159,7 @@ export default class BdApi {
     get ReactUtils() {return ReactUtils;}
     get ContextMenu() {return ContextMenuAPI;}
     get Components() {return Components;}
-    Net = {fetch}; 
+    Net = {fetch};
 }
 
 /**
@@ -185,7 +190,7 @@ BdApi.Webpack = Webpack;
  * An instance of {@link Data} to manage data.
  * @type Data
  */
- BdApi.Data = DataAPI;
+BdApi.Data = DataAPI;
 
 /**
  * An instance of {@link UI} to create interfaces.
@@ -228,6 +233,12 @@ BdApi.Components = Components;
  * @type CommandAPI
  */
 BdApi.Commands = CommandsAPI;
+
+/**
+ * An instance of {@link Keybinds} for managing keybinds.
+ * @type Keybinds
+ */
+BdApi.Keybinds = KeybindsAPI;
 
 /**
  * An instance of {@link Net} for using network related tools.

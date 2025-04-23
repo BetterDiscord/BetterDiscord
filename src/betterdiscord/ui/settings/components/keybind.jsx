@@ -3,46 +3,9 @@ import React from "@modules/react";
 import Button from "../../base/button";
 import {KeyboardIcon, XIcon} from "lucide-react";
 import {none, SettingsContext} from "@ui/contexts";
-import {getModule} from "@webpack";
+import {remapKeyCode, reverseRemapArray} from "../../../../betterdiscord/api/keybinds";
 
 const {useState, useCallback, useEffect, useContext} = React;
-
-const platform = process.platform;
-const ctrl = platform === "win32" ? 0xa2 : platform === "darwin" ? 0xe0 : 0x25;
-const keybindModule = getModule(m => m.ctrl === ctrl, {searchExports: true});
-const reversedKeybindModule = (() => {
-    if (!keybindModule) return {};
-    return Object.entries(keybindModule).reduce((acc, [key, value]) => {
-        acc[value] = key;
-        return acc;
-    }, {});
-})();
-
-function remapKeyCode(keyCode, location) {
-    if (keyCode === 18 || keyCode === 17 || keyCode === 16) {
-        let key = "";
-        if (location === 2) {
-            key = "right ";
-        }
-        if (keyCode == 18) key += "alt";
-        if (keyCode == 17) key += "ctrl";
-        if (keyCode == 16) key += "shift";
-        keyCode = keybindModule[key];
-    }
-
-    return keyCode;
-};
-
-function reverseRemapArray(arr) {
-    return arr.map((key) => {
-        let keyName = reversedKeybindModule[key];
-        if (keyName.startsWith("alt") || keyName.startsWith("ctrl") || keyName.startsWith("meta") || keyName.startsWith("shift")) {
-            keyName = "left " + keyName;
-        }
-        return keyName;
-    });
-}
-
 
 export default function Keybind({value: initialValue, onChange, max = 4, clearable = false, useKeyCode = false, disabled}) {
     const [isRecording, setIsRecording] = useState(false);
