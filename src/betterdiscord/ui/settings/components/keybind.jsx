@@ -31,7 +31,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
         event.stopPropagation();
         event.preventDefault();
         const key = useKeyCode ? remapKeyCode(event.keyCode, event.location) : event.key;
-        if (event.repeat || accum.includes(key)) return;
+        if (!useKeyCode && (event.repeat || accum.includes(key))) return;
 
         accum.push(key);
         if (accum.length == max) {
