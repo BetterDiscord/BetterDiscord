@@ -19,7 +19,7 @@ import PluginManager from "./pluginmanager";
 import ThemeManager from "./thememanager";
 
 import Toasts from "@ui/toasts";
-import Notices from "@ui/notices";
+import Notifications from "@modules/notification";
 import Modals from "@ui/modals";
 import UpdaterPanel from "@ui/updater";
 import Web from "@data/web";
@@ -181,14 +181,17 @@ export class CoreUpdater {
 
         if (!this.hasUpdate || !showNotice) return;
 
-        const close = Notices.info(t("Updater.updateAvailable", {version: this.remoteVersion}), {
-            buttons: [{
-                label: t("Notices.moreInfo"),
-                onClick: () => {
-                    close();
-                    UserSettingsWindow?.open?.("updates");
+        Notifications.show({
+            title: t("Updater.updateAvailable", {version: this.remoteVersion}),
+            type: "info",
+            icon: () => React.createElement("img", {src: "https://betterdiscord.app/resources/branding/logo_small.svg", width: "18px", height: "18px"}),
+            duration: Infinity,
+            actions: [
+                {
+                    label: t("Updater.updateButton"),
+                    onClick: () => this.update()
                 }
-            }]
+            ]
         });
     }
 
@@ -318,14 +321,44 @@ class AddonUpdater {
 
     showUpdateNotice() {
         if (!this.pending.length) return;
-        const close = Notices.info(t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}), {
-            buttons: [{
-                label: t("Notices.moreInfo"),
-                onClick: () => {
-                    close();
-                    UserSettingsWindow?.open?.("updates");
+        
+        const addonNames = this.pending.map(filename => {
+            const info = this.cache[path.basename(filename)];
+            return {
+                name: info ? info.name : filename,
+                version: info ? info.version : ""
+            };
+        });
+        
+        Notifications.show({
+            id: `addon-updates-${this.type}`,
+            title: `Addon Updater`,
+            content: [
+                t("Updater.addonUpdatesAvailable", {count: this.pending.length, type: this.type}),
+                React.createElement("br"),
+                ...addonNames.map(addon => [
+                    `• ${addon.name} `,
+                    React.createElement("i", {}, `(${addon.version})`),
+                    React.createElement("br")
+                ]).flat().slice(0, -1)
+            ],
+            type: "info",
+            icon: () => React.createElement("img", {src: "https://betterdiscord.app/resources/branding/logo_small.svg", width: "18px", height: "18px"}),
+            duration: Settings.get("addons", "checkForUpdates") ? Settings.get("addons", "updateInterval") * 60 * 60 * 1000 : Infinity,
+            actions: [
+                {
+                    label: t("Updater.viewUpdates"),
+                    onClick: () => UserSettingsWindow?.open?.("updates")
+                },
+                {
+                    label: t("Updater.updateAll"),
+                    onClick: () => {
+                        for (const filename of this.pending) {
+                            this.updateAddon(filename);
+                        }
+                    }
                 }
-            }]
+            ]
         });
     }
 }
