@@ -328,6 +328,9 @@
     "Notices": {
         "moreInfo": "More Info"
     },
+    "Toasts": {
+        "recoveryFailed": "Recovery incomplete. Some actions failed to complete."
+    },
     "Updater": {
         "updateFailed": "Update Failed!",
         "updateFailedMessage": "BetterDiscord failed to update. Please download the latest version of the installer from our website (https://betterdiscord.app/) and reinstall.",

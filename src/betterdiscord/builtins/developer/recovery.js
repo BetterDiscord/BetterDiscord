@@ -9,12 +9,13 @@ import pluginmanager from "@modules/pluginmanager";
 import IPC from "@modules/ipc";
 import Toasts from "@ui/toasts";
 import Modals from "@ui/modals";
-import {getByKeys, getByPrototypes, getByStrings} from "@webpack";
+import {getByKeys, getByPrototypes, getByStrings, getMangled} from "@webpack";
 
 const Dispatcher = DiscordModules.Dispatcher;
 
 async function attemptRecovery() {
     const transitionTo = getByStrings(["transitionTo - Transitioning to"], {searchExports: true});
+    const modalModule = getMangled(`,["contextKey"]),`, {CloseAllModals: x => x.toString?.()?.includes(".key,") && x.toString?.()?.includes("getState();")});
 
     const recoverySteps = [
         {
@@ -28,17 +29,27 @@ async function attemptRecovery() {
         {
             action: () => transitionTo?.("/channels/@me"),
             errorMessage: "Failed to route to main channel"
+        },
+        {
+            action: () => modalModule?.CloseAllModals(),
+            errorMessage: "Failed to close all modals"
         }
     ];
 
+    let allActionsCompleted = true;
+
     for (const {action, errorMessage} of recoverySteps) {
         try {
-            await action();
+            const result = action();
+            await result;
         }
         catch (error) {
             Logger.error("Recovery", `${errorMessage}:, ${error}`);
+            allActionsCompleted = false;
         }
     }
+
+    return allActionsCompleted;
 }
 
 const parseGithubUrl = (url) => {
@@ -111,11 +122,16 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
         }
     };
 
-    const openDiscordSupport = () => {
+    const openDiscordSupport = async () => {
         if (pluginInfo?.invite) {
-            attemptRecovery();
-            instance.setState({info: null, error: null});
-            if (pluginInfo.invite) Modals.showGuildJoinModal(pluginInfo.invite);
+            const recoverySuccessful = await attemptRecovery();
+            if (recoverySuccessful) {
+                instance.setState({info: null, error: null});
+                if (pluginInfo.invite) Modals.showGuildJoinModal(pluginInfo.invite);
+            }
+            else {
+                Toasts.show(t("Toasts.recoveryFailed"));
+            }
         }
     };
 
@@ -148,9 +164,9 @@ const ErrorDetails = ({componentStack, pluginInfo, stack, instance}) => {
                     )}
                     <Button
                         className="bd-error-safe-mode"
-                        onClick={() => {
+                        onClick={async () => {
                             pluginmanager.addonList.forEach((x) => pluginmanager.disableAddon(x.name));
-                            IPC.relaunch();
+                            await IPC.relaunch();
                         }}
                         color={Colors.RED}
                     >
@@ -225,9 +241,14 @@ export default new class Recovery extends Builtin {
             buttons.children.push(
                 <Button
                     className="bd-button-recovery"
-                    onClick={() => {
-                        attemptRecovery();
-                        instance.setState({info: null, error: null});
+                    onClick={async () => {
+                        const recoverySuccessful = await attemptRecovery();
+                        if (recoverySuccessful) {
+                            instance.setState({info: null, error: null});
+                        }
+                        else {
+                            Toasts.show(t("Toasts.recoveryFailed"));
+                        }
                     }}
                 >
                     {t("Collections.settings.developer.recovery.button")}
