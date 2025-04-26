@@ -58,6 +58,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
         event.preventDefault();
         if (disabled) return;
         if (onChange) onChange([]);
+        setValue([]);
         setState({...state, isRecording: false, accum: []});
     }, [onChange, state, disabled]);
 

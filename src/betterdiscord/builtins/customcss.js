@@ -80,10 +80,10 @@ export default new class CustomCSS extends Builtin {
                 this.saveCSS("");
             }
             const stats = fs.statSync(this.file);
-            if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
-            if (typeof (stats.mtime.getTime()) !== "number") return;
-            if (timeCache[filename] == stats.mtime.getTime()) return;
-            timeCache[filename] = stats.mtime.getTime();
+            if (!stats || !stats.mtimeMs) return;
+            if (typeof (stats.mtimeMs) !== "number") return;
+            if (timeCache[filename] == stats.mtimeMs) return;
+            timeCache[filename] = stats.mtimeMs;
             if (eventType == "change") {
                 const newCSS = this.loadCSS();
                 if (newCSS == this.savedCss) return;

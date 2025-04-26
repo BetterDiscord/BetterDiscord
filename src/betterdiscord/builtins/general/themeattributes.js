@@ -13,7 +13,7 @@ export default new class ThemeAttributes extends Builtin {
 
     enabled() {
         this.before(MessageComponent, "Z", (thisObject, [args]) => {
-            if (args["aria-roledescription"] !== "Message") return;
+            if (args?.["aria-roledescription"] !== "Message") return;
             const author = findInTree(args, (arg) => arg?.username, {walkable: ["props", "childrenMessageContent", "message", "author"]});
             const authorId = author?.id;
             if (!authorId) return;

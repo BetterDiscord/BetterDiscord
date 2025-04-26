@@ -1,11 +1,20 @@
+#bd-notifications-root {
+    position: fixed !important;
+    z-index: 9999 !important;
+    pointer-events: none !important;
+    display: flex !important;
+}
+
+#bd-notifications-root > * {
+    pointer-events: auto !important;
+}
+
 .bd-notification-container {
-    position: fixed;
-    /*top: 16px;*/
-    /*right: 16px;*/
-    display: flex;
+    position: fixed !important;
+    display: flex !important;
     flex-direction: column;
     gap: 8px;
-    z-index: 1000;
+    z-index: 3002 !important; /* right above titleBar */
 }
 
 .bd-notification {

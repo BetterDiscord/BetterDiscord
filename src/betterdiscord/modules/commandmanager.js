@@ -50,7 +50,7 @@ export const MessageEmbedTypes = {
     SAFETY_SYSTEM_NOTIFICATION: "safety_system_notification",
     VOICE_CHANNEL: "voice_channel",
     GAMING_PROFILE: "gaming_profile",
-  };
+};
 
 const iconClasses = {
     ...getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
@@ -81,7 +81,7 @@ class CommandManager {
     static #patchCommandSystem() {
 
         this.User = getByStrings(["hasHadPremium(){"]);
-        this.createBotMessage = getByStrings([ "username:\"Clyde\"" ], {searchExports: true});
+        this.createBotMessage = getByStrings(["username:\"Clyde\""], {searchExports: true});
         this.MessagesModule = getModule(x => x.receiveMessage);
         this.IconsModule = getModule(x => x.BOT_AVATARS);
 
@@ -102,7 +102,7 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings([ ".BUILT_IN?", "categoryListRef:" ], {defaultExport: false});
+        const SidebarModule = getByStrings([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
 
         Patcher.after("CommandManager", SidebarModule, "Z", (that, [props], res) => {
             if (!this.#sections.size) return;
@@ -334,7 +334,7 @@ class CommandManager {
             this.#sections.set(caller, {
                 id: caller,
                 name: caller,
-                type: 0,
+                type: 1,
                 key: "1",
                 icon: caller === "BetterDiscord" ? "https://github.com/BetterDiscord.png" : null,
                 isBD: true

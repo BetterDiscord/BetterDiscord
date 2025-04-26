@@ -92,7 +92,8 @@ const setWindowSize = (event, width, height) => {
 
 const getAccentColor = () => {
     // intentionally left blank so that fallback colors will be used
-    return systemPreferences.getAccentColor() || "";
+    return ((process.platform == "win32" || process.platform == "darwin")
+        && systemPreferences.getAccentColor()) || "";
 };
 
 const stopDevtoolsWarning = event => event.sender.removeAllListeners("devtools-opened");
