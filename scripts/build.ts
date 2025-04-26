@@ -92,8 +92,9 @@ runBuild().catch(async err => {
         try {
             // "await" to avoid concurrent logging
             await ctx.dispose();
-        } catch (err) {
-            console.error(err);
+        }
+        catch (errd) {
+            console.error(errd);
         }
     }
     process.exit(1);
