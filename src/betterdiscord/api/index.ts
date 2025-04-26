@@ -101,7 +101,7 @@ const version: string = Config.get("version");
 export default class BdApi {
     Patcher: Patcher = PatcherAPI;
     Data: Data = DataAPI;
-    DOM: DOM = DOMAPI; 
+    DOM: DOM = DOMAPI;
     Logger: Logger = DefaultLogger;
     Commands: CommandAPI = CommandsAPI;
     React = React;
