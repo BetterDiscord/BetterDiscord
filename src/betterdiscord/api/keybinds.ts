@@ -9,7 +9,7 @@ type GlobalKeybindOptions = {
     keyup: boolean;
 };
 
-type WindowKeybindKey = {ctrl: boolean; alt: boolean; shift: boolean; meta: boolean; keys: string[];};
+type WindowKeybindKey = {ctrl: boolean; ctrlLocation?: number; alt: boolean; altLocation?: number; shift: boolean; shiftLocation?: number, meta: boolean; metaLocation?: number, keys: string[];};
 type WindowKeybindKeyArray = WindowKeybindKey[];
 type WindowKeybindOptions = {
     keydown: boolean;
@@ -172,8 +172,8 @@ class KeybindsManager {
 
     static mapKeysToWindowKeybinds(keys: Keys): WindowKeybindKeyArray {
         if (!keys || keys.length === 0) return [];
+        const ret: WindowKeybindKey = {ctrl: false, alt: false, shift: false, meta: false, keys: []};
         if (typeof keys[0] === "string") {
-            const ret: WindowKeybindKey = {ctrl: false, alt: false, shift: false, meta: false, keys: []};
             (keys as string[]).forEach((key) => {
                 if (key.startsWith("Control")) {
                     ret.ctrl = true;
@@ -194,7 +194,29 @@ class KeybindsManager {
             return [ret];
         }
         else if (typeof keys[0] === "number") {
-            // TODO: Implement mapping from keycode
+            const reversedMappedKeys = reverseRemapArray(keys as number[]);
+            reversedMappedKeys.forEach((key) => {
+                if (key.endsWith("ctrl")) {
+                    ret.ctrl = true;
+                    ret.ctrlLocation = key.startsWith("right") ? 2 : 1;
+                }
+                else if (key.endsWith("alt")) {
+                    ret.alt = true;
+                    ret.altLocation = key.startsWith("right") ? 2 : 1;
+                }
+                else if (key.endsWith("shift")) {
+                    ret.shift = true;
+                    ret.shiftLocation = key.startsWith("right") ? 2 : 1;
+                }
+                else if (key.endsWith("meta")) {
+                    ret.meta = true;
+                    ret.metaLocation = key.startsWith("right") ? 2 : 1;
+                }
+                else {
+                    ret.keys.push(key);
+                }
+            });
+            return [ret];
         }
         return [];
     }
@@ -251,7 +273,11 @@ class KeybindsManager {
         toBind.forEach((keystoBind) => {
             const id = this.windowsKeybindId++;
             const handleCallback = (e: KeyboardEvent) => {
-                if (e.altKey === keystoBind.alt && e.ctrlKey === keystoBind.ctrl && e.shiftKey === keystoBind.shift && e.metaKey === keystoBind.meta) {
+                // TODO: Add support for key locations
+                if (e.altKey === keystoBind.alt
+                    && e.ctrlKey === keystoBind.ctrl
+                    && e.shiftKey === keystoBind.shift
+                    && e.metaKey === keystoBind.meta) {
                     let checkKeys = true;
                     keystoBind.keys.forEach((key) => {
                         if (!this.keysDown.has(key)) {
@@ -300,7 +326,7 @@ class KeybindsManager {
      */
     static unregisterAllKeybinds(pluginName: string) {
         const globalKeybinds = this.globalKeybinds.get(pluginName);
-        globalKeybinds?.forEach((keybind, id) => {
+        globalKeybinds?.forEach((_keybind, id) => {
             DiscordUtils.inputEventUnregister(id);
             globalKeybinds.delete(id);
         });
