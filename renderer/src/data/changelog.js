@@ -12,6 +12,7 @@ export default {
             title: "Hot Hot Hotfixes 🔥",
             type: "fixed",
             items: [
+                "All of BetterDiscord will actually load now after Discord's recent changes.",
                 "BetterDiscord notice banners will now be banners again instead of showing up squashed in the corner.",
                 "Toasts will show and be aligned properly.",
                 "Plugins and themes should be loaded correctly on Discord Canary.",
