@@ -113,9 +113,9 @@ export default class Modals {
         if (Array.isArray(content) ? content.every(el => React.isValidElement(el)) : React.isValidElement(content)) {
             const container = modal.querySelector(".scroller")!;
 
+            const root = ReactDOM.createRoot(container);
             try {
-                // eslint-disable-next-line react/no-deprecated
-                ReactDOM.render(content as ReactElement, container);
+                root.render(content as ReactElement);
             }
             catch (error) {
                 container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`) as HTMLElement);
@@ -123,8 +123,7 @@ export default class Modals {
             }
 
             DOMManager.onRemoved(container, () => {
-                // eslint-disable-next-line react/no-deprecated
-                ReactDOM.unmountComponentAtNode(container);
+                root.unmount();
             });
         }
         else {
@@ -275,7 +274,7 @@ export default class Modals {
         if (panel instanceof Node || typeof (panel) === "string") {
             child = class ReactWrapper extends React.Component<any, {hasError: boolean;}> {
                 element: Element | string;
-                elementRef: RefObject<Element | string>;
+                elementRef: RefObject<Element | string | null>;
                 constructor(props?: any) {
                     super(props);
                     this.elementRef = React.createRef();
@@ -320,11 +319,9 @@ export default class Modals {
     static makeStack() {
         const div = DOMManager.parseHTML(`<div id="bd-modal-container">`) as HTMLElement;
         DOMManager.bdBody.append(div);
-        // eslint-disable-next-line react/no-deprecated
-        ReactDOM.render(
-            [React.createElement(ErrorBoundary, {id: "makeStack", name: "Modals", hideError: true}, React.createElement(ModalStack))],
-            // <ErrorBoundary id="makeStack" name="Modals" hideError={true}><ModalStack /></ErrorBoundary>,
-            div
+        const root = ReactDOM.createRoot(div);
+        root.render(
+            [React.createElement(ErrorBoundary, {id: "makeStack", name: "Modals", hideError: true}, React.createElement(ModalStack))]
         );
         this.hasInitialized = true;
     }
