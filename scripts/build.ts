@@ -29,6 +29,7 @@ let modulesRequested = process.argv.filter(a => a.startsWith("--module=")).map(a
 if (!modulesRequested.length) modulesRequested = Object.keys(moduleConfigs);
 
 const entryPoints = modulesRequested.map(m => moduleConfigs[m]);
+const contextList: esbuild.BuildContext[] = [];
 
 async function runBuild() {
     const before = performance.now();
@@ -65,7 +66,7 @@ async function runBuild() {
             "process.env.__BUILD__": JSON.stringify(DEVELOPMENT)
         }
     });
-
+    contextList.push(ctx);
 
     if (process.argv.includes("--watch")) {
         await ctx.watch();
@@ -85,4 +86,16 @@ async function runBuild() {
     console.log("");
 }
 
-runBuild().catch(console.error);
+runBuild().catch(async err => {
+    console.error(err);
+    for (const ctx of contextList) {
+        try {
+            // "await" to avoid concurrent logging
+            await ctx.dispose();
+        }
+        catch (errd) {
+            console.error(errd);
+        }
+    }
+    process.exit(1);
+});
