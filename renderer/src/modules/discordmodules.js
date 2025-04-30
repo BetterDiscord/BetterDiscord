@@ -11,7 +11,7 @@ import WebpackModules, {Filters} from "./webpackmodules";
 
 const DiscordModules = Utilities.memoizeObject({
     get React() {return WebpackModules.getByProps("createElement", "cloneElement");},
-    get ReactDOM() {return WebpackModules.getByProps("render", "findDOMNode");},
+    get ReactDOM() {return Object.assign({}, WebpackModules.getByProps("createPortal"), WebpackModules.getByProps("createRoot"));},
     get ChannelActions() {return WebpackModules.getByProps("selectChannel");},
     get LocaleStore() {return WebpackModules.getByProps("locale", "initialize");},
     get UserStore() {return WebpackModules.getByProps("getCurrentUser", "getUser");},
