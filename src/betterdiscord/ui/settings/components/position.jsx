@@ -12,7 +12,7 @@ const positions = [
 const Position = ({value: initialValue, onChange, disabled}) => {
     const [internalValue, setValue] = useState(initialValue);
     const contextValue = useContext(SettingsContext);
-    
+
     const value = contextValue !== none ? contextValue : internalValue;
 
     const handlePositionChange = (position) => {

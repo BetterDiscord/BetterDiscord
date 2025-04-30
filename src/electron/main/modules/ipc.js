@@ -100,8 +100,8 @@ const stopDevtoolsWarning = event => event.sender.removeAllListeners("devtools-o
 
 const openDialog = (event, options = {}) => {
     const {
-        mode = "open", 
-        openDirectory = false, 
+        mode = "open",
+        openDirectory = false,
         openFile = true,
         multiSelections = false,
         filters,
@@ -120,7 +120,7 @@ const openDialog = (event, options = {}) => {
     if (!openFunction) return Promise.resolve({error: "Unkown Mode: " + mode});
 
     return openFunction.apply(dialog, [
-        modal && BrowserWindow.fromWebContents(event.sender), 
+        modal && BrowserWindow.fromWebContents(event.sender),
         {
             defaultPath,
             filters,

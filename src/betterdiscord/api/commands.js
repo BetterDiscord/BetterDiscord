@@ -80,7 +80,7 @@ class CommandAPI {
     }
 
     /**
-     * Gets all commands registered by a specific caller 
+     * Gets all commands registered by a specific caller
      * @param {string} caller Name of the caller whose commands should be retrieved
      * @returns {Array} Array of command objects registered by the caller
      */

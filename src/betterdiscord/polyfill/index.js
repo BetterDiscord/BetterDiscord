@@ -45,7 +45,7 @@ export const createRequire = function (path) {
             case "module": return Module;
             case "buffer": return buffer;
             case "crypto": return crypto;
-    
+
             default:
                 return Module._load(mod, path, createRequire);
         }

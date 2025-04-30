@@ -51,7 +51,7 @@ const request = function (url, options, callback) {
     let responseObject = null;
     let reqObject = null;
     let pipe = null;
-    
+
     makeRequest(url, options, callback, (req, res) => {
         reqObject = req;
         responseObject = res;

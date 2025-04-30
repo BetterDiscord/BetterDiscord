@@ -19,9 +19,9 @@ class Patcher {
     }
 
     /**
-     * This method patches onto another function, allowing your code to run beforehand. 
+     * This method patches onto another function, allowing your code to run beforehand.
      * Using this, you are also able to modify the incoming arguments before the original method is run.
-     * 
+     *
      * @param {string} caller Name of the caller of the patch function
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.
      * @param {string} functionName Name of the function to be patched
@@ -39,9 +39,9 @@ class Patcher {
     }
 
     /**
-     * This method patches onto another function, allowing your code to run instead. 
+     * This method patches onto another function, allowing your code to run instead.
      * Using this, you are able to replace the original completely. You can still call the original manually if needed.
-     * 
+     *
      * @param {string} caller Name of the caller of the patch function
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.
      * @param {string} functionName Name of the function to be patched
@@ -59,9 +59,9 @@ class Patcher {
     }
 
     /**
-     * This method patches onto another function, allowing your code to run afterwards. 
+     * This method patches onto another function, allowing your code to run afterwards.
      * Using this, you are able to modify the return value after the original method is run.
-     * 
+     *
      * @param {string} caller Name of the caller of the patch function
      * @param {object} moduleToPatch Object with the function to be patched. Can also be an object's prototype.
      * @param {string} functionName Name of the function to be patched
@@ -80,7 +80,7 @@ class Patcher {
 
     /**
      * Returns all patches by a particular caller. The patches all have an `unpatch()` method.
-     * 
+     *
      * @param {string} caller ID of the original patches
      * @returns {Array<function>} Array of all the patch objects
      */
@@ -92,7 +92,7 @@ class Patcher {
 
     /**
      * Automatically cancels all patches created with a specific ID.
-     * 
+     *
      * @param {string} caller ID of the original patches
      */
     unpatchAll(caller) {

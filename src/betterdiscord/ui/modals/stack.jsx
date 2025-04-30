@@ -22,7 +22,7 @@ class ModalLayer extends React.Component {
             this.setState({transitionState: 1});
             finish();
         }, 300);
-        
+
     }
     componentWillLeave(finish) {
         this.setState({transitionState: 2});

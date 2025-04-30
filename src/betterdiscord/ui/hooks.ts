@@ -49,7 +49,7 @@ export function useInternalStore<T>(stores: Store | Store[], factory: () => T, d
         for (const store of $stores) {
             store.addChangeListener(listener);
         }
-      
+
         return () => {
             for (const store of $stores) {
                 store.removeChangeListener(listener);

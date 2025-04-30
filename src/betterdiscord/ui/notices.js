@@ -19,7 +19,7 @@ export default class Notices {
         const element = document.createElement(type);
         Object.assign(element, options);
         const filteredChildren = children.filter((n) => n);
-    
+
         if (filteredChildren.length > 0) element.append(...filteredChildren);
 
         return element;

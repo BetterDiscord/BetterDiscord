@@ -21,6 +21,7 @@
     },
     "devDependencies": {
         "@electron/asar": "^3.2.0",
+        "@stylistic/eslint-plugin": "^3.1.0",
         "@types/bun": "^1.2.2",
         "@types/eslint": "^9.6.1",
         "@types/react": "^19.1.2",

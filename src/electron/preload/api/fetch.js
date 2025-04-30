@@ -11,7 +11,7 @@ const redirectCodes = new Set([301, 302, 307, 308]);
  * @property {"manual" | "follow"} [redirect] - Whether to follow redirects.
  * @property {number} [maxRedirects] - Maximum amount of redirects to be followed.
  * @property {AbortSignal} [signal] - Signal to abruptly cancel the request
- * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable. 
+ * @property {Uint8Array | string} [body] - Defines a request body. Data must be serializable.
  * @property {number} [timeout] - Request timeout time.
  */
 
@@ -27,7 +27,7 @@ export function nativeFetch(requestedUrl, fetchOptions) {
 
     /** * @param {URL} url */
     const execute = (url, options, redirectCount = 0) => {
-        const Module = url.protocol === "http:" ? http : https;        
+        const Module = url.protocol === "http:" ? http : https;
 
         const req = Module.request(url.href, {
             headers: options.headers ?? {},
@@ -41,7 +41,7 @@ export function nativeFetch(requestedUrl, fetchOptions) {
                     state = "ABORTED";
                     const error = new Error(`Maximum amount of redirects reached (${options.maxRedirects ?? MAX_DEFAULT_REDIRECTS})`);
                     errors.forEach(e => e(error));
-                    
+
                     return;
                 }
 
@@ -116,7 +116,7 @@ export function nativeFetch(requestedUrl, fetchOptions) {
      * Obviously parsing a URL may throw an error, but this is
      * actually intended here. The caller should handle this
      * gracefully.
-     * 
+     *
      * Reasoning: at this point the caller does not have a
      * reference to the object below so they have no way of
      * listening to the error through onError.

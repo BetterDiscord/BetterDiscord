@@ -7,12 +7,12 @@
 
  import DiscordModules from "./discordmodules";
  import {getByKeys} from "@webpack";
- 
- 
+
+
  export default class Patcher {
- 
+
      static get patches() {return this._patches || (this._patches = []);}
- 
+
      /**
       * Returns all the patches done by a specific caller
       * @param {string} name - Name of the patch caller
@@ -28,7 +28,7 @@
          }
          return patches;
      }
- 
+
      /**
       * Unpatches all patches passed, or when a string is passed unpatches all
       * patches done by that specific caller.
@@ -36,19 +36,19 @@
       */
      static unpatchAll(patches) {
          if (typeof patches === "string") patches = this.getPatchesByCaller(patches);
- 
+
          for (const patch of patches) {
              patch.unpatch();
          }
      }
- 
+
      static resolveModule(module) {
          if (!module || typeof (module) === "function" || (typeof (module) === "object" && !Array.isArray(module))) return module;
          if (typeof module === "string") return DiscordModules[module];
          if (Array.isArray(module)) return getByKeys(module);
          return null;
      }
- 
+
      static makeOverride(patch) {
          return function BDPatcher() {
              let returnValue;
@@ -61,7 +61,7 @@
                      Logger.err("Patcher", `Could not fire before callback of ${patch.functionName} for ${superPatch.caller}`, err);
                  }
              }
- 
+
              const insteads = patch.children.filter(c => c.type === "instead");
              if (!insteads.length) {returnValue = patch.originalFunction.apply(this, arguments);}
              else {
@@ -75,7 +75,7 @@
                      }
                  }
              }
- 
+
              for (const slavePatch of patch.children.filter(c => c.type === "after")) {
                  try {
                      const tempReturn = slavePatch.callback(this, arguments, returnValue);
@@ -88,11 +88,11 @@
              return returnValue;
          };
      }
- 
+
      static rePatch(patch) {
          patch.proxyFunction = patch.module[patch.functionName] = this.makeOverride(patch);
      }
- 
+
      static makePatch(module, functionName, name) {
          const patch = {
              name,
@@ -115,12 +115,12 @@
          this.patches.push(patch);
          return patch;
      }
- 
+
      /**
       * Function with no arguments and no return value that may be called to revert changes made by {@link module:Patcher}, restoring (unpatching) original method.
       * @callback module:Patcher~unpatch
       */
- 
+
      /**
       * A callback that modifies method logic. This callback is called on each call of the original method and is provided all data about original call. Any of the data can be modified if necessary, but do so wisely.
       *
@@ -132,7 +132,7 @@
       * @param {(function|*)} extraValue - For `instead` patches, this is the original function from the module. For `after` patches, this is the return value of the function.
       * @return {*} Makes sense only when using an `instead` or `after` patch. If something other than `undefined` is returned, the returned value replaces the value of `returnValue`. If used for `before` the return value is ignored.
       */
- 
+
      /**
       * This method patches onto another function, allowing your code to run beforehand.
       * Using this, you are also able to modify the incoming arguments before the original method is run.
@@ -147,7 +147,7 @@
       * @return {module:Patcher~unpatch} Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
       */
      static before(caller, moduleToPatch, functionName, callback, options = {}) {return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "before"}));}
- 
+
      /**
       * This method patches onto another function, allowing your code to run after.
       * Using this, you are also able to modify the return value, using the return of your code instead.
@@ -162,7 +162,7 @@
       * @return {module:Patcher~unpatch} Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
       */
      static after(caller, moduleToPatch, functionName, callback, options = {}) {return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "after"}));}
- 
+
      /**
       * This method patches onto another function, allowing your code to run instead.
       * Using this, you are also able to modify the return value, using the return of your code instead.
@@ -177,7 +177,7 @@
       * @return {module:Patcher~unpatch} Function with no arguments and no return value that should be called to cancel (unpatch) this patch. You should save and run it when your plugin is stopped.
       */
      static instead(caller, moduleToPatch, functionName, callback, options = {}) {return this.pushChildPatch(caller, moduleToPatch, functionName, callback, Object.assign(options, {type: "instead"}));}
- 
+
      /**
       * This method patches onto another function, allowing your code to run before, instead or after the original function.
       * Using this you are able to modify the incoming arguments before the original function is run as well as the return
@@ -199,10 +199,10 @@
          if (!module) return null;
          if (!module[functionName] && forcePatch) module[functionName] = function() {};
          if (!(module[functionName] instanceof Function)) return null;
- 
+
          if (typeof moduleToPatch === "string") options.displayName = moduleToPatch;
          const displayName = options.displayName || module.displayName || module.name || module.constructor.displayName || module.constructor.name;
- 
+
          const patchId = `${displayName}.${functionName}`;
          const patch = this.patches.find(p => p.module == module && p.functionName == functionName) || this.makePatch(module, functionName, patchId);
          if (!patch.proxyFunction) this.rePatch(patch);
@@ -225,6 +225,5 @@
          patch.counter++;
          return child.unpatch;
      }
- 
+
  }
- 

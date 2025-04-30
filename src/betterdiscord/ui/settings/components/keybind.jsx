@@ -13,7 +13,7 @@ export default function Keybind({value: initialValue, onChange, max = 4, clearab
 
     const [internalValue, setValue] = useState(initialValue);
     const contextValue = useContext(SettingsContext);
-    
+
     const value = contextValue !== none ? contextValue : internalValue;
 
     useEffect(() => {

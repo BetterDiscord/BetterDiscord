@@ -27,10 +27,10 @@ export default new class Editor {
 
         try {
             await DOMManager.injectScript("monaco-script", `${baseUrl}/vs/loader.min.js`);
-            
+
             const amdLoader = window.require; // Grab Monaco's amd loader
             window.require = commonjsLoader; // Revert to commonjs
-            
+
             // Configure Monaco's AMD loader
             amdLoader.config({paths: {vs: `${baseUrl}/vs`}});
             amdLoader(["vs/editor/editor.main"], () => {}); // exposes the monaco global

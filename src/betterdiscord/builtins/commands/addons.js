@@ -67,7 +67,7 @@ export default (type) => {
                 if (addon.source) fields.push({name: "Source", value: `[GitHub](${addon.source})`, inline: true});
                 if (addon.invite) fields.push({name: "Support", value: `[Discord](https://discord.gg/${addon.invite})`, inline: true});
                 if (addon.donate) fields.push({name: "Donate", value: `[Link](${addon.donate})`, inline: true});
-                
+
                 return {embeds: [{
                     color: 4096741,
                     title: addon.name,

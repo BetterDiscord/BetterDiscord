@@ -7,7 +7,7 @@ const {useState, useCallback, useContext} = React;
 export default function Textbox({value: initialValue, maxLength, placeholder, onKeyDown, onChange, disabled}) {
     const [internalValue, setValue] = useState(initialValue);
     const contextValue = useContext(SettingsContext);
-    
+
     const value = contextValue !== none ? contextValue : internalValue;
 
     const change = useCallback((e) => {

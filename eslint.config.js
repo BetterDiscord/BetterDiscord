@@ -3,6 +3,7 @@ import globals from "globals";
 import ts from "typescript-eslint";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
+import stylistic from "@stylistic/eslint-plugin";
 
 
 // Make sure typescript rules only affect typescript for now
@@ -26,6 +27,17 @@ export default ts.config(
     // Global ignore dirs
     {
         ignores: ["dist/", "assets/"]
+    },
+
+    // Trailing spaces, and other stylistic rules
+    // see more rules here: https://eslint.style/rules
+    {
+        plugins: {
+            "@stylistic": stylistic
+        },
+        rules: {
+            "@stylistic/no-trailing-spaces": ["error"]
+        }
     },
 
     // Setup general JS rules

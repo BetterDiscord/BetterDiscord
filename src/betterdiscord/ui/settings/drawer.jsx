@@ -23,7 +23,7 @@ export default function Drawer({name, collapsible, shown = true, showDivider, ch
             drawer.style.setProperty("height", "");
             drawer.classList.remove("animating");
         }, timeout);
-        
+
     }, [collapsed, onDrawerToggle]);
 
     const collapseClass = collapsible ? `collapsible ${collapsed ? "collapsed" : "expanded"}` : "";

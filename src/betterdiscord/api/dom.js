@@ -30,7 +30,7 @@ class DOM {
 
     /**
      * Adds a `<style>` to the document with the given ID.
-     * 
+     *
      * @param {string} id ID to use for style element
      * @param {string} css CSS to apply to the document
      */
@@ -49,7 +49,7 @@ class DOM {
 
     /**
      * Removes a `<style>` from the document corresponding to the given ID.
-     * 
+     *
      * @param {string} id ID used for the style element
      */
     removeStyle(id) {
@@ -59,13 +59,13 @@ class DOM {
         else if (this.#callerName) {
             id = this.#callerName;
         }
-        
+
         DOMManager.removeStyle(id);
     }
 
     /**
      * Adds a listener for when the node is removed from the document body.
-     * 
+     *
      * @param {HTMLElement} node Node to be observed
      * @param {function} callback Function to run when removed
      */
@@ -86,7 +86,7 @@ class DOM {
 
     /**
      * Utility to help smoothly animate using JavaScript.
-     * 
+     *
      * @param {function} update Render function indicating the style should be updated
      * @param {number} duration Duration in ms to animate for
      * @param {object} [options] Options to customize the animation
@@ -97,9 +97,9 @@ class DOM {
     }
 
     /**
-     * Utility function to make creating DOM elements easier. Acts similarly 
+     * Utility function to make creating DOM elements easier. Acts similarly
      * to `React.createElement`
-     * 
+     *
      * @param {string} tag HTML tag name to create
      * @param {object} [options] Options object to customize the element
      * @param {string} [options.className] Class name to add to the element
@@ -116,10 +116,10 @@ class DOM {
      * Parses a string of HTML and returns the results. If the second parameter is true,
      * the parsed HTML will be returned as a document fragment {@see https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment}.
      * This is extremely useful if you have a list of elements at the top level, they can then be appended all at once to another node.
-     * 
+     *
      * If the second parameter is false, then the return value will be the list of parsed
      * nodes and there were multiple top level nodes, otherwise the single node is returned.
-     * 
+     *
      * @param {string} html HTML to be parsed
      * @param {boolean} [fragment=false] Whether or not the return should be the raw `DocumentFragment`
      * @returns {(DocumentFragment|NodeList|HTMLElement)} The result of HTML parsing

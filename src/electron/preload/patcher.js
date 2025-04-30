@@ -30,7 +30,7 @@ export default function () {
                 configurable: true
             });
         };
-        
+
         if (!Reflect.has(window, chunkName)) {
             predefine(window, chunkName, instance => {
                 instance.push([[Symbol()], {}, require => {
@@ -56,6 +56,6 @@ export default function () {
             });
         }
     };
-    
+
     webFrame.top.executeJavaScript("(" + patcher + ")()");
 }

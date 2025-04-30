@@ -24,11 +24,11 @@ const AccessibilityContext = getModule(m => m?._currentValue?.reducedMotion, {se
 
 /**
  * Clone of Discord's builtin spinner, acts 100% the same
- * @param {SpinnerProps} props 
+ * @param {SpinnerProps} props
  */
 function Spinner(props) {
     const {reducedMotion} = React.useContext(AccessibilityContext);
-    
+
     const {animated = true} = props;
 
     /** @type {SpinnerTypes} */
@@ -67,7 +67,7 @@ function Spinner(props) {
                     {...props}
                 >
                     <div className="bd-spinner-inner">
-                        <svg 
+                        <svg
                             className="bd-spinner-circular"
                             viewBox="25 25 50 50"
                         >

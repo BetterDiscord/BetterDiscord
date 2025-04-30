@@ -7,7 +7,7 @@ const {useState, useCallback, useMemo, useRef, useContext} = React;
 export default function Slider({value: initialValue, min, max, step, onChange, disabled, units = "", markers = []}) {
     const [internalValue, setValue] = useState(initialValue);
     const contextValue = useContext(SettingsContext);
-    
+
     const value = contextValue !== none ? contextValue : internalValue;
     const inputRef = useRef(null);
 
@@ -65,7 +65,7 @@ export default function Slider({value: initialValue, min, max, step, onChange, d
 
 /**
  * label offset left:
- * 
+ *
  * value - min
  * -----------   x 100
  *  max - min

@@ -28,7 +28,7 @@ function setupMarkdown() {
 export default function Markdown({className, children}) {
     if (!DiscordMarkdown && !rules) setupMarkdown();
     if (!DiscordMarkdown) return <div className="bd-markdown-fallback">{children}</div>;
-    
+
     return <DiscordMarkdown
                 className={className}
                 parser={DiscordModules.SimpleMarkdown.parserFor(rules)}
