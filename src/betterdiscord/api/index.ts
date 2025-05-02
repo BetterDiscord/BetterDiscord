@@ -37,7 +37,11 @@ import Button from "@ui/base/button";
 import Spinner from "@ui/spinner";
 
 import type ReactType from "react";
-import type ReactDOMType from "react-dom";
+import type ReactDOMBaseType from "react-dom";
+import type ReactDOMClientType from "react-dom/client";
+
+type ReactDOMType = typeof ReactDOMBaseType & typeof ReactDOMClientType;
+
 
 const bounded = new Map();
 const PluginAPI = new AddonAPI(PluginManager);
@@ -87,7 +91,7 @@ const React: typeof ReactType = DiscordModules.React;
  * @type ReactDOM
  * @memberof BdApi
  */
-const ReactDOM: typeof ReactDOMType = DiscordModules.ReactDOM;
+const ReactDOM: ReactDOMType = DiscordModules.ReactDOM;
 
 /**
  * A reference string for BD's version.
