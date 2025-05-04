@@ -58,7 +58,8 @@ export default class Patcher {
             for (const superPatch of patch.children.filter(c => c.type === "before")) {
                 try {
                     superPatch.callback(this, arguments);
-                } catch (err) {
+                } 
+                catch (err) {
                     Logger.err("Patcher", `Could not fire before callback of ${patch.functionName} for ${superPatch.caller}`, err);
                 }
             }
@@ -66,12 +67,14 @@ export default class Patcher {
             const insteads = patch.children.filter(c => c.type === "instead");
             if (!insteads.length) {
                 returnValue = patch.originalFunction.apply(this, arguments);
-            } else {
+            } 
+            else {
                 for (const insteadPatch of insteads) {
                     try {
                         const tempReturn = insteadPatch.callback(this, arguments, patch.originalFunction.bind(this));
                         if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
-                    } catch (err) {
+                    } 
+                    catch (err) {
                         Logger.err("Patcher", `Could not fire instead callback of ${patch.functionName} for ${insteadPatch.caller}`, err);
                     }
                 }
@@ -81,7 +84,8 @@ export default class Patcher {
                 try {
                     const tempReturn = slavePatch.callback(this, arguments, returnValue);
                     if (typeof (tempReturn) !== "undefined") returnValue = tempReturn;
-                } catch (err) {
+                } 
+                catch (err) {
                     Logger.err("Patcher", `Could not fire after callback of ${patch.functionName} for ${slavePatch.caller}`, err);
                 }
             }
@@ -206,8 +210,9 @@ export default class Patcher {
         const {type = "after", forcePatch = true} = options;
         const module = this.resolveModule(moduleToPatch);
         if (!module) return null;
-        if (!module[functionName] && forcePatch) module[functionName] = function () {
-        };
+        if (!module[functionName] && forcePatch) {
+            module[functionName] = function () {};
+        }
         if (!(module[functionName] instanceof Function)) return null;
 
         if (typeof moduleToPatch === "string") options.displayName = moduleToPatch;
