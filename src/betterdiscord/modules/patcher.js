@@ -98,6 +98,24 @@ export default class Patcher {
     }
 
     static makePatch(module, functionName, name, caller) {
+        const allCallers = new Set();
+
+        const existingPatch = this.patches.find(p => p.module === module && p.functionName === functionName);
+        if (existingPatch) {
+            for (const child of existingPatch.children) {
+                if (child.caller) allCallers.add(child.caller);
+            }
+        }
+        else {
+            for (const patch of this.patches) {
+                for (const child of patch.children) {
+                    if (child.caller) allCallers.add(child.caller);
+                }
+            }
+        }
+
+        if (caller) allCallers.add(caller);
+
         const patch = {
             name,
             module,
@@ -110,15 +128,25 @@ export default class Patcher {
                 patch.children = [];
             },
             counter: 0,
-            children: []
+            children: [],
+            getActiveCallers: () => {
+                const callers = new Set();
+                for (const child of patch.children) {
+                    if (child.caller) callers.add(child.caller);
+                }
+                return Array.from(callers);
+            }
         };
 
         const mainPatchedMethod = this.makeOverride(patch);
         patch.proxyFunction = module[functionName] = mainPatchedMethod;
+
         Object.assign(module[functionName], patch.originalFunction);
-        module[functionName].__caller = caller;
+
         module[functionName].__originalFunction = patch.originalFunction;
+        module[functionName].__callers = patch.getActiveCallers;
         module[functionName].toString = () => patch.originalFunction.toString();
+
         this.patches.push(patch);
         return patch;
     }
