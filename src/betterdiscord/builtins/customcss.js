@@ -17,6 +17,7 @@ import FloatingWindows from "@ui/floatingwindows";
 import SettingsTitle from "@ui/settings/title";
 import {getByKeys} from "@webpack";
 import {debounce, findInTree} from "@common/utils";
+import RemoteAPI from "@polyfill/remote";
 
 
 const UserSettings = getByKeys(["updateAccount"]);
@@ -27,6 +28,7 @@ export default new class CustomCSS extends Builtin {
     get id() {return "customcss";}
     get startDetached() {return Settings.get(this.collection, this.category, "openAction") == "detached";}
     get nativeOpen() {return Settings.get(this.collection, this.category, "openAction") == "system";}
+    get startAsExternal() {return Settings.get(this.collection, this.category, "openAction") == "external";}
     get file() {return path.resolve(Config.get("channelPath"), "custom.css");}
 
     constructor() {
@@ -51,6 +53,7 @@ export default new class CustomCSS extends Builtin {
                 if (this.isDetached) return;
                 if (this.nativeOpen) return this.openNative();
                 else if (this.startDetached) return this.openDetached(this.savedCss);
+                else if (this.startAsExternal) return this.openExternal();
                 const settingsView = findInTree(thisObject._reactInternals, m => m && m.onSetSection, {walkable: ["child", "memoizedProps", "props", "children"]});
                 if (settingsView && settingsView.onSetSection) settingsView.onSetSection(this.id);
             }
@@ -85,9 +88,9 @@ export default new class CustomCSS extends Builtin {
             if (timeCache[filename] == stats.mtimeMs) return;
             timeCache[filename] = stats.mtimeMs;
             if (eventType == "change") {
-                const newCSS = this.loadCSS();
-                if (newCSS == this.savedCss) return;
-                this.savedCss = newCSS;
+                const oldCSS = this.savedCss;
+                this.loadCSS();
+                if (oldCSS === this.savedCss) return;
                 this.insertCSS(this.savedCss);
                 Events.emit("customcss-updated", this.savedCss);
             }
@@ -131,6 +134,7 @@ export default new class CustomCSS extends Builtin {
         if (this.isDetached) return;
         if (this.nativeOpen) return this.openNative();
         else if (this.startDetached) return this.openDetached(this.savedCss);
+        else if (this.startAsExternal) return this.openExternal();
         return UserSettings?.open?.(this.id);
     }
 
@@ -175,5 +179,9 @@ export default new class CustomCSS extends Builtin {
         this.isDetached = true;
         UserSettings.close();
         DiscordModules.Dispatcher?.dispatch({type: "LAYER_POP"});
+    }
+
+    openExternal() {
+        RemoteAPI.editor.open("custom-css");
     }
 };

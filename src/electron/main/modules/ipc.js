@@ -2,6 +2,7 @@ import {spawn} from "child_process";
 import {ipcMain as ipc, BrowserWindow, app, dialog, systemPreferences, shell} from "electron";
 
 import * as IPCEvents from "@common/constants/ipcevents";
+import Editor from "./editor";
 
 const getPath = (event, pathReq) => {
     let returnPath;
@@ -100,8 +101,8 @@ const stopDevtoolsWarning = event => event.sender.removeAllListeners("devtools-o
 
 const openDialog = (event, options = {}) => {
     const {
-        mode = "open", 
-        openDirectory = false, 
+        mode = "open",
+        openDirectory = false,
         openFile = true,
         multiSelections = false,
         filters,
@@ -120,7 +121,7 @@ const openDialog = (event, options = {}) => {
     if (!openFunction) return Promise.resolve({error: "Unkown Mode: " + mode});
 
     return openFunction.apply(dialog, [
-        modal && BrowserWindow.fromWebContents(event.sender), 
+        modal && BrowserWindow.fromWebContents(event.sender),
         {
             defaultPath,
             filters,
@@ -142,6 +143,16 @@ const openDialog = (event, options = {}) => {
 const registerPreload = (event, path) => {
     app.commandLine.appendSwitch("preload", path);
 };
+const openEditor = (event, type, filename) => {
+    Editor.open(type, filename);
+};
+
+const updateSettings = (event, settings) => {
+    Editor.updateSettings(settings);
+};
+const getSettings = (event) => {
+    event.returnValue = Editor.getSettings();
+};
 
 export default class IPCMain {
     static registerEvents() {
@@ -157,10 +168,13 @@ export default class IPCMain {
             ipc.on(IPCEvents.WINDOW_SIZE, setWindowSize);
             ipc.on(IPCEvents.DEVTOOLS_WARNING, stopDevtoolsWarning);
             ipc.on(IPCEvents.REGISTER_PRELOAD, registerPreload);
+            ipc.on(IPCEvents.EDITOR_SETTINGS_GET, getSettings);
             ipc.handle(IPCEvents.GET_ACCENT_COLOR, getAccentColor);
             ipc.handle(IPCEvents.RUN_SCRIPT, runScript);
             ipc.handle(IPCEvents.OPEN_DIALOG, openDialog);
             ipc.handle(IPCEvents.OPEN_WINDOW, createBrowserWindow);
+            ipc.handle(IPCEvents.EDITOR_OPEN, openEditor);
+            ipc.handle(IPCEvents.EDITOR_SETTINGS_UPDATE, updateSettings);
         }
         catch (err) {
             // eslint-disable-next-line no-console

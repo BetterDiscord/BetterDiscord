@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> - BetterDiscord Editor</title>
+</head>
+
+<body class="monaco-workbench monaco-editor vs-dark">
+    <style>
+        :root body {
+            margin: 0;
+            position: fixed !important;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            /* background-color: var(--vscode-editor-background); */
+            background-color: var(--discord-background-alt);
+            color: var(--vscode-foreground);
+            outline: 0 !important;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        #loader {
+            margin: 0;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+            background-color: var(--discord-background);
+            color: var(--discord-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #action-bar {
+            background-color: var(--vscode-editor-background);
+            color: var(--vscode-foreground);
+            border-top: 1px solid var(--vscode-tree-tableColumnsBorder);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #action-bar>div {
+            display: flex;
+            align-items: center;
+        }
+
+        #tabbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+        }
+
+        #tabbar-left {
+            display: flex;
+            gap: 4px;
+        }
+
+        .tabbar-action {
+            padding: 4px 8px;
+            display: flex;
+            text-decoration: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .tabbar-action:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #cccccc;
+        }
+
+        .footer-item {
+            align-items: center;
+            cursor: pointer;
+            display: flex;
+            height: 100%;
+            outline-width: 0;
+            overflow: hidden;
+            padding: 0 5px;
+            text-overflow: ellipsis;
+            white-space: pre;
+            margin-left: 3px;
+            margin-right: 3px;
+            text-decoration: none;
+        }
+
+        .footer-item:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #cccccc;
+        }
+
+        #live-update {
+            cursor: pointer;
+        }
+
+        #bd-icon {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        #bd-icon::before {
+            content: "";
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            mask: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhbHF1ZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDIwMDAgMjAwMCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjAwMCAyMDAwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48Zz4gICAgPHBhdGggZmlsbD0iI2ZmZiIgc3R5bGU9InN0cm9rZTpub25lIiBkPSJNMTQwMi4yLDYzMS43Yy05LjctMzUzLjQtMjg2LjItNDk2LTY0Mi42LTQ5Nkg2OC40djcxNC4xbDQ0MiwzOThWNDkwLjdoMjU3YzI3NC41LDAsMjc0LjUsMzQ0LjksMCwzNDQuOSAgICAgICAgSDU5Ny42djMyOS41aDE2OS44YzI3NC41LDAsMjc0LjUsMzQ0LjgsMCwzNDQuOGgtNjk5djM1NC45aDY5MS4yYzM1Ni4zLDAsNjMyLjgtMTQyLjYsNjQyLjYtNDk2YzAtMTYyLjYtNDQuNS0yODQuMS0xMjIuOS0zNjguNiAgICAgICAgQzEzNTcuNyw5MTUuOCwxNDAyLjIsNzk0LjMsMTQwMi4yLDYzMS43eiIvPjwvZz48L3N2Zz4=) 50% 50%/70% no-repeat;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            animation: bd-spinner 1s cubic-bezier(.4, 0, 0, 1) -.05s infinite;
+            background-color: var(--discord-color);
+        }
+
+        #bd-icon::after {
+            content: "";
+            left: 0;
+            top: 0;
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            mask: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkNhbHF1ZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDIwMDAgMjAwMCIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMjAwMCAyMDAwIiB4bWw6c3BhY2U9InByZXNlcnZlIj48Zz4gICAgPHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyNjIuNSwxMzUuMkwxMjYyLjUsMTM1LjJsLTc2LjgsMGMyNi42LDEzLjMsNTEuNywyOC4xLDc1LDQ0LjNjNzAuNyw0OS4xLDEyNi4xLDExMS41LDE2NC42LDE4NS4zICAgICAgICBjMzkuOSw3Ni42LDYxLjUsMTY1LjYsNjQuMywyNjQuNmwwLDEuMnYxLjJjMCwxNDEuMSwwLDU5Ni4xLDAsNzM3LjF2MS4ybDAsMS4yYy0yLjcsOTktMjQuMywxODgtNjQuMywyNjQuNiAgICAgICAgYy0zOC41LDczLjgtOTMuOCwxMzYuMi0xNjQuNiwxODUuM2MtMjIuNiwxNS43LTQ2LjksMzAuMS03Mi42LDQzLjFoNzIuNWMzNDYuMiwxLjksNjcxLTE3MS4yLDY3MS01NjcuOVY3MTYuNyAgICAgICAgQzE5MzMuNSwzMTIuMiwxNjA4LjcsMTM1LjIsMTI2Mi41LDEzNS4yeiIvPjwvZz48L3N2Zz4=) 50% 50%/70% no-repeat;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            animation: bd-spinner 1s ease infinite;
+            background-color: var(--discord-color);
+        }
+
+        @keyframes bd-spinner {
+            0% {
+                transform: scale(1)rotate(0.01deg);
+            }
+
+            20% {
+                transform: scale(1.3)rotate(0.01deg);
+            }
+
+            40% {
+                transform: scale(0.9)rotate(0.01deg);
+            }
+
+            100% {
+                transform: scale(1)rotate(0.01deg);
+            }
+        }
+    </style>
+
+    <div id="tabbar">
+        <div id="tabbar-left">
+            <div class="tabbar-action" id="save" title="Save">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-save">
+                    <path
+                        d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                    <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                </svg>
+            </div>
+            <div class="tabbar-action" id="open-editor" title="Open In System Editor">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-pencil">
+                    <path
+                        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                    <path d="m15 5 4 4" />
+                </svg>
+            </div>
+            <div class="tabbar-action" id="refresh" title="Resync Editor">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-refresh-ccw">
+                    <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                    <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                    <path d="M16 16h5v5" />
+                </svg>
+            </div>
+        </div>
+        <div id="tabbar-right">
+            <span>Live Update</span>
+            <input type="checkbox" name="live-update" id="live-update">
+        </div>
+    </div>
+    <div id="editor"></div>
+    <div id="action-bar">
+        <div id="action-bar-left">
+            <div class="footer-item" id="action-info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-circle-x-icon lucide-circle-x">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m15 9-6 6" />
+                    <path d="m9 9 6 6" />
+                </svg>
+                <span id="errors"> 0 </span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                    <path d="M12 9v4" />
+                    <path d="M12 17h.01" />
+                </svg>
+                <span id="warnings"> 0</span>
+            </div>
+        </div>
+        <div id="action-bar-right">
+            <div class="footer-item" id="action-current-position">
+                <span id="current-position">Ln 1, Col 1</span>
+            </div>
+            <div class="footer-item" id="tab-size">Tabs: 4</div>
+            <div class="footer-item" id="action-langauge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-braces-icon lucide-braces">
+                    <path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1" />
+                    <path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1" />
+                </svg>
+                <span id="language">CSS</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader">
+        <div id="bd-icon"></div>
+        <span>Loading...</span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.1/require.min.js"></script>
+
+    <script src="./script.js"></script>
+</body>
+
+</html>
