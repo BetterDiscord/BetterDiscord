@@ -22,6 +22,7 @@
     "devDependencies": {
         "@electron/asar": "^3.2.0",
         "@types/bun": "^1.2.2",
+        "@types/electron": "^1.6.12",
         "@types/eslint": "^9.6.1",
         "@types/react": "^19.1.2",
         "@types/react-dom": "^19.1.2",
@@ -41,7 +42,8 @@
         "buffer": "^6.0.3",
         "clsx": "^2.1.1",
         "fast-equals": "^5.2.2",
-        "lucide-react": "^0.474.0"
+        "lucide-react": "^0.474.0",
+        "monaco-editor": "0.52.2"
     },
     "engines": {
         "bun": ">=1.2"

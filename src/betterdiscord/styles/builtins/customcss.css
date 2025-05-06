@@ -1,6 +1,7 @@
 #bd-editor-panel {
     display: flex;
     flex-direction: column;
+    background: var(--bd-editor-background, var(--background-secondary));
 }
 
 #bd-editor-controls button {
