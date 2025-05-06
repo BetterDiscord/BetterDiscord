@@ -56,6 +56,10 @@ class NotificationUI {
         return () => this.hide(notification.id);
     }
 
+    static has(id) {
+        return this.notifications.some(n => n.id === id);
+    }
+
     static hide(id) {
         const notificationIndex = this.notifications.findIndex(n => n.id === id);
         if (notificationIndex !== -1) {
