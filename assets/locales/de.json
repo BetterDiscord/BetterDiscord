@@ -33,8 +33,8 @@
                     "note": "Macht den Discord-Hintergrund transparent (Benötigt Discord Neustart)"
                 },
                 "frame": {
-                    "name": "Standard-Design",
-                    "note": "Stellt das Hauptfenster im Standard-Design des Betriebssystems dar"
+                    "name": "Fensterrahmen",
+                    "note": "Nutzt den Standardrahmen des Betriebssystems für das Hauptfenster"
                 }
             },
             "addons": {
