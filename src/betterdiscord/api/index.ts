@@ -17,6 +17,7 @@ import ContextMenu from "./contextmenu";
 import fetch from "./fetch";
 import Logger from "./logger";
 import CommandAPI from "./commands";
+import Keybinds from "./keybinds";
 
 import ColorInput from "@ui/settings/components/color";
 import DropdownInput from "@ui/settings/components/dropdown";
@@ -51,6 +52,7 @@ const DOMAPI = new DOM();
 const ContextMenuAPI = new ContextMenu();
 const CommandsAPI = new CommandAPI();
 const DefaultLogger = new Logger();
+const KeybindsAPI = new Keybinds();
 
 /**
  * `Components` is a namespace holding a series of React components. It is available under {@link BdApi}.
@@ -108,6 +110,7 @@ export default class BdApi {
     DOM: DOM = DOMAPI;
     Logger: Logger = DefaultLogger;
     Commands: CommandAPI = CommandsAPI;
+    Keybinds: Keybinds = KeybindsAPI;
     React = React;
     ReactDOM = ReactDOM;
     version = version;
@@ -117,6 +120,7 @@ export default class BdApi {
     static DOM: DOM;
     static Logger: Logger;
     static Commands: CommandAPI;
+    static Keybinds: Keybinds;
     static React = React;
     static ReactDOM = ReactDOM;
     static version = version;
@@ -145,6 +149,7 @@ export default class BdApi {
         this.DOM = new DOM(pluginName);
         this.Logger = new Logger(pluginName);
         this.Commands = new CommandAPI(pluginName);
+        this.Keybinds = new Keybinds(pluginName);
 
         bounded.set(pluginName, this);
     }
@@ -232,6 +237,12 @@ BdApi.Components = Components;
  * @type CommandAPI
  */
 BdApi.Commands = CommandsAPI;
+
+/**
+ * An instance of {@link Keybinds} for managing keybinds.
+ * @type Keybinds
+ */
+BdApi.Keybinds = KeybindsAPI;
 
 /**
  * An instance of {@link Net} for using network related tools.
