@@ -259,9 +259,9 @@ class KeybindsManager {
         for (const [id, keybind] of keybinds.entries()) {
             if (keybind.event === event) {
                 DiscordUtils.inputEventUnregister(id);
-                keybinds.delete(id);
             }
         }
+        keybinds.clear();
         return true;
     }
 
@@ -320,13 +320,13 @@ class KeybindsManager {
         const keybinds = this.windowKeybinds.get(pluginName);
         if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);
 
-        keybinds?.forEach((keybind, id) => {
+        for (const keybind of keybinds.values()) {
             if (keybind.event === event) {
                 window.removeEventListener("keydown", keybind.callback);
                 window.removeEventListener("keyup", keybind.callback);
-                keybinds.delete(id);
             }
-        });
+        };
+        keybinds.clear();
         return true;
     }
 
@@ -337,16 +337,20 @@ class KeybindsManager {
      */
     static unregisterAllKeybinds(pluginName: string) {
         const globalKeybinds = this.globalKeybinds.get(pluginName);
-        globalKeybinds?.forEach((_keybind, id) => {
-            DiscordUtils.inputEventUnregister(id);
-            globalKeybinds.delete(id);
-        });
+        if (globalKeybinds) {
+            for (const id of globalKeybinds.keys()) {
+                DiscordUtils.inputEventUnregister(id);
+            }
+            globalKeybinds.clear();
+        }
         const windowKeybinds = this.windowKeybinds.get(pluginName);
-        windowKeybinds?.forEach((keybind, id) => {
-            window.removeEventListener("keydown", keybind.callback);
-            window.removeEventListener("keyup", keybind.callback);
-            windowKeybinds.delete(id);
-        });
+        if (windowKeybinds) {
+            for (const keybind of windowKeybinds.values()) {
+                window.removeEventListener("keydown", keybind.callback);
+                window.removeEventListener("keyup", keybind.callback);
+            }
+            windowKeybinds.clear();
+        }
         return true;
     }
 }
