@@ -1,3 +1,4 @@
+import Logger from "@common/logger";
 import {getByKeys, getModule} from "@webpack";
 
 type GlobalKeybindKey = [0, number];
@@ -9,7 +10,12 @@ type GlobalKeybindOptions = {
     keyup: boolean;
 };
 
-type WindowKeybindKey = {ctrl: boolean; ctrlLocation?: number; alt: boolean; altLocation?: number; shift: boolean; shiftLocation?: number, meta: boolean; metaLocation?: number, keys: string[];};
+type WindowKey = {
+    key: string;
+    location: number | undefined;// undefined for any location
+};
+
+type WindowKeybindKey = WindowKey[];
 type WindowKeybindKeyArray = WindowKeybindKey[];
 type WindowKeybindOptions = {
     keydown: boolean;
@@ -18,6 +24,14 @@ type WindowKeybindOptions = {
 
 type Keys = number[] | string[];
 type Keybind = {event: string, keys: Keys, callback: (() => void) | ((e: KeyboardEvent) => void);};
+
+const getDiscordUtils = getByKeys(["getDiscordUtils"]) as {
+    getDiscordUtils(): object;
+};
+const DiscordUtils = getDiscordUtils.getDiscordUtils() as {
+    inputEventRegister(id: number, keys: GlobalKeybindKey[], callback: () => void, options: GlobalKeybindOptions): undefined;
+    inputEventUnregister(id: number): undefined;
+};
 
 const platform = process.platform;
 const ctrl = platform === "win32" ? 0xa2 : platform === "darwin" ? 0xe0 : 0x25;
@@ -67,22 +81,17 @@ export function reverseRemapArray(arr: number[]) {
     });
 }
 
-const getDiscordUtils = getByKeys(["getDiscordUtils"]) as {
-    getDiscordUtils(): object;
-};
-const DiscordUtils = getDiscordUtils.getDiscordUtils() as {
-    inputEventRegister(id: number, keys: GlobalKeybindKey[], callback: () => void, options: GlobalKeybindOptions): undefined;
-    inputEventUnregister(id: number): undefined;
-};
-
+// Listeners used to track the keys pressed for the window keybinds
 window.addEventListener("keydown", (e: KeyboardEvent) => {
-    KeybindsManager.keysDown.add(e.key);
+    KeybindsManager.keysDown.set(e.key, e.location);
     KeybindsManager.keysUp.delete(e.key);
 });
 window.addEventListener("keyup", (e: KeyboardEvent) => {
-    KeybindsManager.keysUp.add(e.key);
+    KeybindsManager.keysUp.set(e.key, e.location);
     KeybindsManager.keysDown.delete(e.key);
 });
+
+
 
 /**
  * `KeybindsManager` is a class that manages the registration and unregistration of Keybinds.
@@ -96,8 +105,8 @@ class KeybindsManager {
     static windowsKeybindId: number = 1000;
     static globalKeybinds: Map<string, Map<number, Keybind>> = new Map();
     static windowKeybinds: Map<string, Map<number, Keybind>> = new Map();
-    static keysDown: Set<string> = new Set();
-    static keysUp: Set<string> = new Set();
+    static keysDown: Map<string, number> = new Map();
+    static keysUp: Map<string, number> = new Map();
 
     static setupPluginKeybinds(pluginName: string) {
         if (this.globalKeybinds.has(pluginName)) {
@@ -117,9 +126,9 @@ class KeybindsManager {
         if (!keys || keys.length === 0) return [];
         if (typeof keys[0] === "number") {
             const bindKeys: GlobalKeybindKeyArray = [];
-            (keys as number[]).forEach((key) => {
+            for (const key of keys as number[]) {
                 bindKeys.push([0, key]);
-            });
+            };
             return [bindKeys];
         }
         else if (typeof keys[0] === "string") {
@@ -129,19 +138,19 @@ class KeybindsManager {
             const normalKeys: string[] = [];
 
             // First identify special keys and regular keys
-            (keys as string[]).forEach((key) => {
-                key = key.toLowerCase();
-                if (key === "control") key = "ctrl";
-                if (key.startsWith("arrow")) key = key.replace("arrow", "");
-                if (key.startsWith("page")) key = key.replace("page", "page ");
+            for (const key of keys as string[]) {
+                let keyL = key.toLowerCase();
+                if (keyL === "control") keyL = "ctrl";
+                if (keyL.startsWith("arrow")) keyL = keyL.replace("arrow", "");
+                if (keyL.startsWith("page")) keyL = keyL.replace("page", "page ");
 
-                if (key === "ctrl" || key === "shift" || key === "alt" || key === "meta") {
-                    specialKeys.push(key);
+                if (keyL === "ctrl" || keyL === "shift" || keyL === "alt" || keyL === "meta") {
+                    specialKeys.push(keyL);
                 }
                 else {
-                    normalKeys.push(key);
+                    normalKeys.push(keyL);
                 }
-            });
+            };
 
             // Create all permutations
             const numberOfCombinations = Math.pow(2, specialKeys.length);
@@ -172,50 +181,43 @@ class KeybindsManager {
 
     static mapKeysToWindowKeybinds(keys: Keys): WindowKeybindKeyArray {
         if (!keys || keys.length === 0) return [];
-        const ret: WindowKeybindKey = {ctrl: false, alt: false, shift: false, meta: false, keys: []};
+        const ret: WindowKeybindKey = [];
         if (typeof keys[0] === "string") {
-            (keys as string[]).forEach((key) => {
-                if (key.startsWith("Control")) {
-                    ret.ctrl = true;
+            for (const key of keys as string[]) {
+                let location: number | undefined = 0;
+                if (key.startsWith("Control") || key.startsWith("Alt") || key.startsWith("Shift") || key.startsWith("Meta")) {
+                    location = undefined;
                 }
-                else if (key.startsWith("Alt")) {
-                    ret.alt = true;
-                }
-                else if (key.startsWith("Shift")) {
-                    ret.shift = true;
-                }
-                else if (key.startsWith("Meta")) {
-                    ret.meta = true;
-                }
-                else {
-                    ret.keys.push(key);
-                }
-            });
+                ret.push({key: key, location: location});
+            };
             return [ret];
         }
         else if (typeof keys[0] === "number") {
             const reversedMappedKeys = reverseRemapArray(keys as number[]);
-            reversedMappedKeys.forEach((key) => {
+            for (const key of reversedMappedKeys) {
+                let location = 0;
+                let keyN = "";
                 if (key.endsWith("ctrl")) {
-                    ret.ctrl = true;
-                    ret.ctrlLocation = key.startsWith("right") ? 2 : 1;
+                    location = key.startsWith("right") ? 2 : 1;
+                    keyN = "Control";
                 }
                 else if (key.endsWith("alt")) {
-                    ret.alt = true;
-                    ret.altLocation = key.startsWith("right") ? 2 : 1;
+                    location = key.startsWith("right") ? 2 : 1;
+                    keyN = "Alt";
                 }
                 else if (key.endsWith("shift")) {
-                    ret.shift = true;
-                    ret.shiftLocation = key.startsWith("right") ? 2 : 1;
+                    location = key.startsWith("right") ? 2 : 1;
+                    keyN = "Shift";
                 }
                 else if (key.endsWith("meta")) {
-                    ret.meta = true;
-                    ret.metaLocation = key.startsWith("right") ? 2 : 1;
+                    location = key.startsWith("right") ? 2 : 1;
+                    keyN = "Meta";
                 }
                 else {
-                    ret.keys.push(key);
+                    keyN = key;
                 }
-            });
+                ret.push({key: keyN, location: location});
+            };
             return [ret];
         }
         return [];
@@ -230,14 +232,17 @@ class KeybindsManager {
      * @param {Object} options Options for the keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    static registerGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: GlobalKeybindOptions) {
+    static registerGlobalKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: GlobalKeybindOptions = {blurred: true, focused: true, keydown: true, keyup: false}) {
         const toBind = this.mapKeysToGlobalKeybinds(keys);
-        if (!this.globalKeybinds.has(pluginName)) return false;
-        toBind.forEach((keystoBind) => {
+        const keybinds = this.globalKeybinds.get(pluginName);
+        if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);
+
+        for (const keysToBind of toBind) {
             const id = this.gloabalKeybindId++;
-            this.globalKeybinds.get(pluginName)?.set(id, {event, keys, callback});
-            DiscordUtils.inputEventRegister(id, keystoBind, callback, options);
-        });
+            keybinds.set(id, {event, keys, callback});
+            DiscordUtils.inputEventRegister(id, keysToBind, callback, options);
+        };
+
         return true;
     }
 
@@ -249,7 +254,8 @@ class KeybindsManager {
      */
     static unregisterGlobalKeybind(pluginName: string, event: string) {
         const keybinds = this.globalKeybinds.get(pluginName);
-        if (!keybinds) return false;
+        if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);
+
         for (const [id, keybind] of keybinds.entries()) {
             if (keybind.event === event) {
                 DiscordUtils.inputEventUnregister(id);
@@ -268,27 +274,31 @@ class KeybindsManager {
      * @param {Object} options Options for the keybind
      * @returns {boolean} Whether the Keybind was registered
      */
-    static registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: WindowKeybindOptions) {
+    static registerWindowKeybind(pluginName: string, event: string, keys: Keys, callback: () => void, options: WindowKeybindOptions = {keydown: true, keyup: false}) {
         const toBind = this.mapKeysToWindowKeybinds(keys);
-        toBind.forEach((keystoBind) => {
+        const keybinds = this.windowKeybinds.get(pluginName);
+        if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);
+
+        for (const keysToBind of toBind) {
             const id = this.windowsKeybindId++;
+
             const handleCallback = (e: KeyboardEvent) => {
-                // TODO: Add support for key locations
-                if (e.altKey === keystoBind.alt
-                    && e.ctrlKey === keystoBind.ctrl
-                    && e.shiftKey === keystoBind.shift
-                    && e.metaKey === keystoBind.meta) {
+                if (keysToBind.find(key => key.key === e.key)) {
                     let checkKeys = true;
-                    keystoBind.keys.forEach((key) => {
-                        if (!this.keysDown.has(key)) {
+                    for (const key of keysToBind) {
+                        const location = this.keysDown.get(key.key) || e.location;
+                        if (location === undefined) {
                             checkKeys = false;
                         }
-                    });
+                        else if (location !== key.location && key.location !== undefined) {
+                            checkKeys = false;
+                        }
+                    };
                     if (!checkKeys) return;
                     callback();
                 }
             };
-            this.windowKeybinds.get(pluginName)?.set(id, {event: event, keys: keys, callback: handleCallback});
+            keybinds.set(id, {event: event, keys: keys, callback: handleCallback});
 
             if (options.keydown) {
                 window.addEventListener("keydown", handleCallback);
@@ -296,7 +306,7 @@ class KeybindsManager {
             if (options.keyup) {
                 window.addEventListener("keyup", handleCallback);
             }
-        });
+        };
         return true;
     }
 
@@ -308,7 +318,8 @@ class KeybindsManager {
      */
     static unregisterWindowKeybind(pluginName: string, event: string) {
         const keybinds = this.windowKeybinds.get(pluginName);
-        if (!keybinds) return false;
+        if (!keybinds) throw new Error("KeybindsManager: No keybinds Map found for the plugin " + pluginName);
+
         keybinds?.forEach((keybind, id) => {
             if (keybind.event === event) {
                 window.removeEventListener("keydown", keybind.callback);
@@ -373,28 +384,43 @@ export class Keybinds {
             event = pluginName as unknown as string;
             pluginName = this.#callerName;
         }
-        if (options === undefined) {
+        try {
             if (global) {
-                options = {blurred: true, focused: true, keydown: true, keyup: false};
+                return KeybindsManager.registerGlobalKeybind(pluginName, event, keys, callback, options as GlobalKeybindOptions);
             }
-            else {
-                options = {keydown: true, keyup: false};
-            }
+            return KeybindsManager.registerWindowKeybind(pluginName, event, keys, callback, options as WindowKeybindOptions);
         }
-        return global ? KeybindsManager.registerGlobalKeybind(pluginName, event, keys, callback, options as GlobalKeybindOptions) : KeybindsManager.registerWindowKeybind(pluginName, event, keys, callback, options as WindowKeybindOptions);
+        catch (e) {
+            Logger.stacktrace(this.#callerName, "Keybinds.registerKeybind", e);
+            return false;
+        }
     };
 
     /**
      * Unregisters a Keybind.
+     * @param {string} pluginName Name of the plugin to unregister the Keybind for
      * @param {string} event Name of the event to unregister
+     * @param {boolean} global Whether the Keybind is global or window; if not specified, it will be treated as both global and window
      * @returns {boolean} Whether the Keybind was unregistered
      */
     unregisterKeybind(pluginName: string, event: string, global: boolean) {
         if (this.#callerName) {
+            global = event as unknown as boolean;
             event = pluginName;
             pluginName = this.#callerName;
         }
-        return global ? KeybindsManager.unregisterGlobalKeybind(pluginName, event) : KeybindsManager.unregisterWindowKeybind(pluginName, event);
+        try {
+            if (global || global === undefined) {
+                return KeybindsManager.unregisterGlobalKeybind(pluginName, event);
+            }
+            if (!global || global === undefined) {
+                return KeybindsManager.unregisterWindowKeybind(pluginName, event);
+            }
+        }
+        catch (e) {
+            Logger.stacktrace(this.#callerName, "Keybinds.unregisterKeybind", e);
+            return false;
+        }
     }
 
     /**
