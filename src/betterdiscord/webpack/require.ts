@@ -5,7 +5,6 @@ export let webpackRequire: Webpack.Require;
 
 export const lazyListeners = new Set<Webpack.Filter>();
 
-
 let __ORIGINAL_PUSH__ = window.webpackChunkdiscord_app.push;
 
 Object.defineProperty(window.webpackChunkdiscord_app, "push", {

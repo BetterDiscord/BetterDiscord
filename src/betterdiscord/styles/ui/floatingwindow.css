@@ -29,7 +29,7 @@
     overflow: auto;
     resize: both;
     padding-bottom: 10px;
-    background: var(--background-tertiary);
+    background: var(--bd-editor-background, var(--background-tertiary));
 }
 
 .floating-window-titlebar {
@@ -45,7 +45,7 @@
 .floating-window-content {
     display: flex;
     flex-direction: column;
-    background: var(--background-secondary);
+    background: var(--bd-editor-background, var(--background-secondary));
     color: #FFFFFF;
     flex: 1;
     overflow: hidden;
@@ -100,6 +100,10 @@
     overflow: hidden;
 }
 
+.editor-wrapper {
+    position: relative;
+}
+
 .floating-window .editor-wrapper {
     flex: 1;
     overflow: hidden;
@@ -130,4 +134,86 @@
     min-height: 605px;
     max-height: 90%;
     max-width: 90%;
+}
+
+.bd-editor-footer {
+    color: var(--bd-editor-foreground);
+    border-top: 1px solid var(--bd-editor-divider);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bd-editor-footer-left,
+.bd-editor-footer-right {
+    display: flex;
+}
+
+.bd-editor-footer-item {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    height: 100%;
+    outline-width: 0;
+    overflow: hidden;
+    padding: 0 5px;
+    text-overflow: ellipsis;
+    white-space: pre;
+    margin-left: 3px;
+    margin-right: 3px;
+    line-height: 22px;
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+}
+
+.bd-editor-problems {
+    position: absolute;
+    overflow: hidden scroll;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background: var(--bd-editor-background, var(--background-tertiary));
+    z-index: 5;
+}
+
+.bd-editor-problem {
+    color: var(--bd-editor-foreground, var(--text-normal));
+    display: inline-flex;
+    gap: 8px;
+    padding: 3px 4px 0;
+}
+
+.bd-editor-problem.bd-editor-severity-8 svg {
+    color: var(--info-danger-foreground);
+}
+
+.bd-editor-problem.bd-editor-severity-4 svg {
+    color: var(--info-warning-foreground);
+}
+
+.bd-editor-problem.bd-editor-severity-2 svg,
+.bd-editor-problem.bd-editor-severity-1 svg {
+    color: var(--info-help-foreground);
+}
+
+.bd-editor-problem > :nth-child(2) ~ span {
+    opacity: 0.7;
+}
+
+.bd-editor-no-problems {
+    color: var(--bd-editor-foreground, var(--text-normal));
+    padding: 4px;
+}
+
+.bd-editor-footer-right .codicon {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    height: 100%;
+    outline-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre;
+    padding: 0 3px;
 }
