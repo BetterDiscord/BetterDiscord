@@ -570,7 +570,7 @@ export default class WebpackModules {
         else if (typeof(window[this.chunkName]) !== "undefined") {
             window[this.chunkName].push([[id], 
                 {},
-                __internal_require__ => __discord_webpack_require__ = __internal_require__
+                __internal_require__ => {if (Reflect.has(__internal_require__, "b")) __discord_webpack_require__ = __internal_require__;}
             ]);
         }
 
