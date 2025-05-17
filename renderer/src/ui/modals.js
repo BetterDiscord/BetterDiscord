@@ -116,9 +116,10 @@ export default class Modals {
 
         if (Array.isArray(content) ? content.every(el => React.isValidElement(el)) : React.isValidElement(content)) {
             const container = modal.querySelector(".scroller");
+            let root;
 
             try {
-                const root = ReactDOM.createRoot(container);
+                root = ReactDOM.createRoot(container);
                 root.render(content);
             }
             catch (error) {
@@ -126,7 +127,7 @@ export default class Modals {
             }
 
             DOMManager.onRemoved(container, () => {
-                ReactDOM.unmountComponentAtNode(container);
+                root?.unmount();
             });
         }
         else {

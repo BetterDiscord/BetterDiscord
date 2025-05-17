@@ -11,6 +11,20 @@ This changelog starts with the restructured 1.0.0 release that happened after co
 ### Changed
 
 ### Fixed
+ - Fixed more using old reactdom apis
+ - Fixed webpack require hijack
+ - Fixed customcss watcher
+
+
+## 1.12.4
+
+### Added
+
+### Removed
+
+### Changed
+
+### Fixed
  - Fixed using old reactdom apis
 
 
