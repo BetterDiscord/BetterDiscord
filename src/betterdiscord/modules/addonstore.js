@@ -14,6 +14,7 @@ import Modals from "@ui/modals";
 import InstallModal from "@ui/modals/installmodal";
 import Settings from "@stores/settings";
 import Web from "@data/web";
+import AddonManager from "./addonmanager";
 
 /**
  * @typedef {{
@@ -301,7 +302,14 @@ class Addon {
                     }
 
                     if (shouldEnable) {
-                        this.manager.state[this.name] = true;
+                        // Shouldn't need a try..catch but better safe than sorry
+                        try {
+                            const meta = AddonManager.prototype.extractMeta(text, this.filename);
+                            this.manager.state[meta.name || this.name] = true;
+                        }
+                        catch {
+                            this.manager.state[this.name] = true;
+                        }
 
                         this.manager.saveState();
                     }
