@@ -89,7 +89,7 @@ export class Filters {
                 return false;
             }
             if (!source) return false;
-            
+
             return searches.every(search => {
                 if (typeof search === "string") return source.includes(search);
                 return Boolean(source.match(search));
@@ -228,14 +228,14 @@ export default class WebpackModules {
         for (let i = 0; i < indices.length; i++) {
             const index = indices[i];
             if (!modules.hasOwnProperty(index)) continue;
-            
+
             let module = null;
             try {module = modules[index];}
             catch {continue;}
 
             const {exports} = module;
             if (shouldSkipModule(exports)) continue;
-            
+
             if (typeof(exports) === "object" && searchExports && !exports.TypedArray) {
                 for (const key in exports) {
                     let foundModule = null;
@@ -265,13 +265,13 @@ export default class WebpackModules {
 
 
         }
-        
+
         return first || rm.length == 0 ? undefined : rm;
     }
 
     /**
      * Finds multiple modules using multiple filters.
-     * 
+     *
      * @param {...object} queries Whether to return only the first matching module
      * @param {Function} queries.filter A function to use to filter modules
      * @param {Boolean} [queries.first=true] Whether to return only the first matching module
@@ -324,17 +324,17 @@ export default class WebpackModules {
                 }
             }
         }
-        
+
         return returnedModules;
     }
 
     /**
-     * Searches for a module by value, returns module & matched key. Useful in combination with the Patcher. 
+     * Searches for a module by value, returns module & matched key. Useful in combination with the Patcher.
      * @param {(value: any, index: number, array: any[]) => boolean} filter A function to use to filter the module
      * @param {object} [options] Set of options to customize the search
      * @param {any} [options.target=null] Optional module target to look inside.
      * @param {Boolean} [options.defaultExport=true] Whether to return default export when matching the default export
-     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters. 
+     * @param {Boolean} [options.searchExports=false] Whether to execute the filter on webpack export getters.
      * @param {Boolean} [options.raw=false] Whether to return the whole Module object when matching exports
      * @return {[Any, string]}
      */
@@ -343,7 +343,7 @@ export default class WebpackModules {
             Object.values(exports).some(filter),
             rest
         );
-        
+
         yield target && Object.keys(target).find(k => filter(target[k]));
     }
 
@@ -365,7 +365,7 @@ export default class WebpackModules {
         if (typeof filter === "string" || filter instanceof RegExp) {
             filter = Filters.bySource(filter);
         }
-    
+
         const returnValue = {};
         let module = this.getModule(
             (exports, moduleInstance, id) => {
@@ -374,18 +374,18 @@ export default class WebpackModules {
             },
             {defaultExport, searchExports, raw}
         );
-    
+
         if (!module) return returnValue;
         if (raw) module = module.exports;
-    
+
         const mangledEntries = Object.entries(mangled);
-    
+
         for (const searchKey in module) {
             if (!Object.prototype.hasOwnProperty.call(module, searchKey)) continue;
-    
+
             for (const [key, propertyFilter] of mangledEntries) {
                 if (key in returnValue) continue;
-    
+
                 if (propertyFilter(module[searchKey])) {
                     Object.defineProperty(returnValue, key, {
                         get() {
@@ -400,9 +400,9 @@ export default class WebpackModules {
                 }
             }
         }
-    
+
         return returnValue;
-    } 
+    }
 
     /**
      * Finds all modules matching a filter function.
@@ -540,7 +540,7 @@ export default class WebpackModules {
                     if (wrappedFilter(exports, module, id)) foundModule = exports;
 
                 }
-                
+
                 if (!foundModule) return;
                 if (raw) foundModule = module;
                 cancel();
@@ -560,17 +560,17 @@ export default class WebpackModules {
      */
     static get require() {
         if (this._require) return this._require;
-        const id = "bd-webpackmodules";
+        const id = Symbol("BetterDiscord");
         let __discord_webpack_require__;
-        if (typeof(webpackJsonp) !== "undefined") {
-            __discord_webpack_require__ = window.webpackJsonp.push([[], {
-                [id]: (module, exports, __internal_require__) => module.exports = __internal_require__
-            }, [[id]]]);
-        }
-        else if (typeof(window[this.chunkName]) !== "undefined") {
-            window[this.chunkName].push([[id], 
+
+        if (typeof(window[this.chunkName]) !== "undefined") {
+            window[this.chunkName].push([[id],
                 {},
-                __internal_require__ => __discord_webpack_require__ = __internal_require__
+                __internal_require__ => {
+                    if ("b" in __internal_require__) {
+                        __discord_webpack_require__ = __internal_require__;
+                    }
+                }
             ]);
         }
 
@@ -593,7 +593,7 @@ export default class WebpackModules {
     static initialize() {
         this.handlePush = this.handlePush.bind(this);
         this.listeners = new Set();
-        
+
         this.__ORIGINAL_PUSH__ = window[this.chunkName].push;
         Object.defineProperty(window[this.chunkName], "push", {
             configurable: true,
@@ -608,7 +608,7 @@ export default class WebpackModules {
                 });
             }
         });
-    }    
+    }
 
     /**
      * Adds a listener for when discord loaded a chunk. Useful for subscribing to lazy loaded modules.
