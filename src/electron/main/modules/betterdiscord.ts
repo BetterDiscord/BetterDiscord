@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import electron from "electron";
+import electron, {BrowserWindow} from "electron";
 import {spawn} from "child_process";
 
 import ReactDevTools from "./reactdevtools";
@@ -13,17 +13,22 @@ const buildInfoFile = path.resolve(appPath, "..", "build_info.json");
 // Locate data path to find transparency settings
 let bdFolder = "";
 if (process.platform === "win32" || process.platform === "darwin") bdFolder = path.join(electron.app.getPath("userData"), "..");
-else bdFolder = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config"); // This will help with snap packages eventually
+else bdFolder = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME!, ".config"); // This will help with snap packages eventually
 bdFolder = path.join(bdFolder, "BetterDiscord") + "/";
 
 let hasCrashed = false;
 export default class BetterDiscord {
-    static getSetting(category, key) {
+    static _settings: Record<string, Record<string, any>>;
+
+    static getSetting(category: string, key: string) {
         if (this._settings) return this._settings[category]?.[key];
 
         try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const buildInfo = require(buildInfoFile);
             const settingsFile = path.resolve(bdFolder, "data", buildInfo.releaseChannel, "settings.json");
+
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             this._settings = require(settingsFile) ?? {};
             return this._settings[category]?.[key];
         }
@@ -45,7 +50,7 @@ export default class BetterDiscord {
         if (!fs.existsSync(path.join(bdFolder, "themes"))) fs.mkdirSync(path.join(bdFolder, "themes"));
     }
 
-    static async injectRenderer(browserWindow) {
+    static async injectRenderer(browserWindow: BrowserWindow) {
         const location = path.join(__dirname, "betterdiscord.js");
         if (!fs.existsSync(location)) return; // TODO: cut a fatal log
         const content = fs.readFileSync(location).toString();
@@ -65,15 +70,18 @@ export default class BetterDiscord {
         if (!success) return; // TODO: cut a fatal log
     }
 
-    static setup(browserWindow) {
+    static setup(browserWindow: BrowserWindow) {
 
         // Setup some useful vars to avoid blocking IPC calls
         try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             process.env.DISCORD_RELEASE_CHANNEL = require(buildInfoFile).releaseChannel;
         }
         catch {
             process.env.DISCORD_RELEASE_CHANNEL = "stable";
         }
+
+        // @ts-expect-error adding new property, don't want to override object
         process.env.DISCORD_PRELOAD = browserWindow.__originalPreload;
         process.env.DISCORD_APP_PATH = appPath;
         process.env.DISCORD_USER_DATA = electron.app.getPath("userData");
@@ -123,13 +131,13 @@ export default class BetterDiscord {
 
             // I think this is how it works on MacOS
             // But cant work still because of a build plist needs changed (I think?)
-            electron.app.on("open-url", (event, url) => {
+            electron.app.on("open-url", (_, url) => {
                 if (url.startsWith("betterdiscord://")) {
                     browserWindow.webContents.send(IPCEvents.HANDLE_PROTOCOL, url);
                 }
             });
 
-            electron.app.on("second-instance", (event, argv) => {
+            electron.app.on("second-instance", (_, argv) => {
                 // Ignore multi instance
                 if (argv.includes("--multi-instance")) return;
 
@@ -173,3 +181,8 @@ Object.defineProperty(global, "appSettings", {
     configurable: true,
     enumerable: false
 });
+
+declare global {
+    // eslint-disable-next-line no-var
+    var appSettings: any;
+}

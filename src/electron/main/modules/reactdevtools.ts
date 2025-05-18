@@ -4,12 +4,12 @@ import {session} from "electron";
 
 export const REACT_DEVTOOLS_ID = "fmkadmapgofadopljbjfkapdkoienihi";
 
-const findLatestVersion = (extensionPath) => {
+const findLatestVersion = (extensionPath: string) => {
     const versions = fs.readdirSync(extensionPath);
     return path.resolve(extensionPath, versions[versions.length - 1]);
 };
 
-const findExtension = (dataPath) => {
+const findExtension = (dataPath: string) => {
     // Default to extensions folder in BetterDiscord folder
     const replacementPath = path.resolve(dataPath, "extensions", REACT_DEVTOOLS_ID);
     if (fs.existsSync(replacementPath)) {
@@ -21,10 +21,10 @@ const findExtension = (dataPath) => {
 
     let extensionPath = "";
     // Get path to user data folder
-    if (process.platform === "win32") extensionPath = path.resolve(process.env.LOCALAPPDATA, "Google/Chrome/User Data");
-    else if (process.platform === "linux") extensionPath = path.resolve(process.env.HOME, ".config/google-chrome");
-    else if (process.platform === "darwin") extensionPath = path.resolve(process.env.HOME, "Library/Application Support/Google/Chrome");
-    else extensionPath = path.resolve(process.env.HOME, ".config/chromium");
+    if (process.platform === "win32") extensionPath = path.resolve(process.env.LOCALAPPDATA!, "Google/Chrome/User Data");
+    else if (process.platform === "linux") extensionPath = path.resolve(process.env.HOME!, ".config/google-chrome");
+    else if (process.platform === "darwin") extensionPath = path.resolve(process.env.HOME!, "Library/Application Support/Google/Chrome");
+    else extensionPath = path.resolve(process.env.HOME!, ".config/chromium");
 
     // If default profile doesn't exist
     if (!fs.existsSync(extensionPath + "/Default")) {
@@ -49,8 +49,8 @@ const findExtension = (dataPath) => {
     }
     else {
         extensionPath += `/Default/Extensions/${REACT_DEVTOOLS_ID}`;
-    } 
-    
+    }
+
     // Get latest version
     if (fs.existsSync(extensionPath)) {
         extensionPath = findLatestVersion(extensionPath);
@@ -62,7 +62,7 @@ const findExtension = (dataPath) => {
 };
 
 export default class ReactDevTools {
-    static async install(dataPath) {
+    static async install(dataPath: string) {
         const extPath = findExtension(dataPath);
         if (!extPath) return; // TODO: cut a log
 
@@ -75,7 +75,7 @@ export default class ReactDevTools {
         }
     }
 
-    static async remove(dataPath) {
+    static async remove(dataPath: string) {
         const extPath = findExtension(dataPath);
         if (!extPath) return; // TODO: cut a log
 

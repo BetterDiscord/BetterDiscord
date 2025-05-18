@@ -37,6 +37,7 @@ if (!process.argv.includes("--vanilla")) {
 
 // Needs to run this after Discord but before ready()
 if (!process.argv.includes("--vanilla")) {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const BetterDiscord = require("./modules/betterdiscord").default;
     BetterDiscord.disableMediaKeys();
     BetterDiscord.ensureDirectories();

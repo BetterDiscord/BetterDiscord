@@ -2,7 +2,9 @@ import electron from "electron";
 
 export default class {
     static remove() {
-        electron.session.defaultSession.webRequest.onHeadersReceived(function(details, callback) {
+        electron.session.defaultSession.webRequest.onHeadersReceived(function (details, callback) {
+            if (!details.responseHeaders) return callback({cancel: false});
+
             const headers = Object.keys(details.responseHeaders);
             for (let h = 0; h < headers.length; h++) {
                 const key = headers[h];
