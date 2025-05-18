@@ -1,21 +1,20 @@
 import Logger from "./logger";
 
+
 export default class EventEmitter {
     static get EventEmitter() {return EventEmitter;}
 
-    constructor() {
-        this.events = {};
-    }
+    events: Record<string, Set<(...args: any[]) => void>> = {};
 
     setMaxListeners() {}
 
-    on(event, callback) {
+    on(event: string, callback: (...args: any[]) => void) {
         if (!this.events[event]) this.events[event] = new Set();
 
         this.events[event].add(callback);
     }
 
-    emit(event, ...args) {
+    emit(event: string, ...args: any[]) {
         if (!this.events[event]) return;
 
         for (const [index, listener] of this.events[event].entries()) {
@@ -28,7 +27,7 @@ export default class EventEmitter {
         }
     }
 
-    off(event, callback) {
+    off(event: string, callback: (...args: any[]) => void) {
         if (!this.events[event]) return;
 
         return this.events[event].delete(callback);

@@ -7,10 +7,12 @@
 
 /* eslint-disable no-console */
 
+type ConsoleLogTypes = "error" | "debug" | "log" | "warn" | "info";
+
 /**
  * List of logging types.
  */
-export const LogTypes = {
+export const LogTypes: Record<string, ConsoleLogTypes> = {
     /** Alias for error */
     err: "error",
     error: "error",
@@ -31,7 +33,7 @@ export default class Logger {
      * @param {string} message - Message or error to have logged.
      * @param {any} error - Error object to log with the message.
      */
-    static stacktrace(module, message, error) {
+    static stacktrace(module: string, message: any, error: Error) {
         console.error(`%c[${module}]%c ${message}\n\n%c`, "color: #3a71c1; font-weight: 700;", "color: red; font-weight: 700;", "color: red;", error);
     }
 
@@ -41,14 +43,14 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {any[]} message - Messages to have logged.
      */
-    static err(module, ...message) {Logger._log(module, message, "error");}
+    static err(module: string, ...message: any[]) {Logger._log(module, message, "error");}
 
     /**
      * Alias for "err"
      * @param {string} module NAme of the calling module
      * @param  {...any} message Messages to have logged.
      */
-    static error(module, ...message) {Logger._log(module, message, "error");}
+    static error(module: string, ...message: any[]) {Logger._log(module, message, "error");}
 
     /**
      * Logs a warning message.
@@ -56,7 +58,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    static warn(module, ...message) {Logger._log(module, message, "warn");}
+    static warn(module: string, ...message: any[]) {Logger._log(module, message, "warn");}
 
     /**
      * Logs an informational message.
@@ -64,7 +66,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    static info(module, ...message) {Logger._log(module, message, "info");}
+    static info(module: string, ...message: any[]) {Logger._log(module, message, "info");}
 
     /**
      * Logs used for debugging purposes.
@@ -72,7 +74,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    static debug(module, ...message) {Logger._log(module, message, "debug");}
+    static debug(module: string, ...message: any[]) {Logger._log(module, message, "debug");}
 
     /**
      * Logs used for basic loggin.
@@ -80,7 +82,7 @@ export default class Logger {
      * @param {string} module - Name of the calling module.
      * @param {...any} message - Messages to have logged.
      */
-    static log(module, ...message) {Logger._log(module, message);}
+    static log(module: string, ...message: any[]) {Logger._log(module, message);}
 
     /**
      * Logs strings using different console levels and a module label.
@@ -89,14 +91,13 @@ export default class Logger {
      * @param {any|Array<any>} message - Messages to have logged.
      * @param {module:Logger.LogTypes} type - Type of log to use in console.
      */
-    static _log(module, message, type = "log") {
-        type = Logger.parseType(type);
+    static _log(module: string, message: any, type: keyof typeof LogTypes = "log") {
+        const parsedType = Logger.parseType(type);
         if (!Array.isArray(message)) message = [message];
-        console[type](`%c[BetterDiscord]%c [${module}]%c`, "color: #3E82E5; font-weight: 700;", "color: #3a71c1;", "", ...message);
+        console[parsedType](`%c[BetterDiscord]%c [${module}]%c`, "color: #3E82E5; font-weight: 700;", "color: #3a71c1;", "", ...message);
     }
 
-    static parseType(type) {
+    static parseType(type: keyof typeof LogTypes): ConsoleLogTypes {
         return LogTypes[type] || "log";
     }
-
 }
