@@ -1,10 +1,11 @@
 import {webFrame} from "electron";
 
 
+// TODO: could use better typing when this is rewritten
 export default function () {
     const patcher = function () {
         const chunkName = "webpackChunkdiscord_app";
-        const predefine = function (target, prop, effect) {
+        const predefine = function (target: object, prop: keyof typeof target, effect: (v: any) => void) {
             const value = target[prop];
             Object.defineProperty(target, prop, {
                 get() {return value;},
@@ -24,17 +25,18 @@ export default function () {
                         console.error(error);
                     }
 
-                    // eslint-disable-next-line no-setter-return
+
                     return newValue;
                 },
                 configurable: true
             });
         };
-        
+
         if (!Reflect.has(window, chunkName)) {
+            // @ts-expect-error cba
             predefine(window, chunkName, instance => {
-                instance.push([[Symbol()], {}, require => {
-                    require.d = (target, exports) => {
+                instance.push([[Symbol()], {}, (require: any) => {
+                    require.d = (target: object, exports: any) => {
                         for (const key in exports) {
                             if (!Reflect.has(exports, key)) continue;
 
@@ -56,6 +58,6 @@ export default function () {
             });
         }
     };
-    
-    webFrame.top.executeJavaScript("(" + patcher + ")()");
+
+    webFrame.top?.executeJavaScript("(" + patcher + ")()");
 }

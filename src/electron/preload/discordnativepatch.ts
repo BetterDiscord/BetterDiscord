@@ -5,15 +5,16 @@ import * as IPCEvents from "@common/constants/ipcevents";
 
 let dataPath = "";
 if (process.platform === "win32" || process.platform === "darwin") dataPath = path.join(electron.ipcRenderer.sendSync(IPCEvents.GET_PATH, "userData"), "..");
-else dataPath = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME, ".config"); // This will help with snap packages eventually
+else dataPath = process.env.XDG_CONFIG_HOME ? process.env.XDG_CONFIG_HOME : path.join(process.env.HOME!, ".config"); // This will help with snap packages eventually
 dataPath = path.join(dataPath, "BetterDiscord") + "/";
 
-let _settings;
-function getSetting(category, key) {
+let _settings: Record<string, Record<string, any>>;
+function getSetting(category: string, key: string) {
     if (_settings) return _settings[category]?.[key];
 
     try {
-        const settingsFile = path.resolve(dataPath, "data", process.env.DISCORD_RELEASE_CHANNEL, "settings.json");
+        const settingsFile = path.resolve(dataPath, "data", process.env.DISCORD_RELEASE_CHANNEL!, "settings.json");
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         _settings = require(settingsFile) ?? {};
         return _settings[category]?.[key];
     }
@@ -26,16 +27,16 @@ function getSetting(category, key) {
 const {exposeInMainWorld} = electron.contextBridge;
 
 // Hold the listeners
-let /** @type {Function} */ onOpened, /** @type {Function} */ onClosed;
+let /** @type {Function} */ onOpened: () => void, /** @type {Function} */ onClosed: () => void;
 
 let isOpen = false;
 /** @type {boolean} */
-let patchDevtoolsCallbacks = getSetting("developer", "devToolsWarning");
+let patchDevtoolsCallbacks: boolean = getSetting("developer", "devToolsWarning");
 if (typeof patchDevtoolsCallbacks !== "boolean") patchDevtoolsCallbacks = false;
 
 const contextBridge = {
     ...electron.contextBridge,
-    exposeInMainWorld(apiKey, api) {
+    exposeInMainWorld(apiKey: string, api: any) {
         if (apiKey === "DiscordNative") {
             // On macOS check if native frame is enabled
             // every other os say false
@@ -52,7 +53,7 @@ const contextBridge = {
                 }
             );
 
-            api.window.setDevtoolsCallbacks = (_onOpened, _onClosed) => {
+            api.window.setDevtoolsCallbacks = (_onOpened: () => void, _onClosed: () => void) => {
                 onOpened = _onOpened;
                 onClosed = _onClosed;
             };
@@ -63,7 +64,7 @@ const contextBridge = {
 };
 
 class DiscordNativePatch {
-    static setDevToolsWarningState(value) {
+    static setDevToolsWarningState(value: boolean) {
         patchDevtoolsCallbacks = value;
 
         // If devtools is open
@@ -102,8 +103,8 @@ class DiscordNativePatch {
 
     static patch() {
         const electronPath = require.resolve("electron");
-        delete require.cache[electronPath].exports; // If it didn't work, try to delete existing
-        require.cache[electronPath].exports = {...electron, contextBridge}; // Try to assign again after deleting
+        delete require.cache[electronPath]!.exports; // If it didn't work, try to delete existing
+        require.cache[electronPath]!.exports = {...electron, contextBridge}; // Try to assign again after deleting
     }
 
     static init() {

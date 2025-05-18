@@ -5,6 +5,7 @@ import * as BdApi from "./api";
 import init from "./init";
 import DiscordNativePatch from "./discordnativepatch";
 
+
 patchDefine();
 DiscordNativePatch.init();
 

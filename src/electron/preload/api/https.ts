@@ -1,12 +1,19 @@
+import * as fs from "fs";
 import * as https from "https";
+import * as http from "http";
+
 
 const methods = ["get", "put", "post", "delete", "head"];
 const redirectCodes = new Set([301, 302, 307, 308]);
 const headersToClone = ["statusCode", "statusMessage", "url", "headers", "method", "aborted", "complete", "rawHeaders", "end"];
 
-const makeRequest = (url, options, callback, setReq) => {
+type RequestOptions = https.RequestOptions & {formData?: Buffer | string;};
+type RequestCallback = (e: Error, h?: Record<string, any>, d?: Buffer) => void;
+type SetReq = (res: http.IncomingMessage, req: http.ClientRequest) => void;
+
+const makeRequest = (url: string, options: RequestOptions, callback: RequestCallback, setReq: SetReq) => {
     const req = https.request(url, Object.assign({method: "GET"}, options), res => {
-        if (redirectCodes.has(res.statusCode) && res.headers.location) {
+        if (redirectCodes.has(res.statusCode ?? 0) && res.headers.location) {
             const final = new URL(res.headers.location);
 
             for (const [key, value] of new URL(url).searchParams.entries()) {
@@ -16,8 +23,8 @@ const makeRequest = (url, options, callback, setReq) => {
             return makeRequest(final.toString(), options, callback, setReq);
         }
 
-        const chunks = [];
-        let error = null;
+        const chunks: Buffer[] = [];
+        let error: Error | null = null;
 
         setReq(res, req);
 
@@ -28,9 +35,9 @@ const makeRequest = (url, options, callback, setReq) => {
         });
 
         res.addListener("end", () => {
-            const headers = Object.fromEntries(headersToClone.map(h => [h, res[h]]));
+            const headers = Object.fromEntries(headersToClone.map(h => [h, res.headers[h]]));
 
-            callback(error, headers, Buffer.concat(chunks));
+            callback(error as Error, headers, Buffer.concat(chunks));
             req.end();
         });
     });
@@ -47,12 +54,12 @@ const makeRequest = (url, options, callback, setReq) => {
     req.on("error", (error) => callback(error));
 };
 
-const request = function (url, options, callback) {
-    let responseObject = null;
-    let reqObject = null;
-    let pipe = null;
-    
-    makeRequest(url, options, callback, (req, res) => {
+const request = function (url: string, options: RequestOptions, callback: RequestCallback) {
+    let responseObject: http.IncomingMessage | null = null;
+    let reqObject: http.ClientRequest | null = null;
+    let pipe: NodeJS.WritableStream | null = null;
+
+    makeRequest(url, options, callback, (res, req) => {
         reqObject = req;
         responseObject = res;
 
@@ -63,7 +70,7 @@ const request = function (url, options, callback) {
 
     return {
         end() {reqObject?.end();},
-        pipe(fsStream) {
+        pipe(fsStream: fs.WriteStream) {
             if (!responseObject) {
                 pipe = fsStream;
             }
@@ -77,12 +84,12 @@ const request = function (url, options, callback) {
 export default Object.assign({request},
     Object.fromEntries(methods.map(method => [
         method,
-        function () {
-            arguments[1] ??= {};
+        function (this: typeof https["get"], ...args: any[]) {
+            args[1] ??= {};
 
-            arguments[1].method ??= method.toUpperCase();
+            args[1].method ??= method.toUpperCase();
 
-            return Reflect.apply(request, this, arguments);
+            return Reflect.apply(request, this, args);
         }
     ]))
 );
