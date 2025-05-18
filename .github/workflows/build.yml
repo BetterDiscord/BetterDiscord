@@ -1,0 +1,62 @@
+name: BetterDiscord CI
+
+on:
+  push:
+    branches: ["development"]
+  pull_request:
+    branches: ["development"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run tests
+        run: bun run test
+
+      - name: Lint code
+        run: bun run lint
+
+      - name: Build asar
+        run: bun run dist
+        env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          COMMIT_HASH: ${{ github.sha }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          if-no-files-found: error
+          retention-days: 30
+          path: dist/betterdiscord.asar
+
+      - name: Update tag
+        if: ${{ github.event_name == 'push' }}
+        uses: richardsimko/update-tag@v1
+        with:
+          tag_name: canary
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update canary release
+        if: ${{ github.event_name == 'push' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          name: BetterDiscord Canary
+          body: This is the canary release for BetterDiscord automatically kept up to date using GitHub actions.
+          tag_name: canary
+          fail_on_unmatched_files: true
+          files: dist/betterdiscord.asar
