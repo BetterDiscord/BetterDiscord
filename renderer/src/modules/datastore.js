@@ -16,6 +16,10 @@ const releaseChannel = window?.DiscordNative?.app?.getReleaseChannel?.() ?? "sta
 //             -> settings.json
 //             -> plugins.json
 //             -> themes.json
+//             -> misc.json
+//             -> custom.css
+//         -> plugins
+//             -> [pluginName].config.json
 
 export default new class DataStore {
     constructor() {
@@ -38,6 +42,7 @@ export default new class DataStore {
         if (!newStorageExists) fs.mkdirSync(this.baseFolder);
 
         if (!fs.existsSync(this.dataFolder)) fs.mkdirSync(this.dataFolder);
+        if (!fs.existsSync(this.pluginDataFolder)) fs.mkdirSync(this.pluginDataFolder);
         if (!fs.existsSync(this.customCSS)) fs.writeFileSync(this.customCSS, "");
 
         const dataFiles = fs.readdirSync(this.dataFolder).filter(f => !fs.statSync(path.resolve(this.dataFolder, f)).isDirectory() && f.endsWith(".json"));
@@ -59,7 +64,8 @@ export default new class DataStore {
     get customCSS() {return this._customCSS || (this._customCSS = path.resolve(this.dataFolder, "custom.css"));}
     get baseFolder() {return this._baseFolder || (this._baseFolder = path.resolve(Config.dataPath, "data"));}
     get dataFolder() {return this._dataFolder || (this._dataFolder = path.resolve(this.baseFolder, `${releaseChannel}`));}
-    getPluginFile(pluginName) {return path.resolve(Config.dataPath, "plugins", pluginName + ".config.json");}
+    get pluginDataFolder() {return this._pluginDataFolder || (this._pluginDataFolder = path.resolve(this.baseFolder, "plugins"));}
+    getPluginFile(pluginName) {return path.resolve(this.pluginDataFolder, pluginName + ".config.json");}
 
 
     _getFile(key) {
@@ -133,5 +139,27 @@ export default new class DataStore {
         this.ensurePluginData(pluginName); // Ensure plugin data, if any, is cached
         delete this.pluginData[pluginName][key];
         fs.writeFileSync(this.getPluginFile(pluginName), JSON.stringify(this.pluginData[pluginName], null, 4));
+    }
+
+    transferConfigFiles() {
+        try {
+            const files = fs.readdirSync(this.pluginFolder)
+                .filter(file => file.endsWith(".config.json"));
+            if (files.length) {
+                files.forEach(file => {
+                    const oldPath = path.join(this.pluginFolder, file);
+                    const newPath = path.join(this.pluginDataFolder, file);
+                    try {
+                        fs.renameSync(oldPath, newPath);
+                    }
+                    catch (e) {
+                        Logger.stacktrace("DataStore", `Failed to transfer ${file}`, e);
+                    }
+                });
+            }
+        }
+        catch (e) {
+            Logger.stacktrace("DataStore", "Failed to transfer config files", e);
+        }
     }
 };
