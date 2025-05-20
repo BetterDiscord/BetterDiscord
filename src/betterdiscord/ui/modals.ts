@@ -95,7 +95,7 @@ export default class Modals {
                         button.action(e);
                     }
                     catch (error) {
-                        Logger.stacktrace("Modals", "Could not fire button listener", error);
+                        Logger.stacktrace("Modals", "Could not fire button listener", error as Error);
                     }
 
                     handleClose();
@@ -119,7 +119,7 @@ export default class Modals {
             }
             catch (error) {
                 container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`) as HTMLElement);
-                Logger.stacktrace("Modals", "Could not render modal", error);
+                Logger.stacktrace("Modals", "Could not render modal", error as Error);
             }
 
             DOMManager.onRemoved(container, () => {

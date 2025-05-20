@@ -1,4 +1,6 @@
-import require from "./polyfill"; // eslint-disable-line no-unused-vars
+// @ts-expect-error this is how we override require
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import require from "./polyfill";
 import secure from "./secure";
 import LoadingIcon from "./loadingicon";
 import BetterDiscord from "@modules/core";

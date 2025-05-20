@@ -6,7 +6,7 @@ export default new class BDEvents extends EventEmitter {
         this.setMaxListeners(20);
     }
 
-    dispatch(eventName, ...args) {
+    dispatch(eventName: string, ...args: any[]) {
         this.emit(eventName, ...args);
     }
 };

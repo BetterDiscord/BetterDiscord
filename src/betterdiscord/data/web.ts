@@ -6,33 +6,33 @@ const HOSTNAME = "betterdiscord.app";
 const API_VERSION = "v3";
 
 /**
- * @param  {string[]} paths 
+ * @param  {string[]} paths
  */
-const join = (...paths) => {
-    const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
+const join = (...paths: string[]) => {
+    const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)?.[1]).filter(Boolean).join("/");
 
     return `https://${HOSTNAME}/${path}`;
 };
 
 /**
- * @param  {string[]} paths 
+ * @param  {string[]} paths
  */
-const apiJoin = (...paths) => {
-    const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)[1]).filter(Boolean).join("/");
+const apiJoin = (...paths: string[]) => {
+    const path = paths.map(($path) => $path.match(/\/*(.+)\/*/)?.[1]).filter(Boolean).join("/");
 
     return `https://api.${HOSTNAME}/${API_VERSION}/${path}`;
 };
 /**
- * @param {string} type 
+ * @param {string} type
  * @returns {(name: string) => string}
  */
-const makePage = (type) => (name) => join(`${type}/${encodeURIComponent(name)}`);
+const makePage = (type: string) => (name: string) => join(`${type}/${encodeURIComponent(name)}`);
 
 /**
- * @param {string} type 
+ * @param {string} type
  * @returns {(id: string) => string}
  */
-const makeRedirects = (type) => (id) => join(`${type}?id=${id}`);
+const makeRedirects = (type: string) => (id: string) => join(`${type}?id=${id}`);
 
 // First id is betterdiscord and second is betterdiscord 2
 const releaseChannels = {
@@ -54,16 +54,16 @@ const RAW_GIT_URL_REGEX = /^https:\/\/raw\.githubusercontent\.com\/(.+?)\/(.+?)\
 export default class Web {
     /**
      * This will allow preloading of the addon channels
-     * @param {string} channelId 
+     * @param {string} channelId
      * @returns {"plugin" | "theme" | undefined}
      */
-    static getReleaseChannelType(channelId) {
+    static getReleaseChannelType(channelId: string) {
         if (releaseChannels.plugin.includes(channelId)) return "plugin";
         if (releaseChannels.theme.includes(channelId)) return "theme";
     }
 
     /** @param {string} rawGitURL  */
-    static convertToPreviewURL(rawGitURL) {
+    static convertToPreviewURL(rawGitURL: string) {
         const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
         if (!match) {
@@ -72,18 +72,18 @@ export default class Web {
 
         const [, user, repo, commit, filePath] = match;
         const jsdelivr = `https://cdn.jsdelivr.net/gh/${user}/${repo}@${commit}/${filePath}`;
-        
+
         return `https://discord-preview.vercel.app/?file=${encodeURIComponent(jsdelivr)}`;
     }
 
-    /** 
+    /**
      * Converts a raw github link into a normal github page
      * @example
      * https://raw.githubusercontent.com/QWERTxD/BetterDiscordPlugins/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
      * https://github.com/QWERTxD/BetterDiscordPlugins/blob/298752533fbbdab511c3a3f4ffe6afd41d0a93f1/CallTimeCounter/CallTimeCounter.plugin.js
      * @param {string} rawGitURL
      */
-    static convertRawToGitHubURL(rawGitURL) {
+    static convertRawToGitHubURL(rawGitURL: string) {
         const match = rawGitURL.match(RAW_GIT_URL_REGEX);
 
         if (!match) {
@@ -91,12 +91,12 @@ export default class Web {
         }
 
         const [, user, repo, commit, filePath] = match;
-        
+
         return `https://github.com/${user}/${repo}/blob/${commit}/${filePath}`;
     }
 
     static API_VERSION = API_VERSION;
-    
+
     static redirects = {
         github: makeRedirects("/gh-redirect"),
         download: makeRedirects("/download"),
@@ -114,7 +114,7 @@ export default class Web {
     static resources = {
         EMPTY_THUMBNAIL: EMPTY_USE_STORE ? "/resources/store/missing.svg" : "/resources/ui/content_thumbnail.svg",
         /** @param {? string} thumbnail */
-        thumbnail: (thumbnail) => join(thumbnail || Web.resources.EMPTY_THUMBNAIL)
+        thumbnail: (thumbnail: string) => join(thumbnail || Web.resources.EMPTY_THUMBNAIL)
     };
 
     static store = {
@@ -122,7 +122,7 @@ export default class Web {
         themes: apiJoin("/store/themes"),
         plugins: apiJoin("/store/plugins"),
         /** @param {number|string} idOrName Id or Name of a addon */
-        addon: (idOrName) => apiJoin(`/store/${encodeURIComponent(idOrName)}`),
+        addon: (idOrName: string) => apiJoin(`/store/${encodeURIComponent(idOrName)}`),
 
         tags: {
             plugin: [

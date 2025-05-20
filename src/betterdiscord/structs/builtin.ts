@@ -1,3 +1,4 @@
+/* eslint-disable prefer-rest-params */
 import Logger from "@common/logger";
 
 import Events from "@modules/emitter";
@@ -8,7 +9,8 @@ import CommandManager from "@modules/commandmanager";
 
 export default class BuiltinModule {
 
-    #commands = new Set();
+    initialized: boolean = false;
+    #commands = new Set<() => void>();
     get name() {return "Unnamed Builtin";}
     get collection() {return "settings";}
     get category() {return "general";}
@@ -24,7 +26,7 @@ export default class BuiltinModule {
         this.initialized = true;
     }
 
-    registerSetting(collection, category, id, onEnable, onDisable) {
+    registerSetting(collection: string, category: string, id: string, onEnable: () => void, onDisable: () => void) {
         if (arguments.length == 4) {
             collection = this.collection;
             category = arguments[0];
@@ -45,7 +47,7 @@ export default class BuiltinModule {
         });
     }
 
-    get(collection, category, id) {
+    get(collection: string, category: string, id: string) {
         if (arguments.length == 2) {
             collection = this.collection;
             category = arguments[0];
@@ -62,43 +64,43 @@ export default class BuiltinModule {
     async enable() {
         this.log("Enabled");
         try {await this.enabled();}
-        catch (e) {this.stacktrace("Could not be enabled", e);}
+        catch (e) {this.stacktrace("Could not be enabled", e as Error);}
     }
 
     async disable() {
         this.log("Disabled");
         try {await this.disabled();}
-        catch (e) {this.stacktrace("Could not be disabled", e);}
+        catch (e) {this.stacktrace("Could not be disabled", e as Error);}
     }
 
     async enabled() {}
     async disabled() {}
 
-    log(...message) {
+    log(...message: string[]) {
         Logger.log(this.name, ...message);
     }
 
-    warn(...message) {
+    warn(...message: string[]) {
         Logger.warn(this.name, ...message);
     }
 
-    error(...message) {
+    error(...message: string[]) {
         Logger.err(this.name, ...message);
     }
 
-    stacktrace(message, error) {
+    stacktrace(message: string, error: Error) {
         Logger.stacktrace(this.name, message, error);
     }
 
-    before(object, func, callback) {
+    before(object: object, func: string, callback: (t: object, a: any[]) => void) {
         return Patcher.before(this.name, object, func, callback);
     }
 
-    instead(object, func, callback) {
+    instead(object: object, func: string, callback: (t: object, a: any[], o: () => void) => void) {
         return Patcher.instead(this.name, object, func, callback);
     }
 
-    after(object, func, callback) {
+    after(object: object, func: string, callback: (t: object, a: any[], r: any) => void) {
         return Patcher.after(this.name, object, func, callback);
     }
 
@@ -106,7 +108,8 @@ export default class BuiltinModule {
         return Patcher.unpatchAll(this.name);
     }
 
-    addCommands(...commands) {
+    // TODO: fix type when commands are properly TS
+    addCommands(...commands: object[]) {
         for (const command of commands) {
             const unregister = CommandManager.registerCommand("BetterDiscord", command);
             this.#commands.add(unregister);

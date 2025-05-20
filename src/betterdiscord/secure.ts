@@ -1,14 +1,14 @@
-export default function() {
-    const contentWindowGetter = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, "contentWindow").get;
+export default function () {
+    const contentWindowGetter = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, "contentWindow")!.get!;
     Object.defineProperty(HTMLIFrameElement.prototype, "contentWindow", {
-        get: function () {
-            const contentWindow = Reflect.apply(contentWindowGetter, this, arguments);
+        get: function (...args: any[]) {
+            const contentWindow = Reflect.apply(contentWindowGetter, this, args);
             return new Proxy(contentWindow, {
-                getOwnPropertyDescriptor: function(obj, prop) {
+                getOwnPropertyDescriptor: function (obj, prop) {
                     if (prop === "localStorage") return undefined;
                     return Object.getOwnPropertyDescriptor(obj, prop);
                 },
-                get: function(obj, prop) {
+                get: function (obj, prop) {
                     if (prop === "localStorage") return null;
                     const val = obj[prop];
                     if (typeof val === "function") return val.bind(obj);
@@ -23,9 +23,9 @@ export default function() {
     Object.defineProperty(Function.prototype, "bind", {value: Function.prototype.bind, writable: false, configurable: false});
 
     const oOpen = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function() {
-        const url = arguments[1];
+    XMLHttpRequest.prototype.open = function (...args: any[]) {
+        const url = args[1];
         if (url.toLowerCase().includes("api/webhooks")) return null;
-        return Reflect.apply(oOpen, this, arguments);
+        return Reflect.apply(oOpen, this, args);
     };
 }

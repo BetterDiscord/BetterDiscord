@@ -4,9 +4,9 @@ export const regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d
 
 // Some of the code here adapted from https://github.com/npm/node-semver
 const numeric = /^[0-9]+$/;
-function compare(a, b) {
-    const anum = numeric.test(a);
-    const bnum = numeric.test(b);
+function compare(a: string | number, b: string | number) {
+    const anum = numeric.test(a.toString());
+    const bnum = numeric.test(b.toString());
 
     if (anum && bnum) {
         a = +a;
@@ -20,7 +20,7 @@ function compare(a, b) {
     return 1;
 }
 
-function tokenize(pre) {
+function tokenize(pre: string) {
     return pre.split(".").map((id) => {
         if (!numeric.test(id)) return id;
         const num = +id; // convert to number and check if valid
@@ -29,7 +29,7 @@ function tokenize(pre) {
     });
 }
 
-function compareTokens(a, b) {
+function compareTokens(a: string, b: string) {
     const atokens = tokenize(a);
     const btokens = tokenize(b);
 
@@ -42,10 +42,10 @@ function compareTokens(a, b) {
         else if (x === undefined) return -1;
         else if (x === y) continue;
         return compare(x, y);
-    } 
+    }
 }
 
-function preCompare(a, b) {
+function preCompare(a: string, b: string) {
     // Having a prerelease makes it a "lower" version
     if (a.length && !b.length) return -1;
     else if (!a.length && b.length) return 1;
@@ -55,14 +55,16 @@ function preCompare(a, b) {
 
 /**
  * This works on semantic versioning e.g. "1.0.0".
- * 
+ *
  * @param {string} currentVersion
  * @param {string} remoteVersion
  * @returns {-1 | 0 | 1} 0 indicates equal, -1 indicates left hand greater, 1 indicates right hand greater
  */
-export function comparator(currentVersion, remoteVersion) {
+export function comparator(currentVersion: string, remoteVersion: string) {
     const current = regex.exec(currentVersion);
     const remote = regex.exec(remoteVersion);
+
+    if (!current || !remote) return false;
 
     // Raw match is at [0] so major starts at [1]
     // This compares only the major, minor, and patch levels
