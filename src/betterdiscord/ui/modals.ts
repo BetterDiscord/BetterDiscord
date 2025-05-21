@@ -32,7 +32,7 @@ import type AddonError from "@structs/addonerror";
 const queue: Array<() => void> = [];
 
 interface ModalActions {
-    openModal: (e: () => ReactElement) => string | number;
+    openModal: (e: (p?: any) => ReactElement, o?: object) => string | number;
     closeModal: (key: string | number) => void;
 }
 

@@ -8,7 +8,7 @@ import Group, {buildSetting} from "@ui/settings/group";
 import React from "@modules/react";
 import ErrorBoundary from "@ui/errorboundary";
 import Settings from "@stores/settings";
-import NotificationUI from "@modules/notification";
+import NotificationUI from "@ui/notifications";
 
 
 /**
@@ -22,7 +22,7 @@ let cntr = 0;
 const UI = {
     /**
      * Shows a generic but very customizable modal.
-     * 
+     *
      * @param {string} title Title of the modal
      * @param {(string|ReactElement|Array<string|ReactElement>)} content A string of text to display in the modal
      */
@@ -50,25 +50,25 @@ const UI = {
         return () => NotificationUI.hide(id);
     },
 
-/**
-     * Creates a tooltip to automatically show on hover.
-     *
-     * @param {HTMLElement} node DOM node to monitor and show the tooltip on
-     * @param {string|HTMLElement} content String to show in the tooltip
-     * @param {object} options Additional options for the tooltip
-     * @param {"primary"|"info"|"success"|"warn"|"danger"} [options.style="primary"] Correlates to the Discord styling/colors
-     * @param {"top"|"right"|"bottom"|"left"} [options.side="top"] Can be any of top, right, bottom, left
-     * @param {boolean} [options.preventFlip=false] Prevents moving the tooltip to the opposite side if it is too big or goes offscreen
-     * @param {boolean} [options.disabled=false] Whether the tooltip should be disabled from showing on hover
-     * @returns {Tooltip} The tooltip that was generated.
-     */
+    /**
+         * Creates a tooltip to automatically show on hover.
+         *
+         * @param {HTMLElement} node DOM node to monitor and show the tooltip on
+         * @param {string|HTMLElement} content String to show in the tooltip
+         * @param {object} options Additional options for the tooltip
+         * @param {"primary"|"info"|"success"|"warn"|"danger"} [options.style="primary"] Correlates to the Discord styling/colors
+         * @param {"top"|"right"|"bottom"|"left"} [options.side="top"] Can be any of top, right, bottom, left
+         * @param {boolean} [options.preventFlip=false] Prevents moving the tooltip to the opposite side if it is too big or goes offscreen
+         * @param {boolean} [options.disabled=false] Whether the tooltip should be disabled from showing on hover
+         * @returns {Tooltip} The tooltip that was generated.
+         */
     createTooltip(node, content, options = {}) {
         return Tooltip.create(node, content, options);
     },
 
     /**
      * Shows a generic but very customizable confirmation modal with optional confirm and cancel callbacks.
-     * 
+     *
      * @param {string} title Title of the modal.
      * @param {(string|ReactElement|Array<string|ReactElement>)} children Single or mixed array of React elements and strings. Everything is wrapped in Discord's `TextElement` component so strings will show and render properly.
      * @param {object} [options] Options to modify the modal
@@ -86,7 +86,7 @@ const UI = {
 
     /**
      * Shows a changelog modal in a similar style to Discord's. Customizable with images, videos, colored sections and supports markdown.
-     * 
+     *
      * The changes option is a array of objects that have this typing:
      * ```ts
      * interface Changes {
@@ -96,7 +96,7 @@ const UI = {
      *     blurb?: string;
      * }
      * ```
-     * 
+     *
      * @param {object} options Information to display in the modal
      * @param {string} options.title Title to show in the modal header
      * @param {string} options.subtitle Title to show below the main header
@@ -136,7 +136,7 @@ const UI = {
 
     /**
      * Shows a notice above Discord's chat layer.
-     * 
+     *
      * @param {string|Node} content Content of the notice
      * @param {object} options Options for the notice
      * @param {string} [options.type="info" | "error" | "warning" | "success"] Type for the notice. Will affect the color.
@@ -149,9 +149,9 @@ const UI = {
     },
 
     /**
-     * Gives access to the [Electron Dialog](https://www.electronjs.org/docs/latest/api/dialog/) api. 
+     * Gives access to the [Electron Dialog](https://www.electronjs.org/docs/latest/api/dialog/) api.
      * Returns a `Promise` that resolves to an `object` that has a `boolean` cancelled and a `filePath` string for saving and a `filePaths` string array for opening.
-     * 
+     *
      * @param {object} options Options object to configure the dialog
      * @param {"open"|"save"} [options.mode="open"] Determines whether the dialog should open or save files
      * @param {string} [options.defaultPath=~] Path the dialog should show on launch
@@ -178,7 +178,7 @@ const UI = {
      * Creates a single setting wrapped in a setting item that has a name and note.
      * The shape of the object should match the props of the component you want to render, check the
      * `BdApi.Components` section for details. Shown below are ones common to all setting types.
-     * @param {object} setting 
+     * @param {object} setting
      * @param {string} setting.type One of: dropdown, number, switch, text, slider, radio, keybind, color, custom
      * @param {string} setting.id Identifier to used for callbacks
      * @param {string} setting.name Visual name to display
@@ -196,22 +196,22 @@ const UI = {
 
     /**
      * Creates a settings panel (react element) based on json-like data.
-     * 
+     *
      * The `settings` array here is an array of the same settings types described in `buildSetting` above.
      * However, this API allows one additional setting "type" called `category`. This has the same properties
      * as the Group React Component found under the `Components` API.
-     * 
+     *
      * `onChange` will always be given 3 arguments: category id, setting id, and setting value. In the case
      * that you have settings on the "root" of the panel, the category id is `null`. Any `onChange`
      * listeners attached to individual settings will fire before the panel-level change listener.
-     * 
+     *
      * `onDrawerToggle` is given 2 arguments: category id, and the current shown state. You can use this to
      * save drawer states.
-     * 
+     *
      * `getDrawerState` is given 2 arguments: category id, and the default shown state. You can use this to
      * recall a saved drawer state.
-     * 
-     * @param {object} props 
+     *
+     * @param {object} props
      * @param {Array<object>} props.settings Array of settings to show
      * @param {CallableFunction} props.onChange Function called on every change
      * @param {CallableFunction} [props.onDrawerToggle] Optionally used to save drawer states

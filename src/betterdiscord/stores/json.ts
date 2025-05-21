@@ -4,7 +4,7 @@ import Store from "./base";
 import Config from "./config";
 
 
-type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store";
+export type Files = "settings" | "plugins" | "themes" | "misc" | "addon-store";
 
 export default new class JsonStore extends Store {
     cache: Record<Files, Record<string, unknown> | undefined> = {
@@ -52,7 +52,7 @@ export default new class JsonStore extends Store {
         if (typeof (this.cache[file]) !== "undefined") return this.cache[file]; // Already have data cached
         let data;
         try {
-            data = JSON.parse(fs.readFileSync(path.resolve(Config.get("channelPath"), `${file}.json`)));
+            data = JSON.parse(fs.readFileSync(path.resolve(Config.get("channelPath"), `${file}.json`)).toString());
         }
         catch {
             data = {};

@@ -64,7 +64,7 @@ export function comparator(currentVersion: string, remoteVersion: string) {
     const current = regex.exec(currentVersion);
     const remote = regex.exec(remoteVersion);
 
-    if (!current || !remote) return false;
+    if (!current || !remote) return 0;
 
     // Raw match is at [0] so major starts at [1]
     // This compares only the major, minor, and patch levels

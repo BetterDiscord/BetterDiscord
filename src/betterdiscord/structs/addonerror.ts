@@ -1,8 +1,8 @@
-export default class AddonError extends Error {
+export default class AddonError<T extends {message?: string, stack?: string;} = object> extends Error {
     file: string;
-    error: Error;
+    error: T;
     type: string;
-    constructor(name: string, filename: string, message: string, error: Error, type: string) {
+    constructor(name: string, filename: string, message: string, error: T, type: string) {
         super(message);
         this.name = name;
         this.file = filename;

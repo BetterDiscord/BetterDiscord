@@ -43,6 +43,8 @@ class NotificationUI {
     }
 
     static show(notificationObj) {
+        if (!this.root) this.initialize();
+
         const notification = {
             exiting: false,
             ...notificationObj

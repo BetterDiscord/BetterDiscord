@@ -93,15 +93,15 @@ export default class BuiltinModule {
     }
 
     before(object: object, func: string, callback: (t: object, a: any[]) => void) {
-        return Patcher.before(this.name, object, func, callback);
+        return Patcher.before(this.name, object, func as keyof typeof object, callback);
     }
 
     instead(object: object, func: string, callback: (t: object, a: any[], o: () => void) => void) {
-        return Patcher.instead(this.name, object, func, callback);
+        return Patcher.instead(this.name, object, func as keyof typeof object, callback);
     }
 
     after(object: object, func: string, callback: (t: object, a: any[], r: any) => void) {
-        return Patcher.after(this.name, object, func, callback);
+        return Patcher.after(this.name, object, func as keyof typeof object, callback);
     }
 
     unpatchAll() {

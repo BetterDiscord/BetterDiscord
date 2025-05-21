@@ -3,6 +3,9 @@ import React from "@modules/react";
 import pluginmanager from "./pluginmanager";
 import Logger from "@common/logger";
 import {Filters, getByStrings, getModule, getStore, getWithKey, modules} from "@webpack";
+import type {FluxStore} from "../types/discord/modules";
+
+// TODO: create better types for this file, too many "any"
 
 export const CommandTypes = {
     CHAT_INPUT: 1,
@@ -53,14 +56,13 @@ export const MessageEmbedTypes = {
 };
 
 const iconClasses = {
-    ...getModule(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
-    builtInSeparator: getModule(x => x.builtInSeparator)?.builtInSeparator
+    ...getModule<any>(x => x.wrapper && x.icon && x.selected && x.selectable && !x.mask),
+    builtInSeparator: getModule<any>(x => x.builtInSeparator)?.builtInSeparator
 };
 
-const getAcronym = (input) =>
-    input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
+const getAcronym = (input: string) => input?.replace(/'s /g, " ").match(/\b\w/g)?.join("").slice(0, 2) ?? "";
 
-const isValidImageUrl = (url) => {
+const isValidImageUrl = (url: string) => {
     try {
         const validatedUrl = new URL(url);
         return ((validatedUrl.protocol === "data:" && validatedUrl.pathname.startsWith("image/")) || validatedUrl.protocol === "https:");
@@ -73,6 +75,12 @@ const isValidImageUrl = (url) => {
 class CommandManager {
     static #commands = new Map();
     static #sections = new Map();
+
+    static User = getByStrings<any>(["hasHadPremium(){"]);
+    static createBotMessage = getByStrings<any>(["username:\"Clyde\""], {searchExports: true});
+    static MessagesModule = getModule<any>(x => x.receiveMessage);
+    static IconsModule = getModule<any>(x => x.BOT_AVATARS);
+    static localBDBot: any;
 
     static initialize() {
         this.#patchCommandSystem();
@@ -103,9 +111,9 @@ class CommandManager {
     }
 
     static #patchSidebarModule() {
-        const SidebarModule = getByStrings([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
+        const SidebarModule = getByStrings<{Z(p: {sections: any[];}): void;}>([".BUILT_IN?", "categoryListRef:"], {defaultExport: false});
 
-        Patcher.after("CommandManager", SidebarModule, "Z", (that, [props], res) => {
+        Patcher.after("CommandManager", SidebarModule!, "Z", (_, [props]: [{sections: any[];}], res: any) => {
             if (!this.#sections.size) return;
 
             const child = res.props.children;
@@ -113,7 +121,7 @@ class CommandManager {
             if (child.props?.__bdPatched) return;
 
             res.props.children = React.cloneElement(child, {
-                renderCategoryListItem: (...args) => {
+                renderCategoryListItem: (...args: any[]) => {
                     const ret = child.props.renderCategoryListItem(...args);
                     const nextSection = props.sections[args[1] + 1];
 
@@ -139,16 +147,16 @@ class CommandManager {
     static #patchIndexStore() {
         const [mod, key] = getWithKey(Filters.byStrings(".getScoreWithoutLoadingLatest"));
 
-        Patcher.after("CommandManager", mod, key, (that, args, res) => {
+        Patcher.after("CommandManager", mod, key, (_, args: any, res: any) => {
             if (!args[2].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
 
             for (const sectionedCommand of res.sectionedCommands) {
                 if (sectionedCommand.section.id !== "-1") continue;
-                sectionedCommand.data = sectionedCommand.data.filter(m => !m.isBD);
+                sectionedCommand.data = sectionedCommand.data.filter((m: any) => !m.isBD);
             }
 
-            let descriptorsIndex = res.descriptors.findIndex((value) => value.id === "-1");
-            let sectionedCommandsIndex = res.sectionedCommands.findIndex((value) => value.section.id === "-1");
+            let descriptorsIndex = res.descriptors.findIndex((value: any) => value.id === "-1");
+            let sectionedCommandsIndex = res.sectionedCommands.findIndex((value: any) => value.section.id === "-1");
 
             for (const section of this.#sections.values()) {
                 const commands = this.getCommandsByCaller(section.id);
@@ -166,20 +174,20 @@ class CommandManager {
     }
 
     static #patchQuery() {
-        const ApplicationCommandIndexStore = getStore("ApplicationCommandIndexStore");
+        const ApplicationCommandIndexStore = getStore("ApplicationCommandIndexStore")! as FluxStore & {query: (a: any, p: {text: string; commandTypes: any;}) => any;};
 
-        Patcher.after("CommandManager", ApplicationCommandIndexStore, "query", (that, args, res) => {
+        Patcher.after("CommandManager", ApplicationCommandIndexStore, "query", (_, args: [any, {text: string; commandTypes: any;}], res: any) => {
             if (!args[1].commandTypes.includes(CommandTypes.CHAT_INPUT)) return res;
 
             const text = args[1].text || "";
 
             for (const sectionedCommand of res.sectionedCommands) {
                 if (sectionedCommand.section.id !== "-1") continue;
-                sectionedCommand.data = sectionedCommand.data.filter(m => !m.isBD);
+                sectionedCommand.data = sectionedCommand.data.filter((m: any) => !m.isBD);
             }
 
             for (const section of this.#sections.values()) {
-                const commands = this.getCommandsByCaller(section.id).filter((cmd) => cmd.name.includes(text) || cmd.description.includes(text));
+                const commands = this.getCommandsByCaller(section.id).filter((cmd: any) => cmd.name.includes(text) || cmd.description.includes(text));
 
                 if (commands.length > 0) {
                     res.sectionedCommands.push({
@@ -198,8 +206,9 @@ class CommandManager {
             target: getModule((e, m) => modules[m.id].toString().includes("hasSpaceTerminator:"))
         });
 
-        Patcher.after("CommandManager", mod, key, (that, [{id}], res) => {
+        Patcher.after("CommandManager", mod as {[key: Extract<keyof typeof mod, string>]: (o: {id: string;}) => any;}, key as Extract<keyof typeof mod, string>, (_, [{id}]: [{id: string;}], res: any) => {
             const getIconUrl = () => {
+                // @ts-expect-error cba
                 const metadataIcon = pluginmanager.getAddon(id)?.icon ?? null;
                 const sectionIcon = this.#sections.has(id) ? this.#sections.get(id)?.icon : null;
                 return metadataIcon || sectionIcon;
@@ -208,7 +217,7 @@ class CommandManager {
             const iconUrl = getIconUrl();
             const acronym = getAcronym(id);
 
-            const Logo = ({width, height, padding = 0, className, isSelected, selectable}) => {
+            const Logo = ({width, height, padding = 0, className, isSelected, selectable}: any) => {
                 const wrapperClasses = [
                     selectable && iconClasses.selectable,
                     isSelected && iconClasses.selected,
@@ -268,7 +277,7 @@ class CommandManager {
     static #patchAuthorizer() {
         const [module, key] = getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"));
 
-        Patcher.instead("CommandManager", module, key, (that, args, original) => {
+        Patcher.instead("CommandManager", module, key, (that, args: any, original) => {
             if (this.#sections.has(args[0]?.applicationId)) {
                 return Promise.resolve({
                     isAuthorized: true
@@ -279,7 +288,7 @@ class CommandManager {
         });
     }
 
-    static registerCommand(caller, command) {
+    static registerCommand(caller: string, command: any) {
         if (!caller || !command?.name || !command?.execute) {
             throw new Error("Command must have a caller, name, and execute function");
         }
@@ -300,8 +309,9 @@ class CommandManager {
         return () => this.unregisterCommand(caller, command.id);
     }
 
-    static #formatCommand(caller, command, commandId) {
-        const self = this;
+    static #formatCommand(caller: string, command: any, commandId: string) {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        const self: any = this;
 
         return {
             ...command,
@@ -323,10 +333,10 @@ class CommandManager {
         };
     }
 
-    static #formatOptions(options) {
+    static #formatOptions(options: any) {
         if (!options) return [];
 
-        return options.map(option => ({
+        return options.map((option: any) => ({
             ...option,
             get name() {return option.name;},
             get description() {return option.description;},
@@ -334,7 +344,7 @@ class CommandManager {
             type: option.type,
             get required() {return option.required || false;},
             get choices() {
-                return option.choices?.map(choice => ({
+                return option.choices?.map((choice: any) => ({
                     ...choice,
                     get name() {return choice.name;},
                     get displayName() {return choice.name;}
@@ -344,7 +354,7 @@ class CommandManager {
         }));
     }
 
-    static #ensureSection(caller) {
+    static #ensureSection(caller: string) {
         if (!this.#sections.has(caller)) {
             this.#sections.set(caller, {
                 id: caller,
@@ -357,8 +367,8 @@ class CommandManager {
         }
     }
 
-    static #patchExecuteFunction(command) {
-        return (data, {channel, guild}) => {
+    static #patchExecuteFunction(command: any) {
+        return (data: any, {channel, guild}: any) => {
             try {
                 const result = command.execute(data, {channel, guild});
 
@@ -369,17 +379,17 @@ class CommandManager {
                 return result;
             }
             catch (error) {
-                Logger.stacktrace("CommandManager", `Failed to run execute() for command ${command.name}`, error);
+                Logger.stacktrace("CommandManager", `Failed to run execute() for command ${command.name}`, error as Error);
             }
         };
     }
 
-    static async sendBotMessage(result, {channel}) {
+    static async sendBotMessage(result: any, {channel}: any) {
         try {
             result = await result;
         }
         catch (error) {
-            return Logger.stacktrace("CommandManager", "Failed to get result of execute()", error);
+            return Logger.stacktrace("CommandManager", "Failed to get result of execute()", error as Error);
         }
 
         if (!(result !== null && typeof result === "object" && !Array.isArray(result))) {
@@ -398,7 +408,7 @@ class CommandManager {
                 ? result.embeds
                 : [result.embeds];
 
-            loadingMessage.embeds = loadingMessage.embeds.map(embed => ({
+            loadingMessage.embeds = loadingMessage.embeds.map((embed: any) => ({
                 ...embed,
                 type: embed.type || "rich"
             }));
@@ -413,7 +423,7 @@ class CommandManager {
         }
     }
 
-    static unregisterCommand(caller, commandId) {
+    static unregisterCommand(caller: string, commandId: string) {
         const fullCommandId = `bd-${caller}-${commandId}`;
         const pluginCommands = this.#commands.get(caller);
 
@@ -425,12 +435,12 @@ class CommandManager {
         }
     }
 
-    static unregisterAll(caller) {
+    static unregisterAll(caller: string) {
         this.#commands.delete(caller);
         this.#sections.delete(caller);
     }
 
-    static getCommandsByCaller(caller) {
+    static getCommandsByCaller(caller: string) {
         return Array.from(this.#commands.get(caller)?.values() || []);
     }
 }

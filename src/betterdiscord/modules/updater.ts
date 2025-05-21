@@ -90,7 +90,7 @@ export default class Updater {
 
         if (!Settings.get("addons", "checkForUpdates")) return;
 
-        const hours = Settings.get("addons", "updateInterval");
+        const hours = Settings.get<number>("addons", "updateInterval");
         this.updateCheckInterval = setInterval(() => {
             CoreUpdater.checkForUpdate();
             PluginUpdater.checkAll();

@@ -114,7 +114,7 @@ export default class Web {
     static resources = {
         EMPTY_THUMBNAIL: EMPTY_USE_STORE ? "/resources/store/missing.svg" : "/resources/ui/content_thumbnail.svg",
         /** @param {? string} thumbnail */
-        thumbnail: (thumbnail: string) => join(thumbnail || Web.resources.EMPTY_THUMBNAIL)
+        thumbnail: (thumbnail?: string) => join(thumbnail || Web.resources.EMPTY_THUMBNAIL)
     };
 
     static store = {
