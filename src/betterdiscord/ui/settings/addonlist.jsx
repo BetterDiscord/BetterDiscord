@@ -124,7 +124,7 @@ export default function AddonList({title, store}) {
     const [view, setView] = useState(getState.bind(null, store.prefix, "view", "list"));
 
 
-    const addonList = useInternalStore(store, () => store.addonList, [store]);
+    const addonList = useInternalStore(store, () => store.addonList.concat(), [store], shallowEqual);
     const addonState = useInternalStore(store, () => Object.assign({}, store.state), [store], shallowEqual);
 
     const onChange = useCallback((id) => {
