@@ -98,6 +98,7 @@ class CommandManager {
         this.#patchQuery();
         this.#patchApplicationIcons();
         this.#patchIndexStore();
+        this.#patchAuthorizer();
 
         this.IconsModule.BOT_AVATARS.betterdiscord = "https://github.com/BetterDiscord.png";
     }
@@ -284,6 +285,20 @@ class CommandManager {
         this.#ensureSection(caller);
 
         return () => this.unregisterCommand(caller, command.id);
+    }
+
+    static #patchAuthorizer() {
+        const [module, key] = Webpack.getWithKey(Filters.byStrings("openOAuth2Modal", "Promise.resolve", "commandIntegrationTypes"));
+
+        Patcher.instead("CommandManager", module, key, (that, args, original) => {
+            if (this.#sections.has(args[0]?.applicationId)) {
+                return Promise.resolve({
+                    isAuthorized: true
+                });
+            }
+
+            return original.apply(that, args);
+        });
     }
 
     static #formatCommand(caller, command, commandId) {

@@ -83,7 +83,8 @@ export default class BetterDiscord {
 
         // When DOM is available, pass the renderer over the wall
         browserWindow.webContents.on("dom-ready", () => {
-            if (!hasCrashed) return this.injectRenderer(browserWindow);
+            // Temporary fix for new canary/ptb changes
+            if (!hasCrashed) return setTimeout(() => this.injectRenderer(browserWindow), 1000);
 
             // If a previous crash was detected, show a message explaining why BD isn't there
             electron.dialog.showMessageBox({

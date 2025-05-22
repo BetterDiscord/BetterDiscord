@@ -71,12 +71,12 @@ export default class Modals {
                     </div>
                 </div>
             </div>`);
-        
+
         const handleClose = () => {
             modal.classList.add("closing");
             setTimeout(() => {
                 modal.remove();
-                
+
                 const next = this.ModalQueue.shift();
                 if (!next) return;
 
@@ -116,25 +116,27 @@ export default class Modals {
 
         if (Array.isArray(content) ? content.every(el => React.isValidElement(el)) : React.isValidElement(content)) {
             const container = modal.querySelector(".scroller");
+            let root;
 
             try {
-                ReactDOM.render(content, container);
+                root = ReactDOM.createRoot(container);
+                root.render(content);
             }
             catch (error) {
                 container.append(DOMManager.parseHTML(`<span style="color: red">There was an unexpected error. Modal could not be rendered.</span>`));
             }
 
             DOMManager.onRemoved(container, () => {
-                ReactDOM.unmountComponentAtNode(container);
+                root?.unmount();
             });
         }
         else {
             modal.querySelector(".scroller").append(content);
         }
-        
+
         modal.querySelector(".footer button").addEventListener("click", handleClose);
         modal.querySelector(".bd-backdrop").addEventListener("click", handleClose);
-        
+
         const handleOpen = () => document.getElementById("app-mount").append(modal);
 
         if (this.hasModalOpen) {
@@ -279,10 +281,11 @@ export default class Modals {
     static makeStack() {
         const div = DOMManager.parseHTML(`<div id="bd-modal-container">`);
         DOMManager.bdBody.append(div);
-        ReactDOM.render(<ErrorBoundary id="makeStack" name="Modals" hideError={true}><ModalStack /></ErrorBoundary>, div);
+        const root = ReactDOM.createRoot(div);
+        root.render(<ErrorBoundary id="makeStack" name="Modals" hideError={true}><ModalStack /></ErrorBoundary>);
         this.hasInitialized = true;
     }
-    
+
     static openModal(render, options = {}) {
         if (typeof(this.ModalActions.openModal) === "function") return this.ModalActions.openModal(render);
         if (!this.hasInitialized) this.makeStack();

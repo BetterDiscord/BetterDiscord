@@ -1,3 +1,7 @@
+#bd-notices {
+    grid-area: notice;
+}
+
 .bd-notice-success {
     --color: #3BA55D;
 }

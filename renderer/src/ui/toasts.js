@@ -7,7 +7,7 @@ import DOMManager from "@modules/dommanager";
 
 export default class Toasts {
 
-    static get ChannelsClass() {return WebpackModules.getByProps("sidebar", "hasNotice").sidebar.split(" ")[0];}
+    static get ChannelsClass() {return WebpackModules.getByProps("sidebar", "base").sidebar.split(" ")[0];}
     static get MembersWrapClass() {return WebpackModules.getByProps("membersWrap").membersWrap.split(" ")[0];}
 
     static get shouldShowToasts() {return Settings.get("settings", "general", "showToasts");}

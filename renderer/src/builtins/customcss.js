@@ -65,12 +65,12 @@ export default new class CustomCSS extends Builtin {
     }
 
     watchContent() {
-        if (this.watcher) return this.error("Already watching content.");
+        if (this.watcher) return this.error("Already watching custom css.");
         const timeCache = {};
-        this.log("Starting to watch content.");
+        this.log("Starting to watch custom css.");
         this.watcher = fs.watch(DataStore.customCSS, {persistent: false}, async (eventType, filename) => {
             if (!eventType || !filename) return;
-            await new Promise(r => setTimeout(r, 50));
+            await new Promise(r => setTimeout(r, 100));
             try {fs.statSync(DataStore.customCSS);}
             catch (err) {
                 if (err.code !== "ENOENT") return;
@@ -78,14 +78,14 @@ export default new class CustomCSS extends Builtin {
                 this.saveCSS("");
             }
             const stats = fs.statSync(DataStore.customCSS);
-            if (!stats || !stats.mtime || !stats.mtime.getTime()) return;
-            if (typeof(stats.mtime.getTime()) !== "number") return;
-            if (timeCache[filename] == stats.mtime.getTime()) return;
-            timeCache[filename] = stats.mtime.getTime();
+            if (!stats || !stats.mtimeMs) return;
+            if (typeof(stats.mtimeMs) !== "number") return;
+            if (timeCache[filename] == stats.mtimeMs) return;
+            timeCache[filename] = stats.mtimeMs;
             if (eventType == "change") {
-                const newCSS = DataStore.loadCustomCSS();
-                if (newCSS == this.savedCss) return;
-                this.savedCss = newCSS;
+                const oldCSS = this.savedCss;
+                this.loadCSS();
+                if (oldCSS === this.savedCss) return;
                 this.insertCSS(this.savedCss);
                 Events.emit("customcss-updated", this.savedCss);
             }
