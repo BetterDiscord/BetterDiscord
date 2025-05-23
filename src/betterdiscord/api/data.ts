@@ -55,7 +55,7 @@ class Data {
      *
      * @param {string} pluginName Name of the plugin loading data
      * @param {string} key Which piece of data to load
-     * @param {string} uncached uncaches the last returned data if true
+     * @param {boolean} uncached uncaches the last returned data if true
      * @returns {any} The stored data
      *
      * @warning ⚠️ **Use of the `uncached` parameter is discouraged!**
