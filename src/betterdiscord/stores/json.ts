@@ -92,9 +92,20 @@ export default new class JsonStore extends Store {
         this.emit();
     }
 
-    getData(pluginName: string, key: string) {
+    getData(pluginName: string, key: string, uncached: boolean = false) {
         this.#ensurePluginData(pluginName); //       Ensure plugin data, if any, is cached
-        return this.pluginCache[pluginName][key]; // Return blindly to allow falsey values
+        return uncached ? JSON.parse(fs.readFileSync(this.#getPluginFile(pluginName)).toString())[key] : this.pluginCache[pluginName][key]; // Return blindly to allow falsey values
+    }
+
+    recache(pluginName: string) {
+        this.#ensurePluginData(pluginName);
+        try {
+            this.pluginCache[pluginName] = JSON.parse(fs.readFileSync(this.#getPluginFile(pluginName)).toString());
+            return true;
+        }
+        catch {
+            return false;
+        }
     }
 
     setData(pluginName: string, key: string, value: unknown) {

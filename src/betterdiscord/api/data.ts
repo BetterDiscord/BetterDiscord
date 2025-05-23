@@ -33,18 +33,32 @@ class Data {
     }
 
     /**
+     * Recaches JSON-serializable save file.
+     *
+     * @param {string} pluginName Name of the plugin saving data
+     * @return {boolean} success Did the data recache
+     */
+    recache(pluginName: string) {
+        if (this.#callerName) {
+            pluginName = this.#callerName;
+        }
+        return JsonStore.recache(pluginName);
+    }
+
+    /**
      * Loads previously stored data.
      *
      * @param {string} pluginName Name of the plugin loading data
      * @param {string} key Which piece of data to load
+     * @param {string} uncached Uncaches the last data returned
      * @returns {any} The stored data
      */
-    load(pluginName: string, key: string) {
+    load(pluginName: string, key: string, uncached: boolean = false) {
         if (this.#callerName) {
             key = pluginName;
             pluginName = this.#callerName;
         }
-        return JsonStore.getData(pluginName, key);
+        return JsonStore.getData(pluginName, key, uncached);
     }
 
     /**
